@@ -1,0 +1,31 @@
+# Generated projects and build outputs
+GeneratedProjects/
+Chimera/Intermediate/
+Chimera/Saved/
+Chimera/Binaries/
+Chimera/Build/
+Chimera/.vs/
+
+# Logs and temp files
+*.log
+*.sarif
+$null
+
+# Test output files
+tdd_pipeline_output*.txt
+demo_output.txt
+deleted_files_summary.txt
+diff_output.txt
+
+# Large binaries
+antlr-4.13.2-complete.jar
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (for .kilo)
+.kilo/node_modules/
