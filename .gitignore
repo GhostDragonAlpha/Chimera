@@ -3,8 +3,9 @@ GeneratedProjects/
 Chimera/Intermediate/
 Chimera/Saved/
 Chimera/Binaries/
-Chimera/Build/
+Chimera/DerivedDataCache/
 Chimera/.vs/
+Chimera/Build/
 
 # Logs and temp files
 *.log
@@ -29,3 +30,8 @@ antlr-4.13.2-complete.jar
 
 # Node modules (for .kilo)
 .kilo/node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
