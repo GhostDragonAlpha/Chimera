@@ -17,6 +17,7 @@ tdd_pipeline_output*.txt
 demo_output.txt
 deleted_files_summary.txt
 diff_output.txt
+validation_output.txt
 
 # Large binaries
 antlr-4.13.2-complete.jar
@@ -24,6 +25,8 @@ antlr-4.13.2-complete.jar
 # IDE and editor files
 .vscode/
 .idea/
+*.sln
+*.slnx
 *.swp
 *.swo
 *~
