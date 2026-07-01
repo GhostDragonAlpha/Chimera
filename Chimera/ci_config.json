@@ -1,0 +1,98 @@
+{
+    "version": "1.0",
+    "pipeline": {
+        "name": "Chimera CI Pipeline",
+        "trigger": "commit",
+        "branches": ["main", "develop"],
+        "exclude_branches": ["feature/*"]
+    },
+
+    "build": {
+        "targets": [
+            "ChimeraEditor"
+        ],
+        "platforms": [
+            "Win64"
+        ],
+        "configurations": [
+            "Shipping",
+            "Development"
+        ],
+        "incremental": true,
+        "plugin_compilation": {
+            "enabled": true,
+            "plugins": [
+                "McpAutomationBridge",
+                "PythonScriptPlugin"
+            ]
+        },
+        "post_build_validation": {
+            "check_dlls": true,
+            "expected_dlls": [
+                "*ChimeraEditor*.dll",
+                "McpAutomationBridge.dll",
+                "PythonScriptPlugin.dll"
+            ],
+            "check_logs_for_errors": true
+        }
+    },
+
+    "test": {
+        "suites": [
+            "mcp_full_integration_test.py"
+        ],
+        "timeout_seconds": 300,
+        "parallel_execution": true,
+        "retry_count": 2,
+        "report_format": "json",
+        "environment": {
+            "mcp_server_url": "http://localhost:3000/mcp",
+            "requires_running_server": true
+        }
+    },
+
+    "coverage": {
+        "enabled": true,
+        "threshold": 80,
+        "report_format": "cobertura",
+        "exclude_patterns": [
+            "Tests\\*",
+            "ThirdParty\\*"
+        ],
+        "tool": "pytest-cov"
+    },
+
+    "artifacts": {
+        "retention_days": 30,
+        "directories": [
+            "Binaries",
+            "Intermediate",
+            ".ci_logs",
+            ".ci_reports"
+        ],
+        "max_file_size_mb": 100,
+        "compression": "zip",
+        "upload_enabled": false
+    },
+
+    "notifications": {
+        "email": null,
+        "webhook": null,
+        "on_status": [
+            "success",
+            "failure"
+        ],
+        "channels": {
+            "slack": null,
+            "teams": null
+        }
+    },
+
+    "environment": {
+        "variables": {
+            "CI": true,
+            "BUILD_ARTIFACTSTAGINGDIRECTORY": ".ci_artifacts",
+            "BUILD_LOGS_DIRECTORY": ".ci_logs"
+        }
+    }
+}

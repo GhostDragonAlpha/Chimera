@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "unreal-engine": {
+      "type": "http",
+      "url": "http://localhost:3000/mcp"
+    }
+  },
+  "instructions": "Use MCP tools to control UE Editor. Key tools for automated testing:\n- control_editor: play/stop PIE, take screenshots (full_editor_window mode), console commands\n- system_control: execute Python scripts, run profiling, send console commands\n- manage_level: load/save levels\n- inspect: query game world state"
+}
