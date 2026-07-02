@@ -1,0 +1,176 @@
+{
+  "import_dir": "E:\\Assets",
+  "generated_materials": [
+    {
+      "material_name": "MI_SurfaceConcrete",
+      "type": "PhysicalMaterial",
+      "parameters": {
+        "base_color": {
+          "r": 0.6,
+          "g": 0.55,
+          "b": 0.5
+        },
+        "roughness": 0.7098822504467981,
+        "metallic": 0.28340545178251725
+      },
+      "shader_graph": [
+        {
+          "name": "BaseColor",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Roughness",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Metallic",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "MaterialOutput",
+          "type": "Output"
+        }
+      ]
+    },
+    {
+      "material_name": "MI_SurfaceMetal",
+      "type": "PhysicalMaterial",
+      "parameters": {
+        "base_color": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "roughness": 0.4257913697383999,
+        "metallic": 0.21489520411699298
+      },
+      "shader_graph": [
+        {
+          "name": "BaseColor",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Roughness",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Metallic",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "MaterialOutput",
+          "type": "Output"
+        }
+      ]
+    },
+    {
+      "material_name": "MI_SurfaceWood",
+      "type": "PhysicalMaterial",
+      "parameters": {
+        "base_color": {
+          "r": 0.45,
+          "g": 0.3,
+          "b": 0.15
+        },
+        "roughness": 0.33110578432783383,
+        "metallic": 0.045307156798430503
+      },
+      "shader_graph": [
+        {
+          "name": "BaseColor",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Roughness",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Metallic",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "MaterialOutput",
+          "type": "Output"
+        }
+      ]
+    }
+  ],
+  "generated_textures": [
+    {
+      "texture_name": "T_NormalConcrete",
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "format": "NormalMap",
+      "channels": 3,
+      "mip_levels": 8,
+      "generation_seed": 78762
+    },
+    {
+      "texture_name": "T_AlbedoWood",
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "format": "Color",
+      "channels": 4,
+      "mip_levels": 16,
+      "generation_seed": 87062
+    }
+  ],
+  "blueprint_instances": [
+    {
+      "blueprint_id": "BP_BP_Wall_436",
+      "template_source": "BP_Wall",
+      "parent_class": "/Game/Blueprints/BP_BaseStaticMesh",
+      "components": [
+        "StaticMeshComponent"
+      ],
+      "properties": {
+        "cast_shadow": true,
+        "receive_shadow": true
+      },
+      "export_path": "/Game/Blueprints/BP_BP_Wall_436"
+    },
+    {
+      "blueprint_id": "BP_BP_Floor_110",
+      "template_source": "BP_Floor",
+      "parent_class": "/Game/Blueprints/BP_BaseStaticMesh",
+      "components": [
+        "StaticMeshComponent"
+      ],
+      "properties": {
+        "cast_shadow": false,
+        "receive_shadow": true
+      },
+      "export_path": "/Game/Blueprints/BP_BP_Floor_110"
+    }
+  ],
+  "dependency_analysis": {
+    "dependency_graph": {
+      "edges": [],
+      "total_edges": 0
+    },
+    "blueprint_dependencies": [
+      {
+        "blueprint": "BP_BP_Wall_436",
+        "parent_class": "/Game/Blueprints/BP_BaseStaticMesh",
+        "component_count": 1
+      },
+      {
+        "blueprint": "BP_BP_Floor_110",
+        "parent_class": "/Game/Blueprints/BP_BaseStaticMesh",
+        "component_count": 1
+      }
+    ],
+    "orphaned_assets": [],
+    "stats": {
+      "total_assets": 0,
+      "total_materials": 3,
+      "total_blueprints": 2,
+      "dependency_edges": 0,
+      "orphan_count": 0
+    }
+  }
+}

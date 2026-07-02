@@ -1,0 +1,389 @@
+{
+  "biome": "forest",
+  "seed": 100,
+  "chunks": [
+    {
+      "chunk_id": "terrain_forest_0100_0",
+      "position": {
+        "x": -450.0,
+        "y": -450.0,
+        "z": 11.653540408330425
+      },
+      "size": 1000.0,
+      "material_path": "/Game/Materials/MI_ForestSurface",
+      "height_range": [
+        0.0,
+        80.0
+      ]
+    },
+    {
+      "chunk_id": "terrain_forest_0100_1",
+      "position": {
+        "x": -225.0,
+        "y": -450.0,
+        "z": 36.394160361121706
+      },
+      "size": 1000.0,
+      "material_path": "/Game/Materials/MI_ForestSurface",
+      "height_range": [
+        0.0,
+        80.0
+      ]
+    },
+    {
+      "chunk_id": "terrain_forest_0100_2",
+      "position": {
+        "x": 0.0,
+        "y": -450.0,
+        "z": 61.66270445272177
+      },
+      "size": 1000.0,
+      "material_path": "/Game/Materials/MI_ForestSurface",
+      "height_range": [
+        0.0,
+        80.0
+      ]
+    },
+    {
+      "chunk_id": "terrain_forest_0100_3",
+      "position": {
+        "x": 225.0,
+        "y": -450.0,
+        "z": 56.441058154722235
+      },
+      "size": 1000.0,
+      "material_path": "/Game/Materials/MI_ForestSurface",
+      "height_range": [
+        0.0,
+        80.0
+      ]
+    }
+  ],
+  "placements": [
+    {
+      "actor_id": "struct_BP_RuinsTemple_0",
+      "type": "structure",
+      "template_path": "BP_RuinsTemple",
+      "position": {
+        "x": -506.64725338454326,
+        "y": -346.9417921157633,
+        "z": 11.653540408330425
+      },
+      "lod_levels": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ]
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_1",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": -592.3723263365824,
+        "y": -538.2515725572646,
+        "z": 11.653540408330425
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_2",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": -594.3646895460288,
+        "y": -129.95829194820658,
+        "z": 11.653540408330425
+      }
+    },
+    {
+      "actor_id": "prop_BP_TreeOak_3",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": -121.55023299853235,
+        "y": -11.388364939509529,
+        "z": 11.653540408330425
+      }
+    },
+    {
+      "actor_id": "prop_BP_TreeOak_4",
+      "type": "prop",
+      "template_path": "BP_TreeOak",
+      "position": {
+        "x": -156.92474485965124,
+        "y": -861.6296465359763,
+        "z": 11.653540408330425
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_5",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": -717.8847702400534,
+        "y": -165.41470123109787,
+        "z": 11.653540408330425
+      }
+    },
+    {
+      "actor_id": "prop_BP_Mushroom_6",
+      "type": "prop",
+      "template_path": "BP_TreeOak",
+      "position": {
+        "x": -896.4565132174228,
+        "y": -358.5420136135523,
+        "z": 11.653540408330425
+      }
+    },
+    {
+      "actor_id": "prop_BP_Mushroom_7",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": -746.7268303080917,
+        "y": -590.2579160494574,
+        "z": 11.653540408330425
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_8",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": -529.3875692979636,
+        "y": -539.3903492005196,
+        "z": 11.653540408330425
+      }
+    },
+    {
+      "actor_id": "struct_BP_Watchtower_9",
+      "type": "structure",
+      "template_path": "BP_Watchtower",
+      "position": {
+        "x": -217.38146124831042,
+        "y": -317.9573767189578,
+        "z": 36.394160361121706
+      },
+      "lod_levels": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ]
+    },
+    {
+      "actor_id": "prop_BP_Mushroom_10",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": 117.84757670164504,
+        "y": -365.9795071116522,
+        "z": 36.394160361121706
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_11",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": -670.2274778195864,
+        "y": -668.5452618838084,
+        "z": 36.394160361121706
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_12",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": -359.460106384241,
+        "y": -72.34769958318657,
+        "z": 36.394160361121706
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_13",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": -161.58685695504835,
+        "y": -348.6656616564204,
+        "z": 36.394160361121706
+      }
+    },
+    {
+      "actor_id": "prop_BP_TreeOak_14",
+      "type": "prop",
+      "template_path": "BP_TreeOak",
+      "position": {
+        "x": -596.3929002166403,
+        "y": -321.9425344828063,
+        "z": 36.394160361121706
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_15",
+      "type": "prop",
+      "template_path": "BP_TreeOak",
+      "position": {
+        "x": -391.716041897697,
+        "y": -1.7569013208515116,
+        "z": 36.394160361121706
+      }
+    },
+    {
+      "actor_id": "prop_BP_Mushroom_16",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": -469.4514305600081,
+        "y": -71.08825176236667,
+        "z": 36.394160361121706
+      }
+    },
+    {
+      "actor_id": "prop_BP_TreeOak_17",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": 80.87400639875932,
+        "y": -669.7698984166548,
+        "z": 61.66270445272177
+      }
+    },
+    {
+      "actor_id": "prop_BP_Mushroom_18",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": -65.47992605748203,
+        "y": -348.63721469983784,
+        "z": 61.66270445272177
+      }
+    },
+    {
+      "actor_id": "prop_BP_TreeOak_19",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": -39.36970732033632,
+        "y": -774.341422281982,
+        "z": 61.66270445272177
+      }
+    },
+    {
+      "actor_id": "prop_BP_TreeOak_20",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": 300.02705874577805,
+        "y": -564.3151668254119,
+        "z": 56.441058154722235
+      }
+    },
+    {
+      "actor_id": "prop_BP_Mushroom_21",
+      "type": "prop",
+      "template_path": "BP_TreeOak",
+      "position": {
+        "x": 111.01314557693786,
+        "y": -149.29474524739442,
+        "z": 56.441058154722235
+      }
+    },
+    {
+      "actor_id": "prop_BP_Mushroom_22",
+      "type": "prop",
+      "template_path": "BP_TreeOak",
+      "position": {
+        "x": -171.8757695027901,
+        "y": -57.457910251067005,
+        "z": 56.441058154722235
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_23",
+      "type": "prop",
+      "template_path": "BP_Mushroom",
+      "position": {
+        "x": -46.11579731780944,
+        "y": -264.1583407017787,
+        "z": 56.441058154722235
+      }
+    },
+    {
+      "actor_id": "prop_BP_TreeOak_24",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": 306.3981227618724,
+        "y": -118.57950755556908,
+        "z": 56.441058154722235
+      }
+    },
+    {
+      "actor_id": "prop_BP_GrassCluster_25",
+      "type": "prop",
+      "template_path": "BP_GrassCluster",
+      "position": {
+        "x": 120.40136427560827,
+        "y": -753.3863927446153,
+        "z": 56.441058154722235
+      }
+    }
+  ],
+  "level_info": {
+    "level_name": "LP_Forest_-450_-450",
+    "biome": "forest",
+    "streaming_regions": [
+      {
+        "region_id": "reg_terrain_forest_0100_0",
+        "bounds": {
+          "min_x": -950.0,
+          "max_x": 50.0,
+          "min_y": -950.0,
+          "max_y": 50.0
+        }
+      },
+      {
+        "region_id": "reg_terrain_forest_0100_1",
+        "bounds": {
+          "min_x": -725.0,
+          "max_x": 275.0,
+          "min_y": -950.0,
+          "max_y": 50.0
+        }
+      },
+      {
+        "region_id": "reg_terrain_forest_0100_2",
+        "bounds": {
+          "min_x": -500.0,
+          "max_x": 500.0,
+          "min_y": -950.0,
+          "max_y": 50.0
+        }
+      },
+      {
+        "region_id": "reg_terrain_forest_0100_3",
+        "bounds": {
+          "min_x": -275.0,
+          "max_x": 725.0,
+          "min_y": -950.0,
+          "max_y": 50.0
+        }
+      }
+    ],
+    "total_chunks": 4
+  },
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "stats": {
+      "total_placements": 26,
+      "structures": 2,
+      "props": 24,
+      "streaming_regions": 4,
+      "lod_levels": 12
+    }
+  }
+}

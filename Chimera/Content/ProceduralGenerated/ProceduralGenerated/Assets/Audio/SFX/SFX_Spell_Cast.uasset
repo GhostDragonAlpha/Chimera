@@ -1,0 +1,5 @@
+/Script/AudioDevice.WaveInstance
+{
+	AssetName="SFX_Spell_Cast"
+	Style="fantasy_realistic"
+}

@@ -1,0 +1,45 @@
+# Begin widget blueprint for D6HudWidget
+Begin Object Class=/Script/UMGEditor.WidgetBlueprint Name="WBP_D6HudWidget_C"
+   SuperClass=/Script/Chimera.D6HudWidget
+   RootCanvasPanel=/Script/UMG.CanvasPanel'CanvasPanel_0'
+End Object
+
+Begin Object Class=/Script/UMG.CanvasPanel Name="CanvasPanel_0"
+   
+   // Thrust gauge widget - bound to BP_UpdateThrustLevel(float NewThrustLevel)
+   Begin Object Class=/Script/UMG.Image Name="ThrustGauge_Image"
+      WidgetSize=(X=32.0,Y=256.0)
+      Position=(Offset=48.0)
+   End Object
+
+   // Attitude indicator crosshairs - bound to BP_UpdateOrientation(PitchDegrees, YawDegrees, RollDegrees)
+   Begin Object Class=/Script/UMG.CanvasPanel Name="AttitudeIndicator_Canvas"
+      WidgetSize=(X=256.0,Y=256.0)
+      Position=(Offset=736.0)
+      
+      // Pitch/Yaw/Roll crosshair elements rotated via BP_UpdateOrientation
+      Begin Object Class=/Script/UMG.CanvasPanel Name="Crosshairs_Canvas"
+         bIsTransformDirty=true
+      End Object
+   End Object
+
+   // Altitude text - bound to BP_UpdateAltitude(float AltitudeMeters)
+   Begin Object Class=/Script/UMG.TextBlock Name="AltitudeText_TextBlock"
+      Text=FSlateTextValue()
+      Font=(SourceFont=SystemFont,Size=24,FontWeight=Bold)
+      Position=(Offset=32.0,Y=-32.0)
+   End Object
+
+   // Flight mode status badge - bound to BP_UpdateFlightModeStatus(bool bActive)
+   Begin Object Class=/Script/UMG.Image Name="FlightModeBadge_Image"
+      Visibility=Visible
+      Position=(Offset=-64.0,Y=-64.0)
+   End Object
+   
+End Object
+
+// Blueprint Event Implementations:
+// - BP_UpdateThrustLevel(float): Updates ThrustGauge_Image fill/progress
+// - BP_UpdateOrientation(float,float,float): Rotates AttitudeIndicator_Canvas crosshairs by pitch/yaw/roll
+// - BP_UpdateAltitude(float): Sets AltitudeText_TextBlock text to altitude value in meters
+// - BP_UpdateFlightModeStatus(bool): Toggles FlightModeBadge_Image visibility and texture based on bActive

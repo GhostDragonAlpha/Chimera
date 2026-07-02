@@ -1,0 +1,6 @@
+/Script/Engine.AnimMontage
+{
+	AssetName="AM_Jump"
+	Ability="Jump"
+	Style="fantasy_realistic"
+}

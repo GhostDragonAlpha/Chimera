@@ -1,0 +1,35 @@
+{
+    "blueprint_name": "BP_CelestialBodyController",
+    "type": "Blueprint (Actor)",
+    "variables": [
+        {
+            "name": "MoonActor",
+            "type": "StaticMeshComponent",
+            "description": "Reference to SM_Moon mesh"
+        },
+        {
+            "name": "EarthCenterPosition",
+            "type": "FVector2D",
+            "default_value": "(0, 0)",
+            "description": "Earth center in world space (X,Y)"
+        },
+        {
+            "name": "MoonCenterPosition",
+            "type": "FVector2D",
+            "default_value": "(0, 384400000.0)",
+            "description": "Moon center in world space (X,Y)"
+        }
+    ],
+    "tick_logic": [
+        "Get player location from GetPlayerPawn() or owner actor",
+        "Calculate distance to Moon center using Distance node between player and Moon position",
+        "Divide Moon actual radius by calculated distance for apparent size scaling",
+        "Multiply result by MorphFactor (from SphericalGravityComponent) for smooth scaling",
+        "Set static mesh scale based on apparent size calculation"
+    ],
+    "visibility_logic": [
+        "Check if celestial body is within camera frustum using Component Visibility node",
+        "Only render when distance < max_render_distance_km and > min_render_distance_km",
+        "Enable/disable rendering based on frustum culling results"
+    ]
+}

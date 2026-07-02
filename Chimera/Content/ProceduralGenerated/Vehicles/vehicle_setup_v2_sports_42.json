@@ -1,0 +1,51 @@
+{
+  "vehicle_id": "veh_sports_42",
+  "template_path": "/Game/Vehicles/SportsCar/BP_SportsCar.BP_SportsCar_C",
+  "transform": {
+    "location": {
+      "x": 313.94267984578835,
+      "y": -47.498924477733304,
+      "z": 0
+    },
+    "rotation": {
+      "yaw": -2.2497068163088074
+    }
+  },
+  "base_stats": {
+    "chassis_height": 120.0,
+    "drag_coefficient": 0.31,
+    "weight_kg": 1400
+  },
+  "upgrades_applied": [
+    "engine",
+    "suspension",
+    "tires"
+  ],
+  "modified_stats": {
+    "max_rpm": 8500,
+    "torque_multiplier": 1.3,
+    "spring_rate": 1.4,
+    "damping_ratio": 0.7,
+    "friction_bias": 1.2,
+    "lateral_stiffness": 1.3
+  },
+  "performance_config": {
+    "racing_mode": true,
+    "tuning_preset": "race",
+    "physics_tuning": {
+      "total_power_bonus": 20.0,
+      "power_factor": 1.5,
+      "handling_factor": 1.2,
+      "braking_factor": 1.3,
+      "tire_pressure_boost": 1.1,
+      "engine_remap": true
+    },
+    "ai_behavior": "aggressive"
+  },
+  "registration": {
+    "vehicle_id": "veh_sports_42",
+    "category": "Sports",
+    "race_class": "RC_Champion",
+    "registered": true
+  }
+}

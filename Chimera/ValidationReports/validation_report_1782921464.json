@@ -1,0 +1,53 @@
+{
+  "report_metadata": {
+    "timestamp": "validation_report_generated",
+    "dsl_spec_validated": true
+  },
+  "asset_mapping": {},
+  "class_mapping": {
+    "character_classes": [
+      {
+        "dsl_character": "Player_Pilot",
+        "generated_classes": [
+          "placeholder"
+        ]
+      }
+    ]
+  },
+  "deviations_and_warnings": [
+    {
+      "type": "missing_generation",
+      "category": "characters",
+      "description": "No character class files generated despite DSL declarations"
+    }
+  ],
+  "performance_warnings": [],
+  "test_results_summary": {
+    "playtest_results": {
+      "summary": {
+        "total_tests": 3,
+        "passed": 0,
+        "failed": 3,
+        "skipped": 0,
+        "pass_rate": 0.0
+      },
+      "tests": [
+        {
+          "name": "BuyTitaniumReducesCreditsAndAddsToCargo",
+          "status": "FAILED",
+          "suggestion": "Test execution did not produce explicit result for BuyTitaniumReducesCreditsAndAddsToCargo. Check UE automation logs in Saved/Logs directory."
+        },
+        {
+          "name": "QuantumTravelConsumesFuel",
+          "status": "FAILED",
+          "suggestion": "Test execution did not produce explicit result for QuantumTravelConsumesFuel. Check UE automation logs in Saved/Logs directory."
+        },
+        {
+          "name": "MissionDeliveryRewardOnCompletion",
+          "status": "FAILED",
+          "suggestion": "Test execution did not produce explicit result for MissionDeliveryRewardOnCompletion. Check UE automation logs in Saved/Logs directory."
+        }
+      ]
+    }
+  }
+}

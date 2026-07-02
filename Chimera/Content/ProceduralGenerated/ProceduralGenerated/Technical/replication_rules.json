@@ -1,0 +1,9 @@
+{
+  "network_model": "client_server",
+  "replicated_properties": [
+    "Health: Replicated, RepNotify"
+  ],
+  "rpcs": [
+    "Server_Attack: reliable, server"
+  ]
+}

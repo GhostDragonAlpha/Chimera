@@ -1,0 +1,102 @@
+{
+    "blueprint_name": "BP_WPOMaterialController",
+    "type": "Blueprint (Actor)",
+    "parent_class": "Actor",
+    "variables": [
+        {
+            "name": "WPOMaterialInstance",
+            "type": "MaterialInstanceConstant",
+            "description": "Reference to MI_EarthLandscapeWPO material instance"
+        },
+        {
+            "name": "MorphFactorParam",
+            "type": "ScalarParameter",
+            "default_value": 0.0,
+            "range": [
+                0.0,
+                1.0
+            ],
+            "description": "Controls flat-to-sphere morph intensity (bound to material)"
+        }
+    ],
+    "beginplay_nodes": [
+        {
+            "node": "Get Owner",
+            "type": "Execution"
+        },
+        {
+            "node": "Cast To AChimeraPawn",
+            "inputs": [
+                "Get Owner"
+            ],
+            "type": "Type Casting"
+        },
+        {
+            "node": "Get Component By Class (ULandscapeComponent)",
+            "inputs": [
+                "Cast Result"
+            ],
+            "type": "Component Access"
+        },
+        {
+            "node": "Set Material (Slot 0, MI_EarthLandscapeWPO)",
+            "inputs": [
+                "Get Component Result",
+                0,
+                "WPOMaterialInstance"
+            ],
+            "type": "Material Assignment"
+        }
+    ],
+    "tick_nodes": [
+        {
+            "node": "Get Player Pawn",
+            "type": "Player Access"
+        },
+        {
+            "node": "Get Actor Location",
+            "inputs": [
+                "Get Player Pawn"
+            ],
+            "type": "Location Query"
+        },
+        {
+            "node": "Distance to Planet Center (PlanetCenterParam)",
+            "inputs": [
+                "Get Actor Location",
+                "PlanetCenterParam"
+            ],
+            "type": "Math (Distance)"
+        },
+        {
+            "node": "Divide (PlayerAltitude.Z / Distance)",
+            "inputs": [
+                "PlayerAltitudeParam.Z",
+                "Distance result"
+            ],
+            "type": "Math (Division)"
+        },
+        {
+            "node": "Multiply (Result * MorphFactorParam)",
+            "inputs": [
+                "Divide result",
+                "MorphFactorParam"
+            ],
+            "type": "Math (Multiplication)"
+        },
+        {
+            "node": "Set Scalar Parameter Value (WPOMaterialInstance, MorphFactorParam)",
+            "inputs": [
+                "WPOMaterialInstance",
+                "MorphFactorParam",
+                "Multiply result"
+            ],
+            "type": "Parameter Update"
+        }
+    ],
+    "integration_with_spherical_gravity": {
+        "description": "BP_WPOMaterialController receives morph factor from SphericalGravityComponent via C++ binding",
+        "cpp_binding": "In ChimeraPawn.cpp, call WPOMaterialController->UpdateMorphFactor(PlayerAltitude) in Tick()",
+        "parameter_flow": "SphericalGravityComponent.CalculateGravitationalAcceleration() \u2192 PlayerAltitude.Z \u2192 BP_WPOMaterialController.Tick()"
+    }
+}

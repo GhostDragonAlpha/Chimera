@@ -1,0 +1,11 @@
+{
+  "terms": {
+    "TERM_001": {"label": "Component Alpha", "synonyms": ["comp_a", "component_alpha", "c-alpha"]},
+    "TERM_002": {"label": "Data Processor", "synonyms": ["proc_d", "data_proc", "dp"]},
+    "TERM_003": {"label": "Output Logger", "synonyms": ["log_out", "output_logger", "ol"]}
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "last_updated": "2026-07-01"
+  }
+}

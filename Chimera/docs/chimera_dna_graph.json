@@ -1,0 +1,149 @@
+{
+  "nodes": [
+    {
+      "id": "error_35ad3812c58e8850",
+      "type": "Error",
+      "timestamp": "2026-07-02T21:02:58.755224",
+      "error_message": "UBT Compilation Failed",
+      "error_signature": "35ad3812c58e8850",
+      "template_file": "E:\\PythonChimera\\Chimera\\GeneratedProjects_DeepSpaceTrader\\GeneratedProject\\Source\\DeepSpaceTrader/DeepSpaceTrader",
+      "is_recurring": true,
+      "links": []
+    },
+    {
+      "id": "mutation_1092a4fb1841",
+      "type": "Mutation",
+      "timestamp": "2026-07-02T21:04:24.587906",
+      "error_signature": "success_no_error",
+      "template_file": "E:\\PythonChimera\\Chimera\\GeneratedProjects_DeepSpaceTrader\\GeneratedProject\\Source\\DeepSpaceTrader/DeepSpaceTrader",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "compilation_result": "pass",
+      "links": []
+    },
+    {
+      "id": "mutation_37af63b17e3c",
+      "type": "Mutation",
+      "timestamp": "2026-07-02T21:38:45.443145",
+      "error_signature": "success_no_error",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated/DeepSpaceTrader",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "compilation_result": "pass",
+      "links": []
+    },
+    {
+      "id": "mutation_37af63b17e3c",
+      "type": "Mutation",
+      "timestamp": "2026-07-02T21:39:32.134879",
+      "error_signature": "success_no_error",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated/DeepSpaceTrader",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "compilation_result": "pass",
+      "links": []
+    },
+    {
+      "id": "mutation_5b87d7882e43",
+      "type": "Mutation",
+      "timestamp": "2026-07-02T21:41:47.005802",
+      "error_signature": "dir_consolidation",
+      "template_file": "build_orchestrator, game_code_generator",
+      "error_category": "module_dependency",
+      "fix_description": "Consolidated all generated dirs into E:/PythonChimera/Chimera/; fixed CHIMERA_API; added AIModule,NiagaraCore,Niagara,GameplayAbilities to Build.cs; fixed templates; added PrivateIncludePaths",
+      "compilation_result": "pass"
+    },
+    {
+      "id": "health_2026-07-02T214147.005802",
+      "type": "Health",
+      "timestamp": "2026-07-02T21:41:47.005802",
+      "status": "healthy",
+      "details": "Build succeeded with 0 errors. 38 generated files. One canonical project path."
+    },
+    {
+      "id": "summary_final_2026-07-02T2148",
+      "type": "Mutation",
+      "timestamp": "2026-07-02T21:48:59.213096+00:00",
+      "error_signature": "final_summary",
+      "template_file": "ALL",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "BUILD SUCCEEDED: Zero errors. 38 generated files. DNA system integrated. 5 stale dirs removed. 12 template bugs fixed. All documentation updated.",
+      "fix_diff": "Full pipeline: DSL parse -> Code gen -> UBT compile -> Pass. Project structure consolidated to E:/PythonChimera/Chimera/",
+      "compilation_result": "pass",
+      "next_milestone": "Headless level loading and GameMode BeginPlay confirmation"
+    },
+    {
+      "id": "health_final_2026-07-02T2148",
+      "type": "Health",
+      "timestamp": "2026-07-02T21:48:59.213096+00:00",
+      "status": "healthy",
+      "details": "FINAL: Build clean with 0 errors. 12 known bugs fixed. All template bugs resolved. Module: Chimera, API: CHIMERA_API. DNA system operational. Dashboard and API ready.",
+      "total_mutations": 5,
+      "total_errors": 1
+    }
+  ],
+  "edges": [
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_e789feb3287c",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_e789feb3287c",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    },
+    {
+      "source": "error_35ad3812c58e8850",
+      "target": "template_d05b3c811ca8",
+      "type": "generated_from"
+    }
+  ]
+}

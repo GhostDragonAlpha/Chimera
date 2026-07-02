@@ -1,0 +1,171 @@
+game "SpaceTrader" {
+    engine_version = "5.8";
+    target_platforms = ["PC"];
+}
+
+game_settings {
+    camera_perspective = "third_person";
+    game_mode = "single_player";
+}
+
+narrative {
+    acts = [
+        {"id": "act_1", "name": "Beginning Trader"},
+        {"id": "act_2", "name": "Building Empire"}
+    ];
+}
+
+technical {
+    network_model = "standalone";
+    performance { target_fps=60, LOD_strategy="standard" };
+    module_dependencies = ["GameplayAbilities", "EnhancedInput"];
+}
+
+art_direction {
+    style = "sci_fi_realistic";
+    color_palette = ["dark_space", "metallic_grey", "blue_hologram"];
+}
+
+world {
+    planet "Titan" {
+        type = "gas_giant_moon";
+        gravity_g = 1.5;
+        atmosphere_density = 0.8;
+        
+        biome_config "outpost_region" {
+            vegetation_density = 0.0,
+            ground_texture_types = ["metal_plating", "concrete", "rust"],
+            resource_nodes = ["titanium_ore"];
+        }
+    }
+}
+
+celestial {
+    space_station "Orbital_Hub_7" {
+        orbits_planet = "Titan";
+        capacity_crew = 50;
+        facilities = ["market", "fuel_depot", "repair_dock"];
+    }
+}
+
+flight_model {
+    type = "arcade_space_flight";
+    thrust_acceleration = 25.0;
+    max_speed_kmh = 1200;
+    turn_rate_deg_per_sec = 90;
+    inertia_damping = 0.85;
+}
+
+ship_systems {
+    ship "Trader_Vessel_Alpha" inherits "ASpaceShip" {
+        fuel_capacity_liters = 10000;
+        cargo_capacity_kg = 50000;
+        
+        system "Fuel_Tank" {
+            consumption_rate_per_km = 0.5;
+        }
+        
+        system "Quantum_Engine" {
+            travel_time_seconds = 30;
+            fuel_cost_per_jump_liters = 2000;
+        }
+    }
+}
+
+quantum_travel {
+    route "Orbital_Hub_7_to_Surface" {
+        origin = "Orbital_Hub_7";
+        destination = "Titan_Surface_Outpost";
+        travel_time_seconds = 30;
+        fuel_cost_liters = 2000;
+        requires_quantum_drive = true;
+    }
+}
+
+economy_systems {
+    commodity "Titanium" {
+        base_type = "mineral";
+        unit = "kg";
+        
+        market_price "Orbital_Hub_7_Market" {
+            buy_price_per_kg = 50;
+            sell_price_per_kg = 45;
+        }
+        
+        market_price "Titan_Surface_Outpost_Market" {
+            buy_price_per_kg = 80;
+            sell_price_per_kg = 72;
+        }
+    }
+    
+    trade_route "Station_to_Surface_Trade" {
+        origin = "Orbital_Hub_7";
+        destination = "Titan_Surface_Outpost";
+        commodities_allowed = ["Titanium"];
+    }
+}
+
+ui {
+    hud_layout "Trader_HUD" {
+        elements = [
+            {"name": "fuel_gauge", "position": "bottom_left"},
+            {"name": "cargo_display", "position": "top_right"},
+            {"name": "market_panel", "position": "center"}
+        ];
+    }
+}
+
+gameplay {
+    character "Player_Pilot" inherits "ACharacter" {
+        ability_system_component = "ASC_Player";
+        attribute_set = "AS_PlayerAttributes";
+        default_abilities = ["GA_FlyShip", "GA_InteractMarket"];
+    }
+    
+    survival_stats {
+        fuel_stat = true,
+        cargo_weight_stat = false;
+    }
+}
+
+tests {
+    test "BuyTitaniumReducesCreditsAndAddsToCargo" {
+        type = "unit";
+        description = "Buying Titanium at the station reduces player credits and adds Titanium to cargo";
+        
+        setup {
+            spawn_actor(type = "Character", id = "player", class = "Player_Pilot");
+            add_credits(actor = "player", amount = 10000);
+            set_market_price(market = "Orbital_Hub_7_Market", commodity = "Titanium", price_per_kg = 50);
+        }
+        
+        action {
+            buy_commodity(actor = "player", market = "Orbital_Hub_7_Market", commodity = "Titanium", quantity_kg = 100);
+        }
+        
+        assert {
+            player_credits(actor = "player") == 9500;
+            inventory_count(actor = "player", item = "Titanium", unit = "kg") == 100;
+        }
+    }
+    
+    test "QuantumTravelConsumesFuel" {
+        type = "integration";
+        description = "Flying from station to planet consumes quantum fuel via Quantum_Engine system";
+        
+        setup {
+            spawn_actor(type = "Ship", id = "test_ship", class = "Trader_Vessel_Alpha");
+            set_system_fuel(actor = "test_ship", system = "Fuel_Tank", amount_liters = 10000);
+            grant_ability(actor = "test_ship", ability = "Quantum_Spool_Jump");
+        }
+        
+        action {
+            activate_quantum_travel(actor = "test_ship", route = "Orbital_Hub_7_to_Surface");
+        }
+        
+        assert {
+            system_fuel_remaining(actor = "test_ship", system = "Fuel_Tank") <= 8000;
+            quantum_drive_status(actor = "test_ship") == "cooldown";
+        }
+    }
+}

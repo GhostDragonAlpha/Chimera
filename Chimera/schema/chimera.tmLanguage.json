@@ -1,0 +1,76 @@
+{
+  "name": "Chimera DSL",
+  "scopeName": "source.chimera.dsl",
+  "patterns": [
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#comments"
+    }
+  ],
+  "repository": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.chimera",
+          "match": "\\b(game|narrative|gameplay|world|ui|audio|technical|art_direction)\\b"
+        },
+        {
+          "name": "keyword.control.chimera",
+          "match": "\\b(engine_version|target_platforms|network_model|module_dependencies|performance|replication|style|color_palette)\\b"
+        },
+        {
+          "name": "keyword.control.chimera",
+          "match": "\\b(character|ability|inherits|uses|combat_system|inventory|progression|level|npc|environment|spawn_point|scripted_event|hud|pause_menu|widget|music_cue|sfx|dynamic_mixing_rules)\\b"
+        },
+        {
+          "name": "keyword.control.chimera",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.chimera",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.chimera",
+          "match": "\\\\[ntr\"\\\\]"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.integer.chimera",
+          "match": "\\b[0-9]+\\b"
+        },
+        {
+          "name": "constant.numeric.float.chimera",
+          "match": "\\b[0-9]+\\.[0-9]+\\b"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.chimera",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.chimera",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    }
+  }
+}
