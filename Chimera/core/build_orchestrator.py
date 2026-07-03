@@ -7,15 +7,17 @@ Validates that generated assets and classes match DSL specifications.
 
 import json
 
-# DNA Integration
+# DNA Integration - Route through Graphify interface
 try:
-    from core.dna.mutation_logger import load_dna_graph, save_dna_graph, record_compilation_success, record_compilation_failure, hash_error_signature
+    from core.graphify_interface import query, mutate, load_dna_graph, save_dna_graph, graphify_mutate as record_compilation_success, graphify_mutate as record_compilation_failure
     from core.dna.auto_fixer import auto_fix_brace_error
 except ImportError:
     try:
-        from dna.mutation_logger import load_dna_graph, save_dna_graph, record_compilation_success, record_compilation_failure, hash_error_signature
+        from graphify_interface import query, mutate, load_dna_graph, save_dna_graph, graphify_mutate as record_compilation_success, graphify_mutate as record_compilation_failure
         from dna.auto_fixer import auto_fix_brace_error
     except ImportError:
+        def query(*args, **kwargs): return {"canonical_output_dir": "E:/PythonChimera/Chimera", "module_name": "Chimera", "api_macro": "CHIMERA_API", "include_paths": ["ProceduralGenerated/Combat", "ProceduralGenerated/AI", "ProceduralGenerated/Flight", "ProceduralGenerated/PCG", "ProceduralGenerated/Stations", "ProceduralGenerated/Missions", "ProceduralGenerated/Factions", "ProceduralGenerated/Save", "ProceduralGenerated/GameMode", "ProceduralGenerated/Ships"]}
+        def mutate(*args, **kwargs): return "mutate_dummy"
         def load_dna_graph(): return {"nodes": [], "edges": []}
         def save_dna_graph(*args): pass
         def record_compilation_success(*args, **kwargs): return "mutation_dummy"
@@ -152,10 +154,23 @@ class BuildOrchestrator:
     """Assembles .uproject file and orchestrates compilation and testing."""
 
     def __init__(self, project_name: str, output_dir: str):
-        # Output to the main Chimera project directory
-        self.output_dir = Path("E:/PythonChimera/Chimera")
+        # Query Graphify for canonical paths and configuration
+        config = query("config") or {
+            "canonical_output_dir": "E:/PythonChimera/Chimera",
+            "module_name": "Chimera",
+            "api_macro": "CHIMERA_API",
+            "include_paths": ["ProceduralGenerated/Combat", "ProceduralGenerated/AI", "ProceduralGenerated/Flight", 
+                              "ProceduralGenerated/PCG", "ProceduralGenerated/Stations", "ProceduralGenerated/Missions", 
+                              "ProceduralGenerated/Factions", "ProceduralGenerated/Save", "ProceduralGenerated/GameMode", 
+                              "ProceduralGenerated/Ships"]
+        }
+        
+        self.output_dir = Path(config.get("canonical_output_dir", "E:/PythonChimera/Chimera"))
         self.project_name = project_name
         # UE project structure: Source/Chimera/ProceduralGenerated for generated code
+        source_dirs = config.get("include_paths", [])
+        self.source_dir = Path(f"E:/PythonChimera/Chimera/Source/{config.get('module_name', 'Chimera')}/{'/'.join(source_dirs).split(',')[0].replace('ProceduralGenerated/', '') if 'ProceduralGenerated/' in str(source_dirs) else 'ProceduralGenerated'}")
+        # Simplified source dir path
         self.source_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated")
         self.content_dir = self.output_dir / "Content"
         
@@ -170,6 +185,8 @@ class BuildOrchestrator:
         
         # Use the existing module name from the project: "Chimera"
         self.sanitized_module_name = "Chimera"
+        # Store the DSL game title for class naming (e.g., DeepSpaceTraderGameMode)
+        self.game_title = sanitize_module_name(title)
         
         # Use the existing uproject file — don't regenerate it
         uproject_path_str = str(self.output_dir) + os.sep + "Chimera.uproject"
@@ -200,12 +217,11 @@ class BuildOrchestrator:
                 
             success = builder.compile_project(self.sanitized_module_name, uproject_path, "Development")
             
-            # Log compilation result to DNA
-            graph = load_dna_graph()
+            # Log compilation result to DNA through Graphify
             template_file = f"{self.source_dir}/DeepSpaceTrader"
             
             if success:
-                record_compilation_success(graph, snapshot_diff="build_completed", template_file=template_file, template_line=0)
+                mutate("compilation", "pass", details={"snapshot_diff": "build_completed", "template_file": template_file})
             else:
                 # Try to auto-fix brace errors before logging failure
                 source_dir_str = str(self.source_dir)
@@ -216,16 +232,15 @@ class BuildOrchestrator:
                         
                         fix_result = auto_fix_brace_error(str(file_path), template_file)
                         
-                # Log the compilation failure
-                record_compilation_failure(graph, ubt_output="UBT Compilation Failed", template_file=template_file)
+                # Log the compilation failure through Graphify
+                mutate("compilation", "fail", details={"ubt_output": "UBT Compilation Failed", "template_file": template_file})
                 
             return success
             
         except Exception as e:
             print(f"Compilation error: {e}")
-            graph = load_dna_graph()
             template_file = f"{self.source_dir}/DeepSpaceTrader"
-            record_compilation_failure(graph, ubt_output=str(e), template_file=template_file)
+            mutate("compilation", "error", details={"ubt_output": str(e), "template_file": template_file})
             return False
 
     def run_automated_tests(self, dsl_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -436,7 +451,7 @@ ServerDefaultMap=/Engine/Maps/Entry
         default_game_ini = f"""[/Script/EngineSettings.GameMapsSettings]
 GameDefaultMap={game_default_map}
 EditorStartupMap={editor_startup_map}
-GlobalDefaultGameMode=/Script/{self.sanitized_module_name}.{self.sanitized_module_name}GameMode
+GlobalDefaultGameMode=/Script/{self.sanitized_module_name}.{self.game_title}GameMode
 
 [/Script/Engine.Engine]
 +ActiveGameNameRedirects=(OldGameName="TP_DeepSpaceTrader",NewGameName="/Script/{self.sanitized_module_name}")

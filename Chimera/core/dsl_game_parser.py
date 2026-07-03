@@ -10,6 +10,18 @@ import re
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
+# Route through Graphify interface for mutation logging
+try:
+    from core.graphify_interface import query, mutate, load_dna_graph, save_dna_graph
+except ImportError:
+    try:
+        from graphify_interface import query, mutate, load_dna_graph, save_dna_graph
+    except ImportError:
+        def query(*args, **kwargs): return None
+        def mutate(*args, **kwargs): return "mutate_dummy"
+        def load_dna_graph(): return {"nodes": [], "edges": []}
+        def save_dna_graph(*args): pass
+
 try:
     from core.validator import DSLSchemaValidator
 except ImportError:
@@ -858,6 +870,9 @@ class DSLGameParser:
         """Parse DSL content and validate against schema."""
         # Parse DSL string to dictionary
         parsed_dsl = self.parse_dsl_string(dsl_content)
+        
+        # Log parse results through Graphify mutation interface
+        mutate("parse", "success", details=parsed_dsl if isinstance(parsed_dsl, dict) else {})
         
         # Convert to JSON string for validation
         dsl_json_string = json.dumps(parsed_dsl, indent=2)

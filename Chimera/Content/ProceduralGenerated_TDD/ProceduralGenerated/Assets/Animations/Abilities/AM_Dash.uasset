@@ -1,6 +1,0 @@
-/Script/Engine.AnimMontage
-{
-	AssetName="AM_Dash"
-	Ability="Dash"
-	Style="default"
-}

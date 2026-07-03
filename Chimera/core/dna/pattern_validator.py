@@ -2,13 +2,16 @@ import json
 import hashlib
 from pathlib import Path
 
-DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")
-
-def load_dna_graph():
-    if DNA_GRAPH_PATH.exists():
-        with open(DNA_GRAPH_PATH, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {"nodes": [], "edges": []}
+# Route through Graphify interface
+try:
+    from core.graphify_interface import query, load_dna_graph, save_dna_graph
+except ImportError:
+    try:
+        from graphify_interface import query, load_dna_graph, save_dna_graph
+    except ImportError:
+        def query(*args, **kwargs): return None
+        def load_dna_graph(): return {"nodes": [], "edges": []}
+        def save_dna_graph(*args): pass
 
 def hash_template_name(template_name: str) -> str:
     return hashlib.sha256(template_name.encode('utf-8')).hexdigest()[:16]

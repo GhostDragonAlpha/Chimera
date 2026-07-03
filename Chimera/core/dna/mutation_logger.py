@@ -1,91 +1,37 @@
-import json
 import hashlib
 from datetime import datetime
 from pathlib import Path
 
-DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")
-
-def load_dna_graph():
-    if DNA_GRAPH_PATH.exists():
-        with open(DNA_GRAPH_PATH, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {"nodes": [], "edges": []}
-
-def save_dna_graph(graph):
-    DNA_GRAPH_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(DNA_GRAPH_PATH, 'w', encoding='utf-8') as f:
-        json.dump(graph, f, indent=2)
+# Route through Graphify interface
+try:
+    from core.graphify_interface import query, mutate, load_dna_graph, save_dna_graph, hash_error_signature as _hash_err_sig
+except ImportError:
+    try:
+        from graphify_interface import query, mutate, load_dna_graph, save_dna_graph, hash_error_signature as _hash_err_sig
+    except ImportError:
+        def query(*args, **kwargs): return None
+        def mutate(*args, **kwargs): return "mutate_dummy"
+        def load_dna_graph(): return {"nodes": [], "edges": []}
+        def save_dna_graph(*args): pass
+        def _hash_err_sig(*args, **kwargs): return "hash_dummy"
 
 def hash_error_signature(error_message: str) -> str:
     return hashlib.sha256(error_message.encode('utf-8')).hexdigest()[:16]
 
-def create_mutation_node(error_signature: str, template_file: str, template_line: int, 
-                         error_category: str, fix_description: str, fix_diff: str, 
-                         compilation_result: str) -> dict:
-    return {
-        "id": f"mutation_{hashlib.sha256(f'{error_signature}_{template_file}_{template_line}'.encode()).hexdigest()[:12]}",
-        "type": "Mutation",
-        "timestamp": datetime.utcnow().isoformat(),
-        "error_signature": error_signature,
-        "template_file": template_file,
-        "template_line": template_line,
-        "error_category": error_category,
-        "fix_description": fix_description,
-        "fix_diff": fix_diff,
-        "compilation_result": compilation_result,
-        "links": []
-    }
-
-def create_error_node(error_message: str, template_file: str) -> dict:
-    error_signature = hash_error_signature(error_message)
-    return {
-        "id": f"error_{error_signature}",
-        "type": "Error",
-        "timestamp": datetime.utcnow().isoformat(),
-        "error_message": error_message,
-        "error_signature": error_signature,
-        "template_file": template_file,
-        "is_recurring": False,
-        "links": []
-    }
-
-def create_fix_node(error_id: str, template_file: str, fix_description: str) -> dict:
-    return {
-        "id": f"fix_{hashlib.sha256(f'{error_id}_{template_file}'.encode()).hexdigest()[:12]}",
-        "type": "Fix",
-        "timestamp": datetime.utcnow().isoformat(),
-        "error_id": error_id,
-        "template_file": template_file,
-        "fix_description": fix_description,
-        "categories": [],
-        "links": []
-    }
-
 def record_compilation_success(graph, snapshot_diff: str, template_file: str, template_line: int):
-    nodes = graph.get("nodes", [])
-    edges = graph.get("edges", [])
-    
-    mutation_node = create_mutation_node(
-        error_signature="success_no_error",
-        template_file=template_file,
-        template_line=template_line,
-        error_category="none",
-        fix_description=snapshot_diff or "no changes",
-        fix_diff=snapshot_diff or "",
-        compilation_result="pass"
-    )
-    
-    nodes.append(mutation_node)
-    save_dna_graph({"nodes": nodes, "edges": edges})
-    return mutation_node["id"]
+    result = mutate("compilation", "pass", details={"snapshot_diff": snapshot_diff, "template_file": template_file})
+    return result or f"mutation_{hashlib.sha256(f'success_no_error_{template_file}_{template_line}'.encode()).hexdigest()[:12]}"
 
 def record_compilation_failure(graph, ubt_output: str, template_file: str):
+    error_signature = hash_error_signature(ubt_output)
+    
+    # Query existing errors through Graphify
+    mutations = query("mutation", "compilation") or []
+    
     nodes = graph.get("nodes", [])
     edges = graph.get("edges", [])
     
-    error_signature = hash_error_signature(ubt_output)
-    
-    existing_errors = [n for n in nodes if n["type"] == "Error" and n["error_signature"] == error_signature]
+    existing_errors = [n for n in nodes if n["type"] == "Error" and n.get("error_signature") == error_signature]
     
     error_node = None
     is_recurring = False
@@ -97,14 +43,23 @@ def record_compilation_failure(graph, ubt_output: str, template_file: str):
         
         # Link to similar errors
         for n in nodes:
-            if n["type"] == "Error" and n["id"] != error_node["id"]:
+            if n["type"] == "Error" and n.get("id") != error_node["id"]:
                 edges.append({
                     "source": error_node["id"],
                     "target": n["id"],
                     "type": "similar_error"
                 })
     else:
-        error_node = create_error_node(ubt_output, template_file)
+        error_node = {
+            "id": f"error_{error_signature}",
+            "type": "Error",
+            "timestamp": datetime.utcnow().isoformat(),
+            "error_message": ubt_output,
+            "error_signature": error_signature,
+            "template_file": template_file,
+            "is_recurring": False,
+            "links": []
+        }
         nodes.append(error_node)
         
     # Link Error to Template
@@ -121,8 +76,16 @@ def record_fix_applied(graph, error_id: str, template_file: str, fix_description
     nodes = graph.get("nodes", [])
     edges = graph.get("edges", [])
     
-    fix_node = create_fix_node(error_id, template_file, fix_description)
-    fix_node["categories"] = [category]
+    fix_node = {
+        "id": f"fix_{hashlib.sha256(f'{error_id}_{template_file}'.encode()).hexdigest()[:12]}",
+        "type": "Fix",
+        "timestamp": datetime.utcnow().isoformat(),
+        "error_id": error_id,
+        "template_file": template_file,
+        "fix_description": fix_description,
+        "categories": [category],
+        "links": []
+    }
     nodes.append(fix_node)
     
     # Link Fix -> Error
@@ -139,9 +102,6 @@ def record_fix_applied(graph, error_id: str, template_file: str, fix_description
         "target": template_id,
         "type": "applied_to_template"
     })
-    
-    # Link to Mutation if exists
-    mutations = [n for n in nodes if n["type"] == "Mutation" and n.get("error_signature") == hash_error_signature(graph.get("nodes", []))]
     
     save_dna_graph({"nodes": nodes, "edges": edges})
     return fix_node["id"]

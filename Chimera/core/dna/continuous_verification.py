@@ -1,7 +1,12 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from apscheduler.schedulers.background import BackgroundScheduler
+try:
+    from apscheduler.schedulers.background import BackgroundScheduler
+    SCHEDULER_AVAILABLE = True
+except ImportError:
+    SCHEDULER_AVAILABLE = False
+    BackgroundScheduler = None
 
 DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")
 
@@ -72,6 +77,9 @@ def continuous_verification_loop():
         return {"success": False, "status": "unhealthy", "errors": errors}
 
 def start_continuous_verification_scheduler():
+    if not SCHEDULER_AVAILABLE:
+        print("[DNA] APScheduler not installed — continuous verification scheduler not started")
+        return None
     scheduler = BackgroundScheduler()
     scheduler.add_job(continuous_verification_loop, 'interval', hours=1)
     scheduler.start()

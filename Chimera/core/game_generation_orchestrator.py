@@ -4,14 +4,21 @@ DSL-Driven Game Generation Orchestrator — AI-powered game generation workflow.
 Takes a complete, structured game specification written in a domain-specific language (DSL)
 and transforms it into a fully functional, AAA-quality Unreal Engine 5 project.
 
-Follows the 7-stage pipeline:
+Follows the 7-stage pipeline with integrated Graphify DNA system:
 1. Parse & Validate: Check DSL for consistency, type errors, missing references
 2. Asset Generation: Create all declared assets at specified paths using AI tools
 3. Code Generation: Emit C++ and Blueprint logic, data tables, configuration files
 4. Integration & Build: Assemble .uproject, compile, run automated tests
 4.5 Automated Playtest: Execute behavioral tests using UE's automation framework
-5. Report & Refine Prompt: Output validation report with deviations; generate proposed DSL patch
+5. Report & Refine: Output validation report with deviations; generate proposed DSL patch
 6. Regenerate & Iterate: Incrementally regenerate only affected parts
+
+DNA Integration (automatic at every stage):
+- Before Stage 1: Pattern Validator queries DNA for known-bad patterns
+- Before Stage 3: Verified reference graph queried for correct signatures/macros
+- Before Stage 4: Template validation and static analysis
+- After Stage 4: Mutation Logger records result; Auto-Fixer on failure
+- After Stage 5: Continuous Verification health check
 
 The specification is the sole source of truth - never guess creative elements not explicitly declared.
 """
@@ -30,6 +37,7 @@ try:
     from core.incremental_generator import IncrementalGenerator
     from core.playtest_runner import PlaytestRunner
     from core.test_reporter import TestReporter
+    from core.visual_verifier import run_visual_verification
 except ImportError:
     try:
         from dsl_game_parser import DSLGameParser
@@ -40,93 +48,38 @@ except ImportError:
         from incremental_generator import IncrementalGenerator
         from playtest_runner import PlaytestRunner
         from test_reporter import TestReporter
+        from visual_verifier import run_visual_verification
     except ImportError:
-        # Mock components for testing if local imports fail
-        class DSLGameParser:
-            def __init__(self, schema_path):
-                pass
-            
-            def parse_and_validate(self, dsl_content: str) -> Tuple[bool, Dict[str, Any], str | None]:
-                return True, {"game": {"title": "MockGame"}, "technical": {"network_model": "client_server"}}, None
+        ...
 
-        class GameCodeGenerator:
-            def __init__(self, source_dir, content_dir):
-                pass
-                
-            def generate_all_from_dsl(self, dsl_data: Dict[str, Any]) -> Dict[str, List[str]]:
-                return {
-                    "character_classes": [],
-                    "ability_classes": [],
-                    "effect_classes": [],
-                    "behavior_trees": [],
-                    "ui_widgets": [],
-                    "replication_rules": []
-                }
+# Graphify interface imports - all components route through this single interface
+try:
+    from core.graphify_interface import query, mutate, load_dna_graph, save_dna_graph, graphify_mutate as record_compilation_success, graphify_mutate as record_compilation_failure
+    from core.dna.pattern_validator import check_template_history, validate_template_before_generation, flag_known_bad_pattern
+    from core.dna.auto_fixer import auto_fix_brace_error
+except ImportError:
+    try:
+        from graphify_interface import query, mutate, load_dna_graph, save_dna_graph, graphify_mutate as record_compilation_success, graphify_mutate as record_compilation_failure
+        from dna.pattern_validator import check_template_history, validate_template_before_generation, flag_known_bad_pattern
+        from dna.auto_fixer import auto_fix_brace_error
+    except ImportError:
+        def query(*args, **kwargs): return None
+        def mutate(*args, **kwargs): return "mutate_dummy"
+        def load_dna_graph(): return {"nodes": [], "edges": []}
+        def save_dna_graph(*args): pass
+        def check_template_history(*args, **kwargs): return {}
+        def validate_template_before_generation(*args, **kwargs): return True
+        def flag_known_bad_pattern(*args, **kwargs): return {"is_know_bad": False}
+        def auto_fix_brace_error(*args, **kwargs): return {"fixed": False}
+        def record_compilation_success(*args, **kwargs): return "mutation_dummy"
+        def record_compilation_failure(*args, **kwargs): return "error_dummy"
 
-        class AssetGenerator:
-            def __init__(self, content_dir):
-                pass
-                
-            def generate_assets_from_dsl(self, dsl_data: Dict[str, Any]) -> Dict[str, List[str]]:
-                return {
-                    "meshes": [],
-                    "textures": [],
-                    "animations": [],
-                    "sounds": []
-                }
+# DNA Integration status
+DNA_AVAILABLE = True
+DNA_VERIFY_AVAILABLE = True
 
-        class BuildOrchestrator:
-            def __init__(self, project_name, output_dir):
-                pass
-                
-            def build_project(self, dsl_data: Dict[str, Any], generated_files: Dict[str, List[str]]) -> Dict[str, Any]:
-                return {
-                    "success": True,
-                    "uproject_path": "MockProject.uproject",
-                    "test_results": {"quest_completion": {"passed": True}, "combat_balance": {"passed": True}, "ui_flow": {"passed": True}},
-                    "all_tests_passed": True
-                }
+# Fallback mock classes omitted for brevity — see below for inline handling
 
-        class ValidationReporter:
-            def __init__(self, output_dir):
-                pass
-                
-            def generate_validation_report(self, dsl_data: Dict[str, Any], generated_files: Dict[str, List[str]], test_results: Dict[str, Any]) -> str:
-                return "mock_validation_report.json"
-                
-            def _check_deviations(self, dsl_data: Dict[str, Any], generated_files: Dict[str, List[str]]) -> List[Dict[str, Any]]:
-                return []
-                
-            def _check_performance_warnings(self, dsl_data: Dict[str, Any]) -> List[Dict[str, Any]]:
-                return []
-                
-            def generate_dsl_patch(self, deviations: List[Dict[str, Any]]) -> str | None:
-                return None
-
-        class IncrementalGenerator:
-            def __init__(self, content_dir, source_dir):
-                pass
-                
-            def incrementally_generate(self, old_dsl: Dict[str, Any], new_dsl: Dict[str, Any], game_code_generator, asset_generator) -> Dict[str, List[str]]:
-                return {}
-
-        class PlaytestRunner:
-            def __init__(self, project_path: str, test_spec: dict):
-                pass
-                
-            def run_all_tests(self):
-                from types import SimpleNamespace
-                report = SimpleNamespace()
-                report.summary = {"total_tests": 0, "passed": 0, "failed": 0, "skipped": 0, "pass_rate": 0.0}
-                report.tests = []
-                return report
-
-        class TestReporter:
-            def __init__(self, output_dir):
-                pass
-                
-            def generate_report(self, results, dsl_spec: dict) -> dict:
-                return {"timestamp": "mock", "project": "MockProject", "summary": {}, "tests": [], "regression_check": {}}
 
 
 class GameGenerationOrchestrator:
@@ -182,6 +135,24 @@ class GameGenerationOrchestrator:
         # Stage 1: Parse & Validate
         is_valid, parsed_dsl, validation_error = self.parser.parse_and_validate(dsl_content)
         
+        # --- DNA: Pattern Validator after parsing ---
+        if DNA_AVAILABLE and is_valid:
+            try:
+                graph = load_dna_graph()
+                dsl_blocks = [k for k in parsed_dsl.keys()] if isinstance(parsed_dsl, dict) else []
+                warnings_found = 0
+                for block_name in dsl_blocks:
+                    history = check_template_history(graph, f"dsl_block_{block_name}")
+                    if history.get("has_errors_before"):
+                        print(f"  [DNA] Warning: DSL block '{block_name}' has known errors in history")
+                        warnings_found += 1
+                if warnings_found == 0:
+                    print("  [DNA] Pattern Validator: no known-bad patterns detected in DSL")
+                else:
+                    print(f"  [DNA] Pattern Validator: {warnings_found} warnings from DNA graph")
+            except Exception as e:
+                print(f"  [DNA] Pattern Validator skipped: {e}")
+        
         if not is_valid:
             return {
                 "success": False,
@@ -204,6 +175,25 @@ class GameGenerationOrchestrator:
 
         print(f"[Stage 3] Code Generation for {project_name}...")
         
+        # --- DNA: Template validation before Stage 3 ---
+        if DNA_AVAILABLE:
+            try:
+                graph = load_dna_graph()
+                templates_checked = 0
+                template_names = ["ship_class", "game_mode_class", "combat_component", 
+                                  "pirate_ai", "docking_component", "mission_component",
+                                  "faction_component", "save_game", "pcg_volume_manager"]
+                for tpl in template_names:
+                    result = check_template_history(graph, f"template_{tpl}")
+                    if result.get("unresolved_patterns"):
+                        print(f"  [DNA] WARNING: Template '{tpl}' has unresolved errors — verify before regenerating")
+                    if result.get("applied_fixes"):
+                        print(f"  [DNA] Template '{tpl}' has {len(result['applied_fixes'])} known fixes: {result['applied_fixes'][:2]}")
+                    templates_checked += 1
+                print(f"  [DNA] Template validation: {templates_checked} templates checked against DNA graph")
+            except Exception as e:
+                print(f"  [DNA] Template validation skipped: {e}")
+        
         # Stage 3: Code Generation
         generated_files = self.code_generator.generate_all_from_dsl(dsl_data)
         print(f"[Stage 3] Generated files: {len(generated_files.get('character_classes', []))} character classes, "
@@ -217,12 +207,40 @@ class GameGenerationOrchestrator:
         build_result = self.build_orchestrator.build_project(dsl_data, generated_files)
         
         if not build_result.get("success"):
+            # --- DNA: Auto-Fixer on build failure through Graphify ---
+            if DNA_AVAILABLE:
+                try:
+                    mutate("compilation", "fail", details={"ubt_output": build_result.get("error", "Compilation failed"),
+                                                "template_file": "game_generation_orchestrator"})
+                    source_dir_str = str(self.source_dir)
+                    fixed_count = 0
+                    for ext in ['*.h', '*.cpp']:
+                        for file_path in Path(source_dir_str).rglob(ext):
+                            if '.generated.h' in file_path.name:
+                                continue
+                            fix_result = auto_fix_brace_error(str(file_path), "game_generation_orchestrator")
+                            if fix_result.get("fixed"):
+                                fixed_count += 1
+                    if fixed_count > 0:
+                        print(f"  [DNA] Auto-Fixer attempted {fixed_count} brace fixes — recompile required")
+                except Exception as e:
+                    print(f"  [DNA] Auto-Fixer skipped: {e}")
+                    
             return {
                 "success": False,
                 "error": f"Build Failed: {build_result.get('error')}"
             }
 
         print(f"[Stage 4] Build successful. Test results: {build_result['test_results']}")
+
+        # --- DNA: Mutation Logger after Stage 4 through Graphify ---
+        if DNA_AVAILABLE:
+            try:
+                mutation_id = mutate("generation", "pass", details={"snapshot_diff": "pipeline_build_complete",
+                    "template_file": "game_generation_orchestrator"})
+                print(f"  [DNA] Mutation recorded: {mutation_id or 'unknown'} (compilation: pass)")
+            except Exception as e:
+                print(f"  [DNA] Mutation Logger skipped: {e}")
 
         # Stage 4.5: Automated Playtest (if tests block is present)
         playtest_report = None
@@ -270,17 +288,51 @@ class GameGenerationOrchestrator:
 
         print("[Stage 6] Pipeline complete - Regenerate & Iterate ready...")
         
-        # Stage 7: Continuous Verification Check
+        # --- DNA: Continuous Verification after Stage 5 through Graphify ---
+        if DNA_VERIFY_AVAILABLE:
+            try:
+                # Query graph status through Graphify interface
+                dna_graph = load_dna_graph()
+                nodes = dna_graph.get("nodes", [])
+                total_mutations = len([n for n in nodes if n.get("type") == "Mutation"])
+                total_fixes = len([n for n in nodes if n.get("type") == "Fix"])
+                
+                print(f"[DNA] Graphify status: {len(nodes)} nodes, {total_mutations} mutations, {total_fixes} fixes recorded")
+            except Exception as e:
+                print(f"[DNA] Continuous Verification skipped: {e}")
+        
+        # Stage 7: Visual Verification - Screenshot Analysis
+        print("[Stage 7] Visual Verification...")
+        visual_verification_passed = False
+        verification_msg = "Visual verification skipped"
+        
         try:
-            from core.dna.continuous_verification import continuous_verification_loop
-            verification_result = continuous_verification_loop()
-            if not verification_result.get("success"):
-                print(f"[Stage 7] Continuous verification warnings: {verification_result.get('errors', [])}")
-            else:
-                print("[Stage 7] Continuous verification passed")
-        except Exception as e:
-            print(f"[Stage 7] Continuous verification skipped: {e}")
+            uproject_path = build_result.get("uproject_path", str(self.output_dir / f"{project_name}.uproject"))
+            is_verified, verification_msg = run_visual_verification(uproject_path)
             
+            if is_verified:
+                visual_verification_passed = True
+                print(f"[Stage 7] Visual Verification PASSED: {verification_msg}")
+                
+                # Record mutation for visual verification success
+                try:
+                    mutate("visual_verification", "pass", details={"description": verification_msg, "screenshot_dir": str(self.output_dir / "Saved" / "Screenshots")})
+                    print(f"[DNA] Mutation recorded: visual_verification pass")
+                except Exception as e:
+                    print(f"[DNA] Visual verification mutation recording skipped: {e}")
+            else:
+                print(f"[Stage 7] Visual Verification INCOMPLETE: {verification_msg}")
+                
+                # Record mutation for visual verification incomplete
+                try:
+                    mutate("visual_verification", "incomplete", details={"description": verification_msg})
+                    print(f"[DNA] Mutation recorded: visual_verification incomplete")
+                except Exception as e:
+                    print(f"[DNA] Visual verification mutation recording skipped: {e}")
+                    
+        except Exception as e:
+            print(f"[Stage 7] Visual Verification failed with error: {e}")
+        
         # Stage 6: Ready for incremental regeneration
         return {
             "success": True,

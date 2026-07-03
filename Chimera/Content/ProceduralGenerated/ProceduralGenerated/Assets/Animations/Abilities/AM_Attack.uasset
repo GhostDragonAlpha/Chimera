@@ -1,6 +1,0 @@
-/Script/Engine.AnimMontage
-{
-	AssetName="AM_Attack"
-	Ability="Attack"
-	Style="fantasy_realistic"
-}

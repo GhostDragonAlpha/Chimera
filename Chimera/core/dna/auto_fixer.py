@@ -1,9 +1,20 @@
 import re
 from pathlib import Path
-from core.game_code_generator import CppSyntaxValidator
-from core.dna.mutation_logger import load_dna_graph, save_dna_graph, create_mutation_node, hash_error_signature
 
-DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")
+# Route through Graphify interface
+try:
+    from core.graphify_interface import query, mutate, load_dna_graph, save_dna_graph
+except ImportError:
+    try:
+        from graphify_interface import query, mutate, load_dna_graph, save_dna_graph
+    except ImportError:
+        def query(*args, **kwargs): return None
+        def mutate(*args, **kwargs): return "mutate_dummy"
+        def load_dna_graph(): return {"nodes": [], "edges": []}
+        def save_dna_graph(*args): pass
+
+from core.game_code_generator import CppSyntaxValidator
+import hashlib
 
 def find_unbalanced_braces(file_path: str) -> dict:
     try:
@@ -118,20 +129,28 @@ def auto_fix_brace_error(file_path: str, template_file: str) -> dict:
     if fix_success:
         graph = load_dna_graph()
         
-        mutation_node = create_mutation_node(
-            error_signature=hash_error_signature(f"brace_mismatch_{file_path}"),
-            template_file=template_file,
-            template_line=brace_info.get("line", 0),
-            error_category="brace_mismatch",
-            fix_description="Auto-fixed unbalanced braces",
-            fix_diff=fixed_content or "",
-            compilation_result="pending_review"
-        )
+        error_signature = hashlib.sha256(f"brace_mismatch_{file_path}".encode('utf-8')).hexdigest()[:16]
+        
+        mutation_node = {
+            "id": f"mutation_{hashlib.sha256(f'success_no_error_{template_file}_{brace_info.get("line", 0)}'.encode()).hexdigest()[:12]}",
+            "type": "Mutation",
+            "timestamp": __import__('datetime').datetime.utcnow().isoformat(),
+            "error_signature": error_signature,
+            "template_file": template_file,
+            "template_line": brace_info.get("line", 0),
+            "error_category": "brace_mismatch",
+            "fix_description": "Auto-fixed unbalanced braces",
+            "fix_diff": fixed_content or "",
+            "compilation_result": "pending_review",
+            "links": []
+        }
         
         nodes = graph.get("nodes", [])
         edges = graph.get("edges", [])
         nodes.append(mutation_node)
         save_dna_graph({"nodes": nodes, "edges": edges})
+        
+        mutate("generation", "pass", details={"fix_description": "Auto-fixed unbalanced braces", "file_path": file_path})
         
         return {
             "fixed": True,

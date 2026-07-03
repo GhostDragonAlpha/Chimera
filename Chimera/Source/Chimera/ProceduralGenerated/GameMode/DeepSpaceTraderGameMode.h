@@ -4,6 +4,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "PCGVolumeManager.h"
+#include "FlightComponent.h"
+#include "WeaponComponent.h"
+#include "ShieldComponent.h"
+#include "DamageComponent.h"
+#include "SystemDamageComponent.h"
+#include "DockingComponent.h"
+#include "MissionComponent.h"
+#include "FactionComponent.h"
+#include "SaveGameComponent.h"
 #include "DeepSpaceTraderGameMode.generated.h"
 
 UCLASS()
@@ -19,5 +28,7 @@ protected:
 
 	UPROPERTY()
 	APCGVolumeManager* PcgVolumeManager;
+	UPROPERTY()
+	AActor* PlayerShip;
 };
 

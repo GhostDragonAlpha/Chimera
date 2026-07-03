@@ -24,7 +24,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Tracking", meta = (ClampMin = "0.0", ClampMax = "1.0"))
 	float TrackingStrength;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USphereComponent* CollisionSphere;
 
 protected:

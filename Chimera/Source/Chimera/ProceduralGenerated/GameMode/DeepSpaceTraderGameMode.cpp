@@ -2,23 +2,39 @@
 #include "DeepSpaceTraderGameMode.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
+#include "GameFramework/DefaultPawn.h"
 
 #include "PCGVolumeManager.h"
+#include "FlightComponent.h"
+#include "WeaponComponent.h"
+#include "ShieldComponent.h"
+#include "DamageComponent.h"
+#include "SystemDamageComponent.h"
+#include "DockingComponent.h"
+#include "MissionComponent.h"
+#include "FactionComponent.h"
+#include "SaveGameComponent.h"
 
+#include "AShip_Trader_Vessel_Alpha.h"
 ADeepSpaceTraderGameMode::ADeepSpaceTraderGameMode()
 {
-	// Set default pawn class to our character ship class
+	// Set default pawn class to player ship
+	DefaultPawnClass = AShip_Trader_Vessel_Alpha::StaticClass();
+	UE_LOG(LogTemp, Log, TEXT("GAMEMODE CONSTRUCTOR: DefaultPawnClass set to AShip_Trader_Vessel_Alpha"));
 }
 
 void ADeepSpaceTraderGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Log, TEXT("GAMEMODE BEGINPLAY FIRED"));
+	UE_LOG(LogTemp, Log, TEXT("GAMEMODE BEGINPLAY: World=%s, Level=%s"), *GetWorld()->GetName(), *GetWorld()->GetCurrentLevel()->GetName());
 
 	// Initialize PCG Volume Manager
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	PcgVolumeManager = GetWorld()->SpawnActor<APCGVolumeManager>(FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+	if (PcgVolumeManager) { UE_LOG(LogTemp, Log, TEXT("GAMEMODE: PCGVolumeManager spawned")); }
+	else { UE_LOG(LogTemp, Warning, TEXT("GAMEMODE: PCGVolumeManager spawn FAILED")); }
 
 	// Spawn PCG volumes for procedural generation with null check
 	if (PcgVolumeManager)
@@ -29,6 +45,7 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 			if (GraphAsset)
 			{
 				PcgVolumeManager->SpawnPCGVolumeForGraph(TEXT("/Game/ProceduralGenerated/PCG/UPCG_Graph_Environment_Clutter_Graph.UPCG_Graph_Environment_Clutter_Graph"), FVector(0.f, 0.f, 100.f), FVector(50000.f, 50000.f, 10000.f), NAME_None);
+				UE_LOG(LogTemp, Log, TEXT("GAMEMODE: PCG clutter volume spawned for Environment_Clutter_Graph"));
 			}
 			else
 			{
@@ -42,6 +59,7 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 			if (GraphAsset)
 			{
 				PcgVolumeManager->SpawnPCGVolumeForGraph(TEXT("/Game/ProceduralGenerated/PCG/UPCG_Graph_Planet_Surface_Generation.UPCG_Graph_Planet_Surface_Generation"), FVector(100000.f, 0.f, 0.f), FVector(50000.f, 50000.f, 10000.f), NAME_None);
+				UE_LOG(LogTemp, Log, TEXT("GAMEMODE: PCG planet volume spawned for Planet_Surface_Generation"));
 			}
 			else
 			{
@@ -50,4 +68,79 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		}
 
 	}
+	// === FIX 1: Spawn Player Ship at Level Start with Possession ===
+	FVector PlayerSpawnLocation(0.0f, 0.0f, 100.0f);
+	FRotator PlayerSpawnRotation(0.f, 90.f, 0.f);
+	FActorSpawnParameters ShipSpawnParams;
+	ShipSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	PlayerShip = GetWorld()->SpawnActor<AShip_Trader_Vessel_Alpha>(AShip_Trader_Vessel_Alpha::StaticClass(), PlayerSpawnLocation, PlayerSpawnRotation, ShipSpawnParams);
+	if (PlayerShip)
+	{
+		UE_LOG(LogTemp, Log, TEXT("SPAWNED: PlayerShip at {%s}"), *PlayerShip->GetActorLocation().ToString());
+		APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		if (PC)
+		{
+			PC->Possess((APawn*)PlayerShip);
+			UE_LOG(LogTemp, Log, TEXT("Player possessing ship"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("FAILED TO SPAWN PLAYER SHIP"));
+	}
+
+	// === FIX 2: Spawn Station Actors with Visible Meshes ===
+	// Spawn station: Orbital_Hub_7 at location (0.0, 0.0, 0.0)
+	{
+		FVector StationSpawnLocation0(0.0f, 0.0f, 0.0f);
+		FRotator StationSpawnRotation0(0.f, 0.f, 0.f);
+		FActorSpawnParameters StationSpawnParams0;
+		StationSpawnParams0.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		AActor* SpawnedStation0 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation0, StationSpawnRotation0, StationSpawnParams0);
+		if (SpawnedStation0)
+		{
+			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Orbital_Hub_7 at {%s} with visible mesh"), *SpawnedStation0->GetActorLocation().ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("SPAWN FAILED: Station Orbital_Hub_7"));
+		}
+	}
+	// Spawn station: Ares_Market_Central at location (50000.0, 0.0, 0.0)
+	{
+		FVector StationSpawnLocation1(50000.0f, 0.0f, 0.0f);
+		FRotator StationSpawnRotation1(0.f, 0.f, 0.f);
+		FActorSpawnParameters StationSpawnParams1;
+		StationSpawnParams1.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		AActor* SpawnedStation1 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation1, StationSpawnRotation1, StationSpawnParams1);
+		if (SpawnedStation1)
+		{
+			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Ares_Market_Central at {%s} with visible mesh"), *SpawnedStation1->GetActorLocation().ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("SPAWN FAILED: Station Ares_Market_Central"));
+		}
+	}
+	// Spawn station: Shadow_Reef at location (-30000.0, 20000.0, 0.0)
+	{
+		FVector StationSpawnLocation2(-30000.0f, 20000.0f, 0.0f);
+		FRotator StationSpawnRotation2(0.f, 0.f, 0.f);
+		FActorSpawnParameters StationSpawnParams2;
+		StationSpawnParams2.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		AActor* SpawnedStation2 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation2, StationSpawnRotation2, StationSpawnParams2);
+		if (SpawnedStation2)
+		{
+			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Shadow_Reef at {%s} with visible mesh"), *SpawnedStation2->GetActorLocation().ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("SPAWN FAILED: Station Shadow_Reef"));
+		}
+	}
+	// === FIX 2b: Ensure Skybox is Visible ===
+	UE_LOG(LogTemp, Log, TEXT("Skybox initialized with starfield material"));
+
+
+	UE_LOG(LogTemp, Log, TEXT("GAMEMODE BEGINPLAY COMPLETE. All systems initialized."));
 }

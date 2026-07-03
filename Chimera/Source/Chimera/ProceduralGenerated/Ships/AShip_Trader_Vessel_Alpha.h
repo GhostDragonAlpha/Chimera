@@ -9,6 +9,10 @@
 #include "DamageComponent.h"
 #include "SystemDamageComponent.h"
 #include "CombatTargetComponent.h"
+#include "DockingComponent.h"
+#include "MissionComponent.h"
+#include "FactionComponent.h"
+#include "SaveGameComponent.h"
 #include "AShip_Trader_Vessel_Alpha.generated.h"
 
 UCLASS()
@@ -17,9 +21,8 @@ class CHIMERA_API AShip_Trader_Vessel_Alpha : public AActor
 	GENERATED_BODY()
 
 public:
-	AShip_Trader_Vessel_Alpha(const FObjectInitializer& ObjectInitializer);
+	AShip_Trader_Vessel_Alpha();
 
-protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ship")
 	FName ShipCategory;
 
@@ -38,23 +41,35 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	float HullHealth;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UFlightComponent* FlightComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Combat Components")
+	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
 	UWeaponComponent* WeaponComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Combat Components")
+	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
 	UShieldComponent* ShieldComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Combat Components")
+	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
 	UDamageComponent* DamageComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Combat Components")
+	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
 	USystemDamageComponent* SystemDamageComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Combat Components")
+	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
 	UCombatTargetComponent* CombatTargetComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UDockingComponent* DockingComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
+	UMissionComponent* MissionComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
+	UFactionComponent* FactionComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
+	USaveGameComponent* SaveGameComponent;
 
 public:
 	virtual void BeginPlay() override;

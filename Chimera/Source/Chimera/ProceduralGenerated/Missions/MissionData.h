@@ -9,12 +9,12 @@ struct FMissionObjective
 {
 	GENERATED_BODY()
 
-	UPROPERTY() FString Type;
-	UPROPERTY() FName Commodity;
-	UPROPERTY() int32 Quantity;
-	UPROPERTY() FName Station;
-	UPROPERTY() int32 Count;
-	UPROPERTY() bool bComplete;
+	UPROPERTY() FString Type = TEXT("");
+	UPROPERTY() FName Commodity = NAME_None;
+	UPROPERTY() int32 Quantity = 0;
+	UPROPERTY() FName Station = NAME_None;
+	UPROPERTY() int32 Count = 0;
+	UPROPERTY() bool bComplete = false;
 };
 
 USTRUCT()
@@ -22,14 +22,14 @@ struct FMissionData
 {
 	GENERATED_BODY()
 
-	UPROPERTY() FName MissionID;
-	UPROPERTY() FString Type;
-	UPROPERTY() FString Description;
+	UPROPERTY() FName MissionID = NAME_None;
+	UPROPERTY() FString Type = TEXT("");
+	UPROPERTY() FString Description = TEXT("");
 	UPROPERTY() TArray<FMissionObjective> Objectives;
-	UPROPERTY() int32 CurrentObjectiveIndex;
-	UPROPERTY() float RewardCredits;
-	UPROPERTY() FName FactionID;
-	UPROPERTY() float StandingChange;
-	UPROPERTY() FString Status;
+	UPROPERTY() int32 CurrentObjectiveIndex = 0;
+	UPROPERTY() float RewardCredits = 0.0f;
+	UPROPERTY() FName FactionID = NAME_None;
+	UPROPERTY() float StandingChange = 0.0f;
+	UPROPERTY() FString Status = TEXT("");
 };
 
