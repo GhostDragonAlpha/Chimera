@@ -45,6 +45,11 @@ uvicorn query_api:app --host localhost --port 8766
 | `core\dna\` | Graphify DNA knowledge graph |
 | `tests\dsl_grammar\` | DSL specification files |
 | `docs\chimera_dna_graph.json` | Persistent DNA storage |
+| `docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md` | Complete Development Cycle workflow |
+| `docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE_MASTER_PROMPT.md` | Master prompt for development cycle |
+| `docs/DIRECTOR_AI_MASTER_CONTEXT.md` | Director AI context and guidance |
+| `docs/MCP_PATHWAYS.md` | Proven MCP tool pathways |
+| `docs/MCP_TOOL_INVENTORY.md` | Complete MCP tool reference |
 
 ## Architecture
 
