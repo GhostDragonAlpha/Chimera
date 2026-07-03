@@ -73,6 +73,28 @@ The Graphify knowledge graph records every compilation result, every fix, and ev
 
 ---
 
+## Current Project State (Phase 2 — Apply & Verify)
+
+### DNA System Status
+- **DNA Nodes**: 459 (growing with each iteration)
+- **DNA Edges**: 325+
+- **Node Types**: Mutation, Error, Fix, Health, Pathway, FeatureUpdate, VisualVerification, Reference, EducationPrinciple, ResearchReference
+
+### MCP Pathway Library Status
+- **Total Tools**: 36 available via MCP bridge
+- **Working Pathways**: 12 recorded (spawn_actor, set_transform, get_components, set_component_property, search_assets, screenshot, set_camera_position, get_project_settings, get_material_details, list_levels, create_light, create_material)
+- **Failed Pathways**: 1 (manage_asset.list_instances — not yet tested)
+
+### Feature Ledger Status
+- **Total Features**: 56 across 10 spiral loops (Loop 0–9)
+- **Verified**: Player_Character_Lighting, Ground_Sand_Surface, Verb_Look
+- **Needs Refinement**: Player_Character_Suit, Player_Character_Model, Ground_Rock_Surface, Ground_Metal_Surface
+
+### Current Phase: Phase 2 — Apply & Verify (Loops 0–2 in progress)
+The project is actively building test scenes and verifying them against NASA references via LM Studio visual comparison. The Ralph Loop continues until all features pass verification.
+
+---
+
 ## DSL Blocks Implemented
 
 All blocks defined in the JSON schema and ANTLR4 grammar are supported:

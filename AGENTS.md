@@ -65,23 +65,65 @@ Chimera/ProceduralGenerated/Combat, AI, Flight, PCG, Stations, Missions,
 Factions, Save, GameMode, Ships
 ```
 
-## DNA System (Graphify)
+---
 
-The Graphify knowledge graph records every compilation result, every fix, and every mutation. It gets smarter with every build.
+## The Complete Development Cycle (Master Workflow)
 
-### Modules
-- **Storage**: `E:\PythonChimera\Chimera\docs\chimera_dna_graph.json`
-- **Modules**: `E:\PythonChimera\Chimera\core\dna\`
-- **Dashboard**: `E:\PythonChimera\Chimera\dna_dashboard.py`
-- **API**: FastAPI at `localhost:8766`
+All agents MUST follow the workflow defined in `docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md`. This document defines:
 
-### Components
-- `mutation_logger.py` — Records every compilation result as a mutation node with error signatures
-- `pattern_validator.py` — Queries DNA for known-bad patterns before code generation; blocks known bugs from repeating
-- `auto_fixer.py` — Detects and fixes brace errors in generated files, records mutations
-- `continuous_verification.py` — Hourly health checks via APScheduler
-- `query_api.py` — FastAPI endpoints: `/dna/errors`, `/dna/health`, `/dna/template/{name}/history`
-- `dashboard.py` — Streamlit web app: mutations, error trends, fragile templates, graph visualization
+- **13 Schools** — Education phase teaching principles from real-world references
+- **6 Phases** — Foundation → Research → Apply & Verify → Integration → Polish → Release
+- **Spiral Growth Pattern** — Complete Loop N before starting Loop N+1
+- **Feature Ledger** — Tracks all features across loops with status, parameters, verification history
+- **Ralph Loop** — Iterative build → screenshot → compare → record → refine cycle
+- **The Contract** — Pre-flight/post-flight checklist for every MCP call
+
+---
+
+## MCP Pathway Query Rule (MANDATORY)
+
+### Before ANY MCP Call:
+
+1. **Query Graphify**: `g.query("pathway", "what_you_want_to_do")`
+   - Examples: `g.query("pathway", "create_material")`, `g.query("pathway", "spawn_point_light")`
+   
+2. **If pathway exists**: Follow it exactly. Do not deviate. Do not experiment.
+
+3. **If pathway does NOT exist**:
+   - Report: "No pathway found for [task]"
+   - Use `manage_tools` → `list_tools` to find tools that might work
+   - Test the simplest possible approach
+   - If it works: record the pathway in Graphify for future use
+   - If it fails: record the failure, try next approach
+
+4. **After ANY MCP call**: Record result in DNA graph as a mutation node with pathway name, success/failure status, and error message if any.
+
+See `docs/MCP_PATHWAYS.md` for all 12 working pathways (11 verified + 1 newly discovered).
+See `docs/MCP_TOOL_INVENTORY.md` for complete tool reference with parameter schemas.
+
+---
+
+## DNA System (Graphify Knowledge Graph)
+
+The Graphify knowledge graph records every compilation result, every fix, and every mutation. It connects to every pipeline component and gets smarter with each iteration.
+
+### Current State
+- **DNA Nodes**: 459 (growing with each iteration)
+- **DNA Edges**: 325+
+- **MCP Pathways**: 12 working pathways recorded
+- **Feature Ledger Entries**: 56 features across 10 spiral loops (Loop 0–9)
+
+### Storage & Components
+| File | Purpose |
+|------|---------|
+| `docs/chimera_dna_graph.json` | Persistent DNA storage — nodes and edges graph |
+| `core/graphify_interface.py` | Graphify interface module defining load/save/query/mutate functions |
+| `core/dna/mutation_logger.py` | Records compile results as mutation nodes with error signatures |
+| `core/dna/pattern_validator.py` | Queries DNA for known-bad patterns before code generation |
+| `core/dna/auto_fixer.py` | Detects brace errors, attempts fixes, records mutations |
+| `core/dna/continuous_verification.py` | Hourly health checks via APScheduler |
+| `core/dna/query_api.py` | FastAPI server at `localhost:8766` with `/dna/errors`, `/dna/health` endpoints |
+| `dna_dashboard.py` | Streamlit dashboard showing mutations, error trends, fragile templates |
 
 ### DNA Schema
 Every entry follows this structure:
@@ -89,6 +131,11 @@ Every entry follows this structure:
 - **Error Node**: error_message, template_file, is_recurring flag
 - **Fix Node**: error_id, template_file, fix_description, categories
 - **Health Node**: status, details, timestamp
+- **Pathway Node**: name, tool, action, params_schema, result, description (NEW — records MCP pathways)
+- **FeatureUpdate Node**: feature_name, loop, status, parameters, lm_studio_assessment, iteration_count (NEW — tracks verification progress)
+- **VisualVerification Node**: task_name, screenshot_path, focus_area, lm_studio_response, status (NEW — stores LM Studio feedback)
+
+---
 
 ## Six Improvements
 
@@ -98,6 +145,8 @@ Every entry follows this structure:
 4. **Template Validation** — Pattern validator checks templates against DNA before generation; blocks known-bad patterns
 5. **Differential Testing** — Generated code validated against UE5 reference patterns
 6. **Incremental Regeneration** — Knowledge-graph-driven regeneration of only affected components when DSL changes
+
+---
 
 ## Known Fixed Bugs and Their Mutations
 
@@ -115,3 +164,25 @@ Every entry follows this structure:
 | 10 | GameMode GraphAsset redefinition | game_code_generator | Added scoping braces | signature_error |
 | 11 | *TEXT() format string dereference | game_code_generator | Removed stray `*` from UE_LOG | macro_error |
 | 12 | DockingComponent missing constructor | game_code_generator | Added empty constructor body | signature_error |
+
+---
+
+## Current Project State (Phase 2 — Apply & Verify)
+
+### Verified Features (Loops 0–2)
+- **Player_Character_Lighting** ✓ — Three-point lighting matches NASA reference
+- **Ground_Sand_Surface** ✓ — PBR material with correct color (#8B7D6B), roughness (0.9), metallic (0.05), normal map for micro-topography
+- **Verb_Look** ✓ — Camera FOV 90°, pitch 0° (level with eyes), distance ~2m
+
+### Needs Refinement (Loops 0–2)
+- **Player_Character_Suit** ⚠ — PBR fabric correct; visor needs layered material (clear polycarbonate substrate + thin gold top layer) for spectral/thin-film shader
+- **Player_Character_Model** ⚠ — Still using sports car body placeholder; needs proper astronaut mesh
+- **Ground_Rock_Surface** ⚠ — Material applied but cone mesh scale/polygon count needs adjustment
+- **Ground_Metal_Surface** ⚠ — Material applied but needs procedural dust-accumulation mask
+
+### Next Steps
+1. Complete suit refinement (layered visor material)
+2. Replace player placeholder with proper astronaut mesh
+3. Adjust rock patch scale and add normal maps
+4. Add dust accumulation mask to metal surface
+5. Advance to Loop 3 (Sky) research once Loops 0–2 are verified
