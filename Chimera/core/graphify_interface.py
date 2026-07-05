@@ -23,6 +23,11 @@ def save_knowledge_graph(graph):
     with open(KNOWLEDGE_GRAPH_PATH, 'w', encoding='utf-8') as f:
         json.dump(graph, f, indent=2)
 
+def save_dna_graph(graph):
+    DNA_GRAPH_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(DNA_GRAPH_PATH, 'w', encoding='utf-8') as f:
+        json.dump(graph, f, indent=2)
+
 def hash_node_id(node_type: str, identifier: str) -> str:
     return hashlib.sha256(f"{node_type}:{identifier}".encode('utf-8')).hexdigest()[:16]
 
@@ -49,6 +54,32 @@ def graphify_query(query_type: str, identifier: str = None, context: dict = None
     elif query_type == "config":
         return _query_config()
         
+    elif query_type == "campus":
+        return _query_campus(identifier, context)
+        
+    elif query_type == "health":
+        dna = load_dna_graph()
+        nodes = dna.get("nodes", [])
+        mutations = [n for n in nodes if n.get("type") == "Mutation"]
+        pathways = [n for n in nodes if n.get("type") in ("Pathway", "pathway_attempt")]
+        features = [n for n in nodes if n.get("type") == "FeatureUpdate"]
+        return {
+            "total_nodes": len(nodes),
+            "mutations": len(mutations),
+            "pathways": len(pathways),
+            "features": len(features)
+        }
+        
+
+    elif query_type == "feature":
+        return _query_feature(identifier)
+        
+    elif query_type == "pathway":
+        return _query_pathway(identifier)
+
+    elif query_type == "gpa":
+        return _query_gpa(identifier, context)
+        
     else:
         raise ValueError(f"Unknown query type: {query_type}")
 
@@ -66,7 +97,28 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
         
     elif mutate_type in ["verification", "visual_verification"]:
         return _mutate_visual_verification(result, details)
-        
+
+    elif mutate_type == "feature_complete":
+        return _mutate_feature_complete(details or {})
+
+    elif mutate_type == "loop_complete":
+        return _mutate_loop_complete(details or {})
+
+    elif mutate_type == "research_discovery":
+        return _mutate_research_discovery(details or {})
+
+    elif mutate_type == "professor_grade":
+        return _mutate_professor_grade(details or {})
+
+    elif mutate_type == "professor_report_card":
+        return _mutate_professor_report_card(details or {})
+
+    elif mutate_type == "pathway_attempt":
+        return _mutate_pathway_attempt(details or {})
+
+    elif mutate_type == "technical_discovery":
+       return _mutate_technical_discovery(details or {})
+
     else:
         raise ValueError(f"Unknown mutation type: {mutate_type}")
 
@@ -271,6 +323,237 @@ def _query_config() -> dict:
         "dependencies": ["Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "PCG", "AIModule", "GameplayAbilities", "Niagara", "NiagaraCore"]
     }
 
+CAMPUSES_DATA = {
+    "game_development": {
+        "name": "Game Development School",
+        "focus": "Level design, lighting, environment art, visual storytelling, game feel",
+        "seed_sources": [
+            {"name": "GDC Vault: Level Design Principles", "quality": "A+"},
+            {"name": "Unreal Engine Documentation: Lighting for Games", "quality": "A+"},
+            {"name": "ArtStation Environment Art Pipelines", "quality": "B+"},
+            {"name": "Game Developer Magazine: Visual Storytelling", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Official Epic Games documentation", "GDC presentations from senior developers"],
+            "B+": ["Industry articles from Game Developer, Polygon, IGN Creative"],
+            "C": ["General gaming blogs, unverified tutorials"]
+        }
+    },
+    "art_school": {
+        "name": "Art School",
+        "focus": "Color theory, composition, form/mass, light/shadow, material rendering",
+        "seed_sources": [
+            {"name": "Color Theory for Artists (online courses)", "quality": "A+"},
+            {"name": "Composition Principles in Fine Art", "quality": "A+"},
+            {"name": "PBR Materials Explained by Artists", "quality": "B+"},
+            {"name": "Form and Silhouette Design Principles", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Academic art resources, professional artist tutorials (Proko, Draw.io)"],
+            "B+": ["ArtStation tutorials, YouTube art education channels"],
+            "C": ["General design blogs, unverified color theory guides"]
+        }
+    },
+    "film_school": {
+        "name": "Film School",
+        "focus": "Cinematography, three-point lighting, production design",
+        "seed_sources": [
+            {"name": "American Society of Cinematographers (ASC) guidelines", "quality": "A+"},
+            {"name": "Three-Point Lighting Setup Tutorials", "quality": "B+"},
+            {"name": "Film Production Design Principles", "quality": "B+"},
+            {"name": "Cinematography Camera Work Principles", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["ASC publications, professional cinematographer tutorials"],
+            "B+": ["Film school resources, professional director guides"],
+            "C": ["General photography blogs, amateur filmmaking guides"]
+        }
+    },
+    "architecture_school": {
+        "name": "Architecture School",
+        "focus": "Spatial design, materiality, lighting design",
+        "seed_sources": [
+            {"name": "Architectural Lighting Design Guidelines", "quality": "A+"},
+            {"name": "Architectural Digest Design Principles", "quality": "B+"},
+            {"name": "Spatial Design for Interiors", "quality": "B+"},
+            {"name": "Materiality in Modern Architecture", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Professional architecture publications (ArchDaily, Architizer)"],
+            "B+": ["University architecture department resources"],
+            "C": ["General home design blogs, interior decorating sites"]
+        }
+    },
+    "engineering_school": {
+        "name": "Engineering School",
+        "focus": "Spacecraft design, industrial design, form follows function",
+        "seed_sources": [
+            {"name": "NASA Technical Reports", "quality": "A+"},
+            {"name": "Spacecraft Design Constraints and Requirements", "quality": "A+"},
+            {"name": "Industrial Design Principles (Form Follows Function)", "quality": "B+"},
+            {"name": "Engineering Form and Function Case Studies", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Official NASA documentation, engineering textbooks"],
+            "B+": ["Professional engineering society publications"],
+            "C": ["General science blogs, speculative engineering articles"]
+        }
+    },
+    "unreal_engine_craft": {
+        "name": "Unreal Engine Craft School",
+        "focus": "Modeling Mode, console commands, MCP geometry tools, shape creation",
+        "seed_sources": [
+            {"name": "Unreal Engine 5 Documentation: Modeling Mode", "quality": "A+"},
+            {"name": "MCP Geometry Tools Documentation", "quality": "A+"},
+            {"name": "Console Command References", "quality": "A+"},
+            {"name": "UE5 Sculpting Tools Tutorials", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Official Epic Games documentation, verified MCP pathway docs"],
+            "B+": ["Community tutorials that have been verified against official docs"],
+            "C": ["Unverified YouTube tutorials, outdated engine version guides"]
+        }
+    },
+    "spatial_reasoning": {
+        "name": "Spatial Reasoning School",
+        "focus": "3D composition, grid systems, distance/scale, spatial relationships",
+        "seed_sources": [
+            {"name": "Spatial Relationship Guidelines in Level Design", "quality": "A+"},
+            {"name": "3D Composition Principles for Games", "quality": "B+"},
+            {"name": "Modular Grid Design for Games", "quality": "B+"},
+            {"name": "Distance and Scale in Virtual Environments", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Academic game design resources, professional level design guides"],
+            "B+": ["Industry level design articles, GDC spatial reasoning talks"],
+            "C": ["General 3D modeling tutorials without spatial context"]
+        }
+    },
+    "iteration_school": {
+        "name": "Iteration School",
+        "focus": "Michelangelo Procedure, failure protocol, refinement process",
+        "seed_sources": [
+            {"name": "Michelangelo Carving Process Documentation", "quality": "A+"},
+            {"name": "The Michelangelo Procedure in Modern Practice", "quality": "A+"},
+            {"name": "Iterative Design Process Refinement Guides", "quality": "B+"},
+            {"name": "Failure Protocol in Creative Industries", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Historical documentation of Michelangelo's process, verified iteration studies"],
+            "B+": ["Professional creative industry refinement guides"],
+            "C": ["General productivity or creativity blogs"]
+        }
+    },
+    "emotion_to_parameter": {
+        "name": "Emotion-to-Parameter School",
+        "focus": "Mapping feelings to technical values (lighting, materials, sound, space)",
+        "seed_sources": [
+            {"name": "Color Temperature and Emotion Psychology", "quality": "A+"},
+            {"name": "How Lighting Creates Mood in Film", "quality": "B+"},
+            {"name": "How Materials Affect Mood in Interior Design", "quality": "B+"},
+            {"name": "Emotional Sound Design Principles", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Academic psychology studies on color/emotion, professional film lighting guides"],
+            "B+": ["Professional game audio/lighting design resources"],
+            "C": ["General mood or atmosphere blogs"]
+        }
+    },
+    "reference_management": {
+        "name": "Reference Management School",
+        "focus": "Organization, avoiding duplication, cross-referencing, reference decay",
+        "seed_sources": [
+            {"name": "Graphify Knowledge Graph Documentation", "quality": "A+"},
+            {"name": "Reference Decay and Verification Protocols", "quality": "A+"},
+            {"name": "Reference Organization Systems in Creative Industries", "quality": "B+"},
+            {"name": "Cross-Referencing Techniques for Research", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Official Chimera documentation, verified knowledge graph practices"],
+            "B+": ["Professional research organization guides"],
+            "C": ["General note-taking or organization blogs"]
+        }
+    },
+    "creativity_school": {
+        "name": "Creativity School",
+        "focus": "Combinatorial creativity, extrapolation, constraints as creativity",
+        "seed_sources": [
+            {"name": "Combinatorial Creativity Research Papers", "quality": "A+"},
+            {"name": "Constraints as Creativity in Design", "quality": "B+"},
+            {"name": "Extrapolation Techniques Across Domains", "quality": "B+"},
+            {"name": "The Idea Log and Creative Documentation", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Academic creativity research, verified design methodology papers"],
+            "B+": ["Professional creative industry methodology guides"],
+            "C": ["General creativity or brainstorming blogs"]
+        }
+    },
+    "collaboration_school": {
+        "name": "Collaboration School",
+        "focus": "Presenting options, asking for guidance, mirror protocol",
+        "seed_sources": [
+            {"name": "Mirror Protocol in Creative Collaboration", "quality": "B+"},
+            {"name": "Presenting Options to Stakeholders", "quality": "B+"},
+            {"name": "Incorporating Feedback in Creative Industries", "quality": "B+"},
+            {"name": "Asking for Guidance Effectively", "quality": "B+"}
+        ],
+        "quality_ratings": {
+            "A+": ["Professional collaboration methodology resources, verified communication guides"],
+            "B+": ["Industry teamwork and collaboration guides"],
+            "C": ["General workplace communication blogs"]
+        }
+    }
+}
+
+def _query_campus(campus_name: str, context: dict = None) -> dict:
+    """Returns trusted research sources for a specific campus/school or all campuses."""
+    if context is None:
+        context = {}
+        
+    quality_filter = context.get("quality")
+    
+    if campus_name == "all" or campus_name.lower() == "all":
+        result = {}
+        for key, campus in CAMPUSES_DATA.items():
+            sources = campus["seed_sources"]
+            if quality_filter:
+                sources = [s for s in sources if s.get("quality", "").upper().startswith(quality_filter.upper())]
+            result[key] = {
+                "name": campus["name"],
+                "focus": campus["focus"],
+                "seed_sources": sources,
+                "quality_ratings": campus["quality_ratings"]
+            }
+        return result
+    
+    # Normalize campus_name
+    campus_key = None
+    for key, campus in CAMPUSES_DATA.items():
+        if campus_name.lower() == key or campus_name.lower() == campus["name"].lower().replace(" school", "").replace("school", ""):
+            campus_key = key
+            break
+            
+    if not campus_key and campus_name in CAMPUSES_DATA:
+        campus_key = campus_name
+        
+    if not campus_key:
+        raise ValueError(f"Unknown campus: {campus_name}")
+        
+    campus = CAMPUSES_DATA[campus_key]
+    sources = campus["seed_sources"]
+    
+    if quality_filter:
+        sources = [s for s in sources if s.get("quality", "").upper().startswith(quality_filter.upper())]
+        
+    return {
+        "campus": campus_key,
+        "name": campus["name"],
+        "focus": campus["focus"],
+        "seed_sources": sources,
+        "quality_ratings": campus["quality_ratings"]
+    }
+
 def _mutate_compilation(result: str) -> str:
     """Records a compilation mutation through Graphify."""
     dna_graph = load_dna_graph()
@@ -372,6 +655,448 @@ def _mutate_visual_verification(result: str = None, details: dict = None) -> str
         "fix_description": f"Visual verification {result}: AI analysis completed",
         "fix_diff": f"Verification result: {result}, Description: {description[:200]}",
         "compilation_result": result,
+        "links": []
+    }
+    
+    nodes.append(mutation_node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    
+    return mutation_node["id"]
+
+def _mutate_feature_complete(details: dict) -> str:
+    """Records a feature completion mutation through Graphify (FeatureUpdate node)."""
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    feature_name = details.get("feature", "unknown_feature")
+    status = details.get("status", "implemented")
+    loop = details.get("loop", 0)
+    parameters = details.get("parameters", {})
+
+    mutation_node = {
+        "id": f"feature_{hashlib.sha256(f'feature_{feature_name}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "FeatureUpdate",
+        "timestamp": datetime.utcnow().isoformat(),
+        "feature_name": feature_name,
+        "loop": loop,
+        "status": status,
+        "parameters": parameters,
+        "error_signature": "success_no_error",
+        "template_file": f"loop_{loop}/{feature_name}",
+        "error_category": "none",
+        "fix_description": f"Feature '{feature_name}' (Loop {loop}) recorded as '{status}'",
+        "compilation_result": "pass",
+        "links": []
+    }
+
+    nodes.append(mutation_node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+
+    return mutation_node["id"]
+
+def _mutate_loop_complete(details: dict) -> str:
+    """Records a loop completion mutation through Graphify."""
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    loop = details.get("loop", 0)
+    name = details.get("name", "unknown")
+    features = details.get("features", [])
+    status = details.get("status", "all_implemented")
+    emotional_anchor = details.get("emotional_anchor", "")
+
+    mutation_node = {
+        "id": f"loop_{hashlib.sha256(f'loop_{loop}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "LoopComplete",
+        "timestamp": datetime.utcnow().isoformat(),
+        "loop": loop,
+        "name": name,
+        "status": status,
+        "features": features,
+        "emotional_anchor": emotional_anchor,
+        "error_signature": "success_no_error",
+        "template_file": f"loop_{loop}_complete",
+        "error_category": "none",
+        "fix_description": f"Loop {loop} '{name}' completed with status '{status}'. Features: {len(features)}",
+        "compilation_result": "pass",
+        "links": []
+    }
+
+    nodes.append(mutation_node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+
+    return mutation_node["id"]
+
+def _mutate_research_discovery(details: dict) -> str:
+    """Records a research discovery mutation through Graphify."""
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    source = details.get("source", "unknown_source")
+    campus = details.get("campus", "unknown_campus")
+    quality_rating = details.get("quality_rating", "B")
+    principles = details.get("principles", [])
+
+    mutation_node = {
+        "id": f"discovery_{hashlib.sha256(f'research_discovery_{source}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "ResearchDiscovery",
+        "timestamp": datetime.utcnow().isoformat(),
+        "source": source,
+        "campus": campus,
+        "quality_rating": quality_rating,
+        "principles": principles,
+        "error_signature": "success_no_error",
+        "template_file": f"research_discovery/{campus}/{source}",
+        "error_category": "none",
+        "fix_description": f"Research discovery recorded: source '{source}' for campus '{campus}' with quality rating '{quality_rating}'",
+        "compilation_result": "pass",
+        "links": []
+    }
+
+    nodes.append(mutation_node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+
+    return mutation_node["id"]
+
+
+
+def _query_feature(feature_pattern: str) -> list:
+    """Returns FeatureUpdate nodes matching a feature name pattern."""
+    dna = load_dna_graph()
+    nodes = dna.get("nodes", [])
+    pattern_lower = feature_pattern.lower()
+    matches = []
+    for node in nodes:
+        if node.get("type") == "FeatureUpdate":
+            name = node.get("feature_name", "")
+            if pattern_lower in name.lower():
+                matches.append(node)
+    return matches if matches else [{"message": f"No feature matching '{feature_pattern}' found"}]
+
+def _query_pathway(feature_or_action: str) -> list:
+    """Returns all pathway nodes matching a feature name or tool/action string."""
+    import json as _json
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    
+    matches = []
+    query_lower = feature_or_action.lower()
+    
+    for node in nodes:
+        node_type = node.get("type", "")
+        if node_type in ("Pathway", "pathway_attempt"):
+            # Serialize node to string for broad matching
+            node_str = _json.dumps(node, default=str).lower()
+            if query_lower in node_str:
+                matches.append({
+                    "id": node.get("id"),
+                    "type": node_type,
+                    "tool": node.get("tool"),
+                    "action": node.get("action"),
+                    "parameters_tried": node.get("parameters_tried"),
+                    "result": node.get("result"),
+                    "error_message": node.get("error_message"),
+                    "timestamp": node.get("timestamp"),
+                    "fix_description": node.get("fix_description")
+                })
+    
+    return matches
+
+def _query_gpa(scope: str, context: dict = None) -> dict:
+    """Returns GPA data for a specific scope: loop_X, school_X, overall, or trend."""
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    
+    # Handle "overall" scope explicitly
+    if scope == "overall" or scope is None:
+        matching = [n for n in nodes if n.get("type") == "ProfessorGPA" and n.get("scope") == "project_overall"]
+        if matching:
+            latest = sorted(matching, key=lambda x: x.get("timestamp", ""), reverse=True)[0]
+            return latest
+        return {
+            "scope": "overall",
+            "gpa": None,
+            "message": "No project overall GPA data recorded yet"
+        }
+    
+    if scope == "trend":
+        # Find all GPA nodes across all scopes, sort by date, compute trend
+        gpa_nodes = [n for n in nodes if n.get("type") == "ProfessorGrade"]
+        overall_nodes = [n for n in nodes if n.get("type") == "ProfessorGPA" and n.get("scope") == "project_overall"]
+        
+        if not overall_nodes and not gpa_nodes:
+            return {
+                "scope": "trend",
+                "gpa": None,
+                "trend": "flat",
+                "message": "No GPA data recorded yet"
+            }
+        
+        # Compute current GPA from most recent grades
+        recent_grades = sorted(gpa_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)[:10]
+        if recent_grades:
+            scores = [g.get("score", 0) for g in recent_grades]
+            current_gpa = sum(scores) / len(scores)
+        else:
+            current_gpa = None
+        
+        # Trend from overall nodes
+        sorted_overall = sorted(overall_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)
+        if len(sorted_overall) >= 2:
+            prev_gpa = sorted_overall[1].get("gpa", 0)
+            curr_gpa = sorted_overall[0].get("gpa", 0)
+            if curr_gpa > prev_gpa + 0.05:
+                trend = "rising"
+            elif curr_gpa < prev_gpa - 0.05:
+                trend = "falling"
+            else:
+                trend = "flat"
+        else:
+            trend = "flat"
+        
+        return {
+            "scope": "trend",
+            "gpa": current_gpa or (sorted_overall[0]["gpa"] if sorted_overall else None),
+            "trend": trend,
+            "grades_count": len(gpa_nodes)
+        }
+    
+    # Find matching GPA node for specific scope
+    matching = [n for n in nodes if n.get("type") == "ProfessorGPA" and n.get("scope") == scope]
+    if matching:
+        latest = sorted(matching, key=lambda x: x.get("timestamp", ""), reverse=True)[0]
+        return latest
+    
+    return {
+        "scope": scope,
+        "gpa": None,
+        "message": f"No GPA data recorded for scope '{scope}'"
+    }
+
+def _mutate_professor_grade(details: dict) -> str:
+    """Records a professor grade and updates cumulative GPA."""
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    
+    feature = details.get("feature", "unknown_feature")
+    grade = details.get("grade", "F")
+    reasoning = details.get("reasoning", "")
+    
+    # Map grade to score
+    grade_scores = {"A": 4.0, "B": 3.0, "C": 2.0, "F": 0.0}
+    score = grade_scores.get(grade.upper(), 0.0)
+    
+    # Determine loop from feature name (e.g., "Player_Character_Suit" -> "loop_0")
+    loop_prefixes = {
+        "Player_": 0, "Ground_": 1, "Verb_": 2, "Sky_": 3,
+        "Tool_": 4, "NPC_": 5, "Social_": 5, "Shelter_": 6,
+        "Travel_": 7, "System_": 8, "Universe_": 9
+    }
+    feature_loop = None
+    for prefix, loop_num in loop_prefixes.items():
+        if feature.startswith(prefix):
+            feature_loop = loop_num
+            break
+    
+    # Create professor_grade node
+    grade_node = {
+        "id": f"professor_grade_{hashlib.sha256(f'{feature}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "ProfessorGrade",
+        "timestamp": datetime.utcnow().isoformat(),
+        "feature": feature,
+        "grade": grade.upper(),
+        "score": score,
+        "reasoning": reasoning,
+        "error_signature": "success_no_error",
+        "template_file": f"professor_grade/{feature}",
+        "error_category": "none",
+        "fix_description": f"Professor grade recorded: {feature} = {grade} ({score}) — {reasoning}",
+        "compilation_result": "pass",
+        "links": []
+    }
+    
+    nodes.append(grade_node)
+    
+    # Update cumulative GPA
+    _update_cumulative_gpa(nodes, edges, scope=f"loop_{feature_loop}" if feature_loop is not None else None)
+    _update_cumulative_gpa(nodes, edges, scope="project_overall")
+    
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    
+    return grade_node["id"]
+
+def _update_cumulative_gpa(nodes, edges, scope: str):
+    """Updates or creates cumulative GPA node for the given scope."""
+    if scope is None:
+        return
+    
+    # Find all ProfessorGrade nodes within this scope
+    if scope == "project_overall":
+        relevant_grades = [n for n in nodes if n.get("type") == "ProfessorGrade"]
+    elif scope.startswith("loop_"):
+        loop_num = scope.split("_")[1]
+        loop_prefixes_keys = [k for k, v in {
+            "Player_": 0, "Ground_": 1, "Verb_": 2, "Sky_": 3,
+            "Tool_": 4, "NPC_": 5, "Social_": 5, "Shelter_": 6,
+            "Travel_": 7, "System_": 8, "Universe_": 9
+        }.items() if str(v) == loop_num]
+        relevant_grades = [
+            n for n in nodes if n.get("type") == "ProfessorGrade" 
+            and any(n.get("feature", "").startswith(p) for p in loop_prefixes_keys)
+        ]
+    else:
+        return
+    
+    if not relevant_grades:
+        return
+    
+    scores = [g.get("score", 0) for g in relevant_grades]
+    gpa = sum(scores) / len(scores)
+    
+    # Find previous GPA node for trend calculation
+    previous_nodes = [n for n in nodes if n.get("type") == "ProfessorGPA" and n.get("scope") == scope]
+    previous = sorted(previous_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)
+    previous_gpa = previous[0].get("gpa", 0.0) if previous else None
+    
+    # Determine trend
+    if previous_gpa is not None:
+        if gpa > previous_gpa + 0.05:
+            trend = "rising"
+        elif gpa < previous_gpa - 0.05:
+            trend = "falling"
+        else:
+            trend = "flat"
+    else:
+        trend = "flat"
+    
+    # Create GPA node
+    gpa_node = {
+        "id": f"professor_gpa_{hashlib.sha256(f'{scope}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "ProfessorGPA",
+        "timestamp": datetime.utcnow().isoformat(),
+        "scope": scope,
+        "gpa": round(gpa, 2),
+        "grades_count": len(scores),
+        "trend": trend,
+        "previous_gpa": previous_gpa,
+        "date": datetime.utcnow().strftime("%Y-%m-%d"),
+        "error_signature": "success_no_error",
+        "template_file": f"gpa/{scope}",
+        "error_category": "none",
+        "fix_description": f"GPA for {scope}: {round(gpa, 2)} ({trend}), based on {len(scores)} grades",
+        "compilation_result": "pass",
+        "links": []
+    }
+    
+    nodes.append(gpa_node)
+
+def _mutate_professor_report_card(details: dict = None):
+    """Records a professor report card mutation in the DNA graph."""
+    if details is None:
+        details = {}
+        
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    
+    scope = details.get("scope", "loops_0_through_6")
+    gpa = details.get("gpa")
+    total_graded_features = details.get("total_graded_features", 0)
+    has_real_lm_studio_grades = details.get("has_real_lm_studio_grades", False)
+    findings = details.get("findings", "")
+    recommendations = details.get("recommendations", "")
+    
+    # Create professor_report_card node
+    report_card_node = {
+        "id": f"professor_report_card_{hashlib.sha256(f'{scope}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "ProfessorReportCard",
+        "timestamp": datetime.utcnow().isoformat(),
+        "scope": scope,
+        "gpa": gpa,
+        "total_graded_features": total_graded_features,
+        "has_real_lm_studio_grades": has_real_lm_studio_grades,
+        "findings": findings,
+        "recommendations": recommendations,
+        "error_signature": "success_no_error",
+        "template_file": f"professor_report_card/{scope}",
+        "error_category": "none",
+        "fix_description": f"Professor report card recorded for {scope}: {total_graded_features} features graded, has_real_lm_studio_grades={has_real_lm_studio_grades}",
+        "compilation_result": "pass",
+        "links": []
+    }
+    
+    nodes.append(report_card_node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    
+    return report_card_node["id"]
+
+def _mutate_pathway_attempt(details: dict) -> str:
+    """Records a pathway attempt mutation through Graphify."""
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    
+    tool = details.get("tool", "unknown_tool")
+    action = details.get("action", "unknown_action")
+    parameters_tried = details.get("parameters_tried", {})
+    result = details.get("result", "unknown_result")
+    error_message = details.get("error_message", "")
+    
+    mutation_node = {
+        "id": f"pathway_attempt_{hashlib.sha256(f'pathway_attempt_{tool}_{action}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "pathway_attempt",
+        "timestamp": datetime.utcnow().isoformat(),
+        "tool": tool,
+        "action": action,
+        "parameters_tried": parameters_tried,
+        "result": result,
+        "error_message": error_message,
+        "error_signature": "success_no_error" if result == "success" else f"pathway_attempt_{result}",
+        "template_file": f"pathway_attempt/{tool}/{action}",
+        "error_category": "none" if result == "success" else "pathway_failure",
+        "fix_description": f"Pathway attempt recorded: tool '{tool}', action '{action}', result '{result}'",
+        "compilation_result": result,
+        "links": []
+    }
+    
+    nodes.append(mutation_node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    
+    return mutation_node["id"]
+
+
+def _mutate_technical_discovery(details: dict) -> str:
+    """Records a technical discovery education node through Graphify."""
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    
+    school = details.get("school", "unknown_school")
+    topic = details.get("topic", "unknown_topic")
+    discovery = details.get("discovery", "")
+    resolved_pathway = details.get("resolved_pathway", "unknown_pathway")
+    previous_attempts = details.get("previous_attempts", 0)
+    discovered_by = details.get("discovered_by", "unknown_agent_session_id")
+    
+    mutation_node = {
+        "id": f"technical_discovery_{hashlib.sha256(f'technical_discovery_{school}_{topic}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "TechnicalDiscovery",
+        "timestamp": datetime.utcnow().isoformat(),
+        "school": school,
+        "topic": topic,
+        "discovery": discovery,
+        "resolved_pathway": resolved_pathway,
+        "previous_attempts": previous_attempts,
+        "discovered_by": discovered_by,
+        "error_signature": "success_no_error",
+        "template_file": f"technical_discovery/{school}/{topic}",
+        "error_category": "none",
+        "fix_description": f"Technical discovery recorded: school '{school}', topic '{topic}', resolved pathway '{resolved_pathway}'",
+        "compilation_result": "pass",
         "links": []
     }
     

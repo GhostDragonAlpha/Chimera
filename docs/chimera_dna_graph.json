@@ -1,0 +1,278 @@
+{
+  "nodes": [
+    {
+      "id": "professor_report_card_aa75c88ebd886486",
+      "type": "ProfessorReportCard",
+      "timestamp": "2026-07-03T22:55:31.250679",
+      "scope": "loops_0_through_6",
+      "gpa": null,
+      "total_graded_features": 0,
+      "has_real_lm_studio_grades": false,
+      "findings": "No ProfessorGrade nodes with verbatim lm_studio_raw responses from LM Studio were found in the DNA graph. The report card is empty until the measurements are real.",
+      "recommendations": "Begin sending research summaries to LM Studio with the grading prompt for verified features across Loops 0-6. Record explicit ProfessorGrade nodes via g.mutate('professor_grade', {...}) with the lm_studio_raw field containing the full verbatim LM Studio response.",
+      "error_signature": "success_no_error",
+      "template_file": "professor_report_card/loops_0_through_6",
+      "error_category": "none",
+      "fix_description": "Professor report card recorded for loops_0_through_6: 0 features graded, has_real_lm_studio_grades=False",
+      "compilation_result": "pass",
+      "links": []
+    },
+    {
+      "id": "pw_a5f74ae95785",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:23.082231",
+      "tool": "manage_asset",
+      "action": "create_folder",
+      "parameters_tried": {
+        "path": "/Game/Chimera/Materials"
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "Create material folder before create_material. Path = /Game/Chimera/Materials (no trailing slash)."
+    },
+    {
+      "id": "pw_821cbe2dc2d6",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:23.082231",
+      "tool": "manage_asset",
+      "action": "create_material",
+      "parameters_tried": {
+        "name": "MAT_Player_Suit_Visor",
+        "path": "/Game/Chimera/Materials"
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "MUST use folder path (/Game/Chimera/Materials), NOT /Game/Chimera/Materials/Name/Name. Folder must exist first."
+    },
+    {
+      "id": "pw_8e68ee4e8822",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:23.082231",
+      "tool": "manage_asset",
+      "action": "set_blend_mode",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "blendMode": "Translucent"
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "Valid blendModes: Opaque, Masked, Translucent, Additive, Modulate, AlphaComposite, AlphaHoldout"
+    },
+    {
+      "id": "pw_097ac01eaa97",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:23.082231",
+      "tool": "manage_asset",
+      "action": "set_two_sided",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "twoSided": true
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "Two-sided needed for inner face of visor geometry"
+    },
+    {
+      "id": "pw_484169d693b0",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:23.082231",
+      "tool": "manage_asset",
+      "action": "add_vector_parameter",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "parameterName": "BaseColor",
+        "defaultValue": {
+          "r": 1.0,
+          "g": 0.85,
+          "b": 0.45,
+          "a": 1.0
+        }
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "Use add_vector_parameter (not set_vector_parameter_value). Gold tint (1.0, 0.85, 0.45) simulates gold thin-film on polycarbonate."
+    },
+    {
+      "id": "pw_c3ee585f3808",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:23.082231",
+      "tool": "manage_asset",
+      "action": "add_scalar_parameter",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "parameterName": "Roughness",
+        "defaultValue": 0.1
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "0.1 = polished visor surface with strong specular highlight"
+    },
+    {
+      "id": "pw_4beaacd2a672",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:23.082231",
+      "tool": "manage_asset",
+      "action": "add_scalar_parameter",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "parameterName": "Opacity",
+        "defaultValue": 0.7
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "0.7 = semi-transparent, face visible through visor"
+    },
+    {
+      "id": "feat_fac3d50877bdb431",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-05T04:08:23.082231",
+      "feature_name": "Player_Character_Suit",
+      "loop": 0,
+      "status": "partial",
+      "parameters": {
+        "material_path": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "blend_mode": "Translucent",
+        "two_sided": true,
+        "base_color_rgb": [
+          1.0,
+          0.85,
+          0.45
+        ],
+        "roughness": 0.1,
+        "opacity": 0.7,
+        "description": "Gold-tinted translucent polycarbonate visor material with polished surface. Material created and configured in UE5 editor.",
+        "blocked_by": "Player_Character_Model uses sports car placeholder \u2014 needs proper astronaut mesh with visor component for application",
+        "next_steps": "Create Player_Character_Model astronaut mesh, add visor geometry component, apply MAT_Player_Suit_Visor, screenshot, LM Studio verify"
+      }
+    },
+    {
+      "id": "pw_a5f74ae95785",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:38.738338",
+      "tool": "manage_asset",
+      "action": "create_folder",
+      "parameters_tried": {
+        "path": "/Game/Chimera/Materials"
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "Create material folder before create_material. Path = /Game/Chimera/Materials (no trailing slash)."
+    },
+    {
+      "id": "pw_821cbe2dc2d6",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:38.738338",
+      "tool": "manage_asset",
+      "action": "create_material",
+      "parameters_tried": {
+        "name": "MAT_Player_Suit_Visor",
+        "path": "/Game/Chimera/Materials"
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "MUST use folder path (/Game/Chimera/Materials), NOT /Game/Chimera/Materials/Name/Name. Folder must exist first."
+    },
+    {
+      "id": "pw_8e68ee4e8822",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:38.738338",
+      "tool": "manage_asset",
+      "action": "set_blend_mode",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "blendMode": "Translucent"
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "Valid blendModes: Opaque, Masked, Translucent, Additive, Modulate, AlphaComposite, AlphaHoldout"
+    },
+    {
+      "id": "pw_097ac01eaa97",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:38.738338",
+      "tool": "manage_asset",
+      "action": "set_two_sided",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "twoSided": true
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "Two-sided needed for inner face of visor geometry"
+    },
+    {
+      "id": "pw_484169d693b0",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:38.738338",
+      "tool": "manage_asset",
+      "action": "add_vector_parameter",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "parameterName": "BaseColor",
+        "defaultValue": {
+          "r": 1.0,
+          "g": 0.85,
+          "b": 0.45,
+          "a": 1.0
+        }
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "Use add_vector_parameter (not set_vector_parameter_value). Gold tint (1.0, 0.85, 0.45) simulates gold thin-film on polycarbonate."
+    },
+    {
+      "id": "pw_c3ee585f3808",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:38.738338",
+      "tool": "manage_asset",
+      "action": "add_scalar_parameter",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "parameterName": "Roughness",
+        "defaultValue": 0.1
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "0.1 = polished visor surface with strong specular highlight"
+    },
+    {
+      "id": "pw_4beaacd2a672",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-05T04:08:38.738338",
+      "tool": "manage_asset",
+      "action": "add_scalar_parameter",
+      "parameters_tried": {
+        "materialPath": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "parameterName": "Opacity",
+        "defaultValue": 0.7
+      },
+      "result": "success",
+      "error_message": "",
+      "fix_description": "0.7 = semi-transparent, face visible through visor"
+    },
+    {
+      "id": "feat_fac3d50877bdb431",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-05T04:08:38.738338",
+      "feature_name": "Player_Character_Suit",
+      "loop": 0,
+      "status": "partial",
+      "parameters": {
+        "material_path": "/Game/Chimera/Materials/MAT_Player_Suit_Visor",
+        "blend_mode": "Translucent",
+        "two_sided": true,
+        "base_color_rgb": [
+          1.0,
+          0.85,
+          0.45
+        ],
+        "roughness": 0.1,
+        "opacity": 0.7,
+        "description": "Gold-tinted translucent polycarbonate visor material with polished surface. Material created and configured in UE5 editor.",
+        "blocked_by": "Player_Character_Model uses sports car placeholder \u2014 needs proper astronaut mesh with visor component for application",
+        "next_steps": "Create Player_Character_Model astronaut mesh, add visor geometry component, apply MAT_Player_Suit_Visor, screenshot, LM Studio verify"
+      }
+    }
+  ],
+  "edges": []
+}
