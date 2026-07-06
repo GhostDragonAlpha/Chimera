@@ -1919,10 +1919,10 @@ class RalphLoopHarness:
         if grade:
             logger.info(f"  Grade: {grade['grade']} | Score: {grade['score']} | {grade['reasoning'][:80]}...")
             self.iteration_history[feature_name_final].append(f"graded_{grade['grade']}")
-            if grade["grade"] == "F" and iterations < self.max_iterations - 1:
-                logger.warning("Grade F - research insufficient. Marking for re-research.")
+            if grade["grade"] in ("C", "F") and iterations < self.max_iterations - 1:
+                logger.warning(f"Grade {grade['grade']} - research insufficient (Contract: A/B proceed, C/F return to research). Marking for re-research.")
                 self.graphify.record_feature_update(feature_name_final, "needs_refinement", feature_loop)
-                return {"feature": feature_name_final, "status": "needs_refinement", "grade": "F"}
+                return {"feature": feature_name_final, "status": "needs_refinement", "grade": grade["grade"]}
 
         # 5. Apply — launch UE5 if not running
         logger.info(f"\n--- Apply Phase ---")
