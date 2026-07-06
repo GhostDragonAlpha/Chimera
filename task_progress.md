@@ -1,3 +1,28 @@
+# Session 2026-07-06 — Result grading LIVE; honest re-grade demoted Loop 8 (F/C/F/F)
+
+**The grading system now measures the game, not the research.** First full cycle ran:
+generated acceptance tests → in-engine execution (UnrealEditor-Cmd -nullrhi, 4/4 Success,
+exit 0) → initial A's → **grade-inflation audit** (user challenge) → coverage-aware grader
+(pass_rate × declared-criteria coverage) → honest re-grade:
+- System_Economy **F 52.8** — DSL prices instantiated nowhere (DSL→DataAsset gap); manager tick/events untested
+- System_Factions **C 64.5** — gameplay standing-change events are unwired BP stubs
+- System_SaveLoad **F 47.8** — SaveGameComponent save/load paths never executed; ship-state fields unpopulated
+- System_Missions **F 58.8** — objective completion + reward-paid-once untested
+All demoted verified→implemented with study guides in the graph. THIS IS THE WORK LIST.
+
+**Architecture principle (user-confirmed): research writes the exam.** Research output =
+declared acceptance criteria; the built game takes the exam; grade = pass_rate × coverage ×
+fidelity(researched params observable in-engine). NEXT BUILD ITEM: research phase emits a
+machine-readable acceptance-criteria manifest per feature (criterion → test/telemetry
+assertion, recorded to graph) so the coverage denominator comes from research, never from
+the grading agent.
+
+Headless test execution SOLVED: `UnrealEditor-Cmd.exe <uproject> -ExecCmds="Automation
+RunTests ChimeraTests.Acceptance;Quit" -unattended -nullrhi -ReportExportPath=...` — every
+cycle can now measure for real.
+
+---
+
 # Session 2026-07-06 — Loop 8 System_SaveLoad VERIFIED & MERGED (master be7e960)
 
 **Pipeline run: UBT `Result: Succeeded, 83.03s`, exit code 0, ALL GATES PASSED. Professor grade B.

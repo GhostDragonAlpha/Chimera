@@ -1,5 +1,9 @@
 # Result Grading Rubric — Industry-Standard Criteria
 
+**Principle: research writes the exam; the built game takes it.** Research output = the
+declared acceptance criteria (the coverage denominator). The grading agent never declares
+or shrinks the exam at grading time.
+
 The grade for a feature comes from **measuring the built result**, judged by the driving
 agent against this rubric. **No runtime model dependency**: no LM Studio, no local LLM in
 the gate path. Where judgment is required, the agent applies the written criteria below

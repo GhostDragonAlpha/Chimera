@@ -1,5 +1,10 @@
 # Chimera Development Progress Update
 
+## July 6, 2026 (later) — Result grading live; grade-inflation audit demotes Loop 8 honestly
+
+First measured cycle: 4/4 acceptance tests passed in-engine (headless via -nullrhi). Initial A grades were audited and found inflated (thin coverage counted as full correctness, author-judged checklist, asserted fidelity). Grader now scores pass_rate × declared-criteria coverage. Honest grades: Economy F 52.8, Factions C 64.5, SaveLoad F 47.8, Missions F 58.8 — all back to implemented with study guides (DSL→DataAsset instantiation, component save/load path tests, faction event wiring, mission objective/reward tests). Principle established: research writes the exam; the game takes it.
+
+
 ## July 6, 2026 — Loop 8 (Systems) closed; SaveLoad real implementation pipeline-verified
 
 **Loop 8 complete (anchor: Consequence).** System_Economy, System_Factions, System_Missions, System_SaveLoad all `implemented`; LoopComplete recorded. Pipeline run: UBT `Result: Succeeded, 83.03s`, exit code 0, all gates passed, Professor grade B, 46 generated files verified. Playtests: 3 skipped (headless) — promotion to `verified` awaits in-editor `Automation RunTests ChimeraTests`.
