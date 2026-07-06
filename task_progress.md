@@ -12,11 +12,29 @@ regenerated Save/Economy/Factions from the fixed templates and built green):
 Ledger: System_Economy / System_Factions / System_SaveLoad = implemented. GPA 2.9 flat.
 Playtests: 3 skipped (headless env — need running editor + `Automation RunTests ChimeraTests`).
 
-## NEXT
-1. System_Missions: record implemented (code healthy + compiled in the green run) → `loop_complete` Loop 8.
-2. Ledger repair: loops 3–7 show not_started (quarantine artifact) — re-record from VisualVerification evidence with `--backfilled`.
-3. Loop 9 (The Universe) per Spiral order — or revisit Loop 0 open items (Player_Character_Model needs_refinement, Animation blocked).
-4. In-editor playtest pass when UE is open: `Automation RunTests ChimeraTests`.
+## NEXT — RESULT-GRADING REDESIGN (user directive 2026-07-06: grade the RESULT, not the research)
+The Professor currently grades research summaries (the input). Wrong target. The grade that
+drives GPA and the C/F→re-research retry must come from MEASURING THE RUNNING GAME
+("quantum collapse": the feature's quality is unknown until measured):
+
+1. **`core/result_grader.py`** — grades a feature AFTER Apply from:
+   - **Unit/functional tests** (primary weight): per-feature UE Automation tests, run via
+     `Automation RunTests ChimeraTests` (in-editor; headless skips recorded as such, never passes)
+   - **Telemetry assertions** (secondary): MCP `inspect` (get_scene_stats / runtime_report /
+     get_performance_stats) checked against the feature's researched parameters
+   - **Visual verification** (tertiary signal only — demoted from primary verdict)
+   Deterministic score → letter grade → existing `record_grade`/GPA machinery.
+2. **Generated acceptance tests** — new `generate_feature_acceptance_tests()` in the generator
+   emits Automation specs per feature. Exemplars:
+   - SaveLoad roundtrip: save → mutate credits/cargo/standings/missions → load → assert restored
+   - Economy: raise demand ⇒ price rises; flood supply ⇒ price falls; clamps hold at 0.25x/4x
+   - Factions: ModifyStanding on unseeded faction does NOT crash; tier ladder boundaries exact
+   - Missions: objective completion increments index; final objective pays reward exactly once
+3. **Rewire the Ralph gate order**: research review stays as a cheap sanity pre-gate (advisory),
+   Apply → build (auto-F on fail) → **RESULT GRADE = the gate** (C/F → back to research WITH the
+   grader's reasoning fed into the next research prompt as the study guide).
+4. Then: Loop 0 open items (Player_Character_Model refinement, Animation blocked) and Loop 9,
+   verified under the new result-grading regime.
 
 ---
 
