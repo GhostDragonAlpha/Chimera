@@ -1,0 +1,107 @@
+- generic [active] [ref=f8e1]:
+  - link "Jump to content" [ref=f8e2] [cursor=pointer]:
+    - /url: "#bodyContent"
+  - banner [ref=f8e4]:
+    - generic [ref=f8e5]:
+      - navigation "Site" [ref=f8e6]:
+        - generic "Main menu" [ref=f8e7]:
+          - button "Main menu" [ref=f8e8] [cursor=pointer]
+          - generic [ref=f8e11]: Main menu
+      - link "Wikimedia Commons" [ref=f8e12] [cursor=pointer]:
+        - /url: /wiki/Main_Page
+        - img [ref=f8e13]
+        - img "Wikimedia Commons" [ref=f8e15]
+    - generic [ref=f8e16]:
+      - search [ref=f8e17]:
+        - generic [ref=f8e20]:
+          - searchbox "Search Wikimedia Commons" [ref=f8e23]
+          - button "Search" [ref=f8e25]
+      - navigation "Personal tools" [ref=f8e26]:
+        - generic [ref=f8e27]:
+          - list [ref=f8e30]:
+            - listitem [ref=f8e31]:
+              - link "English" [ref=f8e32] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f8e34]: English
+          - list [ref=f8e37]:
+            - listitem [ref=f8e38]:
+              - link "Donate" [ref=f8e39] [cursor=pointer]:
+                - /url: https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=commons.wikimedia.org&uselang=en
+            - listitem [ref=f8e40]:
+              - link "Create account" [ref=f8e41] [cursor=pointer]:
+                - /url: /w/index.php?title=Special:CreateAccount&returnto=File%3AISS+Galley.jpg
+            - listitem [ref=f8e42]:
+              - link "Log in" [ref=f8e43] [cursor=pointer]:
+                - /url: /w/index.php?title=Special:UserLogin&returnto=File%3AISS+Galley.jpg
+  - generic [ref=f8e45]:
+    - main [ref=f8e49]:
+      - heading "File:ISS Galley.jpg" [level=1] [ref=f8e51]
+      - generic [ref=f8e53]:
+        - navigation "Namespaces" [ref=f8e55]:
+          - list [ref=f8e58]:
+            - listitem [ref=f8e59]:
+              - link "File" [ref=f8e60] [cursor=pointer]:
+                - /url: /w/index.php?title=File:ISS_Galley.jpg&action=edit&redlink=1
+                - generic [ref=f8e61]: File
+            - listitem [ref=f8e62]:
+              - link "Discussion" [ref=f8e63] [cursor=pointer]:
+                - /url: /w/index.php?title=File_talk:ISS_Galley.jpg&action=edit&redlink=1
+                - generic [ref=f8e64]: Discussion
+        - generic [ref=f8e65]:
+          - navigation "Views" [ref=f8e66]:
+            - list [ref=f8e69]:
+              - listitem [ref=f8e70]:
+                - link "Create" [ref=f8e71] [cursor=pointer]:
+                  - /url: /w/index.php?title=File:ISS_Galley.jpg&action=edit
+                  - generic [ref=f8e72]: Create
+          - navigation "Page tools" [ref=f8e73]:
+            - generic [ref=f8e74]:
+              - button "Tools" [ref=f8e75] [cursor=pointer]
+              - generic [ref=f8e78]: Tools
+      - navigation "Appearance" [ref=f8e81]:
+        - generic [ref=f8e84]:
+          - generic [ref=f8e85]: Appearance
+          - button "hide" [ref=f8e86] [cursor=pointer]
+      - generic "File:ISS Galley.jpg" [ref=f8e87]:
+        - generic [ref=f8e88]:
+          - paragraph [ref=f8e90]: No file by this name exists.
+          - heading "File usage on Commons" [level=2] [ref=f8e91]
+          - paragraph [ref=f8e93]: There are no pages that use this file.
+    - contentinfo [ref=f8e95]:
+      - list:
+        - listitem [ref=f8e96]:
+          - link "Privacy policy" [ref=f8e97] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+        - listitem [ref=f8e98]:
+          - link "About Wikimedia Commons" [ref=f8e99] [cursor=pointer]:
+            - /url: /wiki/Commons:Welcome
+        - listitem [ref=f8e100]:
+          - link "Disclaimers" [ref=f8e101] [cursor=pointer]:
+            - /url: /wiki/Commons:General_disclaimer
+        - listitem [ref=f8e102]:
+          - link "Legal & safety contacts" [ref=f8e103] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Legal:Wikimedia_Foundation_Legal_and_Safety_Contact_Information
+        - listitem [ref=f8e104]:
+          - link "Code of Conduct" [ref=f8e105] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Universal_Code_of_Conduct
+        - listitem [ref=f8e106]:
+          - link "Developers" [ref=f8e107] [cursor=pointer]:
+            - /url: https://developer.wikimedia.org
+        - listitem [ref=f8e108]:
+          - link "Statistics" [ref=f8e109] [cursor=pointer]:
+            - /url: https://stats.wikimedia.org/#/commons.wikimedia.org
+        - listitem [ref=f8e110]:
+          - link "Cookie statement" [ref=f8e111] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Cookie_statement
+        - listitem [ref=f8e112]:
+          - link "Mobile view" [ref=f8e113] [cursor=pointer]:
+            - /url: //commons.wikimedia.org/w/index.php?title=File:ISS_Galley.jpg&mobileaction=toggle_view_mobile
+      - list [ref=f8e114]:
+        - listitem [ref=f8e115]:
+          - link "Wikimedia Foundation" [ref=f8e116] [cursor=pointer]:
+            - /url: https://www.wikimedia.org/
+            - img "Wikimedia Foundation" [ref=f8e118]
+        - listitem [ref=f8e119]:
+          - link "Powered by MediaWiki" [ref=f8e120] [cursor=pointer]:
+            - /url: https://www.mediawiki.org/
+            - img "Powered by MediaWiki" [ref=f8e122]

@@ -1,0 +1,232 @@
+- generic [active] [ref=f37e1]:
+  - link "Jump to content" [ref=f37e2] [cursor=pointer]:
+    - /url: "#bodyContent"
+  - banner [ref=f37e4]:
+    - generic [ref=f37e5]:
+      - navigation "Site" [ref=f37e6]:
+        - generic "Main menu" [ref=f37e7]:
+          - button "Main menu" [ref=f37e8] [cursor=pointer]
+          - generic [ref=f37e11]: Main menu
+      - link "Wikipedia The Free Encyclopedia" [ref=f37e12] [cursor=pointer]:
+        - /url: /wiki/Main_Page
+        - generic [ref=f37e13]:
+          - img "Wikipedia" [ref=f37e14]
+          - img "The Free Encyclopedia" [ref=f37e15]
+    - generic [ref=f37e16]:
+      - search [ref=f37e17]:
+        - generic [ref=f37e20]:
+          - searchbox "Search Wikipedia" [ref=f37e23]
+          - button "Search" [ref=f37e25]
+      - navigation "Personal tools" [ref=f37e26]:
+        - list [ref=f37e30]:
+          - listitem [ref=f37e31]:
+            - link "Donate" [ref=f37e32] [cursor=pointer]:
+              - /url: https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en
+          - listitem [ref=f37e33]:
+            - link "Create account" [ref=f37e34] [cursor=pointer]:
+              - /url: /w/index.php?title=Special:CreateAccount&returnto=Energy+weapon
+          - listitem [ref=f37e35]:
+            - link "Log in" [ref=f37e36] [cursor=pointer]:
+              - /url: /w/index.php?title=Special:UserLogin&returnto=Energy+weapon
+  - generic [ref=f37e38]:
+    - main [ref=f37e42]:
+      - generic [ref=f37e43]:
+        - heading "Energy weapon" [level=1] [ref=f37e44]:
+          - generic [ref=f37e45]: Energy weapon
+        - generic [ref=f37e46]:
+          - button "This article is only available in this language. Add the article for other languages" [ref=f37e47] [cursor=pointer]
+          - generic [ref=f37e50]: Add languages
+      - generic [ref=f37e52]:
+        - navigation "Namespaces" [ref=f37e54]:
+          - list [ref=f37e57]:
+            - listitem [ref=f37e58]:
+              - link "Article" [ref=f37e59] [cursor=pointer]:
+                - /url: /wiki/Energy_weapon
+                - generic [ref=f37e60]: Article
+            - listitem [ref=f37e61]:
+              - link "Talk" [ref=f37e62] [cursor=pointer]:
+                - /url: /wiki/Talk:Energy_weapon
+                - generic [ref=f37e63]: Talk
+        - generic [ref=f37e64]:
+          - navigation "Views" [ref=f37e65]:
+            - list [ref=f37e68]:
+              - listitem [ref=f37e69]:
+                - link "Read" [ref=f37e70] [cursor=pointer]:
+                  - /url: /wiki/Energy_weapon
+                  - generic [ref=f37e71]: Read
+              - listitem [ref=f37e72]:
+                - link "Edit" [ref=f37e73] [cursor=pointer]:
+                  - /url: /w/index.php?title=Energy_weapon&action=edit
+                  - generic [ref=f37e74]: Edit
+              - listitem [ref=f37e75]:
+                - link "View history" [ref=f37e76] [cursor=pointer]:
+                  - /url: /w/index.php?title=Energy_weapon&action=history
+                  - generic [ref=f37e77]: View history
+          - navigation "Page tools" [ref=f37e78]:
+            - generic [ref=f37e79]:
+              - button "Tools" [ref=f37e80] [cursor=pointer]
+              - generic [ref=f37e83]: Tools
+      - navigation "Appearance" [ref=f37e86]:
+        - generic [ref=f37e88]:
+          - generic [ref=f37e89]:
+            - generic [ref=f37e90]: Appearance
+            - button "hide" [ref=f37e91] [cursor=pointer]
+          - generic [ref=f37e92]:
+            - generic [ref=f37e93]: Text
+            - list [ref=f37e95]:
+              - listitem [ref=f37e96]:
+                - generic [ref=f37e98]:
+                  - generic [ref=f37e99]:
+                    - radio "Small" [ref=f37e100]
+                    - generic [ref=f37e103]: Small
+                  - generic [ref=f37e104]:
+                    - radio "Standard" [checked] [ref=f37e105]
+                    - generic [ref=f37e108]: Standard
+                  - generic [ref=f37e109]:
+                    - radio "Large" [ref=f37e110]
+                    - generic [ref=f37e113]: Large
+          - generic [ref=f37e114]:
+            - generic [ref=f37e115]: Width
+            - list [ref=f37e117]:
+              - listitem [ref=f37e118]:
+                - generic [ref=f37e120]:
+                  - generic [ref=f37e121]:
+                    - radio "Standard" [checked] [ref=f37e122]
+                    - generic [ref=f37e125]: Standard
+                  - generic [ref=f37e126]:
+                    - radio "Wide" [ref=f37e127]
+                    - generic [ref=f37e130]: Wide
+          - generic [ref=f37e131]:
+            - generic [ref=f37e132]: Color
+            - list [ref=f37e134]:
+              - listitem [ref=f37e135]:
+                - generic [ref=f37e137]:
+                  - generic [ref=f37e138]:
+                    - radio "Automatic" [ref=f37e139]
+                    - generic [ref=f37e142]: Automatic
+                  - generic [ref=f37e143]:
+                    - radio "Light" [checked] [ref=f37e144]
+                    - generic [ref=f37e147]: Light
+                  - generic [ref=f37e148]:
+                    - radio "Dark" [ref=f37e149]
+                    - generic [ref=f37e152]: Dark
+      - generic "Energy weapon" [ref=f37e153]:
+        - generic [ref=f37e155]: From Wikipedia, the free encyclopedia
+        - generic [ref=f37e158]:
+          - generic [ref=f37e160]:
+            - link "Wiktionary logo" [ref=f37e163] [cursor=pointer]:
+              - /url: //en.wikipedia.org/wiki/File:Wiktionary-logo-en-v2.svg
+              - img "Wiktionary logo" [ref=f37e164]
+            - generic [ref=f37e165]:
+              - text: Look up
+              - link "energy weapon" [ref=f37e168] [cursor=pointer]:
+                - /url: https://en.wiktionary.org/wiki/Special:Search/energy%20weapon
+              - text: in Wiktionary, the free dictionary.
+          - paragraph [ref=f37e169]: "Energy weapon may refer to:"
+          - list [ref=f37e170]:
+            - listitem [ref=f37e171]:
+              - link "Directed-energy weapon" [ref=f37e172] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Directed-energy_weapon
+              - text: ", a real-life energy weapon used in the military and law enforcement"
+              - list [ref=f37e173]:
+                - listitem [ref=f37e174]:
+                  - link "Raygun" [ref=f37e175] [cursor=pointer]:
+                    - /url: //en.wikipedia.org/wiki/Raygun
+                  - text: ", a fictional gun-type energy weapon"
+            - listitem [ref=f37e176]:
+              - link "Energy sword" [ref=f37e177] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Energy_sword
+              - text: ", a fictional sword-type energy weapon"
+            - listitem [ref=f37e178]:
+              - link "Force field (technology)" [ref=f37e179] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Force_field_(technology)
+              - text: ", a fictional shield-type energy weapon"
+          - note [ref=f37e180]:
+            - link "Disambiguation icon" [ref=f37e182] [cursor=pointer]:
+              - /url: //en.wikipedia.org/wiki/File:Disambig_gray.svg
+              - img "Disambiguation icon" [ref=f37e183]
+            - generic [ref=f37e184]:
+              - text: This
+              - link "disambiguation" [ref=f37e185] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Help:Disambiguation
+              - text: page lists articles associated with the title Energy weapon.
+              - generic [ref=f37e186]:
+                - text: If an
+                - link "internal link" [ref=f37e187] [cursor=pointer]:
+                  - /url: https://en.wikipedia.org/w/index.php?title=Special:WhatLinksHere/Energy_weapon&namespace=0
+                - text: incorrectly led you here, you may wish to change the link to point directly to the intended article.
+        - generic [ref=f37e189]:
+          - link "Categories" [ref=f37e190] [cursor=pointer]:
+            - /url: /wiki/Help:Category
+          - text: ":"
+          - list [ref=f37e191]:
+            - listitem [ref=f37e192]:
+              - link "Disambiguation pages" [ref=f37e193] [cursor=pointer]:
+                - /url: /wiki/Category:Disambiguation_pages
+            - listitem [ref=f37e194]:
+              - link "Energy weapons" [ref=f37e195] [cursor=pointer]:
+                - /url: /wiki/Category:Energy_weapons
+    - contentinfo [ref=f37e197]:
+      - list [ref=f37e198]:
+        - listitem [ref=f37e199]: This page was last edited on 11 July 2024, at 18:09 (UTC).
+        - listitem [ref=f37e200]:
+          - text: Page was rendered with
+          - link "Parsoid" [ref=f37e201] [cursor=pointer]:
+            - /url: https://www.mediawiki.org/wiki/Special:MyLanguage/Parsoid
+          - text: .
+        - listitem [ref=f37e202]:
+          - text: Text is available under the
+          - link "Creative Commons Attribution-ShareAlike 4.0 License" [ref=f37e203] [cursor=pointer]:
+            - /url: /wiki/Wikipedia:Text_of_the_Creative_Commons_Attribution-ShareAlike_4.0_International_License
+          - text: ; additional terms may apply. By using this site, you agree to the
+          - link "Terms of Use" [ref=f37e204] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Terms_of_Use
+          - text: and
+          - link "Privacy Policy" [ref=f37e205] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+          - text: . Wikipedia® is a registered trademark of the
+          - link "Wikimedia Foundation, Inc." [ref=f37e206] [cursor=pointer]:
+            - /url: https://wikimediafoundation.org/
+          - text: ", a non-profit organization."
+      - list:
+        - listitem [ref=f37e207]:
+          - link "Privacy policy" [ref=f37e208] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+        - listitem [ref=f37e209]:
+          - link "About Wikipedia" [ref=f37e210] [cursor=pointer]:
+            - /url: /wiki/Wikipedia:About
+        - listitem [ref=f37e211]:
+          - link "Disclaimers" [ref=f37e212] [cursor=pointer]:
+            - /url: /wiki/Wikipedia:General_disclaimer
+        - listitem [ref=f37e213]:
+          - link "Contact Wikipedia" [ref=f37e214] [cursor=pointer]:
+            - /url: //en.wikipedia.org/wiki/Wikipedia:Contact_us
+        - listitem [ref=f37e215]:
+          - link "Legal & safety contacts" [ref=f37e216] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Legal:Wikimedia_Foundation_Legal_and_Safety_Contact_Information
+        - listitem [ref=f37e217]:
+          - link "Code of Conduct" [ref=f37e218] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Universal_Code_of_Conduct
+        - listitem [ref=f37e219]:
+          - link "Developers" [ref=f37e220] [cursor=pointer]:
+            - /url: https://developer.wikimedia.org
+        - listitem [ref=f37e221]:
+          - link "Statistics" [ref=f37e222] [cursor=pointer]:
+            - /url: https://stats.wikimedia.org/#/en.wikipedia.org
+        - listitem [ref=f37e223]:
+          - link "Cookie statement" [ref=f37e224] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Cookie_statement
+        - listitem [ref=f37e225]:
+          - link "Mobile view" [ref=f37e226] [cursor=pointer]:
+            - /url: //en.wikipedia.org/w/index.php?title=Energy_weapon&mobileaction=toggle_view_mobile
+      - list [ref=f37e227]:
+        - listitem [ref=f37e228]:
+          - link "Wikimedia Foundation" [ref=f37e229] [cursor=pointer]:
+            - /url: https://www.wikimedia.org/
+            - img "Wikimedia Foundation" [ref=f37e231]
+        - listitem [ref=f37e232]:
+          - link "Powered by MediaWiki" [ref=f37e233] [cursor=pointer]:
+            - /url: https://www.mediawiki.org/
+            - img "Powered by MediaWiki" [ref=f37e235]
+  - generic [ref=f37e236]:
+    - list

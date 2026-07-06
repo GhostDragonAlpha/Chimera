@@ -1,0 +1,1362 @@
+- generic [ref=f142e2]:
+  - banner [ref=f142e5]:
+    - button "Epic Ecosystem Dropdown" [ref=f142e9] [cursor=pointer]:
+      - generic:
+        - img
+      - generic:
+        - img
+    - navigation "Unreal Engine Navigation" [ref=f142e10]:
+      - link "Unreal Engine Logo" [ref=f142e12] [cursor=pointer]:
+        - /url: https://www.unrealengine.com/
+        - img "Unreal Engine Logo" [ref=f142e13]
+      - generic [ref=f142e14]:
+        - list [ref=f142e17]:
+          - listitem [ref=f142e18]:
+            - link "Overview" [ref=f142e20] [cursor=pointer]:
+              - /url: https://www.unrealengine.com/
+              - generic:
+                - generic: Overview
+              - generic:
+                - img
+          - listitem [ref=f142e21]:
+            - link "Uses" [ref=f142e23] [cursor=pointer]:
+              - /url: https://www.unrealengine.com/uses/switching-to-unreal-engine
+              - generic:
+                - generic: Uses
+              - generic:
+                - img
+          - listitem [ref=f142e24]:
+            - link "News" [ref=f142e26] [cursor=pointer]:
+              - /url: https://www.unrealengine.com/feed
+              - generic:
+                - generic: News
+          - listitem [ref=f142e27]:
+            - link "Forums" [ref=f142e29] [cursor=pointer]:
+              - /url: https://forums.unrealengine.com/categories?tag=unreal-engine
+              - generic:
+                - generic: Forums
+          - listitem [ref=f142e30]:
+            - link "Documentation" [ref=f142e32] [cursor=pointer]:
+              - /url: https://dev.epicgames.com/documentation/unreal-engine
+              - generic:
+                - generic: Documentation
+          - listitem [ref=f142e33]:
+            - button "More" [ref=f142e35] [cursor=pointer]:
+              - generic:
+                - generic: More
+              - generic:
+                - img
+        - generic [ref=f142e37]:
+          - search [ref=f142e39]:
+            - generic [ref=f142e40]:
+              - searchbox "Search the Unreal Engine website" [ref=f142e41]
+              - button "Search" [ref=f142e42] [cursor=pointer]:
+                - generic:
+                  - img
+                - generic: Search
+          - button "Locale menu" [ref=f142e44] [cursor=pointer]:
+            - generic:
+              - img
+          - link "Sign in" [ref=f142e46] [cursor=pointer]:
+            - /url: https://dev.epicgames.com/community/api/user_identity/login/start?destination=https%3A%2F%2Fdev.epicgames.com%2Fdocumentation%2Funreal-engine%2Fbehavior-tree-in-unreal-engine---user-guide%3Fapplication_version%3D5.3
+            - generic: Sign in
+        - link "Download" [ref=f142e49] [cursor=pointer]:
+          - /url: https://www.unrealengine.com/download
+          - generic: Download
+  - generic: 
+  - generic [ref=f142e50]:
+    - complementary [ref=f142e53]:
+      - generic [ref=f142e55]:
+        - generic [ref=f142e56]: Join our community, grow your knowledge and learn from others!
+        - paragraph [ref=f142e57]:
+          - link "Sign in" [ref=f142e58] [cursor=pointer]:
+            - /url: https://dev.epicgames.com/community/api/user_identity/login/start?destination=https%3A%2F%2Fdev.epicgames.com%2Fdocumentation%2Funreal-engine%2Fbehavior-tree-in-unreal-engine---user-guide%3Fapplication_version%3D5.3
+        - paragraph [ref=f142e59]:
+          - text: Don’t have an Epic Games account?
+          - link "Sign up" [ref=f142e60] [cursor=pointer]:
+            - /url: https://dev.epicgames.com/community/api/user_identity/login/start?destination=https%3A%2F%2Fdev.epicgames.com%2Fdocumentation%2Funreal-engine%2Fbehavior-tree-in-unreal-engine---user-guide%3Fapplication_version%3D5.3
+      - navigation [ref=f142e62]:
+        - list [ref=f142e63]:
+          - listitem [ref=f142e64]:
+            - link "Dev Community" [ref=f142e65] [cursor=pointer]:
+              - /url: https://dev.epicgames.com/community/
+              - img "Dev Community" [ref=f142e66]
+        - button "Unreal Engine" [ref=f142e69] [cursor=pointer]:
+          - generic [ref=f142e70]:
+            - img [ref=f142e72]
+            - generic [ref=f142e74]: Unreal Engine
+          - img [ref=f142e76]
+        - list [ref=f142e78]:
+          - listitem [ref=f142e79]:
+            - link "Forums" [ref=f142e81] [cursor=pointer]:
+              - /url: https://forums.unrealengine.com/categories?tag=unreal-engine
+              - img [ref=f142e83]
+              - generic [ref=f142e88]: Forums
+          - listitem [ref=f142e89]:
+            - button "Documentation" [ref=f142e91] [cursor=pointer]:
+              - img [ref=f142e93]
+              - generic [ref=f142e97]: Documentation
+              - img [ref=f142e99]
+          - listitem [ref=f142e101]:
+            - link "Learning" [ref=f142e103] [cursor=pointer]:
+              - /url: https://dev.epicgames.com/community/unreal-engine/learning
+              - img [ref=f142e105]
+              - generic [ref=f142e107]: Learning
+          - listitem [ref=f142e108]:
+            - link "Developer Assistant Beta" [ref=f142e110] [cursor=pointer]:
+              - /url: https://dev.epicgames.com/community/assistant/unreal-engine
+              - img [ref=f142e112]
+              - generic [ref=f142e119]:
+                - text: Developer Assistant
+                - generic [ref=f142e120]: Beta
+          - listitem [ref=f142e121]:
+            - link "Snippets" [ref=f142e123] [cursor=pointer]:
+              - /url: https://dev.epicgames.com/community/unreal-engine/snippets
+              - img [ref=f142e125]
+              - generic [ref=f142e129]: Snippets
+          - listitem [ref=f142e130]:
+            - button "Profiles" [ref=f142e132] [cursor=pointer]:
+              - img [ref=f142e134]
+              - generic [ref=f142e139]: Profiles
+              - img [ref=f142e141]
+      - generic [ref=f142e144]:
+        - button "Unreal Engine 5.3 " [ref=f142e146] [cursor=pointer]:
+          - generic [ref=f142e148]: Unreal Engine 5.3
+          - generic [ref=f142e149]: 
+        - generic [ref=f142e151]:
+          - generic: 
+          - searchbox "Filter by title" [active] [ref=f142e152]
+        - navigation [ref=f142e154]:
+          - list [ref=f142e155]:
+            - listitem [ref=f142e156]:
+              - link "Unreal Engine 5.3 Documentation" [ref=f142e158] [cursor=pointer]:
+                - /url: /documentation/unreal-engine/unreal-engine-5-3-documentation?application_version=5.3
+              - list [ref=f142e159]:
+                - listitem [ref=f142e160]:
+                  - generic [ref=f142e161]:
+                    - button "Expand" [ref=f142e162] [cursor=pointer]:
+                      - generic [ref=f142e163]: 
+                    - link "What's New" [ref=f142e164] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/whats-new?application_version=5.3
+                - listitem [ref=f142e165]:
+                  - generic [ref=f142e166]:
+                    - button "Expand" [ref=f142e167] [cursor=pointer]:
+                      - generic [ref=f142e168]: 
+                    - link "Understanding the Basics" [ref=f142e169] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/understanding-the-basics-of-unreal-engine?application_version=5.3
+                - listitem [ref=f142e170]:
+                  - generic [ref=f142e171]:
+                    - button "Expand" [ref=f142e172] [cursor=pointer]:
+                      - generic [ref=f142e173]: 
+                    - link "Working with Content" [ref=f142e174] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/working-with-content-in-unreal-engine?application_version=5.3
+                - listitem [ref=f142e175]:
+                  - generic [ref=f142e176]:
+                    - button "Expand" [ref=f142e177] [cursor=pointer]:
+                      - generic [ref=f142e178]: 
+                    - link "Building Virtual Worlds" [ref=f142e179] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/building-virtual-worlds-in-unreal-engine?application_version=5.3
+                - listitem [ref=f142e180]:
+                  - generic [ref=f142e181]:
+                    - button "Expand" [ref=f142e182] [cursor=pointer]:
+                      - generic [ref=f142e183]: 
+                    - link "Designing Visuals, Rendering, and Graphics" [ref=f142e184] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/designing-visuals-rendering-and-graphics-with-unreal-engine?application_version=5.3
+                - listitem [ref=f142e185]:
+                  - generic [ref=f142e186]:
+                    - button "Expand" [ref=f142e187] [cursor=pointer]:
+                      - generic [ref=f142e188]: 
+                    - link "Creating Visual Effects" [ref=f142e189] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/creating-visual-effects-in-niagara-for-unreal-engine?application_version=5.3
+                - listitem [ref=f142e190]:
+                  - generic [ref=f142e191]:
+                    - button "Expand" [ref=f142e192] [cursor=pointer]:
+                      - generic [ref=f142e193]: 
+                    - link "Programming and Scripting" [ref=f142e194] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/unreal-engine-programming-and-scripting?application_version=5.3
+                - listitem [ref=f142e195]:
+                  - generic [ref=f142e196]:
+                    - button "Collapse" [ref=f142e197] [cursor=pointer]:
+                      - generic [ref=f142e198]: 
+                    - link "Making Interactive Experiences" [ref=f142e199] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/making-interactive-experiences-and-gameplay-in-unreal-engine?application_version=5.3
+                  - list [ref=f142e200]:
+                    - listitem [ref=f142e201]:
+                      - generic [ref=f142e202]:
+                        - button "Collapse" [ref=f142e203] [cursor=pointer]:
+                          - generic [ref=f142e204]: 
+                        - link "Artificial Intelligence" [ref=f142e205] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/artificial-intelligence-in-unreal-engine?application_version=5.3
+                      - list [ref=f142e206]:
+                        - listitem [ref=f142e207]:
+                          - generic [ref=f142e208]:
+                            - button "Collapse" [ref=f142e209] [cursor=pointer]:
+                              - generic [ref=f142e210]: 
+                            - link "Behavior Trees" [ref=f142e211] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/behavior-trees-in-unreal-engine?application_version=5.3
+                          - list [ref=f142e212]:
+                            - listitem [ref=f142e213]:
+                              - generic [ref=f142e214]:
+                                - button "Expand" [ref=f142e215] [cursor=pointer]
+                                - link "Behavior Tree Quick Start Guide" [ref=f142e216] [cursor=pointer]:
+                                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---quick-start-guide?application_version=5.3
+                            - listitem [ref=f142e217]:
+                              - generic [ref=f142e218]:
+                                - button "Expand" [ref=f142e219] [cursor=pointer]
+                                - link "Behavior Tree Overview" [ref=f142e220] [cursor=pointer]:
+                                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---overview?application_version=5.3
+                            - listitem [ref=f142e221]:
+                              - generic [ref=f142e222]:
+                                - button "Collapse" [ref=f142e223] [cursor=pointer]
+                                - generic "Behavior Tree User Guide" [ref=f142e224]
+                            - listitem [ref=f142e225]:
+                              - generic [ref=f142e226]:
+                                - button "Expand" [ref=f142e227] [cursor=pointer]:
+                                  - generic [ref=f142e228]: 
+                                - link "Behavior Tree Node Reference" [ref=f142e229] [cursor=pointer]:
+                                  - /url: /documentation/unreal-engine/behavior-tree-node-reference-in-unreal-engine?application_version=5.3
+                        - listitem [ref=f142e230]:
+                          - generic [ref=f142e231]:
+                            - button "Expand" [ref=f142e232] [cursor=pointer]:
+                              - generic [ref=f142e233]: 
+                            - link "MassEntity" [ref=f142e234] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/mass-entity-in-unreal-engine?application_version=5.3
+                        - listitem [ref=f142e235]:
+                          - generic [ref=f142e236]:
+                            - button "Expand" [ref=f142e237] [cursor=pointer]:
+                              - generic [ref=f142e238]: 
+                            - link "Navigation System" [ref=f142e239] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/navigation-system-in-unreal-engine?application_version=5.3
+                        - listitem [ref=f142e240]:
+                          - generic [ref=f142e241]:
+                            - button "Expand" [ref=f142e242] [cursor=pointer]:
+                              - generic [ref=f142e243]: 
+                            - link "Smart Objects" [ref=f142e244] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/smart-objects-in-unreal-engine?application_version=5.3
+                        - listitem [ref=f142e245]:
+                          - generic [ref=f142e246]:
+                            - button "Expand" [ref=f142e247] [cursor=pointer]:
+                              - generic [ref=f142e248]: 
+                            - link "StateTree" [ref=f142e249] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/state-tree-in-unreal-engine?application_version=5.3
+                        - listitem [ref=f142e250]:
+                          - generic [ref=f142e251]:
+                            - button "Expand" [ref=f142e252] [cursor=pointer]:
+                              - generic [ref=f142e253]: 
+                            - link "Environment Query System" [ref=f142e254] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/environment-query-system-in-unreal-engine?application_version=5.3
+                        - listitem [ref=f142e255]:
+                          - generic [ref=f142e256]:
+                            - button "Expand" [ref=f142e257] [cursor=pointer]
+                            - link "AI Perception" [ref=f142e258] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/ai-perception-in-unreal-engine?application_version=5.3
+                        - listitem [ref=f142e259]:
+                          - generic [ref=f142e260]:
+                            - button "Expand" [ref=f142e261] [cursor=pointer]
+                            - link "AI Debugging" [ref=f142e262] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/ai-debugging-in-unreal-engine?application_version=5.3
+                        - listitem [ref=f142e263]:
+                          - generic [ref=f142e264]:
+                            - button "Expand" [ref=f142e265] [cursor=pointer]
+                            - link "AI Components" [ref=f142e266] [cursor=pointer]:
+                              - /url: /documentation/unreal-engine/ai-components-in-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e267]:
+                      - generic [ref=f142e268]:
+                        - button "Expand" [ref=f142e269] [cursor=pointer]:
+                          - generic [ref=f142e270]: 
+                        - link "Data Driven Gameplay Elements" [ref=f142e271] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/data-driven-gameplay-elements-in-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e272]:
+                      - generic [ref=f142e273]:
+                        - button "Expand" [ref=f142e274] [cursor=pointer]:
+                          - generic [ref=f142e275]: 
+                        - link "Gameplay Ability System" [ref=f142e276] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/gameplay-ability-system-for-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e277]:
+                      - generic [ref=f142e278]:
+                        - button "Expand" [ref=f142e279] [cursor=pointer]:
+                          - generic [ref=f142e280]: 
+                        - link "Gameplay Targeting System" [ref=f142e281] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/gameplay-targeting-system-in-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e282]:
+                      - generic [ref=f142e283]:
+                        - button "Expand" [ref=f142e284] [cursor=pointer]:
+                          - generic [ref=f142e285]: 
+                        - link "Input" [ref=f142e286] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/input-in-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e287]:
+                      - generic [ref=f142e288]:
+                        - button "Expand" [ref=f142e289] [cursor=pointer]:
+                          - generic [ref=f142e290]: 
+                        - link "Gameplay Framework" [ref=f142e291] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/gameplay-framework-in-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e292]:
+                      - generic [ref=f142e293]:
+                        - button "Expand" [ref=f142e294] [cursor=pointer]:
+                          - generic [ref=f142e295]: 
+                        - link "Physics" [ref=f142e296] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/physics-in-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e297]:
+                      - generic [ref=f142e298]:
+                        - button "Expand" [ref=f142e299] [cursor=pointer]:
+                          - generic [ref=f142e300]: 
+                        - link "Gameplay Tutorials" [ref=f142e301] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/gameplay-tutorials-for-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e302]:
+                      - generic [ref=f142e303]:
+                        - button "Expand" [ref=f142e304] [cursor=pointer]:
+                          - generic [ref=f142e305]: 
+                        - link "Large World Coordinates" [ref=f142e306] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/large-world-coordinates-in-unreal-engine-5?application_version=5.3
+                    - listitem [ref=f142e307]:
+                      - generic [ref=f142e308]:
+                        - button "Expand" [ref=f142e309] [cursor=pointer]:
+                          - generic [ref=f142e310]: 
+                        - link "Vehicles" [ref=f142e311] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/vehicles-in-unreal-engine?application_version=5.3
+                    - listitem [ref=f142e312]:
+                      - generic [ref=f142e313]:
+                        - button "Expand" [ref=f142e314] [cursor=pointer]:
+                          - generic [ref=f142e315]: 
+                        - link "Networking and Multiplayer" [ref=f142e316] [cursor=pointer]:
+                          - /url: /documentation/unreal-engine/networking-and-multiplayer-in-unreal-engine?application_version=5.3
+                - listitem [ref=f142e317]:
+                  - generic [ref=f142e318]:
+                    - button "Expand" [ref=f142e319] [cursor=pointer]:
+                      - generic [ref=f142e320]: 
+                    - link "Animating Characters and Objects" [ref=f142e321] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/animating-characters-and-objects-in-unreal-engine?application_version=5.3
+                - listitem [ref=f142e322]:
+                  - generic [ref=f142e323]:
+                    - button "Expand" [ref=f142e324] [cursor=pointer]:
+                      - generic [ref=f142e325]: 
+                    - link "Creating User Interfaces" [ref=f142e326] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/creating-user-interfaces-with-umg-and-slate-in-unreal-engine?application_version=5.3
+                - listitem [ref=f142e327]:
+                  - generic [ref=f142e328]:
+                    - button "Expand" [ref=f142e329] [cursor=pointer]:
+                      - generic [ref=f142e330]: 
+                    - link "Working with Audio" [ref=f142e331] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/working-with-audio-in-unreal-engine?application_version=5.3
+                - listitem [ref=f142e332]:
+                  - generic [ref=f142e333]:
+                    - button "Expand" [ref=f142e334] [cursor=pointer]:
+                      - generic [ref=f142e335]: 
+                    - link "Working with Media" [ref=f142e336] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/working-with-media-in-unreal-engine?application_version=5.3
+                - listitem [ref=f142e337]:
+                  - generic [ref=f142e338]:
+                    - button "Expand" [ref=f142e339] [cursor=pointer]:
+                      - generic [ref=f142e340]: 
+                    - link "Setting Up Your Production Pipeline" [ref=f142e341] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/setting-up-your-production-pipeline-in-unreal-engine?application_version=5.3
+                - listitem [ref=f142e342]:
+                  - generic [ref=f142e343]:
+                    - button "Expand" [ref=f142e344] [cursor=pointer]:
+                      - generic [ref=f142e345]: 
+                    - link "Testing and Optimizing Your Content" [ref=f142e346] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/testing-and-optimizing-your-content?application_version=5.3
+                - listitem [ref=f142e347]:
+                  - generic [ref=f142e348]:
+                    - button "Expand" [ref=f142e349] [cursor=pointer]:
+                      - generic [ref=f142e350]: 
+                    - link "Sharing and Releasing Projects" [ref=f142e351] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/sharing-and-releasing-projects-for-unreal-engine?application_version=5.3
+                - listitem [ref=f142e352]:
+                  - generic [ref=f142e353]:
+                    - button "Expand" [ref=f142e354] [cursor=pointer]:
+                      - generic [ref=f142e355]: 
+                    - link "Samples and Tutorials" [ref=f142e356] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/samples-and-tutorials-for-unreal-engine?application_version=5.3
+                - listitem [ref=f142e357]:
+                  - generic [ref=f142e358]:
+                    - button "Expand" [ref=f142e359] [cursor=pointer]
+                    - link "Unreal Engine Blueprint API Reference" [ref=f142e360] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/BlueprintAPI?application_version=5.3
+                - listitem [ref=f142e361]:
+                  - generic [ref=f142e362]:
+                    - button "Expand" [ref=f142e363] [cursor=pointer]
+                    - link "Unreal Engine C++ API Reference" [ref=f142e364] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/API?application_version=5.3
+                - listitem [ref=f142e365]:
+                  - generic [ref=f142e366]:
+                    - button "Expand" [ref=f142e367] [cursor=pointer]
+                    - link "Unreal Engine Python API Documentation" [ref=f142e368] [cursor=pointer]:
+                      - /url: /documentation/unreal-engine/PythonAPI?application_version=5.3
+      - list [ref=f142e369]:
+        - listitem [ref=f142e370]:
+          - button "Collapse" [ref=f142e371] [cursor=pointer]:
+            - img [ref=f142e373]
+            - generic [ref=f142e376]: Collapse
+    - generic [ref=f142e378]:
+      - text: 
+      - main [ref=f142e381]:
+        - generic [ref=f142e382]:
+          - navigation [ref=f142e385]:
+            - list [ref=f142e386]:
+              - listitem [ref=f142e387]:
+                - img "Epic Games" [ref=f142e389]
+                - link "Developer" [ref=f142e390] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=f142e391]:
+                - text: /
+                - link "Documentation" [ref=f142e392] [cursor=pointer]:
+                  - /url: /documentation/
+              - listitem [ref=f142e393]:
+                - text: /
+                - button "Unreal Engine " [ref=f142e394] [cursor=pointer]:
+                  - generic [ref=f142e395]: Unreal Engine
+                  - generic [ref=f142e396]: 
+                - text:       
+              - listitem [ref=f142e397]:
+                - text: /
+                - link "Unreal Engine 5.3 Documentation" [ref=f142e398] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/unreal-engine-5-3-documentation?application_version=5.3
+              - listitem [ref=f142e399]:
+                - text: /
+                - link "Making Interactive Experiences" [ref=f142e400] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/making-interactive-experiences-and-gameplay-in-unreal-engine?application_version=5.3
+              - listitem [ref=f142e401]:
+                - text: /
+                - link "Artificial Intelligence" [ref=f142e402] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/artificial-intelligence-in-unreal-engine?application_version=5.3
+              - listitem [ref=f142e403]:
+                - text: /
+                - link "Behavior Trees" [ref=f142e404] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-trees-in-unreal-engine?application_version=5.3
+              - listitem [ref=f142e405]:
+                - text: /
+                - generic [ref=f142e406]: Behavior Tree User Guide
+              - listitem [ref=f142e407]:
+                - text: /
+                - generic [ref=f142e408]: Behavior Tree User Guide
+          - heading "Behavior Tree User Guide" [level=1] [ref=f142e409]
+          - paragraph [ref=f142e410]: Describes how to create and edit Behavior Trees and Behavior Tree related assets.
+        - generic [ref=f142e411]:
+          - generic [ref=f142e412]:
+            - img "Behavior Tree User Guide" [ref=f142e414]
+            - text: 
+            - article [ref=f142e415]:
+              - generic [ref=f142e420]:
+                - heading "Creating Behavior Tree Assets" [level=2] [ref=f142e421]
+                - paragraph [ref=f142e422]:
+                  - text: This section illustrates how to create the various
+                  - strong [ref=f142e423]: Behavior Tree
+                  - text: assets within Unreal Engine 5.
+                - heading "Creating a Behavior Tree" [level=3] [ref=f142e424]
+                - paragraph [ref=f142e425]:
+                  - strong [ref=f142e426]: Behavior Trees
+                  - text: are essentially the AI's processor and can make decisions and execute various branches based on the outcome of those decisions.
+                  - strong [ref=f142e427]: Behavior Trees
+                  - text: are created inside the
+                  - strong [ref=f142e428]: Content Drawer
+                  - text: "in the following manner:"
+                - paragraph [ref=f142e429]:
+                  - text: Click the
+                  - strong [ref=f142e430]: +Add
+                  - text: button, then under
+                  - strong [ref=f142e431]: Create Advanced Asset
+                  - text: select
+                  - strong [ref=f142e432]: Artificial Intelligence
+                  - text: and
+                  - strong [ref=f142e433]: Behavior Tree
+                  - text: .
+                - img "Click the Add button then under Create Advanced Asset select Artificial Intelligence and Behavior Tree" [ref=f142e434]
+                - paragraph [ref=f142e435]:
+                  - text: The new
+                  - strong [ref=f142e436]: Behavior Tree
+                  - text: asset will be added to the
+                  - strong [ref=f142e437]: Content Drawer
+                  - text: where you can define its name.
+                - img "The new Behavior Tree asset will be added to the Content Drawer where you can define its name" [ref=f142e438]
+                - paragraph
+                - generic [ref=f142e440]:
+                  - generic [ref=f142e441]: 
+                  - paragraph [ref=f142e443]:
+                    - text: You can also use the right-click context menu and select
+                    - strong [ref=f142e444]: +Add > Artificial Intelligence > Behavior Tree.
+                - heading "Creating a Blackboard" [level=3] [ref=f142e445]
+                - paragraph [ref=f142e446]:
+                  - text: The
+                  - strong [ref=f142e447]: Blackboard
+                  - text: asset can be considered as the "brain" of the AI and stores
+                  - strong [ref=f142e448]: Key
+                  - text: values that the
+                  - strong [ref=f142e449]: Behavior Tree
+                  - text: uses to make its decisions.
+                  - strong [ref=f142e450]: Blackboard
+                  - text: "assets can be created using the following methods:"
+                - paragraph [ref=f142e451]:
+                  - text: Click the
+                  - strong [ref=f142e452]: +Add
+                  - text: button, then under
+                  - strong [ref=f142e453]: Create Advanced Asset
+                  - text: select
+                  - strong [ref=f142e454]: Artificial Intelligence
+                  - text: and
+                  - strong [ref=f142e455]: Blackboard
+                  - text: .
+                - img "Click the Add button, then under Create Advanced Asset select Artificial Intelligence and Blackboard" [ref=f142e456]
+                - paragraph [ref=f142e457]:
+                  - text: The new
+                  - strong [ref=f142e458]: Blackboard
+                  - text: asset will be added to the
+                  - strong [ref=f142e459]: Content Drawer
+                  - text: which you can rename to your desired name.
+                - img "The new Blackboard asset will be added to the Content Drawer which you can rename to your desired name" [ref=f142e460]
+                - paragraph [ref=f142e461]: "Another method in which you can create a Blackboard is inside a Behavior Tree:"
+                - paragraph [ref=f142e462]:
+                  - text: Inside the
+                  - strong [ref=f142e463]: Behavior Tree Editor
+                  - text: from the Toolbar by clicking the
+                  - strong [ref=f142e464]: New Blackboard
+                  - text: button.
+                - img "Inside the Behavior Tree Editor from the Toolbar by clicking the New Blackboard button" [ref=f142e465]
+                - paragraph [ref=f142e466]:
+                  - text: This will also create a new
+                  - strong [ref=f142e467]: Blackboard
+                  - text: asset inside the
+                  - strong [ref=f142e468]: Content Drawer
+                  - text: .
+                - heading "Creating a Behavior Tree Task" [level=3] [ref=f142e469]
+                - paragraph [ref=f142e470]:
+                  - text: A
+                  - strong [ref=f142e471]: Task
+                  - text: is an "action" you want the AI to perform, such as move to a location or rotate to face something.
+                - generic [ref=f142e473]:
+                  - generic [ref=f142e474]: 
+                  - paragraph [ref=f142e476]: If optimization is a concern, you may want to consider switching Blueprint Behavior Tree Tasks to native Behavior Tree Tasks.
+                - paragraph [ref=f142e477]:
+                  - text: In addition to the existing
+                  - strong [ref=f142e478]: Tasks
+                  - text: available, you can create custom
+                  - strong [ref=f142e479]: Tasks
+                  - text: "with your own logic:"
+                - paragraph [ref=f142e480]:
+                  - text: Click the
+                  - strong [ref=f142e481]: New Task
+                  - text: button from the Toolbar inside the
+                  - strong [ref=f142e482]: Behavior Tree Editor
+                  - text: .
+                - img "Click the New Task button from the Toolbar inside the Behavior Tree Editor" [ref=f142e483]
+                - paragraph [ref=f142e484]:
+                  - text: This will open a new
+                  - strong [ref=f142e485]: Blueprint
+                  - text: of the
+                  - strong [ref=f142e486]: BTTask_BlueprintBase
+                  - text: class where you can provide your
+                  - strong [ref=f142e487]: Task
+                  - text: logic.
+                - img "This will open a new Blueprint of the BTTask_BlueprintBase class where you can provide your Task logic" [ref=f142e488]
+                - paragraph [ref=f142e489]:
+                  - text: The
+                  - strong [ref=f142e490]: Task Blueprint
+                  - text: will be created inside the
+                  - strong [ref=f142e491]: Content Drawer
+                  - text: in the same location as your
+                  - strong [ref=f142e492]: Behavior Tree
+                  - text: asset.
+                - generic [ref=f142e494]:
+                  - generic [ref=f142e495]: 
+                  - paragraph [ref=f142e497]:
+                    - text: Whenever you create a new
+                    - strong [ref=f142e498]: Task
+                    - text: from the
+                    - strong [ref=f142e499]: Behavior Tree Editor
+                    - text: ", it's a good practice to go into the"
+                    - strong [ref=f142e500]: Content Drawer
+                    - text: and rename the asset instead of using the default name.
+                - paragraph [ref=f142e501]:
+                  - text: When creating a new
+                  - strong [ref=f142e502]: Task
+                  - text: ", you can use an existing"
+                  - strong [ref=f142e503]: Behavior Tree Task
+                  - text: as the
+                  - strong [ref=f142e504]: Parent Class
+                  - text: to inherit functionality by selecting it from the drop-down menu.
+                - img "You can use an existing Behavior Tree Task as the Parent Class to inherit functionality by selecting it from the drop-down menu" [ref=f142e505]
+                - heading "Creating a Behavior Tree Decorator" [level=3] [ref=f142e506]
+                - paragraph [ref=f142e507]:
+                  - strong [ref=f142e508]: Decorators
+                  - text: (also known as conditionals) attach to nodes inside
+                  - strong [ref=f142e509]: Behavior Trees
+                  - text: and can be used to make decisions on whether a branch (or even a single node) in the tree can be executed. There are several default
+                  - strong [ref=f142e510]: Decorators
+                  - text: that you can use in your
+                  - strong [ref=f142e511]: Behavior Trees
+                  - text: ", however, you can also create custom ones:"
+                - paragraph [ref=f142e512]:
+                  - text: Click the
+                  - strong [ref=f142e513]: New Decorator
+                  - text: button from the Toolbar inside the
+                  - strong [ref=f142e514]: Behavior Tree Editor
+                  - text: .
+                - img "Click the New Decorator button from the Toolbar inside the Behavior Tree Editor" [ref=f142e515]
+                - paragraph [ref=f142e516]:
+                  - text: This will open a new
+                  - strong [ref=f142e517]: BTDecorator_BlueprintBase
+                  - text: class where you can provide your
+                  - strong [ref=f142e518]: Decorator
+                  - text: logic.
+                - img "This will open a new BTDecorator_BlueprintBase class where you can provide your Decorator logic" [ref=f142e519]
+                - paragraph [ref=f142e520]:
+                  - text: The
+                  - strong [ref=f142e521]: Decorator Blueprint
+                  - text: will be created inside the
+                  - strong [ref=f142e522]: Content Drawer
+                  - text: in the same location as your
+                  - strong [ref=f142e523]: Behavior Tree
+                  - text: asset.
+                - generic [ref=f142e525]:
+                  - generic [ref=f142e526]: 
+                  - paragraph [ref=f142e528]:
+                    - text: Whenever you create a new
+                    - strong [ref=f142e529]: Decorator
+                    - text: from the
+                    - strong [ref=f142e530]: Behavior Tree Editor
+                    - text: ", it's a good practice to go into the"
+                    - strong [ref=f142e531]: Content Drawer
+                    - text: and rename the asset instead of using the default name.
+                - paragraph [ref=f142e532]:
+                  - text: When creating a new
+                  - strong [ref=f142e533]: Decorator
+                  - text: ", you can use an existing"
+                  - strong [ref=f142e534]: Behavior Tree Decorator
+                  - text: as the
+                  - strong [ref=f142e535]: Parent Class
+                  - text: to inherit functionality from by selecting it from the drop-down menu.
+                - img "You can use an existing Behavior Tree Decorator as the Parent Class to inherit functionality from by selecting it from the drop-down menu"
+                - heading "Creating a Behavior Tree Service" [level=3] [ref=f142e536]
+                - paragraph [ref=f142e537]:
+                  - strong [ref=f142e538]: Services
+                  - text: attach to
+                  - strong [ref=f142e539]: Composite
+                  - text: nodes and will execute at their defined frequency as long as their branch is being executed. These are often used to make checks and to update the
+                  - strong [ref=f142e540]: Blackboard
+                  - text: and take the place of traditional Parallel nodes in other Behavior Tree systems. While there are a few
+                  - strong [ref=f142e541]: Services
+                  - text: available by default, you will more than likely want to create your own custom
+                  - strong [ref=f142e542]: Services
+                  - text: that assist in determining how your
+                  - strong [ref=f142e543]: Behavior Tree
+                  - text: is executed.
+                - generic [ref=f142e545]:
+                  - generic [ref=f142e546]: 
+                  - paragraph [ref=f142e548]: If optimization is a concern, you may want to consider switching Blueprint Behavior Tree Services to native Behavior Tree Services.
+                - paragraph [ref=f142e549]:
+                  - text: Click the
+                  - strong [ref=f142e550]: New Service
+                  - text: button from the Toolbar inside the
+                  - strong [ref=f142e551]: Behavior Tree Editor
+                  - text: .
+                - img "Click the New Service button from the Toolbar inside the Behavior Tree Editor"
+                - paragraph [ref=f142e552]:
+                  - text: This will open a new
+                  - strong [ref=f142e553]: BTService_BlueprintBase
+                  - text: class where you can provide your
+                  - strong [ref=f142e554]: Service
+                  - text: logic.
+                - img "This will open a new BTService_BlueprintBase class where you can provide your Service logic"
+                - paragraph [ref=f142e555]:
+                  - text: The
+                  - strong [ref=f142e556]: Service
+                  - strong [ref=f142e557]: Blueprint
+                  - text: will be created inside the
+                  - strong [ref=f142e558]: Content Drawer
+                  - text: in the same location as your
+                  - strong [ref=f142e559]: Behavior Tree
+                  - text: asset.
+                - generic [ref=f142e561]:
+                  - generic [ref=f142e562]: 
+                  - paragraph [ref=f142e564]:
+                    - text: Whenever you create a new
+                    - strong [ref=f142e565]: Service
+                    - text: from the
+                    - strong [ref=f142e566]: Behavior Tree Editor
+                    - text: ", it's a good practice to go into the"
+                    - strong [ref=f142e567]: Content Drawer
+                    - text: and rename the asset instead of using the default name.
+                - paragraph [ref=f142e568]:
+                  - text: When creating a new
+                  - strong [ref=f142e569]: Service
+                  - text: ", you can use an existing"
+                  - strong [ref=f142e570]: Behavior Tree Service
+                  - text: as the
+                  - strong [ref=f142e571]: Parent Class
+                  - text: to inherit functionality by selecting it from the drop-down menu.
+                - img "You can use an existing Behavior Tree Service as the Parent Class to inherit functionality from by selecting it from the drop-down menu"
+                - heading "Editing a Blackboard" [level=2] [ref=f142e572]
+                - paragraph [ref=f142e573]:
+                  - text: Usually, you'll create a
+                  - strong [ref=f142e574]: Blackboard
+                  - text: before your
+                  - strong [ref=f142e575]: Behavior Tree
+                  - text: as the
+                  - strong [ref=f142e576]: Behavior Tree
+                  - text: references the
+                  - strong [ref=f142e577]: Blackboard
+                  - text: in its decision-making process (you can always add
+                  - strong [ref=f142e578]: Keys
+                  - text: later as you need them). You can edit a
+                  - strong [ref=f142e579]: Blackboard
+                  - text: asset by double-clicking on the asset in the
+                  - strong [ref=f142e580]: Content Drawer
+                  - text: to open it up in the
+                  - strong [ref=f142e581]: Blackboard Editor
+                  - text: .
+                - img "You can edit a Blackboard asset by double-clicking on the asset in the Content Drawer to open it up in the Blackboard Editor"
+                - paragraph [ref=f142e582]:
+                  - text: If you are editing a
+                  - strong [ref=f142e583]: Behavior Tree
+                  - text: that has an assigned
+                  - strong [ref=f142e584]: Blackboard
+                  - text: ", you can switch to the"
+                  - strong [ref=f142e585]: Blackboard
+                  - text: by clicking the tab in the upper-right corner of the window.
+                - img "You can switch to the Blackboard by clicking the tab in the upper-right corner of the window"
+                - paragraph [ref=f142e586]:
+                  - text: In the
+                  - strong [ref=f142e587]: Blackboard Details
+                  - text: panel, you can assign a different
+                  - strong [ref=f142e588]: Blackboard
+                  - text: as the
+                  - strong [ref=f142e589]: Parent
+                  - text: ", inheriting"
+                  - strong [ref=f142e590]: Keys
+                  - text: from it.
+                - img "In the Blackboard Details panel you can assign a different Blackboard as the Parent, inheriting Keys from it"
+                - paragraph [ref=f142e591]:
+                  - text: You can add
+                  - strong [ref=f142e592]: Keys
+                  - text: by clicking the
+                  - strong [ref=f142e593]: New Key
+                  - text: button in the
+                  - strong [ref=f142e594]: Blackboard
+                  - text: window.
+                - img "You can add Keys by clicking the New Key button in the Blackboard window"
+                - generic [ref=f142e596]:
+                  - generic [ref=f142e597]: 
+                  - paragraph [ref=f142e599]:
+                    - text: Please see
+                    - strong [ref=f142e600]: Blueprint Variables
+                    - text: for a breakdown of variable types that can be stored as
+                    - strong [ref=f142e601]: Keys
+                    - text: .
+                - paragraph [ref=f142e602]:
+                  - text: When a
+                  - strong [ref=f142e603]: Key
+                  - text: has been created, you can define properties associated with the
+                  - strong [ref=f142e604]: Key
+                  - text: in the
+                  - strong [ref=f142e605]: Blackboard Details
+                  - text: panel.
+                - img "You can define properties associated with the Key in the Blackboard Details panel"
+                - table [ref=f142e607]:
+                  - rowgroup [ref=f142e608]:
+                    - row "Property Description" [ref=f142e609]:
+                      - columnheader "Property" [ref=f142e610]
+                      - columnheader "Description" [ref=f142e611]
+                  - rowgroup [ref=f142e612]:
+                    - row "Entry Name The user defined name of the Key." [ref=f142e613]:
+                      - cell "Entry Name" [ref=f142e614]:
+                        - strong [ref=f142e615]: Entry Name
+                      - cell "The user defined name of the Key." [ref=f142e616]
+                    - row "Entry Description Optional description to explain what this Blackboard Key does." [ref=f142e617]:
+                      - cell "Entry Description" [ref=f142e618]:
+                        - strong [ref=f142e619]: Entry Description
+                      - cell "Optional description to explain what this Blackboard Key does." [ref=f142e620]
+                    - row "Key Type Defined when you create the Key, however ,Object and Class Keys provide the additional option of defining a specific Class. This enables you to store any type of data that inherits from Object (such as Actors) in them." [ref=f142e621]:
+                      - cell "Key Type" [ref=f142e622]:
+                        - strong [ref=f142e623]: Key Type
+                      - cell "Defined when you create the Key, however ,Object and Class Keys provide the additional option of defining a specific Class. This enables you to store any type of data that inherits from Object (such as Actors) in them." [ref=f142e624]:
+                        - paragraph [ref=f142e626]:
+                          - text: Defined when you create the Key, however ,
+                          - strong [ref=f142e627]: Object
+                          - text: and
+                          - strong [ref=f142e628]: Class
+                          - text: Keys provide the additional option of defining a specific
+                          - strong [ref=f142e629]: Class
+                          - text: . This enables you to store any type of data that inherits from Object (such as Actors) in them.
+                    - row "Instance Synced This is used to determine if the Key will be synchronized across all instances of the Blackboard." [ref=f142e630]:
+                      - cell "Instance Synced" [ref=f142e631]:
+                        - strong [ref=f142e632]: Instance Synced
+                      - cell "This is used to determine if the Key will be synchronized across all instances of the Blackboard." [ref=f142e633]
+                - paragraph [ref=f142e634]:
+                  - text: To
+                  - strong [ref=f142e635]: Rename
+                  - text: or
+                  - strong [ref=f142e636]: Delete
+                  - text: Key, right-click a
+                  - strong [ref=f142e637]: Key
+                  - text: to bring up the context menu, or press
+                  - strong [ref=f142e638]: F2
+                  - text: or
+                  - strong [ref=f142e639]: Delete
+                  - text: on a
+                  - strong [ref=f142e640]: Key
+                  - text: .
+                - img "To Rename or Delete Key right-click a Key to bring up the context menu"
+                - paragraph [ref=f142e641]:
+                  - text: For
+                  - strong [ref=f142e642]: Class
+                  - text: and
+                  - strong [ref=f142e643]: Object
+                  - text: Keys, you can click the little triangle beside
+                  - strong [ref=f142e644]: Key Type
+                  - text: which enables you to define the Base Actor Class to use.
+                - img "For Class and Object Keys you can click the little triangle beside Key Type"
+                - paragraph [ref=f142e645]:
+                  - text: For
+                  - strong [ref=f142e646]: Enum
+                  - text: Keys, there are additional properties that can be set by clicking the little triangle beside
+                  - strong [ref=f142e647]: Key Type
+                  - text: .
+                - img "For Enum Keys there are additional properties that can be set by clicking the little triangle beside Key Type"
+                - table [ref=f142e649]:
+                  - rowgroup [ref=f142e650]:
+                    - row "Property Description" [ref=f142e651]:
+                      - columnheader "Property" [ref=f142e652]
+                      - columnheader "Description" [ref=f142e653]
+                  - rowgroup [ref=f142e654]:
+                    - row "Enum Type The assigned Enumeration to use." [ref=f142e655]:
+                      - cell "Enum Type" [ref=f142e656]:
+                        - strong [ref=f142e657]: Enum Type
+                      - cell "The assigned Enumeration to use." [ref=f142e658]
+                    - row "Enum Name The name of the enum defined in C++ code will take priority over the asset assigned under Enum Type." [ref=f142e659]:
+                      - cell "Enum Name" [ref=f142e660]:
+                        - strong [ref=f142e661]: Enum Name
+                      - cell "The name of the enum defined in C++ code will take priority over the asset assigned under Enum Type." [ref=f142e662]:
+                        - text: The name of the enum defined in C++ code will take priority over the asset assigned under
+                        - strong [ref=f142e663]: Enum Type
+                        - text: .
+                    - row "Is Enum Name Valid Set when Enum Name override is valid and active." [ref=f142e664]:
+                      - cell "Is Enum Name Valid" [ref=f142e665]:
+                        - strong [ref=f142e666]: Is Enum Name Valid
+                      - cell "Set when Enum Name override is valid and active." [ref=f142e667]:
+                        - text: Set when
+                        - strong [ref=f142e668]: Enum Name
+                        - text: override is valid and active.
+                - heading "Editing a Behavior Tree" [level=2] [ref=f142e669]
+                - paragraph [ref=f142e670]:
+                  - text: To edit a
+                  - strong [ref=f142e671]: Behavior Tree
+                  - text: ", you will need to open a"
+                  - strong [ref=f142e672]: Behavior Tree
+                  - text: "asset:"
+                - paragraph [ref=f142e673]:
+                  - text: Double-click a
+                  - strong [ref=f142e674]: Behavior Tree
+                  - text: asset in the
+                  - strong [ref=f142e675]: Content Drawer
+                  - text: to enter
+                  - strong [ref=f142e676]: Behavior Tree Mode
+                  - text: .
+                - img "Double-click a Behavior Tree asset in the Content Drawer to enter Behavior Tree Mode"
+                - paragraph [ref=f142e677]:
+                  - text: Or by switching over to
+                  - strong [ref=f142e678]: Behavior Tree Mode
+                  - text: ":"
+                - paragraph [ref=f142e679]:
+                  - text: Click the
+                  - strong [ref=f142e680]: Behavior Tree
+                  - text: tab in the upper-right corner of the
+                  - strong [ref=f142e681]: Behavior Tree Editor
+                  - text: .
+                - img "Click the Behavior Tree tab in the upper-right corner of the Behavior Tree Editor"
+                - paragraph [ref=f142e682]:
+                  - text: To switch over to
+                  - strong [ref=f142e683]: Behavior Tree Mode
+                  - text: ", you will need to have a currently opened"
+                  - strong [ref=f142e684]: Behavior Tree
+                  - text: asset and are switching from
+                  - strong [ref=f142e685]: Blackboard Mode
+                  - text: .
+                - heading "Assigning a Blackboard" [level=3] [ref=f142e686]
+                - paragraph [ref=f142e687]:
+                  - text: In order for the
+                  - strong [ref=f142e688]: Behavior Tree
+                  - text: to access a
+                  - strong [ref=f142e689]: Blackboard
+                  - text: ", you must assign a"
+                  - strong [ref=f142e690]: Blackboard
+                  - text: "asset:"
+                - paragraph [ref=f142e691]:
+                  - text: Select the
+                  - strong [ref=f142e692]: Root
+                  - text: node in the graph (or deselect all nodes), then in the
+                  - strong [ref=f142e693]: Details
+                  - text: panel, set your desired
+                  - strong [ref=f142e694]: Blackboard Asset
+                  - text: .
+                - img "In the Details panel set your desired Blackboard Asset"
+                - paragraph [ref=f142e695]:
+                  - text: After assigning a
+                  - strong [ref=f142e696]: Blackboard
+                  - text: ", the"
+                  - strong [ref=f142e697]: Blackboard
+                  - text: panel will update with its associated
+                  - strong [ref=f142e698]: Blackboard Keys
+                  - text: .
+                - img "The Blackboard panel will update with its associated Blackboard Keys"
+                - heading "Working with Nodes" [level=3] [ref=f142e699]
+                - paragraph [ref=f142e700]:
+                  - text: To add
+                  - strong [ref=f142e701]: Composites
+                  - text: or
+                  - strong [ref=f142e702]: Tasks
+                  - text: to the graph of your
+                  - strong [ref=f142e703]: Behavior Tree
+                  - text: ", right-click the graph to bring up the context menu and select your desired node."
+                - img "Right-click the graph to bring up the context menu and select your desired node"
+                - generic [ref=f142e705]:
+                  - generic [ref=f142e706]: 
+                  - paragraph [ref=f142e708]:
+                    - text: Only
+                    - strong [ref=f142e709]: Composite
+                    - text: nodes can be connected to the
+                    - strong [ref=f142e710]: Root
+                    - text: node of a
+                    - strong [ref=f142e711]: Behavior Tree
+                    - text: .
+                - paragraph [ref=f142e712]: You can also drag off a node and select a node to add from the context menu.
+                - img "You can also drag off a node and select a node to add from the context menu"
+                - paragraph [ref=f142e713]:
+                  - text: To remove nodes from the graph, select a node (or nodes) and press
+                  - strong [ref=f142e714]: Delete
+                  - text: (or right-click and select
+                  - strong [ref=f142e715]: Delete
+                  - text: ).
+                - img "To remove nodes from the graph select a node or nodes and press Delete or right-click and select Delete"
+                - paragraph [ref=f142e716]: To connect nodes together, left-click and drag from the output pin, to input pin on another node.
+                - img "To connect nodes together left-click and drag from the output pin, to an input pin on another node"
+                - generic [ref=f142e718]:
+                  - generic [ref=f142e719]: 
+                  - paragraph [ref=f142e721]:
+                    - text: Connecting nodes in
+                    - strong [ref=f142e722]: Behavior Trees
+                    - text: only work by connecting an output to an input (you cannot connect from an input to an output).
+                - paragraph [ref=f142e723]:
+                  - text: To disconnect nodes, right-click a node (or define a selection of nodes) and select your desired
+                  - strong [ref=f142e724]: Break All Pin Link(s)
+                  - text: method.
+                - img "To disconnect nodes right-click a node or define a selection of nodes and select your desired Break Link(s) method"
+                - paragraph [ref=f142e725]:
+                  - strong [ref=f142e726]: Break All Pin Link(s)
+                  - text: can be used to break a single link or multiple nodes that are pinned.
+                  - strong [ref=f142e727]: Break link to
+                  - text: ... will break the connection to the specified node.
+                - generic [ref=f142e729]:
+                  - generic [ref=f142e730]: 
+                  - paragraph [ref=f142e732]: You can also press alt + left-click on an input or output pin to break the connection.
+                - paragraph [ref=f142e733]:
+                  - text: To edit a node, select a node, then in the
+                  - strong [ref=f142e734]: Details
+                  - text: panel, you can adjust its properties.
+                - img "Select a node and in the Details panel you can adjust its properties"
+                - paragraph [ref=f142e735]: You can also copy and paste selected nodes and their settings. To do this, select a node (or drag a selection box around a selection of nodes) then press ctrl+c (to copy) and ctrl+v (to paste).
+                - img "To copy or paste a node select a node then press ctrl+c to copy and ctrl+v to paste"
+                - heading "Node Decorators and Services" [level=3] [ref=f142e736]
+                - paragraph [ref=f142e737]:
+                  - text: You can add
+                  - strong [ref=f142e738]: Decorators
+                  - text: or
+                  - strong [ref=f142e739]: Services
+                  - text: to a node in your
+                  - strong [ref=f142e740]: Behavior Tree
+                  - text: graphs from the node context menu.
+                - paragraph [ref=f142e741]:
+                  - text: To do this, right-click a
+                  - strong [ref=f142e742]: Composite
+                  - text: or
+                  - strong [ref=f142e743]: Task
+                  - text: node, then select the
+                  - strong [ref=f142e744]: Decorator
+                  - text: or
+                  - strong [ref=f142e745]: Service
+                  - text: you want to add to the node.
+                - img "To do this right-click a Composite or Task node then select the Decorator or Service you want to add to the node"
+                - paragraph [ref=f142e746]:
+                  - text: To remove a
+                  - strong [ref=f142e747]: Decorator
+                  - text: or
+                  - strong [ref=f142e748]: Service
+                  - text: from a node, select a
+                  - strong [ref=f142e749]: Decorator
+                  - text: or
+                  - strong [ref=f142e750]: Service
+                  - text: then press the
+                  - strong [ref=f142e751]: Delete
+                  - text: key or use the right-click context menu.
+                - img "To remove a Decorator or Service from a node select a Decorator or Service then press the Delete key or use the right-click context menu"
+                - paragraph [ref=f142e752]:
+                  - text: To edit a
+                  - strong [ref=f142e753]: Decorator
+                  - text: or
+                  - strong [ref=f142e754]: Service
+                  - text: attached to the node, first, select the
+                  - strong [ref=f142e755]: Decorator
+                  - text: or
+                  - strong [ref=f142e756]: Service
+                  - text: ", then you can adjust your desired properties in the"
+                  - strong [ref=f142e757]: Details
+                  - text: panel.
+                - img "To edit a Decorator or Service attached to the node first select the Decorator or Service then you can adjust your desired properties in the Details panel"
+                - paragraph [ref=f142e758]:
+                  - strong [ref=f142e759]: Composite
+                  - strong [ref=f142e760]: Decorators
+                  - text: that are added to a node, can be opened up for editing.
+                - paragraph [ref=f142e761]:
+                  - text: To open a Composite Decorator, double-click a
+                  - strong [ref=f142e762]: Composite Decorator
+                  - text: to open a graph that returns a Boolean (true or false) value.
+                - figure [ref=f142e764]:
+                  - link "undefined" [ref=f142e765] [cursor=pointer]:
+                    - /url: https://d1iv7db44yhgxn.cloudfront.net/documentation/images/1848d83d-d75f-4bd5-817b-fd784ccae416/behavior-tree-user-guide-composites.png
+                    - img "undefined" [ref=f142e767]
+                - paragraph [ref=f142e768]: Click image for full view
+                - paragraph [ref=f142e769]:
+                  - text: Any
+                  - strong [ref=f142e770]: Task
+                  - text: ","
+                  - strong [ref=f142e771]: Decorator
+                  - text: ", or"
+                  - strong [ref=f142e772]: Service
+                  - text: created from the toolbar, can be opened up in
+                  - strong [ref=f142e773]: Blueprint
+                  - text: for editing.
+                - paragraph [ref=f142e774]:
+                  - text: After creating a custom
+                  - strong [ref=f142e775]: Task
+                  - text: ","
+                  - strong [ref=f142e776]: Decorator
+                  - text: ", or"
+                  - strong [ref=f142e777]: Service
+                  - text: "and adding it to your graph, double-click it to open it for editing:"
+                - img "After creating a custom Task Decorator or Service and adding it to your graph double-click it to open it for editing"
+                - paragraph [ref=f142e778]:
+                  - text: You can also open any custom
+                  - strong [ref=f142e779]: Task
+                  - text: ","
+                  - strong [ref=f142e780]: Decorator
+                  - text: ", or"
+                  - strong [ref=f142e781]: Service
+                  - text: in the
+                  - strong [ref=f142e782]: Content Drawer
+                  - text: .
+                - paragraph [ref=f142e783]:
+                  - text: Double-click a custom
+                  - strong [ref=f142e784]: Task
+                  - text: ","
+                  - strong [ref=f142e785]: Decorator
+                  - text: ", or"
+                  - strong [ref=f142e786]: Service
+                  - text: in the
+                  - strong [ref=f142e787]: Content Drawer
+                  - text: to open it in
+                  - strong [ref=f142e788]: Blueprint
+                  - text: for editing.
+                - img "Double-click a custom Task Decorator or Service in the Content Drawer to open it in Blueprint for editing"
+                - paragraph [ref=f142e789]:
+                  - text: You can also copy
+                  - strong [ref=f142e790]: Decorators
+                  - text: or
+                  - strong [ref=f142e791]: Services
+                  - text: and paste them onto other nodes.
+                - paragraph [ref=f142e792]: Select a Decorator or Service and press ctrl+c (to copy) and ctrl+v (to paste) onto another node.
+                - img "Select a Decorator or Service and press ctrl+c to copy and ctrl+v to paste onto another node"
+            - list [ref=f142e794]:
+              - listitem [ref=f142e795]:
+                - link "ai" [ref=f142e796] [cursor=pointer]:
+                  - /url: https://dev.epicgames.com/community/search?query=ai
+              - listitem [ref=f142e797]:
+                - link "behavior trees" [ref=f142e798] [cursor=pointer]:
+                  - /url: https://dev.epicgames.com/community/search?query=behavior%20trees
+              - listitem [ref=f142e799]:
+                - link "behavior tree essentials" [ref=f142e800] [cursor=pointer]:
+                  - /url: https://dev.epicgames.com/community/search?query=behavior%20tree%20essentials
+            - generic [ref=f142e801]:
+              - separator [ref=f142e802]
+              - paragraph [ref=f142e803]:
+                - generic [ref=f142e804]: 
+                - text: Ask questions and help your peers
+                - link "Developer Forums" [ref=f142e805] [cursor=pointer]:
+                  - /url: https://forums.unrealengine.com/categories?tag=unreal-engine
+              - paragraph [ref=f142e806]:
+                - generic [ref=f142e807]: 
+                - text: Write your own tutorials or read those from others
+                - link "Learning Library" [ref=f142e808] [cursor=pointer]:
+                  - /url: https://dev.epicgames.com/community/unreal-engine/learning
+          - generic [ref=f142e813]:
+            - generic [ref=f142e815]: On this page
+            - list [ref=f142e816]:
+              - listitem [ref=f142e817]:
+                - link "Creating Behavior Tree Assets" [ref=f142e818] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#creatingbehaviortreeassets
+              - listitem [ref=f142e819]:
+                - link "Creating a Behavior Tree" [ref=f142e820] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#creatingabehaviortree
+              - listitem [ref=f142e821]:
+                - link "Creating a Blackboard" [ref=f142e822] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#creatingablackboard
+              - listitem [ref=f142e823]:
+                - link "Creating a Behavior Tree Task" [ref=f142e824] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#creatingabehaviortreetask
+              - listitem [ref=f142e825]:
+                - link "Creating a Behavior Tree Decorator" [ref=f142e826] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#creatingabehaviortreedecorator
+              - listitem [ref=f142e827]:
+                - link "Creating a Behavior Tree Service" [ref=f142e828] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#creatingabehaviortreeservice
+              - listitem [ref=f142e829]:
+                - link "Editing a Blackboard" [ref=f142e830] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#editingablackboard
+              - listitem [ref=f142e831]:
+                - link "Editing a Behavior Tree" [ref=f142e832] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#editingabehaviortree
+              - listitem [ref=f142e833]:
+                - link "Assigning a Blackboard" [ref=f142e834] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#assigningablackboard
+              - listitem [ref=f142e835]:
+                - link "Working with Nodes" [ref=f142e836] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#workingwithnodes
+              - listitem [ref=f142e837]:
+                - link "Node Decorators and Services" [ref=f142e838] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/behavior-tree-in-unreal-engine---user-guide?application_version=5.3#nodedecoratorsandservices
+  - contentinfo [ref=f142e841]:
+    - generic [ref=f142e842]:
+      - img "Unreal Engine Logo" [ref=f142e845]
+      - list [ref=f142e848]:
+        - listitem [ref=f142e849]:
+          - link "Twitter logo" [ref=f142e850] [cursor=pointer]:
+            - /url: https://twitter.com/unrealengine
+            - img [ref=f142e852]
+        - listitem [ref=f142e854]:
+          - link "Facebook logo" [ref=f142e855] [cursor=pointer]:
+            - /url: https://www.facebook.com/UnrealEngine
+            - img [ref=f142e857]
+        - listitem [ref=f142e859]:
+          - link "Twitch logo" [ref=f142e860] [cursor=pointer]:
+            - /url: http://www.twitch.tv/unrealengine
+            - img [ref=f142e862]
+        - listitem [ref=f142e864]:
+          - link "Instagram logo" [ref=f142e865] [cursor=pointer]:
+            - /url: http://instagram.com/UnrealEngine
+            - img [ref=f142e867]
+        - listitem [ref=f142e869]:
+          - link "YouTube logo" [ref=f142e870] [cursor=pointer]:
+            - /url: http://www.youtube.com/unrealengine
+            - img [ref=f142e872]
+        - listitem [ref=f142e874]:
+          - link "RSS logo" [ref=f142e875] [cursor=pointer]:
+            - /url: https://www.unrealengine.com/rss
+            - img [ref=f142e877]
+    - generic [ref=f142e879]:
+      - separator [ref=f142e880]
+      - generic [ref=f142e881]:
+        - generic [ref=f142e883]:
+          - heading "Games" [level=3] [ref=f142e884]
+          - list [ref=f142e885]:
+            - listitem [ref=f142e886]:
+              - link "Fortnite" [ref=f142e888] [cursor=pointer]:
+                - /url: https://www.fortnite.com/
+                - generic: Fortnite
+            - listitem [ref=f142e889]:
+              - link "Fall Guys" [ref=f142e891] [cursor=pointer]:
+                - /url: https://www.fallguys.com/
+                - generic: Fall Guys
+            - listitem [ref=f142e892]:
+              - link "Rocket League" [ref=f142e894] [cursor=pointer]:
+                - /url: https://www.rocketleague.com/
+                - generic: Rocket League
+            - listitem [ref=f142e895]:
+              - link "Unreal Tournament" [ref=f142e897] [cursor=pointer]:
+                - /url: https://www.epicgames.com/unrealtournament/
+                - generic: Unreal Tournament
+            - listitem [ref=f142e898]:
+              - link "Infinity Blade" [ref=f142e900] [cursor=pointer]:
+                - /url: https://www.epicgames.com/infinityblade/home/
+                - generic: Infinity Blade
+            - listitem [ref=f142e901]:
+              - link "Shadow Complex" [ref=f142e903] [cursor=pointer]:
+                - /url: https://store.epicgames.com/p/shadow-complex/
+                - generic: Shadow Complex
+            - listitem [ref=f142e904]:
+              - link "Robo Recall" [ref=f142e906] [cursor=pointer]:
+                - /url: https://www.epicgames.com/roborecall
+                - generic: Robo Recall
+        - generic [ref=f142e908]:
+          - heading "Marketplaces" [level=3] [ref=f142e909]
+          - list [ref=f142e910]:
+            - listitem [ref=f142e911]:
+              - link "Epic Games Store" [ref=f142e913] [cursor=pointer]:
+                - /url: https://store.epicgames.com/
+                - generic: Epic Games Store
+            - listitem [ref=f142e914]:
+              - link "Fab" [ref=f142e916] [cursor=pointer]:
+                - /url: https://www.fab.com/
+                - generic: Fab
+            - listitem [ref=f142e917]:
+              - link "Quixel Megascans on Fab" [ref=f142e919] [cursor=pointer]:
+                - /url: https://www.fab.com/sellers/Quixel%20Megascans
+                - generic: Quixel Megascans on Fab
+            - listitem [ref=f142e920]:
+              - link "Quixel Megaplants on Fab" [ref=f142e922] [cursor=pointer]:
+                - /url: https://www.fab.com/sellers/Quixel%20Megaplants
+                - generic: Quixel Megaplants on Fab
+            - listitem [ref=f142e923]:
+              - link "Sketchfab" [ref=f142e925] [cursor=pointer]:
+                - /url: https://sketchfab.com/store
+                - generic: Sketchfab
+            - listitem [ref=f142e926]:
+              - link "ArtStation" [ref=f142e928] [cursor=pointer]:
+                - /url: https://www.artstation.com/
+                - generic: ArtStation
+            - listitem [ref=f142e929]:
+              - link "Store Refund Policy" [ref=f142e931] [cursor=pointer]:
+                - /url: https://legal.epicgames.com/store/refund-policy
+                - generic: Store Refund Policy
+            - listitem [ref=f142e932]:
+              - link "Store EULA" [ref=f142e934] [cursor=pointer]:
+                - /url: https://legal.epicgames.com/store/eula
+                - generic: Store EULA
+        - generic [ref=f142e936]:
+          - heading "Tools" [level=3] [ref=f142e937]
+          - list [ref=f142e938]:
+            - listitem [ref=f142e939]:
+              - link "Unreal Engine" [ref=f142e941] [cursor=pointer]:
+                - /url: https://www.unrealengine.com/
+                - generic: Unreal Engine
+            - listitem [ref=f142e942]:
+              - link "UEFN" [ref=f142e944] [cursor=pointer]:
+                - /url: https://store.epicgames.com/p/fortnite--uefn
+                - generic: UEFN
+            - listitem [ref=f142e945]:
+              - link "MetaHuman" [ref=f142e947] [cursor=pointer]:
+                - /url: https://www.metahuman.com/
+                - generic: MetaHuman
+            - listitem [ref=f142e948]:
+              - link "Twinmotion" [ref=f142e950] [cursor=pointer]:
+                - /url: https://www.twinmotion.com/
+                - generic: Twinmotion
+            - listitem [ref=f142e951]:
+              - link "RealityScan" [ref=f142e953] [cursor=pointer]:
+                - /url: https://www.realityscan.com/
+                - generic: RealityScan
+            - listitem [ref=f142e954]:
+              - link "RAD Game Tools" [ref=f142e956] [cursor=pointer]:
+                - /url: https://www.radgametools.com/
+                - generic: RAD Game Tools
+        - generic [ref=f142e958]:
+          - heading "Online Services" [level=3] [ref=f142e959]
+          - list [ref=f142e960]:
+            - listitem [ref=f142e961]:
+              - link "Epic Online Services" [ref=f142e963] [cursor=pointer]:
+                - /url: https://onlineservices.epicgames.com/
+                - generic: Epic Online Services
+            - listitem [ref=f142e964]:
+              - link "Kids Web Services" [ref=f142e966] [cursor=pointer]:
+                - /url: https://www.kidswebservices.com/
+                - generic: Kids Web Services
+            - listitem [ref=f142e967]:
+              - link "Services Agreement" [ref=f142e969] [cursor=pointer]:
+                - /url: https://onlineservices.epicgames.com/services/terms/agreements
+                - generic: Services Agreement
+            - listitem [ref=f142e970]:
+              - link "Acceptable Use Policy" [ref=f142e972] [cursor=pointer]:
+                - /url: https://onlineservices.epicgames.com/services/terms/aup
+                - generic: Acceptable Use Policy
+            - listitem [ref=f142e973]:
+              - link "Trust Statement" [ref=f142e975] [cursor=pointer]:
+                - /url: https://onlineservices.epicgames.com/services/terms/trust-statement
+                - generic: Trust Statement
+            - listitem [ref=f142e976]:
+              - link "Subprocessor List" [ref=f142e978] [cursor=pointer]:
+                - /url: https://onlineservices.epicgames.com/services/terms/subprocessors
+                - generic: Subprocessor List
+        - generic [ref=f142e980]:
+          - heading "Company" [level=3] [ref=f142e981]
+          - list [ref=f142e982]:
+            - listitem [ref=f142e983]:
+              - link "About" [ref=f142e985] [cursor=pointer]:
+                - /url: https://www.epicgames.com/site/about
+                - generic: About
+            - listitem [ref=f142e986]:
+              - link "Newsroom" [ref=f142e988] [cursor=pointer]:
+                - /url: https://www.epicgames.com/site/news
+                - generic: Newsroom
+            - listitem [ref=f142e989]:
+              - link "Careers" [ref=f142e991] [cursor=pointer]:
+                - /url: https://www.epicgames.com/site/careers/jobs
+                - generic: Careers
+            - listitem [ref=f142e992]:
+              - link "Students" [ref=f142e994] [cursor=pointer]:
+                - /url: https://www.epicgames.com/site/earlycareers
+                - generic: Students
+            - listitem [ref=f142e995]:
+              - link "UX Research" [ref=f142e997] [cursor=pointer]:
+                - /url: https://www.epicgames.com/site/ux
+                - generic: UX Research
+        - generic [ref=f142e999]:
+          - heading "Resources" [level=3] [ref=f142e1000]
+          - list [ref=f142e1001]:
+            - listitem [ref=f142e1002]:
+              - link "Dev Community" [ref=f142e1004] [cursor=pointer]:
+                - /url: https://dev.epicgames.com/community/
+                - generic: Dev Community
+            - listitem [ref=f142e1005]:
+              - link "MegaGrants" [ref=f142e1007] [cursor=pointer]:
+                - /url: https://www.unrealengine.com/megagrants
+                - generic: MegaGrants
+            - listitem [ref=f142e1008]:
+              - link "Support-A-Creator" [ref=f142e1010] [cursor=pointer]:
+                - /url: https://sac.epicgames.com/overview
+                - generic: Support-A-Creator
+            - listitem [ref=f142e1011]:
+              - link "Creator Agreement" [ref=f142e1013] [cursor=pointer]:
+                - /url: https://legal.epicgames.com/fortnite/eula/sac
+                - generic: Creator Agreement
+            - listitem [ref=f142e1014]:
+              - link "Distribute on Epic Games" [ref=f142e1016] [cursor=pointer]:
+                - /url: https://store.epicgames.com/distribution
+                - generic: Distribute on Epic Games
+            - listitem [ref=f142e1017]:
+              - link "Unreal Engine Branding Guidelines" [ref=f142e1019] [cursor=pointer]:
+                - /url: https://www.unrealengine.com/branding
+                - generic: Unreal Engine Branding Guidelines
+            - listitem [ref=f142e1020]:
+              - link "Fan Art Policy" [ref=f142e1022] [cursor=pointer]:
+                - /url: https://legal.epicgames.com/epicgames/fan-art-policy
+                - generic: Fan Art Policy
+            - listitem [ref=f142e1023]:
+              - link "Community Rules" [ref=f142e1025] [cursor=pointer]:
+                - /url: https://legal.epicgames.com/epicgames/community-rules
+                - generic: Community Rules
+            - listitem [ref=f142e1026]:
+              - link "EU Digital Services Act Inquiries" [ref=f142e1028] [cursor=pointer]:
+                - /url: https://www.epicgames.com/help/contact-us?source=external
+                - generic: EU Digital Services Act Inquiries
+            - listitem [ref=f142e1029]:
+              - link "Epic Pro Support" [ref=f142e1031] [cursor=pointer]:
+                - /url: https://udn.unrealengine.com/
+                - generic: Epic Pro Support
+      - separator [ref=f142e1032]
+    - generic [ref=f142e1033]:
+      - generic [ref=f142e1034]:
+        - generic [ref=f142e1036]: © 2026 Epic Games, Inc. All rights reserved. Unreal and its logo are Epic’s trademarks or registered trademarks in the US and elsewhere.
+        - list [ref=f142e1037]:
+          - listitem [ref=f142e1038]:
+            - link "Terms of service" [ref=f142e1040] [cursor=pointer]:
+              - /url: https://legal.epicgames.com/epicgames/tos
+              - generic: Terms of service
+          - listitem [ref=f142e1041]:
+            - link "Privacy policy" [ref=f142e1043] [cursor=pointer]:
+              - /url: https://legal.epicgames.com/epicgames/privacy-policy
+              - generic: Privacy policy
+          - listitem [ref=f142e1044]:
+            - link "Safety & security" [ref=f142e1046] [cursor=pointer]:
+              - /url: https://safety.epicgames.com/?lang=en-US
+              - generic: Safety & security
+      - button "Back to top" [ref=f142e1047] [cursor=pointer]:
+        - generic: Back to top
+        - generic:
+          - img

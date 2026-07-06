@@ -1,0 +1,168 @@
+- generic [active] [ref=f857e1]:
+  - banner [ref=f857e2]:
+    - generic [ref=f857e3]:
+      - generic [ref=f857e4]:
+        - list [ref=f857e5]:
+          - listitem [ref=f857e6]:
+            - button "Explore" [ref=f857e7] [cursor=pointer]:
+              - generic [ref=f857e8]: Explore
+              - img [ref=f857e9]
+        - search [ref=f857e15]:
+          - generic [ref=f857e16]: Search
+          - searchbox "Search" [ref=f857e17]
+      - link "NASA Logo" [ref=f857e19] [cursor=pointer]:
+        - /url: https://www.nasa.gov/
+        - img "NASA Logo" [ref=f857e20]
+      - navigation "Primary navigation" [ref=f857e21]:
+        - list [ref=f857e23]:
+          - listitem [ref=f857e24]:
+            - button "News & Events" [ref=f857e25]:
+              - generic [ref=f857e26]: News & Events
+              - img [ref=f857e27]
+          - listitem [ref=f857e30]:
+            - button "Multimedia" [ref=f857e31]:
+              - generic [ref=f857e32]: Multimedia
+              - img [ref=f857e33]
+          - listitem [ref=f857e36]:
+            - link "NASA+ Live" [ref=f857e37] [cursor=pointer]:
+              - /url: https://plus.nasa.gov/
+  - text: Live
+  - main [ref=f857e38]:
+    - generic [ref=f857e39]:
+      - generic [ref=f857e42]:
+        - heading "404" [level=1] [ref=f857e43]
+        - paragraph [ref=f857e44]: The cosmic object you were looking for has disappeared beyond the event horizon.
+        - link "Return Home" [ref=f857e45] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+        - link "Sitemap" [ref=f857e46] [cursor=pointer]:
+          - /url: https://www.nasa.gov/sitemap/
+        - link "Contact NASA" [ref=f857e47] [cursor=pointer]:
+          - /url: https://www.nasa.gov/contact/
+      - img "404" [ref=f857e49]
+  - contentinfo [ref=f857e50]:
+    - generic [ref=f857e51]:
+      - img "NASA Logo" [ref=f857e53]
+      - generic [ref=f857e55]:
+        - generic [ref=f857e57]:
+          - heading "National Aeronautics and Space Administration" [level=3] [ref=f857e58]
+          - paragraph [ref=f857e59]: NASA explores the unknown in air and space, innovates for the benefit of humanity, and inspires the world through discovery.
+          - list [ref=f857e60]:
+            - listitem [ref=f857e61]:
+              - link "About NASA's Mission" [ref=f857e62] [cursor=pointer]:
+                - /url: https://www.nasa.gov/about/
+          - link "Join Us" [ref=f857e63] [cursor=pointer]:
+            - /url: https://www.nasa.gov/get-involved/
+            - text: Join Us
+            - img [ref=f857e64]
+        - list [ref=f857e70]:
+          - listitem [ref=f857e71]:
+            - link "Home" [ref=f857e72] [cursor=pointer]:
+              - /url: https://www.nasa.gov/
+          - listitem [ref=f857e73]:
+            - link "News & Events" [ref=f857e74] [cursor=pointer]:
+              - /url: https://www.nasa.gov/news/
+          - listitem [ref=f857e75]:
+            - link "Multimedia" [ref=f857e76] [cursor=pointer]:
+              - /url: https://www.nasa.gov/multimedia/
+          - listitem [ref=f857e77]:
+            - link "NASA+ Live" [ref=f857e78] [cursor=pointer]:
+              - /url: https://plus.nasa.gov/
+          - listitem [ref=f857e79]:
+            - link "Missions" [ref=f857e80] [cursor=pointer]:
+              - /url: https://www.nasa.gov/nasa-missions/
+          - listitem [ref=f857e81]:
+            - link "Humans in Space" [ref=f857e82] [cursor=pointer]:
+              - /url: https://www.nasa.gov/humans-in-space/
+          - listitem [ref=f857e83]:
+            - link "Earth" [ref=f857e84] [cursor=pointer]:
+              - /url: https://science.nasa.gov/earth/
+          - listitem [ref=f857e85]:
+            - link "The Solar System" [ref=f857e86] [cursor=pointer]:
+              - /url: https://science.nasa.gov/solar-system/
+          - listitem [ref=f857e87]:
+            - link "The Universe" [ref=f857e88] [cursor=pointer]:
+              - /url: https://science.nasa.gov/universe/
+          - listitem [ref=f857e89]:
+            - link "Science" [ref=f857e90] [cursor=pointer]:
+              - /url: https://science.nasa.gov/
+          - listitem [ref=f857e91]:
+            - link "Aeronautics" [ref=f857e92] [cursor=pointer]:
+              - /url: https://www.nasa.gov/aeronautics/
+          - listitem [ref=f857e93]:
+            - link "Technology" [ref=f857e94] [cursor=pointer]:
+              - /url: https://www.nasa.gov/technology/
+          - listitem [ref=f857e95]:
+            - link "Learning Resources" [ref=f857e96] [cursor=pointer]:
+              - /url: https://www.nasa.gov/learning-resources/
+          - listitem [ref=f857e97]:
+            - link "About NASA" [ref=f857e98] [cursor=pointer]:
+              - /url: https://www.nasa.gov/about/
+          - listitem [ref=f857e99]:
+            - link "NASA en Español (opens in new tab)" [ref=f857e100] [cursor=pointer]:
+              - /url: https://www.nasa.gov/es/
+              - text: NASA en Español
+              - generic [ref=f857e101]: (opens in new tab)
+        - generic [ref=f857e103]:
+          - generic [ref=f857e104]:
+            - heading "Follow NASA" [level=3] [ref=f857e105]
+            - list [ref=f857e106]:
+              - listitem [ref=f857e107]:
+                - link "NASA on Facebook (opens in new tab)" [ref=f857e108] [cursor=pointer]:
+                  - /url: https://www.facebook.com/NASA
+                  - img [ref=f857e109]
+              - listitem [ref=f857e111]:
+                - link "NASA on Instagram (opens in new tab)" [ref=f857e112] [cursor=pointer]:
+                  - /url: https://www.instagram.com/nasa/
+                  - img [ref=f857e113]
+              - listitem [ref=f857e117]:
+                - link "NASA on X (opens in new tab)" [ref=f857e118] [cursor=pointer]:
+                  - /url: https://x.com/NASA
+                  - img [ref=f857e119]
+              - listitem [ref=f857e121]:
+                - link "NASA on YouTube (opens in new tab)" [ref=f857e122] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@NASA
+                  - img [ref=f857e123]
+          - list [ref=f857e125]:
+            - listitem [ref=f857e126]:
+              - link "More NASA Social Accounts" [ref=f857e127] [cursor=pointer]:
+                - /url: https://www.nasa.gov/social-media/
+            - listitem [ref=f857e128]:
+              - link "NASA Newsletters" [ref=f857e129] [cursor=pointer]:
+                - /url: https://www.nasa.gov/nasa-newsletters/
+        - list [ref=f857e131]:
+          - listitem [ref=f857e132]:
+            - link "Sitemap" [ref=f857e133] [cursor=pointer]:
+              - /url: https://www.nasa.gov/sitemap/
+          - listitem [ref=f857e134]:
+            - link "For Media" [ref=f857e135] [cursor=pointer]:
+              - /url: https://www.nasa.gov/news/nasa-media-contacts/
+          - listitem [ref=f857e136]:
+            - link "Privacy Policy" [ref=f857e137] [cursor=pointer]:
+              - /url: https://www.nasa.gov/nasa-web-privacy-policy-and-important-notices/
+          - listitem [ref=f857e138]:
+            - link "FOIA" [ref=f857e139] [cursor=pointer]:
+              - /url: https://www.nasa.gov/foia/
+          - listitem [ref=f857e140]:
+            - link "No FEAR Act" [ref=f857e141] [cursor=pointer]:
+              - /url: https://www.nasa.gov/no-fear-act/
+          - listitem [ref=f857e142]:
+            - link "Office of the IG (opens in new tab)" [ref=f857e143] [cursor=pointer]:
+              - /url: http://oig.nasa.gov/
+              - text: Office of the IG
+              - generic [ref=f857e144]: (opens in new tab)
+          - listitem [ref=f857e145]:
+            - link "Budget & Annual Reports" [ref=f857e146] [cursor=pointer]:
+              - /url: https://www.nasa.gov/budgets-plans-and-reports/
+          - listitem [ref=f857e147]:
+            - link "Agency Financial Reports" [ref=f857e148] [cursor=pointer]:
+              - /url: https://www.nasa.gov/organizations/budget-annual-reports/agency-financial-reports/
+          - listitem [ref=f857e149]:
+            - link "Contact NASA" [ref=f857e150] [cursor=pointer]:
+              - /url: https://www.nasa.gov/contact-nasa/
+          - listitem [ref=f857e151]:
+            - link "Accessibility" [ref=f857e152] [cursor=pointer]:
+              - /url: https://www.nasa.gov/accessibility/
+        - list [ref=f857e154]:
+          - listitem [ref=f857e155]:
+            - generic [ref=f857e156]: "Responsible NASA Official:"
+            - generic [ref=f857e157]: Abigail Bowman

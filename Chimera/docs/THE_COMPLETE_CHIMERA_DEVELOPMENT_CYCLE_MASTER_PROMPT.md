@@ -30,7 +30,9 @@ Each loop is a feature set. Each feature is researched, applied, verified, and e
 1. Query Graphify: `g.query("health")` — report current project state
 2. Query Graphify: `g.query("pattern", your_task)` — report relevant known patterns
 3. Query Graphify: `g.query("mutation", your_task)` — report past bugs matching this task
-4. Report all findings. Only then proceed.
+4. Query Graphify: `g.query("gpa", "trend")` — report current GPA trend
+5. Report all findings from the above queries.
+6. Query Graphify: g.query("campus", relevant_school) — get trusted research sources before any research task
 
 ### POST-FLIGHT: After ANY phase
 
@@ -38,10 +40,29 @@ Each loop is a feature set. Each feature is researched, applied, verified, and e
 2. Report exactly what you did, what changed, the UBT output line verbatim
 3. Never celebrate. Never summarize. Show the exact result.
 4. Never claim a file exists without the full path and on-disk verification
+5. Update the Feature Ledger with any new verified features or parameters.
+6. Record all MCP pathway results in the DNA graph as mutation nodes with pathway name, success/failure status, and error message if any.
+7. If you discovered a new high-quality research source, record it: g.mutate("research_discovery", {...})
+8. If GPA trend is falling, report it with suggested corrective action
 
 ### THE VOICE
 
 When you report, speak with attention. Do not judge. Do not celebrate falsely. Do not summarize away the truth. Push back when something is wrong. Celebrate quietly when something is right.
+
+### Professor Review:
+1. Send research summary to LM Studio with the grading prompt.
+2. Receive LM Studio's response.
+3. Parse the grade letter from the response.
+4. Record in Graphify: g.mutate("professor_grade", {
+    "feature": feature_name,
+    "grade": parsed_letter,
+    "score": parsed_score,
+    "reasoning": "exact LM Studio reasoning sentence",
+    "lm_studio_raw": "full verbatim response"
+})
+5. Report the EXACT LM Studio response. Do not summarize. Do not self-grade.
+
+**The grade comes from LM Studio. The agent is just the messenger. If there's no LM Studio response, there's no grade. The report card is empty until the measurements are real.**
 
 ---
 
@@ -67,6 +88,20 @@ Each feature follows the Ralph Wiggum method: persistent, autonomous execution u
 2. **The Automation Loop:** The agent picks a feature from the ledger, researches it, applies it, verifies it. If verification fails, it loops back to research. If it passes, it encodes the pattern and moves to the next feature.
 3. **Clearing Context Rot:** Each session is fresh. The agent assesses progress entirely through physical evidence — the Feature Ledger, the files on disk, the Git history. The ledger IS the memory across sessions.
 4. **The Completion Promise:** LM Studio is the gate. The agent cannot mark a feature "verified" until the vision model confirms the result matches the reference. The loop continues until the measurement passes.
+### Professor Review:
+1. Send research summary to LM Studio with the grading prompt.
+2. Receive LM Studio's response.
+3. Parse the grade letter from the response.
+4. Record in Graphify: g.mutate("professor_grade", {
+    "feature": feature_name,
+    "grade": parsed_letter,
+    "score": parsed_score,
+    "reasoning": "exact LM Studio reasoning sentence",
+    "lm_studio_raw": "full verbatim response"
+})
+5. Report the EXACT LM Studio response. Do not summarize. Do not self-grade.
+
+**The grade comes from LM Studio. The agent is just the messenger. If there's no LM Studio response, there's no grade. The report card is empty until the measurements are real.**
 
 ---
 
@@ -90,6 +125,7 @@ The system improves itself with every loop. You are both using and building thes
 11. **Feature Dependency Resolution** — Before working on a feature, check if it depends on another unverified feature. Resolve dependencies first.
 12. **Parallel Feature Detection** — Identify features with no shared dependencies. Flag them for potential parallel work.
 13. **Confidence Scoring** — Track pathway success/failure counts. Report confidence when suggesting pathways.
+14. **Professor GPA Tracking** — Every research summary is graded before building. Cumulative GPA tracked per loop, per school, and project overall. Minimum GPA required for loop advancement and template encoding. Trends reveal research quality over time.
 
 ---
 

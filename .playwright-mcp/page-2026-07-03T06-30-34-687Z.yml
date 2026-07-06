@@ -1,0 +1,297 @@
+- generic [active] [ref=f6e1]:
+  - banner [ref=f6e2]:
+    - generic [ref=f6e3]:
+      - generic [ref=f6e4]:
+        - list [ref=f6e5]:
+          - listitem [ref=f6e6]:
+            - button "Explore" [ref=f6e7] [cursor=pointer]:
+              - generic [ref=f6e8]: Explore
+              - img [ref=f6e9]
+        - search [ref=f6e15]:
+          - generic [ref=f6e16]: Search
+          - searchbox "Search" [ref=f6e17]
+      - link "NASA Logo" [ref=f6e19] [cursor=pointer]:
+        - /url: https://www.nasa.gov/
+        - img "NASA Logo" [ref=f6e20]
+      - navigation "Primary navigation" [ref=f6e21]:
+        - list [ref=f6e23]:
+          - listitem [ref=f6e24]:
+            - button "News & Events" [ref=f6e25]:
+              - generic [ref=f6e26]: News & Events
+              - img [ref=f6e27]
+          - listitem [ref=f6e30]:
+            - button "Multimedia" [ref=f6e31]:
+              - generic [ref=f6e32]: Multimedia
+              - img [ref=f6e33]
+          - listitem [ref=f6e36]:
+            - link "NASA+ Live" [ref=f6e37] [cursor=pointer]:
+              - /url: https://plus.nasa.gov/
+  - text: Live
+  - main [ref=f6e38]:
+    - navigation [ref=f6e44]:
+      - list [ref=f6e45]:
+        - listitem [ref=f6e46]:
+          - link "Johnson Space Center" [ref=f6e47] [cursor=pointer]:
+            - /url: https://www.nasa.gov/johnson/
+        - listitem [ref=f6e48]:
+          - link "JSC Front Door" [ref=f6e49] [cursor=pointer]:
+            - /url: https://www.nasa.gov/johnson/frontdoor/
+        - listitem [ref=f6e50]:
+          - button "Capabilities & Services" [ref=f6e51] [cursor=pointer]:
+            - generic [ref=f6e52]: Capabilities & Services
+            - img [ref=f6e53]
+        - listitem [ref=f6e55]:
+          - button "Opportunities" [ref=f6e56] [cursor=pointer]:
+            - generic [ref=f6e57]: Opportunities
+            - img [ref=f6e58]
+    - navigation [ref=f6e66]:
+      - list [ref=f6e67]:
+        - listitem [ref=f6e68]:
+          - link "Spaceflight Environments & Testing" [ref=f6e69] [cursor=pointer]:
+            - /url: https://www.nasa.gov/johnson/frontdoor/capabilities/spaceflight-environments-testing/
+    - generic [ref=f6e70]:
+      - generic [ref=f6e73]:
+        - heading "Contents" [level=2] [ref=f6e75]
+        - list [ref=f6e76]:
+          - listitem [ref=f6e77]:
+            - link "Lighting" [ref=f6e78] [cursor=pointer]:
+              - /url: "#hds-sidebar-nav-1"
+          - listitem [ref=f6e79]:
+            - link "Operational Environment Lighting" [ref=f6e80] [cursor=pointer]:
+              - /url: "#hds-sidebar-nav-2"
+          - listitem [ref=f6e81]:
+            - link "Connect With Us" [ref=f6e82] [cursor=pointer]:
+              - /url: "#hds-sidebar-nav-3"
+      - generic [ref=f6e84]:
+        - generic [ref=f6e85]:
+          - generic [ref=f6e86]:
+            - heading "Lighting" [level=2] [ref=f6e87]
+            - paragraph [ref=f6e89]: Understanding the lighting environment is critical to human spaceflight exploration as it directly impacts astronauts’ circadian rhythms, psychological well-being, and overall performance, necessitating tailored solutions to optimize mission success and crew health. Adding to the difficulties for NASA’s exploration missions, the lighting environment on the lunar south pole presents challenges due to the prolonged periods of darkness and extreme temperature variations, which can affect power generation from solar panels, communication systems, and the operational efficiency of lunar habitats and exploration equipment. JSC’s lighting team plays a vital role in ensuring the safety and functionality of current vehicles (International Space Station, Commercial Crew & Cargo vehicles and Orion, Gateway, and lunar rovers and landers). We provide internal and external lighting requirements verification, lamp and system lighting design, modeling and precise test and measurement of lighting and camera systems, as well as the simulation of orbital and planetary surface lighting environments. This comprehensive approach ensures that lighting systems meet the rigorous demands of space environments, contributing to the overall success and safety of space missions. We invite our partners to capitalize on our expertise in lighting environment analysis and solutions to expand humankind’s reach into our solar system.
+            - heading "Operational Environment Lighting" [level=2] [ref=f6e91]
+            - paragraph [ref=f6e92]: The Lighting Lab team provides internal and external lighting requirements verification for all NASA human-rated Programs including International Space Station (ISS), ISS commercial cargo and crewed vehicles, and Orion, Gateway, and the EVA and Human Surface Mobility Program (EHP). The team also provides lamp and system lighting design, modeling, and test and measurement of lighting and camera systems in their unique lighting lab.
+            - paragraph [ref=f6e93]: The Lighting Lab uses a controlled lighting facility with test equipment for measurement of spectral, radiometric, and photometric light properties. The Lighting Lab is a spacious facility with dimensions of 25’ W x 300’ L x 17’ H, including a dedicated dark room for controlled lighting & imaging tests.
+            - paragraph [ref=f6e94]: Testing & Analysis Services Available
+            - list [ref=f6e95]:
+              - listitem [ref=f6e96]: Interior / exterior lamp and system lighting design
+              - listitem [ref=f6e97]: Lighting requirements development and verification
+              - listitem [ref=f6e98]: Simulate orbital and planetary surface lighting environments
+              - listitem [ref=f6e99]: Human anthropometric modeling analysis (volume, reach and clearance)
+              - listitem [ref=f6e100]: Glare and shadow analysis
+              - listitem [ref=f6e101]: Camera system testing with calibrated lights and solar simulator
+            - paragraph [ref=f6e102]: Software Modeling Tools
+            - list [ref=f6e103]:
+              - listitem [ref=f6e104]: "Radiance: Radiometric and photometric architectural lighting simulation of interior / exterior spacecraft"
+              - listitem [ref=f6e105]: "Zemax: Spectral optics & lamp development using anthropometric modeling & simulation"
+              - listitem [ref=f6e106]: "Jack: Anthropometric human modeling and simulation"
+              - listitem [ref=f6e107]: "Creo Parametric & Rhino: Processing of CAD models & model manipulation"
+              - listitem [ref=f6e108]: "Dojo: Software organizer and database of models, materials and lights for modeling purposes"
+          - generic [ref=f6e109]:
+            - generic [ref=f6e112]:
+              - figure [ref=f6e113]:
+                - link "Spectral Radiance Measurement of Light Source":
+                  - /url: https://www.nasa.gov/wp-content/uploads/2023/03/jsc2016e107123-alt.jpeg
+                  - img "Spectral Radiance Measurement of Light Source" [ref=f6e114] [cursor=pointer]
+              - generic [ref=f6e115]:
+                - generic [ref=f6e116]: Spectral Radiance Measurement of Light Source and Evaluation of Spectral Attenuation of Laser Safety Glasses
+                - generic [ref=f6e117]: NASA
+            - generic [ref=f6e120]:
+              - figure [ref=f6e121]:
+                - link "IES Light Intensity Distribution (Beam Pattern) Measurement of Lamp":
+                  - /url: https://www.nasa.gov/wp-content/uploads/2021/05/jsc2016e107129.jpeg
+                  - img "IES Light Intensity Distribution (Beam Pattern) Measurement of Lamp" [ref=f6e122] [cursor=pointer]
+              - generic [ref=f6e124]: IES Light Intensity Distribution (Beam Pattern) Measurement of Lamp
+            - generic [ref=f6e127]:
+              - figure [ref=f6e128]:
+                - link [ref=f6e129] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/wp-content/uploads/2024/02/iss042e136109orig-1.jpg
+              - generic [ref=f6e131]: Interior view looking starboard (STBD) and aft in the Harmony Node 2, taken during the crew’s sleep period (main lights are turned off). Hatches into the Columbus European Laboratory and Destiny U.S. Laboratory are in view. The pink glow comes from the Vegetable Production System (Veggie) greenhouse, housed in Columbus.
+            - generic [ref=f6e134]:
+              - figure [ref=f6e135]:
+                - link [ref=f6e136] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/wp-content/uploads/2024/02/jsc2022e001698orig-2.jpg
+              - generic [ref=f6e138]: Quantitative evaluation of light source by NBL diver during NBL Preliminary Lunar Lighting Evaluation
+            - generic [ref=f6e141]:
+              - figure [ref=f6e142]:
+                - link [ref=f6e143] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/wp-content/uploads/2024/02/gsfc-20171208-archive-e002006orig-1.jpg
+              - generic [ref=f6e145]: Mountains on the Moon On the Earth, we are taught that mountains form over millions of years, the result of gradual shifting and colliding plates. On the moon however, the situation is quite different. Even the largest lunar mountains were formed in minutes or less as asteroids and comets slammed into the surface at tremendous velocities, displacing and uplifting enough crust to create peaks that easily rival those found on Earth. On a few occasions in the past year, NASA has tilted the angle of LRO to do calibrations and other tests. In such cases the camera has the opportunity to gather oblique images of the lunar surface like the one featured here of Cabeus Crater providing a dramatic view of the moon’s mountainous terrain.
+        - generic [ref=f6e146]:
+          - generic [ref=f6e147]:
+            - heading "Connect With Us" [level=2] [ref=f6e148]
+            - paragraph [ref=f6e149]:
+              - text: Whether you are a public agency, private company, or academic institution, we look forward to hearing from you. Fill out the
+              - link "Statement of Interest" [ref=f6e150] [cursor=pointer]:
+                - /url: https://docs.google.com/forms/d/e/1FAIpQLSd5qI7s5_K33M1l6X1YANpnSXv-K3-cpI_RGp6hVhlCVP2p6g/viewform
+              - text: form to submit your inquiry.
+          - figure [ref=f6e156]:
+            - link [ref=f6e157] [cursor=pointer]:
+              - /url: https://www.nasa.gov/wp-content/uploads/2025/11/bdti-boot-dark-bluex2-e1763415365987.png
+    - generic [ref=f6e158]:
+      - generic [ref=f6e160]:
+        - heading "Related Capabilities" [level=2] [ref=f6e162]
+        - link "Capabilities Home Page" [ref=f6e164] [cursor=pointer]:
+          - /url: https://www.nasa.gov/johnson/frontdoor/capabilities/
+          - generic [ref=f6e165]: Capabilities Home Page
+          - img [ref=f6e166]
+      - generic [ref=f6e173]:
+        - generic [ref=f6e175]:
+          - figure [ref=f6e177]:
+            - img "Spacesuit engineers demonstrate how four crew members would be arranged for launch inside the Orion spacecraft, using a mockup of the vehicle at Johnson Space Center in Houston on Oct. 24, 2014." [ref=f6e178]
+          - generic [ref=f6e179]:
+            - generic:
+              - heading [level=3]
+            - link "Crew Interfaces" [ref=f6e181] [cursor=pointer]:
+              - /url: https://www.nasa.gov/reference/jsc-crew-interfaces/
+              - textbox "Write button text here" [ref=f6e182]
+              - img [ref=f6e183]
+        - generic [ref=f6e187]:
+          - figure [ref=f6e189]
+          - generic [ref=f6e190]:
+            - generic:
+              - heading [level=3]
+            - link "Flight Computing & Avionics Subsystems" [ref=f6e192] [cursor=pointer]:
+              - /url: https://www.nasa.gov/reference/jsc-flight-computing-avionics-subsystems/
+              - textbox "Write button text here" [ref=f6e193]
+              - img [ref=f6e194]
+        - generic [ref=f6e198]:
+          - figure [ref=f6e200]
+          - generic [ref=f6e201]:
+            - generic:
+              - heading [level=3]
+            - link "Human Factors & Performance" [ref=f6e203] [cursor=pointer]:
+              - /url: https://www.nasa.gov/reference/jsc-human-factors-performance/
+              - textbox "Write button text here" [ref=f6e204]
+              - img [ref=f6e205]
+  - contentinfo [ref=f6e208]:
+    - generic [ref=f6e209]:
+      - img "NASA Logo" [ref=f6e211]
+      - generic [ref=f6e213]:
+        - generic [ref=f6e215]:
+          - heading "National Aeronautics and Space Administration" [level=3] [ref=f6e216]
+          - paragraph [ref=f6e217]: NASA explores the unknown in air and space, innovates for the benefit of humanity, and inspires the world through discovery.
+          - list [ref=f6e218]:
+            - listitem [ref=f6e219]:
+              - link "About NASA's Mission" [ref=f6e220] [cursor=pointer]:
+                - /url: https://www.nasa.gov/about/
+          - link "Join Us" [ref=f6e221] [cursor=pointer]:
+            - /url: https://www.nasa.gov/get-involved/
+            - text: Join Us
+            - img [ref=f6e222]
+        - list [ref=f6e228]:
+          - listitem [ref=f6e229]:
+            - link "Home" [ref=f6e230] [cursor=pointer]:
+              - /url: https://www.nasa.gov/
+          - listitem [ref=f6e231]:
+            - link "News & Events" [ref=f6e232] [cursor=pointer]:
+              - /url: https://www.nasa.gov/news/
+          - listitem [ref=f6e233]:
+            - link "Multimedia" [ref=f6e234] [cursor=pointer]:
+              - /url: https://www.nasa.gov/multimedia/
+          - listitem [ref=f6e235]:
+            - link "NASA+ Live" [ref=f6e236] [cursor=pointer]:
+              - /url: https://plus.nasa.gov/
+          - listitem [ref=f6e237]:
+            - link "Missions" [ref=f6e238] [cursor=pointer]:
+              - /url: https://www.nasa.gov/nasa-missions/
+          - listitem [ref=f6e239]:
+            - link "Humans in Space" [ref=f6e240] [cursor=pointer]:
+              - /url: https://www.nasa.gov/humans-in-space/
+          - listitem [ref=f6e241]:
+            - link "Earth" [ref=f6e242] [cursor=pointer]:
+              - /url: https://science.nasa.gov/earth/
+          - listitem [ref=f6e243]:
+            - link "The Solar System" [ref=f6e244] [cursor=pointer]:
+              - /url: https://science.nasa.gov/solar-system/
+          - listitem [ref=f6e245]:
+            - link "The Universe" [ref=f6e246] [cursor=pointer]:
+              - /url: https://science.nasa.gov/universe/
+          - listitem [ref=f6e247]:
+            - link "Science" [ref=f6e248] [cursor=pointer]:
+              - /url: https://science.nasa.gov/
+          - listitem [ref=f6e249]:
+            - link "Aeronautics" [ref=f6e250] [cursor=pointer]:
+              - /url: https://www.nasa.gov/aeronautics/
+          - listitem [ref=f6e251]:
+            - link "Technology" [ref=f6e252] [cursor=pointer]:
+              - /url: https://www.nasa.gov/technology/
+          - listitem [ref=f6e253]:
+            - link "Learning Resources" [ref=f6e254] [cursor=pointer]:
+              - /url: https://www.nasa.gov/learning-resources/
+          - listitem [ref=f6e255]:
+            - link "About NASA" [ref=f6e256] [cursor=pointer]:
+              - /url: https://www.nasa.gov/about/
+          - listitem [ref=f6e257]:
+            - link "NASA en Español (opens in new tab)" [ref=f6e258] [cursor=pointer]:
+              - /url: https://www.nasa.gov/es/
+              - text: NASA en Español
+              - generic [ref=f6e259]: (opens in new tab)
+        - generic [ref=f6e261]:
+          - generic [ref=f6e262]:
+            - heading "Follow NASA" [level=3] [ref=f6e263]
+            - list [ref=f6e264]:
+              - listitem [ref=f6e265]:
+                - link "NASA on Facebook (opens in new tab)" [ref=f6e266] [cursor=pointer]:
+                  - /url: https://www.facebook.com/NASA
+                  - img [ref=f6e267]
+              - listitem [ref=f6e269]:
+                - link "NASA on Instagram (opens in new tab)" [ref=f6e270] [cursor=pointer]:
+                  - /url: https://www.instagram.com/nasa/
+                  - img [ref=f6e271]
+              - listitem [ref=f6e275]:
+                - link "NASA on X (opens in new tab)" [ref=f6e276] [cursor=pointer]:
+                  - /url: https://x.com/NASA
+                  - img [ref=f6e277]
+              - listitem [ref=f6e279]:
+                - link "NASA on YouTube (opens in new tab)" [ref=f6e280] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@NASA
+                  - img [ref=f6e281]
+          - list [ref=f6e283]:
+            - listitem [ref=f6e284]:
+              - link "More NASA Social Accounts" [ref=f6e285] [cursor=pointer]:
+                - /url: https://www.nasa.gov/social-media/
+            - listitem [ref=f6e286]:
+              - link "NASA Newsletters" [ref=f6e287] [cursor=pointer]:
+                - /url: https://www.nasa.gov/nasa-newsletters/
+        - list [ref=f6e289]:
+          - listitem [ref=f6e290]:
+            - link "Sitemap" [ref=f6e291] [cursor=pointer]:
+              - /url: https://www.nasa.gov/sitemap/
+          - listitem [ref=f6e292]:
+            - link "For Media" [ref=f6e293] [cursor=pointer]:
+              - /url: https://www.nasa.gov/news/nasa-media-contacts/
+          - listitem [ref=f6e294]:
+            - link "Privacy Policy" [ref=f6e295] [cursor=pointer]:
+              - /url: https://www.nasa.gov/nasa-web-privacy-policy-and-important-notices/
+          - listitem [ref=f6e296]:
+            - link "FOIA" [ref=f6e297] [cursor=pointer]:
+              - /url: https://www.nasa.gov/foia/
+          - listitem [ref=f6e298]:
+            - link "No FEAR Act" [ref=f6e299] [cursor=pointer]:
+              - /url: https://www.nasa.gov/no-fear-act/
+          - listitem [ref=f6e300]:
+            - link "Office of the IG (opens in new tab)" [ref=f6e301] [cursor=pointer]:
+              - /url: http://oig.nasa.gov/
+              - text: Office of the IG
+              - generic [ref=f6e302]: (opens in new tab)
+          - listitem [ref=f6e303]:
+            - link "Budget & Annual Reports" [ref=f6e304] [cursor=pointer]:
+              - /url: https://www.nasa.gov/budgets-plans-and-reports/
+          - listitem [ref=f6e305]:
+            - link "Agency Financial Reports" [ref=f6e306] [cursor=pointer]:
+              - /url: https://www.nasa.gov/organizations/budget-annual-reports/agency-financial-reports/
+          - listitem [ref=f6e307]:
+            - link "Contact NASA" [ref=f6e308] [cursor=pointer]:
+              - /url: https://www.nasa.gov/contact-nasa/
+          - listitem [ref=f6e309]:
+            - link "Accessibility" [ref=f6e310] [cursor=pointer]:
+              - /url: https://www.nasa.gov/accessibility/
+        - list [ref=f6e312]:
+          - listitem [ref=f6e313]:
+            - generic [ref=f6e314]: "Page Last Updated:"
+            - generic [ref=f6e315]: Jan 22, 2026
+          - listitem [ref=f6e316]:
+            - generic [ref=f6e317]: "Page Editor:"
+            - generic [ref=f6e318]: Sara D. Garcia
+          - listitem [ref=f6e319]:
+            - generic [ref=f6e320]: "Responsible NASA Official:"
+            - generic [ref=f6e321]: Abigail Bowman

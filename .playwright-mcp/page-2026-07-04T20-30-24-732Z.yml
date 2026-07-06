@@ -1,0 +1,516 @@
+- generic [ref=f26e1]:
+  - generic [ref=f26e2]:
+    - banner [ref=f26e5]:
+      - button "Epic Ecosystem Dropdown" [ref=f26e9] [cursor=pointer]:
+        - generic:
+          - img
+        - generic:
+          - img
+      - navigation "Unreal Engine Navigation" [ref=f26e10]:
+        - link "Unreal Engine Logo" [ref=f26e12] [cursor=pointer]:
+          - /url: https://www.unrealengine.com/
+          - img "Unreal Engine Logo" [ref=f26e13]
+        - generic [ref=f26e14]:
+          - list [ref=f26e17]:
+            - listitem [ref=f26e18]:
+              - link "Overview" [ref=f26e20] [cursor=pointer]:
+                - /url: https://www.unrealengine.com/
+                - generic:
+                  - generic: Overview
+                - generic:
+                  - img
+            - listitem [ref=f26e21]:
+              - link "Uses" [ref=f26e23] [cursor=pointer]:
+                - /url: https://www.unrealengine.com/uses/switching-to-unreal-engine
+                - generic:
+                  - generic: Uses
+                - generic:
+                  - img
+            - listitem [ref=f26e24]:
+              - link "News" [ref=f26e26] [cursor=pointer]:
+                - /url: https://www.unrealengine.com/feed
+                - generic:
+                  - generic: News
+            - listitem [ref=f26e27]:
+              - link "Forums" [ref=f26e29] [cursor=pointer]:
+                - /url: https://forums.unrealengine.com/categories?tag=unreal-engine
+                - generic:
+                  - generic: Forums
+            - listitem [ref=f26e30]:
+              - link "Documentation" [ref=f26e32] [cursor=pointer]:
+                - /url: https://dev.epicgames.com/documentation/unreal-engine
+                - generic:
+                  - generic: Documentation
+            - listitem [ref=f26e33]:
+              - button "More" [ref=f26e35] [cursor=pointer]:
+                - generic:
+                  - generic: More
+                - generic:
+                  - img
+          - generic [ref=f26e37]:
+            - search [ref=f26e39]:
+              - generic [ref=f26e40]:
+                - searchbox "Search the Unreal Engine website" [ref=f26e41]
+                - button "Search" [ref=f26e42] [cursor=pointer]:
+                  - generic:
+                    - img
+                  - generic: Search
+            - button "Locale menu" [ref=f26e44] [cursor=pointer]:
+              - generic:
+                - img
+            - link "Sign in" [ref=f26e46] [cursor=pointer]:
+              - /url: https://dev.epicgames.com/community/api/user_identity/login/start?destination=https%3A%2F%2Fdev.epicgames.com%2Fdocumentation%2Funreal-engine%3Fapplication_version%3D5.4
+              - generic: Sign in
+          - link "Download" [ref=f26e49] [cursor=pointer]:
+            - /url: https://www.unrealengine.com/download
+            - generic: Download
+    - generic: 
+    - generic [ref=f26e50]:
+      - complementary [ref=f26e53]:
+        - generic [ref=f26e55]:
+          - generic [ref=f26e56]: Join our community, grow your knowledge and learn from others!
+          - paragraph [ref=f26e57]:
+            - link "Sign in" [ref=f26e58] [cursor=pointer]:
+              - /url: https://dev.epicgames.com/community/api/user_identity/login/start?destination=https%3A%2F%2Fdev.epicgames.com%2Fdocumentation%2Funreal-engine%2Fgameplay-framework%2Fquest-system-in-unreal-engine%3Fapplication_version%3D5.4
+          - paragraph [ref=f26e59]:
+            - text: Don’t have an Epic Games account?
+            - link "Sign up" [ref=f26e60] [cursor=pointer]:
+              - /url: https://dev.epicgames.com/community/api/user_identity/login/start?destination=https%3A%2F%2Fdev.epicgames.com%2Fdocumentation%2Funreal-engine%2Fgameplay-framework%2Fquest-system-in-unreal-engine%3Fapplication_version%3D5.4
+        - navigation [ref=f26e62]:
+          - list [ref=f26e63]:
+            - listitem [ref=f26e64]:
+              - link "Dev Community" [ref=f26e65] [cursor=pointer]:
+                - /url: https://dev.epicgames.com/community/
+                - img "Dev Community" [ref=f26e66]
+          - button "Unreal Engine" [ref=f26e69] [cursor=pointer]:
+            - generic [ref=f26e70]:
+              - img [ref=f26e72]
+              - generic [ref=f26e74]: Unreal Engine
+            - img [ref=f26e76]
+          - list [ref=f26e78]:
+            - listitem [ref=f26e79]:
+              - link "Forums" [ref=f26e81] [cursor=pointer]:
+                - /url: https://forums.unrealengine.com/categories?tag=unreal-engine
+                - img [ref=f26e83]
+                - generic [ref=f26e88]: Forums
+            - listitem [ref=f26e89]:
+              - button "Documentation" [ref=f26e91] [cursor=pointer]:
+                - img [ref=f26e93]
+                - generic [ref=f26e97]: Documentation
+                - img [ref=f26e99]
+            - listitem [ref=f26e101]:
+              - link "Learning" [ref=f26e103] [cursor=pointer]:
+                - /url: https://dev.epicgames.com/community/unreal-engine/learning
+                - img [ref=f26e105]
+                - generic [ref=f26e107]: Learning
+            - listitem [ref=f26e108]:
+              - link "Developer Assistant Beta" [ref=f26e110] [cursor=pointer]:
+                - /url: https://dev.epicgames.com/community/assistant/unreal-engine
+                - img [ref=f26e112]
+                - generic [ref=f26e119]:
+                  - text: Developer Assistant
+                  - generic [ref=f26e120]: Beta
+            - listitem [ref=f26e121]:
+              - link "Snippets" [ref=f26e123] [cursor=pointer]:
+                - /url: https://dev.epicgames.com/community/unreal-engine/snippets
+                - img [ref=f26e125]
+                - generic [ref=f26e129]: Snippets
+            - listitem [ref=f26e130]:
+              - button "Profiles" [ref=f26e132] [cursor=pointer]:
+                - img [ref=f26e134]
+                - generic [ref=f26e139]: Profiles
+                - img [ref=f26e141]
+        - generic [ref=f26e144]:
+          - button "Unreal Engine 5.4 " [ref=f26e146] [cursor=pointer]:
+            - generic [ref=f26e148]: Unreal Engine 5.4
+            - generic [ref=f26e149]: 
+          - generic [ref=f26e151]:
+            - generic: 
+            - searchbox "Filter by title" [active] [ref=f26e152]
+          - navigation [ref=f26e154]:
+            - list [ref=f26e155]:
+              - listitem [ref=f26e156]:
+                - link "Unreal Engine 5.4 Documentation" [ref=f26e158] [cursor=pointer]:
+                  - /url: /documentation/unreal-engine/unreal-engine-5-4-documentation?application_version=5.4
+                - list [ref=f26e159]:
+                  - listitem [ref=f26e160]:
+                    - generic [ref=f26e161]:
+                      - button "Expand" [ref=f26e162] [cursor=pointer]:
+                        - generic [ref=f26e163]: 
+                      - link "What's New" [ref=f26e164] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/whats-new?application_version=5.4
+                  - listitem [ref=f26e165]:
+                    - generic [ref=f26e166]:
+                      - button "Expand" [ref=f26e167] [cursor=pointer]:
+                        - generic [ref=f26e168]: 
+                      - link "Understanding the Basics" [ref=f26e169] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/understanding-the-basics-of-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e170]:
+                    - generic [ref=f26e171]:
+                      - button "Expand" [ref=f26e172] [cursor=pointer]:
+                        - generic [ref=f26e173]: 
+                      - link "Working with Content" [ref=f26e174] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/working-with-content-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e175]:
+                    - generic [ref=f26e176]:
+                      - button "Expand" [ref=f26e177] [cursor=pointer]:
+                        - generic [ref=f26e178]: 
+                      - link "Building Virtual Worlds" [ref=f26e179] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/building-virtual-worlds-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e180]:
+                    - generic [ref=f26e181]:
+                      - button "Expand" [ref=f26e182] [cursor=pointer]:
+                        - generic [ref=f26e183]: 
+                      - link "Designing Visuals, Rendering, and Graphics" [ref=f26e184] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/designing-visuals-rendering-and-graphics-with-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e185]:
+                    - generic [ref=f26e186]:
+                      - button "Expand" [ref=f26e187] [cursor=pointer]:
+                        - generic [ref=f26e188]: 
+                      - link "Creating Visual Effects" [ref=f26e189] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/creating-visual-effects-in-niagara-for-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e190]:
+                    - generic [ref=f26e191]:
+                      - button "Expand" [ref=f26e192] [cursor=pointer]:
+                        - generic [ref=f26e193]: 
+                      - link "Programming and Scripting" [ref=f26e194] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/unreal-engine-programming-and-scripting?application_version=5.4
+                  - listitem [ref=f26e195]:
+                    - generic [ref=f26e196]:
+                      - button "Expand" [ref=f26e197] [cursor=pointer]:
+                        - generic [ref=f26e198]: 
+                      - link "Making Interactive Experiences" [ref=f26e199] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/making-interactive-experiences-and-gameplay-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e200]:
+                    - generic [ref=f26e201]:
+                      - button "Expand" [ref=f26e202] [cursor=pointer]:
+                        - generic [ref=f26e203]: 
+                      - link "Animating Characters and Objects" [ref=f26e204] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/animating-characters-and-objects-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e205]:
+                    - generic [ref=f26e206]:
+                      - button "Expand" [ref=f26e207] [cursor=pointer]:
+                        - generic [ref=f26e208]: 
+                      - link "Creating User Interfaces" [ref=f26e209] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/creating-user-interfaces-with-umg-and-slate-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e210]:
+                    - generic [ref=f26e211]:
+                      - button "Expand" [ref=f26e212] [cursor=pointer]:
+                        - generic [ref=f26e213]: 
+                      - link "Motion Design" [ref=f26e214] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/motion-design-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e215]:
+                    - generic [ref=f26e216]:
+                      - button "Expand" [ref=f26e217] [cursor=pointer]:
+                        - generic [ref=f26e218]: 
+                      - link "Working with Audio" [ref=f26e219] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/working-with-audio-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e220]:
+                    - generic [ref=f26e221]:
+                      - button "Expand" [ref=f26e222] [cursor=pointer]:
+                        - generic [ref=f26e223]: 
+                      - link "Working with Media" [ref=f26e224] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/working-with-media-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e225]:
+                    - generic [ref=f26e226]:
+                      - button "Expand" [ref=f26e227] [cursor=pointer]:
+                        - generic [ref=f26e228]: 
+                      - link "Setting Up Your Production Pipeline" [ref=f26e229] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/setting-up-your-production-pipeline-in-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e230]:
+                    - generic [ref=f26e231]:
+                      - button "Expand" [ref=f26e232] [cursor=pointer]:
+                        - generic [ref=f26e233]: 
+                      - link "Testing and Optimizing Your Content" [ref=f26e234] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/testing-and-optimizing-your-content?application_version=5.4
+                  - listitem [ref=f26e235]:
+                    - generic [ref=f26e236]:
+                      - button "Expand" [ref=f26e237] [cursor=pointer]:
+                        - generic [ref=f26e238]: 
+                      - link "Sharing and Releasing Projects" [ref=f26e239] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/sharing-and-releasing-projects-for-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e240]:
+                    - generic [ref=f26e241]:
+                      - button "Expand" [ref=f26e242] [cursor=pointer]:
+                        - generic [ref=f26e243]: 
+                      - link "Samples and Tutorials" [ref=f26e244] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/samples-and-tutorials-for-unreal-engine?application_version=5.4
+                  - listitem [ref=f26e245]:
+                    - generic [ref=f26e246]:
+                      - button "Expand" [ref=f26e247] [cursor=pointer]
+                      - link "Unreal Engine Blueprint API Reference" [ref=f26e248] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/BlueprintAPI?application_version=5.4
+                  - listitem [ref=f26e249]:
+                    - generic [ref=f26e250]:
+                      - button "Expand" [ref=f26e251] [cursor=pointer]
+                      - link "Unreal Engine Python API Documentation" [ref=f26e252] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/PythonAPI?application_version=5.4
+                  - listitem [ref=f26e253]:
+                    - generic [ref=f26e254]:
+                      - button "Expand" [ref=f26e255] [cursor=pointer]
+                      - link "Unreal Engine C++ API Reference" [ref=f26e256] [cursor=pointer]:
+                        - /url: /documentation/unreal-engine/API?application_version=5.4
+        - list [ref=f26e257]:
+          - listitem [ref=f26e258]:
+            - button "Collapse" [ref=f26e259] [cursor=pointer]:
+              - img [ref=f26e261]
+              - generic [ref=f26e264]: Collapse
+      - generic [ref=f26e266]:
+        - text: 
+        - main [ref=f26e269]:
+          - generic [ref=f26e270]:
+            - generic:
+              - generic:
+                - navigation
+            - heading [level=1]
+          - generic [ref=f26e273]: 
+    - contentinfo [ref=f26e276]:
+      - generic [ref=f26e277]:
+        - img "Unreal Engine Logo" [ref=f26e280]
+        - list [ref=f26e283]:
+          - listitem [ref=f26e284]:
+            - link "Twitter logo" [ref=f26e285] [cursor=pointer]:
+              - /url: https://twitter.com/unrealengine
+              - img [ref=f26e287]
+          - listitem [ref=f26e289]:
+            - link "Facebook logo" [ref=f26e290] [cursor=pointer]:
+              - /url: https://www.facebook.com/UnrealEngine
+              - img [ref=f26e292]
+          - listitem [ref=f26e294]:
+            - link "Twitch logo" [ref=f26e295] [cursor=pointer]:
+              - /url: http://www.twitch.tv/unrealengine
+              - img [ref=f26e297]
+          - listitem [ref=f26e299]:
+            - link "Instagram logo" [ref=f26e300] [cursor=pointer]:
+              - /url: http://instagram.com/UnrealEngine
+              - img [ref=f26e302]
+          - listitem [ref=f26e304]:
+            - link "YouTube logo" [ref=f26e305] [cursor=pointer]:
+              - /url: http://www.youtube.com/unrealengine
+              - img [ref=f26e307]
+          - listitem [ref=f26e309]:
+            - link "RSS logo" [ref=f26e310] [cursor=pointer]:
+              - /url: https://www.unrealengine.com/rss
+      - generic [ref=f26e312]:
+        - separator [ref=f26e313]
+        - generic [ref=f26e314]:
+          - generic [ref=f26e316]:
+            - heading "Games" [level=3] [ref=f26e317]
+            - list [ref=f26e318]:
+              - listitem [ref=f26e319]:
+                - link "Fortnite" [ref=f26e321] [cursor=pointer]:
+                  - /url: https://www.fortnite.com/
+                  - generic: Fortnite
+              - listitem [ref=f26e322]:
+                - link "Fall Guys" [ref=f26e324] [cursor=pointer]:
+                  - /url: https://www.fallguys.com/
+                  - generic: Fall Guys
+              - listitem [ref=f26e325]:
+                - link "Rocket League" [ref=f26e327] [cursor=pointer]:
+                  - /url: https://www.rocketleague.com/
+                  - generic: Rocket League
+              - listitem [ref=f26e328]:
+                - link "Unreal Tournament" [ref=f26e330] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/unrealtournament/
+                  - generic: Unreal Tournament
+              - listitem [ref=f26e331]:
+                - link "Infinity Blade" [ref=f26e333] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/infinityblade/home/
+                  - generic: Infinity Blade
+              - listitem [ref=f26e334]:
+                - link "Shadow Complex" [ref=f26e336] [cursor=pointer]:
+                  - /url: https://store.epicgames.com/p/shadow-complex/
+                  - generic: Shadow Complex
+              - listitem [ref=f26e337]:
+                - link "Robo Recall" [ref=f26e339] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/roborecall
+                  - generic: Robo Recall
+          - generic [ref=f26e341]:
+            - heading "Marketplaces" [level=3] [ref=f26e342]
+            - list [ref=f26e343]:
+              - listitem [ref=f26e344]:
+                - link "Epic Games Store" [ref=f26e346] [cursor=pointer]:
+                  - /url: https://store.epicgames.com/
+                  - generic: Epic Games Store
+              - listitem [ref=f26e347]:
+                - link "Fab" [ref=f26e349] [cursor=pointer]:
+                  - /url: https://www.fab.com/
+                  - generic: Fab
+              - listitem [ref=f26e350]:
+                - link "Quixel Megascans on Fab" [ref=f26e352] [cursor=pointer]:
+                  - /url: https://www.fab.com/sellers/Quixel%20Megascans
+                  - generic: Quixel Megascans on Fab
+              - listitem [ref=f26e353]:
+                - link "Quixel Megaplants on Fab" [ref=f26e355] [cursor=pointer]:
+                  - /url: https://www.fab.com/sellers/Quixel%20Megaplants
+                  - generic: Quixel Megaplants on Fab
+              - listitem [ref=f26e356]:
+                - link "Sketchfab" [ref=f26e358] [cursor=pointer]:
+                  - /url: https://sketchfab.com/store
+                  - generic: Sketchfab
+              - listitem [ref=f26e359]:
+                - link "ArtStation" [ref=f26e361] [cursor=pointer]:
+                  - /url: https://www.artstation.com/
+                  - generic: ArtStation
+              - listitem [ref=f26e362]:
+                - link "Store Refund Policy" [ref=f26e364] [cursor=pointer]:
+                  - /url: https://legal.epicgames.com/store/refund-policy
+                  - generic: Store Refund Policy
+              - listitem [ref=f26e365]:
+                - link "Store EULA" [ref=f26e367] [cursor=pointer]:
+                  - /url: https://legal.epicgames.com/store/eula
+                  - generic: Store EULA
+          - generic [ref=f26e369]:
+            - heading "Tools" [level=3] [ref=f26e370]
+            - list [ref=f26e371]:
+              - listitem [ref=f26e372]:
+                - link "Unreal Engine" [ref=f26e374] [cursor=pointer]:
+                  - /url: https://www.unrealengine.com/
+                  - generic: Unreal Engine
+              - listitem [ref=f26e375]:
+                - link "UEFN" [ref=f26e377] [cursor=pointer]:
+                  - /url: https://store.epicgames.com/p/fortnite--uefn
+                  - generic: UEFN
+              - listitem [ref=f26e378]:
+                - link "MetaHuman" [ref=f26e380] [cursor=pointer]:
+                  - /url: https://www.metahuman.com/
+                  - generic: MetaHuman
+              - listitem [ref=f26e381]:
+                - link "Twinmotion" [ref=f26e383] [cursor=pointer]:
+                  - /url: https://www.twinmotion.com/
+                  - generic: Twinmotion
+              - listitem [ref=f26e384]:
+                - link "RealityScan" [ref=f26e386] [cursor=pointer]:
+                  - /url: https://www.realityscan.com/
+                  - generic: RealityScan
+              - listitem [ref=f26e387]:
+                - link "RAD Game Tools" [ref=f26e389] [cursor=pointer]:
+                  - /url: https://www.radgametools.com/
+                  - generic: RAD Game Tools
+          - generic [ref=f26e391]:
+            - heading "Online Services" [level=3] [ref=f26e392]
+            - list [ref=f26e393]:
+              - listitem [ref=f26e394]:
+                - link "Epic Online Services" [ref=f26e396] [cursor=pointer]:
+                  - /url: https://onlineservices.epicgames.com/
+                  - generic: Epic Online Services
+              - listitem [ref=f26e397]:
+                - link "Kids Web Services" [ref=f26e399] [cursor=pointer]:
+                  - /url: https://www.kidswebservices.com/
+                  - generic: Kids Web Services
+              - listitem [ref=f26e400]:
+                - link "Services Agreement" [ref=f26e402] [cursor=pointer]:
+                  - /url: https://onlineservices.epicgames.com/services/terms/agreements
+                  - generic: Services Agreement
+              - listitem [ref=f26e403]:
+                - link "Acceptable Use Policy" [ref=f26e405] [cursor=pointer]:
+                  - /url: https://onlineservices.epicgames.com/services/terms/aup
+                  - generic: Acceptable Use Policy
+              - listitem [ref=f26e406]:
+                - link "Trust Statement" [ref=f26e408] [cursor=pointer]:
+                  - /url: https://onlineservices.epicgames.com/services/terms/trust-statement
+                  - generic: Trust Statement
+              - listitem [ref=f26e409]:
+                - link "Subprocessor List" [ref=f26e411] [cursor=pointer]:
+                  - /url: https://onlineservices.epicgames.com/services/terms/subprocessors
+                  - generic: Subprocessor List
+          - generic [ref=f26e413]:
+            - heading "Company" [level=3] [ref=f26e414]
+            - list [ref=f26e415]:
+              - listitem [ref=f26e416]:
+                - link "About" [ref=f26e418] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/site/about
+                  - generic: About
+              - listitem [ref=f26e419]:
+                - link "Newsroom" [ref=f26e421] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/site/news
+                  - generic: Newsroom
+              - listitem [ref=f26e422]:
+                - link "Careers" [ref=f26e424] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/site/careers/jobs
+                  - generic: Careers
+              - listitem [ref=f26e425]:
+                - link "Students" [ref=f26e427] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/site/earlycareers
+                  - generic: Students
+              - listitem [ref=f26e428]:
+                - link "UX Research" [ref=f26e430] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/site/ux
+                  - generic: UX Research
+          - generic [ref=f26e432]:
+            - heading "Resources" [level=3] [ref=f26e433]
+            - list [ref=f26e434]:
+              - listitem [ref=f26e435]:
+                - link "Dev Community" [ref=f26e437] [cursor=pointer]:
+                  - /url: https://dev.epicgames.com/community/
+                  - generic: Dev Community
+              - listitem [ref=f26e438]:
+                - link "MegaGrants" [ref=f26e440] [cursor=pointer]:
+                  - /url: https://www.unrealengine.com/megagrants
+                  - generic: MegaGrants
+              - listitem [ref=f26e441]:
+                - link "Support-A-Creator" [ref=f26e443] [cursor=pointer]:
+                  - /url: https://sac.epicgames.com/overview
+                  - generic: Support-A-Creator
+              - listitem [ref=f26e444]:
+                - link "Creator Agreement" [ref=f26e446] [cursor=pointer]:
+                  - /url: https://legal.epicgames.com/fortnite/eula/sac
+                  - generic: Creator Agreement
+              - listitem [ref=f26e447]:
+                - link "Distribute on Epic Games" [ref=f26e449] [cursor=pointer]:
+                  - /url: https://store.epicgames.com/distribution
+                  - generic: Distribute on Epic Games
+              - listitem [ref=f26e450]:
+                - link "Unreal Engine Branding Guidelines" [ref=f26e452] [cursor=pointer]:
+                  - /url: https://www.unrealengine.com/branding
+                  - generic: Unreal Engine Branding Guidelines
+              - listitem [ref=f26e453]:
+                - link "Fan Art Policy" [ref=f26e455] [cursor=pointer]:
+                  - /url: https://legal.epicgames.com/epicgames/fan-art-policy
+                  - generic: Fan Art Policy
+              - listitem [ref=f26e456]:
+                - link "Community Rules" [ref=f26e458] [cursor=pointer]:
+                  - /url: https://legal.epicgames.com/epicgames/community-rules
+                  - generic: Community Rules
+              - listitem [ref=f26e459]:
+                - link "EU Digital Services Act Inquiries" [ref=f26e461] [cursor=pointer]:
+                  - /url: https://www.epicgames.com/help/contact-us?source=external
+                  - generic: EU Digital Services Act Inquiries
+              - listitem [ref=f26e462]:
+                - link "Epic Pro Support" [ref=f26e464] [cursor=pointer]:
+                  - /url: https://udn.unrealengine.com/
+                  - generic: Epic Pro Support
+        - separator [ref=f26e465]
+      - generic [ref=f26e466]:
+        - generic [ref=f26e467]:
+          - generic [ref=f26e469]: © 2026 Epic Games, Inc. All rights reserved. Unreal and its logo are Epic’s trademarks or registered trademarks in the US and elsewhere.
+          - list [ref=f26e470]:
+            - listitem [ref=f26e471]:
+              - link "Terms of service" [ref=f26e473] [cursor=pointer]:
+                - /url: https://legal.epicgames.com/epicgames/tos
+                - generic: Terms of service
+            - listitem [ref=f26e474]:
+              - link "Privacy policy" [ref=f26e476] [cursor=pointer]:
+                - /url: https://legal.epicgames.com/epicgames/privacy-policy
+                - generic: Privacy policy
+            - listitem [ref=f26e477]:
+              - link "Safety & security" [ref=f26e479] [cursor=pointer]:
+                - /url: https://safety.epicgames.com/?lang=en-US
+                - generic: Safety & security
+        - button "Back to top" [ref=f26e480] [cursor=pointer]:
+          - generic: Back to top
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - status [ref=f26e481]:
+                  - generic [ref=f26e484]:
+                    - generic [ref=f26e485]: 
+                    - generic [ref=f26e486]:
+                      - generic [ref=f26e487]: No document
+                      - generic [ref=f26e488]: The document you're looking for does not exist in this version. You have been redirected to the closest page.
+                  - button "Close" [ref=f26e489] [cursor=pointer]: ×
+                - list

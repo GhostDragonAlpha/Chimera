@@ -33,6 +33,8 @@ public class Chimera : ModuleRules
 			"Chimera/ProceduralGenerated/GameMode",
 			"Chimera/ProceduralGenerated/Ships",
 			"Chimera/ProceduralGenerated/Tools",
+			"Chimera/ProceduralGenerated/Sound",
+			"Chimera/ProceduralGenerated/Interactions"
 		});
 	}
 }

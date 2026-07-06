@@ -1,0 +1,153 @@
+- generic [active] [ref=f12e1]:
+  - link "Jump to content" [ref=f12e2] [cursor=pointer]:
+    - /url: "#bodyContent"
+  - banner [ref=f12e4]:
+    - generic [ref=f12e5]:
+      - navigation "Site" [ref=f12e6]:
+        - generic "Main menu" [ref=f12e7]:
+          - button "Main menu" [ref=f12e8] [cursor=pointer]
+          - generic [ref=f12e11]: Main menu
+      - link "Wikimedia Commons" [ref=f12e12] [cursor=pointer]:
+        - /url: /wiki/Main_Page
+        - img [ref=f12e13]
+        - img "Wikimedia Commons" [ref=f12e15]
+    - generic [ref=f12e16]:
+      - search [ref=f12e17]:
+        - generic [ref=f12e20]:
+          - searchbox "Search Wikimedia Commons" [ref=f12e23]
+          - button "Search" [ref=f12e25]
+      - navigation "Personal tools" [ref=f12e26]:
+        - generic [ref=f12e27]:
+          - list [ref=f12e30]:
+            - listitem [ref=f12e31]:
+              - link "English" [ref=f12e32] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f12e34]: English
+          - list [ref=f12e37]:
+            - listitem [ref=f12e38]:
+              - link "Donate" [ref=f12e39] [cursor=pointer]:
+                - /url: https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=commons.wikimedia.org&uselang=en
+            - listitem [ref=f12e40]:
+              - link "Create account" [ref=f12e41] [cursor=pointer]:
+                - /url: /w/index.php?title=Special:CreateAccount&returnto=File%3AISS+Node+2+Harmony.jpg
+            - listitem [ref=f12e42]:
+              - link "Log in" [ref=f12e43] [cursor=pointer]:
+                - /url: /w/index.php?title=Special:UserLogin&returnto=File%3AISS+Node+2+Harmony.jpg
+  - generic [ref=f12e45]:
+    - main [ref=f12e49]:
+      - heading "File:ISS Node 2 Harmony.jpg" [level=1] [ref=f12e51]
+      - generic [ref=f12e53]:
+        - navigation "Namespaces" [ref=f12e55]:
+          - list [ref=f12e58]:
+            - listitem [ref=f12e59]:
+              - link "File" [ref=f12e60] [cursor=pointer]:
+                - /url: /w/index.php?title=File:ISS_Node_2_Harmony.jpg&action=edit&redlink=1
+                - generic [ref=f12e61]: File
+            - listitem [ref=f12e62]:
+              - link "Discussion" [ref=f12e63] [cursor=pointer]:
+                - /url: /w/index.php?title=File_talk:ISS_Node_2_Harmony.jpg&action=edit&redlink=1
+                - generic [ref=f12e64]: Discussion
+        - generic [ref=f12e65]:
+          - navigation "Views" [ref=f12e66]:
+            - list [ref=f12e69]:
+              - listitem [ref=f12e70]:
+                - link "Create" [ref=f12e71] [cursor=pointer]:
+                  - /url: /w/index.php?title=File:ISS_Node_2_Harmony.jpg&action=edit
+                  - generic [ref=f12e72]: Create
+          - navigation "Page tools" [ref=f12e73]:
+            - generic [ref=f12e74]:
+              - button "Tools" [ref=f12e75] [cursor=pointer]
+              - generic [ref=f12e78]: Tools
+      - navigation "Appearance" [ref=f12e81]:
+        - generic [ref=f12e83]:
+          - generic [ref=f12e84]:
+            - generic [ref=f12e85]: Appearance
+            - button "hide" [ref=f12e86] [cursor=pointer]
+          - generic [ref=f12e87]:
+            - generic [ref=f12e88]: Text
+            - list [ref=f12e90]:
+              - listitem [ref=f12e91]:
+                - generic [ref=f12e92]:
+                  - generic [ref=f12e93]:
+                    - generic [ref=f12e94]:
+                      - radio "Small" [disabled] [ref=f12e95]
+                      - generic [ref=f12e98]: Small
+                    - generic [ref=f12e99]:
+                      - radio "Standard" [disabled] [ref=f12e100]
+                      - generic [ref=f12e103]: Standard
+                    - generic [ref=f12e104]:
+                      - radio "Large" [disabled] [ref=f12e105]
+                      - generic [ref=f12e108]: Large
+                  - paragraph [ref=f12e109]: This page always uses small font size
+          - generic [ref=f12e110]:
+            - generic [ref=f12e111]: Width
+            - list [ref=f12e113]:
+              - listitem [ref=f12e114]:
+                - generic [ref=f12e116]:
+                  - generic [ref=f12e117]:
+                    - radio "Standard" [checked] [ref=f12e118]
+                    - generic [ref=f12e121]: Standard
+                  - generic [ref=f12e122]:
+                    - radio "Wide" [ref=f12e123]
+                    - generic [ref=f12e126]: Wide
+          - generic [ref=f12e127]:
+            - generic [ref=f12e128]:
+              - text: Color
+              - generic [ref=f12e129]: (beta)
+            - list [ref=f12e131]:
+              - listitem [ref=f12e132]:
+                - generic [ref=f12e134]:
+                  - generic [ref=f12e135]:
+                    - radio "Automatic" [ref=f12e136]
+                    - generic [ref=f12e139]: Automatic
+                  - generic [ref=f12e140]:
+                    - radio "Light" [checked] [ref=f12e141]
+                    - generic [ref=f12e144]: Light
+                  - generic [ref=f12e145]:
+                    - radio "Dark" [ref=f12e146]
+                    - generic [ref=f12e149]: Dark
+      - generic "File:ISS Node 2 Harmony.jpg" [ref=f12e150]:
+        - generic [ref=f12e151]:
+          - paragraph [ref=f12e153]: No file by this name exists.
+          - heading "File usage on Commons" [level=2] [ref=f12e154]
+          - paragraph [ref=f12e156]: There are no pages that use this file.
+    - contentinfo [ref=f12e158]:
+      - list:
+        - listitem [ref=f12e159]:
+          - link "Privacy policy" [ref=f12e160] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+        - listitem [ref=f12e161]:
+          - link "About Wikimedia Commons" [ref=f12e162] [cursor=pointer]:
+            - /url: /wiki/Commons:Welcome
+        - listitem [ref=f12e163]:
+          - link "Disclaimers" [ref=f12e164] [cursor=pointer]:
+            - /url: /wiki/Commons:General_disclaimer
+        - listitem [ref=f12e165]:
+          - link "Legal & safety contacts" [ref=f12e166] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Legal:Wikimedia_Foundation_Legal_and_Safety_Contact_Information
+        - listitem [ref=f12e167]:
+          - link "Code of Conduct" [ref=f12e168] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Universal_Code_of_Conduct
+        - listitem [ref=f12e169]:
+          - link "Developers" [ref=f12e170] [cursor=pointer]:
+            - /url: https://developer.wikimedia.org
+        - listitem [ref=f12e171]:
+          - link "Statistics" [ref=f12e172] [cursor=pointer]:
+            - /url: https://stats.wikimedia.org/#/commons.wikimedia.org
+        - listitem [ref=f12e173]:
+          - link "Cookie statement" [ref=f12e174] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Cookie_statement
+        - listitem [ref=f12e175]:
+          - link "Mobile view" [ref=f12e176] [cursor=pointer]:
+            - /url: //commons.wikimedia.org/w/index.php?title=File:ISS_Node_2_Harmony.jpg&mobileaction=toggle_view_mobile
+      - list [ref=f12e177]:
+        - listitem [ref=f12e178]:
+          - link "Wikimedia Foundation" [ref=f12e179] [cursor=pointer]:
+            - /url: https://www.wikimedia.org/
+            - img "Wikimedia Foundation" [ref=f12e181]
+        - listitem [ref=f12e182]:
+          - link "Powered by MediaWiki" [ref=f12e183] [cursor=pointer]:
+            - /url: https://www.mediawiki.org/
+            - img "Powered by MediaWiki" [ref=f12e185]
+  - generic [ref=f12e186]:
+    - list

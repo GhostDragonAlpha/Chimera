@@ -1,0 +1,456 @@
+- generic [active] [ref=f136e1]:
+  - banner [ref=f136e2]:
+    - generic [ref=f136e3]:
+      - generic [ref=f136e4]:
+        - list [ref=f136e5]:
+          - listitem [ref=f136e6]:
+            - button "Explore" [ref=f136e7] [cursor=pointer]:
+              - generic [ref=f136e8]: Explore
+              - img [ref=f136e9]
+        - search [ref=f136e15]:
+          - generic [ref=f136e16]: Search
+          - searchbox "Search Search" [ref=f136e17]
+      - link "NASA Logo" [ref=f136e19] [cursor=pointer]:
+        - /url: https://www.nasa.gov
+        - img "NASA Logo" [ref=f136e20]
+      - navigation "Primary navigation" [ref=f136e21]:
+        - list [ref=f136e23]:
+          - listitem [ref=f136e24]:
+            - button "News & Events" [ref=f136e25]:
+              - generic [ref=f136e26]: News & Events
+              - img [ref=f136e27]
+          - listitem [ref=f136e30]:
+            - button "Multimedia" [ref=f136e31]:
+              - generic [ref=f136e32]: Multimedia
+              - img [ref=f136e33]
+          - listitem [ref=f136e36]:
+            - link "NASA+ Live" [ref=f136e37] [cursor=pointer]:
+              - /url: https://plus.nasa.gov/
+  - text: Live
+  - main [ref=f136e38]:
+    - article [ref=f136e39]:
+      - generic [ref=f136e40]:
+        - navigation [ref=f136e46]:
+          - list [ref=f136e47]:
+            - listitem [ref=f136e48]:
+              - link "Planets Overview" [ref=f136e49] [cursor=pointer]:
+                - /url: https://science.nasa.gov/solar-system/planets/
+            - listitem [ref=f136e50]:
+              - link "What is a Planet?" [ref=f136e51] [cursor=pointer]:
+                - /url: https://science.nasa.gov/solar-system/planets/what-is-a-planet/
+            - listitem [ref=f136e52]:
+              - link "Planet Sizes" [ref=f136e53] [cursor=pointer]:
+                - /url: https://science.nasa.gov/solar-system/planet-sizes-and-locations-in-our-solar-system/
+            - listitem [ref=f136e54]:
+              - link "Planet Temperatures" [ref=f136e55] [cursor=pointer]:
+                - /url: https://science.nasa.gov/solar-system/temperatures-across-our-solar-system/
+            - listitem [ref=f136e56]:
+              - button "All Planets" [ref=f136e57] [cursor=pointer]:
+                - generic [ref=f136e58]: All Planets
+                - img [ref=f136e59]
+            - listitem [ref=f136e61]:
+              - button "Planetary Analogs" [ref=f136e62] [cursor=pointer]:
+                - generic [ref=f136e63]: Planetary Analogs
+                - img [ref=f136e64]
+            - listitem [ref=f136e66]:
+              - button "More" [ref=f136e67] [cursor=pointer]:
+                - generic [ref=f136e68]: More
+                - img [ref=f136e69]
+        - generic [ref=f136e71]:
+          - figure [ref=f136e72]:
+            - img "Illustration showing the planets stacked in rows." [ref=f136e73]
+          - generic [ref=f136e76]:
+            - generic [ref=f136e77]:
+              - heading "About the Planets" [level=1] [ref=f136e78]
+              - paragraph [ref=f136e79]: "Our solar system has eight planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. There are five officially recognized dwarf planets in our solar system: Ceres, Pluto, Haumea, Makemake, and Eris."
+            - generic [ref=f136e80]:
+              - heading [level=2]
+              - generic [ref=f136e81]:
+                - generic [ref=f136e82]:
+                  - generic [ref=f136e84]: "8"
+                  - heading "Planets" [level=4] [ref=f136e86]
+                - generic [ref=f136e87]:
+                  - generic [ref=f136e89]: "5"
+                  - heading "Dwarf Planets" [level=4] [ref=f136e91]
+        - heading "Introduction" [level=2] [ref=f136e92]
+        - paragraph [ref=f136e93]: What is a planet? The word traces back to the ancient Greek word planēt, which means “wanderer.” A more modern definition can be found in the Merriam-Webster dictionary, which defines a planet as “any of the large bodies that revolve around the Sun in the solar system.”
+        - paragraph [ref=f136e94]:
+          - text: In 2006, the International Astronomical Union (IAU) — a group of astronomers that names objects in our solar system — agreed on their own definition of
+          - link "“planet.”" [ref=f136e95] [cursor=pointer]:
+            - /url: https://www.iau.org/IAU/Science/What-we-do/Pluto-and-the-Developing-Landscape-of-Our-Solar-System.aspx?WebsiteKey=9e4eaea2-b0d6-4c4b-bd18-913a208b91be#Pluto-4
+          - text: This new definition caused Pluto's famous “demotion” to a dwarf planet, and reduced the solar system census from nine planets to eight.
+        - 'link "Learn More: ‘What is a planet?’" [ref=f136e97] [cursor=pointer]':
+          - /url: https://science.nasa.gov/solar-system/planets/what-is-a-planet/
+          - generic [ref=f136e98]: "Learn More: ‘What is a planet?’"
+          - img [ref=f136e99]
+        - generic [ref=f136e102]:
+          - generic [ref=f136e105]:
+            - heading "Inner Planets" [level=2] [ref=f136e107]
+            - paragraph [ref=f136e108]: The first four planets from the Sun are Mercury, Venus, Earth, and Mars. These inner planets also are known as terrestrial planets because they have solid surfaces.
+          - generic [ref=f136e110]:
+            - generic [ref=f136e112]:
+              - figure [ref=f136e114]:
+                - img "Mercury is gray with bright white patches, and craters visible in this image from the MESSENGER spacecraft." [ref=f136e115]
+              - generic [ref=f136e116]:
+                - heading "Mercury Facts" [level=3] [ref=f136e118]
+                - paragraph [ref=f136e119]: Mercury is the planet nearest to the Sun, and the smallest planet in our solar system.
+                - link "Explore Mercury" [ref=f136e121] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/mercury/facts/
+                  - textbox "Write button text here" [ref=f136e122]
+                  - img [ref=f136e123]
+            - generic [ref=f136e127]:
+              - figure [ref=f136e129]:
+                - img "A serene-looking Venus with creamy white, and tan clouds." [ref=f136e130]
+              - generic [ref=f136e131]:
+                - heading "Venus Facts" [level=3] [ref=f136e133]
+                - paragraph [ref=f136e134]: Venus is the second planet from the Sun, and the sixth largest planet.
+                - link "Explore Venus" [ref=f136e136] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/venus/venus-facts/
+                  - textbox "Write button text here" [ref=f136e137]
+                  - img [ref=f136e138]
+            - generic [ref=f136e142]:
+              - figure [ref=f136e144]:
+                - img "A view of Earth from Apollo 17 showing the blue ocean, reddish brown landmasses, and wispy, white clouds." [ref=f136e145]
+              - generic [ref=f136e146]:
+                - heading "Earth Facts" [level=3] [ref=f136e148]
+                - paragraph [ref=f136e149]: Earth – our home planet – is the third planet from the Sun, and the fifth largest planet.
+                - link "Explore Earth" [ref=f136e151] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/earth/facts/
+                  - textbox "Write button text here" [ref=f136e152]
+                  - img [ref=f136e153]
+            - generic [ref=f136e157]:
+              - figure [ref=f136e159]:
+                - img "Mars is a reddish brown in this image from a spacecraft. A deep gash is visible across the center of the planet." [ref=f136e160]
+              - generic [ref=f136e161]:
+                - heading "Mars Facts" [level=3] [ref=f136e163]
+                - paragraph [ref=f136e164]: Mars is the fourth planet from the Sun, and the seventh largest planet.
+                - link "Explore Mars" [ref=f136e166] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/mars/facts/
+                  - textbox "Write button text here" [ref=f136e167]
+                  - img [ref=f136e168]
+        - generic [ref=f136e171]:
+          - generic [ref=f136e174]:
+            - heading "Outer Planets" [level=2] [ref=f136e176]
+            - paragraph [ref=f136e177]: The giant planets in the outer solar system don't have hard surfaces. Instead, they have swirling gases above a core. Jupiter and Saturn are gas giants. Uranus and Neptune are ice giants.
+          - generic [ref=f136e179]:
+            - generic [ref=f136e181]:
+              - figure [ref=f136e183]:
+                - img "A view of Jupiter's Great Red Spot and colorful cloud bands of tan, brown, white, and orange as seen from the Juno spacecraft." [ref=f136e184]
+              - generic [ref=f136e185]:
+                - heading "Jupiter Facts" [level=3] [ref=f136e187]
+                - paragraph [ref=f136e188]: Jupiter is the fifth planet from the Sun, and the largest planet in our solar system.
+                - link "Explore Jupiter" [ref=f136e190] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/jupiter/facts/
+                  - textbox "Write button text here" [ref=f136e191]
+                  - img [ref=f136e192]
+            - generic [ref=f136e196]:
+              - figure [ref=f136e198]:
+                - img "A view of Saturn from the Cassini spacecraft shows the golden planet with its rings." [ref=f136e199]
+              - generic [ref=f136e200]:
+                - heading "Saturn Facts" [level=3] [ref=f136e202]
+                - paragraph [ref=f136e203]: Saturn is the sixth planet from the Sun, the second largest planet in our solar system.
+                - link "Explore Saturn" [ref=f136e205] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/saturn/facts/
+                  - textbox "Write button text here" [ref=f136e206]
+                  - img [ref=f136e207]
+            - generic [ref=f136e211]:
+              - figure [ref=f136e213]:
+                - img "Pale blue planet Uranus is seen against the darkness of space in an image from the Voyager 2 spacecraft." [ref=f136e214]
+              - generic [ref=f136e215]:
+                - heading "Uranus Facts" [level=3] [ref=f136e217]
+                - paragraph [ref=f136e218]: Uranus is the seventh planet from the Sun, and the third largest planet in our solar system.
+                - link "Explore Uranus" [ref=f136e220] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/uranus/facts/
+                  - textbox "Write button text here" [ref=f136e221]
+                  - img [ref=f136e222]
+            - generic [ref=f136e226]:
+              - figure [ref=f136e228]:
+                - img "Neptune is blue and banded with clouds and storms." [ref=f136e229]
+              - generic [ref=f136e230]:
+                - heading "Neptune Facts" [level=3] [ref=f136e232]
+                - paragraph [ref=f136e233]: Neptune is the eighth and most distant planet in our solar system. It's the fourth largest planet.
+                - link "Explore Neptune" [ref=f136e235] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/neptune/facts/
+                  - textbox "Write button text here" [ref=f136e236]
+                  - img [ref=f136e237]
+        - generic [ref=f136e240]:
+          - generic [ref=f136e243]:
+            - heading "Dwarf Planets" [level=2] [ref=f136e245]
+            - paragraph [ref=f136e246]: Dwarf planets include longtime favorite Pluto, Ceres, Makemake, Haumea, and Eris. Ceres is the only dwarf planet in the inner solar system. It's in the main asteroid belt between Mars and Jupiter.
+          - generic [ref=f136e248]:
+            - generic [ref=f136e250]:
+              - figure [ref=f136e252]:
+                - img "Gray Ceres has a bright spot near its upper left side in this image from NASA's Dawn spacecraft." [ref=f136e253]
+              - generic [ref=f136e254]:
+                - heading "Ceres Facts" [level=3] [ref=f136e256]
+                - paragraph [ref=f136e257]: Dwarf planet Ceres is the largest object in the asteroid belt between Mars and Jupiter, and it's the only dwarf planet in the inner solar system.
+                - link "Explore Ceres" [ref=f136e259] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/dwarf-planets/ceres/facts/
+                  - textbox "Write button text here" [ref=f136e260]
+                  - img [ref=f136e261]
+            - generic [ref=f136e265]:
+              - figure [ref=f136e267]:
+                - img "Pluto is reddish and has a heart shape lighter patch in the lower right half of this image from the New Horizons spacecraft." [ref=f136e268]
+              - generic [ref=f136e269]:
+                - heading "Pluto Facts" [level=3] [ref=f136e271]
+                - paragraph [ref=f136e272]: Pluto was long considered our solar system's ninth planet. It was reclassified as a dwarf planet in 2006 by the International Astronomical Union.
+                - link "Explore Pluto" [ref=f136e274] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/dwarf-planets/pluto/facts/
+                  - textbox "Write button text here" [ref=f136e275]
+                  - img [ref=f136e276]
+            - generic [ref=f136e280]:
+              - figure [ref=f136e282]:
+                - img "Dwarf planet Haumea looks like a bright dot with two smaller ones on each side." [ref=f136e283]
+              - generic [ref=f136e284]:
+                - heading "Haumea Facts" [level=3] [ref=f136e286]
+                - paragraph [ref=f136e287]: Haumea was nicknamed Santa by one discovery team. It is oval-shaped, and is one of the fastest rotating large objects in our solar system.
+                - link "Explore Haumea" [ref=f136e289] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/dwarf-planets/haumea/
+                  - textbox "Write button text here" [ref=f136e290]
+                  - img [ref=f136e291]
+            - generic [ref=f136e295]:
+              - figure [ref=f136e297]
+              - generic [ref=f136e298]:
+                - heading "Makemake Facts" [level=3] [ref=f136e300]
+                - paragraph [ref=f136e301]: Makemake is slightly smaller than Pluto, and is the second-brightest object in the Kuiper Belt, while Pluto is the brightest.
+                - link "Explore Makemake" [ref=f136e303] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/dwarf-planets/makemake/
+                  - textbox "Write button text here" [ref=f136e304]
+                  - img [ref=f136e305]
+            - generic [ref=f136e309]:
+              - figure [ref=f136e311]
+              - generic [ref=f136e312]:
+                - heading "Eris Facts" [level=3] [ref=f136e314]
+                - paragraph [ref=f136e315]: The discovery of Eris helped trigger the debate in the scientific community that led to the decision to clarify the definition of a planet.
+                - link "Explore Eris" [ref=f136e317] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/dwarf-planets/eris/
+                  - textbox "Write button text here" [ref=f136e318]
+                  - img [ref=f136e319]
+        - generic [ref=f136e322]:
+          - generic [ref=f136e323]:
+            - generic [ref=f136e325]:
+              - img [ref=f136e326]
+              - generic [ref=f136e332]: Featured Story
+            - generic [ref=f136e335]:
+              - 'heading "What’s Up: June 2026 Skywatching Tips from NASA" [level=2] [ref=f136e337]'
+              - paragraph [ref=f136e338]: Venus and Jupiter meet after sunset, the Moon passes in front of Venus, summer begins, and deep-sky treasures rise into…
+              - link "Read the Story" [ref=f136e339] [cursor=pointer]:
+                - /url: https://science.nasa.gov/solar-system/whats-up-june-2026-skywatching-tips-from-nasa/
+                - generic [ref=f136e340]: Read the Story
+                - img [ref=f136e341]
+          - figure [ref=f136e346]
+        - generic [ref=f136e347]:
+          - generic [ref=f136e348]:
+            - generic [ref=f136e350]:
+              - img [ref=f136e351]
+              - generic [ref=f136e357]: Featured Story
+            - generic [ref=f136e360]:
+              - heading "Planet Sizes and Locations in Our Solar System" [level=2] [ref=f136e362]
+              - paragraph [ref=f136e363]: Our solar system has eight planets, and five officially recognized dwarf planets. Which planet is biggest? Which is smallest? What…
+              - link "Read the Story" [ref=f136e364] [cursor=pointer]:
+                - /url: https://science.nasa.gov/solar-system/planets/planet-sizes-and-locations-in-our-solar-system/
+                - generic [ref=f136e365]: Read the Story
+                - img [ref=f136e366]
+          - figure [ref=f136e371]
+        - generic [ref=f136e374]:
+          - generic [ref=f136e375]:
+            - generic [ref=f136e376]: Hypothetical Planet X
+            - heading "Is There Another Planet in the Solar System?" [level=2] [ref=f136e377]
+            - paragraph [ref=f136e378]: It's an intriguing idea that might explain some current mysteries, but direct evidence of another planet has yet to be found.
+            - link "Learn More" [ref=f136e379] [cursor=pointer]:
+              - /url: https://science.nasa.gov/solar-system/planet-x/
+              - generic [ref=f136e380]: Learn More
+              - img [ref=f136e381]
+          - figure [ref=f136e387]:
+            - img "Artist's illustration of Hypothetical Planet X" [ref=f136e388]
+        - generic [ref=f136e389]:
+          - generic [ref=f136e390]:
+            - generic [ref=f136e392]:
+              - img [ref=f136e393]
+              - generic [ref=f136e399]: Featured Story
+            - generic [ref=f136e402]:
+              - heading "Temperatures Across Our Solar System" [level=2] [ref=f136e404]
+              - paragraph [ref=f136e405]: Let’s look at the mean temperature of the Sun, and the planets in our solar system.
+              - link "Read the Story" [ref=f136e406] [cursor=pointer]:
+                - /url: https://science.nasa.gov/solar-system/temperatures-across-our-solar-system/
+                - generic [ref=f136e407]: Read the Story
+                - img [ref=f136e408]
+          - figure [ref=f136e413]
+        - generic [ref=f136e414]:
+          - generic [ref=f136e415]:
+            - img "Facebook logo" [ref=f136e417]
+            - link "Go to @NASASolarSystem on facebook" [ref=f136e420] [cursor=pointer]:
+              - /url: https://facebook.com/NASASolarSystem
+              - text: "@NASASolarSystem"
+          - generic [ref=f136e421]:
+            - img [ref=f136e423]
+            - link "Go to @NASASolarSystem on twitter" [ref=f136e426] [cursor=pointer]:
+              - /url: https://x.com/NASASolarSystem
+              - text: "@NASASolarSystem"
+          - generic [ref=f136e427]:
+            - img "Instagram logo" [ref=f136e429]
+            - link "Go to @NASASolarSystem on instagram" [ref=f136e435] [cursor=pointer]:
+              - /url: https://instagram.com/NASASolarSystem
+              - text: "@NASASolarSystem"
+        - generic [ref=f136e437]:
+          - generic [ref=f136e439]:
+            - generic [ref=f136e440]: Keep Exploring
+            - heading "Discover More" [level=2] [ref=f136e441]
+          - generic [ref=f136e442]:
+            - link "Solar System Exploration" [ref=f136e443] [cursor=pointer]:
+              - /url: https://science.nasa.gov/solar-system/
+              - generic [ref=f136e444]:
+                - paragraph [ref=f136e447]:
+                  - generic [ref=f136e448]: Solar System Exploration
+                  - img [ref=f136e449]
+                - figure [ref=f136e452]
+            - link "Kuiper Belt" [ref=f136e453] [cursor=pointer]:
+              - /url: https://science.nasa.gov/solar-system/kuiper-belt/
+              - generic [ref=f136e454]:
+                - paragraph [ref=f136e457]:
+                  - generic [ref=f136e458]: Kuiper Belt
+                  - img [ref=f136e459]
+                - figure [ref=f136e462]
+            - link "Oort Cloud" [ref=f136e463] [cursor=pointer]:
+              - /url: https://science.nasa.gov/solar-system/oort-cloud/
+              - generic [ref=f136e464]:
+                - paragraph [ref=f136e467]:
+                  - generic [ref=f136e468]: Oort Cloud
+                  - img [ref=f136e469]
+                - figure [ref=f136e472]
+            - link "Exoplanets" [ref=f136e473] [cursor=pointer]:
+              - /url: https://science.nasa.gov/exoplanets/
+              - generic [ref=f136e474]:
+                - paragraph [ref=f136e477]:
+                  - generic [ref=f136e478]: Exoplanets
+                  - img [ref=f136e479]
+                - figure [ref=f136e482]
+  - contentinfo [ref=f136e483]:
+    - generic [ref=f136e484]:
+      - img "NASA Logo" [ref=f136e486]
+      - generic [ref=f136e488]:
+        - generic [ref=f136e490]:
+          - heading "National Aeronautics and Space Administration" [level=3] [ref=f136e491]
+          - paragraph [ref=f136e492]: NASA explores the unknown in air and space, innovates for the benefit of humanity, and inspires the world through discovery.
+          - list [ref=f136e493]:
+            - listitem [ref=f136e494]:
+              - link "About NASA's Mission" [ref=f136e495] [cursor=pointer]:
+                - /url: https://www.nasa.gov/about/
+          - link "Join Us" [ref=f136e496] [cursor=pointer]:
+            - /url: https://www.nasa.gov/get-involved/
+            - text: Join Us
+            - img [ref=f136e497]
+        - list [ref=f136e503]:
+          - listitem [ref=f136e504]:
+            - link "Home" [ref=f136e505] [cursor=pointer]:
+              - /url: https://www.nasa.gov
+          - listitem [ref=f136e506]:
+            - link "News & Events" [ref=f136e507] [cursor=pointer]:
+              - /url: https://www.nasa.gov/news/
+          - listitem [ref=f136e508]:
+            - link "Multimedia" [ref=f136e509] [cursor=pointer]:
+              - /url: https://www.nasa.gov/multimedia/
+          - listitem [ref=f136e510]:
+            - link "NASA+ Live" [ref=f136e511] [cursor=pointer]:
+              - /url: https://plus.nasa.gov/
+          - listitem [ref=f136e512]:
+            - link "Missions" [ref=f136e513] [cursor=pointer]:
+              - /url: https://www.nasa.gov/nasa-missions/
+          - listitem [ref=f136e514]:
+            - link "Humans in Space" [ref=f136e515] [cursor=pointer]:
+              - /url: https://www.nasa.gov/humans-in-space/
+          - listitem [ref=f136e516]:
+            - link "Earth" [ref=f136e517] [cursor=pointer]:
+              - /url: https://science.nasa.gov/earth/
+          - listitem [ref=f136e518]:
+            - link "The Solar System" [ref=f136e519] [cursor=pointer]:
+              - /url: https://science.nasa.gov/solar-system/
+          - listitem [ref=f136e520]:
+            - link "The Universe" [ref=f136e521] [cursor=pointer]:
+              - /url: https://science.nasa.gov/universe/
+          - listitem [ref=f136e522]:
+            - link "Science" [ref=f136e523] [cursor=pointer]:
+              - /url: https://science.nasa.gov/
+          - listitem [ref=f136e524]:
+            - link "Aeronautics" [ref=f136e525] [cursor=pointer]:
+              - /url: https://www.nasa.gov/aeronautics/
+          - listitem [ref=f136e526]:
+            - link "Technology" [ref=f136e527] [cursor=pointer]:
+              - /url: https://www.nasa.gov/technology/
+          - listitem [ref=f136e528]:
+            - link "Learning Resources" [ref=f136e529] [cursor=pointer]:
+              - /url: https://www.nasa.gov/learning-resources/
+          - listitem [ref=f136e530]:
+            - link "About NASA" [ref=f136e531] [cursor=pointer]:
+              - /url: https://www.nasa.gov/about/
+          - listitem [ref=f136e532]:
+            - link "NASA en Español" [ref=f136e533] [cursor=pointer]:
+              - /url: https://www.nasa.gov/es/
+        - generic [ref=f136e535]:
+          - generic [ref=f136e536]:
+            - heading "Follow NASA" [level=3] [ref=f136e537]
+            - list [ref=f136e538]:
+              - listitem [ref=f136e539]:
+                - link "NASA on Facebook" [ref=f136e540] [cursor=pointer]:
+                  - /url: https://www.facebook.com/NASA
+                  - img [ref=f136e541]
+              - listitem [ref=f136e543]:
+                - link "NASA on Instagram" [ref=f136e544] [cursor=pointer]:
+                  - /url: https://www.instagram.com/nasa/
+                  - img [ref=f136e545]
+              - listitem [ref=f136e549]:
+                - link "NASA on X" [ref=f136e550] [cursor=pointer]:
+                  - /url: https://x.com/NASA
+                  - img [ref=f136e551]
+              - listitem [ref=f136e553]:
+                - link "NASA on YouTube" [ref=f136e554] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@NASA
+                  - img [ref=f136e555]
+          - list [ref=f136e557]:
+            - listitem [ref=f136e558]:
+              - link "More NASA Social Accounts" [ref=f136e559] [cursor=pointer]:
+                - /url: https://www.nasa.gov/social-media/
+            - listitem [ref=f136e560]:
+              - link "NASA Newsletters" [ref=f136e561] [cursor=pointer]:
+                - /url: https://www.nasa.gov/nasa-newsletters/
+        - list [ref=f136e563]:
+          - listitem [ref=f136e564]:
+            - link "Sitemap" [ref=f136e565] [cursor=pointer]:
+              - /url: https://www.nasa.gov/sitemap/
+          - listitem [ref=f136e566]:
+            - link "For Media" [ref=f136e567] [cursor=pointer]:
+              - /url: https://www.nasa.gov/news/nasa-media-contacts/
+          - listitem [ref=f136e568]:
+            - link "Privacy Policy" [ref=f136e569] [cursor=pointer]:
+              - /url: https://www.nasa.gov/nasa-web-privacy-policy-and-important-notices/
+          - listitem [ref=f136e570]:
+            - link "FOIA" [ref=f136e571] [cursor=pointer]:
+              - /url: https://www.nasa.gov/foia/
+          - listitem [ref=f136e572]:
+            - link "No FEAR Act" [ref=f136e573] [cursor=pointer]:
+              - /url: https://www.nasa.gov/no-fear-act/
+          - listitem [ref=f136e574]:
+            - link "Office of the IG" [ref=f136e575] [cursor=pointer]:
+              - /url: http://oig.nasa.gov/
+          - listitem [ref=f136e576]:
+            - link "Budget & Annual Reports" [ref=f136e577] [cursor=pointer]:
+              - /url: https://www.nasa.gov/budgets-plans-and-reports/
+          - listitem [ref=f136e578]:
+            - link "Agency Financial Reports" [ref=f136e579] [cursor=pointer]:
+              - /url: https://www.nasa.gov/organizations/budget-annual-reports/agency-financial-reports/
+          - listitem [ref=f136e580]:
+            - link "Contact NASA" [ref=f136e581] [cursor=pointer]:
+              - /url: https://www.nasa.gov/contact-nasa/
+          - listitem [ref=f136e582]:
+            - link "Accessibility" [ref=f136e583] [cursor=pointer]:
+              - /url: https://www.nasa.gov/accessibility/
+        - list [ref=f136e585]:
+          - listitem [ref=f136e586]:
+            - generic [ref=f136e587]: "Page Last Updated:"
+            - generic "Page Last Updated:" [ref=f136e588]: Jun 01, 2026
+          - listitem [ref=f136e589]:
+            - generic [ref=f136e590]: "Page Editor:"
+            - generic "Page Editor:" [ref=f136e591]: Stephen Carney
+          - listitem [ref=f136e592]:
+            - generic [ref=f136e593]: "Responsible NASA Official for Science:"
+            - generic [ref=f136e594]: Diana Logreira

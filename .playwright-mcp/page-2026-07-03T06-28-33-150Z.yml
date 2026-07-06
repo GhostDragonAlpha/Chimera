@@ -1,0 +1,1056 @@
+- generic [active] [ref=f3e1]:
+  - generic:
+    - generic:
+      - link "Skip to main content" [ref=f3e2] [cursor=pointer]
+      - link "Turn off continuous scrolling" [ref=f3e3] [cursor=pointer]:
+        - /url: "#"
+      - link "Accessibility help" [ref=f3e4] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=en
+  - generic [ref=f3e9]:
+    - search [ref=f3e10]:
+      - generic [ref=f3e12]:
+        - 'link "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f3e14] [cursor=pointer]':
+          - /url: https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQPQgJ
+          - 'img "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f3e15]'
+        - generic [ref=f3e16]:
+          - generic [ref=f3e17]:
+            - combobox "Search" [ref=f3e20]: international space station interior lighting international space station interior lighting
+            - generic [ref=f3e21]:
+              - button "Clear" [ref=f3e23] [cursor=pointer]:
+                - img [ref=f3e25]
+              - generic [ref=f3e28]:
+                - button "Search by voice" [ref=f3e29] [cursor=pointer]:
+                  - img [ref=f3e30]
+                - button "Search by image" [ref=f3e32] [cursor=pointer]:
+                  - img [ref=f3e33]
+          - button "Search" [ref=f3e35] [cursor=pointer]:
+            - img [ref=f3e38]
+    - generic [ref=f3e40]:
+      - button "Settings" [ref=f3e42] [cursor=pointer]:
+        - img [ref=f3e45]
+      - generic [ref=f3e48]:
+        - button "Google apps" [ref=f3e50] [cursor=pointer]:
+          - img [ref=f3e51]
+        - link "Sign in" [ref=f3e55] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=https://www.google.com/search%3Fq%3Dinternational%2Bspace%2Bstation%2Binterior%2Blighting%26udm%3D2%26sei%3DkFZHaoSkEsC9ruEPwILX-QY&ec=futura_srp_og_si_72236_p
+  - generic [ref=f3e57]:
+    - navigation [ref=f3e62]:
+      - generic [ref=f3e63]:
+        - list [ref=f3e64]:
+          - listitem [ref=f3e65]:
+            - link "AI Mode" [ref=f3e68] [cursor=pointer]:
+              - /url: /search?q=international+space+station+interior+lighting&sca_esv=e6872afb170044af&udm=50&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7D8S3JXFX3QUpSPGrqDnvDPG1dKnNaV-haS8ZaqCWMSk0P3YsGaGCwaQ6iCW7gxiDr2KRVxC7bXx6yDmcWewBXj4qNpJxTu_HRoK7CeEqMdy9PDIqDogvDhHoZ4Q8Hv7P_MG70GdB6OMXkIX8hYzKPI6AkHnTFiY0nbfsIAD5jQBzh_iFQ&aep=1&ntc=1&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQ2J8OegQIChAD
+              - generic [ref=f3e71]: AI Mode
+          - listitem [ref=f3e72]:
+            - link "All" [ref=f3e73] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&q=international+space+station+interior+lighting&source=lnms&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7D8S3JXFX3QUpSPGrqDnvDPG1dKnNaV-haS8ZaqCWMSk0P3YsGaGCwaQ6iCW7gxiDr2KRVxC7bXx6yDmcWewBXj4qNpJxTu_HRoK7CeEqMdy9PDIqDogvDhHoZ4Q8Hv7P_MG70GdB6OMXkIX8hYzKPI6AkHnTFiY0nbfsIAD5jQBzh_iFQ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQ0pQJegQIDRAB
+              - generic [ref=f3e75]: All
+          - listitem [ref=f3e76]:
+            - link "Images" [disabled] [ref=f3e77]:
+              - generic [ref=f3e79]: Images
+          - listitem [ref=f3e80]:
+            - link "Videos" [ref=f3e81] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&udm=7&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7D8S3JXFX3QUpSPGrqDnvDPG1dKnNaV-haS8ZaqCWMSk0P3YsGaGCwaQ6iCW7gxiDr2KRVxC7bXx6yDmcWewBXj4qNpJxTu_HRoK7CeEqMdy9PDIqDogvDhHoZ4Q8Hv7P_MG70GdB6OMXkIX8hYzKPI6AkHnTFiY0nbfsIAD5jQBzh_iFQ&q=international+space+station+interior+lighting&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQtKgLegQIEBAB
+              - generic [ref=f3e83]: Videos
+          - listitem [ref=f3e84]:
+            - link "Shopping" [ref=f3e85] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&udm=28&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7D8S3JXFX3QUpSPGrqDnvDPG1dKnNaV-haS8ZaqCWMSk0P3YsGaGCwaQ6iCW7gxiDr2KRVxC7bXx6yDmcWewBXj4qNpJxTu_HRoK7CeEqMdy9PDIqDogvDhHoZ4Q8Hv7P_MG70GdB6OMXkIX8hYzKPI6AkHnTFiY0nbfsIAD5jQBzh_iFQ&q=international+space+station+interior+lighting&ved=1t:220175&ictx=111
+              - generic [ref=f3e87]: Shopping
+          - listitem [ref=f3e88]:
+            - link "News" [ref=f3e89] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&q=international+space+station+interior+lighting&tbm=nws&source=lnms&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7D8S3JXFX3QUpSPGrqDnvDPG1dKnNaV-haS8ZaqCWMSk0P3YsGaGCwaQ6iCW7gxiDr2KRVxC7bXx6yDmcWewBXj4qNpJxTu_HRoK7CeEqMdy9PDIqDogvDhHoZ4Q8Hv7P_MG70GdB6OMXkIX8hYzKPI6AkHnTFiY0nbfsIAD5jQBzh_iFQ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQ0pQJegQICxAB
+              - generic [ref=f3e91]: News
+          - listitem [ref=f3e92]:
+            - link "Forums" [ref=f3e93] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&udm=18&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7D8S3JXFX3QUpSPGrqDnvDPG1dKnNaV-haS8ZaqCWMSk0P3YsGaGCwaQ6iCW7gxiDr2KRVxC7bXx6yDmcWewBXj4qNpJxTu_HRoK7CeEqMdy9PDIqDogvDhHoZ4Q8Hv7P_MG70GdB6OMXkIX8hYzKPI6AkHnTFiY0nbfsIAD5jQBzh_iFQ&q=international+space+station+interior+lighting&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQs6gLegQIDhAB
+              - generic [ref=f3e95]: Forums
+          - listitem [ref=f3e96]:
+            - button "More filters" [ref=f3e97] [cursor=pointer]:
+              - generic "More filters" [ref=f3e98]:
+                - generic [ref=f3e99]:
+                  - generic [ref=f3e100]: More
+                  - img [ref=f3e102]
+        - button "Tools" [ref=f3e105] [cursor=pointer]:
+          - generic [ref=f3e107]:
+            - generic [ref=f3e108]: Tools
+            - img [ref=f3e110]
+    - navigation [ref=f3e113]:
+      - navigation [ref=f3e116]:
+        - list [ref=f3e124]:
+          - listitem [ref=f3e125]:
+            - link "Add Earth" [ref=f3e126] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&q=earth+international+space+station+interior+lighting&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r3rPdI3KT_90l4x48d4lEgIVtEWhqBLOeHsty9Zx0wgGnBfdaVFnq5LyEW3UecLCg_ZXBraIc3CSi1P9GoLhTZS87vhwFxYn5GF0eljPkSNbxcMdCc_Zt2iJ1YBRsO3wccJ9M25avo-Oim6_uRYNn7qXeBzLd2u0sfRWDQXzzakkTLzCi&udm=2&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQxKsJKAB6BAgREAE&ictx=0
+              - generic [ref=f3e132]: Earth
+          - listitem [ref=f3e133]:
+            - link "Add Destiny" [ref=f3e134] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&q=destiny+international+space+station+interior+lighting&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r27E1_7Ryeiuc3CNVRbfYUSSIDAZPAF0OxeIcl7RQoGFvFdklnnhBtBSY0FyjtmNYaGxk2Kvjd7B5qeCHeZ3TwG7aPNYicSZ1lcgN41Xpl5ZwWpSQMsEheDIwygRFiFYxnalAB5CoDBUa-hkga1YS8SigdcwWjDyy56X892Ov5RG0uQkM&udm=2&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQxKsJKAF6BAgVEAE&ictx=0
+              - generic [ref=f3e140]: Destiny
+          - listitem [ref=f3e141]:
+            - link "Add Nasa astronaut" [ref=f3e142] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&q=nasa+astronaut+international+space+station+interior+lighting&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4ryMyqIXL6RpCwPEsQPZy9LVIy54ftJ-6UwCoUqFJ2U40V2jmgUH_8mzX9qO6XXaBH2M0CswjHAO0DcuSeQCpkBTQWnN0WCTNuTGL-qQfvaGMEXivexT0D1TfUtUzN3gKyfk6QBe5YJCpG4Eyzu9ALz9MOLG0VD3pDJyqqwZQ7JegN8RCzNOLsWE5dvtgayRJafZhj9g&udm=2&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQxKsJKAJ6BAgSEAE&ictx=0
+              - generic [ref=f3e144]: Nasa astronaut
+          - listitem [ref=f3e145]:
+            - link "Add Astronomy" [ref=f3e146] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&q=astronomy+international+space+station+interior+lighting&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rf8ja6zYNpJud3l8fygttrQTuS6MEJhhb2SLNX90Ek_Oh9BhPjgcBNL3fPDNv5iR5Bfbs254R_Q_8IWPIELJQKziAIyMdpZ9m5B0IXEldViBBsFF1CL5UVgflNsGOGqbYTvrlgRQBfRJGa8pii8GxUi9N_rYyV8GelNZRVeaikujMvqah&udm=2&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQxKsJKAN6BAgTEAE&ictx=0
+              - generic [ref=f3e152]: Astronomy
+          - listitem [ref=f3e153]:
+            - link "Add Circadian rhythm" [ref=f3e154] [cursor=pointer]:
+              - /url: /search?sca_esv=e6872afb170044af&q=circadian+rhythm+international+space+station+interior+lighting&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4raFaJXJAdSd7JcdFVCK-e3oraVChlrg6mbBeQVeZyqLThIdo6VDf3AvQypWbjoyzgepSgZ7KJP9q2fY4M7EMf-KZ8WgQcPTEACxz9I_mi14U7aIGsBsdEM_-0qXl7MUFV2VoPPYpCvFeOleUaHn0aRuAkq72uhuPNKoTlelzEcxxm50PWaU83tRLOe1sDIByoXRQTkw&udm=2&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQxKsJKAR6BAgUEAE&ictx=0
+              - generic [ref=f3e160]: Circadian rhythm
+    - heading "Search Results" [level=1] [ref=f3e161]
+    - main [ref=f3e163]:
+      - generic [ref=f3e172]:
+        - generic [ref=f3e176] [cursor=pointer]:
+          - button "Lights on the International Space Station - NASA" [ref=f3e181]:
+            - img "Lights on the International Space Station - NASA" [ref=f3e183]
+          - link "Lights on the International Space Station - NASA NASA" [ref=f3e185]:
+            - /url: https://www.nasa.gov/stem-content/lights-on-the-international-space-station/
+            - generic [ref=f3e186]:
+              - generic [ref=f3e188]: Lights on the International Space Station - NASA
+              - generic [ref=f3e192]: NASA
+        - generic [ref=f3e196] [cursor=pointer]:
+          - 'button "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better | Space" [ref=f3e201]':
+            - 'img "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better | Space" [ref=f3e203]'
+          - 'link "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better | Space Space" [ref=f3e205]':
+            - /url: https://www.space.com/35997-led-lights-help-astronauts-sleep-better.html
+            - generic [ref=f3e206]:
+              - generic [ref=f3e208]: "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better | Space"
+              - generic [ref=f3e212]: Space
+        - generic [ref=f3e216] [cursor=pointer]:
+          - button "health - Is the new RGB solid state LED lighting on the ISS ever used to produce colors other than white? - Space Exploration Stack Exchange" [ref=f3e221]:
+            - img "health - Is the new RGB solid state LED lighting on the ISS ever used to produce colors other than white? - Space Exploration Stack Exchange" [ref=f3e223]
+          - link "health - Is the new RGB solid state LED lighting on the ISS ever used to produce colors other than white? - Space Exploration Stack Exchange Space Exploration Stack Exchange" [ref=f3e225]:
+            - /url: https://space.stackexchange.com/questions/37274/is-the-new-rgb-solid-state-led-lighting-on-the-iss-ever-used-to-produce-colors-o
+            - generic [ref=f3e226]:
+              - generic [ref=f3e228]: health - Is the new RGB solid state LED lighting on the ISS ever used to produce colors other than white? - Space Exploration Stack Exchange
+              - generic [ref=f3e232]: Space Exploration Stack Exchange
+        - generic [ref=f3e236] [cursor=pointer]:
+          - generic [ref=f3e238]:
+            - button "New LED Lights On Space Station Will Help With Sleep Study | Video" [ref=f3e241]:
+              - img "New LED Lights On Space Station Will Help With Sleep Study | Video" [ref=f3e243]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - link "New LED Lights On Space Station Will Help With Sleep Study | Video YouTube" [ref=f3e245]:
+            - /url: https://www.youtube.com/watch?v=jdulSZHfME4
+            - generic [ref=f3e246]:
+              - generic [ref=f3e248]: New LED Lights On Space Station Will Help With Sleep Study | Video
+              - generic [ref=f3e252]: YouTube
+        - generic [ref=f3e256] [cursor=pointer]:
+          - button "Light and Space Missions - Let's Talk Science" [ref=f3e261]:
+            - img "Light and Space Missions - Let's Talk Science" [ref=f3e263]
+          - link "Light and Space Missions - Let's Talk Science Let's Talk Science" [ref=f3e265]:
+            - /url: https://letstalkscience.ca/educational-resources/stem-explained/light-and-space-missions
+            - generic [ref=f3e266]:
+              - generic [ref=f3e268]: Light and Space Missions - Let's Talk Science
+              - generic [ref=f3e272]: Let's Talk Science
+        - generic [ref=f3e276] [cursor=pointer]:
+          - button "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange" [ref=f3e281]:
+            - img "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange" [ref=f3e283]
+          - link "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange Space Exploration Stack Exchange" [ref=f3e285]:
+            - /url: https://space.stackexchange.com/questions/53769/how-does-the-iss-crew-adjust-the-color-of-the-new-led-cabin-lighting-is-there-a
+            - generic [ref=f3e286]:
+              - generic [ref=f3e288]: How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange
+              - generic [ref=f3e292]: Space Exploration Stack Exchange
+        - generic [ref=f3e296] [cursor=pointer]:
+          - button "Lighting - NASA" [ref=f3e301]:
+            - img "Lighting - NASA" [ref=f3e303]
+          - link "Lighting - NASA NASA" [ref=f3e305]:
+            - /url: https://www.nasa.gov/reference/jsc-lighting/
+            - generic [ref=f3e306]:
+              - generic [ref=f3e308]: Lighting - NASA
+              - generic [ref=f3e312]: NASA
+        - generic [ref=f3e316] [cursor=pointer]:
+          - button "See the best photos from the International Space Station of 2022 in this NASA video | Space" [ref=f3e321]:
+            - img "See the best photos from the International Space Station of 2022 in this NASA video | Space" [ref=f3e323]
+          - link "See the best photos from the International Space Station of 2022 in this NASA video | Space Space" [ref=f3e325]:
+            - /url: https://www.space.com/nasa-best-international-space-station-photos-2022-video
+            - generic [ref=f3e326]:
+              - generic [ref=f3e328]: See the best photos from the International Space Station of 2022 in this NASA video | Space
+              - generic [ref=f3e332]: Space
+        - generic [ref=f3e336] [cursor=pointer]:
+          - button "Home Sweet Home in Orbit - The New York Times" [ref=f3e341]:
+            - img "Home Sweet Home in Orbit - The New York Times" [ref=f3e343]
+          - link "Home Sweet Home in Orbit - The New York Times ny times" [ref=f3e345]:
+            - /url: https://www.nytimes.com/2020/11/02/science/space-station-astronomy.html
+            - generic [ref=f3e346]:
+              - generic [ref=f3e348]: Home Sweet Home in Orbit - The New York Times
+              - generic [ref=f3e352]: ny times
+        - generic [ref=f3e356] [cursor=pointer]:
+          - button "CASIS is Optimistic About the Future of Science in Space" [ref=f3e361]:
+            - img "CASIS is Optimistic About the Future of Science in Space" [ref=f3e363]
+          - link "CASIS is Optimistic About the Future of Science in Space ISS National Lab" [ref=f3e365]:
+            - /url: https://issnationallab.org/iss360/lugo-forging-path-series/
+            - generic [ref=f3e366]:
+              - generic [ref=f3e368]: CASIS is Optimistic About the Future of Science in Space
+              - generic [ref=f3e372]: ISS National Lab
+        - generic [ref=f3e376] [cursor=pointer]:
+          - 'button "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e381]':
+            - 'img "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e383]'
+          - 'link "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian The Guardian" [ref=f3e385]':
+            - /url: https://www.theguardian.com/artanddesign/gallery/2020/nov/10/gimme-some-space-inside-the-international-space-station-in-pictures
+            - generic [ref=f3e386]:
+              - generic [ref=f3e388]: "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian"
+              - generic [ref=f3e392]: The Guardian
+        - generic [ref=f3e396] [cursor=pointer]:
+          - generic [ref=f3e398]:
+            - button "ISS interior with lights turned off!" [ref=f3e401]:
+              - img "ISS interior with lights turned off!" [ref=f3e403]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - link "ISS interior with lights turned off! YouTube" [ref=f3e405]:
+            - /url: https://www.youtube.com/watch?v=_GcQjokeCa0
+            - generic [ref=f3e406]:
+              - generic [ref=f3e408]: ISS interior with lights turned off!
+              - generic [ref=f3e412]: YouTube
+        - generic [ref=f3e416] [cursor=pointer]:
+          - 'button "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better | Space" [ref=f3e421]':
+            - 'img "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better | Space" [ref=f3e423]'
+          - 'link "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better | Space Space" [ref=f3e425]':
+            - /url: https://www.space.com/35997-led-lights-help-astronauts-sleep-better.html
+            - generic [ref=f3e426]:
+              - generic [ref=f3e428]: "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better | Space"
+              - generic [ref=f3e432]: Space
+        - generic [ref=f3e436] [cursor=pointer]:
+          - 'button "Inside the International Space Station at night : r/space" [ref=f3e441]':
+            - 'img "Inside the International Space Station at night : r/space" [ref=f3e443]'
+          - 'link "Inside the International Space Station at night : r/space Reddit" [ref=f3e445]':
+            - /url: https://www.reddit.com/r/space/comments/1r493n/inside_the_international_space_station_at_night/
+            - generic [ref=f3e446]:
+              - generic [ref=f3e448]: "Inside the International Space Station at night : r/space"
+              - generic [ref=f3e452]: Reddit
+        - generic [ref=f3e456] [cursor=pointer]:
+          - button "iss - Why does the International Space Station have a downward facing light? - Space Exploration Stack Exchange" [ref=f3e461]:
+            - img "iss - Why does the International Space Station have a downward facing light? - Space Exploration Stack Exchange" [ref=f3e463]
+          - link "iss - Why does the International Space Station have a downward facing light? - Space Exploration Stack Exchange Space Exploration Stack Exchange" [ref=f3e465]:
+            - /url: https://space.stackexchange.com/questions/5592/why-does-the-international-space-station-have-a-downward-facing-light
+            - generic [ref=f3e466]:
+              - generic [ref=f3e468]: iss - Why does the International Space Station have a downward facing light? - Space Exploration Stack Exchange
+              - generic [ref=f3e472]: Space Exploration Stack Exchange
+        - generic [ref=f3e476] [cursor=pointer]:
+          - button "ESA - Space Station at night" [ref=f3e481]:
+            - img "ESA - Space Station at night" [ref=f3e483]
+          - link "ESA - Space Station at night European Space Agency" [ref=f3e485]:
+            - /url: https://www.esa.int/ESA_Multimedia/Images/2014/10/Space_Station_at_night2
+            - generic [ref=f3e486]:
+              - generic [ref=f3e488]: ESA - Space Station at night
+              - generic [ref=f3e492]: European Space Agency
+        - generic [ref=f3e496] [cursor=pointer]:
+          - 'button "Live from the International Space Station: Yujileds® Space Lamp has been installed in astronaut Andreas Mogensens cabin - Yujileds" [ref=f3e501]':
+            - 'img "Live from the International Space Station: Yujileds® Space Lamp has been installed in astronaut Andreas Mogensens cabin - Yujileds" [ref=f3e503]'
+          - 'link "Live from the International Space Station: Yujileds® Space Lamp has been installed in astronaut Andreas Mogensens cabin - Yujileds Yujileds" [ref=f3e505]':
+            - /url: https://www.yujiintl.com/live-from-the-international-space-station-yujileds-space-lamp-has-been-installed-in-astronaut-andreas-mogensens-cabin/
+            - generic [ref=f3e506]:
+              - generic [ref=f3e508]: "Live from the International Space Station: Yujileds® Space Lamp has been installed in astronaut Andreas Mogensens cabin - Yujileds"
+              - generic [ref=f3e512]: Yujileds
+        - generic [ref=f3e516] [cursor=pointer]:
+          - button "The International Space Station is carefully lit to support human vision, safety, and circadian rhythm. Every light is positioned using physics, measuring how illumination drops with distance so astronauts can work, sleep," [ref=f3e521]:
+            - img "The International Space Station is carefully lit to support human vision, safety, and circadian rhythm. Every light is positioned using physics, measuring how illumination drops with distance so astronauts can work, sleep," [ref=f3e523]
+          - link "The International Space Station is carefully lit to support human vision, safety, and circadian rhythm. Every light is positioned using physics, measuring how illumination drops with distance so astronauts can work, sleep, Instagram" [ref=f3e525]:
+            - /url: https://www.instagram.com/p/DS5av2sjZwh/
+            - generic [ref=f3e526]:
+              - generic [ref=f3e528]: The International Space Station is carefully lit to support human vision, safety, and circadian rhythm. Every light is positioned using physics, measuring how illumination drops with distance so astronauts can work, sleep,
+              - generic [ref=f3e532]: Instagram
+        - generic [ref=f3e536] [cursor=pointer]:
+          - button "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange" [ref=f3e541]:
+            - img "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange" [ref=f3e543]
+          - link "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange Space Exploration Stack Exchange" [ref=f3e545]:
+            - /url: https://space.stackexchange.com/questions/53769/how-does-the-iss-crew-adjust-the-color-of-the-new-led-cabin-lighting-is-there-a
+            - generic [ref=f3e546]:
+              - generic [ref=f3e548]: How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange
+              - generic [ref=f3e552]: Space Exploration Stack Exchange
+        - generic [ref=f3e556] [cursor=pointer]:
+          - 'button "Floating blue-eyed robot keeps watch on the ISS: Space photo of the day | Space" [ref=f3e561]':
+            - 'img "Floating blue-eyed robot keeps watch on the ISS: Space photo of the day | Space" [ref=f3e563]'
+          - 'link "Floating blue-eyed robot keeps watch on the ISS: Space photo of the day | Space Space" [ref=f3e565]':
+            - /url: https://www.space.com/space-exploration/international-space-station/floating-blue-eyed-robot-keeps-watch-on-the-iss-space-photo-of-the-day
+            - generic [ref=f3e566]:
+              - generic [ref=f3e568]: "Floating blue-eyed robot keeps watch on the ISS: Space photo of the day | Space"
+              - generic [ref=f3e572]: Space
+        - generic [ref=f3e576] [cursor=pointer]:
+          - 'button "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e581]':
+            - 'img "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e583]'
+          - 'link "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian The Guardian" [ref=f3e585]':
+            - /url: https://www.theguardian.com/artanddesign/gallery/2020/nov/10/gimme-some-space-inside-the-international-space-station-in-pictures
+            - generic [ref=f3e586]:
+              - generic [ref=f3e588]: "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian"
+              - generic [ref=f3e592]: The Guardian
+        - generic [ref=f3e596] [cursor=pointer]:
+          - button "We work hard on the @iss, but we also like to relax together. Sometimes we do movie nights in space." [ref=f3e601]:
+            - img "We work hard on the @iss, but we also like to relax together. Sometimes we do movie nights in space." [ref=f3e603]
+          - link "We work hard on the @iss, but we also like to relax together. Sometimes we do movie nights in space. Instagram" [ref=f3e605]:
+            - /url: https://www.instagram.com/p/DRSnXwFDsWN/
+            - generic [ref=f3e606]:
+              - generic [ref=f3e608]: We work hard on the @iss, but we also like to relax together. Sometimes we do movie nights in space.
+              - generic [ref=f3e612]: Instagram
+        - generic [ref=f3e616] [cursor=pointer]:
+          - button "Plant Growth Systems | Space Station Microgravity & Tech | Sierra Space" [ref=f3e621]:
+            - img "Plant Growth Systems | Space Station Microgravity & Tech | Sierra Space" [ref=f3e623]
+          - link "Plant Growth Systems | Space Station Microgravity & Tech | Sierra Space Sierra Space" [ref=f3e625]:
+            - /url: https://www.sierraspace.com/space-technology/microgravity-environmental-systems/space-station-payloads/
+            - generic [ref=f3e626]:
+              - generic [ref=f3e628]: Plant Growth Systems | Space Station Microgravity & Tech | Sierra Space
+              - generic [ref=f3e632]: Sierra Space
+        - generic [ref=f3e636] [cursor=pointer]:
+          - 'button "Interior Space: A Visual Exploration of the International Space Station" [ref=f3e641]':
+            - 'img "Interior Space: A Visual Exploration of the International Space Station" [ref=f3e643]'
+          - 'link "Interior Space: A Visual Exploration of the International Space Station Kottke" [ref=f3e645]':
+            - /url: https://kottke.org/20/08/interior-space-a-visual-exploration-of-the-international-space-station
+            - generic [ref=f3e646]:
+              - generic [ref=f3e648]: "Interior Space: A Visual Exploration of the International Space Station"
+              - generic [ref=f3e652]: Kottke
+        - generic [ref=f3e654]:
+          - heading "Related searches" [level=2] [ref=f3e655]
+          - link "bedroom international space station inside" [ref=f3e656] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=bedroom+international+space+station+inside&stick=H4sIAAAAAAAAAFvEqpWUmlKUn5-rkJlXklqUl1iSmZ-XmKNQXJCYnKpQXALmA-WKM1NSAQmguvItAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegQIdBAA
+            - generic [ref=f3e661]: bedroom international space station inside
+          - link "inside layout international space station" [ref=f3e662] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=inside+layout+international+space+station&stick=H4sIAAAAAAAAAFvEqpmZV5yZkqqQk1iZX1qikJlXklqUl1iSmZ-XmKNQXJCYnKpQXALmAwBaugviLAAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUIjAEQAA
+            - generic [ref=f3e667]: inside layout international space station
+          - link "toilet on the international space station" [ref=f3e668] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=toilet+on+the+international+space+station&stick=H4sIAAAAAAAAAFvEqlmSn5mTWqKQn6dQkpGqkJlXklqUl1iSmZ-XmKNQXJCYnKpQXALmAwAWk3hALAAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUItwEQAA
+            - generic [ref=f3e673]: toilet on the international space station
+        - generic [ref=f3e677] [cursor=pointer]:
+          - button "Why NASA Is Lighting 'Cool Flames' Inside the ISS - SpaceRef" [ref=f3e682]:
+            - img "Why NASA Is Lighting 'Cool Flames' Inside the ISS - SpaceRef" [ref=f3e684]
+          - link "Why NASA Is Lighting 'Cool Flames' Inside the ISS - SpaceRef SpaceRef" [ref=f3e686]:
+            - /url: https://spaceref.com/newspace-and-tech/why-nasa-lighting-cool-flames-inside-iss/
+            - generic [ref=f3e687]:
+              - generic [ref=f3e689]: Why NASA Is Lighting 'Cool Flames' Inside the ISS - SpaceRef
+              - generic [ref=f3e693]: SpaceRef
+        - generic [ref=f3e697] [cursor=pointer]:
+          - generic [ref=f3e699]:
+            - button "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images" [ref=f3e702]:
+              - img "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images" [ref=f3e704]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images Getty Images" [ref=f3e706]:
+            - /url: https://www.gettyimages.com/photos/inside-international-space-station
+            - generic [ref=f3e707]:
+              - generic [ref=f3e709]: 721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images
+              - generic [ref=f3e713]: Getty Images
+        - generic [ref=f3e717] [cursor=pointer]:
+          - 'button "One nice change that has been made to ISS since my final NASA Expedition is tunable lights that have 3 frequencies: a general frequency normal operations during the day, in the morning" [ref=f3e722]':
+            - 'img "One nice change that has been made to ISS since my final NASA Expedition is tunable lights that have 3 frequencies: a general frequency normal operations during the day, in the morning" [ref=f3e724]'
+          - 'link "One nice change that has been made to ISS since my final NASA Expedition is tunable lights that have 3 frequencies: a general frequency normal operations during the day, in the morning Instagram" [ref=f3e726]':
+            - /url: https://www.instagram.com/p/C6_h8ntOTg2/
+            - generic [ref=f3e727]:
+              - generic [ref=f3e729]: "One nice change that has been made to ISS since my final NASA Expedition is tunable lights that have 3 frequencies: a general frequency normal operations during the day, in the morning"
+              - generic [ref=f3e733]: Instagram
+        - generic [ref=f3e737] [cursor=pointer]:
+          - 'button "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e742]':
+            - 'img "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e744]'
+          - 'link "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian The Guardian" [ref=f3e746]':
+            - /url: https://www.theguardian.com/artanddesign/gallery/2020/nov/10/gimme-some-space-inside-the-international-space-station-in-pictures
+            - generic [ref=f3e747]:
+              - generic [ref=f3e749]: "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian"
+              - generic [ref=f3e753]: The Guardian
+        - generic [ref=f3e757] [cursor=pointer]:
+          - button "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange" [ref=f3e762]:
+            - img "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange" [ref=f3e764]
+          - link "How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange Space Exploration Stack Exchange" [ref=f3e766]:
+            - /url: https://space.stackexchange.com/questions/53769/how-does-the-iss-crew-adjust-the-color-of-the-new-led-cabin-lighting-is-there-a
+            - generic [ref=f3e767]:
+              - generic [ref=f3e769]: How does the ISS crew adjust the color of the new LED cabin lighting? Is there a knob somewhere? Can it be programmed to change by itself? - Space Exploration Stack Exchange
+              - generic [ref=f3e773]: Space Exploration Stack Exchange
+        - generic [ref=f3e777] [cursor=pointer]:
+          - generic [ref=f3e779]:
+            - button "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock" [ref=f3e782]:
+              - img "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock" [ref=f3e784]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock iStock" [ref=f3e786]:
+            - /url: https://www.istockphoto.com/photos/international-space-station-interior
+            - generic [ref=f3e787]:
+              - generic [ref=f3e789]: 250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock
+              - generic [ref=f3e793]: iStock
+        - generic [ref=f3e797] [cursor=pointer]:
+          - 'button "Tablet-controlled with ambient lighting: Inside Boeing''s next-gen spaceship | The Independent | The Independent" [ref=f3e802]':
+            - 'img "Tablet-controlled with ambient lighting: Inside Boeing''s next-gen spaceship | The Independent | The Independent" [ref=f3e804]'
+          - 'link "Tablet-controlled with ambient lighting: Inside Boeing''s next-gen spaceship | The Independent | The Independent The Independent" [ref=f3e806]':
+            - /url: https://www.independent.co.uk/tech/tabletcontrolled-with-ambient-lighting-inside-boeing-s-nextgen-spaceship-8730121.html
+            - generic [ref=f3e807]:
+              - generic [ref=f3e809]: "Tablet-controlled with ambient lighting: Inside Boeing's next-gen spaceship | The Independent | The Independent"
+              - generic [ref=f3e813]: The Independent
+        - generic [ref=f3e817] [cursor=pointer]:
+          - 'button "The International Space Station at night: 🟢 lights in the @NASA Destiny lab 🟡 lights in Node-2 🌍 reflections on the ceiling The @Space_Station can be a more colourful place than you" [ref=f3e822]':
+            - 'img "The International Space Station at night: 🟢 lights in the @NASA Destiny lab 🟡 lights in Node-2 🌍 reflections on the ceiling The @Space_Station can be a more colourful place than you" [ref=f3e824]'
+          - 'link "The International Space Station at night: 🟢 lights in the @NASA Destiny lab 🟡 lights in Node-2 🌍 reflections on the ceiling The @Space_Station can be a more colourful place than you x.com" [ref=f3e826]':
+            - /url: https://x.com/Thom_astro/status/1409241362873077761
+            - generic [ref=f3e827]:
+              - generic [ref=f3e829]: "The International Space Station at night: 🟢 lights in the @NASA Destiny lab 🟡 lights in Node-2 🌍 reflections on the ceiling The @Space_Station can be a more colourful place than you"
+              - generic [ref=f3e833]: x.com
+        - generic [ref=f3e837] [cursor=pointer]:
+          - 'button "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e842]':
+            - 'img "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e844]'
+          - 'link "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian The Guardian" [ref=f3e846]':
+            - /url: https://www.theguardian.com/artanddesign/gallery/2020/nov/10/gimme-some-space-inside-the-international-space-station-in-pictures
+            - generic [ref=f3e847]:
+              - generic [ref=f3e849]: "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian"
+              - generic [ref=f3e853]: The Guardian
+        - generic [ref=f3e857] [cursor=pointer]:
+          - 'button "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e862]':
+            - 'img "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e864]'
+          - 'link "Voyager Station: Interiors of the First Luxury Space Station Brera Interni" [ref=f3e866]':
+            - /url: https://www.brerainterni.com/magazine/post/voyager-station-interiors-of-first-luxury-space-station?srsltid=AfmBOoorCb4ydD7c4JxptOipxw6ifs8y9rdCwSi7VNBamUJzRQPfseBB
+            - generic [ref=f3e867]:
+              - generic [ref=f3e869]: "Voyager Station: Interiors of the First Luxury Space Station"
+              - generic [ref=f3e873]: Brera Interni
+        - generic [ref=f3e877] [cursor=pointer]:
+          - generic [ref=f3e879]:
+            - button "Inside an International Space Station Module with Equipment and Lights, Miscellaneous Motion Graphics ft. space & space station - Envato" [ref=f3e882]:
+              - img "Inside an International Space Station Module with Equipment and Lights, Miscellaneous Motion Graphics ft. space & space station - Envato" [ref=f3e884]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Inside an International Space Station Module with Equipment and Lights, Miscellaneous Motion Graphics ft. space & space station - Envato Envato" [ref=f3e886]:
+            - /url: https://elements.envato.com/inside-an-international-space-station-module-with--2YE5DT6?srsltid=AfmBOoq6E0O_F5d1goElQAK1sCu8EZmkvhgWtROCo3T_IGE2JkaENjD2
+            - generic [ref=f3e887]:
+              - generic [ref=f3e889]: Inside an International Space Station Module with Equipment and Lights, Miscellaneous Motion Graphics ft. space & space station - Envato
+              - generic [ref=f3e893]: Envato
+        - generic [ref=f3e897] [cursor=pointer]:
+          - 'button "Boeing CST-100: A Glimpse Into The Future Of Space Travel" [ref=f3e902]':
+            - 'img "Boeing CST-100: A Glimpse Into The Future Of Space Travel" [ref=f3e904]'
+          - 'link "Boeing CST-100: A Glimpse Into The Future Of Space Travel Serious Readers" [ref=f3e906]':
+            - /url: https://www.seriousreaders.com/blog/tablet-controlled-with-ambient-lighting-inside-boeing-s-next-gen-spaceship?srsltid=AfmBOooatQLH_KJ_yk0pUfTgVRPM5TbwB-BbQF1jj7PkkrlT4CC9h7D6
+            - generic [ref=f3e907]:
+              - generic [ref=f3e909]: "Boeing CST-100: A Glimpse Into The Future Of Space Travel"
+              - generic [ref=f3e913]: Serious Readers
+        - generic [ref=f3e917] [cursor=pointer]:
+          - button "Take NASA's 4K Video Tour of the International Space Station" [ref=f3e922]:
+            - img "Take NASA's 4K Video Tour of the International Space Station" [ref=f3e924]
+          - link "Take NASA's 4K Video Tour of the International Space Station The Drive" [ref=f3e926]:
+            - /url: https://www.thedrive.com/news/5818/take-nasas-4k-video-tour-of-the-international-space-station
+            - generic [ref=f3e927]:
+              - generic [ref=f3e929]: Take NASA's 4K Video Tour of the International Space Station
+              - generic [ref=f3e933]: The Drive
+        - generic [ref=f3e937] [cursor=pointer]:
+          - button "A good night's sleep in orbit" [ref=f3e942]:
+            - img "A good night's sleep in orbit" [ref=f3e944]
+          - link "A good night's sleep in orbit Phys.org" [ref=f3e946]:
+            - /url: https://phys.org/news/2023-09-good-night-orbit.html
+            - generic [ref=f3e947]:
+              - generic [ref=f3e949]: A good night's sleep in orbit
+              - generic [ref=f3e953]: Phys.org
+        - generic [ref=f3e957] [cursor=pointer]:
+          - button "Home Sweet Home in Orbit - The New York Times" [ref=f3e962]:
+            - img "Home Sweet Home in Orbit - The New York Times" [ref=f3e964]
+          - link "Home Sweet Home in Orbit - The New York Times ny times" [ref=f3e966]:
+            - /url: https://www.nytimes.com/2020/11/02/science/space-station-astronomy.html
+            - generic [ref=f3e967]:
+              - generic [ref=f3e969]: Home Sweet Home in Orbit - The New York Times
+              - generic [ref=f3e973]: ny times
+        - generic [ref=f3e977] [cursor=pointer]:
+          - generic [ref=f3e979]:
+            - button "Interior lights give the Microgravity Science Glovebox (MSG) the appearance of a high-tech juke box. The European Space Agency (ESA) and NASA are developing the MSG for use aboard the International Space" [ref=f3e982]:
+              - img "Interior lights give the Microgravity Science Glovebox (MSG) the appearance of a high-tech juke box. The European Space Agency (ESA) and NASA are developing the MSG for use aboard the International Space" [ref=f3e984]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Interior lights give the Microgravity Science Glovebox (MSG) the appearance of a high-tech juke box. The European Space Agency (ESA) and NASA are developing the MSG for use aboard the International Space Alamy" [ref=f3e986]:
+            - /url: https://www.alamy.com/interior-lights-give-the-microgravity-science-glovebox-msg-the-appearance-of-a-high-tech-juke-box-the-european-space-agency-esa-and-nasa-are-developing-the-msg-for-use-aboard-the-international-space-station-iss-scientists-will-use-the-msg-to-carry-out-multidisciplinary-studies-in-combustion-science-fluid-physics-and-materials-science-image361371311.html
+            - generic [ref=f3e987]:
+              - generic [ref=f3e989]: Interior lights give the Microgravity Science Glovebox (MSG) the appearance of a high-tech juke box. The European Space Agency (ESA) and NASA are developing the MSG for use aboard the International Space
+              - generic [ref=f3e993]: Alamy
+        - generic [ref=f3e997] [cursor=pointer]:
+          - 'button "ISS: What life is like for Nasa astronauts Suni Williams and Butch Wilmore" [ref=f3e1002]':
+            - 'img "ISS: What life is like for Nasa astronauts Suni Williams and Butch Wilmore" [ref=f3e1004]'
+          - 'link "ISS: What life is like for Nasa astronauts Suni Williams and Butch Wilmore BBC" [ref=f3e1006]':
+            - /url: https://www.bbc.com/news/articles/cp3dv0ddwp7o
+            - generic [ref=f3e1007]:
+              - generic [ref=f3e1009]: "ISS: What life is like for Nasa astronauts Suni Williams and Butch Wilmore"
+              - generic [ref=f3e1013]: BBC
+        - generic [ref=f3e1017] [cursor=pointer]:
+          - generic [ref=f3e1019]:
+            - button "648 International Space Station Interior Stock Video Footage - 4K and HD Video Clips | Shutterstock" [ref=f3e1022]:
+              - img "648 International Space Station Interior Stock Video Footage - 4K and HD Video Clips | Shutterstock" [ref=f3e1024]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "648 International Space Station Interior Stock Video Footage - 4K and HD Video Clips | Shutterstock Shutterstock" [ref=f3e1026]:
+            - /url: https://www.shutterstock.com/video/search/international-space-station-interior
+            - generic [ref=f3e1027]:
+              - generic [ref=f3e1029]: 648 International Space Station Interior Stock Video Footage - 4K and HD Video Clips | Shutterstock
+              - generic [ref=f3e1033]: Shutterstock
+        - generic [ref=f3e1037] [cursor=pointer]:
+          - 'button "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e1042]':
+            - 'img "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e1044]'
+          - 'link "Voyager Station: Interiors of the First Luxury Space Station Brera Interni" [ref=f3e1046]':
+            - /url: https://www.brerainterni.com/magazine/post/voyager-station-interiors-of-first-luxury-space-station?srsltid=AfmBOoocVa3L3Mpx9BQLCfm0Cevb23sIMRDLL4aIWWZBGm1tp62tmGpO
+            - generic [ref=f3e1047]:
+              - generic [ref=f3e1049]: "Voyager Station: Interiors of the First Luxury Space Station"
+              - generic [ref=f3e1053]: Brera Interni
+        - generic [ref=f3e1057] [cursor=pointer]:
+          - button "Nighttime Photos of the International Space Station - Business Insider" [ref=f3e1062]:
+            - img "Nighttime Photos of the International Space Station - Business Insider" [ref=f3e1064]
+          - link "Nighttime Photos of the International Space Station - Business Insider Business Insider" [ref=f3e1066]:
+            - /url: https://www.businessinsider.com/nighttime-photos-of-the-international-space-station-2014-11
+            - generic [ref=f3e1067]:
+              - generic [ref=f3e1069]: Nighttime Photos of the International Space Station - Business Insider
+              - generic [ref=f3e1073]: Business Insider
+        - generic [ref=f3e1077] [cursor=pointer]:
+          - 'button "Image: Interior view from the International Space Station cupola" [ref=f3e1082]':
+            - 'img "Image: Interior view from the International Space Station cupola" [ref=f3e1084]'
+          - 'link "Image: Interior view from the International Space Station cupola Phys.org" [ref=f3e1086]':
+            - /url: https://phys.org/news/2015-01-image-interior-view-international-space.html
+            - generic [ref=f3e1087]:
+              - generic [ref=f3e1089]: "Image: Interior view from the International Space Station cupola"
+              - generic [ref=f3e1093]: Phys.org
+        - generic [ref=f3e1097] [cursor=pointer]:
+          - 'button "Sci-Fi Hallway Scene inspired by the International Space Station [Octane] : r/Cinema4D" [ref=f3e1102]':
+            - 'img "Sci-Fi Hallway Scene inspired by the International Space Station [Octane] : r/Cinema4D" [ref=f3e1104]'
+          - 'link "Sci-Fi Hallway Scene inspired by the International Space Station [Octane] : r/Cinema4D Reddit" [ref=f3e1106]':
+            - /url: https://www.reddit.com/r/Cinema4D/comments/4y5yq7/scifi_hallway_scene_inspired_by_the_international/
+            - generic [ref=f3e1107]:
+              - generic [ref=f3e1109]: "Sci-Fi Hallway Scene inspired by the International Space Station [Octane] : r/Cinema4D"
+              - generic [ref=f3e1113]: Reddit
+        - generic [ref=f3e1117] [cursor=pointer]:
+          - button "Inside an International Space Station Module with Equipment and Lights, Miscellaneous Motion Graphics ft. space & space station - Envato" [ref=f3e1122]:
+            - img "Inside an International Space Station Module with Equipment and Lights, Miscellaneous Motion Graphics ft. space & space station - Envato" [ref=f3e1124]
+          - link "Inside an International Space Station Module with Equipment and Lights, Miscellaneous Motion Graphics ft. space & space station - Envato Envato" [ref=f3e1126]:
+            - /url: https://elements.envato.com/inside-an-international-space-station-module-with--2YE5DT6?srsltid=AfmBOoquDIxP8GLEIGppplFlA0Z2bNlmgepHwPwmd38VZzDNTuYYAirb
+            - generic [ref=f3e1127]:
+              - generic [ref=f3e1129]: Inside an International Space Station Module with Equipment and Lights, Miscellaneous Motion Graphics ft. space & space station - Envato
+              - generic [ref=f3e1133]: Envato
+        - generic [ref=f3e1137] [cursor=pointer]:
+          - generic [ref=f3e1139]:
+            - button "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images" [ref=f3e1142]:
+              - img "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images" [ref=f3e1144]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images Getty Images" [ref=f3e1146]:
+            - /url: https://www.gettyimages.com/photos/inside-international-space-station
+            - generic [ref=f3e1147]:
+              - generic [ref=f3e1149]: 721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images
+              - generic [ref=f3e1153]: Getty Images
+        - generic [ref=f3e1155]:
+          - heading "Related searches" [level=2] [ref=f3e1156]
+          - link "bathroom iss inside" [ref=f3e1157] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=bathroom+iss+inside&stick=H4sIAAAAAAAAAFvEKpyUWJJRlJ-fq5BZXKyQmVecmZIKAERC-6YWAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUI2wIQAA
+            - generic [ref=f3e1162]: bathroom iss inside
+          - link "sleeping international space station inside" [ref=f3e1163] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=sleeping+international+space+station+inside&stick=H4sIAAAAAAAAAFvEql2ck5pakJmXrpCZV5JalJdYkpmfl5ijUFyQmJyqUFwC5gPlijNTUgEj45BFLgAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUI4QIQAA
+            - generic [ref=f3e1168]: sleeping international space station inside
+          - link "iss bedroom" [ref=f3e1169] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=iss+bedroom&stick=H4sIAAAAAAAAAFvEyp1ZXKyQlJpSlJ-fCwACqrlvDgAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUI6QIQAA
+            - generic [ref=f3e1174]: iss bedroom
+        - generic [ref=f3e1178] [cursor=pointer]:
+          - button "Twas the night before Christmas Eve and all through the @Space_Station, not a creature was stirring, not even an astronaut ready for exploration. Happy holiday season from low-Earth orbit! ☃️❄️" [ref=f3e1183]:
+            - img "Twas the night before Christmas Eve and all through the @Space_Station, not a creature was stirring, not even an astronaut ready for exploration. Happy holiday season from low-Earth orbit! ☃️❄️" [ref=f3e1185]
+          - link "Twas the night before Christmas Eve and all through the @Space_Station, not a creature was stirring, not even an astronaut ready for exploration. Happy holiday season from low-Earth orbit! ☃️❄️ x.com" [ref=f3e1187]:
+            - /url: https://x.com/ISS_Research/status/1606416647010783232
+            - generic [ref=f3e1188]:
+              - generic [ref=f3e1190]: Twas the night before Christmas Eve and all through the @Space_Station, not a creature was stirring, not even an astronaut ready for exploration. Happy holiday season from low-Earth orbit! ☃️❄️
+              - generic [ref=f3e1194]: x.com
+        - generic [ref=f3e1198] [cursor=pointer]:
+          - 'button "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e1203]':
+            - 'img "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e1205]'
+          - 'link "Voyager Station: Interiors of the First Luxury Space Station Brera Interni" [ref=f3e1207]':
+            - /url: https://www.brerainterni.com/magazine/post/voyager-station-interiors-of-first-luxury-space-station?srsltid=AfmBOop2z98TdiGyMu9MYPSywXzCetk8LDPOJLyzHKGwZA_v3mP84oXQ
+            - generic [ref=f3e1208]:
+              - generic [ref=f3e1210]: "Voyager Station: Interiors of the First Luxury Space Station"
+              - generic [ref=f3e1214]: Brera Interni
+        - generic [ref=f3e1218] [cursor=pointer]:
+          - generic [ref=f3e1220]:
+            - button "Interior of a space station displaying red ambient lighting and equipment 50918969 Stock Video at Vecteezy" [ref=f3e1223]:
+              - img "Interior of a space station displaying red ambient lighting and equipment 50918969 Stock Video at Vecteezy" [ref=f3e1225]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Interior of a space station displaying red ambient lighting and equipment 50918969 Stock Video at Vecteezy Vecteezy" [ref=f3e1227]:
+            - /url: https://www.vecteezy.com/video/50918969-interior-of-a-space-station-displaying-red-ambient-lighting-and-equipment
+            - generic [ref=f3e1228]:
+              - generic [ref=f3e1230]: Interior of a space station displaying red ambient lighting and equipment 50918969 Stock Video at Vecteezy
+              - generic [ref=f3e1234]: Vecteezy
+        - generic [ref=f3e1238] [cursor=pointer]:
+          - 'button "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e1243]':
+            - 'img "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e1245]'
+          - 'link "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian The Guardian" [ref=f3e1247]':
+            - /url: https://www.theguardian.com/artanddesign/gallery/2020/nov/10/gimme-some-space-inside-the-international-space-station-in-pictures
+            - generic [ref=f3e1248]:
+              - generic [ref=f3e1250]: "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian"
+              - generic [ref=f3e1254]: The Guardian
+        - generic [ref=f3e1258] [cursor=pointer]:
+          - button "See the ISS Dwarfed by the Moon" [ref=f3e1263]:
+            - img "See the ISS Dwarfed by the Moon" [ref=f3e1265]
+          - link "See the ISS Dwarfed by the Moon TIME" [ref=f3e1267]:
+            - /url: https://time.com/3981443/space-station-moon-dwarfed/
+            - generic [ref=f3e1268]:
+              - generic [ref=f3e1270]: See the ISS Dwarfed by the Moon
+              - generic [ref=f3e1274]: TIME
+        - generic [ref=f3e1278] [cursor=pointer]:
+          - button "48,268 Space Station Interior Royalty-Free Images, Stock Photos & Pictures | Shutterstock" [ref=f3e1283]:
+            - img "48,268 Space Station Interior Royalty-Free Images, Stock Photos & Pictures | Shutterstock" [ref=f3e1285]
+          - link "48,268 Space Station Interior Royalty-Free Images, Stock Photos & Pictures | Shutterstock Shutterstock" [ref=f3e1287]:
+            - /url: https://www.shutterstock.com/search/space-station-interior
+            - generic [ref=f3e1288]:
+              - generic [ref=f3e1290]: 48,268 Space Station Interior Royalty-Free Images, Stock Photos & Pictures | Shutterstock
+              - generic [ref=f3e1294]: Shutterstock
+        - generic [ref=f3e1298] [cursor=pointer]:
+          - button "Take a video tour of the International Space Station - CSMonitor.com" [ref=f3e1303]:
+            - img "Take a video tour of the International Space Station - CSMonitor.com" [ref=f3e1305]
+          - link "Take a video tour of the International Space Station - CSMonitor.com The Christian Science Monitor" [ref=f3e1307]:
+            - /url: https://www.csmonitor.com/Science/2016/1102/Take-a-video-tour-of-the-International-Space-Station
+            - generic [ref=f3e1308]:
+              - generic [ref=f3e1310]: Take a video tour of the International Space Station - CSMonitor.com
+              - generic [ref=f3e1314]: The Christian Science Monitor
+        - generic [ref=f3e1318] [cursor=pointer]:
+          - button "Twas the night before Christmas Eve and all through the @Space_Station, not a creature was stirring, not even an astronaut ready for exploration. Happy holiday season from low-Earth orbit! ☃️❄️" [ref=f3e1323]:
+            - img "Twas the night before Christmas Eve and all through the @Space_Station, not a creature was stirring, not even an astronaut ready for exploration. Happy holiday season from low-Earth orbit! ☃️❄️" [ref=f3e1325]
+          - link "Twas the night before Christmas Eve and all through the @Space_Station, not a creature was stirring, not even an astronaut ready for exploration. Happy holiday season from low-Earth orbit! ☃️❄️ x.com" [ref=f3e1327]:
+            - /url: https://x.com/ISS_Research/status/1606416647010783232
+            - generic [ref=f3e1328]:
+              - generic [ref=f3e1330]: Twas the night before Christmas Eve and all through the @Space_Station, not a creature was stirring, not even an astronaut ready for exploration. Happy holiday season from low-Earth orbit! ☃️❄️
+              - generic [ref=f3e1334]: x.com
+        - generic [ref=f3e1338] [cursor=pointer]:
+          - generic [ref=f3e1340]:
+            - button "648 International Space Station Interior Stock Video Footage - 4K and HD Video Clips | Shutterstock" [ref=f3e1343]:
+              - img "648 International Space Station Interior Stock Video Footage - 4K and HD Video Clips | Shutterstock" [ref=f3e1345]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "648 International Space Station Interior Stock Video Footage - 4K and HD Video Clips | Shutterstock Shutterstock" [ref=f3e1347]:
+            - /url: https://www.shutterstock.com/video/search/international-space-station-interior
+            - generic [ref=f3e1348]:
+              - generic [ref=f3e1350]: 648 International Space Station Interior Stock Video Footage - 4K and HD Video Clips | Shutterstock
+              - generic [ref=f3e1354]: Shutterstock
+        - generic [ref=f3e1358] [cursor=pointer]:
+          - button "We work hard on the @iss, but we also like to relax together. Sometimes we do movie nights in space." [ref=f3e1363]:
+            - img "We work hard on the @iss, but we also like to relax together. Sometimes we do movie nights in space." [ref=f3e1365]
+          - link "We work hard on the @iss, but we also like to relax together. Sometimes we do movie nights in space. Instagram" [ref=f3e1367]:
+            - /url: https://www.instagram.com/p/DRSnXwFDsWN/
+            - generic [ref=f3e1368]:
+              - generic [ref=f3e1370]: We work hard on the @iss, but we also like to relax together. Sometimes we do movie nights in space.
+              - generic [ref=f3e1374]: Instagram
+        - generic [ref=f3e1378] [cursor=pointer]:
+          - button "Tour the International Space Station in new NASA walkthrough | Popular Science" [ref=f3e1383]:
+            - img "Tour the International Space Station in new NASA walkthrough | Popular Science" [ref=f3e1385]
+          - link "Tour the International Space Station in new NASA walkthrough | Popular Science Popular Science" [ref=f3e1387]:
+            - /url: https://www.popsci.com/science/iss-nasa-walkthrough-video/
+            - generic [ref=f3e1388]:
+              - generic [ref=f3e1390]: Tour the International Space Station in new NASA walkthrough | Popular Science
+              - generic [ref=f3e1394]: Popular Science
+        - generic [ref=f3e1398] [cursor=pointer]:
+          - button "iss - Why does the International Space Station have a downward facing light? - Space Exploration Stack Exchange" [ref=f3e1403]:
+            - img "iss - Why does the International Space Station have a downward facing light? - Space Exploration Stack Exchange" [ref=f3e1405]
+          - link "iss - Why does the International Space Station have a downward facing light? - Space Exploration Stack Exchange Space Exploration Stack Exchange" [ref=f3e1407]:
+            - /url: https://space.stackexchange.com/questions/5592/why-does-the-international-space-station-have-a-downward-facing-light
+            - generic [ref=f3e1408]:
+              - generic [ref=f3e1410]: iss - Why does the International Space Station have a downward facing light? - Space Exploration Stack Exchange
+              - generic [ref=f3e1414]: Space Exploration Stack Exchange
+        - generic [ref=f3e1418] [cursor=pointer]:
+          - 'button "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e1423]':
+            - 'img "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e1425]'
+          - 'link "Voyager Station: Interiors of the First Luxury Space Station Brera Interni" [ref=f3e1427]':
+            - /url: https://www.brerainterni.com/magazine/post/voyager-station-interiors-of-first-luxury-space-station?srsltid=AfmBOop7as-u0bZzMBN9180cbWC7xrzEyPWI-Ooi_rcmzkP-rrZj4zcP
+            - generic [ref=f3e1428]:
+              - generic [ref=f3e1430]: "Voyager Station: Interiors of the First Luxury Space Station"
+              - generic [ref=f3e1434]: Brera Interni
+        - generic [ref=f3e1438] [cursor=pointer]:
+          - generic [ref=f3e1440]:
+            - button "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock" [ref=f3e1443]:
+              - img "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock" [ref=f3e1445]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock iStock" [ref=f3e1447]:
+            - /url: https://www.istockphoto.com/photos/international-space-station-interior
+            - generic [ref=f3e1448]:
+              - generic [ref=f3e1450]: 250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock
+              - generic [ref=f3e1454]: iStock
+        - generic [ref=f3e1458] [cursor=pointer]:
+          - generic [ref=f3e1460]:
+            - button "Interior view of a module aboard the International Space Station 56361468 Stock Video at Vecteezy" [ref=f3e1463]:
+              - img "Interior view of a module aboard the International Space Station 56361468 Stock Video at Vecteezy" [ref=f3e1465]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Interior view of a module aboard the International Space Station 56361468 Stock Video at Vecteezy Vecteezy" [ref=f3e1467]:
+            - /url: https://www.vecteezy.com/video/56361468-interior-view-of-a-module-aboard-the-international-space-station
+            - generic [ref=f3e1468]:
+              - generic [ref=f3e1470]: Interior view of a module aboard the International Space Station 56361468 Stock Video at Vecteezy
+              - generic [ref=f3e1474]: Vecteezy
+        - generic [ref=f3e1478] [cursor=pointer]:
+          - button "ESA - Space Station at night" [ref=f3e1483]:
+            - img "ESA - Space Station at night" [ref=f3e1485]
+          - link "ESA - Space Station at night European Space Agency" [ref=f3e1487]:
+            - /url: https://www.esa.int/ESA_Multimedia/Images/2014/10/Space_Station_at_night9
+            - generic [ref=f3e1488]:
+              - generic [ref=f3e1490]: ESA - Space Station at night
+              - generic [ref=f3e1494]: European Space Agency
+        - generic [ref=f3e1498] [cursor=pointer]:
+          - generic [ref=f3e1500]:
+            - button "Interior Section Aboard International Space Station Stock Footage Video (100% Royalty-free) 3772781713 | Shutterstock" [ref=f3e1503]:
+              - img "Interior Section Aboard International Space Station Stock Footage Video (100% Royalty-free) 3772781713 | Shutterstock" [ref=f3e1505]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Interior Section Aboard International Space Station Stock Footage Video (100% Royalty-free) 3772781713 | Shutterstock Shutterstock" [ref=f3e1507]:
+            - /url: https://www.shutterstock.com/video/clip-3772781713-interior-section-aboard-international-space-station-showcases
+            - generic [ref=f3e1508]:
+              - generic [ref=f3e1510]: Interior Section Aboard International Space Station Stock Footage Video (100% Royalty-free) 3772781713 | Shutterstock
+              - generic [ref=f3e1514]: Shutterstock
+        - generic [ref=f3e1518] [cursor=pointer]:
+          - 'button "Interior lighting: Making your spaceship feel like home. : r/starcitizen" [ref=f3e1523]':
+            - 'img "Interior lighting: Making your spaceship feel like home. : r/starcitizen" [ref=f3e1525]'
+          - 'link "Interior lighting: Making your spaceship feel like home. : r/starcitizen Reddit" [ref=f3e1527]':
+            - /url: https://www.reddit.com/r/starcitizen/comments/3rqd37/interior_lighting_making_your_spaceship_feel_like/
+            - generic [ref=f3e1528]:
+              - generic [ref=f3e1530]: "Interior lighting: Making your spaceship feel like home. : r/starcitizen"
+              - generic [ref=f3e1534]: Reddit
+        - generic [ref=f3e1538] [cursor=pointer]:
+          - button "A Dazzling Trail of Night Lights Viewed From International Space Station [Video]" [ref=f3e1543]:
+            - img "A Dazzling Trail of Night Lights Viewed From International Space Station [Video]" [ref=f3e1545]
+          - link "A Dazzling Trail of Night Lights Viewed From International Space Station [Video] SciTechDaily" [ref=f3e1547]:
+            - /url: https://scitechdaily.com/a-dazzling-trail-of-night-lights-viewed-from-international-space-station-video/
+            - generic [ref=f3e1548]:
+              - generic [ref=f3e1550]: A Dazzling Trail of Night Lights Viewed From International Space Station [Video]
+              - generic [ref=f3e1554]: SciTechDaily
+        - generic [ref=f3e1558] [cursor=pointer]:
+          - 'button "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e1563]':
+            - 'img "Voyager Station: Interiors of the First Luxury Space Station" [ref=f3e1565]'
+          - 'link "Voyager Station: Interiors of the First Luxury Space Station Brera Interni" [ref=f3e1567]':
+            - /url: https://www.brerainterni.com/magazine/post/voyager-station-interiors-of-first-luxury-space-station?srsltid=AfmBOopO8Ip0vVtyd6A81JFkGhj8dYnaVaN1s7jXLWAGMBVge7laU2KC
+            - generic [ref=f3e1568]:
+              - generic [ref=f3e1570]: "Voyager Station: Interiors of the First Luxury Space Station"
+              - generic [ref=f3e1574]: Brera Interni
+        - generic [ref=f3e1578] [cursor=pointer]:
+          - generic [ref=f3e1580]:
+            - button "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock" [ref=f3e1583]:
+              - img "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock" [ref=f3e1585]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock iStock" [ref=f3e1587]:
+            - /url: https://www.istockphoto.com/photos/international-space-station-interior
+            - generic [ref=f3e1588]:
+              - generic [ref=f3e1590]: 250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock
+              - generic [ref=f3e1594]: iStock
+        - generic [ref=f3e1598] [cursor=pointer]:
+          - 'button "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e1603]':
+            - 'img "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e1605]'
+          - 'link "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian The Guardian" [ref=f3e1607]':
+            - /url: https://www.theguardian.com/artanddesign/gallery/2020/nov/10/gimme-some-space-inside-the-international-space-station-in-pictures
+            - generic [ref=f3e1608]:
+              - generic [ref=f3e1610]: "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian"
+              - generic [ref=f3e1614]: The Guardian
+        - generic [ref=f3e1618] [cursor=pointer]:
+          - button "Take a Mind-Bending 4K Video Tour Inside the International Space Station Shot with a Fisheye | Shutterbug" [ref=f3e1623]:
+            - img "Take a Mind-Bending 4K Video Tour Inside the International Space Station Shot with a Fisheye | Shutterbug" [ref=f3e1625]
+          - link "Take a Mind-Bending 4K Video Tour Inside the International Space Station Shot with a Fisheye | Shutterbug Shutterbug.com" [ref=f3e1627]:
+            - /url: https://www.shutterbug.com/content/take-mind-bending-video-tour-inside-international-space-station-shot-fisheye-lens
+            - generic [ref=f3e1628]:
+              - generic [ref=f3e1630]: Take a Mind-Bending 4K Video Tour Inside the International Space Station Shot with a Fisheye | Shutterbug
+              - generic [ref=f3e1634]: Shutterbug.com
+        - generic [ref=f3e1638] [cursor=pointer]:
+          - button "Sleeping on the ISS isn't easy. This lamp for astronauts could help | Space" [ref=f3e1643]:
+            - img "Sleeping on the ISS isn't easy. This lamp for astronauts could help | Space" [ref=f3e1645]
+          - link "Sleeping on the ISS isn't easy. This lamp for astronauts could help | Space Space" [ref=f3e1647]:
+            - /url: https://www.space.com/iss-astronauts-sleep-circadian-rhythm-lamp
+            - generic [ref=f3e1648]:
+              - generic [ref=f3e1650]: Sleeping on the ISS isn't easy. This lamp for astronauts could help | Space
+              - generic [ref=f3e1654]: Space
+        - generic [ref=f3e1656]:
+          - heading "Related searches" [level=2] [ref=f3e1657]
+          - link "toilet international space station inside" [ref=f3e1658] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=toilet+international+space+station+inside&stick=H4sIAAAAAAAAAFvEqlmSn5mTWqKQmVeSWpSXWJKZn5eYo1BckJicqlBcAuYD5YozU1IB8v_a7SwAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUIlAQQAA
+            - generic [ref=f3e1663]: toilet international space station inside
+          - link "iss interior" [ref=f3e1664] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=iss+interior&stick=H4sIAAAAAAAAAFvEypNZXKyQmVeSWpSZXwQAlLGo5Q8AAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUIqQQQAA
+            - generic [ref=f3e1669]: iss interior
+          - link "iss lights from earth" [ref=f3e1670] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=iss+lights+from+earth&stick=H4sIAAAAAAAAAFvEKppZXKyQk5meUVKskFaUn6uQmlhUkgEA2bmkLxgAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUIwAQQAA
+            - generic [ref=f3e1675]: iss lights from earth
+        - generic [ref=f3e1679] [cursor=pointer]:
+          - button "Unimersiv's new experience will take you inside the International Space Station" [ref=f3e1684]:
+            - img "Unimersiv's new experience will take you inside the International Space Station" [ref=f3e1686]
+          - link "Unimersiv's new experience will take you inside the International Space Station Unimersiv" [ref=f3e1688]:
+            - /url: https://unimersiv.com/international-space-station-virtual-reality-vr/
+            - generic [ref=f3e1689]:
+              - generic [ref=f3e1691]: Unimersiv's new experience will take you inside the International Space Station
+              - generic [ref=f3e1695]: Unimersiv
+        - generic [ref=f3e1699] [cursor=pointer]:
+          - button "interior, spacecraft photography, international space station, cupola, space, panels, clouds, earth | Piqsels" [ref=f3e1704]:
+            - img "interior, spacecraft photography, international space station, cupola, space, panels, clouds, earth | Piqsels" [ref=f3e1706]
+          - link "interior, spacecraft photography, international space station, cupola, space, panels, clouds, earth | Piqsels Piqsels" [ref=f3e1708]:
+            - /url: https://www.piqsels.com/en/public-domain-photo-fmssj
+            - generic [ref=f3e1709]:
+              - generic [ref=f3e1711]: interior, spacecraft photography, international space station, cupola, space, panels, clouds, earth | Piqsels
+              - generic [ref=f3e1715]: Piqsels
+        - generic [ref=f3e1719] [cursor=pointer]:
+          - button "Nighttime Photos of the International Space Station - Business Insider" [ref=f3e1724]:
+            - img "Nighttime Photos of the International Space Station - Business Insider" [ref=f3e1726]
+          - link "Nighttime Photos of the International Space Station - Business Insider Business Insider" [ref=f3e1728]:
+            - /url: https://www.businessinsider.com/nighttime-photos-of-the-international-space-station-2014-11
+            - generic [ref=f3e1729]:
+              - generic [ref=f3e1731]: Nighttime Photos of the International Space Station - Business Insider
+              - generic [ref=f3e1735]: Business Insider
+        - generic [ref=f3e1739] [cursor=pointer]:
+          - button "See 360-degree view inside International Space Station | Euronews" [ref=f3e1744]:
+            - img "See 360-degree view inside International Space Station | Euronews" [ref=f3e1746]
+          - link "See 360-degree view inside International Space Station | Euronews Euronews" [ref=f3e1748]:
+            - /url: https://www.euronews.com/health/2019/07/17/see-360-degree-view-inside-international-space-station
+            - generic [ref=f3e1749]:
+              - generic [ref=f3e1751]: See 360-degree view inside International Space Station | Euronews
+              - generic [ref=f3e1755]: Euronews
+        - generic [ref=f3e1759] [cursor=pointer]:
+          - 'button "Xploration Outer Space: A Space Station for All" [ref=f3e1764]':
+            - 'img "Xploration Outer Space: A Space Station for All" [ref=f3e1766]'
+          - 'link "Xploration Outer Space: A Space Station for All The Described and Captioned Media Program" [ref=f3e1768]':
+            - /url: https://dcmp.org/media/21218-xploration-outer-space-a-space-station-for-all
+            - generic [ref=f3e1769]:
+              - generic [ref=f3e1771]: "Xploration Outer Space: A Space Station for All"
+              - generic [ref=f3e1775]: The Described and Captioned Media Program
+        - generic [ref=f3e1779] [cursor=pointer]:
+          - button "Nighttime Photos of the International Space Station - Business Insider" [ref=f3e1784]:
+            - img "Nighttime Photos of the International Space Station - Business Insider" [ref=f3e1786]
+          - link "Nighttime Photos of the International Space Station - Business Insider Business Insider" [ref=f3e1788]:
+            - /url: https://www.businessinsider.com/nighttime-photos-international-space-station-2015-10
+            - generic [ref=f3e1789]:
+              - generic [ref=f3e1791]: Nighttime Photos of the International Space Station - Business Insider
+              - generic [ref=f3e1795]: Business Insider
+        - generic [ref=f3e1799] [cursor=pointer]:
+          - button "NASA Astronauts | “Happy 4th of July! No fireworks on the ISS so we used camera flashes instead. Experimented with “light painting” today. 15 sec, f22,... | Instagram" [ref=f3e1804]:
+            - img "NASA Astronauts | “Happy 4th of July! No fireworks on the ISS so we used camera flashes instead. Experimented with “light painting” today. 15 sec, f22,... | Instagram" [ref=f3e1806]
+          - link "NASA Astronauts | “Happy 4th of July! No fireworks on the ISS so we used camera flashes instead. Experimented with “light painting” today. 15 sec, f22,... | Instagram Instagram" [ref=f3e1808]:
+            - /url: https://www.instagram.com/p/C9DBpKdpHTS/
+            - generic [ref=f3e1809]:
+              - generic [ref=f3e1811]: NASA Astronauts | “Happy 4th of July! No fireworks on the ISS so we used camera flashes instead. Experimented with “light painting” today. 15 sec, f22,... | Instagram
+              - generic [ref=f3e1815]: Instagram
+        - generic [ref=f3e1819] [cursor=pointer]:
+          - button "Executive Summary" [ref=f3e1824]:
+            - img "Executive Summary" [ref=f3e1826]
+          - link "Executive Summary Executive Summary" [ref=f3e1828]:
+            - /url: https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-026-lighting-design.pdf
+            - generic [ref=f3e1829]:
+              - generic [ref=f3e1831]: Executive Summary
+              - generic [ref=f3e1835]: Executive Summary
+        - generic [ref=f3e1839] [cursor=pointer]:
+          - button "Photography and the International Space Station Archeological Project" [ref=f3e1844]:
+            - img "Photography and the International Space Station Archeological Project" [ref=f3e1846]
+          - link "Photography and the International Space Station Archeological Project Scalar - Chapman University" [ref=f3e1848]:
+            - /url: https://scalar.chapman.edu/scalar/interior-space---a-visual-exploration-of-the-international-space-station-photographs-by-paolo-nespo/introduction
+            - generic [ref=f3e1849]:
+              - generic [ref=f3e1851]: Photography and the International Space Station Archeological Project
+              - generic [ref=f3e1855]: Scalar - Chapman University
+        - generic [ref=f3e1859] [cursor=pointer]:
+          - 'button "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e1864]':
+            - 'img "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian" [ref=f3e1866]'
+          - 'link "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian The Guardian" [ref=f3e1868]':
+            - /url: https://www.theguardian.com/artanddesign/gallery/2020/nov/10/gimme-some-space-inside-the-international-space-station-in-pictures
+            - generic [ref=f3e1869]:
+              - generic [ref=f3e1871]: "Gimme some space: inside the International Space Station – in pictures | Art and design | The Guardian"
+              - generic [ref=f3e1875]: The Guardian
+        - generic [ref=f3e1879] [cursor=pointer]:
+          - button "Here's How You Design for Living and Working in Outer Space - Metropolis" [ref=f3e1884]:
+            - img "Here's How You Design for Living and Working in Outer Space - Metropolis" [ref=f3e1886]
+          - link "Here's How You Design for Living and Working in Outer Space - Metropolis Metropolis Magazine" [ref=f3e1888]:
+            - /url: https://metropolismag.com/viewpoints/international-space-station-workplace-design/
+            - generic [ref=f3e1889]:
+              - generic [ref=f3e1891]: Here's How You Design for Living and Working in Outer Space - Metropolis
+              - generic [ref=f3e1895]: Metropolis Magazine
+        - generic [ref=f3e1899] [cursor=pointer]:
+          - button "Astronauts could stay at this space 'motel' on the way to Mars" [ref=f3e1904]:
+            - img "Astronauts could stay at this space 'motel' on the way to Mars" [ref=f3e1906]
+          - link "Astronauts could stay at this space 'motel' on the way to Mars NBC News" [ref=f3e1908]:
+            - /url: https://www.nbcnews.com/mach/science/astronauts-could-stay-space-motel-way-mars-ncna903166
+            - generic [ref=f3e1909]:
+              - generic [ref=f3e1911]: Astronauts could stay at this space 'motel' on the way to Mars
+              - generic [ref=f3e1915]: NBC News
+        - generic [ref=f3e1919] [cursor=pointer]:
+          - button "Does the International Space Station Have External Lights? | HuffPost Contributor" [ref=f3e1924]:
+            - img "Does the International Space Station Have External Lights? | HuffPost Contributor" [ref=f3e1926]
+          - link "Does the International Space Station Have External Lights? | HuffPost Contributor HuffPost" [ref=f3e1928]:
+            - /url: https://www.huffpost.com/entry/does-the-international-space-station-have-external_b_58ed3198e4b0ea028d568d9a
+            - generic [ref=f3e1929]:
+              - generic [ref=f3e1931]: Does the International Space Station Have External Lights? | HuffPost Contributor
+              - generic [ref=f3e1935]: HuffPost
+        - generic [ref=f3e1939] [cursor=pointer]:
+          - generic [ref=f3e1941]:
+            - button "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock" [ref=f3e1944]:
+              - img "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock" [ref=f3e1946]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock iStock" [ref=f3e1948]:
+            - /url: https://www.istockphoto.com/photos/international-space-station-interior
+            - generic [ref=f3e1949]:
+              - generic [ref=f3e1951]: 250+ International Space Station Interior Stock Photos, Pictures & Royalty-Free Images - iStock
+              - generic [ref=f3e1955]: iStock
+        - generic [ref=f3e1959] [cursor=pointer]:
+          - button "Nile River and Egypt City Lights at Night from the International Space Station ISS, Earth from Space, Science Stock Footage ft. space & planet - Envato" [ref=f3e1964]:
+            - img "Nile River and Egypt City Lights at Night from the International Space Station ISS, Earth from Space, Science Stock Footage ft. space & planet - Envato" [ref=f3e1966]
+          - link "Nile River and Egypt City Lights at Night from the International Space Station ISS, Earth from Space, Science Stock Footage ft. space & planet - Envato Envato" [ref=f3e1968]:
+            - /url: https://elements.envato.com/nile-river-and-egypt-city-lights-at-night-from-the-TDZLTES?srsltid=AfmBOoo09cxXQ3HfUaKzA-3TBSEHpAoKm4oyux4iWjMLIRFXlyjLyFiA
+            - generic [ref=f3e1969]:
+              - generic [ref=f3e1971]: Nile River and Egypt City Lights at Night from the International Space Station ISS, Earth from Space, Science Stock Footage ft. space & planet - Envato
+              - generic [ref=f3e1975]: Envato
+        - generic [ref=f3e1979] [cursor=pointer]:
+          - button "What does the ISS look like by night? - Space Exploration Stack Exchange" [ref=f3e1984]:
+            - img "What does the ISS look like by night? - Space Exploration Stack Exchange" [ref=f3e1986]
+          - link "What does the ISS look like by night? - Space Exploration Stack Exchange Space Exploration Stack Exchange" [ref=f3e1988]:
+            - /url: https://space.stackexchange.com/questions/17153/what-does-the-iss-look-like-by-night
+            - generic [ref=f3e1989]:
+              - generic [ref=f3e1991]: What does the ISS look like by night? - Space Exploration Stack Exchange
+              - generic [ref=f3e1995]: Space Exploration Stack Exchange
+        - generic [ref=f3e1999] [cursor=pointer]:
+          - button "7 Photos Of The International Space Station Decorated For Christmas | IBTimes" [ref=f3e2004]:
+            - img "7 Photos Of The International Space Station Decorated For Christmas | IBTimes" [ref=f3e2006]
+          - link "7 Photos Of The International Space Station Decorated For Christmas | IBTimes International Business Times" [ref=f3e2008]:
+            - /url: https://www.ibtimes.com/7-photos-international-space-station-decorated-christmas-2631739
+            - generic [ref=f3e2009]:
+              - generic [ref=f3e2011]: 7 Photos Of The International Space Station Decorated For Christmas | IBTimes
+              - generic [ref=f3e2015]: International Business Times
+        - generic [ref=f3e2019] [cursor=pointer]:
+          - button "See What Life Is Like Inside the International Space Station - ABC News" [ref=f3e2024]:
+            - img "See What Life Is Like Inside the International Space Station - ABC News" [ref=f3e2026]
+          - link "See What Life Is Like Inside the International Space Station - ABC News ABC News" [ref=f3e2028]:
+            - /url: https://abcnews.com/US/life-inside-space-station-photos-iss/story?id=21206626
+            - generic [ref=f3e2029]:
+              - generic [ref=f3e2031]: See What Life Is Like Inside the International Space Station - ABC News
+              - generic [ref=f3e2035]: ABC News
+        - generic [ref=f3e2039] [cursor=pointer]:
+          - button "A minifridge-size lab aboard the @ISS is helping scientists take precise measurements of motion, gravity, and even time. The Cold Atom Lab chills atoms to temperatures below -459 degrees Fahrenheit (-273.15 degrees" [ref=f3e2044]:
+            - img "A minifridge-size lab aboard the @ISS is helping scientists take precise measurements of motion, gravity, and even time. The Cold Atom Lab chills atoms to temperatures below -459 degrees Fahrenheit (-273.15 degrees" [ref=f3e2046]
+          - link "A minifridge-size lab aboard the @ISS is helping scientists take precise measurements of motion, gravity, and even time. The Cold Atom Lab chills atoms to temperatures below -459 degrees Fahrenheit (-273.15 degrees Instagram" [ref=f3e2048]:
+            - /url: https://www.instagram.com/p/DZ_QN4lGb3W/
+            - generic [ref=f3e2049]:
+              - generic [ref=f3e2051]: A minifridge-size lab aboard the @ISS is helping scientists take precise measurements of motion, gravity, and even time. The Cold Atom Lab chills atoms to temperatures below -459 degrees Fahrenheit (-273.15 degrees
+              - generic [ref=f3e2055]: Instagram
+        - generic [ref=f3e2059] [cursor=pointer]:
+          - button "The Colors of the World, Seen From the International Space Station - The Atlantic" [ref=f3e2064]:
+            - img "The Colors of the World, Seen From the International Space Station - The Atlantic" [ref=f3e2066]
+          - link "The Colors of the World, Seen From the International Space Station - The Atlantic The Atlantic" [ref=f3e2068]:
+            - /url: https://www.theatlantic.com/photography/archive/2025/08/colors-international-space-station/683844/
+            - generic [ref=f3e2069]:
+              - generic [ref=f3e2071]: The Colors of the World, Seen From the International Space Station - The Atlantic
+              - generic [ref=f3e2075]: The Atlantic
+        - generic [ref=f3e2079] [cursor=pointer]:
+          - button "Astronaut Jessica Meir Configures the Light Microscopy Module - NASA" [ref=f3e2084]:
+            - img "Astronaut Jessica Meir Configures the Light Microscopy Module - NASA" [ref=f3e2086]
+          - link "Astronaut Jessica Meir Configures the Light Microscopy Module - NASA NASA" [ref=f3e2088]:
+            - /url: https://www.nasa.gov/image-article/astronaut-jessica-meir-configures-light-microscopy-module/
+            - generic [ref=f3e2089]:
+              - generic [ref=f3e2091]: Astronaut Jessica Meir Configures the Light Microscopy Module - NASA
+              - generic [ref=f3e2095]: NASA
+        - generic [ref=f3e2099] [cursor=pointer]:
+          - button "48,268 Space Station Interior Royalty-Free Images, Stock Photos & Pictures | Shutterstock" [ref=f3e2104]:
+            - img "48,268 Space Station Interior Royalty-Free Images, Stock Photos & Pictures | Shutterstock" [ref=f3e2106]
+          - link "48,268 Space Station Interior Royalty-Free Images, Stock Photos & Pictures | Shutterstock Shutterstock" [ref=f3e2108]:
+            - /url: https://www.shutterstock.com/search/space-station-interior
+            - generic [ref=f3e2109]:
+              - generic [ref=f3e2111]: 48,268 Space Station Interior Royalty-Free Images, Stock Photos & Pictures | Shutterstock
+              - generic [ref=f3e2115]: Shutterstock
+        - generic [ref=f3e2119] [cursor=pointer]:
+          - generic [ref=f3e2121]:
+            - button "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images" [ref=f3e2124]:
+              - img "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images" [ref=f3e2126]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images Getty Images" [ref=f3e2128]:
+            - /url: https://www.gettyimages.com/photos/inside-international-space-station
+            - generic [ref=f3e2129]:
+              - generic [ref=f3e2131]: 721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images
+              - generic [ref=f3e2135]: Getty Images
+        - generic [ref=f3e2139] [cursor=pointer]:
+          - button "ILM Brings International Space Station Reality to 'Life' | Animation World Network" [ref=f3e2144]:
+            - img "ILM Brings International Space Station Reality to 'Life' | Animation World Network" [ref=f3e2146]
+          - link "ILM Brings International Space Station Reality to 'Life' | Animation World Network Animation World Network" [ref=f3e2148]:
+            - /url: https://www.awn.com/vfxworld/ilm-brings-international-space-station-reality-life
+            - generic [ref=f3e2149]:
+              - generic [ref=f3e2151]: ILM Brings International Space Station Reality to 'Life' | Animation World Network
+              - generic [ref=f3e2155]: Animation World Network
+        - generic [ref=f3e2157]:
+          - heading "Related searches" [level=2] [ref=f3e2158]
+          - link "bed inside space station" [ref=f3e2159] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=bed+inside+space+station&stick=H4sIAAAAAAAAAFvEKpGUmqKQmVecmZKqUFyQmAwkSxJLMvPzAN7Y0WUbAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUImwIQAA
+            - generic [ref=f3e2164]: bed inside space station
+          - link "inside iss" [ref=f3e2165] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=inside+iss&stick=H4sIAAAAAAAAAFvEypWZV5yZkqqQWVwMACW4D2sNAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUItAIQAA
+            - generic [ref=f3e2170]: inside iss
+          - link "bedroom space station inside" [ref=f3e2171] [cursor=pointer]:
+            - /url: /search?sca_esv=e6872afb170044af&udm=2&q=bedroom+space+station+inside&stick=H4sIAAAAAAAAAFvEKpOUmlKUn5-rUFyQmJyqUFySWJKZn6eQmVecmZIKAA9E3BwfAAAA&source=univ&sa=X&ved=2ahUKEwiFt_3E8LWVAxWON4YAHaqECjoQrNwCegUIxQIQAA
+            - generic [ref=f3e2176]: bedroom space station inside
+        - generic [ref=f3e2180] [cursor=pointer]:
+          - button "Space Station at Night - Lit By A Greenhouse - SpaceRef" [ref=f3e2185]:
+            - img "Space Station at Night - Lit By A Greenhouse - SpaceRef" [ref=f3e2187]
+          - link "Space Station at Night - Lit By A Greenhouse - SpaceRef SpaceRef" [ref=f3e2189]:
+            - /url: https://spaceref.com/science-and-exploration/space-station-at-night-lit-by-greenhouse/
+            - generic [ref=f3e2190]:
+              - generic [ref=f3e2192]: Space Station at Night - Lit By A Greenhouse - SpaceRef
+              - generic [ref=f3e2196]: SpaceRef
+        - generic [ref=f3e2200] [cursor=pointer]:
+          - button "Spacewalk a success for French, US astronauts" [ref=f3e2205]:
+            - img "Spacewalk a success for French, US astronauts" [ref=f3e2207]
+          - link "Spacewalk a success for French, US astronauts Phys.org" [ref=f3e2209]:
+            - /url: https://phys.org/news/2017-03-spacewalk-success-french-astronauts.html
+            - generic [ref=f3e2210]:
+              - generic [ref=f3e2212]: Spacewalk a success for French, US astronauts
+              - generic [ref=f3e2216]: Phys.org
+        - generic [ref=f3e2220] [cursor=pointer]:
+          - button "Dear International Space Station, I'm So Sorry" [ref=f3e2225]:
+            - img "Dear International Space Station, I'm So Sorry" [ref=f3e2227]
+          - link "Dear International Space Station, I'm So Sorry Josie Like The Girls' Name - Substack" [ref=f3e2229]:
+            - /url: https://likethegirlsname.substack.com/p/dear-international-space-station
+            - generic [ref=f3e2230]:
+              - generic [ref=f3e2232]: Dear International Space Station, I'm So Sorry
+              - generic [ref=f3e2236]: Josie Like The Girls' Name - Substack
+        - generic [ref=f3e2240] [cursor=pointer]:
+          - generic [ref=f3e2242]:
+            - button "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images" [ref=f3e2245]:
+              - img "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images" [ref=f3e2247]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images Getty Images" [ref=f3e2249]:
+            - /url: https://www.gettyimages.com/photos/inside-international-space-station
+            - generic [ref=f3e2250]:
+              - generic [ref=f3e2252]: 721 Inside International Space Station Stock Photos, High-Res Pictures, and Images - Getty Images
+              - generic [ref=f3e2256]: Getty Images
+      - generic [ref=f3e2260]:
+        - heading "Page Navigation" [level=1] [ref=f3e2261]
+        - button "More results" [ref=f3e2262] [cursor=pointer]:
+          - generic [ref=f3e2263]:
+            - separator [ref=f3e2264]
+            - generic [ref=f3e2265]:
+              - generic [ref=f3e2266]: More results
+              - img [ref=f3e2268]
+      - navigation

@@ -1,0 +1,75 @@
+- generic [ref=f21e5]:
+  - generic [ref=f21e7]:
+    - banner [ref=f21e8]:
+      - link "Skip to main content" [ref=f21e9] [cursor=pointer]
+      - generic [ref=f21e10]:
+        - generic [ref=f21e12]:
+          - link "NASA" [ref=f21e13] [cursor=pointer]:
+            - /url: //www.nasa.gov
+            - img "NASA" [ref=f21e14]
+          - generic [ref=f21e15]:
+            - text: NASA Image and
+            - text: Video Library
+        - generic [ref=f21e16]:
+          - heading "Discover our intergalactic multimedia collections" [level=2] [ref=f21e17]:
+            - text: Discover
+            - generic [ref=f21e18]: our intergalactic multimedia collections
+          - search "Sitewide" [ref=f21e21]:
+            - generic [ref=f21e22]:
+              - textbox "Search for ... (e.g. \"Orion\")" [ref=f21e23]
+              - generic: Search for ... (e.g. "Orion")
+              - button "Submit" [ref=f21e25] [cursor=pointer]
+            - list "media filters" [ref=f21e26]:
+              - listitem [ref=f21e27]:
+                - generic [ref=f21e29]:
+                  - checkbox "Images" [checked] [ref=f21e32] [cursor=pointer]
+                  - generic [ref=f21e34] [cursor=pointer]: Images
+              - listitem [ref=f21e35]:
+                - generic [ref=f21e37]:
+                  - checkbox "Videos" [checked] [ref=f21e40] [cursor=pointer]
+                  - generic [ref=f21e42] [cursor=pointer]: Videos
+              - listitem [ref=f21e43]:
+                - generic [ref=f21e45]:
+                  - checkbox "Audio" [checked] [ref=f21e48] [cursor=pointer]
+                  - generic [ref=f21e50] [cursor=pointer]: Audio
+    - main [ref=f21e51]:
+      - heading "NASA Image and Video Library" [level=1] [ref=f21e52]
+      - generic [ref=f21e54]:
+        - heading "Categories" [level=2] [ref=f21e55]
+        - generic [ref=f21e56]:
+          - button "Newest Uploads" [ref=f21e57] [cursor=pointer]:
+            - generic [ref=f21e58]: Newest Uploads
+          - button "Trending & Popular" [ref=f21e59] [cursor=pointer]:
+            - generic [ref=f21e60]: Trending & Popular
+        - heading "Images and Videos" [level=2] [ref=f21e64]
+  - contentinfo [ref=f21e65]:
+    - generic [ref=f21e67]:
+      - generic [ref=f21e68]:
+        - link "NASA" [ref=f21e70] [cursor=pointer]:
+          - /url: //www.nasa.gov
+          - img "NASA" [ref=f21e71]
+        - generic [ref=f21e72]:
+          - paragraph [ref=f21e73]:
+            - strong [ref=f21e74]: National Aeronautics and Space Administration
+          - paragraph [ref=f21e75]:
+            - strong [ref=f21e76]: "NASA Official:"
+            - text: NASA Office of Communications
+      - list "footer links" [ref=f21e78]:
+        - listitem [ref=f21e79]:
+          - link "Usage Guidelines" [ref=f21e80] [cursor=pointer]:
+            - /url: http://www.nasa.gov/audience/formedia/features/MP_Photo_Guidelines.html
+        - listitem [ref=f21e81]:
+          - link "Privacy" [ref=f21e82] [cursor=pointer]:
+            - /url: http://www.nasa.gov/about/highlights/HP_Privacy.html
+        - listitem [ref=f21e83]:
+          - link "FOIA" [ref=f21e84] [cursor=pointer]:
+            - /url: http://www.nasa.gov/FOIA/index.html
+        - listitem [ref=f21e85]:
+          - link "Contact NASA" [ref=f21e86] [cursor=pointer]:
+            - /url: https://www.nasa.gov/about/contact/index.html
+        - listitem [ref=f21e87]:
+          - link "Accessibility" [ref=f21e88] [cursor=pointer]:
+            - /url: https://www.nasa.gov/general/accessibility/
+        - listitem [ref=f21e89]:
+          - link "API Docs" [ref=f21e90] [cursor=pointer]:
+            - /url: docs/images.nasa.gov_api_docs.pdf

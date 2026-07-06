@@ -1,0 +1,254 @@
+- generic [active] [ref=f7e1]:
+  - generic:
+    - generic:
+      - link "Skip to main content" [ref=f7e2] [cursor=pointer]
+      - link "Turn off continuous scrolling" [ref=f7e3] [cursor=pointer]:
+        - /url: "#"
+      - link "Accessibility help" [ref=f7e4] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=en
+  - generic [ref=f7e9]:
+    - search [ref=f7e10]:
+      - generic [ref=f7e12]:
+        - 'link "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f7e14] [cursor=pointer]':
+          - /url: https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwiJ7tiYlbqVAxWcpysGHVK-KVkQPQgJ
+          - 'img "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f7e15]'
+        - generic [ref=f7e16]:
+          - generic [ref=f7e17]:
+            - combobox "Search" [ref=f7e20]: NASA lunar sample scoop specifications OR "lunar sample tool" NASA lunar sample scoop specifications OR "lunar sample tool"
+            - generic [ref=f7e21]:
+              - button "Clear" [ref=f7e23] [cursor=pointer]:
+                - img [ref=f7e25]
+              - generic [ref=f7e28]:
+                - button "Search by voice" [ref=f7e29] [cursor=pointer]:
+                  - img [ref=f7e30]
+                - button "Search by image" [ref=f7e32] [cursor=pointer]:
+                  - img [ref=f7e33]
+          - button "Search" [ref=f7e35] [cursor=pointer]:
+            - img [ref=f7e38]
+    - generic [ref=f7e40]:
+      - button "Settings" [ref=f7e42] [cursor=pointer]:
+        - img [ref=f7e45]
+      - generic [ref=f7e48]:
+        - button "Google apps" [ref=f7e50] [cursor=pointer]:
+          - img [ref=f7e51]
+        - link "Sign in" [ref=f7e55] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=https://www.google.com/search%3Fq%3DNASA%2Blunar%2Bsample%2Bscoop%2Bspecifications%2BOR%2B%2522lunar%2Bsample%2Btool%2522%26udm%3D2&ec=futura_srp_og_si_72236_p
+  - generic [ref=f7e57]:
+    - navigation [ref=f7e62]:
+      - generic [ref=f7e63]:
+        - list [ref=f7e64]:
+          - listitem [ref=f7e65]:
+            - link "AI Mode" [ref=f7e68] [cursor=pointer]:
+              - /url: /search?q=NASA+lunar+sample+scoop+specifications+OR+%22lunar+sample+tool%22&sca_esv=242c098e2c9e95d6&udm=50&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832U_8HGA5CoQxEwPvRgW8CjwpZiBOTXGraIOC6va6bSJuuFNtN97xSJl52iuW5YVoLGl-ovRiHYr_89lOSh74uHZ9msk-LEa3vFFmwHrTx5PJrEc__xmN0IcTqf277Kj-9vXVmyQk-SUNahyHPVzxKQ76W9H8-hTgQEZWRzPW8RBrHQjCtiFbKAOeETNjxje3JMbJuPE&aep=1&ntc=1&sa=X&ved=2ahUKEwiJ7tiYlbqVAxWcpysGHVK-KVkQ2J8OegQIChAD
+              - generic [ref=f7e71]: AI Mode
+          - listitem [ref=f7e72]:
+            - link "All" [ref=f7e73] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=NASA+lunar+sample+scoop+specifications+OR+%22lunar+sample+tool%22&source=lnms&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832U_8HGA5CoQxEwPvRgW8CjwpZiBOTXGraIOC6va6bSJuuFNtN97xSJl52iuW5YVoLGl-ovRiHYr_89lOSh74uHZ9msk-LEa3vFFmwHrTx5PJrEc__xmN0IcTqf277Kj-9vXVmyQk-SUNahyHPVzxKQ76W9H8-hTgQEZWRzPW8RBrHQjCtiFbKAOeETNjxje3JMbJuPE&sa=X&ved=2ahUKEwiJ7tiYlbqVAxWcpysGHVK-KVkQ0pQJegQICxAB
+              - generic [ref=f7e75]: All
+          - listitem [ref=f7e76]:
+            - link "Images" [disabled] [ref=f7e77]:
+              - generic [ref=f7e79]: Images
+          - listitem [ref=f7e80]:
+            - link "News" [ref=f7e81] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=NASA+lunar+sample+scoop+specifications+OR+%22lunar+sample+tool%22&tbm=nws&source=lnms&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832U_8HGA5CoQxEwPvRgW8CjwpZiBOTXGraIOC6va6bSJuuFNtN97xSJl52iuW5YVoLGl-ovRiHYr_89lOSh74uHZ9msk-LEa3vFFmwHrTx5PJrEc__xmN0IcTqf277Kj-9vXVmyQk-SUNahyHPVzxKQ76W9H8-hTgQEZWRzPW8RBrHQjCtiFbKAOeETNjxje3JMbJuPE&sa=X&ved=2ahUKEwiJ7tiYlbqVAxWcpysGHVK-KVkQ0pQJegQIDxAB
+              - generic [ref=f7e83]: News
+          - listitem [ref=f7e84]:
+            - link "Shopping" [ref=f7e85] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&udm=28&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832U_8HGA5CoQxEwPvRgW8CjwpZiBOTXGraIOC6va6bSJuuFNtN97xSJl52iuW5YVoLGl-ovRiHYr_89lOSh74uHZ9msk-LEa3vFFmwHrTx5PJrEc__xmN0IcTqf277Kj-9vXVmyQk-SUNahyHPVzxKQ76W9H8-hTgQEZWRzPW8RBrHQjCtiFbKAOeETNjxje3JMbJuPE&q=NASA+lunar+sample+scoop+specifications+OR+%22lunar+sample+tool%22&ved=1t:220175&ictx=111
+              - generic [ref=f7e87]: Shopping
+          - listitem [ref=f7e88]:
+            - link "Forums" [ref=f7e89] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&udm=18&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832U_8HGA5CoQxEwPvRgW8CjwpZiBOTXGraIOC6va6bSJuuFNtN97xSJl52iuW5YVoLGl-ovRiHYr_89lOSh74uHZ9msk-LEa3vFFmwHrTx5PJrEc__xmN0IcTqf277Kj-9vXVmyQk-SUNahyHPVzxKQ76W9H8-hTgQEZWRzPW8RBrHQjCtiFbKAOeETNjxje3JMbJuPE&q=NASA+lunar+sample+scoop+specifications+OR+%22lunar+sample+tool%22&sa=X&ved=2ahUKEwiJ7tiYlbqVAxWcpysGHVK-KVkQs6gLegQIDhAB
+              - generic [ref=f7e91]: Forums
+          - listitem [ref=f7e92]:
+            - link "Short videos" [ref=f7e93] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&udm=39&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832U_8HGA5CoQxEwPvRgW8CjwpZiBOTXGraIOC6va6bSJuuFNtN97xSJl52iuW5YVoLGl-ovRiHYr_89lOSh74uHZ9msk-LEa3vFFmwHrTx5PJrEc__xmN0IcTqf277Kj-9vXVmyQk-SUNahyHPVzxKQ76W9H8-hTgQEZWRzPW8RBrHQjCtiFbKAOeETNjxje3JMbJuPE&q=NASA+lunar+sample+scoop+specifications+OR+%22lunar+sample+tool%22&sa=X&ved=2ahUKEwiJ7tiYlbqVAxWcpysGHVK-KVkQs6gLegQIDBAB
+              - generic [ref=f7e95]: Short videos
+          - listitem [ref=f7e96]:
+            - button "More filters" [ref=f7e97] [cursor=pointer]:
+              - generic "More filters" [ref=f7e98]:
+                - generic [ref=f7e99]:
+                  - generic [ref=f7e100]: More
+                  - img [ref=f7e102]
+        - button "Tools" [ref=f7e105] [cursor=pointer]:
+          - generic [ref=f7e107]:
+            - generic [ref=f7e108]: Tools
+            - img [ref=f7e110]
+    - heading "Search Results" [level=1] [ref=f7e112]
+    - main [ref=f7e114]:
+      - generic [ref=f7e123]:
+        - generic [ref=f7e127] [cursor=pointer]:
+          - 'button "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e132]':
+            - 'img "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e134]'
+          - 'link "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link Springer Nature" [ref=f7e136]':
+            - /url: https://link.springer.com/article/10.1007/s11214-025-01239-6
+            - generic [ref=f7e137]:
+              - generic [ref=f7e139]: "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link"
+              - generic [ref=f7e143]: Springer Nature
+        - generic [ref=f7e147] [cursor=pointer]:
+          - 'button "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e152]':
+            - 'img "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e154]'
+          - 'link "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link Springer Nature" [ref=f7e156]':
+            - /url: https://link.springer.com/article/10.1007/s11214-025-01239-6
+            - generic [ref=f7e157]:
+              - generic [ref=f7e159]: "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link"
+              - generic [ref=f7e163]: Springer Nature
+        - generic [ref=f7e167] [cursor=pointer]:
+          - 'button "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e172]':
+            - 'img "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e174]'
+          - 'link "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link Springer Nature" [ref=f7e176]':
+            - /url: https://link.springer.com/article/10.1007/s11214-025-01239-6
+            - generic [ref=f7e177]:
+              - generic [ref=f7e179]: "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link"
+              - generic [ref=f7e183]: Springer Nature
+        - generic [ref=f7e187] [cursor=pointer]:
+          - 'button "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e192]':
+            - 'img "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e194]'
+          - 'link "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link Springer Nature" [ref=f7e196]':
+            - /url: https://link.springer.com/article/10.1007/s11214-025-01239-6
+            - generic [ref=f7e197]:
+              - generic [ref=f7e199]: "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link"
+              - generic [ref=f7e203]: Springer Nature
+        - generic [ref=f7e207] [cursor=pointer]:
+          - 'button "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e212]':
+            - 'img "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e214]'
+          - 'link "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link Springer Nature" [ref=f7e216]':
+            - /url: https://link.springer.com/article/10.1007/s11214-025-01239-6
+            - generic [ref=f7e217]:
+              - generic [ref=f7e219]: "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link"
+              - generic [ref=f7e223]: Springer Nature
+        - generic [ref=f7e227] [cursor=pointer]:
+          - button "atalog of Apollo lunar surface geological sampling tools and containers" [ref=f7e232]:
+            - img "atalog of Apollo lunar surface geological sampling tools and containers" [ref=f7e234]
+          - link "atalog of Apollo lunar surface geological sampling tools and containers Lunar and Planetary Institute" [ref=f7e236]:
+            - /url: https://www.lpi.usra.edu/captem/lsac/alltonLunarToolCatalog.pdf
+            - generic [ref=f7e237]:
+              - generic [ref=f7e239]: atalog of Apollo lunar surface geological sampling tools and containers
+              - generic [ref=f7e243]: Lunar and Planetary Institute
+        - generic [ref=f7e247] [cursor=pointer]:
+          - button "Alan Shepard smuggled a golf club onto the Moon. The makeshift six‑iron was hidden inside a sock and attached to a lunar sample tool. With one arm in a bulky spacesuit, he" [ref=f7e252]:
+            - img "Alan Shepard smuggled a golf club onto the Moon. The makeshift six‑iron was hidden inside a sock and attached to a lunar sample tool. With one arm in a bulky spacesuit, he" [ref=f7e254]
+          - link "Alan Shepard smuggled a golf club onto the Moon. The makeshift six‑iron was hidden inside a sock and attached to a lunar sample tool. With one arm in a bulky spacesuit, he Facebook" [ref=f7e256]:
+            - /url: https://www.facebook.com/knowbnk/posts/alan-shepard-smuggled-a-golf-club-onto-the-moon-the-makeshift-sixiron-was-hidden/1513213010601354/
+            - generic [ref=f7e257]:
+              - generic [ref=f7e259]: Alan Shepard smuggled a golf club onto the Moon. The makeshift six‑iron was hidden inside a sock and attached to a lunar sample tool. With one arm in a bulky spacesuit, he
+              - generic [ref=f7e263]: Facebook
+        - generic [ref=f7e267] [cursor=pointer]:
+          - 'button "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e272]':
+            - 'img "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e274]'
+          - 'link "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link Springer Nature" [ref=f7e276]':
+            - /url: https://link.springer.com/article/10.1007/s11214-025-01239-6
+            - generic [ref=f7e277]:
+              - generic [ref=f7e279]: "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link"
+              - generic [ref=f7e283]: Springer Nature
+        - generic [ref=f7e287] [cursor=pointer]:
+          - button "NASA Awards Contract to Deliver Science, Tech to Moon Ahead of Human Missions - NASA" [ref=f7e292]:
+            - img "NASA Awards Contract to Deliver Science, Tech to Moon Ahead of Human Missions - NASA" [ref=f7e294]
+          - link "NASA Awards Contract to Deliver Science, Tech to Moon Ahead of Human Missions - NASA NASA" [ref=f7e296]:
+            - /url: https://www.nasa.gov/news-release/nasa-awards-contract-to-deliver-science-tech-to-moon-ahead-of-human-missions/
+            - generic [ref=f7e297]:
+              - generic [ref=f7e299]: NASA Awards Contract to Deliver Science, Tech to Moon Ahead of Human Missions - NASA
+              - generic [ref=f7e303]: NASA
+        - generic [ref=f7e307] [cursor=pointer]:
+          - button "Apollo 17 Lunar Sample Information Catalog - NASA" [ref=f7e312]:
+            - img "Apollo 17 Lunar Sample Information Catalog - NASA" [ref=f7e314]
+          - link "Apollo 17 Lunar Sample Information Catalog - NASA YUMPU" [ref=f7e316]:
+            - /url: https://www.yumpu.com/en/document/view/33151030/apollo-17-lunar-sample-information-catalog-nasa
+            - generic [ref=f7e317]:
+              - generic [ref=f7e319]: Apollo 17 Lunar Sample Information Catalog - NASA
+              - generic [ref=f7e323]: YUMPU
+        - generic [ref=f7e327] [cursor=pointer]:
+          - 'button "Endurance: Lunar South Pole–Aitken Basin Traverse and Sample Return Rover" [ref=f7e332]':
+            - 'img "Endurance: Lunar South Pole–Aitken Basin Traverse and Sample Return Rover" [ref=f7e334]'
+          - 'link "Endurance: Lunar South Pole–Aitken Basin Traverse and Sample Return Rover NASA Science" [ref=f7e336]':
+            - /url: https://science.nasa.gov/wp-content/uploads/2023/11/endurance-spa-traverse-and-sample-return.pdf
+            - generic [ref=f7e337]:
+              - generic [ref=f7e339]: "Endurance: Lunar South Pole–Aitken Basin Traverse and Sample Return Rover"
+              - generic [ref=f7e343]: NASA Science
+        - generic [ref=f7e347] [cursor=pointer]:
+          - 'button "Lunar Robotic Construction System Using Raw Regolith: Design Conceptualization" [ref=f7e352]':
+            - 'img "Lunar Robotic Construction System Using Raw Regolith: Design Conceptualization" [ref=f7e354]'
+          - 'link "Lunar Robotic Construction System Using Raw Regolith: Design Conceptualization MDPI" [ref=f7e356]':
+            - /url: https://www.mdpi.com/2226-4310/12/11/947
+            - generic [ref=f7e357]:
+              - generic [ref=f7e359]: "Lunar Robotic Construction System Using Raw Regolith: Design Conceptualization"
+              - generic [ref=f7e363]: MDPI
+        - generic [ref=f7e367] [cursor=pointer]:
+          - button "A Pathfinder Lunar Construction Mission Concept Using Regolith Filled Bags" [ref=f7e372]:
+            - img "A Pathfinder Lunar Construction Mission Concept Using Regolith Filled Bags" [ref=f7e374]
+          - link "A Pathfinder Lunar Construction Mission Concept Using Regolith Filled Bags MDPI" [ref=f7e376]:
+            - /url: https://www.mdpi.com/2226-4310/13/3/223
+            - generic [ref=f7e377]:
+              - generic [ref=f7e379]: A Pathfinder Lunar Construction Mission Concept Using Regolith Filled Bags
+              - generic [ref=f7e383]: MDPI
+        - generic [ref=f7e387] [cursor=pointer]:
+          - button "Apollo lunar surface equipment inventory and tool catalog" [ref=f7e392]:
+            - img "Apollo lunar surface equipment inventory and tool catalog" [ref=f7e394]
+          - link "Apollo lunar surface equipment inventory and tool catalog Facebook" [ref=f7e396]:
+            - /url: https://www.facebook.com/groups/48800622850/posts/10160907472887851/
+            - generic [ref=f7e397]:
+              - generic [ref=f7e399]: Apollo lunar surface equipment inventory and tool catalog
+              - generic [ref=f7e403]: Facebook
+        - generic [ref=f7e407] [cursor=pointer]:
+          - button "Houston, Tranquility base here.\" | Lunar Reconnaissance Orbiter Camera" [ref=f7e412]:
+            - img "Houston, Tranquility base here.\" | Lunar Reconnaissance Orbiter Camera" [ref=f7e414]
+          - link "Houston, Tranquility base here.\" | Lunar Reconnaissance Orbiter Camera Lunar Reconnaissance Orbiter Camera" [ref=f7e416]:
+            - /url: https://lroc.im-ldi.com/images/563
+            - generic [ref=f7e417]:
+              - generic [ref=f7e419]: Houston, Tranquility base here." | Lunar Reconnaissance Orbiter Camera
+              - generic [ref=f7e423]: Lunar Reconnaissance Orbiter Camera
+        - generic [ref=f7e427] [cursor=pointer]:
+          - button "A Pathfinder Lunar Construction Mission Concept Using Regolith Filled Bags" [ref=f7e432]:
+            - img "A Pathfinder Lunar Construction Mission Concept Using Regolith Filled Bags" [ref=f7e434]
+          - link "A Pathfinder Lunar Construction Mission Concept Using Regolith Filled Bags MDPI" [ref=f7e436]:
+            - /url: https://www.mdpi.com/2226-4310/13/3/223
+            - generic [ref=f7e437]:
+              - generic [ref=f7e439]: A Pathfinder Lunar Construction Mission Concept Using Regolith Filled Bags
+              - generic [ref=f7e443]: MDPI
+        - generic [ref=f7e447] [cursor=pointer]:
+          - 'button "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e452]':
+            - 'img "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=f7e454]'
+          - 'link "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link Springer Nature" [ref=f7e456]':
+            - /url: https://link.springer.com/article/10.1007/s11214-025-01239-6
+            - generic [ref=f7e457]:
+              - generic [ref=f7e459]: "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link"
+              - generic [ref=f7e463]: Springer Nature
+        - generic [ref=f7e467] [cursor=pointer]:
+          - button "Houston, Tranquility base here.\" | Lunar Reconnaissance Orbiter Camera" [ref=f7e472]:
+            - img "Houston, Tranquility base here.\" | Lunar Reconnaissance Orbiter Camera" [ref=f7e474]
+          - link "Houston, Tranquility base here.\" | Lunar Reconnaissance Orbiter Camera Lunar Reconnaissance Orbiter Camera" [ref=f7e476]:
+            - /url: https://lroc.im-ldi.com/images/563
+            - generic [ref=f7e477]:
+              - generic [ref=f7e479]: Houston, Tranquility base here." | Lunar Reconnaissance Orbiter Camera
+              - generic [ref=f7e483]: Lunar Reconnaissance Orbiter Camera
+        - generic [ref=f7e487] [cursor=pointer]:
+          - button "Apollo lunar module ascent engine test in 1965" [ref=f7e492]:
+            - img "Apollo lunar module ascent engine test in 1965" [ref=f7e494]
+          - link "Apollo lunar module ascent engine test in 1965 Facebook" [ref=f7e496]:
+            - /url: https://www.facebook.com/groups/261265912631524/posts/585041493587296/
+            - generic [ref=f7e497]:
+              - generic [ref=f7e499]: Apollo lunar module ascent engine test in 1965
+              - generic [ref=f7e503]: Facebook
+        - generic [ref=f7e507] [cursor=pointer]:
+          - button "NASA's RASSOR robot digs moon dust for lunar bases" [ref=f7e512]:
+            - img "NASA's RASSOR robot digs moon dust for lunar bases" [ref=f7e514]
+          - link "NASA's RASSOR robot digs moon dust for lunar bases Facebook" [ref=f7e516]:
+            - /url: https://www.facebook.com/groups/1203973030963062/posts/1482821983078164/
+            - generic [ref=f7e517]:
+              - generic [ref=f7e519]: NASA's RASSOR robot digs moon dust for lunar bases
+              - generic [ref=f7e523]: Facebook
+        - generic [ref=f7e527] [cursor=pointer]:
+          - 'button "Lunar Robotic Construction System Using Raw Regolith: Design Conceptualization" [ref=f7e532]':
+            - 'img "Lunar Robotic Construction System Using Raw Regolith: Design Conceptualization" [ref=f7e534]'
+          - 'link "Lunar Robotic Construction System Using Raw Regolith: Design Conceptualization MDPI" [ref=f7e536]':
+            - /url: https://www.mdpi.com/2226-4310/12/11/947
+            - generic [ref=f7e537]:
+              - generic [ref=f7e539]: "Lunar Robotic Construction System Using Raw Regolith: Design Conceptualization"
+              - generic [ref=f7e543]: MDPI
+      - generic [ref=f7e547]:
+        - heading "Page Navigation" [level=1] [ref=f7e548]
+        - generic [ref=f7e549]:
+          - text: The rest of the results might not be what you're looking for.
+          - link "See more anyway" [ref=f7e550] [cursor=pointer]:
+            - /url: "#"
+      - navigation

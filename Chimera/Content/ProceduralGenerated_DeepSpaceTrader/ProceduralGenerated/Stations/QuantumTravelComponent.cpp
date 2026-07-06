@@ -6,7 +6,7 @@
 #include "../Combat/SystemDamageComponent.h"
 
 UQuantumTravelComponent::UQuantumTravelComponent(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer), SpoolTime(5.0f), TravelTime(30.0f), FuelCost(2000.0f), MaxRange(8000000000.0f), bIsSpooling(false), bInTransit(false), InterdictionChance(0.1f)
+	: Super(ObjectInitializer), SpoolTime(5.0f), TravelTime(30.0f), FuelCost(2000.0f), MaxRange(8000000000.0f), bIsSpooling(false), bInTransit(false), InterdictionChance(0.1f), QuantumDriveStatus(EQuantumDriveStatus::Idle)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
@@ -16,17 +16,38 @@ void UQuantumTravelComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	if (!bIsSpooling && !bInTransit) return;
-
 }
 
 bool UQuantumTravelComponent::BeginQuantumTravel(FVector TargetLocation)
 {
 	// 1. Check UFlightComponent fuel >= FuelCost
-	// 2. Check distance <= MaxRange
+	UFlightComponent* FlightComp = GetOwner()->FindComponentByClass<UFlightComponent>();
+	if (!FlightComp || FlightComp->GetCurrentFuelLiters() < FuelCost)
+	{
+		return false; // Not enough fuel
+	}
+
 	// 3. Check SystemDamageComponent: if Quantum_Engine or QuantumDrive subsystem health <= 0, return false
-	// 4. If QuantumDrive health < 50%: SpoolTime *= 2.0
-	// 5. Deduct fuel via UFlightComponent
-	// 6. Set bIsSpooling = true, start spool timer
+	USystemDamageComponent* DamageComp = GetOwner()->FindComponentByClass<USystemDamageComponent>();
+	if (DamageComp)
+	{
+		if (!DamageComp->IsSubsystemHealthy("QuantumEngine"))
+		{
+			return false; // Quantum engine damaged or destroyed
+		}
+	}
+
+	// 4. Deduct fuel via UFlightComponent
+	if (FlightComp)
+	{
+		FlightComp->ConsumeFuel(FuelCost);
+	}
+
+	// 5. Set bIsSpooling = true, start spool timer, set status to Spooling
+	bIsSpooling = true;
+	this->TargetLocation = TargetLocation;
+	QuantumDriveStatus = EQuantumDriveStatus::Spooling;
+
 	return true;
 }
 
@@ -34,7 +55,15 @@ void UQuantumTravelComponent::CancelQuantumTravel()
 {
 	if (!bIsSpooling) return;
 	// Only during spool phase: Refund 50% fuel, Reset timers
+	UFlightComponent* FlightComp = GetOwner()->FindComponentByClass<UFlightComponent>();
+	if (FlightComp)
+	{
+		float RefundAmount = FuelCost * 0.5f;
+		FlightComp->AddFuel(RefundAmount);
+	}
+
 	bIsSpooling = false;
+	QuantumDriveStatus = EQuantumDriveStatus::Idle;
 }
 
 bool UQuantumTravelComponent::IsSpooling() const
@@ -52,4 +81,16 @@ float UQuantumTravelComponent::GetSpoolProgress() const
 	if (SpoolTime <= 0.0f) return 1.0f;
 	// TODO: Calculate spool progress from 0 to 1 based on elapsed time
 	return 0.0f;
+}
+
+FString UQuantumTravelComponent::GetQuantumDriveStatusString() const
+{
+	switch (QuantumDriveStatus)
+	{
+	case EQuantumDriveStatus::Idle: return "Idle";
+	case EQuantumDriveStatus::Spooling: return "Spooling";
+	case EQuantumDriveStatus::InTransit: return "InTransit";
+	case EQuantumDriveStatus::Cooldown: return "Cooldown";
+	default: return "Unknown";
+	}
 }

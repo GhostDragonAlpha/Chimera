@@ -6,7 +6,7 @@
 #include "MissionData.h"
 #include "MissionComponent.generated.h"
 
-UCLASS( ClassNoGenerateOptions, meta = (BlueprintType, Category = "Missions") )
+UCLASS( meta = (BlueprintType, Category = "Missions") )
 class CHIMERA_API UMissionComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -14,10 +14,17 @@ class CHIMERA_API UMissionComponent : public UActorComponent
 public:
 	UMissionComponent(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY() TArray<FMissionData> ActiveMissions;
-	UPROPERTY() TArray<FName> CompletedMissions;
-	UPROPERTY() TArray<FName> FailedMissions;
-	UPROPERTY() TArray<FMissionData> AvailableMissions;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions|Active")
+	TArray<FMissionData> ActiveMissions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions|Completed")
+	TArray<FName> CompletedMissions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions|Failed")
+	TArray<FName> FailedMissions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Missions|Available")
+	TArray<FMissionData> AvailableMissions;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Mission")
@@ -26,14 +33,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Mission")
 	void UpdateObjective(FString ObjectiveType, FString Parameter);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Mission|Events")
-	void CompleteMission(FName MissionID);
+	UFUNCTION(BlueprintCallable, Category = "Mission|Events")
+	bool CompleteMission(FName MissionID);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Mission|Events")
-	void FailMission(FName MissionID, FString Reason);
+	UFUNCTION(BlueprintCallable, Category = "Mission|Events")
+	void FailMission(FName MissionID, const FString& Reason);
 
-	UFUNCTION(BlueprintCallable, Category = "Mission")
-	TArray<FMissionData> CheckMissionBoard(FName StationID);
+public:
+	void CheckMissionBoard(FName StationID, TArray<FMissionData>& OutMissions);
 
-	UFUNCTION(BlueprintPure, Category = "Mission")
-	TArray<FMissionData> GetActiveMissions() const;
+	void GetActiveMissions(TArray<FMissionData>& OutMissions) const;
+	
+	bool IsMissionCompleted(FName MissionID) const;
+};
