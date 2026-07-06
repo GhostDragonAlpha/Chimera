@@ -45,3 +45,6 @@ Test message only -- no image provided/
 
 # Archived one-off scripts
 session_records/
+
+# Local clone of the graphify tool (own git repo — would embed a broken gitlink)
+Chimera/tools/graphify/
