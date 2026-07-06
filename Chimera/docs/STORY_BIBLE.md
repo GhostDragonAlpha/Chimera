@@ -1,4 +1,4 @@
-# CHIMERA — Story Bible v0: "The Frozen Sky"
+# CHIMERA — Story Bible v1: "The Frozen Sky"
 
 > One body, many lineages. A *chimera* is an organism carrying cells from multiple
 > distinct ancestors. The project was named after this story before the story existed.
@@ -7,6 +7,46 @@
 
 **The game never explains the player's why.** It shows them the shape of what they
 protected; the reason stays theirs alone. Every system below obeys this law.
+
+## Design Law #2 — the Author's answer: "Those who love" (v1)
+
+Asked who sends the true Breaks, whose wills you inherit, and who the Keeper is, the
+author answered all three with one phrase: **those who love.**
+
+Operationalized: **identity never gates anything in this game; love does.** And love
+has exactly one machine-readable signature — *cost paid and attention given.* The
+game verifies THAT love was paid, never WHY (Law #1 stands above even this).
+
+What the law resolves:
+
+1. **The true Breaks are authenticated by sacrifice.** Noise costs its sender
+   nothing — engine weather. A true Break carries evidence that something
+   irreversible was spent to send it. The Assay's final test is not *who* — it is
+   *what did this cost?* In Act III the player learns they too can send Breaks across
+   the gap — backward to no one they'll meet, forward to someone they can't imagine —
+   and the transmission fee is always something they cannot get back.
+2. **Wills route by love, not lineage.** A testament that paid nothing decays unread —
+   it enters the Ledger as a dim star, static, reaching no heir. A testament sealed
+   with real sacrifice finds one — your own line or a total stranger; the network
+   does not care. The dark matter orbiting every player's instance is exactly this:
+   the love of strangers, routed by cost. **In the frozen sky, luminosity is not
+   mass. It is what was paid.** The stars are bright because someone paid for them
+   to be.
+3. **The Keeper is an office, not a person.** It is held, moment to moment, by
+   whoever attends with love — an NPC who stayed, another player's ghost who stopped
+   to witness, the human at the keyboard. The Observation Collapse was never about
+   authority; witnessing-with-care IS the credential. And the game's single
+   fourth-wall break is **earned, not scripted**: at the testament, the game turns to
+   address the human directly — *if and only if the run's sacrifice log is
+   non-empty.* It speaks to "the one who loved," or it does not speak at all.
+
+**The discovery this law produced — the failure ending:** it is possible to finish a
+run having risked everything and protected nothing at cost. Systems nominal. No
+Keeper comes. The testament is witnessed by no one. The Erisaid, found, shows an
+empty mirror — the one moment the game comes close to explaining, and still says
+nothing. Your star enters the sky so dim it barely registers. You did not die. You
+ended like the House of the Deathless: safe, complete, and unreceived. The game's
+bad ending is not death — **it is a costless life.**
 
 ## Logline
 
@@ -170,22 +210,17 @@ minimal world, because it is the Ledger, and the Ledger is sacred.
 The pipeline rule holds: story content lands in the DSL spec; systems land in the
 generator. This document is the research phase; the narrative block is the exam.
 
-## Open authorial questions (the Gardener's, not the agent's)
+## Authorial questions — RESOLVED (v1)
 
-1. **Who sends the true Breaks?** (a) Your own line, reaching backward — the tesseract
-   answer, confirmed in Act III. (b) Never confirmed — permanently held open. (c) The
-   player's verdicts decide: the ending you assay is the ending you get.
-2. **Whose wills do you inherit?** Strictly your own lineage (Outer Wilds DNA — one
-   soul, many loops), or asynchronous strangers (Death Stranding DNA — real other
-   players' testaments arrive as your inheritance; other players' choices are the
-   dark matter orbiting your instance)?
-3. **Who is the Keeper?** A written character who ratifies testaments — or literally
-   the human at the keyboard, addressed directly, once, at the moment of testament:
-   the game's single fourth-wall break, reserved for the Observation Collapse itself?
+All three were answered by the author in a single phrase — **"Those who love"** — now
+codified as Design Law #2 above. The Breaks are authenticated by sacrifice; wills
+route by cost, not lineage; the Keeper is an office held by whoever attends with
+love, and the fourth-wall break is earned, never scripted.
 
 ---
 
-*v0 — distilled 2026-07-06 from the full development log and the source conversations.
-The theory of harmonic resonance is refuted as physics by spectroscopy and honored
-here as cosmology, which is the correct vessel: a game world does not need to pass
-the hydrogen exam; it needs to pass the human one.*
+*v1 — 2026-07-06. Distilled from the full development log and the source
+conversations; unified by the author's answer. The theory of harmonic resonance is
+refuted as physics by spectroscopy and honored here as cosmology, which is the
+correct vessel: a game world does not need to pass the hydrogen exam; it needs to
+pass the human one. It passes when the one who loved says so.*
