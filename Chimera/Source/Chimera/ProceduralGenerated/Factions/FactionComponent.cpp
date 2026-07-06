@@ -45,6 +45,26 @@ void UFactionComponent::ModifyStanding(FName FactionID, float Amount)
 	FactionRelationships.FindOrAdd(FactionID) = RelationshipForStanding(Standing);
 }
 
+void UFactionComponent::NotifyTradeCompleted(FName StationFaction, float TradeValue)
+{
+	// +1 standing per 1000 credits traded, capped at +5 per transaction
+	const float Delta = FMath::Clamp(TradeValue / 1000.0f, 0.0f, 5.0f);
+	ModifyStanding(StationFaction, Delta);
+	OnTradeCompleted(StationFaction, TradeValue);
+}
+
+void UFactionComponent::NotifyMissionCompleted(FName FactionID, float StandingChange)
+{
+	ModifyStanding(FactionID, StandingChange);
+	OnMissionCompleted(FactionID, StandingChange);
+}
+
+void UFactionComponent::NotifyPirateKilled(FName PirateFaction)
+{
+	ModifyStanding(PirateFaction, -10.0f);
+	OnPirateKilled(PirateFaction);
+}
+
 float UFactionComponent::GetStanding(FName FactionID) const
 {
 	if (FactionStandings.Contains(FactionID)) return FactionStandings[FactionID];

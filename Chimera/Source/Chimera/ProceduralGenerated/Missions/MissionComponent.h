@@ -21,6 +21,9 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Mission")
+	void InitializeMissionBoardFromDSL();
+
+	UFUNCTION(BlueprintCallable, Category = "Mission")
 	void AcceptMission(FName MissionID);
 
 	UFUNCTION(BlueprintCallable, Category = "Mission")

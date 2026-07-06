@@ -22,6 +22,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Faction")
 	void ModifyStanding(FName FactionID, float Amount);
 
+	// Native gameplay hooks: apply standing consequences and fire the BP events
+	UFUNCTION(BlueprintCallable, Category = "Faction")
+	void NotifyTradeCompleted(FName StationFaction, float TradeValue);
+
+	UFUNCTION(BlueprintCallable, Category = "Faction")
+	void NotifyMissionCompleted(FName FactionID, float StandingChange);
+
+	UFUNCTION(BlueprintCallable, Category = "Faction")
+	void NotifyPirateKilled(FName PirateFaction);
+
 	UFUNCTION(BlueprintPure, Category = "Faction")
 	float GetStanding(FName FactionID) const;
 

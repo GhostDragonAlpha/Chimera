@@ -611,7 +611,8 @@ class DSLGameParser:
             
             # Parse commodities
             commodities_list = []
-            commod_matches = re.findall(r'commodity\s+"([^"]+)"\s*\{([^}]+)\}', econ_body)
+            # One level of brace nesting so market_price sub-blocks survive the capture
+            commod_matches = re.findall(r'commodity\s+"([^"]+)"\s*\{((?:[^{}]|\{[^{}]*\})*)\}', econ_body)
             for match in commod_matches:
                 comm_name = match[0]
                 comm_body = match[1]
@@ -699,6 +700,30 @@ class DSLGameParser:
                 
             if econ_systems:
                 result["economy_systems"] = econ_systems
+
+        # Parse missions_contracts block (was previously dropped entirely)
+        missions_body = extract_block_content(dsl_content, 'missions_contracts')
+        if missions_body:
+            missions_list = []
+            m_matches = re.findall(r'mission\s+"([^"]+)"\s*\{((?:[^{}]|\{[^{}]*\})*)\}', missions_body)
+            for m_name, m_body in m_matches:
+                m_def = {"name": m_name}
+                for key in ("type", "faction", "origin_station", "destination_station",
+                            "required_commodity", "danger_level"):
+                    km = re.search(key + r'\s*=\s*"([^"]+)"', m_body)
+                    if km:
+                        m_def[key] = km.group(1)
+                for key in ("quantity_kg", "quantity_units", "quantity_rations",
+                            "reward_credits", "penalty_failed"):
+                    km = re.search(key + r'\s*=\s*(\d+)', m_body)
+                    if km:
+                        m_def[key] = int(km.group(1))
+                ef = re.search(r'enemy_factions\s*=\s*\[(.*?)\]', m_body)
+                if ef:
+                    m_def["enemy_factions"] = [c.strip().strip('"\'') for c in ef.group(1).split(',')]
+                missions_list.append(m_def)
+            if missions_list:
+                result["missions_contracts"] = {"missions": missions_list}
 
         # Parse procedural_generation block
         pcg_body = extract_block_content(dsl_content, 'procedural_generation')

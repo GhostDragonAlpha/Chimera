@@ -6,6 +6,8 @@
 #include "../Inventory/InventoryTradeComponent.h"
 #include "../Missions/MissionComponent.h"
 #include "../Factions/FactionComponent.h"
+#include "../Combat/ShieldComponent.h"
+#include "../Combat/DamageComponent.h"
 
 USaveGameComponent::USaveGameComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -39,6 +41,16 @@ bool USaveGameComponent::SaveGame(FName SlotName)
 			SaveObject->FactionStandings = Factions->FactionStandings;
 			SaveObject->FactionRelationships = Factions->FactionRelationships;
 		}
+		if (UShieldComponent* Shield = Owner->FindComponentByClass<UShieldComponent>())
+		{
+			SaveObject->CurrentShield = Shield->GetCurrentShield();
+		}
+		if (UDamageComponent* Damage = Owner->FindComponentByClass<UDamageComponent>())
+		{
+			SaveObject->CurrentHullHealth = Damage->CurrentHullHealth;
+		}
+		// CurrentFuel/CurrentShipClass/SubsystemHealth/CurrentStation have no live
+		// source-of-truth components yet — intentionally left unwired (no fake data).
 		SaveObject->PlayerLocation = Owner->GetActorLocation();
 		SaveObject->PlayerRotation = Owner->GetActorRotation();
 	}
@@ -79,6 +91,14 @@ bool USaveGameComponent::LoadGame(FName SlotName)
 		{
 			Factions->FactionStandings = SaveObject->FactionStandings;
 			Factions->FactionRelationships = SaveObject->FactionRelationships;
+		}
+		if (UShieldComponent* Shield = Owner->FindComponentByClass<UShieldComponent>())
+		{
+			Shield->SetCurrentShield(SaveObject->CurrentShield);
+		}
+		if (UDamageComponent* Damage = Owner->FindComponentByClass<UDamageComponent>())
+		{
+			Damage->CurrentHullHealth = SaveObject->CurrentHullHealth;
 		}
 		Owner->SetActorLocationAndRotation(SaveObject->PlayerLocation, SaveObject->PlayerRotation);
 	}

@@ -27,6 +27,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Station|Inventory")
 	TArray<FString> AvailableCommodities;
 
+	// Absolute per-commodity prices from the DSL (checked before the multiplier fallback)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Station|Trading")
+	TMap<FName, float> BuyPrices;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Station|Trading")
+	TMap<FName, float> SellPrices;
+
 	UFUNCTION(BlueprintCallable, Category = "Station|Trading")
 	float GetBuyPriceForCommodity(FString CommodityName, float BasePrice) const;
 

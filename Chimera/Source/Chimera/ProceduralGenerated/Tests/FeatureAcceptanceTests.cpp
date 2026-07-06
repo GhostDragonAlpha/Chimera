@@ -12,6 +12,11 @@
 #include "../Save/DeepSpaceTraderSaveGame.h"
 #include "../Save/SaveGameComponent.h"
 #include "../Inventory/InventoryTradeComponent.h"
+#include "../Economy/EconomyManager.h"
+#include "../Economy/EconomyInitializer.h"
+#include "../Economy/StationTradingData.h"
+#include "../Combat/ShieldComponent.h"
+#include "../Combat/DamageComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 
@@ -248,6 +253,152 @@ bool FSaveGameComponentRoundtripOnActor::RunTest(const FString& Parameters)
 		FMath::IsNearlyEqual(Factions->GetStanding(FName(TEXT("faction_titan_miners"))), 25.0f));
 
 	UGameplayStatics::DeleteGameInSlot(TEXT("ComponentPathSlot"), 0);
+	Actor->Destroy();
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FEconomyInitializerAppliesDSLPrices,
+	"ChimeraTests.Acceptance.EconomyInitializerAppliesDSLPrices",
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FEconomyInitializerAppliesDSLPrices::RunTest(const FString& Parameters)
+{
+	UEconomyManager* Manager = NewObject<UEconomyManager>();
+	UEconomyInitializer::BuildEconomy(Manager);
+
+	TestTrue(TEXT("Commodities loaded from DSL"), Manager->CommodityList.Num() >= 4);
+	TestNotNull(TEXT("Titanium exists in-engine"), Manager->GetCommodityByName(TEXT("Titanium")));
+
+	UStationTradingData* Titan = nullptr;
+	UStationTradingData* Hub = nullptr;
+	for (UStationTradingData* S : Manager->StationTradingList)
+	{
+		if (!S) continue;
+		if (S->StationName == TEXT("Titan_Surface_Outpost")) Titan = S;
+		if (S->StationName == TEXT("Orbital_Hub_7")) Hub = S;
+	}
+	if (TestNotNull(TEXT("Titan outpost station loaded"), Titan))
+	{
+		TestTrue(TEXT("DSL: Titanium buys at 45 at the mine"),
+			FMath::IsNearlyEqual(Titan->GetBuyPriceForCommodity(TEXT("Titanium"), 0.0f), 45.0f));
+		TestTrue(TEXT("DSL: Titanium sells at 40 at the mine"),
+			FMath::IsNearlyEqual(Titan->GetSellPriceForCommodity(TEXT("Titanium"), 0.0f), 40.0f));
+	}
+	if (TestNotNull(TEXT("Orbital hub station loaded"), Hub))
+	{
+		TestTrue(TEXT("DSL: Titanium buys at 80 at the hub"),
+			FMath::IsNearlyEqual(Hub->GetBuyPriceForCommodity(TEXT("Titanium"), 0.0f), 80.0f));
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMissionBoardLoadsDSLMissions,
+	"ChimeraTests.Acceptance.MissionBoardLoadsDSLMissions",
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FMissionBoardLoadsDSLMissions::RunTest(const FString& Parameters)
+{
+	UMissionComponent* Missions = NewObject<UMissionComponent>();
+	Missions->InitializeMissionBoardFromDSL();
+
+	TestEqual(TEXT("All DSL missions on the board"), Missions->AvailableMissions.Num(), 3);
+	auto FindReward = [&](const TCHAR* Id) -> float
+	{
+		for (const FMissionData& M : Missions->AvailableMissions)
+			if (M.MissionID == FName(Id)) return M.RewardCredits;
+		return -1.0f;
+	};
+	TestTrue(TEXT("Delivery reward exact (25000)"), FMath::IsNearlyEqual(FindReward(TEXT("Delivery_Titanium_Batch_1")), 25000.0f));
+	TestTrue(TEXT("Smuggling reward exact (100000)"), FMath::IsNearlyEqual(FindReward(TEXT("Smuggle_Quantum_Cores")), 100000.0f));
+	TestTrue(TEXT("Escort reward exact (50000)"), FMath::IsNearlyEqual(FindReward(TEXT("Escort_Convoy")), 50000.0f));
+
+	Missions->AcceptMission(FName(TEXT("Delivery_Titanium_Batch_1")));
+	TestEqual(TEXT("DSL mission acceptable"), Missions->ActiveMissions.Num(), 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFactionStandingChangesFromGameplay,
+	"ChimeraTests.Acceptance.FactionStandingChangesFromGameplay",
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FFactionStandingChangesFromGameplay::RunTest(const FString& Parameters)
+{
+	// World-free notifies
+	UFactionComponent* Factions = NewObject<UFactionComponent>();
+	Factions->NotifyTradeCompleted(FName(TEXT("faction_titan_miners")), 2000.0f);
+	TestTrue(TEXT("Trade moves standing (+2 for 2000cr)"),
+		FMath::IsNearlyEqual(Factions->GetStanding(FName(TEXT("faction_titan_miners"))), 2.0f));
+	Factions->NotifyPirateKilled(FName(TEXT("faction_pirate_syndicate")));
+	TestTrue(TEXT("Pirate kill applies -10"),
+		FMath::IsNearlyEqual(Factions->GetStanding(FName(TEXT("faction_pirate_syndicate"))), -10.0f));
+
+	// Mission completion drives standing through the owner wiring
+	UWorld* World = nullptr;
+	if (GEngine)
+	{
+		for (const FWorldContext& Context : GEngine->GetWorldContexts())
+		{
+			if (Context.World()) { World = Context.World(); break; }
+		}
+	}
+	if (!TestNotNull(TEXT("World available"), World)) return false;
+	AActor* Actor = World->SpawnActor<AActor>();
+	UMissionComponent* Missions = NewObject<UMissionComponent>(Actor);
+	Missions->RegisterComponent();
+	UFactionComponent* OwnerFactions = NewObject<UFactionComponent>(Actor);
+	OwnerFactions->RegisterComponent();
+
+	FMissionData Mission;
+	Mission.MissionID = FName(TEXT("FACT1"));
+	Mission.FactionID = FName(TEXT("faction_orbital_council"));
+	Mission.StandingChange = 10.0f;
+	FMissionObjective Dock;
+	Dock.Type = TEXT("Dock");
+	Mission.Objectives.Add(Dock);
+	Missions->AvailableMissions.Add(Mission);
+	Missions->AcceptMission(FName(TEXT("FACT1")));
+	Missions->UpdateObjective(TEXT("Dock"), TEXT(""));
+
+	TestTrue(TEXT("Mission completion moved faction standing by +10"),
+		FMath::IsNearlyEqual(OwnerFactions->GetStanding(FName(TEXT("faction_orbital_council"))), 10.0f));
+
+	Actor->Destroy();
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FShipStateSaveRoundtrip,
+	"ChimeraTests.Acceptance.ShipStateSaveRoundtrip",
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FShipStateSaveRoundtrip::RunTest(const FString& Parameters)
+{
+	UWorld* World = nullptr;
+	if (GEngine)
+	{
+		for (const FWorldContext& Context : GEngine->GetWorldContexts())
+		{
+			if (Context.World()) { World = Context.World(); break; }
+		}
+	}
+	if (!TestNotNull(TEXT("World available"), World)) return false;
+	AActor* Actor = World->SpawnActor<AActor>();
+	UShieldComponent* Shield = NewObject<UShieldComponent>(Actor);
+	Shield->RegisterComponent();
+	UDamageComponent* Damage = NewObject<UDamageComponent>(Actor);
+	Damage->RegisterComponent();
+	USaveGameComponent* Saver = NewObject<USaveGameComponent>(Actor);
+	Saver->RegisterComponent();
+
+	Shield->SetCurrentShield(42.0f);
+	Damage->CurrentHullHealth = 77.0f;
+
+	const FName Slot(TEXT("ShipStateSlot"));
+	TestTrue(TEXT("Save with ship state succeeds"), Saver->SaveGame(Slot));
+
+	Shield->SetCurrentShield(1.0f);
+	Damage->CurrentHullHealth = 1.0f;
+
+	TestTrue(TEXT("Load restores ship state"), Saver->LoadGame(Slot));
+	TestTrue(TEXT("Shield restored"), FMath::IsNearlyEqual(Shield->GetCurrentShield(), 42.0f));
+	TestTrue(TEXT("Hull restored"), FMath::IsNearlyEqual(Damage->CurrentHullHealth, 77.0f));
+
+	UGameplayStatics::DeleteGameInSlot(TEXT("ShipStateSlot"), 0);
 	Actor->Destroy();
 	return true;
 }

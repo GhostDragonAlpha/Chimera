@@ -17,6 +17,10 @@ public:
 	void InitializeFromShip(float ShieldCapacity, float RegenRate);
 	float AbsorbDamage(float IncomingDamage);
 
+	// Save/load access to shield state
+	float GetCurrentShield() const;
+	void SetCurrentShield(float NewShield);
+
 private:
 	float MaxShieldCapacity;
 	float CurrentShield;
