@@ -128,7 +128,8 @@ Wait, looking at the
 - evidence: mutation_28c2cd27ce30a284, mutation_0b49ebfeb34e12e4, mutation_4dff0fabb310dec5, mutation_55aaeca6facbc536, mutation_cb0f8548a01157e2, mutation_a75a79da8dd27502, mutation_dd8771a50908e4d5, mutation_71aaaea24b2aff0d
 - sample: RalphLoop: ralph_loop_complete_Player_Character_Model → incomplete. {"feature": "Player_Character_Model", "loop": 0, "status": "needs_refinement", "verified": f
 - sample: RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {"feature": "Player_Character_Model", "loop": 0, "status": "needs_refinement", "verified": 
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: (same lesson as H-9: incomplete-loop churn from the pre-result-grader era; the feature was later verified A 98.8 under the new regime)
+- agent_note: Recommend VETO as superseded — same era and root cause as H-9; tombstone prevents re-proposal.
 
 ## H-12: grade_CF: Build_Pipeline
 - status: pending
@@ -138,4 +139,5 @@ Wait, looking at the
 - sample: UBT compilation fail: E:\PythonChimera\Chimera\Source\Chimera\ProceduralGenerated\Tests\ChimeraDSLTests.cpp(52,53): error C2039: 'GetCurrentFuelLiters': is not 
 - sample: UBT compilation fail: no error text captured
 - sample: UBT compilation fail: error C2039: not a member
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: A build-failure grade must carry the failing file:line verbatim — "no error text captured" makes the F untriageable and wastes the retry.
+- agent_note: Same family as H-1 (template drift) but the distinct lesson is OBSERVABILITY: one sample lost the error text entirely. Recommend APPROVE -> claude_md (record UBT output verbatim, always), or fold into H-7's capture-the-right-stream rule if you prefer one observability heuristic.
