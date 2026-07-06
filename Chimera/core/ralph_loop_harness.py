@@ -513,72 +513,145 @@ class GraphifyInterface:
 # ─── MCP Client (Unreal Engine via node CLI) ────────────────────────────────
 
 class MCPClient:
-    """Calls chiR24-unreal-mcp tools via Node.js CLI subprocess."""
+    """Calls chiR24-unreal-mcp tools via JSON-RPC over stdio."""
+
+    @staticmethod
+    def _read_line(proc) -> Optional[str]:
+        """Read one line from an MCP process's stdout."""
+        line = proc.stdout.readline()
+        if not line:
+            return None
+        return line.strip()
+
+    @staticmethod
+    def _write_msg(proc, msg: dict):
+        """Write one JSON-RPC message to an MCP process's stdin."""
+        data = json.dumps(msg) + "\n"
+        proc.stdin.write(data)
+        proc.stdin.flush()
+
+    @staticmethod
+    def _init_mcp(proc) -> bool:
+        """Initialize MCP connection handshake."""
+        MCPClient._write_msg(proc, {
+            "jsonrpc": "2.0", "id": "init", "method": "initialize",
+            "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {"name": "chimera-ralph-loop", "version": "1.0"},
+            }
+        })
+        resp = MCPClient._read_line(proc)
+        if not resp:
+            return False
+        try:
+            parsed = json.loads(resp)
+            if parsed.get("id") == "init" and "capabilities" in parsed.get("result", {}):
+                MCPClient._write_msg(proc, {"jsonrpc": "2.0", "method": "notifications/initialized"})
+                return True
+        except json.JSONDecodeError:
+            pass
+        return False
 
     @staticmethod
     def call_tool(tool_name: str, arguments: Dict[str, Any],
                   timeout: int = None) -> Tuple[bool, str]:
-        """Execute an MCP tool call. Tries HTTP to running server first, then falls back to node CLI subprocess."""
+        """Execute an MCP tool call via JSON-RPC over stdio.
+
+        Spawns the chiR24 node CLI, sends JSON-RPC messages, reads responses.
+        Proper handshake: initialize -> initialized -> tools/call -> shutdown."""
         if timeout is None:
             timeout = HARNESS_CONFIG["mcp_timeout"]
 
-        # Try 1: HTTP to running UE MCP server at port 3000
-        payload = {
-            "jsonrpc": "2.0",
-            "id": int(time.time() * 1000),
-            "method": "tools/call",
-            "params": {"name": tool_name, "arguments": arguments},
-        }
-        data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(
-            "http://localhost:3000/mcp", data=data,
-            headers={"Content-Type": "application/json"},
-        )
+        cli = HARNESS_CONFIG["mcp_cli_path"]
+        if not Path(cli).exists():
+            return False, f"MCP CLI not found: {cli}"
+
         try:
-            resp = urllib.request.urlopen(req, timeout=5)  # short timeout for probe
-            raw = resp.read().decode("utf-8")
-            parsed = json.loads(raw)
-            result = parsed.get("result", {})
+            proc = subprocess.Popen(
+                ["node", str(cli)],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                cwd=str(Path(cli).parent.parent),
+            )
+        except Exception as e:
+            return False, f"Cannot start MCP process: {e}"
+
+        try:
+            if not MCPClient._init_mcp(proc):
+                return False, "MCP initialization failed"
+
+            # Send tools/call
+            msg_id = int(__import__("time").time() * 1000)
+            MCPClient._write_msg(proc, {
+                "jsonrpc": "2.0", "id": str(msg_id), "method": "tools/call",
+                "params": {"name": tool_name, "arguments": arguments},
+            })
+
+            # Read response with timeout (polling loop, no select on Windows pipes)
+            # Read response with thread timeout (Windows-compatible)
+            import threading, time as _time
+            response_data = []
+            def _reader():
+                try:
+                    line = proc.stdout.readline()
+                    if line: response_data.append(line.strip())
+                except: pass
+            reader = threading.Thread(target=_reader, daemon=True)
+            reader.start()
+            reader.join(timeout)
+            if not response_data:
+                try: proc.kill()
+                except: pass
+                stderr_out = ""
+                try: stderr_out = (proc.stderr.read() or "")[:200]
+                except: pass
+                return False, f"MCP timeout ({timeout}s). stderr: {stderr_out}"
+            response_line = response_data[0]
+
+            line = response_line.strip()
+            try:
+                parsed = json.loads(line)
+            except json.JSONDecodeError:
+                return False, f"Invalid JSON from MCP: {line[:200]}"
+
             if parsed.get("error"):
                 return False, json.dumps(parsed["error"])
+
+            # Extract content from result
+            result = parsed.get("result", {})
             content = result.get("content", [])
-            if content:
-                text_parts = [c.get("text", str(c)) for c in content if c.get("type") == "text"]
-                rt = "\n".join(text_parts) if text_parts else json.dumps(result)
+            text_parts = [
+                c.get("text", str(c)) for c in content
+                if isinstance(c, dict) and c.get("type") == "text"
+            ]
+            if text_parts:
+                rt = "\n".join(text_parts)
                 if '"success":false' in rt.lower() or '"status":"error"' in rt.lower():
                     return False, rt
                 return True, rt
+
+            # Try structuredContent
+            sc = result.get("structuredContent", {})
+            if sc:
+                sc_result = sc.get("result", {})
+                if isinstance(sc_result, dict) and "data" in sc_result:
+                    return True, json.dumps(sc_result["data"])
+                return True, json.dumps(sc_result)
+
             return True, json.dumps(result)
-        except Exception:
-            pass  # fall through to subprocess
 
-        # Try 2: Node CLI subprocess (works when UE is a standalone process)
-        cli = HARNESS_CONFIG["mcp_cli_path"]
-        args_json = json.dumps(arguments)
-        escaped = args_json.replace('"', '\\"')
-        ps_cmd = f'$env:UE_PROJECT_PATH="E:\\PythonChimera\\Chimera\\Chimera.uproject"; node "{cli}" --tool {tool_name} --args "{escaped}"'
-
-        try:
-            result = subprocess.run(
-                ["powershell", "-NoProfile", "-Command", ps_cmd],
-                capture_output=True, text=True, timeout=timeout,
-            )
-            stdout = result.stdout.strip() if result.stdout else ""
-            stderr = result.stderr.strip() if result.stderr else ""
-
-            if result.returncode == 0 and stdout:
-                if '"success":false' in stdout.lower() or '"status":"error"' in stdout.lower():
-                    return False, stdout
-                return True, stdout
-            else:
-                error_detail = stderr or stdout or f"returncode={result.returncode}"
-                return False, error_detail
-        except subprocess.TimeoutExpired:
-            return False, f"Timeout after {timeout}s"
-        except FileNotFoundError:
-            return False, f"MCP CLI not found at: {cli}"
         except Exception as e:
-            return False, str(e)
+            return False, f"MCP call failed: {e}"
+        finally:
+            try:
+                MCPClient._write_msg(proc, {"jsonrpc": "2.0", "method": "shutdown"})
+                proc.terminate()
+                proc.wait(timeout=5)
+            except Exception:
+                proc.kill()
 
     @staticmethod
     def screenshot(filename: str, mode: str = None) -> Tuple[bool, str]:
@@ -657,87 +730,93 @@ class MCPClient:
         })
 
 
-# ─── Playwright Client (web research via SSE MCP) ─────────────────────────
+# ─── Playwright Client (web research via stdio MCP + HTTP fallback) ─────
 
 class PlaywrightClient:
-    """Calls @playwright/mcp tools via HTTP SSE transport at localhost:8342."""
+    """Calls @playwright/mcp tools via JSON-RPC over stdio transport.
+    Falls back to direct DuckDuckGo HTML scraping when Playwright unavailable."""
 
     @staticmethod
     def call_web_tool(tool_name: str, arguments: Dict[str, Any],
                       timeout: int = 30) -> Optional[dict]:
-        """Call a Playwright MCP tool via SSE transport.
-
-        Sends a JSON-RPC request to the SSE endpoint.
-        """
-        url = HARNESS_CONFIG.get("playwright_url", "http://localhost:8342/mcp")
-
-        # Build JSON-RPC 2.0 request
-        req_id = int(time.time() * 1000)
-        payload = {
-            "jsonrpc": "2.0",
-            "id": req_id,
-            "method": "tools/call",
-            "params": {
-                "name": tool_name,
-                "arguments": arguments,
-            },
-        }
-
-        data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(
-            url, data=data,
-            headers={
-                "Content-Type": "application/json",
-                "Accept": "application/json, text/event-stream",
-            },
-        )
-
+        """Call a Playwright MCP tool via stdio JSON-RPC."""
         try:
-            resp = urllib.request.urlopen(req, timeout=timeout)
-            raw = resp.read().decode("utf-8")
-            return json.loads(raw)
-        except urllib.error.HTTPError as e:
-            body = e.read().decode("utf-8", errors="replace") if e.fp else ""
-            if e.code == 406:
-                logger.warning(f"[Playwright] SSE endpoint requires Accept header with event-stream. Retrying with correct headers.")
-            logger.warning(f"[Playwright] HTTP {e.code} for {tool_name}: {body[:200]}")
+            import subprocess, json, time
+            proc = subprocess.Popen(
+                ["npx", "-y", "@playwright/mcp@latest"],
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE, text=True,
+            )
+        except Exception as e:
+            logger.warning(f"[Playwright] Cannot start: {e}")
             return None
+        def w(msg):
+            proc.stdin.write(json.dumps(msg) + "\n"); proc.stdin.flush()
+        def r():
+            line = proc.stdout.readline()
+            return json.loads(line.strip()) if line and line.strip() else None
+        try:
+            w({"jsonrpc":"2.0","id":"init","method":"initialize",
+               "params":{"protocolVersion":"2025-11-25","capabilities":{},
+                         "clientInfo":{"name":"chimera-research","version":"1.0"}}})
+            if not r(): return None
+            w({"jsonrpc":"2.0","method":"notifications/initialized"})
+            req_id = int(time.time() * 1000)
+            w({"jsonrpc":"2.0","id":str(req_id),"method":"tools/call",
+               "params":{"name":tool_name,"arguments":arguments}})
+            result = r()
+            try: w({"jsonrpc":"2.0","method":"shutdown"})
+            except: pass
+            return result
         except Exception as e:
             logger.warning(f"[Playwright] {tool_name} failed: {e}")
             return None
+        finally:
+            try: proc.terminate(); proc.wait(timeout=5)
+            except: proc.kill()
 
     @staticmethod
     def navigate(url: str) -> Optional[dict]:
-        """Navigate browser to a URL."""
         return PlaywrightClient.call_web_tool("browser_navigate", {"url": url})
 
     @staticmethod
     def snapshot() -> Optional[dict]:
-        """Get the current page snapshot (text content)."""
         return PlaywrightClient.call_web_tool("browser_snapshot", {})
 
     @staticmethod
-    def screenshot(filename: str = "web_reference.png") -> Optional[str]:
-        """Capture a screenshot of the current page."""
-        result = PlaywrightClient.call_web_tool("browser_screenshot", {
-            "name": filename,
-        })
-        return result
+    def search(query: str) -> str:
+        """Search the web. Tries Playwright first, falls back to direct HTTP."""
+        nav = PlaywrightClient.navigate(f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}")
+        if nav:
+            import time; time.sleep(2)
+            snap = PlaywrightClient.snapshot()
+            if snap:
+                content = snap.get("content", {})
+                if isinstance(content, dict): return str(content.get("text", ""))[:5000]
+                if isinstance(content, str): return content[:5000]
+        logger.info("[Web Research] Playwright unavailable, using direct HTTP search.")
+        return PlaywrightClient._search_via_http(query)
 
     @staticmethod
-    def search(query: str, max_results: int = 5) -> Optional[List[Dict[str, str]]]:
-        """Search the web using a search engine. Navigates to a search URL,
-        captures the snapshot, and returns the result text."""
-        search_url = f"https://duckduckgo.com/?q={urllib.parse.quote(query)}"
-        nav = PlaywrightClient.navigate(search_url)
-        if not nav:
-            return None
-        time.sleep(2)  # let results load
-        snap = PlaywrightClient.snapshot()
-        if not snap:
-            return None
-        # snapshot returns {content: {text: ...}} or similar
-        return snap
+    def _search_via_http(query: str) -> str:
+        """Direct DuckDuckGo HTML search — no browser needed."""
+        import urllib.request, re
+        try:
+            url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"})
+            resp = urllib.request.urlopen(req, timeout=15)
+            html = resp.read().decode("utf-8", errors="replace")
+            results = []
+            for s in re.findall(r'class="result__snippet"[^>]*>(.*?)</(?:a|div)>', html, re.DOTALL):
+                clean = re.sub(r'<[^>]+>', '', s).strip()
+                if clean: results.append(clean)
+            for u, t in re.findall(r'class="result__a"[^>]*href="([^"]*)"[^>]*>(.*?)</a>', html, re.DOTALL):
+                ct = re.sub(r'<[^>]+>', '', t).strip()
+                if ct: results.append(f"{ct}: {u}")
+            return "\n".join(results[:10]) if results else re.sub(r'<[^>]+>', ' ', html)[:3000]
+        except Exception as e:
+            return f"[Search error: {e}]"
 
 
 # ─── LM Studio Client ───────────────────────────────────────────────────────
@@ -1295,20 +1374,11 @@ class RalphLoopHarness:
             return "Behavior"
         return "Model"
 
-    # ─── Web Research via Playwright ────────────────────────────────────
+    # ─── Web Research via Playwright + HTTP fallback ────────────────────
 
     def _web_search_feature(self, feature_name: str, feature_type: str) -> str:
-        """Use Playwright MCP to search the web for reference images and articles.
-        Falls back to campus seed sources if Playwright is unavailable."""
+        """Search the web for references using Playwright stdio or direct HTTP."""
         logger.info(f"[Web Research] Searching for references for {feature_name}...")
-
-        if not self._is_playwright_running():
-            self._launch_playwright()
-            time.sleep(5)
-            if not self._wait_for_port(8342, timeout=20):
-                logger.info(f"[Web Research] Playwright unavailable — using campus seeds.")
-                return ""
-
 
         search_queries = [
             f"{feature_name.replace('_', ' ')} unreal engine 5 reference",
@@ -1320,14 +1390,9 @@ class RalphLoopHarness:
 
         for query in search_queries[:2]:  # limit to 2 queries
             try:
-                search_url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
-                result = PlaywrightClient.navigate(search_url)
+                result = PlaywrightClient.search(query)
                 if result:
-                    time.sleep(1.5)
-                    snap = PlaywrightClient.snapshot()
-                    if snap and isinstance(snap, dict):
-                        text = json.dumps(snap, default=str)[:1000]
-                        combined_results.append(f"Query: {query}\n{text}")
+                    combined_results.append(f"Query: {query}\n{result[:1500]}")
             except Exception as e:
                 logger.warning(f"[Web Research] Query failed '{query}': {e}")
 
@@ -1634,8 +1699,13 @@ class RalphLoopHarness:
 
     @staticmethod
     def _is_playwright_running() -> bool:
-        """Check if Playwright MCP server is accepting connections on port 8342."""
-        return RalphLoopHarness._is_port_open(8342, timeout=5)
+        """Playwright is launched on-demand via stdio. Always returns True."""
+        return True
+
+    @staticmethod
+    def _launch_playwright() -> bool:
+        """Playwright is launched on-demand via stdio. No-op."""
+        return True
 
     @staticmethod
     def _launch_ue5_editor() -> bool:
@@ -1651,20 +1721,6 @@ class RalphLoopHarness:
             return True
         except Exception as e:
             logger.error(f"[Launch] Failed to spawn UE5: {e}")
-            return False
-
-    @staticmethod
-    def _launch_playwright() -> bool:
-        """Launch Playwright MCP server on port 8342 in background. Returns True if spawned."""
-        try:
-            subprocess.Popen(
-                ["cmd", "/c", "start", "Playwright MCP", "npx", "-y", "@playwright/mcp@latest", "--port", "8342"],
-                shell=False,
-            )
-            logger.info(f"[Launch] Spawned Playwright MCP server")
-            return True
-        except Exception as e:
-            logger.error(f"[Launch] Failed to spawn Playwright: {e}")
             return False
 
     def preflight_services(self) -> None:
@@ -1684,18 +1740,8 @@ class RalphLoopHarness:
             else:
                 logger.warning(f"[Pre-flight] UE5 Editor: FAILED TO START after 5 minutes")
 
-        # Playwright MCP (port 8342)
-        if self._is_playwright_running():
-            logger.info(f"[Pre-flight] Playwright MCP: RUNNING (port 8342)")
-        else:
-            logger.info(f"[Pre-flight] Playwright MCP: NOT RUNNING. Launching...")
-            self._launch_playwright()
-            logger.info(f"[Pre-flight] Waiting for Playwright to initialize (10s)...")
-            time.sleep(10)
-            if self._wait_for_port(8342, timeout=30):
-                logger.info(f"[Pre-flight] Playwright MCP: STARTED")
-            else:
-                logger.warning(f"[Pre-flight] Playwright MCP: FAILED TO START — web research will use campus seeds")
+        # Playwright MCP (launched on-demand via stdio)
+        logger.info(f"[Pre-flight] Playwright MCP: on-demand stdio")
 
         # LM Studio (port 1234) — must be running manually
         if self._is_port_open(1234):
