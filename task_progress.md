@@ -1,3 +1,13 @@
+# Session 2026-07-06 (final) — SOLIDIFIED + PUSHED: github.com/GhostDragonAlpha/Chimera @ c82d1f5
+
+User CONFIRMED the observation prediction live ("sand looks like a fountain with bubbles") —
+the Observation Collapse caught exactly what it was built to catch, before any verdict was even
+recorded. All docs aligned to the Generation Protocol era (CLAUDE.md drift fixed, Contract,
+rubric, README, AGENTS.md); compile 12/12, preflight exit 0; 4 commits pushed to origin/master.
+The two human queues stand open: 10 pending heuristics + 20-feature observation queue.
+
+---
+
 # Session 2026-07-06 (late night) — DRESS REHEARSAL RUN + OBSERVATION COLLAPSE: the human is now the final measurement
 
 **Full circadian cycle executed live on Ground_Sand_Particles (Loop 1):**
