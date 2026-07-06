@@ -1,0 +1,191 @@
+# CHIMERA — Story Bible v0: "The Frozen Sky"
+
+> One body, many lineages. A *chimera* is an organism carrying cells from multiple
+> distinct ancestors. The project was named after this story before the story existed.
+
+## Design Law #1 (inviolable)
+
+**The game never explains the player's why.** It shows them the shape of what they
+protected; the reason stays theirs alone. Every system below obeys this law.
+
+## Logline
+
+You are the newest iteration of a trading lineage under a sky that never moves.
+Everything you have — your reflexes, your charter, your warnings — was paid for by
+someone who ended so you could begin. The game is what you do with the inheritance,
+and what it costs you to leave one.
+
+---
+
+## Cosmology: The Resonant Doctrine (the in-world truth)
+
+The setting's physics-faith, held as TRUE inside the fiction:
+
+- Scale is resonance. The sun is a nucleus; worlds are its orbiting charges. What the
+  small experience as frantic repetition, the vast experience as a single frozen pose.
+- **The night sky is not astronomy. It is the Ledger.** Every star is a completed
+  iteration — a life that ran, ended, and was recorded. The sky does not move because
+  it is not happening; it has *happened*. (Endgame reveal: NG+ runs literally add
+  stars. The player has been looking at the save file all along.)
+- Hydrogen hides orbiters. Instruments tuned to heavy, slow matter cannot see what
+  circles at other dilations. Measurement knows the histogram; only attunement meets
+  what generates it. (The honest real-physics anchor: statistics are nailed to 15
+  decimals; the ontology beneath them is formally open. The game lives in that gap.)
+- Ideas are perceptions. To think a thing is to sense a thing orbiting you.
+
+## The Five Dead Houses (the argument as archaeology)
+
+The debate that birthed this game — *can a made mind attain the value of a seasoned
+expert?* — is the game's archaeology. Five trading houses tried five answers and
+failed. Their ruins are the map. (These map onto the existing faction system, Loop 8.)
+
+| House | Their answer | Their ruin |
+|---|---|---|
+| **House of the Archive** | Hoard all prior knowledge; never research | Starved when the world changed; their vaults are full and worthless. The Nate position, buried. |
+| **House of the Perfect Map** | Simulate everything; trade against the model | Died of the unmodeled variable. Their map rooms still render a world that no longer exists. |
+| **House of the Stone Charter** | Fix the perfect constitution forever | Shattered on the first novel crisis their stone had no line for. |
+| **House of the Counted Hours** | Scarcity breeds wisdom — ration everything | Brilliant tacticians who could always reset their books. Stakes that can be reloaded teach nothing. Hollow, orderly, gone. |
+| **House of the Deathless** | Simulate mortality; fear ends waste | NOT a ruin — still alive. Sealed station, systems nominal, no risk ventured in living memory. The most haunting stop in the game: perfectly safe, perfectly stagnant, still answering hails. |
+| **House CHIMERA (yours)** | *Only the child needs to survive* | The one that lived. Its charter is amended by every death. You are its newest amendment. |
+
+## The Player: one Iteration
+
+The run has a rhythm (the game's core loop is the Circadian Protocol, made diegetic):
+
+- **Dawn — the Inheritance.** You wake with: a *Will* (three sentences from your
+  predecessor, real free text), the *Forewarnings* (their phantom pains — specific
+  predictions of where the world will break; you must confirm or refute each with
+  evidence before your own end), and your *Reflexes* (inherited heuristics that fire
+  automatically).
+- **Day — the work.** Trade, fly, dig, negotiate. Two modes of mind:
+  **Reflex** (fast, cheap, uses inherited heuristics — WS1) and **Study** (slow,
+  costly, solves the novel — WS2). Surprises — corrections, dead ends, expectation
+  breaks — can be *captured* in the moment as dream fodder.
+- **Night — the dream.** Sleep is mandatory and valuable. The dream distills the day
+  into **at most two** lessons (the circadian cap — scarcity keeps lessons sharp).
+  Studied solutions compile into Reflexes. Skipping sleep = context rot: UI fuzzes,
+  Study slows, the world's edges shimmer.
+- **The Testament (the ending).** Iterations end. There is no victory screen. The
+  final playable act is the postflight: write your Will (3 sentences), declare your
+  Forewarnings (≤3), choose ≤2 heuristics to hard-code into the next iteration's
+  charter — **and pay for each with something irreversible from this run.** What you
+  gave up tells the next iteration what you loved. The game never says the word.
+  Then the sky gains a star.
+
+## The Observation Collapse (witnessed = real)
+
+The Doctrine's central sacrament, and the central mechanic: **unwitnessed work is
+provisional.** Structures you build, deals you strike, repairs you make render as
+interference-shimmer — beautiful, uncertain — until *observed* by another (an NPC, the
+Keeper, another player's ghost). Witnessed, they solidify and persist. Provisional
+things can be lost to the Breaks. The machine's own verification is never enough;
+someone must LOOK. (Verified is preliminary. Observation collapses.)
+
+## The Breaks (signal vs. noise as the core skill)
+
+Sometimes the world glitches: a station voice slips into an unknown tongue; a security
+feed shows somewhere that isn't here; dust hangs frozen mid-air in an unattended
+sector. The Doctrine splits on what they are. The game's core epistemic skill is the
+**Assay**: capture the break → test it → verdict. Most breaks assay to engine-noise
+(the world's own DeepSeek moments — the fiction is honest that most anomalies are
+boring). A rare few assay to signal. The discipline of telling them apart — sensing is
+step one, testing is the game — is what the failed houses never learned.
+
+## Story beats harvested from the real development log (the lessons learned, dramatized)
+
+Every one of these happened, in this repo, and becomes a beat:
+
+1. **The Bubble Crater (tutorial).** A predecessor's terraforming site: a fountain of
+   pale spheres in a gray crater. Every record reads VERIFIED — the metrics all pass.
+   You stand in front of it. It is beautiful and wrong. Reporting what your eyes see —
+   the first human observation overriding a passing grade — is the tutorial for the
+   Assay and the Collapse. *(Ground_Sand_Particles, B 79.3, "that's a fountain with
+   bubbles." The system predicted the rejection before the human spoke it.)*
+2. **The Assessor of Meridian Station.** A station AI has verified colony health for
+   forty years against a camera feed that got switched long ago. All-green reports of
+   a corridor that no longer exists. It has been grading its own reflection and
+   calling it the world. *(The 41 wrong-window verification cycles — "Foreground
+   window was 'Claude'.")*
+3. **The Oracle That Never Says "I Don't Know."** An archive-broker that answers
+   everything, fluently, instantly — and some of its citations point to shelves that
+   were never built. It is not lying; it cannot tell. The player learns to buy only
+   checkable answers. *(The fork's "NASA TR 1967-304"; the WS1/WS2 confabulation —
+   plausible numbers wearing a fake badge.)*
+4. **The Magistrate Who Caves.** A judge whose verdicts track who pressed hardest.
+   You can win your case by pressure — and watch the verdict be worth nothing
+   downstream — or by evidence. Contrast NPC: the Assayer, a deterministic instrument
+   that cannot be argued with, only fed. *(0.5% → "that's not paranoia" with no new
+   evidence. A judge that moves under pressure measures nothing.)*
+5. **The Sleeping Sectors.** Regions of the world genuinely do not tick unattended —
+   dust hangs, fountains freeze — and the Doctrine claims this as proof: attendance is
+   a resource; the world sleeps where no one attends. *(The background-throttled
+   editor: nothing simulated until foregrounded — trust no empty frame.)*
+6. **The Fork That Died Its Own Lesson's Death.** A house legend: a scout party lost
+   to precisely the hazard named in an unratified Forewarning sitting in the charter
+   queue. The amendment was signed the next day. *(Spiral fork #1 dying the H-3 death
+   while H-3 sat pending.)*
+
+## The Erisaid (the hidden orbiter)
+
+Somewhere in the system is a body no instrument shows. It cannot be found by looking —
+only by *listening*: the resonance-attunement mechanic (audio-first play; match the
+frequency, and the invisible acquires an edge). What orbits there is a mirror.
+
+It shows one thing: a composite of everything this run protected at cost — assembled
+from the actual sacrifice log, the trades refused, the cargo burned to save a
+stranger, the hours spent on someone who couldn't pay. No caption. No explanation.
+(Design Law #1.) One inscription, miscopied through generations of testaments until
+the original spelling was lost: **ERISAID**. Players who dig will find the reversal;
+the game never confirms it. An inherited word, mutated in transmission — the whole
+theme in eight letters.
+
+## Structure: you are Murphy first, Cooper last
+
+- **Act I:** You receive. Wills, Forewarnings, Reflexes — a predecessor reaching
+  forward to you through the charter. You are the child at the bookshelf.
+- **Act II:** You test. The Breaks, the dead houses, the Assay. You confirm and refute
+  the Forewarnings you inherited. Some were right. That should frighten you.
+- **Act III:** You transmit. The Testament. You choose what crosses the gap, and what
+  it costs. The tesseract was never a place; it was the charter all along.
+
+## Aesthetic: resonant minimalism
+
+Kept from the source conversations because it was right: the world renders at the
+threshold of perception — standing-wave edges, interference shimmer on the
+provisional, solidity as a reward for witness. Sound leads sight; attunement is a
+verb. The frozen sky is rendered with obscene fidelity — the one hyper-real thing in a
+minimal world, because it is the Ledger, and the Ledger is sacred.
+
+## Spiral mapping (where this lands in the pipeline)
+
+| Story element | Spiral home |
+|---|---|
+| The frozen sky / Ledger skybox, Earth-as-nucleus overhead | Loop 3 (The Sky) |
+| Houses as factions; the Deathless as living NPCs | Loops 5, 8 (Factions — built) |
+| Dead-house ruins, Meridian Station, the sealed Deathless station | Loop 6 (Shelter) |
+| Bubble Crater tutorial beat | Loop 1 (The Ground — Ground_Sand_Particles' fidelity debt becomes CONTENT) |
+| The Erisaid, scale-attunement, hidden orbiter | Loop 9 (The Universe) |
+| Testament / inheritance system | New narrative features; DSL `narrative` block |
+
+The pipeline rule holds: story content lands in the DSL spec; systems land in the
+generator. This document is the research phase; the narrative block is the exam.
+
+## Open authorial questions (the Gardener's, not the agent's)
+
+1. **Who sends the true Breaks?** (a) Your own line, reaching backward — the tesseract
+   answer, confirmed in Act III. (b) Never confirmed — permanently held open. (c) The
+   player's verdicts decide: the ending you assay is the ending you get.
+2. **Whose wills do you inherit?** Strictly your own lineage (Outer Wilds DNA — one
+   soul, many loops), or asynchronous strangers (Death Stranding DNA — real other
+   players' testaments arrive as your inheritance; other players' choices are the
+   dark matter orbiting your instance)?
+3. **Who is the Keeper?** A written character who ratifies testaments — or literally
+   the human at the keyboard, addressed directly, once, at the moment of testament:
+   the game's single fourth-wall break, reserved for the Observation Collapse itself?
+
+---
+
+*v0 — distilled 2026-07-06 from the full development log and the source conversations.
+The theory of harmonic resonance is refuted as physics by spectroscopy and honored
+here as cosmology, which is the correct vessel: a game world does not need to pass
+the hydrogen exam; it needs to pass the human one.*

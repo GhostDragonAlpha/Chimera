@@ -21093,6 +21093,32 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_b50c9ca69deb"
+    },
+    {
+      "id": "discovery_5f839ddf7e63f30e",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-06T18:11:52.407820",
+      "source": "STORY_BIBLE.md v0 - The Frozen Sky (synthesis of the Nate debate, Legacy Loop/Circadian conversations, and this repo development log)",
+      "campus": "creativity",
+      "quality_rating": "A",
+      "principles": [
+        "Chimera = one body, many lineages: the project name already encodes the story",
+        "The AI-vs-expert debate becomes archaeology: five dead houses = five failed answers; House Chimera (sacrificial charter) is the sixth that lived",
+        "Circadian Protocol made diegetic: Dawn inheritance / Day reflex-study / Night dream (max 2 lessons) / Testament as the ending - no victory screen",
+        "Observation Collapse as mechanic: unwitnessed work renders provisional (interference shimmer), witnessed work solidifies",
+        "The Breaks: signal-vs-noise assay as the core epistemic skill; most breaks are honest engine-noise",
+        "Real dev-log events become beats: Bubble Crater (B-grade vs human eye), Assessor of Meridian (wrong-window self-verification), the Oracle (confabulated citations), the caving Magistrate, Sleeping Sectors (unticked simulation)",
+        "The Erisaid: hidden orbiter mirror showing what the run protected at cost, never explaining why - Design Law 1: the game never explains the players why",
+        "Resonance cosmology honored as in-world doctrine, honestly severed from physics claims (spectroscopy exam already ran)"
+      ],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/creativity/STORY_BIBLE.md v0 - The Frozen Sky (synthesis of the Nate debate, Legacy Loop/Circadian conversations, and this repo development log)",
+      "error_category": "none",
+      "fix_description": "Research discovery recorded: source 'STORY_BIBLE.md v0 - The Frozen Sky (synthesis of the Nate debate, Legacy Loop/Circadian conversations, and this repo development log)' for campus 'creativity' with quality rating 'A'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_337104e9f446"
     }
   ],
   "edges": [
