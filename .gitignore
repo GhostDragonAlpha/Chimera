@@ -38,3 +38,10 @@ antlr-4.13.2-complete.jar
 __pycache__/
 *.pyc
 *.pyo
+
+# Stale session artifacts (never commit)
+-p/
+Test message only -- no image provided/
+
+# Archived one-off scripts
+session_records/

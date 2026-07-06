@@ -9,21 +9,64 @@ UMissionComponent::UMissionComponent(const FObjectInitializer& ObjectInitializer
 
 void UMissionComponent::AcceptMission(FName MissionID)
 {
-	// Find mission in AvailableMissions, move to ActiveMissions, set Status = "Active"
+	for (int32 i = 0; i < AvailableMissions.Num(); ++i)
+	{
+		if (AvailableMissions[i].MissionID == MissionID)
+		{
+			FMissionData Mission = AvailableMissions[i];
+			Mission.Status = TEXT("Active");
+			ActiveMissions.Add(Mission);
+			AvailableMissions.RemoveAt(i);
+			return;
+		}
+	}
 }
 
 void UMissionComponent::UpdateObjective(FString ObjectiveType, FString Parameter)
 {
-	// Find current active objective in current mission
-	// Check if parameter matches (commodity, station, quantity)
-	// If match: mark objective complete, increment CurrentObjectiveIndex
-	// If all objectives complete: CompleteMission()
+	TArray<FMissionData> CompletedThisPass;
+
+	for (FMissionData& Mission : ActiveMissions)
+	{
+		if (Mission.CurrentObjectiveIndex < Mission.Objectives.Num())
+		{
+			FMissionObjective& Obj = Mission.Objectives[Mission.CurrentObjectiveIndex];
+			if (Obj.bComplete) continue;
+
+			bool bMatches = (Obj.Type == ObjectiveType);
+			if (bMatches && Obj.Type == TEXT("Deliver") && Obj.Commodity != NAME_None)
+				bMatches = (Obj.Commodity.ToString() == Parameter);
+			if (!bMatches) continue;
+
+			Obj.bComplete = true;
+			Mission.CurrentObjectiveIndex++;
+
+			bool bAllComplete = true;
+			for (const FMissionObjective& CheckObj : Mission.Objectives)
+				if (!CheckObj.bComplete) { bAllComplete = false; break; }
+
+			if (bAllComplete)
+			{
+				Mission.Status = TEXT("Completed");
+				CompletedMissions.Add(Mission.MissionID);
+				CompletedThisPass.Add(Mission);
+				CompleteMission(Mission.MissionID);
+			}
+			break;
+		}
+	}
+
+	for (const FMissionData& Completed : CompletedThisPass)
+	{
+		ActiveMissions.RemoveAll(
+			[&](const FMissionData& M) { return M.MissionID == Completed.MissionID; });
+	}
 }
 
 void UMissionComponent::CheckMissionBoard(FName StationID, TArray<FMissionData>& OutMissions)
 {
 	OutMissions.Empty();
-	// Return missions available at this station
+	OutMissions = AvailableMissions;
 }
 
 void UMissionComponent::GetActiveMissions(TArray<FMissionData>& OutMissions) const

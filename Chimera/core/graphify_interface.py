@@ -1,10 +1,34 @@
 import json
 import hashlib
+import os
+import sys
+import uuid
 from datetime import datetime
 from pathlib import Path
 
 KNOWLEDGE_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json")
 DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")
+
+# Provenance: every node written by this process is stamped with who wrote it and a
+# per-process run id (one pipeline run = one process = one run_id, so duplicate
+# mutations within a run can be collapsed). Nodes that predate provenance get
+# "legacy_pre_provenance" — timestamps older than this module's load time cannot
+# have been written by this process.
+RUN_ID = os.environ.get("CHIMERA_RUN_ID") or f"run_{uuid.uuid4().hex[:12]}"
+RECORDED_BY = os.environ.get("CHIMERA_RECORDED_BY") or (
+    os.path.basename(sys.argv[0]) if sys.argv and sys.argv[0] else "interactive"
+)
+_PROVENANCE_LOADED_AT = datetime.utcnow().isoformat()
+
+
+def _stamp_provenance(nodes):
+    for n in nodes:
+        if isinstance(n, dict) and "recorded_by" not in n:
+            if n.get("timestamp", "") < _PROVENANCE_LOADED_AT:
+                n["recorded_by"] = "legacy_pre_provenance"
+            else:
+                n["recorded_by"] = RECORDED_BY
+                n["run_id"] = RUN_ID
 
 def load_knowledge_graph():
     if KNOWLEDGE_GRAPH_PATH.exists():
@@ -24,6 +48,7 @@ def save_knowledge_graph(graph):
         json.dump(graph, f, indent=2)
 
 def save_dna_graph(graph):
+    _stamp_provenance(graph.get("nodes", []))
     DNA_GRAPH_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(DNA_GRAPH_PATH, 'w', encoding='utf-8') as f:
         json.dump(graph, f, indent=2)
@@ -87,8 +112,14 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     """Unified mutation interface to record state changes."""
     
     if mutate_type == "compilation":
-        return _mutate_compilation(result)
-        
+        return _mutate_compilation(result, details or {})
+
+    elif mutate_type == "phase_complete":
+        phase_details = details or {}
+        if result and "result" not in phase_details:
+            phase_details["result"] = result
+        return _mutate_phase_complete(phase_details)
+
     elif mutate_type == "parse":
         return _mutate_parse(details or {})
         
@@ -554,31 +585,56 @@ def _query_campus(campus_name: str, context: dict = None) -> dict:
         "quality_ratings": campus["quality_ratings"]
     }
 
-def _mutate_compilation(result: str) -> str:
-    """Records a compilation mutation through Graphify."""
+def _mutate_compilation(result: str, details: dict = None) -> str:
+    """Records a compilation mutation through Graphify.
+
+    details may carry: ubt_output (full compiler text — the tail is stored),
+    template_file, failing_files. Failures also record an automatic F grade so
+    the GPA reflects build health, not just professor reviews.
+    """
+    details = details or {}
     dna_graph = load_dna_graph()
     nodes = dna_graph.get("nodes", [])
     edges = dna_graph.get("edges", [])
-    
+
+    ubt_output = (details.get("ubt_output") or "").strip()
+    # UBT prints errors near the end — keep the tail, capped so the graph stays readable
+    ubt_excerpt = ubt_output[-4000:] if ubt_output else ""
+    error_lines = [ln.strip() for ln in ubt_output.splitlines() if "error" in ln.lower()][:20]
+    template_file = details.get("template_file") or "unspecified"
+
     mutation_node = {
         "id": f"mutation_{hashlib.sha256(f'compilation_{result}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:12]}",
         "type": "Mutation",
         "timestamp": datetime.utcnow().isoformat(),
         "error_signature": "success_no_error" if result == "pass" else f"compilation_{result}",
-        "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated/DeepSpaceTrader",
+        "template_file": template_file,
         "template_line": 0,
         "error_category": "none" if result == "pass" else "compilation_error",
-        "fix_description": f"build_completed" if result == "pass" else f"compilation_{result}",
-        "fix_diff": f"build_completed" if result == "pass" else f"compilation_{result}",
+        "fix_description": "build_completed" if result == "pass" else (
+            error_lines[0] if error_lines else f"compilation_{result}"),
+        "fix_diff": "build_completed" if result == "pass" else (
+            "\n".join(error_lines) if error_lines else f"compilation_{result}"),
+        "ubt_output_excerpt": ubt_excerpt,
+        "failing_files": details.get("failing_files", []),
         "compilation_result": result,
         "links": []
     }
-    
+
     nodes.append(mutation_node)
-    
+
     # Save back to DNA graph (which is part of the knowledge base)
     save_dna_graph({"nodes": nodes, "edges": edges})
-    
+
+    # A failed build is an automatic F — GPA must be able to fall
+    if result != "pass":
+        _mutate_professor_grade({
+            "feature": details.get("feature", "Build_Pipeline"),
+            "grade": "F",
+            "reasoning": (f"UBT compilation {result}: " +
+                          (error_lines[0][:300] if error_lines else "no error text captured")),
+        })
+
     return mutation_node["id"]
 
 def _mutate_parse(parse_details: dict) -> str:
@@ -642,8 +698,9 @@ def _mutate_visual_verification(result: str = None, details: dict = None) -> str
     edges = dna_graph.get("edges", [])
     
     screenshot_path = details.get("screenshot_path") if details else None
-    description = details.get("description") if details else ""
-    
+    description = (details.get("description") if details else "") or ""
+    feature = (details.get("feature") if details else None) or "Visual_Verification"
+
     mutation_node = {
         "id": f"mutation_{hashlib.sha256(f'visual_verification_{result}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:12]}",
         "type": "Mutation",
@@ -654,13 +711,23 @@ def _mutate_visual_verification(result: str = None, details: dict = None) -> str
         "error_category": "none" if result == "pass" else "verification_incomplete",
         "fix_description": f"Visual verification {result}: AI analysis completed",
         "fix_diff": f"Verification result: {result}, Description: {description[:200]}",
+        "screenshot_path": screenshot_path,
+        "feature": feature,
         "compilation_result": result,
         "links": []
     }
-    
+
     nodes.append(mutation_node)
     save_dna_graph({"nodes": nodes, "edges": edges})
-    
+
+    # A verification that didn't pass pulls the GPA down (C = return to research)
+    if result != "pass":
+        _mutate_professor_grade({
+            "feature": feature,
+            "grade": "C",
+            "reasoning": f"Visual verification returned {result}: {description[:200]}",
+        })
+
     return mutation_node["id"]
 
 def _mutate_feature_complete(details: dict) -> str:
@@ -669,10 +736,13 @@ def _mutate_feature_complete(details: dict) -> str:
     nodes = dna_graph.get("nodes", [])
     edges = dna_graph.get("edges", [])
 
-    feature_name = details.get("feature", "unknown_feature")
+    feature_name = details.get("feature") or details.get("feature_name") or "unknown_feature"
     status = details.get("status", "implemented")
     loop = details.get("loop", 0)
     parameters = details.get("parameters", {})
+
+    if feature_name == "unknown_feature":
+        return "rejected_unknown_feature: details must include 'feature' or 'feature_name'; nothing recorded"
 
     mutation_node = {
         "id": f"feature_{hashlib.sha256(f'feature_{feature_name}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
@@ -689,6 +759,8 @@ def _mutate_feature_complete(details: dict) -> str:
         "compilation_result": "pass",
         "links": []
     }
+    if details.get("backfilled"):
+        mutation_node["backfilled"] = True
 
     nodes.append(mutation_node)
     save_dna_graph({"nodes": nodes, "edges": edges})
@@ -703,9 +775,12 @@ def _mutate_loop_complete(details: dict) -> str:
 
     loop = details.get("loop", 0)
     name = details.get("name", "unknown")
-    features = details.get("features", [])
+    features = details.get("features") or details.get("features_completed") or []
     status = details.get("status", "all_implemented")
     emotional_anchor = details.get("emotional_anchor", "")
+
+    if name == "unknown" and not features:
+        return "rejected_unknown_loop: details must include 'name' and/or 'features'; nothing recorded"
 
     mutation_node = {
         "id": f"loop_{hashlib.sha256(f'loop_{loop}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
@@ -723,6 +798,8 @@ def _mutate_loop_complete(details: dict) -> str:
         "compilation_result": "pass",
         "links": []
     }
+    if details.get("backfilled"):
+        mutation_node["backfilled"] = True
 
     nodes.append(mutation_node)
     save_dna_graph({"nodes": nodes, "edges": edges})
@@ -1045,6 +1122,9 @@ def _mutate_pathway_attempt(details: dict) -> str:
     parameters_tried = details.get("parameters_tried", {})
     result = details.get("result", "unknown_result")
     error_message = details.get("error_message", "")
+
+    if tool == "unknown_tool" and action == "unknown_action":
+        return "rejected_unknown_pathway_attempt: details must include 'tool' and 'action'; nothing recorded"
     
     mutation_node = {
         "id": f"pathway_attempt_{hashlib.sha256(f'pathway_attempt_{tool}_{action}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
@@ -1062,7 +1142,9 @@ def _mutate_pathway_attempt(details: dict) -> str:
         "compilation_result": result,
         "links": []
     }
-    
+    if details.get("backfilled"):
+        mutation_node["backfilled"] = True
+
     nodes.append(mutation_node)
     save_dna_graph({"nodes": nodes, "edges": edges})
     
@@ -1106,9 +1188,98 @@ def _mutate_technical_discovery(details: dict) -> str:
     return mutation_node["id"]
 
 def save_dna_graph(graph):
+    _stamp_provenance(graph.get("nodes", []))
     DNA_GRAPH_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(DNA_GRAPH_PATH, 'w', encoding='utf-8') as f:
         json.dump(graph, f, indent=2)
+
+def _mutate_phase_complete(details: dict) -> str:
+    """Records a phase completion (the Contract's Post-Flight g.mutate("phase_complete", ...))."""
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    phase = details.get("phase") or details.get("name") or "unknown_phase"
+    result = details.get("result", "")
+    notes = details.get("notes", "")
+
+    if phase == "unknown_phase" and not result:
+        return "rejected_unknown_phase: details must include 'phase' and/or 'result'; nothing recorded"
+
+    mutation_node = {
+        "id": f"phase_{hashlib.sha256(f'phase_{phase}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "PhaseComplete",
+        "timestamp": datetime.utcnow().isoformat(),
+        "phase": phase,
+        "result": result,
+        "notes": notes,
+        "error_signature": "success_no_error",
+        "template_file": f"phase_complete/{phase}",
+        "error_category": "none",
+        "fix_description": f"Phase '{phase}' complete: {str(result)[:200]}",
+        "compilation_result": "pass",
+        "links": []
+    }
+    if details.get("backfilled"):
+        mutation_node["backfilled"] = True
+
+    nodes.append(mutation_node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+
+    return mutation_node["id"]
+
+
+# ---------------------------------------------------------------------------
+# Typed recording helpers — ALWAYS use these instead of hand-building the
+# details dicts (mis-keyed dicts are rejected, but these can't be mis-keyed).
+# ---------------------------------------------------------------------------
+
+def record_feature(feature: str, loop: int, status: str, parameters: dict = None,
+                   backfilled: bool = False) -> str:
+    """Record a Feature Ledger status change (FeatureUpdate node)."""
+    details = {"feature": feature, "loop": loop, "status": status,
+               "parameters": parameters or {}}
+    if backfilled:
+        details["backfilled"] = True
+    return graphify_mutate("feature_complete", details=details)
+
+
+def record_pathway(tool: str, action: str, result: str, parameters_tried: dict = None,
+                   error_message: str = "", backfilled: bool = False) -> str:
+    """Record an MCP pathway attempt (pathway_attempt node)."""
+    details = {"tool": tool, "action": action, "result": result,
+               "parameters_tried": parameters_tried or {}, "error_message": error_message}
+    if backfilled:
+        details["backfilled"] = True
+    return graphify_mutate("pathway_attempt", details=details)
+
+
+def record_loop(loop: int, name: str, features: list, status: str = "all_implemented",
+                emotional_anchor: str = "", backfilled: bool = False) -> str:
+    """Record a spiral loop completion (LoopComplete node)."""
+    details = {"loop": loop, "name": name, "features": features, "status": status,
+               "emotional_anchor": emotional_anchor}
+    if backfilled:
+        details["backfilled"] = True
+    return graphify_mutate("loop_complete", details=details)
+
+
+def record_phase(phase: str, result: str, notes: str = "") -> str:
+    """Record Post-Flight phase completion (PhaseComplete node)."""
+    return graphify_mutate("phase_complete", details={"phase": phase, "result": result, "notes": notes})
+
+
+def record_grade(feature: str, grade: str, reasoning: str = "") -> str:
+    """Record a professor grade (A/B/C/F) for a feature; updates cumulative GPA."""
+    return graphify_mutate("professor_grade", details={"feature": feature, "grade": grade, "reasoning": reasoning})
+
+
+def record_build(passed: bool, ubt_output: str, template_file: str = "", failing_files: list = None) -> str:
+    """Record a build result WITH the actual UBT output (failures auto-grade F)."""
+    return graphify_mutate("compilation", "pass" if passed else "fail", details={
+        "ubt_output": ubt_output, "template_file": template_file,
+        "failing_files": failing_files or []})
+
 
 # Convenience functions for backward compatibility
 query = graphify_query
