@@ -30,11 +30,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 try:
-    from core.graphify_interface import load_dna_graph, collect_inheritance
+    from core.graphify_interface import (load_dna_graph, collect_inheritance,
+                                         collect_observation_queue)
     from core import heuristic_distiller, graph_compactor
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from graphify_interface import load_dna_graph, collect_inheritance
+    from graphify_interface import (load_dna_graph, collect_inheritance,
+                                    collect_observation_queue)
     import heuristic_distiller
     import graph_compactor
 
@@ -104,6 +106,19 @@ def main():
             lines.append(f"- {p['id']} [{p['age_days']}d] {p['text']}")
     else:
         lines.append("None — all inherited pains dispositioned.")
+
+    obs = collect_observation_queue(nodes)
+    lines += ["", "## Observation queue — the true collapse awaits your eyes"]
+    if obs:
+        for q in obs[:10]:
+            hint = f" — {q['grade_hint']}" if q["grade_hint"] else ""
+            lines.append(f"- Loop {q['loop']} **{q['feature']}**{hint} "
+                         f"(system-verified {q['verified_at']})")
+        lines.append("")
+        lines.append("Record verdicts: `python -m core.graphify_record observe --feature X "
+                     "--verdict accepted|rejected --notes \"...\" --loop N`")
+    else:
+        lines.append("Empty — every system-verified feature has been human-observed.")
     lines += ["", "## Tonight's distillation", "```", distill_out.strip(), "```",
               "", "## Compaction preview (dry-run — apply is always manual)",
               "```", compact_out.strip(), "```", ""]

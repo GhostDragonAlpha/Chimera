@@ -100,3 +100,22 @@ Wait, looking at the
    - **Technical Parameters:** Has `dimensions`, `radius
 - draft_rule: (related to H-3 — the professor-review path parsed LM meta-dumps as grade reasoning; 12 C/F verdicts may be parsing artifacts, not judgments)
 - agent_note: Recommend VETO as subsumed by H-3 (schema-validate ALL LM output) — or approve separately if you want the professor path named explicitly. Note: these 12 historic C/F grades polluted GPA history with possibly-false verdicts; the result-grader redesign already removed the LM from the gate path.
+
+<!-- distilled 2026-07-06T16:24:28Z -->
+## H-9: ralph_ralph_loop_complete_Player_Character_Lighting
+- status: pending
+- kind: failure  |  count: 12  |  last_seen: 2026-07-04T05:35:13
+- proposed_organ: claude_md
+- evidence: mutation_7ecfb3f135b7ae18, mutation_550c879fe28b4124, mutation_ff729ef0505792cc, mutation_a5cc94c1b1df7f6d, mutation_54db1006d3560a99, mutation_b88e4aa5d3be8b28, mutation_43b4754d74ead0ff, mutation_8af106100d89ceb8
+- sample: RalphLoop: ralph_loop_complete_Player_Character_Lighting -> incomplete. {"feature": "Player_Character_Lighting", "loop": 0, "status": "needs_refinement", "verif
+- draft_rule: Twelve incomplete loop endings for one feature is retry churn without a targeted study guide — every re-research prompt must quote the grader's lowest categories.
+- agent_note: Recommend VETO as superseded — the result-grader redesign already generates study guides on C/F and the H-8 root cause (LM meta-dump grades) drove the churn. Tombstone prevents re-proposal.
+
+## H-10: pathway: build_orchestrator.ue_shutdown -> killed_for_build
+- status: pending
+- kind: pathway  |  count: 12  |  last_seen: 2026-07-06T04:02:31
+- proposed_organ: mcp_pathways
+- evidence: pathway_attempt_3e517c048179cfdd, pathway_attempt_3d5996596d09f1f7, pathway_attempt_9f39685541ef77e3, pathway_attempt_3574744951ff40af, pathway_attempt_e8985cac48e6c15d, pathway_attempt_921e5813592aa091, pathway_attempt_ee865905242c80ff, pathway_attempt_cf31600eb01f0688
+- sample: Pathway attempt recorded: tool 'build_orchestrator', action 'ue_shutdown', result 'killed_for_build'
+- draft_rule: killed_for_build is the build lifecycle working as designed, not a pathway failure — record intended shutdowns as success with a note, or routine builds pollute the failure ledger.
+- agent_note: 12 routine pre-build UE shutdowns mis-recorded as failed pathways (they cluster as failures forever). Recommend APPROVE -> claude_md + the concrete fix: build_orchestrator's record call should pass result='success' for intended kills. The distiller itself flagged its own noise source here.

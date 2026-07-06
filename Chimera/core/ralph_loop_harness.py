@@ -1299,7 +1299,7 @@ class RalphLoopHarness:
             if loop not in active_loops:
                 active_loops[loop] = {"total": 0, "verified": 0, "name": ""}
             active_loops[loop]["total"] += 1
-            if f.get("status") in ("verified", "implemented", "encoded"):
+            if f.get("status") in ("verified", "implemented", "encoded", "observed"):
                 active_loops[loop]["verified"] += 1
 
         loops_to_check = [just_completed_loop] if just_completed_loop is not None else sorted(active_loops.keys())

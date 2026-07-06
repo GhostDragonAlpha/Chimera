@@ -156,6 +156,9 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "surprise":
         return _mutate_surprise(details or {})
 
+    elif mutate_type == "observation":
+        return _mutate_observation(details or {})
+
     else:
         raise ValueError(f"Unknown mutation type: {mutate_type}")
 
@@ -1291,6 +1294,110 @@ def _mutate_surprise(details: dict) -> str:
     nodes.append(node)
     save_dna_graph({"nodes": nodes, "edges": edges})
     return node["id"]
+
+
+def _mutate_observation(details: dict) -> str:
+    """Records the human's Observation of a system-finalized feature — the true
+    quantum collapse (Generation Protocol increment 2). The system's verification
+    is the preliminary measurement; the feature's state collapses only here."""
+    feature = str(details.get("feature") or "").strip()
+    verdict = str(details.get("verdict") or "").strip().lower()
+    notes = str(details.get("notes") or "").strip()
+    observer = str(details.get("observer") or "human")
+
+    if not feature:
+        return "rejected_observation: 'feature' is required; nothing recorded"
+    if verdict not in ("accepted", "rejected"):
+        return "rejected_observation: verdict must be 'accepted' or 'rejected'; nothing recorded"
+    if verdict == "rejected" and not notes:
+        return ("rejected_observation: a rejection REQUIRES notes — the human's reason "
+                "is the study guide; nothing recorded")
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    node = {
+        "id": f"observation_{hashlib.sha256(f'observation_{feature}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "Observation",
+        "timestamp": datetime.utcnow().isoformat(),
+        "feature_name": feature,
+        "verdict": verdict,
+        "notes": notes,
+        "observer": observer,
+        "error_signature": "success_no_error" if verdict == "accepted" else "human_rejection",
+        "template_file": f"observation/{feature}",
+        "error_category": "none" if verdict == "accepted" else "human_rejection",
+        "fix_description": f"Human observation of '{feature}': {verdict}"
+                           + (f" — {notes[:160]}" if notes else ""),
+        "compilation_result": "pass" if verdict == "accepted" else "rejected",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def collect_observation_queue(nodes: list) -> list:
+    """Features whose LATEST FeatureUpdate is 'verified' with no LATER Observation:
+    system-finalized, awaiting the human's collapse. Returns
+    [{feature, loop, verified_at, grade_hint, evidence_hint}] oldest-first."""
+    latest_verified = {}
+    for n in nodes:
+        if n.get("type") != "FeatureUpdate":
+            continue
+        name = n.get("feature_name")
+        if not name or name == "unknown_feature":
+            continue
+        ts = str(n.get("timestamp", ""))
+        prev = latest_verified.get(name)
+        if prev is None or ts > prev[0]:
+            latest_verified[name] = (ts, n)
+
+    observed_after = {}
+    for n in nodes:
+        if n.get("type") != "Observation":
+            continue
+        name = n.get("feature_name")
+        ts = str(n.get("timestamp", ""))
+        if name and ts > observed_after.get(name, ""):
+            observed_after[name] = ts
+
+    queue = []
+    for name, (ts, n) in latest_verified.items():
+        if n.get("status") != "verified":
+            continue
+        if observed_after.get(name, "") > ts:
+            continue  # already collapsed by a later observation
+        params = n.get("parameters") or {}
+        grade = str(params.get("grade", ""))[:24]
+        evidence = params.get("evidence") or {}
+        shots = evidence.get("screenshots", "") if isinstance(evidence, dict) else ""
+        queue.append({"feature": name, "loop": n.get("loop"),
+                      "verified_at": ts[:19], "grade_hint": grade,
+                      "evidence_hint": str(shots)[:80]})
+    queue.sort(key=lambda q: q["verified_at"])
+    return queue
+
+
+def record_observation(feature: str, verdict: str, notes: str = "",
+                       observer: str = "human") -> str:
+    """Record the human's Observation verdict on a system-finalized feature.
+
+    accepted -> caller should also record_feature(status='observed').
+    rejected -> caller should record_feature(status='needs_refinement') with the
+    notes; a SurpriseMoment(source=human) is auto-recorded so the distiller
+    treats the rejection as first-class dream fodder."""
+    node_id = graphify_mutate("observation", details={
+        "feature": feature, "verdict": verdict, "notes": notes, "observer": observer})
+    if not str(node_id).startswith("rejected_") and verdict == "rejected":
+        graphify_mutate("surprise", details={
+            "context": f"Human observation of system-finalized feature '{feature}'",
+            "expectation": "system verification (rubric grade) matches human judgment",
+            "reality": notes,
+            "lesson_hint": "frame-level correction: what the machine measured is not what the human sees",
+            "source": "human"})
+    return node_id
 
 
 def _mutate_heuristic(details: dict) -> str:

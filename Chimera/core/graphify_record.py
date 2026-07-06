@@ -18,13 +18,13 @@ from pathlib import Path
 try:
     from core.graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
-        record_heuristic, record_surprise, parse_pain_verdicts,
+        record_heuristic, record_surprise, record_observation, parse_pain_verdicts,
     )
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
     from graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
-        record_heuristic, record_surprise, parse_pain_verdicts,
+        record_heuristic, record_surprise, record_observation, parse_pain_verdicts,
     )
 
 
@@ -90,6 +90,12 @@ def main():
     p.add_argument("--organ", required=True, choices=["gate", "claude_md", "mcp_pathways"])
     p.add_argument("--evidence", action="append", help="graph node id of teaching failure (repeatable)")
 
+    p = sub.add_parser("observe", help="Human Observation verdict — the true quantum collapse")
+    p.add_argument("--feature", required=True)
+    p.add_argument("--verdict", required=True, choices=["accepted", "rejected"])
+    p.add_argument("--notes", default="", help="REQUIRED for rejections — the human's reason")
+    p.add_argument("--loop", type=int, help="loop number (for the follow-up status flip)")
+
     p = sub.add_parser("surprise", help="SurpriseMoment (Circadian dream fodder) — capture live")
     p.add_argument("--context", required=True, help="what was happening")
     p.add_argument("--reality", required=True, help="what actually happened / what the human said")
@@ -121,6 +127,16 @@ def main():
     elif args.kind == "surprise":
         node_id = record_surprise(args.context, args.reality, args.expectation,
                                   args.lesson_hint, args.source)
+    elif args.kind == "observe":
+        node_id = record_observation(args.feature, args.verdict, args.notes)
+        if not str(node_id).startswith("rejected_"):
+            status = "observed" if args.verdict == "accepted" else "needs_refinement"
+            params = {"human_verdict": args.verdict}
+            if args.notes:
+                params["human_notes"] = args.notes
+            fid = record_feature(args.feature, args.loop if args.loop is not None else 0,
+                                 status, params)
+            print(f"FeatureUpdate: {args.feature} -> {status} ({fid})")
     else:
         node_id = record_grade(args.feature, args.grade.upper(), args.reasoning)
 

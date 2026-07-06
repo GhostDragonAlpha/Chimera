@@ -80,7 +80,11 @@ def collect_clusters(nodes: list, min_cluster: int) -> list:
 
     for n in nodes:
         ntype = n.get("type", "")
-        if ntype == "SurpriseMoment" and not n.get("consolidated"):
+        if ntype == "Observation" and n.get("verdict") == "rejected":
+            # the human's collapse said no — the highest-grade dream fodder there is
+            add(f"human_rejection: {n.get('feature_name','?')}", "human_rejection", n,
+                str(n.get("notes", ""))[:160])
+        elif ntype == "SurpriseMoment" and not n.get("consolidated"):
             # cluster surprises by their strongest shared tokens (context+reality)
             key = "surprise: " + " ".join(sorted(_tokens(
                 f"{n.get('context','')} {n.get('lesson_hint','')}"))[:4])
@@ -96,8 +100,12 @@ def collect_clusters(nodes: list, min_cluster: int) -> list:
             add(_normalize_signature(str(n.get("error_signature"))), "failure", n,
                 str(n.get("fix_description", ""))[:160])
 
-    out = [c for c in clusters.values() if c["count"] >= min_cluster]
-    out.sort(key=lambda c: (-c["count"], c["last_seen"]))
+    # human rejections stage at ANY count (min_cluster does not gate the human's voice)
+    # and sort ahead of every machine-detected cluster
+    out = [c for c in clusters.values()
+           if c["count"] >= min_cluster or c["kind"] == "human_rejection"]
+    out.sort(key=lambda c: (0 if c["kind"] == "human_rejection" else 1,
+                            -c["count"], c["last_seen"]))
     return out
 
 

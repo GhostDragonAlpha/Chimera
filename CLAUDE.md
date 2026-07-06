@@ -15,6 +15,7 @@
 - **Fork before researching a feature** (preferred): `python -m core.spiral_forks --feature X --use-lm` — 3 briefs (conservative/alternative/wild), winner proceeds, losers' autopsies are recorded tuition. Forks never touch live state.
 - **Dream loop** (`python -m core.dream_loop`, manual or scheduled): distills failures+surprises into ≤2 candidate heuristics per night, staged in `docs/PENDING_HEURISTICS.md`.
 - **The human Gardener approves EVERY heuristic** before promotion (gate / CLAUDE.md rule / MCP_PATHWAYS trap). Pending = inert. Vetoed entries stay as tombstones. Promote approved ones via `python -m core.graphify_record heuristic ...` and set status `promoted`.
+- **The human observation is the true collapse**: `verified` is only the system's preliminary measurement. Every system-finalized feature enters the Observation queue (preflight [4.5]) until the human records `observe --verdict accepted|rejected`. Agents NEVER record observations themselves — accepted → `observed` (truly done), rejected → `needs_refinement` with the human's notes as first-priority dream fodder. Loops show `[DONE*]` until observed.
 - Graph hygiene: `python -m core.graph_compactor --dry-run` (archive-never-delete; apply is always manual).
 
 ## Architecture Overview

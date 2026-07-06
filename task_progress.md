@@ -1,3 +1,43 @@
+# Session 2026-07-06 (late night) — DRESS REHEARSAL RUN + OBSERVATION COLLAPSE: the human is now the final measurement
+
+**Full circadian cycle executed live on Ground_Sand_Particles (Loop 1):**
+- Dawn ingested the Will + 3 pains. Fork winner's citation FAILED verification (P2 CONFIRMED:
+  "NASA TR 1967-304" matches no NASA series — params were real Lunar Sourcebook values anyway).
+- Research corrected + 6-criterion exam declared (vacuum ballistics: dust arcs, never billows).
+- Apply fought through FOUR new Niagara bridge traps (all recorded, MCP_PATHWAYS §21b):
+  authoring calls are facades (success:true, renders nothing), get_niagara_info/validate LIE,
+  background-throttled editor freezes all simulation (foreground before trusting empty frames!),
+  duplicating lightweight templates breaks data interfaces. Working pathway: `spawn_niagara`
+  with engine template paths directly.
+- **Particles live around the player** (vision verdict: PARTICLES) — honest grade **B 79.3**
+  (5/6 criteria; fidelity 0.33: white Earth-gravity fountain, not sand — debt listed on the node).
+- Dusk dispositioned pains (P2 confirmed, P3 confirmed — env vars also broke WebSearch+classifier,
+  P1 still-open) + declared 3 new pains. Night staged H-9/H-10 (drafted, dispositions recommended).
+
+**OBSERVATION COLLAPSE built (user insight: "the human measure after the system finalizes is the
+true quantum collapse"):** `verified` is now only the system's preliminary measurement.
+- `graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
+  → accepted = status `observed` (truly done); rejected (notes REQUIRED) = `needs_refinement`
+  + notes auto-recorded as human SurpriseMoment; the distiller stages human rejections FIRST at any count.
+- Queue = latest-status-verified with no later Observation: **20 features await the human's eyes**
+  (preflight [4.5], DREAM_REPORT, dashboard). Boards show `[DONE*]` (Loops 0/2/8) until observed.
+- Agents NEVER record observations (CLAUDE.md rule).
+
+## NEXT — TWO HUMAN QUEUES, THEN LOOP 1
+1. **GARDENER: docs/PENDING_HEURISTICS.md — 10 candidates** (H-1..H-10, draft rules + veto/approve
+   recommendations inline). Approving H-2/H-3/H-7/H-10 and vetoing the subsumed ones is the
+   agent's recommendation; your call.
+2. **OBSERVER: 20-feature observation queue** (preflight [4.5]). Expect to REJECT
+   Ground_Sand_Particles ("white bubbles, not sand") — that rejection reopening the feature is
+   the system working as designed. Player_Character_Model/Animation have full evidence packets
+   (screenshots in Saved/Screenshots/loop0_*).
+3. Loop 1 continues: Ground_Sand_Particles fidelity debt (sand color via owned system/material,
+   lunar gravity -162), then Footprints (+ manage_character setup_footstep_system) + Sound.
+4. Standing: 4 ANTHROPIC_* deepseek env vars (P3 confirmed twice); astronaut as default pawn
+   (generator); helmet into BP; dream-loop 2AM schedule opt-in.
+
+---
+
 # Session 2026-07-06 (night) — GENERATION PROTOCOL BUILT: the workflow now sleeps, dreams, and inherits
 
 User proposed the "sacrificial parent / Legacy Loop" + "Circadian Protocol" concepts; verdict was

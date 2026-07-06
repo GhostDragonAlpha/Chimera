@@ -15,17 +15,22 @@ import urllib.request
 from pathlib import Path
 
 try:
-    from core.graphify_interface import load_dna_graph, graphify_query, collect_inheritance
+    from core.graphify_interface import (load_dna_graph, graphify_query,
+                                         collect_inheritance, collect_observation_queue)
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from graphify_interface import load_dna_graph, graphify_query, collect_inheritance
+    from graphify_interface import (load_dna_graph, graphify_query,
+                                    collect_inheritance, collect_observation_queue)
 
 LOOP_NAMES = {
     0: "The Player", 1: "The Ground", 2: "Basic Verbs", 3: "The Sky", 4: "Tools",
     5: "Other Dots", 6: "Shelter", 7: "Travel", 8: "Systems", 9: "The Universe",
 }
 
-DONE_STATUSES = {"verified", "encoded", "deferred"}
+DONE_STATUSES = {"verified", "encoded", "deferred", "observed"}
+# 'verified' = system's eyes (preliminary measurement); 'observed' = human's eyes
+# (the true collapse). Loops complete on 'verified' show [DONE*] until observed.
+HUMAN_DONE_STATUSES = {"encoded", "deferred", "observed"}
 
 
 def _http_ok(url, timeout=3):
@@ -140,7 +145,11 @@ def main():
             statuses[fname] = status
         done = sum(1 for s in statuses.values() if s in DONE_STATUSES)
         open_feats = [f"{f}({s})" for f, s in statuses.items() if s not in DONE_STATUSES]
-        marker = "DONE" if done == len(feats) else f"{done}/{len(feats)}"
+        human_done = sum(1 for s in statuses.values() if s in HUMAN_DONE_STATUSES)
+        if done == len(feats):
+            marker = "DONE" if human_done == len(feats) else "DONE*"
+        else:
+            marker = f"{done}/{len(feats)}"
         if open_feats and current_loop is None:
             current_loop = loop_num
         print(f"    Loop {loop_num} {LOOP_NAMES.get(loop_num, '?'):<14} [{marker}]"
@@ -165,11 +174,23 @@ def main():
         pending_heuristics = len(_re.findall(r"^- status: pending$",
                                              pending_path.read_text(encoding="utf-8"),
                                              _re.MULTILINE))
-    if inh["will"] or inh["open_pains"] or pending_heuristics:
+    obs_queue = collect_observation_queue(nodes)
+    if inh["will"] or inh["open_pains"] or pending_heuristics or obs_queue:
         print("\n[4.5] Inheritance from the previous generation:")
         if pending_heuristics:
             print(f"    Dream Report: {pending_heuristics} candidate heuristic(s) awaiting "
                   f"Gardener approval (docs/PENDING_HEURISTICS.md)")
+        if obs_queue:
+            print(f"    Observation queue: {len(obs_queue)} system-finalized feature(s) "
+                  f"awaiting the human's eyes — the true collapse")
+            print(f"      (record: python -m core.graphify_record observe --feature X "
+                  f"--verdict accepted|rejected --notes ... --loop N)")
+            for q in obs_queue[:6]:
+                hint = f"  {q['grade_hint']}" if q["grade_hint"] else ""
+                shots = f"  [{q['evidence_hint']}]" if q["evidence_hint"] else ""
+                print(f"      Loop {q['loop']} {q['feature']}{hint}{shots}")
+            if len(obs_queue) > 6:
+                print(f"      ... and {len(obs_queue) - 6} more")
         if inh["will"]:
             print(f"    Will ({inh['will']['timestamp'][:19]} — {inh['will']['phase'][:50]}):")
             print(f"      {inh['will']['inheritance'][:300]}")

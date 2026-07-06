@@ -48,12 +48,14 @@ with col4:
 # --- Generation Protocol: Inheritance Log (the morning funeral meeting) ---
 st.subheader("🌅 Inheritance Log — Generation Protocol")
 try:
-    from core.graphify_interface import collect_inheritance
+    from core.graphify_interface import collect_inheritance, collect_observation_queue
     inh = collect_inheritance(nodes)
+    obs_queue = collect_observation_queue(nodes)
 except Exception:
     inh = {"will": None, "open_pains": []}
+    obs_queue = []
 
-col_will, col_pains, col_dream = st.columns(3)
+col_will, col_pains, col_dream, col_obs = st.columns(4)
 with col_will:
     st.markdown("**The Will (latest)**")
     if inh["will"]:
@@ -80,6 +82,14 @@ with col_dream:
             st.caption(f"**{num}** {sig}")
     else:
         st.caption("No candidates distilled yet (python -m core.dream_loop).")
+with col_obs:
+    st.markdown("**Observation queue — the true collapse**")
+    st.metric("Awaiting your eyes", len(obs_queue))
+    for q in obs_queue[:6]:
+        hint = f" — {q['grade_hint']}" if q.get("grade_hint") else ""
+        st.caption(f"Loop {q['loop']} **{q['feature']}**{hint}")
+    if not obs_queue:
+        st.caption("Every system-verified feature has been human-observed.")
 
 # --- Generation Protocol: the sawtooth — grade scores over time ---
 st.subheader("📈 Grade Sawtooth — score per ProfessorGrade over time")

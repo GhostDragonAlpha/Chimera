@@ -105,6 +105,7 @@ def main():
     print("  [ ] Every MCP call recorded as a pathway_attempt")
     print("  [ ] New discoveries recorded (research_discovery / technical_discovery)")
     print("  [ ] Phantom pains declared for next session + inherited pains dispositioned")
+    print("  [ ] System-finalized features staged for HUMAN observation (the true collapse)")
     print("  [ ] Git status reviewed and staged appropriate changes")
     print("  [ ] task_progress.md updated for the next session")
 

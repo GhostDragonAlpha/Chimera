@@ -159,6 +159,15 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 - **Parameters**: `{actorName, parentActor, socketName?}` — arg is `parentActor` (`parentActorName` rejected).
 - Keeps world transform on attach — snap into place with `set_transform` afterwards.
 
+### 21b. Niagara particles (2026-07-06, Ground_Sand_Particles cycle)
+- **THE working pathway**: `manage_effect spawn_niagara {systemPath, actorName, location}` — engine plugin template paths work directly (e.g. `/Niagara/DefaultAssets/Templates/Systems/FountainLightweight`).
+- **TRAP (facade)**: `create_niagara_system` + `add_emitter_to_system` + all `add_*_module` actions return success:true but produce systems that render NOTHING. The plugin's own `/Game/MCPTest` leftovers have the same disease. Only the viewport render is truth.
+- **TRAP (lying instruments)**: `get_niagara_info` reports emitterCount=0 even for working systems; `validate_niagara_system` says isValid=true for systems that error on spawn.
+- **TRAP (simulation freeze)**: a background-throttled editor (~3fps) ticks no Niagara — systems look dead even with `set_viewport_realtime` on. Foreground the editor (PowerShell AppActivate) before trusting ANY empty frame.
+- **TRAP (duplication)**: duplicating lightweight/stateless templates into /Game breaks their data interfaces (`Error initializing data interfaces`). Reference the engine asset directly.
+- Property-writing `Asset` on an existing NiagaraComponent does NOT reinitialize it — delete + fresh `spawn_niagara`.
+- `set_niagara_parameter`: `User.SpawnRate` works on FountainLightweight; `User.Color` rejected — param surface is per-template.
+
 ### 21. Saving (2026-07-06)
 - `control_editor save_all` — saves dirty BP assets AND the level (returns savedCount).
 - `manage_asset` has NO save action; `manage_level save_level` saves only the level.
