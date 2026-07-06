@@ -1906,6 +1906,10 @@ void UEconomyManager::CalculateStationTradePrices(UStationTradingData* StationDa
 #include "../Missions/MissionComponent.h"
 #include "../Missions/MissionData.h"
 #include "../Save/DeepSpaceTraderSaveGame.h"
+#include "../Save/SaveGameComponent.h"
+#include "../Inventory/InventoryTradeComponent.h"
+#include "Engine/Engine.h"
+#include "Engine/World.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
@@ -2042,6 +2046,105 @@ bool FMissionAcceptMovesToActive::RunTest(const FString& Parameters)
 	Missions->AcceptMission(FName(TEXT("does_not_exist")));
 	TestEqual(TEXT("Unknown id changes nothing"), Missions->ActiveMissions.Num(), 1);
 
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMissionObjectiveProgressionAndCompletion,
+	"ChimeraTests.Acceptance.MissionObjectiveProgressionAndCompletion",
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FMissionObjectiveProgressionAndCompletion::RunTest(const FString& Parameters)
+{
+	UMissionComponent* Missions = NewObject<UMissionComponent>();
+
+	FMissionData Mission;
+	Mission.MissionID = FName(TEXT("OBJ1"));
+	FMissionObjective Deliver;
+	Deliver.Type = TEXT("Deliver");
+	Deliver.Commodity = FName(TEXT("Titanium"));
+	FMissionObjective Dock;
+	Dock.Type = TEXT("Dock");
+	Mission.Objectives.Add(Deliver);
+	Mission.Objectives.Add(Dock);
+	Missions->AvailableMissions.Add(Mission);
+	Missions->AcceptMission(FName(TEXT("OBJ1")));
+
+	Missions->UpdateObjective(TEXT("Deliver"), TEXT("Titanium"));
+	if (TestEqual(TEXT("Mission still active after first objective"), Missions->ActiveMissions.Num(), 1))
+	{
+		TestEqual(TEXT("Objective index advanced"), Missions->ActiveMissions[0].CurrentObjectiveIndex, 1);
+	}
+	TestEqual(TEXT("Not completed early"), Missions->CompletedMissions.Num(), 0);
+
+	Missions->UpdateObjective(TEXT("Dock"), TEXT(""));
+	TestTrue(TEXT("Mission completed after final objective"),
+		Missions->CompletedMissions.Contains(FName(TEXT("OBJ1"))));
+	TestEqual(TEXT("Completed mission left active list"), Missions->ActiveMissions.Num(), 0);
+
+	// Completion must pay out exactly once — a repeat event cannot re-complete it
+	Missions->UpdateObjective(TEXT("Dock"), TEXT(""));
+	int32 Count = 0;
+	for (const FName& Id : Missions->CompletedMissions) { if (Id == FName(TEXT("OBJ1"))) Count++; }
+	TestEqual(TEXT("Mission completed exactly once"), Count, 1);
+
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSaveGameComponentRoundtripOnActor,
+	"ChimeraTests.Acceptance.SaveGameComponentRoundtripOnActor",
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FSaveGameComponentRoundtripOnActor::RunTest(const FString& Parameters)
+{
+	// Exercises the REAL integration path: SaveGameComponent reading and restoring
+	// sibling components via FindComponentByClass (previously zero executed coverage).
+	// World via GEngine (no UnrealEd dependency for a game module).
+	UWorld* World = nullptr;
+	if (GEngine)
+	{
+		for (const FWorldContext& Context : GEngine->GetWorldContexts())
+		{
+			if (Context.World()) { World = Context.World(); break; }
+		}
+	}
+	if (!TestNotNull(TEXT("World available"), World)) return false;
+	AActor* Actor = World->SpawnActor<AActor>();
+	if (!TestNotNull(TEXT("Actor spawned"), Actor)) return false;
+
+	UInventoryTradeComponent* Inv = NewObject<UInventoryTradeComponent>(Actor);
+	Inv->RegisterComponent();
+	UMissionComponent* Missions = NewObject<UMissionComponent>(Actor);
+	Missions->RegisterComponent();
+	UFactionComponent* Factions = NewObject<UFactionComponent>(Actor);
+	Factions->RegisterComponent();
+	USaveGameComponent* Saver = NewObject<USaveGameComponent>(Actor);
+	Saver->RegisterComponent();
+
+	Inv->SetCredits(500.0f);
+	TMap<FName, int32> Cargo;
+	Cargo.Add(FName(TEXT("Titanium")), 3);
+	Inv->SetCargo(Cargo);
+	Factions->ModifyStanding(FName(TEXT("faction_titan_miners")), 25.0f);
+	FMissionData Mission;
+	Mission.MissionID = FName(TEXT("RT1"));
+	Missions->ActiveMissions.Add(Mission);
+
+	const FName Slot(TEXT("ComponentPathSlot"));
+	TestTrue(TEXT("Component SaveGame succeeds"), Saver->SaveGame(Slot));
+
+	// Mutate everything, then restore
+	Inv->SetCredits(0.0f);
+	Inv->SetCargo(TMap<FName, int32>());
+	Missions->ActiveMissions.Empty();
+	Factions->ModifyStanding(FName(TEXT("faction_titan_miners")), -100.0f);
+
+	TestTrue(TEXT("Component LoadGame succeeds"), Saver->LoadGame(Slot));
+	TestTrue(TEXT("Credits restored through component path"), FMath::IsNearlyEqual(Inv->GetCredits(), 500.0f));
+	TestEqual(TEXT("Cargo restored through component path"), Inv->GetCargoQuantity(FName(TEXT("Titanium"))), 3);
+	TestEqual(TEXT("Active mission restored through component path"), Missions->ActiveMissions.Num(), 1);
+	TestTrue(TEXT("Faction standing restored through component path"),
+		FMath::IsNearlyEqual(Factions->GetStanding(FName(TEXT("faction_titan_miners"))), 25.0f));
+
+	UGameplayStatics::DeleteGameInSlot(TEXT("ComponentPathSlot"), 0);
+	Actor->Destroy();
 	return true;
 }
 
