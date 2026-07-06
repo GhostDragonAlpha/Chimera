@@ -1,5 +1,11 @@
 # Chimera — Build System Reference
 
+## NEW AGENT? START HERE (in order)
+1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment.
+2. Read `E:\PythonChimera\task_progress.md` — session handoff log; the top **NEXT** section is your work list.
+3. Work under the Contract (below): typed recording only (`record_*` helpers), fix generator templates never generated C++, and answer the Frame Audit (`Chimera/docs/RESULT_GRADING_RUBRIC.md`) before declaring anything complete.
+4. Finish with `python -m core.postflight --phase "..." --result "<UBT verbatim>"` and update `task_progress.md` for the next agent.
+
 ## Canonical Project Structure
 
 ```
