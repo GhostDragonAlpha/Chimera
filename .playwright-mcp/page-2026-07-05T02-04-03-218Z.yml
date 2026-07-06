@@ -1,0 +1,1128 @@
+- generic [active] [ref=f31e1]:
+  - generic:
+    - generic:
+      - link "Skip to main content" [ref=f31e2] [cursor=pointer]
+      - link "Turn off continuous scrolling" [ref=f31e3] [cursor=pointer]:
+        - /url: "#"
+      - link "Accessibility help" [ref=f31e4] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=en
+  - generic [ref=f31e9]:
+    - search [ref=f31e10]:
+      - generic [ref=f31e12]:
+        - 'link "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f31e14] [cursor=pointer]':
+          - /url: https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwjku--SubqVAxWcpysGHVK-KVkQPQgJ
+          - 'img "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f31e15]'
+        - generic [ref=f31e16]:
+          - generic [ref=f31e17]:
+            - combobox "Search" [ref=f31e20]: Zebra MC3300 handheld scanner Zebra MC3300 handheld scanner
+            - generic [ref=f31e21]:
+              - button "Clear" [ref=f31e23] [cursor=pointer]:
+                - img [ref=f31e25]
+              - generic [ref=f31e28]:
+                - button "Search by voice" [ref=f31e29] [cursor=pointer]:
+                  - img [ref=f31e30]
+                - button "Search by image" [ref=f31e32] [cursor=pointer]:
+                  - img [ref=f31e33]
+          - button "Search" [ref=f31e35] [cursor=pointer]:
+            - img [ref=f31e38]
+    - generic [ref=f31e40]:
+      - button "Settings" [ref=f31e42] [cursor=pointer]:
+        - img [ref=f31e45]
+      - generic [ref=f31e48]:
+        - button "Google apps" [ref=f31e50] [cursor=pointer]:
+          - img [ref=f31e51]
+        - link "Sign in" [ref=f31e55] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=https://www.google.com/search%3Fq%3DZebra%2BMC3300%2Bhandheld%2Bscanner%26udm%3D2&ec=futura_srp_og_si_72236_p
+  - generic [ref=f31e57]:
+    - navigation [ref=f31e62]:
+      - generic [ref=f31e63]:
+        - list [ref=f31e64]:
+          - listitem [ref=f31e65]:
+            - link "AI Mode" [ref=f31e68] [cursor=pointer]:
+              - /url: /search?q=Zebra+MC3300+handheld+scanner&sca_esv=33ade75dbb948c2a&udm=50&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7B4AoTz21sHAeOqyQPVHb8M7wY4jd1zRnfXMpPBtl8F3KQI7J6bZA_ksLS2Az4X9n8OIKZnl1Ca4zcMt1rmi9mtQZnyMc9C39Gvfe4wmP1MaBf5qKdmKe21pF1KgLjv5FpoOtsbxv7tzPR0eeQSMrY9KZnhx9FQ_-K1mOO-IB0yl_idKfo&aep=1&ntc=1&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQ2J8OegQIChAD
+              - generic [ref=f31e71]: AI Mode
+          - listitem [ref=f31e72]:
+            - link "All" [ref=f31e73] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=Zebra+MC3300+handheld+scanner&source=lnms&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7B4AoTz21sHAeOqyQPVHb8M7wY4jd1zRnfXMpPBtl8F3KQI7J6bZA_ksLS2Az4X9n8OIKZnl1Ca4zcMt1rmi9mtQZnyMc9C39Gvfe4wmP1MaBf5qKdmKe21pF1KgLjv5FpoOtsbxv7tzPR0eeQSMrY9KZnhx9FQ_-K1mOO-IB0yl_idKfo&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQ0pQJegQICxAB
+              - generic [ref=f31e75]: All
+          - listitem [ref=f31e76]:
+            - link "Shopping" [ref=f31e77] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&udm=28&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7B4AoTz21sHAeOqyQPVHb8M7wY4jd1zRnfXMpPBtl8F3KQI7J6bZA_ksLS2Az4X9n8OIKZnl1Ca4zcMt1rmi9mtQZnyMc9C39Gvfe4wmP1MaBf5qKdmKe21pF1KgLjv5FpoOtsbxv7tzPR0eeQSMrY9KZnhx9FQ_-K1mOO-IB0yl_idKfo&q=Zebra+MC3300+handheld+scanner&ved=1t:220175&ictx=111
+              - generic [ref=f31e79]: Shopping
+          - listitem [ref=f31e80]:
+            - link "Images" [disabled] [ref=f31e81]:
+              - generic [ref=f31e83]: Images
+          - listitem [ref=f31e84]:
+            - link "Videos" [ref=f31e85] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&udm=7&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7B4AoTz21sHAeOqyQPVHb8M7wY4jd1zRnfXMpPBtl8F3KQI7J6bZA_ksLS2Az4X9n8OIKZnl1Ca4zcMt1rmi9mtQZnyMc9C39Gvfe4wmP1MaBf5qKdmKe21pF1KgLjv5FpoOtsbxv7tzPR0eeQSMrY9KZnhx9FQ_-K1mOO-IB0yl_idKfo&q=Zebra+MC3300+handheld+scanner&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQtKgLegQIDRAB
+              - generic [ref=f31e87]: Videos
+          - listitem [ref=f31e88]:
+            - link "Forums" [ref=f31e89] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&udm=18&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7B4AoTz21sHAeOqyQPVHb8M7wY4jd1zRnfXMpPBtl8F3KQI7J6bZA_ksLS2Az4X9n8OIKZnl1Ca4zcMt1rmi9mtQZnyMc9C39Gvfe4wmP1MaBf5qKdmKe21pF1KgLjv5FpoOtsbxv7tzPR0eeQSMrY9KZnhx9FQ_-K1mOO-IB0yl_idKfo&q=Zebra+MC3300+handheld+scanner&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQs6gLegQIEBAB
+              - generic [ref=f31e91]: Forums
+          - listitem [ref=f31e92]:
+            - link "Short videos" [ref=f31e93] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&udm=39&fbs=ABfTbFVQT6KYne3_7HzvYh-3OtGxmA6qToXQOWeUvgXQ5M6Rvtme8by44bKODdrCzbFzI7B4AoTz21sHAeOqyQPVHb8M7wY4jd1zRnfXMpPBtl8F3KQI7J6bZA_ksLS2Az4X9n8OIKZnl1Ca4zcMt1rmi9mtQZnyMc9C39Gvfe4wmP1MaBf5qKdmKe21pF1KgLjv5FpoOtsbxv7tzPR0eeQSMrY9KZnhx9FQ_-K1mOO-IB0yl_idKfo&q=Zebra+MC3300+handheld+scanner&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQs6gLegQIDhAB
+              - generic [ref=f31e95]: Short videos
+          - listitem [ref=f31e96]:
+            - button "More filters" [ref=f31e97] [cursor=pointer]:
+              - generic "More filters" [ref=f31e98]:
+                - generic [ref=f31e99]:
+                  - generic [ref=f31e100]: More
+                  - img [ref=f31e102]
+        - button "Tools" [ref=f31e105] [cursor=pointer]:
+          - generic [ref=f31e107]:
+            - generic [ref=f31e108]: Tools
+            - img [ref=f31e110]
+    - navigation [ref=f31e113]:
+      - navigation [ref=f31e116]:
+        - list [ref=f31e124]:
+          - listitem [ref=f31e125]:
+            - link "Add Rfid" [ref=f31e126] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=rfid+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rHfOjuRCfV2iX3EB0hrETeEARunXVvjxGTZed4-g5hVfOsrRMLdjRdbu0tdIY8elvGjEyOQH5zXH4XDONXg_Usb-4ry8Jky0Zmd2StF9EMTaUOu070cYgZEYJCclLZ_vhZ2W7B5mkBiAaZJg39KRtKIEF7sI&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAB6BAgREAE&ictx=0
+              - generic [ref=f31e132]: Rfid
+          - listitem [ref=f31e133]:
+            - link "Add Mc3300 rfid reader" [ref=f31e134] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=mc3300+rfid+reader+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r21-Rdu7tO0gifSkViQvk4PvfIfgiLAwiTccJp3Wd1IUltep6gGVZQufCoyMwNGsUzUpx6EgMMjORfa_tlyM7IA3mG-jyGk01dKjwrEKE_61-A0gwlMCggZc8Vhp9wdEO_FDlPHTalW70gr2BbvWox_79FPkEX0EVZNv8GH1hxpS58Kju&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAF6BAgWEAE&ictx=0
+              - generic [ref=f31e140]: Mc3300 rfid reader
+          - listitem [ref=f31e141]:
+            - link "Add Zebra mc3300x" [ref=f31e142] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=zebra+mc3300x+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rvMK4OwXsRyIhE7EdbHGMcNpzeDZop8FmcBjAFPsg1Gl0CrGdZ2rLV9ry2du-V9W_-SxNClJ1uAB3TlmAsian8vrfhn8S6z243cZy_Y3jyjj8CI96r44O5CkJPZHvNUakXYZk_GG4Iu_R4OXte5JFN3QTM3c&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAJ6BAgVEAE&ictx=0
+              - generic [ref=f31e148]: Zebra mc3300x
+          - listitem [ref=f31e149]:
+            - link "Add Zebra rfid scanner" [ref=f31e150] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=zebra+rfid+scanner+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r21-Rdu7tO0gifSkViQvk4PvfIfgiLAwiTccJp3Wd1IUltep6gGVZQufCoyMwNGsUb86wX9aKcIiNGduh0ffs46jqqfLhRmfKK8Cw25fF4PYMCROyPDHqQXnEYs17HtMlLo6bh3OIn_mBiqo_LMgjo4mibCA&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAN6BAgUEAE&ictx=0
+              - generic [ref=f31e156]: Zebra rfid scanner
+          - listitem [ref=f31e157]:
+            - link "Add Zebra mc330k" [ref=f31e158] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=zebra+mc330k+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rH-nEfqucMsHGD4YSv-NbV65gVAEu3Ik0adCUQejHMUFrrlEljiuoVAKxcsgab2JWrbcgFcK6Eu78859tGHmzqxWnP_MW5A8Q8PAGqhLpyinfULBLxV4Mc_Ud5GdMISVUQD0lGW2Zm1RGWFWvAqJjmcY-iL0&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAR6BAgTEAE&ictx=0
+              - generic [ref=f31e164]: Zebra mc330k
+          - listitem [ref=f31e165]:
+            - link "Add Mc33 zebra" [ref=f31e166] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=mc33+zebra+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rTalc9ibXQalw1qPNRsa2keOWYHV9-za5qP0UFHoULHvinIZNBCn_MCddtHzGmPNUYVczjz2fosVfwVgJakuXX5FKcV9twoQRrBtVbCHNBC-1qHVshR38F0iP_DurHwr1I2tHSIpuGF87_rgVQNEZ1ZvcVH4&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAV6BQj6BRAB&ictx=0
+              - generic [ref=f31e172]: Mc33 zebra
+          - listitem [ref=f31e173]:
+            - link "Add Zebra mc33xx" [ref=f31e174] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=zebra+mc33xx+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rH-nEfqucMsHGD4YSv-NbV65gVAEu3Ik0adCUQejHMUFrrlEljiuoVAKxcsgab2JWyI-CBe2vh4NwK7Z1SuxRZhRdl-89vXzt2-4Oima40MkSmXBp9bmS8KVy4s0TZX4zd-rnbM3QTfFiUWi8u9B5rMhMRI8&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAZ6BQj0BRAB&ictx=0
+              - generic [ref=f31e180]: Zebra mc33xx
+          - listitem [ref=f31e181]:
+            - link "Add Zebra mc33x" [ref=f31e182] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=zebra+mc33x+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r6lclnUuEFz1h_qVdzJ_AdtbbDk7WnxIpTDbZidI3Lnu5A-Kx-2IfvO11hRnizeWHk6WJ6-c_dOgxsMJVURWfBKxWA8Yax9Pb0UONTF751t-72xGntHtov_CTKY3cIKLppJotRVyl40ClVOXCI7YhzubWZZA&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAd6BQjzBRAB&ictx=0
+              - generic [ref=f31e188]: Zebra mc33x
+          - listitem [ref=f31e189]:
+            - link "Add Pistol grip" [ref=f31e190] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=pistol+grip+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r6lclnUuEFz1h_qVdzJ_AdtbbDk7WnxIpTDbZidI3Lnu5A-Kx-2IfvO11hRnizeWH3jLA2eL0W6jyJ05whhH4IGfPG621TmoI7qgmNi72Bb7MaxkdhEwxOSPTHf0Zduy-2bu7ZlKOZBRDTvilKKRW0LrL7Iu4DT_JzkGcaD7mzNK-p_o_&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAh6BQj2BRAB&ictx=0
+              - generic [ref=f31e196]: Pistol grip
+          - listitem [ref=f31e197]:
+            - link "Add Qr code" [ref=f31e198] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=qr+code+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rFa2o0JhNkSECFiglsbMkH3_27gmsLe7iud_Eo1BoWAMUvUUzUI45LcRpp6dRBIB6ib7f7Sk2WPSyW-cr-nS-pJJF851r5vdSWH3pSoFwx3ev9jr-eAyWqhelyvK5FlWJdx2RzrrVdXmRf-Ww5dxCGaxe8tU&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAl6BQj5BRAB&ictx=0
+              - generic [ref=f31e200]: Qr code
+          - listitem [ref=f31e201]:
+            - link "Add Zebra technologies" [ref=f31e202] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=zebra+technologies+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r21-Rdu7tO0gifSkViQvk4PvfIfgiLAwiTccJp3Wd1IUltep6gGVZQufCoyMwNGsUBmVwr38rLQ0cHJ1_GraJgXXIVHYjfXNRAXJB-st7qq90Dwhz8xrZFDANuiHkTMD7oAhhv64FsW5LoqWYKQzPvl8IE8eaqBvDHVCUs3w0DwSAWP-V&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAp6BQj4BRAB&ictx=0
+              - generic [ref=f31e208]: Zebra technologies
+          - listitem [ref=f31e209]:
+            - link "Add Handheld computer" [ref=f31e210] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=handheld+computer+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4reLO176j24wbGEBzQiBbnQmYcQAGVIjKRv0mOQSdqOZV53ffAsuz8elVYcXGs0J6NaW6ke6H-OND8G8IdozH-5bSeKwWCygXopjCgimTGjq1XCr09KQdEoe_IPV_qZQs1PAgXwe6WE-KDFCcAOTJlaH7_hSTnfDW25wXMgLJzWfBkFI5z&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAt6BQj3BRAB&ictx=0
+              - generic [ref=f31e216]: Handheld computer
+          - listitem [ref=f31e217]:
+            - link "Add Rfid handheld" [ref=f31e218] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=rfid+handheld+Zebra+MC3300+handheld+scanner&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rvMK4OwXsRyIhE7EdbHGMcNpzeDZop8FmcBjAFPsg1Gl0CrGdZ2rLV9ry2du-V9W_N5TldPIlGOjxYgg0rpgfU7bkxBhBOBcsBAJvpfD871y_iAG8xyOA7tw7LsZs9W82Ltvc-fsU11ixYS6ctszi7wrQdsk&udm=2&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQxKsJKAx6BQj1BRAB&ictx=0
+              - generic [ref=f31e224]: Rfid handheld
+    - heading "Search Results" [level=1] [ref=f31e225]
+    - main [ref=f31e227]:
+      - generic [ref=f31e236]:
+        - generic [ref=f31e240] [cursor=pointer]:
+          - button "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e245]:
+            - img "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e247]
+          - link "MC33xx Series Handheld Mobile Computer | Zebra Zebra Technologies" [ref=f31e249]:
+            - /url: https://www.zebra.com/us/en/products/mobile-computers/handheld/mc3300.html
+            - generic [ref=f31e250]:
+              - generic [ref=f31e252]: MC33xx Series Handheld Mobile Computer | Zebra
+              - generic [ref=f31e256]: Zebra Technologies
+        - generic [ref=f31e260] [cursor=pointer]:
+          - button "MC3300 Mobile Computer Support | Zebra" [ref=f31e265]:
+            - img "MC3300 Mobile Computer Support | Zebra" [ref=f31e267]
+          - link "MC3300 Mobile Computer Support | Zebra Zebra Technologies" [ref=f31e269]:
+            - /url: https://www.zebra.com/us/en/support-downloads/mobile-computers/handheld/mc3300.html
+            - generic [ref=f31e270]:
+              - generic [ref=f31e272]: MC3300 Mobile Computer Support | Zebra
+              - generic [ref=f31e276]: Zebra Technologies
+        - generic [ref=f31e280] [cursor=pointer]:
+          - button "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e285]:
+            - img "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e287]
+          - link "MC33xx Series Handheld Mobile Computer | Zebra Zebra Technologies" [ref=f31e289]:
+            - /url: https://www.zebra.com/us/en/products/mobile-computers/handheld/mc3300.html
+            - generic [ref=f31e290]:
+              - generic [ref=f31e292]: MC33xx Series Handheld Mobile Computer | Zebra
+              - generic [ref=f31e296]: Zebra Technologies
+        - generic [ref=f31e300] [cursor=pointer]:
+          - 'button "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e305]':
+            - 'img "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e307]'
+          - 'link "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products Amazon.com" [ref=f31e309]':
+            - /url: https://www.amazon.com/Zebra-Handheld-Computer-Collection-MC330K-GE4HA3US/dp/B07DN6JJXX
+            - generic [ref=f31e310]:
+              - generic [ref=f31e312]: "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products"
+              - generic [ref=f31e316]: Amazon.com
+        - generic [ref=f31e320] [cursor=pointer]:
+          - generic [ref=f31e322]:
+            - button "MC330M-GJ3HG2RW Zebra MC3300 Standard Data Capture Terminal Rugged Android ~D~" [ref=f31e325]:
+              - img "MC330M-GJ3HG2RW Zebra MC3300 Standard Data Capture Terminal Rugged Android ~D~" [ref=f31e327]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "MC330M-GJ3HG2RW Zebra MC3300 Standard Data Capture Terminal Rugged Android ~D~ Barcode-Arena.com · In stock" [ref=f31e329]:
+            - /url: https://www.barcode-arena.com/mc3300-g-38key-2d.html?srsltid=AfmBOopAgGbBZ_q3KRQ8D6ZbqREnB3IpcJ3pGAVJNXXk2ekOjuesy_ci
+            - generic [ref=f31e330]:
+              - generic [ref=f31e332]: MC330M-GJ3HG2RW Zebra MC3300 Standard Data Capture Terminal Rugged Android ~D~
+              - generic [ref=f31e336]: Barcode-Arena.com · In stock
+        - generic [ref=f31e340] [cursor=pointer]:
+          - generic [ref=f31e342]:
+            - button "Zebra MC3300x handheld mobile computer 10.2 cm (4\") 800 x 480 pix" [ref=f31e345]:
+              - img "Zebra MC3300x handheld mobile computer 10.2 cm (4\") 800 x 480 pix" [ref=f31e347]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC3300x handheld mobile computer 10.2 cm (4\") 800 x 480 pix Atlas RFID Solutions · In stock" [ref=f31e349]:
+            - /url: https://www.atlasrfidstore.com/zebra-mc3300x-s-handheld-mobile-computer/?srsltid=AfmBOoqRLtoQn3cBXnvdbshYGtyFc_7ZI_PsuCZR6v0jaf0vbUjBVnEV
+            - generic [ref=f31e350]:
+              - generic [ref=f31e352]: Zebra MC3300x handheld mobile computer 10.2 cm (4") 800 x 480 pix
+              - generic [ref=f31e356]: Atlas RFID Solutions · In stock
+        - generic [ref=f31e360] [cursor=pointer]:
+          - button "MC3300 RFID Series Handheld Mobile Computers | Zebra" [ref=f31e365]:
+            - img "MC3300 RFID Series Handheld Mobile Computers | Zebra" [ref=f31e367]
+          - link "MC3300 RFID Series Handheld Mobile Computers | Zebra Zebra Technologies" [ref=f31e369]:
+            - /url: https://www.zebra.com/us/en/products/rfid/rfid-handhelds/mc3300-series.html
+            - generic [ref=f31e370]:
+              - generic [ref=f31e372]: MC3300 RFID Series Handheld Mobile Computers | Zebra
+              - generic [ref=f31e376]: Zebra Technologies
+        - generic [ref=f31e380] [cursor=pointer]:
+          - generic [ref=f31e382]:
+            - button "Zebra MC3300x Handheld Android Barcode Scanner, Alpha Numeric Keypad, Charger Included" [ref=f31e385]:
+              - img "Zebra MC3300x Handheld Android Barcode Scanner, Alpha Numeric Keypad, Charger Included" [ref=f31e387]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC3300x Handheld Android Barcode Scanner, Alpha Numeric Keypad, Charger Included Barcode-Arena.com · In stock" [ref=f31e389]:
+            - /url: https://www.barcode-arena.com/zebra-mc3300x-handheld-android-scanner.html?srsltid=AfmBOopjIiXZaW-hq0G4v5rd5ElicpS31SgPKTfXC_Jd9iw7uhBhrRdv
+            - generic [ref=f31e390]:
+              - generic [ref=f31e392]: Zebra MC3300x Handheld Android Barcode Scanner, Alpha Numeric Keypad, Charger Included
+              - generic [ref=f31e396]: Barcode-Arena.com · In stock
+        - generic [ref=f31e400] [cursor=pointer]:
+          - 'button "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e405]':
+            - 'img "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e407]'
+          - 'link "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products Amazon.com" [ref=f31e409]':
+            - /url: https://www.amazon.com/Zebra-Handheld-Computer-Collection-MC330K-GE4HA3US/dp/B07DN6JJXX
+            - generic [ref=f31e410]:
+              - generic [ref=f31e412]: "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products"
+              - generic [ref=f31e416]: Amazon.com
+        - generic [ref=f31e420] [cursor=pointer]:
+          - button "MC3300 RFID Series Handheld Mobile Computers | Zebra" [ref=f31e425]:
+            - img "MC3300 RFID Series Handheld Mobile Computers | Zebra" [ref=f31e427]
+          - link "MC3300 RFID Series Handheld Mobile Computers | Zebra Zebra Technologies" [ref=f31e429]:
+            - /url: https://www.zebra.com/us/en/products/rfid/rfid-handhelds/mc3300-series.html
+            - generic [ref=f31e430]:
+              - generic [ref=f31e432]: MC3300 RFID Series Handheld Mobile Computers | Zebra
+              - generic [ref=f31e436]: Zebra Technologies
+        - generic [ref=f31e440] [cursor=pointer]:
+          - button "Zebra MC3300 Barcode Scanner" [ref=f31e445]:
+            - img "Zebra MC3300 Barcode Scanner" [ref=f31e447]
+          - link "Zebra MC3300 Barcode Scanner Triton Store" [ref=f31e449]:
+            - /url: https://tritonstore.com.au/zebra-mc3300-barcode-scanner/
+            - generic [ref=f31e450]:
+              - generic [ref=f31e452]: Zebra MC3300 Barcode Scanner
+              - generic [ref=f31e456]: Triton Store
+        - generic [ref=f31e460] [cursor=pointer]:
+          - 'button "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e465]':
+            - 'img "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e467]'
+          - 'link "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products Amazon.com" [ref=f31e469]':
+            - /url: https://www.amazon.com/Zebra-Handheld-Computer-Collection-MC330K-GE4HA3US/dp/B07DN6JJXX
+            - generic [ref=f31e470]:
+              - generic [ref=f31e472]: "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products"
+              - generic [ref=f31e476]: Amazon.com
+        - generic [ref=f31e480] [cursor=pointer]:
+          - generic [ref=f31e482]:
+            - button "Zebra MC3300 - 6 ft.1.8 m Drop Specs" [ref=f31e485]:
+              - img "Zebra MC3300 - 6 ft.1.8 m Drop Specs" [ref=f31e487]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC3300 - 6 ft.1.8 m Drop Specs Barcodes, Inc." [ref=f31e489]:
+            - /url: https://www.barcodesinc.com/zebra/mc3300.htm?srsltid=AfmBOorWCdemWCp1UoOQFhDhxsH0QTysOi0C8gefC_ZMaIqq70LEUc7L
+            - generic [ref=f31e490]:
+              - generic [ref=f31e492]: Zebra MC3300 - 6 ft.1.8 m Drop Specs
+              - generic [ref=f31e496]: Barcodes, Inc.
+        - generic [ref=f31e500] [cursor=pointer]:
+          - generic [ref=f31e502]:
+            - button "MC330L-SM3EG4NA - Zebra MC3300 Mobile Computer" [ref=f31e505]:
+              - img "MC330L-SM3EG4NA - Zebra MC3300 Mobile Computer" [ref=f31e507]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "MC330L-SM3EG4NA - Zebra MC3300 Mobile Computer Barcode Factory" [ref=f31e509]:
+            - /url: https://www.barcodefactory.com/zebra/mobile-computers/mc3300-series/mc330l-sm3eg4na?srsltid=AfmBOop4TWqs9i1J1jJEheeNlBNNVThm2PA7v78mI3quqt0NFBZuNCDY
+            - generic [ref=f31e510]:
+              - generic [ref=f31e512]: MC330L-SM3EG4NA - Zebra MC3300 Mobile Computer
+              - generic [ref=f31e516]: Barcode Factory
+        - generic [ref=f31e520] [cursor=pointer]:
+          - button "ZEBRA EVM/EMC, MC3300-R, (MC33X), ROTATING HEAD, WLAN, BLUETOOTH, STANDARD RANGE 1D LASER (SE96X), 4.0\" DISPLAY, 47 KEY, - MC330L-RL4EG4NA - Barcode Scanners - CDW.com" [ref=f31e525]:
+            - img "ZEBRA EVM/EMC, MC3300-R, (MC33X), ROTATING HEAD, WLAN, BLUETOOTH, STANDARD RANGE 1D LASER (SE96X), 4.0\" DISPLAY, 47 KEY, - MC330L-RL4EG4NA - Barcode Scanners - CDW.com" [ref=f31e527]
+          - link "ZEBRA EVM/EMC, MC3300-R, (MC33X), ROTATING HEAD, WLAN, BLUETOOTH, STANDARD RANGE 1D LASER (SE96X), 4.0\" DISPLAY, 47 KEY, - MC330L-RL4EG4NA - Barcode Scanners - CDW.com CDW" [ref=f31e529]:
+            - /url: https://www.cdw.com/product/zebra-evm-emc-mc3300-r-mc33x-rotating-head-wlan-bluetooth-standard/6621363
+            - generic [ref=f31e530]:
+              - generic [ref=f31e532]: ZEBRA EVM/EMC, MC3300-R, (MC33X), ROTATING HEAD, WLAN, BLUETOOTH, STANDARD RANGE 1D LASER (SE96X), 4.0" DISPLAY, 47 KEY, - MC330L-RL4EG4NA - Barcode Scanners - CDW.com
+              - generic [ref=f31e536]: CDW
+        - generic [ref=f31e540] [cursor=pointer]:
+          - generic [ref=f31e542]:
+            - button "MC330L-GJ4EG4NA - Zebra MC3300 Mobile Computer" [ref=f31e545]:
+              - img "MC330L-GJ4EG4NA - Zebra MC3300 Mobile Computer" [ref=f31e547]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "MC330L-GJ4EG4NA - Zebra MC3300 Mobile Computer The ZPS Store · In stock" [ref=f31e549]:
+            - /url: https://www.zpsstore.com/mc330l-gj4eg4na-zebra-mc3300-mobile-computer/?srsltid=AfmBOoqhbiiU3It0yDOrVyzGEwYcHW4y5NBM85Rqr8lPTRFnM_F3KSyd
+            - generic [ref=f31e550]:
+              - generic [ref=f31e552]: MC330L-GJ4EG4NA - Zebra MC3300 Mobile Computer
+              - generic [ref=f31e556]: The ZPS Store · In stock
+        - generic [ref=f31e560] [cursor=pointer]:
+          - button "MC3300 RFID Series Handheld Mobile Computers | Zebra" [ref=f31e565]:
+            - img "MC3300 RFID Series Handheld Mobile Computers | Zebra" [ref=f31e567]
+          - link "MC3300 RFID Series Handheld Mobile Computers | Zebra Zebra Technologies" [ref=f31e569]:
+            - /url: https://www.zebra.com/us/en/products/rfid/rfid-handhelds/mc3300-series.html
+            - generic [ref=f31e570]:
+              - generic [ref=f31e572]: MC3300 RFID Series Handheld Mobile Computers | Zebra
+              - generic [ref=f31e576]: Zebra Technologies
+        - generic [ref=f31e580] [cursor=pointer]:
+          - generic [ref=f31e582]:
+            - button "Zebra MC330K-GE3HA3US Mobile Computer" [ref=f31e585]:
+              - img "Zebra MC330K-GE3HA3US Mobile Computer" [ref=f31e587]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC330K-GE3HA3US Mobile Computer ScanDepot · In stock" [ref=f31e589]:
+            - /url: https://scandepot.com/products/zebra-mc330k-ge3ha3us-mobile-computer?srsltid=AfmBOopDWxG0ldx_csifTHJy0khbBwdgFhBTWORETukXQ9C9Vkxmozxf
+            - generic [ref=f31e590]:
+              - generic [ref=f31e592]: Zebra MC330K-GE3HA3US Mobile Computer
+              - generic [ref=f31e596]: ScanDepot · In stock
+        - generic [ref=f31e600] [cursor=pointer]:
+          - 'button "The Zebra MC3300: A Mobile Computer That Doubles as a Super Scanner" [ref=f31e605]':
+            - 'img "The Zebra MC3300: A Mobile Computer That Doubles as a Super Scanner" [ref=f31e607]'
+          - 'link "The Zebra MC3300: A Mobile Computer That Doubles as a Super Scanner Avalon Integration" [ref=f31e609]':
+            - /url: https://avalonintegration.com/zebra-mc3300-super-scanner/
+            - generic [ref=f31e610]:
+              - generic [ref=f31e612]: "The Zebra MC3300: A Mobile Computer That Doubles as a Super Scanner"
+              - generic [ref=f31e616]: Avalon Integration
+        - generic [ref=f31e620] [cursor=pointer]:
+          - button "MC330L-GL4EG4NA - Zebra MC3300x Mobile Computer" [ref=f31e625]:
+            - img "MC330L-GL4EG4NA - Zebra MC3300x Mobile Computer" [ref=f31e627]
+          - link "MC330L-GL4EG4NA - Zebra MC3300x Mobile Computer Barcode Factory" [ref=f31e629]:
+            - /url: https://www.barcodefactory.com/zebra/mobile-computers/mc3300-series/mc330l-gl4eg4na?srsltid=AfmBOooaY3qSV2lquVC_qgH9ShdSAY9Sz0MUiSCSEJR8GGlI59SKem8v
+            - generic [ref=f31e630]:
+              - generic [ref=f31e632]: MC330L-GL4EG4NA - Zebra MC3300x Mobile Computer
+              - generic [ref=f31e636]: Barcode Factory
+        - generic [ref=f31e640] [cursor=pointer]:
+          - button "Zebra MC3300ax-S Handheld Mobile Computer | Atlas RFID" [ref=f31e645]:
+            - img "Zebra MC3300ax-S Handheld Mobile Computer | Atlas RFID" [ref=f31e647]
+          - link "Zebra MC3300ax-S Handheld Mobile Computer | Atlas RFID Atlas RFID Solutions" [ref=f31e649]:
+            - /url: https://www.atlasrfidstore.com/zebra-mc3300ax-s-handheld-mobile-computer/?srsltid=AfmBOorl5PDht-Zf1ho0gTpywYU72YhaFgTd7iFMj8mbs-kuYqh6s0fF
+            - generic [ref=f31e650]:
+              - generic [ref=f31e652]: Zebra MC3300ax-S Handheld Mobile Computer | Atlas RFID
+              - generic [ref=f31e656]: Atlas RFID Solutions
+        - generic [ref=f31e660] [cursor=pointer]:
+          - 'button "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products" [ref=f31e665]':
+            - 'img "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products" [ref=f31e667]'
+          - 'link "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products Amazon.com" [ref=f31e669]':
+            - /url: https://www.amazon.com/Computer-Barcode-Scanner-Charger-Included/dp/B08LQXPXDW
+            - generic [ref=f31e670]:
+              - generic [ref=f31e672]: "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products"
+              - generic [ref=f31e676]: Amazon.com
+        - generic [ref=f31e680] [cursor=pointer]:
+          - generic [ref=f31e682]:
+            - button "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation" [ref=f31e685]:
+              - img "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation" [ref=f31e687]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation SRK Innovation" [ref=f31e689]:
+            - /url: https://www.srkinnovations.com/products/integrated-uhf-rfid-reader-zebra-mc3300-865-928mhz-usb-2-0-high-speed?srsltid=AfmBOooqTwwtvOtYnelCY7iH6EhxFItIuSg-XUSGBMq-tZvomLmQqaJv
+            - generic [ref=f31e690]:
+              - generic [ref=f31e692]: Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation
+              - generic [ref=f31e696]: SRK Innovation
+        - generic [ref=f31e700] [cursor=pointer]:
+          - generic [ref=f31e702]:
+            - button "ZEBRA MC33 2D Barcode Scanner with WiFi, NFC, Android 8.1 - Reliable Handheld Reader for Efficient Data Management" [ref=f31e705]:
+              - img "ZEBRA MC33 2D Barcode Scanner with WiFi, NFC, Android 8.1 - Reliable Handheld Reader for Efficient Data Management" [ref=f31e707]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "ZEBRA MC33 2D Barcode Scanner with WiFi, NFC, Android 8.1 - Reliable Handheld Reader for Efficient Data Management Alibaba.com" [ref=f31e709]:
+            - /url: https://www.alibaba.com/product-detail/ZEBRA-MC33-MC330K-MC330L-SJ3EA4CN-2D_1601165358009.html
+            - generic [ref=f31e710]:
+              - generic [ref=f31e712]: ZEBRA MC33 2D Barcode Scanner with WiFi, NFC, Android 8.1 - Reliable Handheld Reader for Efficient Data Management
+              - generic [ref=f31e716]: Alibaba.com
+        - generic [ref=f31e718]:
+          - heading "Related searches" [level=2] [ref=f31e719]
+          - link "zebra handheld barcode scanner" [ref=f31e720] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+handheld+barcode+scanner&stick=H4sIAAAAAAAAAFvEKleVmlSUqJCRmJeSkZqTopCUWJScn5KqUJycmJeXWgQA6WznmyEAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegQIeRAA
+            - generic [ref=f31e725]: zebra handheld barcode scanner
+          - link "zebra scanner codes" [ref=f31e726] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+scanner+codes&stick=H4sIAAAAAAAAAFvEKlyVmlSUqFCcnJiXl1qkkJyfkloMADe76xkWAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUIlAEQAA
+            - generic [ref=f31e731]: zebra scanner codes
+          - link "zebra handheld scanner" [ref=f31e732] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+handheld+scanner&stick=H4sIAAAAAAAAAFvEKlaVmlSUqJCRmJeSkZqTolCcnJiXl1oEAF5eZPEZAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUIpAEQAA
+            - generic [ref=f31e737]: zebra handheld scanner
+        - generic [ref=f31e741] [cursor=pointer]:
+          - button "Zebra MC3300 - 6 ft.1.8 m Drop Specs" [ref=f31e746]:
+            - img "Zebra MC3300 - 6 ft.1.8 m Drop Specs" [ref=f31e748]
+          - link "Zebra MC3300 - 6 ft.1.8 m Drop Specs Barcodes, Inc." [ref=f31e750]:
+            - /url: https://www.barcodesinc.com/zebra/mc3300.htm?srsltid=AfmBOopCFwjV0DpOjhCMPRQfFrfqvuqqrzSvYRLdEMxaGL2Q__RgyJdK
+            - generic [ref=f31e751]:
+              - generic [ref=f31e753]: Zebra MC3300 - 6 ft.1.8 m Drop Specs
+              - generic [ref=f31e757]: Barcodes, Inc.
+        - generic [ref=f31e761] [cursor=pointer]:
+          - button "Zebra MC3300 | Rugged Handheld Mobile Computer!" [ref=f31e766]:
+            - img "Zebra MC3300 | Rugged Handheld Mobile Computer!" [ref=f31e768]
+          - link "Zebra MC3300 | Rugged Handheld Mobile Computer! Micro Nordic" [ref=f31e770]:
+            - /url: https://micronordic.com/product/zebra-mc3300-mobile-handheld-computer-refurbished/
+            - generic [ref=f31e771]:
+              - generic [ref=f31e773]: Zebra MC3300 | Rugged Handheld Mobile Computer!
+              - generic [ref=f31e777]: Micro Nordic
+        - generic [ref=f31e781] [cursor=pointer]:
+          - button "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e786]:
+            - img "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e788]
+          - link "MC33xx Series Handheld Mobile Computer | Zebra Zebra Technologies" [ref=f31e790]:
+            - /url: https://www.zebra.com/us/en/products/mobile-computers/handheld/mc3300.html
+            - generic [ref=f31e791]:
+              - generic [ref=f31e793]: MC33xx Series Handheld Mobile Computer | Zebra
+              - generic [ref=f31e797]: Zebra Technologies
+        - generic [ref=f31e801] [cursor=pointer]:
+          - generic [ref=f31e803]:
+            - button "✓Zebra MC3300 Android Pistol-Grip Long Range 2D/1D Barcode Scanner w/ Cradle!🔥⭐ | eBay" [ref=f31e806]:
+              - img "✓Zebra MC3300 Android Pistol-Grip Long Range 2D/1D Barcode Scanner w/ Cradle!🔥⭐ | eBay" [ref=f31e808]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "✓Zebra MC3300 Android Pistol-Grip Long Range 2D/1D Barcode Scanner w/ Cradle!🔥⭐ | eBay eBay" [ref=f31e810]:
+            - /url: https://www.ebay.com/itm/277235476139
+            - generic [ref=f31e811]:
+              - generic [ref=f31e813]: ✓Zebra MC3300 Android Pistol-Grip Long Range 2D/1D Barcode Scanner w/ Cradle!🔥⭐ | eBay
+              - generic [ref=f31e817]: eBay
+        - generic [ref=f31e821] [cursor=pointer]:
+          - generic [ref=f31e823]:
+            - button "Zebra’s MC3300 Unboxing and Review" [ref=f31e826]:
+              - img "Zebra’s MC3300 Unboxing and Review" [ref=f31e828]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - link "Zebra’s MC3300 Unboxing and Review YouTube" [ref=f31e830]:
+            - /url: https://www.youtube.com/watch?v=NUQ3BtER308
+            - generic [ref=f31e831]:
+              - generic [ref=f31e833]: Zebra’s MC3300 Unboxing and Review
+              - generic [ref=f31e837]: YouTube
+        - generic [ref=f31e841] [cursor=pointer]:
+          - generic [ref=f31e843]:
+            - button "MC330L-GJ2EG4NA (Device & Battery ONLY)" [ref=f31e846]:
+              - img "MC330L-GJ2EG4NA (Device & Battery ONLY)" [ref=f31e848]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "MC330L-GJ2EG4NA (Device & Battery ONLY) Legacy Technology · In stock" [ref=f31e850]:
+            - /url: https://www.legacyglobal.com/products/zebra-mc330l-gj2eg4na/?srsltid=AfmBOorYtSctHJohU9Jkb5HtE3ewgs0gAIxh7NOY0E_RpeQW1aKr0B0S
+            - generic [ref=f31e851]:
+              - generic [ref=f31e853]: MC330L-GJ2EG4NA (Device & Battery ONLY)
+              - generic [ref=f31e857]: Legacy Technology · In stock
+        - generic [ref=f31e861] [cursor=pointer]:
+          - generic [ref=f31e863]:
+            - button "Zebra MC330L-GE3EA4CN Rugged Handheld 32GB 4-inch Black 5200mAh Android 7.0 13MP Camera Inventory PDA Wireless Barcode Scanner" [ref=f31e866]:
+              - img "Zebra MC330L-GE3EA4CN Rugged Handheld 32GB 4-inch Black 5200mAh Android 7.0 13MP Camera Inventory PDA Wireless Barcode Scanner" [ref=f31e868]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC330L-GE3EA4CN Rugged Handheld 32GB 4-inch Black 5200mAh Android 7.0 13MP Camera Inventory PDA Wireless Barcode Scanner Alibaba.com · In stock" [ref=f31e870]:
+            - /url: https://www.alibaba.com/product-detail/Zebra-MC3300-Premium-MC330K-GE3HA3RW-Rugged_1600061088881.html
+            - generic [ref=f31e871]:
+              - generic [ref=f31e873]: Zebra MC330L-GE3EA4CN Rugged Handheld 32GB 4-inch Black 5200mAh Android 7.0 13MP Camera Inventory PDA Wireless Barcode Scanner
+              - generic [ref=f31e877]: Alibaba.com · In stock
+        - generic [ref=f31e881] [cursor=pointer]:
+          - button "Zebra MC3300 Mobile Computer | Unique Scanning | Blog | Radley Corp" [ref=f31e886]:
+            - img "Zebra MC3300 Mobile Computer | Unique Scanning | Blog | Radley Corp" [ref=f31e888]
+          - link "Zebra MC3300 Mobile Computer | Unique Scanning | Blog | Radley Corp Radley Corporation" [ref=f31e890]:
+            - /url: https://www.radley.com/zebras-mc3300-mobile-computer-offers-unique-scanning-options/
+            - generic [ref=f31e891]:
+              - generic [ref=f31e893]: Zebra MC3300 Mobile Computer | Unique Scanning | Blog | Radley Corp
+              - generic [ref=f31e897]: Radley Corporation
+        - generic [ref=f31e901] [cursor=pointer]:
+          - button "Zebra MC3300 | OpalTec" [ref=f31e906]:
+            - img "Zebra MC3300 | OpalTec" [ref=f31e908]
+          - link "Zebra MC3300 | OpalTec OpalTec" [ref=f31e910]:
+            - /url: https://opaltechnology.com/product/zebra-mc3300
+            - generic [ref=f31e911]:
+              - generic [ref=f31e913]: Zebra MC3300 | OpalTec
+              - generic [ref=f31e917]: OpalTec
+        - generic [ref=f31e921] [cursor=pointer]:
+          - generic [ref=f31e923]:
+            - button "Heavy-Duty Zebra MC3300 Case with Trigger Handle No" [ref=f31e926]:
+              - img "Heavy-Duty Zebra MC3300 Case with Trigger Handle No" [ref=f31e928]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Heavy-Duty Zebra MC3300 Case with Trigger Handle No AgozTech · In stock" [ref=f31e930]:
+            - /url: https://www.agoztech.com/products/heavy-duty-zebra-mc3300-case-with-trigger-handle?srsltid=AfmBOorgItp3CeeYIpiKN7zQTVN-JUH36bWY_bTqf-7Bm6n2tFrIiML9
+            - generic [ref=f31e931]:
+              - generic [ref=f31e933]: Heavy-Duty Zebra MC3300 Case with Trigger Handle No
+              - generic [ref=f31e937]: AgozTech · In stock
+        - generic [ref=f31e941] [cursor=pointer]:
+          - button "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth" [ref=f31e946]:
+            - img "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth" [ref=f31e948]
+          - link "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth EnCStore.com" [ref=f31e950]:
+            - /url: https://www.encstore.com/zebra-mc3300ax-handheld-mobile-computer-wifi-bluetooth-enc6821
+            - generic [ref=f31e951]:
+              - generic [ref=f31e953]: Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth
+              - generic [ref=f31e957]: EnCStore.com
+        - generic [ref=f31e961] [cursor=pointer]:
+          - button "Zebra MC330L-GL4EG4NA MC3300x Barcode Scanner" [ref=f31e966]:
+            - img "Zebra MC330L-GL4EG4NA MC3300x Barcode Scanner" [ref=f31e968]
+          - link "Zebra MC330L-GL4EG4NA MC3300x Barcode Scanner PTS Mobile" [ref=f31e970]:
+            - /url: https://www.ptsmobile.com/MC330L-GL4EG4NA.html?srsltid=AfmBOooh7KSNhzsF0bUMJWuONwnLFeZY-QPq1hWpZQHyluony9wNWAaw
+            - generic [ref=f31e971]:
+              - generic [ref=f31e973]: Zebra MC330L-GL4EG4NA MC3300x Barcode Scanner
+              - generic [ref=f31e977]: PTS Mobile
+        - generic [ref=f31e981] [cursor=pointer]:
+          - button "Using the Zebra MC3300x RFID scanner with Orca Scan" [ref=f31e986]:
+            - img "Using the Zebra MC3300x RFID scanner with Orca Scan" [ref=f31e988]
+          - link "Using the Zebra MC3300x RFID scanner with Orca Scan Orca Scan" [ref=f31e990]:
+            - /url: https://orcascan.com/guides/zebra-mc3300x-orca-scan-setup-31fc6ab9
+            - generic [ref=f31e991]:
+              - generic [ref=f31e993]: Using the Zebra MC3300x RFID scanner with Orca Scan
+              - generic [ref=f31e997]: Orca Scan
+        - generic [ref=f31e1001] [cursor=pointer]:
+          - button "MC3300 RFID Series Handheld Mobile Computers | Zebra" [ref=f31e1006]:
+            - img "MC3300 RFID Series Handheld Mobile Computers | Zebra" [ref=f31e1008]
+          - link "MC3300 RFID Series Handheld Mobile Computers | Zebra Zebra Technologies" [ref=f31e1010]:
+            - /url: https://www.zebra.com/us/en/products/rfid/rfid-handhelds/mc3300-series.html
+            - generic [ref=f31e1011]:
+              - generic [ref=f31e1013]: MC3300 RFID Series Handheld Mobile Computers | Zebra
+              - generic [ref=f31e1017]: Zebra Technologies
+        - generic [ref=f31e1021] [cursor=pointer]:
+          - button "ZEBRA MC33 MC330K Handheld Android Barcode Scanner Mobile Computer w/ Battery | eBay" [ref=f31e1026]:
+            - img "ZEBRA MC33 MC330K Handheld Android Barcode Scanner Mobile Computer w/ Battery | eBay" [ref=f31e1028]
+          - link "ZEBRA MC33 MC330K Handheld Android Barcode Scanner Mobile Computer w/ Battery | eBay eBay" [ref=f31e1030]:
+            - /url: https://www.ebay.com/itm/285939451992
+            - generic [ref=f31e1031]:
+              - generic [ref=f31e1033]: ZEBRA MC33 MC330K Handheld Android Barcode Scanner Mobile Computer w/ Battery | eBay
+              - generic [ref=f31e1037]: eBay
+        - generic [ref=f31e1041] [cursor=pointer]:
+          - button "Zebra MC3300 Series - Antibus Scale & Barcode Systems" [ref=f31e1046]:
+            - img "Zebra MC3300 Series - Antibus Scale & Barcode Systems" [ref=f31e1048]
+          - link "Zebra MC3300 Series - Antibus Scale & Barcode Systems Antibus Scales & Barcode Systems" [ref=f31e1050]:
+            - /url: https://antibus.com/barcode-products/mobile-barcode-scanners/272-zebra-mc3300-series/
+            - generic [ref=f31e1051]:
+              - generic [ref=f31e1053]: Zebra MC3300 Series - Antibus Scale & Barcode Systems
+              - generic [ref=f31e1057]: Antibus Scales & Barcode Systems
+        - generic [ref=f31e1061] [cursor=pointer]:
+          - 'button "Amazon.com : Zebra MC3300 Android Pistol Grip Mobile Computer, 2D/1D Barcode Scanner, Charger Included (Renewed) : Office Products" [ref=f31e1066]':
+            - 'img "Amazon.com : Zebra MC3300 Android Pistol Grip Mobile Computer, 2D/1D Barcode Scanner, Charger Included (Renewed) : Office Products" [ref=f31e1068]'
+          - 'link "Amazon.com : Zebra MC3300 Android Pistol Grip Mobile Computer, 2D/1D Barcode Scanner, Charger Included (Renewed) : Office Products Amazon.com" [ref=f31e1070]':
+            - /url: https://www.amazon.com/Computer-Barcode-Scanner-Charger-Included/dp/B09GBL9LLN
+            - generic [ref=f31e1071]:
+              - generic [ref=f31e1073]: "Amazon.com : Zebra MC3300 Android Pistol Grip Mobile Computer, 2D/1D Barcode Scanner, Charger Included (Renewed) : Office Products"
+              - generic [ref=f31e1077]: Amazon.com
+        - generic [ref=f31e1081] [cursor=pointer]:
+          - generic [ref=f31e1083]:
+            - button "Zebra MC3300 Premium Handheld Android Barcode Scanner, 4\" Display, Wireless, Rugged Design, 1-Year Warranty, 5200 mAh Battery" [ref=f31e1086]:
+              - img "Zebra MC3300 Premium Handheld Android Barcode Scanner, 4\" Display, Wireless, Rugged Design, 1-Year Warranty, 5200 mAh Battery" [ref=f31e1088]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC3300 Premium Handheld Android Barcode Scanner, 4\" Display, Wireless, Rugged Design, 1-Year Warranty, 5200 mAh Battery Alibaba.com" [ref=f31e1090]:
+            - /url: https://www.alibaba.com/product-detail/Zebra-MC3300-Premium-MC330K-GE3HA3RW-Rugged_1600061088881.html
+            - generic [ref=f31e1091]:
+              - generic [ref=f31e1093]: Zebra MC3300 Premium Handheld Android Barcode Scanner, 4" Display, Wireless, Rugged Design, 1-Year Warranty, 5200 mAh Battery
+              - generic [ref=f31e1097]: Alibaba.com
+        - generic [ref=f31e1101] [cursor=pointer]:
+          - generic [ref=f31e1103]:
+            - button "MC3300 Android Mobile Computer - Zebra Handheld Barcode scanner – Southern Technology Ltd" [ref=f31e1106]:
+              - img "MC3300 Android Mobile Computer - Zebra Handheld Barcode scanner – Southern Technology Ltd" [ref=f31e1108]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "MC3300 Android Mobile Computer - Zebra Handheld Barcode scanner – Southern Technology Ltd Southern Technology Ltd" [ref=f31e1110]:
+            - /url: https://southerntech.co.nz/products/mc3300-android-mobile-computer-zebra-handheld-barcode-scanner?srsltid=AfmBOookNnsDESQIr6llNHXc_Q3NR7jz5Xf2xKcda9myaFIoNxLe_uP1
+            - generic [ref=f31e1111]:
+              - generic [ref=f31e1113]: MC3300 Android Mobile Computer - Zebra Handheld Barcode scanner – Southern Technology Ltd
+              - generic [ref=f31e1117]: Southern Technology Ltd
+        - generic [ref=f31e1121] [cursor=pointer]:
+          - generic [ref=f31e1123]:
+            - button "Zebra MC3300x - Gun, WLAN, 2D SE4770, 47 Key, Ext. Batt., Android 10 GMS, 4GB/32GB, Sensors, NFC" [ref=f31e1126]:
+              - img "Zebra MC3300x - Gun, WLAN, 2D SE4770, 47 Key, Ext. Batt., Android 10 GMS, 4GB/32GB, Sensors, NFC" [ref=f31e1128]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC3300x - Gun, WLAN, 2D SE4770, 47 Key, Ext. Batt., Android 10 GMS, 4GB/32GB, Sensors, NFC Barcode Barn" [ref=f31e1130]:
+            - /url: https://barcodebarn.com/zebra-mc3300x-gun-wlan-2d-se4770-47-key-ext-batt-android-10-gms-4gb-32gb-sensors-nfc/?srsltid=AfmBOoqVKHY_5MWN17vSf_HnpNiYQ_W_85mhRUqwAtNNM89D6PQarbo7
+            - generic [ref=f31e1131]:
+              - generic [ref=f31e1133]: Zebra MC3300x - Gun, WLAN, 2D SE4770, 47 Key, Ext. Batt., Android 10 GMS, 4GB/32GB, Sensors, NFC
+              - generic [ref=f31e1137]: Barcode Barn
+        - generic [ref=f31e1141] [cursor=pointer]:
+          - button "Zebra MC3300-G Mobile Computer, Android, Barcode Scanner" [ref=f31e1146]:
+            - img "Zebra MC3300-G Mobile Computer, Android, Barcode Scanner" [ref=f31e1148]
+          - link "Zebra MC3300-G Mobile Computer, Android, Barcode Scanner Barcode-Arena.com" [ref=f31e1150]:
+            - /url: https://www.barcode-arena.com/mc3300-g-mobile-computer-kit.html?srsltid=AfmBOopIY63lNO1lL7Y8kOfua7pWMv5gDlTTgaC_b00ENYgH0OPgYOl-
+            - generic [ref=f31e1151]:
+              - generic [ref=f31e1153]: Zebra MC3300-G Mobile Computer, Android, Barcode Scanner
+              - generic [ref=f31e1157]: Barcode-Arena.com
+        - generic [ref=f31e1161] [cursor=pointer]:
+          - button "Zebra MC33000 (MC330K-GE4HA3US) 1D/2D Extended Range Barcode Scanner Surplus Traders" [ref=f31e1166]:
+            - img "Zebra MC33000 (MC330K-GE4HA3US) 1D/2D Extended Range Barcode Scanner Surplus Traders" [ref=f31e1168]
+          - link "Zebra MC33000 (MC330K-GE4HA3US) 1D/2D Extended Range Barcode Scanner Surplus Traders Surplus Traders" [ref=f31e1170]:
+            - /url: https://www.surplustraders.net/zebra-mc33000-mc330k-ge4ha3us-1d-2d-extended-range-barcode-scanner.html
+            - generic [ref=f31e1171]:
+              - generic [ref=f31e1173]: Zebra MC33000 (MC330K-GE4HA3US) 1D/2D Extended Range Barcode Scanner Surplus Traders
+              - generic [ref=f31e1177]: Surplus Traders
+        - generic [ref=f31e1181] [cursor=pointer]:
+          - button "Zebra MC3300 Mobile Computer" [ref=f31e1186]:
+            - img "Zebra MC3300 Mobile Computer" [ref=f31e1188]
+          - link "Zebra MC3300 Mobile Computer Zebra El Terminalleri" [ref=f31e1190]:
+            - /url: https://www.zebraelterminali.com/en/p/zebra-mc3300-mobile-computer
+            - generic [ref=f31e1191]:
+              - generic [ref=f31e1193]: Zebra MC3300 Mobile Computer
+              - generic [ref=f31e1197]: Zebra El Terminalleri
+        - generic [ref=f31e1201] [cursor=pointer]:
+          - generic [ref=f31e1203]:
+            - button "Exploring the Zebra MC3300 Handheld Computer | Zebra" [ref=f31e1206]:
+              - img "Exploring the Zebra MC3300 Handheld Computer | Zebra" [ref=f31e1208]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - link "Exploring the Zebra MC3300 Handheld Computer | Zebra YouTube" [ref=f31e1210]:
+            - /url: https://www.youtube.com/watch?v=6WnAO95HMWo
+            - generic [ref=f31e1211]:
+              - generic [ref=f31e1213]: Exploring the Zebra MC3300 Handheld Computer | Zebra
+              - generic [ref=f31e1217]: YouTube
+        - generic [ref=f31e1219]:
+          - heading "Related searches" [level=2] [ref=f31e1220]
+          - link "zebra handheld scanner price" [ref=f31e1221] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+handheld+scanner+price&stick=H4sIAAAAAAAAAFvEKlOVmlSUqJCRmJeSkZqTolCcnJiXl1qkUFCUmZwKACVnsmMfAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUIpAUQAA
+            - generic [ref=f31e1226]: zebra handheld scanner price
+          - link "zebra handheld scanner android" [ref=f31e1227] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+handheld+scanner+android&stick=H4sIAAAAAAAAAFvEKleVmlSUqJCRmJeSkZqTolCcnJiXl1qkAOQX5WemAABb1cwxIQAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUIsgUQAA
+            - generic [ref=f31e1232]: zebra handheld scanner android
+          - link "zebra mc3300 scanner" [ref=f31e1233] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+mc3300+scanner&stick=H4sIAAAAAAAAAFvEKlKVmlSUqJCbbGxsYKBQnJyYl5daBABNu28pFwAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUIxgUQAA
+            - generic [ref=f31e1238]: zebra mc3300 scanner
+        - generic [ref=f31e1242] [cursor=pointer]:
+          - button "Zebra MC3300 Mobile Handheld Computers | Authorized Reseller" [ref=f31e1247]:
+            - img "Zebra MC3300 Mobile Handheld Computers | Authorized Reseller" [ref=f31e1249]
+          - link "Zebra MC3300 Mobile Handheld Computers | Authorized Reseller Mobile ID Solutions" [ref=f31e1251]:
+            - /url: https://mobileidsolutions.com/content/zebra-mc3300-mobile-computers/
+            - generic [ref=f31e1252]:
+              - generic [ref=f31e1254]: Zebra MC3300 Mobile Handheld Computers | Authorized Reseller
+              - generic [ref=f31e1258]: Mobile ID Solutions
+        - generic [ref=f31e1262] [cursor=pointer]:
+          - generic [ref=f31e1264]:
+            - button "Zebra MC3300ax Mobile Computers | POSGuys.com" [ref=f31e1267]:
+              - img "Zebra MC3300ax Mobile Computers | POSGuys.com" [ref=f31e1269]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC3300ax Mobile Computers | POSGuys.com POSGuys.com" [ref=f31e1271]:
+            - /url: https://posguys.com/mobile-computers_6/Zebra-MC3300ax_4209/?srsltid=AfmBOoocu5w_vTQE8W1d8IAN9kZUoFX1RjkmtYH6RYBw5Smzd3Mh4CrF
+            - generic [ref=f31e1272]:
+              - generic [ref=f31e1274]: Zebra MC3300ax Mobile Computers | POSGuys.com
+              - generic [ref=f31e1278]: POSGuys.com
+        - generic [ref=f31e1282] [cursor=pointer]:
+          - button "ZEBRA MC330K MC330M-GL4HA2US WIRELESS HANDHELD COMPUTER BARCODE SCANNER | eBay" [ref=f31e1287]:
+            - img "ZEBRA MC330K MC330M-GL4HA2US WIRELESS HANDHELD COMPUTER BARCODE SCANNER | eBay" [ref=f31e1289]
+          - link "ZEBRA MC330K MC330M-GL4HA2US WIRELESS HANDHELD COMPUTER BARCODE SCANNER | eBay eBay" [ref=f31e1291]:
+            - /url: https://www.ebay.com/itm/325996548574
+            - generic [ref=f31e1292]:
+              - generic [ref=f31e1294]: ZEBRA MC330K MC330M-GL4HA2US WIRELESS HANDHELD COMPUTER BARCODE SCANNER | eBay
+              - generic [ref=f31e1298]: eBay
+        - generic [ref=f31e1302] [cursor=pointer]:
+          - button "Zebra MC3300 - Imprint Enterprises" [ref=f31e1307]:
+            - img "Zebra MC3300 - Imprint Enterprises" [ref=f31e1309]
+          - link "Zebra MC3300 - Imprint Enterprises Imprint Enterprises" [ref=f31e1311]:
+            - /url: https://imprint-e.com/zebra-mc3300x/
+            - generic [ref=f31e1312]:
+              - generic [ref=f31e1314]: Zebra MC3300 - Imprint Enterprises
+              - generic [ref=f31e1318]: Imprint Enterprises
+        - generic [ref=f31e1322] [cursor=pointer]:
+          - button "Zebra MC3300 Mobile computer-MC330M-SL3HA2RW-Straight Shooter" [ref=f31e1327]:
+            - img "Zebra MC3300 Mobile computer-MC330M-SL3HA2RW-Straight Shooter" [ref=f31e1329]
+          - link "Zebra MC3300 Mobile computer-MC330M-SL3HA2RW-Straight Shooter Barcodes Group" [ref=f31e1331]:
+            - /url: https://www.barcodes.com.au/zebra-mc3300-mobile-computer-straight-shooter/?srsltid=AfmBOoppfSrMbIEFDB5opZ5qyAKqOVcESce-tr25uCOKca_3Ugk5Yo9l
+            - generic [ref=f31e1332]:
+              - generic [ref=f31e1334]: Zebra MC3300 Mobile computer-MC330M-SL3HA2RW-Straight Shooter
+              - generic [ref=f31e1338]: Barcodes Group
+        - generic [ref=f31e1342] [cursor=pointer]:
+          - button "MC330X-GE2EG4RW, Zebra MC3300x Gun/Pistol, 4.0\" WVGA LED, Gorilla Glass, Qualcomm Snapdragon 660 octa-core 2.2GHz, 4GB RAM, 32GB Flash, Wi-Fi, Bluetooth, Android 11 | EET" [ref=f31e1347]:
+            - img "MC330X-GE2EG4RW, Zebra MC3300x Gun/Pistol, 4.0\" WVGA LED, Gorilla Glass, Qualcomm Snapdragon 660 octa-core 2.2GHz, 4GB RAM, 32GB Flash, Wi-Fi, Bluetooth, Android 11 | EET" [ref=f31e1349]
+          - link "MC330X-GE2EG4RW, Zebra MC3300x Gun/Pistol, 4.0\" WVGA LED, Gorilla Glass, Qualcomm Snapdragon 660 octa-core 2.2GHz, 4GB RAM, 32GB Flash, Wi-Fi, Bluetooth, Android 11 | EET EET" [ref=f31e1351]:
+            - /url: https://www.eetgroup.com/en-eu/mc330x-ge2eg4rw-zebra-mc3300x-handheld-mobile-computer-102-cm-4-800-x-480-pixels-touchscreen-522-g-wid-w126431185
+            - generic [ref=f31e1352]:
+              - generic [ref=f31e1354]: MC330X-GE2EG4RW, Zebra MC3300x Gun/Pistol, 4.0" WVGA LED, Gorilla Glass, Qualcomm Snapdragon 660 octa-core 2.2GHz, 4GB RAM, 32GB Flash, Wi-Fi, Bluetooth, Android 11 | EET
+              - generic [ref=f31e1358]: EET
+        - generic [ref=f31e1362] [cursor=pointer]:
+          - 'button "ZEBRA MC3300 BARCODE MOBILE COMPUTER ORDERING NUMBER: 22701386" [ref=f31e1367]':
+            - 'img "ZEBRA MC3300 BARCODE MOBILE COMPUTER ORDERING NUMBER: 22701386" [ref=f31e1369]'
+          - 'link "ZEBRA MC3300 BARCODE MOBILE COMPUTER ORDERING NUMBER: 22701386 alcaidc.com" [ref=f31e1371]':
+            - /url: https://www.alcaidc.com/public/product/productinformation.aspx?itemcode=22701386
+            - generic [ref=f31e1372]:
+              - generic [ref=f31e1374]: "ZEBRA MC3300 BARCODE MOBILE COMPUTER ORDERING NUMBER: 22701386"
+              - generic [ref=f31e1378]: alcaidc.com
+        - generic [ref=f31e1382] [cursor=pointer]:
+          - button "Using the Zebra MC3300 scanner with Orca Scan" [ref=f31e1387]:
+            - img "Using the Zebra MC3300 scanner with Orca Scan" [ref=f31e1389]
+          - link "Using the Zebra MC3300 scanner with Orca Scan Orca Scan" [ref=f31e1391]:
+            - /url: https://orcascan.com/guides/zebra-mc3300-orca-scan-setup-ccd648f4
+            - generic [ref=f31e1392]:
+              - generic [ref=f31e1394]: Using the Zebra MC3300 scanner with Orca Scan
+              - generic [ref=f31e1398]: Orca Scan
+        - generic [ref=f31e1402] [cursor=pointer]:
+          - button "Zebra MC33 MC3300 Barcode Scanner MC330K-GI4HG3US USED TESTED W/ Battery | eBay" [ref=f31e1407]:
+            - img "Zebra MC33 MC3300 Barcode Scanner MC330K-GI4HG3US USED TESTED W/ Battery | eBay" [ref=f31e1409]
+          - link "Zebra MC33 MC3300 Barcode Scanner MC330K-GI4HG3US USED TESTED W/ Battery | eBay eBay" [ref=f31e1411]:
+            - /url: https://www.ebay.com/itm/406730788143
+            - generic [ref=f31e1412]:
+              - generic [ref=f31e1414]: Zebra MC33 MC3300 Barcode Scanner MC330K-GI4HG3US USED TESTED W/ Battery | eBay
+              - generic [ref=f31e1418]: eBay
+        - generic [ref=f31e1422] [cursor=pointer]:
+          - button "RAM® Spring Loaded Holder for Zebra MC3300/3400/3450 – RAM Mounts" [ref=f31e1427]:
+            - img "RAM® Spring Loaded Holder for Zebra MC3300/3400/3450 – RAM Mounts" [ref=f31e1429]
+          - link "RAM® Spring Loaded Holder for Zebra MC3300/3400/3450 – RAM Mounts RAM Mounts" [ref=f31e1431]:
+            - /url: https://rammount.com/products/ram-hol-ze33u?srsltid=AfmBOoq458HiBHBvNrxV0JF4YPTocvJIl9s0O357LfaZNvx3R4GzH3wX
+            - generic [ref=f31e1432]:
+              - generic [ref=f31e1434]: RAM® Spring Loaded Holder for Zebra MC3300/3400/3450 – RAM Mounts
+              - generic [ref=f31e1438]: RAM Mounts
+        - generic [ref=f31e1442] [cursor=pointer]:
+          - button "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth" [ref=f31e1447]:
+            - img "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth" [ref=f31e1449]
+          - link "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth EnCStore.com" [ref=f31e1451]:
+            - /url: https://www.encstore.com/zebra-mc3300ax-handheld-mobile-computer-wifi-bluetooth-enc6821
+            - generic [ref=f31e1452]:
+              - generic [ref=f31e1454]: Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth
+              - generic [ref=f31e1458]: EnCStore.com
+        - generic [ref=f31e1462] [cursor=pointer]:
+          - button "Zebra MC330L Scanning Kit — Integrity Data Solutions, Inc." [ref=f31e1467]:
+            - img "Zebra MC330L Scanning Kit — Integrity Data Solutions, Inc." [ref=f31e1469]
+          - link "Zebra MC330L Scanning Kit — Integrity Data Solutions, Inc. Integrity Data Solutions, Inc." [ref=f31e1471]:
+            - /url: https://www.accessids.com/media-and-supplies/p/zebra-mc330l-scanning-kit
+            - generic [ref=f31e1472]:
+              - generic [ref=f31e1474]: Zebra MC330L Scanning Kit — Integrity Data Solutions, Inc.
+              - generic [ref=f31e1478]: Integrity Data Solutions, Inc.
+        - generic [ref=f31e1482] [cursor=pointer]:
+          - generic [ref=f31e1484]:
+            - button "Zebra MC330K-GI3HG3US Mobile Computer" [ref=f31e1487]:
+              - img "Zebra MC330K-GI3HG3US Mobile Computer" [ref=f31e1489]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC330K-GI3HG3US Mobile Computer Barcode House · In stock" [ref=f31e1491]:
+            - /url: https://www.barcode-house.com/product/zebra-mc3300-barcode-scanner-2d-imager-38-key/?srsltid=AfmBOoo_eUbwpAm9uF-USD2iKa1XmQ_PYjXUWkS_TyYBA-pCiCX2g4jV
+            - generic [ref=f31e1492]:
+              - generic [ref=f31e1494]: Zebra MC330K-GI3HG3US Mobile Computer
+              - generic [ref=f31e1498]: Barcode House · In stock
+        - generic [ref=f31e1502] [cursor=pointer]:
+          - button "Zebra MC3300-G Android Warehouse Long Range Scanner 2D/1D/QR Code" [ref=f31e1507]:
+            - img "Zebra MC3300-G Android Warehouse Long Range Scanner 2D/1D/QR Code" [ref=f31e1509]
+          - link "Zebra MC3300-G Android Warehouse Long Range Scanner 2D/1D/QR Code Barcode-Arena.com" [ref=f31e1511]:
+            - /url: https://www.barcode-arena.com/mc3300-g-38key-2d.html?srsltid=AfmBOoriompcQssXCMs4kaenpVzn_jxjFiqI2aEjT3cw1xYShLVSbcWc
+            - generic [ref=f31e1512]:
+              - generic [ref=f31e1514]: Zebra MC3300-G Android Warehouse Long Range Scanner 2D/1D/QR Code
+              - generic [ref=f31e1518]: Barcode-Arena.com
+        - generic [ref=f31e1522] [cursor=pointer]:
+          - generic [ref=f31e1524]:
+            - button "Zebra MC330M-GI3HA2US Mobile Computer | Zebra MC3300" [ref=f31e1527]:
+              - img "Zebra MC330M-GI3HA2US Mobile Computer | Zebra MC3300" [ref=f31e1529]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC330M-GI3HA2US Mobile Computer | Zebra MC3300 Inventory Accuracy Enterprises, Inc" [ref=f31e1531]:
+            - /url: https://www.invaccuracy.com/product/zebra-mc330m-gi3ha2us/?srsltid=AfmBOorbhKkkqF4rYA4J_TmgOCVEPqRBsQc7GBH-Es-MWVyWpI6ZCakX
+            - generic [ref=f31e1532]:
+              - generic [ref=f31e1534]: Zebra MC330M-GI3HA2US Mobile Computer | Zebra MC3300
+              - generic [ref=f31e1538]: Inventory Accuracy Enterprises, Inc
+        - generic [ref=f31e1542] [cursor=pointer]:
+          - 'button "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products" [ref=f31e1547]':
+            - 'img "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products" [ref=f31e1549]'
+          - 'link "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products Amazon.com" [ref=f31e1551]':
+            - /url: https://www.amazon.com/Computer-Barcode-Scanner-Charger-Included/dp/B08LQXPXDW
+            - generic [ref=f31e1552]:
+              - generic [ref=f31e1554]: "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products"
+              - generic [ref=f31e1558]: Amazon.com
+        - generic [ref=f31e1562] [cursor=pointer]:
+          - button "Zebra MC330K-GE3HA3RW MC3300 mobile computer from Smart Print and Labelling" [ref=f31e1567]:
+            - img "Zebra MC330K-GE3HA3RW MC3300 mobile computer from Smart Print and Labelling" [ref=f31e1569]
+          - link "Zebra MC330K-GE3HA3RW MC3300 mobile computer from Smart Print and Labelling Smart Print & Labelling Limited" [ref=f31e1571]:
+            - /url: https://www.smartlabelling.co.uk/zebra-mc3300/MC330K-GE3HA3RW.html
+            - generic [ref=f31e1572]:
+              - generic [ref=f31e1574]: Zebra MC330K-GE3HA3RW MC3300 mobile computer from Smart Print and Labelling
+              - generic [ref=f31e1578]: Smart Print & Labelling Limited
+        - generic [ref=f31e1582] [cursor=pointer]:
+          - generic [ref=f31e1584]:
+            - button "Zebra MC3300 Premium Handheld Android Barcode Scanner, 4\" Display, Wireless, Rugged Design, 1-Year Warranty, 5200 mAh Battery" [ref=f31e1587]:
+              - img "Zebra MC3300 Premium Handheld Android Barcode Scanner, 4\" Display, Wireless, Rugged Design, 1-Year Warranty, 5200 mAh Battery" [ref=f31e1589]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC3300 Premium Handheld Android Barcode Scanner, 4\" Display, Wireless, Rugged Design, 1-Year Warranty, 5200 mAh Battery Alibaba.com" [ref=f31e1591]:
+            - /url: https://www.alibaba.com/product-detail/Zebra-MC3300-Premium-MC330K-GE3HA3RW-Rugged_1600061088881.html
+            - generic [ref=f31e1592]:
+              - generic [ref=f31e1594]: Zebra MC3300 Premium Handheld Android Barcode Scanner, 4" Display, Wireless, Rugged Design, 1-Year Warranty, 5200 mAh Battery
+              - generic [ref=f31e1598]: Alibaba.com
+        - generic [ref=f31e1602] [cursor=pointer]:
+          - button "Zebra MC3300 Wireless Android Long Range Barcode Scanner" [ref=f31e1607]:
+            - img "Zebra MC3300 Wireless Android Long Range Barcode Scanner" [ref=f31e1609]
+          - link "Zebra MC3300 Wireless Android Long Range Barcode Scanner Barcode-Arena.com" [ref=f31e1611]:
+            - /url: https://www.barcode-arena.com/mc3300-g-47key-2d.html?srsltid=AfmBOorkzLo9V9vsd9sJ1jkamXcTKiHFqSdPqr_YpaAu62uPYc1UutmP
+            - generic [ref=f31e1612]:
+              - generic [ref=f31e1614]: Zebra MC3300 Wireless Android Long Range Barcode Scanner
+              - generic [ref=f31e1618]: Barcode-Arena.com
+        - generic [ref=f31e1622] [cursor=pointer]:
+          - button "Zebra Mc3300 Mobile Computer, For Warehouse Mobility at ₹ 39000/piece in Chennai" [ref=f31e1627]:
+            - img "Zebra Mc3300 Mobile Computer, For Warehouse Mobility at ₹ 39000/piece in Chennai" [ref=f31e1629]
+          - link "Zebra Mc3300 Mobile Computer, For Warehouse Mobility at ₹ 39000/piece in Chennai IndiaMART" [ref=f31e1631]:
+            - /url: https://www.indiamart.com/proddetail/zebra-mc3300-mobile-computer-25273530830.html?srsltid=AfmBOoo1sodf8ByzcrN9WUHz4w7uecB83-a_QmDE9tfy-1uTj8StqX3k
+            - generic [ref=f31e1632]:
+              - generic [ref=f31e1634]: Zebra Mc3300 Mobile Computer, For Warehouse Mobility at ₹ 39000/piece in Chennai
+              - generic [ref=f31e1638]: IndiaMART
+        - generic [ref=f31e1642] [cursor=pointer]:
+          - generic [ref=f31e1644]:
+            - button "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation" [ref=f31e1647]:
+              - img "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation" [ref=f31e1649]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation SRK Innovation" [ref=f31e1651]:
+            - /url: https://www.srkinnovations.com/products/integrated-uhf-rfid-reader-zebra-mc3300-865-928mhz-usb-2-0-high-speed?srsltid=AfmBOoolPBgjR46_4q5qmKPjfDiYYNutY_3pBMjdalCqjdD1rrTIFAxs
+            - generic [ref=f31e1652]:
+              - generic [ref=f31e1654]: Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation
+              - generic [ref=f31e1658]: SRK Innovation
+        - generic [ref=f31e1662] [cursor=pointer]:
+          - button "Zebra MC3300 Mobile Computer | Liberty Systems" [ref=f31e1667]:
+            - img "Zebra MC3300 Mobile Computer | Liberty Systems" [ref=f31e1669]
+          - link "Zebra MC3300 Mobile Computer | Liberty Systems Liberty Systems" [ref=f31e1671]:
+            - /url: https://www.libertysystems.com/products/zebra-mc3300
+            - generic [ref=f31e1672]:
+              - generic [ref=f31e1674]: Zebra MC3300 Mobile Computer | Liberty Systems
+              - generic [ref=f31e1678]: Liberty Systems
+        - generic [ref=f31e1682] [cursor=pointer]:
+          - 'button "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e1687]':
+            - 'img "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e1689]'
+          - 'link "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products Amazon.com" [ref=f31e1691]':
+            - /url: https://www.amazon.com/Zebra-Handheld-Computer-Collection-MC330K-GE4HA3US/dp/B07DN6JJXX
+            - generic [ref=f31e1692]:
+              - generic [ref=f31e1694]: "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products"
+              - generic [ref=f31e1698]: Amazon.com
+        - generic [ref=f31e1702] [cursor=pointer]:
+          - button "Knowledge Base - MC3300 Handheld Mobile Computer - IbarcodeSolutions" [ref=f31e1707]:
+            - img "Knowledge Base - MC3300 Handheld Mobile Computer - IbarcodeSolutions" [ref=f31e1709]
+          - link "Knowledge Base - MC3300 Handheld Mobile Computer - IbarcodeSolutions IbarcodeSolutions" [ref=f31e1711]:
+            - /url: https://www.ibarcodesolutions.com/knowledge-base/cat/faq/post/mc3300-handheld-mobile-computer/
+            - generic [ref=f31e1712]:
+              - generic [ref=f31e1714]: Knowledge Base - MC3300 Handheld Mobile Computer - IbarcodeSolutions
+              - generic [ref=f31e1718]: IbarcodeSolutions
+        - generic [ref=f31e1720]:
+          - heading "Related searches" [level=2] [ref=f31e1721]
+          - link "zebra handheld device" [ref=f31e1722] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+handheld+device&stick=H4sIAAAAAAAAAFvEKlqVmlSUqJCRmJeSkZqTopCSWpaZnAoAqAESahgAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUIlgQQAA
+            - generic [ref=f31e1727]: zebra handheld device
+          - link "zebra mobile scanner" [ref=f31e1728] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+mobile+scanner&stick=H4sIAAAAAAAAAFvEKlKVmlSUqJCbn5SZk6pQnJyYl5daBACK8_cVFwAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUIrAQQAA
+            - generic [ref=f31e1733]: zebra mobile scanner
+          - link "zebra mc3300 price" [ref=f31e1734] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+mc3300+price&stick=H4sIAAAAAAAAAFvEKlSVmlSUqJCbbGxsYKBQUJSZnAoAceOtbxUAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUItQQQAA
+            - generic [ref=f31e1739]: zebra mc3300 price
+        - generic [ref=f31e1743] [cursor=pointer]:
+          - button "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e1748]:
+            - img "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e1750]
+          - link "MC33xx Series Handheld Mobile Computer | Zebra Zebra Technologies" [ref=f31e1752]:
+            - /url: https://www.zebra.com/us/en/products/mobile-computers/handheld/mc3300.html
+            - generic [ref=f31e1753]:
+              - generic [ref=f31e1755]: MC33xx Series Handheld Mobile Computer | Zebra
+              - generic [ref=f31e1759]: Zebra Technologies
+        - generic [ref=f31e1763] [cursor=pointer]:
+          - generic [ref=f31e1765]:
+            - button "Zebra MC3300 Handheld Mobile Computer, 4\" Capacitive WVGA Display, Qualcomm APQ8056. 4GB RAM + 32GB ROM, 3-Axis Accelerometer, Gyroscope, 2D Scanner," [ref=f31e1768]:
+              - img "Zebra MC3300 Handheld Mobile Computer, 4\" Capacitive WVGA Display, Qualcomm APQ8056. 4GB RAM + 32GB ROM, 3-Axis Accelerometer, Gyroscope, 2D Scanner," [ref=f31e1770]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC3300 Handheld Mobile Computer, 4\" Capacitive WVGA Display, Qualcomm APQ8056. 4GB RAM + 32GB ROM, 3-Axis Accelerometer, Gyroscope, 2D Scanner, Microless · In stock" [ref=f31e1772]:
+            - /url: https://global.microless.com/product/zebra-mc3300-handheld-mobile-computer-4-capacitive-wvga-display-qualcomm-apq8056-4gb-ram-32gb-rom-3-axis-accelerometer-gyroscope-2d-scanner-black-mc330l-ge4eg4rw/
+            - generic [ref=f31e1773]:
+              - generic [ref=f31e1775]: Zebra MC3300 Handheld Mobile Computer, 4" Capacitive WVGA Display, Qualcomm APQ8056. 4GB RAM + 32GB ROM, 3-Axis Accelerometer, Gyroscope, 2D Scanner,
+              - generic [ref=f31e1779]: Microless · In stock
+        - generic [ref=f31e1783] [cursor=pointer]:
+          - button "Handheld Mobile Computer Holster (Medium-Size) with Belt Clip and Belt Loop Fits Zebra MC3300 | e-Holster" [ref=f31e1788]:
+            - img "Handheld Mobile Computer Holster (Medium-Size) with Belt Clip and Belt Loop Fits Zebra MC3300 | e-Holster" [ref=f31e1790]
+          - link "Handheld Mobile Computer Holster (Medium-Size) with Belt Clip and Belt Loop Fits Zebra MC3300 | e-Holster e-Holster" [ref=f31e1792]:
+            - /url: https://www.eholster.com/product/barcode-scanner-holster-with-belt-clip-and-belt-loop/?srsltid=AfmBOopk5ZSRng6YrWPTNIqWT6TNovBy7myiy-4d-QxorqA1eMuZIAB-
+            - generic [ref=f31e1793]:
+              - generic [ref=f31e1795]: Handheld Mobile Computer Holster (Medium-Size) with Belt Clip and Belt Loop Fits Zebra MC3300 | e-Holster
+              - generic [ref=f31e1799]: e-Holster
+        - generic [ref=f31e1803] [cursor=pointer]:
+          - generic [ref=f31e1805]:
+            - button "Zebra MC330K-GE4HG3US Mobile Computer" [ref=f31e1808]:
+              - img "Zebra MC330K-GE4HG3US Mobile Computer" [ref=f31e1810]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra MC330K-GE4HG3US Mobile Computer Barcode House · In stock" [ref=f31e1812]:
+            - /url: https://www.barcode-house.com/product/zebra-mc3300-mobile-computer-with-cradle-kit-2/?srsltid=AfmBOooPECn-bXz38um7Pdb057bpOyp5JJx7feG39u9rYbAl-m9EfdHB
+            - generic [ref=f31e1813]:
+              - generic [ref=f31e1815]: Zebra MC330K-GE4HG3US Mobile Computer
+              - generic [ref=f31e1819]: Barcode House · In stock
+        - generic [ref=f31e1823] [cursor=pointer]:
+          - button "ZEBRA MC3300 Handheld Mobile Computer User Guide - Manuals+" [ref=f31e1828]:
+            - img "ZEBRA MC3300 Handheld Mobile Computer User Guide - Manuals+" [ref=f31e1830]
+          - link "ZEBRA MC3300 Handheld Mobile Computer User Guide - Manuals+ Manuals.plus" [ref=f31e1832]:
+            - /url: https://manuals.plus/zebra/mc3300-handheld-mobile-computer-manual
+            - generic [ref=f31e1833]:
+              - generic [ref=f31e1835]: ZEBRA MC3300 Handheld Mobile Computer User Guide - Manuals+
+              - generic [ref=f31e1839]: Manuals.plus
+        - generic [ref=f31e1843] [cursor=pointer]:
+          - button "Zebra MC3300 Rugged Handheld Mobile Computer" [ref=f31e1848]:
+            - img "Zebra MC3300 Rugged Handheld Mobile Computer" [ref=f31e1850]
+          - link "Zebra MC3300 Rugged Handheld Mobile Computer Rugged SA" [ref=f31e1852]:
+            - /url: https://ruggedsa.co.za/product/zebra-mc3300-handheld-mobile-computer/?srsltid=AfmBOooHWuaHhzuT1p5qdq0iDsQSbHt_S9uDQZkxtWH-vf2_DKdRvteI
+            - generic [ref=f31e1853]:
+              - generic [ref=f31e1855]: Zebra MC3300 Rugged Handheld Mobile Computer
+              - generic [ref=f31e1859]: Rugged SA
+        - generic [ref=f31e1863] [cursor=pointer]:
+          - button "Zebra Mc3300 | eBay" [ref=f31e1868]:
+            - img "Zebra Mc3300 | eBay" [ref=f31e1870]
+          - link "Zebra Mc3300 | eBay eBay" [ref=f31e1872]:
+            - /url: https://www.ebay.com/shop/zebra-mc3300?_nkw=zebra+mc3300
+            - generic [ref=f31e1873]:
+              - generic [ref=f31e1875]: Zebra Mc3300 | eBay
+              - generic [ref=f31e1879]: eBay
+        - generic [ref=f31e1883] [cursor=pointer]:
+          - button "Zebra MC3300 Mobile computer Barcode Scanner เครื่องอ่านบาร์โค้ดพกพา" [ref=f31e1888]:
+            - img "Zebra MC3300 Mobile computer Barcode Scanner เครื่องอ่านบาร์โค้ดพกพา" [ref=f31e1890]
+          - link "Zebra MC3300 Mobile computer Barcode Scanner เครื่องอ่านบาร์โค้ดพกพา Planet Barcode" [ref=f31e1892]:
+            - /url: https://planet-barcode.co.th/en/product/zebra-mc3300-mobile-computer-en/
+            - generic [ref=f31e1893]:
+              - generic [ref=f31e1895]: Zebra MC3300 Mobile computer Barcode Scanner เครื่องอ่านบาร์โค้ดพกพา
+              - generic [ref=f31e1899]: Planet Barcode
+        - generic [ref=f31e1903] [cursor=pointer]:
+          - button "Zebra MC3300 - Imprint Enterprises" [ref=f31e1908]:
+            - img "Zebra MC3300 - Imprint Enterprises" [ref=f31e1910]
+          - link "Zebra MC3300 - Imprint Enterprises Imprint Enterprises" [ref=f31e1912]:
+            - /url: https://imprint-e.com/zebra-intelligent-cabinets/
+            - generic [ref=f31e1913]:
+              - generic [ref=f31e1915]: Zebra MC3300 - Imprint Enterprises
+              - generic [ref=f31e1919]: Imprint Enterprises
+        - generic [ref=f31e1923] [cursor=pointer]:
+          - 'button "ZEBRA MC3300 BARCODE MOBILE COMPUTER ORDERING NUMBER: 22701976" [ref=f31e1928]':
+            - 'img "ZEBRA MC3300 BARCODE MOBILE COMPUTER ORDERING NUMBER: 22701976" [ref=f31e1930]'
+          - 'link "ZEBRA MC3300 BARCODE MOBILE COMPUTER ORDERING NUMBER: 22701976 alcaidc.com" [ref=f31e1932]':
+            - /url: https://www.alcaidc.com/Public/product/productinformation.aspx?itemcode=22701976
+            - generic [ref=f31e1933]:
+              - generic [ref=f31e1935]: "ZEBRA MC3300 BARCODE MOBILE COMPUTER ORDERING NUMBER: 22701976"
+              - generic [ref=f31e1939]: alcaidc.com
+        - generic [ref=f31e1943] [cursor=pointer]:
+          - button "Cleverence Blog & Articles | Warehouse & Inventory Insights" [ref=f31e1948]:
+            - img "Cleverence Blog & Articles | Warehouse & Inventory Insights" [ref=f31e1950]
+          - link "Cleverence Blog & Articles | Warehouse & Inventory Insights Cleverence Blog & Articles | Warehouse & Inventory Insights" [ref=f31e1952]:
+            - /url: https://www.cleverence.com/articles/hardware-reviews/zebra-mc3300u-long-range-rfid-reader/?srsltid=AfmBOor5N2pFxk9pYqitq1MqkO3d5VjBTUrjZp48co_5_MCuAwdlvt1P
+            - generic [ref=f31e1953]:
+              - generic [ref=f31e1955]: Cleverence Blog & Articles | Warehouse & Inventory Insights
+              - generic [ref=f31e1959]: Cleverence Blog & Articles | Warehouse & Inventory Insights
+        - generic [ref=f31e1963] [cursor=pointer]:
+          - 'button "Zebra MC9300 NFC Haptics Camera Mobile Computer: Barcode Giant" [ref=f31e1968]':
+            - 'img "Zebra MC9300 NFC Haptics Camera Mobile Computer: Barcode Giant" [ref=f31e1970]'
+          - 'link "Zebra MC9300 NFC Haptics Camera Mobile Computer: Barcode Giant Barcode Giant" [ref=f31e1972]':
+            - /url: https://www.barcodegiant.com/zebra/part-mc930p-gsfhg4na.htm
+            - generic [ref=f31e1973]:
+              - generic [ref=f31e1975]: "Zebra MC9300 NFC Haptics Camera Mobile Computer: Barcode Giant"
+              - generic [ref=f31e1979]: Barcode Giant
+        - generic [ref=f31e1983] [cursor=pointer]:
+          - button "Zebra MC3300 Mobile Computer Accessories | Holder, Cradle, Holster by Smart-Grip" [ref=f31e1988]:
+            - img "Zebra MC3300 Mobile Computer Accessories | Holder, Cradle, Holster by Smart-Grip" [ref=f31e1990]
+          - link "Zebra MC3300 Mobile Computer Accessories | Holder, Cradle, Holster by Smart-Grip Smart-Grip" [ref=f31e1992]:
+            - /url: https://www.smart-grip.com/zebra-mc3300-Accessories.html
+            - generic [ref=f31e1993]:
+              - generic [ref=f31e1995]: Zebra MC3300 Mobile Computer Accessories | Holder, Cradle, Holster by Smart-Grip
+              - generic [ref=f31e1999]: Smart-Grip
+        - generic [ref=f31e2003] [cursor=pointer]:
+          - button "Cleverence Blog & Articles | Warehouse & Inventory Insights" [ref=f31e2008]:
+            - img "Cleverence Blog & Articles | Warehouse & Inventory Insights" [ref=f31e2010]
+          - link "Cleverence Blog & Articles | Warehouse & Inventory Insights Cleverence Blog & Articles | Warehouse & Inventory Insights" [ref=f31e2012]:
+            - /url: https://www.cleverence.com/articles/hardware-reviews/zebra-mc3300u-long-range-rfid-reader/?srsltid=AfmBOop1BQSFlP3hgK-6jo4pjl1woNow7gpd1A0StRzUJ_cywC-kJqmA
+            - generic [ref=f31e2013]:
+              - generic [ref=f31e2015]: Cleverence Blog & Articles | Warehouse & Inventory Insights
+              - generic [ref=f31e2019]: Cleverence Blog & Articles | Warehouse & Inventory Insights
+        - generic [ref=f31e2023] [cursor=pointer]:
+          - button "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth" [ref=f31e2028]:
+            - img "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth" [ref=f31e2030]
+          - link "Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth EnCStore.com" [ref=f31e2032]:
+            - /url: https://www.encstore.com/zebra-mc3300ax-handheld-mobile-computer-wifi-bluetooth-enc6821
+            - generic [ref=f31e2033]:
+              - generic [ref=f31e2035]: Zebra MC3300ax Handheld Mobile Computer, WiFi & Bluetooth
+              - generic [ref=f31e2039]: EnCStore.com
+        - generic [ref=f31e2043] [cursor=pointer]:
+          - button "Zebra MC3300 - The ultimate lightweight, rugged key based touch mobile" [ref=f31e2048]:
+            - img "Zebra MC3300 - The ultimate lightweight, rugged key based touch mobile" [ref=f31e2050]
+          - link "Zebra MC3300 - The ultimate lightweight, rugged key based touch mobile Gamma Solutions" [ref=f31e2052]:
+            - /url: https://www.gammasolutions.com/gamma-chat/zebra-mc3300-the-ultimate-lightweight-rugged-key-based-touch-mobile/
+            - generic [ref=f31e2053]:
+              - generic [ref=f31e2055]: Zebra MC3300 - The ultimate lightweight, rugged key based touch mobile
+              - generic [ref=f31e2059]: Gamma Solutions
+        - generic [ref=f31e2063] [cursor=pointer]:
+          - generic [ref=f31e2065]:
+            - button "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation" [ref=f31e2068]:
+              - img "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation" [ref=f31e2070]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation SRK Innovation" [ref=f31e2072]:
+            - /url: https://www.srkinnovations.com/products/integrated-uhf-rfid-reader-zebra-mc3300-865-928mhz-usb-2-0-high-speed?srsltid=AfmBOopKP8O68usx2epDozROH3rzwf2R6lBRsLeAHHdYD2NpvXdeu2e1
+            - generic [ref=f31e2073]:
+              - generic [ref=f31e2075]: Zebra-MC3300 RFID UHF Handheld Reader | SRK Innovation
+              - generic [ref=f31e2079]: SRK Innovation
+        - generic [ref=f31e2083] [cursor=pointer]:
+          - 'button "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products" [ref=f31e2088]':
+            - 'img "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products" [ref=f31e2090]'
+          - 'link "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products Amazon.com" [ref=f31e2092]':
+            - /url: https://www.amazon.com/Computer-Barcode-Scanner-Charger-Included/dp/B08LQXPXDW
+            - generic [ref=f31e2093]:
+              - generic [ref=f31e2095]: "Amazon.com : MC3300 Mobile Computer, 2D/1D Barcode Scanner, Charger Included : Office Products"
+              - generic [ref=f31e2099]: Amazon.com
+        - generic [ref=f31e2103] [cursor=pointer]:
+          - button "MC3300 Handheld Mobile Computer" [ref=f31e2108]:
+            - img "MC3300 Handheld Mobile Computer" [ref=f31e2110]
+          - link "MC3300 Handheld Mobile Computer partnercampaigns.com" [ref=f31e2112]:
+            - /url: https://zebra.partnercampaigns.com/zebra-handheld/
+            - generic [ref=f31e2113]:
+              - generic [ref=f31e2115]: MC3300 Handheld Mobile Computer
+              - generic [ref=f31e2119]: partnercampaigns.com
+        - generic [ref=f31e2123] [cursor=pointer]:
+          - button "Zebra MC330K-SG4HA4US MC3300 4\" Handheld Touchscreen Mobile Computer" [ref=f31e2128]:
+            - img "Zebra MC330K-SG4HA4US MC3300 4\" Handheld Touchscreen Mobile Computer" [ref=f31e2130]
+          - link "Zebra MC330K-SG4HA4US MC3300 4\" Handheld Touchscreen Mobile Computer Saitech Inc" [ref=f31e2132]:
+            - /url: https://esaitech.com/products/zebra-mc330k-sg4ha4us-mc3300-4-inch-handheld-touchscreen-mobile-computer?srsltid=AfmBOoqeIVb91_amEasQvrImozp8Lj9aM7PetftRwQ99ZIqcuVOdbzsl
+            - generic [ref=f31e2133]:
+              - generic [ref=f31e2135]: Zebra MC330K-SG4HA4US MC3300 4" Handheld Touchscreen Mobile Computer
+              - generic [ref=f31e2139]: Saitech Inc
+        - generic [ref=f31e2143] [cursor=pointer]:
+          - generic [ref=f31e2145]:
+            - button "How to Hard Reset a Zebra MC33XX Series Scanner" [ref=f31e2148]:
+              - img "How to Hard Reset a Zebra MC33XX Series Scanner" [ref=f31e2150]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - link "How to Hard Reset a Zebra MC33XX Series Scanner YouTube" [ref=f31e2152]:
+            - /url: https://www.youtube.com/watch?v=CLHLw4flzB8
+            - generic [ref=f31e2153]:
+              - generic [ref=f31e2155]: How to Hard Reset a Zebra MC33XX Series Scanner
+              - generic [ref=f31e2159]: YouTube
+        - generic [ref=f31e2163] [cursor=pointer]:
+          - generic [ref=f31e2165]:
+            - button "Zebra Mc3300 | eBay" [ref=f31e2168]:
+              - img "Zebra Mc3300 | eBay" [ref=f31e2170]
+            - generic:
+              - generic: a day ago
+          - link "Zebra Mc3300 | eBay eBay" [ref=f31e2172]:
+            - /url: https://www.ebay.com/shop/zebra-mc3300?_nkw=zebra+mc3300
+            - generic [ref=f31e2173]:
+              - generic [ref=f31e2175]: Zebra Mc3300 | eBay
+              - generic [ref=f31e2179]: eBay
+        - generic [ref=f31e2183] [cursor=pointer]:
+          - button "Zebra MC3300 Mobile Computer | Liberty Systems" [ref=f31e2188]:
+            - img "Zebra MC3300 Mobile Computer | Liberty Systems" [ref=f31e2190]
+          - link "Zebra MC3300 Mobile Computer | Liberty Systems Liberty Systems" [ref=f31e2192]:
+            - /url: https://www.libertysystems.com/products/zebra-mc3300
+            - generic [ref=f31e2193]:
+              - generic [ref=f31e2195]: Zebra MC3300 Mobile Computer | Liberty Systems
+              - generic [ref=f31e2199]: Liberty Systems
+        - generic [ref=f31e2203] [cursor=pointer]:
+          - button "Zebra Handheld Mobile Scanner Exporter from Mumbai India" [ref=f31e2208]:
+            - img "Zebra Handheld Mobile Scanner Exporter from Mumbai India" [ref=f31e2210]
+          - link "Zebra Handheld Mobile Scanner Exporter from Mumbai India Suraj Barcoding Systems" [ref=f31e2212]:
+            - /url: https://www.surajbarcodingsystems.com/zebra-handheld-mobile-scanner.htm
+            - generic [ref=f31e2213]:
+              - generic [ref=f31e2215]: Zebra Handheld Mobile Scanner Exporter from Mumbai India
+              - generic [ref=f31e2219]: Suraj Barcoding Systems
+        - generic [ref=f31e2221]:
+          - heading "Related searches" [level=2] [ref=f31e2222]
+          - link "zebra mc9300" [ref=f31e2223] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+mc9300&stick=H4sIAAAAAAAAAFvEylOVmlSUqJCbbGlsYAAAKaUiqA8AAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUIvQIQAA
+            - generic [ref=f31e2228]: zebra mc9300
+          - link "zebra scanner gun" [ref=f31e2229] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+scanner+gun&stick=H4sIAAAAAAAAAFvEKliVmlSUqFCcnJiXl1qkkF6aBwABhSOyFAAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUI1wIQAA
+            - generic [ref=f31e2234]: zebra scanner gun
+          - link "zebra scanner phone" [ref=f31e2235] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=zebra+scanner+phone&stick=H4sIAAAAAAAAAFvEKlyVmlSUqFCcnJiXl1qkUJCRn5cKAKftCbgWAAAA&source=univ&sa=X&ved=2ahUKEwjku--SubqVAxWcpysGHVK-KVkQrNwCegUI5QIQAA
+            - generic [ref=f31e2240]: zebra scanner phone
+        - generic [ref=f31e2244] [cursor=pointer]:
+          - 'button "Zebra MC3300 Mobile Computers, Model: MC3300x, Connectivity: Wifi + 4G + Bt at ₹ 79000 in New Delhi" [ref=f31e2249]':
+            - 'img "Zebra MC3300 Mobile Computers, Model: MC3300x, Connectivity: Wifi + 4G + Bt at ₹ 79000 in New Delhi" [ref=f31e2251]'
+          - 'link "Zebra MC3300 Mobile Computers, Model: MC3300x, Connectivity: Wifi + 4G + Bt at ₹ 79000 in New Delhi IndiaMART" [ref=f31e2253]':
+            - /url: https://www.indiamart.com/proddetail/zebra-mc3300-mobile-computers-2854253036873.html?srsltid=AfmBOoo8AIsCupZeBOpdSrrPTZZfiQwHhGhRW0xdEInIz2H9zBA9tMGj
+            - generic [ref=f31e2254]:
+              - generic [ref=f31e2256]: "Zebra MC3300 Mobile Computers, Model: MC3300x, Connectivity: Wifi + 4G + Bt at ₹ 79000 in New Delhi"
+              - generic [ref=f31e2260]: IndiaMART
+        - generic [ref=f31e2264] [cursor=pointer]:
+          - 'button "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e2269]':
+            - 'img "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products" [ref=f31e2271]'
+          - 'link "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products Amazon.com" [ref=f31e2273]':
+            - /url: https://www.amazon.com/Zebra-Handheld-Computer-Collection-MC330K-GE4HA3US/dp/B07DN6JJXX
+            - generic [ref=f31e2274]:
+              - generic [ref=f31e2276]: "Amazon.com : Zebra MC3300 Premium Handheld Mobile Computer Data Collection Terminal Barcode Scanner Running Android 7.1.2 MC330K-GE4HA3US : Office Products"
+              - generic [ref=f31e2280]: Amazon.com
+        - generic [ref=f31e2284] [cursor=pointer]:
+          - button "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e2289]:
+            - img "MC33xx Series Handheld Mobile Computer | Zebra" [ref=f31e2291]
+          - link "MC33xx Series Handheld Mobile Computer | Zebra Zebra Technologies" [ref=f31e2293]:
+            - /url: https://www.zebra.com/us/en/products/mobile-computers/handheld/mc3300.html
+            - generic [ref=f31e2294]:
+              - generic [ref=f31e2296]: MC33xx Series Handheld Mobile Computer | Zebra
+              - generic [ref=f31e2300]: Zebra Technologies
+        - generic [ref=f31e2304] [cursor=pointer]:
+          - button "ZEBRA MC3300 MOBILE COMPUTER | Logicode–AIDC Solution and Integration Singapore" [ref=f31e2309]:
+            - img "ZEBRA MC3300 MOBILE COMPUTER | Logicode–AIDC Solution and Integration Singapore" [ref=f31e2311]
+          - link "ZEBRA MC3300 MOBILE COMPUTER | Logicode–AIDC Solution and Integration Singapore Logicode" [ref=f31e2313]:
+            - /url: https://www.logicode.com.sg/products_uri/zebra-mc3300-mobile-computer/
+            - generic [ref=f31e2314]:
+              - generic [ref=f31e2316]: ZEBRA MC3300 MOBILE COMPUTER | Logicode–AIDC Solution and Integration Singapore
+              - generic [ref=f31e2320]: Logicode
+      - generic [ref=f31e2324]:
+        - heading "Page Navigation" [level=1] [ref=f31e2325]
+        - button "More results" [ref=f31e2326] [cursor=pointer]:
+          - generic [ref=f31e2327]:
+            - separator [ref=f31e2328]
+            - generic [ref=f31e2329]:
+              - generic [ref=f31e2330]: More results
+              - img [ref=f31e2332]
+      - navigation

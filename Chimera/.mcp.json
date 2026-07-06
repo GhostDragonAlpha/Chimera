@@ -2,8 +2,28 @@
   "mcpServers": {
     "unreal-engine": {
       "type": "http",
-      "url": "http://localhost:3000/mcp"
+      "url": "http://localhost:3000/mcp",
+      "env": {}
+    },
+    "graphify": {
+      "type": "stdio",
+      "command": "C:\\Users\\allen\\.local\\bin\\graphify-mcp.exe",
+      "args": ["E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json"],
+      "env": {}
+    },
+    "chiR24-unreal-mcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["E:/ChiR24-Unreal_mcp-test/dist/cli.js"],
+      "env": {}
+    },
+    "playwright": {
+      "type": "http",
+      "url": "http://localhost:8342/sse",
+      "env": {
+        "PLAYWRIGHT_BROWSERS_PATH": "C:\\Users\\allen\\AppData\\Local\\ms-playwright"
+      }
     }
   },
-  "instructions": "Use MCP tools to control UE Editor. Key tools for automated testing:\n- control_editor: play/stop PIE, take screenshots (full_editor_window mode), console commands\n- system_control: execute Python scripts, run profiling, send console commands\n- manage_level: load/save levels\n- inspect: query game world state"
+  "instructions": "Use MCP tools to control UE Editor, query Graphify knowledge graph, and browse for web research.\n\nKey tools:\n- chiR24-unreal-mcp: control_editor, control_actor, manage_asset, manage_level\n- graphify: query_graph, get_node, get_neighbors\n- playwright: browser_navigate, browser_snapshot, browser_screenshot, browser_click"
 }

@@ -1,0 +1,95 @@
+{
+  "graphify_health": {
+    "nodes": 501,
+    "edges": 325,
+    "gpa": {
+      "current_loop_gpa": "C (2.0)",
+      "project_overall_gpa": "C",
+      "trend": "Falling - needs attention"
+    },
+    "spiral_loop": "Loop 0",
+    "features_verified": 60,
+    "last_health_check": "2026-07-04T06:32:50Z"
+  },
+  "feature_status": {
+    "name": "Player_Character_Suit",
+    "status": "needs_refinement",
+    "type": "material",
+    "loop": 0,
+    "iterations": 4,
+    "education_links": [
+      "Player_Character_Suit - Research Principle 1",
+      "Player_Character_Suit - Research Principle 2",
+      "Player_Character_Suit - Research Principle 3",
+      "Player_Character_Suit - Research Principle 4",
+      "Player_Character_Suit - Research Principle 5",
+      "Player_Character_Suit - Research Principle 6",
+      "Player_Character_Suit - Research Principle 7",
+      "Player_Character_Suit - Research Principle 8"
+    ],
+    "reference_links": [
+      "E:\\PythonChimera\\Chimera\\Saved\\Screenshots\\refinement_suit_v1.png",
+      "E:\\PythonChimera\\Chimera\\Saved\\Screenshots\\refinement_suit_v2.png",
+      "E:\\PythonChimera\\Chimera\\Saved\\Screenshots\\refinement_suit_v3.png",
+      "E:\\PythonChimera\\Chimera\\Saved\\Screenshots\\refinement_suit_v4.png",
+      "E:\\PythonChimera\\Chimera\\Saved\\Screenshots\\refinement_suit_v6.png"
+    ],
+    "professor_grade": {
+      "grade": "C",
+      "score": 2.0,
+      "reasoning": "Input cut off mid-sentence in parameters section; lacks complete JSON structure and fully specified data for all components."
+    }
+  },
+  "mcp_tools_available": {
+    "total_tools": 36,
+    "working_pathways_count": 12,
+    "core_tools_working": [
+      "unreal_engine_control_actor.spawn_actor",
+      "unreal_engine_control_actor.set_transform",
+      "unreal_engine_control_actor.get_components",
+      "unreal_engine_control_actor.set_component_property",
+      "unreal_engine_manage_asset.search_assets",
+      "unreal_engine_control_editor.screenshot",
+      "unreal_engine_control_editor.set_camera_position",
+      "unreal_engine_inspect.get_project_settings",
+      "unreal_engine_inspect.get_material_details",
+      "unreal_engine_manage_level.list_levels",
+      "unreal_engine_manage_level.create_light",
+      "unreal_engine_manage_asset.create_material"
+    ],
+    "tool_inventory_path": "Chimera/docs/MCP_TOOL_INVENTORY.md",
+    "pathways_documentation_path": "Chimera/docs/MCP_PATHWAYS.md"
+  },
+  "pathways_found": {
+    "material_creation_pathway": "manage_asset.create_material - Tool: unreal_engine_manage_asset, Action: create_material, Parameters: {name: string, path: string}",
+    "asset_search_pathway": "manage_asset.search_assets - Tool: unreal_engine_manage_asset, Action: search_assets, Parameters: {directory: string, classNames?: string[], limit?: number}",
+    "component_property_set_pathway": "control_actor.set_component_property - Tool: unreal_engine_control_actor, Action: set_component_property, Parameters: {actorName: string, componentName: string, properties: {key: value}}",
+    "screenshot_capture_pathway": "control_editor.screenshot - Tool: unreal_engine_control_editor, Action: screenshot, Parameters: {filename: string}"
+  },
+  "campus_data": {
+    "research_campuses": [
+      {"school": "Game Development School", "seed_sources": ["GDC Vault", "Unreal Engine Documentation", "ArtStation Environment Art Pipelines"], "quality_ratings": {"A+": "Official Epic Games documentation, GDC presentations", "B+": "Industry articles from Game Developer", "C": "General gaming blogs"}},
+      {"school": "Art School", "seed_sources": ["Color Theory for Artists", "Composition Principles in Fine Art", "PBR Materials Explained"], "quality_ratings": {"A+": "Academic art resources, professional artist tutorials", "B+": "ArtStation tutorials, YouTube art education channels", "C": "General design blogs"}},
+      {"school": "Film School", "seed_sources": ["ASC guidelines", "Three-Point Lighting Setup Tutorials", "Film Production Design Principles"], "quality_ratings": {"A+: "ASC publications, professional cinematographer tutorials", "B+": "Film school resources", "C": "General photography blogs"}},
+      {"school": "Architecture School", "seed_sources": ["Architectural Digest", "Spatial Design for Interiors", "Architectural Lighting Design Guidelines"], "quality_ratings": {"A+: "Professional architecture publications", "B+": "University architecture department resources", "C": "General home design blogs"}},
+      {"school": "Engineering School", "seed_sources": ["NASA Technical Reports", "Industrial Design Principles", "Spacecraft Design Constraints"], "quality_ratings": {"A+: "Official NASA documentation, engineering textbooks", "B+": "Professional engineering society publications", "C": "General science blogs"}},
+      {"school": "Unreal Engine Craft School", "seed_sources": ["UE5 Documentation: Modeling Mode", "UE5 Sculpting Tools Tutorials", "MCP Geometry Tools Documentation"], "quality_ratings": {"A+: "Official Epic Games documentation, verified MCP pathway docs", "B+": "Community tutorials verified against official docs", "C": "Unverified YouTube tutorials"}},
+      {"school": "Spatial Reasoning School", "seed_sources": ["GDC Vault: Spatial Reasoning in Level Design"], "quality_ratings": {"A+: "Official GDC presentations", "B+": "Verified spatial design resources", "C": "General 3D design blogs"}},
+      {"school": "Iteration School", "seed_sources": ["Michelangelo Sculpture Principles"], "quality_ratings": {"A+: "Academic art history resources", "B+": "Verified iteration methodology guides", "C": "General creative process blogs"}},
+      {"school": "Emotion-to-Parameter School", "seed_sources": ["Smashing Magazine: Color Emotion in Website Design"], "quality_ratings": {"A+: "Academic color psychology research", "B+": "Professional design emotion mapping resources", "C": "General color theory guides"}},
+      {"school": "Reference Management School", "seed_sources": ["Graphify Project Documentation"], "quality_ratings": {"A+: "Official Graphify documentation", "B+": "Verified knowledge graph resources", "C": "General reference management blogs"}},
+      {"school": "Creativity School", "seed_sources": ["Combinatorial Creativity Wikipedia"], "quality_ratings": {"A+: "Academic creativity research", "B+": "Verified combinatorial design resources", "C": "General creativity blogs"}},
+      {"school": "Collaboration School", "seed_sources": ["Mirror Protocol Wikipedia"], "quality_ratings": {"A+: "Academic collaboration frameworks", "B+": "Verified mirror protocol resources", "C": "General teamwork guides"}}
+    ]
+  },
+  "lm_studio_status": {
+    "port_1234_open": true,
+    "status": "ONLINE - Port 1234 is open and accessible",
+    "model_expected": "qwen3.6-35b-a3b-mtp@iq2_m"
+  },
+  "ue5_status": {
+    "mcp_bridge_port_8091_open": true,
+    "status": "MCP Bridge Port 8091: OPEN - UE5 editor MCP bridge is accessible",
+    "editor_process_running": "Port 8091 open indicates Unreal Engine MCP server is running"
+  }
+}

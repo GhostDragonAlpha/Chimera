@@ -1,0 +1,1623 @@
+- generic [active] [ref=f24e1]:
+  - link "Jump to content" [ref=f24e2] [cursor=pointer]:
+    - /url: "#bodyContent"
+  - banner [ref=f24e4]:
+    - generic [ref=f24e5]:
+      - navigation "Site" [ref=f24e6]:
+        - generic "Main menu" [ref=f24e7]:
+          - button "Main menu" [ref=f24e8] [cursor=pointer]
+          - generic [ref=f24e11]: Main menu
+      - link "Wikipedia The Free Encyclopedia" [ref=f24e12] [cursor=pointer]:
+        - /url: /wiki/Main_Page
+        - generic [ref=f24e13]:
+          - img "Wikipedia" [ref=f24e14]
+          - img "The Free Encyclopedia" [ref=f24e15]
+    - generic [ref=f24e16]:
+      - search [ref=f24e17]:
+        - generic [ref=f24e20]:
+          - searchbox "Search Wikipedia" [ref=f24e23]
+          - button "Search" [ref=f24e25]
+      - navigation "Personal tools" [ref=f24e26]:
+        - list [ref=f24e30]:
+          - listitem [ref=f24e31]:
+            - link "Donate" [ref=f24e32] [cursor=pointer]:
+              - /url: https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en
+          - listitem [ref=f24e33]:
+            - link "Create account" [ref=f24e34] [cursor=pointer]:
+              - /url: /w/index.php?title=Special:CreateAccount&returnto=Apollo+Lunar+Surface+Experiments+Package
+          - listitem [ref=f24e35]:
+            - link "Log in" [ref=f24e36] [cursor=pointer]:
+              - /url: /w/index.php?title=Special:UserLogin&returnto=Apollo+Lunar+Surface+Experiments+Package
+  - generic [ref=f24e38]:
+    - navigation "Contents" [ref=f24e42]:
+      - generic [ref=f24e44]:
+        - generic [ref=f24e45]:
+          - heading "Contents" [level=2] [ref=f24e46]
+          - button "hide" [ref=f24e47] [cursor=pointer]
+        - list [ref=f24e48]:
+          - listitem [ref=f24e49]:
+            - link "(Top)" [ref=f24e50] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=f24e51]: (Top)
+          - listitem [ref=f24e52]:
+            - link "Background" [ref=f24e53] [cursor=pointer]:
+              - /url: "#Background"
+              - generic [ref=f24e54]: Background
+            - list
+          - listitem [ref=f24e55]:
+            - link "Deployment" [ref=f24e56] [cursor=pointer]:
+              - /url: "#Deployment"
+              - generic [ref=f24e57]: Deployment
+            - list
+          - listitem [ref=f24e58]:
+            - link "Common elements" [ref=f24e59] [cursor=pointer]:
+              - /url: "#Common_elements"
+              - generic [ref=f24e60]: Common elements
+            - list
+          - listitem [ref=f24e61]:
+            - link "List of experiments" [ref=f24e62] [cursor=pointer]:
+              - /url: "#List_of_experiments"
+              - generic [ref=f24e63]: List of experiments
+            - list
+          - listitem [ref=f24e64]:
+            - link "List of missions" [ref=f24e65] [cursor=pointer]:
+              - /url: "#List_of_missions"
+              - generic [ref=f24e66]: List of missions
+            - button "Toggle List of missions subsection" [expanded] [ref=f24e67]:
+              - generic [ref=f24e69]: Toggle List of missions subsection
+            - list [ref=f24e70]:
+              - listitem [ref=f24e71]:
+                - link "Apollo 11 (EASEP)" [ref=f24e72] [cursor=pointer]:
+                  - /url: "#Apollo_11_(EASEP)"
+                  - generic [ref=f24e73]: Apollo 11 (EASEP)
+                - list
+              - listitem [ref=f24e74]:
+                - link "Apollo 12" [ref=f24e75] [cursor=pointer]:
+                  - /url: "#Apollo_12"
+                  - generic [ref=f24e76]: Apollo 12
+                - list
+              - listitem [ref=f24e77]:
+                - link "Apollo 13" [ref=f24e78] [cursor=pointer]:
+                  - /url: "#Apollo_13"
+                  - generic [ref=f24e79]: Apollo 13
+                - list
+              - listitem [ref=f24e80]:
+                - link "Apollo 14" [ref=f24e81] [cursor=pointer]:
+                  - /url: "#Apollo_14"
+                  - generic [ref=f24e82]: Apollo 14
+                - list
+              - listitem [ref=f24e83]:
+                - link "Apollo 15" [ref=f24e84] [cursor=pointer]:
+                  - /url: "#Apollo_15"
+                  - generic [ref=f24e85]: Apollo 15
+                - list
+              - listitem [ref=f24e86]:
+                - link "Apollo 16" [ref=f24e87] [cursor=pointer]:
+                  - /url: "#Apollo_16"
+                  - generic [ref=f24e88]: Apollo 16
+                - list
+              - listitem [ref=f24e89]:
+                - link "Apollo 17" [ref=f24e90] [cursor=pointer]:
+                  - /url: "#Apollo_17"
+                  - generic [ref=f24e91]: Apollo 17
+                - list
+          - listitem [ref=f24e92]:
+            - link "After Apollo" [ref=f24e93] [cursor=pointer]:
+              - /url: "#After_Apollo"
+              - generic [ref=f24e94]: After Apollo
+            - list
+          - listitem [ref=f24e95]:
+            - link "See also" [ref=f24e96] [cursor=pointer]:
+              - /url: "#See_also"
+              - generic [ref=f24e97]: See also
+            - list
+          - listitem [ref=f24e98]:
+            - link "Notes" [ref=f24e99] [cursor=pointer]:
+              - /url: "#Notes"
+              - generic [ref=f24e100]: Notes
+            - list
+          - listitem [ref=f24e101]:
+            - link "References" [ref=f24e102] [cursor=pointer]:
+              - /url: "#References"
+              - generic [ref=f24e103]: References
+            - list
+          - listitem [ref=f24e104]:
+            - link "Bibliography" [ref=f24e105] [cursor=pointer]:
+              - /url: "#Bibliography"
+              - generic [ref=f24e106]: Bibliography
+            - list
+          - listitem [ref=f24e107]:
+            - link "External links" [ref=f24e108] [cursor=pointer]:
+              - /url: "#External_links"
+              - generic [ref=f24e109]: External links
+            - list
+    - main [ref=f24e111]:
+      - generic [ref=f24e112]:
+        - heading "Apollo Lunar Surface Experiments Package" [level=1] [ref=f24e113]:
+          - generic [ref=f24e114]: Apollo Lunar Surface Experiments Package
+        - generic [ref=f24e115]:
+          - button "Go to an article in another language. Available in 18 languages" [ref=f24e116] [cursor=pointer]
+          - generic [ref=f24e119]: 18 languages
+      - generic [ref=f24e121]:
+        - navigation "Namespaces" [ref=f24e123]:
+          - list [ref=f24e126]:
+            - listitem [ref=f24e127]:
+              - link "Article" [ref=f24e128] [cursor=pointer]:
+                - /url: /wiki/Apollo_Lunar_Surface_Experiments_Package
+                - generic [ref=f24e129]: Article
+            - listitem [ref=f24e130]:
+              - link "Talk" [ref=f24e131] [cursor=pointer]:
+                - /url: /wiki/Talk:Apollo_Lunar_Surface_Experiments_Package
+                - generic [ref=f24e132]: Talk
+        - generic [ref=f24e133]:
+          - navigation "Views" [ref=f24e134]:
+            - list [ref=f24e137]:
+              - listitem [ref=f24e138]:
+                - link "Read" [ref=f24e139] [cursor=pointer]:
+                  - /url: /wiki/Apollo_Lunar_Surface_Experiments_Package
+                  - generic [ref=f24e140]: Read
+              - listitem [ref=f24e141]:
+                - link "Edit" [ref=f24e142] [cursor=pointer]:
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit
+                  - generic [ref=f24e143]: Edit
+              - listitem [ref=f24e144]:
+                - link "View history" [ref=f24e145] [cursor=pointer]:
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=history
+                  - generic [ref=f24e146]: View history
+          - navigation "Page tools" [ref=f24e147]:
+            - generic [ref=f24e148]:
+              - button "Tools" [ref=f24e149] [cursor=pointer]
+              - generic [ref=f24e152]: Tools
+      - navigation "Appearance" [ref=f24e155]:
+        - generic [ref=f24e157]:
+          - generic [ref=f24e158]:
+            - generic [ref=f24e159]: Appearance
+            - button "hide" [ref=f24e160] [cursor=pointer]
+          - generic [ref=f24e161]:
+            - generic [ref=f24e162]: Text
+            - list [ref=f24e164]:
+              - listitem [ref=f24e165]:
+                - generic [ref=f24e167]:
+                  - generic [ref=f24e168]:
+                    - radio "Small" [ref=f24e169]
+                    - generic [ref=f24e172]: Small
+                  - generic [ref=f24e173]:
+                    - radio "Standard" [checked] [ref=f24e174]
+                    - generic [ref=f24e177]: Standard
+                  - generic [ref=f24e178]:
+                    - radio "Large" [ref=f24e179]
+                    - generic [ref=f24e182]: Large
+          - generic [ref=f24e183]:
+            - generic [ref=f24e184]: Width
+            - list [ref=f24e186]:
+              - listitem [ref=f24e187]:
+                - generic [ref=f24e189]:
+                  - generic [ref=f24e190]:
+                    - radio "Standard" [checked] [ref=f24e191]
+                    - generic [ref=f24e194]: Standard
+                  - generic [ref=f24e195]:
+                    - radio "Wide" [ref=f24e196]
+                    - generic [ref=f24e199]: Wide
+          - generic [ref=f24e200]:
+            - generic [ref=f24e201]: Color
+            - list [ref=f24e203]:
+              - listitem [ref=f24e204]:
+                - generic [ref=f24e206]:
+                  - generic [ref=f24e207]:
+                    - radio "Automatic" [ref=f24e208]
+                    - generic [ref=f24e211]: Automatic
+                  - generic [ref=f24e212]:
+                    - radio "Light" [checked] [ref=f24e213]
+                    - generic [ref=f24e216]: Light
+                  - generic [ref=f24e217]:
+                    - radio "Dark" [ref=f24e218]
+                    - generic [ref=f24e221]: Dark
+      - generic "Apollo Lunar Surface Experiments Package" [ref=f24e222]:
+        - generic [ref=f24e224]: From Wikipedia, the free encyclopedia
+        - generic [ref=f24e226]:
+          - generic [ref=f24e227]:
+            - figure "The ALSEP of the Apollo 16 mission" [ref=f24e228]:
+              - link [ref=f24e229] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/File:Ap16_pse.jpg
+                - img [ref=f24e230]
+              - generic [ref=f24e231]: The ALSEP of the Apollo 16 mission
+            - paragraph [ref=f24e232]:
+              - text: The Apollo Lunar Surface Experiments Package (ALSEP) comprised a set of scientific instruments placed by the
+              - link "astronauts" [ref=f24e233] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Astronaut
+              - text: at the landing site of each of the five
+              - link "Apollo missions" [ref=f24e234] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Apollo_program
+              - text: to land on the Moon following
+              - link "Apollo 11" [ref=f24e235] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Apollo_11
+              - text: (Apollos
+              - link "12" [ref=f24e236] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Apollo_12
+              - text: ","
+              - link "14" [ref=f24e237] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Apollo_14
+              - text: ","
+              - link "15" [ref=f24e238] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Apollo_15
+              - text: ","
+              - link "16" [ref=f24e239] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Apollo_16
+              - text: ", and"
+              - link "17" [ref=f24e240] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Apollo_17
+              - text: ). Apollo 11 left a smaller package called the Early Apollo Scientific Experiments Package, or EASEP.
+          - region "Background" [ref=f24e241]:
+            - generic [ref=f24e242]:
+              - heading "Background" [level=2] [ref=f24e243]
+              - generic [ref=f24e244]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=1
+            - paragraph [ref=f24e245]:
+              - text: "The instrumentation and experiments that would comprise ALSEP were decided in February 1966. Specifically, the experiments, institutions responsible, and principal investigators and coinvestigators were:"
+              - superscript [ref=f24e246]:
+                - link [ref=f24e247] [cursor=pointer]:
+                  - /url: https://en.wikipedia.org/wiki/Apollo_Lunar_Surface_Experiments_Package#endnote_EAweb
+            - list [ref=f24e248]:
+              - listitem [ref=f24e249]:
+                - text: "Passive Lunar Seismic Experiment:"
+                - link "Massachusetts Institute of Technology" [ref=f24e250] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Massachusetts_Institute_of_Technology
+                - text: ","
+                - link "Frank Press" [ref=f24e251] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Frank_Press
+                - text: ;
+                - link "Columbia University" [ref=f24e252] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Columbia_University
+                - text: ", George Sutton;"
+                - link "Georgia Tech" [ref=f24e253] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Georgia_Tech
+                - text: ", Robert Hostetler"
+              - listitem [ref=f24e254]:
+                - link "Lunar Surface Magnetometer" [ref=f24e255] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Lunar_Surface_Magnetometer
+                - text: ":"
+                - link "Ames Research Center" [ref=f24e256] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Ames_Research_Center
+                - text: ", C. P. Sonett;"
+                - link "Marshall Space Flight Center" [ref=f24e257] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Marshall_Space_Flight_Center
+                - text: ", Jerry Modisette."
+              - listitem [ref=f24e258]:
+                - text: Medium-Energy
+                - link "Solar Wind" [ref=f24e259] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Solar_Wind_Spectrometer
+                - text: ":"
+                - link "Jet Propulsion Laboratory" [ref=f24e260] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Jet_Propulsion_Laboratory
+                - text: ", C. W. Snyder and M. M. Neugebauer."
+              - listitem [ref=f24e261]:
+                - link "Suprathermal Ion Detection" [ref=f24e262] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Suprathermal_Ion_Detector_Experiment
+                - text: ":"
+                - link "Rice University" [ref=f24e263] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Rice_University
+                - text: ", J. W. Freeman Jr.; Marshall Space Flight Center,"
+                - link "Curt Michel" [ref=f24e264] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Curt_Michel
+                - text: .
+              - listitem [ref=f24e265]:
+                - link "Heat Flow Experiment" [ref=f24e266] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Heat_Flow_Experiment
+                - text: ": Columbia University, M. Langseth;"
+                - link "Yale University" [ref=f24e267] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Yale_University
+                - text: ", S. Clark."
+              - listitem [ref=f24e268]:
+                - text: Low-Energy Solar Wind
+                - link "Charged Particle Lunar Environment Experiment" [ref=f24e269] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Charged_Particle_Lunar_Environment_Experiment
+                - text: ": Rice University, B. J. O'Brien."
+              - listitem [ref=f24e270]:
+                - link "Active Seismic Experiment" [ref=f24e271] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Active_Seismic_Experiment
+                - text: ":"
+                - superscript [ref=f24e272]:
+                  - link "[1]" [ref=f24e273] [cursor=pointer]:
+                    - /url: "#cite_note-active-1"
+                    - generic: "[1]"
+                - superscript [ref=f24e274]:
+                  - link "[2]" [ref=f24e275] [cursor=pointer]:
+                    - /url: "#cite_note-ninfinger-2"
+                    - generic: "[2]"
+                - link "Stanford University" [ref=f24e276] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Stanford_University
+                - text: ", R. L. Kovach;"
+                - link "United States Geological Survey" [ref=f24e277] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/United_States_Geological_Survey
+                - text: ", J. S. Watkins."
+              - listitem [ref=f24e278]:
+                - text: "SNAP-27 isotopic power system:"
+                - superscript [ref=f24e279]:
+                  - link "[3]" [ref=f24e280] [cursor=pointer]:
+                    - /url: "#cite_note-3"
+                    - generic: "[3]"
+                - link "Sandia National Laboratories" [ref=f24e281] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Sandia_National_Laboratories
+                - text: ", Jim Leonard"
+            - paragraph [ref=f24e282]:
+              - text: The ALSEP was built and tested by
+              - link "Bendix Aerospace" [ref=f24e283] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Bendix_Corporation
+              - text: in
+              - link "Ann Arbor, Michigan" [ref=f24e284] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Ann_Arbor,_Michigan
+              - text: . The instruments were designed to run autonomously after the astronauts left and to make long-term studies of the lunar environment. They were arrayed around a Central Station which supplied power generated by a
+              - link "radioisotope thermoelectric generator" [ref=f24e285] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Radioisotope_thermoelectric_generator
+              - text: (RTG) to run the instruments and communications so data collected by the experiments could be relayed to Earth. Thermal control was achieved by passive elements (insulation, reflectors, thermal coatings) as well as power dissipation resistors and heaters. Data collected from the instruments were converted into a telemetry format and transmitted to Earth.
+          - region "Deployment" [ref=f24e286]:
+            - generic [ref=f24e287]:
+              - heading "Deployment" [level=2] [ref=f24e288]
+              - generic [ref=f24e289]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=2
+            - paragraph [ref=f24e290]:
+              - text: The ALSEP was stored in the
+              - link "Lunar Module" [ref=f24e291] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Apollo_Lunar_Module
+              - text: "'s Scientific Equipment (SEQ) Bay in two separate subpackages. The base of the first subpackage formed the Central Station. The base of the second subpackage was part of the RTG. A subpallet was attached to the second subpackage, which usually carried one or two of the experiments and the antenna gimbal assembly."
+            - paragraph [ref=f24e292]: On Apollo 12, 13, and 14, the second subpackage stored the Lunar Hand Tool Carrier (HTC). The exact deployment of experiments differed by mission. The following pictures show a typical procedure from Apollo 12.
+            - table [ref=f24e293]:
+              - rowgroup [ref=f24e294]:
+                - row "Picture Description" [ref=f24e295]:
+                  - columnheader "Picture" [ref=f24e296]
+                  - columnheader "Description" [ref=f24e297]
+                - row "Pete Conrad opens the SEQ bay doors through a system of lanyards and pulleys." [ref=f24e298]:
+                  - cell [ref=f24e299]:
+                    - link [ref=f24e301] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-47-6913.jpg
+                      - img [ref=f24e302]
+                  - cell "Pete Conrad opens the SEQ bay doors through a system of lanyards and pulleys." [ref=f24e303]:
+                    - link "Pete Conrad" [ref=f24e304] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Pete_Conrad
+                    - text: opens the SEQ bay doors through a system of lanyards and pulleys.
+                - row "Alan Bean removes the second subpackage from the SEQ bay. This was accomplished by using the boom which can be seen extended and a pulley system to set it on the ground. By Apollo 17, astronauts felt that the use of the boom and pulley system complicated the operation. And as such, the entire system was removed for Apollo 17. On Apollo 11, Buzz Aldrin chose not to use the system because of a lack of time." [ref=f24e305]:
+                  - cell [ref=f24e306]:
+                    - link [ref=f24e308] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6783.jpg
+                      - img [ref=f24e309]
+                  - cell "Alan Bean removes the second subpackage from the SEQ bay. This was accomplished by using the boom which can be seen extended and a pulley system to set it on the ground. By Apollo 17, astronauts felt that the use of the boom and pulley system complicated the operation. And as such, the entire system was removed for Apollo 17. On Apollo 11, Buzz Aldrin chose not to use the system because of a lack of time." [ref=f24e310]:
+                    - link "Alan Bean" [ref=f24e311] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Alan_Bean
+                    - text: removes the second subpackage from the SEQ bay. This was accomplished by using the boom which can be seen extended and a pulley system to set it on the ground. By Apollo 17, astronauts felt that the use of the boom and pulley system complicated the operation. And as such, the entire system was removed for Apollo 17. On Apollo 11, Buzz Aldrin chose not to use the system because of a lack of time.
+                - row "The first subpackage, which Conrad had removed from the SEQ bay earlier." [ref=f24e312]:
+                  - cell [ref=f24e313]:
+                    - link [ref=f24e315] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6784.jpg
+                      - img [ref=f24e316]
+                  - cell "The first subpackage, which Conrad had removed from the SEQ bay earlier." [ref=f24e317]
+                - row "Bean lowers the RTG cask into a position where he can access it." [ref=f24e318]:
+                  - cell [ref=f24e319]:
+                    - link [ref=f24e321] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6786.jpg
+                      - img [ref=f24e322]
+                  - cell "Bean lowers the RTG cask into a position where he can access it." [ref=f24e323]
+                - row "Bean is beginning to remove the dome from the RTG cask. He is using a specialized tool called the Dome Removal Tool (DRT). Note how he has already prepared the RTG for fueling and has already deployed the HTC. Conrad has already removed the subpallet from the RTG subpackage." [ref=f24e324]:
+                  - cell [ref=f24e325]:
+                    - link [ref=f24e327] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6787.jpg
+                      - img [ref=f24e328]
+                  - cell "Bean is beginning to remove the dome from the RTG cask. He is using a specialized tool called the Dome Removal Tool (DRT). Note how he has already prepared the RTG for fueling and has already deployed the HTC. Conrad has already removed the subpallet from the RTG subpackage." [ref=f24e329]
+                - row "Bean discards the dome with the DRT still attached. Neither had a use afterward." [ref=f24e330]:
+                  - cell [ref=f24e331]:
+                    - link [ref=f24e333] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6788.jpg
+                      - img [ref=f24e334]
+                  - cell "Bean discards the dome with the DRT still attached. Neither had a use afterward." [ref=f24e335]
+                - row "Bean is attempting to remove the fuel element from the cask using the Fuel Transfer Tool (FTT). Note one of the Universal Hand Tools (UHT) attached to the RTG subpackage. On Apollo 12, the fuel element stuck in the cask because of thermal expansion (Bean could feel the heat through his suit). Conrad pounded the side of the cask with a hammer while Bean successfully worked it loose. He then inserted it into the RTG and discarded the FTT." [ref=f24e336]:
+                  - cell [ref=f24e337]:
+                    - link [ref=f24e339] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:Putting_the_Plutonium_238_fuel_into_the_SNAP_27.jpg
+                      - img [ref=f24e340]
+                  - cell "Bean is attempting to remove the fuel element from the cask using the Fuel Transfer Tool (FTT). Note one of the Universal Hand Tools (UHT) attached to the RTG subpackage. On Apollo 12, the fuel element stuck in the cask because of thermal expansion (Bean could feel the heat through his suit). Conrad pounded the side of the cask with a hammer while Bean successfully worked it loose. He then inserted it into the RTG and discarded the FTT." [ref=f24e341]
+                - row "Bean attaches the RTG subpackage to the carrybar in preparation for the traverse to the ALSEP deployment site. The carrybar would later be used as the mast for the antenna on the Central Station." [ref=f24e342]:
+                  - cell [ref=f24e343]:
+                    - link [ref=f24e345] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6792.jpg
+                      - img [ref=f24e346]
+                  - cell "Bean attaches the RTG subpackage to the carrybar in preparation for the traverse to the ALSEP deployment site. The carrybar would later be used as the mast for the antenna on the Central Station." [ref=f24e347]
+                - row "During the traverse to the ALSEP deployment site, Conrad took this picture. His shadow indicates that he is carrying the subpallet with one of the two UHTs." [ref=f24e348]:
+                  - cell [ref=f24e349]:
+                    - link [ref=f24e351] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6793.jpg
+                      - img [ref=f24e352]
+                  - cell "During the traverse to the ALSEP deployment site, Conrad took this picture. His shadow indicates that he is carrying the subpallet with one of the two UHTs." [ref=f24e353]
+                - row "Bean carries the ALSEP out to the deployment site." [ref=f24e354]:
+                  - cell [ref=f24e355]:
+                    - link [ref=f24e357] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6807.jpg
+                      - img [ref=f24e358]
+                  - cell "Bean carries the ALSEP out to the deployment site." [ref=f24e359]
+                - row "Conrad holds the carrybar in his left hand while he releases the antenna gimbal assembly with a UHT." [ref=f24e360]:
+                  - cell [ref=f24e361]:
+                    - link [ref=f24e363] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-47-6919.jpg
+                      - img [ref=f24e364]
+                  - cell "Conrad holds the carrybar in his left hand while he releases the antenna gimbal assembly with a UHT." [ref=f24e365]
+                - row "This photo shows Jim Lovell training for Apollo 13. He is currently deploying a mock-up of the Central Station. The Station was spring-loaded. After releasing Boyd bolts, the top of the Station would spring up, deploying it. Note the various locations on top of it which held some of the experiments before deployment. They were also held down with Boyd bolts that were released with a UHT.[4]" [ref=f24e366]:
+                  - cell [ref=f24e367]:
+                    - link [ref=f24e369] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Ap13-70-HC-77.jpg
+                      - img [ref=f24e370]
+                  - cell "This photo shows Jim Lovell training for Apollo 13. He is currently deploying a mock-up of the Central Station. The Station was spring-loaded. After releasing Boyd bolts, the top of the Station would spring up, deploying it. Note the various locations on top of it which held some of the experiments before deployment. They were also held down with Boyd bolts that were released with a UHT.[4]" [ref=f24e371]:
+                    - text: This photo shows
+                    - link "Jim Lovell" [ref=f24e372] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Jim_Lovell
+                    - text: training for Apollo 13. He is currently deploying a mock-up of the Central Station. The Station was spring-loaded. After releasing Boyd bolts, the top of the Station would spring up, deploying it. Note the various locations on top of it which held some of the experiments before deployment. They were also held down with Boyd bolts that were released with a UHT.
+                    - superscript [ref=f24e373]:
+                      - link "[4]" [ref=f24e374] [cursor=pointer]:
+                        - /url: "#cite_note-4"
+                        - generic: "[4]"
+          - region "Common elements" [ref=f24e375]:
+            - generic [ref=f24e376]:
+              - heading "Common elements" [level=2] [ref=f24e377]
+              - generic [ref=f24e378]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=3
+            - paragraph [ref=f24e379]: Each ALSEP station had some common elements.
+            - table [ref=f24e380]:
+              - rowgroup [ref=f24e381]:
+                - row "Name Diagram Picture Description" [ref=f24e382]:
+                  - columnheader "Name" [ref=f24e383]
+                  - columnheader "Diagram" [ref=f24e384]
+                  - columnheader "Picture" [ref=f24e385]
+                  - columnheader "Description" [ref=f24e386]
+                - row "Central Station The picture shows the Central Station from Apollo 16's ALSEP. The Central Station was essentially the command center for the entire ALSEP station. It received commands from Earth, transmitted data, and distributed power to each experiment. Communications with Earth were achieved through a 58 cm long, 3.8 cm diameter modified axial-helical antenna mounted on top of the Central Station and pointed towards Earth by the astronauts. Transmitters, receivers, data processors and multiplexers were housed within the Central Station. The Central Station was a 25 kg box with a stowed volume of 34,800 cubic cm. In addition, on Apollos 12 to 15, a Dust Detector was mounted on the Central Station which measured the accumulation of lunar dust." [ref=f24e387]:
+                  - rowheader "Central Station" [ref=f24e388]
+                  - cell [ref=f24e389]:
+                    - link [ref=f24e391] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:Central_Station.jpg
+                      - img [ref=f24e392]
+                  - cell [ref=f24e393]:
+                    - link [ref=f24e395] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Apollo_16_Central_Station.jpg
+                      - img [ref=f24e396]
+                  - cell "The picture shows the Central Station from Apollo 16's ALSEP. The Central Station was essentially the command center for the entire ALSEP station. It received commands from Earth, transmitted data, and distributed power to each experiment. Communications with Earth were achieved through a 58 cm long, 3.8 cm diameter modified axial-helical antenna mounted on top of the Central Station and pointed towards Earth by the astronauts. Transmitters, receivers, data processors and multiplexers were housed within the Central Station. The Central Station was a 25 kg box with a stowed volume of 34,800 cubic cm. In addition, on Apollos 12 to 15, a Dust Detector was mounted on the Central Station which measured the accumulation of lunar dust." [ref=f24e397]:
+                    - text: The picture shows the Central Station from Apollo 16's ALSEP.
+                    - text: The Central Station was essentially the command center for the entire ALSEP station. It received commands from Earth, transmitted data, and distributed power to each experiment. Communications with Earth were achieved through a 58 cm long, 3.8 cm diameter modified axial-helical antenna mounted on top of the Central Station and pointed towards Earth by the astronauts.
+                    - paragraph [ref=f24e398]: Transmitters, receivers, data processors and multiplexers were housed within the Central Station. The Central Station was a 25 kg box with a stowed volume of 34,800 cubic cm. In addition, on Apollos 12 to 15, a Dust Detector was mounted on the Central Station which measured the accumulation of lunar dust.
+                - row "Radioisotope Thermoelectric Generator (RTG) The picture shows the RTG from Apollo 14 with the Central Station in the background. The RTG was the power source for the ALSEP. It utilized the heat from the radioactive decay of plutonium-238 and thermocouples to generate approximately 70 watts of power. The base of the RTG was the base of the second ALSEP subpackage." [ref=f24e399]:
+                  - rowheader "Radioisotope Thermoelectric Generator (RTG)" [ref=f24e400]:
+                    - link "Radioisotope Thermoelectric Generator" [ref=f24e401] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Radioisotope_thermoelectric_generator
+                    - text: (RTG)
+                  - cell [ref=f24e402]:
+                    - link [ref=f24e404] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_RTG_ALSEP.png
+                      - img [ref=f24e405]
+                  - cell [ref=f24e406]:
+                    - link [ref=f24e408] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Apollo_14_RTG.jpg
+                      - img [ref=f24e409]
+                  - cell "The picture shows the RTG from Apollo 14 with the Central Station in the background. The RTG was the power source for the ALSEP. It utilized the heat from the radioactive decay of plutonium-238 and thermocouples to generate approximately 70 watts of power. The base of the RTG was the base of the second ALSEP subpackage." [ref=f24e410]:
+                    - text: The picture shows the RTG from Apollo 14 with the Central Station in the background.
+                    - text: The RTG was the power source for the ALSEP. It utilized the heat from the radioactive decay of
+                    - link "plutonium-238" [ref=f24e411] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Plutonium-238
+                    - text: and
+                    - link "thermocouples" [ref=f24e412] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Thermocouple
+                    - text: to generate approximately 70
+                    - link "watts" [ref=f24e413] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Watt
+                    - text: of power. The base of the RTG was the base of the second ALSEP subpackage.
+                - row "RTG Cask The RTG cask stored the plutonium-238 fuel element. It was located to left of the SEQ bay. The cask was designed to withstand a launch vehicle explosion in the event of an abort or a re-entry into Earth's atmosphere, which is what occurred on Apollo 13. The picture shows Edgar Mitchell practicing the removal of the fuel element." [ref=f24e414]:
+                  - columnheader "RTG Cask" [ref=f24e415]
+                  - cell [ref=f24e416]
+                  - cell [ref=f24e417]:
+                    - link [ref=f24e419] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Ap14-KSC-70P-508.jpg
+                      - img [ref=f24e420]
+                  - cell "The RTG cask stored the plutonium-238 fuel element. It was located to left of the SEQ bay. The cask was designed to withstand a launch vehicle explosion in the event of an abort or a re-entry into Earth's atmosphere, which is what occurred on Apollo 13. The picture shows Edgar Mitchell practicing the removal of the fuel element." [ref=f24e421]
+          - region "List of experiments" [ref=f24e422]:
+            - generic [ref=f24e423]:
+              - heading "List of experiments" [level=2] [ref=f24e424]
+              - generic [ref=f24e425]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=4
+            - table [ref=f24e426]:
+              - rowgroup [ref=f24e427]:
+                - row "Name Diagram Description" [ref=f24e428]:
+                  - columnheader "Name" [ref=f24e429]
+                  - columnheader "Diagram" [ref=f24e430]
+                  - columnheader "Description" [ref=f24e431]
+                - row "Active Seismic Experiment (ASE) Through the use of seismology the internal structure of the Moon could be determined to several hundred feet underground. The ASE consisted of three major components. A set of three geophones was laid out in a line by an astronaut from the Central Station to detect the explosions.[5] A mortar package was designed to lob a set of four explosives from varying distances away from the ALSEP. An astronaut-activated Thumper was used to detonate one of 22 charges to create a small shock. The diagram shows the Thumper device." [ref=f24e432]:
+                  - rowheader "Active Seismic Experiment (ASE)" [ref=f24e433]:
+                    - link "Active Seismic Experiment" [ref=f24e434] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Active_Seismic_Experiment
+                    - text: (ASE)
+                  - cell [ref=f24e435]:
+                    - link [ref=f24e437] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:Active_Seismic_Experiment_Thumper.png
+                      - img [ref=f24e438]
+                  - cell "Through the use of seismology the internal structure of the Moon could be determined to several hundred feet underground. The ASE consisted of three major components. A set of three geophones was laid out in a line by an astronaut from the Central Station to detect the explosions.[5] A mortar package was designed to lob a set of four explosives from varying distances away from the ALSEP. An astronaut-activated Thumper was used to detonate one of 22 charges to create a small shock. The diagram shows the Thumper device." [ref=f24e439]:
+                    - text: Through the use of
+                    - link "seismology" [ref=f24e440] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Seismology
+                    - text: the internal structure of the Moon could be determined to several hundred feet underground. The ASE consisted of three major components. A set of three
+                    - link "geophones" [ref=f24e441] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Geophone
+                    - text: was laid out in a line by an astronaut from the Central Station to detect the explosions.
+                    - superscript [ref=f24e442]:
+                      - link "[5]" [ref=f24e443] [cursor=pointer]:
+                        - /url: "#cite_note-Brzostowski_pp_414-416-5"
+                        - generic: "[5]"
+                    - text: A mortar package was designed to lob a set of four explosives from varying distances away from the ALSEP. An astronaut-activated Thumper was used to detonate one of 22 charges to create a small shock. The diagram shows the Thumper device.
+                - row "Charged Particle Lunar Environment Experiment (CPLEE) The CPLEE was designed to measure the fluxes of charged particles such as electrons and ions." [ref=f24e444]:
+                  - columnheader "Charged Particle Lunar Environment Experiment (CPLEE)" [ref=f24e445]:
+                    - link "Charged Particle Lunar Environment Experiment" [ref=f24e446] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Charged_Particle_Lunar_Environment_Experiment
+                    - text: (CPLEE)
+                  - cell [ref=f24e447]
+                  - cell "The CPLEE was designed to measure the fluxes of charged particles such as electrons and ions." [ref=f24e448]:
+                    - text: The CPLEE was designed to measure the
+                    - link "fluxes" [ref=f24e449] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Flux
+                    - text: of charged particles such as
+                    - link "electrons" [ref=f24e450] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Electron
+                    - text: and
+                    - link "ions" [ref=f24e451] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Ion
+                    - text: .
+                - row "Cold Cathode Gauge Experiment (CCGE) or Cold Cathode Ion Gauge (CCIG) The CCGE experiment was designed to measure the pressure of the lunar atmosphere. It was originally designed to be part of the SIDE, but its strong magnetic field would have caused interference. The CCIG is on the right of the SIDE in the diagram." [ref=f24e452]:
+                  - columnheader "Cold Cathode Gauge Experiment (CCGE) or Cold Cathode Ion Gauge (CCIG)" [ref=f24e453]:
+                    - link "Cold Cathode Gauge Experiment (CCGE) or Cold Cathode Ion Gauge (CCIG)" [ref=f24e454] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Cold_Cathode_Gauge_Experiment
+                  - cell [ref=f24e455]
+                  - cell "The CCGE experiment was designed to measure the pressure of the lunar atmosphere. It was originally designed to be part of the SIDE, but its strong magnetic field would have caused interference. The CCIG is on the right of the SIDE in the diagram." [ref=f24e456]:
+                    - text: The CCGE experiment was designed to measure the pressure of the
+                    - link "lunar atmosphere" [ref=f24e457] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Atmosphere_of_the_Moon
+                    - text: . It was originally designed to be part of the SIDE, but its strong magnetic field would have caused interference. The CCIG is on the right of the SIDE in the diagram.
+                - row "Heat Flow Experiment (HFE) The HFE was designed to make thermal measurements of the lunar subsurface in order to determine the rate at which heat flows out of the interior.[6] The measurements could help determine the abundance of radioisotopes and help understand the thermal evolution of the Moon. The HFE consisted of an electronics box and two probes. Each probe was placed in a hole by an astronaut that was drilled to about 2.5 m deep." [ref=f24e458]:
+                  - columnheader "Heat Flow Experiment (HFE)" [ref=f24e459]:
+                    - link "Heat Flow Experiment" [ref=f24e460] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Heat_Flow_Experiment
+                    - text: (HFE)
+                  - cell [ref=f24e461]
+                  - cell "The HFE was designed to make thermal measurements of the lunar subsurface in order to determine the rate at which heat flows out of the interior.[6] The measurements could help determine the abundance of radioisotopes and help understand the thermal evolution of the Moon. The HFE consisted of an electronics box and two probes. Each probe was placed in a hole by an astronaut that was drilled to about 2.5 m deep." [ref=f24e462]:
+                    - text: The HFE was designed to make thermal measurements of the lunar subsurface in order to determine the rate at which heat flows out of the interior.
+                    - superscript [ref=f24e463]:
+                      - link "[6]" [ref=f24e464] [cursor=pointer]:
+                        - /url: "#cite_note-6"
+                        - generic: "[6]"
+                    - text: The measurements could help determine the abundance of radioisotopes and help understand the thermal evolution of the Moon. The HFE consisted of an electronics box and two probes. Each probe was placed in a hole by an astronaut that was drilled to about 2.5 m deep.
+                - row "Laser Ranging Retroreflector (LRRR) An LRRR is used to reflect a laser beam from Earth, the round-trip timing of the beam is an accurate gauge of the distance to the Moon. The information is used to study lunar recession due to tidal dissipation and the irregular motion of the Earth. The LRRRs are the only experiments still in use. The above diagram shows the Apollo 11 version. Apollo 14's was similar to Apollo 11's. The lower diagram shows the larger Apollo 15 version." [ref=f24e465]:
+                  - rowheader "Laser Ranging Retroreflector (LRRR)" [ref=f24e466]:
+                    - link "Laser Ranging Retroreflector (LRRR)" [ref=f24e467] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Laser_Ranging_Retroflector
+                  - cell [ref=f24e468]:
+                    - link [ref=f24e470] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:Laser_Ranging_Retroreflector.gif
+                      - img [ref=f24e471]
+                    - paragraph [ref=f24e472]:
+                      - link [ref=f24e474] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:Laser_Ranging_Retroreflector_Apollo_15.gif
+                        - img [ref=f24e475]
+                  - cell "An LRRR is used to reflect a laser beam from Earth, the round-trip timing of the beam is an accurate gauge of the distance to the Moon. The information is used to study lunar recession due to tidal dissipation and the irregular motion of the Earth. The LRRRs are the only experiments still in use. The above diagram shows the Apollo 11 version. Apollo 14's was similar to Apollo 11's. The lower diagram shows the larger Apollo 15 version." [ref=f24e476]:
+                    - text: An LRRR is used to reflect a
+                    - link "laser" [ref=f24e477] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Laser
+                    - text: beam from Earth, the round-trip timing of the beam is an accurate gauge of the distance to the Moon. The information is used to study lunar recession due to tidal dissipation and the irregular motion of the Earth. The LRRRs are the only experiments still in use. The above diagram shows the
+                    - link "Apollo 11" [ref=f24e478] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Apollo_11
+                    - text: version.
+                    - link "Apollo 14" [ref=f24e479] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Apollo_14
+                    - text: "'s was similar to Apollo 11's. The lower diagram shows the larger Apollo 15 version."
+                - row "Lunar Atmosphere Composition Experiment (LACE) The LACE was designed to detect the composition of the lunar atmosphere." [ref=f24e480]:
+                  - columnheader "Lunar Atmosphere Composition Experiment (LACE)" [ref=f24e481]:
+                    - link "Lunar Atmosphere Composition Experiment" [ref=f24e482] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Lunar_Atmospheric_Composition_Experiment
+                    - text: (LACE)
+                  - cell [ref=f24e483]
+                  - cell "The LACE was designed to detect the composition of the lunar atmosphere." [ref=f24e484]
+                - row "Lunar Ejecta and Meteorites Experiment (LEAM) The LEAM was designed to detect secondary particles that had been ejected by meteorite impacts on the lunar surface and to detect primary micrometeorites themselves.[7] See lunar soil for some experiment results." [ref=f24e485]:
+                  - rowheader "Lunar Ejecta and Meteorites Experiment (LEAM)" [ref=f24e486]:
+                    - link "Lunar Ejecta and Meteorites Experiment" [ref=f24e487] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Lunar_Ejecta_and_Meteorites_Experiment
+                    - text: (LEAM)
+                  - cell [ref=f24e488]:
+                    - link [ref=f24e490] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Lunar_Ejecta_and_Meteorites_Experiment.gif
+                      - img [ref=f24e491]
+                  - cell "The LEAM was designed to detect secondary particles that had been ejected by meteorite impacts on the lunar surface and to detect primary micrometeorites themselves.[7] See lunar soil for some experiment results." [ref=f24e492]:
+                    - text: The LEAM was designed to detect secondary particles that had been ejected by meteorite impacts on the lunar surface and to detect primary micrometeorites themselves.
+                    - superscript [ref=f24e493]:
+                      - link "[7]" [ref=f24e494] [cursor=pointer]:
+                        - /url: "#cite_note-7"
+                        - generic: "[7]"
+                    - text: See
+                    - link "lunar soil" [ref=f24e495] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Lunar_soil#Anthropogenic_spread
+                    - text: for some experiment results.
+                - row "Lunar Seismic Profiling Experiment (LSPE) The LSPE was similar to the ASE except the expected depth was to be several kilometers. It consisted of three major components. A set of four geophones was laid out near the ALSEP by an astronaut.[5] The LSPE antenna was used to send signals to the charges. There were eight charges, each consisting of various sizes ranging from 1⁄8 to 6 lb (0.06 to 2.72 kg). The charges were deployed during the Lunar Roving Vehicle traverses." [ref=f24e496]:
+                  - rowheader "Lunar Seismic Profiling Experiment (LSPE)" [ref=f24e497]:
+                    - link "Lunar Seismic Profiling Experiment" [ref=f24e498] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Lunar_Seismic_Profiling_Experiment
+                    - text: (LSPE)
+                  - cell [ref=f24e499]:
+                    - link [ref=f24e501] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Lunar_Seismic_Profiling_Experiment_Charge.gif
+                      - img [ref=f24e502]
+                    - link [ref=f24e504] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:NASA_Apollo17_LSPE_explosive.jpg
+                      - img [ref=f24e505]
+                  - cell "The LSPE was similar to the ASE except the expected depth was to be several kilometers. It consisted of three major components. A set of four geophones was laid out near the ALSEP by an astronaut.[5] The LSPE antenna was used to send signals to the charges. There were eight charges, each consisting of various sizes ranging from 1⁄8 to 6 lb (0.06 to 2.72 kg). The charges were deployed during the Lunar Roving Vehicle traverses." [ref=f24e506]:
+                    - text: The LSPE was similar to the ASE except the expected depth was to be several kilometers. It consisted of three major components. A set of four geophones was laid out near the ALSEP by an astronaut.
+                    - superscript [ref=f24e507]:
+                      - link "[5]" [ref=f24e508] [cursor=pointer]:
+                        - /url: "#cite_note-Brzostowski_pp_414-416-5"
+                        - generic: "[5]"
+                    - text: The LSPE antenna was used to send signals to the charges. There were eight charges, each consisting of various sizes ranging from
+                    - generic [ref=f24e509]: 1⁄8
+                    - text: to 6 lb (0.06 to 2.72 kg). The charges were deployed during the
+                    - link "Lunar Roving Vehicle" [ref=f24e510] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Lunar_Roving_Vehicle
+                    - text: traverses.
+                - row "Lunar Surface Gravimeter (LSG) The LSG was designed to make very accurate measurements of lunar gravity and its change over time. It was hoped the data could be used to prove the existence of gravitational waves." [ref=f24e511]:
+                  - rowheader "Lunar Surface Gravimeter (LSG)" [ref=f24e512]:
+                    - link "Lunar Surface Gravimeter" [ref=f24e513] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Lunar_Surface_Gravimeter
+                    - text: (LSG)
+                  - cell [ref=f24e514]:
+                    - link [ref=f24e516] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Lunar_Surface_Gravimeter.gif
+                      - img [ref=f24e517]
+                  - cell "The LSG was designed to make very accurate measurements of lunar gravity and its change over time. It was hoped the data could be used to prove the existence of gravitational waves." [ref=f24e518]:
+                    - text: The LSG was designed to make very accurate measurements of lunar gravity and its change over time. It was hoped the data could be used to prove the existence of
+                    - link "gravitational waves" [ref=f24e519] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Gravitational_wave
+                    - text: .
+                - row "Lunar Surface Magnetometer (LSM) The LSM was designed to measure the Moon's magnetic field. The data could be used to determine electrical properties of the subsurface. It was also used to study the interaction of solar plasma and the lunar surface." [ref=f24e520]:
+                  - rowheader "Lunar Surface Magnetometer (LSM)" [ref=f24e521]:
+                    - link "Lunar Surface Magnetometer" [ref=f24e522] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Lunar_Surface_Magnetometer
+                    - text: (LSM)
+                  - cell [ref=f24e523]:
+                    - link [ref=f24e525] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Lunar_Surface_Magnetometer.svg
+                      - img [ref=f24e526]
+                  - cell "The LSM was designed to measure the Moon's magnetic field. The data could be used to determine electrical properties of the subsurface. It was also used to study the interaction of solar plasma and the lunar surface." [ref=f24e527]:
+                    - text: The LSM was designed to measure the
+                    - link "Moon's magnetic field" [ref=f24e528] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Magnetic_field_of_the_Moon
+                    - text: . The data could be used to determine electrical properties of the subsurface. It was also used to study the interaction of solar plasma and the lunar surface.
+                - row "Apollo 12 Passive Seismic Experiment (PSE) The PSE was designed to detect \"moonquakes,\" either naturally or artificially created, to help study the structure of the subsurface." [ref=f24e529]:
+                  - rowheader "Apollo 12 Passive Seismic Experiment (PSE)" [ref=f24e530]:
+                    - link "Apollo 12 Passive Seismic Experiment" [ref=f24e531] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Apollo_12_Passive_Seismic_Experiment
+                    - text: (PSE)
+                  - cell [ref=f24e532]:
+                    - link [ref=f24e534] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Passive_Seismic_Experiment.jpg
+                      - img [ref=f24e535]
+                  - cell "The PSE was designed to detect \"moonquakes,\" either naturally or artificially created, to help study the structure of the subsurface." [ref=f24e536]:
+                    - text: The PSE was designed to detect "
+                    - link "moonquakes" [ref=f24e537] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Moonquake
+                    - text: ",\" either naturally or artificially created, to help study the structure of the subsurface."
+                - row "Passive Seismic Experiment Package (PSEP) Similar to the PSE, except it was self-supporting. This meant it carried its own power source (solar arrays), electronics, and communications equipment. In addition, the PSEP also carried a Dust Detector." [ref=f24e538]:
+                  - rowheader "Passive Seismic Experiment Package (PSEP)" [ref=f24e539]:
+                    - link "Passive Seismic Experiment Package" [ref=f24e540] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Passive_Seismic_Experiment_Package
+                    - text: (PSEP)
+                  - cell [ref=f24e541]:
+                    - link [ref=f24e543] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Passive_Seismic_Experiment_Package.gif
+                      - img [ref=f24e544]
+                  - cell "Similar to the PSE, except it was self-supporting. This meant it carried its own power source (solar arrays), electronics, and communications equipment. In addition, the PSEP also carried a Dust Detector." [ref=f24e545]:
+                    - text: Similar to the PSE, except it was self-supporting. This meant it carried its own power source (
+                    - link "solar arrays" [ref=f24e546] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Photovoltaics
+                    - text: ), electronics, and communications equipment. In addition, the PSEP also carried a Dust Detector.
+                - row "Solar Wind Spectrometer Experiment (SWS) The SWS was designed to study solar wind properties and its effects on the lunar environment." [ref=f24e547]:
+                  - rowheader "Solar Wind Spectrometer Experiment (SWS)" [ref=f24e548]:
+                    - link "Solar Wind Spectrometer Experiment (SWS)" [ref=f24e549] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Solar_Wind_Spectrometer
+                  - cell [ref=f24e550]:
+                    - link [ref=f24e552] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/File:ALSEP_Solar_Wind_Spectrometer-en.svg
+                      - img [ref=f24e553]
+                  - cell "The SWS was designed to study solar wind properties and its effects on the lunar environment." [ref=f24e554]
+                - row "Suprathermal Ion Detector Experiment (SIDE) The SIDE was designed to measure various properties of positive ions in the lunar environment, provide data on the plasma interaction between solar wind and the Moon, and to determine the electrical potential of the lunar surface." [ref=f24e555]:
+                  - columnheader "Suprathermal Ion Detector Experiment (SIDE)" [ref=f24e556]:
+                    - link "Suprathermal Ion Detector Experiment" [ref=f24e557] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Suprathermal_Ion_Detector_Experiment
+                    - text: (SIDE)
+                  - cell [ref=f24e558]
+                  - cell "The SIDE was designed to measure various properties of positive ions in the lunar environment, provide data on the plasma interaction between solar wind and the Moon, and to determine the electrical potential of the lunar surface." [ref=f24e559]
+          - region "List of missions" [ref=f24e560]:
+            - generic [ref=f24e561]:
+              - heading "List of missions" [level=2] [ref=f24e562]
+              - generic [ref=f24e563]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=5
+            - paragraph [ref=f24e564]: Each mission had a different array of experiments.
+            - region "Apollo 11 (EASEP)" [ref=f24e565]:
+              - generic [ref=f24e566]:
+                - heading "Apollo 11 (EASEP)" [level=3] [ref=f24e567]: Apollo 11 (EASEP)
+                - generic [ref=f24e568]:
+                  - link "edit":
+                    - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=6
+              - figure "On Apollo 11, Buzz Aldrin simply carried the EASEP to the deployment site by using handles. This is different from the carrybar used on later missions." [ref=f24e569]:
+                - link [ref=f24e570] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:Buzz_Aldrin_carries_the_EASEP.jpg
+                  - img [ref=f24e571]
+                - generic [ref=f24e572]:
+                  - text: On Apollo 11,
+                  - link "Buzz Aldrin" [ref=f24e573] [cursor=pointer]:
+                    - /url: //en.wikipedia.org/wiki/Buzz_Aldrin
+                  - text: simply carried the EASEP to the deployment site by using handles. This is different from the carrybar used on later missions.
+              - paragraph [ref=f24e574]:
+                - text: Because of the risk of an early abort on the Moon, geologists persuaded NASA to permit only experiments that could be set up or completed in 10 minutes.
+                - superscript [ref=f24e575]:
+                  - link "[8]" [ref=f24e576] [cursor=pointer]:
+                    - /url: "#cite_note-lindoh-8"
+                    - generic: "[8]"
+                - text: As a result, Apollo 11 did not leave a full ALSEP package, but left a simpler version called the Early Apollo Surface Experiments Package (EASEP). Since there was only one 2 hour 40 minute EVA planned, the crew would not have enough time to deploy a full ALSEP, which usually took one to two hours to deploy. Both packages were stored in the LM's SEQ bay.
+              - paragraph [ref=f24e577]:
+                - text: Engineers designed the EASEP to deploy with one squeeze handle, and the Laser Ranging Retroreflector (LRRR) also deployed within ten minutes. Despite the simpler design, the seismometer was sensitive enough to detect
+                - link "Neil Armstrong" [ref=f24e578] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Neil_Armstrong
+                - text: "'s movements during sleep."
+                - superscript [ref=f24e579]:
+                  - link "[8]" [ref=f24e580] [cursor=pointer]:
+                    - /url: "#cite_note-lindoh-8"
+                    - generic: "[8]"
+              - table [ref=f24e581]:
+                - rowgroup [ref=f24e582]:
+                  - row "Name Picture Notes" [ref=f24e583]:
+                    - columnheader "Name" [ref=f24e584]
+                    - columnheader "Picture" [ref=f24e585]
+                    - columnheader "Notes" [ref=f24e586]
+                  - row "LRRR The transparent dust cover has already been removed and is 3–4 m further to the right. The metal reflector mirrors the black sky." [ref=f24e587]:
+                    - rowheader "LRRR" [ref=f24e588]:
+                      - link "LRRR" [ref=f24e589] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Laser_Ranging_Retroflector
+                    - cell [ref=f24e590]:
+                      - link [ref=f24e592] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:Apollo_11_Lunar_Laser_Ranging_Experiment.jpg
+                        - img [ref=f24e593]
+                    - cell "The transparent dust cover has already been removed and is 3–4 m further to the right. The metal reflector mirrors the black sky." [ref=f24e594]:
+                      - text: The transparent dust cover has already been removed and is 3–4
+                      - text: m further to the right. The metal reflector mirrors the black sky.
+                  - row "PSEP Failed after 21 days" [ref=f24e596]:
+                    - rowheader "PSEP" [ref=f24e597]:
+                      - link "PSEP" [ref=f24e598] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Passive_Seismic_Experiment_Package
+                    - cell [ref=f24e599]:
+                      - link [ref=f24e601] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS11-40-5951.jpg
+                        - img [ref=f24e602]
+                    - cell "Failed after 21 days" [ref=f24e603]
+            - region "Apollo 12" [ref=f24e604]:
+              - generic [ref=f24e605]:
+                - heading "Apollo 12" [level=3] [ref=f24e606]
+                - generic [ref=f24e607]:
+                  - link "edit":
+                    - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=7
+              - figure "The layout of Apollo 12's ALSEP" [ref=f24e608]:
+                - link [ref=f24e609] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:Apollo_12_ALSEP.svg
+                  - img [ref=f24e610]
+                - generic [ref=f24e611]: The layout of Apollo 12's ALSEP
+              - table [ref=f24e612]:
+                - rowgroup [ref=f24e613]:
+                  - row "Name Picture Notes" [ref=f24e614]:
+                    - columnheader "Name" [ref=f24e615]
+                    - columnheader "Picture" [ref=f24e616]
+                    - columnheader "Notes" [ref=f24e617]
+                  - row "LSM Stored on the first subpackage" [ref=f24e618]:
+                    - rowheader "LSM" [ref=f24e619]:
+                      - link "LSM" [ref=f24e620] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Lunar_Surface_Magnetometer
+                    - cell [ref=f24e621]:
+                      - link [ref=f24e623] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-47-6920.jpg
+                        - img [ref=f24e624]
+                    - cell "Stored on the first subpackage" [ref=f24e625]
+                  - row "PSE Stored on the first subpackage" [ref=f24e626]:
+                    - rowheader "PSE" [ref=f24e627]:
+                      - link "PSE" [ref=f24e628] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Apollo_12_Passive_Seismic_Experiment
+                    - cell [ref=f24e629]:
+                      - link [ref=f24e631] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-47-6917.jpg
+                        - img [ref=f24e632]
+                    - cell "Stored on the first subpackage" [ref=f24e633]
+                  - row "SWS Stored on the first subpackage" [ref=f24e634]:
+                    - rowheader "SWS" [ref=f24e635]:
+                      - link "SWS" [ref=f24e636] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Solar_Wind_Spectrometer
+                    - cell [ref=f24e637]:
+                      - link [ref=f24e639] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-46-6812.jpg
+                        - img [ref=f24e640]
+                    - cell "Stored on the first subpackage" [ref=f24e641]
+                  - row "SIDE/CCGE Stored on the second subpackage as part of the subpallet. The CCIG can be seen to the left of the SIDE. The CCIG failed after only 14 hours." [ref=f24e642]:
+                    - rowheader "SIDE/CCGE" [ref=f24e643]:
+                      - link "SIDE" [ref=f24e644] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Suprathermal_Ion_Detector_Experiment
+                      - text: /
+                      - link "CCGE" [ref=f24e645] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Cold_Cathode_Gauge_Experiment
+                    - cell [ref=f24e646]:
+                      - link [ref=f24e648] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS12-47-6922.jpg
+                        - img [ref=f24e649]
+                    - cell "Stored on the second subpackage as part of the subpallet. The CCIG can be seen to the left of the SIDE. The CCIG failed after only 14 hours." [ref=f24e650]:
+                      - text: Stored on the second subpackage as part of the subpallet.
+                      - text: The CCIG can be seen to the left of the SIDE. The CCIG failed after only 14 hours.
+              - paragraph [ref=f24e651]: The antenna gimbal assembly was stored on the subpallet. The stool for the PSE, the ALSEP tools, carrybar, and HTC was stored on the second subpackage.
+            - region "Apollo 13" [ref=f24e652]:
+              - generic [ref=f24e653]:
+                - heading "Apollo 13" [level=3] [ref=f24e654]
+                - generic [ref=f24e655]:
+                  - link "edit":
+                    - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=8
+              - figure "The planned layout of Apollo 13's ALSEP" [ref=f24e656]:
+                - link [ref=f24e657] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:Arrayx2b.gif
+                  - img [ref=f24e658]
+                - generic [ref=f24e659]: The planned layout of Apollo 13's ALSEP
+              - figure "A recording of the Apollo 13 S-IVB's impact on the lunar surface as detected by the Apollo 12 Passive Seismic Experiment." [ref=f24e660]:
+                - link [ref=f24e661] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:S70-34985.jpg
+                  - img [ref=f24e662]
+                - generic [ref=f24e663]: A recording of the Apollo 13 S-IVB's impact on the lunar surface as detected by the Apollo 12 Passive Seismic Experiment.
+              - paragraph [ref=f24e664]:
+                - text: Because of the aborted landing, none of the experiments were deployed. The Apollo 13
+                - link "S-IVB" [ref=f24e665] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/S-IVB
+                - text: stage was deliberately crashed on the Moon to provide a signal for the Apollo 12 PSE.
+              - table [ref=f24e666]:
+                - rowgroup [ref=f24e667]:
+                  - row "Name Notes" [ref=f24e668]:
+                    - columnheader "Name" [ref=f24e669]
+                    - columnheader "Notes" [ref=f24e670]
+                  - row "CPLEE Stored on the first subpackage" [ref=f24e671]:
+                    - rowheader "CPLEE" [ref=f24e672]
+                    - cell "Stored on the first subpackage" [ref=f24e673]
+                  - row "CCGE Stored on the first subpackage" [ref=f24e674]:
+                    - rowheader "CCGE" [ref=f24e675]
+                    - cell "Stored on the first subpackage" [ref=f24e676]
+                  - row "HFE Stored on the first subpackage" [ref=f24e677]:
+                    - rowheader "HFE" [ref=f24e678]
+                    - cell "Stored on the first subpackage" [ref=f24e679]
+                  - row "PSE Stored on the first subpackage" [ref=f24e680]:
+                    - rowheader "PSE" [ref=f24e681]
+                    - cell "Stored on the first subpackage" [ref=f24e682]
+              - paragraph [ref=f24e683]: The antenna gimbal assembly was stored on the first subpackage. The stool for the PSE, the ALSEP tools, carrybar, and the lunar drill was stored on the subpallet. The HTC was stored on the second subpackage.
+            - region "Apollo 14" [ref=f24e684]:
+              - generic [ref=f24e685]:
+                - heading "Apollo 14" [level=3] [ref=f24e686]
+                - generic [ref=f24e687]:
+                  - link "edit":
+                    - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=9
+              - figure "The layout of Apollo 14's ALSEP" [ref=f24e688]:
+                - link [ref=f24e689] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:Apollo_14_ALSEP.jpg
+                  - img [ref=f24e690]
+                - generic [ref=f24e691]: The layout of Apollo 14's ALSEP
+              - table [ref=f24e692]:
+                - rowgroup [ref=f24e693]:
+                  - row "Name Picture Notes" [ref=f24e694]:
+                    - columnheader "Name" [ref=f24e695]
+                    - columnheader "Picture" [ref=f24e696]
+                    - columnheader "Notes" [ref=f24e697]
+                  - row "ASE The above image shows the mortar device. The lower one shows Lunar Module Pilot Edgar Mitchell operating the Thumper. The mortar, geophones, and Thumper was stored on the first subpackage. Thirteen of the twenty-two Thumper charges were fired successfully.[5] Because of concerns about the deployment of the mortar, none of the four explosives were fired. There was an attempt to fire them at the end of the ALSEP's operational lifetime, but the charges failed to work after being dormant for so long." [ref=f24e698]:
+                    - rowheader "ASE" [ref=f24e699]:
+                      - link "ASE" [ref=f24e700] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Active_Seismic_Experiment
+                    - cell [ref=f24e701]:
+                      - link [ref=f24e703] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS14-67-9361.jpg
+                        - img [ref=f24e704]
+                      - link [ref=f24e706] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS14-67-9374.jpg
+                        - img [ref=f24e707]
+                    - cell "The above image shows the mortar device. The lower one shows Lunar Module Pilot Edgar Mitchell operating the Thumper. The mortar, geophones, and Thumper was stored on the first subpackage. Thirteen of the twenty-two Thumper charges were fired successfully.[5] Because of concerns about the deployment of the mortar, none of the four explosives were fired. There was an attempt to fire them at the end of the ALSEP's operational lifetime, but the charges failed to work after being dormant for so long." [ref=f24e708]:
+                      - text: The above image shows the mortar device. The lower one shows Lunar Module Pilot
+                      - link "Edgar Mitchell" [ref=f24e709] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Edgar_Mitchell
+                      - text: operating the Thumper.
+                      - text: The mortar, geophones, and Thumper was stored on the first subpackage.
+                      - text: Thirteen of the twenty-two Thumper charges were fired successfully.
+                      - superscript [ref=f24e710]:
+                        - link "[5]" [ref=f24e711] [cursor=pointer]:
+                          - /url: "#cite_note-Brzostowski_pp_414-416-5"
+                          - generic: "[5]"
+                      - text: Because of concerns about the deployment of the mortar, none of the four explosives were fired. There was an attempt to fire them at the end of the ALSEP's operational lifetime, but the charges failed to work after being dormant for so long.
+                  - row "CPLEE Stored on the first subpackage" [ref=f24e712]:
+                    - rowheader "CPLEE" [ref=f24e713]:
+                      - link "CPLEE" [ref=f24e714] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Charged_Particle_Lunar_Environment_Experiment
+                    - cell [ref=f24e715]:
+                      - link [ref=f24e717] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS14-67-9364.jpg
+                        - img [ref=f24e718]
+                    - cell "Stored on the first subpackage" [ref=f24e719]
+                  - row "LRRR Stored in Quad I of the LM and brought to the ALSEP site separately" [ref=f24e720]:
+                    - rowheader "LRRR" [ref=f24e721]:
+                      - link "LRRR" [ref=f24e722] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Laser_Ranging_Retroreflector
+                    - cell [ref=f24e723]:
+                      - link [ref=f24e725] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS14-67-9386.jpg
+                        - img [ref=f24e726]
+                    - cell "Stored in Quad I of the LM and brought to the ALSEP site separately" [ref=f24e727]
+                  - row "PSE Stored on the first subpackage" [ref=f24e728]:
+                    - rowheader "PSE" [ref=f24e729]:
+                      - link "PSE" [ref=f24e730] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Apollo_14_Passive_Seismic_Experiment
+                    - cell [ref=f24e731]:
+                      - link [ref=f24e733] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS14-67-9362.jpg
+                        - img [ref=f24e734]
+                    - cell "Stored on the first subpackage" [ref=f24e735]
+                  - row "SIDE/CCGE Stored on the subpallet. The SIDE is in the upper-left corner while the CCIG is in the center of the picture." [ref=f24e736]:
+                    - rowheader "SIDE/CCGE" [ref=f24e737]:
+                      - link "SIDE" [ref=f24e738] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Suprathermal_Ion_Detector_Experiment
+                      - text: /
+                      - link "CCGE" [ref=f24e739] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Cold_Cathode_Gauge_Experiment
+                    - cell [ref=f24e740]:
+                      - link [ref=f24e742] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS14-67-9373.jpg
+                        - img [ref=f24e743]
+                    - cell "Stored on the subpallet. The SIDE is in the upper-left corner while the CCIG is in the center of the picture." [ref=f24e744]:
+                      - text: Stored on the subpallet.
+                      - text: The SIDE is in the upper-left corner while the CCIG is in the center of the picture.
+              - paragraph [ref=f24e745]: The antenna gimbal assembly was stored on the subpallet. The stool for the PSE, the ALSEP tools, carrybar, and HTC was stored on the second subpackage.
+            - region "Apollo 15" [ref=f24e746]:
+              - generic [ref=f24e747]:
+                - heading "Apollo 15" [level=3] [ref=f24e748]
+                - generic [ref=f24e749]:
+                  - link "edit":
+                    - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=10
+              - figure "The layout of Apollo 15's ALSEP" [ref=f24e750]:
+                - link [ref=f24e751] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:Apollo_15_ALSEP.svg
+                  - img [ref=f24e752]
+                - generic [ref=f24e753]: The layout of Apollo 15's ALSEP
+              - table [ref=f24e754]:
+                - rowgroup [ref=f24e755]:
+                  - row "Name Picture Notes" [ref=f24e756]:
+                    - columnheader "Name" [ref=f24e757]
+                    - columnheader "Picture" [ref=f24e758]
+                    - columnheader "Notes" [ref=f24e759]
+                  - row "HFE The center of the picture shows the electronics box and the two wires going to each of the probes. Stored on the second subpackage. During the drilling operations for each of the holes, more resistance was encountered than expected. As a result, the probes could not be inserted to their planned depth. Accurate scientific data could not be obtained from the Apollo 15 experiment until the data could be compared to Apollo 17's." [ref=f24e760]:
+                    - rowheader "HFE" [ref=f24e761]:
+                      - link "HFE" [ref=f24e762] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Heat_Flow_Experiment
+                    - cell [ref=f24e763]:
+                      - link [ref=f24e765] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS15-92-12416.jpg
+                        - img [ref=f24e766]
+                    - cell "The center of the picture shows the electronics box and the two wires going to each of the probes. Stored on the second subpackage. During the drilling operations for each of the holes, more resistance was encountered than expected. As a result, the probes could not be inserted to their planned depth. Accurate scientific data could not be obtained from the Apollo 15 experiment until the data could be compared to Apollo 17's." [ref=f24e767]:
+                      - text: The center of the picture shows the electronics box and the two wires going to each of the probes.
+                      - text: Stored on the second subpackage.
+                      - text: During the drilling operations for each of the holes, more resistance was encountered than expected. As a result, the probes could not be inserted to their planned depth. Accurate scientific data could not be obtained from the Apollo 15 experiment until the data could be compared to Apollo 17's.
+                  - row "LRRR Stored in Quad III of the LM and brought to the ALSEP site via the Lunar Roving Vehicle" [ref=f24e768]:
+                    - rowheader "LRRR" [ref=f24e769]:
+                      - link "LRRR" [ref=f24e770] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Laser_Ranging_Retroreflector
+                    - cell [ref=f24e771]:
+                      - link [ref=f24e773] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS15-85-11468.jpg
+                        - img [ref=f24e774]
+                    - cell "Stored in Quad III of the LM and brought to the ALSEP site via the Lunar Roving Vehicle" [ref=f24e775]
+                  - row "LSM Stored on the first subpackage" [ref=f24e776]:
+                    - rowheader "LSM" [ref=f24e777]:
+                      - link "LSM" [ref=f24e778] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Lunar_Surface_Magnetometer
+                    - cell [ref=f24e779]:
+                      - link [ref=f24e781] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS15-86-11588.jpg
+                        - img [ref=f24e782]
+                    - cell "Stored on the first subpackage" [ref=f24e783]
+                  - row "PSE Stored on the first subpackage" [ref=f24e784]:
+                    - rowheader "PSE" [ref=f24e785]
+                    - cell [ref=f24e786]:
+                      - link [ref=f24e788] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS15-86-11591.jpg
+                        - img [ref=f24e789]
+                    - cell "Stored on the first subpackage" [ref=f24e790]
+                  - row "SWS Stored on the first subpackage" [ref=f24e791]:
+                    - rowheader "SWS" [ref=f24e792]:
+                      - link "SWS" [ref=f24e793] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Solar_Wind_Spectrometer
+                    - cell [ref=f24e794]:
+                      - link [ref=f24e796] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS15-86-11593.jpg
+                        - img [ref=f24e797]
+                    - cell "Stored on the first subpackage" [ref=f24e798]
+                  - row "SIDE/CCGE The SIDE is on the left while the CCIG is attached on the right. Stored on the subpallet. Note the tilt of the SIDE. This was necessary because of the latitude of Apollo 15's landing site. Also note the boom connecting the SIDE and CCIG. This redesign was done because earlier crews complained about the difficulty to deploy the SIDE/CCIG when only wires connected the two experiments." [ref=f24e799]:
+                    - rowheader "SIDE/CCGE" [ref=f24e800]:
+                      - link "SIDE" [ref=f24e801] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Suprathermal_Ion_Detector_Experiment
+                      - text: /
+                      - link "CCGE" [ref=f24e802] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Cold_Cathode_Gauge_Experiment
+                    - cell [ref=f24e803]:
+                      - link [ref=f24e805] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS15-86-11596.jpg
+                        - img [ref=f24e806]
+                    - cell "The SIDE is on the left while the CCIG is attached on the right. Stored on the subpallet. Note the tilt of the SIDE. This was necessary because of the latitude of Apollo 15's landing site. Also note the boom connecting the SIDE and CCIG. This redesign was done because earlier crews complained about the difficulty to deploy the SIDE/CCIG when only wires connected the two experiments." [ref=f24e807]:
+                      - text: The SIDE is on the left while the CCIG is attached on the right.
+                      - text: Stored on the subpallet.
+                      - text: Note the tilt of the SIDE. This was necessary because of the latitude of Apollo 15's landing site. Also note the boom connecting the SIDE and CCIG. This redesign was done because earlier crews complained about the difficulty to deploy the SIDE/CCIG when only wires connected the two experiments.
+              - paragraph [ref=f24e808]: The antenna gimbal assembly was stored on the subpallet. The ALSEP tools, carrybar, and stool for the PSE was stored on the second subpackage.
+            - region "Apollo 16" [ref=f24e809]:
+              - generic [ref=f24e810]:
+                - heading "Apollo 16" [level=3] [ref=f24e811]
+                - generic [ref=f24e812]:
+                  - link "edit":
+                    - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=11
+              - figure "The layout of Apollo 16's ALSEP" [ref=f24e813]:
+                - link [ref=f24e814] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:Apollo_16_ALSEP.svg
+                  - img [ref=f24e815]
+                - generic [ref=f24e816]: The layout of Apollo 16's ALSEP
+              - table [ref=f24e817]:
+                - rowgroup [ref=f24e818]:
+                  - row "Name Picture Notes" [ref=f24e819]:
+                    - columnheader "Name" [ref=f24e820]
+                    - columnheader "Picture" [ref=f24e821]
+                    - columnheader "Notes" [ref=f24e822]
+                  - row "ASE[1] The pictures show the mortar pack (top) and thumper (bottom). Note the new mortar base used to improve the experiment after problems were encountered with Apollo 14's. The mortar, geophones, and Thumper were stored on the first subpackage. The base of the mortar box was stored on the second subpackage. After three of the explosives were fired successfully, the pitch sensor went off scale. It was then decided not to fire the fourth explosive. Nineteen of the Thumper charges were successfully fired.[5]" [ref=f24e823]:
+                    - rowheader "ASE[1]" [ref=f24e824]:
+                      - link "ASE" [ref=f24e825] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Active_Seismic_Experiment
+                      - superscript [ref=f24e826]:
+                        - link "[1]" [ref=f24e827] [cursor=pointer]:
+                          - /url: "#cite_note-active-1"
+                          - generic: "[1]"
+                    - cell [ref=f24e828]:
+                      - link [ref=f24e830] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS16-113-18377.jpg
+                        - img [ref=f24e831]
+                      - link [ref=f24e833] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:Apollo_14_Joe_Engle_training.jpg
+                        - img [ref=f24e834]
+                    - cell "The pictures show the mortar pack (top) and thumper (bottom). Note the new mortar base used to improve the experiment after problems were encountered with Apollo 14's. The mortar, geophones, and Thumper were stored on the first subpackage. The base of the mortar box was stored on the second subpackage. After three of the explosives were fired successfully, the pitch sensor went off scale. It was then decided not to fire the fourth explosive. Nineteen of the Thumper charges were successfully fired.[5]" [ref=f24e835]:
+                      - text: The pictures show the mortar pack (top) and thumper (bottom). Note the new mortar base used to improve the experiment after problems were encountered with Apollo 14's.
+                      - text: The mortar, geophones, and Thumper were stored on the first subpackage. The base of the mortar box was stored on the second subpackage.
+                      - text: After three of the explosives were fired successfully, the pitch sensor went off scale. It was then decided not to fire the fourth explosive. Nineteen of the Thumper charges were successfully fired.
+                      - superscript [ref=f24e836]:
+                        - link "[5]" [ref=f24e837] [cursor=pointer]:
+                          - /url: "#cite_note-Brzostowski_pp_414-416-5"
+                          - generic: "[5]"
+                  - row "HFE The picture shows the one heat flow probe that was successfully deployed. Stored on the second subpackage. After successfully deploying one of the probes, Commander John Young inadvertently caught his foot on the cable to the experiment from the Central Station. The cable was pulled out of its connector on the Central Station. Although some technicians and astronauts on Earth believed that a repair was feasible, mission control ultimately decided that the time necessary for a repair could be put to better use on other work, and so the experiment was terminated." [ref=f24e838]:
+                    - rowheader "HFE" [ref=f24e839]:
+                      - link "HFE" [ref=f24e840] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Heat_Flow_Experiment
+                    - cell [ref=f24e841]:
+                      - link [ref=f24e843] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS16-113-18369.jpg
+                        - img [ref=f24e844]
+                    - cell "The picture shows the one heat flow probe that was successfully deployed. Stored on the second subpackage. After successfully deploying one of the probes, Commander John Young inadvertently caught his foot on the cable to the experiment from the Central Station. The cable was pulled out of its connector on the Central Station. Although some technicians and astronauts on Earth believed that a repair was feasible, mission control ultimately decided that the time necessary for a repair could be put to better use on other work, and so the experiment was terminated." [ref=f24e845]:
+                      - text: The picture shows the one heat flow probe that was successfully deployed.
+                      - text: Stored on the second subpackage.
+                      - text: After successfully deploying one of the probes, Commander
+                      - link "John Young" [ref=f24e846] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/John_Young_(astronaut)
+                      - text: inadvertently caught his foot on the cable to the experiment from the Central Station. The cable was pulled out of its connector on the Central Station.
+                      - paragraph [ref=f24e847]: Although some technicians and astronauts on Earth believed that a repair was feasible, mission control ultimately decided that the time necessary for a repair could be put to better use on other work, and so the experiment was terminated.
+                  - row "LSM Stored on the first subpackage" [ref=f24e848]:
+                    - rowheader "LSM" [ref=f24e849]:
+                      - link "LSM" [ref=f24e850] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Lunar_Surface_Magnetometer
+                    - cell [ref=f24e851]:
+                      - link [ref=f24e853] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS16-113-18374.jpg
+                        - img [ref=f24e854]
+                    - cell "Stored on the first subpackage" [ref=f24e855]
+                  - row "PSE Stored on the first subpackage" [ref=f24e856]:
+                    - rowheader "PSE" [ref=f24e857]
+                    - cell [ref=f24e858]:
+                      - link [ref=f24e860] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS16-113-18346.jpg
+                        - img [ref=f24e861]
+                    - cell "Stored on the first subpackage" [ref=f24e862]
+            - region "Apollo 17" [ref=f24e863]:
+              - generic [ref=f24e864]:
+                - heading "Apollo 17" [level=3] [ref=f24e865]
+                - generic [ref=f24e866]:
+                  - link "edit":
+                    - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=12
+              - figure "The layout of Apollo 17's ALSEP" [ref=f24e867]:
+                - link [ref=f24e868] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:A17array.jpg
+                  - img [ref=f24e869]
+                - generic [ref=f24e870]: The layout of Apollo 17's ALSEP
+              - table [ref=f24e871]:
+                - rowgroup [ref=f24e872]:
+                  - row "Name Picture Notes" [ref=f24e873]:
+                    - columnheader "Name" [ref=f24e874]
+                    - columnheader "Picture" [ref=f24e875]
+                    - columnheader "Notes" [ref=f24e876]
+                  - row "HFE One of the probes can be seen in the foreground while the electronics box and the other probe can be seen in the background." [ref=f24e877]:
+                    - rowheader "HFE" [ref=f24e878]:
+                      - link "HFE" [ref=f24e879] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Heat_Flow_Experiment
+                    - cell [ref=f24e880]:
+                      - link [ref=f24e882] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS17-134-20497.jpg
+                        - img [ref=f24e883]
+                    - cell "One of the probes can be seen in the foreground while the electronics box and the other probe can be seen in the background." [ref=f24e884]
+                  - row "LACE" [ref=f24e885]:
+                    - rowheader "LACE" [ref=f24e886]:
+                      - link "LACE" [ref=f24e887] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Lunar_Atmospheric_Composition_Experiment
+                    - cell [ref=f24e888]:
+                      - link [ref=f24e890] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS17-134-20498.jpg
+                        - img [ref=f24e891]
+                    - cell [ref=f24e892]
+                  - row "LEAM The LEAM is in the foreground. The scientific validity of this experiment has been called into question because of some odd data." [ref=f24e893]:
+                    - rowheader "LEAM" [ref=f24e894]:
+                      - link "LEAM" [ref=f24e895] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Lunar_Ejecta_and_Meteorites_Experiment
+                    - cell [ref=f24e896]:
+                      - link [ref=f24e898] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS17-134-20500.jpg
+                        - img [ref=f24e899]
+                    - cell "The LEAM is in the foreground. The scientific validity of this experiment has been called into question because of some odd data." [ref=f24e900]
+                  - row "LSPE The upper image shows the antenna for the LSPE in the foreground. The middle image shows one of the charges. The bottom image shows the geophones.[5]" [ref=f24e901]:
+                    - rowheader "LSPE" [ref=f24e902]:
+                      - link "LSPE" [ref=f24e903] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Lunar_Seismic_Profiling_Experiment
+                    - cell [ref=f24e904]:
+                      - link [ref=f24e906] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS17-136-20704.jpg
+                        - img [ref=f24e907]
+                      - link [ref=f24e909] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS17-143-21936.jpg
+                        - img [ref=f24e910]
+                      - link [ref=f24e912] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:NASA_LSPE_geophones_Apollo17.jpg
+                        - img [ref=f24e913]
+                    - cell "The upper image shows the antenna for the LSPE in the foreground. The middle image shows one of the charges. The bottom image shows the geophones.[5]" [ref=f24e914]:
+                      - text: The upper image shows the antenna for the LSPE in the foreground. The middle image shows one of the charges. The bottom image shows the geophones.
+                      - superscript [ref=f24e915]:
+                        - link "[5]" [ref=f24e916] [cursor=pointer]:
+                          - /url: "#cite_note-Brzostowski_pp_414-416-5"
+                          - generic: "[5]"
+                  - row "LSG Because of a design error, the experiment could not accomplish what it was designed for." [ref=f24e917]:
+                    - rowheader "LSG" [ref=f24e918]:
+                      - link "LSG" [ref=f24e919] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Lunar_Surface_Gravimeter
+                    - cell [ref=f24e920]:
+                      - link [ref=f24e922] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/File:ALSEP_AS17-134-20501.jpg
+                        - img [ref=f24e923]
+                    - cell "Because of a design error, the experiment could not accomplish what it was designed for." [ref=f24e924]
+          - region "After Apollo" [ref=f24e925]:
+            - generic [ref=f24e926]:
+              - heading "After Apollo" [level=2] [ref=f24e927]
+              - generic [ref=f24e928]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=13
+            - paragraph [ref=f24e929]:
+              - text: The ALSEP system and instruments were controlled by commands from Earth. The stations ran from deployment until the support operations were terminated on 30 September 1977 due primarily to budgetary considerations. In 1977 it was evaluated that the power packs of at least one station could not run both the transmitter and any other instrument. The transmitters were not switched off,
+              - superscript [ref=f24e930]:
+                - link "[9]" [ref=f24e931] [cursor=pointer]:
+                  - /url: "#cite_note-9"
+                  - generic: "[9]"
+              - text: and all 5 ALSEPs were observed by the Soviet radio telescope
+              - link "RATAN-600" [ref=f24e932] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/RATAN-600
+              - text: between 18 October and 28 November 1977, after the official termination of their mission.
+              - superscript [ref=f24e933]:
+                - link "[10]" [ref=f24e934] [cursor=pointer]:
+                  - /url: "#cite_note-nau78-10"
+                  - generic: "[10]"
+            - paragraph [ref=f24e935]:
+              - text: ALSEP systems are visible in several images taken by the
+              - link "Lunar Reconnaissance Orbiter" [ref=f24e936] [cursor=pointer]:
+                - /url: //en.wikipedia.org/wiki/Lunar_Reconnaissance_Orbiter
+              - text: during its orbits over Apollo landing sites.
+            - list [ref=f24e937]:
+              - listitem [ref=f24e938]:
+                - link "A LRO photo showing the Apollo 17 ALSEP (science package)" [ref=f24e941] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:Apollo_17_landing_site,_labeled.jpg
+                  - img "A LRO photo showing the Apollo 17 ALSEP (science package)" [ref=f24e942]
+                - generic [ref=f24e943]:
+                  - text: A
+                  - link "LRO" [ref=f24e944] [cursor=pointer]:
+                    - /url: //en.wikipedia.org/wiki/Lunar_Reconnaissance_Orbiter
+                  - text: photo showing the Apollo 17 ALSEP (science package)
+              - listitem [ref=f24e945]:
+                - link "A LRO photo showing the Apollo 12 ALSEP" [ref=f24e948] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/File:Apollo_12_LRO.jpg
+                  - img "A LRO photo showing the Apollo 12 ALSEP" [ref=f24e949]
+                - generic [ref=f24e950]: A LRO photo showing the Apollo 12 ALSEP
+          - region "See also" [ref=f24e951]:
+            - generic [ref=f24e952]:
+              - heading "See also" [level=2] [ref=f24e953]
+              - generic [ref=f24e954]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=14
+            - navigation "Portals" [ref=f24e955]:
+              - listitem [ref=f24e956]:
+                - link "Solar System portal" [ref=f24e961] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Portal:Solar_System
+              - listitem [ref=f24e962]:
+                - link "Spaceflight portal" [ref=f24e967] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Portal:Spaceflight
+            - list [ref=f24e968]:
+              - listitem [ref=f24e969]:
+                - link "Apollo program" [ref=f24e970] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Apollo_program
+              - listitem [ref=f24e971]:
+                - link "Lunar laser ranging experiment" [ref=f24e972] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Lunar_laser_ranging_experiment
+              - listitem [ref=f24e973]:
+                - link "Hexanitrostilbene" [ref=f24e974] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Hexanitrostilbene
+                - text: ", a vacuum stable explosive used in the ALSEP."
+              - listitem [ref=f24e975]:
+                - link "Lunar Roving Vehicle" [ref=f24e976] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Lunar_Roving_Vehicle
+              - listitem [ref=f24e977]:
+                - link "List of artificial objects on the Moon" [ref=f24e978] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/List_of_artificial_objects_on_the_Moon
+          - region "Notes" [ref=f24e979]:
+            - generic [ref=f24e980]:
+              - heading "Notes" [level=2] [ref=f24e981]
+              - generic [ref=f24e982]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=15
+            - paragraph [ref=f24e983]:
+              - generic [ref=f24e984]:
+                - link "^" [ref=f24e987] [cursor=pointer]:
+                  - /url: "#ref_EAweb"
+                - text: Encyclopedia Astronautica website, 14 February 1966 entry.
+          - region "References" [ref=f24e988]:
+            - generic [ref=f24e989]:
+              - heading "References" [level=2] [ref=f24e990]
+              - generic [ref=f24e991]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=16
+            - list [ref=f24e994]:
+              - listitem [ref=f24e995]:
+                - generic [ref=f24e996]:
+                  - text: ^
+                  - link "Jump up to:" [ref=f24e997] [cursor=pointer]:
+                    - /url: "#cite_ref-active_1-0"
+                    - generic [ref=f24e998]: "Jump up to:"
+                  - link [ref=f24e999] [cursor=pointer]:
+                    - /url: "#cite_ref-active_1-1"
+                - generic [ref=f24e1000]:
+                  - text: Apollo 16 Mission
+                  - link "Science Experiments - Active Seismic" [ref=f24e1001] [cursor=pointer]:
+                    - /url: http://www.lpi.usra.edu/lunar/missions/apollo/apollo_16/experiments/as/
+                  - text: ", Lunar and Planetary Institute (accessed 11 Dec 2015)"
+              - listitem [ref=f24e1002]:
+                - link "Jump up" [ref=f24e1004] [cursor=pointer]:
+                  - /url: "#cite_ref-ninfinger_2-0"
+                  - text: ^
+                - generic [ref=f24e1005]:
+                  - link "Experiment Operations During Apollo EVAs" [ref=f24e1006] [cursor=pointer]:
+                    - /url: https://www.ninfinger.org/karld/My%20Space%20Museum/ASE.htm
+                  - text: (accessed 11 Dec 2015)
+              - listitem [ref=f24e1007]:
+                - link "Jump up" [ref=f24e1009] [cursor=pointer]:
+                  - /url: "#cite_ref-3"
+                  - text: ^
+                - generic [ref=f24e1010]:
+                  - generic [ref=f24e1011]:
+                    - text: Labs, Sandia (July 15, 2019).
+                    - 'link "\"Sandia National Laboratories: May 23, 1969: Sandia Helps in Apollo Moon Program\"" [ref=f24e1012] [cursor=pointer]':
+                      - /url: https://www.sandia.gov/labnews/2019/07/15/may-23-1969-sandia-helps-in-apollo-moon-program/
+                    - text: . Sandia Labs
+                    - generic [ref=f24e1013]: . Retrieved July 18, 2019
+                    - text: .
+                  - generic "ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.genre=unknown&rft.jtitle=Sandia+Labs&rft.atitle=Sandia+National+Laboratories%3A+May+23%2C+1969%3A+Sandia+Helps+in+Apollo+Moon+Program&rft.date=2019-07-15&rft.aulast=Labs&rft.aufirst=Sandia&rft_id=https%3A%2F%2Fwww.sandia.gov%2Flabnews%2F2019%2F07%2F15%2Fmay-23-1969-sandia-helps-in-apollo-moon-program%2F&rfr_id=info%3Asid%2Fen.wikipedia.org%3AApollo+Lunar+Surface+Experiments+Package"
+              - listitem [ref=f24e1014]:
+                - link "Jump up" [ref=f24e1016] [cursor=pointer]:
+                  - /url: "#cite_ref-4"
+                  - text: ^
+                - generic [ref=f24e1017]:
+                  - link "Boyd Bolts" [ref=f24e1018] [cursor=pointer]:
+                    - /url: https://www.nasa.gov/history/alsj/alsj-BoydBolts.html
+                  - link "Archived" [ref=f24e1019] [cursor=pointer]:
+                    - /url: https://web.archive.org/web/20111017005526/http://next.nasa.gov/alsj/alsj-BoydBolts.html
+                  - text: 2011-10-17 at the
+                  - link "Wayback Machine" [ref=f24e1020] [cursor=pointer]:
+                    - /url: //en.wikipedia.org/wiki/Wayback_Machine
+                  - text: (Apollo Lunar Surface Journal)
+              - listitem [ref=f24e1021]:
+                - generic [ref=f24e1022]:
+                  - text: ^
+                  - link "Jump up to:" [ref=f24e1023] [cursor=pointer]:
+                    - /url: "#cite_ref-Brzostowski_pp_414-416_5-0"
+                    - generic [ref=f24e1024]: "Jump up to:"
+                  - link [ref=f24e1025] [cursor=pointer]:
+                    - /url: "#cite_ref-Brzostowski_pp_414-416_5-1"
+                  - link [ref=f24e1026] [cursor=pointer]:
+                    - /url: "#cite_ref-Brzostowski_pp_414-416_5-2"
+                  - link [ref=f24e1027] [cursor=pointer]:
+                    - /url: "#cite_ref-Brzostowski_pp_414-416_5-3"
+                  - link [ref=f24e1028] [cursor=pointer]:
+                    - /url: "#cite_ref-Brzostowski_pp_414-416_5-4"
+                - text: Brzostowski and Brzostowski, pp 414-416
+              - listitem [ref=f24e1029]:
+                - link "Jump up" [ref=f24e1031] [cursor=pointer]:
+                  - /url: "#cite_ref-6"
+                  - text: ^
+                - generic [ref=f24e1032]:
+                  - generic [ref=f24e1033]:
+                    - text: Sarah Stanley (June 25, 2018).
+                    - link "\"The Case of the Missing Lunar Heat Flow Data Is Finally Solved\"" [ref=f24e1034] [cursor=pointer]:
+                      - /url: https://eos.org/research-spotlights/the-case-of-the-missing-lunar-heat-flow-data-is-finally-solved
+                    - text: ". Journal of Geophysical Research: Planets"
+                    - generic [ref=f24e1035]: . Retrieved July 9, 2018
+                    - text: – via
+                    - link "Eos (magazine)" [ref=f24e1036] [cursor=pointer]:
+                      - /url: //en.wikipedia.org/wiki/Eos_(magazine)
+                    - text: .
+                  - generic "ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook&rft.genre=unknown&rft.btitle=The+Case+of+the+Missing+Lunar+Heat+Flow+Data+Is+Finally+Solved&rft.pub=Journal+of+Geophysical+Research%3A+Planets&rft.date=2018-06-25&rft.au=Sarah+Stanley&rft_id=https%3A%2F%2Feos.org%2Fresearch-spotlights%2Fthe-case-of-the-missing-lunar-heat-flow-data-is-finally-solved&rfr_id=info%3Asid%2Fen.wikipedia.org%3AApollo+Lunar+Surface+Experiments+Package"
+              - listitem [ref=f24e1037]:
+                - link "Jump up" [ref=f24e1039] [cursor=pointer]:
+                  - /url: "#cite_ref-7"
+                  - text: ^
+                - generic [ref=f24e1040]:
+                  - link "Lunar Ejecta and Meteorites" [ref=f24e1041] [cursor=pointer]:
+                    - /url: https://ares.jsc.nasa.gov/HumanExplore/Exploration/EXLibrary/docs/ApolloCat/Part1/LEAM.htm
+                  - link "Archived" [ref=f24e1042] [cursor=pointer]:
+                    - /url: https://web.archive.org/web/20080517153801/http://ares.jsc.nasa.gov/HumanExplore/Exploration/EXLibrary/docs/ApolloCat/Part1/LEAM.htm
+                  - text: May 17, 2008, at the
+                  - link "Wayback Machine" [ref=f24e1043] [cursor=pointer]:
+                    - /url: //en.wikipedia.org/wiki/Wayback_Machine
+              - listitem [ref=f24e1044]:
+                - generic [ref=f24e1045]:
+                  - text: ^
+                  - link "Jump up to:" [ref=f24e1046] [cursor=pointer]:
+                    - /url: "#cite_ref-lindoh_8-0"
+                    - generic [ref=f24e1047]: "Jump up to:"
+                  - link [ref=f24e1048] [cursor=pointer]:
+                    - /url: "#cite_ref-lindoh_8-1"
+                - generic [ref=f24e1049]:
+                  - link "Don L. Lind oral history transcript" [ref=f24e1050] [cursor=pointer]:
+                    - /url: https://www.jsc.nasa.gov/history/oral_histories/LindDL/linddl.pdf
+                  - text: ", NASA Johnson Space Center Oral History Project, 27 May 2005."
+              - listitem [ref=f24e1051]:
+                - link "Jump up" [ref=f24e1053] [cursor=pointer]:
+                  - /url: "#cite_ref-9"
+                  - text: ^
+                - generic [ref=f24e1054]:
+                  - link "Charles Redmond" [ref=f24e1055] [cursor=pointer]:
+                    - /url: https://repository.hou.usra.edu/bitstream/handle/20.500.11753/892/VF5.pdf
+                  - text: ". National Aeronautics and Space Administration lyndon B. JohMon Spece Cent. Houston, Texas 77058 AC713 483-5111 Charles Redmond RELEASE NO: 77-47. September 12, 1977. p 5. \"...Even though the experiments will be terminated, the transmitters will continue to serve Earth as a reference point in astronomy. The Jet Propulsion Laboratory will continue to use the signals from the ALSEP transmitters to assist in the Lab's deep space work including geodetic and astrometric studies and spacecraft navigation. Also, the motion of the lunar orbit will be accurately monitored against a background of extra-galactic stars to test gravitational theories\"."
+                  - link "Archived" [ref=f24e1056] [cursor=pointer]:
+                    - /url: https://web.archive.org/web/20210227084720/https://repository.hou.usra.edu/bitstream/handle/20.500.11753/892/VF5.pdf
+              - listitem [ref=f24e1057]:
+                - link "Jump up" [ref=f24e1059] [cursor=pointer]:
+                  - /url: "#cite_ref-nau78_10-0"
+                  - text: ^
+                - generic [ref=f24e1060]:
+                  - text: Naugolnaia, M. N.; Spangenberg, E. E.; Soboleva, N. S.; Fomin, V. A.
+                  - link "Determination of selenographic coordinates of objects by RATAN-600." [ref=f24e1061] [cursor=pointer]:
+                    - /url: http://adsabs.harvard.edu/full/1978SvAL....4..302N
+                  - text: Pisma v Astronomicheskii Zhurnal, vol. 4, Dec. 1978, p. 562-565. (Soviet Astronomy Letters, vol. 4, Nov.-Dec. 1978, p. 302-303).
+                  - link "Free access icon" [ref=f24e1064] [cursor=pointer]:
+                    - /url: //en.wikipedia.org/wiki/Open_access#Free_access
+                    - img "Free access icon" [ref=f24e1065]
+          - region "Bibliography" [ref=f24e1066]:
+            - generic [ref=f24e1067]:
+              - heading "Bibliography" [level=2] [ref=f24e1068]
+              - generic [ref=f24e1069]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=17
+            - list [ref=f24e1070]:
+              - listitem [ref=f24e1071]: Brzostowski, M.A., and Brzostowski, A.C., Archiving the Apollo active seismic data, The Leading Edge, Society of Exploration Geophysicists, April, 2009.
+          - region "External links" [ref=f24e1072]:
+            - generic [ref=f24e1073]:
+              - heading "External links" [level=2] [ref=f24e1074]
+              - generic [ref=f24e1075]:
+                - link "edit":
+                  - /url: /w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&action=edit&section=18
+            - list [ref=f24e1076]:
+              - listitem [ref=f24e1077]:
+                - link "Astronautix Site" [ref=f24e1078] [cursor=pointer]:
+                  - /url: https://web.archive.org/web/20040815132912/http://www.astronautix.com/craft/apoalsep.htm
+              - listitem [ref=f24e1079]:
+                - link "NSSDC Apollo Page" [ref=f24e1080] [cursor=pointer]:
+                  - /url: https://nssdc.gsfc.nasa.gov/planetary/lunar/apollo.html
+              - listitem [ref=f24e1081]:
+                - link "Apollo Scientific Experiments Data Handbook" [ref=f24e1082] [cursor=pointer]:
+                  - /url: https://www.lpi.usra.edu/lunar/documents/NASA%20TM-X-58131.pdf
+              - listitem [ref=f24e1083]:
+                - link "ALSEP Termination Report" [ref=f24e1084] [cursor=pointer]:
+                  - /url: https://www.lpi.usra.edu/lunar/documents/NASA%20RP-1036.pdf
+              - listitem [ref=f24e1085]:
+                - link "Catalog of Apollo Experiment Operations" [ref=f24e1086] [cursor=pointer]:
+                  - /url: https://www.lpi.usra.edu/lunar/documents/NASA%20RP-1317.pdf
+              - listitem [ref=f24e1087]:
+                - link "Apollo Lunar Surface Experiments Package, Design Certification Review (1971)" [ref=f24e1088] [cursor=pointer]:
+                  - /url: https://www.lpi.usra.edu/lunar/documents/NASA-CR-115109.pdf
+              - listitem [ref=f24e1089]:
+                - link "Archive of ALSEP documents" [ref=f24e1090] [cursor=pointer]:
+                  - /url: http://www.lpi.usra.edu/lunar/ALSEP/
+                - text: ", from the"
+                - link "Lunar and Planetary Institute" [ref=f24e1091] [cursor=pointer]:
+                  - /url: //en.wikipedia.org/wiki/Lunar_and_Planetary_Institute
+            - navigation "Moon" [ref=f24e1092]:
+              - table [ref=f24e1093]:
+                - rowgroup [ref=f24e1094]:
+                  - row "[show] v · t · e Moon" [ref=f24e1095]:
+                    - columnheader "[show] v · t · e Moon" [ref=f24e1096]:
+                      - button "[show]" [ref=f24e1097] [cursor=pointer]
+                      - list [ref=f24e1099]:
+                        - listitem [ref=f24e1100]:
+                          - link "v" [ref=f24e1101] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Template:The_Moon
+                          - text: ·
+                        - listitem [ref=f24e1102]:
+                          - link "t" [ref=f24e1103] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Template_talk:The_Moon
+                          - text: ·
+                        - listitem [ref=f24e1104]:
+                          - link "e" [ref=f24e1105] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Special:EditPage/Template:The_Moon
+                      - link "Moon" [ref=f24e1107] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Moon
+                  - row
+                  - row: · · · () · · · ()
+                  - row: ( () · · () · ) · ( · · ( ( · ) · · · ) · ) · ( · · · ) · ·
+                  - row: · · · ( · ) · ( · ()) · () · () · · ( · · ) · ( ( · · · · · · ) · · · ) · () · · · ( · ) · · ( · ) · · ·
+                  - row: · · · ( ( · )) · ( () · · · ) · ( · ) · ( · ) ·
+                  - row: ( · · ) · · · () · · ·
+                  - row: · · ( ()) · · · ·
+                  - row: · () · · · · · · · ·
+                  - row: · ·
+                  - row: · · · · ( · ) · · · · ( · · · ) · · · · · · ·
+                  - row
+            - navigation "Apollo program hardware" [ref=f24e1108]:
+              - table [ref=f24e1109]:
+                - rowgroup [ref=f24e1110]:
+                  - row "[show] v · t · e Apollo program hardware" [ref=f24e1111]:
+                    - columnheader "[show] v · t · e Apollo program hardware" [ref=f24e1112]:
+                      - button "[show]" [ref=f24e1113] [cursor=pointer]
+                      - list [ref=f24e1115]:
+                        - listitem [ref=f24e1116]:
+                          - link "v" [ref=f24e1117] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Template:Apollo_program_hardware
+                          - text: ·
+                        - listitem [ref=f24e1118]:
+                          - link "t" [ref=f24e1119] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Template_talk:Apollo_program_hardware
+                          - text: ·
+                        - listitem [ref=f24e1120]:
+                          - link "e" [ref=f24e1121] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Special:EditPage/Template:Apollo_program_hardware
+                      - link "Apollo program hardware" [ref=f24e1123] [cursor=pointer]:
+                        - /url: //en.wikipedia.org/wiki/Apollo_program
+                  - row: · · ·
+                  - row: · · ·
+                  - row: ( () · · ())
+                  - row: · · · · · · · · ·
+                  - row: ( · )
+                  - row: · · () · · ( · · · · · ) · · · · · · · · ·
+                  - row: · · · ·
+                  - row: · · ·
+                  - row: · · ·
+                  - row
+            - navigation "Spacecraft missions to the Moon" [ref=f24e1124]:
+              - table [ref=f24e1125]:
+                - rowgroup [ref=f24e1126]:
+                  - row "[show] v · t · e Spacecraft missions to the Moon" [ref=f24e1127]:
+                    - columnheader "[show] v · t · e Spacecraft missions to the Moon" [ref=f24e1128]:
+                      - button "[show]" [ref=f24e1129] [cursor=pointer]
+                      - list [ref=f24e1131]:
+                        - listitem [ref=f24e1132]:
+                          - link "v" [ref=f24e1133] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Template:Moon_spacecraft
+                          - text: ·
+                        - listitem [ref=f24e1134]:
+                          - link "t" [ref=f24e1135] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Template_talk:Moon_spacecraft
+                          - text: ·
+                        - listitem [ref=f24e1136]:
+                          - link "e" [ref=f24e1137] [cursor=pointer]:
+                            - /url: //en.wikipedia.org/wiki/Special:EditPage/Template:Moon_spacecraft
+                      - generic [ref=f24e1138]:
+                        - link "Spacecraft missions" [ref=f24e1139] [cursor=pointer]:
+                          - /url: //en.wikipedia.org/wiki/List_of_missions_to_the_Moon
+                        - text: to the
+                        - link "Moon" [ref=f24e1140] [cursor=pointer]:
+                          - /url: //en.wikipedia.org/wiki/Moon
+                  - row: ( · · · · · · · ) · () · () · () · () · () · () · ( · · · )
+                  - row: · · · · · · · · ·
+                  - row: · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ( · · ) · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
+                  - row: · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
+                  - row: · · · · · · · · · · · ·
+                  - row: · · · · · · · · · · · · · · · · · · · · · · · ·
+                  - row: · · · · · · · · · · · · ·
+                  - row
+        - generic [ref=f24e1142]:
+          - link "Categories" [ref=f24e1143] [cursor=pointer]:
+            - /url: /wiki/Help:Category
+          - text: ":"
+          - list [ref=f24e1144]:
+            - listitem [ref=f24e1145]:
+              - link "Apollo program hardware" [ref=f24e1146] [cursor=pointer]:
+                - /url: /wiki/Category:Apollo_program_hardware
+            - listitem [ref=f24e1147]:
+              - link "Bendix Corporation" [ref=f24e1148] [cursor=pointer]:
+                - /url: /wiki/Category:Bendix_Corporation
+    - contentinfo [ref=f24e1150]:
+      - list [ref=f24e1151]:
+        - listitem [ref=f24e1152]: This page was last edited on 17 May 2026, at 03:11 (UTC).
+        - listitem [ref=f24e1153]:
+          - text: Page was rendered with
+          - link "Parsoid" [ref=f24e1154] [cursor=pointer]:
+            - /url: https://www.mediawiki.org/wiki/Special:MyLanguage/Parsoid
+          - text: .
+        - listitem [ref=f24e1155]:
+          - text: Text is available under the
+          - link "Creative Commons Attribution-ShareAlike 4.0 License" [ref=f24e1156] [cursor=pointer]:
+            - /url: /wiki/Wikipedia:Text_of_the_Creative_Commons_Attribution-ShareAlike_4.0_International_License
+          - text: ; additional terms may apply. By using this site, you agree to the
+          - link "Terms of Use" [ref=f24e1157] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Terms_of_Use
+          - text: and
+          - link "Privacy Policy" [ref=f24e1158] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+          - text: . Wikipedia® is a registered trademark of the
+          - link "Wikimedia Foundation, Inc." [ref=f24e1159] [cursor=pointer]:
+            - /url: https://wikimediafoundation.org/
+          - text: ", a non-profit organization."
+      - list:
+        - listitem [ref=f24e1160]:
+          - link "Privacy policy" [ref=f24e1161] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+        - listitem [ref=f24e1162]:
+          - link "About Wikipedia" [ref=f24e1163] [cursor=pointer]:
+            - /url: /wiki/Wikipedia:About
+        - listitem [ref=f24e1164]:
+          - link "Disclaimers" [ref=f24e1165] [cursor=pointer]:
+            - /url: /wiki/Wikipedia:General_disclaimer
+        - listitem [ref=f24e1166]:
+          - link "Contact Wikipedia" [ref=f24e1167] [cursor=pointer]:
+            - /url: //en.wikipedia.org/wiki/Wikipedia:Contact_us
+        - listitem [ref=f24e1168]:
+          - link "Legal & safety contacts" [ref=f24e1169] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Legal:Wikimedia_Foundation_Legal_and_Safety_Contact_Information
+        - listitem [ref=f24e1170]:
+          - link "Code of Conduct" [ref=f24e1171] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Universal_Code_of_Conduct
+        - listitem [ref=f24e1172]:
+          - link "Developers" [ref=f24e1173] [cursor=pointer]:
+            - /url: https://developer.wikimedia.org
+        - listitem [ref=f24e1174]:
+          - link "Statistics" [ref=f24e1175] [cursor=pointer]:
+            - /url: https://stats.wikimedia.org/#/en.wikipedia.org
+        - listitem [ref=f24e1176]:
+          - link "Cookie statement" [ref=f24e1177] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Cookie_statement
+        - listitem [ref=f24e1178]:
+          - link "Mobile view" [ref=f24e1179] [cursor=pointer]:
+            - /url: //en.wikipedia.org/w/index.php?title=Apollo_Lunar_Surface_Experiments_Package&mobileaction=toggle_view_mobile
+      - list [ref=f24e1180]:
+        - listitem [ref=f24e1181]:
+          - link "Wikimedia Foundation" [ref=f24e1182] [cursor=pointer]:
+            - /url: https://www.wikimedia.org/
+            - img "Wikimedia Foundation" [ref=f24e1184]
+        - listitem [ref=f24e1185]:
+          - link "Powered by MediaWiki" [ref=f24e1186] [cursor=pointer]:
+            - /url: https://www.mediawiki.org/
+            - img "Powered by MediaWiki" [ref=f24e1188]
+  - generic [ref=f24e1189]:
+    - list

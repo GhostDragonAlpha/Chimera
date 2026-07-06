@@ -29,6 +29,6 @@ protected:
 	UPROPERTY()
 	APCGVolumeManager* PcgVolumeManager;
 	UPROPERTY()
-	AActor* PlayerShip;
+		APawn* PlayerShip;
 };
 

@@ -1,0 +1,107 @@
+- generic [active] [ref=f7e1]:
+  - link "Jump to content" [ref=f7e2] [cursor=pointer]:
+    - /url: "#bodyContent"
+  - banner [ref=f7e4]:
+    - generic [ref=f7e5]:
+      - navigation "Site" [ref=f7e6]:
+        - generic "Main menu" [ref=f7e7]:
+          - button "Main menu" [ref=f7e8] [cursor=pointer]
+          - generic [ref=f7e11]: Main menu
+      - link "Wikimedia Commons" [ref=f7e12] [cursor=pointer]:
+        - /url: /wiki/Main_Page
+        - img [ref=f7e13]
+        - img "Wikimedia Commons" [ref=f7e15]
+    - generic [ref=f7e16]:
+      - search [ref=f7e17]:
+        - generic [ref=f7e20]:
+          - searchbox "Search Wikimedia Commons" [ref=f7e23]
+          - button "Search" [ref=f7e25]
+      - navigation "Personal tools" [ref=f7e26]:
+        - generic [ref=f7e27]:
+          - list [ref=f7e30]:
+            - listitem [ref=f7e31]:
+              - link "English" [ref=f7e32] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f7e34]: English
+          - list [ref=f7e37]:
+            - listitem [ref=f7e38]:
+              - link "Donate" [ref=f7e39] [cursor=pointer]:
+                - /url: https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=commons.wikimedia.org&uselang=en
+            - listitem [ref=f7e40]:
+              - link "Create account" [ref=f7e41] [cursor=pointer]:
+                - /url: /w/index.php?title=Special:CreateAccount&returnto=File%3AISS+Cupola+1.jpg
+            - listitem [ref=f7e42]:
+              - link "Log in" [ref=f7e43] [cursor=pointer]:
+                - /url: /w/index.php?title=Special:UserLogin&returnto=File%3AISS+Cupola+1.jpg
+  - generic [ref=f7e45]:
+    - main [ref=f7e49]:
+      - heading "File:ISS Cupola 1.jpg" [level=1] [ref=f7e51]
+      - generic [ref=f7e53]:
+        - navigation "Namespaces" [ref=f7e55]:
+          - list [ref=f7e58]:
+            - listitem [ref=f7e59]:
+              - link "File" [ref=f7e60] [cursor=pointer]:
+                - /url: /w/index.php?title=File:ISS_Cupola_1.jpg&action=edit&redlink=1
+                - generic [ref=f7e61]: File
+            - listitem [ref=f7e62]:
+              - link "Discussion" [ref=f7e63] [cursor=pointer]:
+                - /url: /w/index.php?title=File_talk:ISS_Cupola_1.jpg&action=edit&redlink=1
+                - generic [ref=f7e64]: Discussion
+        - generic [ref=f7e65]:
+          - navigation "Views" [ref=f7e66]:
+            - list [ref=f7e69]:
+              - listitem [ref=f7e70]:
+                - link "Create" [ref=f7e71] [cursor=pointer]:
+                  - /url: /w/index.php?title=File:ISS_Cupola_1.jpg&action=edit
+                  - generic [ref=f7e72]: Create
+          - navigation "Page tools" [ref=f7e73]:
+            - generic [ref=f7e74]:
+              - button "Tools" [ref=f7e75] [cursor=pointer]
+              - generic [ref=f7e78]: Tools
+      - navigation "Appearance" [ref=f7e81]:
+        - generic [ref=f7e84]:
+          - generic [ref=f7e85]: Appearance
+          - button "hide" [ref=f7e86] [cursor=pointer]
+      - generic "File:ISS Cupola 1.jpg" [ref=f7e87]:
+        - generic [ref=f7e88]:
+          - paragraph [ref=f7e90]: No file by this name exists.
+          - heading "File usage on Commons" [level=2] [ref=f7e91]
+          - paragraph [ref=f7e93]: There are no pages that use this file.
+    - contentinfo [ref=f7e95]:
+      - list:
+        - listitem [ref=f7e96]:
+          - link "Privacy policy" [ref=f7e97] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Privacy_policy
+        - listitem [ref=f7e98]:
+          - link "About Wikimedia Commons" [ref=f7e99] [cursor=pointer]:
+            - /url: /wiki/Commons:Welcome
+        - listitem [ref=f7e100]:
+          - link "Disclaimers" [ref=f7e101] [cursor=pointer]:
+            - /url: /wiki/Commons:General_disclaimer
+        - listitem [ref=f7e102]:
+          - link "Legal & safety contacts" [ref=f7e103] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Legal:Wikimedia_Foundation_Legal_and_Safety_Contact_Information
+        - listitem [ref=f7e104]:
+          - link "Code of Conduct" [ref=f7e105] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Universal_Code_of_Conduct
+        - listitem [ref=f7e106]:
+          - link "Developers" [ref=f7e107] [cursor=pointer]:
+            - /url: https://developer.wikimedia.org
+        - listitem [ref=f7e108]:
+          - link "Statistics" [ref=f7e109] [cursor=pointer]:
+            - /url: https://stats.wikimedia.org/#/commons.wikimedia.org
+        - listitem [ref=f7e110]:
+          - link "Cookie statement" [ref=f7e111] [cursor=pointer]:
+            - /url: https://foundation.wikimedia.org/wiki/Special:MyLanguage/Policy:Cookie_statement
+        - listitem [ref=f7e112]:
+          - link "Mobile view" [ref=f7e113] [cursor=pointer]:
+            - /url: //commons.wikimedia.org/w/index.php?title=File:ISS_Cupola_1.jpg&mobileaction=toggle_view_mobile
+      - list [ref=f7e114]:
+        - listitem [ref=f7e115]:
+          - link "Wikimedia Foundation" [ref=f7e116] [cursor=pointer]:
+            - /url: https://www.wikimedia.org/
+            - img "Wikimedia Foundation" [ref=f7e118]
+        - listitem [ref=f7e119]:
+          - link "Powered by MediaWiki" [ref=f7e120] [cursor=pointer]:
+            - /url: https://www.mediawiki.org/
+            - img "Powered by MediaWiki" [ref=f7e122]

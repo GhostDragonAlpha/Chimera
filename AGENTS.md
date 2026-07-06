@@ -55,18 +55,34 @@ Tracked in Graphify. Each feature node: name, type, loop, status (`not_started` 
 
 ## The Contract (MANDATORY)
 
-### Pre-Flight
-1. `g.query("health")` — project state
-2. `g.query("pattern", your_task)` — known patterns
-3. `g.query("mutation", your_task)` — past bugs
-4. `g.query("gpa", "trend")` — GPA trend
-5. Report findings. Only then proceed.
+### Pre-Flight — one command
+```
+cd E:\PythonChimera\Chimera
+python -m core.preflight
+```
+Prints graph health, GPA trend, spiral loop board, pending technical_research,
+last pipeline run, environment reachability (LM Studio / UE / DNA API), junk count.
+Report findings. Only then proceed. (Granular fallbacks: `g.query("health")`,
+`g.query("pattern", task)`, `g.query("mutation", task)`, `g.query("gpa", "trend")`.)
 
-### Post-Flight
-1. `g.mutate("phase_complete", result)` — record what happened
-2. Report exact UBT output verbatim. Never summarize.
-3. Update Feature Ledger. Record all MCP pathway results.
-4. If GPA falling, report with corrective action.
+### Post-Flight — one command
+```
+python -m core.postflight --phase "<what you did>" --result "<UBT output verbatim>" [--feature X --loop N --status S]
+```
+Records PhaseComplete (+ optional FeatureUpdate) and prints the closing checklist.
+1. Report exact UBT output verbatim. Never summarize.
+2. Update Feature Ledger. Record all MCP pathway results.
+3. If GPA falling, report with corrective action. (Build failures auto-grade F,
+   non-pass visual verifications auto-grade C — a falling GPA is real signal.)
+
+### Recording convention (all mutations)
+**Never hand-write `g.mutate` detail dicts** — mis-keyed dicts are rejected with a
+`rejected_*` string (nothing recorded). Use the typed helpers from
+`core/graphify_interface.py`: `record_feature`, `record_pathway`, `record_loop`,
+`record_phase`, `record_grade`, `record_build` — or the CLI
+`python -m core.graphify_record {feature|pathway|loop|phase|grade} ...`.
+Backfilling history? Add `backfilled=True` / `--backfilled`; never fake timestamps.
+Every node is auto-stamped with `recorded_by` + per-process `run_id`.
 
 ## The Ralph Loop (Iterative Verification)
 
@@ -92,13 +108,17 @@ Record metrics to DNA: sources_consulted, websites_visited, parameters_cross_ref
 | Endpoint | Purpose |
 |----------|---------|
 | `docs/chimera_dna_graph.json` | Persistent DNA storage |
-| `core/graphify_interface.py` | Query/mutate functions (`g.query`, `g.mutate`) |
+| `core/graphify_interface.py` | Query/mutate functions + typed helpers (`record_*`) |
+| `core/preflight.py` | `python -m core.preflight` — one-command Pre-Flight report |
+| `core/postflight.py` | `python -m core.postflight` — one-command Post-Flight recorder |
+| `core/graphify_record.py` | `python -m core.graphify_record` — typed mutation CLI |
 | `core/dna/pattern_validator.py` | Blocks known-bad patterns before generation |
 | `core/dna/auto_fixer.py` | Auto-fix brace errors |
 | `core/dna/query_api.py` | FastAPI at `localhost:8766` (/dna/errors, /dna/health) |
 | `dna_dashboard.py` | Streamlit dashboard |
+| `docs/dna_graph_quarantine_unknown_nodes.json` | Archive of quarantined junk nodes |
 
-**DNA Node Types**: Mutation, Error, Fix, Health, Pathway, FeatureUpdate, VisualVerification, ProfessorGrade, ProfessorGPA, TechnicalDiscovery, ResearchDiscovery
+**DNA Node Types**: Mutation, Error, Fix, Health, Pathway, FeatureUpdate, VisualVerification, ProfessorGrade, ProfessorGPA, TechnicalDiscovery, ResearchDiscovery, PhaseComplete, LoopComplete
 
 ## MCP Pathway Rule
 
@@ -126,11 +146,15 @@ Unknown MCP action → try 5+ parameter combos → record all attempts → spawn
 ### Screenshots for Verification
 **NEVER use MCP `control_editor.screenshot`.** It captures UI chrome, not the viewport. MCP `editor_viewport` mode captures the full editor window with overlays. MCP `game_viewport` mode uses the default pawn camera (not your placed CameraActor). Both produce small (1048x462) low-resolution images.
 
-**Use `pyautogui.screenshot()` only.** Steps:
-1. `powershell "$wshell=New-Object -ComObject wscript.shell; $wshell.AppActivate('Unreal Editor'); Start-Sleep 2"`
-2. `python -c "import pyautogui; pyautogui.screenshot('path.png')"`
+**Use `pyautogui.screenshot()` only** — via `core/visual_verifier.py`, which now enforces:
+1. AppActivate 'Unreal Editor' + 2s settle
+2. **Foreground-window guard**: capture aborts (recording `aborted_wrong_window`) unless
+   the foreground window title contains "Unreal Editor" — past runs graded a screenshot
+   of LM Studio itself
 3. Verify file size > 100000 bytes
-4. Send to LM Studio
+4. Send to LM Studio — prefer **checklist mode**:
+   `run_visual_verification(project_path, checklist=["criterion", ...], feature="Name")`
+   does strict per-item YES/NO (unanswered = NO) instead of keyword sniffing
 
 If the UE5 viewport renders black after MCP operations, reset with:
 - `control_editor.set_view_mode("Lit")`
@@ -162,6 +186,9 @@ After 2 failed attempts on any feature, automatically create a technical_researc
 | 10 | GameMode redefinition | game_code_generator | Added scoping braces | signature_error |
 | 11 | TEXT() dereference | game_code_generator | Removed stray `*` | macro_error |
 | 12 | DockingComponent ctor | game_code_generator | Added empty ctor body | signature_error |
+| 13 | g.mutate key mismatch → unknown_* junk | graphify_interface | Key aliases + rejection guards + typed record_* helpers | interface_contract |
+| 14 | UBT output never captured (capture_output=False) | ubt_builder | Capture stdout+stderr; store excerpt + error lines in graph | build_observability |
+| 15 | CommodityData price formula no-op (S/(S+1)−D/(D+1)≈0) | Economy/CommodityData | price = Base×clamp(pow(D/S, elasticity), 0.25, 4.0) | logic_error |
 
 ## Key File Paths
 

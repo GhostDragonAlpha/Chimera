@@ -1,0 +1,177 @@
+- generic [active] [ref=f665e1]:
+  - img
+  - generic [ref=f665e3]:
+    - navigation "Main" [ref=f665e9]:
+      - heading "Flickr logo. If you click it, you’ll go home" [level=1] [ref=f665e11] [cursor=pointer]:
+        - img [ref=f665e12]
+      - menubar [ref=f665e14]:
+        - listitem [ref=f665e15]:
+          - menuitem "Explore" [ref=f665e16] [cursor=pointer]
+        - link "MODE" [ref=f665e17] [cursor=pointer]:
+          - /url: https://modefestival.com/
+        - listitem [ref=f665e18]:
+          - menuitem "Get Pro" [ref=f665e19] [cursor=pointer]:
+            - generic [ref=f665e20]: ✨ Get Pro
+      - menubar [ref=f665e21]:
+        - menuitem [ref=f665e22]:
+          - search [ref=f665e23]:
+            - generic "Search" [ref=f665e24]:
+              - img "Search" [ref=f665e25] [cursor=pointer]
+            - list
+            - textbox "Search" [ref=f665e27]:
+              - /placeholder: Photos, people, or groups
+        - menuitem "Upload" [ref=f665e28]:
+          - link "Upload" [ref=f665e29] [cursor=pointer]:
+            - /url: /upload
+            - img [ref=f665e30]
+        - menuitem "Sign In" [ref=f665e32]:
+          - link "Log In" [ref=f665e33] [cursor=pointer]:
+            - /url: /signin
+        - menuitem "Sign Up" [ref=f665e34]:
+          - link "Sign Up" [ref=f665e35] [cursor=pointer]:
+            - /url: /signup
+    - navigation "Secondary" [ref=f665e40]:
+      - generic [ref=f665e42]:
+        - menubar [ref=f665e43]:
+          - menuitem "Explore" [ref=f665e44] [cursor=pointer]:
+            - link "Explore" [ref=f665e45]:
+              - /url: /explore
+              - generic [ref=f665e46]: Explore
+          - menuitem "What’s New" [ref=f665e47] [cursor=pointer]:
+            - link "What’s New" [ref=f665e48]:
+              - /url: /explore/discover
+              - generic [ref=f665e49]: What’s New
+          - menuitem "Camera Finder" [ref=f665e50] [cursor=pointer]:
+            - link "Camera Finder" [ref=f665e51]:
+              - /url: /cameras
+              - generic [ref=f665e52]: Camera Finder
+          - menuitem "Trending" [ref=f665e53] [cursor=pointer]:
+            - link "Trending" [ref=f665e54]:
+              - /url: /photos/tags
+              - generic [ref=f665e55]: Trending
+          - menuitem "Events" [ref=f665e56] [cursor=pointer]:
+            - link "Events" [ref=f665e57]:
+              - /url: /events
+              - generic [ref=f665e58]: Events
+        - generic [ref=f665e59] [cursor=pointer]:
+          - text: More
+          - menuitem [ref=f665e60]
+    - generic [ref=f665e61]:
+      - heading "Tags issinterior" [level=5] [ref=f665e63]:
+        - link "Tags" [ref=f665e64] [cursor=pointer]:
+          - /url: /photos/tags
+        - link "issinterior" [ref=f665e66] [cursor=pointer]:
+          - /url: /photos/tags/issinterior
+      - navigation [ref=f665e81]:
+        - generic [ref=f665e82]:
+          - generic [ref=f665e83]:
+            - paragraph [ref=f665e84]:
+              - text: Sponsored images from
+              - img [ref=f665e85]
+            - paragraph [ref=f665e86]:
+              - 'link "LIMITED DEAL: 20% off with code FLICKR20" [ref=f665e87] [cursor=pointer]':
+                - /url: https://www.istockphoto.com/plans-and-pricing?utm_source=flickr&utm_medium=affiliate&utm_campaign=Tags_photos_sponsored&utm_term=issinterior&utm_content=https%3A%2F%2Fwww.flickr.com%2Fphotos%2Ftags%2Fissinterior&ref=sponsored
+          - generic [ref=f665e88]:
+            - link "High quality 8k SciFi Spaceship Corridor, shuttle interior based on the cupola space station ISS International space station.window to earth view.footage available on gettyimages video" [ref=f665e89] [cursor=pointer]:
+              - /url: https://www.istockphoto.com/photo/spaceship-cabin-8k-gm1373098214-442036906?utm_source=flickr&utm_medium=affiliate&utm_campaign=Tags_photos_sponsored&utm_term=issinterior&utm_content=https%3A%2F%2Fwww.flickr.com%2Fphotos%2Ftags%2Fissinterior&ref=sponsored
+            - link "Symmetrical view of two modern closed window shutters on a clean white facade in strong sunlight" [ref=f665e90] [cursor=pointer]:
+              - /url: https://www.istockphoto.com/photo/two-closed-window-shutters-on-white-wall-gm2225345559-641389266?utm_source=flickr&utm_medium=affiliate&utm_campaign=Tags_photos_sponsored&utm_term=issinterior&utm_content=https%3A%2F%2Fwww.flickr.com%2Fphotos%2Ftags%2Fissinterior&ref=sponsored
+            - link "Cockpit view from International Space Station operating nearby of planet Earth. Concept of exploration and research of new life. Some elements are composed by NASA images." [ref=f665e91] [cursor=pointer]:
+              - /url: https://www.istockphoto.com/photo/cockpit-view-from-international-space-station-gm1136337086-302598236?utm_source=flickr&utm_medium=affiliate&utm_campaign=Tags_photos_sponsored&utm_term=issinterior&utm_content=https%3A%2F%2Fwww.flickr.com%2Fphotos%2Ftags%2Fissinterior&ref=sponsored
+            - link "Futuristic,The Way Forward,Technology,City,Abstract,Tunnel,Vanishing Point,Lighting Equipment,Spaceship" [ref=f665e92] [cursor=pointer]:
+              - /url: https://www.istockphoto.com/photo/scientific-and-technological-indoor-space-gm1586691751-529106150?utm_source=flickr&utm_medium=affiliate&utm_campaign=Tags_photos_sponsored&utm_term=issinterior&utm_content=https%3A%2F%2Fwww.flickr.com%2Fphotos%2Ftags%2Fissinterior&ref=sponsored
+            - generic [ref=f665e93]:
+              - link "Collage image with planet Earth from the outer space from the ISS window. Elements of this image furnished by NASA." [ref=f665e94] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/collage-image-with-planet-earth-from-the-outer-space-from-the-iss-window-elements-of-gm1089646048-292308098?utm_source=flickr&utm_medium=affiliate&utm_campaign=Tags_photos_sponsored&utm_term=issinterior&utm_content=https%3A%2F%2Fwww.flickr.com%2Fphotos%2Ftags%2Fissinterior&ref=sponsored
+              - link "View more" [ref=f665e96] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/search/2/image?mediatype=photography&phrase=issinterior&utm_source=flickr&utm_medium=affiliate&utm_campaign=Tags_photos_viewmore&utm_term=issinterior&utm_content=https%3A%2F%2Fwww.flickr.com%2Fphotos%2Ftags%2Fissinterior&ref=sponsored
+          - paragraph [ref=f665e98]:
+            - link "Upgrade to Flickr Pro to hide these ads" [ref=f665e99] [cursor=pointer]:
+              - /url: /account/upgrade/pro?utm_campaign=getty-search&utm_source=desktop&utm_medium=ads_upsell&utm_content=upgrade
+      - heading [level=5] [ref=f665e101]
+    - generic [ref=f665e107]:
+      - generic [ref=f665e112]:
+        - paragraph [ref=f665e114]:
+          - text: This site uses cookies to improve your experience and to help show content that is more relevant to your interests. By using this site, you agree to the use of cookies by Flickr and our partners as described in our
+          - link "cookie policy" [ref=f665e115] [cursor=pointer]:
+            - /url: /help/cookies
+          - text: .
+        - button [ref=f665e117] [cursor=pointer]:
+          - img [ref=f665e118]
+      - contentinfo [ref=f665e120]:
+        - contentinfo [ref=f665e121]:
+          - list [ref=f665e123]:
+            - listitem [ref=f665e124]:
+              - link "About" [ref=f665e125] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f665e126]:
+              - link "Jobs" [ref=f665e127] [cursor=pointer]:
+                - /url: /jobs
+            - listitem [ref=f665e128]:
+              - link "Blog" [ref=f665e129] [cursor=pointer]:
+                - /url: //blog.flickr.net/en
+            - listitem [ref=f665e130]:
+              - link "Advertise" [ref=f665e131] [cursor=pointer]:
+                - /url: https://www.flickrads.com?utm_source=flickr&utm_campaign=footer
+            - listitem [ref=f665e132]:
+              - link "Developers" [ref=f665e133] [cursor=pointer]:
+                - /url: /services/developer
+            - listitem [ref=f665e134]:
+              - link "Cookies" [ref=f665e135] [cursor=pointer]:
+                - /url: /help/cookies
+            - listitem [ref=f665e136]:
+              - link "Guidelines" [ref=f665e137] [cursor=pointer]:
+                - /url: /help/guidelines
+            - listitem [ref=f665e138]:
+              - link "Help" [ref=f665e139] [cursor=pointer]:
+                - /url: //flickrhelp.com
+            - listitem [ref=f665e140]:
+              - link "Report abuse" [ref=f665e141] [cursor=pointer]:
+                - /url: /abuse
+            - listitem [ref=f665e142] [cursor=pointer]:
+              - link "English" [ref=f665e143]:
+                - /url: /change_language.gne?lang=en-US&csrf=
+          - generic [ref=f665e145]:
+            - list [ref=f665e147]:
+              - listitem [ref=f665e148]:
+                - link "Legal" [ref=f665e149] [cursor=pointer]:
+                  - /url: /help/legal
+              - listitem [ref=f665e150]:
+                - link "Privacy" [ref=f665e151] [cursor=pointer]:
+                  - /url: /help/privacy
+              - listitem [ref=f665e152]:
+                - link "Terms" [ref=f665e153] [cursor=pointer]:
+                  - /url: /help/terms
+            - generic [ref=f665e154]:
+              - link [ref=f665e156] [cursor=pointer]:
+                - /url: https://www.awesome.co/
+                - img [ref=f665e157]
+              - generic [ref=f665e159]: Connecting people through photography.
+              - link [ref=f665e161] [cursor=pointer]:
+                - /url: https://www.onepercentfortheplanet.org/
+                - img [ref=f665e162]
+              - link [ref=f665e165] [cursor=pointer]:
+                - /url: https://www.greatplacetowork.com/certified-company/7051750
+                - img [ref=f665e166]
+              - link [ref=f665e169] [cursor=pointer]:
+                - /url: https://www.climateneutral.org/brand/flickr
+                - img [ref=f665e170]
+              - link [ref=f665e173] [cursor=pointer]:
+                - /url: https://www.conservationalliance.com/
+                - img [ref=f665e174]
+              - link [ref=f665e177] [cursor=pointer]:
+                - /url: https://www.tugboatinstitute.com/certified-evergreen/
+                - img [ref=f665e178]
+            - list [ref=f665e181]:
+              - listitem [ref=f665e182]:
+                - link "Facebook" [ref=f665e183] [cursor=pointer]:
+                  - /url: https://www.facebook.com/flickr
+                  - img [ref=f665e184]
+              - listitem [ref=f665e186]:
+                - link "YouTube" [ref=f665e187] [cursor=pointer]:
+                  - /url: https://www.youtube.com/user/smugmug
+                  - img [ref=f665e188]
+              - listitem [ref=f665e190]:
+                - link "Instagram" [ref=f665e191] [cursor=pointer]:
+                  - /url: https://www.instagram.com/flickr/
+                  - img [ref=f665e192]

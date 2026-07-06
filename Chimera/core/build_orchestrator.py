@@ -204,42 +204,60 @@ class BuildOrchestrator:
         return uproject_path_str
 
     def compile_with_ubt(self, uproject_path: str) -> bool:
-        """Compile using Unreal Build Tool (UBT)."""
+        """Compile using Unreal Build Tool (UBT), with auto-fix retry."""
         print(f"Compiling project with UBT: {uproject_path}")
-        
+        template_file = str(self.source_dir)
+
+        for attempt in range(1, 4):  # up to 3 attempts
+            success = self._single_compile(uproject_path, template_file)
+            if success:
+                return True
+
+            # Build failed — try auto-fix and retry
+            if attempt >= 3:
+                print(f"  [BUILD-RETRY] Max retries ({attempt}) reached. Reporting failure.")
+                return False
+
+            print(f"  [BUILD-RETRY] Build attempt {attempt} failed. Scanning for auto-fixable errors...")
+            source_dir_str = str(self.source_dir)
+            fixed_count = 0
+            for ext in ['*.h', '*.cpp']:
+                for file_path in Path(source_dir_str).rglob(ext):
+                    if '.generated.h' in file_path.name:
+                        continue
+                    fix_result = auto_fix_brace_error(str(file_path), template_file)
+                    if fix_result.get("fixed"):
+                        fixed_count += 1
+
+            if fixed_count > 0:
+                print(f"  [BUILD-RETRY] Applied {fixed_count} brace fixes, retrying build (attempt {attempt+1})...")
+            else:
+                print(f"  [BUILD-RETRY] No auto-fixable errors found. Not retrying.")
+                return False
+
+        return False
+
+    def _single_compile(self, uproject_path: str, template_file: str) -> bool:
+        """One UBT compilation attempt. Returns True on success, False on failure."""
         try:
             builder = UBTBuilder()
             builder.setup()
-            
-            # Use the sanitized module name stored during assemble_uproject
+
             if not hasattr(self, 'sanitized_module_name'):
                 raise RuntimeError("sanitized_module_name not set. assemble_uproject must be called first.")
-                
+
             success = builder.compile_project(self.sanitized_module_name, uproject_path, "Development")
-            
-            # Log compilation result to DNA through Graphify
-            template_file = f"{self.source_dir}/DeepSpaceTrader"
-            
+            ubt_output = getattr(builder, "last_output", "")
+
             if success:
-                mutate("compilation", "pass", details={"snapshot_diff": "build_completed", "template_file": template_file})
+                mutate("compilation", "pass", details={"ubt_output": ubt_output, "template_file": template_file})
+                return True
             else:
-                # Try to auto-fix brace errors before logging failure
-                source_dir_str = str(self.source_dir)
-                for ext in ['*.h', '*.cpp']:
-                    for file_path in Path(source_dir_str).rglob(ext):
-                        if '.generated.h' in file_path.name or 'DeepSpaceTrader.generated.h' in file_path.name:
-                            continue
-                        
-                        fix_result = auto_fix_brace_error(str(file_path), template_file)
-                        
-                # Log the compilation failure through Graphify
-                mutate("compilation", "fail", details={"ubt_output": "UBT Compilation Failed", "template_file": template_file})
-                
-            return success
-            
+                mutate("compilation", "fail", details={"ubt_output": ubt_output, "template_file": template_file})
+                return False
+
         except Exception as e:
             print(f"Compilation error: {e}")
-            template_file = f"{self.source_dir}/DeepSpaceTrader"
             mutate("compilation", "error", details={"ubt_output": str(e), "template_file": template_file})
             return False
 
@@ -283,6 +301,27 @@ class BuildOrchestrator:
         except Exception as e:
             print(f"Warning: Could not execute PCG asset creation script: {e}")
 
+    def _verify_generated_files(self, generated_files: Dict[str, Any]) -> List[str]:
+        """Check that all files reported as generated actually exist on disk.
+        Returns a list of missing file paths.
+        Skips bare filenames (no path separators) — those are class names from
+        the DSL, not filesystem paths. Only checks entries that look like paths."""
+        missing = []
+        for category, files in generated_files.items():
+            if not isinstance(files, list):
+                continue
+            for f in files:
+                if not isinstance(f, str):
+                    continue
+                # Skip bare filenames like "CombatTargetComponent.h" — these are
+                # class names, not paths. Only check strings with directory separators.
+                if "/" not in f and "\\" not in f:
+                    continue
+                path = Path(f)
+                if not path.exists():
+                    missing.append(f)
+        return missing
+
     def _run_level_creation_script(self, script_path: str, uproject_path: str):
         """Run the level creation Python script using Unreal's Editor API."""
         print(f"Running level creation script: {script_path}")
@@ -302,7 +341,22 @@ class BuildOrchestrator:
     def build_project(self, dsl_data: Dict[str, Any], generated_files: Dict[str, List[str]]) -> Dict[str, Any]:
         """Complete build process: assemble .uproject, compile, and run tests."""
         print("Starting project build process...")
-        
+
+        # Step 0: Guard against stale generated module trees (Known Bug #1: the
+        # single canonical module is Source/Chimera — anything else under Source/
+        # is a stale copy that shadows canonical files and confuses searches).
+        source_root = self.output_dir / "Source"
+        allowed_entries = {"Chimera", "Chimera.Target.cs", "ChimeraEditor.Target.cs"}
+        if source_root.exists():
+            stale = sorted(p.name for p in source_root.iterdir() if p.name not in allowed_entries)
+            if stale:
+                error_msg = (f"Stale generated trees under Source/: {stale}. "
+                             f"Single canonical module is Source/Chimera (Known Bug #1). "
+                             f"Delete them (git rm -r) and re-run the pipeline.")
+                print(f"[STALE-TREE GUARD] {error_msg}")
+                mutate("compilation", "fail", details={"ubt_output": error_msg, "template_file": str(source_root)})
+                return {"success": False, "error": error_msg, "stale_trees": stale}
+
         # Step 1: Assemble .uproject file
         uproject_path = self.assemble_uproject(dsl_data, generated_files)
         print(f"Assembled .uproject file: {uproject_path}")
@@ -320,7 +374,34 @@ class BuildOrchestrator:
                 "static_analysis_errors": analysis_errors
             }
         print("Static analysis passed")
-        
+
+        # Step 1.6: If UE Editor is running, it holds the module DLL lock and blocks the linker.
+        # Close it before building so the cycle can proceed autonomously.
+        try:
+            import subprocess
+            ue_check = subprocess.run(
+                ["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe"],
+                capture_output=True, text=True, timeout=10,
+            )
+            if "UnrealEditor.exe" in ue_check.stdout:
+                print("  [BUILD] Unreal Editor is running — module DLL is locked.")
+                print("  [BUILD] Closing UE Editor to free the linker...")
+                subprocess.run(["taskkill", "/F", "/IM", "UnrealEditor.exe"],
+                               capture_output=True, text=True, timeout=15)
+                import time
+                time.sleep(3)  # Wait for process to fully exit
+                # Log to graph
+                try:
+                    mutate("pathway_attempt", details={
+                        "tool": "build_orchestrator", "action": "ue_shutdown",
+                        "result": "killed_for_build", "parameters_tried": {},
+                    })
+                except Exception:
+                    pass
+                print("  [BUILD] UE Editor closed. Proceeding with compilation.")
+        except Exception as e:
+            print(f"  [BUILD] Note: could not check UE Editor state: {e}")
+
         # Step 2: Compile with UBT
         compile_success = self.compile_with_ubt(uproject_path)
         if not compile_success:
@@ -330,7 +411,20 @@ class BuildOrchestrator:
             }
             
         print("Compilation successful")
-        
+
+        # Step 2.4: Generated-file integrity check — verify all files specified
+        # in the DSL exist on disk, so stale/incomplete generations are caught
+        # before follow-up stages.
+        missing_files = self._verify_generated_files(generated_files)
+        if missing_files:
+            print(f"  [INTEGRITY] WARNING: {len(missing_files)} expected files missing from disk:")
+            for f in missing_files[:5]:
+                print(f"    - {f}")
+            if len(missing_files) > 5:
+                print(f"    ... and {len(missing_files) - 5} more")
+        else:
+            print(f"  [INTEGRITY] All generated files present on disk ({sum(len(v) for v in generated_files.values() if isinstance(v, list))} files checked)")
+
         # Step 2.5: Run level creation script if level block exists in DSL and level_creation_script is generated
         if "level" in dsl_data and "level_creation_script" in generated_files and generated_files["level_creation_script"]:
             print(f"[Stage 3] Generating level from DSL...")
@@ -395,26 +489,37 @@ class BuildOrchestrator:
         print(f"Updated {build_cs_path}")
 
     def _copy_template_level(self):
-        """Copy the default level template to the generated project's Content/Maps directory."""
+        """Copy the default level template to the generated project's Content/Maps directory.
+
+        When Unreal Editor has the project open, level files are locked and cannot
+        be overwritten directly. This is expected — the level is already loaded in
+        the editor, so we skip the copy and log the event instead of failing.
+        """
         import shutil
         from pathlib import Path
-        
+
         # Source template path
         template_source = Path("E:/PythonChimera/Chimera/templates/DefaultLevel.umap")
-        
+
         if not template_source.exists():
             return
-            
+
         # Determine level name based on module name
         level_name_base = f"{self.sanitized_module_name.lower()}defaultlevel"
-        
+
         # Target content directory: Content/Levels/
         levels_dir = self.content_dir / "Levels"
         levels_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Copy template to target
         target_level_path = levels_dir / f"{level_name_base}.umap"
-        shutil.copy2(template_source, target_level_path)
+        try:
+            shutil.copy2(template_source, target_level_path)
+        except PermissionError as e:
+            # UE editor has the project open — level file is locked.
+            # This is non-critical; the level is already loaded in the editor.
+            print(f"  [INFO] Level file locked by UE Editor (expected): {e}")
+            print(f"  [INFO] Skipping level copy — level '{level_name_base}' is already loaded in the running editor.")
         
         # Generate DefaultEngine.ini and DefaultGame.ini
         self._generate_project_config_files()

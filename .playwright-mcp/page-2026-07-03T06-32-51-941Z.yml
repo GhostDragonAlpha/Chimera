@@ -1,0 +1,402 @@
+- generic [active] [ref=f132e1]:
+  - link "Skip to main content" [ref=f132e2] [cursor=pointer]:
+    - /url: "#main"
+  - navigation "Main Navigation" [ref=f132e3]:
+    - banner "Site header" [ref=f132e4]:
+      - navigation "Main navigation" [ref=f132e5]:
+        - link "Space Space" [ref=f132e7] [cursor=pointer]:
+          - /url: https://www.space.com
+          - img "Space" [ref=f132e9]
+          - generic [ref=f132e10]: Space
+        - generic [ref=f132e12]:
+          - generic [ref=f132e14] [cursor=pointer]:
+            - generic [ref=f132e15]: Sign in
+            - img [ref=f132e17]
+          - generic [ref=f132e19] [cursor=pointer]:
+            - generic [ref=f132e20]: Feed
+            - button "View your notifications and profile settings" [ref=f132e25]:
+              - img [ref=f132e26]
+          - button "Search" [ref=f132e30]:
+            - generic [ref=f132e31]: Search
+            - img [ref=f132e33]
+    - navigation [ref=f132e35]:
+      - list [ref=f132e38]:
+        - listitem [ref=f132e39]:
+          - link [ref=f132e40] [cursor=pointer]:
+            - /url: https://www.space.com
+            - img [ref=f132e41]
+        - listitem [ref=f132e44]:
+          - link "Space Exploration" [ref=f132e45] [cursor=pointer]:
+            - /url: https://www.space.com/space-exploration
+        - listitem [ref=f132e46]:
+          - link "Astronomy" [ref=f132e47] [cursor=pointer]:
+            - /url: https://www.space.com/astronomy
+        - listitem [ref=f132e48]:
+          - link "Stargazing" [ref=f132e49] [cursor=pointer]:
+            - /url: https://www.space.com/stargazing
+        - listitem [ref=f132e50]:
+          - link "Entertainment" [ref=f132e51] [cursor=pointer]:
+            - /url: https://www.space.com/entertainment
+        - listitem [ref=f132e52]:
+          - button "Tech & Science" [ref=f132e53]
+        - listitem [ref=f132e54]:
+          - link "Videos" [ref=f132e55] [cursor=pointer]:
+            - /url: https://videos.space.com/
+        - listitem [ref=f132e56]:
+          - button "More" [ref=f132e57]:
+            - text: More
+            - img [ref=f132e58]
+  - main [ref=f132e64]:
+    - article [ref=f132e65]:
+      - generic [ref=f132e66]:
+        - generic [ref=f132e67]:
+          - generic [ref=f132e70]:
+            - navigation "Breadcrumbs" [ref=f132e71]:
+              - list [ref=f132e72]:
+                - listitem [ref=f132e73]:
+                  - link "Return to Space Exploration" [ref=f132e74] [cursor=pointer]:
+                    - /url: https://www.space.com/space-exploration
+                    - text: Space Exploration
+                  - img [ref=f132e75]
+                - listitem [ref=f132e77]:
+                  - link "Return to Missions" [ref=f132e78] [cursor=pointer]:
+                    - /url: https://www.space.com/space-exploration/missions
+                    - text: Missions
+                  - img [ref=f132e79]
+                - listitem [ref=f132e81]:
+                  - link "Return to International Space Station" [ref=f132e82] [cursor=pointer]:
+                    - /url: https://www.space.com/space-exploration/missions/international-space-station
+                    - text: International Space Station
+            - 'heading "Space Station Shut-Eye: New LED Lights May Help Astronauts (and You) Sleep Better" [level=1] [ref=f132e83]'
+            - generic [ref=f132e85]:
+              - link "News" [ref=f132e86] [cursor=pointer]:
+                - /url: https://www.space.com/news
+              - generic [ref=f132e87]:
+                - generic [ref=f132e88]:
+                  - text: By
+                  - link "View profile for Hanneke Weitering" [ref=f132e89] [cursor=pointer]:
+                    - /url: https://www.space.com/author/hanneke-weitering
+                    - text: Hanneke Weitering
+                - text: (
+                - link "View space.com-spaceflight" [ref=f132e90] [cursor=pointer]:
+                  - /url: https://www.space.com/space-com-spaceflight
+                  - text: space.com-spaceflight
+                - text: )
+                - generic [ref=f132e91]:
+                  - text: published
+                  - time [ref=f132e92]: March 17, 2017
+          - generic [ref=f132e94]:
+            - generic [ref=f132e95]:
+              - 'figure "Solid-State Light Assemblies (SSLAs) are replacing old lighting technology aboard the International Space Station. These lights offer more efficient, longer-lasting lighting options, as well as provide crewmembers with the ability to adjust lighting intensity based on the time of day, promoting a more conducive environment for both sleep and alertness. (Image credit: NASA)" [ref=f132e97]':
+                - img "SSLA" [ref=f132e99]
+                - generic [ref=f132e100]:
+                  - text: Solid-State Light Assemblies (SSLAs) are replacing old lighting technology aboard the International Space Station. These lights offer more efficient, longer-lasting lighting options, as well as provide crewmembers with the ability to adjust lighting intensity based on the time of day, promoting a more conducive environment for both sleep and alertness.
+                  - generic [ref=f132e101]: "(Image credit: NASA)"
+              - generic [ref=f132e102]:
+                - generic [ref=f132e103]:
+                  - generic [ref=f132e104]:
+                    - tooltip "Share this article" [ref=f132e105]:
+                      - button "Share this article" [ref=f132e106]:
+                        - img
+                        - text: Share
+                      - tooltip: Share this article
+                    - tooltip:
+                      - tooltip: Join the conversation
+                  - generic [ref=f132e107]:
+                    - tooltip "Add us as a preferred source on Google" [ref=f132e108]:
+                      - link "Add us as a preferred source on Google" [ref=f132e109] [cursor=pointer]:
+                        - /url: https://google.com/preferences/source?q=space.com
+                        - img [ref=f132e110]
+                        - text: Follow us
+                      - tooltip: Add us as a preferred source on Google
+                    - tooltip "Newsletter" [ref=f132e115]:
+                      - button "Newsletter" [ref=f132e116]:
+                        - img [ref=f132e117]
+                        - text: Newsletter
+                      - tooltip: Subscribe to our newsletter
+                - application "Video Player" [ref=f132e121]
+                - paragraph [ref=f132e128]:
+                  - text: Astronauts on the International Space Station are swapping out their fluorescent light bulbs for
+                  - link "a fancy new set of light-emitting diodes (LEDs)" [ref=f132e129] [cursor=pointer]:
+                    - /url: https://www.youtube.com/user/VideoFromSpace
+                  - text: that scientists think will help them sleep better and be more alert. If the new lights work as intended, the technology could help people on Earth sleep better as well.
+                - paragraph [ref=f132e130]: The intensity and colors of the light emitted by the new Solid-State Light Assemblies (SSLAs) can produce millions of different spectra of light. Three settings will help to create a lighting environment that can either increase alertness, promote sleepiness or provide normal "daylight" that will help astronauts see clearly during normal work hours.
+                - paragraph [ref=f132e131]:
+                  - text: Because the space station circles the Earth every 92 minutes, astronauts on board can see the sun rise and set 16 times in a day. While it might sound delightful to watch pretty sunrises and sunsets all day, this rapid cycle of day and night can throw astronauts' sleep schedules out of whack. Add to that a demanding work schedule with occasional night shifts, and the astronauts are bound to experience some insomnia. [
+                  - 'link "Sleeping in Space: How Astronauts Do It" [ref=f132e132] [cursor=pointer]':
+                    - /url: https://www.space.com/35293-how-astronauts-sleep-in-space.html
+                  - text: "]"
+                - paragraph [ref=f132e133]:
+                  - text: In fact, research has shown that
+                  - link "astronauts don't get enough sleep" [ref=f132e134] [cursor=pointer]:
+                    - /url: https://www.space.com/26829-astronauts-space-station-sleep-deprivation.html
+                  - text: . On average, they sleep about 6 hours per night, while their schedules allot 8.5 hours. As a result, sleeping pills and caffeine are popular commodities among space travelers.
+                - complementary
+                - paragraph [ref=f132e135]: On Earth, the human body naturally operates on a 24-hour schedule called a circadian rhythm. Our biological clocks depend on a regular pattern of sunlight and darkness to keep that rhythm going. In space, astronauts depend on artificial lighting to regulate their sleep-wake schedules. But it's not just the timing of the light that matters on the space station — the type of lights used can make a big difference when it comes to keeping sleep schedules on track.
+                - application "Video Player" [ref=f132e138]
+                - complementary [ref=f132e145]:
+                  - generic [ref=f132e146]: You may like
+                  - list [ref=f132e147]:
+                    - listitem [ref=f132e148]:
+                      - link "A nighttime view of Earth, based on images from Earth-monitoring satellites. Light pollution has brightened Earth by 16% since 2014, satellites find" [ref=f132e149] [cursor=pointer]:
+                        - /url: https://www.space.com/astronomy/earth/light-pollution-has-brightened-earth-by-16-percent-since-2014-satellites-find
+                        - img "A nighttime view of Earth, based on images from Earth-monitoring satellites." [ref=f132e151]
+                        - generic [ref=f132e152]: Light pollution has brightened Earth by 16% since 2014, satellites find
+                    - listitem [ref=f132e153]:
+                      - link "an illustration of earth at night. the planet is mostly black and in shadow, revealing patterns of dots of light tracing the outlines of continents NASA satellite images uncover dramatic changes in Earth's nighttime lights" [ref=f132e154] [cursor=pointer]:
+                        - /url: https://www.space.com/astronomy/earth/is-earth-getting-brighter-at-night-its-complicated-new-nasa-black-marble-project-images-reveal
+                        - img "an illustration of earth at night. the planet is mostly black and in shadow, revealing patterns of dots of light tracing the outlines of continents" [ref=f132e156]
+                        - generic [ref=f132e157]: NASA satellite images uncover dramatic changes in Earth's nighttime lights
+                    - listitem [ref=f132e158]:
+                      - link "An image of the International Space Station, with its many solar panels and modules, floating above Earth in space Crew of tiny worms readies for April 11 launch to International Space Station" [ref=f132e159] [cursor=pointer]:
+                        - /url: https://www.space.com/space-exploration/launches-spacecraft/crew-of-tiny-worms-readies-for-april-10-launch-to-international-space-station
+                        - img "An image of the International Space Station, with its many solar panels and modules, floating above Earth in space" [ref=f132e161]
+                        - generic [ref=f132e162]: Crew of tiny worms readies for April 11 launch to International Space Station
+                - paragraph [ref=f132e163]:
+                  - text: Fluorescent light bulbs and LEDs are prized for being energy-efficient, but the light they produce can contribute to insomnia. Both emit
+                  - link "blue light" [ref=f132e164] [cursor=pointer]:
+                    - /url: http://www.livescience.com/53874-blue-light-sleep.html
+                  - text: ", which promotes alertness while decreasing the amount of the natural sleep hormone melatonin. While blue light may be helpful in the mornings, exposure to blue light closer to bedtime can make falling asleep more difficult."
+                - paragraph [ref=f132e165]: The new SSLAs that are being installed inside the space station contain LEDs, but with the adjustable light spectrum, blue light at night will no longer pose a problem. Before bedtime, the new lighting system will emit a spectrum of light without the smaller wavelengths of blue and violet light. When it's time to wake up again, the light spectrum will include that element of the spectrum to promote alertness. This can help astronauts reset or maintain a healthy circadian rhythm and, in turn, make them more productive on the job.
+                - complementary [ref=f132e166]:
+                  - img "Space" [ref=f132e167]
+                  - generic [ref=f132e168]:
+                    - button "Newsletter" [ref=f132e169]:
+                      - img [ref=f132e170]
+                      - generic [ref=f132e172]: Signup to our newsletter
+                    - link "Add us as a preferred source on Google" [ref=f132e173] [cursor=pointer]:
+                      - /url: https://google.com/preferences/source?q=space.com
+                      - img [ref=f132e174]
+                      - generic [ref=f132e179]: Follow us on Google
+                - 'figure "Expedition 18 Commander, Mike Fincke, holding an early version of a solid state lighting assembly (the general luminaire assembly or GLA) that is part of the Lighting Effects investigation. Equipment for that investigation will fly toward the space station aboard a Cygnus spacecraft on Oct. 14, 2016. (Image credit: NASA)" [ref=f132e180]':
+                  - paragraph [ref=f132e183]:
+                    - img "Expedition 18 Commander, Mike Fincke, holding an early version of a solid state lighting assembly (the general luminaire assembly or GLA) that is part of the Lighting Effects investigation. Equipment for that investigation will fly toward the space station aboard a Cygnus spacecraft on Oct. 14, 2016." [ref=f132e184]
+                    - link "" [ref=f132e185] [cursor=pointer]:
+                      - /url: https://cdn.mos.cms.futurecdn.net/b6BtrjdhDVZSoEfe9MbqW7.jpg
+                  - generic [ref=f132e186]:
+                    - text: Expedition 18 Commander, Mike Fincke, holding an early version of a solid state lighting assembly (the general luminaire assembly or GLA) that is part of the Lighting Effects investigation. Equipment for that investigation will fly toward the space station aboard a Cygnus spacecraft on Oct. 14, 2016.
+                    - generic [ref=f132e187]: "(Image credit: NASA)"
+                - paragraph [ref=f132e188]: Astronauts began replacing the old fluorescent General Luminaire Assemblies in August, and the transition is still ongoing. Meanwhile, NASA has been studying how the new lights are affecting the astronauts through the Lighting Effects Study.
+                - paragraph [ref=f132e189]:
+                  - text: "\"The system can provide millions of different light spectra,\" Steven Lockley, a sleep specialist at Brigham and Women's Hospital and co-investigator for the Lighting Effects Study,"
+                  - link "said in a statement" [ref=f132e190] [cursor=pointer]:
+                    - /url: https://science.nasa.gov/news-articles/the-power-of-light
+                  - text: . "We’re not making the ISS into a disco, but we are going to use three different light settings. We'll use a general light setting that provides a good light to see by during normal work, a higher-intensity blue light enriched setting that elevates alertness and can better shift the circadian clock when needed, and a lower-intensity blue wavelength-depleted 'pre-sleep' setting to calm the brain and promote sleep."
+                - paragraph [ref=f132e191]: Results from the sleep study will help flight planners optimize lighting schedules for astronauts during spaceflight, but it can also help people on Earth gain control of their sleeping patterns.
+                - paragraph [ref=f132e192]: "\"Study results should make it clear exactly when and how to use these various settings of light intensity and spectrum,\" NASA officials said in the statement. \"These results could also lead to Earth-based benefits such as helping manage sleep patterns for shift workers, or even developing treatments for sleep disorders or jet lag.\""
+                - paragraph [ref=f132e193]:
+                  - emphasis [ref=f132e194]: Email Hanneke Weitering at hweitering@space.com or follow her
+                  - link "@hannekescience" [ref=f132e195] [cursor=pointer]:
+                    - /url: http://twitter.com/hannekescience
+                    - emphasis [ref=f132e196]: "@hannekescience"
+                  - emphasis [ref=f132e197]: . Follow us
+                  - link "@Spacedotcom" [ref=f132e198] [cursor=pointer]:
+                    - /url: http://twitter.com/spacedotcom
+                    - emphasis [ref=f132e199]: "@Spacedotcom"
+                  - emphasis [ref=f132e200]: ","
+                  - emphasis [ref=f132e201]:
+                    - link "Facebook" [ref=f132e202] [cursor=pointer]:
+                      - /url: http://www.facebook.com/pages/Spacecom/17610706465
+                  - emphasis [ref=f132e203]: and
+                  - link "Google+" [ref=f132e204] [cursor=pointer]:
+                    - /url: https://plus.google.com/b/109556515093730290049/109556515093730290049
+                    - emphasis [ref=f132e205]: Google+
+                  - emphasis [ref=f132e206]: . Original article on
+                  - link "Space.com" [ref=f132e207] [cursor=pointer]:
+                    - /url: https://www.space.com/35997-led-lights-help-astronauts-sleep-better.html
+                    - emphasis [ref=f132e208]: Space.com
+                  - emphasis [ref=f132e209]: .
+              - generic [ref=f132e213]:
+                - generic [ref=f132e215]:
+                  - paragraph [ref=f132e217]:
+                    - strong [ref=f132e218]: Share your thoughts
+                  - generic [ref=f132e219]:
+                    - generic [ref=f132e220] [cursor=pointer]:
+                      - img [ref=f132e221]
+                      - generic [ref=f132e223]: "1"
+                    - generic [ref=f132e224] [cursor=pointer]:
+                      - img [ref=f132e225]
+                      - generic [ref=f132e227]: "0"
+                    - generic [ref=f132e228] [cursor=pointer]:
+                      - img [ref=f132e229]
+                      - generic [ref=f132e231]: "0"
+                    - generic [ref=f132e232] [cursor=pointer]:
+                      - img [ref=f132e233]
+                      - generic [ref=f132e236]: "0"
+                - generic [ref=f132e239]:
+                  - button "Log In or Register" [ref=f132e240] [cursor=pointer]
+                  - button "More Quizzes" [ref=f132e241] [cursor=pointer]
+              - generic [ref=f132e243]:
+                - generic [ref=f132e244]:
+                  - figure [ref=f132e246]:
+                    - img "Hanneke Weitering" [ref=f132e251]
+                  - generic [ref=f132e252]:
+                    - link "Hanneke Weitering" [ref=f132e254] [cursor=pointer]:
+                      - /url: https://www.space.com/author/hanneke-weitering
+                    - navigation [ref=f132e256]:
+                      - link "FACEBOOK" [ref=f132e257] [cursor=pointer]:
+                        - /url: https://www.facebook.com/hannekeweitering
+                        - img [ref=f132e259]
+                      - link "TWITTER" [ref=f132e262] [cursor=pointer]:
+                        - /url: https://twitter.com/HannekeScience
+                        - img [ref=f132e264]:
+                          - img [ref=f132e268]
+                      - link "LINKEDIN" [ref=f132e270] [cursor=pointer]:
+                        - /url: https://www.linkedin.com/in/hannekeweitering/
+                        - img [ref=f132e272]
+                      - link "WEBSITE" [ref=f132e275] [cursor=pointer]:
+                        - /url: http://www.hannekescience.com/
+                        - img [ref=f132e277]: 
+                    - generic [ref=f132e279]: Contributing expert
+                - paragraph [ref=f132e282]: Hanneke Weitering is a multimedia journalist in the Pacific Northwest reporting on the future of aviation at FutureFlight.aero and Aviation International News and was previously the Editor for Spaceflight and Astronomy news here at Space.com. As an editor with over 10 years of experience in science journalism she has previously written for Scholastic Classroom Magazines, MedPage Today and The Joint Institute for Computational Sciences at Oak Ridge National Laboratory. After studying physics at the University of Tennessee in her hometown of Knoxville, she earned her graduate degree in Science, Health and Environmental Reporting (SHERP) from New York University. Hanneke joined the Space.com team in 2016 as a staff writer and producer, covering topics including spaceflight and astronomy. She currently lives in Seattle, home of the Space Needle, with her cat and two snakes. In her spare time, Hanneke enjoys exploring the Rocky Mountains, basking in nature and looking for dark skies to gaze at the cosmos.
+            - generic [ref=f132e285]:
+              - complementary [ref=f132e286]:
+                - generic [ref=f132e287]:
+                  - generic [ref=f132e288]: Read more
+                  - generic [ref=f132e289]:
+                    - link "Light pollution has brightened Earth by 16% since 2014, satellites find - Earth" [ref=f132e291] [cursor=pointer]:
+                      - /url: https://www.space.com/astronomy/earth/light-pollution-has-brightened-earth-by-16-percent-since-2014-satellites-find
+                      - img "A nighttime view of Earth, based on images from Earth-monitoring satellites." [ref=f132e294]
+                      - text: Earth
+                      - generic [ref=f132e295]: Light pollution has brightened Earth by 16% since 2014, satellites find
+                    - link "NASA satellite images uncover dramatic changes in Earth's nighttime lights - Earth" [ref=f132e302] [cursor=pointer]:
+                      - /url: https://www.space.com/astronomy/earth/is-earth-getting-brighter-at-night-its-complicated-new-nasa-black-marble-project-images-reveal
+                      - img "an illustration of earth at night. the planet is mostly black and in shadow, revealing patterns of dots of light tracing the outlines of continents" [ref=f132e305]
+                      - text: Earth
+                      - generic [ref=f132e306]: NASA satellite images uncover dramatic changes in Earth's nighttime lights
+                    - link "Crew of tiny worms readies for April 11 launch to International Space Station - Launches & Spacecraft" [ref=f132e313] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/launches-spacecraft/crew-of-tiny-worms-readies-for-april-10-launch-to-international-space-station
+                      - img "An image of the International Space Station, with its many solar panels and modules, floating above Earth in space" [ref=f132e316]
+                      - text: Launches & Spacecraft
+                      - generic [ref=f132e317]: Crew of tiny worms readies for April 11 launch to International Space Station
+                    - link "My quiet obsession with satellites — and how they're ruining everything - Stargazing" [ref=f132e324] [cursor=pointer]:
+                      - /url: https://www.space.com/stargazing/my-quiet-obsession-with-satellites-and-how-theyre-ruining-everything
+                      - img "view of night sky filled with stars and long white streaks of light coming from the satellites." [ref=f132e327]
+                      - text: Stargazing
+                      - generic [ref=f132e328]: My quiet obsession with satellites — and how they're ruining everything
+                    - link "Astronauts face grip strength challenge in space and on Earth, scientists find - Human Spaceflight" [ref=f132e335] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/human-spaceflight/astronauts-lose-their-grip-going-to-space-scientists-say
+                      - img "Astronauts exercise to prevent loss of bone density and muscle while in space." [ref=f132e338]
+                      - text: Human Spaceflight
+                      - generic [ref=f132e339]: Astronauts face grip strength challenge in space and on Earth, scientists find
+                    - link "Could bad space weather endanger the Artemis 2 moon astronauts? - Artemis" [ref=f132e346] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/artemis/could-bad-space-weather-endanger-the-artemis-2-moon-astronauts
+                      - img "a half-lit moon seen behind the cone-shaped nozzle of a spacecraft engine" [ref=f132e349]
+                      - text: Artemis
+                      - generic [ref=f132e350]: Could bad space weather endanger the Artemis 2 moon astronauts?
+              - complementary [ref=f132e356]:
+                - generic [ref=f132e357]:
+                  - generic [ref=f132e358]: Latest in International Space Station
+                  - generic [ref=f132e359]:
+                    - link "NASA wants to dump the ISS in the sea. Experts say the plan 'raises serious concerns for ocean health' - International Space Station" [ref=f132e361] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/international-space-station/nasa-wants-to-dump-the-iss-in-the-sea-experts-say-the-plan-raises-serious-concerns-for-ocean-health
+                      - img "The international space station can be seen in the foreground with the blue and white of Earth behind it." [ref=f132e364]
+                      - text: International Space Station
+                      - generic [ref=f132e365]: NASA wants to dump the ISS in the sea. Experts say the plan 'raises serious concerns for ocean health'
+                    - link "SpaceX Dragon says goodbye to the ISS | Space photo of the day for June 23, 2026 - International Space Station" [ref=f132e372] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/international-space-station/spacex-dragon-says-goodbye-to-the-iss-space-photo-of-the-day-for-june-23-2026
+                      - img "A view out of the window of the ISS sees the SpaceX Dragon capsule with Earth in the background." [ref=f132e375]
+                      - text: International Space Station
+                      - generic [ref=f132e376]: SpaceX Dragon says goodbye to the ISS | Space photo of the day for June 23, 2026
+                    - link "Home again! SpaceX Dragon cargo capsule splashes down off California coast - International Space Station" [ref=f132e383] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/international-space-station/spacex-dragon-cargo-capsule-crs-34-return-to-earth
+                      - img "This screenshot shows SpaceX&#039;s robotic Dragon cargo spacecraft departing the International Space Station on June 16, 2026." [ref=f132e386]
+                      - text: International Space Station
+                      - generic [ref=f132e387]: Home again! SpaceX Dragon cargo capsule splashes down off California coast
+                    - link "The critical robot arm on the ISS isn't working properly, but NASA has a plan to fix it - International Space Station" [ref=f132e394] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/international-space-station/the-critical-robot-arm-on-the-iss-isnt-working-properly-but-nasa-has-a-plan-to-fix-it
+                      - img "a multi-segmented arm extends from a cylindrical space station module. the blue-and-white curvature of earth is visible below" [ref=f132e397]
+                      - text: International Space Station
+                      - generic [ref=f132e398]: The critical robot arm on the ISS isn't working properly, but NASA has a plan to fix it
+                    - link "Astronauts on International Space Station take shelter in SpaceX Dragon as cosmonauts try to fix air leak - International Space Station" [ref=f132e405] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/international-space-station/astronauts-on-international-space-station-take-shelter-in-spacex-dragon-as-cosmonauts-try-to-fix-air-leak
+                      - img "The International Space Station." [ref=f132e408]
+                      - text: International Space Station
+                      - generic [ref=f132e409]: Astronauts on International Space Station take shelter in SpaceX Dragon as cosmonauts try to fix air leak
+                    - link "Russian cosmonauts complete ISS spacewalk to install and retrieve science experiments - International Space Station" [ref=f132e416] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/international-space-station/russian-cosmonauts-install-sun-watching-telescope-on-iss-during-6-hour-spacewalk
+                      - img "Two spacesuited cosmonauts are seen working outside a large space station set against the blackness of space." [ref=f132e419]
+                      - text: International Space Station
+                      - generic [ref=f132e420]: Russian cosmonauts complete ISS spacewalk to install and retrieve science experiments
+              - complementary [ref=f132e426]:
+                - generic [ref=f132e427]:
+                  - generic [ref=f132e428]: Latest in News
+                  - generic [ref=f132e429]:
+                    - 'link "This Week In Space podcast: Episode 216 — Dark Matter Intelligence - Space Movies & Shows" [ref=f132e431] [cursor=pointer]':
+                      - /url: https://www.space.com/entertainment/space-movies-shows/this-week-in-space-podcast-episode-216-dark-matter-intelligence
+                      - 'img "This Week In Space podcast: Episode 216 — Dark Matter Intelligence" [ref=f132e434]'
+                      - text: Space Movies & Shows
+                      - generic [ref=f132e435]: "This Week In Space podcast: Episode 216 — Dark Matter Intelligence"
+                    - link "Blue Origin plans to fly New Glenn rocket again this year despite massive rocket explosion (video) - Launches & Spacecraft" [ref=f132e442] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/launches-spacecraft/blue-origin-working-around-the-clock-to-repair-damaged-launch-pad-after-new-glenn-rocket-explosion-video
+                      - img "A split image shows an explosion over large machinery picking up debris." [ref=f132e445]
+                      - text: Launches & Spacecraft
+                      - generic [ref=f132e446]: Blue Origin plans to fly New Glenn rocket again this year despite massive rocket explosion (video)
+                    - link "SpaceX's next Starship breathes fire for 1st time in prelaunch test (video) - Launches & Spacecraft" [ref=f132e453] [cursor=pointer]:
+                      - /url: https://www.space.com/space-exploration/launches-spacecraft/spacexs-next-starship-breathes-fire-for-1st-time-in-prelaunch-test-video
+                      - img "One engine, in a bay of six, spits hot fire." [ref=f132e456]
+                      - text: Launches & Spacecraft
+                      - generic [ref=f132e457]: SpaceX's next Starship breathes fire for 1st time in prelaunch test (video)
+                    - link "Only a few hours left! This expert-approved, beginner-friendly drone is $60 off for Prime Day - Drones" [ref=f132e464] [cursor=pointer]:
+                      - /url: https://www.space.com/technology/drones/only-a-few-hours-left-this-expert-approved-beginner-friendly-drone-is-usd60-off-for-prime-day
+                      - img "A DJI Neo drone flying in front of a blurred bush or tree." [ref=f132e467]
+                      - text: Drones
+                      - generic [ref=f132e468]: Only a few hours left! This expert-approved, beginner-friendly drone is $60 off for Prime Day
+                    - 'link "Beam me up to 4K: Your ultimate sci-fi collection for less than $25 on Prime Day - Skywatching Kit" [ref=f132e475] [cursor=pointer]':
+                      - /url: https://www.space.com/stargazing/skywatching-kit/beam-me-up-to-4k-your-ultimate-sci-fi-collection-for-less-than-25-dollars
+                      - img "Product photo of the Amazon Fire TV Stick 4k Plus" [ref=f132e478]
+                      - text: Skywatching Kit
+                      - generic [ref=f132e479]: "Beam me up to 4K: Your ultimate sci-fi collection for less than $25 on Prime Day"
+                    - link "Strange glowing 'bow-and-arrow' structure may be a giant cosmic shock wave created by a supersonic galaxy collision - Galaxies" [ref=f132e486] [cursor=pointer]:
+                      - /url: https://www.space.com/astronomy/galaxies/strange-glowing-bow-and-arrow-structure-may-be-a-giant-cosmic-shock-wave-created-by-a-supersonic-galaxy-collision
+                      - img "a red wisp of gas on a starry background" [ref=f132e489]
+                      - text: Galaxies
+                      - generic [ref=f132e490]: Strange glowing 'bow-and-arrow' structure may be a giant cosmic shock wave created by a supersonic galaxy collision
+        - generic [ref=f132e496]:
+          - generic [ref=f132e499]: Advertisement
+          - generic [ref=f132e504]: Advertisement
+  - region "Main footer"
+  - contentinfo "footer content" [ref=f132e508]:
+    - generic [ref=f132e509]:
+      - paragraph [ref=f132e510]:
+        - text: Space is part of Future US Inc, an international media group and leading digital publisher.
+        - link "Visit our corporate site" [ref=f132e511] [cursor=pointer]:
+          - /url: https://futureplc.com/
+        - text: .
+      - link "Add as a preferred source on Google Add as a preferred source on Google" [ref=f132e512] [cursor=pointer]:
+        - /url: https://google.com/preferences/source?q=space.com
+        - img "Add as a preferred source on Google" [ref=f132e514]
+        - generic [ref=f132e515]: Add as a preferred source on Google
+      - navigation "Footer Navigation" [ref=f132e516]:
+        - list [ref=f132e517]:
+          - listitem [ref=f132e518]:
+            - link "About Us" [ref=f132e519] [cursor=pointer]:
+              - /url: https://www.space.com/41418-about-us.html
+          - listitem [ref=f132e520]:
+            - link "Contact Future's experts" [ref=f132e521] [cursor=pointer]:
+              - /url: https://futureplc.com/contact/
+          - listitem [ref=f132e522]:
+            - link "Terms and conditions" [ref=f132e523] [cursor=pointer]:
+              - /url: https://futureplc.com/terms-conditions/
+          - listitem [ref=f132e524]:
+            - link "Privacy policy" [ref=f132e525] [cursor=pointer]:
+              - /url: https://futureplc.com/privacy-policy/
+          - listitem [ref=f132e526]:
+            - link "Cookies policy" [ref=f132e527] [cursor=pointer]:
+              - /url: https://futureplc.com/cookies-policy/
+          - listitem [ref=f132e528]:
+            - link "Accessibility Statement" [ref=f132e529] [cursor=pointer]:
+              - /url: https://futureplc.com/accessibility-statement/
+          - listitem [ref=f132e530]:
+            - link "Advertise with us" [ref=f132e531] [cursor=pointer]:
+              - /url: https://go.future-advertising.com/Spacecom-Media-Kit.html
+          - listitem [ref=f132e532]:
+            - link "Web notifications" [ref=f132e533] [cursor=pointer]:
+              - /url: https://www.space.com/how-to-turn-off-web-notifications-for-chrome-macos.html
+          - listitem [ref=f132e534]:
+            - link "Careers" [ref=f132e535] [cursor=pointer]:
+              - /url: https://futureplc.com/careers/
+          - listitem [ref=f132e536]:
+            - link "Do not sell or share my personal information" [ref=f132e537] [cursor=pointer]:
+              - /url: /privacy-portal
+      - paragraph [ref=f132e538]: © Future US, Inc. Full 7th Floor, 130 West 42nd Street, New York, NY 10036.

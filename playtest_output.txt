@@ -1,0 +1,185 @@
+LogInit: Display: Running engine for game: Chimera
+LogCore: Display: Requested channels: 'cpu,gpu,frame,log,bookmark,screenshot,region'
+LogTrace: Display: Control listening on port 1985
+LogCsvProfiler: Display: Metadata set : platform="Windows"
+LogCsvProfiler: Display: Metadata set : config="Development"
+LogCsvProfiler: Display: Metadata set : buildversion="++UE5+Release-5.8-CL-53629095"
+LogCsvProfiler: Display: Metadata set : engineversion="5.8.0-53629095+++UE5+Release-5.8"
+LogCsvProfiler: Display: Metadata set : enginereleaseversion="5.8.0"
+LogCsvProfiler: Display: Metadata set : os="Windows 11 (25H2) [10.0.26200.8655] "
+LogCsvProfiler: Display: Metadata set : cpu="GenuineIntel|13th Gen Intel(R) Core(TM) i9-13900K"
+LogCsvProfiler: Display: Metadata set : pgoenabled="0"
+LogCsvProfiler: Display: Metadata set : pgoprofilingenabled="0"
+LogCsvProfiler: Display: Metadata set : ltoenabled="0"
+LogCsvProfiler: Display: Metadata set : asan="0"
+LogCsvProfiler: Display: Metadata set : mergedmodules="0"
+LogCsvProfiler: Display: Metadata set : compacttset="0"
+LogCsvProfiler: Display: Metadata set : commandline="" E:\PythonChimera\Chimera\Chimera.uproject /Game/Levels/chimeradefaultlevel?Game=/Script/Chimera.DeepSpaceTraderGameMode -game -log -stdout -nosound -nodebugger -nopause -windowed -resx=800 -resy=600 -ExecCmds=Automation RunTests DeepSpaceTraderTests; Quit -TestExit=Automation Test Queue Empty -Unattended -NoSplash -NoPause""
+LogCsvProfiler: Display: Metadata set : loginid="03a9b03e4cbb90fc2295a99e1706efd3"
+LogCsvProfiler: Display: Metadata set : llm="0"
+LogCsvProfiler: Display: Metadata set : zenstreaming="0"
+LogCsvProfiler: Display: Metadata set : systemresolution.resx="1280"
+LogCsvProfiler: Display: Metadata set : systemresolution.resy="720"
+LogAudio: Display: Audio Device Manager not initializing due to all audio being disabled. If this is not intentional, please check command line arguments for "-nosound".
+LogConfig: Display: Loading VulkanPC ini files took 0.04 seconds
+LogConfig: Display: Loading Mac ini files took 0.04 seconds
+LogConfig: Display: Loading Android ini files took 0.04 seconds
+LogConfig: Display: Loading IOS ini files took 0.04 seconds
+LogConfig: Display: Loading VisionOS ini files took 0.04 seconds
+LogConfig: Display: Loading Unix ini files took 0.04 seconds
+LogConfig: Display: Loading TVOS ini files took 0.04 seconds
+LogConfig: Display: Loading Windows ini files took 0.05 seconds
+LogConfig: Display: Loading Linux ini files took 0.05 seconds
+LogPluginManager: Display: The Plugin StructUtils has been marked deprecated for 5.5 and will be removed soon. Please update your dependencies.
+LogAnalytics: Display: Provider StudioTelemetry.Provider.Log is disabled for this application
+LogAnalytics: Display: Provider StudioTelemetry.Provider.CSV is disabled for this application
+LogAnalytics: Display: Provider StudioTelemetry.Provider.Horde is disabled for this application
+RenderDocPlugin: Display: RenderDoc plugin will not be loaded. Use '-AttachRenderDoc' on the cmd line or enable 'renderdoc.AutoAttach' in the plugin settings.
+LogAsyncCompilation: Display: MemorySharingInfo: UsedMemory=349MiB, MaxMemoryAvailable=139035MiB
+LogStreaming: Display: AsyncLoading2 - Created: Async Loading Thread: false, Async Post Load: false, Multithreaded: false
+[2026.07.04-03.54.33:098][  0]LogCsvProfiler: Display: Metadata set : systemresolution.resx="800"
+[2026.07.04-03.54.33:098][  0]LogCsvProfiler: Display: Metadata set : systemresolution.resy="600"
+[2026.07.04-03.54.33:099][  0]LogHAL: Display: Platform has ~ 128 GB [137199091712 / 137438953472 / 128], which maps to Largest [LargestMinGB=32, LargerMinGB=12, DefaultMinGB=8, SmallerMinGB=6, SmallestMinGB=0)
+[2026.07.04-03.54.33:111][  0]LogCsvProfiler: Display: Metadata set : extradevelopmentmemorymb="0"
+[2026.07.04-03.54.33:111][  0]LogObj: Display: Attempting to load config data for Default__DownlinkBandwidthManagerConfig before the Class has been constructed/registered/linked (likely during module loading or early startup). This will result in the load silently failing and should be fixed.
+[2026.07.04-03.54.33:535][  0]LogWindowsTouchpad: Display: CacheForceMaxTouchpadSensitivityMode SetMaxTouchpadSensitivity
+[2026.07.04-03.54.33:541][  0]LogObj: Display: Attempting to load config data for Default__SlateThemeManager before the Class has been constructed/registered/linked (likely during module loading or early startup). This will result in the load silently failing and should be fixed.
+[2026.07.04-03.54.34:018][  0]LogD3D12RHI: Display: Creating D3D12 RHI with Max Feature Level SM5
+[2026.07.04-03.54.34:022][  0]LogRHI: Display: Timeout Detection and Recovery (TDR) summary: 
+	- TDR settings OK - Level: Recover, Delay: 2, DdiDelay: 5
+[2026.07.04-03.54.34:290][  0]LogD3D12RHI: Display: Not using pipeline state disk cache per r.D3D12.PSO.DiskCache=0
+[2026.07.04-03.54.34:290][  0]LogD3D12RHI: Display: Not using driver-optimized pipeline state disk cache per r.D3D12.PSO.DriverOptimizedDiskCache=0
+[2026.07.04-03.54.34:296][  0]LogCsvProfiler: Display: Metadata set : verbatimrhiname="D3D12"
+[2026.07.04-03.54.34:297][  0]LogCsvProfiler: Display: Metadata set : rhiname="D3D12"
+[2026.07.04-03.54.34:297][  0]LogCsvProfiler: Display: Metadata set : rhifeaturelevel="SM5"
+[2026.07.04-03.54.34:297][  0]LogCsvProfiler: Display: Metadata set : shaderplatform="PCD3D_SM5"
+[2026.07.04-03.54.34:297][  0]LogCsvProfiler: Display: Metadata set : gpu="NVIDIA GeForce RTX 4090"
+[2026.07.04-03.54.34:297][  0]LogCsvProfiler: Display: Metadata set : gpudriver="610.47"
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" -Mode=ValidatePlatforms -OutputSDKs  -AllPlatforms  -project="E:/PythonChimera/Chimera/Chimera.uproject" -log="E:/PythonChimera/Chimera/Saved/Logs/AutoSDKInfo.txt" -verbose -timestamps
+Log file: E:\PythonChimera\Chimera\Saved\Logs\AutoSDKInfo.txt
+##PlatformValidate: Win64 VALID 10.0.22621.0
+##PlatformValidate: Mac INVALID 26.1.1
+##PlatformValidate: IOS INVALID 26.1.1
+##PlatformValidate: Android INVALID r27c
+##PlatformValidate: Linux INVALID v26_clang-20.1.8-rockylinux8
+##PlatformValidate: LinuxArm64 INVALID <UNKNOWN>
+##PlatformValidate: TVOS INVALID 26.1.1
+##PlatformValidate: VisionOS INVALID <UNKNOWN>
+Unable to find required SDK version 'MainVersion' for platform LinuxArm64. Check your SDK.json files
+Unable to find required SDK version 'MainVersion' for platform VisionOS. Check your SDK.json files
+Trace written to file C:\Users\allen\AppData\Local\UnrealBuildTool\Trace.uba with size 318b
+[2026.07.04-03.54.34:710][  0]LogTextureFormatASTC: Display: ASTCEnc version 5.0.1 library loaded
+[2026.07.04-03.54.34:710][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatASTC
+[2026.07.04-03.54.34:710][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatDXT
+[2026.07.04-03.54.34:710][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatETC2
+[2026.07.04-03.54.34:710][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatIntelISPCTexComp
+[2026.07.04-03.54.34:710][  0]LogTextureFormatOodle: Display: Oodle Texture TFO init; latest sdk version = 2.9.16
+[2026.07.04-03.54.34:710][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.16.dll
+[2026.07.04-03.54.34:712][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatOodle
+[2026.07.04-03.54.34:712][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatUncompressed
+[2026.07.04-03.54.34:759][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Windows'
+[2026.07.04-03.54.34:759][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsEditor'
+[2026.07.04-03.54.34:760][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsServer'
+[2026.07.04-03.54.34:760][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsClient'
+[2026.07.04-03.54.34:760][  0]LogTargetPlatformManager: Display: Building Assets For WindowsEditor
+[2026.07.04-03.54.34:763][  0]LogAudioDebug: Display: Lib vorbis DLL was dynamically loaded.
+[2026.07.04-03.54.35:019][  0]LogDerivedDataCache: Display: ../../../Engine/DerivedDataCache/Compressed.ddp: Opened pak cache for reading. (1688 MiB)
+[2026.07.04-03.54.35:020][  0]LogZenServiceInstance: Display: Launching zen utility 'C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/zen.exe service status'.
+[2026.07.04-03.54.36:436][  0]LogZenServiceInstance: Display: Writing plugin version info to 'C:/Users/allen/AppData/Local/UnrealEngine/Common/Zen/Install/zen_plugin_versions.json'
+[2026.07.04-03.54.36:436][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/allen/AppData/Local/UnrealEngine/5.8/Saved/Zen/zen.version', version: '5.8.8-202604241126-windows-x64-release-0882b34'
+[2026.07.04-03.54.36:437][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/allen/AppData/Local/UnrealEngine/Common/Zen/Install/zen.version', version: '5.8.8-202604241126-windows-x64-release-0882b34'
+[2026.07.04-03.54.36:437][  0]LogZenServiceInstance: Display: Installed service at 'C:/Users/allen/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is up to date
+[2026.07.04-03.54.36:437][  0]LogZenServiceInstance: Display: Launching executable 'C:/Users/allen/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe', working dir 'C:/Users/allen/AppData/Local/UnrealEngine/Common/Zen/Install', data dir 'C:/Users/allen/AppData/Local/UnrealEngine/Common/Zen/Data', args '--port 8558 --data-dir C:\Users\allen\AppData\Local\UnrealEngine\Common\Zen\Data --http asio --gc-cache-duration-seconds 1209600 --gc-interval-seconds 21600 --gc-low-diskspace-threshold 2147483648 --cache-bucket-limit-overwrites --quiet --restrict-content-types --allow-external-oidctoken-exe=false --plugins-config "C:/Users/allen/AppData/Local/UnrealEngine/Common/Zen/Install/zen_plugins_v1.json" --security-config-path "C:/Users/allen/AppData/Local/UnrealEngine/Common/Zen/Install/security-config.json" --owner-pid 66424  --child-id Zen_66424_Startup'
+[2026.07.04-03.54.38:601][  0]LogZenServiceInstance: Display: Unreal Zen Storage Server HTTP service at http://[::1]:8558 status: OK!.
+[2026.07.04-03.54.38:602][  0]LogDerivedDataCache: Display: ZenLocal: Using ZenServer HTTP service at [::1] with namespace ue.ddc status: OK!.
+[2026.07.04-03.54.38:607][  0]LogDerivedDataCache: Display: C:/Users/allen/AppData/Local/UnrealEngine/Common/DerivedDataCache: Performance: Latency=0.06ms. RandomReadSpeed=932.02MBs, RandomWriteSpeed=246.81MBs. Assigned SpeedClass 'Local'
+[2026.07.04-03.54.38:610][  0]LogShaderCompilers: Display: No distributed shader compiler controller found
+[2026.07.04-03.54.38:610][  0]LogShaderCompilers: Display: Using 16 local workers for shader compilation
+[2026.07.04-03.54.38:617][  0]LogShaderCompilers: Display: Compiling shader autogen file: E:/PythonChimera/Chimera/Intermediate/ShaderAutogen/PCD3D_SM5/AutogenShaderHeaders.ush
+[2026.07.04-03.54.38:619][  0]LogShaderCompilers: Display: Autogen file is unchanged, skipping write.
+[2026.07.04-03.54.39:617][  0]LogDeviceProfileManager: Display: Deviceprofile LinuxArm64Editor not found.
+[2026.07.04-03.54.39:618][  0]LogDeviceProfileManager: Display: Deviceprofile LinuxArm64 not found.
+[2026.07.04-03.54.39:652][  0]LogCsvProfiler: Display: Metadata set : deviceprofile="WindowsEditor"
+[2026.07.04-03.54.39:654][  0]LogStreaming: Display: FlushAsyncLoading(1): 1 QueuedPackages, 0 AsyncPackages
+[2026.07.04-03.54.39:660][  0]LogTextureEncodingSettings: Display: Texture Encode Speed: Final (cook).
+[2026.07.04-03.54.39:662][  0]LogTextureEncodingSettings: Display: Oodle Texture Encode Speed settings: Fast: RDO Off Lambda=0, Effort=Normal Final: RDO Off Lambda=0, Effort=Normal
+[2026.07.04-03.54.39:662][  0]LogTextureEncodingSettings: Display: Shared linear texture encoding: Disabled
+[2026.07.04-03.54.39:888][  0]LogMeshReduction: Display: Using QuadricMeshReduction for automatic static mesh reduction
+[2026.07.04-03.54.39:889][  0]LogMeshReduction: Display: Using SkeletalMeshReduction for automatic skeletal mesh reduction
+[2026.07.04-03.54.39:889][  0]LogMeshReduction: Display: Using ProxyLODMeshReduction for automatic mesh merging
+[2026.07.04-03.54.39:889][  0]LogMeshReduction: Display: No distributed automatic mesh merging module available
+[2026.07.04-03.54.40:114][  0]LogVirtualization: Display: VirtualizationSystem name found in ini file: None
+[2026.07.04-03.54.40:115][  0]LogVirtualization: Display: FNullVirtualizationSystem mounted, virtualization will be disabled
+[2026.07.04-03.54.40:161][  0]LogWorldPartition: Display: FWorldPartitionClassDescRegistry::Initialize started...
+[2026.07.04-03.54.40:163][  0]LogWorldPartition: Display: FWorldPartitionClassDescRegistry::Initialize took 1.620 ms
+[2026.07.04-03.54.40:547][  0]LogMetaSound: Display: MetaSound Page Target Initialized to 'Default'
+[2026.07.04-03.54.40:549][  0]LogAudio: Display: Registering Engine Module Parameter Interfaces...
+[2026.07.04-03.54.40:859][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2026.07.04-03.54.40:859][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2026.07.04-03.54.41:179][  0]LogClass: Error: IntProperty FWeaponSlotData::Count is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:180][  0]LogClass: Error: FloatProperty FWeaponSlotData::FireRate is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:180][  0]LogClass: Error: FloatProperty FWeaponSlotData::DamagePerShot is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:180][  0]LogClass: Error: FloatProperty FWeaponSlotData::ProjectileSpeed is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:180][  0]LogClass: Error: FloatProperty FWeaponSlotData::Range is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:180][  0]LogClass: Error: IntProperty FMissileRackData::Count is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:180][  0]LogClass: Error: FloatProperty FMissileRackData::Damage is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:180][  0]LogClass: Error: FloatProperty FMissileRackData::TrackingStrength is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:180][  0]LogClass: Display: 8 Uninitialized script struct members found including 0 object properties
+[2026.07.04-03.54.41:185][  0]LogAutomationTest: Error: LogClass: IntProperty FWeaponSlotData::Count is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:185][  0]LogAutomationTest: Error: LogClass: FloatProperty FWeaponSlotData::FireRate is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:185][  0]LogAutomationTest: Error: LogClass: FloatProperty FWeaponSlotData::DamagePerShot is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:185][  0]LogAutomationTest: Error: LogClass: FloatProperty FWeaponSlotData::ProjectileSpeed is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:185][  0]LogAutomationTest: Error: LogClass: FloatProperty FWeaponSlotData::Range is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:185][  0]LogAutomationTest: Error: LogClass: IntProperty FMissileRackData::Count is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:186][  0]LogAutomationTest: Error: LogClass: FloatProperty FMissileRackData::Damage is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:186][  0]LogAutomationTest: Error: LogClass: FloatProperty FMissileRackData::TrackingStrength is not initialized properly. Module:Chimera File:ProceduralGenerated/Combat/WeaponComponent.h
+[2026.07.04-03.54.41:378][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.12.dll
+[2026.07.04-03.54.41:380][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.15.dll
+[2026.07.04-03.54.41:453][  0]LogCsvProfiler: Display: Metadata set : largeworldcoordinates="1"
+[2026.07.04-03.54.41:462][  0]LogInit: Display: Game Engine Initialized.
+[2026.07.04-03.54.41:510][  0]LogPython: Display: No pip-enabled plugins with python dependencies found, skipping
+[2026.07.04-03.54.41:735][  0]LogCsvProfiler: Display: Metadata set : raytracing="0"
+[2026.07.04-03.54.41:762][  0]LogEditorDataStorageUI: Warning: Unable to register widget factory 'ActorLayersWidgetConstructor' as purpose '0' isn't registered.
+[2026.07.04-03.54.41:762][  0]LogEditorDataStorageUI: Warning: Unable to register widget factory 'AlertWidgetConstructor' as purpose '0' isn't registered.
+[2026.07.04-03.54.41:763][  0]LogEditorDataStorageUI: Warning: Unable to register widget factory 'AlertHeaderWidgetConstructor' as purpose '0' isn't registered.
+[2026.07.04-03.54.41:763][  0]LogEditorDataStorageUI: Warning: Unable to register widget factory 'UObjectLabelWidgetConstructor' as purpose '0' isn't registered.
+[2026.07.04-03.54.41:763][  0]LogEditorDataStorageUI: Warning: Unable to register widget factory 'OutlinerUnsavedWidgetConstructor' as purpose '0' isn't registered.
+[2026.07.04-03.54.41:764][  0]LogEditorDataStorageUI: Warning: Unable to register widget factory 'OutlinerUnsavedHeaderConstructor' as purpose '0' isn't registered.
+[2026.07.04-03.54.41:764][  0]LogEditorDataStorageUI: Warning: Unable to register widget factory 'SocketWidgetConstructor' as purpose '0' isn't registered.
+[2026.07.04-03.54.41:764][  0]LogEditorDataStorageUI: Warning: Unable to register widget factory 'TypeInfoWidgetConstructor' as purpose '0' isn't registered.
+[2026.07.04-03.54.41:764][  0]LogInit: Display: Starting Game.
+[2026.07.04-03.54.41:823][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.5.dll
+[2026.07.04-03.54.41:842][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Engine/MapTemplates/SM_Template_Map_Floor.SM_Template_Map_Floor being ready before playing
+[2026.07.04-03.54.41:843][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Engine/EngineSky/SM_SkySphere.SM_SkySphere being ready before playing
+[2026.07.04-03.54.41:846][  0]LogUObjectGlobals: Warning: Failed to find object 'Object /Game/ProceduralGenerated/PCG/UPCG_Graph_Environment_Clutter_Graph.UPCG_Graph_Environment_Clutter_Graph'
+[2026.07.04-03.54.41:846][  0]LogTemp: Warning: PCG graph asset not found: /Game/ProceduralGenerated/PCG/UPCG_Graph_Environment_Clutter_Graph.UPCG_Graph_Environment_Clutter_Graph. Skipping PCG generation.
+[2026.07.04-03.54.41:846][  0]LogUObjectGlobals: Warning: Failed to find object 'Object /Game/ProceduralGenerated/PCG/UPCG_Graph_Planet_Surface_Generation.UPCG_Graph_Planet_Surface_Generation'
+[2026.07.04-03.54.41:846][  0]LogTemp: Warning: PCG graph asset not found: /Game/ProceduralGenerated/PCG/UPCG_Graph_Planet_Surface_Generation.UPCG_Graph_Planet_Surface_Generation. Skipping PCG generation.
+[2026.07.04-03.54.44:203][  0]LogWindows: Error: === Critical error: ===
+[2026.07.04-03.54.44:203][  0]LogWindows: Error: 
+[2026.07.04-03.54.44:203][  0]LogWindows: Error: Fatal error!
+[2026.07.04-03.54.44:203][  0]LogWindows: Error: 
+[2026.07.04-03.54.44:203][  0]LogWindows: Error: Unhandled Exception: EXCEPTION_ACCESS_VIOLATION reading address 0xffffffffffffffff
+[2026.07.04-03.54.44:204][  0]LogWindows: Error: 
+[2026.07.04-03.54.44:204][  0]LogWindows: Error: [Callstack] 0x00007ffa7d600879 UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:204][  0]LogWindows: Error: [Callstack] 0x00007ffa7e3fe8de UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:204][  0]LogWindows: Error: [Callstack] 0x00007ffa7e3e754f UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:204][  0]LogWindows: Error: [Callstack] 0x00007ffa7d642c6e UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:204][  0]LogWindows: Error: [Callstack] 0x000001bf2a8637e0 UnrealEditor-Chimera.dll!ADeepSpaceTraderGameMode::BeginPlay() [E:\PythonChimera\Chimera\Source\Chimera\ProceduralGenerated\GameMode\DeepSpaceTraderGameMode.cpp:84]
+[2026.07.04-03.54.44:204][  0]LogWindows: Error: [Callstack] 0x00007ffa7cc70ed8 UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:204][  0]LogWindows: Error: [Callstack] 0x00007ffa7f019611 UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ffa7d958cf1 UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ffa7edc5818 UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ffa7f19f2f5 UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ffa7f15743e UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ffa7d985744 UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ffa7d8fef4d UnrealEditor-Engine.dll!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ff62be7d5f5 UnrealEditor-Cmd.exe!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ff62be7c375 UnrealEditor-Cmd.exe!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ff62be7c56a UnrealEditor-Cmd.exe!UnknownFunction []
+[2026.07.04-03.54.44:205][  0]LogWindows: Error: [Callstack] 0x00007ff62be81206 UnrealEditor-Cmd.exe!UnknownFunction []
+[2026.07.04-03.54.44:206][  0]LogWindows: Error: [Callstack] 0x00007ff62be95bc4 UnrealEditor-Cmd.exe!UnknownFunction []
+[2026.07.04-03.54.44:206][  0]LogWindows: Error: [Callstack] 0x00007ff62be982da UnrealEditor-Cmd.exe!UnknownFunction []
+[2026.07.04-03.54.44:206][  0]LogWindows: Error: [Callstack] 0x00007ffb8c24e957 KERNEL32.DLL!UnknownFunction []
+[2026.07.04-03.54.44:206][  0]LogWindows: Error: 

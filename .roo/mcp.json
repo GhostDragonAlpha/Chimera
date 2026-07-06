@@ -1,0 +1,77 @@
+{
+	"mcpServers": {
+		"unreal-engine": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"unreal-engine-mcp-server"
+			],
+			"env": {
+				"UE_PROJECT_PATH": "E:/PythonChimera/Chimera",
+				"MCP_AUTOMATION_PORT": "8091"
+			},
+			"alwaysAllow": [
+				"manage_tools",
+				"manage_geometry",
+				"manage_level",
+				"manage_lighting",
+				"control_actor",
+				"inspect",
+				"control_editor",
+				"manage_asset",
+				"system_control",
+				"manage_performance",
+				"manage_material_authoring",
+				"manage_blueprint",
+				"manage_texture",
+				"manage_effect",
+				"manage_character"
+			]
+		},
+		"chiR24-unreal-mcp": {
+			"type": "stdio",
+			"command": "node",
+			"args": [
+				"E:/ChiR24-Unreal_mcp-test/dist/cli.js"
+			],
+			"cwd": "E:/ChiR24-Unreal_mcp-test",
+			"alwaysAllow": [
+				"control_editor",
+				"control_actor",
+				"manage_asset",
+				"manage_level"
+			]
+		},
+		"playwright": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@latest"
+			],
+			"alwaysAllow": [
+				"browser_navigate",
+				"browser_snapshot",
+				"browser_run_code_unsafe",
+				"browser_evaluate",
+				"browser_tabs",
+				"browser_take_screenshot",
+				"browser_console_messages"
+			]
+		},
+		"graphify": {
+			"type": "stdio",
+			"command": "C:\\Users\\allen\\AppData\\Roaming\\Python\\Python314\\Scripts\\graphify-mcp.exe",
+			"args": [
+				"E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json"
+			],
+			"cwd": "E:/PythonChimera/Chimera",
+			"alwaysAllow": [
+				"query_graph",
+				"graph_stats",
+				"god_nodes",
+				"get_community",
+				"get_node"
+			]
+		}
+	}
+}

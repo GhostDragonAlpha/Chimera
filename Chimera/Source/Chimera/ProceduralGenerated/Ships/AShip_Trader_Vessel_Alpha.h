@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
 #include "FlightComponent.h"
 #include "WeaponComponent.h"
 #include "ShieldComponent.h"
@@ -13,15 +13,27 @@
 #include "MissionComponent.h"
 #include "FactionComponent.h"
 #include "SaveGameComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/SceneComponent.h"
 #include "AShip_Trader_Vessel_Alpha.generated.h"
 
 UCLASS()
-class CHIMERA_API AShip_Trader_Vessel_Alpha : public AActor
+class CHIMERA_API AShip_Trader_Vessel_Alpha : public APawn
 {
 	GENERATED_BODY()
 
 public:
-	AShip_Trader_Vessel_Alpha();
+	AShip_Trader_Vessel_Alpha(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* ShipRoot;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* ShipMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* CameraComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ship")
 	FName ShipCategory;

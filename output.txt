@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import json, urllib.request, sys; url = 'http://localhost:1234/v1/chat/completions'; payload = json.dumps({'model': 'qwen3.6-35b-a3b-mtp@iq2_m', 'messages': [{'role': 'user', 'content': 'Say hello'}], 'temperature': 0.1, 'max_tokens': 100}).encode(); req = urllib.request.Request(url, data=payload, headers={'Content-Type': 'application/json'}); resp = urllib.request.urlopen(req, timeout=120); data = json.loads(resp.read()); print(data['choices'][0]['message']['content'], flush=True)
+                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 493, in open
+    response = meth(req, response)
+  File "C:\Python314\Lib\urllib\request.py", line 602, in http_response
+    response = self.parent.error(
+        'http', request, response, code, msg, hdrs)
+  File "C:\Python314\Lib\urllib\request.py", line 531, in error
+    return self._call_chain(*args)
+           ~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 611, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 400: Bad Request

@@ -1,0 +1,266 @@
+- generic [active] [ref=f9e1]:
+  - generic:
+    - generic:
+      - link "Skip to main content" [ref=f9e2] [cursor=pointer]
+      - link "Turn off continuous scrolling" [ref=f9e3] [cursor=pointer]:
+        - /url: "#"
+      - link "Accessibility help" [ref=f9e4] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=en
+  - generic [ref=f9e9]:
+    - search [ref=f9e10]:
+      - generic [ref=f9e12]:
+        - 'link "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f9e14] [cursor=pointer]':
+          - /url: https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwiGysjO5rmVAxXKjCsGHWshIWsQPQgJ
+          - 'img "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f9e15]'
+        - generic [ref=f9e16]:
+          - generic [ref=f9e17]:
+            - combobox "Search" [ref=f9e20]: handheld geological survey scanner lunar surface analysis tool handheld geological survey scanner lunar surface analysis tool
+            - generic [ref=f9e21]:
+              - button "Clear" [ref=f9e23] [cursor=pointer]:
+                - img [ref=f9e25]
+              - generic [ref=f9e28]:
+                - button "Search by voice" [ref=f9e29] [cursor=pointer]:
+                  - img [ref=f9e30]
+                - button "Search by image" [ref=f9e32] [cursor=pointer]:
+                  - img [ref=f9e33]
+          - button "Search" [ref=f9e35] [cursor=pointer]:
+            - img [ref=f9e38]
+    - generic [ref=f9e40]:
+      - button "Settings" [ref=f9e42] [cursor=pointer]:
+        - img [ref=f9e45]
+      - generic [ref=f9e48]:
+        - button "Google apps" [ref=f9e50] [cursor=pointer]:
+          - img [ref=f9e51]
+        - link "Sign in" [ref=f9e55] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=https://www.google.com/search%3Fq%3Dhandheld%2Bgeological%2Bsurvey%2Bscanner%2Blunar%2Bsurface%2Banalysis%2Btool%26udm%3D2&ec=futura_srp_og_si_72236_p
+  - generic [ref=f9e57]:
+    - navigation [ref=f9e62]:
+      - generic [ref=f9e63]:
+        - list [ref=f9e64]:
+          - listitem [ref=f9e65]:
+            - link "AI Mode" [ref=f9e68] [cursor=pointer]:
+              - /url: /search?q=handheld+geological+survey+scanner+lunar+surface+analysis+tool&sca_esv=91c0d796bc89922b&udm=50&fbs=ABfTbFUxGEP8yeZbmk97ajdTjIq-bxSzyj7z9gU06lAo0LlvNKzSRx6KfqVA5DRSEwRk3qXBat9txIyjcBypwpb4VUzZ0nrJHLHEVGi2fZiLledXnNtyX2G5SJVqSidHJsh4KjpkCOcgd57sOHKTIYGMN1aLIRG_g5YGeSIK8hdhJyh1JwmmIuaN493LCgljStriw25OyAZXL56syB3QSuBUUNzlv_rHoxHraFuh6yOgltL9BQJR_kY&aep=1&ntc=1&sa=X&ved=2ahUKEwiGysjO5rmVAxXKjCsGHWshIWsQ2J8OegQIChAD
+              - generic [ref=f9e71]: AI Mode
+          - listitem [ref=f9e72]:
+            - link "All" [ref=f9e73] [cursor=pointer]:
+              - /url: /search?sca_esv=91c0d796bc89922b&q=handheld+geological+survey+scanner+lunar+surface+analysis+tool&source=lnms&fbs=ABfTbFUxGEP8yeZbmk97ajdTjIq-bxSzyj7z9gU06lAo0LlvNKzSRx6KfqVA5DRSEwRk3qXBat9txIyjcBypwpb4VUzZ0nrJHLHEVGi2fZiLledXnNtyX2G5SJVqSidHJsh4KjpkCOcgd57sOHKTIYGMN1aLIRG_g5YGeSIK8hdhJyh1JwmmIuaN493LCgljStriw25OyAZXL56syB3QSuBUUNzlv_rHoxHraFuh6yOgltL9BQJR_kY&sa=X&ved=2ahUKEwiGysjO5rmVAxXKjCsGHWshIWsQ0pQJegQIDRAB
+              - generic [ref=f9e75]: All
+          - listitem [ref=f9e76]:
+            - link "Images" [disabled] [ref=f9e77]:
+              - generic [ref=f9e79]: Images
+          - listitem [ref=f9e80]:
+            - link "Shopping" [ref=f9e81] [cursor=pointer]:
+              - /url: /search?sca_esv=91c0d796bc89922b&udm=28&fbs=ABfTbFUxGEP8yeZbmk97ajdTjIq-bxSzyj7z9gU06lAo0LlvNKzSRx6KfqVA5DRSEwRk3qXBat9txIyjcBypwpb4VUzZ0nrJHLHEVGi2fZiLledXnNtyX2G5SJVqSidHJsh4KjpkCOcgd57sOHKTIYGMN1aLIRG_g5YGeSIK8hdhJyh1JwmmIuaN493LCgljStriw25OyAZXL56syB3QSuBUUNzlv_rHoxHraFuh6yOgltL9BQJR_kY&q=handheld+geological+survey+scanner+lunar+surface+analysis+tool&ved=1t:220175&ictx=111
+              - generic [ref=f9e83]: Shopping
+          - listitem [ref=f9e84]:
+            - link "Forums" [ref=f9e85] [cursor=pointer]:
+              - /url: /search?sca_esv=91c0d796bc89922b&udm=18&fbs=ABfTbFUxGEP8yeZbmk97ajdTjIq-bxSzyj7z9gU06lAo0LlvNKzSRx6KfqVA5DRSEwRk3qXBat9txIyjcBypwpb4VUzZ0nrJHLHEVGi2fZiLledXnNtyX2G5SJVqSidHJsh4KjpkCOcgd57sOHKTIYGMN1aLIRG_g5YGeSIK8hdhJyh1JwmmIuaN493LCgljStriw25OyAZXL56syB3QSuBUUNzlv_rHoxHraFuh6yOgltL9BQJR_kY&q=handheld+geological+survey+scanner+lunar+surface+analysis+tool&sa=X&ved=2ahUKEwiGysjO5rmVAxXKjCsGHWshIWsQs6gLegQIDhAB
+              - generic [ref=f9e87]: Forums
+          - listitem [ref=f9e88]:
+            - link "Short videos" [ref=f9e89] [cursor=pointer]:
+              - /url: /search?sca_esv=91c0d796bc89922b&udm=39&fbs=ABfTbFUxGEP8yeZbmk97ajdTjIq-bxSzyj7z9gU06lAo0LlvNKzSRx6KfqVA5DRSEwRk3qXBat9txIyjcBypwpb4VUzZ0nrJHLHEVGi2fZiLledXnNtyX2G5SJVqSidHJsh4KjpkCOcgd57sOHKTIYGMN1aLIRG_g5YGeSIK8hdhJyh1JwmmIuaN493LCgljStriw25OyAZXL56syB3QSuBUUNzlv_rHoxHraFuh6yOgltL9BQJR_kY&q=handheld+geological+survey+scanner+lunar+surface+analysis+tool&sa=X&ved=2ahUKEwiGysjO5rmVAxXKjCsGHWshIWsQs6gLegQIDBAB
+              - generic [ref=f9e91]: Short videos
+          - listitem [ref=f9e92]:
+            - link "Web" [ref=f9e93] [cursor=pointer]:
+              - /url: /search?sca_esv=91c0d796bc89922b&udm=web&fbs=ABfTbFUxGEP8yeZbmk97ajdTjIq-bxSzyj7z9gU06lAo0LlvNKzSRx6KfqVA5DRSEwRk3qXBat9txIyjcBypwpb4VUzZ0nrJHLHEVGi2fZiLledXnNtyX2G5SJVqSidHJsh4KjpkCOcgd57sOHKTIYGMN1aLIRG_g5YGeSIK8hdhJyh1JwmmIuaN493LCgljStriw25OyAZXL56syB3QSuBUUNzlv_rHoxHraFuh6yOgltL9BQJR_kY&q=handheld+geological+survey+scanner+lunar+surface+analysis+tool&sa=X&ved=2ahUKEwiGysjO5rmVAxXKjCsGHWshIWsQs6gLegQIDxAB
+              - generic [ref=f9e95]: Web
+          - listitem [ref=f9e96]:
+            - button "More filters" [ref=f9e97] [cursor=pointer]:
+              - generic "More filters" [ref=f9e98]:
+                - generic [ref=f9e99]:
+                  - generic [ref=f9e100]: More
+                  - img [ref=f9e102]
+        - button "Tools" [ref=f9e105] [cursor=pointer]:
+          - generic [ref=f9e107]:
+            - generic [ref=f9e108]: Tools
+            - img [ref=f9e110]
+    - heading "Search Results" [level=1] [ref=f9e112]
+    - main [ref=f9e114]:
+      - generic [ref=f9e123]:
+        - generic [ref=f9e127] [cursor=pointer]:
+          - button "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e132]:
+            - img "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e134]
+          - link "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching Geo-matching" [ref=f9e136]:
+            - /url: https://geo-matching.com/products/handheld-3d-lidar-scanner-high-precision-portable-mapping-device-for-education-architecture-industrial-surveying
+            - generic [ref=f9e137]:
+              - generic [ref=f9e139]: Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching
+              - generic [ref=f9e143]: Geo-matching
+        - generic [ref=f9e147] [cursor=pointer]:
+          - 'button "SLAM 1000 HANDHELD SCANNER: ENTRY-LEVEL MODEL FOR PROFESSIONAL MAPPING" [ref=f9e152]':
+            - 'img "SLAM 1000 HANDHELD SCANNER: ENTRY-LEVEL MODEL FOR PROFESSIONAL MAPPING" [ref=f9e154]'
+          - 'link "SLAM 1000 HANDHELD SCANNER: ENTRY-LEVEL MODEL FOR PROFESSIONAL MAPPING TOPODRONE" [ref=f9e156]':
+            - /url: https://topodrone.com/blog/slam-1000-handheld-scanner-entry-level-model-for-professional-mapping/
+            - generic [ref=f9e157]:
+              - generic [ref=f9e159]: "SLAM 1000 HANDHELD SCANNER: ENTRY-LEVEL MODEL FOR PROFESSIONAL MAPPING"
+              - generic [ref=f9e163]: TOPODRONE
+        - generic [ref=f9e167] [cursor=pointer]:
+          - button "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e172]:
+            - img "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e174]
+          - link "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching Geo-matching" [ref=f9e176]:
+            - /url: https://geo-matching.com/products/handheld-3d-lidar-scanner-high-precision-portable-mapping-device-for-education-architecture-industrial-surveying
+            - generic [ref=f9e177]:
+              - generic [ref=f9e179]: Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching
+              - generic [ref=f9e183]: Geo-matching
+        - generic [ref=f9e187] [cursor=pointer]:
+          - button "Handheld Surface Analyst" [ref=f9e192]:
+            - img "Handheld Surface Analyst" [ref=f9e194]
+          - link "Handheld Surface Analyst Brighton Science" [ref=f9e196]:
+            - /url: https://www.brighton-science.com/solutions/non-networked-solutions/5001-high-performance-surface-inspection
+            - generic [ref=f9e197]:
+              - generic [ref=f9e199]: Handheld Surface Analyst
+              - generic [ref=f9e203]: Brighton Science
+        - generic [ref=f9e207] [cursor=pointer]:
+          - button "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e212]:
+            - img "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e214]
+          - link "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching Geo-matching" [ref=f9e216]:
+            - /url: https://geo-matching.com/products/handheld-3d-lidar-scanner-high-precision-portable-mapping-device-for-education-architecture-industrial-surveying
+            - generic [ref=f9e217]:
+              - generic [ref=f9e219]: Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching
+              - generic [ref=f9e223]: Geo-matching
+        - generic [ref=f9e227] [cursor=pointer]:
+          - button "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e232]:
+            - img "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e234]
+          - link "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching Geo-matching" [ref=f9e236]:
+            - /url: https://geo-matching.com/products/handheld-3d-lidar-scanner-high-precision-portable-mapping-device-for-education-architecture-industrial-surveying
+            - generic [ref=f9e237]:
+              - generic [ref=f9e239]: Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching
+              - generic [ref=f9e243]: Geo-matching
+        - generic [ref=f9e247] [cursor=pointer]:
+          - button "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e252]:
+            - img "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching" [ref=f9e254]
+          - link "Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching Geo-matching" [ref=f9e256]:
+            - /url: https://geo-matching.com/products/handheld-3d-lidar-scanner-high-precision-portable-mapping-device-for-education-architecture-industrial-surveying
+            - generic [ref=f9e257]:
+              - generic [ref=f9e259]: Handheld 3D LiDAR Scanner – High Precision Portable Mapping Device for Education, Architecture & Industrial Surveying - Geo-matching
+              - generic [ref=f9e263]: Geo-matching
+        - generic [ref=f9e267] [cursor=pointer]:
+          - button "ESA - Moon tools to the test at LUNA" [ref=f9e272]:
+            - img "ESA - Moon tools to the test at LUNA" [ref=f9e274]
+          - link "ESA - Moon tools to the test at LUNA European Space Agency" [ref=f9e276]:
+            - /url: https://www.esa.int/ESA_Multimedia/Images/2025/04/Moon_tools_to_the_test_at_LUNA
+            - generic [ref=f9e277]:
+              - generic [ref=f9e279]: ESA - Moon tools to the test at LUNA
+              - generic [ref=f9e283]: European Space Agency
+        - generic [ref=f9e287] [cursor=pointer]:
+          - button "Feima Robotics SLAM200 handheld LiDAR scanner - Geo-matching" [ref=f9e292]:
+            - img "Feima Robotics SLAM200 handheld LiDAR scanner - Geo-matching" [ref=f9e294]
+          - link "Feima Robotics SLAM200 handheld LiDAR scanner - Geo-matching Geo-matching" [ref=f9e296]:
+            - /url: https://geo-matching.com/products/third-generation-3d-handheld-scanner-slam200
+            - generic [ref=f9e297]:
+              - generic [ref=f9e299]: Feima Robotics SLAM200 handheld LiDAR scanner - Geo-matching
+              - generic [ref=f9e303]: Geo-matching
+        - generic [ref=f9e307] [cursor=pointer]:
+          - generic [ref=f9e309]:
+            - button "Qianxun Starlight H7 Handheld Slam Scanner Integration High-Precision Multiple-Mode 360 Lidar Laser Scanner for Survey Equipment" [ref=f9e312]:
+              - img "Qianxun Starlight H7 Handheld Slam Scanner Integration High-Precision Multiple-Mode 360 Lidar Laser Scanner for Survey Equipment" [ref=f9e314]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - link "Qianxun Starlight H7 Handheld Slam Scanner Integration High-Precision Multiple-Mode 360 Lidar Laser Scanner for Survey Equipment Made-in-China.com" [ref=f9e316]:
+            - /url: https://m.made-in-china.com/product/Qianxun-Starlight-H7-Handheld-Slam-Scanner-Integration-High-Precision-Multiple-Mode-360-Lidar-Laser-Scanner-for-Survey-Equipment-2212548815.html
+            - generic [ref=f9e317]:
+              - generic [ref=f9e319]: Qianxun Starlight H7 Handheld Slam Scanner Integration High-Precision Multiple-Mode 360 Lidar Laser Scanner for Survey Equipment
+              - generic [ref=f9e323]: Made-in-China.com
+        - generic [ref=f9e327] [cursor=pointer]:
+          - 'button "SLAM 1000 HANDHELD SCANNER: ENTRY-LEVEL MODEL FOR PROFESSIONAL MAPPING" [ref=f9e332]':
+            - 'img "SLAM 1000 HANDHELD SCANNER: ENTRY-LEVEL MODEL FOR PROFESSIONAL MAPPING" [ref=f9e334]'
+          - 'link "SLAM 1000 HANDHELD SCANNER: ENTRY-LEVEL MODEL FOR PROFESSIONAL MAPPING TOPODRONE" [ref=f9e336]':
+            - /url: https://topodrone.com/blog/slam-1000-handheld-scanner-entry-level-model-for-professional-mapping/
+            - generic [ref=f9e337]:
+              - generic [ref=f9e339]: "SLAM 1000 HANDHELD SCANNER: ENTRY-LEVEL MODEL FOR PROFESSIONAL MAPPING"
+              - generic [ref=f9e343]: TOPODRONE
+        - generic [ref=f9e347] [cursor=pointer]:
+          - generic [ref=f9e349]:
+            - button "Qianxun Starlight H7 Handheld Slam Scanner Integration High-Precision Multiple-Mode 360 Lidar Laser Scanner for Survey Equipment" [ref=f9e352]:
+              - img "Qianxun Starlight H7 Handheld Slam Scanner Integration High-Precision Multiple-Mode 360 Lidar Laser Scanner for Survey Equipment" [ref=f9e354]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - link "Qianxun Starlight H7 Handheld Slam Scanner Integration High-Precision Multiple-Mode 360 Lidar Laser Scanner for Survey Equipment Made-in-China.com" [ref=f9e356]:
+            - /url: https://m.made-in-china.com/product/Qianxun-Starlight-H7-Handheld-Slam-Scanner-Integration-High-Precision-Multiple-Mode-360-Lidar-Laser-Scanner-for-Survey-Equipment-2212548815.html
+            - generic [ref=f9e357]:
+              - generic [ref=f9e359]: Qianxun Starlight H7 Handheld Slam Scanner Integration High-Precision Multiple-Mode 360 Lidar Laser Scanner for Survey Equipment
+              - generic [ref=f9e363]: Made-in-China.com
+        - generic [ref=f9e367] [cursor=pointer]:
+          - button "eHLS1 | Handheld LiDAR Scanner | eSurvey GNSS" [ref=f9e372]:
+            - img "eHLS1 | Handheld LiDAR Scanner | eSurvey GNSS" [ref=f9e374]
+          - link "eHLS1 | Handheld LiDAR Scanner | eSurvey GNSS eSurvey GNSS" [ref=f9e376]:
+            - /url: https://www.esurvey-gnss.com/product/lidar/ehls1
+            - generic [ref=f9e377]:
+              - generic [ref=f9e379]: eHLS1 | Handheld LiDAR Scanner | eSurvey GNSS
+              - generic [ref=f9e383]: eSurvey GNSS
+        - generic [ref=f9e387] [cursor=pointer]:
+          - button "Portable Mineral Testers for Mining and Exploration | Bruker" [ref=f9e392]:
+            - img "Portable Mineral Testers for Mining and Exploration | Bruker" [ref=f9e394]
+          - link "Portable Mineral Testers for Mining and Exploration | Bruker Bruker" [ref=f9e396]:
+            - /url: https://www.bruker.com/fr/products-and-solutions/elemental-analyzers/handheld-xrf-spectrometers/handheld-xrf-applications/geoscience.html
+            - generic [ref=f9e397]:
+              - generic [ref=f9e399]: Portable Mineral Testers for Mining and Exploration | Bruker
+              - generic [ref=f9e403]: Bruker
+        - generic [ref=f9e407] [cursor=pointer]:
+          - button "Mining & Geochemistry Handheld XRF Analyzers | Portable Field XRF for Exploration" [ref=f9e412]:
+            - img "Mining & Geochemistry Handheld XRF Analyzers | Portable Field XRF for Exploration" [ref=f9e414]
+          - link "Mining & Geochemistry Handheld XRF Analyzers | Portable Field XRF for Exploration Alloy Geek" [ref=f9e416]:
+            - /url: https://alloygeek.com/collections/mining-handheld-xrf-analyzers?srsltid=AfmBOopqgQ0YAKt7DaPRX6NURuTsendfuSRoe2AsZ9W65cgJi1Nu_Cr-
+            - generic [ref=f9e417]:
+              - generic [ref=f9e419]: Mining & Geochemistry Handheld XRF Analyzers | Portable Field XRF for Exploration
+              - generic [ref=f9e423]: Alloy Geek
+        - generic [ref=f9e427] [cursor=pointer]:
+          - button "Portable Mineral Testers for Mining and Exploration | Bruker" [ref=f9e432]:
+            - img "Portable Mineral Testers for Mining and Exploration | Bruker" [ref=f9e434]
+          - link "Portable Mineral Testers for Mining and Exploration | Bruker Bruker" [ref=f9e436]:
+            - /url: https://www.bruker.com/en/products-and-solutions/elemental-analyzers/handheld-xrf-spectrometers/handheld-xrf-applications/geoscience.html
+            - generic [ref=f9e437]:
+              - generic [ref=f9e439]: Portable Mineral Testers for Mining and Exploration | Bruker
+              - generic [ref=f9e443]: Bruker
+        - generic [ref=f9e447] [cursor=pointer]:
+          - 'button "Apollo Next Generation Sample Analysis (ANGSA): an Apollo Participating Scientist Program to Prepare the Lunar Sample Community for Artemis | Space Science Reviews | Springer Nature Link" [ref=f9e452]':
+            - 'img "Apollo Next Generation Sample Analysis (ANGSA): an Apollo Participating Scientist Program to Prepare the Lunar Sample Community for Artemis | Space Science Reviews | Springer Nature Link" [ref=f9e454]'
+          - 'link "Apollo Next Generation Sample Analysis (ANGSA): an Apollo Participating Scientist Program to Prepare the Lunar Sample Community for Artemis | Space Science Reviews | Springer Nature Link Springer Nature" [ref=f9e456]':
+            - /url: https://link.springer.com/article/10.1007/s11214-024-01094-x
+            - generic [ref=f9e457]:
+              - generic [ref=f9e459]: "Apollo Next Generation Sample Analysis (ANGSA): an Apollo Participating Scientist Program to Prepare the Lunar Sample Community for Artemis | Space Science Reviews | Springer Nature Link"
+              - generic [ref=f9e463]: Springer Nature
+        - generic [ref=f9e467] [cursor=pointer]:
+          - button "A Portable and Handheld LiDAR Scanner for 3D Mapping-Geosun Navigation" [ref=f9e472]:
+            - img "A Portable and Handheld LiDAR Scanner for 3D Mapping-Geosun Navigation" [ref=f9e474]
+          - link "A Portable and Handheld LiDAR Scanner for 3D Mapping-Geosun Navigation Quality LiDAR Scanning System - UAV LiDAR System factory from China" [ref=f9e476]:
+            - /url: https://en.geosuntech.com/News/202.html
+            - generic [ref=f9e477]:
+              - generic [ref=f9e479]: A Portable and Handheld LiDAR Scanner for 3D Mapping-Geosun Navigation
+              - generic [ref=f9e483]: Quality LiDAR Scanning System - UAV LiDAR System factory from China
+        - generic [ref=f9e487] [cursor=pointer]:
+          - button "Artemis astronauts, here's your Moon-observing assignment 👀 This custom science plan is fine-tuned to the exact lighting conditions on the Moon's surface when the Artemis II crew flies by, and for their" [ref=f9e492]:
+            - img "Artemis astronauts, here's your Moon-observing assignment 👀 This custom science plan is fine-tuned to the exact lighting conditions on the Moon's surface when the Artemis II crew flies by, and for their" [ref=f9e494]
+          - link "Artemis astronauts, here's your Moon-observing assignment 👀 This custom science plan is fine-tuned to the exact lighting conditions on the Moon's surface when the Artemis II crew flies by, and for their Facebook" [ref=f9e496]:
+            - /url: https://www.facebook.com/NASASolarSystem/posts/artemis-astronauts-heres-your-moon-observing-assignment-this-custom-science-plan/1417696533726621/
+            - generic [ref=f9e497]:
+              - generic [ref=f9e499]: Artemis astronauts, here's your Moon-observing assignment 👀 This custom science plan is fine-tuned to the exact lighting conditions on the Moon's surface when the Artemis II crew flies by, and for their
+              - generic [ref=f9e503]: Facebook
+        - generic [ref=f9e507] [cursor=pointer]:
+          - button "Frontiers | Semi-autonomous exploration of martian and lunar analogues with a legged robot using a Raman-equipped robotic arm and microscopic imager" [ref=f9e512]:
+            - img "Frontiers | Semi-autonomous exploration of martian and lunar analogues with a legged robot using a Raman-equipped robotic arm and microscopic imager" [ref=f9e514]
+          - link "Frontiers | Semi-autonomous exploration of martian and lunar analogues with a legged robot using a Raman-equipped robotic arm and microscopic imager Frontiers" [ref=f9e516]:
+            - /url: https://www.frontiersin.org/journals/space-technologies/articles/10.3389/frspt.2026.1741757/full
+            - generic [ref=f9e517]:
+              - generic [ref=f9e519]: Frontiers | Semi-autonomous exploration of martian and lunar analogues with a legged robot using a Raman-equipped robotic arm and microscopic imager
+              - generic [ref=f9e523]: Frontiers
+        - generic [ref=f9e527] [cursor=pointer]:
+          - button "CHCNAV RS7 SLAM 3D-Laserscanner mit 40 m bis 64 m Reichweite - GEO Pro ..." [ref=f9e532]:
+            - img "CHCNAV RS7 SLAM 3D-Laserscanner mit 40 m bis 64 m Reichweite - GEO Pro ..." [ref=f9e534]
+          - link "CHCNAV RS7 SLAM 3D-Laserscanner mit 40 m bis 64 m Reichweite - GEO Pro ... Epotronic" [ref=f9e536]:
+            - /url: https://epotronic.com/eng/CHCNAV-RS7-SLAM-3D-Laser-Scanner-with-40-m-to-64-m-Range-GEO-Pro-Bundle/CRS1003.2
+            - generic [ref=f9e537]:
+              - generic [ref=f9e539]: CHCNAV RS7 SLAM 3D-Laserscanner mit 40 m bis 64 m Reichweite - GEO Pro ...
+              - generic [ref=f9e543]: Epotronic
+      - generic [ref=f9e547]:
+        - heading "Page Navigation" [level=1] [ref=f9e548]
+        - generic [ref=f9e549]:
+          - text: The rest of the results might not be what you're looking for.
+          - link "See more anyway" [ref=f9e550] [cursor=pointer]:
+            - /url: "#"
+      - navigation

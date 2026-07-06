@@ -1,0 +1,314 @@
+{
+  "communities": {
+    "0": [
+      "combat_combattargetcomponent_cpp_combat_combattargetcomponent",
+      "combat_combattargetcomponent_cpp_fobjectinitializer",
+      "combat_combattargetcomponent_h_combat_combattargetcomponent",
+      "combat_combattargetcomponent_ucombattargetcomponent",
+      "combat_combattargetcomponent_ucombattargetcomponent_ucombattargetcomponent",
+      "combat_damagecomponent_h_combat_damagecomponent",
+      "combat_damagecomponent_udamagecomponent",
+      "combat_shieldcomponent_cpp_combat_shieldcomponent",
+      "combat_shieldcomponent_cpp_fobjectinitializer",
+      "combat_shieldcomponent_h_combat_shieldcomponent",
+      "combat_shieldcomponent_ushieldcomponent",
+      "combat_shieldcomponent_ushieldcomponent_absorbdamage",
+      "combat_shieldcomponent_ushieldcomponent_initializefromship",
+      "combat_shieldcomponent_ushieldcomponent_ushieldcomponent",
+      "combat_systemdamagecomponent_h_combat_systemdamagecomponent",
+      "combat_systemdamagecomponent_usystemdamagecomponent",
+      "gamemode_deepspacetradergamemode_adeepspacetradergamemode",
+      "gamemode_deepspacetradergamemode_adeepspacetradergamemode_adeepspacetradergamemode",
+      "gamemode_deepspacetradergamemode_adeepspacetradergamemode_beginplay",
+      "gamemode_deepspacetradergamemode_cpp_gamemode_deepspacetradergamemode",
+      "gamemode_deepspacetradergamemode_h_gamemode_deepspacetradergamemode",
+      "ships_aship_trader_vessel_alpha_aaship_trader_vessel_alpha",
+      "ships_aship_trader_vessel_alpha_aaship_trader_vessel_alpha_aaship_trader_vessel_alpha",
+      "ships_aship_trader_vessel_alpha_aaship_trader_vessel_alpha_beginplay",
+      "ships_aship_trader_vessel_alpha_cpp_fobjectinitializer",
+      "ships_aship_trader_vessel_alpha_cpp_ships_aship_trader_vessel_alpha",
+      "ships_aship_trader_vessel_alpha_h_ships_aship_trader_vessel_alpha"
+    ],
+    "1": [
+      "ai_pirateaicontroller_apirateaicontroller_apirateaicontroller",
+      "ai_pirateaicontroller_apirateaicontroller_beginplay",
+      "ai_pirateaicontroller_apirateaicontroller_evaluatethreat",
+      "ai_pirateaicontroller_apirateaicontroller_scanforplayer",
+      "ai_pirateaicontroller_apirateaicontroller_tick",
+      "ai_pirateaicontroller_cpp_ai_pirateaicontroller",
+      "ai_pirateaicontroller_cpp_fobjectinitializer",
+      "ai_pirateaicontroller_eaipiratestate",
+      "ai_pirateaicontroller_eaipiratestate_apirateaicontroller",
+      "ai_pirateaicontroller_eaipiratestate_beginplay",
+      "ai_pirateaicontroller_eaipiratestate_currentstate",
+      "ai_pirateaicontroller_eaipiratestate_detectionrange",
+      "ai_pirateaicontroller_eaipiratestate_engagementrange",
+      "ai_pirateaicontroller_eaipiratestate_evaluatethreat",
+      "ai_pirateaicontroller_eaipiratestate_factionname",
+      "ai_pirateaicontroller_eaipiratestate_hostilitytoplayer",
+      "ai_pirateaicontroller_eaipiratestate_scanforplayer",
+      "ai_pirateaicontroller_eaipiratestate_tick",
+      "ai_pirateaicontroller_eaipiratestate_umeta",
+      "ai_pirateaicontroller_h_ai_pirateaicontroller",
+      "ai_pirateaicontroller_h_fname",
+      "uint8"
+    ],
+    "2": [
+      "combat_weaponcomponent_fmissilerackdata",
+      "combat_weaponcomponent_fmissilerackdata_count",
+      "combat_weaponcomponent_fmissilerackdata_damage",
+      "combat_weaponcomponent_fmissilerackdata_missiletype",
+      "combat_weaponcomponent_fmissilerackdata_rackname",
+      "combat_weaponcomponent_fmissilerackdata_trackingstrength",
+      "combat_weaponcomponent_fweaponslotdata",
+      "combat_weaponcomponent_fweaponslotdata_count",
+      "combat_weaponcomponent_fweaponslotdata_damagepershot",
+      "combat_weaponcomponent_fweaponslotdata_firerate",
+      "combat_weaponcomponent_fweaponslotdata_name",
+      "combat_weaponcomponent_fweaponslotdata_projectilespeed",
+      "combat_weaponcomponent_fweaponslotdata_range",
+      "combat_weaponcomponent_fweaponslotdata_size",
+      "combat_weaponcomponent_fweaponslotdata_type",
+      "combat_weaponcomponent_h_combat_weaponcomponent",
+      "combat_weaponcomponent_h_fname",
+      "combat_weaponcomponent_h_fstring",
+      "combat_weaponcomponent_h_int32",
+      "combat_weaponcomponent_uweaponcomponent"
+    ],
+    "3": [
+      "combat_projectile_aprojectile",
+      "combat_projectile_aprojectile_aprojectile",
+      "combat_projectile_aprojectile_beginplay",
+      "combat_projectile_aprojectile_onhit",
+      "combat_projectile_aprojectile_tickcomponent",
+      "combat_projectile_cpp_aactor",
+      "combat_projectile_cpp_combat_projectile",
+      "combat_projectile_cpp_fobjectinitializer",
+      "combat_projectile_cpp_fvector",
+      "combat_projectile_h_combat_projectile",
+      "eleveltick",
+      "factortickfunction",
+      "fhitresult",
+      "uprimitivecomponent"
+    ],
+    "4": [
+      "combat_systemdamagecomponent_cpp_combat_systemdamagecomponent",
+      "combat_systemdamagecomponent_cpp_fname",
+      "combat_systemdamagecomponent_cpp_fobjectinitializer",
+      "combat_systemdamagecomponent_cpp_tarray",
+      "combat_systemdamagecomponent_usystemdamagecomponent_applysystemdamage",
+      "combat_systemdamagecomponent_usystemdamagecomponent_beginplay",
+      "combat_systemdamagecomponent_usystemdamagecomponent_getsubsystemhealth",
+      "combat_systemdamagecomponent_usystemdamagecomponent_getsubsystemstatus",
+      "combat_systemdamagecomponent_usystemdamagecomponent_initializefromship",
+      "combat_systemdamagecomponent_usystemdamagecomponent_repairsubsystem",
+      "combat_systemdamagecomponent_usystemdamagecomponent_usystemdamagecomponent",
+      "esubsystemstatus"
+    ],
+    "5": [
+      "factions_factioncomponent_cpp_factions_factioncomponent",
+      "factions_factioncomponent_cpp_fname",
+      "factions_factioncomponent_cpp_fobjectinitializer",
+      "factions_factioncomponent_cpp_fstring",
+      "factions_factioncomponent_h_factions_factioncomponent",
+      "factions_factioncomponent_ufactioncomponent",
+      "factions_factioncomponent_ufactioncomponent_getrelationship",
+      "factions_factioncomponent_ufactioncomponent_getstanding",
+      "factions_factioncomponent_ufactioncomponent_initializefromdsl",
+      "factions_factioncomponent_ufactioncomponent_ishostile",
+      "factions_factioncomponent_ufactioncomponent_modifystanding",
+      "factions_factioncomponent_ufactioncomponent_ufactioncomponent"
+    ],
+    "6": [
+      "combat_weaponcomponent_cpp_aactor",
+      "combat_weaponcomponent_cpp_combat_weaponcomponent",
+      "combat_weaponcomponent_cpp_fname",
+      "combat_weaponcomponent_cpp_fobjectinitializer",
+      "combat_weaponcomponent_cpp_int32",
+      "combat_weaponcomponent_cpp_tarray",
+      "combat_weaponcomponent_uweaponcomponent_firemissile",
+      "combat_weaponcomponent_uweaponcomponent_fireweapon",
+      "combat_weaponcomponent_uweaponcomponent_getavailableweapons",
+      "combat_weaponcomponent_uweaponcomponent_getmissilecount",
+      "combat_weaponcomponent_uweaponcomponent_uweaponcomponent"
+    ],
+    "7": [
+      "fmissiondata",
+      "missions_missioncomponent_cpp_fname",
+      "missions_missioncomponent_cpp_fobjectinitializer",
+      "missions_missioncomponent_cpp_fstring",
+      "missions_missioncomponent_cpp_missions_missioncomponent",
+      "missions_missioncomponent_cpp_tarray",
+      "missions_missioncomponent_umissioncomponent_acceptmission",
+      "missions_missioncomponent_umissioncomponent_checkmissionboard",
+      "missions_missioncomponent_umissioncomponent_getactivemissions",
+      "missions_missioncomponent_umissioncomponent_umissioncomponent",
+      "missions_missioncomponent_umissioncomponent_updateobjective"
+    ],
+    "8": [
+      "missions_missioncomponent_h_missions_missioncomponent",
+      "missions_missioncomponent_umissioncomponent",
+      "missions_missiondata",
+      "save_deepspacetradersavegame_cpp_save_deepspacetradersavegame",
+      "save_deepspacetradersavegame_fmissionsavedata",
+      "save_deepspacetradersavegame_fmissionsavedata_missionid",
+      "save_deepspacetradersavegame_fmissionsavedata_status",
+      "save_deepspacetradersavegame_h_fname",
+      "save_deepspacetradersavegame_h_fstring",
+      "save_deepspacetradersavegame_h_save_deepspacetradersavegame",
+      "save_deepspacetradersavegame_udeepspacetradersavegame"
+    ],
+    "9": [
+      "combat_damagecomponent_cpp_aactor",
+      "combat_damagecomponent_cpp_combat_damagecomponent",
+      "combat_damagecomponent_cpp_fobjectinitializer",
+      "combat_damagecomponent_udamagecomponent_applydamage",
+      "combat_damagecomponent_udamagecomponent_beginplay",
+      "combat_damagecomponent_udamagecomponent_gethullpercent",
+      "combat_damagecomponent_udamagecomponent_initializefromship",
+      "combat_damagecomponent_udamagecomponent_isdestroyed",
+      "combat_damagecomponent_udamagecomponent_udamagecomponent"
+    ],
+    "10": [
+      "pcg_pcgvolumemanager_apcgvolumemanager",
+      "pcg_pcgvolumemanager_apcgvolumemanager_apcgvolumemanager",
+      "pcg_pcgvolumemanager_apcgvolumemanager_beginplay",
+      "pcg_pcgvolumemanager_apcgvolumemanager_spawnpcgvolumeforgraph",
+      "pcg_pcgvolumemanager_cpp_fname",
+      "pcg_pcgvolumemanager_cpp_fstring",
+      "pcg_pcgvolumemanager_cpp_fvector",
+      "pcg_pcgvolumemanager_cpp_pcg_pcgvolumemanager",
+      "pcg_pcgvolumemanager_h_pcg_pcgvolumemanager"
+    ],
+    "11": [
+      "save_savegamecomponent_cpp_fname",
+      "save_savegamecomponent_cpp_fobjectinitializer",
+      "save_savegamecomponent_cpp_save_savegamecomponent",
+      "save_savegamecomponent_h_save_savegamecomponent",
+      "save_savegamecomponent_usavegamecomponent",
+      "save_savegamecomponent_usavegamecomponent_autosave",
+      "save_savegamecomponent_usavegamecomponent_loadgame",
+      "save_savegamecomponent_usavegamecomponent_savegame",
+      "save_savegamecomponent_usavegamecomponent_usavegamecomponent"
+    ],
+    "12": [
+      "flight_flightcomponent_cpp_flight_flightcomponent",
+      "flight_flightcomponent_cpp_fobjectinitializer",
+      "flight_flightcomponent_h_flight_flightcomponent",
+      "flight_flightcomponent_uflightcomponent",
+      "flight_flightcomponent_uflightcomponent_initializefromship",
+      "flight_flightcomponent_uflightcomponent_uflightcomponent"
+    ],
+    "13": [
+      "stations_dockingcomponent_cpp_stations_dockingcomponent",
+      "stations_dockingcomponent_h_stations_dockingcomponent",
+      "stations_dockingcomponent_udockingcomponent"
+    ],
+    "14": [
+      "levels_create_level_deepspacetrader_defaultlevel",
+      "levels_create_level_deepspacetrader_defaultlevel_create_level"
+    ],
+    "15": [
+      "pcgassets_create_pcg_graph_assets",
+      "pcgassets_create_pcg_graph_assets_create_pcg_graph_assets"
+    ]
+  },
+  "cohesion": {
+    "0": 0.07407407407407407,
+    "1": 0.09956709956709957,
+    "2": 0.11578947368421053,
+    "3": 0.14285714285714285,
+    "4": 0.21212121212121213,
+    "5": 0.21212121212121213,
+    "6": 0.23636363636363636,
+    "7": 0.23636363636363636,
+    "8": 0.2,
+    "9": 0.2222222222222222,
+    "10": 0.2222222222222222,
+    "11": 0.25,
+    "12": 0.3333333333333333,
+    "13": 0.6666666666666666,
+    "14": 1.0,
+    "15": 1.0
+  },
+  "gods": [
+    {
+      "id": "ai_pirateaicontroller_eaipiratestate",
+      "label": "EAIPirateState",
+      "degree": 14
+    },
+    {
+      "id": "combat_weaponcomponent_fweaponslotdata",
+      "label": "FWeaponSlotData",
+      "degree": 12
+    },
+    {
+      "id": "combat_weaponcomponent_fmissilerackdata",
+      "label": "FMissileRackData",
+      "degree": 9
+    },
+    {
+      "id": "combat_projectile_aprojectile_onhit",
+      "label": "AProjectile::OnHit()",
+      "degree": 5
+    },
+    {
+      "id": "save_deepspacetradersavegame_fmissionsavedata",
+      "label": "FMissionSaveData",
+      "degree": 5
+    },
+    {
+      "id": "missions_missioncomponent_umissioncomponent_checkmissionboard",
+      "label": "UMissionComponent::CheckMissionBoard()",
+      "degree": 4
+    },
+    {
+      "id": "pcg_pcgvolumemanager_apcgvolumemanager_spawnpcgvolumeforgraph",
+      "label": "APCGVolumeManager::SpawnPCGVolumeForGraph()",
+      "degree": 4
+    },
+    {
+      "id": "ai_pirateaicontroller_apirateaicontroller_tick",
+      "label": "APirateAIController::Tick()",
+      "degree": 3
+    },
+    {
+      "id": "combat_projectile_aprojectile_tickcomponent",
+      "label": "AProjectile::TickComponent()",
+      "degree": 3
+    },
+    {
+      "id": "combat_systemdamagecomponent_usystemdamagecomponent_initializefromship",
+      "label": "USystemDamageComponent::InitializeFromShip()",
+      "degree": 3
+    }
+  ],
+  "surprises": [
+    {
+      "source": "APirateAIController::Tick()",
+      "target": "EvaluateThreat",
+      "source_files": [
+        "AI/PirateAIController.cpp",
+        "AI/PirateAIController.h"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source"
+    },
+    {
+      "source": "APirateAIController::Tick()",
+      "target": "ScanForPlayer",
+      "source_files": [
+        "AI/PirateAIController.cpp",
+        "AI/PirateAIController.h"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

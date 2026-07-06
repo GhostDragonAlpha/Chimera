@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import json
 from pathlib import Path
-from core.dna.mutation_logger import load_dna_graph, get_mutations_by_category
+from core.dna.mutation_logger import load_dna_graph, get_mutations_by_category, save_dna_graph
 from core.dna.pattern_validator import check_template_history
 
 DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")

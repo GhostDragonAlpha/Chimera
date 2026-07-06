@@ -1,0 +1,1017 @@
+- generic [active] [ref=f39e1]:
+  - generic:
+    - generic:
+      - link "Skip to main content" [ref=f39e2] [cursor=pointer]
+      - link "Turn off continuous scrolling" [ref=f39e3] [cursor=pointer]:
+        - /url: "#"
+      - link "Accessibility help" [ref=f39e4] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=en
+  - generic [ref=f39e9]:
+    - search [ref=f39e10]:
+      - generic [ref=f39e12]:
+        - 'link "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f39e14] [cursor=pointer]':
+          - /url: https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQPQgJ
+          - 'img "Fourth of July 2026: Celebrating 250 years of the USA" [ref=f39e15]'
+        - generic [ref=f39e16]:
+          - generic [ref=f39e17]:
+            - combobox "Search" [ref=f39e20]: sci-fi laser rifle weapon model reference sci-fi laser rifle weapon model reference
+            - generic [ref=f39e21]:
+              - button "Clear" [ref=f39e23] [cursor=pointer]:
+                - img [ref=f39e25]
+              - generic [ref=f39e28]:
+                - button "Search by voice" [ref=f39e29] [cursor=pointer]:
+                  - img [ref=f39e30]
+                - button "Search by image" [ref=f39e32] [cursor=pointer]:
+                  - img [ref=f39e33]
+          - button "Search" [ref=f39e35] [cursor=pointer]:
+            - img [ref=f39e38]
+    - generic [ref=f39e40]:
+      - button "Settings" [ref=f39e42] [cursor=pointer]:
+        - img [ref=f39e45]
+      - generic [ref=f39e48]:
+        - button "Google apps" [ref=f39e50] [cursor=pointer]:
+          - img [ref=f39e51]
+        - link "Sign in" [ref=f39e55] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=https://www.google.com/search%3Fq%3Dsci-fi%2Blaser%2Brifle%2Bweapon%2Bmodel%2Breference%26udm%3D2&ec=futura_srp_og_si_72236_p
+  - generic [ref=f39e57]:
+    - navigation [ref=f39e62]:
+      - generic [ref=f39e63]:
+        - list [ref=f39e64]:
+          - listitem [ref=f39e65]:
+            - link "AI Mode" [ref=f39e68] [cursor=pointer]:
+              - /url: /search?q=sci-fi+laser+rifle+weapon+model+reference&sca_esv=33ade75dbb948c2a&udm=50&fbs=ABfTbFWX8Can4Rb7JjuFvBw79YrXQMyJMofRft37fxW-VQ0iJcb-TVtMT2eZIreEjxT1y-yRvs0WGzJ9Y9aN9B0HiTvCSXIzVdfrgNICNgi6ZSLCHlRCw5ZDeHK3SQKMVU2gp1ehrmBo-C-3khTe4Y_VlCFpL_-lhA0-G7I9hhxt6xUjlyM2RHF7CZgR0zzNuKkyBiXdRKasKDlClHE9Pz0dbFwCwasvrGaMC4cfhYqPiYrxdTXuk3o&aep=1&ntc=1&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQ2J8OegQIChAD
+              - generic [ref=f39e71]: AI Mode
+          - listitem [ref=f39e72]:
+            - link "All" [ref=f39e73] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=sci-fi+laser+rifle+weapon+model+reference&source=lnms&fbs=ABfTbFWX8Can4Rb7JjuFvBw79YrXQMyJMofRft37fxW-VQ0iJcb-TVtMT2eZIreEjxT1y-yRvs0WGzJ9Y9aN9B0HiTvCSXIzVdfrgNICNgi6ZSLCHlRCw5ZDeHK3SQKMVU2gp1ehrmBo-C-3khTe4Y_VlCFpL_-lhA0-G7I9hhxt6xUjlyM2RHF7CZgR0zzNuKkyBiXdRKasKDlClHE9Pz0dbFwCwasvrGaMC4cfhYqPiYrxdTXuk3o&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQ0pQJegQIDRAB
+              - generic [ref=f39e75]: All
+          - listitem [ref=f39e76]:
+            - link "Images" [disabled] [ref=f39e77]:
+              - generic [ref=f39e79]: Images
+          - listitem [ref=f39e80]:
+            - link "Shopping" [ref=f39e81] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&udm=28&fbs=ABfTbFWX8Can4Rb7JjuFvBw79YrXQMyJMofRft37fxW-VQ0iJcb-TVtMT2eZIreEjxT1y-yRvs0WGzJ9Y9aN9B0HiTvCSXIzVdfrgNICNgi6ZSLCHlRCw5ZDeHK3SQKMVU2gp1ehrmBo-C-3khTe4Y_VlCFpL_-lhA0-G7I9hhxt6xUjlyM2RHF7CZgR0zzNuKkyBiXdRKasKDlClHE9Pz0dbFwCwasvrGaMC4cfhYqPiYrxdTXuk3o&q=sci-fi+laser+rifle+weapon+model+reference&ved=1t:220175&ictx=111
+              - generic [ref=f39e83]: Shopping
+          - listitem [ref=f39e84]:
+            - link "Videos" [ref=f39e85] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&udm=7&fbs=ABfTbFWX8Can4Rb7JjuFvBw79YrXQMyJMofRft37fxW-VQ0iJcb-TVtMT2eZIreEjxT1y-yRvs0WGzJ9Y9aN9B0HiTvCSXIzVdfrgNICNgi6ZSLCHlRCw5ZDeHK3SQKMVU2gp1ehrmBo-C-3khTe4Y_VlCFpL_-lhA0-G7I9hhxt6xUjlyM2RHF7CZgR0zzNuKkyBiXdRKasKDlClHE9Pz0dbFwCwasvrGaMC4cfhYqPiYrxdTXuk3o&q=sci-fi+laser+rifle+weapon+model+reference&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQtKgLegQIDhAB
+              - generic [ref=f39e87]: Videos
+          - listitem [ref=f39e88]:
+            - link "Forums" [ref=f39e89] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&udm=18&fbs=ABfTbFWX8Can4Rb7JjuFvBw79YrXQMyJMofRft37fxW-VQ0iJcb-TVtMT2eZIreEjxT1y-yRvs0WGzJ9Y9aN9B0HiTvCSXIzVdfrgNICNgi6ZSLCHlRCw5ZDeHK3SQKMVU2gp1ehrmBo-C-3khTe4Y_VlCFpL_-lhA0-G7I9hhxt6xUjlyM2RHF7CZgR0zzNuKkyBiXdRKasKDlClHE9Pz0dbFwCwasvrGaMC4cfhYqPiYrxdTXuk3o&q=sci-fi+laser+rifle+weapon+model+reference&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQs6gLegQICxAB
+              - generic [ref=f39e91]: Forums
+          - listitem [ref=f39e92]:
+            - link "Short videos" [ref=f39e93] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&udm=39&fbs=ABfTbFWX8Can4Rb7JjuFvBw79YrXQMyJMofRft37fxW-VQ0iJcb-TVtMT2eZIreEjxT1y-yRvs0WGzJ9Y9aN9B0HiTvCSXIzVdfrgNICNgi6ZSLCHlRCw5ZDeHK3SQKMVU2gp1ehrmBo-C-3khTe4Y_VlCFpL_-lhA0-G7I9hhxt6xUjlyM2RHF7CZgR0zzNuKkyBiXdRKasKDlClHE9Pz0dbFwCwasvrGaMC4cfhYqPiYrxdTXuk3o&q=sci-fi+laser+rifle+weapon+model+reference&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQs6gLegQIDBAB
+              - generic [ref=f39e95]: Short videos
+          - listitem [ref=f39e96]:
+            - button "More filters" [ref=f39e97] [cursor=pointer]:
+              - generic "More filters" [ref=f39e98]:
+                - generic [ref=f39e99]:
+                  - generic [ref=f39e100]: More
+                  - img [ref=f39e102]
+        - button "Tools" [ref=f39e105] [cursor=pointer]:
+          - generic [ref=f39e107]:
+            - generic [ref=f39e108]: Tools
+            - img [ref=f39e110]
+    - navigation [ref=f39e113]:
+      - navigation [ref=f39e116]:
+        - list [ref=f39e124]:
+          - listitem [ref=f39e125]:
+            - link "Add Cgtrader" [ref=f39e126] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=cgtrader+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rnz0cfJVzG3l0uEtLclCSjdZDns_ejjzMLxck0lsz2ournrYlumnhah8pEGpOIFFrBhNXHU-FUf69g8M2NETNL8pbbfbuHfY-cLXrPtdiNyap0IUTN-hAvmCBKiigrIBCUHNi4m2JQBL2qes7VOvoJAHxQ1QvkvbILlxJZYtMUyuVMvbR&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAB6BAgREAE&ictx=0
+              - generic [ref=f39e132]: Cgtrader
+          - listitem [ref=f39e133]:
+            - link "Add Low poly" [ref=f39e134] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=low+poly+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rnz0cfJVzG3l0uEtLclCSjdZDns_ejjzMLxck0lsz2ournrYlumnhah8pEGpOIFFrBhNXHU-FUf69g8M2NETNL345q3tgQekWkyYFZ8V-azuviWVY3_zH1qqqbCoiHHDcFvn6g-_Vx0vDfoS-kdTKawAczM6MiGm52xX-RpVQfyjvDr5d&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAF6BAgVEAE&ictx=0
+              - generic [ref=f39e140]: Low poly
+          - listitem [ref=f39e141]:
+            - link "Add Assault rifle" [ref=f39e142] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=assault+rifle+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rf8ja6zYNpJud3l8fygttraH_cxm34d6mBWGVcC7C_T228xLn0f9K3_-9o9-k7y33ot1u7-iuYCfKe3FhPaf-a-MQbcJtQxTdpo7QjKgZ_PAn2CsypH0BSrrtnCXaOPNv_8UxIRM-zbV21DeNAa6UlRLxMm8dNq2QjYYUAYUaPI5wqyCy&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAJ6BAgUEAE&ictx=0
+              - generic [ref=f39e148]: Assault rifle
+          - listitem [ref=f39e149]:
+            - link "Add Laser blaster" [ref=f39e150] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=laser+blaster+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rf8ja6zYNpJud3l8fygttraH_cxm34d6mBWGVcC7C_T228xLn0f9K3_-9o9-k7y33ot1u7-iuYCfKe3FhPaf-az3A8x10KL8zFx21m_3Ee3Ckcl7nFUyA9_w0J0RR_Z3RcoK4_ML5GptIR-iMAel-eAbOdVCxxvA3ynb-Zrb6BBLl-i01&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAN6BAgWEAE&ictx=0
+              - generic [ref=f39e156]: Laser blaster
+          - listitem [ref=f39e157]:
+            - link "Add Pistol" [ref=f39e158] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=pistol+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r21-Rdu7tO0gifSkViQvk4IXMclLQHyEUmKV7E13xXrreyai_9_MWTfY3qJb2CkkY6Q42DF76zI3wD5ylPHJXIL5ZxMboBcuBZNcDnTzSGtQn12REbg7XWB0nhyh0r6Wbv8tHTFoCf7e2YtKL64ssnz7W6NbfNOXweE69x5LQJ65oog4v&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAR6BAgTEAE&ictx=0
+              - generic [ref=f39e164]: Pistol
+          - listitem [ref=f39e165]:
+            - link "Add Plasma rifle" [ref=f39e166] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=plasma+rifle+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rb6ov3c6U0v2pckZSx7tVjegi-kycB_fBnzu0BhMgrFrfree83yKiBUfv4gxTr2dN1_fLRcn8hDxh-jgskqlbpMMaJuIiYq8FMZEC76CIPSE3RakDLQ8-Y28d5I3tQwxyvXFfrxr7nHN3u2scmY-Dulc85sZf2Ia7NosJlP9cBEZqIrkx&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAV6BQj9BRAB&ictx=0
+              - generic [ref=f39e172]: Plasma rifle
+          - listitem [ref=f39e173]:
+            - link "Add Sniper rifle" [ref=f39e174] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=sniper+rifle+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rb6ov3c6U0v2pckZSx7tVjegi-kycB_fBnzu0BhMgrFrfree83yKiBUfv4gxTr2dN1_fLRcn8hDxh-jgskqlbpHsmwEvMIAGuYf8s3rBwvqGNdKqheDvO6ATR-YHm7hN5szq0IaQtlZcweNLtDyNV6uwpajHFIMd-BNjVSnnQA1NQLnub&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAZ6BQj8BRAB&ictx=0
+              - generic [ref=f39e180]: Sniper rifle
+          - listitem [ref=f39e181]:
+            - link "Add Art" [ref=f39e182] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=art+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r9o8EtIr7w4auRdy15uM4Z6Q3HcEZf9id8HMBPaRaA6f9JLlWxwbukTxSoqflwviqufRYFA02sOvEeDQvNVxwtsijqtTvIZVp0LwbDpDOKujmKZjEHTP_sKh6sbX3sYqfE6joEY7iTaErR_Fthw6tJXZyZP8Iw9Xpasd0UK8Ae3qCo93h&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAd6BQj6BRAB&ictx=0
+              - generic [ref=f39e188]: Art
+          - listitem [ref=f39e189]:
+            - link "Add Concept art" [ref=f39e190] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=concept+art+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r27E1_7Ryeiuc3CNVRbfYUZRMIiGaZSCMvFpfY5rPLKsx7u8Bt_ypuuTUektP7VI2kbHW1CjzdMF2pZo-fAgP6NLytyVT_hbovnkzqSTFP7anTER5FUDxVcTO8Ec29IHBGNCVzlLZ34fE4RuHXEXccDC5cnLLPv-7Kpr03tigZyHPqvBh&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAh6BQj7BRAB&ictx=0
+              - generic [ref=f39e196]: Concept art
+          - listitem [ref=f39e197]:
+            - link "Add Cgtrader 3d" [ref=f39e198] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=cgtrader+3d+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r27E1_7Ryeiuc3CNVRbfYUZRMIiGaZSCMvFpfY5rPLKsx7u8Bt_ypuuTUektP7VI2kbHW1CjzdMF2pZo-fAgP6Jt0lx_pc8p_qAz4RRAdkxo9-zz-82b8ByfkwMDeCmxgsAfGs6jIKnf_rLFpqdDWEmDkUQFjjanU8Uj-J6HXqrnWcGjs&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAl6BQj4BRAB&ictx=0
+              - generic [ref=f39e204]: Cgtrader 3d
+          - listitem [ref=f39e205]:
+            - link "Add Submachine gun" [ref=f39e206] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=submachine+gun+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rZcRmNRsmD3AQt8nqY335QbyOhCmYG6bCOEk0bV0Cizo1lz3xwbLpoyZbMhJRi2WYOz4nwz7svVAa6y2_8wlC7l3oOsw-piEHxtehj1s22i7xONzT8zOiPDP4yf-VSwJnNav_12zsqYCR2X0u7mIt1VfNxfDKMrzfSfQl23irvG4HLT-g0JI21QKlx4ukWZjS-QXSBA&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAp6BQj1BRAB&ictx=0
+              - generic [ref=f39e208]: Submachine gun
+          - listitem [ref=f39e209]:
+            - link "Add 3d printed" [ref=f39e210] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=3d+printed+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rLiLRLr-gfc3Ye1m5cZRmtRDJi1G1WiZb7WvNARJ_lCr_aMJ1H6LMfCnIJECvGzCYULN0X6bHfWPNaqtT2LiCEC-WK8U2J-1vUxkCPVHg9yYB6O3ZYrJo8S8neTOPRObzCox2cuQvg3BUupOG1bMfqFj2ku7TAYkbFlBYdclgDbbvKlvt&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAt6BQj0BRAB&ictx=0
+              - generic [ref=f39e216]: 3d printed
+          - listitem [ref=f39e217]:
+            - link "Add Futuristic weapon" [ref=f39e218] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=futuristic+weapon+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r6cd0dmTIiQhobo0LA7r0bhrc3kPbUKuJcs8WUEZtuJ3A-BepncvGpdP_rgfGueEf0YWR4XJ7X86-yJxKEk7TT1dpVUS_gTNbHoV-KGuTR6nc3077v2OdCvZAy48cVG9WTL0qLwFSHvyytL3lcBCToFDvkAYmZVljtpauzJzcCuWRZ2qXkeo9ys9OiwhJ3dLCBqDd8Q&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKAx6BQjzBRAB&ictx=0
+              - generic [ref=f39e224]: Futuristic weapon
+          - listitem [ref=f39e225]:
+            - link "Add Heavy sniper" [ref=f39e226] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=heavy+sniper+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rb6ov3c6U0v2pckZSx7tVjegi-kycB_fBnzu0BhMgrFrfree83yKiBUfv4gxTr2dN1_fLRcn8hDxh-jgskqlbpGW7sqFG9cVG7pKG1DboG-8Z-AmtmNJVMt8oisCqAhsvUJBjHMs8f3M1pi8g4wgM7DsfnXIRB5upDGT-ZpwSwU6r4AQwbRvWsyzCSVahzgx5DAJS5Q&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKA16BQj5BRAB&ictx=0
+              - generic [ref=f39e232]: Heavy sniper
+          - listitem [ref=f39e233]:
+            - link "Add Design" [ref=f39e234] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=design+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r21-Rdu7tO0gifSkViQvk4IXMclLQHyEUmKV7E13xXrreyai_9_MWTfY3qJb2CkkY6Q42DF76zI3wD5ylPHJXIB_Ga0EeBadg4XQ0fBwJktqKB0XSMPDUlySNCNZr-Ikzx5-68CPL1-KWiX0Mg-YQjp3CnrIwnv6V3bGN2g8EPyYdjhbz&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKA56BQj2BRAB&ictx=0
+              - generic [ref=f39e236]: Design
+          - listitem [ref=f39e237]:
+            - link "Add Machine gun" [ref=f39e238] [cursor=pointer]:
+              - /url: /search?sca_esv=33ade75dbb948c2a&q=machine+gun+sci-fi+laser+rifle+weapon+model+reference&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r27E1_7Ryeiuc3CNVRbfYUZRMIiGaZSCMvFpfY5rPLKsx7u8Bt_ypuuTUektP7VI2kbHW1CjzdMF2pZo-fAgP6DFAP4ZiPP87g85orhOhNS6LhO-xVH1XIq2sjAs37LMTJvqwxfR5CEMKhLTPs4bAXtnBmilEM2P_d37i0C5tlGUEf8Je&udm=2&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQxKsJKA96BQj3BRAB&ictx=0
+              - generic [ref=f39e244]: Machine gun
+    - heading "Search Results" [level=1] [ref=f39e245]
+    - main [ref=f39e247]:
+      - generic [ref=f39e256]:
+        - generic [ref=f39e260] [cursor=pointer]:
+          - button "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e265]:
+            - img "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e267]
+          - link "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971 RenderHub" [ref=f39e269]:
+            - /url: https://www.renderhub.com/sergey971/sci-fi-assault-rifle-laser-blaster
+            - generic [ref=f39e270]:
+              - generic [ref=f39e272]: Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971
+              - generic [ref=f39e276]: RenderHub
+        - generic [ref=f39e280] [cursor=pointer]:
+          - button "Sci-Fi Automatic Weapon 3D Model by sergey971" [ref=f39e285]:
+            - img "Sci-Fi Automatic Weapon 3D Model by sergey971" [ref=f39e287]
+          - link "Sci-Fi Automatic Weapon 3D Model by sergey971 RenderHub" [ref=f39e289]:
+            - /url: https://www.renderhub.com/sergey971/automatic-weapons
+            - generic [ref=f39e290]:
+              - generic [ref=f39e292]: Sci-Fi Automatic Weapon 3D Model by sergey971
+              - generic [ref=f39e296]: RenderHub
+        - generic [ref=f39e300] [cursor=pointer]:
+          - button "Sci Fi Assault rifle laser blaster - Download Free 3D model by Artem Goyko [f730872] - Sketchfab" [ref=f39e305]:
+            - img "Sci Fi Assault rifle laser blaster - Download Free 3D model by Artem Goyko [f730872] - Sketchfab" [ref=f39e307]
+          - link "Sci Fi Assault rifle laser blaster - Download Free 3D model by Artem Goyko [f730872] - Sketchfab Sketchfab" [ref=f39e309]:
+            - /url: https://sketchfab.com/models/f730872e1ee843e9a3934e9e3f6719c0/embed
+            - generic [ref=f39e310]:
+              - generic [ref=f39e312]: Sci Fi Assault rifle laser blaster - Download Free 3D model by Artem Goyko [f730872] - Sketchfab
+              - generic [ref=f39e316]: Sketchfab
+        - generic [ref=f39e320] [cursor=pointer]:
+          - button "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e325]:
+            - img "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e327]
+          - link "Concept Energy or Laser Rifle V02 - 3D Model by Figster RenderHub" [ref=f39e329]:
+            - /url: https://www.renderhub.com/figster/concept-energy-or-laser-rifle-v02
+            - generic [ref=f39e330]:
+              - generic [ref=f39e332]: Concept Energy or Laser Rifle V02 - 3D Model by Figster
+              - generic [ref=f39e336]: RenderHub
+        - generic [ref=f39e340] [cursor=pointer]:
+          - button "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e345]:
+            - img "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e347]
+          - link "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971 RenderHub" [ref=f39e349]:
+            - /url: https://www.renderhub.com/sergey971/sci-fi-assault-rifle-laser-blaster
+            - generic [ref=f39e350]:
+              - generic [ref=f39e352]: Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971
+              - generic [ref=f39e356]: RenderHub
+        - generic [ref=f39e360] [cursor=pointer]:
+          - button "How can I detail this? Sci-Fi guns - Works in Progress - Blender Artists Community" [ref=f39e365]:
+            - img "How can I detail this? Sci-Fi guns - Works in Progress - Blender Artists Community" [ref=f39e367]
+          - link "How can I detail this? Sci-Fi guns - Works in Progress - Blender Artists Community Blender Artists Community" [ref=f39e369]:
+            - /url: https://blenderartists.org/t/how-can-i-detail-this-sci-fi-guns/586073
+            - generic [ref=f39e370]:
+              - generic [ref=f39e372]: How can I detail this? Sci-Fi guns - Works in Progress - Blender Artists Community
+              - generic [ref=f39e376]: Blender Artists Community
+        - generic [ref=f39e380] [cursor=pointer]:
+          - 'button "Laser rifle model : r/blender" [ref=f39e385]':
+            - 'img "Laser rifle model : r/blender" [ref=f39e387]'
+          - 'link "Laser rifle model : r/blender Reddit" [ref=f39e389]':
+            - /url: https://www.reddit.com/r/blender/comments/15b0wv0/laser_rifle_model/
+            - generic [ref=f39e390]:
+              - generic [ref=f39e392]: "Laser rifle model : r/blender"
+              - generic [ref=f39e396]: Reddit
+        - generic [ref=f39e400] [cursor=pointer]:
+          - 'button "giorgio baroni - Sci-fi Laser Rifle: Dragon Rifle" [ref=f39e405]':
+            - 'img "giorgio baroni - Sci-fi Laser Rifle: Dragon Rifle" [ref=f39e407]'
+          - 'link "giorgio baroni - Sci-fi Laser Rifle: Dragon Rifle giorgio baroni - ArtStation" [ref=f39e409]':
+            - /url: https://giorgiobaroni.artstation.com/projects/2xy5dK
+            - generic [ref=f39e410]:
+              - generic [ref=f39e412]: "giorgio baroni - Sci-fi Laser Rifle: Dragon Rifle"
+              - generic [ref=f39e416]: giorgio baroni - ArtStation
+        - generic [ref=f39e420] [cursor=pointer]:
+          - button "Sci fi laser rifle 3D model | CGTrader" [ref=f39e425]:
+            - img "Sci fi laser rifle 3D model | CGTrader" [ref=f39e427]
+          - link "Sci fi laser rifle 3D model | CGTrader CGTrader" [ref=f39e429]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/sci-fi-laser-rifle-0f776f5d-f9f1-4a64-bd12-7088c0eeb778
+            - generic [ref=f39e430]:
+              - generic [ref=f39e432]: Sci fi laser rifle 3D model | CGTrader
+              - generic [ref=f39e436]: CGTrader
+        - generic [ref=f39e440] [cursor=pointer]:
+          - button "Futuristic Rifle Reference Image created on Craiyon" [ref=f39e445]:
+            - img "Futuristic Rifle Reference Image created on Craiyon" [ref=f39e447]
+          - link "Futuristic Rifle Reference Image created on Craiyon Craiyon" [ref=f39e449]:
+            - /url: https://www.craiyon.com/es/search/futuristic-rifle-reference-image
+            - generic [ref=f39e450]:
+              - generic [ref=f39e452]: Futuristic Rifle Reference Image created on Craiyon
+              - generic [ref=f39e456]: Craiyon
+        - generic [ref=f39e460] [cursor=pointer]:
+          - button "Futuristic Sci-fi Laser Weapon Gun Video Stock Vector (Royalty Free) 2765831823 | Shutterstock" [ref=f39e465]:
+            - img "Futuristic Sci-fi Laser Weapon Gun Video Stock Vector (Royalty Free) 2765831823 | Shutterstock" [ref=f39e467]
+          - link "Futuristic Sci-fi Laser Weapon Gun Video Stock Vector (Royalty Free) 2765831823 | Shutterstock Shutterstock" [ref=f39e469]:
+            - /url: https://www.shutterstock.com/image-vector/futuristic-scifi-laser-weapon-gun-video-2765831823
+            - generic [ref=f39e470]:
+              - generic [ref=f39e472]: Futuristic Sci-fi Laser Weapon Gun Video Stock Vector (Royalty Free) 2765831823 | Shutterstock
+              - generic [ref=f39e476]: Shutterstock
+        - generic [ref=f39e480] [cursor=pointer]:
+          - button "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740" [ref=f39e485]:
+            - img "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740" [ref=f39e487]
+          - link "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740 TurboSquid" [ref=f39e489]:
+            - /url: https://www.turbosquid.com/3d-models/3d-sci-fi-weapon-laser-gun-model-1538740
+            - generic [ref=f39e490]:
+              - generic [ref=f39e492]: 3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740
+              - generic [ref=f39e496]: TurboSquid
+        - generic [ref=f39e500] [cursor=pointer]:
+          - button "Sci-Fi Futuristic Laser Rifle" [ref=f39e505]:
+            - img "Sci-Fi Futuristic Laser Rifle" [ref=f39e507]
+          - link "Sci-Fi Futuristic Laser Rifle CGCircuit" [ref=f39e509]:
+            - /url: https://www.cgcircuit.com/asset/sci-fi-futuristic-laser-rifle
+            - generic [ref=f39e510]:
+              - generic [ref=f39e512]: Sci-Fi Futuristic Laser Rifle
+              - generic [ref=f39e516]: CGCircuit
+        - generic [ref=f39e520] [cursor=pointer]:
+          - button "Sci-fi Gun — polycount" [ref=f39e525]:
+            - img "Sci-fi Gun — polycount" [ref=f39e527]
+          - link "Sci-fi Gun — polycount Polycount" [ref=f39e529]:
+            - /url: https://polycount.com/discussion/222473/sci-fi-gun
+            - generic [ref=f39e530]:
+              - generic [ref=f39e532]: Sci-fi Gun — polycount
+              - generic [ref=f39e536]: Polycount
+        - generic [ref=f39e540] [cursor=pointer]:
+          - 'button "Sci-Fi Gun #254 3D Model by sergey971" [ref=f39e545]':
+            - 'img "Sci-Fi Gun #254 3D Model by sergey971" [ref=f39e547]'
+          - 'link "Sci-Fi Gun #254 3D Model by sergey971 RenderHub" [ref=f39e549]':
+            - /url: https://www.renderhub.com/sergey971/sci-fi-gun-254
+            - generic [ref=f39e550]:
+              - generic [ref=f39e552]: "Sci-Fi Gun #254 3D Model by sergey971"
+              - generic [ref=f39e556]: RenderHub
+        - generic [ref=f39e560] [cursor=pointer]:
+          - button "ArtStation - PEACEMAKER SCIFI LASER RIFLE" [ref=f39e565]:
+            - img "ArtStation - PEACEMAKER SCIFI LASER RIFLE" [ref=f39e567]
+          - link "ArtStation - PEACEMAKER SCIFI LASER RIFLE ArtStation" [ref=f39e569]:
+            - /url: https://www.artstation.com/artwork/49lQJW
+            - generic [ref=f39e570]:
+              - generic [ref=f39e572]: ArtStation - PEACEMAKER SCIFI LASER RIFLE
+              - generic [ref=f39e576]: ArtStation
+        - generic [ref=f39e580] [cursor=pointer]:
+          - 'button "Laser rifle model : r/blender" [ref=f39e585]':
+            - 'img "Laser rifle model : r/blender" [ref=f39e587]'
+          - 'link "Laser rifle model : r/blender Reddit" [ref=f39e589]':
+            - /url: https://www.reddit.com/r/blender/comments/15b0wv0/laser_rifle_model/
+            - generic [ref=f39e590]:
+              - generic [ref=f39e592]: "Laser rifle model : r/blender"
+              - generic [ref=f39e596]: Reddit
+        - generic [ref=f39e600] [cursor=pointer]:
+          - button "Sci fi laser rifle 3D model | CGTrader" [ref=f39e605]:
+            - img "Sci fi laser rifle 3D model | CGTrader" [ref=f39e607]
+          - link "Sci fi laser rifle 3D model | CGTrader CGTrader" [ref=f39e609]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/sci-fi-laser-rifle-0f776f5d-f9f1-4a64-bd12-7088c0eeb778
+            - generic [ref=f39e610]:
+              - generic [ref=f39e612]: Sci fi laser rifle 3D model | CGTrader
+              - generic [ref=f39e616]: CGTrader
+        - generic [ref=f39e620] [cursor=pointer]:
+          - button "Mugunth (3DArtist) - Rancher_001 (Scifi Gun)" [ref=f39e625]:
+            - img "Mugunth (3DArtist) - Rancher_001 (Scifi Gun)" [ref=f39e627]
+          - link "Mugunth (3DArtist) - Rancher_001 (Scifi Gun) Mugunth (3DArtist)" [ref=f39e629]:
+            - /url: https://sasuke_mugunth.artstation.com/projects/oeVq4
+            - generic [ref=f39e630]:
+              - generic [ref=f39e632]: Mugunth (3DArtist) - Rancher_001 (Scifi Gun)
+              - generic [ref=f39e636]: Mugunth (3DArtist)
+        - generic [ref=f39e640] [cursor=pointer]:
+          - button "Sci-Fi Laser Gun 1 3D model | CGTrader" [ref=f39e645]:
+            - img "Sci-Fi Laser Gun 1 3D model | CGTrader" [ref=f39e647]
+          - link "Sci-Fi Laser Gun 1 3D model | CGTrader CGTrader" [ref=f39e649]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/sci-fi-laser-gun-1
+            - generic [ref=f39e650]:
+              - generic [ref=f39e652]: Sci-Fi Laser Gun 1 3D model | CGTrader
+              - generic [ref=f39e656]: CGTrader
+        - generic [ref=f39e660] [cursor=pointer]:
+          - 'button "SMG and Laser weapon concept art by me : r/ImaginaryFuturism" [ref=f39e665]':
+            - 'img "SMG and Laser weapon concept art by me : r/ImaginaryFuturism" [ref=f39e667]'
+          - 'link "SMG and Laser weapon concept art by me : r/ImaginaryFuturism Reddit" [ref=f39e669]':
+            - /url: https://www.reddit.com/r/ImaginaryFuturism/comments/1d6e3nt/smg_and_laser_weapon_concept_art_by_me/
+            - generic [ref=f39e670]:
+              - generic [ref=f39e672]: "SMG and Laser weapon concept art by me : r/ImaginaryFuturism"
+              - generic [ref=f39e676]: Reddit
+        - generic [ref=f39e680] [cursor=pointer]:
+          - button "3D model Stylized Sci-Fi Assault Laser Rifle VR / AR / low-poly | CGTrader" [ref=f39e685]:
+            - img "3D model Stylized Sci-Fi Assault Laser Rifle VR / AR / low-poly | CGTrader" [ref=f39e687]
+          - link "3D model Stylized Sci-Fi Assault Laser Rifle VR / AR / low-poly | CGTrader CGTrader" [ref=f39e689]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/stylized-sci-fi-assault-rifle
+            - generic [ref=f39e690]:
+              - generic [ref=f39e692]: 3D model Stylized Sci-Fi Assault Laser Rifle VR / AR / low-poly | CGTrader
+              - generic [ref=f39e696]: CGTrader
+        - generic [ref=f39e700] [cursor=pointer]:
+          - button "Sci-Fi Laser Gun 2 3D model | CGTrader" [ref=f39e705]:
+            - img "Sci-Fi Laser Gun 2 3D model | CGTrader" [ref=f39e707]
+          - link "Sci-Fi Laser Gun 2 3D model | CGTrader CGTrader" [ref=f39e709]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/sci-fi-laser-gun-2
+            - generic [ref=f39e710]:
+              - generic [ref=f39e712]: Sci-Fi Laser Gun 2 3D model | CGTrader
+              - generic [ref=f39e716]: CGTrader
+        - generic [ref=f39e720] [cursor=pointer]:
+          - button "ArtStation - Sci-fi Weapon|8K Reference Images | Artworks" [ref=f39e725]:
+            - img "ArtStation - Sci-fi Weapon|8K Reference Images | Artworks" [ref=f39e727]
+          - link "ArtStation - Sci-fi Weapon|8K Reference Images | Artworks ArtStation" [ref=f39e729]:
+            - /url: https://www.artstation.com/marketplace/p/OlPVB/sci-fi-weapon-8k-reference-images
+            - generic [ref=f39e730]:
+              - generic [ref=f39e732]: ArtStation - Sci-fi Weapon|8K Reference Images | Artworks
+              - generic [ref=f39e736]: ArtStation
+        - generic [ref=f39e738]:
+          - heading "Related searches" [level=2] [ref=f39e739]
+          - link "assault sci fi laser rifle" [ref=f39e740] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=assault+sci+fi+laser+rifle&stick=H4sIAAAAAAAAAFvEKpVYXJxYmlOiUJycqZCWqZCTWJxapFCUmZaTCgAkJ_70HQAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegQIfxAA
+            - generic [ref=f39e745]: assault sci fi laser rifle
+          - link "sci fi laser rifle concept art" [ref=f39e746] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=sci+fi+laser+rifle+concept+art&stick=H4sIAAAAAAAAAFvEKlecnKmQlqmQk1icWqRQlJmWk6qQnJ-XnFpQopBYVAIAoTougCEAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUInAEQAA
+            - generic [ref=f39e751]: sci fi laser rifle concept art
+          - link "laser gun concept art" [ref=f39e752] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=laser+gun+concept+art&stick=H4sIAAAAAAAAAFvEKpqTWJxapJBemqeQnJ-XnFpQopBYVAIAPr7r1BgAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUIrwEQAA
+            - generic [ref=f39e757]: laser gun concept art
+        - generic [ref=f39e761] [cursor=pointer]:
+          - button "3d Illustration Sci-fi Futuristic Weapon Isolated Stock Illustration 1499623649 | Shutterstock" [ref=f39e766]:
+            - img "3d Illustration Sci-fi Futuristic Weapon Isolated Stock Illustration 1499623649 | Shutterstock" [ref=f39e768]
+          - link "3d Illustration Sci-fi Futuristic Weapon Isolated Stock Illustration 1499623649 | Shutterstock Shutterstock" [ref=f39e770]:
+            - /url: https://www.shutterstock.com/image-illustration/3d-illustration-scifi-futuristic-weapon-isolated-1499623649
+            - generic [ref=f39e771]:
+              - generic [ref=f39e773]: 3d Illustration Sci-fi Futuristic Weapon Isolated Stock Illustration 1499623649 | Shutterstock
+              - generic [ref=f39e777]: Shutterstock
+        - generic [ref=f39e781] [cursor=pointer]:
+          - button "Old Sci-Fi Gun Tutorial - Superhive (formerly Blender Market)" [ref=f39e786]:
+            - img "Old Sci-Fi Gun Tutorial - Superhive (formerly Blender Market)" [ref=f39e788]
+          - link "Old Sci-Fi Gun Tutorial - Superhive (formerly Blender Market) Blender Market" [ref=f39e790]:
+            - /url: https://superhivemarket.com/products/old-sci-fi-gun-tutorial
+            - generic [ref=f39e791]:
+              - generic [ref=f39e793]: Old Sci-Fi Gun Tutorial - Superhive (formerly Blender Market)
+              - generic [ref=f39e797]: Blender Market
+        - generic [ref=f39e801] [cursor=pointer]:
+          - button "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ," [ref=f39e806]:
+            - img "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ," [ref=f39e808]
+          - link "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun , Facebook" [ref=f39e810]:
+            - /url: https://www.facebook.com/groups/levelup.livestream/posts/767685476775307/
+            - generic [ref=f39e811]:
+              - generic [ref=f39e813]: Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ,
+              - generic [ref=f39e817]: Facebook
+        - generic [ref=f39e821] [cursor=pointer]:
+          - button "Sniper rifles are always a fun design challenge. Hats off to the designer for pushing a really fun theme of it being “pressurized”. That really helped bring a unique vision to this" [ref=f39e826]:
+            - img "Sniper rifles are always a fun design challenge. Hats off to the designer for pushing a really fun theme of it being “pressurized”. That really helped bring a unique vision to this" [ref=f39e828]
+          - link "Sniper rifles are always a fun design challenge. Hats off to the designer for pushing a really fun theme of it being “pressurized”. That really helped bring a unique vision to this Instagram" [ref=f39e830]:
+            - /url: https://www.instagram.com/p/DVJrXCikS6J/
+            - generic [ref=f39e831]:
+              - generic [ref=f39e833]: Sniper rifles are always a fun design challenge. Hats off to the designer for pushing a really fun theme of it being “pressurized”. That really helped bring a unique vision to this
+              - generic [ref=f39e837]: Instagram
+        - generic [ref=f39e841] [cursor=pointer]:
+          - button "Sci-fi Laser Rifle - Download Free 3D model by Ramhat (@Ramhat) [1dbac27]" [ref=f39e846]:
+            - img "Sci-fi Laser Rifle - Download Free 3D model by Ramhat (@Ramhat) [1dbac27]" [ref=f39e848]
+          - link "Sci-fi Laser Rifle - Download Free 3D model by Ramhat (@Ramhat) [1dbac27] Sketchfab" [ref=f39e850]:
+            - /url: https://sketchfab.com/3d-models/sci-fi-laser-rifle-1dbac27e101440bdbd109a793b7bba82
+            - generic [ref=f39e851]:
+              - generic [ref=f39e853]: Sci-fi Laser Rifle - Download Free 3D model by Ramhat (@Ramhat) [1dbac27]
+              - generic [ref=f39e857]: Sketchfab
+        - generic [ref=f39e861] [cursor=pointer]:
+          - 'button "Laser rifle model : r/blender" [ref=f39e866]':
+            - 'img "Laser rifle model : r/blender" [ref=f39e868]'
+          - 'link "Laser rifle model : r/blender Reddit" [ref=f39e870]':
+            - /url: https://www.reddit.com/r/blender/comments/15b0wv0/laser_rifle_model/
+            - generic [ref=f39e871]:
+              - generic [ref=f39e873]: "Laser rifle model : r/blender"
+              - generic [ref=f39e877]: Reddit
+        - generic [ref=f39e881] [cursor=pointer]:
+          - button "Sci-Fi Gun 05 - Black Shotgun 3D Model by gsommer" [ref=f39e886]:
+            - img "Sci-Fi Gun 05 - Black Shotgun 3D Model by gsommer" [ref=f39e888]
+          - link "Sci-Fi Gun 05 - Black Shotgun 3D Model by gsommer RenderHub" [ref=f39e890]:
+            - /url: https://www.renderhub.com/gsommer/sci-fi-gun-05-black-shotgun
+            - generic [ref=f39e891]:
+              - generic [ref=f39e893]: Sci-Fi Gun 05 - Black Shotgun 3D Model by gsommer
+              - generic [ref=f39e897]: RenderHub
+        - generic [ref=f39e901] [cursor=pointer]:
+          - button "Sci-Fi Futuristic Laser Rifle" [ref=f39e906]:
+            - img "Sci-Fi Futuristic Laser Rifle" [ref=f39e908]
+          - link "Sci-Fi Futuristic Laser Rifle CGCircuit" [ref=f39e910]:
+            - /url: https://www.cgcircuit.com/asset/sci-fi-futuristic-laser-rifle
+            - generic [ref=f39e911]:
+              - generic [ref=f39e913]: Sci-Fi Futuristic Laser Rifle
+              - generic [ref=f39e917]: CGCircuit
+        - generic [ref=f39e921] [cursor=pointer]:
+          - button "Sci-fi concept Laser Rifle free 3D model | CGTrader" [ref=f39e926]:
+            - img "Sci-fi concept Laser Rifle free 3D model | CGTrader" [ref=f39e928]
+          - link "Sci-fi concept Laser Rifle free 3D model | CGTrader CGTrader" [ref=f39e930]:
+            - /url: https://www.cgtrader.com/free-3d-models/military/gun/sci-fi-concept-laser-rifle
+            - generic [ref=f39e931]:
+              - generic [ref=f39e933]: Sci-fi concept Laser Rifle free 3D model | CGTrader
+              - generic [ref=f39e937]: CGTrader
+        - generic [ref=f39e941] [cursor=pointer]:
+          - button "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e946]:
+            - img "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e948]
+          - link "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org 3DModels.org" [ref=f39e950]:
+            - /url: https://3dmodels.org/3d-models/sci-fi-futuristic-laser-rifle-low-poly/?srsltid=AfmBOorbgbhtos1MGBgO_d4bxe1vfx-6em96_Qfi1wzvPP7a6i2jsgye
+            - generic [ref=f39e951]:
+              - generic [ref=f39e953]: Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org
+              - generic [ref=f39e957]: 3DModels.org
+        - generic [ref=f39e961] [cursor=pointer]:
+          - button "Let's model a SCI-FI RIFLE in10 MINUTES - ep. 56 - Blender 2.91 - YouTube" [ref=f39e966]:
+            - img "Let's model a SCI-FI RIFLE in10 MINUTES - ep. 56 - Blender 2.91 - YouTube" [ref=f39e968]
+          - link "Let's model a SCI-FI RIFLE in10 MINUTES - ep. 56 - Blender 2.91 - YouTube YouTube" [ref=f39e970]:
+            - /url: https://www.youtube.com/watch?v=iybJlqU1tRw
+            - generic [ref=f39e971]:
+              - generic [ref=f39e973]: Let's model a SCI-FI RIFLE in10 MINUTES - ep. 56 - Blender 2.91 - YouTube
+              - generic [ref=f39e977]: YouTube
+        - generic [ref=f39e981] [cursor=pointer]:
+          - button "Kendra Storz - Sci-Fi Laser Gun" [ref=f39e986]:
+            - img "Kendra Storz - Sci-Fi Laser Gun" [ref=f39e988]
+          - link "Kendra Storz - Sci-Fi Laser Gun Kendra Storz" [ref=f39e990]:
+            - /url: https://kstorz10.artstation.com/projects/4b6Y4n
+            - generic [ref=f39e991]:
+              - generic [ref=f39e993]: Kendra Storz - Sci-Fi Laser Gun
+              - generic [ref=f39e997]: Kendra Storz
+        - generic [ref=f39e1001] [cursor=pointer]:
+          - button "refs - weapons - guns - sci-fi - A 3D model collection by Antoine Patel (@apatel) - Sketchfab" [ref=f39e1006]:
+            - img "refs - weapons - guns - sci-fi - A 3D model collection by Antoine Patel (@apatel) - Sketchfab" [ref=f39e1008]
+          - link "refs - weapons - guns - sci-fi - A 3D model collection by Antoine Patel (@apatel) - Sketchfab Sketchfab" [ref=f39e1010]:
+            - /url: https://sketchfab.com/apatel/collections/refs-weapons-guns-sci-fi-4706eea9af1e467cbe236aa05cb4b912
+            - generic [ref=f39e1011]:
+              - generic [ref=f39e1013]: refs - weapons - guns - sci-fi - A 3D model collection by Antoine Patel (@apatel) - Sketchfab
+              - generic [ref=f39e1017]: Sketchfab
+        - generic [ref=f39e1021] [cursor=pointer]:
+          - button "Sci-Fi Laser Rifle 3d model 3ds Max files free download - CadNav" [ref=f39e1026]:
+            - img "Sci-Fi Laser Rifle 3d model 3ds Max files free download - CadNav" [ref=f39e1028]
+          - link "Sci-Fi Laser Rifle 3d model 3ds Max files free download - CadNav CadNav" [ref=f39e1030]:
+            - /url: https://www.cadnav.com/3d-models/model-36478.html
+            - generic [ref=f39e1031]:
+              - generic [ref=f39e1033]: Sci-Fi Laser Rifle 3d model 3ds Max files free download - CadNav
+              - generic [ref=f39e1037]: CadNav
+        - generic [ref=f39e1041] [cursor=pointer]:
+          - button "Sci-Fi Futuristic Laser Rifle" [ref=f39e1046]:
+            - img "Sci-Fi Futuristic Laser Rifle" [ref=f39e1048]
+          - link "Sci-Fi Futuristic Laser Rifle CGCircuit" [ref=f39e1050]:
+            - /url: https://www.cgcircuit.com/asset/sci-fi-futuristic-laser-rifle
+            - generic [ref=f39e1051]:
+              - generic [ref=f39e1053]: Sci-Fi Futuristic Laser Rifle
+              - generic [ref=f39e1057]: CGCircuit
+        - generic [ref=f39e1061] [cursor=pointer]:
+          - button "Sci-fi retro rifle 3D Model $39 - .max .fbx - Free3D" [ref=f39e1066]:
+            - img "Sci-fi retro rifle 3D Model $39 - .max .fbx - Free3D" [ref=f39e1068]
+          - link "Sci-fi retro rifle 3D Model $39 - .max .fbx - Free3D Free3D.com" [ref=f39e1070]:
+            - /url: https://free3d.com/3d-model/sci-fi-retro-rifle-9692.html
+            - generic [ref=f39e1071]:
+              - generic [ref=f39e1073]: Sci-fi retro rifle 3D Model $39 - .max .fbx - Free3D
+              - generic [ref=f39e1077]: Free3D.com
+        - generic [ref=f39e1081] [cursor=pointer]:
+          - button "3D model Sci-Fi Laser Rifle VR / AR / low-poly | CGTrader" [ref=f39e1086]:
+            - img "3D model Sci-Fi Laser Rifle VR / AR / low-poly | CGTrader" [ref=f39e1088]
+          - link "3D model Sci-Fi Laser Rifle VR / AR / low-poly | CGTrader CGTrader" [ref=f39e1090]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/sci-fi-laser-rifle
+            - generic [ref=f39e1091]:
+              - generic [ref=f39e1093]: 3D model Sci-Fi Laser Rifle VR / AR / low-poly | CGTrader
+              - generic [ref=f39e1097]: CGTrader
+        - generic [ref=f39e1101] [cursor=pointer]:
+          - button "Sci-Fi Assault Rifle 089 | Fab" [ref=f39e1106]:
+            - img "Sci-Fi Assault Rifle 089 | Fab" [ref=f39e1108]
+          - link "Sci-Fi Assault Rifle 089 | Fab Fab" [ref=f39e1110]:
+            - /url: https://www.fab.com/listings/1f54ad38-5202-42ff-878c-9752f70640bb
+            - generic [ref=f39e1111]:
+              - generic [ref=f39e1113]: Sci-Fi Assault Rifle 089 | Fab
+              - generic [ref=f39e1117]: Fab
+        - generic [ref=f39e1121] [cursor=pointer]:
+          - button "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e1126]:
+            - img "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e1128]
+          - link "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971 RenderHub" [ref=f39e1130]:
+            - /url: https://www.renderhub.com/sergey971/sci-fi-assault-rifle-laser-blaster
+            - generic [ref=f39e1131]:
+              - generic [ref=f39e1133]: Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971
+              - generic [ref=f39e1137]: RenderHub
+        - generic [ref=f39e1141] [cursor=pointer]:
+          - button "ArtStation - Sci-fi gun" [ref=f39e1146]:
+            - img "ArtStation - Sci-fi gun" [ref=f39e1148]
+          - link "ArtStation - Sci-fi gun ArtStation" [ref=f39e1150]:
+            - /url: https://www.artstation.com/artwork/2Bk9rA
+            - generic [ref=f39e1151]:
+              - generic [ref=f39e1153]: ArtStation - Sci-fi gun
+              - generic [ref=f39e1157]: ArtStation
+        - generic [ref=f39e1161] [cursor=pointer]:
+          - button "Sci-Fi Futuristic Laser Rifle | Fab" [ref=f39e1166]:
+            - img "Sci-Fi Futuristic Laser Rifle | Fab" [ref=f39e1168]
+          - link "Sci-Fi Futuristic Laser Rifle | Fab Fab" [ref=f39e1170]:
+            - /url: https://www.fab.com/listings/001c17a8-c4bd-415b-bf53-4283ba0c8cdf
+            - generic [ref=f39e1171]:
+              - generic [ref=f39e1173]: Sci-Fi Futuristic Laser Rifle | Fab
+              - generic [ref=f39e1177]: Fab
+        - generic [ref=f39e1181] [cursor=pointer]:
+          - button "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e1186]:
+            - img "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e1188]
+          - link "Concept Energy or Laser Rifle V02 - 3D Model by Figster RenderHub" [ref=f39e1190]:
+            - /url: https://www.renderhub.com/figster/concept-energy-or-laser-rifle-v02
+            - generic [ref=f39e1191]:
+              - generic [ref=f39e1193]: Concept Energy or Laser Rifle V02 - 3D Model by Figster
+              - generic [ref=f39e1197]: RenderHub
+        - generic [ref=f39e1201] [cursor=pointer]:
+          - button "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740" [ref=f39e1206]:
+            - img "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740" [ref=f39e1208]
+          - link "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740 TurboSquid" [ref=f39e1210]:
+            - /url: https://www.turbosquid.com/3d-models/3d-sci-fi-weapon-laser-gun-model-1538740
+            - generic [ref=f39e1211]:
+              - generic [ref=f39e1213]: 3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740
+              - generic [ref=f39e1217]: TurboSquid
+        - generic [ref=f39e1221] [cursor=pointer]:
+          - button "Sci-Fi Laser Gun 3d model Maya files free download - CadNav" [ref=f39e1226]:
+            - img "Sci-Fi Laser Gun 3d model Maya files free download - CadNav" [ref=f39e1228]
+          - link "Sci-Fi Laser Gun 3d model Maya files free download - CadNav CadNav" [ref=f39e1230]:
+            - /url: https://www.cadnav.com/3d-models/model-47441.html
+            - generic [ref=f39e1231]:
+              - generic [ref=f39e1233]: Sci-Fi Laser Gun 3d model Maya files free download - CadNav
+              - generic [ref=f39e1237]: CadNav
+        - generic [ref=f39e1239]:
+          - heading "Related searches" [level=2] [ref=f39e1240]
+          - link "sci fi blaster rifle" [ref=f39e1241] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=sci+fi+blaster+rifle&stick=H4sIAAAAAAAAAFvEKlKcnKmQlqmQlJNYXJJapFCUmZaTCgDQwst1FwAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUIrAUQAA
+            - generic [ref=f39e1246]: sci fi blaster rifle
+          - link "sci fi futuristic assault rifle" [ref=f39e1247] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=sci+fi+futuristic+assault+rifle&stick=H4sIAAAAAAAAAFvEKl-cnKmQBkSlJaVFmcUlmckKicXFiaU5JQpFmWk5qQD2OIh5IgAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUIuwUQAA
+            - generic [ref=f39e1252]: sci fi futuristic assault rifle
+          - link "futuristic laser rifle" [ref=f39e1253] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=futuristic+laser+rifle&stick=H4sIAAAAAAAAAFvEKpZWWlJalFlckpmskJNYnFqkUJSZlpMKAMWoEisZAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUIzwUQAA
+            - generic [ref=f39e1258]: futuristic laser rifle
+        - generic [ref=f39e1262] [cursor=pointer]:
+          - button "SciFi Laser Rifle 3D model | CGTrader" [ref=f39e1267]:
+            - img "SciFi Laser Rifle 3D model | CGTrader" [ref=f39e1269]
+          - link "SciFi Laser Rifle 3D model | CGTrader CGTrader" [ref=f39e1271]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/scifi-laser-rifle
+            - generic [ref=f39e1272]:
+              - generic [ref=f39e1274]: SciFi Laser Rifle 3D model | CGTrader
+              - generic [ref=f39e1278]: CGTrader
+        - generic [ref=f39e1282] [cursor=pointer]:
+          - button "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e1287]:
+            - img "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e1289]
+          - link "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971 RenderHub" [ref=f39e1291]:
+            - /url: https://www.renderhub.com/sergey971/sci-fi-assault-rifle-laser-blaster
+            - generic [ref=f39e1292]:
+              - generic [ref=f39e1294]: Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971
+              - generic [ref=f39e1298]: RenderHub
+        - generic [ref=f39e1302] [cursor=pointer]:
+          - button "Futuristic Laser Rifle 3d model Maya files free download - CadNav" [ref=f39e1307]:
+            - img "Futuristic Laser Rifle 3d model Maya files free download - CadNav" [ref=f39e1309]
+          - link "Futuristic Laser Rifle 3d model Maya files free download - CadNav CadNav" [ref=f39e1311]:
+            - /url: https://www.cadnav.com/3d-models/model-48290.html
+            - generic [ref=f39e1312]:
+              - generic [ref=f39e1314]: Futuristic Laser Rifle 3d model Maya files free download - CadNav
+              - generic [ref=f39e1318]: CadNav
+        - generic [ref=f39e1322] [cursor=pointer]:
+          - button "ArtStation - 3D Sci-Fi Laser Weapon" [ref=f39e1327]:
+            - img "ArtStation - 3D Sci-Fi Laser Weapon" [ref=f39e1329]
+          - link "ArtStation - 3D Sci-Fi Laser Weapon ArtStation" [ref=f39e1331]:
+            - /url: https://www.artstation.com/artwork/03wJm4
+            - generic [ref=f39e1332]:
+              - generic [ref=f39e1334]: ArtStation - 3D Sci-Fi Laser Weapon
+              - generic [ref=f39e1338]: ArtStation
+        - generic [ref=f39e1342] [cursor=pointer]:
+          - 'button "Design for a sci-fi energy weapon : r/conceptart" [ref=f39e1347]':
+            - 'img "Design for a sci-fi energy weapon : r/conceptart" [ref=f39e1349]'
+          - 'link "Design for a sci-fi energy weapon : r/conceptart Reddit" [ref=f39e1351]':
+            - /url: https://www.reddit.com/r/conceptart/comments/ygjb7g/design_for_a_scifi_energy_weapon/
+            - generic [ref=f39e1352]:
+              - generic [ref=f39e1354]: "Design for a sci-fi energy weapon : r/conceptart"
+              - generic [ref=f39e1358]: Reddit
+        - generic [ref=f39e1362] [cursor=pointer]:
+          - button "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e1367]:
+            - img "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e1369]
+          - link "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org 3DModels.org" [ref=f39e1371]:
+            - /url: https://3dmodels.org/3d-models/sci-fi-futuristic-laser-rifle-low-poly/?srsltid=AfmBOoqiDxhOVsQ1FvyWh_Gc5NQwCO1JmqtTg7GgTyUz9sVTJofB0mNT
+            - generic [ref=f39e1372]:
+              - generic [ref=f39e1374]: Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org
+              - generic [ref=f39e1378]: 3DModels.org
+        - generic [ref=f39e1382] [cursor=pointer]:
+          - button "Sci-Fi Laser Rifle free VR / AR / low-poly 3D model animated | CGTrader" [ref=f39e1387]:
+            - img "Sci-Fi Laser Rifle free VR / AR / low-poly 3D model animated | CGTrader" [ref=f39e1389]
+          - link "Sci-Fi Laser Rifle free VR / AR / low-poly 3D model animated | CGTrader CGTrader" [ref=f39e1391]:
+            - /url: https://www.cgtrader.com/free-3d-models/military/gun/sci-fi-laser-rifle-fec05388-a366-4a9b-83ac-df01836e607f
+            - generic [ref=f39e1392]:
+              - generic [ref=f39e1394]: Sci-Fi Laser Rifle free VR / AR / low-poly 3D model animated | CGTrader
+              - generic [ref=f39e1398]: CGTrader
+        - generic [ref=f39e1402] [cursor=pointer]:
+          - button "Laser Weapons of Hard Sci-Fi news - ModDB" [ref=f39e1407]:
+            - img "Laser Weapons of Hard Sci-Fi news - ModDB" [ref=f39e1409]
+          - link "Laser Weapons of Hard Sci-Fi news - ModDB ModDB" [ref=f39e1411]:
+            - /url: https://www.moddb.com/news/laser-weapons-of-hard-sci-fi
+            - generic [ref=f39e1412]:
+              - generic [ref=f39e1414]: Laser Weapons of Hard Sci-Fi news - ModDB
+              - generic [ref=f39e1418]: ModDB
+        - generic [ref=f39e1422] [cursor=pointer]:
+          - button "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e1427]:
+            - img "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e1429]
+          - link "Concept Energy or Laser Rifle V02 - 3D Model by Figster RenderHub" [ref=f39e1431]:
+            - /url: https://www.renderhub.com/figster/concept-energy-or-laser-rifle-v02
+            - generic [ref=f39e1432]:
+              - generic [ref=f39e1434]: Concept Energy or Laser Rifle V02 - 3D Model by Figster
+              - generic [ref=f39e1438]: RenderHub
+        - generic [ref=f39e1442] [cursor=pointer]:
+          - button "Laser Weapons - A 3D model collection by StasonicK - Sketchfab" [ref=f39e1447]:
+            - img "Laser Weapons - A 3D model collection by StasonicK - Sketchfab" [ref=f39e1449]
+          - link "Laser Weapons - A 3D model collection by StasonicK - Sketchfab Sketchfab" [ref=f39e1451]:
+            - /url: https://sketchfab.com/StasonicK/collections/laser-weapons-d99f3f5c28fe4d33bf16b500ba4ade6a
+            - generic [ref=f39e1452]:
+              - generic [ref=f39e1454]: Laser Weapons - A 3D model collection by StasonicK - Sketchfab
+              - generic [ref=f39e1458]: Sketchfab
+        - generic [ref=f39e1462] [cursor=pointer]:
+          - button "Modern Sci-Fi Weapons Space Gun Pack 3d model VR / AR / low-poly | CGTrader" [ref=f39e1467]:
+            - img "Modern Sci-Fi Weapons Space Gun Pack 3d model VR / AR / low-poly | CGTrader" [ref=f39e1469]
+          - link "Modern Sci-Fi Weapons Space Gun Pack 3d model VR / AR / low-poly | CGTrader CGTrader" [ref=f39e1471]:
+            - /url: https://www.cgtrader.com/3d-model-packs/modern-sci-fi-weapons-space-gun-pack-3d-model
+            - generic [ref=f39e1472]:
+              - generic [ref=f39e1474]: Modern Sci-Fi Weapons Space Gun Pack 3d model VR / AR / low-poly | CGTrader
+              - generic [ref=f39e1478]: CGTrader
+        - generic [ref=f39e1482] [cursor=pointer]:
+          - 'button "Laser rifle model : r/blender" [ref=f39e1487]':
+            - 'img "Laser rifle model : r/blender" [ref=f39e1489]'
+          - 'link "Laser rifle model : r/blender Reddit" [ref=f39e1491]':
+            - /url: https://www.reddit.com/r/blender/comments/15b0wv0/laser_rifle_model/
+            - generic [ref=f39e1492]:
+              - generic [ref=f39e1494]: "Laser rifle model : r/blender"
+              - generic [ref=f39e1498]: Reddit
+        - generic [ref=f39e1502] [cursor=pointer]:
+          - button "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ," [ref=f39e1507]:
+            - img "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ," [ref=f39e1509]
+          - link "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun , Facebook" [ref=f39e1511]:
+            - /url: https://www.facebook.com/groups/levelup.livestream/posts/767685476775307/
+            - generic [ref=f39e1512]:
+              - generic [ref=f39e1514]: Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ,
+              - generic [ref=f39e1518]: Facebook
+        - generic [ref=f39e1522] [cursor=pointer]:
+          - button "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e1527]:
+            - img "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e1529]
+          - link "Concept Energy or Laser Rifle V02 - 3D Model by Figster RenderHub" [ref=f39e1531]:
+            - /url: https://www.renderhub.com/figster/concept-energy-or-laser-rifle-v02
+            - generic [ref=f39e1532]:
+              - generic [ref=f39e1534]: Concept Energy or Laser Rifle V02 - 3D Model by Figster
+              - generic [ref=f39e1538]: RenderHub
+        - generic [ref=f39e1542] [cursor=pointer]:
+          - button "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e1547]:
+            - img "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e1549]
+          - link "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org 3DModels.org" [ref=f39e1551]:
+            - /url: https://3dmodels.org/3d-models/sci-fi-futuristic-laser-rifle-low-poly/?srsltid=AfmBOopf6bGXGQmlnLvWeuTDTDBB6GtGhwBQ6oWANg4KIo_yquYGZ6c3
+            - generic [ref=f39e1552]:
+              - generic [ref=f39e1554]: Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org
+              - generic [ref=f39e1558]: 3DModels.org
+        - generic [ref=f39e1562] [cursor=pointer]:
+          - button "3D model Sci-Fi Laser Rifle VR / AR / low-poly | CGTrader" [ref=f39e1567]:
+            - img "3D model Sci-Fi Laser Rifle VR / AR / low-poly | CGTrader" [ref=f39e1569]
+          - link "3D model Sci-Fi Laser Rifle VR / AR / low-poly | CGTrader CGTrader" [ref=f39e1571]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/sci-fi-laser-rifle
+            - generic [ref=f39e1572]:
+              - generic [ref=f39e1574]: 3D model Sci-Fi Laser Rifle VR / AR / low-poly | CGTrader
+              - generic [ref=f39e1578]: CGTrader
+        - generic [ref=f39e1582] [cursor=pointer]:
+          - button "Future Sci-fi Laser Sniper Rifle 3D Model - TurboSquid 2349781" [ref=f39e1587]:
+            - img "Future Sci-fi Laser Sniper Rifle 3D Model - TurboSquid 2349781" [ref=f39e1589]
+          - link "Future Sci-fi Laser Sniper Rifle 3D Model - TurboSquid 2349781 TurboSquid" [ref=f39e1591]:
+            - /url: https://www.turbosquid.com/3d-models/future-scifi-laser-sniper-rifle-3d-model-2349781
+            - generic [ref=f39e1592]:
+              - generic [ref=f39e1594]: Future Sci-fi Laser Sniper Rifle 3D Model - TurboSquid 2349781
+              - generic [ref=f39e1598]: TurboSquid
+        - generic [ref=f39e1602] [cursor=pointer]:
+          - button "commission) Assault Laser Rifle by RtazAlvaro on DeviantArt" [ref=f39e1607]:
+            - img "commission) Assault Laser Rifle by RtazAlvaro on DeviantArt" [ref=f39e1609]
+          - link "commission) Assault Laser Rifle by RtazAlvaro on DeviantArt DeviantArt" [ref=f39e1611]:
+            - /url: https://www.deviantart.com/rtazalvaro/art/commission-Assault-Laser-Rifle-1142052802
+            - generic [ref=f39e1612]:
+              - generic [ref=f39e1614]: commission) Assault Laser Rifle by RtazAlvaro on DeviantArt
+              - generic [ref=f39e1618]: DeviantArt
+        - generic [ref=f39e1622] [cursor=pointer]:
+          - button "refs - weapons - guns - sci-fi - A 3D model collection by Antoine Patel (@apatel) - Sketchfab" [ref=f39e1627]:
+            - img "refs - weapons - guns - sci-fi - A 3D model collection by Antoine Patel (@apatel) - Sketchfab" [ref=f39e1629]
+          - link "refs - weapons - guns - sci-fi - A 3D model collection by Antoine Patel (@apatel) - Sketchfab Sketchfab" [ref=f39e1631]:
+            - /url: https://sketchfab.com/apatel/collections/refs-weapons-guns-sci-fi-4706eea9af1e467cbe236aa05cb4b912
+            - generic [ref=f39e1632]:
+              - generic [ref=f39e1634]: refs - weapons - guns - sci-fi - A 3D model collection by Antoine Patel (@apatel) - Sketchfab
+              - generic [ref=f39e1638]: Sketchfab
+        - generic [ref=f39e1642] [cursor=pointer]:
+          - button "Retro Laser Gun | Sci-Fi Weapons models | Blendkit" [ref=f39e1647]:
+            - img "Retro Laser Gun | Sci-Fi Weapons models | Blendkit" [ref=f39e1649]
+          - link "Retro Laser Gun | Sci-Fi Weapons models | Blendkit BlenderKit" [ref=f39e1651]:
+            - /url: https://www.blenderkit.com/asset-gallery-detail/bd18acf1-5287-4f47-8ab9-1556612661a3/
+            - generic [ref=f39e1652]:
+              - generic [ref=f39e1654]: Retro Laser Gun | Sci-Fi Weapons models | Blendkit
+              - generic [ref=f39e1658]: BlenderKit
+        - generic [ref=f39e1662] [cursor=pointer]:
+          - button "Sci-Fi Futuristic Laser Rifle" [ref=f39e1667]:
+            - img "Sci-Fi Futuristic Laser Rifle" [ref=f39e1669]
+          - link "Sci-Fi Futuristic Laser Rifle CGCircuit" [ref=f39e1671]:
+            - /url: https://www.cgcircuit.com/asset/sci-fi-futuristic-laser-rifle
+            - generic [ref=f39e1672]:
+              - generic [ref=f39e1674]: Sci-Fi Futuristic Laser Rifle
+              - generic [ref=f39e1678]: CGCircuit
+        - generic [ref=f39e1682] [cursor=pointer]:
+          - button "Gun skin design concept for sci-fi luger pistol" [ref=f39e1687]:
+            - img "Gun skin design concept for sci-fi luger pistol" [ref=f39e1689]
+          - link "Gun skin design concept for sci-fi luger pistol Facebook" [ref=f39e1691]:
+            - /url: https://www.facebook.com/groups/officialconceptart/posts/3007946096070713/
+            - generic [ref=f39e1692]:
+              - generic [ref=f39e1694]: Gun skin design concept for sci-fi luger pistol
+              - generic [ref=f39e1698]: Facebook
+        - generic [ref=f39e1702] [cursor=pointer]:
+          - button "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e1707]:
+            - img "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e1709]
+          - link "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org 3DModels.org" [ref=f39e1711]:
+            - /url: https://3dmodels.org/3d-models/sci-fi-futuristic-laser-rifle-low-poly/?srsltid=AfmBOoo4kMgS-yV31IzdHcPpDCuo0nnh5jZztg7rnQe3s37g3pnLxxJw
+            - generic [ref=f39e1712]:
+              - generic [ref=f39e1714]: Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org
+              - generic [ref=f39e1718]: 3DModels.org
+        - generic [ref=f39e1722] [cursor=pointer]:
+          - button "Sci-fi Pistol (Magazine, Bullets, Triger, Eject Button Included) Low Poly by Aderans3D" [ref=f39e1727]:
+            - img "Sci-fi Pistol (Magazine, Bullets, Triger, Eject Button Included) Low Poly by Aderans3D" [ref=f39e1729]
+          - link "Sci-fi Pistol (Magazine, Bullets, Triger, Eject Button Included) Low Poly by Aderans3D 3DOcean" [ref=f39e1731]:
+            - /url: https://3docean.net/item/scifi-pistol-magazine-bullets-triger-eject-button-included-low-poly/26665886
+            - generic [ref=f39e1732]:
+              - generic [ref=f39e1734]: Sci-fi Pistol (Magazine, Bullets, Triger, Eject Button Included) Low Poly by Aderans3D
+              - generic [ref=f39e1738]: 3DOcean
+        - generic [ref=f39e1740]:
+          - heading "Related searches" [level=2] [ref=f39e1741]
+          - link "sci fi assault rifle concept art" [ref=f39e1742] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=sci+fi+assault+rifle+concept+art&stick=H4sIAAAAAAAAAFvEqlCcnKmQlqmQWFycWJpTolCUmZaTqpCcn5ecWlCikFhUAgC5JN3wIwAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUIlwQQAA
+            - generic [ref=f39e1747]: sci fi assault rifle concept art
+          - link "sci fi gun reference" [ref=f39e1748] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=sci+fi+gun+reference&stick=H4sIAAAAAAAAAFvEKlKcnKmQlqmQXpqnUJSallqUmpecCgBkx81EFwAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUIrgQQAA
+            - generic [ref=f39e1753]: sci fi gun reference
+          - link "sci fi laser cannon" [ref=f39e1754] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=sci+fi+laser+cannon&stick=H4sIAAAAAAAAAFvEKlycnKmQlqmQk1icWqSQnJiXl58HAHy5YswWAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUIwgQQAA
+            - generic [ref=f39e1759]: sci fi laser cannon
+        - generic [ref=f39e1763] [cursor=pointer]:
+          - button "Sci-fi concept Laser Rifle free 3D model | CGTrader" [ref=f39e1768]:
+            - img "Sci-fi concept Laser Rifle free 3D model | CGTrader" [ref=f39e1770]
+          - link "Sci-fi concept Laser Rifle free 3D model | CGTrader CGTrader" [ref=f39e1772]:
+            - /url: https://www.cgtrader.com/free-3d-models/military/gun/sci-fi-concept-laser-rifle
+            - generic [ref=f39e1773]:
+              - generic [ref=f39e1775]: Sci-fi concept Laser Rifle free 3D model | CGTrader
+              - generic [ref=f39e1779]: CGTrader
+        - generic [ref=f39e1783] [cursor=pointer]:
+          - button "Sci-Fi Futuristic Laser Rifle" [ref=f39e1788]:
+            - img "Sci-Fi Futuristic Laser Rifle" [ref=f39e1790]
+          - link "Sci-Fi Futuristic Laser Rifle CGCircuit" [ref=f39e1792]:
+            - /url: https://www.cgcircuit.com/asset/sci-fi-futuristic-laser-rifle
+            - generic [ref=f39e1793]:
+              - generic [ref=f39e1795]: Sci-Fi Futuristic Laser Rifle
+              - generic [ref=f39e1799]: CGCircuit
+        - generic [ref=f39e1803] [cursor=pointer]:
+          - button "3D model Stylized Sci-Fi Assault Laser Rifle VR / AR / low-poly | CGTrader" [ref=f39e1808]:
+            - img "3D model Stylized Sci-Fi Assault Laser Rifle VR / AR / low-poly | CGTrader" [ref=f39e1810]
+          - link "3D model Stylized Sci-Fi Assault Laser Rifle VR / AR / low-poly | CGTrader CGTrader" [ref=f39e1812]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/stylized-sci-fi-assault-rifle
+            - generic [ref=f39e1813]:
+              - generic [ref=f39e1815]: 3D model Stylized Sci-Fi Assault Laser Rifle VR / AR / low-poly | CGTrader
+              - generic [ref=f39e1819]: CGTrader
+        - generic [ref=f39e1823] [cursor=pointer]:
+          - button "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e1828]:
+            - img "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e1830]
+          - link "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971 RenderHub" [ref=f39e1832]:
+            - /url: https://www.renderhub.com/sergey971/sci-fi-assault-rifle-laser-blaster
+            - generic [ref=f39e1833]:
+              - generic [ref=f39e1835]: Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971
+              - generic [ref=f39e1839]: RenderHub
+        - generic [ref=f39e1843] [cursor=pointer]:
+          - 'button "Sci-fi Laser Rifle: Dragon Rifle - 3D model by giorgiobaroni (@giorgiobaroni) [19ad46e]" [ref=f39e1848]':
+            - 'img "Sci-fi Laser Rifle: Dragon Rifle - 3D model by giorgiobaroni (@giorgiobaroni) [19ad46e]" [ref=f39e1850]'
+          - 'link "Sci-fi Laser Rifle: Dragon Rifle - 3D model by giorgiobaroni (@giorgiobaroni) [19ad46e] Sketchfab" [ref=f39e1852]':
+            - /url: https://sketchfab.com/3d-models/sci-fi-laser-rifle-dragon-rifle-19ad46eeea4441f69b6c4c18b9ce07f3
+            - generic [ref=f39e1853]:
+              - generic [ref=f39e1855]: "Sci-fi Laser Rifle: Dragon Rifle - 3D model by giorgiobaroni (@giorgiobaroni) [19ad46e]"
+              - generic [ref=f39e1859]: Sketchfab
+        - generic [ref=f39e1863] [cursor=pointer]:
+          - button "Sci-Fi Futuristic Laser Rifle" [ref=f39e1868]:
+            - img "Sci-Fi Futuristic Laser Rifle" [ref=f39e1870]
+          - link "Sci-Fi Futuristic Laser Rifle CGCircuit" [ref=f39e1872]:
+            - /url: https://www.cgcircuit.com/asset/sci-fi-futuristic-laser-rifle
+            - generic [ref=f39e1873]:
+              - generic [ref=f39e1875]: Sci-Fi Futuristic Laser Rifle
+              - generic [ref=f39e1879]: CGCircuit
+        - generic [ref=f39e1883] [cursor=pointer]:
+          - button "ArtStation - 4K 301 Sci Fi Gun Reference Photo Pack | Artworks" [ref=f39e1888]:
+            - img "ArtStation - 4K 301 Sci Fi Gun Reference Photo Pack | Artworks" [ref=f39e1890]
+          - link "ArtStation - 4K 301 Sci Fi Gun Reference Photo Pack | Artworks ArtStation" [ref=f39e1892]:
+            - /url: https://www.artstation.com/marketplace/p/DBG30/4k-301-sci-fi-gun-reference-photo-pack
+            - generic [ref=f39e1893]:
+              - generic [ref=f39e1895]: ArtStation - 4K 301 Sci Fi Gun Reference Photo Pack | Artworks
+              - generic [ref=f39e1899]: ArtStation
+        - generic [ref=f39e1903] [cursor=pointer]:
+          - button "Sci-Fi Shotgun 3D Model $39 - .max .fbx .obj - Free3D" [ref=f39e1908]:
+            - img "Sci-Fi Shotgun 3D Model $39 - .max .fbx .obj - Free3D" [ref=f39e1910]
+          - link "Sci-Fi Shotgun 3D Model $39 - .max .fbx .obj - Free3D Free3D.com" [ref=f39e1912]:
+            - /url: https://free3d.com/3d-model/sci-fi-shotgun-1018.html
+            - generic [ref=f39e1913]:
+              - generic [ref=f39e1915]: Sci-Fi Shotgun 3D Model $39 - .max .fbx .obj - Free3D
+              - generic [ref=f39e1919]: Free3D.com
+        - generic [ref=f39e1923] [cursor=pointer]:
+          - button "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e1928]:
+            - img "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org" [ref=f39e1930]
+          - link "Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org 3DModels.org" [ref=f39e1932]:
+            - /url: https://3dmodels.org/3d-models/sci-fi-futuristic-laser-rifle-low-poly/?srsltid=AfmBOopx9Gn8x6yFxfEXjChJ2OQVIVt3SZo1eiS_ggBCijtMaRRyjcFy
+            - generic [ref=f39e1933]:
+              - generic [ref=f39e1935]: Sci-fi Futuristic Laser Rifle Low-poly 3D model - Download Assault rifle on 3DModels.org
+              - generic [ref=f39e1939]: 3DModels.org
+        - generic [ref=f39e1943] [cursor=pointer]:
+          - button "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e1948]:
+            - img "Concept Energy or Laser Rifle V02 - 3D Model by Figster" [ref=f39e1950]
+          - link "Concept Energy or Laser Rifle V02 - 3D Model by Figster RenderHub" [ref=f39e1952]:
+            - /url: https://www.renderhub.com/figster/concept-energy-or-laser-rifle-v02
+            - generic [ref=f39e1953]:
+              - generic [ref=f39e1955]: Concept Energy or Laser Rifle V02 - 3D Model by Figster
+              - generic [ref=f39e1959]: RenderHub
+        - generic [ref=f39e1963] [cursor=pointer]:
+          - generic [ref=f39e1965]:
+            - button "3d illustration of sci-fi futuristic weapon isolated on white background. Science fiction military laser gun. Concept design of high-tech assault rifle green gray color scratched metal. Close-up view Stock Illustration | Adobe" [ref=f39e1968]:
+              - img "3d illustration of sci-fi futuristic weapon isolated on white background. Science fiction military laser gun. Concept design of high-tech assault rifle green gray color scratched metal. Close-up view Stock Illustration | Adobe" [ref=f39e1970]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "3d illustration of sci-fi futuristic weapon isolated on white background. Science fiction military laser gun. Concept design of high-tech assault rifle green gray color scratched metal. Close-up view Stock Illustration | Adobe Adobe Stock" [ref=f39e1972]:
+            - /url: https://stock.adobe.com/images/3d-illustration-of-sci-fi-futuristic-weapon-isolated-on-white-background-science-fiction-military-laser-gun-concept-design-of-high-tech-assault-rifle-green-gray-color-scratched-metal-close-up-view/295457591
+            - generic [ref=f39e1973]:
+              - generic [ref=f39e1975]: 3d illustration of sci-fi futuristic weapon isolated on white background. Science fiction military laser gun. Concept design of high-tech assault rifle green gray color scratched metal. Close-up view Stock Illustration | Adobe
+              - generic [ref=f39e1979]: Adobe Stock
+        - generic [ref=f39e1983] [cursor=pointer]:
+          - button "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ," [ref=f39e1988]:
+            - img "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ," [ref=f39e1990]
+          - link "Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun , Facebook" [ref=f39e1992]:
+            - /url: https://www.facebook.com/groups/levelup.livestream/posts/767685476775307/
+            - generic [ref=f39e1993]:
+              - generic [ref=f39e1995]: Weapons design (Sci-Fi) Hey guys ! I just tried to do some weapons design sketch ,I have references some real gun and turn it to more sci-fi . Handgun , Submachine gun ,
+              - generic [ref=f39e1999]: Facebook
+        - generic [ref=f39e2003] [cursor=pointer]:
+          - button "Sci Fi Laser Rifle Firing Energy Beam created on Craiyon" [ref=f39e2008]:
+            - img "Sci Fi Laser Rifle Firing Energy Beam created on Craiyon" [ref=f39e2010]
+          - link "Sci Fi Laser Rifle Firing Energy Beam created on Craiyon Craiyon" [ref=f39e2012]:
+            - /url: https://www.craiyon.com/en/search/sci-fi-laser-rifle-firing-energy-beam
+            - generic [ref=f39e2013]:
+              - generic [ref=f39e2015]: Sci Fi Laser Rifle Firing Energy Beam created on Craiyon
+              - generic [ref=f39e2019]: Craiyon
+        - generic [ref=f39e2023] [cursor=pointer]:
+          - button "Sci-Fi Laser Gun 2 3D model | CGTrader" [ref=f39e2028]:
+            - img "Sci-Fi Laser Gun 2 3D model | CGTrader" [ref=f39e2030]
+          - link "Sci-Fi Laser Gun 2 3D model | CGTrader CGTrader" [ref=f39e2032]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/sci-fi-laser-gun-2
+            - generic [ref=f39e2033]:
+              - generic [ref=f39e2035]: Sci-Fi Laser Gun 2 3D model | CGTrader
+              - generic [ref=f39e2039]: CGTrader
+        - generic [ref=f39e2043] [cursor=pointer]:
+          - button "Retro Laser Gun | Sci-Fi Weapons models | Blendkit" [ref=f39e2048]:
+            - img "Retro Laser Gun | Sci-Fi Weapons models | Blendkit" [ref=f39e2050]
+          - link "Retro Laser Gun | Sci-Fi Weapons models | Blendkit BlenderKit" [ref=f39e2052]:
+            - /url: https://www.blenderkit.com/asset-gallery-detail/bd18acf1-5287-4f47-8ab9-1556612661a3/
+            - generic [ref=f39e2053]:
+              - generic [ref=f39e2055]: Retro Laser Gun | Sci-Fi Weapons models | Blendkit
+              - generic [ref=f39e2059]: BlenderKit
+        - generic [ref=f39e2063] [cursor=pointer]:
+          - button "CyFy _ Weapons - A 3D model collection by slwalden84 - Sketchfab" [ref=f39e2068]:
+            - img "CyFy _ Weapons - A 3D model collection by slwalden84 - Sketchfab" [ref=f39e2070]
+          - link "CyFy _ Weapons - A 3D model collection by slwalden84 - Sketchfab Sketchfab" [ref=f39e2072]:
+            - /url: https://sketchfab.com/slwalden84/collections/cyfy-_-weapons-310f64e85ed34716bdb36368da8d2894
+            - generic [ref=f39e2073]:
+              - generic [ref=f39e2075]: CyFy _ Weapons - A 3D model collection by slwalden84 - Sketchfab
+              - generic [ref=f39e2079]: Sketchfab
+        - generic [ref=f39e2083] [cursor=pointer]:
+          - button "Sci-fi Guns - Free 3d model on creazilla.com" [ref=f39e2088]:
+            - img "Sci-fi Guns - Free 3d model on creazilla.com" [ref=f39e2090]
+          - link "Sci-fi Guns - Free 3d model on creazilla.com Creazilla" [ref=f39e2092]:
+            - /url: https://prod.test.creazilla.com/media/3d-model/41566/sci-fi-guns
+            - generic [ref=f39e2093]:
+              - generic [ref=f39e2095]: Sci-fi Guns - Free 3d model on creazilla.com
+              - generic [ref=f39e2099]: Creazilla
+        - generic [ref=f39e2103] [cursor=pointer]:
+          - button "ArtStation - Sci-Fi HandGun 4K Reference/Concept Images" [ref=f39e2108]:
+            - img "ArtStation - Sci-Fi HandGun 4K Reference/Concept Images" [ref=f39e2110]
+          - link "ArtStation - Sci-Fi HandGun 4K Reference/Concept Images ArtStation" [ref=f39e2112]:
+            - /url: https://www.artstation.com/artwork/QXZ6Dl
+            - generic [ref=f39e2113]:
+              - generic [ref=f39e2115]: ArtStation - Sci-Fi HandGun 4K Reference/Concept Images
+              - generic [ref=f39e2119]: ArtStation
+        - generic [ref=f39e2123] [cursor=pointer]:
+          - button "Sci Fi Laser Rifle Firing Energy Beam created on Craiyon" [ref=f39e2128]:
+            - img "Sci Fi Laser Rifle Firing Energy Beam created on Craiyon" [ref=f39e2130]
+          - link "Sci Fi Laser Rifle Firing Energy Beam created on Craiyon Craiyon" [ref=f39e2132]:
+            - /url: https://www.craiyon.com/en/search/sci-fi-laser-rifle-firing-energy-beam
+            - generic [ref=f39e2133]:
+              - generic [ref=f39e2135]: Sci Fi Laser Rifle Firing Energy Beam created on Craiyon
+              - generic [ref=f39e2139]: Craiyon
+        - generic [ref=f39e2143] [cursor=pointer]:
+          - button "Sci-Fi Laser Rifle 3D Model $10 - .blend - Free3D" [ref=f39e2148]:
+            - img "Sci-Fi Laser Rifle 3D Model $10 - .blend - Free3D" [ref=f39e2150]
+          - link "Sci-Fi Laser Rifle 3D Model $10 - .blend - Free3D Free3D.com" [ref=f39e2152]:
+            - /url: https://free3d.com/3d-model/sci-fi-laser-rifle-5977.html
+            - generic [ref=f39e2153]:
+              - generic [ref=f39e2155]: Sci-Fi Laser Rifle 3D Model $10 - .blend - Free3D
+              - generic [ref=f39e2159]: Free3D.com
+        - generic [ref=f39e2163] [cursor=pointer]:
+          - generic [ref=f39e2165]:
+            - button "Creating a Sci-Fi Pistol for Games With Sean Marino" [ref=f39e2168]:
+              - img "Creating a Sci-Fi Pistol for Games With Sean Marino" [ref=f39e2170]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - link "Creating a Sci-Fi Pistol for Games With Sean Marino YouTube" [ref=f39e2172]:
+            - /url: https://www.youtube.com/watch?v=bMItSP8Gu6Y
+            - generic [ref=f39e2173]:
+              - generic [ref=f39e2175]: Creating a Sci-Fi Pistol for Games With Sean Marino
+              - generic [ref=f39e2179]: YouTube
+        - generic [ref=f39e2183] [cursor=pointer]:
+          - button "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e2188]:
+            - img "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971" [ref=f39e2190]
+          - link "Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971 RenderHub" [ref=f39e2192]:
+            - /url: https://www.renderhub.com/sergey971/sci-fi-assault-rifle-laser-blaster
+            - generic [ref=f39e2193]:
+              - generic [ref=f39e2195]: Sci-Fi Assault Rifle Laser Blaster 3D Model by sergey971
+              - generic [ref=f39e2199]: RenderHub
+        - generic [ref=f39e2203] [cursor=pointer]:
+          - button "Retro Laser Gun | Sci-Fi Weapons models | Blendkit" [ref=f39e2208]:
+            - img "Retro Laser Gun | Sci-Fi Weapons models | Blendkit" [ref=f39e2210]
+          - link "Retro Laser Gun | Sci-Fi Weapons models | Blendkit BlenderKit" [ref=f39e2212]:
+            - /url: https://www.blenderkit.com/asset-gallery-detail/bd18acf1-5287-4f47-8ab9-1556612661a3/
+            - generic [ref=f39e2213]:
+              - generic [ref=f39e2215]: Retro Laser Gun | Sci-Fi Weapons models | Blendkit
+              - generic [ref=f39e2219]: BlenderKit
+        - generic [ref=f39e2223] [cursor=pointer]:
+          - generic [ref=f39e2225]:
+            - button "Sci Fi Laser Gun Clipart Illustration Futuristic Weapon 3d Model, Futuristic Laser Gun, Sci Fi Weapons Clip Art, Futuristic Blaster Clipart PNG Transparent Image and Clipart for Free Download" [ref=f39e2228]:
+              - img "Sci Fi Laser Gun Clipart Illustration Futuristic Weapon 3d Model, Futuristic Laser Gun, Sci Fi Weapons Clip Art, Futuristic Blaster Clipart PNG Transparent Image and Clipart for Free Download" [ref=f39e2230]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Sci Fi Laser Gun Clipart Illustration Futuristic Weapon 3d Model, Futuristic Laser Gun, Sci Fi Weapons Clip Art, Futuristic Blaster Clipart PNG Transparent Image and Clipart for Free Download Pngtree" [ref=f39e2232]:
+            - /url: https://pngtree.com/freepng/sci-fi-laser-gun-clipart-illustration---futuristic-weapon-3d-model_16288343.html
+            - generic [ref=f39e2233]:
+              - generic [ref=f39e2235]: Sci Fi Laser Gun Clipart Illustration Futuristic Weapon 3d Model, Futuristic Laser Gun, Sci Fi Weapons Clip Art, Futuristic Blaster Clipart PNG Transparent Image and Clipart for Free Download
+              - generic [ref=f39e2239]: Pngtree
+        - generic [ref=f39e2241]:
+          - heading "Related searches" [level=2] [ref=f39e2242]
+          - link "energy sci fi assault rifle" [ref=f39e2243] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=energy+sci+fi+assault+rifle&stick=H4sIAAAAAAAAAFvEKp2al1qUXqlQnJypkJapkFhcnFiaU6JQlJmWkwoAVwihvB4AAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUIvQIQAA
+            - generic [ref=f39e2248]: energy sci fi assault rifle
+          - link "futuristic concept art laser gun" [ref=f39e2249] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=futuristic+concept+art+laser+gun&stick=H4sIAAAAAAAAAFvEqpBWWlJalFlckpmskJyfl5xaUKKQWFSikJNYnFqkkF6aBwBxMhqWIwAAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUI0QIQAA
+            - generic [ref=f39e2254]: futuristic concept art laser gun
+          - link "futuristic sci fi laser gun" [ref=f39e2255] [cursor=pointer]:
+            - /url: /search?sca_esv=33ade75dbb948c2a&udm=2&q=futuristic+sci+fi+laser+gun&stick=H4sIAAAAAAAAAFvEKp1WWlJalFlckpmsUJycqZCWqZCTWJxapJBemgcA5eG_gB4AAAA&source=univ&sa=X&ved=2ahUKEwj3t8fhvrqVAxXR8MkDHaB9LpgQrNwCegUI3gIQAA
+            - generic [ref=f39e2260]: futuristic sci fi laser gun
+        - generic [ref=f39e2264] [cursor=pointer]:
+          - button "🔫 Futuristic Rifle・Free OBJ File for ・Cults" [ref=f39e2269]:
+            - img "🔫 Futuristic Rifle・Free OBJ File for ・Cults" [ref=f39e2271]
+          - link "🔫 Futuristic Rifle・Free OBJ File for ・Cults Cults 3D" [ref=f39e2273]:
+            - /url: https://cults3d.com/en/3d-model/art/futuristic-rifle?srsltid=AfmBOooMBp6bsOcsB1df-4XniNJ_ZsUpEV-J4TkWvqOp1a_DHn_gkgA3
+            - generic [ref=f39e2274]:
+              - generic [ref=f39e2276]: 🔫 Futuristic Rifle・Free OBJ File for ・Cults
+              - generic [ref=f39e2280]: Cults 3D
+        - generic [ref=f39e2284] [cursor=pointer]:
+          - button "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740" [ref=f39e2289]:
+            - img "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740" [ref=f39e2291]
+          - link "3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740 TurboSquid" [ref=f39e2293]:
+            - /url: https://www.turbosquid.com/3d-models/3d-sci-fi-weapon-laser-gun-model-1538740
+            - generic [ref=f39e2294]:
+              - generic [ref=f39e2296]: 3D Sci-fi Weapon Laser Gun Model - TurboSquid 1538740
+              - generic [ref=f39e2300]: TurboSquid
+        - generic [ref=f39e2304] [cursor=pointer]:
+          - button "Sci-Fi Laser Gun 2 3D model | CGTrader" [ref=f39e2309]:
+            - img "Sci-Fi Laser Gun 2 3D model | CGTrader" [ref=f39e2311]
+          - link "Sci-Fi Laser Gun 2 3D model | CGTrader CGTrader" [ref=f39e2313]:
+            - /url: https://www.cgtrader.com/3d-models/military/gun/sci-fi-laser-gun-2
+            - generic [ref=f39e2314]:
+              - generic [ref=f39e2316]: Sci-Fi Laser Gun 2 3D model | CGTrader
+              - generic [ref=f39e2320]: CGTrader
+        - generic [ref=f39e2324] [cursor=pointer]:
+          - button "Sci-fi guns 02 by nevilime on DeviantArt" [ref=f39e2329]:
+            - img "Sci-fi guns 02 by nevilime on DeviantArt" [ref=f39e2331]
+          - link "Sci-fi guns 02 by nevilime on DeviantArt DeviantArt" [ref=f39e2333]:
+            - /url: https://www.deviantart.com/nevilime/art/Sci-fi-guns-02-836797479
+            - generic [ref=f39e2334]:
+              - generic [ref=f39e2336]: Sci-fi guns 02 by nevilime on DeviantArt
+              - generic [ref=f39e2340]: DeviantArt
+      - generic [ref=f39e2344]:
+        - heading "Page Navigation" [level=1] [ref=f39e2345]
+        - button "More results" [ref=f39e2346] [cursor=pointer]:
+          - generic [ref=f39e2347]:
+            - separator [ref=f39e2348]
+            - generic [ref=f39e2349]:
+              - generic [ref=f39e2350]: More results
+              - img [ref=f39e2352]
+      - navigation

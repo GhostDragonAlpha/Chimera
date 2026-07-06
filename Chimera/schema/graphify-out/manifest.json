@@ -1,0 +1,57 @@
+{
+  "chimera.tmLanguage.json": {
+    "mtime": 1782922404.940629,
+    "ast_hash": "1933b6888ae3a9575e9aa95f9c9038f9",
+    "semantic_hash": "1933b6888ae3a9575e9aa95f9c9038f9"
+  },
+  "dsl_game_schema.json": {
+    "mtime": 1782968234.407165,
+    "ast_hash": "3d0fb84a2842db9fa47ad5fe4adf29b9",
+    "semantic_hash": "3d0fb84a2842db9fa47ad5fe4adf29b9"
+  },
+  "dsl_schema.json": {
+    "mtime": 1782912166.992774,
+    "ast_hash": "385a9cd03c6d2f870a14a763656f75a0",
+    "semantic_hash": "385a9cd03c6d2f870a14a763656f75a0"
+  },
+  "generated/chaos_dsl_schema.json": {
+    "mtime": 1782967858.249997,
+    "ast_hash": "468965f257a1c3f1f947e98dc133af6c",
+    "semantic_hash": "468965f257a1c3f1f947e98dc133af6c"
+  },
+  "generated/common_ui_dsl_schema.json": {
+    "mtime": 1782967858.3061645,
+    "ast_hash": "7b7689ce7c71d5739a8fafcdb4c3759c",
+    "semantic_hash": "7b7689ce7c71d5739a8fafcdb4c3759c"
+  },
+  "generated/enhanced_input_dsl_schema.json": {
+    "mtime": 1782967858.2940173,
+    "ast_hash": "bf28da9e8c8ba17545e84ec6d2da221f",
+    "semantic_hash": "bf28da9e8c8ba17545e84ec6d2da221f"
+  },
+  "generated/gameplay_abilities_dsl_schema.json": {
+    "mtime": 1782967858.291,
+    "ast_hash": "3be6a2995fc807a5cffa0d17bf161c18",
+    "semantic_hash": "3be6a2995fc807a5cffa0d17bf161c18"
+  },
+  "generated/materials_dsl_schema.json": {
+    "mtime": 1782967858.259171,
+    "ast_hash": "a5d984628962437303d58c933c10f4cf",
+    "semantic_hash": "a5d984628962437303d58c933c10f4cf"
+  },
+  "generated/niagara_dsl_schema.json": {
+    "mtime": 1782967858.2304046,
+    "ast_hash": "1697c635e59f03716777dbdf3f034afd",
+    "semantic_hash": "1697c635e59f03716777dbdf3f034afd"
+  },
+  "generated/pcg_dsl_schema.json": {
+    "mtime": 1782967858.2021804,
+    "ast_hash": "dab80d5f7ae603a451afd929617b1bc1",
+    "semantic_hash": "dab80d5f7ae603a451afd929617b1bc1"
+  },
+  "generated/umg_dsl_schema.json": {
+    "mtime": 1782967858.277244,
+    "ast_hash": "14b54123f863aa23ff727105a5fdff0a",
+    "semantic_hash": "14b54123f863aa23ff727105a5fdff0a"
+  }
+}

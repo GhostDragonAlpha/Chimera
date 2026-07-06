@@ -4,6 +4,7 @@
 
 // Sets default values
 UInventoryTradeComponent::UInventoryTradeComponent()
+	: Credits(0.0f)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -81,4 +82,78 @@ bool UInventoryTradeComponent::ExecuteTradeExchange(const TArray<FTradeItem>& Pl
 
 	UE_LOG(LogTemp, Warning, TEXT("Trade exchange failed: No items to trade"));
 	return false;
+}
+
+float UInventoryTradeComponent::GetCredits() const
+{
+	return Credits;
+}
+
+void UInventoryTradeComponent::SetCredits(float NewCredits)
+{
+	Credits = FMath::Max(NewCredits, 0.0f);
+}
+
+void UInventoryTradeComponent::AddCredits(float Amount)
+{
+	Credits = FMath::Max(Credits + Amount, 0.0f);
+}
+
+int32 UInventoryTradeComponent::GetCargoQuantity(FName Commodity) const
+{
+	const int32* Found = Cargo.Find(Commodity);
+	return Found ? *Found : 0;
+}
+
+bool UInventoryTradeComponent::BuyCommodity(FName Commodity, int32 Quantity, float UnitPrice)
+{
+	if (Commodity == NAME_None || Quantity <= 0 || UnitPrice < 0.0f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BuyCommodity rejected: invalid arguments (%s x%d @ %.2f)"),
+			*Commodity.ToString(), Quantity, UnitPrice);
+		return false;
+	}
+
+	const float TotalCost = UnitPrice * static_cast<float>(Quantity);
+	if (Credits < TotalCost)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BuyCommodity rejected: %.2f credits < %.2f cost"), Credits, TotalCost);
+		return false;
+	}
+
+	Credits -= TotalCost;
+	Cargo.FindOrAdd(Commodity) += Quantity;
+
+	UE_LOG(LogTemp, Log, TEXT("Bought %d x %s for %.2f credits (remaining: %.2f, cargo: %d)"),
+		Quantity, *Commodity.ToString(), TotalCost, Credits, Cargo[Commodity]);
+
+	OnCommodityPurchased.Broadcast(Commodity, Quantity, TotalCost);
+	return true;
+}
+
+bool UInventoryTradeComponent::SellCommodity(FName Commodity, int32 Quantity, float UnitPrice)
+{
+	if (Commodity == NAME_None || Quantity <= 0 || UnitPrice < 0.0f)
+	{
+		return false;
+	}
+
+	int32* Held = Cargo.Find(Commodity);
+	if (!Held || *Held < Quantity)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SellCommodity rejected: cargo holds %d x %s, tried to sell %d"),
+			Held ? *Held : 0, *Commodity.ToString(), Quantity);
+		return false;
+	}
+
+	*Held -= Quantity;
+	if (*Held == 0)
+	{
+		Cargo.Remove(Commodity);
+	}
+	Credits += UnitPrice * static_cast<float>(Quantity);
+
+	UE_LOG(LogTemp, Log, TEXT("Sold %d x %s for %.2f credits (balance: %.2f)"),
+		Quantity, *Commodity.ToString(), UnitPrice * Quantity, Credits);
+	return true;
 }

@@ -1,56 +1,54 @@
-# Loop 4 — Tools Master Task Progress
+# Session 2026-07-05/06 — Full Pipeline Solidification
 
-## Pre-Flight (Complete)
-- [x] Graphify health check: 4958 nodes, 5437 edges, 97% EXTRACTED
-- [x] UE5 MCP connection verified: Chimera project, UE 5.8
-- [x] MCP pathways checked: 12 documented
-- [x] Research campus queried: Engineering School (NASA)
-- [x] Spiral position confirmed: Loop 3 (Sky) complete → Advancing to Loop 4 (Tools)
-- [x] Asset inventory: Materials exist at /Game/Tools/Materials/ (5 materials), no meshes
-- [x] No tool meshes or Blueprints exist — first creation
-- [x] Geometry pathway established: create_box/cylinder → boolean_union → convert_to_static_mesh → set_component_property (material)
+## Final State
+- **Graph**: ~1015 nodes, 0 junk, 0 without provenance
+- **GPA**: 1.4 (trend flat) — build trend last 20: 20 pass, 0 fail
+- **Scene Verification**: 4 mandatory layers deployed, all non-skippable
+- **Pipeline**: All gates mandatory, exit code 1 on any violation
 
-## Tool_Shovel_Model & Material
-- [x] Research complete: Apollo lunar scoop design (NASA references)
-- [x] SM_ShovelBlade created (40x4x25 box)
-- [x] SM_ShovelHandle created (r=2, h=120 cylinder, 8 segments)
-- [x] SM_ShovelGrip created (10x4x4 box)
-- [x] Boolean union merged blade + handle (268 triangles)
-- [x] Boolean union merged + T-grip (304 triangles)
-- [x] Converted to SM_Shovel at /Game/Tools/Geometry/SM_Shovel
-- [x] SM_Shovel verified on disk
-- [ ] Apply MAT_ShovelBlade to shovel blade section
-- [ ] Apply MAT_ShovelHandle to shovel handle section
-- [ ] Screenshot for visual verification
-- [ ] Professor review with LM Studio
+## What Changed
 
-## Tool_Scanner_Model & Material
-- [ ] Research: Handheld sci-fi scanner / tricorder design
-- [ ] Create SM_ScannerBody geometry
-- [ ] Create SM_Scanner display/lens component
-- [ ] Boolean merge components
-- [ ] Convert to SM_Scanner at /Game/Tools/Geometry/SM_Scanner
-- [ ] Apply MAT_ScannerBody to body
-- [ ] Apply MAT_ScannerLens to lens
-- [ ] Screenshot for visual verification
+### New files
+- `core/gates.py` — 12 mandatory hard gates, all block pipeline on failure
+- `core/scene_verifier.py` — 4-layer scene verification via MCP (engine facts + screenshot + LM text + LM vision)
+- `core/mcp_client.py` — MCP tool call helper for chiR24-unreal bridge
 
-## Tool_Weapon_Model & Material
-- [ ] Research: Compact survival/emergency weapon design
-- [ ] Create SM_Weapon geometry
-- [ ] Convert to SM_Weapon at /Game/Tools/Geometry/SM_Weapon
-- [ ] Apply MAT_WeaponBody to body
-- [ ] Screenshot for visual verification
+### Modified files
+- `core/game_generation_orchestrator.py` — Stage 7 replaced with 4-layer scene verifier, all stage transitions hardened with gates
+- `core/build_orchestrator.py` — UE auto-kill before build, auto-restart after, generated-file integrity check, build-retry loop, locked-file graceful handling
+- `core/preflight.py` — Build trend analysis, exit code 1 on critical violations
+- `core/postflight.py` — Automated git status check
+- `core/visual_verifier.py` — UE foreground wait loop, LM Studio URL fix, encoding sanitization
+- `core/gates.py` — GPA gate deduplicates, cumulative GPA vs raw grades
+- `core/playtest_runner.py` — SKIPPED status instead of false FAILED, pass_rate excludes skips
+- `core/game_code_generator.py` — MissionComponent emits real AcceptMission/UpdateObjective
+- `core/ubt_builder.py` — capture_output=True (was missing)
+- `run_deep_space_trader_pipeline.py` — Exit code propagation, GateViolation handling
+- `.gitignore` — stale dirs excluded
+- `CLAUDE.md` — full rewrite with gates, scene verifier, MCP, conventions
 
-## Source Code Generation
-- [ ] Create ProceduralGenerated/Tools/ folder structure
-- [ ] Create Tool_Shovel C++ class with static mesh reference
-- [ ] Create Tool_Scanner C++ class with static mesh reference
-- [ ] Create Tool_Weapon C++ class with static mesh reference
-- [ ] Run pipeline to compile
+### Verified working
+- Build: 5/5 cycles pass (9 actions, ~13s each)
+- Pre-Flight: GPA, build trend, loop board, zero junk
+- Scene verifier Layer 1: hard facts pass (deterministic)
+- Scene verifier Layer 3: qwen3.6 text reasoning pass
+- Scene verifier Layer 4: qwen3.6 vision correctly identifies empty level
+- MCP screenshot: captures UE viewport render, not desktop
 
-## Post-Flight
-- [ ] Record all pathways in DNA graph
-- [ ] Record new geometry pathway (create_geometry → boolean → convert → material)
-- [ ] Screenshot final assembly
-- [ ] Update Feature Ledger
-- [ ] Report session results
+### Gates verified
+- `gate_no_stale_trees`: caught ProceduralGenerated/ artifact, blocked pipeline
+- `gate_gpa_not_critically_falling`: correctly uses cumulative GPA
+- `gate_build_succeeded`: blocks on UBT failure
+- `stage_7_visual`: blocks on any scene verifier layer failure
+- Pre-Flight exit code 1 on violations
+
+### Known blockers for next session
+- Scene verifier Layer 4 blocks because level has no game actors spawned
+- 3 playtests skip (no headless UE automation in desktop env)
+- System_Economy pending LM Studio re-review for A grade
+
+## How to resume
+1. Launch UE Editor → `start "" "path\to\UnrealEditor.exe" "E:\PythonChimera\Chimera\Chimera.uproject"`
+2. `python -m core.preflight` to check state
+3. `python run_deep_space_trader_pipeline.py` — all gates fire, scene verifier runs
+4. `python -m core.postflight --phase "..." --result "..."` to record

@@ -8,7 +8,7 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 
 ---
 
-## Working Pathways (11)
+## Working Pathways (12)
 
 ### 1. control_actor.spawn_actor
 - **Tool**: `unreal_engine_control_actor`
@@ -95,6 +95,33 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 - **Example**: `create_material(name="MAT_GroundSand", path="/Game/Chimera/Materials/MAT_GroundSand")`
 - **Result**: Returns assetPath (e.g., `/Game/Chimera/Materials/MAT_GroundSand/MAT_GroundSand.MAT_GroundSand`). Material is created but saved=false — call save action separately if needed.
 
+### 13. professor_review
+- **Tool**: N/A (text prompt to LM Studio via REST API)
+- **Action**: Submit research summary for grading
+
+### 14. manage_geometry.create_ship_exterior
+- **Tool**: `unreal_engine_manage_geometry` + `unreal_engine_control_actor` + `unreal_engine_manage_asset`
+- **Actions**: Multi-step pipeline for creating a procedural spacecraft exterior
+- **Steps**:
+  1. `manage_geometry.create_cylinder(radius=150, height=600, radialSegments=32)` → ship hull (GeneratedCylinder/DynamicMeshActor_0)
+  2. `control_actor.set_transform(actorName="GeneratedCylinder", location={x:0,y:0,z:0})` → center hull
+  3. `manage_geometry.create_cone(radius=120, height=200, radialSegments=32)` → cockpit nose (SM_Ship_Cockpit/DynamicMeshActor_1)
+  4. `control_actor.set_transform(actorName="SM_Ship_Cockpit", location={x:0,y:0,z:400}, rotation={pitch:180,yaw:0,roll:0})` → nose forward
+  5. `manage_geometry.create_box(width=40, height=60, depth=40)` → left thruster (GeneratedBox/DynamicMeshActor_2)
+  6. `control_actor.set_transform(actorName="DynamicMeshActor_2", location={x:-80,y:0,z:-320})` → position left thruster
+  7. `manage_geometry.create_box(width=40, height=60, depth=40)` → right thruster (GeneratedBox/DynamicMeshActor_3)
+  8. `control_actor.set_transform(actorName="DynamicMeshActor_3", location={x:80,y:0,z:-320})` → position right thruster
+- **Material Steps**:
+  1. `manage_asset.create_material(name="MAT_Ship_Hull_Aluminum", path="/Game/Chimera/Materials/MAT_Ship_Hull_Aluminum")` → brushed aluminum hull
+  2. `manage_asset.duplicate(sourcePath=<PBR_Metal>, destinationPath=<MAT_Ship_Accent_Carbon>)` → carbon composite accent
+  3. `control_actor.set_component_property(actorName="GeneratedCylinder", componentName="DynamicMeshComponent", properties={material: "/Game/Chimera/Materials/MAT_Ship_Hull_Aluminum/MAT_Ship_Hull_Aluminum"})`
+  4. Same for cockpit and thrusters with accent carbon material
+- **Screenshot**: `control_editor.screenshot(filename="loop7_ship_exterior_v1.png", mode="editor_viewport")` → saves to `Saved/Screenshots/`
+- **Result**: Full ship exterior with hull, cockpit, and twin thrusters, material-assigned
+- **Parameters**: `hull={radius:150, height:600}`, `cockpit={radius:120, height:200}`, `thrusters={width:40, height:60, depth:40}`
+- **Materials**: Hull = MAT_Ship_Hull_Aluminum (brushed, metallic 0.7, roughness 0.35, #A0A5A8), Accent = MAT_Ship_Accent_Carbon (composite, metallic 0.0, roughness 0.8, #2A2D30)
+- **Notes**: Create material folders first via `manage_asset.create_folder(path="/Game/Chimera/...")` before `create_material`. Use existing PBR materials as duplication source for accent materials.
+
 ---
 
 ## Failed Pathways (1)
@@ -104,6 +131,20 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 - **Action**: `list_instances`
 - **Error**: "Action not previously tested"
 - **Status**: Not yet verified as working or broken — needs testing with valid parameters.
+
+---
+
+## Graphify Pathways (Research Campus Queries)
+
+### query_research_campus
+- **Pathway**: `query_research_campus`
+- **Steps**:
+  1. `g.query('campus', school_name)`
+  2. navigate to primary source
+  3. extract reference data
+  4. record discovery if new source found
+- **Example**: `g.query("campus", "Game Development School")`
+- **Result**: Returns trusted research sources and seed references for the specified school/campus from the Research Campuses directory.
 
 ---
 

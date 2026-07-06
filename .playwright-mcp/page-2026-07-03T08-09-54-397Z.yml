@@ -1,0 +1,38 @@
+- generic [active] [ref=f2e1]:
+  - text: "[] 3D [] [] · · · · · · · ·"
+  - generic:
+    - generic:
+      - generic [ref=f2e1011]:
+        - button "Close this tool (Esc)" [ref=f2e1012]
+        - generic [ref=f2e1014]: 1 ⁄ 39
+        - button "Download this file" [ref=f2e1015] [cursor=pointer]
+        - button "Share or embed this file" [ref=f2e1017] [cursor=pointer]
+        - button "Show in full screen" [ref=f2e1019]
+        - button "Show next image" [ref=f2e1021]
+        - button "Show previous image" [ref=f2e1023]
+      - img [ref=f2e1028]
+      - generic [ref=f2e1029]:
+        - generic [ref=f2e1030]:
+          - link "More details" [ref=f2e1031] [cursor=pointer]:
+            - /url: https://commons.wikimedia.org/wiki/File:The_station_pictured_from_the_SpaceX_Crew_Dragon_5_(cropped).jpg
+            - text: More details
+          - paragraph [ref=f2e1033] [cursor=pointer]:
+            - generic [ref=f2e1034]: The station pictured from the SpaceX Crew Dragon jsc2021e064211_alt (Dec. 8, 2021) --- This mosaic depicts the International Space Station pictured from the SpaceX Crew Dragon Endeavour during a fly around of the orbiting lab that took place following its undocking from the Harmony module’s space-facing port on Nov. 8, 2021.
+            - generic [ref=f2e1035]: …
+        - generic [ref=f2e1036]:
+          - paragraph [ref=f2e1038]:
+            - generic [ref=f2e1039]:
+              - text: NASA -
+              - generic [ref=f2e1040]:
+                - link "https://www.flickr.com/photos/nasa2explore/51749924967/in/photostream/" [ref=f2e1041] [cursor=pointer]:
+                  - /url: https://www.flickr.com/photos/nasa2explore/51749924967/in/photostream/
+                - text: ; see also
+                - link "https://images.nasa.gov/details-jsc2021e064211_alt" [ref=f2e1042] [cursor=pointer]:
+                  - /url: https://images.nasa.gov/details-jsc2021e064211_alt
+          - list [ref=f2e1045]:
+            - listitem [ref=f2e1046]:
+              - link "Public Domain" [ref=f2e1047] [cursor=pointer]:
+                - /url: https://commons.wikimedia.org/wiki/File:The_station_pictured_from_the_SpaceX_Crew_Dragon_5_(cropped).jpg?uselang=en#Licensing
+            - listitem [ref=f2e1048]: File:The station pictured from the SpaceX Crew Dragon 5 (cropped).jpg
+            - listitem [ref=f2e1049]: "Created: 8 November 2021"
+            - listitem [ref=f2e1050]: "Uploaded: 21 December 2021"

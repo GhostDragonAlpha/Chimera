@@ -1,0 +1,31 @@
+- contentinfo [ref=f20e6]:
+  - generic [ref=f20e8]:
+    - generic [ref=f20e9]:
+      - link "NASA" [ref=f20e11] [cursor=pointer]:
+        - /url: //www.nasa.gov
+        - img "NASA" [ref=f20e12]
+      - generic [ref=f20e13]:
+        - paragraph [ref=f20e14]:
+          - strong [ref=f20e15]: National Aeronautics and Space Administration
+        - paragraph [ref=f20e16]:
+          - strong [ref=f20e17]: "NASA Official:"
+          - text: NASA Office of Communications
+    - list "footer links" [ref=f20e19]:
+      - listitem [ref=f20e20]:
+        - link "Usage Guidelines" [ref=f20e21] [cursor=pointer]:
+          - /url: http://www.nasa.gov/audience/formedia/features/MP_Photo_Guidelines.html
+      - listitem [ref=f20e22]:
+        - link "Privacy" [ref=f20e23] [cursor=pointer]:
+          - /url: http://www.nasa.gov/about/highlights/HP_Privacy.html
+      - listitem [ref=f20e24]:
+        - link "FOIA" [ref=f20e25] [cursor=pointer]:
+          - /url: http://www.nasa.gov/FOIA/index.html
+      - listitem [ref=f20e26]:
+        - link "Contact NASA" [ref=f20e27] [cursor=pointer]:
+          - /url: https://www.nasa.gov/about/contact/index.html
+      - listitem [ref=f20e28]:
+        - link "Accessibility" [ref=f20e29] [cursor=pointer]:
+          - /url: https://www.nasa.gov/general/accessibility/
+      - listitem [ref=f20e30]:
+        - link "API Docs" [ref=f20e31] [cursor=pointer]:
+          - /url: docs/images.nasa.gov_api_docs.pdf

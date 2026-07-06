@@ -22,6 +22,7 @@ class UBTBuilder:
     def __init__(self):
         self.ue_root: Optional[str] = None
         self.ubt_path: Optional[str] = None
+        self.last_output: str = ""  # full stdout+stderr of the most recent compile
 
     def detect_ue_root(self) -> Optional[str]:
         """Detect Unreal Engine root directory using the detection order."""
@@ -183,16 +184,25 @@ class UBTBuilder:
         ]
 
         print(f"Invoking UBT: {' '.join(ubt_command)}")
-        
+
+        self.last_output = ""
         try:
-            result = subprocess.run(ubt_command, check=True, capture_output=False)
-            print("UBT compilation completed successfully.")
-            return True
-        except subprocess.CalledProcessError as e:
-            print(f"UBT compilation failed with return code: {e.returncode}")
+            # Capture output so failures carry the real compiler errors into the
+            # DNA graph (the Contract: report exact UBT output, never summarize).
+            result = subprocess.run(ubt_command, capture_output=True, text=True, errors="replace")
+            self.last_output = (result.stdout or "")
+            if result.stderr:
+                self.last_output += ("\n" + result.stderr)
+            print(self.last_output)
+
+            if result.returncode == 0:
+                print("UBT compilation completed successfully.")
+                return True
+            print(f"UBT compilation failed with return code: {result.returncode}")
             return False
         except Exception as e:
-            print(f"UBT compilation error: {e}")
+            self.last_output = f"UBT invocation error: {e}"
+            print(self.last_output)
             return False
 
 

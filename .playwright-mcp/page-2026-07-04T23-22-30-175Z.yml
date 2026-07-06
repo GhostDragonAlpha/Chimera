@@ -1,0 +1,1051 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - link "Skip to main content" [ref=e2] [cursor=pointer]
+      - link "Turn off continuous scrolling" [ref=e3] [cursor=pointer]:
+        - /url: "#"
+      - link "Accessibility help" [ref=e4] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=en
+  - generic [ref=e9]:
+    - search [ref=e10]:
+      - generic [ref=e12]:
+        - 'link "Fourth of July 2026: Celebrating 250 years of the USA" [ref=e14] [cursor=pointer]':
+          - /url: https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQPQgJ
+          - 'img "Fourth of July 2026: Celebrating 250 years of the USA" [ref=e15]'
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - combobox "Search" [ref=e20]: Apollo lunar sample scoop Apollo lunar sample scoop
+            - generic [ref=e21]:
+              - button "Clear" [ref=e23] [cursor=pointer]:
+                - img [ref=e25]
+              - generic [ref=e28]:
+                - button "Search by voice" [ref=e29] [cursor=pointer]:
+                  - img [ref=e30]
+                - button "Search by image" [ref=e32] [cursor=pointer]:
+                  - img [ref=e33]
+          - button "Search" [ref=e35] [cursor=pointer]:
+            - img [ref=e38]
+    - generic [ref=e40]:
+      - button "Settings" [ref=e42] [cursor=pointer]:
+        - img [ref=e45]
+      - generic [ref=e48]:
+        - button "Google apps" [ref=e50] [cursor=pointer]:
+          - img [ref=e51]
+        - link "Sign in" [ref=e55] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=https://www.google.com/search%3Fq%3DApollo%2Blunar%2Bsample%2Bscoop%26udm%3D2&ec=futura_srp_og_si_72236_p
+  - generic [ref=e57]:
+    - navigation [ref=e62]:
+      - generic [ref=e63]:
+        - list [ref=e64]:
+          - listitem [ref=e65]:
+            - link "AI Mode" [ref=e68] [cursor=pointer]:
+              - /url: /search?q=Apollo+lunar+sample+scoop&sca_esv=242c098e2c9e95d6&udm=50&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832SMIiTl3t-JZ4hGJOxPbHYS0UkvKdZAJprgUu75aBO7-BLWkuaPDBh2_EM1SJP1rc08CVyl19pahAnGF-dfPH5Wxha5H6BYyHUtweKOou9AuXxtkgn4GHzPdBx55ipvqhr2WPJ_bdHBBYDXCaczgcRgblpOBSudcUjcsyKU72NZLM1Hr-zKl_8o_OBBbWN6yP3BTy_8&aep=1&ntc=1&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQ2J8OegQIChAD
+              - generic [ref=e71]: AI Mode
+          - listitem [ref=e72]:
+            - link "All" [ref=e73] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=Apollo+lunar+sample+scoop&source=lnms&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832SMIiTl3t-JZ4hGJOxPbHYS0UkvKdZAJprgUu75aBO7-BLWkuaPDBh2_EM1SJP1rc08CVyl19pahAnGF-dfPH5Wxha5H6BYyHUtweKOou9AuXxtkgn4GHzPdBx55ipvqhr2WPJ_bdHBBYDXCaczgcRgblpOBSudcUjcsyKU72NZLM1Hr-zKl_8o_OBBbWN6yP3BTy_8&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQ0pQJegQIDxAB
+              - generic [ref=e75]: All
+          - listitem [ref=e76]:
+            - link "Images" [disabled] [ref=e77]:
+              - generic [ref=e79]: Images
+          - listitem [ref=e80]:
+            - link "Shopping" [ref=e81] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&udm=28&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832SMIiTl3t-JZ4hGJOxPbHYS0UkvKdZAJprgUu75aBO7-BLWkuaPDBh2_EM1SJP1rc08CVyl19pahAnGF-dfPH5Wxha5H6BYyHUtweKOou9AuXxtkgn4GHzPdBx55ipvqhr2WPJ_bdHBBYDXCaczgcRgblpOBSudcUjcsyKU72NZLM1Hr-zKl_8o_OBBbWN6yP3BTy_8&q=Apollo+lunar+sample+scoop&ved=1t:220175&ictx=111
+              - generic [ref=e83]: Shopping
+          - listitem [ref=e84]:
+            - link "News" [ref=e85] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=Apollo+lunar+sample+scoop&tbm=nws&source=lnms&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832SMIiTl3t-JZ4hGJOxPbHYS0UkvKdZAJprgUu75aBO7-BLWkuaPDBh2_EM1SJP1rc08CVyl19pahAnGF-dfPH5Wxha5H6BYyHUtweKOou9AuXxtkgn4GHzPdBx55ipvqhr2WPJ_bdHBBYDXCaczgcRgblpOBSudcUjcsyKU72NZLM1Hr-zKl_8o_OBBbWN6yP3BTy_8&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQ0pQJegQIEBAB
+              - generic [ref=e87]: News
+          - listitem [ref=e88]:
+            - link "Videos" [ref=e89] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&udm=7&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832SMIiTl3t-JZ4hGJOxPbHYS0UkvKdZAJprgUu75aBO7-BLWkuaPDBh2_EM1SJP1rc08CVyl19pahAnGF-dfPH5Wxha5H6BYyHUtweKOou9AuXxtkgn4GHzPdBx55ipvqhr2WPJ_bdHBBYDXCaczgcRgblpOBSudcUjcsyKU72NZLM1Hr-zKl_8o_OBBbWN6yP3BTy_8&q=Apollo+lunar+sample+scoop&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQtKgLegQIDhAB
+              - generic [ref=e91]: Videos
+          - listitem [ref=e92]:
+            - link "Forums" [ref=e93] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&udm=18&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8c4u0nXx4bEIpwm1lnNH832SMIiTl3t-JZ4hGJOxPbHYS0UkvKdZAJprgUu75aBO7-BLWkuaPDBh2_EM1SJP1rc08CVyl19pahAnGF-dfPH5Wxha5H6BYyHUtweKOou9AuXxtkgn4GHzPdBx55ipvqhr2WPJ_bdHBBYDXCaczgcRgblpOBSudcUjcsyKU72NZLM1Hr-zKl_8o_OBBbWN6yP3BTy_8&q=Apollo+lunar+sample+scoop&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQs6gLegQIDBAB
+              - generic [ref=e95]: Forums
+          - listitem [ref=e96]:
+            - button "More filters" [ref=e97] [cursor=pointer]:
+              - generic "More filters" [ref=e98]:
+                - generic [ref=e99]:
+                  - generic [ref=e100]: More
+                  - img [ref=e102]
+        - button "Tools" [ref=e105] [cursor=pointer]:
+          - generic [ref=e107]:
+            - generic [ref=e108]: Tools
+            - img [ref=e110]
+    - navigation [ref=e113]:
+      - navigation [ref=e116]:
+        - list [ref=e124]:
+          - listitem [ref=e125]:
+            - link "Add Astronaut" [ref=e126] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=astronaut+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r03JvPzvGy4Kh_E-W0bL94L0-LE4pqJQcwOmrZfzC20NEpl4_3UUl5T3qa9P9QfLLXYxSEFDVvORx7SXlNSPYHWie43KbKxAPoe31YEr2quvNLIEsg9MhvLOMRDBBggLKmz07tAuS_h113gcNQN0kTqn7ehc&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAB6BAgREAE&ictx=0
+              - generic [ref=e132]: Astronaut
+          - listitem [ref=e133]:
+            - link "Add Charlie duke" [ref=e134] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=charlie+duke+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rhfEV-4K40i-ZaIQJgdggp1oavpsKLeOg69vujSxVjktQuVusbH3_rHcHv2atqlmhwTn_prQVCGVAZz-40ZPFdZvYT0t2RY7OS6wyM5vwkr6JH2tMYwUMgBxvk_JH1R3r1DIGAIm6ILyZOnlBdrpf28e9zCk&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAF6BAgUEAE&ictx=0
+              - generic [ref=e140]: Charlie duke
+          - listitem [ref=e141]:
+            - link "Add The moon rocks" [ref=e142] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=the+moon+rocks+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rTalc9ibXQalw1qPNRsa2kdPb2R1fBT1hCpbuzJ_3gFp6jIMWlgvofALk9tHThekpzOCz_cr-leusXFyS3VO89MvDnRIfn_tylu1tZjyiM0s_L0gvz7Yxf8BtSgvw63c6EFaOSg01ysyWhQUEttGxT15S7QZeEUs6-vgkZMLmwmirddwH&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAJ6BAgWEAE&ictx=0
+              - generic [ref=e148]: The moon rocks
+          - listitem [ref=e149]:
+            - link "Add Lunar regolith" [ref=e150] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=lunar+regolith+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rTalc9ibXQalw1qPNRsa2kdPb2R1fBT1hCpbuzJ_3gFp6jIMWlgvofALk9tHThekpjE8dV6zwFeh0a3JOke5w-uXiiKDUAZuFD_M7NNOULH1uiY7IR17CmzpSfAsQZLwkLstaHnMLl_gNnKZ8Okc2dHT-GV0&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAN6BAgSEAE&ictx=0
+              - generic [ref=e156]: Lunar regolith
+          - listitem [ref=e157]:
+            - link "Add Sample return container" [ref=e158] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=sample+return+container+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4ruNQoIX2hVRvWC7VWmS862CoxgR-OfG7hht52dI4uT1Npm28LYqY2H0wot-7iLQqcDCE-78ZCQvxG_AKWdm1DNzb8neU-S_r9UvCmwvsuH31L49y9RjNv_hINk0N70utSRU5qHqZlmhu8k7VsFmF8NGdP70Gwz9bHsCyWIgjiDyDjsLgf&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAR6BAgVEAE&ictx=0
+              - generic [ref=e164]: Sample return container
+          - listitem [ref=e165]:
+            - link "Add Apollo astronauts" [ref=e166] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=apollo+astronauts+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rvMK4OwXsRyIhE7EdbHGMcNrCXe0rrfxEkk1bgWM_6vPBtx6XyJe3QB2aYEipDC0Ep8GcI6lQiIlteeMcQxyI9UZJ8ij9wlemYw0466tsZiJDUwMfGdmn_aNsqCLcS4_KM6-6HtQ2dnqThQMeYkERJ8YEqGA&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAV6BQj0BRAB&ictx=0
+              - generic [ref=e172]: Apollo astronauts
+          - listitem [ref=e173]:
+            - link "Add Neil armstrong" [ref=e174] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=neil+armstrong+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rTalc9ibXQalw1qPNRsa2kdPb2R1fBT1hCpbuzJ_3gFp6jIMWlgvofALk9tHThekp_3K_WyY4oLZtlM9VVOZYy1hO9eiJPydBN62OerR1o2RIp4SkueEpc_zyrwRRmI8E9C_nTIJ96Km5S8-Na2pqeGbxk9HY9X-bGPk9bB_Yu9GVeYl-&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAZ6BQj2BRAB&ictx=0
+              - generic [ref=e180]: Neil armstrong
+          - listitem [ref=e181]:
+            - link "Add Moon dust" [ref=e182] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=moon+dust+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4r03JvPzvGy4Kh_E-W0bL94L0-LE4pqJQcwOmrZfzC20NEpl4_3UUl5T3qa9P9QfLLT_hfLoVZOA1bi4yw6UNbhZnzb_c4-GIMDZiU92eSn132egk6KjKkppYTOMzlilc2TrhwGKwC8Wa-1Mc6Ynjmrxz43Zc&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAd6BQj5BRAB&ictx=0
+              - generic [ref=e188]: Moon dust
+          - listitem [ref=e189]:
+            - link "Add Nasa" [ref=e190] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=nasa+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rmQD1vnvaXh5kfOBKMW7ukHqPZ8_SSs5kBTcd_O4KlFLTcVndTxJZRUtTTAbkwNT3e4u9K8T7m9UU_jV0At0_ro723DmFmGLYYlNfE6AQoRUQl7yRDOv1AvLQMuVlOxzvaSfn46InLK8yOnGLvkuP1iBsxZs&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAh6BQj4BRAB&ictx=0
+              - generic [ref=e196]: Nasa
+          - listitem [ref=e197]:
+            - link "Add Harrison schmitt" [ref=e198] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=harrison+schmitt+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rH-nEfqucMsHGD4YSv-NbVylKxwUIv0nC5mf8BRBbMc463go8BJ3uiFFquLXfS1WeLoZ7E8oaZXX4-GoPxNheCVcBgnwsP4ntqKTKBSxWstEETuP1snk4xycmeVTYM4Qeq1wNM9dc7YoYmBznwLOBi-kfhiPmnPE6K_uZKMrCUnSmY_Q0&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAl6BQj3BRAB&ictx=0
+              - generic [ref=e204]: Harrison schmitt
+          - listitem [ref=e205]:
+            - link "Add Charles duke" [ref=e206] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=charles+duke+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rhfEV-4K40i-ZaIQJgdggp1oavpsKLeOg69vujSxVjktQuVusbH3_rHcHv2atqlmhwwIdvJ36J79uor-0mZYkYjRORTNzWlBssoNWas2MO_M2Q7TsYLkZV1gIIFXMixITMJb59xdbXphFXQSUdbKP37qqYts&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAp6BQjzBRAB&ictx=0
+              - generic [ref=e212]: Charles duke
+          - listitem [ref=e213]:
+            - link "Add Rock box" [ref=e214] [cursor=pointer]:
+              - /url: /search?sca_esv=242c098e2c9e95d6&q=rock+box+Apollo+lunar+sample+scoop&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rHfOjuRCfV2iX3EB0hrETeO5UoH7_e-9xG3QlfhY4qmzQNdIeTXSae3-cJiLfxT9uB5YqP_Z5NoDJ0GM9jBAp5AUCbZK-jEbrnUtdv84f47tyWTctk72S0I1fbVqVrD3MAXkrfdrRz66t7BXUd_cv_b2Q4bM&udm=2&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQxKsJKAt6BQj1BRAB&ictx=0
+              - generic [ref=e220]: Rock box
+    - heading "Search Results" [level=1] [ref=e221]
+    - main [ref=e223]:
+      - generic [ref=e232]:
+        - generic [ref=e236] [cursor=pointer]:
+          - generic [ref=e238]:
+            - button "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke" [ref=e241]:
+              - img "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke" [ref=e243]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke RR Auction · Out of stock" [ref=e245]:
+            - /url: https://www.rrauction.com/auctions/lot-detail/347936406777197-apollo-16-lunar-surface-used-moon-rock-scoop-from-the-personal-collection-of-charlie-duke/
+            - generic [ref=e246]:
+              - generic [ref=e248]: Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke
+              - generic [ref=e252]: RR Auction · Out of stock
+        - generic [ref=e256] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e261]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e263]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e265]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e266]:
+              - generic [ref=e268]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e272]: Lunar and Planetary Institute
+        - generic [ref=e276] [cursor=pointer]:
+          - button "Scoop, Small | National Air and Space Museum" [ref=e281]:
+            - img "Scoop, Small | National Air and Space Museum" [ref=e283]
+          - link "Scoop, Small | National Air and Space Museum National Air and Space Museum" [ref=e285]:
+            - /url: https://airandspace.si.edu/collection-objects/scoop-small/nasm_A19850613000
+            - generic [ref=e286]:
+              - generic [ref=e288]: Scoop, Small | National Air and Space Museum
+              - generic [ref=e292]: National Air and Space Museum
+        - generic [ref=e296] [cursor=pointer]:
+          - generic [ref=e298]:
+            - button "Apollo 11 Training-Used Moon Rock Scoop" [ref=e301]:
+              - img "Apollo 11 Training-Used Moon Rock Scoop" [ref=e303]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Apollo 11 Training-Used Moon Rock Scoop RR Auction · Out of stock" [ref=e305]:
+            - /url: https://www.rrauction.com/auctions/lot-detail/340003605384303-apollo-11-training-used-moon-rock-scoop/
+            - generic [ref=e306]:
+              - generic [ref=e308]: Apollo 11 Training-Used Moon Rock Scoop
+              - generic [ref=e312]: RR Auction · Out of stock
+        - generic [ref=e316] [cursor=pointer]:
+          - button "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal" [ref=e321]:
+            - img "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal" [ref=e323]
+          - link "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal RR Auction" [ref=e325]:
+            - /url: https://www.rrauction.com/auctions/lot-detail/347936406777197-apollo-16-lunar-surface-used-moon-rock-scoop-from-the-personal-collection-of-charlie-duke/
+            - generic [ref=e326]:
+              - generic [ref=e328]: Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal
+              - generic [ref=e332]: RR Auction
+        - generic [ref=e336] [cursor=pointer]:
+          - button "Fifty years since Apollo 11, ORNL 'Moon Scoop' remains a source of family pride" [ref=e341]:
+            - img "Fifty years since Apollo 11, ORNL 'Moon Scoop' remains a source of family pride" [ref=e343]
+          - link "Fifty years since Apollo 11, ORNL 'Moon Scoop' remains a source of family pride Oak Ridge National Laboratory" [ref=e345]:
+            - /url: https://www.ornl.gov/news/fifty-years-apollo-11-ornl-moon-scoop-remains-source-family-pride
+            - generic [ref=e346]:
+              - generic [ref=e348]: Fifty years since Apollo 11, ORNL 'Moon Scoop' remains a source of family pride
+              - generic [ref=e352]: Oak Ridge National Laboratory
+        - generic [ref=e356] [cursor=pointer]:
+          - generic [ref=e358]:
+            - button "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke" [ref=e361]:
+              - img "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke" [ref=e363]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke RR Auction · Out of stock" [ref=e365]:
+            - /url: https://www.rrauction.com/auctions/lot-detail/347936406777197-apollo-16-lunar-surface-used-moon-rock-scoop-from-the-personal-collection-of-charlie-duke/
+            - generic [ref=e366]:
+              - generic [ref=e368]: Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke
+              - generic [ref=e372]: RR Auction · Out of stock
+        - generic [ref=e376] [cursor=pointer]:
+          - button "Microscopic particles from first Apollo 11 lunar sample head to auction | collectSPACE" [ref=e381]:
+            - img "Microscopic particles from first Apollo 11 lunar sample head to auction | collectSPACE" [ref=e383]
+          - link "Microscopic particles from first Apollo 11 lunar sample head to auction | collectSPACE collectSPACE.com" [ref=e385]:
+            - /url: https://www.collectspace.com/news/news-032822a-apollo_armstrong_moon_dust_auction.html
+            - generic [ref=e386]:
+              - generic [ref=e388]: Microscopic particles from first Apollo 11 lunar sample head to auction | collectSPACE
+              - generic [ref=e392]: collectSPACE.com
+        - generic [ref=e396] [cursor=pointer]:
+          - generic [ref=e398]:
+            - button "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke" [ref=e401]:
+              - img "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke" [ref=e403]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+          - link "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke RR Auction · Out of stock" [ref=e405]:
+            - /url: https://www.rrauction.com/auctions/lot-detail/347936406777197-apollo-16-lunar-surface-used-moon-rock-scoop-from-the-personal-collection-of-charlie-duke/
+            - generic [ref=e406]:
+              - generic [ref=e408]: Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal Collection of Charlie Duke
+              - generic [ref=e412]: RR Auction · Out of stock
+        - generic [ref=e416] [cursor=pointer]:
+          - generic [ref=e418]:
+            - button "Astronaut Harrison Schmitt uses scoop to retrieve lunar… — PICRYL - Public Domain Media Search Engine" [ref=e421]:
+              - img "Astronaut Harrison Schmitt uses scoop to retrieve lunar… — PICRYL - Public Domain Media Search Engine" [ref=e423]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Astronaut Harrison Schmitt uses scoop to retrieve lunar… — PICRYL - Public Domain Media Search Engine PICRYL" [ref=e425]:
+            - /url: https://picryl.com/media/astronaut-harrison-schmitt-uses-scoop-to-retrieve-lunar-samples-during-eva-2ccc41
+            - generic [ref=e426]:
+              - generic [ref=e428]: Astronaut Harrison Schmitt uses scoop to retrieve lunar… — PICRYL - Public Domain Media Search Engine
+              - generic [ref=e432]: PICRYL
+        - generic [ref=e436] [cursor=pointer]:
+          - button "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal" [ref=e441]:
+            - img "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal" [ref=e443]
+          - link "Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal RR Auction" [ref=e445]:
+            - /url: https://www.rrauction.com/auctions/lot-detail/347936406777197-apollo-16-lunar-surface-used-moon-rock-scoop-from-the-personal-collection-of-charlie-duke/
+            - generic [ref=e446]:
+              - generic [ref=e448]: Apollo 16 Lunar Surface-Used Moon Rock Scoop - From the Personal
+              - generic [ref=e452]: RR Auction
+        - generic [ref=e456] [cursor=pointer]:
+          - button "Microscopic particles from first Apollo 11 lunar sample head to auction | collectSPACE" [ref=e461]:
+            - img "Microscopic particles from first Apollo 11 lunar sample head to auction | collectSPACE" [ref=e463]
+          - link "Microscopic particles from first Apollo 11 lunar sample head to auction | collectSPACE collectSPACE.com" [ref=e465]:
+            - /url: https://www.collectspace.com/news/news-032822a-apollo_armstrong_moon_dust_auction.html
+            - generic [ref=e466]:
+              - generic [ref=e468]: Microscopic particles from first Apollo 11 lunar sample head to auction | collectSPACE
+              - generic [ref=e472]: collectSPACE.com
+        - generic [ref=e476] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e481]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e483]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e485]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e486]:
+              - generic [ref=e488]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e492]: Lunar and Planetary Institute
+        - generic [ref=e496] [cursor=pointer]:
+          - button "NASA has no plans to exchange lunar samples with China - SpaceNews" [ref=e501]:
+            - img "NASA has no plans to exchange lunar samples with China - SpaceNews" [ref=e503]
+          - link "NASA has no plans to exchange lunar samples with China - SpaceNews SpaceNews" [ref=e505]:
+            - /url: https://spacenews.com/nasa-has-no-plans-to-exchange-lunar-samples-with-china/
+            - generic [ref=e506]:
+              - generic [ref=e508]: NASA has no plans to exchange lunar samples with China - SpaceNews
+              - generic [ref=e512]: SpaceNews
+        - generic [ref=e516] [cursor=pointer]:
+          - generic [ref=e518]:
+            - 'button "Real Apollo 11 footage: before the famous photos, Neil Armstrong does the smartest thing on the Moon—he scoops up a contingency lunar sample in case the mission has to abort early. 🌕🚀, , This fast ..." [ref=e521]':
+              - 'img "Real Apollo 11 footage: before the famous photos, Neil Armstrong does the smartest thing on the Moon—he scoops up a contingency lunar sample in case the mission has to abort early. 🌕🚀, , This fast ..." [ref=e523]'
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Video
+          - 'link "Real Apollo 11 footage: before the famous photos, Neil Armstrong does the smartest thing on the Moon—he scoops up a contingency lunar sample in case the mission has to abort early. 🌕🚀, , This fast ... Instagram" [ref=e525]':
+            - /url: https://www.instagram.com/reel/DUGFXTBkUfX/
+            - generic [ref=e526]:
+              - generic [ref=e528]: "Real Apollo 11 footage: before the famous photos, Neil Armstrong does the smartest thing on the Moon—he scoops up a contingency lunar sample in case the mission has to abort early. 🌕🚀, , This fast ..."
+              - generic [ref=e532]: Instagram
+        - generic [ref=e536] [cursor=pointer]:
+          - button "Astronaut James Irwin uses scoop during Apollo 15 EVA — PICRYL - Public Domain Media Search Engine" [ref=e541]:
+            - img "Astronaut James Irwin uses scoop during Apollo 15 EVA — PICRYL - Public Domain Media Search Engine" [ref=e543]
+          - link "Astronaut James Irwin uses scoop during Apollo 15 EVA — PICRYL - Public Domain Media Search Engine PICRYL" [ref=e545]:
+            - /url: https://picryl.com/media/astronaut-james-irwin-uses-scoop-during-apollo-15-eva-c7649b
+            - generic [ref=e546]:
+              - generic [ref=e548]: Astronaut James Irwin uses scoop during Apollo 15 EVA — PICRYL - Public Domain Media Search Engine
+              - generic [ref=e552]: PICRYL
+        - generic [ref=e556] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e561]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e563]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e565]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e566]:
+              - generic [ref=e568]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e572]: Lunar and Planetary Institute
+        - generic [ref=e576] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e581]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e583]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e585]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e586]:
+              - generic [ref=e588]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e592]: Lunar and Planetary Institute
+        - generic [ref=e596] [cursor=pointer]:
+          - button "NASA Apollo 16 mission item hits auction market, expected to go for nearly $750K | Fox Business" [ref=e601]:
+            - img "NASA Apollo 16 mission item hits auction market, expected to go for nearly $750K | Fox Business" [ref=e603]
+          - link "NASA Apollo 16 mission item hits auction market, expected to go for nearly $750K | Fox Business Fox Business" [ref=e605]:
+            - /url: https://www.foxbusiness.com/lifestyle/nasas-apollo-16-mission-item-hits-auction-market-expected-nearly-750k
+            - generic [ref=e606]:
+              - generic [ref=e608]: NASA Apollo 16 mission item hits auction market, expected to go for nearly $750K | Fox Business
+              - generic [ref=e612]: Fox Business
+        - generic [ref=e616] [cursor=pointer]:
+          - button "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum" [ref=e621]:
+            - img "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum" [ref=e623]
+          - link "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum National Air and Space Museum" [ref=e625]:
+            - /url: https://airandspace.si.edu/collection-objects/alsrc-apollo-lunar-sample-return-container-apollo-11/nasm_A19710814000
+            - generic [ref=e626]:
+              - generic [ref=e628]: Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum
+              - generic [ref=e632]: National Air and Space Museum
+        - generic [ref=e636] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e641]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e643]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e645]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e646]:
+              - generic [ref=e648]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e652]: Lunar and Planetary Institute
+        - generic [ref=e656] [cursor=pointer]:
+          - button "The Otherwise Unremarkable 'Rock Boxes' That Brought Pieces of the Moon Back to Earth" [ref=e661]:
+            - img "The Otherwise Unremarkable 'Rock Boxes' That Brought Pieces of the Moon Back to Earth" [ref=e663]
+          - link "The Otherwise Unremarkable 'Rock Boxes' That Brought Pieces of the Moon Back to Earth Smithsonian Magazine" [ref=e665]:
+            - /url: https://www.smithsonianmag.com/smithsonian-institution/apollo-rock-box-nasa-moon-180985962/
+            - generic [ref=e666]:
+              - generic [ref=e668]: The Otherwise Unremarkable 'Rock Boxes' That Brought Pieces of the Moon Back to Earth
+              - generic [ref=e672]: Smithsonian Magazine
+        - generic [ref=e676] [cursor=pointer]:
+          - generic [ref=e678]:
+            - button "Apollo 17 Geologist-Astronaut Harrison Schmitt covered with lunar dirt. Schmitt scoops up lunar samples. Placed in the Stock Photo - Alamy" [ref=e681]:
+              - img "Apollo 17 Geologist-Astronaut Harrison Schmitt covered with lunar dirt. Schmitt scoops up lunar samples. Placed in the Stock Photo - Alamy" [ref=e683]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Apollo 17 Geologist-Astronaut Harrison Schmitt covered with lunar dirt. Schmitt scoops up lunar samples. Placed in the Stock Photo - Alamy Alamy" [ref=e685]:
+            - /url: https://www.alamy.com/stock-photo-apollo-17-geologist-astronaut-harrison-schmitt-covered-with-lunar-50061807.html
+            - generic [ref=e686]:
+              - generic [ref=e688]: Apollo 17 Geologist-Astronaut Harrison Schmitt covered with lunar dirt. Schmitt scoops up lunar samples. Placed in the Stock Photo - Alamy
+              - generic [ref=e692]: Alamy
+        - generic [ref=e696] [cursor=pointer]:
+          - 'button "NASA History On Auction Block: Apollo 16 ''Moon Rock Scoop'' Could Fetch Over $800,000! - SpaceChatter" [ref=e701]':
+            - 'img "NASA History On Auction Block: Apollo 16 ''Moon Rock Scoop'' Could Fetch Over $800,000! - SpaceChatter" [ref=e703]'
+          - 'link "NASA History On Auction Block: Apollo 16 ''Moon Rock Scoop'' Could Fetch Over $800,000! - SpaceChatter SpaceChatter" [ref=e705]':
+            - /url: https://spacechatter.com/2023/10/04/nasa-apollo-16-moon-rock-scoop-auction/
+            - generic [ref=e706]:
+              - generic [ref=e708]: "NASA History On Auction Block: Apollo 16 'Moon Rock Scoop' Could Fetch Over $800,000! - SpaceChatter"
+              - generic [ref=e712]: SpaceChatter
+        - generic [ref=e714]:
+          - heading "Related searches" [level=2] [ref=e715]
+          - link "apollo 11 moon rock samples" [ref=e716] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=apollo+11+moon+rock+samples&stick=H4sIAAAAAAAAAFvEKp1YkJ-Tk69gaKiQm5-fp1CUn5ytUJyYW5CTWgwABW8gGx4AAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegQIdRAA
+            - generic [ref=e721]: apollo 11 moon rock samples
+          - link "moon samples from apollo 11" [ref=e722] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=moon+samples+from+apollo+11&stick=H4sIAAAAAAAAAFvEKp2bn5-nUJyYW5CTWqyQVpSfq5BYkJ-Tk69gaAgAF9s_VB4AAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUIkwEQAA
+            - generic [ref=e727]: moon samples from apollo 11
+          - link "actual moon rock" [ref=e728] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=actual+moon+rock&stick=H4sIAAAAAAAAAFvEKpCYXFKamKOQm5-fp1CUn5wNADWzv-sTAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUIoAEQAA
+            - generic [ref=e733]: actual moon rock
+        - generic [ref=e737] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e742]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e744]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e746]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e747]:
+              - generic [ref=e749]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e753]: Lunar and Planetary Institute
+        - generic [ref=e757] [cursor=pointer]:
+          - 'button "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=e762]':
+            - 'img "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link" [ref=e764]'
+          - 'link "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link Springer Nature" [ref=e766]':
+            - /url: https://link.springer.com/article/10.1007/s11214-025-01239-6
+            - generic [ref=e767]:
+              - generic [ref=e769]: "Lunar Regolith Sampling Technologies: A Critical Review | Space Science Reviews | Springer Nature Link"
+              - generic [ref=e773]: Springer Nature
+        - generic [ref=e777] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e782]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e784]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e786]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e787]:
+              - generic [ref=e789]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e793]: Lunar and Planetary Institute
+        - generic [ref=e797] [cursor=pointer]:
+          - button "Lunar sample storage and preservation methods | Houston, TX" [ref=e802]:
+            - img "Lunar sample storage and preservation methods | Houston, TX" [ref=e804]
+          - link "Lunar sample storage and preservation methods | Houston, TX Facebook" [ref=e806]:
+            - /url: https://www.facebook.com/groups/48800622850/posts/10163526171867851/
+            - generic [ref=e807]:
+              - generic [ref=e809]: Lunar sample storage and preservation methods | Houston, TX
+              - generic [ref=e813]: Facebook
+        - generic [ref=e817] [cursor=pointer]:
+          - button "Contingency Sampler With Folding Handle" [ref=e822]:
+            - img "Contingency Sampler With Folding Handle" [ref=e824]
+          - link "Contingency Sampler With Folding Handle Capcom Espace" [ref=e826]:
+            - /url: http://www.capcomespace.net/dossiers/espace_US/apollo/Nouveau_Dossier/contingency_sampler_with_folding.htm
+            - generic [ref=e827]:
+              - generic [ref=e829]: Contingency Sampler With Folding Handle
+              - generic [ref=e833]: Capcom Espace
+        - generic [ref=e837] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e842]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e844]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e846]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e847]:
+              - generic [ref=e849]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e853]: Lunar and Planetary Institute
+        - generic [ref=e857] [cursor=pointer]:
+          - button "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum" [ref=e862]:
+            - img "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum" [ref=e864]
+          - link "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum National Air and Space Museum" [ref=e866]:
+            - /url: https://airandspace.si.edu/collection-objects/alsrc-apollo-lunar-sample-return-container-apollo-11/nasm_A19710814000
+            - generic [ref=e867]:
+              - generic [ref=e869]: Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum
+              - generic [ref=e873]: National Air and Space Museum
+        - generic [ref=e877] [cursor=pointer]:
+          - button "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom" [ref=e882]:
+            - img "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom" [ref=e884]
+          - link "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom UNM Newsroom" [ref=e886]:
+            - /url: https://news.unm.edu/news/unm-scientists-part-of-nasa-team-to-open-apollo-era-lunar-samples
+            - generic [ref=e887]:
+              - generic [ref=e889]: UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom
+              - generic [ref=e893]: UNM Newsroom
+        - generic [ref=e897] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e902]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e904]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e906]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e907]:
+              - generic [ref=e909]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e913]: Lunar and Planetary Institute
+        - generic [ref=e917] [cursor=pointer]:
+          - 'button "Today is the #Apollo17 lunar landing anniversary! Crewmember, Jack Schmitt was the first geologist on the Moon. The astronauts gathered 243 pounds of rocks and sediment. Today those samples are preserved at" [ref=e922]':
+            - 'img "Today is the #Apollo17 lunar landing anniversary! Crewmember, Jack Schmitt was the first geologist on the Moon. The astronauts gathered 243 pounds of rocks and sediment. Today those samples are preserved at" [ref=e924]'
+          - 'link "Today is the #Apollo17 lunar landing anniversary! Crewmember, Jack Schmitt was the first geologist on the Moon. The astronauts gathered 243 pounds of rocks and sediment. Today those samples are preserved at Facebook" [ref=e926]':
+            - /url: https://www.facebook.com/NASAScience/posts/today-is-the-apollo17-lunar-landing-anniversary-crewmember-jack-schmitt-was-the-/1008936947939395/
+            - generic [ref=e927]:
+              - generic [ref=e929]: "Today is the #Apollo17 lunar landing anniversary! Crewmember, Jack Schmitt was the first geologist on the Moon. The astronauts gathered 243 pounds of rocks and sediment. Today those samples are preserved at"
+              - generic [ref=e933]: Facebook
+        - generic [ref=e937] [cursor=pointer]:
+          - 'button "2 Surface Sample Image: PICRYL - Public Domain Media Search Engine Public Domain Search}" [ref=e942]':
+            - 'img "2 Surface Sample Image: PICRYL - Public Domain Media Search Engine Public Domain Search}" [ref=e944]'
+          - 'link "2 Surface Sample Image: PICRYL - Public Domain Media Search Engine Public Domain Search} Collections - GetArchive" [ref=e946]':
+            - /url: https://boudewijnhuijgens.getarchive.net/amp/topics/surface+sample
+            - generic [ref=e947]:
+              - generic [ref=e949]: "2 Surface Sample Image: PICRYL - Public Domain Media Search Engine Public Domain Search}"
+              - generic [ref=e953]: Collections - GetArchive
+        - generic [ref=e957] [cursor=pointer]:
+          - button "Lunar - Missions - Apollo 11 Samples" [ref=e962]:
+            - img "Lunar - Missions - Apollo 11 Samples" [ref=e964]
+          - link "Lunar - Missions - Apollo 11 Samples Lunar and Planetary Institute" [ref=e966]:
+            - /url: https://www.lpi.usra.edu/lunar/missions/apollo/apollo_11/samples/
+            - generic [ref=e967]:
+              - generic [ref=e969]: Lunar - Missions - Apollo 11 Samples
+              - generic [ref=e973]: Lunar and Planetary Institute
+        - generic [ref=e977] [cursor=pointer]:
+          - button "Scoop, Large | National Air and Space Museum" [ref=e982]:
+            - img "Scoop, Large | National Air and Space Museum" [ref=e984]
+          - link "Scoop, Large | National Air and Space Museum National Air and Space Museum" [ref=e986]:
+            - /url: https://airandspace.si.edu/collection-objects/scoop-large/nasm_A19750032000
+            - generic [ref=e987]:
+              - generic [ref=e989]: Scoop, Large | National Air and Space Museum
+              - generic [ref=e993]: National Air and Space Museum
+        - generic [ref=e997] [cursor=pointer]:
+          - button "Scientists solve lunar mystery with aid of missing moon tapes" [ref=e1002]:
+            - img "Scientists solve lunar mystery with aid of missing moon tapes" [ref=e1004]
+          - link "Scientists solve lunar mystery with aid of missing moon tapes Phys.org" [ref=e1006]:
+            - /url: https://phys.org/news/2018-06-scientists-lunar-mystery-aid-moon.html
+            - generic [ref=e1007]:
+              - generic [ref=e1009]: Scientists solve lunar mystery with aid of missing moon tapes
+              - generic [ref=e1013]: Phys.org
+        - generic [ref=e1017] [cursor=pointer]:
+          - button "One Metal Scoop, Slightly Used - www.caltech.edu" [ref=e1022]:
+            - img "One Metal Scoop, Slightly Used - www.caltech.edu" [ref=e1024]
+          - link "One Metal Scoop, Slightly Used - www.caltech.edu Caltech" [ref=e1026]:
+            - /url: https://www.caltech.edu/about/news/one-metal-scoop-slightly-used-37551
+            - generic [ref=e1027]:
+              - generic [ref=e1029]: One Metal Scoop, Slightly Used - www.caltech.edu
+              - generic [ref=e1033]: Caltech
+        - generic [ref=e1037] [cursor=pointer]:
+          - button "Moon scoop from the 1960s may hold secrets" [ref=e1042]:
+            - img "Moon scoop from the 1960s may hold secrets" [ref=e1044]
+          - link "Moon scoop from the 1960s may hold secrets NBC News" [ref=e1046]:
+            - /url: https://www.nbcnews.com/id/wbna25334999
+            - generic [ref=e1047]:
+              - generic [ref=e1049]: Moon scoop from the 1960s may hold secrets
+              - generic [ref=e1053]: NBC News
+        - generic [ref=e1057] [cursor=pointer]:
+          - button "NASA Opens Pristine Tube of Moon Dust From the Apollo Missions" [ref=e1062]:
+            - img "NASA Opens Pristine Tube of Moon Dust From the Apollo Missions" [ref=e1064]
+          - link "NASA Opens Pristine Tube of Moon Dust From the Apollo Missions Smithsonian Magazine" [ref=e1066]:
+            - /url: https://www.smithsonianmag.com/smart-news/nasa-cracks-open-fresh-tube-moon-dust-180973514/
+            - generic [ref=e1067]:
+              - generic [ref=e1069]: NASA Opens Pristine Tube of Moon Dust From the Apollo Missions
+              - generic [ref=e1073]: Smithsonian Magazine
+        - generic [ref=e1077] [cursor=pointer]:
+          - button "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum" [ref=e1082]:
+            - img "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum" [ref=e1084]
+          - link "Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum National Air and Space Museum" [ref=e1086]:
+            - /url: https://airandspace.si.edu/collection-objects/alsrc-apollo-lunar-sample-return-container-apollo-11/nasm_A19710814000
+            - generic [ref=e1087]:
+              - generic [ref=e1089]: Apollo Lunar Sample Return Container (ALSRC), Apollo 11 | National Air and Space Museum
+              - generic [ref=e1093]: National Air and Space Museum
+        - generic [ref=e1097] [cursor=pointer]:
+          - button "dsc63260.jpg" [ref=e1102]:
+            - img "dsc63260.jpg" [ref=e1104]
+          - link "dsc63260.jpg heroicrelics.org" [ref=e1106]:
+            - /url: http://heroicrelics.org/naas/apollo-lunar-sample-equipment/dsc63260.jpg.html
+            - generic [ref=e1107]:
+              - generic [ref=e1109]: dsc63260.jpg
+              - generic [ref=e1113]: heroicrelics.org
+        - generic [ref=e1117] [cursor=pointer]:
+          - generic [ref=e1119]:
+            - button "Two members of the Apollo 11 lunar landing mission participate in a simulation of deploying and using lunar tools on the surface of the moon during a training exercise in bldg 9" [ref=e1122]:
+              - img "Two members of the Apollo 11 lunar landing mission participate in a simulation of deploying and using lunar tools on the surface of the moon during a training exercise in bldg 9" [ref=e1124]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Two members of the Apollo 11 lunar landing mission participate in a simulation of deploying and using lunar tools on the surface of the moon during a training exercise in bldg 9 Alamy" [ref=e1126]:
+            - /url: https://www.alamy.com/two-members-of-the-apollo-11-lunar-landing-mission-participate-in-a-simulation-of-deploying-and-using-lunar-tools-on-the-surface-of-the-moon-during-a-training-exercise-in-bldg-9-on-april-22-1969-astronaut-edwin-e-aldrin-jr-on-left-lunar-module-pilot-uses-scoop-and-tongs-to-pick-up-sample-astronaut-neil-a-armstrong-apollo-11-commander-holds-bag-to-receive-sample-in-the-background-is-a-lunar-module-mockup-both-men-are-wearing-extravehicular-mobility-units-emu-image440886713.html
+            - generic [ref=e1127]:
+              - generic [ref=e1129]: Two members of the Apollo 11 lunar landing mission participate in a simulation of deploying and using lunar tools on the surface of the moon during a training exercise in bldg 9
+              - generic [ref=e1133]: Alamy
+        - generic [ref=e1137] [cursor=pointer]:
+          - button "Apollo 17 Lunar Samples" [ref=e1142]:
+            - img "Apollo 17 Lunar Samples" [ref=e1144]
+          - link "Apollo 17 Lunar Samples Lunar and Planetary Institute" [ref=e1146]:
+            - /url: https://www.lpi.usra.edu/lunar/missions/apollo/apollo_17/samples/
+            - generic [ref=e1147]:
+              - generic [ref=e1149]: Apollo 17 Lunar Samples
+              - generic [ref=e1153]: Lunar and Planetary Institute
+        - generic [ref=e1157] [cursor=pointer]:
+          - button "Neil Armstrong's Collected Samples of the Moon on the 1969 Apollo 11 Mission Up for Grabs - autoevolution" [ref=e1162]:
+            - img "Neil Armstrong's Collected Samples of the Moon on the 1969 Apollo 11 Mission Up for Grabs - autoevolution" [ref=e1164]
+          - link "Neil Armstrong's Collected Samples of the Moon on the 1969 Apollo 11 Mission Up for Grabs - autoevolution autoevolution" [ref=e1166]:
+            - /url: https://www.autoevolution.com/news/neil-armstrong-s-collected-samples-of-the-moon-on-the-1969-apollo-11-mission-up-for-grabs-185744.html
+            - generic [ref=e1167]:
+              - generic [ref=e1169]: Neil Armstrong's Collected Samples of the Moon on the 1969 Apollo 11 Mission Up for Grabs - autoevolution
+              - generic [ref=e1173]: autoevolution
+        - generic [ref=e1177] [cursor=pointer]:
+          - button "Some photos of Apollo lunar samples | Some Meteorite Information | Washington University in St. Louis" [ref=e1182]:
+            - img "Some photos of Apollo lunar samples | Some Meteorite Information | Washington University in St. Louis" [ref=e1184]
+          - link "Some photos of Apollo lunar samples | Some Meteorite Information | Washington University in St. Louis sites.wustl.edu" [ref=e1186]:
+            - /url: https://sites.wustl.edu/meteoritesite/items/some-photos-of-apollo-samples/
+            - generic [ref=e1187]:
+              - generic [ref=e1189]: Some photos of Apollo lunar samples | Some Meteorite Information | Washington University in St. Louis
+              - generic [ref=e1193]: sites.wustl.edu
+        - generic [ref=e1197] [cursor=pointer]:
+          - button "Apollo Lunar Roving Vehicles | Springer Nature Link" [ref=e1202]:
+            - img "Apollo Lunar Roving Vehicles | Springer Nature Link" [ref=e1204]
+          - link "Apollo Lunar Roving Vehicles | Springer Nature Link Springer Nature" [ref=e1206]:
+            - /url: https://link.springer.com/rwe/10.1007/978-3-319-14541-9_223
+            - generic [ref=e1207]:
+              - generic [ref=e1209]: Apollo Lunar Roving Vehicles | Springer Nature Link
+              - generic [ref=e1213]: Springer Nature
+        - generic [ref=e1215]:
+          - heading "Related searches" [level=2] [ref=e1216]
+          - link "moon soil samples" [ref=e1217] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=moon+soil+samples&stick=H4sIAAAAAAAAAFvEKpibn5-nUJyfmaNQnJhbkJNaDABJFcYFFAAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUI2AIQAA
+            - generic [ref=e1222]: moon soil samples
+          - link "real moon dust" [ref=e1223] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=real+moon+dust&stick=H4sIAAAAAAAAAFvEyleUmpijkJufn6eQUlpcAgDfmE0_EQAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUI3gIQAA
+            - generic [ref=e1228]: real moon dust
+          - link "real moon soil" [ref=e1229] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=real+moon+soil&stick=H4sIAAAAAAAAAFvEyleUmpijkJufn6dQnJ-ZAwDSs3NAEQAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUI7AIQAA
+            - generic [ref=e1234]: real moon soil
+        - generic [ref=e1238] [cursor=pointer]:
+          - button "Moon scoop from the 1960s may hold secrets" [ref=e1243]:
+            - img "Moon scoop from the 1960s may hold secrets" [ref=e1245]
+          - link "Moon scoop from the 1960s may hold secrets NBC News" [ref=e1247]:
+            - /url: https://www.nbcnews.com/id/wbna25334999
+            - generic [ref=e1248]:
+              - generic [ref=e1250]: Moon scoop from the 1960s may hold secrets
+              - generic [ref=e1254]: NBC News
+        - generic [ref=e1258] [cursor=pointer]:
+          - 'button "Chang''e-6: Moon samples collected and launched into lunar orbit - SpaceNews" [ref=e1263]':
+            - 'img "Chang''e-6: Moon samples collected and launched into lunar orbit - SpaceNews" [ref=e1265]'
+          - 'link "Chang''e-6: Moon samples collected and launched into lunar orbit - SpaceNews SpaceNews" [ref=e1267]':
+            - /url: https://spacenews.com/change-6-moon-samples-collected-and-launched-into-lunar-orbit/
+            - generic [ref=e1268]:
+              - generic [ref=e1270]: "Chang'e-6: Moon samples collected and launched into lunar orbit - SpaceNews"
+              - generic [ref=e1274]: SpaceNews
+        - generic [ref=e1278] [cursor=pointer]:
+          - button "Apollo Lunar Roving Vehicles | Springer Nature Link" [ref=e1283]:
+            - img "Apollo Lunar Roving Vehicles | Springer Nature Link" [ref=e1285]
+          - link "Apollo Lunar Roving Vehicles | Springer Nature Link Springer Nature" [ref=e1287]:
+            - /url: https://link.springer.com/rwe/10.1007/978-3-319-14541-9_223
+            - generic [ref=e1288]:
+              - generic [ref=e1290]: Apollo Lunar Roving Vehicles | Springer Nature Link
+              - generic [ref=e1294]: Springer Nature
+        - generic [ref=e1298] [cursor=pointer]:
+          - button "How NASA has preserved Apollo moon rocks for 50 years | Science News" [ref=e1303]:
+            - img "How NASA has preserved Apollo moon rocks for 50 years | Science News" [ref=e1305]
+          - link "How NASA has preserved Apollo moon rocks for 50 years | Science News Science News" [ref=e1307]:
+            - /url: https://www.sciencenews.org/article/nasa-apollo-anniversary-moon-rocks-preservation
+            - generic [ref=e1308]:
+              - generic [ref=e1310]: How NASA has preserved Apollo moon rocks for 50 years | Science News
+              - generic [ref=e1314]: Science News
+        - generic [ref=e1318] [cursor=pointer]:
+          - button "Scoop, Large | National Air and Space Museum" [ref=e1323]:
+            - img "Scoop, Large | National Air and Space Museum" [ref=e1325]
+          - link "Scoop, Large | National Air and Space Museum National Air and Space Museum" [ref=e1327]:
+            - /url: https://airandspace.si.edu/collection-objects/scoop-large/nasm_A19750032000
+            - generic [ref=e1328]:
+              - generic [ref=e1330]: Scoop, Large | National Air and Space Museum
+              - generic [ref=e1334]: National Air and Space Museum
+        - generic [ref=e1338] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e1343]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e1345]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e1347]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e1348]:
+              - generic [ref=e1350]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e1354]: Lunar and Planetary Institute
+        - generic [ref=e1358] [cursor=pointer]:
+          - button "Time Warp" [ref=e1363]:
+            - img "Time Warp" [ref=e1365]
+          - link "Time Warp Oak Ridge National Laboratory" [ref=e1367]:
+            - /url: https://www.ornl.gov/blog/time-warp
+            - generic [ref=e1368]:
+              - generic [ref=e1370]: Time Warp
+              - generic [ref=e1374]: Oak Ridge National Laboratory
+        - generic [ref=e1378] [cursor=pointer]:
+          - button "The case for India and China to exchange lunar samples from Chang'e and Chandrayaan — Open Lunar Foundation" [ref=e1383]:
+            - img "The case for India and China to exchange lunar samples from Chang'e and Chandrayaan — Open Lunar Foundation" [ref=e1385]
+          - link "The case for India and China to exchange lunar samples from Chang'e and Chandrayaan — Open Lunar Foundation Open Lunar Foundation" [ref=e1387]:
+            - /url: https://www.openlunar.org/blog/exchange-samples
+            - generic [ref=e1388]:
+              - generic [ref=e1390]: The case for India and China to exchange lunar samples from Chang'e and Chandrayaan — Open Lunar Foundation
+              - generic [ref=e1394]: Open Lunar Foundation
+        - generic [ref=e1398] [cursor=pointer]:
+          - 'button "Apollo 17. Lunar Surface Pilot Harrison H. Schmitt carries the Scoop / Sampling tool during extravehicular activities. captured by Commander Eugene A. Cernan. Photo ID: AS17-145-22165. Color Film Scan. Restored. Best viewed" [ref=e1403]':
+            - 'img "Apollo 17. Lunar Surface Pilot Harrison H. Schmitt carries the Scoop / Sampling tool during extravehicular activities. captured by Commander Eugene A. Cernan. Photo ID: AS17-145-22165. Color Film Scan. Restored. Best viewed" [ref=e1405]'
+          - 'link "Apollo 17. Lunar Surface Pilot Harrison H. Schmitt carries the Scoop / Sampling tool during extravehicular activities. captured by Commander Eugene A. Cernan. Photo ID: AS17-145-22165. Color Film Scan. Restored. Best viewed Facebook" [ref=e1407]':
+            - /url: https://www.facebook.com/groups/spacehipsters/posts/24784913771126839/
+            - generic [ref=e1408]:
+              - generic [ref=e1410]: "Apollo 17. Lunar Surface Pilot Harrison H. Schmitt carries the Scoop / Sampling tool during extravehicular activities. captured by Commander Eugene A. Cernan. Photo ID: AS17-145-22165. Color Film Scan. Restored. Best viewed"
+              - generic [ref=e1414]: Facebook
+        - generic [ref=e1418] [cursor=pointer]:
+          - button "One Metal Scoop, Slightly Used - www.caltech.edu" [ref=e1423]:
+            - img "One Metal Scoop, Slightly Used - www.caltech.edu" [ref=e1425]
+          - link "One Metal Scoop, Slightly Used - www.caltech.edu Caltech" [ref=e1427]:
+            - /url: https://www.caltech.edu/about/news/one-metal-scoop-slightly-used-37551
+            - generic [ref=e1428]:
+              - generic [ref=e1430]: One Metal Scoop, Slightly Used - www.caltech.edu
+              - generic [ref=e1434]: Caltech
+        - generic [ref=e1438] [cursor=pointer]:
+          - button "Fifty Years Later, Curators Unveil One of Last Sealed Apollo Samples - NASA" [ref=e1443]:
+            - img "Fifty Years Later, Curators Unveil One of Last Sealed Apollo Samples - NASA" [ref=e1445]
+          - link "Fifty Years Later, Curators Unveil One of Last Sealed Apollo Samples - NASA NASA" [ref=e1447]:
+            - /url: https://www.nasa.gov/general/fifty-years-later-curators-unveil-one-of-last-sealed-apollo-samples/
+            - generic [ref=e1448]:
+              - generic [ref=e1450]: Fifty Years Later, Curators Unveil One of Last Sealed Apollo Samples - NASA
+              - generic [ref=e1454]: NASA
+        - generic [ref=e1458] [cursor=pointer]:
+          - button "The Dutch Apollo 11 Goodwill display contains genuine Moon rocks | Communications Earth & Environment" [ref=e1463]:
+            - img "The Dutch Apollo 11 Goodwill display contains genuine Moon rocks | Communications Earth & Environment" [ref=e1465]
+          - link "The Dutch Apollo 11 Goodwill display contains genuine Moon rocks | Communications Earth & Environment Nature" [ref=e1467]:
+            - /url: https://www.nature.com/articles/s43247-024-01961-z
+            - generic [ref=e1468]:
+              - generic [ref=e1470]: The Dutch Apollo 11 Goodwill display contains genuine Moon rocks | Communications Earth & Environment
+              - generic [ref=e1474]: Nature
+        - generic [ref=e1478] [cursor=pointer]:
+          - button "Pilbara Craton Soil as A Possible Lunar Soil Simulant for Civil Engineering Applications" [ref=e1483]:
+            - img "Pilbara Craton Soil as A Possible Lunar Soil Simulant for Civil Engineering Applications" [ref=e1485]
+          - link "Pilbara Craton Soil as A Possible Lunar Soil Simulant for Civil Engineering Applications MDPI" [ref=e1487]:
+            - /url: https://www.mdpi.com/1996-1944/12/23/3871
+            - generic [ref=e1488]:
+              - generic [ref=e1490]: Pilbara Craton Soil as A Possible Lunar Soil Simulant for Civil Engineering Applications
+              - generic [ref=e1494]: MDPI
+        - generic [ref=e1498] [cursor=pointer]:
+          - generic [ref=e1500]:
+            - button "Photograph of Lunar Sample No. 14321 from Apollo 14 — NARA and DVIDS Public Domain Archives" [ref=e1503]:
+              - img "Photograph of Lunar Sample No. 14321 from Apollo 14 — NARA and DVIDS Public Domain Archives" [ref=e1505]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Photograph of Lunar Sample No. 14321 from Apollo 14 — NARA and DVIDS Public Domain Archives NARA and DVIDS Public Domain Archives" [ref=e1507]:
+            - /url: https://nara.getarchive.net/media/photograph-of-lunar-sample-no-14321-from-apollo-14-10a2e7
+            - generic [ref=e1508]:
+              - generic [ref=e1510]: Photograph of Lunar Sample No. 14321 from Apollo 14 — NARA and DVIDS Public Domain Archives
+              - generic [ref=e1514]: NARA and DVIDS Public Domain Archives
+        - generic [ref=e1518] [cursor=pointer]:
+          - button "How NASA has preserved Apollo moon rocks for 50 years | Science News" [ref=e1523]:
+            - img "How NASA has preserved Apollo moon rocks for 50 years | Science News" [ref=e1525]
+          - link "How NASA has preserved Apollo moon rocks for 50 years | Science News Science News" [ref=e1527]:
+            - /url: https://www.sciencenews.org/article/nasa-apollo-anniversary-moon-rocks-preservation
+            - generic [ref=e1528]:
+              - generic [ref=e1530]: How NASA has preserved Apollo moon rocks for 50 years | Science News
+              - generic [ref=e1534]: Science News
+        - generic [ref=e1538] [cursor=pointer]:
+          - button "San Diego Air & Space Museum - Historic Balboa Park, San Diego" [ref=e1543]:
+            - img "San Diego Air & Space Museum - Historic Balboa Park, San Diego" [ref=e1545]
+          - link "San Diego Air & Space Museum - Historic Balboa Park, San Diego San Diego Air & Space Museum - Historic Balboa Park, San Diego" [ref=e1547]:
+            - /url: https://sandiegoairandspace.org/collection/item/apollo-rock-box
+            - generic [ref=e1548]:
+              - generic [ref=e1550]: San Diego Air & Space Museum - Historic Balboa Park, San Diego
+              - generic [ref=e1554]: San Diego Air & Space Museum - Historic Balboa Park, San Diego
+        - generic [ref=e1558] [cursor=pointer]:
+          - button "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom" [ref=e1563]:
+            - img "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom" [ref=e1565]
+          - link "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom UNM Newsroom" [ref=e1567]:
+            - /url: https://news.unm.edu/news/unm-scientists-part-of-nasa-team-to-open-apollo-era-lunar-samples
+            - generic [ref=e1568]:
+              - generic [ref=e1570]: UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom
+              - generic [ref=e1574]: UNM Newsroom
+        - generic [ref=e1578] [cursor=pointer]:
+          - button "How NASA has preserved Apollo moon rocks for 50 years | Science News" [ref=e1583]:
+            - img "How NASA has preserved Apollo moon rocks for 50 years | Science News" [ref=e1585]
+          - link "How NASA has preserved Apollo moon rocks for 50 years | Science News Science News" [ref=e1587]:
+            - /url: https://www.sciencenews.org/article/nasa-apollo-anniversary-moon-rocks-preservation
+            - generic [ref=e1588]:
+              - generic [ref=e1590]: How NASA has preserved Apollo moon rocks for 50 years | Science News
+              - generic [ref=e1594]: Science News
+        - generic [ref=e1598] [cursor=pointer]:
+          - button "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction" [ref=e1603]:
+            - img "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction" [ref=e1605]
+          - link "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction Designboom" [ref=e1607]:
+            - /url: https://www.designboom.com/art/first-ever-lunar-dust-collected-apollo-11-mission-auction-nasa-03-31-2022/
+            - generic [ref=e1608]:
+              - generic [ref=e1610]: First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction
+              - generic [ref=e1614]: Designboom
+        - generic [ref=e1618] [cursor=pointer]:
+          - button "Lunar Sample Laboratory Facility - Wikipedia" [ref=e1623]:
+            - img "Lunar Sample Laboratory Facility - Wikipedia" [ref=e1625]
+          - link "Lunar Sample Laboratory Facility - Wikipedia Wikipedia" [ref=e1627]:
+            - /url: https://en.wikipedia.org/wiki/Lunar_Sample_Laboratory_Facility
+            - generic [ref=e1628]:
+              - generic [ref=e1630]: Lunar Sample Laboratory Facility - Wikipedia
+              - generic [ref=e1634]: Wikipedia
+        - generic [ref=e1638] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e1643]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e1645]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e1647]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e1648]:
+              - generic [ref=e1650]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e1654]: Lunar and Planetary Institute
+        - generic [ref=e1658] [cursor=pointer]:
+          - button "Fifty years since Apollo 11, ORNL 'Moon Scoop' remains a source of family pride" [ref=e1663]:
+            - img "Fifty years since Apollo 11, ORNL 'Moon Scoop' remains a source of family pride" [ref=e1665]
+          - link "Fifty years since Apollo 11, ORNL 'Moon Scoop' remains a source of family pride Oak Ridge National Laboratory" [ref=e1667]:
+            - /url: https://www.ornl.gov/news/fifty-years-apollo-11-ornl-moon-scoop-remains-source-family-pride
+            - generic [ref=e1668]:
+              - generic [ref=e1670]: Fifty years since Apollo 11, ORNL 'Moon Scoop' remains a source of family pride
+              - generic [ref=e1674]: Oak Ridge National Laboratory
+        - generic [ref=e1678] [cursor=pointer]:
+          - button "Astronaut Harrison Schmitt retrieving lunar samples during… — PICRYL - Public Domain Media Search Engine" [ref=e1683]:
+            - img "Astronaut Harrison Schmitt retrieving lunar samples during… — PICRYL - Public Domain Media Search Engine" [ref=e1685]
+          - link "Astronaut Harrison Schmitt retrieving lunar samples during… — PICRYL - Public Domain Media Search Engine PICRYL" [ref=e1687]:
+            - /url: https://picryl.com/media/astronaut-harrison-schmitt-retrieving-lunar-samples-during-eva-85a142
+            - generic [ref=e1688]:
+              - generic [ref=e1690]: Astronaut Harrison Schmitt retrieving lunar samples during… — PICRYL - Public Domain Media Search Engine
+              - generic [ref=e1694]: PICRYL
+        - generic [ref=e1698] [cursor=pointer]:
+          - button "Geology - Tools" [ref=e1703]:
+            - img "Geology - Tools" [ref=e1705]
+          - link "Geology - Tools www.ninfinger.org" [ref=e1707]:
+            - /url: https://www.ninfinger.org/karld/My%20Space%20Museum/GeoTools.htm
+            - generic [ref=e1708]:
+              - generic [ref=e1710]: Geology - Tools
+              - generic [ref=e1714]: www.ninfinger.org
+        - generic [ref=e1716]:
+          - heading "Related searches" [level=2] [ref=e1717]
+          - link "astronaut tools" [ref=e1718] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=astronaut+tools&stick=H4sIAAAAAAAAAFvEyp9YXFKUn5dYWqJQkp-fUwwAb_SopBIAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUImwQQAA
+            - generic [ref=e1723]: astronaut tools
+          - link "apollo 16 moon rock" [ref=e1724] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=apollo+16+moon+rock&stick=H4sIAAAAAAAAAFvEKpxYkJ-Tk69gaKaQm5-fp1CUn5wNAK_XnI8WAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUIrQQQAA
+            - generic [ref=e1729]: apollo 16 moon rock
+          - link "apollo 11 moon rocks" [ref=e1730] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=apollo+11+moon+rocks&stick=H4sIAAAAAAAAAFvEKpJYkJ-Tk69gaKiQm5-fp1CUn5xdDABygpdAFwAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUIwgQQAA
+            - generic [ref=e1735]: apollo 11 moon rocks
+        - generic [ref=e1739] [cursor=pointer]:
+          - button "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction" [ref=e1744]:
+            - img "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction" [ref=e1746]
+          - link "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction Designboom" [ref=e1748]:
+            - /url: https://www.designboom.com/art/first-ever-lunar-dust-collected-apollo-11-mission-auction-nasa-03-31-2022/
+            - generic [ref=e1749]:
+              - generic [ref=e1751]: First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction
+              - generic [ref=e1755]: Designboom
+        - generic [ref=e1759] [cursor=pointer]:
+          - button "Apollo 17 lunar sample newly opened and unveiled by NASA | CNN" [ref=e1764]:
+            - img "Apollo 17 lunar sample newly opened and unveiled by NASA | CNN" [ref=e1766]
+          - link "Apollo 17 lunar sample newly opened and unveiled by NASA | CNN CNN" [ref=e1768]:
+            - /url: https://www.cnn.com/2022/03/25/world/apollo-lunar-samples-scn
+            - generic [ref=e1769]:
+              - generic [ref=e1771]: Apollo 17 lunar sample newly opened and unveiled by NASA | CNN
+              - generic [ref=e1775]: CNN
+        - generic [ref=e1779] [cursor=pointer]:
+          - button "Apollo 11 moon rock bag sells for $1.8M at Sotheby's space auction | collectSPACE" [ref=e1784]:
+            - img "Apollo 11 moon rock bag sells for $1.8M at Sotheby's space auction | collectSPACE" [ref=e1786]
+          - link "Apollo 11 moon rock bag sells for $1.8M at Sotheby's space auction | collectSPACE collectSPACE.com" [ref=e1788]:
+            - /url: https://www.collectspace.com/news/news-072017b-sothebys-space-auction-moon-bag.html
+            - generic [ref=e1789]:
+              - generic [ref=e1791]: Apollo 11 moon rock bag sells for $1.8M at Sotheby's space auction | collectSPACE
+              - generic [ref=e1795]: collectSPACE.com
+        - generic [ref=e1799] [cursor=pointer]:
+          - button "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom" [ref=e1804]:
+            - img "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom" [ref=e1806]
+          - link "UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom UNM Newsroom" [ref=e1808]:
+            - /url: https://news.unm.edu/news/unm-scientists-part-of-nasa-team-to-open-apollo-era-lunar-samples
+            - generic [ref=e1809]:
+              - generic [ref=e1811]: UNM scientists' part of NASA team to open Apollo-era lunar samples | UNM UCAM Newsroom
+              - generic [ref=e1815]: UNM Newsroom
+        - generic [ref=e1819] [cursor=pointer]:
+          - button "Lunar crystals collected by Apollo astronauts show Moon is millions of years older than we thought | Irish Independent" [ref=e1824]:
+            - img "Lunar crystals collected by Apollo astronauts show Moon is millions of years older than we thought | Irish Independent" [ref=e1826]
+          - link "Lunar crystals collected by Apollo astronauts show Moon is millions of years older than we thought | Irish Independent Irish Independent" [ref=e1828]:
+            - /url: https://www.independent.ie/world-news/lunar-crystals-collected-by-apollo-astronauts-show-moon-is-millions-of-years-older-than-we-thought/a/135214920.html
+            - generic [ref=e1829]:
+              - generic [ref=e1831]: Lunar crystals collected by Apollo astronauts show Moon is millions of years older than we thought | Irish Independent
+              - generic [ref=e1835]: Irish Independent
+        - generic [ref=e1839] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e1844]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e1846]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e1848]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e1849]:
+              - generic [ref=e1851]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e1855]: Lunar and Planetary Institute
+        - generic [ref=e1859] [cursor=pointer]:
+          - button "The Otherwise Unremarkable 'Rock Boxes' That Brought Pieces of the Moon Back to Earth" [ref=e1864]:
+            - img "The Otherwise Unremarkable 'Rock Boxes' That Brought Pieces of the Moon Back to Earth" [ref=e1866]
+          - link "The Otherwise Unremarkable 'Rock Boxes' That Brought Pieces of the Moon Back to Earth Smithsonian Magazine" [ref=e1868]:
+            - /url: https://www.smithsonianmag.com/smithsonian-institution/apollo-rock-box-nasa-moon-180985962/
+            - generic [ref=e1869]:
+              - generic [ref=e1871]: The Otherwise Unremarkable 'Rock Boxes' That Brought Pieces of the Moon Back to Earth
+              - generic [ref=e1875]: Smithsonian Magazine
+        - generic [ref=e1879] [cursor=pointer]:
+          - button "Neil Armstrong Collected These Lunar Soil Samples During NASA's Apollo 11 Mission and They Could be Yours - TechEBlog" [ref=e1884]:
+            - img "Neil Armstrong Collected These Lunar Soil Samples During NASA's Apollo 11 Mission and They Could be Yours - TechEBlog" [ref=e1886]
+          - link "Neil Armstrong Collected These Lunar Soil Samples During NASA's Apollo 11 Mission and They Could be Yours - TechEBlog TechEBlog -" [ref=e1888]:
+            - /url: https://www.techeblog.com/neil-armstrong-nasa-apollo11-lunar-soil-sample-auction/
+            - generic [ref=e1889]:
+              - generic [ref=e1891]: Neil Armstrong Collected These Lunar Soil Samples During NASA's Apollo 11 Mission and They Could be Yours - TechEBlog
+              - generic [ref=e1895]: TechEBlog -
+        - generic [ref=e1899] [cursor=pointer]:
+          - button "During the six Apollo Moon landings from 1969 to 1972, astronauts left behind about 90 sealed bags of human waste to reduce weight and bring lunar samples back to Earth. The Moon" [ref=e1904]:
+            - img "During the six Apollo Moon landings from 1969 to 1972, astronauts left behind about 90 sealed bags of human waste to reduce weight and bring lunar samples back to Earth. The Moon" [ref=e1906]
+          - link "During the six Apollo Moon landings from 1969 to 1972, astronauts left behind about 90 sealed bags of human waste to reduce weight and bring lunar samples back to Earth. The Moon Instagram" [ref=e1908]:
+            - /url: https://www.instagram.com/p/DVEMQqlDsx0/
+            - generic [ref=e1909]:
+              - generic [ref=e1911]: During the six Apollo Moon landings from 1969 to 1972, astronauts left behind about 90 sealed bags of human waste to reduce weight and bring lunar samples back to Earth. The Moon
+              - generic [ref=e1915]: Instagram
+        - generic [ref=e1919] [cursor=pointer]:
+          - 'button "PSRD: Lunar Samples Collected Up There and Down Here" [ref=e1924]':
+            - 'img "PSRD: Lunar Samples Collected Up There and Down Here" [ref=e1926]'
+          - 'link "PSRD: Lunar Samples Collected Up There and Down Here PSRD" [ref=e1928]':
+            - /url: http://www.psrd.hawaii.edu/July19/lunar-samples.html
+            - generic [ref=e1929]:
+              - generic [ref=e1931]: "PSRD: Lunar Samples Collected Up There and Down Here"
+              - generic [ref=e1935]: PSRD
+        - generic [ref=e1939] [cursor=pointer]:
+          - generic [ref=e1941]:
+            - button "View of Apollo 16 lunar sample no. 68815 — PICRYL - Public Domain Media Search Engine" [ref=e1944]:
+              - img "View of Apollo 16 lunar sample no. 68815 — PICRYL - Public Domain Media Search Engine" [ref=e1946]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "View of Apollo 16 lunar sample no. 68815 — PICRYL - Public Domain Media Search Engine PICRYL" [ref=e1948]:
+            - /url: https://picryl.com/media/view-of-apollo-16-lunar-sample-no-68815-ca2e70
+            - generic [ref=e1949]:
+              - generic [ref=e1951]: View of Apollo 16 lunar sample no. 68815 — PICRYL - Public Domain Media Search Engine
+              - generic [ref=e1955]: PICRYL
+        - generic [ref=e1959] [cursor=pointer]:
+          - button "NASA To Open Lunar Samples Returned Almost 50 Years Ago" [ref=e1964]:
+            - img "NASA To Open Lunar Samples Returned Almost 50 Years Ago" [ref=e1966]
+          - link "NASA To Open Lunar Samples Returned Almost 50 Years Ago Popular Mechanics" [ref=e1968]:
+            - /url: https://www.popularmechanics.com/space/moon-mars/a26788465/nasa-time-capsule-lunar-samples/
+            - generic [ref=e1969]:
+              - generic [ref=e1971]: NASA To Open Lunar Samples Returned Almost 50 Years Ago
+              - generic [ref=e1975]: Popular Mechanics
+        - generic [ref=e1979] [cursor=pointer]:
+          - generic [ref=e1981]:
+            - button "Astronaut neil armstrong uses scoop hi-res stock photography and images - Alamy" [ref=e1984]:
+              - img "Astronaut neil armstrong uses scoop hi-res stock photography and images - Alamy" [ref=e1986]
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - link "Astronaut neil armstrong uses scoop hi-res stock photography and images - Alamy Alamy" [ref=e1988]:
+            - /url: https://www.alamy.com/stock-photo/astronaut-neil-armstrong-uses-scoop.html
+            - generic [ref=e1989]:
+              - generic [ref=e1991]: Astronaut neil armstrong uses scoop hi-res stock photography and images - Alamy
+              - generic [ref=e1995]: Alamy
+        - generic [ref=e1999] [cursor=pointer]:
+          - button "Lunar - Missions - Apollo 16 Mission Samples" [ref=e2004]:
+            - img "Lunar - Missions - Apollo 16 Mission Samples" [ref=e2006]
+          - link "Lunar - Missions - Apollo 16 Mission Samples Lunar and Planetary Institute" [ref=e2008]:
+            - /url: https://www.lpi.usra.edu/lunar/missions/apollo/apollo_16/samples/
+            - generic [ref=e2009]:
+              - generic [ref=e2011]: Lunar - Missions - Apollo 16 Mission Samples
+              - generic [ref=e2015]: Lunar and Planetary Institute
+        - generic [ref=e2019] [cursor=pointer]:
+          - 'button "Collecting Moon Rocks: Sample Collection Tools" [ref=e2024]':
+            - 'img "Collecting Moon Rocks: Sample Collection Tools" [ref=e2026]'
+          - 'link "Collecting Moon Rocks: Sample Collection Tools Lunar and Planetary Institute" [ref=e2028]':
+            - /url: https://www.lpi.usra.edu/lunar/samples/apollo/tools/index.shtml
+            - generic [ref=e2029]:
+              - generic [ref=e2031]: "Collecting Moon Rocks: Sample Collection Tools"
+              - generic [ref=e2035]: Lunar and Planetary Institute
+        - generic [ref=e2039] [cursor=pointer]:
+          - generic [ref=e2041]:
+            - 'button "LUNAR SAMPLE - APOLLO 15 ROCK #15016 — NARA and DVIDS Public Domain Archives" [ref=e2044]':
+              - 'img "LUNAR SAMPLE - APOLLO 15 ROCK #15016 — NARA and DVIDS Public Domain Archives" [ref=e2046]'
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic: Licensable
+          - 'link "LUNAR SAMPLE - APOLLO 15 ROCK #15016 — NARA and DVIDS Public Domain Archives NARA and DVIDS Public Domain Archives - Get Archive" [ref=e2048]':
+            - /url: https://nara.getarchive.net/media/lunar-sample-apollo-15-rock-15016-4fa01d
+            - generic [ref=e2049]:
+              - generic [ref=e2051]: "LUNAR SAMPLE - APOLLO 15 ROCK #15016 — NARA and DVIDS Public Domain Archives"
+              - generic [ref=e2055]: NARA and DVIDS Public Domain Archives - Get Archive
+        - generic [ref=e2059] [cursor=pointer]:
+          - button "Apollo 11 Moon Samples Rediscovered After 40 Years" [ref=e2064]:
+            - img "Apollo 11 Moon Samples Rediscovered After 40 Years" [ref=e2066]
+          - link "Apollo 11 Moon Samples Rediscovered After 40 Years VOA" [ref=e2068]:
+            - /url: https://www.voanews.com/a/apollo-11-moon-samples-uncovered-after-40-years/1670097.html
+            - generic [ref=e2069]:
+              - generic [ref=e2071]: Apollo 11 Moon Samples Rediscovered After 40 Years
+              - generic [ref=e2075]: VOA
+        - generic [ref=e2079] [cursor=pointer]:
+          - button "NASA cracks open a moon sample that's been shut away for decades" [ref=e2084]:
+            - img "NASA cracks open a moon sample that's been shut away for decades" [ref=e2086]
+          - link "NASA cracks open a moon sample that's been shut away for decades GeekWire" [ref=e2088]:
+            - /url: https://www.geekwire.com/2019/nasa-cracks-open-sample-moon-soil-thats-shut-away-47-years/
+            - generic [ref=e2089]:
+              - generic [ref=e2091]: NASA cracks open a moon sample that's been shut away for decades
+              - generic [ref=e2095]: GeekWire
+        - generic [ref=e2099] [cursor=pointer]:
+          - button "What the Apollo Moon rocks told us" [ref=e2104]:
+            - img "What the Apollo Moon rocks told us" [ref=e2106]
+          - link "What the Apollo Moon rocks told us Astronomy Magazine" [ref=e2108]:
+            - /url: https://www.astronomy.com/observing/what-the-apollo-moon-rocks-told-us/
+            - generic [ref=e2109]:
+              - generic [ref=e2111]: What the Apollo Moon rocks told us
+              - generic [ref=e2115]: Astronomy Magazine
+        - generic [ref=e2119] [cursor=pointer]:
+          - button "Apollo 11 moon rock bag sells for $1.8M at Sotheby's space auction | collectSPACE" [ref=e2124]:
+            - img "Apollo 11 moon rock bag sells for $1.8M at Sotheby's space auction | collectSPACE" [ref=e2126]
+          - link "Apollo 11 moon rock bag sells for $1.8M at Sotheby's space auction | collectSPACE collectSPACE.com" [ref=e2128]:
+            - /url: https://www.collectspace.com/news/news-072017b-sothebys-space-auction-moon-bag.html
+            - generic [ref=e2129]:
+              - generic [ref=e2131]: Apollo 11 moon rock bag sells for $1.8M at Sotheby's space auction | collectSPACE
+              - generic [ref=e2135]: collectSPACE.com
+        - generic [ref=e2139] [cursor=pointer]:
+          - button "Rock collected by Apollo 17 astronaut in 1972 reveals moon's age | Mint" [ref=e2144]:
+            - img "Rock collected by Apollo 17 astronaut in 1972 reveals moon's age | Mint" [ref=e2146]
+          - link "Rock collected by Apollo 17 astronaut in 1972 reveals moon's age | Mint Mint" [ref=e2148]:
+            - /url: https://www.livemint.com/mint-lounge/business-of-life/moon-age-apollo-17-mission-nasa-111698129599175.html
+            - generic [ref=e2149]:
+              - generic [ref=e2151]: Rock collected by Apollo 17 astronaut in 1972 reveals moon's age | Mint
+              - generic [ref=e2155]: Mint
+        - generic [ref=e2159] [cursor=pointer]:
+          - button "NASA's Apollo Moon Rocks Still Thrill Scientists 50 Years Later | Space" [ref=e2164]:
+            - img "NASA's Apollo Moon Rocks Still Thrill Scientists 50 Years Later | Space" [ref=e2166]
+          - link "NASA's Apollo Moon Rocks Still Thrill Scientists 50 Years Later | Space Space" [ref=e2168]:
+            - /url: https://www.space.com/42920-apollo-moon-rocks-science-still-thriving.html
+            - generic [ref=e2169]:
+              - generic [ref=e2171]: NASA's Apollo Moon Rocks Still Thrill Scientists 50 Years Later | Space
+              - generic [ref=e2175]: Space
+        - generic [ref=e2179] [cursor=pointer]:
+          - button "Neil Armstrong's Collected Samples of the Moon on the 1969 Apollo 11 Mission Up for Grabs - autoevolution" [ref=e2184]:
+            - img "Neil Armstrong's Collected Samples of the Moon on the 1969 Apollo 11 Mission Up for Grabs - autoevolution" [ref=e2186]
+          - link "Neil Armstrong's Collected Samples of the Moon on the 1969 Apollo 11 Mission Up for Grabs - autoevolution autoevolution" [ref=e2188]:
+            - /url: https://www.autoevolution.com/news/neil-armstrong-s-collected-samples-of-the-moon-on-the-1969-apollo-11-mission-up-for-grabs-185744.html
+            - generic [ref=e2189]:
+              - generic [ref=e2191]: Neil Armstrong's Collected Samples of the Moon on the 1969 Apollo 11 Mission Up for Grabs - autoevolution
+              - generic [ref=e2195]: autoevolution
+        - generic [ref=e2199] [cursor=pointer]:
+          - button "Lunar - Missions - Apollo 16 Mission Samples" [ref=e2204]:
+            - img "Lunar - Missions - Apollo 16 Mission Samples" [ref=e2206]
+          - link "Lunar - Missions - Apollo 16 Mission Samples Lunar and Planetary Institute" [ref=e2208]:
+            - /url: https://www.lpi.usra.edu/lunar/missions/apollo/apollo_16/samples/
+            - generic [ref=e2209]:
+              - generic [ref=e2211]: Lunar - Missions - Apollo 16 Mission Samples
+              - generic [ref=e2215]: Lunar and Planetary Institute
+        - generic [ref=e2217]:
+          - heading "Related searches" [level=2] [ref=e2218]
+          - link "moon soil on earth" [ref=e2219] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=moon+soil+on+earth&stick=H4sIAAAAAAAAAFvEKpSbn5-nUJyfmaMApFMTi0oyAE0R4F8VAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUImQIQAA
+            - generic [ref=e2224]: moon soil on earth
+          - link "real moon rocks from the moon" [ref=e2225] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=real+moon+rocks+from+the+moon&stick=H4sIAAAAAAAAAFvEKluUmpijkJufn6dQlJ-cXayQVpSfq1CSkQoWAwAvOF3iIAAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUIrwIQAA
+            - generic [ref=e2230]: real moon rocks from the moon
+          - link "moon soil plant" [ref=e2231] [cursor=pointer]:
+            - /url: /search?sca_esv=242c098e2c9e95d6&udm=2&q=moon+soil+plant&stick=H4sIAAAAAAAAAFvEyp-bn5-nUJyfmaNQkJOYVwIA5VA4lhIAAAA&source=univ&sa=X&ved=2ahUKEwiWo6iFlbqVAxUZN4YAHeMsApMQrNwCegUIswIQAA
+            - generic [ref=e2236]: moon soil plant
+        - generic [ref=e2240] [cursor=pointer]:
+          - button "Rock collected by Apollo 17 astronauts reveals moon's true age" [ref=e2245]:
+            - img "Rock collected by Apollo 17 astronauts reveals moon's true age" [ref=e2247]
+          - link "Rock collected by Apollo 17 astronauts reveals moon's true age Newstalk ZB" [ref=e2249]:
+            - /url: https://www.newstalkzb.co.nz/news/world/rock-collected-by-apollo-17-astronauts-reveals-moon-s-true-age/
+            - generic [ref=e2250]:
+              - generic [ref=e2252]: Rock collected by Apollo 17 astronauts reveals moon's true age
+              - generic [ref=e2256]: Newstalk ZB
+        - generic [ref=e2260] [cursor=pointer]:
+          - button "During the six Apollo Moon landings from 1969 to 1972, astronauts left behind about 90 sealed bags of human waste to reduce weight and bring lunar samples back to Earth. The Moon" [ref=e2265]:
+            - img "During the six Apollo Moon landings from 1969 to 1972, astronauts left behind about 90 sealed bags of human waste to reduce weight and bring lunar samples back to Earth. The Moon" [ref=e2267]
+          - link "During the six Apollo Moon landings from 1969 to 1972, astronauts left behind about 90 sealed bags of human waste to reduce weight and bring lunar samples back to Earth. The Moon Instagram" [ref=e2269]:
+            - /url: https://www.instagram.com/p/DVEMQqlDsx0/
+            - generic [ref=e2270]:
+              - generic [ref=e2272]: During the six Apollo Moon landings from 1969 to 1972, astronauts left behind about 90 sealed bags of human waste to reduce weight and bring lunar samples back to Earth. The Moon
+              - generic [ref=e2276]: Instagram
+        - generic [ref=e2280] [cursor=pointer]:
+          - button "APOLLO 11 BUZZ ALDRIN AND MOON SAMPLES 11x14 GLOSSY PHOTO PRINT | eBay" [ref=e2285]:
+            - img "APOLLO 11 BUZZ ALDRIN AND MOON SAMPLES 11x14 GLOSSY PHOTO PRINT | eBay" [ref=e2287]
+          - link "APOLLO 11 BUZZ ALDRIN AND MOON SAMPLES 11x14 GLOSSY PHOTO PRINT | eBay eBay" [ref=e2289]:
+            - /url: https://www.ebay.com/itm/361910208138
+            - generic [ref=e2290]:
+              - generic [ref=e2292]: APOLLO 11 BUZZ ALDRIN AND MOON SAMPLES 11x14 GLOSSY PHOTO PRINT | eBay
+              - generic [ref=e2296]: eBay
+        - generic [ref=e2300] [cursor=pointer]:
+          - button "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction" [ref=e2305]:
+            - img "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction" [ref=e2307]
+          - link "First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction Designboom" [ref=e2309]:
+            - /url: https://www.designboom.com/art/first-ever-lunar-dust-collected-apollo-11-mission-auction-nasa-03-31-2022/
+            - generic [ref=e2310]:
+              - generic [ref=e2312]: First-ever Lunar Dust Collected on Apollo 11 Mission Goes on Auction
+              - generic [ref=e2316]: Designboom
+      - generic [ref=e2320]:
+        - heading "Page Navigation" [level=1] [ref=e2321]
+        - button "More results" [ref=e2322] [cursor=pointer]:
+          - generic [ref=e2323]:
+            - separator [ref=e2324]
+            - generic [ref=e2325]:
+              - generic [ref=e2326]: More results
+              - img [ref=e2328]
+      - navigation

@@ -1,0 +1,19 @@
+- generic [active] [ref=f664e1]:
+  - main [ref=f664e2]:
+    - link "Wikimedia" [ref=f664e3] [cursor=pointer]:
+      - /url: https://www.wikimedia.org
+      - img "Wikimedia" [ref=f664e4]
+    - generic [ref=f664e5]:
+      - heading "Error" [level=1] [ref=f664e6]
+      - paragraph [ref=f664e7]: Use thumbnail sizes listed on https://w.wiki/GHai
+  - generic [ref=f664e8]:
+    - paragraph [ref=f664e9]: If you report this error to the Wikimedia System Administrators, please include the details below.
+    - paragraph [ref=f664e10]:
+      - code [ref=f664e11]:
+        - text: Request served via cp1101 cp1101, Varnish XID 1014427990
+        - text: "Upstream caches: cp1101 int"
+        - text: "Error: 400, Use thumbnail sizes listed on https://w.wiki/GHai at Fri, 03 Jul 2026 06:50:15 GMT"
+    - group [ref=f664e12]:
+      - generic "Sensitive client information" [ref=f664e13] [cursor=pointer]:
+        - code [ref=f664e14]: Sensitive client information
+    - paragraph

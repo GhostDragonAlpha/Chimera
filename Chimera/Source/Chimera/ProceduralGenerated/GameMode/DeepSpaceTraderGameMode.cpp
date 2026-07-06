@@ -80,7 +80,7 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		APlayerController* PC = GetWorld()->GetFirstPlayerController();
 		if (PC)
 		{
-			PC->Possess((APawn*)PlayerShip);
+						PC->Possess(PlayerShip);
 			UE_LOG(LogTemp, Log, TEXT("Player possessing ship"));
 		}
 	}
