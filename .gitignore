@@ -6,6 +6,8 @@ Chimera/Binaries/
 Chimera/DerivedDataCache/
 Chimera/.vs/
 Chimera/Build/
+Chimera/Plugins/**/Binaries/
+Chimera/Plugins/**/Intermediate/
 
 # Logs and temp files
 *.log
