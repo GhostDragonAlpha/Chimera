@@ -45,6 +45,16 @@ usability heuristics; standard live-balance practice). Each item is concrete and
 - Screenshot/vision as the primary verdict (now tertiary evidence at most; the
   `gate_lm_available` blocker applies only if a vision layer is explicitly requested).
 
+## Frame Audit (mandatory before declaring any phase/design complete)
+
+History shows agents optimize inside the handed frame; every frame-level error in this
+project was caught by the human. Before claiming done, answer these OUT LOUD in the
+Post-Flight record:
+1. What is being measured vs. what actually matters? (proxy vs. target)
+2. Who judges the judge — is the author grading its own work anywhere?
+3. Are we fixing the artifact, or the machine that generates the artifact?
+4. What would look good while being wrong?
+
 ## Recording
 
 `record_grade(feature, letter, reasoning)` where reasoning = the per-category point
