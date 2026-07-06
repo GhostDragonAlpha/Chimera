@@ -44,3 +44,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	bool RemoveCargo(FName CommodityID, int32 Quantity);
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory|Trading")
+	float BuyCommodity(FName CommodityID, int32 QuantityKg, float PricePerKg);
+
+	UFUNCTION(BlueprintPure, Category = "Inventory")
+	int32 GetCurrentCargoWeight() const;
+};

@@ -70,3 +70,33 @@ bool UPlayerInventoryComponent::RemoveCargo(FName CommodityID, int32 Quantity)
 
 	return true;
 }
+
+float UPlayerInventoryComponent::BuyCommodity(FName CommodityID, int32 QuantityKg, float PricePerKg)
+{
+	float TotalCost = static_cast<float>(QuantityKg) * PricePerKg;
+
+	if (CurrentCredits < TotalCost)
+	{
+		return -1.0f; // Not enough credits
+	}
+
+	if (!AddCargo(CommodityID, QuantityKg))
+	{
+		return -2.0f; // Cargo full or invalid quantity
+	}
+
+	CurrentCredits -= TotalCost;
+	CurrentCredits = FMath::RoundToFloat(CurrentCredits);
+
+	return TotalCost;
+}
+
+int32 UPlayerInventoryComponent::GetCurrentCargoWeight() const
+{
+	int32 TotalWeight = 0;
+	for (TMap<FName, int32>::TConstIterator It(CargoContents); It; ++It)
+	{
+		TotalWeight += It.Value();
+	}
+	return TotalWeight;
+}

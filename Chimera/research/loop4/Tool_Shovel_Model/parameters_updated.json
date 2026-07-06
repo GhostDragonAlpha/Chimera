@@ -1,0 +1,35 @@
+{
+    "feature": "Tool_Shovel_Model",
+    "emotional_anchor": "Purpose and utility (practical tool for excavation)",
+    "parameters": {
+        "shovel_head": {
+            "material": "steel",
+            "base_color": [0.3, 0.3, 0.35],
+            "roughness": 0.5,
+            "metallic": 0.9,
+            "dimensions": {"width": 30.5, "height": 20.0, "depth": 7.6}
+        },
+        "shovel_handle": {
+            "material": "wood_or_composite",
+            "base_color": [0.45, 0.35, 0.2],
+            "roughness": 0.6,
+            "metallic": 0.0,
+            "dimensions": {"length": 122.0, "diameter": 3.2}
+        }
+    },
+    "references": [
+        "https://docs.unrealengine.com/5.3/en-US/materials-and-textures-in-unreal-engine/metallic-roughness-workflow/",
+        "https://polyhaven.com/textures/material/wood",
+        "https://www.amestruetemper.com/products/shovels/"
+    ],
+    "schools_applied": [
+        "Engineering School - Industrial design, form follows function",
+        "Art School - Material rendering for metal and wood",
+        "Emotion-to-Parameter - Purpose and utility anchor"
+    ],
+    "implementation_steps": [
+        "Step 1: MCP control_actor spawn StaticMeshActor for shovel head at appropriate position",
+        "Step 2: MCP manage_asset create_material MAT_Tool_Shovel_Head at /Game/Materials/",
+        "Step 3: MCP manage_asset create_material MAT_Tool_Shovel_Handle at /Game/Materials/"
+    ]
+}

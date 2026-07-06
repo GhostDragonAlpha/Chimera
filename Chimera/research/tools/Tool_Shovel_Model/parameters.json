@@ -1,0 +1,45 @@
+{
+  "feature": "Tool_Shovel_Model",
+  "loop": 4,
+  "emotional_anchor": "Hope — A single warm point in void; worn but cared for",
+  "category": "tools",
+  "parameters": {
+    "geometry": {
+      "type": "StaticMeshActor",
+      "name": "Tool_Shovel_Model_Actor",
+      "dimensions": {"width": 40, "height": 120, "depth": 8},
+      "handle_length": 60,
+      "blade_width": 35,
+      "blade_depth": 6,
+      "blade_angle_degrees": 75,
+      "material_slot_0": "Handle",
+      "material_slot_1": "Blade"
+    },
+    "materials": {
+      "handle_color": [0.42, 0.35, 0.28],
+      "handle_roughness": 0.75,
+      "handle_metallic": 0.0,
+      "blade_color": [0.35, 0.36, 0.38],
+      "blade_roughness": 0.45,
+      "blade_metallic": 0.92,
+      "wear_pattern": "edge_wear_high",
+      "dust_accumulation": 0.15
+    },
+    "position": {"x": 0, "y": -200, "z": 80},
+    "rotation": {"pitch": 0, "yaw": 0, "roll": 0},
+    "scale": {"x": 1.0, "y": 1.0, "z": 1.0}
+  },
+  "references": [
+    "https://www.nasa.gov/asset-gallery/",
+    "https://www.si.edu/object/shovel:nmrih%3A286495",
+    "https://www.polyhaven.com/materials/metal"
+  ],
+  "schools_applied": ["engineering_school", "art_school", "unreal_engine_craft"],
+  "implementation_steps": [
+    "Step 1: Create StaticMeshActor with shovel geometry (handle + blade)",
+    "Step 2: Apply MAT_Shovel_Handle material to handle slot (wood, roughness 0.75)",
+    "Step 3: Apply MAT_Shovel_Blade material to blade slot (steel, metallic 0.92)",
+    "Step 4: Position at (0, -200, 80) as a prop actor",
+    "Step 5: Add simple edge wear via vertex color mask"
+  ]
+}

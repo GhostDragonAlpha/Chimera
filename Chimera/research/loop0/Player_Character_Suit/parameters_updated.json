@@ -1,0 +1,45 @@
+{
+    "feature": "Player_Character_Suit_Visor",
+    "emotional_anchor": "Safe but mysterious (contained protection with partial visibility)",
+    "parameters": {
+        "geometry": {
+            "mesh_type": "curved_visor_shell",
+            "curvature_radius": 120,
+            "dimensions": {"width": 240, "height": 180, "depth": 100},
+            "orientation": "relative_to_head_mesh"
+        },
+        "material_layered_thin_film": {
+            "substrate": {
+                "material": "polycarbonate",
+                "refractive_index": 1.58,
+                "base_color": [0.95, 0.96, 0.97],
+                "roughness": 0.15,
+                "metallic": 0.0
+            },
+            "thin_film_layer": {
+                "material": "gold_coating",
+                "thickness_nm": 80,
+                "spectral_reflection": "gold_visible_wavelengths"
+            },
+            "shader_type": "thin_film_interference"
+        }
+    },
+    "references": [
+        "https://www.nasa.gov/astronauts/basics/whats-an-emu/",
+        "https://ntrs.nasa.gov/citations/20090016542",
+        "https://en.wikipedia.org/wiki/Thin-film_interference",
+        "https://docs.unrealengine.com/5.3/en-US/material-guide-in-unreal-engine/",
+        "https://docs.unrealengine.com/5.3/en-US/unreal-engine-reference-nodes-for-materials/#fresnel"
+    ],
+    "schools_applied": [
+        "Engineering School - Space suit design, visor materials",
+        "Art School - Material rendering, thin-film effects",
+        "Emotion-to-Parameter - Safe but mysterious anchor"
+    ],
+    "implementation_steps": [
+        "Step 1: MCP control_actor spawn StaticMeshActor for curved visor shell at appropriate head position",
+        "Step 2: MCP manage_asset create_material MAT_Player_Character_Suit_Visor at /Game/Materials/",
+        "Step 3: Configure thin-film interference shader with polycarbonate substrate parameters",
+        "Step 4: Add gold thin-film layer with thickness ~80nm for spectral reflection"
+    ]
+}

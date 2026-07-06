@@ -1,0 +1,67 @@
+{
+  "feature": "Player_Character_Model",
+  "emotional_anchor": "Human presence in the void (solitary but purposeful)",
+  "parameters": {
+    "character_geometry": {
+      "mesh_type": "astronaut_eva_suit",
+      "height_proportion": 1.85,
+      "width_proportion": 0.65,
+      "depth_proportion": 0.35,
+      "scale": 1.0,
+      "layers": [
+        "undergarment_LCVG",
+        "mobility_unit_EMU",
+        "PLSS_backpack",
+        "helmet_with_visor"
+      ]
+    },
+    "mesh_requirements": {
+      "topology": "animation_compatible",
+      "bone_structure": "standard_character_rig",
+      "joint_requirements": [
+        "shoulder_mobility_joints",
+        "elbow_flexion_joints",
+        "hip_rotation_joints",
+        "knee_flexion_joints",
+        "wrist_twist_joints",
+        "ankle_pitch_joints"
+      ],
+      "plss_backpack_integration": {
+        "position": "posterior_spine_attachment",
+        "weight_distribution": "centered_on_upper_back",
+        "animation_compatibility": "rigid_attachment_to_torso_bones"
+      },
+      "helmet_visor_assembly": {
+        "helmet_shell": "hard_composite_material",
+        "visor_type": "curved_polycarbonate_with_gold_coating",
+        "attachment_method": "sealed_ring_to_mobility_unit_neck_ring"
+      }
+    },
+    "ue5_character_system_standards": {
+      "character_height_in_urs": 185.0,
+      "capsule_radius": 20.0,
+      "capsule_half_height": 90.0,
+      "mesh_origin_offset": "feet_at_ground_level",
+      "animation_reference_pose": "UE5_standard_A_pose"
+    }
+  },
+  "references": [
+    "NASA EMU (Extravehicular Mobility Unit) documentation: https://www.nasa.gov/astronauts/out-of-space-suited-up-press-kit/",
+    "NASA Spacesuit Design Reference: https://www.nasa.gov/sites/default/files/atoms/files/spacesuit_design.pdf",
+    "ESA Euromoonspacesuit design references: https://www.esa.int/Enabling_Support/Preparing_for_the_Future/The_European_spacesuit",
+    "UE5 Character Mesh Standards: https://docs.unrealengine.com/5.2/en-US/creating-and-using-skeletal-meshes-in-unreal-engine/"
+  ],
+  "schools_applied": [
+    "Engineering School - Spacecraft design, industrial design, EMU structural engineering",
+    "Art School - Form/mass, material rendering, suit geometry proportions",
+    "Emotion-to-Parameter - Human presence in the void anchor (solitary but purposeful)"
+  ],
+  "implementation_steps": [
+    "Step 1: Query Graphify for MCP pathway 'spawn_character_blueprint' or 'create_skeletal_mesh'",
+    "Step 2: Use mcp_unreal_engine_control_actor to spawn CharacterBlueprint with proper astronaut skeletal mesh",
+    "Step 3: Configure mesh geometry with EVA suit proportions (height 1.85m, width 0.65m, depth 0.35m)",
+    "Step 4: Ensure animation compatibility with standard character rig and mobility joints",
+    "Step 5: Attach PLSS backpack as rigid component to torso bones",
+    "Step 6: Configure helmet with curved visor assembly"
+  ]
+}

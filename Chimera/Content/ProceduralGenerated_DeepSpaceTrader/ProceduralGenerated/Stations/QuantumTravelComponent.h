@@ -5,6 +5,15 @@
 #include "Components/ActorComponent.h"
 #include "QuantumTravelComponent.generated.h"
 
+UENUM(BlueprintType)
+enum class EQuantumDriveStatus : uint8
+{
+	Idle UMETA(DisplayName = "Idle"),
+	Spooling UMETA(DisplayName = "Spooling"),
+	InTransit UMETA(DisplayName = "In Transit"),
+	Cooldown UMETA(DisplayName = "Cooldown")
+};
+
 UCLASS( ClassNoGenerateOptions, meta = (BlueprintType, Category = "QuantumTravel") )
 class CHIMERA_API UQuantumTravelComponent : public UActorComponent
 {
@@ -37,6 +46,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "QuantumTravel")
 	FVector TargetLocation;
 
+	UPROPERTY(VisibleAnywhere, Category = "QuantumTravel")
+	EQuantumDriveStatus QuantumDriveStatus;
+
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -54,3 +66,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "QuantumTravel")
 	float GetSpoolProgress() const;
+
+	UFUNCTION(BlueprintPure, Category = "QuantumTravel")
+	EQuantumDriveStatus GetQuantumDriveStatus() const { return QuantumDriveStatus; }
+
+	UFUNCTION(BlueprintPure, Category = "QuantumTravel")
+	FString GetQuantumDriveStatusString() const;
+};

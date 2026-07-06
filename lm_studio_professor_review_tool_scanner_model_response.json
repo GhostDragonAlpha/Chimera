@@ -1,0 +1,34 @@
+{
+  "id": "chatcmpl-melqrkxivv151ymehtliji",
+  "object": "chat.completion",
+  "created": 1783215568,
+  "model": "qwen3.6-35b-a3b-mtp@iq2_m",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "",
+        "reasoning_content": "Here's a thinking process:\n\n1.  **Analyze User Input:**\n   - **Role:** Professor for the Chimera Project's Ralph Loop\n   - **Task:** Review research summaries for features and assign a grade (A, B, C, F), score (0-100), and reasoning sentence.\n   - **Output Format:** EXACTLY: `Grade: [Letter], Score: [Score], Reasoning: [reasoning sentence]`\n   - **Constraints:** Do not generate any internal thinking, reasoning_content, or any other text. Start immediately with 'Grade:'.\n\n2.  **Analyze the Research Summary:**\n   - **Feature:** Tool_Scanner_Model (",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "length"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 573,
+    "completion_tokens": 150,
+    "total_tokens": 723,
+    "completion_tokens_details": {
+      "reasoning_tokens": 149
+    }
+  },
+  "stats": {
+    "total_draft_tokens_count": 104,
+    "accepted_draft_tokens_count": 97,
+    "rejected_draft_tokens_count": 0,
+    "ignored_draft_tokens_count": 7
+  },
+  "system_fingerprint": "qwen3.6-35b-a3b-mtp@iq2_m"
+}
