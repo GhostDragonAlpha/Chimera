@@ -1,3 +1,23 @@
+# Session 2026-07-06 — Workflow Alignment (commits 03f7714 + cb2a636, pushed to PR #1)
+
+- **FactionComponent crash fixed at the generator level** (`generate_faction_component_files`): FindOrAdd + RelationshipForStanding ladder + seeds the 3 DSL factions; generated file re-patched to match. Survives regeneration now.
+- **Economy module brought under generator ownership**: new `generate_economy_files()` emits CommodityData/EconomyManager/StationTradingData with the fixed pricing model (`price = Base*clamp(pow(D/S, elasticity), 0.25, 4)`); registered in `generate_all_from_dsl` on the `economy_systems` DSL block.
+- **Faction gate fixed**: read `narrative.factions` but the DSL defines `game.factions` (legacy fallback kept).
+- **DSL titanium economics corrected**: Titan outpost 45/40 (cheap at source), Orbital Hub 80/72 — free-trade route now runs WITH the Titan→Hub delivery mission.
+- **Deleted**: `Content/ProceduralGenerated_DeepSpaceTrader/` (90 dead C++ copies under Content, never compiled) and `Source/.../ProceduralGenerated/graphify-out/` (39 tool-output files; `graphify-out/` now gitignored repo-wide). `Content/ProceduralGenerated/` (real .uassets + pipeline JSONs) KEPT.
+- **CLAUDE.md conventions state true ownership now**: generator-owned file list vs loop-built manual files.
+
+## NEXT DEVELOPMENT STEP: Loop 8 System_SaveLoad — generator-first
+1. `python -m core.preflight`
+2. `python -m py_compile Chimera/core/game_code_generator.py` (verify economy-template addition; queued during classifier outage)
+3. Extend `generate_save_game_class_file()` (fields: Credits, Cargo map, FactionStandings, Active/Completed missions, player transform) and `generate_save_game_component_files()` (SaveGame reads component state, LoadGame restores — both stubs today).
+4. `python run_deep_space_trader_pipeline.py` — regenerates Economy+Factions+Save from fixed templates, builds, verifies. Report UBT verbatim.
+5. `python -m core.graphify_record feature --name System_SaveLoad --loop 8 --status <result>` + postflight.
+
+Still queued (classifier-gated writes): Chimera/.mcp.json graphify path → Python314 build; .kilo/kilo.jsonc chiR24 entry; git gc; trade-component nits (sell event broadcast, empty tick).
+
+---
+
 # Session 2026-07-05/06 — Full Pipeline Solidification
 
 ## Final State
