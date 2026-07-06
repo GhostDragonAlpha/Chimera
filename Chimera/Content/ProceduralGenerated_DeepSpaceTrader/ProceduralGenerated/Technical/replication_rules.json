@@ -1,9 +1,0 @@
-{
-  "network_model": "standalone",
-  "replicated_properties": [
-    "Health: Replicated, RepNotify"
-  ],
-  "rpcs": [
-    "Server_Attack: reliable, server"
-  ]
-}

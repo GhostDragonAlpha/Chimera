@@ -53,3 +53,6 @@ Chimera/tools/graphify/
 
 # Playwright MCP session artifacts (page snapshots/screenshots)
 .playwright-mcp/
+
+# Graphify tool output (belongs next to the tool, never in source trees)
+graphify-out/
