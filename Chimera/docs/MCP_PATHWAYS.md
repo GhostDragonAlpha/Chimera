@@ -122,6 +122,47 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 - **Materials**: Hull = MAT_Ship_Hull_Aluminum (brushed, metallic 0.7, roughness 0.35, #A0A5A8), Accent = MAT_Ship_Accent_Carbon (composite, metallic 0.0, roughness 0.8, #2A2D30)
 - **Notes**: Create material folders first via `manage_asset.create_folder(path="/Game/Chimera/...")` before `create_material`. Use existing PBR materials as duplication source for accent materials.
 
+### 15. manage_character.configure_mesh_component (2026-07-06)
+- **Tool**: `manage_character`
+- **Action**: `configure_mesh_component`
+- **Parameters**: `{blueprintPath, skeletalMeshPath?, animBlueprintPath?, meshOffset?: {x,y,z}, meshRotation?: {pitch,yaw,roll}}`
+- **Result**: Durable Blueprint-level mesh + AnimBP assignment (survives respawn; save with `control_editor save_all`). Standard mannequin fit: offset z=-90, yaw=-90.
+
+### 16. control_editor camera — BugItGo (2026-07-06)
+- **Tool**: `control_editor`
+- **Action**: `console_command` with `command: "BugItGo x y z pitch yaw roll"`
+- **Result**: Moves the editor viewport camera reliably.
+- **TRAP**: `set_camera_position` and `focus_actor` report success but a locked/piloted viewport does NOT move (verified: 3 different camera commands produced identical frames). Always use BugItGo.
+
+### 17. control_actor.set_material (2026-07-06)
+- **Tool**: `control_actor`
+- **Action**: `set_material`
+- **Parameters**: `{actorName, componentName?, materialPath, materialSlot}`
+- **Result**: Real per-slot override; verify via `get_component_property propertyName=OverrideMaterials`.
+- **TRAP**: `set_component_property` with `properties: {material: ...}` reports success but writes nothing.
+
+### 18. Verification read-backs (2026-07-06)
+- `control_actor.get_component_property {actorName, componentName, propertyName}` — SkeletalMesh, AnimClass, OverrideMaterials, Velocity, AnimScriptInstance, RelativeScale3D…
+- ACharacter movement component is named **CharMoveComp** (not CharacterMovement).
+- `control_actor.get_actor_bounds {actorName}` — origin+extent (height = 2×extent.z).
+- `animation_physics.get_skeleton_info {skeletonPath}` — boneCount, socketCount (`get_skeleton_bones` NOT implemented).
+- `inspect.get_property` on arbitrary object paths (e.g. anim instances) is NOT supported — smart lookup only resolves actors. Anim-node variables are unreachable; use velocity + displacement + vision instead.
+
+### 19. PIE verification workflow (2026-07-06)
+- `control_editor play` / `stop_pie` — PIE session control. Level actors keep their editor names inside PIE.
+- **TRAP**: `possess` reports success but the PIE PlayerController keeps DefaultPawn_0 (`inputDiagnostics` proves it). `simulate_input` (type must be `key_down`/`key_up`) drives the DefaultPawn, not your actor.
+- **PIE camera**: `set_transform` on `DefaultPawn0` positions the view; control rotation is FIXED at spawn yaw — place the pawn so its +X view frames the subject (rotating the pawn actor does not turn the view).
+- **Input-free locomotion for anim evidence**: zero `BrakingDecelerationWalking`/`GroundFriction`/`BrakingFrictionFactor` on CharMoveComp, then write `Velocity` — sustains ~1s of real walking (velocity read-back + displacement + stride frames).
+- `ShowDebug Animation` via console_command fails (EXEC_FAILED) — no anim debug overlay through the bridge.
+
+### 20. control_actor.attach (2026-07-06)
+- **Parameters**: `{actorName, parentActor, socketName?}` — arg is `parentActor` (`parentActorName` rejected).
+- Keeps world transform on attach — snap into place with `set_transform` afterwards.
+
+### 21. Saving (2026-07-06)
+- `control_editor save_all` — saves dirty BP assets AND the level (returns savedCount).
+- `manage_asset` has NO save action; `manage_level save_level` saves only the level.
+
 ---
 
 ## Failed Pathways (1)

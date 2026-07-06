@@ -1,3 +1,38 @@
+# Session 2026-07-06 (evening) — LOOP 0 CLOSED: Model refined + Animation unblocked, both A on 12/12 in-engine criteria
+
+**Player_Character_Model A 98.8 · Player_Character_Animation A 98.5 · GPA 3.3 → 3.5.**
+Imported Epic's UE5.8 mannequin pack (54 uassets: SKM_Manny_Simple, 161-bone SK_Mannequin, rigs,
+materials, 26 unarmed locomotion sequences + BS_Idle_Walk_Run + ABP_Unarmed) from engine
+TemplateResources into `Content/Characters/Mannequins` — one import fixed both features
+(model was a primitive-cone rough-cut; animation was blocked on "no anim sequences exist").
+
+- Apply was **durable**: `manage_character configure_mesh_component` on BP_Astronaut_Character
+  (mesh+ABP at Blueprint level, offset z-90/yaw-90), EVA suit material both slots (read-back
+  OverrideMaterials x2), gold-visor helmet spawned+attached at head. All saved (save_all) + committed.
+- Verified in-engine, exams declared at research time (6 criteria each, coverage 6/6):
+  read-backs exact; PIE anim instance live; idle at v=0; walk at v=260–300 with 406cm displacement
+  and profile stride frames; **independent qwen vision verdicts: WALKING / STANDING (control)**;
+  fps 120 foregrounded, crash-free, actors 20→20 over 30s soak.
+- New MCP pathways recorded (graph + docs/MCP_PATHWAYS.md §15–21), including TRAPS:
+  `set_camera_position`/`focus_actor` silently no-op on a locked viewport (**use BugItGo**);
+  `possess` doesn't switch the PIE pawn (PC keeps DefaultPawn_0); `properties.material` writes
+  nothing (**use set_material**); movement component is **CharMoveComp**; anim-node vars unreadable.
+- Docs drift found: `core/mcp_client.py` and `core/scene_verifier.py` in CLAUDE.md don't exist
+  (never committed). Live MCP path is `core.telemetry_probe.MCPStdioClient` → node CLI → port 8091.
+
+## NEXT
+1. **Loop 1 (The Ground)** is now the spiral head: Ground_Sand_Particles + Ground_Sand_Footprints
+   (researching) + Ground_Sand_Sound (not_started); pending research task exists for the
+   dust-accumulation mask (Ground_Metal_Surface).
+2. **Make the astronaut the played pawn** (generator work): DeepSpaceTraderGameMode template in
+   `core/game_code_generator.py` should set DefaultPawnClass to the player character so PIE
+   possesses it natively — closes the input→walk measurement gap honestly.
+3. **Fold the helmet into the BP** as an SCS component (currently a level-instance attachment —
+   fresh spawns have no helmet); then re-verify Model fidelity to 100%.
+4. Fix CLAUDE.md file-table drift (mcp_client.py / scene_verifier.py rows).
+
+---
+
 # Session 2026-07-06 (blitz) — LOOP 8 FULLY VERIFIED: all four systems at B on measured evidence
 
 Subagent infra was down (deepseek-v4-flash routing) so the 5-task parallel blitz ran serially. Delivered:
