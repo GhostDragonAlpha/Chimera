@@ -1,12 +1,51 @@
-# Chimera — UE 5.8 Earth-Scale Vehicle Simulation
+# Chimera — Agent-Developed Game Factory (UE 5.8)
 
-Chimera is an Unreal Engine 5.8 vehicle game project featuring **Earth-scale landscape physics**, spherical gravity, seamless edge wrapping, and Lagrange transition zones between celestial bodies (Earth ↔ Moon). The project integrates a comprehensive MCP automation bridge with 37 tools for AI-driven editor control, testing, and procedural generation.
+**No humans write code here.** Agents are the only developers. This README is an agent
+entry point: a formal DSL spec is compiled into UE5 C++ and assets by a generator
+pipeline, measured by automation tests and telemetry, graded against an industry-standard
+rubric, and iterated until verified. The workflow below is the project.
+
+## START HERE (every session, any agent)
+
+1. `cd E:\PythonChimera\Chimera` → `python -m core.preflight` — live state: graph health, GPA, spiral loop board, pending research, last run, environment.
+2. Read `E:\PythonChimera\task_progress.md` — session handoff; the top **NEXT** section is your work list.
+3. Execute THE WORKFLOW below. Nothing else is the process.
+4. Finish: `python -m core.postflight --phase "..." --result "<UBT verbatim>"`, update `task_progress.md`, commit + push.
+
+## THE WORKFLOW (authoritative — one full cycle)
+
+```
+SELECT → RESEARCH (writes the exam) → APPLY (DSL/generator layer) → BUILD+GATES
+      → MEASURE (tests+telemetry) → GRADE THE RESULT → verified | back to research
+```
+
+1. **SELECT** — next open feature in the lowest incomplete Spiral loop (the preflight board). Never skip forward.
+2. **RESEARCH WRITES THE EXAM** — research the feature (campus sources + web, Research Depth Protocol in `Chimera/docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md`). The output is the feature's **declared acceptance criteria** — the coverage denominator the grade is computed against — plus buildable parameters. Record everything with the typed helpers (`record_*` / `python -m core.graphify_record`); mis-keyed dicts are rejected.
+3. **APPLY AT THE RIGHT LAYER** — game content → the DSL (`Chimera/tests/dsl_grammar/deep_space_trader.chimera`); code shape → generator templates (`Chimera/core/game_code_generator.py`). **Never hand-edit generator-owned C++** (Flight, Ship, GameMode, PCG, Missions, Docking, QuantumTravel, Factions, Economy, Save, Combat suite, PirateAI) — regeneration clobbers it.
+4. **BUILD + GATES** — `python run_deep_space_trader_pipeline.py` — regenerates all generator-owned code, UBT-builds, runs mandatory hard gates (exit 1 on violation). Build failure auto-grades **F**. Stale trees under `Source/` fail the build.
+5. **MEASURE** — headless, no editor window needed:
+   `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" Chimera.uproject -ExecCmds="Automation RunTests ChimeraTests;Quit" -unattended -nullrhi -ReportExportPath=Saved/AcceptanceReport`
+   plus telemetry via MCP `inspect` (scene stats, runtime report, performance).
+6. **GRADE THE RESULT** — `python -m core.result_grader --feature <X> --evidence <evidence.json>` against `Chimera/docs/RESULT_GRADING_RUBRIC.md`. Score = pass_rate × declared-criteria coverage (40) + stability/perf (25) + design checklist (20) + spec fidelity (15). **No LM/model dependency.** A ≥ 90, B ≥ 75, C ≥ 60, F < 60.
+7. **GATE** — A/B → `record_feature(..., "verified")`. **C/F → back to step 2** carrying the grader's study guide (lowest-scoring categories) as the research target.
+8. **FRAME AUDIT** — mandatory before declaring anything complete: answer the four questions in the rubric (proxy vs target; who judges the judge; artifact vs its generator; what would look good while wrong) in the Post-Flight record.
+
+## FILE MAP
+
+| Need | File |
+|---|---|
+| Auto-loaded agent briefs | `CLAUDE.md` (Claude Code) / `AGENTS.md` (Roo, Kilo, others) |
+| Session handoff + NEXT | `task_progress.md` |
+| Grading rubric + frame audit | `Chimera/docs/RESULT_GRADING_RUBRIC.md` |
+| Full methodology (Spiral, Contract, Ralph loop) | `Chimera/docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md` |
+| Known-good MCP call sequences | `Chimera/docs/MCP_PATHWAYS.md` |
+| DNA knowledge graph interface | `Chimera/core/graphify_interface.py` (`record_*` helpers) |
+
+Everything below is system reference (engine setup, MCP tool inventory, build details —
+parts describe the earlier vehicle-simulation framing). The workflow above is authoritative.
 
 ---
 
-
-
-> **Current conventions (2026-07-06):** Pre-Flight is one command: `python -m core.preflight`; Post-Flight: `python -m core.postflight --phase "..." --result "<UBT verbatim>"`. Never hand-write mutation dicts — use the typed helpers (`record_feature`/`record_pathway`/`record_loop`/`record_phase`/`record_grade`/`record_build`) or `python -m core.graphify_record`; mis-keyed writes are rejected with `rejected_*` and every node is auto-stamped `recorded_by`+`run_id`. Generator-owned C++ (Flight, Ship, GameMode, PCG, Missions, Docking, QuantumTravel, Factions, Economy, Save, Combat suite, PirateAI) is regenerated every pipeline run — fix templates in `core/game_code_generator.py`, never the C++. Build failures auto-grade F; non-pass visual verification grades C; stale trees under `Source/` fail the build.
 ## 1. Project Overview
 
 | Attribute | Value |
