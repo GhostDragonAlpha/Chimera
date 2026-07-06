@@ -1,3 +1,36 @@
+# Session 2026-07-06 (succession) — TWO HONEST CYCLES + THE RUNBOOK: prepared for a weaker heir
+
+**Cycle 1 — Ground_Sand_Particles fidelity debt: formally BRIDGE-BLOCKED.** Binary scan proved
+NO stock Niagara template exposes User.* params — set_niagara_parameter "applied:true" is facade #2
+(writes a variable nothing reads). Debt (sand color #8B7D6B, gravity −162) is unpayable until a
+capable session repairs Plugins/McpAutomationBridge Niagara authoring (UE5.8 stateless emitters).
+Grade stands B 79.3. Phantom pain 762486:P2 CONFIRMED with sharper evidence.
+
+**Cycle 2 — Ground_Sand_Footprints: honest C 72.9 → needs_refinement (the gate working).**
+Authored+saved at BP level: footstep system (foot_l/foot_r, trace, tracking vars), Sand surface
+map. FAILED honestly: configure_footstep_fx echoed only scale vars (particle path unconfirmed —
+facade-scent); no observable footstep events in PIE (template walk anims have no notifies).
+Study guide on the feature node: (1) facade-check the FX wiring by read-back, (2) add_anim_notify
+at foot-plant frames on MF_Unarmed_Walk_Fwd (UNTESTED — may be facade #3), (3) decals last.
+Telemetry clean: 120fps foregrounded, crash-free. **Ground_Sand_Sound: BLOCKED-ON-ASSETS**
+(Content/Audio empty; engine ships no footsteps; human must import a CC0 pack).
+
+**THE INHERITANCE: `E:\PythonChimera\SUCCESSOR_RUNBOOK.md`** — recipes-not-principles for a less
+capable heir. Prime directives, exact session recipe, ordered tasks (process human verdicts →
+footprints retry recipe → pipeline health check), every proven MCP recipe, every paid-for trap.
+CLAUDE.md now routes unsure models there. STORY_BIBLE v1 ("Those who love") shipped earlier today.
+
+## NEXT (successor: follow SUCCESSOR_RUNBOOK.md task order)
+1. **Human queues first** when verdicts arrive: 10 heuristics (PENDING_HEURISTICS.md) + 20-feature
+   observation queue. Mechanical promotion/recording recipes are in the runbook.
+2. **Footprints retry** per study guide (add_anim_notify is the hinge — read back or declare facade #3).
+3. **Capable sessions only**: repair McpAutomationBridge Niagara authoring; then pay the sand
+   fidelity debt; astronaut as GameMode default pawn (generator); helmet into BP as SCS.
+4. Standing: 4 ANTHROPIC_*/deepseek env vars (P3, confirmed 2×) — human's call; dream-loop 2AM
+   schedule opt-in; DSL narrative block awaits STORY_BIBLE encoding.
+
+---
+
 # Session 2026-07-06 (final) — SOLIDIFIED + PUSHED: github.com/GhostDragonAlpha/Chimera @ c82d1f5
 
 User CONFIRMED the observation prediction live ("sand looks like a fountain with bubbles") —

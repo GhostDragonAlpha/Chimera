@@ -4,6 +4,8 @@
 > Takes a formal DSL spec → generates compilable UE5 C++ + assets through a 7-stage automated pipeline.
 > **MANDATORY GATES** at every stage. No fallback ladders. No silent continuation.
 
+> **Less capable model or unsure?** Follow `E:\PythonChimera\SUCCESSOR_RUNBOOK.md` EXACTLY — recipes, not principles. Improvise nothing.
+
 ## NEW AGENT? START HERE (in order)
 1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment, **and section [4.5]: the previous generation's Will, open phantom pains, and Dream Report candidates awaiting the human**.
 2. Read `E:\PythonChimera\task_progress.md` — session handoff log; the top **NEXT** section is your work list.

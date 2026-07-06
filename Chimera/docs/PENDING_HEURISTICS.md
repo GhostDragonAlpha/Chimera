@@ -119,3 +119,23 @@ Wait, looking at the
 - sample: Pathway attempt recorded: tool 'build_orchestrator', action 'ue_shutdown', result 'killed_for_build'
 - draft_rule: killed_for_build is the build lifecycle working as designed, not a pathway failure — record intended shutdowns as success with a note, or routine builds pollute the failure ledger.
 - agent_note: 12 routine pre-build UE shutdowns mis-recorded as failed pathways (they cluster as failures forever). Recommend APPROVE -> claude_md + the concrete fix: build_orchestrator's record call should pass result='success' for intended kills. The distiller itself flagged its own noise source here.
+
+<!-- distilled 2026-07-06T18:34:16Z -->
+## H-11: ralph_ralph_loop_complete_Player_Character_Model
+- status: pending
+- kind: failure  |  count: 12  |  last_seen: 2026-07-06T04:49:48
+- proposed_organ: claude_md
+- evidence: mutation_28c2cd27ce30a284, mutation_0b49ebfeb34e12e4, mutation_4dff0fabb310dec5, mutation_55aaeca6facbc536, mutation_cb0f8548a01157e2, mutation_a75a79da8dd27502, mutation_dd8771a50908e4d5, mutation_71aaaea24b2aff0d
+- sample: RalphLoop: ralph_loop_complete_Player_Character_Model → incomplete. {"feature": "Player_Character_Model", "loop": 0, "status": "needs_refinement", "verified": f
+- sample: RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {"feature": "Player_Character_Model", "loop": 0, "status": "needs_refinement", "verified": 
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-12: grade_CF: Build_Pipeline
+- status: pending
+- kind: grade  |  count: 11  |  last_seen: 2026-07-06T07:36:10
+- proposed_organ: gate
+- evidence: professor_grade_1a92c9ff41eb66f4, professor_grade_8f4a03f041187ce9, professor_grade_0f7ad1992f6d1372, professor_grade_3b51652770d01ac1, professor_grade_828db6a52893ed78, professor_grade_9892b433ad232f61, professor_grade_1f10acc06dc1729d, professor_grade_8de5ed93050d580d
+- sample: UBT compilation fail: E:\PythonChimera\Chimera\Source\Chimera\ProceduralGenerated\Tests\ChimeraDSLTests.cpp(52,53): error C2039: 'GetCurrentFuelLiters': is not 
+- sample: UBT compilation fail: no error text captured
+- sample: UBT compilation fail: error C2039: not a member
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
