@@ -193,13 +193,13 @@ economy_systems {
         unit = "kg";
         
         market_price "Orbital_Hub_7_Market" {
-            buy_price_per_kg = 50;
-            sell_price_per_kg = 45;
-        }
-        
-        market_price "Titan_Surface_Outpost_Market" {
             buy_price_per_kg = 80;
             sell_price_per_kg = 72;
+        }
+
+        market_price "Titan_Surface_Outpost_Market" {
+            buy_price_per_kg = 45;
+            sell_price_per_kg = 40;
         }
     }
     
