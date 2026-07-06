@@ -38,10 +38,30 @@ Update `task_progress.md` (prepend a session block + NEXT list) before committin
    `python -m core.graphify_record heuristic --signature "<sig>" --rule "<rule>" --organ <organ> --evidence <node_id>`
    and change the entry's status to `promoted`. Vetoed entries: change status to
    `vetoed`, touch nothing else.
-2. **If the human gave observation verdicts**: run exactly
-   `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --loop <N>`
-   (notes REQUIRED for rejected — use the human's own words).
-3. **Ground_Sand_Footprints retry** (status: needs_refinement, grade C 72.9). The study
+2. **If the human gave a PLAYTEST TEMPERATURE** (a few sentences about the WHOLE
+   experience — this is how the Observer actually works; do not expect per-feature
+   verdicts):
+   a. Record it VERBATIM first:
+      `python -m core.graphify_record playtest --notes "<their exact words>" --build <commit>`
+      → note the returned playtest node id.
+   b. **Attribution** (this is YOUR job — "the AI has to guess on intentions, but
+      now it has the information"). For each feature in the observation queue,
+      decide ONE tier and act:
+      - **Directly implicated** — the temperature praises/indicts it. Run
+        `... observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --derived-from <playtest_id> --quote "<their exact phrase>" --loop <N>`
+      - **Exercised but unmentioned** — it was on screen / in play and drew no
+        complaint. Silence passed the glance:
+        `... observe --feature <X> --verdict accepted --derived-from <playtest_id> --tacit --loop <N>`
+      - **Not exercised** — the playtest couldn't have touched it (e.g. SaveLoad
+        if they never saved). LEAVE IT QUEUED. Do not attribute.
+   c. End your session summary with the full attribution table (feature → tier →
+      quote) so the human can overrule any line with one sentence. If they do,
+      record their sentence as a `surprise --source human` and flip the feature.
+   If you are a weaker model: do tier 1 (direct mentions) ONLY; leave tacit calls
+   to a capable session.
+3. **If the human gave an explicit per-feature verdict** (rare): run exactly
+   `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --loop <N>`.
+4. **Ground_Sand_Footprints retry** (status: needs_refinement, grade C 72.9). The study
    guide is on the feature node and in task_progress.md. Steps, exactly:
    a. Call `animation_physics` action `add_anim_notify` on
       `/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd`
@@ -51,7 +71,7 @@ Update `task_progress.md` (prepend a session block + NEXT list) before committin
       STOP this task.
    c. If notifies stick: wire is beyond this runbook — record what you did and leave
       the wiring for a capable session. Do not attempt Blueprint graph editing.
-4. **Run the pipeline for a health check**: `python run_deep_space_trader_pipeline.py`
+5. **Run the pipeline for a health check**: `python run_deep_space_trader_pipeline.py`
    — record the UBT line verbatim via postflight. If it fails, do NOT fix generated
    C++; record and stop.
 

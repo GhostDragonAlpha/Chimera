@@ -159,6 +159,9 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "observation":
         return _mutate_observation(details or {})
 
+    elif mutate_type == "playtest":
+        return _mutate_playtest(details or {})
+
     else:
         raise ValueError(f"Unknown mutation type: {mutate_type}")
 
@@ -1296,6 +1299,47 @@ def _mutate_surprise(details: dict) -> str:
     return node["id"]
 
 
+def _mutate_playtest(details: dict) -> str:
+    """Records the human's holistic playtest temperature — VERBATIM, few tokens,
+    the complete measure of the whole experience. This is how the Observer actually
+    works: one reading for the build, not per-feature verdicts. The agent then
+    performs ATTRIBUTION (see record_observation's derived_from/quote/tacit)."""
+    notes = str(details.get("notes") or "").strip()
+    build_ref = str(details.get("build_ref") or "")
+    if not notes:
+        return "rejected_playtest: 'notes' (the human's verbatim words) required; nothing recorded"
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    node = {
+        "id": f"playtest_{hashlib.sha256(f'playtest_{notes}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "PlaytestObservation",
+        "timestamp": datetime.utcnow().isoformat(),
+        "notes": notes,
+        "build_ref": build_ref,
+        "observer": "human",
+        "error_signature": "success_no_error",
+        "template_file": "playtest/holistic_temperature",
+        "error_category": "none",
+        "fix_description": f"Playtest temperature (verbatim): {notes[:180]}",
+        "compilation_result": "n/a",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def record_playtest(notes: str, build_ref: str = "") -> str:
+    """Record the human's holistic playtest temperature verbatim. The agent must
+    then attribute it feature-by-feature via record_observation(derived_from=...),
+    three tiers: directly-implicated (quote required) / exercised-but-unmentioned
+    (tacit=True) / not-exercised (leave queued). Every attribution is reversible
+    by one human sentence."""
+    return graphify_mutate("playtest", details={"notes": notes, "build_ref": build_ref})
+
+
 def _mutate_observation(details: dict) -> str:
     """Records the human's Observation of a system-finalized feature — the true
     quantum collapse (Generation Protocol increment 2). The system's verification
@@ -1304,6 +1348,9 @@ def _mutate_observation(details: dict) -> str:
     verdict = str(details.get("verdict") or "").strip().lower()
     notes = str(details.get("notes") or "").strip()
     observer = str(details.get("observer") or "human")
+    derived_from = str(details.get("derived_from") or "")
+    quote = str(details.get("quote") or "")
+    tacit = bool(details.get("tacit"))
 
     if not feature:
         return "rejected_observation: 'feature' is required; nothing recorded"
@@ -1312,6 +1359,15 @@ def _mutate_observation(details: dict) -> str:
     if verdict == "rejected" and not notes:
         return ("rejected_observation: a rejection REQUIRES notes — the human's reason "
                 "is the study guide; nothing recorded")
+    # Attribution honesty: an agent-derived observation must trace to a playtest node,
+    # and a non-tacit attribution must quote the human's actual words.
+    if derived_from:
+        observer = "human-via-attribution"
+        if not tacit and not quote:
+            return ("rejected_observation: attribution requires 'quote' (the human's "
+                    "phrase) unless tacit=True; nothing recorded")
+    elif observer != "human":
+        return "rejected_observation: only the human, or an attribution derived_from a playtest node, may observe"
 
     dna_graph = load_dna_graph()
     nodes = dna_graph.get("nodes", [])
@@ -1325,6 +1381,9 @@ def _mutate_observation(details: dict) -> str:
         "verdict": verdict,
         "notes": notes,
         "observer": observer,
+        "derived_from": derived_from,
+        "quote": quote,
+        "tacit": tacit,
         "error_signature": "success_no_error" if verdict == "accepted" else "human_rejection",
         "template_file": f"observation/{feature}",
         "error_category": "none" if verdict == "accepted" else "human_rejection",
@@ -1381,15 +1440,25 @@ def collect_observation_queue(nodes: list) -> list:
 
 
 def record_observation(feature: str, verdict: str, notes: str = "",
-                       observer: str = "human") -> str:
-    """Record the human's Observation verdict on a system-finalized feature.
+                       observer: str = "human", derived_from: str = "",
+                       quote: str = "", tacit: bool = False) -> str:
+    """Record an Observation verdict on a system-finalized feature.
+
+    Two legitimate sources:
+    - The human directly (observer='human').
+    - Agent ATTRIBUTION of a holistic playtest: pass derived_from=<playtest node id>
+      plus quote=<the human's phrase implicating this feature>, or tacit=True for
+      exercised-but-unmentioned features (silence during play = passed the glance).
+      Features NOT exercised in the playtest stay queued — do not attribute them.
 
     accepted -> caller should also record_feature(status='observed').
     rejected -> caller should record_feature(status='needs_refinement') with the
     notes; a SurpriseMoment(source=human) is auto-recorded so the distiller
-    treats the rejection as first-class dream fodder."""
+    treats the rejection as first-class dream fodder. Every attribution is
+    reversible by one human sentence."""
     node_id = graphify_mutate("observation", details={
-        "feature": feature, "verdict": verdict, "notes": notes, "observer": observer})
+        "feature": feature, "verdict": verdict, "notes": notes, "observer": observer,
+        "derived_from": derived_from, "quote": quote, "tacit": tacit})
     if not str(node_id).startswith("rejected_") and verdict == "rejected":
         graphify_mutate("surprise", details={
             "context": f"Human observation of system-finalized feature '{feature}'",

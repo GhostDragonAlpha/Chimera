@@ -21300,6 +21300,25 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_1b9d191379fa"
+    },
+    {
+      "id": "surprise_af9753abad6be2c4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-06T19:02:10.879001",
+      "context": "Observation Collapse intake design - per-feature verdict queue (20 entries) awaiting the human",
+      "expectation": "Human records observe --feature X --verdict per feature",
+      "reality": "The observer's actual nature: observation happens during PLAYTESTING as a few sentences describing the ENTIRE experience - the overall temperature of the game, boiled down to a few tokens. The AI must attribute that holistic signal to features itself - guess on intentions, but now it has the information",
+      "lesson_hint": "Holistic temperature + agent attribution with quoted provenance, three tiers: directly-implicated / exercised-but-unmentioned (tacit) / not-exercised (stays queued). Every attribution reversible by one human sentence",
+      "source": "human",
+      "consolidated": false,
+      "error_signature": "surprise_human",
+      "template_file": "surprise/human",
+      "error_category": "surprise",
+      "fix_description": "Surprise (human): expected 'Human records observe --feature X --verdict per feature' but 'The observer's actual nature: observation happens during PLAYTESTING as a few se'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_a69ae358b070"
     }
   ],
   "edges": [
