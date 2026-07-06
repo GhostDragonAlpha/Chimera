@@ -61,19 +61,17 @@ Update `task_progress.md` (prepend a session block + NEXT list) before committin
    to a capable session.
 3. **If the human gave an explicit per-feature verdict** (rare): run exactly
    `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --loop <N>`.
-4. **Ground_Sand_Footprints retry** (status: needs_refinement, grade C 72.9). The study
-   guide is on the feature node and in task_progress.md. Steps, exactly:
-   a. Call `animation_physics` action `add_anim_notify` on
-      `/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd`
-      with a notify name like `FootPlant` at ~0.3s and ~0.8s.
-   b. READ BACK (get_anim_sequence_info or re-query). If the notify is not readable
-      back or the action errors: this is facade #3 — record it, set the feature note,
-      STOP this task.
-   c. If notifies stick: wire is beyond this runbook — record what you did and leave
-      the wiring for a capable session. Do not attempt Blueprint graph editing.
-5. **Run the pipeline for a health check**: `python run_deep_space_trader_pipeline.py`
-   — record the UBT line verbatim via postflight. If it fails, do NOT fix generated
-   C++; record and stop.
+4. **The first executable item in task_progress.md's NEXT list.** The handoff
+   invariant means each item carries its recipe inline (or names the feature whose
+   graph node holds the study guide). Execute it EXACTLY; add nothing. Skip items
+   marked `capable sessions only` or lacking a recipe.
+5. **If nothing above applies — pipeline health check**:
+   `python run_deep_space_trader_pipeline.py` — record the UBT line verbatim via
+   postflight. If it fails, do NOT fix generated C++; record and stop.
+
+When YOU write the NEXT list at dusk: same invariant — exact commands or a named
+feature node + skip-condition per item. An item without a recipe is a wish; do not
+write wishes.
 
 ## PROVEN RECIPES (copy exactly)
 

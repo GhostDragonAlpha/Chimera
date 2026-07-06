@@ -20,14 +20,26 @@ capable heir. Prime directives, exact session recipe, ordered tasks (process hum
 footprints retry recipe → pipeline health check), every proven MCP recipe, every paid-for trap.
 CLAUDE.md now routes unsure models there. STORY_BIBLE v1 ("Those who love") shipped earlier today.
 
-## NEXT (successor: follow SUCCESSOR_RUNBOOK.md task order)
-1. **Human queues first** when verdicts arrive: 10 heuristics (PENDING_HEURISTICS.md) + 20-feature
-   observation queue. Mechanical promotion/recording recipes are in the runbook.
-2. **Footprints retry** per study guide (add_anim_notify is the hinge — read back or declare facade #3).
-3. **Capable sessions only**: repair McpAutomationBridge Niagara authoring; then pay the sand
-   fidelity debt; astronaut as GameMode default pawn (generator); helmet into BP as SCS.
-4. Standing: 4 ANTHROPIC_*/deepseek env vars (P3, confirmed 2×) — human's call; dream-loop 2AM
-   schedule opt-in; DSL narrative block awaits STORY_BIBLE encoding.
+## NEXT (each item carries its recipe — the handoff invariant; execute exactly, add nothing)
+1. **Human queues first** when verdicts arrive (recipes: CYCLE_PROMPT branches A/B):
+   12 heuristics in Chimera/docs/PENDING_HEURISTICS.md + 20-feature observation queue.
+   Skip-condition: no human verdicts given → next item.
+2. **Ground_Sand_Footprints retry** (C 72.9, needs_refinement). Recipe:
+   a. MCP call: `animation_physics` `add_anim_notify`
+      `{assetPath:"/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd", notifyName:"FootPlant", time:0.3}`
+      then again with `time:0.8`.
+   b. READ BACK with `animation_physics` `get_anim_sequence_info` on the same asset.
+      Notifies absent or action errors → facade #3:
+      `python -m core.graphify_record pathway --tool animation_physics --action add_anim_notify --result failed --param NOTE="facade #3 confirmed"`
+      → note here → STOP item.
+   c. Notifies verified present → `control_editor` `save_all`, record pathway success,
+      note "BP wiring remains — capable sessions only" here → STOP item (no BP graph editing).
+3. **`capable sessions only`**: repair McpAutomationBridge Niagara authoring (UE5.8 stateless
+   emitters); then pay sand fidelity debt (color #8B7D6B, gravity −162); astronaut as GameMode
+   default pawn (generator template); helmet into BP as SCS component; DSL narrative block from
+   STORY_BIBLE.md.
+4. **Human-only, standing**: 4 ANTHROPIC_*/deepseek env vars (P3, confirmed 2×); CC0 footstep
+   sound pack import (unblocks Ground_Sand_Sound); optional 2AM dream-loop schedule.
 
 ---
 

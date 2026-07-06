@@ -35,10 +35,16 @@ From preflight note: [4.5] open pain IDs, pending heuristic count, observation q
   2) For each queue feature the temperature DIRECTLY mentions: `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --derived-from <playtest_id> --quote "<their exact phrase>" --loop <N>`
   3) Features clearly on-screen during play but unmentioned: same command with `--verdict accepted --tacit` instead of --quote. Features the playtest never touched: leave alone.
   4) End report with the full table: feature | tier | quote.
-- **C. Otherwise: Ground_Sand_Footprints retry** (C 72.9, needs_refinement):
-  1) Via MCP: `animation_physics` `add_anim_notify` `{assetPath:"/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd", notifyName:"FootPlant", time:0.3}` and again at `time:0.8`.
-  2) READ BACK: `animation_physics` `get_anim_sequence_info` on the same asset. If notifies absent or the action errors → it is facade #3: `python -m core.graphify_record pathway --tool animation_physics --action add_anim_notify --result failed --param NOTE="facade #3 confirmed"`, note it in task_progress.md, STOP this item.
-  3) If notifies verified present: `control_editor save_all`, record pathway success, note in task_progress that Blueprint wiring remains for a capable session. STOP (do not attempt BP graph editing).
+- **C. Otherwise: execute the FIRST executable item in the NEXT list** (you already
+  read it in STEP 1). The handoff invariant guarantees each NEXT item carries its own
+  recipe — exact commands inline, or the feature name whose node holds the study
+  guide (fetch with ONE command:
+  `python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','<Name>')[-1]; print(json.dumps(n.get('parameters',{}),indent=1)[:2000])"`).
+  Skip any item marked `capable sessions only` or lacking a recipe — go to the next
+  item. Execute the recipe EXACTLY; add nothing to it.
+- **D. If no NEXT item is executable: pipeline health check** —
+  `python run_deep_space_trader_pipeline.py`, record the UBT result line VERBATIM in
+  Step 4. If it fails, do NOT touch generated C++; the recorded failure is the work.
 
 **STEP 3 — GRADE (only if you built/changed a feature):** write `ev.json`:
 ```
@@ -54,7 +60,12 @@ Unmeasured = omit (scores zero — never guess). Then `python -m core.result_gra
 python -m core.postflight --phase "<what you did>" --result "<key outputs verbatim>" --inheritance "<=3 sentences to successor>" --phantom-pain "<one specific failure prediction>" --pain-verdict "<id-from-preflight>:confirmed|refuted|still-open"
 python -m core.dream_loop
 ```
-Prepend a short session block + NEXT to `E:\PythonChimera\task_progress.md`, then:
+Prepend a short session block + NEXT list to `E:\PythonChimera\task_progress.md`.
+**HANDOFF INVARIANT (what keeps this prompt universal):** every NEXT item you write
+must be executable by your successor without searching — include the exact
+command(s) inline, or the feature name whose graph node carries the study guide,
+plus a skip-condition. Mark judgment-heavy items `capable sessions only`. An item
+without a recipe is a wish, not a task — do not write wishes. Then:
 `cd E:\PythonChimera && git add -A && git commit -m "<one line>" && git push origin master`
 
 **STEP 5 — REPORT ≤10 lines:** work item chosen · result/grade with breakdown · honest failures · what you left the successor · the one question you need answered (if any) · attribution table if B ran.
