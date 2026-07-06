@@ -12,14 +12,15 @@ Usage:
 """
 import argparse
 import json
+import os
 import re
+import subprocess
 import time
-import urllib.request
 from pathlib import Path
 
 LOG_DIR = Path("E:/PythonChimera/Chimera/Saved/Logs")
 FATAL_MARKERS = ("Fatal error", "Assertion failed", "LowLevelFatalError", "=== Critical error")
-MCP_URL = "http://localhost:3000/mcp"
+MCP_CLI = r"E:\ChiR24-Unreal_mcp-test\dist\cli.js"
 
 
 def newest_log(explicit: str | None) -> Path | None:
@@ -43,38 +44,81 @@ def check_crash_free(log_path: Path | None):
     return (len(hits) == 0), (f"markers found: {hits}" if hits else f"clean ({log_path.name})")
 
 
-def mcp_call(tool: str, arguments: dict, timeout: float = 5.0):
-    payload = json.dumps({
-        "jsonrpc": "2.0", "id": 1, "method": "tools/call",
-        "params": {"name": tool, "arguments": arguments},
-    }).encode("utf-8")
-    req = urllib.request.Request(MCP_URL, data=payload,
-                                 headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return json.loads(resp.read().decode("utf-8", errors="replace"))
+class MCPStdioClient:
+    """Minimal MCP-over-stdio client for the chiR24 bridge CLI (newline-delimited JSON-RPC)."""
+
+    def __init__(self):
+        env = dict(os.environ, UE_PROJECT_PATH=r"E:\PythonChimera\Chimera")
+        self.proc = subprocess.Popen(["node", MCP_CLI], stdin=subprocess.PIPE,
+                                     stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=env)
+        self._id = 0
+        self._send({"jsonrpc": "2.0", "id": self._next(), "method": "initialize",
+                    "params": {"protocolVersion": "2024-11-05", "capabilities": {},
+                               "clientInfo": {"name": "telemetry-probe", "version": "1.0"}}})
+        if not self._read(self._id):
+            raise RuntimeError("MCP initialize failed")
+        self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
+
+    def _next(self):
+        self._id += 1
+        return self._id
+
+    def _send(self, obj):
+        self.proc.stdin.write((json.dumps(obj) + "\n").encode())
+        self.proc.stdin.flush()
+
+    def _read(self, id_, timeout=30):
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            line = self.proc.stdout.readline()
+            if not line:
+                time.sleep(0.05)
+                continue
+            try:
+                msg = json.loads(line.decode("utf-8", errors="replace"))
+            except json.JSONDecodeError:
+                continue
+            if msg.get("id") == id_:
+                return msg
+        return None
+
+    def call(self, tool: str, arguments: dict):
+        self._send({"jsonrpc": "2.0", "id": self._next(), "method": "tools/call",
+                    "params": {"name": tool, "arguments": arguments}})
+        return self._read(self._id)
+
+    def close(self):
+        try:
+            self.proc.kill()
+        except OSError:
+            pass
 
 
-def probe_fps():
+def _extract(pattern: str, msg) -> float | None:
+    m = re.search(pattern, json.dumps(msg), re.IGNORECASE)
+    return float(m.group(1)) if m else None
+
+
+def probe_fps(client: "MCPStdioClient"):
     try:
-        result = mcp_call("inspect", {"action": "get_performance_stats"})
-        text = json.dumps(result)
-        m = re.search(r'"?fps"?\s*[:=]\s*([0-9.]+)', text, re.IGNORECASE)
-        if m:
-            return float(m.group(1)), "MCP get_performance_stats"
+        result = client.call("inspect", {"action": "get_performance_stats"})
+        fps = _extract(r'fps"?\s*[:=]\s*"?([0-9.]+)', result)
+        if fps is not None:
+            return fps, "MCP get_performance_stats (stdio bridge)"
     except Exception as e:
         return None, f"engine unreachable ({type(e).__name__})"
     return None, "no fps field in performance stats"
 
 
-def probe_growth(soak_seconds: int):
+def probe_growth(client: "MCPStdioClient", soak_seconds: int):
     def actor_count():
-        result = mcp_call("inspect", {"action": "get_scene_stats"})
-        m = re.search(r'"?actor_?count"?\s*[:=]\s*(\d+)', json.dumps(result), re.IGNORECASE)
-        return int(m.group(1)) if m else None
+        result = client.call("inspect", {"action": "get_performance_stats"})
+        count = _extract(r'actorCount"?\s*[:=]\s*"?(\d+)', result)
+        return int(count) if count is not None else None
     try:
         first = actor_count()
         if first is None:
-            return None, "no actor count in scene stats"
+            return None, "no actor count in performance stats"
         time.sleep(soak_seconds)
         second = actor_count()
         if second is None:
@@ -101,16 +145,23 @@ def main():
         telemetry["crash_free"] = crash_free
 
     if not args.skip_engine:
-        fps, note = probe_fps()
-        notes["fps"] = note
-        if fps is not None:
-            telemetry["fps"] = fps
-            telemetry["target_fps"] = 60
+        client = None
+        try:
+            client = MCPStdioClient()
+        except Exception as e:
+            notes["engine"] = f"bridge unavailable ({type(e).__name__})"
+        if client:
+            fps, note = probe_fps(client)
+            notes["fps"] = note
+            if fps is not None:
+                telemetry["fps"] = fps
+                telemetry["target_fps"] = 60
 
-        grew, note = probe_growth(args.soak)
-        notes["unbounded_growth"] = note
-        if grew is not None:
-            telemetry["unbounded_growth"] = grew
+            grew, note = probe_growth(client, args.soak)
+            notes["unbounded_growth"] = note
+            if grew is not None:
+                telemetry["unbounded_growth"] = grew
+            client.close()
 
     out = Path(args.out)
     out.write_text(json.dumps({"telemetry": telemetry, "notes": notes}, indent=2), encoding="utf-8")

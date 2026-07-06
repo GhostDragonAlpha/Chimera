@@ -291,6 +291,28 @@ bool FEconomyInitializerAppliesDSLPrices::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FEconomyManagerPriceRespondsToMarketShifts,
+	"ChimeraTests.Acceptance.EconomyManagerPriceRespondsToMarketShifts",
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FEconomyManagerPriceRespondsToMarketShifts::RunTest(const FString& Parameters)
+{
+	UEconomyManager* Manager = NewObject<UEconomyManager>();
+	UEconomyInitializer::BuildEconomy(Manager);
+
+	const float Before = Manager->GetCommodityPrice(TEXT("Titanium"));
+	TestTrue(TEXT("Baseline price positive"), Before > 0.0f);
+
+	Manager->AdjustCommoditySupply(TEXT("Titanium"), 100000.0f);
+	const float Flooded = Manager->GetCommodityPrice(TEXT("Titanium"));
+	TestTrue(TEXT("Flooded supply lowers manager-level price"), Flooded < Before);
+
+	Manager->AdjustCommodityDemand(TEXT("Titanium"), 500000.0f);
+	TestTrue(TEXT("Demand spike raises manager-level price"),
+		Manager->GetCommodityPrice(TEXT("Titanium")) > Flooded);
+
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMissionBoardLoadsDSLMissions,
 	"ChimeraTests.Acceptance.MissionBoardLoadsDSLMissions",
 	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
