@@ -20,6 +20,8 @@ E:\PythonChimera\Chimera\
 
 **Module**: `Chimera` | **API macro**: `CHIMERA_API` | **Dependencies**: Core, CoreUObject, Engine, InputCore, EnhancedInput, PCG, AIModule, GameplayAbilities, Niagara, NiagaraCore
 
+**File ownership under `ProceduralGenerated/`** — generator-owned files (Flight, Ship, GameMode, PCGVolumeManager, Missions, Docking, QuantumTravel, Factions, Economy, Save, Combat suite, PirateAI) are regenerated every pipeline run: fix their generator template in `core/game_code_generator.py`, never the C++. Loop-built manual files (Tools, Interactions, Sound, UI, NPC AI, InventoryTradeComponent, ChimeraMovementComponent, StationActor) have no template and are safe to hand-edit.
+
 ## The Pipeline (Primary Build Mechanism)
 
 ```
@@ -189,6 +191,9 @@ After 2 failed attempts on any feature, automatically create a technical_researc
 | 13 | g.mutate key mismatch → unknown_* junk | graphify_interface | Key aliases + rejection guards + typed record_* helpers | interface_contract |
 | 14 | UBT output never captured (capture_output=False) | ubt_builder | Capture stdout+stderr; store excerpt + error lines in graph | build_observability |
 | 15 | CommodityData price formula no-op (S/(S+1)−D/(D+1)≈0) | Economy/CommodityData | price = Base×clamp(pow(D/S, elasticity), 0.25, 4.0) | logic_error |
+| 16 | FactionComponent TMap::operator[] assert crash + tier names seeded as factions | game_code_generator (faction template) | FindOrAdd + RelationshipForStanding ladder + DSL faction seeding, fixed at generator level | crash |
+| 17 | Faction generation gated on narrative.factions; DSL defines game.factions | game_code_generator | Gate reads game.factions with narrative fallback | dsl_mapping |
+| 18 | SaveGame/LoadGame were timestamp-only stubs | game_code_generator (save templates) | Real save/restore of InventoryTrade/Mission/Faction state + player transform | feature_gap |
 
 ## Key File Paths
 

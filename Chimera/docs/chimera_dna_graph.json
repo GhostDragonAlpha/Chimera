@@ -17448,6 +17448,70 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_fe125bcd765b"
+    },
+    {
+      "id": "feature_1fc15de46d081c5e",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-06T06:16:07.591144",
+      "feature_name": "Tool_Weapon_Model",
+      "loop": 4,
+      "status": "verified",
+      "parameters": {
+        "restored_from": "visual_verification_ced7d245f8e0e579",
+        "evidence_task": "Tool_Weapon_Model_Verification_Refinement",
+        "note": "re-recorded from VisualVerification evidence after quarantine regression"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Tool_Weapon_Model",
+      "error_category": "none",
+      "fix_description": "Feature 'Tool_Weapon_Model' (Loop 4) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "backfilled": true,
+      "recorded_by": "repair_ledger_from_evidence.py",
+      "run_id": "run_8b4ba52126da"
+    },
+    {
+      "id": "feature_259ab1d1a9e326fe",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-06T06:16:07.717457",
+      "feature_name": "System_Missions",
+      "loop": 8,
+      "status": "implemented",
+      "parameters": {
+        "evidence": "compiled green in pipeline run 2026-07-06; reward accumulation + objective completion logic reviewed healthy"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_8/System_Missions",
+      "error_category": "none",
+      "fix_description": "Feature 'System_Missions' (Loop 8) recorded as 'implemented'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_53ee30a8ab16"
+    },
+    {
+      "id": "loop_5b3995a1f560621c",
+      "type": "LoopComplete",
+      "timestamp": "2026-07-06T06:16:07.849057",
+      "loop": 8,
+      "name": "Systems",
+      "status": "all_implemented",
+      "features": [
+        "System_Economy",
+        "System_Factions",
+        "System_Missions",
+        "System_SaveLoad"
+      ],
+      "emotional_anchor": "Consequence",
+      "error_signature": "success_no_error",
+      "template_file": "loop_8_complete",
+      "error_category": "none",
+      "fix_description": "Loop 8 'Systems' completed with status 'all_implemented'. Features: 4",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_5019a0d12100"
     }
   ],
   "edges": [
