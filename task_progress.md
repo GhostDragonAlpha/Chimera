@@ -17,13 +17,15 @@ The Professor currently grades research summaries (the input). Wrong target. The
 drives GPA and the C/F→re-research retry must come from MEASURING THE RUNNING GAME
 ("quantum collapse": the feature's quality is unknown until measured):
 
-1. **`core/result_grader.py`** — grades a feature AFTER Apply from:
-   - **Unit/functional tests** (primary weight): per-feature UE Automation tests, run via
-     `Automation RunTests ChimeraTests` (in-editor; headless skips recorded as such, never passes)
-   - **Telemetry assertions** (secondary): MCP `inspect` (get_scene_stats / runtime_report /
-     get_performance_stats) checked against the feature's researched parameters
-   - **Visual verification** (tertiary signal only — demoted from primary verdict)
-   Deterministic score → letter grade → existing `record_grade`/GPA machinery.
+1. **`core/result_grader.py`** — grades a feature AFTER Apply, **no LM/model dependency**
+   (user directive: not dependent on open-source models — the driving agent judges against
+   the checked-in industry-standard rubric `docs/RESULT_GRADING_RUBRIC.md`):
+   - **Correctness 40pts**: per-feature UE Automation tests (headless skip ≠ pass, caps at 20)
+   - **Stability/perf 25pts**: MCP telemetry — no crashes, ≥ target_fps, no unbounded growth
+   - **Design-standard checklist 20pts**: feedback/consistency/meaningful-params/fail-safety/balance
+   - **Spec fidelity 15pts**: built result matches DSL + researched parameters via telemetry
+   A≥90 B≥75 C≥60 F<60 → existing `record_grade`/GPA machinery. `gate_lm_available` scoped
+   to explicitly-requested vision layers only, no longer a pipeline-wide blocker.
 2. **Generated acceptance tests** — new `generate_feature_acceptance_tests()` in the generator
    emits Automation specs per feature. Exemplars:
    - SaveLoad roundtrip: save → mutate credits/cargo/standings/missions → load → assert restored
