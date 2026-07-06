@@ -48,13 +48,18 @@ def _score_correctness(tests: dict) -> tuple[float, str]:
     failed = int(tests.get("failed", 0))
     skipped = int(tests.get("skipped", 0))
     ran = bool(tests.get("ran_in_editor", False))
+    # criteria_total: how many acceptance criteria the feature DEFINES. Pass rate is
+    # multiplied by coverage so 1/1 passing of 4 declared criteria earns 10/40, not
+    # 40/40 — thin coverage can no longer masquerade as correctness.
+    criteria_total = max(int(tests.get("criteria_total", 0)), passed + failed)
     total = passed + failed
-    if total == 0:
+    if total == 0 or criteria_total == 0:
         note = ("no tests executed"
                 + (f" ({skipped} skipped — headless)" if skipped else " — no acceptance tests exist"))
         return 0.0, note
-    pts = (passed / total) * W_CORRECTNESS
-    note = f"{passed}/{total} tests passed"
+    coverage = min(1.0, total / criteria_total)
+    pts = (passed / total) * coverage * W_CORRECTNESS
+    note = f"{passed}/{total} tests passed; coverage {total}/{criteria_total} declared criteria"
     if not ran:
         pts = min(pts, HEADLESS_CORRECTNESS_CAP)
         note += f" (not run in-editor: capped at {HEADLESS_CORRECTNESS_CAP})"
