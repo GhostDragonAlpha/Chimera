@@ -28,13 +28,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Economy|Stations")
 	TArray<UStationTradingData*> StationTradingList;
 
-	/** Strength of the mean-reverting force that pulls prices toward equilibrium.
-	 *  0.0 = pure random walk (unstable, professor grade F).
-	 *  0.001 = gentle reversion (prices drift but don't run away).
-	 *  0.01 = strong reversion (prices tightly hug equilibrium). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Economy|Stability")
-	float MeanReversionStrength;
-
 	UPROPERTY(BlueprintAssignable, Category = "Economy|Events")
 	FOnCommodityPriceChanged OnCommodityPriceChanged;
 

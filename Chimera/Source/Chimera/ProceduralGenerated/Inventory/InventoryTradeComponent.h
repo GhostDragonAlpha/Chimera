@@ -69,6 +69,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Inventory|Trade")
 	int32 GetCargoQuantity(FName Commodity) const;
 
+	/** Full cargo snapshot for save/load. */
+	UFUNCTION(BlueprintCallable, Category="Inventory|Trade")
+	TMap<FName, int32> GetCargo() const;
+
+	/** Replace the cargo hold wholesale (load-game restore). */
+	UFUNCTION(BlueprintCallable, Category="Inventory|Trade")
+	void SetCargo(const TMap<FName, int32>& NewCargo);
+
 	/**
 	 * Buy Quantity units of Commodity at UnitPrice each.
 	 * Deducts credits and adds to cargo atomically.

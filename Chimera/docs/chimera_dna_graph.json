@@ -16628,7 +16628,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-US/unreal-engine-creating-and-modifying-characters/; https://www.gdcvault.com/play/1027864/Making-Space-Work-The-C",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-US/unreal-engine-creating-and-modifying-characters/; https://www.gdcvault.com/play/1027864/Making-Space-Work-The-Challenges-of\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_9ad8b9d5fff54539",
@@ -16643,7 +16644,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = B (3.0) - The research provides a clear functional description and some technical parameters but lacks specific implementation details for animation states, physics collision meshes, and multiplayer synchronization protocols.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_87f9022b478caae4",
@@ -16656,7 +16658,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> failed. {\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server sta",
       "fix_diff": "{\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server started on stdio\\n[UE-MCP] Shutting down MCP server\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "failed",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_02594167b96676c7",
@@ -16671,7 +16674,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"what_you_see\": \"The user wants me to analyze a screenshot for the \\\"Player_Character_Model\\\" feature of the Chimera Project.\\nI need to output a strictly formatted JSON object bas",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_55aaeca6facbc536",
@@ -16684,7 +16688,8 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_38973170ce3b99a0",
@@ -16697,7 +16702,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-us/skeletal-meshes-in-unreal-engine-5/; https://www.gdcvault.com/play/1027864/The-Art-of-Space-Exploration\", \"camp",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-us/skeletal-meshes-in-unreal-engine-5/; https://www.gdcvault.com/play/1027864/The-Art-of-Space-Exploration\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_e7237a099dc54076",
@@ -16712,7 +16718,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = B (3.0) - The research provides a solid conceptual framework with relevant engine-specific references (Unreal Engine Control Rig) and clear design goals, but it lacks specific technical parameters for the modular mesh structure, LOD levels, and animation blending weights required for an 'A' grade implementation path.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_2cc1eb4ce9a67bd4",
@@ -16725,7 +16732,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> failed. {\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server sta",
       "fix_diff": "{\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server started on stdio\\n[UE-MCP] Shutting down MCP server\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "failed",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_35939b8c33ffd601",
@@ -16740,7 +16748,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"what_you_see\": \"The user wants me to analyze a screenshot for the \\\"Player_Character_Model\\\" feature.\\nI need to check if the image exists or if it's simulated mode. Since I canno",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_cb0f8548a01157e2",
@@ -16753,7 +16762,8 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_ef635e8dc0917eca",
@@ -16766,7 +16776,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/4.26/docs/skeletal-mesh-component-in-unreal-engine/; https://www.gdcvault.com/play/1025398/The-Design-of-Final-Fantasy-XV",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/4.26/docs/skeletal-mesh-component-in-unreal-engine/; https://www.gdcvault.com/play/1025398/The-Design-of-Final-Fantasy-XV\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_3c5cbebf795bc7f8",
@@ -16781,7 +16792,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = B (3.0) - The research provides a clear functional description and includes relevant technical references for skeletal animation and design philosophy, but it lacks specific implementation parameters such as polygon count, bone structure details, or LOD specifications required for an 'A' grade.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_0464502349cbdfac",
@@ -16794,7 +16806,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> failed. {\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server sta",
       "fix_diff": "{\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server started on stdio\\n[UE-MCP] Shutting down MCP server\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "failed",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_c314d31b9f634877",
@@ -16809,7 +16822,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"what_you_see\": \"The user wants me to analyze a screenshot for the \\\"Player_Character_Model\\\" feature in a game called Chimera.\\nI need to check if the screenshot shows a 3D mesh r",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_a75a79da8dd27502",
@@ -16822,7 +16836,8 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_db7b86749f442e2f",
@@ -16835,7 +16850,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/4.27/en-US/Basics/SkeletalMeshes/; https://www.gdcvault.com/play/1025398/The-Design-of-Unreal-Character-Customization\", \"",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/4.27/en-US/Basics/SkeletalMeshes/; https://www.gdcvault.com/play/1025398/The-Design-of-Unreal-Character-Customization\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_46f8b5163171d672",
@@ -16850,7 +16866,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = B (3.0) - The research provides a clear functional description and relevant references for skeletal mesh implementation but lacks specific technical parameters such as polygon count, bone structure details, or LOD specifications required for an A-grade submission.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_44a50781a873e8cb",
@@ -16863,7 +16880,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> failed. {\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server sta",
       "fix_diff": "{\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server started on stdio\\n[UE-MCP] Shutting down MCP server\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "failed",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_98e849204f5046a5",
@@ -16878,7 +16896,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"confidence\": 0.15, \"what_you_see\": \"Input contains feature description and local screenshot path, but lacks actual UE5 engine state data or runtime dump for verification.\", \"issue",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_dd8771a50908e4d5",
@@ -16891,7 +16910,8 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_65970f6ee4b89da2",
@@ -16904,7 +16924,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-US/unreal-engine-creating-and-modifying-meshes/; https://www.gdcvault.com/play/1027896/The-Art-of-Spacecraft-Desig",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-US/unreal-engine-creating-and-modifying-meshes/; https://www.gdcvault.com/play/1027896/The-Art-of-Spacecraft-Design\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_acc0a4a6cef32ca7",
@@ -16919,7 +16940,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = B (3.0) - The research provides specific technical parameters for material properties and lighting but lacks detailed implementation paths, animation rigging specifics, or collision mesh definitions required for a complete character model specification.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_94143d630747a07d",
@@ -16932,7 +16954,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> failed. {\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server sta",
       "fix_diff": "{\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server started on stdio\\n[UE-MCP] Shutting down MCP server\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "failed",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_40399be43b4e9bd3",
@@ -16947,7 +16970,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"what_you_see\": \"Here's a thinking process:\\n\\n1.  **Analyze User Input:**\\n   - Role: Game QA Analyst for Chimera Project (UE5 space trading sim)\\n   - Task: Evaluate engine state",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_71aaaea24b2aff0d",
@@ -16960,7 +16984,8 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_e27c027f08b671e2",
@@ -16973,7 +16998,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-US/unreal-engine/skeletons-and-skeletal-meshes/; https://www.youtube.com/watch?v=example_metahuman_rig\", \"campus\":",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-US/unreal-engine/skeletons-and-skeletal-meshes/; https://www.youtube.com/watch?v=example_metahuman_rig\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_18b87231a6713e09",
@@ -16988,7 +17014,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = B (3.0) - The research provides a clear functional description and references to UE5 skeletons, but lacks specific technical parameters for the dynamic material swapping implementation (e.g., Material Instance creation workflow or LOD distances) and uses placeholder/example URLs instead of verified documentation links.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_c522d2c66591cec7",
@@ -17001,7 +17028,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> failed. {\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server sta",
       "fix_diff": "{\"message\": \"[DynamicToolManager] Initialized with 22 tools across 4 categories\\n[UE-MCP] UE_PROJECT_PATH validated: E:\\\\PythonChimera\\\\Chimera\\\\Chimera.uproject\\n[UE-MCP] Unreal Engine MCP Server started on stdio\\n[UE-MCP] Shutting down MCP server\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "failed",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_85f66afc861750e1",
@@ -17016,7 +17044,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"confidence\": 0.95, \"what_you_see\": \"No engine state data provided in the prompt.\", \"issues\": [\"The input contains only feature description and screenshot path, but lacks the actua",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_658937032b107714",
@@ -17029,7 +17058,8 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_f09562ca1fed21bd",
@@ -17042,7 +17072,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.3/en-US/unreal-engine/skeletal-meshes-and-animations/; https://www.gdcvault.com/play/1026894/The-Art-of-Space-Explorati",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.3/en-US/unreal-engine/skeletal-meshes-and-animations/; https://www.gdcvault.com/play/1026894/The-Art-of-Space-Exploration\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_29d9929f646f84ab",
@@ -17057,7 +17088,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = B (3.0) - The research provides a clear functional description and includes relevant references to Unreal Engine documentation and GDC talks, but the technical parameters are incomplete (lacking mesh resolution, polygon count, LOD levels, animation rig specifications) and lack specific implementation details for the required skeletal animations.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_c75a63fd217a0f4b",
@@ -17070,7 +17102,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> pass. {\"message\": \"mock_geometry_response\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "fix_diff": "{\"message\": \"mock_geometry_response\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_0f6432f4283c1a7d",
@@ -17085,7 +17118,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"confidence\": 0.5, \"what_you_see\": \"The provided engine state data contains placeholder values ('mock_response') for all critical runtime metrics (Scene Stats, Runtime Actors, View",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_d02463d473e4d6cb",
@@ -17098,7 +17132,8 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_3acfbed5ab45c595",
@@ -17111,7 +17146,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.3/en-US/skeletal-meshes-in-unreal-engine/; https://www.gdcvault.com/play/1026894/The-Science-of-Space-Ambience\", \"campu",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.3/en-US/skeletal-meshes-in-unreal-engine/; https://www.gdcvault.com/play/1026894/The-Science-of-Space-Ambience\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_e7a543816023695a",
@@ -17126,7 +17162,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = B (3.0) - The research provides a clear functional description and relevant technical references for skeletal mesh implementation in Unreal Engine, but lacks specific technical parameters such as polygon count, LOD levels, or animation rigging standards required for an 'A' grade.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_269e04c0c329e4fc",
@@ -17139,7 +17176,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> pass. {\"message\": \"mock_geometry_response\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "fix_diff": "{\"message\": \"mock_geometry_response\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_d98b5ca7e4d1a059",
@@ -17154,7 +17192,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"confidence\": 0.5, \"what_you_see\": \"Mock response placeholders for Scene Stats, Runtime Actors, and Viewport; screenshot path provided but not accessible.\", \"issues\": [\"Scene stats",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_c380f27426ba6d4e",
@@ -17167,7 +17206,8 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"B\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_dbcb91b7524e68d2",
@@ -17180,7 +17220,8 @@
       "fix_description": "RalphLoop: research_discovery -> pass. {\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-US/unreal-engine-asset-overview/; https://www.youtube.com/watch?v=example\", \"campus\": \"unreal_engine_craft, spatia",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"source\": \"https://docs.unrealengine.com/5.2/en-US/unreal-engine-asset-overview/; https://www.youtube.com/watch?v=example\", \"campus\": \"unreal_engine_craft, spatial_reasoning, engineering_school\", \"quality_rating\": \"A\"}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "prof_grade_bda2230e87375fc2",
@@ -17195,7 +17236,8 @@
       "error_category": "none",
       "fix_description": "Professor grade: Player_Character_Model = C (2.0) - The research provides a basic conceptual description and generic parameters but lacks specific technical implementation details, real-world references for sci-fi armor or Nanite optimization, and concrete animation/mesh specifications.",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_b9b2c812c2b69ce4",
@@ -17208,7 +17250,8 @@
       "fix_description": "RalphLoop: apply_Player_Character_Model_step1 -> pass. {\"message\": \"success: true | name: SM_Player_Character | class: DynamicMeshActor | width: 200 | height: 200 | depth: 200 | estimatedTriangles: 6 | dimensionsClamped: false | actorPath: /Game/Levels/ch",
       "fix_diff": "{\"message\": \"success: true | name: SM_Player_Character | class: DynamicMeshActor | width: 200 | height: 200 | depth: 200 | estimatedTriangles: 6 | dimensionsClamped: false | actorPath: /Game/Levels/chimeradefaultlevel | actorName: SM_Player_Character | actorGuid: D1FEB0A841E6AAFCBA783E8012B94115 | existsAfter: true | actorClass: DynamicMeshActor | Box mesh created\", \"feature\": \"Player_Character_Model\", \"loop\": 0}",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "vis_verify_ff897ec3d6afa2ef",
@@ -17223,7 +17266,8 @@
       "error_category": "verification_incomplete",
       "fix_description": "Visual verification: Player_Character_Model -> not_verified. {\"verified\": false, \"confidence\": 0.3, \"what_you_see\": \"The engine state shows a basic UE5 scene with default actors (WorldSettings, lights, fog) and multiple StaticMeshActors in the chimeradefaultlev",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_ce0613b7e5fcd461",
@@ -17252,7 +17296,8 @@
       "error_category": "none",
       "fix_description": "Feature 'Player_Character_Model' (Loop 0) -> 'needs_refinement' via RalphLoop",
       "compilation_result": "pass",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "mutation_e7da3fdc5c46cd5a",
@@ -17265,7 +17310,89 @@
       "fix_description": "RalphLoop: ralph_loop_complete_Player_Character_Model -> incomplete. {\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"C\", \"iterations\": 4}",
       "fix_diff": "{\"feature\": \"Player_Character_Model\", \"loop\": 0, \"status\": \"needs_refinement\", \"verified\": false, \"grade\": \"C\", \"iterations\": 4}",
       "compilation_result": "incomplete",
-      "links": []
+      "links": [],
+      "recorded_by": "legacy_pre_provenance"
+    },
+    {
+      "id": "mutation_18607022650a",
+      "type": "Mutation",
+      "timestamp": "2026-07-06T06:06:25.521029",
+      "error_signature": "success_no_error",
+      "template_file": "dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_direction_tests_flight_model_ship_systems_economy_systems_level_procedural_generation",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "DSL parsed with 14 blocks: game, technical, narrative, gameplay, world",
+      "fix_diff": "Parsed DSL blocks: ['game', 'technical', 'narrative', 'gameplay', 'world', 'ui', 'audio', 'art_direction', 'tests', 'flight_model', 'ship_systems', 'economy_systems', 'level', 'procedural_generation']",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_f0d75ee5dc53"
+    },
+    {
+      "id": "mutation_0b71d7d697e8",
+      "type": "Mutation",
+      "timestamp": "2026-07-06T06:07:49.432400",
+      "error_signature": "success_no_error",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "mationBridge\\Private\\McpAutomationBridge_BlueprintGraphHandlers.cpp(1064,66): warning C4996: 'FSoftObjectProperty::FSoftObjectProperty': FSoftObjectProperty constructor with InObjectFlags is deprecated, remove that parameter. - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n          FSoftObjectProperty* SoftProp = new FSoftObjectProperty(TempFunc, FName(*ParamName), RF_Public);\n                                                                 ^\n@progress 'Compiling C++ source code...' 83%\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpAutomationBridge_BlueprintGraphHandlers.cpp(1074,17): warning C4996: 'FField::SetFlags': FField::SetFlags is deprecated, for FProperties consider using PropertyFlags instead. - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n          Prop->SetFlags(RF_Public);\n                ^\n@progress 'Compiling C++ source code...' 86%\n[29/35] Compile [x64] Module.McpAutomationBridge.2.cpp\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n        ForEachObjectWithPackage(Package, [&AssetToSave](UObject* Object) -> bool\n        ^\n[30/35] Compile [x64] Module.McpAutomationBridge.1.cpp\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n        ForEachObjectWithPackage(Package, [&AssetToSave](UObject* Object) -> bool\n        ^\n@progress 'Compiling C++ source code...' 89%\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpAutomationBridgeSubsystem.cpp(582,8): warning C4996: 'GIsSavingPackage': Use the IsSavingPackage() function instead. - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n  if (!GIsSavingPackage && !IsGarbageCollecting() && !IsAsyncLoading()) {\n       ^\n@progress 'Compiling C++ source code...' 91%\n@progress 'Compiling C++ source code...' 94%\n[31/35] Compile [x64] Module.McpAutomationBridge.12.cpp\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n        ForEachObjectWithPackage(Package, [&AssetToSave](UObject* Object) -> bool\n        ^\n[32/35] Link [x64] UnrealEditor-McpAutomationBridge.lib\n[33/35] Link [x64] UnrealEditor-McpAutomationBridge.dll\n@progress 'Compiling C++ source code...' 97%\n[34/35] WriteMetadata ChimeraEditor.target [NoUba]\n@progress 'Compiling C++ source code...' 100%\n[35/35] WriteMetadata ChimeraEditor.target [NoUba]\n\nTotal time in Unreal Build Accelerator local executor: 72.58 seconds\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\n\nResult: Succeeded\nTotal execution time: 83.03 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 21.2kb",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_f0d75ee5dc53"
+    },
+    {
+      "id": "mutation_f50193ea2037",
+      "type": "Mutation",
+      "timestamp": "2026-07-06T06:07:49.468242",
+      "error_signature": "success_no_error",
+      "template_file": "code_generation_unknown",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Generated 0 files across 0 categories",
+      "fix_diff": "Generated files: []",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_f0d75ee5dc53"
+    },
+    {
+      "id": "prof_grade_b1867a4a6f54cffb",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-06T06:09:29.670794+00:00",
+      "feature": "DeepSpaceTrader",
+      "grade": "B",
+      "score": 3.0,
+      "reasoning": "The research provides solid technical parameters for the build verification pipeline, including specific toolchain versions (UE 5.8 C++20), automation plugins (McpAutomationBridge), and a clear implem",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/DeepSpaceTrader",
+      "error_category": "none",
+      "fix_description": "Professor grade: DeepSpaceTrader = B (3.0) - The research provides solid technical parameters for the build verification pipeline, including specific toolchain versions (UE 5.8 C++20), automation plugins (McpAutomationBridge), and a clear implem",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_f0d75ee5dc53"
+    },
+    {
+      "id": "mutation_a887a113ef83",
+      "type": "Mutation",
+      "timestamp": "2026-07-06T06:09:29.707982",
+      "error_signature": "success_no_error",
+      "template_file": "visual_verification/screenshot_analysis",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Visual verification pass: AI analysis completed",
+      "fix_diff": "Verification result: pass, Description: Stage 7 pass. Grade: B",
+      "screenshot_path": null,
+      "feature": "Visual_Verification",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_f0d75ee5dc53"
     }
   ],
   "edges": [

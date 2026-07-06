@@ -1,3 +1,26 @@
+# Session 2026-07-06 (late) — Loop 8 System_SaveLoad implemented, VERIFICATION PENDING
+
+**Branch: `loop8-saveload` (pushed). Do NOT merge to master until the pipeline verifies it.**
+
+Implemented via the generator (workflow-correct):
+- `generate_save_game_class_file()` — SaveGame now stores: credits, cargo map, ship state, player location+rotation, full `FMissionData` arrays (active/available; objective progress survives), completed/failed mission names, faction standings + relationships, station supplies, timestamp. Dropped the lossy `FMissionSaveData` (ID+status only).
+- `generate_save_game_component_files()` — `SaveGame`/`LoadGame` actually read/restore `InventoryTradeComponent` (GetCredits/GetCargo ↔ SetCredits/SetCargo), `MissionComponent` (4 public arrays), `FactionComponent` (both maps), and owner transform via `FindComponentByClass`. Logging on both paths. Was a timestamp-only stub.
+- `InventoryTradeComponent` (manual file, safe from regeneration — verified the generator does not emit it): added `GetCargo()`/`SetCargo()`.
+
+## RESUME (first healthy shell):
+```
+cd E:\PythonChimera\Chimera
+python -m py_compile core/game_code_generator.py
+python run_deep_space_trader_pipeline.py        # regenerates Save/Economy/Factions from templates, builds, verifies
+# green build → merge loop8-saveload to master + push; record:
+python -m core.graphify_record feature --name System_SaveLoad --loop 8 --status implemented
+python -m core.postflight --phase "Loop 8 System_SaveLoad via generator" --result "<UBT verbatim>"
+# Stage 7 may block on empty-level scene verification (known) — build result is the SaveLoad gate.
+```
+Ledger note: loop board shows Loops 3–7 regressed to not_started — artifact of the junk quarantine, needs a re-record pass against reality (assets/level exist).
+
+---
+
 # Session 2026-07-05/06 — Full Pipeline Solidification
 
 ## Final State

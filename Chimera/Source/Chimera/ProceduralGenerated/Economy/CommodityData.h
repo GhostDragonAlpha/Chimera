@@ -28,10 +28,10 @@ public:
 	float CurrentDemand;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity|SupplyDemand")
-	float SupplyMultiplier; // 0.0 to 1.0, affects price based on supply
+	float SupplyMultiplier; // elasticity weight, 0.0 to 1.0
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity|SupplyDemand")
-	float DemandMultiplier; // 0.0 to 1.0, affects price based on demand
+	float DemandMultiplier; // elasticity weight, 0.0 to 1.0
 
 	UFUNCTION(BlueprintCallable, Category = "Commodity|Pricing")
 	float CalculateCurrentPrice() const;
