@@ -105,6 +105,16 @@ int32 UInventoryTradeComponent::GetCargoQuantity(FName Commodity) const
 	return Found ? *Found : 0;
 }
 
+TMap<FName, int32> UInventoryTradeComponent::GetCargo() const
+{
+	return Cargo;
+}
+
+void UInventoryTradeComponent::SetCargo(const TMap<FName, int32>& NewCargo)
+{
+	Cargo = NewCargo;
+}
+
 bool UInventoryTradeComponent::BuyCommodity(FName Commodity, int32 Quantity, float UnitPrice)
 {
 	if (Commodity == NAME_None || Quantity <= 0 || UnitPrice < 0.0f)
