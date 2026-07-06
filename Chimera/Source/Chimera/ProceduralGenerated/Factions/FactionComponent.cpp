@@ -7,37 +7,42 @@ UFactionComponent::UFactionComponent(const FObjectInitializer& ObjectInitializer
 {
 }
 
+namespace
+{
+	// Standing-to-relationship ladder: Hostile <= -75 < Unfriendly <= -25 < Neutral <= 24 < Friendly <= 74 < Allied
+	FString RelationshipForStanding(float Standing)
+	{
+		if (Standing <= -75.0f) return TEXT("Hostile");
+		if (Standing <= -25.0f) return TEXT("Unfriendly");
+		if (Standing <= 24.0f)  return TEXT("Neutral");
+		if (Standing <= 74.0f)  return TEXT("Friendly");
+		return TEXT("Allied");
+	}
+}
+
 void UFactionComponent::InitializeFromDSL()
 {
-	// Hostile: start at -50, Neutral: 0, Friendly: +25
-	FactionRelationships.Add("Hostile");
-	FactionRelationships.Add("Unfriendly");
-	FactionRelationships.Add("Neutral");
-	FactionRelationships.Add("Friendly");
-	FactionRelationships.Add("Allied");
+	// Factions from the game DSL block, seeded at their tier's representative
+	// standing so the derived relationship matches the DSL relation word.
+	const TPair<FName, float> StartingStandings[] = {
+		{ FName(TEXT("faction_orbital_council")), 0.0f },    // neutral
+		{ FName(TEXT("faction_titan_miners")), 25.0f },      // friendly
+		{ FName(TEXT("faction_pirate_syndicate")), -75.0f }, // hostile
+	};
+	for (const TPair<FName, float>& Entry : StartingStandings)
+	{
+		FactionStandings.Add(Entry.Key, Entry.Value);
+		FactionRelationships.Add(Entry.Key, RelationshipForStanding(Entry.Value));
+	}
 }
 
 void UFactionComponent::ModifyStanding(FName FactionID, float Amount)
 {
-	if (!FactionStandings.Contains(FactionID))
-	{
-		FactionStandings.Add(FactionID, 0.0f);
-	}
-	float CurrentStanding = FactionStandings[FactionID] + Amount;
-	CurrentStanding = FMath::Clamp(CurrentStanding, -100.0f, 100.0f);
-	FactionStandings[FactionID] = CurrentStanding;
-
-	// Recalculate relationship:
-	if (CurrentStanding <= -75.0f)
-		FactionRelationships[FactionID] = "Hostile";
-	else if (CurrentStanding <= -25.0f)
-		FactionRelationships[FactionID] = "Unfriendly";
-	else if (CurrentStanding <= +24.0f)
-		FactionRelationships[FactionID] = "Neutral";
-	else if (CurrentStanding <= +74.0f)
-		FactionRelationships[FactionID] = "Friendly";
-	else
-		FactionRelationships[FactionID] = "Allied";
+	// FindOrAdd: TMap::operator[] asserts on missing keys (first standing
+	// change for an unseeded faction crashed before this fix).
+	float& Standing = FactionStandings.FindOrAdd(FactionID);
+	Standing = FMath::Clamp(Standing + Amount, -100.0f, 100.0f);
+	FactionRelationships.FindOrAdd(FactionID) = RelationshipForStanding(Standing);
 }
 
 float UFactionComponent::GetStanding(FName FactionID) const

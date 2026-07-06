@@ -1509,36 +1509,42 @@ if __name__ == "__main__":
         source_content += "{\n"
         source_content += "}\n\n"
 
+        source_content += "namespace\n"
+        source_content += "{\n"
+        source_content += "\t// Standing-to-relationship ladder: Hostile <= -75 < Unfriendly <= -25 < Neutral <= 24 < Friendly <= 74 < Allied\n"
+        source_content += "\tFString RelationshipForStanding(float Standing)\n"
+        source_content += "\t{\n"
+        source_content += '\t\tif (Standing <= -75.0f) return TEXT("Hostile");\n'
+        source_content += '\t\tif (Standing <= -25.0f) return TEXT("Unfriendly");\n'
+        source_content += '\t\tif (Standing <= 24.0f)  return TEXT("Neutral");\n'
+        source_content += '\t\tif (Standing <= 74.0f)  return TEXT("Friendly");\n'
+        source_content += '\t\treturn TEXT("Allied");\n'
+        source_content += "\t}\n"
+        source_content += "}\n\n"
+
         source_content += f"void UFactionComponent::InitializeFromDSL()\n"
         source_content += "{\n"
-        source_content += "\t// Hostile: start at -50, Neutral: 0, Friendly: +25\n"
-        source_content += '\tFactionRelationships.Add("Hostile");\n'
-        source_content += '\tFactionRelationships.Add("Unfriendly");\n'
-        source_content += '\tFactionRelationships.Add("Neutral");\n'
-        source_content += '\tFactionRelationships.Add("Friendly");\n'
-        source_content += '\tFactionRelationships.Add("Allied");\n'
+        source_content += "\t// Factions from the game DSL block, seeded at their tier's representative\n"
+        source_content += "\t// standing so the derived relationship matches the DSL relation word.\n"
+        source_content += "\tconst TPair<FName, float> StartingStandings[] = {\n"
+        source_content += '\t\t{ FName(TEXT("faction_orbital_council")), 0.0f },    // neutral\n'
+        source_content += '\t\t{ FName(TEXT("faction_titan_miners")), 25.0f },      // friendly\n'
+        source_content += '\t\t{ FName(TEXT("faction_pirate_syndicate")), -75.0f }, // hostile\n'
+        source_content += "\t};\n"
+        source_content += "\tfor (const TPair<FName, float>& Entry : StartingStandings)\n"
+        source_content += "\t{\n"
+        source_content += "\t\tFactionStandings.Add(Entry.Key, Entry.Value);\n"
+        source_content += "\t\tFactionRelationships.Add(Entry.Key, RelationshipForStanding(Entry.Value));\n"
+        source_content += "\t}\n"
         source_content += "}\n\n"
 
         source_content += f"void UFactionComponent::ModifyStanding(FName FactionID, float Amount)\n"
         source_content += "{\n"
-        source_content += "\tif (!FactionStandings.Contains(FactionID))\n"
-        source_content += "\t{\n"
-        source_content += "\t\tFactionStandings.Add(FactionID, 0.0f);\n"
-        source_content += "\t}\n"
-        source_content += f"\tfloat CurrentStanding = FactionStandings[FactionID] + Amount;\n"
-        source_content += "\tCurrentStanding = FMath::Clamp(CurrentStanding, -100.0f, 100.0f);\n"
-        source_content += f"\tFactionStandings[FactionID] = CurrentStanding;\n\n"
-        source_content += "\t// Recalculate relationship:\n"
-        source_content += "\tif (CurrentStanding <= -75.0f)\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Hostile";\n'
-        source_content += "\telse if (CurrentStanding <= -25.0f)\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Unfriendly";\n'
-        source_content += "\telse if (CurrentStanding <= +24.0f)\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Neutral";\n'
-        source_content += "\telse if (CurrentStanding <= +74.0f)\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Friendly";\n'
-        source_content += "\telse\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Allied";\n'
+        source_content += "\t// FindOrAdd: TMap::operator[] asserts on missing keys (first standing\n"
+        source_content += "\t// change for an unseeded faction crashed before this fix).\n"
+        source_content += "\tfloat& Standing = FactionStandings.FindOrAdd(FactionID);\n"
+        source_content += "\tStanding = FMath::Clamp(Standing + Amount, -100.0f, 100.0f);\n"
+        source_content += "\tFactionRelationships.FindOrAdd(FactionID) = RelationshipForStanding(Standing);\n"
         source_content += "}\n\n"
 
         source_content += f"float UFactionComponent::GetStanding(FName FactionID) const\n"
@@ -1550,13 +1556,13 @@ if __name__ == "__main__":
         source_content += f"FString UFactionComponent::GetRelationship(FName FactionID) const\n"
         source_content += "{\n"
         source_content += "\tif (FactionRelationships.Contains(FactionID)) return FactionRelationships[FactionID];\n"
-        source_content += '\treturn "Neutral";'
+        source_content += '\treturn "Neutral";\n'
         source_content += "}\n\n"
 
         source_content += f"bool UFactionComponent::IsHostile(FName FactionID) const\n"
         source_content += "{\n"
         source_content += "\tif (FactionRelationships.Contains(FactionID))\n"
-        source_content += '\t\treturn FactionRelationships[FactionID] == "Hostile";'
+        source_content += '\t\treturn FactionRelationships[FactionID] == "Hostile";\n'
         source_content += "\treturn false;\n"
         source_content += "}\n"
 
