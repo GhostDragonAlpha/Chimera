@@ -50,3 +50,6 @@ session_records/
 
 # Local clone of the graphify tool (own git repo — would embed a broken gitlink)
 Chimera/tools/graphify/
+
+# Playwright MCP session artifacts (page snapshots/screenshots)
+.playwright-mcp/
