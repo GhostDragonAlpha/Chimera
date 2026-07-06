@@ -21319,6 +21319,68 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_a69ae358b070"
+    },
+    {
+      "id": "pathway_attempt_e7fbb6ba12043a86",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-06T19:43:06.875868",
+      "tool": "animation_physics",
+      "action": "add_anim_notify",
+      "parameters_tried": {
+        "NOTE": "facade #3 branch confirmed as NOT_IMPLEMENTED: add_anim_notify and get_anim_sequence_info both absent from McpAutomationBridge (honest error, no fake success)"
+      },
+      "result": "failed",
+      "error_message": "",
+      "error_signature": "pathway_attempt_failed",
+      "template_file": "pathway_attempt/animation_physics/add_anim_notify",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'animation_physics', action 'add_anim_notify', result 'failed'",
+      "compilation_result": "failed",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_06e83587a65a"
+    },
+    {
+      "id": "surprise_3ddd345289e269b4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-06T19:43:07.010296",
+      "context": "Footprints study guide hinge add_anim_notify: expected risk was facade #3 (fake success:true that only read-back would catch)",
+      "expectation": "",
+      "reality": "Bridge returns honest NOT_IMPLEMENTED for add_anim_notify AND get_anim_sequence_info - the actions do not exist; failure mode is absence, not facade; read-back tool itself is also missing",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Bridge returns honest NOT_IMPLEMENTED for add_anim_notify AND get_anim_sequence_'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f21afd84e85e"
+    },
+    {
+      "id": "phase_17828713d9c76201",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-06T19:43:37.717654",
+      "phase": "Ground_Sand_Footprints retry: tested the add_anim_notify hinge (NEXT item 2)",
+      "result": "add_anim_notify t=0.3 and t=0.8 both: success: false | error: Animation/Physics action 'add_anim_notify' not implemented | NOT_IMPLEMENTED. get_anim_sequence_info: identical NOT_IMPLEMENTED. No asset modified. Recorded pathway_attempt_e7fbb6ba12043a86 + surprise_3ddd345289e269b4",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Ground_Sand_Footprints retry: tested the add_anim_notify hinge (NEXT item 2)",
+      "error_category": "none",
+      "fix_description": "Phase 'Ground_Sand_Footprints retry: tested the add_anim_notify hinge (NEXT item 2)' complete: add_anim_notify t=0.3 and t=0.8 both: success: false | error: Animation/Physics action 'add_anim_notify' not implemented | NOT_IMPLEMENTED. get_anim_sequence_info: identical NOT_IMPLEMENTED. No asset ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "When a capable session implements add_anim_notify and reruns the recipe, notifies will add and read back fine but PIE footstep events will STILL not fire, because configure_footstep_fx only echoed scale vars (facade-scent) and the BP AnimNotify event wiring was never confirmed."
+      ],
+      "inheritance": "Footprints retry dead-ended at step (a): the bridge implements neither add_anim_notify nor get_anim_sequence_info, so the study-guide hinge cannot be tested until McpAutomationBridge grows both actions (capable sessions only). No asset changed; grade stands C 72.9 needs_refinement. With human queues untouched, duty successors will fall to branch D (pipeline health check).",
+      "pain_verdicts": {
+        "phase_fda9e71b0c0841b4:P2": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_eb04dc8680e1"
     }
   ],
   "edges": [

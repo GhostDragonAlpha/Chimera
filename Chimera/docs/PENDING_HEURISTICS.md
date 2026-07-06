@@ -141,3 +141,14 @@ Wait, looking at the
 - sample: UBT compilation fail: error C2039: not a member
 - draft_rule: A build-failure grade must carry the failing file:line verbatim — "no error text captured" makes the F untriageable and wastes the retry.
 - agent_note: Same family as H-1 (template drift) but the distinct lesson is OBSERVABILITY: one sample lost the error text entirely. Recommend APPROVE -> claude_md (record UBT output verbatim, always), or fold into H-7's capture-the-right-stream rule if you prefer one observability heuristic.
+
+<!-- distilled 2026-07-06T19:43:37Z -->
+## H-13: grade_CF: System_Economy
+- status: pending
+- kind: grade  |  count: 3  |  last_seen: 2026-07-06T06:58:24
+- proposed_organ: claude_md
+- evidence: professor_grade_7886af92f495ccd1, professor_grade_364a07e3116f20a6, professor_grade_bf25d5d3a1fc673f
+- sample: Professor review: Price bounds D, Fluctuation F (needs mean reversion), Station spread A. Overall C pending adjustments.
+- sample: [result-grader 52.8/100] correctness 13.3/40: 1/1 tests passed; coverage 1/3 declared criteria | stability 15.0/25: crash-free; fps unmeasured (0/5); growth unm
+- sample: [result-grader 59.5/100] correctness 20.0/40: 2/2 tests passed; coverage 2/4 declared criteria | stability 15.0/25: crash-free; fps unmeasured (0/5); growth unm
+- draft_rule: Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps; run telemetry foregrounded and test every declared criterion before grading System_Economy.

@@ -1,8 +1,8 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-06T18:34:16Z
+consolidated: 2026-07-06T19:43:37Z
 
 ## Awaiting your approval
-12 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
+13 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
 - H-1: compilation_fail
 - H-2: grade_CF: Visual_Verification
 - H-3: verification_not_verified
@@ -17,8 +17,8 @@ consolidated: 2026-07-06T18:34:16Z
 - phase_762486f41e1aeafb:P1 [0d] The 20-deep observation queue will rot unobserved unless verdicts become habitual - if none are recorded within a week the collapse step failed as designed
 - phase_762486f41e1aeafb:P3 [0d] Expect human rejections to reopen [DONE*] loops when observed (sand particles are white bubbles at B 79.3) - the first rejections will demote board state and that is the system working
 - phase_fda9e71b0c0841b4:P1 [0d] The successor will trust a success:true echo without read-back at least once despite prime directive 5 - watch the footprints retry for facade-blindness
-- phase_fda9e71b0c0841b4:P2 [0d] add_anim_notify is the untested hinge of the footprints study guide - if it is facade #3 the feature stalls until the bridge plugin is repaired
 - phase_fda9e71b0c0841b4:P3 [0d] Zero human verdicts have been recorded since the queues opened - if a week passes with the Gardener and Observer idle, the protocol is running open-circuit and DONE* loops are quietly rotting
+- phase_17828713d9c76201:P1 [0d] When a capable session implements add_anim_notify and reruns the recipe, notifies will add and read back fine but PIE footstep events will STILL not fire, because configure_footstep_fx only echoed scale vars (facade-scent) and the BP AnimNotify event wiring was never confirmed.
 
 ## Observation queue — the true collapse awaits your eyes
 - Loop 2 **Verb_Look** (system-verified 2026-07-04T04:38:08)
@@ -36,7 +36,7 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Tonight's distillation
 ```
-clusters >= 3: 15  |  suppressed (covered/pending): 12  |  staged: 2  |  deferred by cap: 1
+clusters >= 3: 15  |  suppressed (covered/pending): 14  |  staged: 1
   covered   [ 60x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 25x] verification_not_verified  <- PENDING_HEURISTICS.md
@@ -47,18 +47,18 @@ clusters >= 3: 15  |  suppressed (covered/pending): 12  |  staged: 2  |  deferre
   covered   [ 12x] grade_CF: Player_Character_Lighting  <- PENDING_HEURISTICS.md
   covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Lighting  <- PENDING_HEURISTICS.md
   covered   [ 12x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
+  covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Model  <- PENDING_HEURISTICS.md
+  covered   [ 11x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [  4x] grade_CF: Player_Character_Model  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
-  CANDIDATE [ 12x] ralph_ralph_loop_complete_Player_Character_Model
-  CANDIDATE [ 11x] grade_CF: Build_Pipeline
-  deferred  [  3x] grade_CF: System_Economy (cap; next night)
+  CANDIDATE [  3x] grade_CF: System_Economy
 
-staged 2 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
+staged 1 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
 next: agent drafts each draft_rule from evidence; human approves/vetoes; approved rules promote via graphify_record heuristic.
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1290  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1294  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

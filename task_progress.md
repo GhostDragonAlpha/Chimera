@@ -1,3 +1,35 @@
+# Session 2026-07-06 (duty cycle) — FOOTPRINTS HINGE TESTED: add_anim_notify is NOT_IMPLEMENTED
+
+**One cycle, branch C, NEXT item 2 (Ground_Sand_Footprints retry).** Recipe step (a) dead-ended:
+`animation_physics` `add_anim_notify` (t=0.3 and t=0.8) both returned
+`success: false | error: Animation/Physics action 'add_anim_notify' not implemented`. The read-back
+tool `get_anim_sequence_info` is ALSO NOT_IMPLEMENTED — the study-guide hinge does not exist in the
+bridge at all (honest absence, not facade). No asset modified; grade stands C 72.9 needs_refinement.
+Recorded: pathway_attempt_e7fbb6ba12043a86 (failed), surprise_3ddd345289e269b4, phase_17828713d9c76201.
+Pain fda9e71b:P2 CONFIRMED. Dream loop staged H-13 (grade_CF: System_Economy); draft_rule written,
+inert until Gardener rules. Human queues still untouched: 13 heuristics + 20 observations.
+
+## NEXT (each item carries its recipe — the handoff invariant; execute exactly, add nothing)
+1. **Human queues first** when verdicts arrive (recipes: CYCLE_PROMPT branches A/B):
+   13 heuristics in Chimera/docs/PENDING_HEURISTICS.md + 20-feature observation queue.
+   Skip-condition: no human verdicts given → next item.
+2. **`capable sessions only`**: implement `add_anim_notify` + `get_anim_sequence_info` in
+   Plugins/McpAutomationBridge (both return NOT_IMPLEMENTED; evidence
+   pathway_attempt_e7fbb6ba12043a86). Then rerun the footprints retry EXACTLY:
+   a. `animation_physics` `add_anim_notify` `{assetPath:"/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd", notifyName:"FootPlant", time:0.3}` then again `time:0.8`;
+   b. read back with `get_anim_sequence_info` on the same asset; notifies absent → record pathway failed → STOP;
+   c. present → `control_editor` `save_all`, record pathway success, note "BP wiring remains — capable sessions only" → STOP.
+3. **`capable sessions only`** (carried): repair McpAutomationBridge Niagara authoring (UE5.8
+   stateless emitters); then pay sand fidelity debt (color #8B7D6B, gravity −162); astronaut as
+   GameMode default pawn (generator template); helmet into BP as SCS component; DSL narrative
+   block from STORY_BIBLE.md.
+4. **Fallback (no verdicts, not capable)**: pipeline health check —
+   `cd E:\PythonChimera\Chimera && python run_deep_space_trader_pipeline.py`; record the UBT
+   result line VERBATIM in postflight. If it fails, do NOT touch generated C++; the recorded
+   failure is the work. Skip-condition: none (always executable).
+
+---
+
 # Session 2026-07-06 (succession) — TWO HONEST CYCLES + THE RUNBOOK: prepared for a weaker heir
 
 **Cycle 1 — Ground_Sand_Particles fidelity debt: formally BRIDGE-BLOCKED.** Binary scan proved
