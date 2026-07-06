@@ -385,11 +385,17 @@ class GameCodeGenerator:
             if md_path:
                 generated_files["combat_components"].append(md_path)
                 
-        # Generate faction component files
-        if "narrative" in dsl_data and "factions" in dsl_data.get("narrative", {}):
+        # Generate faction component files (DSL defines factions in the game block;
+        # keep the legacy narrative.factions gate for older specs)
+        if "factions" in dsl_data.get("game", {}) or "factions" in dsl_data.get("narrative", {}):
             fc_h, fc_c = self.generate_faction_component_files()
             generated_files["combat_components"].extend([fc_h, fc_c])
-            
+
+        # Generate economy files (commodities, market pricing, station trading)
+        if "economy_systems" in dsl_data:
+            eco_files = self.generate_economy_files()
+            generated_files["combat_components"].extend(eco_files)
+
         # Generate save game files
         sgh_path, sg_cpp = self.generate_save_game_class_file()
         sgc_h, sgc_c = self.generate_save_game_component_files()
@@ -1509,36 +1515,42 @@ if __name__ == "__main__":
         source_content += "{\n"
         source_content += "}\n\n"
 
+        source_content += "namespace\n"
+        source_content += "{\n"
+        source_content += "\t// Standing-to-relationship ladder: Hostile <= -75 < Unfriendly <= -25 < Neutral <= 24 < Friendly <= 74 < Allied\n"
+        source_content += "\tFString RelationshipForStanding(float Standing)\n"
+        source_content += "\t{\n"
+        source_content += '\t\tif (Standing <= -75.0f) return TEXT("Hostile");\n'
+        source_content += '\t\tif (Standing <= -25.0f) return TEXT("Unfriendly");\n'
+        source_content += '\t\tif (Standing <= 24.0f)  return TEXT("Neutral");\n'
+        source_content += '\t\tif (Standing <= 74.0f)  return TEXT("Friendly");\n'
+        source_content += '\t\treturn TEXT("Allied");\n'
+        source_content += "\t}\n"
+        source_content += "}\n\n"
+
         source_content += f"void UFactionComponent::InitializeFromDSL()\n"
         source_content += "{\n"
-        source_content += "\t// Hostile: start at -50, Neutral: 0, Friendly: +25\n"
-        source_content += '\tFactionRelationships.Add("Hostile");\n'
-        source_content += '\tFactionRelationships.Add("Unfriendly");\n'
-        source_content += '\tFactionRelationships.Add("Neutral");\n'
-        source_content += '\tFactionRelationships.Add("Friendly");\n'
-        source_content += '\tFactionRelationships.Add("Allied");\n'
+        source_content += "\t// Factions from the game DSL block, seeded at their tier's representative\n"
+        source_content += "\t// standing so the derived relationship matches the DSL relation word.\n"
+        source_content += "\tconst TPair<FName, float> StartingStandings[] = {\n"
+        source_content += '\t\t{ FName(TEXT("faction_orbital_council")), 0.0f },    // neutral\n'
+        source_content += '\t\t{ FName(TEXT("faction_titan_miners")), 25.0f },      // friendly\n'
+        source_content += '\t\t{ FName(TEXT("faction_pirate_syndicate")), -75.0f }, // hostile\n'
+        source_content += "\t};\n"
+        source_content += "\tfor (const TPair<FName, float>& Entry : StartingStandings)\n"
+        source_content += "\t{\n"
+        source_content += "\t\tFactionStandings.Add(Entry.Key, Entry.Value);\n"
+        source_content += "\t\tFactionRelationships.Add(Entry.Key, RelationshipForStanding(Entry.Value));\n"
+        source_content += "\t}\n"
         source_content += "}\n\n"
 
         source_content += f"void UFactionComponent::ModifyStanding(FName FactionID, float Amount)\n"
         source_content += "{\n"
-        source_content += "\tif (!FactionStandings.Contains(FactionID))\n"
-        source_content += "\t{\n"
-        source_content += "\t\tFactionStandings.Add(FactionID, 0.0f);\n"
-        source_content += "\t}\n"
-        source_content += f"\tfloat CurrentStanding = FactionStandings[FactionID] + Amount;\n"
-        source_content += "\tCurrentStanding = FMath::Clamp(CurrentStanding, -100.0f, 100.0f);\n"
-        source_content += f"\tFactionStandings[FactionID] = CurrentStanding;\n\n"
-        source_content += "\t// Recalculate relationship:\n"
-        source_content += "\tif (CurrentStanding <= -75.0f)\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Hostile";\n'
-        source_content += "\telse if (CurrentStanding <= -25.0f)\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Unfriendly";\n'
-        source_content += "\telse if (CurrentStanding <= +24.0f)\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Neutral";\n'
-        source_content += "\telse if (CurrentStanding <= +74.0f)\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Friendly";\n'
-        source_content += "\telse\n"
-        source_content += '\t\tFactionRelationships[FactionID] = "Allied";\n'
+        source_content += "\t// FindOrAdd: TMap::operator[] asserts on missing keys (first standing\n"
+        source_content += "\t// change for an unseeded faction crashed before this fix).\n"
+        source_content += "\tfloat& Standing = FactionStandings.FindOrAdd(FactionID);\n"
+        source_content += "\tStanding = FMath::Clamp(Standing + Amount, -100.0f, 100.0f);\n"
+        source_content += "\tFactionRelationships.FindOrAdd(FactionID) = RelationshipForStanding(Standing);\n"
         source_content += "}\n\n"
 
         source_content += f"float UFactionComponent::GetStanding(FName FactionID) const\n"
@@ -1550,13 +1562,13 @@ if __name__ == "__main__":
         source_content += f"FString UFactionComponent::GetRelationship(FName FactionID) const\n"
         source_content += "{\n"
         source_content += "\tif (FactionRelationships.Contains(FactionID)) return FactionRelationships[FactionID];\n"
-        source_content += '\treturn "Neutral";'
+        source_content += '\treturn "Neutral";\n'
         source_content += "}\n\n"
 
         source_content += f"bool UFactionComponent::IsHostile(FName FactionID) const\n"
         source_content += "{\n"
         source_content += "\tif (FactionRelationships.Contains(FactionID))\n"
-        source_content += '\t\treturn FactionRelationships[FactionID] == "Hostile";'
+        source_content += '\t\treturn FactionRelationships[FactionID] == "Hostile";\n'
         source_content += "\treturn false;\n"
         source_content += "}\n"
 
@@ -1564,6 +1576,307 @@ if __name__ == "__main__":
             f.write(source_content)
 
         return str(header_path), str(source_path)
+
+    def generate_economy_files(self) -> list[str]:
+        """Generate the Economy module: CommodityData, EconomyManager, StationTradingData.
+
+        Pricing model: price = BasePrice * clamp(pow(Demand/Supply, elasticity), 0.25, 4.0)
+        where elasticity = clamp(SupplyMultiplier + DemandMultiplier, 0.1, 2.0).
+        Brought under generator ownership 2026-07-06 (was orphaned hand-maintained code).
+        """
+        source_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated/Economy")
+        source_dir.mkdir(parents=True, exist_ok=True)
+
+        files = {}
+
+        files["CommodityData.h"] = '''#pragma once
+
+#include "CoreMinimal.h"
+#include "Engine/DataAsset.h"
+#include "CommodityData.generated.h"
+
+UCLASS(Blueprintable, BlueprintType)
+class CHIMERA_API UCommodityData : public UDataAsset
+{
+	GENERATED_BODY()
+
+public:
+	UCommodityData();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity")
+	FString CommodityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity")
+	FString Description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity|Pricing")
+	float BasePrice;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity|SupplyDemand")
+	float CurrentSupply;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity|SupplyDemand")
+	float CurrentDemand;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity|SupplyDemand")
+	float SupplyMultiplier; // elasticity weight, 0.0 to 1.0
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Commodity|SupplyDemand")
+	float DemandMultiplier; // elasticity weight, 0.0 to 1.0
+
+	UFUNCTION(BlueprintCallable, Category = "Commodity|Pricing")
+	float CalculateCurrentPrice() const;
+};
+'''
+
+        files["CommodityData.cpp"] = '''#include "CommodityData.h"
+
+UCommodityData::UCommodityData()
+{
+	BasePrice = 100.0f;
+	CurrentSupply = 1000.0f;
+	CurrentDemand = 1000.0f;
+	SupplyMultiplier = 0.5f;
+	DemandMultiplier = 0.5f;
+}
+
+float UCommodityData::CalculateCurrentPrice() const
+{
+	// Price follows the demand/supply ratio: ratio > 1 (scarcity) raises price,
+	// ratio < 1 (glut) lowers it. SupplyMultiplier + DemandMultiplier act as the
+	// market's elasticity: at the defaults (0.5 + 0.5 = 1.0) price scales linearly
+	// with D/S; higher values make prices more sensitive to imbalance.
+	float epsilon = 1.0f; // Prevent division by zero
+	float ratio = (CurrentDemand + epsilon) / (CurrentSupply + epsilon);
+	float elasticity = FMath::Clamp(SupplyMultiplier + DemandMultiplier, 0.1f, 2.0f);
+	float priceMultiplier = FMath::Pow(ratio, elasticity);
+
+	// Clamp so a trade route can swing at most 4x either way
+	priceMultiplier = FMath::Clamp(priceMultiplier, 0.25f, 4.0f);
+
+	return BasePrice * priceMultiplier;
+}
+'''
+
+        files["StationTradingData.h"] = '''#pragma once
+
+#include "CoreMinimal.h"
+#include "Engine/DataAsset.h"
+#include "StationTradingData.generated.h"
+
+UCLASS(Blueprintable, BlueprintType)
+class CHIMERA_API UStationTradingData : public UDataAsset
+{
+	GENERATED_BODY()
+
+public:
+	UStationTradingData();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Station")
+	FString StationName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Station|Location")
+	FVector Location;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Station|Trading")
+	float BuyPriceMultiplier; // Multiplier for buying prices from station (e.g., 0.9 for 10% discount)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Station|Trading")
+	float SellPriceMultiplier; // Multiplier for selling prices to station (e.g., 1.1 for 10% markup)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Station|Inventory")
+	TArray<FString> AvailableCommodities;
+
+	UFUNCTION(BlueprintCallable, Category = "Station|Trading")
+	float GetBuyPriceForCommodity(FString CommodityName, float BasePrice) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Station|Trading")
+	float GetSellPriceForCommodity(FString CommodityName, float BasePrice) const;
+};
+'''
+
+        files["StationTradingData.cpp"] = '''#include "StationTradingData.h"
+
+UStationTradingData::UStationTradingData()
+{
+	BuyPriceMultiplier = 0.9f; // Buy at 10% discount
+	SellPriceMultiplier = 1.1f; // Sell at 10% markup
+}
+
+float UStationTradingData::GetBuyPriceForCommodity(FString CommodityName, float BasePrice) const
+{
+	return BasePrice * BuyPriceMultiplier;
+}
+
+float UStationTradingData::GetSellPriceForCommodity(FString CommodityName, float BasePrice) const
+{
+	return BasePrice * SellPriceMultiplier;
+}
+'''
+
+        files["EconomyManager.h"] = '''#pragma once
+
+#include "CoreMinimal.h"
+#include "Engine/World.h"
+#include "CommodityData.h"
+#include "StationTradingData.h"
+#include "EconomyManager.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCommodityPriceChanged, FString, CommodityName, float, NewPrice);
+
+UCLASS(Blueprintable, BlueprintType)
+class CHIMERA_API UEconomyManager : public UActorComponent
+{
+	GENERATED_BODY()
+
+public:
+	UEconomyManager();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Economy|Commodities")
+	TArray<UCommodityData*> CommodityList;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Economy|Stations")
+	TArray<UStationTradingData*> StationTradingList;
+
+	UPROPERTY(BlueprintAssignable, Category = "Economy|Events")
+	FOnCommodityPriceChanged OnCommodityPriceChanged;
+
+	UFUNCTION(BlueprintCallable, Category = "Economy|Management")
+	void UpdateCommodityPrices(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable, Category = "Economy|Management")
+	float GetCommodityPrice(FString CommodityName) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Economy|Management")
+	UCommodityData* GetCommodityByName(FString CommodityName) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Economy|SupplyDemand")
+	void AdjustCommoditySupply(FString CommodityName, float SupplyChange);
+
+	UFUNCTION(BlueprintCallable, Category = "Economy|SupplyDemand")
+	void AdjustCommodityDemand(FString CommodityName, float DemandChange);
+
+private:
+	void CalculateStationTradePrices(UStationTradingData* StationData);
+};
+'''
+
+        files["EconomyManager.cpp"] = '''#include "EconomyManager.h"
+
+UEconomyManager::UEconomyManager()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+}
+
+void UEconomyManager::BeginPlay()
+{
+	Super::BeginPlay();
+
+	for (UStationTradingData* StationData : StationTradingList)
+	{
+		CalculateStationTradePrices(StationData);
+	}
+}
+
+void UEconomyManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	UpdateCommodityPrices(DeltaTime);
+}
+
+void UEconomyManager::UpdateCommodityPrices(float DeltaTime)
+{
+	for (UCommodityData* Commodity : CommodityList)
+	{
+		if (!Commodity) continue;
+
+		float OldPrice = Commodity->CalculateCurrentPrice();
+
+		// Simulate natural supply/demand fluctuations over time
+		// Small random variations to simulate market dynamics
+		float SupplyFluctuation = FMath::RandRange(-0.5f, 0.5f) * DeltaTime;
+		float DemandFluctuation = FMath::RandRange(-0.5f, 0.5f) * DeltaTime;
+
+		Commodity->CurrentSupply += SupplyFluctuation * Commodity->CurrentSupply * 0.01f;
+		Commodity->CurrentDemand += DemandFluctuation * Commodity->CurrentDemand * 0.01f;
+
+		float NewPrice = Commodity->CalculateCurrentPrice();
+
+		if (FMath::Abs(NewPrice - OldPrice) > 0.1f)
+		{
+			OnCommodityPriceChanged.Broadcast(Commodity->CommodityName, NewPrice);
+		}
+	}
+}
+
+float UEconomyManager::GetCommodityPrice(FString CommodityName) const
+{
+	UCommodityData* Commodity = GetCommodityByName(CommodityName);
+	if (Commodity)
+	{
+		return Commodity->CalculateCurrentPrice();
+	}
+	return 0.0f;
+}
+
+UCommodityData* UEconomyManager::GetCommodityByName(FString CommodityName) const
+{
+	for (UCommodityData* Commodity : CommodityList)
+	{
+		if (Commodity && Commodity->CommodityName == CommodityName)
+		{
+			return Commodity;
+		}
+	}
+	return nullptr;
+}
+
+void UEconomyManager::AdjustCommoditySupply(FString CommodityName, float SupplyChange)
+{
+	UCommodityData* Commodity = GetCommodityByName(CommodityName);
+	if (Commodity)
+	{
+		Commodity->CurrentSupply += SupplyChange;
+		Commodity->CurrentSupply = FMath::Max(Commodity->CurrentSupply, 0.0f);
+	}
+}
+
+void UEconomyManager::AdjustCommodityDemand(FString CommodityName, float DemandChange)
+{
+	UCommodityData* Commodity = GetCommodityByName(CommodityName);
+	if (Commodity)
+	{
+		Commodity->CurrentDemand += DemandChange;
+		Commodity->CurrentDemand = FMath::Max(Commodity->CurrentDemand, 0.0f);
+	}
+}
+
+void UEconomyManager::CalculateStationTradePrices(UStationTradingData* StationData)
+{
+	if (!StationData) return;
+
+	// Station prices are computed on demand via GetBuy/SellPriceForCommodity, which
+	// multiply these directly — sanitize once at startup so a bad data asset can
+	// never produce zero or negative trade prices.
+	StationData->BuyPriceMultiplier = FMath::Clamp(StationData->BuyPriceMultiplier, 0.1f, 10.0f);
+	StationData->SellPriceMultiplier = FMath::Clamp(StationData->SellPriceMultiplier, 0.1f, 10.0f);
+}
+'''
+
+        out_paths = []
+        for name, content in files.items():
+            path = source_dir / name
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            out_paths.append(str(path))
+        return out_paths
 
     def generate_save_game_class_file(self) -> tuple[str, str]:
         """Generate DeepSpaceTraderSaveGame.h and .cpp."""
