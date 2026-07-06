@@ -1,10 +1,17 @@
 # Chimera — Build System Reference
 
 ## NEW AGENT? START HERE (in order)
-1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment.
+1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment, and **[4.5] Inheritance** (previous generation's Will, open phantom pains, Dream Report count, Observation queue).
 2. Read `E:\PythonChimera\task_progress.md` — session handoff log; the top **NEXT** section is your work list.
 3. Work under the Contract (below): typed recording only (`record_*` helpers), fix generator templates never generated C++, and answer the Frame Audit (`Chimera/docs/RESULT_GRADING_RUBRIC.md`) before declaring anything complete.
-4. Finish with `python -m core.postflight --phase "..." --result "<UBT verbatim>"` and update `task_progress.md` for the next agent.
+4. Finish with `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"` and update `task_progress.md` for the next agent.
+
+## Generation Protocol (mandatory rhythm — full spec: Chimera/docs/GENERATION_PROTOCOL.md)
+- **Fork before researching** (preferred): `python -m core.spiral_forks --feature X --use-lm` — 3 briefs (conservative/alternative/wild), winner proceeds after citation verification, losers autopsied. Forks never touch live state.
+- **Capture surprises live**: `python -m core.graphify_record surprise --context "..." --reality "..." --source human|agent|engine` on any correction, dead-end, or expectation violation.
+- **`verified` is the system's PRELIMINARY measurement.** The human's Observation is the true collapse: `graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N` — **agents NEVER record observations**. Accepted → `observed`; rejected → `needs_refinement` with the human's notes as first-priority dream fodder. Boards show `[DONE*]` until observed.
+- **The human Gardener approves EVERY heuristic** before it enters the constitution (`Chimera/docs/PENDING_HEURISTICS.md`; pending = inert; vetoed entries stay as tombstones).
+- **Nightly**: `python -m core.dream_loop` — distills ≤2 candidates, previews compaction, writes `Chimera/docs/DREAM_REPORT.md`.
 
 ## Canonical Project Structure
 

@@ -4,6 +4,14 @@
 declared acceptance criteria (the coverage denominator). The grading agent never declares
 or shrinks the exam at grading time.
 
+**The grade is the system's preliminary measurement — the human's Observation is the
+true collapse** (Generation Protocol). A/B advances a feature to `verified` and stages it
+in the Observation queue; only the human's `accepted` verdict makes it `observed` (truly
+done), and a human `rejected` reopens it regardless of the grade, with the human's notes
+as first-priority study material. Canonical example: Ground_Sand_Particles scored an
+honest B 79.3 on its declared criteria while visibly being a white fountain, not sand —
+exactly the gap the human observation step exists to catch.
+
 The grade for a feature comes from **measuring the built result**, judged by the driving
 agent against this rubric. **No runtime model dependency**: no LM Studio, no local LLM in
 the gate path. Where judgment is required, the agent applies the written criteria below

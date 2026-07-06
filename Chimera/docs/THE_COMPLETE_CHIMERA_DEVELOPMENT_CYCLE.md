@@ -357,7 +357,7 @@ The Feature Ledger tracks every feature across all loops. Each feature gets a no
 
 ### PRE-FLIGHT: Before ANY phase
 
-> **Current conventions (2026-07-06):** Pre-Flight is one command: `python -m core.preflight`; Post-Flight: `python -m core.postflight --phase "..." --result "<UBT verbatim>"`. Never hand-write mutation dicts — use the typed helpers (`record_feature`/`record_pathway`/`record_loop`/`record_phase`/`record_grade`/`record_build`) or `python -m core.graphify_record`; mis-keyed writes are rejected with `rejected_*` and every node is auto-stamped `recorded_by`+`run_id`. Generator-owned C++ (Flight, Ship, GameMode, PCG, Missions, Docking, QuantumTravel, Factions, Economy, Save, Combat suite, PirateAI) is regenerated every pipeline run — fix templates in `core/game_code_generator.py`, never the C++. Build failures auto-grade F; non-pass visual verification grades C; stale trees under `Source/` fail the build.
+> **Current conventions (2026-07-06, Generation Protocol era):** Pre-Flight is one command: `python -m core.preflight` (section [4.5] carries the previous generation's Will, open phantom pains, the Dream Report count, and the Observation queue); Post-Flight: `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "..." --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"`. Never hand-write mutation dicts — use the typed helpers (`record_feature`/`record_pathway`/`record_loop`/`record_phase`/`record_grade`/`record_build`/`record_surprise`/`record_heuristic`/`record_observation`) or `python -m core.graphify_record`; mis-keyed writes are rejected with `rejected_*`. Generator-owned C++ (Flight, Ship, GameMode, PCG, Missions, Docking, QuantumTravel, Factions, Economy, Save, Combat suite, PirateAI) is regenerated every pipeline run — fix templates in `core/game_code_generator.py`, never the C++. **The gate is the measured RESULT grade** (`core/result_grader.py`, no LM in the gate path); build failures auto-grade F. **`verified` is the system's preliminary measurement — the human's Observation is the true collapse** (`graphify_record observe`, agents never record it): accepted → `observed`, rejected → `needs_refinement` with the human's notes as first-priority dream fodder. The constitution grows only through the human Gardener (docs/PENDING_HEURISTICS.md). Full rhythm: docs/GENERATION_PROTOCOL.md.
 
 1. Query Graphify: `g.query("health")` — report current project state
 2. Query Graphify: `g.query("pattern", your_task)` — report relevant known patterns
@@ -408,11 +408,16 @@ PHASE 3: Encode → templates → DSL mappings
     ↓
 PHASE 4: Compile → UBT → executable
     ↓
-PHASE 5: Visual Verification
+PHASE 5: Visual Verification (system's eyes — preliminary)
+    ↓
+PHASE 5.5: HUMAN OBSERVATION — the true quantum collapse
+    (accepted → observed · rejected → needs_refinement + the human's words)
     ↓
 PHASE 6: Iterate → return to Education or Research
     ↓
-(loop continues — each cycle enriches the system)
+NIGHT: Dream Loop — distill failures/surprises → Gardener's queue
+    ↓
+(loop continues — each generation wakes carrying lessons, not logs)
     ↑
 GRAPHIFY (records every pattern, verification, iteration, lesson)
 ```
@@ -435,31 +440,25 @@ All paths relative to `E:\PythonChimera\Chimera\`:
 
 ---
 
-## Current Project State
+## Current Project State (2026-07-06)
 
-- **DNA Nodes**: 459
-- **DNA Edges**: 325+
-- **MCP Pathways**: 12 working pathways recorded
-- **Feature Ledger Entries**: 56 features across 10 spiral loops (Loop 0–9)
-- **Current Phase**: Phase 2 — Apply & Verify (Loops 0–2 in progress)
-
-### Verified Features (Loops 0–2)
-- **Player_Character_Lighting** ✓ — Three-point lighting matches NASA reference
-- **Ground_Sand_Surface** ✓ — PBR material: color #8B7D6B, roughness 0.9, metallic 0.05
-- **Verb_Look** ✓ — Camera FOV 90°, pitch 0°, distance ~2m
-
-### Needs Refinement (Loops 0–2)
-- **Player_Character_Suit** ⚠ — Visor needs layered material (polycarbonate + gold thin-film)
-- **Player_Character_Model** ⚠ — Still using sports car placeholder; needs astronaut mesh
-- **Ground_Rock_Surface** ⚠ — Cone mesh scale/polygon count needs adjustment
-- **Ground_Metal_Surface** ⚠ — Needs procedural dust-accumulation mask
+- **DNA Nodes**: ~1280 (0 junk; archive-never-delete hygiene via `core/graph_compactor.py`)
+- **GPA**: 3.5 · build trend 20/20 pass
+- **MCP Pathways**: 21+ documented pathway families incl. TRAPS (docs/MCP_PATHWAYS.md)
+- **Board**: Loops 0/2/8 `[DONE*]` (system-verified, awaiting human observation); Loop 1 4/6;
+  spiral head = Loop 1 (The Ground)
+- **Loop 0 highlights**: rigged astronaut (SKM_Manny, 161 bones) + ABP locomotion verified A/A
+  in-engine (PIE walk telemetry + independent vision verdicts); gold-visor helmet attached
+- **Loop 8**: all four systems (Economy/Factions/SaveLoad/Missions) at A/B on 14/14 in-engine tests
+- **Generation Protocol LIVE**: Wills + phantom pains flow between sessions; distiller has staged
+  10 heuristic candidates for the Gardener; the Observation queue holds every system-verified
+  feature awaiting the human collapse
 
 ### Next Steps
-1. Complete suit refinement (layered visor material)
-2. Replace player placeholder with proper astronaut mesh
-3. Adjust rock patch scale and add normal maps
-4. Add dust accumulation mask to metal surface
-5. Advance to Loop 3 (Sky) research once Loops 0–2 are verified
+1. Human queues: PENDING_HEURISTICS.md verdicts + the Observation queue (preflight [4.5])
+2. Loop 1: Ground_Sand_Particles fidelity debt (sand color, lunar gravity −162, owned Niagara
+   system), Ground_Sand_Footprints, Ground_Sand_Sound, dust-accumulation mask research task
+3. Player as GameMode default pawn (generator template) + helmet into BP as SCS component
 
 ---
 

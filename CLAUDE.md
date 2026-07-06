@@ -45,25 +45,36 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `Source/Chimera/ProceduralGenerated/` | All generated game code (do NOT hand-edit) |
 | `core/` | Pipeline components (Python) |
 | `core/gates.py` | Mandatory hard gate definitions |
-| `core/scene_verifier.py` | 4-layer vision-free scene verification via MCP |
+| `core/result_grader.py` | Rubric-based result grading (zero LM dependency) — the gate |
+| `core/telemetry_probe.py` | Crash/fps/soak evidence + `MCPStdioClient` (the MCP tool-call helper) |
+| `core/heuristic_distiller.py` | Nightly failure/surprise clustering → PENDING_HEURISTICS.md |
+| `core/dream_loop.py` | Circadian consolidation orchestrator (distill + compact preview + Dream Report) |
+| `core/spiral_forks.py` | Bounded sacrificial research forks (3, one wild) |
+| `core/graph_compactor.py` | Archive-never-delete graph hygiene |
 | `core/dna/` | Graphify DNA knowledge graph interface |
-| `core/mcp_client.py` | MCP tool call helper |
 | `tests/dsl_grammar/` | DSL specification files |
 | `docs/chimera_dna_graph.json` | DNA graph storage |
+| `docs/GENERATION_PROTOCOL.md` | The circadian rhythm spec (Dawn/Day/Observation/Dusk/Night) |
+| `docs/PENDING_HEURISTICS.md` | Gardener's queue (human approves every constitution change) |
+| `docs/DREAM_REPORT.md` | Morning briefing (regenerated nightly) |
+| `docs/MCP_PATHWAYS.md` | Proven MCP pathways + TRAPS |
 | `Plugins/McpAutomationBridge/` | UE-side MCP plugin |
 
-## Mandatory Scene Verification (4 Layers)
+## Verification & Measurement (current regime — see docs/RESULT_GRADING_RUBRIC.md)
 
-Stage 7 of the pipeline runs 4 mandatory layers. ALL must pass. NO fallback.
+**The gate is the RESULT grade**: `core/result_grader.py` scores measured evidence
+(in-engine tests × declared-criteria coverage, telemetry, agent-judged checklist, spec
+fidelity) with **zero LM dependency**. A ≥90 · B ≥75 · C ≥60 · F <60; C/F → back to
+research with the study guide. Build failure auto-grades F.
 
-| Layer | Method | What it checks | Model |
-|---|---|---|---|
-| 1 | Engine state hard facts | World loaded, ≥5 actors, lights, viewport >100px, screenshot >100KB | Deterministic |
-| 2 | MCP screenshot capture | UE viewport render saved to disk | `control_editor screenshot` |
-| 3 | LM text reasoning | qwen3.6 analyzes structured engine data | `qwen3.6-35b-a3b-mtp@iq2_m` |
-| 4 | LM vision analysis | qwen3.6 analyzes screenshot via multimodal vision | `qwen3.6-35b-a3b-mtp@iq2_m` |
-
-All four are mandatory. No layer can be skipped or timed out to a lesser substitute. The pipeline blocks until all four return PASS or the wall clock expires.
+Evidence layers (in order of authority):
+| Layer | Method | Notes |
+|---|---|---|
+| Engine state hard facts | MCP queries: read-backs, bounds, transforms, actor lists | Deterministic; the workhorse |
+| Telemetry | `python -m core.telemetry_probe --soak 30` | crash-free log, fps vs target, growth — **measure FOREGROUNDED** (background throttle freezes fps AND all Niagara/anim simulation) |
+| MCP screenshot | `control_editor screenshot mode=editor_viewport` | Never desktop captures |
+| LM text/vision (qwen3.6) | tertiary evidence only, when explicitly requested | `gate_lm_available` applies only to explicitly-requested vision layers |
+| **Human observation** | `graphify_record observe` | **The true collapse** — `verified` is the system's preliminary measurement; features finish only under the human's eyes |
 
 ## Pipeline Commands
 
@@ -93,6 +104,18 @@ python core/playtest_runner.py
 python -m core.graphify_record feature --name X --loop 8 --status verified
 python fix_dna_key_mismatch_pollution.py
 cd core/dna && uvicorn query_api:app --host localhost --port 8766
+```
+
+### Generation Protocol (circadian — full spec: docs/GENERATION_PROTOCOL.md)
+```powershell
+python -m core.spiral_forks --feature X --use-lm      # 3 research forks, winner proceeds
+python -m core.graphify_record surprise --context "..." --reality "..." --source human
+python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N   # HUMAN ONLY
+python -m core.dream_loop                             # nightly: distill <=2 candidates + Dream Report
+python -m core.heuristic_distiller --dry-run          # inspect clusters without staging
+python -m core.graph_compactor --dry-run              # archive preview (apply is manual)
+python -m core.result_grader --feature X --evidence ev.json
+python -m core.telemetry_probe --out t.json --soak 30
 ```
 
 ### Build with UBT directly

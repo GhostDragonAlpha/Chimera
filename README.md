@@ -1,22 +1,29 @@
 # Chimera — Agent-Developed Game Factory (UE 5.8)
 
-**No humans write code here.** Agents are the only developers. This README is an agent
-entry point: a formal DSL spec is compiled into UE5 C++ and assets by a generator
-pipeline, measured by automation tests and telemetry, graded against an industry-standard
-rubric, and iterated until verified. The workflow below is the project.
+**No humans write code here.** Agents are the only developers; the human holds exactly two
+roles — **Gardener** (approves every constitutional heuristic) and **Observer** (the final
+measurement of every feature). A formal DSL spec is compiled into UE5 C++ and assets by a
+generator pipeline, measured by automation tests and telemetry, graded against an
+industry-standard rubric, and iterated under the **Generation Protocol** — a circadian
+rhythm in which each agent session is one generation: it wakes with its predecessor's
+inheritance, works the spiral, declares where it will fail, and dreams its lessons into a
+constitution the human curates. The workflow below is the project.
 
 ## START HERE (every session, any agent)
 
-1. `cd E:\PythonChimera\Chimera` → `python -m core.preflight` — live state: graph health, GPA, spiral loop board, pending research, last run, environment.
+1. `cd E:\PythonChimera\Chimera` → `python -m core.preflight` — live state: graph health, GPA, spiral loop board, pending research, environment, and **[4.5] Inheritance**: the previous generation's Will, open phantom pains, Dream Report count, Observation queue.
 2. Read `E:\PythonChimera\task_progress.md` — session handoff; the top **NEXT** section is your work list.
 3. Execute THE WORKFLOW below. Nothing else is the process.
-4. Finish: `python -m core.postflight --phase "..." --result "<UBT verbatim>"`, update `task_progress.md`, commit + push.
+4. Finish: `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"`, update `task_progress.md`, commit + push. Optionally run the night: `python -m core.dream_loop`.
 
 ## THE WORKFLOW (authoritative — one full cycle)
 
 ```
-SELECT → RESEARCH (writes the exam) → APPLY (DSL/generator layer) → BUILD+GATES
-      → MEASURE (tests+telemetry) → GRADE THE RESULT → verified | back to research
+SELECT → FORK (3 briefs, 1 wild — winner proceeds, losers autopsied)
+      → RESEARCH (writes the exam; verify fork citations) → APPLY (DSL/generator layer)
+      → BUILD+GATES → MEASURE (tests+telemetry) → GRADE THE RESULT (system's eyes)
+      → verified (preliminary) → HUMAN OBSERVATION (the true collapse)
+      → observed | rejected → back to research with the human's words
 ```
 
 1. **SELECT** — next open feature in the lowest incomplete Spiral loop (the preflight board). Never skip forward.
@@ -28,7 +35,9 @@ SELECT → RESEARCH (writes the exam) → APPLY (DSL/generator layer) → BUILD+
    plus telemetry via MCP `inspect` (scene stats, runtime report, performance).
 6. **GRADE THE RESULT** — `python -m core.result_grader --feature <X> --evidence <evidence.json>` against `Chimera/docs/RESULT_GRADING_RUBRIC.md`. Score = pass_rate × declared-criteria coverage (40) + stability/perf (25) + design checklist (20) + spec fidelity (15). **No LM/model dependency.** A ≥ 90, B ≥ 75, C ≥ 60, F < 60.
 7. **GATE** — A/B → `record_feature(..., "verified")`. **C/F → back to step 2** carrying the grader's study guide (lowest-scoring categories) as the research target.
-8. **FRAME AUDIT** — mandatory before declaring anything complete: answer the four questions in the rubric (proxy vs target; who judges the judge; artifact vs its generator; what would look good while wrong) in the Post-Flight record.
+8. **HUMAN OBSERVATION — the true collapse.** `verified` is only the system's preliminary measurement; the feature enters the Observation queue (preflight [4.5]) until the human records `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`. Accepted → `observed` (truly done). Rejected → reopened with the human's notes as first-priority dream fodder. **Agents never record observations.** Loops show `[DONE*]` until every feature is observed.
+9. **FRAME AUDIT** — mandatory before declaring anything complete: answer the four questions in the rubric (proxy vs target; who judges the judge; artifact vs its generator; what would look good while wrong) in the Post-Flight record.
+10. **CAPTURE SURPRISES LIVE** — any human correction, dead-end, or expectation violation: `python -m core.graphify_record surprise --context "..." --reality "..." --source human|agent|engine`. The nightly `python -m core.dream_loop` distills repeated failures/surprises into ≤2 candidate heuristics for the human Gardener (`Chimera/docs/PENDING_HEURISTICS.md` — nothing activates until approved).
 
 ## FILE MAP
 
@@ -36,9 +45,12 @@ SELECT → RESEARCH (writes the exam) → APPLY (DSL/generator layer) → BUILD+
 |---|---|
 | Auto-loaded agent briefs | `CLAUDE.md` (Claude Code) / `AGENTS.md` (Roo, Kilo, others) |
 | Session handoff + NEXT | `task_progress.md` |
+| **Generation Protocol** (circadian rhythm, forks, dream loop, observation) | `Chimera/docs/GENERATION_PROTOCOL.md` |
+| Gardener's queue (pending heuristics — human approves each) | `Chimera/docs/PENDING_HEURISTICS.md` |
+| Morning briefing (regenerated nightly) | `Chimera/docs/DREAM_REPORT.md` |
 | Grading rubric + frame audit | `Chimera/docs/RESULT_GRADING_RUBRIC.md` |
 | Full methodology (Spiral, Contract, Ralph loop) | `Chimera/docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md` |
-| Known-good MCP call sequences | `Chimera/docs/MCP_PATHWAYS.md` |
+| Known-good MCP call sequences + TRAPS | `Chimera/docs/MCP_PATHWAYS.md` |
 | DNA knowledge graph interface | `Chimera/core/graphify_interface.py` (`record_*` helpers) |
 
 Everything below is system reference (engine setup, MCP tool inventory, build details —
