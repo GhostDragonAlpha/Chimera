@@ -150,6 +150,7 @@ HARNESS_CONFIG: Dict[str, Any] = {
     "mcp_port": 8091,
     "playwright_url": "http://localhost:8342/mcp",
     "max_iterations": 10,
+    "fork_budget": 3,  # Generation Protocol: research forks per feature (1 wild)
     "screenshot_dir": str(SCREENSHOTS_DIR),
     "oscillation_threshold": 3,
     "gpa_min_loop_advance": 3.0,

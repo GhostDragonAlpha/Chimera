@@ -150,6 +150,12 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "technical_discovery":
        return _mutate_technical_discovery(details or {})
 
+    elif mutate_type == "heuristic":
+        return _mutate_heuristic(details or {})
+
+    elif mutate_type == "surprise":
+        return _mutate_surprise(details or {})
+
     else:
         raise ValueError(f"Unknown mutation type: {mutate_type}")
 
@@ -1206,6 +1212,20 @@ def _mutate_phase_complete(details: dict) -> str:
     if phase == "unknown_phase" and not result:
         return "rejected_unknown_phase: details must include 'phase' and/or 'result'; nothing recorded"
 
+    # Generation Protocol inheritance fields (all optional)
+    phantom_pains = details.get("phantom_pains") or []
+    inheritance = str(details.get("inheritance") or "")
+    pain_verdicts = details.get("pain_verdicts") or {}
+    if not isinstance(phantom_pains, list) or not all(isinstance(p, str) and p.strip() for p in phantom_pains):
+        return "rejected_phantom_pains: must be a list of non-empty strings; nothing recorded"
+    if len(phantom_pains) > 5:
+        return "rejected_phantom_pains: declare at most 5 (aim for 3 sharp ones); nothing recorded"
+    VALID_VERDICTS = {"confirmed", "refuted", "still-open"}
+    if not isinstance(pain_verdicts, dict) or not all(
+            isinstance(k, str) and v in VALID_VERDICTS for k, v in pain_verdicts.items()):
+        return ("rejected_pain_verdicts: must map '<phase_node_id>:P<n>' -> "
+                "confirmed|refuted|still-open; nothing recorded")
+
     mutation_node = {
         "id": f"phase_{hashlib.sha256(f'phase_{phase}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
         "type": "PhaseComplete",
@@ -1220,6 +1240,12 @@ def _mutate_phase_complete(details: dict) -> str:
         "compilation_result": "pass",
         "links": []
     }
+    if phantom_pains:
+        mutation_node["phantom_pains"] = phantom_pains
+    if inheritance:
+        mutation_node["inheritance"] = inheritance
+    if pain_verdicts:
+        mutation_node["pain_verdicts"] = pain_verdicts
     if details.get("backfilled"):
         mutation_node["backfilled"] = True
 
@@ -1227,6 +1253,85 @@ def _mutate_phase_complete(details: dict) -> str:
     save_dna_graph({"nodes": nodes, "edges": edges})
 
     return mutation_node["id"]
+
+
+def _mutate_surprise(details: dict) -> str:
+    """Records a SurpriseMoment (Circadian dream fodder): a human correction,
+    dead-end, or expectation violation — captured live even when nothing failed."""
+    context = str(details.get("context") or "").strip()
+    expectation = str(details.get("expectation") or "").strip()
+    reality = str(details.get("reality") or "").strip()
+    lesson_hint = str(details.get("lesson_hint") or "").strip()
+    source = str(details.get("source") or "agent")
+
+    if not context or not reality:
+        return "rejected_surprise: 'context' and 'reality' are required; nothing recorded"
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    node = {
+        "id": f"surprise_{hashlib.sha256(f'surprise_{context}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "SurpriseMoment",
+        "timestamp": datetime.utcnow().isoformat(),
+        "context": context,
+        "expectation": expectation,
+        "reality": reality,
+        "lesson_hint": lesson_hint,
+        "source": source,
+        "consolidated": False,
+        "error_signature": f"surprise_{source}",
+        "template_file": f"surprise/{source}",
+        "error_category": "surprise",
+        "fix_description": f"Surprise ({source}): expected '{expectation[:80]}' but '{reality[:80]}'",
+        "compilation_result": "n/a",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def _mutate_heuristic(details: dict) -> str:
+    """Records a Gardener-approved heuristic promotion (Generation Protocol WS2)."""
+    signature = str(details.get("signature") or "").strip()
+    rule = str(details.get("rule") or "").strip()
+    organ = str(details.get("organ") or "").strip()
+    evidence_ids = details.get("evidence_ids") or []
+    approved_by = str(details.get("approved_by") or "human")
+
+    VALID_ORGANS = {"gate", "claude_md", "mcp_pathways"}
+    if not signature or not rule:
+        return "rejected_heuristic: 'signature' and 'rule' are required; nothing recorded"
+    if organ not in VALID_ORGANS:
+        return f"rejected_heuristic: organ must be one of {sorted(VALID_ORGANS)}; nothing recorded"
+    if not isinstance(evidence_ids, list):
+        return "rejected_heuristic: evidence_ids must be a list of node ids; nothing recorded"
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    node = {
+        "id": f"heuristic_{hashlib.sha256(f'heuristic_{signature}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "Heuristic",
+        "timestamp": datetime.utcnow().isoformat(),
+        "signature": signature,
+        "rule": rule,
+        "organ": organ,
+        "evidence_ids": evidence_ids,
+        "approved_by": approved_by,
+        "error_signature": "success_no_error",
+        "template_file": f"heuristic/{organ}/{signature[:60]}",
+        "error_category": "none",
+        "fix_description": f"Heuristic promoted to {organ}: {rule[:180]}",
+        "compilation_result": "pass",
+        "links": list(evidence_ids),
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
 
 
 # ---------------------------------------------------------------------------
@@ -1264,9 +1369,103 @@ def record_loop(loop: int, name: str, features: list, status: str = "all_impleme
     return graphify_mutate("loop_complete", details=details)
 
 
-def record_phase(phase: str, result: str, notes: str = "") -> str:
-    """Record Post-Flight phase completion (PhaseComplete node)."""
-    return graphify_mutate("phase_complete", details={"phase": phase, "result": result, "notes": notes})
+def record_phase(phase: str, result: str, notes: str = "",
+                 phantom_pains: list = None, inheritance: str = "",
+                 pain_verdicts: dict = None) -> str:
+    """Record Post-Flight phase completion (PhaseComplete node).
+
+    Generation Protocol fields: phantom_pains (<=5 predicted failure points the
+    next session must confirm/refute), inheritance (<=3-sentence Will), and
+    pain_verdicts ({'<phase_node_id>:P<n>': 'confirmed|refuted|still-open'} for
+    pains inherited from previous sessions)."""
+    details = {"phase": phase, "result": result, "notes": notes}
+    if phantom_pains:
+        details["phantom_pains"] = phantom_pains
+    if inheritance:
+        details["inheritance"] = inheritance
+    if pain_verdicts:
+        details["pain_verdicts"] = pain_verdicts
+    return graphify_mutate("phase_complete", details=details)
+
+
+def parse_pain_verdicts(raw_list) -> dict:
+    """Parse CLI '<phase_node_id>:P<n>:<verdict>' strings into the pain_verdicts dict.
+
+    Raises SystemExit with a usage message on malformed input (CLI-facing)."""
+    out = {}
+    for raw in raw_list or []:
+        pain_id, sep, verdict = str(raw).rpartition(":")
+        if not sep or not pain_id or ":P" not in pain_id:
+            raise SystemExit(
+                f"--pain-verdict must be '<phase_node_id>:P<n>:confirmed|refuted|still-open', got: {raw}")
+        out[pain_id] = verdict
+    return out
+
+
+def collect_inheritance(nodes: list) -> dict:
+    """Scan PhaseComplete nodes for the Generation Protocol inheritance state.
+
+    Returns {'will': {phase, inheritance, timestamp} | None,
+             'open_pains': [{id, text, declared, age_days}]} where open pains are
+    phantom pains with no verdict recorded by any later PhaseComplete node."""
+    phases = sorted((n for n in nodes if n.get("type") == "PhaseComplete"),
+                    key=lambda n: n.get("timestamp", ""))
+    verdicts = {}
+    for n in phases:
+        verdicts.update(n.get("pain_verdicts") or {})
+
+    will = None
+    for n in reversed(phases):
+        if n.get("inheritance"):
+            will = {"phase": n.get("phase", ""), "inheritance": n["inheritance"],
+                    "timestamp": n.get("timestamp", "")}
+            break
+
+    open_pains = []
+    now = datetime.utcnow()
+    for n in phases:
+        for i, pain in enumerate(n.get("phantom_pains") or [], start=1):
+            pain_id = f"{n['id']}:P{i}"
+            verdict = verdicts.get(pain_id)
+            if verdict in ("confirmed", "refuted"):
+                continue  # dispositioned
+            try:
+                declared = datetime.fromisoformat(str(n.get("timestamp", ""))[:19])
+                age_days = max(0, (now - declared).days)
+            except ValueError:
+                age_days = -1
+            open_pains.append({"id": pain_id, "text": pain,
+                               "declared": str(n.get("timestamp", ""))[:19],
+                               "age_days": age_days,
+                               "still_open": verdict == "still-open"})
+    return {"will": will, "open_pains": open_pains}
+
+
+def record_heuristic(signature: str, rule: str, organ: str, evidence_ids: list = None,
+                     approved_by: str = "human") -> str:
+    """Record a Gardener-approved heuristic promotion (Heuristic node).
+
+    signature: the failure-signature/cluster this rule immunizes against.
+    rule: the one-sentence constitutional rule as promoted.
+    organ: where it was hard-coded — 'gate' | 'claude_md' | 'mcp_pathways'.
+    evidence_ids: graph node ids of the failures that taught this lesson.
+    Only APPROVED heuristics are recorded; pending candidates live in
+    docs/PENDING_HEURISTICS.md until the human approves or vetoes."""
+    return graphify_mutate("heuristic", details={
+        "signature": signature, "rule": rule, "organ": organ,
+        "evidence_ids": evidence_ids or [], "approved_by": approved_by})
+
+
+def record_surprise(context: str, reality: str, expectation: str = "",
+                    lesson_hint: str = "", source: str = "agent") -> str:
+    """Record a SurpriseMoment — Circadian dream fodder for the nightly distiller.
+
+    Capture AS THEY HAPPEN: human corrections (source='human'), dead-ends,
+    expectation violations. These feed core.heuristic_distiller alongside
+    failure clusters; the richest lessons often produce no failure node."""
+    return graphify_mutate("surprise", details={
+        "context": context, "reality": reality, "expectation": expectation,
+        "lesson_hint": lesson_hint, "source": source})
 
 
 def record_grade(feature: str, grade: str, reasoning: str = "") -> str:

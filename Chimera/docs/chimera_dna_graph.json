@@ -20592,6 +20592,123 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_4d7085b5c049"
+    },
+    {
+      "id": "discovery_e96faff93e1ea3d3",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-06T15:42:20.066551",
+      "source": "fork_autopsy:Ground_Sand_Particles:alternative",
+      "campus": "iteration",
+      "quality_rating": "autopsy",
+      "principles": [
+        "Fork 'alternative' for Ground_Sand_Particles lost at 0.0/100 \u2014 the pre-condition that would have saved it: lock ONE canonical reference before proposing parameters."
+      ],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/iteration/fork_autopsy:Ground_Sand_Particles:alternative",
+      "error_category": "none",
+      "fix_description": "Research discovery recorded: source 'fork_autopsy:Ground_Sand_Particles:alternative' for campus 'iteration' with quality rating 'autopsy'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "spiral_forks.py",
+      "run_id": "run_6e6f34641247"
+    },
+    {
+      "id": "discovery_e45bc408b191024f",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-06T15:42:20.091992",
+      "source": "fork_autopsy:Ground_Sand_Particles:wild",
+      "campus": "iteration",
+      "quality_rating": "autopsy",
+      "principles": [
+        "Fork 'wild' for Ground_Sand_Particles lost at 0.0/100 \u2014 the pre-condition that would have saved it: lock ONE canonical reference before proposing parameters."
+      ],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/iteration/fork_autopsy:Ground_Sand_Particles:wild",
+      "error_category": "none",
+      "fix_description": "Research discovery recorded: source 'fork_autopsy:Ground_Sand_Particles:wild' for campus 'iteration' with quality rating 'autopsy'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "spiral_forks.py",
+      "run_id": "run_6e6f34641247"
+    },
+    {
+      "id": "surprise_204ae52a13d1dea9",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-06T15:42:49.122537",
+      "context": "First live spiral_forks run on Ground_Sand_Particles",
+      "expectation": "3 research briefs generated via LM Studio",
+      "reality": "All 3 forks died: qwen3.6 thinking-mode consumed the 1600-token budget, no JSON in content field - the exact H-3 lesson repeating live",
+      "lesson_hint": "H-3 confirmed: schema-validate LM output, /no_think + larger budget + check reasoning_content",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '3 research briefs generated via LM Studio' but 'All 3 forks died: qwen3.6 thinking-mode consumed the 1600-token budget, no JSON '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_cae73340d56f"
+    },
+    {
+      "id": "discovery_0a88bfbddc763b96",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-06T15:44:41.333908",
+      "source": "fork_autopsy:Ground_Sand_Particles:wild",
+      "campus": "iteration",
+      "quality_rating": "autopsy",
+      "principles": [
+        "Fork 'wild' for Ground_Sand_Particles lost at 69.0/100 \u2014 the pre-condition that would have saved it: declare measurable acceptance criteria before building."
+      ],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/iteration/fork_autopsy:Ground_Sand_Particles:wild",
+      "error_category": "none",
+      "fix_description": "Research discovery recorded: source 'fork_autopsy:Ground_Sand_Particles:wild' for campus 'iteration' with quality rating 'autopsy'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "spiral_forks.py",
+      "run_id": "run_329698911025"
+    },
+    {
+      "id": "discovery_2d6e127d606264d0",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-06T15:44:41.359124",
+      "source": "fork_autopsy:Ground_Sand_Particles:alternative",
+      "campus": "iteration",
+      "quality_rating": "autopsy",
+      "principles": [
+        "Fork 'alternative' for Ground_Sand_Particles lost at 56.0/100 \u2014 the pre-condition that would have saved it: declare measurable acceptance criteria before building."
+      ],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/iteration/fork_autopsy:Ground_Sand_Particles:alternative",
+      "error_category": "none",
+      "fix_description": "Research discovery recorded: source 'fork_autopsy:Ground_Sand_Particles:alternative' for campus 'iteration' with quality rating 'autopsy'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "spiral_forks.py",
+      "run_id": "run_329698911025"
+    },
+    {
+      "id": "phase_da55128aec6d109a",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-06T15:46:47.838083",
+      "phase": "Generation Protocol built (Legacy Loop + Circadian adaptation)",
+      "result": "All 5 workstreams delivered and verified: inheritance handshake (postflight/preflight/graph), surprise capture, heuristic distiller (8 candidates staged H-1..H-8, idempotency proven), dream loop (cap 2/night, DREAM_REPORT.md), sacrificial forks (live: 3 died H-3 death, fixed, re-run winner conservative 71/100 + 2 autopsies), graph compactor (0 archivable, correct), dashboard panels, CLAUDE_CODE_SUBAGENT_MODEL env var removed. FRAME AUDIT: (1) proxy-vs-target: distiller counts signature repeats, not lesson importance - the Gardener is the corrective; (2) judge-the-judge: agent drafts rules AND recommends dispositions, but human approves every promotion - authorship bias is vetoable; (3) artifact-vs-machine: this session built the machine that fixes the machine (failures now auto-stage their own lessons); (4) looks-good-but-wrong: 8 staged candidates look like insight but 5 are one lesson-family - approving all 8 verbatim would bloat the constitution, hence per-entry veto recommendations.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Generation Protocol built (Legacy Loop + Circadian adaptation)",
+      "error_category": "none",
+      "fix_description": "Phase 'Generation Protocol built (Legacy Loop + Circadian adaptation)' complete: All 5 workstreams delivered and verified: inheritance handshake (postflight/preflight/graph), surprise capture, heuristic distiller (8 candidates staged H-1..H-8, idempotency proven), dream loop (cap ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Distiller token-coverage will false-suppress genuinely new lessons once PENDING_HEURISTICS.md grows large - watch for repeat failures that never re-stage",
+        "Fork briefs cite LM-confabulated references (NASA TR 1967-304 may not exist) - Phase 1 research that trusts fork citations unverified builds on fiction",
+        "The four ANTHROPIC_*=deepseek User env vars still poison model routing and the permission classifier - any session without bypass permissions will stall again"
+      ],
+      "inheritance": "This generation built the Generation Protocol: sessions now wake with a Will, record surprises live, dream heuristic candidates nightly, and grow the constitution only through the Gardener's hands. Its own fork run died the H-3 death live and was resurrected by applying that pending lesson - approve H-2 and H-3 first. The archive keeps everything; the live graph stays light.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_4c0d583a99d9"
     }
   ],
   "edges": [

@@ -5,10 +5,17 @@
 > **MANDATORY GATES** at every stage. No fallback ladders. No silent continuation.
 
 ## NEW AGENT? START HERE (in order)
-1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment.
+1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment, **and section [4.5]: the previous generation's Will, open phantom pains, and Dream Report candidates awaiting the human**.
 2. Read `E:\PythonChimera\task_progress.md` — session handoff log; the top **NEXT** section is your work list.
 3. Work under the Contract: typed recording only (`record_*` helpers), fix generator templates never generated C++, and answer the Frame Audit (`Chimera/docs/RESULT_GRADING_RUBRIC.md`) before declaring anything complete.
-4. Finish with `python -m core.postflight --phase "..." --result "<UBT verbatim>"` and update `task_progress.md` for the next agent.
+4. Finish with `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"` and update `task_progress.md` for the next agent.
+
+## Generation Protocol (Circadian rhythm — see docs/GENERATION_PROTOCOL.md)
+- **Capture surprises live**: on any human correction, dead-end, or expectation violation, run `python -m core.graphify_record surprise --context "..." --reality "..." --source human|agent|engine`. These feed the nightly distiller.
+- **Fork before researching a feature** (preferred): `python -m core.spiral_forks --feature X --use-lm` — 3 briefs (conservative/alternative/wild), winner proceeds, losers' autopsies are recorded tuition. Forks never touch live state.
+- **Dream loop** (`python -m core.dream_loop`, manual or scheduled): distills failures+surprises into ≤2 candidate heuristics per night, staged in `docs/PENDING_HEURISTICS.md`.
+- **The human Gardener approves EVERY heuristic** before promotion (gate / CLAUDE.md rule / MCP_PATHWAYS trap). Pending = inert. Vetoed entries stay as tombstones. Promote approved ones via `python -m core.graphify_record heuristic ...` and set status `promoted`.
+- Graph hygiene: `python -m core.graph_compactor --dry-run` (archive-never-delete; apply is always manual).
 
 ## Architecture Overview
 

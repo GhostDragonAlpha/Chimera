@@ -1,3 +1,46 @@
+# Session 2026-07-06 (night) — GENERATION PROTOCOL BUILT: the workflow now sleeps, dreams, and inherits
+
+User proposed the "sacrificial parent / Legacy Loop" + "Circadian Protocol" concepts; verdict was
+~60% already existed in disciplined form — the missing 40% is now built (docs/GENERATION_PROTOCOL.md):
+
+- **Inheritance handshake**: postflight gains `--inheritance` (the Will), `--phantom-pain` (×≤5),
+  `--pain-verdict`; preflight section **[4.5]** surfaces the Will + open pains + Dream Report count.
+- **Surprise capture**: `record_surprise` helper + `graphify_record surprise` CLI (SurpriseMoment
+  nodes) — human corrections/dead-ends recorded live as dream fodder.
+- **Heuristic distiller** (`core/heuristic_distiller.py`): deterministic clustering of failures +
+  surprises + C/F grades; coverage suppression; conflict flags; stages to docs/PENDING_HEURISTICS.md.
+  **Seed run distilled 8 candidates (H-1..H-8) — AWAITING GARDENER APPROVE/VETO** (agent
+  recommendations inline; H-2 window-focus and H-3 LM-schema are the sharp ones).
+- **Dream loop** (`core/dream_loop.py`): nightly consolidation (≤2 candidates/night), compaction
+  preview, writes docs/DREAM_REPORT.md. Idempotency verified (second run suppressed all 6 priors).
+- **Sacrificial forks** (`core/spiral_forks.py`): 3 research briefs (conservative/alternative/WILD),
+  deterministic Research-Depth scoring, <40 floor = no winner, losers autopsied to the graph.
+  **Live run on Ground_Sand_Particles**: first attempt all 3 forks died the exact H-3 death
+  (qwen thinking ate the budget — recorded as the first SurpriseMoment); fixed with /no_think +
+  4000 tokens + reasoning_content check; re-run: conservative WON 71/100 (wild 69, alternative 56),
+  2 autopsies recorded. Winning brief: docs/fork_reports/Ground_Sand_Particles_20260706_154441.md
+  (real regolith params; **verify its LM-cited references during Phase 1 — may be confabulated**).
+- **Graph compactor** (`core/graph_compactor.py`): archive-never-delete (quarantine pattern),
+  dry-run default; correctly finds 0 archivable (graph is young).
+- **Dashboard**: Inheritance Log panel + Grade Sawtooth (133 grades, 29 teeth already in history).
+- **WS0 root cause**: `CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash` User env var killed ALL
+  subagent launches (this + prior session) — REMOVED. The four `ANTHROPIC_*=deepseek-v4-pro[1m]`
+  User env vars remain (user's call) — they also break the permission classifier when bypass is off.
+
+## NEXT
+1. **GARDENER: review docs/PENDING_HEURISTICS.md** — approve/veto H-1..H-8 (recommendations inline);
+   agent then promotes approved ones (gate/CLAUDE.md/MCP_PATHWAYS) + records via
+   `graphify_record heuristic` + sets status promoted.
+2. **Loop 1 Ground_Sand_Particles**: proceed to Phase 1.5 with the winning conservative fork brief
+   (verify its citations first); then Footprints + Sound (manage_character has setup_footstep_system).
+3. Consider removing the four remaining `ANTHROPIC_*` deepseek env vars (classifier + model routing).
+4. Optional: schedule the dream loop — `schtasks /Create /SC DAILY /ST 02:00 /TN ChimeraDreamLoop
+   /TR "cmd /c cd /d E:\PythonChimera\Chimera && python -m core.dream_loop"`.
+5. Prior session's items stand: astronaut as GameMode default pawn (generator template); helmet
+   into BP as SCS component; CLAUDE.md mcp_client/scene_verifier doc drift.
+
+---
+
 # Session 2026-07-06 (evening) — LOOP 0 CLOSED: Model refined + Animation unblocked, both A on 12/12 in-engine criteria
 
 **Player_Character_Model A 98.8 · Player_Character_Animation A 98.5 · GPA 3.3 → 3.5.**

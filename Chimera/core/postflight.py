@@ -13,10 +13,14 @@ import sys
 from pathlib import Path
 
 try:
-    from core.graphify_interface import graphify_query, record_phase, record_feature
+    from core.graphify_interface import (graphify_query, record_phase, record_feature,
+                                         parse_pain_verdicts, load_dna_graph,
+                                         collect_inheritance)
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from graphify_interface import graphify_query, record_phase, record_feature
+    from graphify_interface import (graphify_query, record_phase, record_feature,
+                                    parse_pain_verdicts, load_dna_graph,
+                                    collect_inheritance)
 
 
 def main():
@@ -27,10 +31,26 @@ def main():
     parser.add_argument("--feature", help="Optionally also update a Feature Ledger entry")
     parser.add_argument("--loop", type=int, help="Loop number for --feature")
     parser.add_argument("--status", help="Status for --feature (researching/applying/verified/encoded/blocked)")
+    parser.add_argument("--phantom-pain", action="append", dest="phantom_pain",
+                        help="Generation Protocol: predicted failure point the next session must "
+                             "confirm/refute (repeatable, <=5, aim for 3 sharp ones)")
+    parser.add_argument("--inheritance", default="",
+                        help="Generation Protocol: the Will — <=3 sentences on what this session "
+                             "sacrificed itself to teach")
+    parser.add_argument("--pain-verdict", action="append", dest="pain_verdict",
+                        help="Disposition an inherited pain: "
+                             "'<phase_node_id>:P<n>:confirmed|refuted|still-open' (repeatable)")
     args = parser.parse_args()
 
-    node_id = record_phase(args.phase, args.result, args.notes)
+    node_id = record_phase(args.phase, args.result, args.notes,
+                           phantom_pains=args.phantom_pain or [],
+                           inheritance=args.inheritance,
+                           pain_verdicts=parse_pain_verdicts(args.pain_verdict))
     print(f"PhaseComplete recorded: {node_id}")
+    if str(node_id).startswith("rejected_"):
+        raise SystemExit(1)
+    for i, pain in enumerate(args.phantom_pain or [], start=1):
+        print(f"  phantom pain declared -> {node_id}:P{i}  {pain[:80]}")
 
     if args.feature:
         if args.loop is None or not args.status:
@@ -66,11 +86,25 @@ def main():
     except Exception as e:
         print(f"[Git] Status check failed: {e}")
 
+    # Generation Protocol: warn if inherited pains remain un-dispositioned
+    try:
+        inh = collect_inheritance(load_dna_graph().get("nodes", []))
+        undispositioned = [p for p in inh["open_pains"] if p["id"].split(":P")[0] != node_id]
+        if undispositioned:
+            print(f"\n[Inheritance] {len(undispositioned)} phantom pain(s) still open "
+                  f"(confirm/refute with --pain-verdict):")
+            for p in undispositioned[:5]:
+                flag = " (still-open)" if p.get("still_open") else ""
+                print(f"      {p['id']}  [{p['age_days']}d]{flag}  {p['text'][:70]}")
+    except Exception as e:
+        print(f"[Inheritance] scan failed: {e}")
+
     print("\nPost-Flight checklist:")
     print("  [ ] Exact UBT output reported verbatim (never summarized)")
     print("  [ ] Feature Ledger updated for every touched feature")
     print("  [ ] Every MCP call recorded as a pathway_attempt")
     print("  [ ] New discoveries recorded (research_discovery / technical_discovery)")
+    print("  [ ] Phantom pains declared for next session + inherited pains dispositioned")
     print("  [ ] Git status reviewed and staged appropriate changes")
     print("  [ ] task_progress.md updated for the next session")
 

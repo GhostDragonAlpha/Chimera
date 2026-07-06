@@ -1,10 +1,15 @@
-import streamlit as st
 import json
+import re
+import sys
 from pathlib import Path
-import plotly.graph_objects as go
+
 import plotly.express as px
+import plotly.graph_objects as go
+import streamlit as st
 
 DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")
+PENDING_HEURISTICS_PATH = DNA_GRAPH_PATH.parent / "PENDING_HEURISTICS.md"
+sys.path.insert(0, str(DNA_GRAPH_PATH.parent.parent))
 
 st.set_page_config(page_title="Chimera DNA Dashboard", page_icon="🧬", layout="wide")
 
@@ -39,6 +44,69 @@ with col3:
     st.metric("Known Errors", len(errors))
 with col4:
     st.metric("Applied Fixes", len(fixes))
+
+# --- Generation Protocol: Inheritance Log (the morning funeral meeting) ---
+st.subheader("🌅 Inheritance Log — Generation Protocol")
+try:
+    from core.graphify_interface import collect_inheritance
+    inh = collect_inheritance(nodes)
+except Exception:
+    inh = {"will": None, "open_pains": []}
+
+col_will, col_pains, col_dream = st.columns(3)
+with col_will:
+    st.markdown("**The Will (latest)**")
+    if inh["will"]:
+        st.info(f"{inh['will']['inheritance']}\n\n— {inh['will']['phase'][:60]} "
+                f"@ {inh['will']['timestamp'][:19]}")
+    else:
+        st.caption("No inheritance recorded yet (postflight --inheritance).")
+with col_pains:
+    st.markdown("**Open phantom pains**")
+    if inh["open_pains"]:
+        for p in inh["open_pains"][:6]:
+            st.warning(f"`{p['id']}` [{p['age_days']}d] {p['text']}")
+    else:
+        st.caption("All inherited pains dispositioned.")
+with col_dream:
+    st.markdown("**Dream Report — awaiting the Gardener**")
+    if PENDING_HEURISTICS_PATH.exists():
+        text = PENDING_HEURISTICS_PATH.read_text(encoding="utf-8")
+        entries = re.findall(r"^## (H-\d+): (.+?)$\n- status: (\w+)", text, re.MULTILINE)
+        pending = [(n, s) for n, s, status in entries if status == "pending"]
+        promoted = sum(1 for _, _, status in entries if status == "promoted")
+        st.metric("Pending heuristics", len(pending), delta=f"{promoted} promoted all-time")
+        for num, sig in pending[:6]:
+            st.caption(f"**{num}** {sig}")
+    else:
+        st.caption("No candidates distilled yet (python -m core.dream_loop).")
+
+# --- Generation Protocol: the sawtooth — grade scores over time ---
+st.subheader("📈 Grade Sawtooth — score per ProfessorGrade over time")
+grade_nodes = [n for n in nodes if n.get("type") == "ProfessorGrade" and n.get("timestamp")]
+if grade_nodes:
+    import pandas as pd
+    rows = []
+    for n in grade_nodes:
+        m = re.search(r"(\d{1,3}(?:\.\d)?)\s*/\s*100", str(n.get("reasoning", "")))
+        score = float(m.group(1)) if m else {"A": 95, "B": 82, "C": 67, "F": 40}.get(
+            str(n.get("grade", "")).upper(), None)
+        if score is not None:
+            rows.append({"timestamp": n["timestamp"], "score": score,
+                         "feature": n.get("feature", n.get("feature_name", "?")),
+                         "grade": str(n.get("grade", "?")).upper()})
+    if rows:
+        df = pd.DataFrame(rows)
+        df["timestamp"] = pd.to_datetime(df["timestamp"], format="mixed", utc=True)
+        df = df.sort_values("timestamp")
+        fig_saw = px.line(df, x="timestamp", y="score", markers=True,
+                          hover_data=["feature", "grade"],
+                          title="Dips are paid tuition; each recovery should crest higher")
+        fig_saw.add_hline(y=90, line_dash="dot", annotation_text="A")
+        fig_saw.add_hline(y=60, line_dash="dot", annotation_text="C floor")
+        st.plotly_chart(fig_saw, use_container_width=True)
+else:
+    st.caption("No grades recorded yet.")
 
 # Error categories
 st.subheader("Error Categories")

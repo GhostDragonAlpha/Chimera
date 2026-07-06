@@ -15,10 +15,10 @@ import urllib.request
 from pathlib import Path
 
 try:
-    from core.graphify_interface import load_dna_graph, graphify_query
+    from core.graphify_interface import load_dna_graph, graphify_query, collect_inheritance
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from graphify_interface import load_dna_graph, graphify_query
+    from graphify_interface import load_dna_graph, graphify_query, collect_inheritance
 
 LOOP_NAMES = {
     0: "The Player", 1: "The Ground", 2: "Basic Verbs", 3: "The Sky", 4: "Tools",
@@ -155,6 +155,34 @@ def main():
     print(f"\n[4] Pending technical_research tasks: {len(pending)}")
     for n in pending[:5]:
         print(f"    - {n.get('target_action', n.get('id'))[:90]}")
+
+    # 4.5. Generation Protocol inheritance — the Will + open phantom pains + dream report
+    inh = collect_inheritance(nodes)
+    pending_heuristics = 0
+    pending_path = Path(__file__).parent.parent / "docs" / "PENDING_HEURISTICS.md"
+    if pending_path.exists():
+        import re as _re
+        pending_heuristics = len(_re.findall(r"^- status: pending$",
+                                             pending_path.read_text(encoding="utf-8"),
+                                             _re.MULTILINE))
+    if inh["will"] or inh["open_pains"] or pending_heuristics:
+        print("\n[4.5] Inheritance from the previous generation:")
+        if pending_heuristics:
+            print(f"    Dream Report: {pending_heuristics} candidate heuristic(s) awaiting "
+                  f"Gardener approval (docs/PENDING_HEURISTICS.md)")
+        if inh["will"]:
+            print(f"    Will ({inh['will']['timestamp'][:19]} — {inh['will']['phase'][:50]}):")
+            print(f"      {inh['will']['inheritance'][:300]}")
+        if inh["open_pains"]:
+            print(f"    Open phantom pains ({len(inh['open_pains'])}) — confirm or refute this "
+                  f"session (postflight --pain-verdict):")
+            for p in inh["open_pains"][:5]:
+                flag = " [still-open]" if p.get("still_open") else ""
+                print(f"      {p['id']}  [{p['age_days']}d]{flag}  {p['text'][:80]}")
+            stale = [p for p in inh["open_pains"] if p["age_days"] >= 14]
+            if stale:
+                print(f"    !! {len(stale)} pain(s) >= 14 days old — the 2-week horizon has "
+                      f"arrived; disposition them this session.")
 
     # 5. Last pipeline run
     def latest(pred):

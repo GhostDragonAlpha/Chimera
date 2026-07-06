@@ -18,11 +18,13 @@ from pathlib import Path
 try:
     from core.graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
+        record_heuristic, record_surprise, parse_pain_verdicts,
     )
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
     from graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
+        record_heuristic, record_surprise, parse_pain_verdicts,
     )
 
 
@@ -70,11 +72,32 @@ def main():
     p.add_argument("--phase", required=True)
     p.add_argument("--result", required=True)
     p.add_argument("--notes", default="")
+    p.add_argument("--phantom-pain", action="append", dest="phantom_pain",
+                   help="predicted failure point for the next session to confirm/refute (repeatable, <=5)")
+    p.add_argument("--inheritance", default="",
+                   help="the Will: <=3 sentences on what this session sacrificed to learn")
+    p.add_argument("--pain-verdict", action="append", dest="pain_verdict",
+                   help="disposition an inherited pain: '<phase_node_id>:P<n>:confirmed|refuted|still-open' (repeatable)")
 
     p = sub.add_parser("grade", help="Professor grade (A/B/C/F)")
     p.add_argument("--feature", required=True)
     p.add_argument("--grade", required=True, choices=["A", "B", "C", "F", "a", "b", "c", "f"])
     p.add_argument("--reasoning", default="")
+
+    p = sub.add_parser("heuristic", help="Gardener-APPROVED heuristic promotion")
+    p.add_argument("--signature", required=True, help="failure signature/cluster this rule immunizes against")
+    p.add_argument("--rule", required=True, help="the one-sentence constitutional rule")
+    p.add_argument("--organ", required=True, choices=["gate", "claude_md", "mcp_pathways"])
+    p.add_argument("--evidence", action="append", help="graph node id of teaching failure (repeatable)")
+
+    p = sub.add_parser("surprise", help="SurpriseMoment (Circadian dream fodder) — capture live")
+    p.add_argument("--context", required=True, help="what was happening")
+    p.add_argument("--reality", required=True, help="what actually happened / what the human said")
+    p.add_argument("--expectation", default="", help="what was expected instead")
+    p.add_argument("--lesson-hint", default="", dest="lesson_hint",
+                   help="optional first guess at the lesson")
+    p.add_argument("--source", default="agent", choices=["agent", "human", "engine"],
+                   help="who produced the surprise (human = a correction from the user)")
 
     args = parser.parse_args()
 
@@ -88,7 +111,16 @@ def main():
         node_id = record_loop(args.loop, args.name, args.feature or [], args.status,
                               args.anchor, backfilled=args.backfilled)
     elif args.kind == "phase":
-        node_id = record_phase(args.phase, args.result, args.notes)
+        node_id = record_phase(args.phase, args.result, args.notes,
+                               phantom_pains=args.phantom_pain or [],
+                               inheritance=args.inheritance,
+                               pain_verdicts=parse_pain_verdicts(args.pain_verdict))
+    elif args.kind == "heuristic":
+        node_id = record_heuristic(args.signature, args.rule, args.organ,
+                                   evidence_ids=args.evidence or [])
+    elif args.kind == "surprise":
+        node_id = record_surprise(args.context, args.reality, args.expectation,
+                                  args.lesson_hint, args.source)
     else:
         node_id = record_grade(args.feature, args.grade.upper(), args.reasoning)
 
