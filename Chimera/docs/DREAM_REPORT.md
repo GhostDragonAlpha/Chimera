@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-06T19:43:37Z
+consolidated: 2026-07-06T20:06:14Z
 
 ## Awaiting your approval
 13 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
@@ -36,7 +36,7 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Tonight's distillation
 ```
-clusters >= 3: 15  |  suppressed (covered/pending): 14  |  staged: 1
+clusters >= 3: 15  |  suppressed (covered/pending): 15  |  staged: 0
   covered   [ 60x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 25x] verification_not_verified  <- PENDING_HEURISTICS.md
@@ -44,21 +44,19 @@ clusters >= 3: 15  |  suppressed (covered/pending): 14  |  staged: 1
   covered   [ 20x] verification_fail  <- PENDING_HEURISTICS.md
   covered   [ 19x] verification_incomplete  <- PENDING_HEURISTICS.md
   covered   [ 18x] ralph_apply_<feature>_step  <- PENDING_HEURISTICS.md
+  covered   [ 13x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
   covered   [ 12x] grade_CF: Player_Character_Lighting  <- PENDING_HEURISTICS.md
   covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Lighting  <- PENDING_HEURISTICS.md
-  covered   [ 12x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
   covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Model  <- PENDING_HEURISTICS.md
   covered   [ 11x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [  4x] grade_CF: Player_Character_Model  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
-  CANDIDATE [  3x] grade_CF: System_Economy
-
-staged 1 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
-next: agent drafts each draft_rule from evidence; human approves/vetoes; approved rules promote via graphify_record heuristic.
+  covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
+nothing new to stage — the constitution already covers today's lessons
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1294  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1301  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

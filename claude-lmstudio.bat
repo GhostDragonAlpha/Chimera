@@ -1,63 +1,59 @@
 @echo off
 title Claude Code + LM Studio
-setlocal enabledelayedexpansion
+setlocal
 
-:: ============================================================
-:: Claude Code + LM Studio Launcher
-:: ============================================================
-:: Usage:
-::   claude-lmstudio              - Opens in current directory
-::   claude-lmstudio E:\Project   - Opens in specified directory
-::   claude-lmstudio . E:\Project - Uses default URL in specified dir
-::   claude-lmstudio http://localhost:1234/v1 E:\Project
-:: ============================================================
+REM ================================================================
+REM  claude-lmstudio.bat  --  run Claude Code against LM Studio
+REM
+REM  Auto-detects whatever model is CURRENTLY LOADED in LM Studio
+REM  and routes Claude Code at it (Anthropic-compatible endpoint).
+REM  All overrides live only inside this window: normal `claude`
+REM  elsewhere still uses the real Anthropic API.
+REM
+REM  Usage:  claude-lmstudio.bat [any claude args]
+REM          e.g.  claude-lmstudio.bat -c        (continue last convo)
+REM  Remote LM Studio box: set LMS_URL before running, e.g.
+REM          set LMS_URL=http://192.168.3.169:1234
+REM ================================================================
 
-set "LM_URL=http://192.168.3.169:1234/v1"
-set "LM_KEY=lm-studio"
-set "TARGET_DIR=%CD%"
+if not defined LMS_URL set "LMS_URL=http://localhost:1234"
 
-:: Parse arguments
-if not "%1"=="" (
-    echo "%~1" | findstr /i "http" >nul
-    if !errorlevel! equ 0 (
-        set "LM_URL=%~1"
-        if not "%2"=="" set "TARGET_DIR=%~2"
-    ) else (
-        set "TARGET_DIR=%~1"
-    )
-)
-if not "%2"=="" (
-    echo "%~2" | findstr /i "http" >nul
-    if !errorlevel! equ 0 set "LM_URL=%~2"
-)
+REM -- ask LM Studio which LLM/VLM is currently loaded --------------
+set "LMS_MODEL="
+for /f "usebackq delims=" %%m in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "try { $r = Invoke-RestMethod '%LMS_URL%/api/v0/models' -TimeoutSec 5; $m=''; foreach ($x in $r.data) { if (-not $m -and $x.state -eq 'loaded' -and ($x.type -eq 'llm' -or $x.type -eq 'vlm')) { $m = $x.id } }; $m } catch { '' }"`) do set "LMS_MODEL=%%m"
 
-:: Resolve directory
-if not exist "%TARGET_DIR%" (
-    echo [ERROR] Directory not found: %TARGET_DIR%
-    exit /b 1
-)
+if not defined LMS_MODEL goto :no_model
 
-:: Resolve to full path
-for %%i in ("%TARGET_DIR%") do set "TARGET_DIR=%%~fi"
-
-echo =============================================
-echo   Claude Code + LM Studio
-echo =============================================
-echo   Endpoint : %LM_URL%
-echo   Directory: %TARGET_DIR%
-echo =============================================
+echo.
+echo  ==================================================
+echo   Claude Code  --  LOCAL via LM Studio
+echo   endpoint : %LMS_URL%
+echo   model    : %LMS_MODEL%
+echo  ==================================================
 echo.
 
-:: Kill any stale Claude daemon so it picks up fresh settings
-echo Killing stale Claude processes...
-taskkill /F /IM claude.exe >nul 2>&1
-timeout /t 1 /nobreak >nul
+REM -- route Claude Code at LM Studio (this window only) ------------
+set "ANTHROPIC_BASE_URL=%LMS_URL%"
+set "ANTHROPIC_AUTH_TOKEN=lmstudio"
+set "ANTHROPIC_MODEL=%LMS_MODEL%"
+set "ANTHROPIC_DEFAULT_OPUS_MODEL=%LMS_MODEL%"
+set "ANTHROPIC_DEFAULT_SONNET_MODEL=%LMS_MODEL%"
+set "ANTHROPIC_DEFAULT_HAIKU_MODEL=%LMS_MODEL%"
+set "ANTHROPIC_SMALL_FAST_MODEL=%LMS_MODEL%"
+set "CLAUDE_CODE_SUBAGENT_MODEL=%LMS_MODEL%"
+set "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1"
+set "API_TIMEOUT_MS=600000"
 
-:: Set LM Studio as the backend
-set "ANTHROPIC_BASE_URL=%LM_URL%"
-set "ANTHROPIC_API_KEY=%LM_KEY%"
+call claude %*
+exit /b %ERRORLEVEL%
 
-:: Launch Claude Code
-echo Launching Claude Code...
-cd /d "%TARGET_DIR%"
-claude
+:no_model
+echo.
+echo  [ERROR] No model is loaded in LM Studio ^(or the server at %LMS_URL% is not running^).
+echo.
+echo     1. Open LM Studio and start the local server ^(Developer tab^), or run:  lms server start
+echo     2. Load a model in the LM Studio UI ^(or:  lms load^)
+echo     3. Run this batch file again.
+echo.
+pause
+exit /b 1
