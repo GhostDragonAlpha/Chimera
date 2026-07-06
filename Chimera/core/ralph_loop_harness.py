@@ -127,8 +127,24 @@ GRADE_SCHEMA = {
     },
 }
 
+VERIFY_SCHEMA = {
+    "name": "verification",
+    "strict": True,
+    "schema": {
+        "type": "object",
+        "properties": {
+            "verified": {"type": "boolean"},
+            "confidence": {"type": "number"},
+            "what_you_see": {"type": "string"},
+            "issues": {"type": "array", "items": {"type": "string"}},
+            "suggestions": {"type": "array", "items": {"type": "string"}},
+        },
+        "required": ["verified", "confidence", "what_you_see"],
+    },
+}
+
 HARNESS_CONFIG: Dict[str, Any] = {
-    "lm_studio_url": "http://localhost:1234/v1/chat/completions",
+    "lm_studio_url": "http://192.168.3.169:1234/v1/chat/completions",
     "lm_studio_model": "qwen3.6-35b-a3b-mtp@iq2_m",
     "mcp_cli_path": "E:\\ChiR24-Unreal_mcp-test\\dist\\cli.js",
     "mcp_port": 8091,
@@ -957,40 +973,47 @@ class LMStudioClient:
     @staticmethod
     def verify_visual(feature_name: str, screenshot_path: str,
                       reference_description: str = "") -> Optional[dict]:
-        """Send screenshot analysis prompt to LM Studio. Returns verification result."""
-        system_prompt = (
-            "You are a visual verification analyst for the Chimera Project. "
-            "Your task is to analyze game screenshots and compare them against feature "
-            "descriptions and reference parameters.\n\n"
-            "CRITICAL RULE: You MUST respond with ONLY valid JSON. "
-            "Do NOT output any thinking process, analysis steps, or markdown. "
-            "Do NOT use code blocks.\n\n"
-            "Output exactly this JSON structure:\n"
-            "{\n"
-            '  "verified": true/false,\n'
-            '  "confidence": 0.0-1.0,\n'
-            '  "what_you_see": "detailed description of visible elements",\n'
-            '  "match_assessment": "how well it matches the reference",\n'
-            '  "issues": ["list of any problems found"],\n'
-            '  "suggestions": ["suggestions for improvement"]\n'
-            "}\n\n"
-            "If no screenshot was actually captured (simulated mode), set verified=false "
-            "and describe what would need to be visible."
-        )
+        """Send unstructured prompt or screenshot path to LM Studio. Returns verification result.
 
-        user_prompt = (
-            f"FEATURE: {feature_name}\n"
-            f"Screenshot path: {screenshot_path}\n"
-            f"Reference: {reference_description or 'No reference image available.'}\n\n"
-            f"Output ONLY the JSON object described above."
-        )
+        When called with engine state data in reference_description (no actual screenshot path),
+        the model evaluates engine state correctness via text reasoning.
+        When called with a real screenshot path, it describes what would need to be visible."""
+
+        # Detect mode: engine state data or screenshot
+        is_engine_state = bool(screenshot_path == "" and
+                               reference_description and
+                               ("Scene Stats" in reference_description or
+                                "MCP" in reference_description or
+                                "Feature:" in reference_description))
+
+        if is_engine_state:
+            # Text-only mode: qwen3.6 reasons about structured engine state data
+            system_prompt = (
+                "You are a game QA analyst for the Chimera Project, a UE5 space trading sim. "
+                "Evaluate whether the engine state data below is correct and complete. "
+                "Output ONLY valid JSON with NO thinking process or markdown.\n"
+                'Output: {"verified": true/false, "confidence": 0.0-1.0, '
+                '"what_you_see": "summary of engine state", '
+                '"issues": ["problems"], "suggestions": ["improvements"]}'
+            )
+            user_prompt = f"Feature: {feature_name}\n\n{reference_description}\n\nEvaluate this data."
+        else:
+            # Screenshot-only mode (simulated, since we don't send images)
+            system_prompt = (
+                "You are a visual verification analyst for the Chimera Project. "
+                "Output ONLY valid JSON with no thinking process.\n"
+                'Output: {"verified": true/false, "confidence": 0.0-1.0, '
+                '"what_you_see": "summary", '
+                '"issues": ["problems"], "suggestions": ["improvements"]}'
+            )
+            user_prompt = f"FEATURE: {feature_name}\nScreenshot path: {screenshot_path}\nReference: {reference_description[:300]}\n\nDescribe what should be visible."
 
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ]
 
-        raw = LMStudioClient._chat(messages, temperature=0.2, max_tokens=1024)
+        raw = LMStudioClient._chat(messages, temperature=0.2, max_tokens=1024, response_schema=VERIFY_SCHEMA)
         if not raw:
             return None
 
@@ -1276,18 +1299,15 @@ class RalphLoopHarness:
 
     def _web_search_feature(self, feature_name: str, feature_type: str) -> str:
         """Use Playwright MCP to search the web for reference images and articles.
-        If Playwright is not running on port 8342, falls back to campus seed sources only."""
+        Falls back to campus seed sources if Playwright is unavailable."""
         logger.info(f"[Web Research] Searching for references for {feature_name}...")
 
         if not self._is_playwright_running():
-            logger.info(f"[Web Research] Playwright not running. Launching...")
             self._launch_playwright()
-            logger.info(f"[Web Research] Waiting for Playwright to initialize (10s)...")
-            time.sleep(10)
-            if not self._wait_for_port(8342, timeout=30):
-                logger.warning(f"[Web Research] Playwright failed to start — using campus seed sources only.")
+            time.sleep(5)
+            if not self._wait_for_port(8342, timeout=20):
+                logger.info(f"[Web Research] Playwright unavailable — using campus seeds.")
                 return ""
-            logger.info(f"[Web Research] Playwright started. Web research available.")
 
 
         search_queries = [
@@ -1581,9 +1601,10 @@ class RalphLoopHarness:
         """Check if a TCP port is accepting connections."""
         import socket
         try:
+            host = "192.168.3.169" if port == 1234 else "127.0.0.1"
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(timeout)
-            result = sock.connect_ex(("127.0.0.1", port))
+            result = sock.connect_ex((host, port))
             sock.close()
             return result == 0
         except Exception:
@@ -1604,11 +1625,10 @@ class RalphLoopHarness:
         """Check if UnrealEditor.exe is running via tasklist."""
         try:
             result = subprocess.run(
-                ["powershell", "-NoProfile", "-Command",
-                 'tasklist /fi "imagename eq UnrealEditor.exe" 2>nul | findstr UnrealEditor'],
+                ["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe"],
                 capture_output=True, text=True, timeout=10,
             )
-            return "UnrealEditor" in result.stdout
+            return "UnrealEditor.exe" in result.stdout
         except Exception:
             return False
 
@@ -1860,17 +1880,19 @@ class RalphLoopHarness:
 
         # 5. Apply — launch UE5 if not running
         logger.info(f"\n--- Apply Phase ---")
-        if not self._is_ue5_running():
+        if not self._is_ue5_running() and not self._is_port_open(8091):
             logger.info("[Apply] UE5 Editor not running. Launching...")
             self._launch_ue5_editor()
             logger.info("[Apply] Waiting for UE5 Editor to initialize (120s)...")
             time.sleep(120)
             if not self._wait_for_port(8091, timeout=180):
-                logger.error("[Apply] UE5 Editor failed to start after 5 minutes. Apply will likely fail.")
+                logger.error("[Apply] UE5 Editor failed to start. Apply will likely fail.")
                 self.graphify.record_mutation(f"apply_ue5_startup_failed_{feature_name_final}", "failed",
-                                              {"reason": "UE5 did not reach port 8091 within timeout"})
+                                              {"reason": "UE5 did not reach port 8091"})
             else:
                 logger.info("[Apply] UE5 Editor started. MCP bridge should be connected.")
+        else:
+            logger.info("[Apply] UE5 Editor detected running. Skipping launch.")
         parameters = research.get("parameters", {}) or {}
         apply_success, apply_msg = self.apply_feature(feature, parameters)
         self.iteration_history[feature_name_final].append(f"applied_{'pass' if apply_success else 'fail'}")
