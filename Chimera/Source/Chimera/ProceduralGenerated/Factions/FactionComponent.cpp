@@ -54,10 +54,12 @@ float UFactionComponent::GetStanding(FName FactionID) const
 FString UFactionComponent::GetRelationship(FName FactionID) const
 {
 	if (FactionRelationships.Contains(FactionID)) return FactionRelationships[FactionID];
-	return "Neutral";}
+	return "Neutral";
+}
 
 bool UFactionComponent::IsHostile(FName FactionID) const
 {
 	if (FactionRelationships.Contains(FactionID))
-		return FactionRelationships[FactionID] == "Hostile";	return false;
+		return FactionRelationships[FactionID] == "Hostile";
+	return false;
 }
