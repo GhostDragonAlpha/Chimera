@@ -1,5 +1,12 @@
 # Chimera Development Progress Update
 
+## July 6, 2026 — Loop 8 (Systems) closed; SaveLoad real implementation pipeline-verified
+
+**Loop 8 complete (anchor: Consequence).** System_Economy, System_Factions, System_Missions, System_SaveLoad all `implemented`; LoopComplete recorded. Pipeline run: UBT `Result: Succeeded, 83.03s`, exit code 0, all gates passed, Professor grade B, 46 generated files verified. Playtests: 3 skipped (headless) — promotion to `verified` awaits in-editor `Automation RunTests ChimeraTests`.
+
+Highlights: SaveGame/LoadGame now genuinely persist credits, cargo, full mission arrays (objective progress), faction maps, and player transform — implemented at the generator level. FactionComponent TMap crash fixed in the generator template. Economy brought under generator ownership. DSL titanium economics corrected. Repo aligned to DSL→generator→C++ (dead Content C++ copies and graphify-out removed). Ledger repaired from surviving VisualVerification evidence only (conservative; 31 features left open for honest re-verification).
+
+
 ## July 5, 2026 (evening) — Gameplay mechanics + test infrastructure
 
 **Root cause of 0/3 test regression fixed.** `Automation RunTests ChimeraTests` matched 0 of 7,095 tests (Chimera.log:1273) because no automation test macros existed in Source; the prior 100% pass rate was a parser false positive.

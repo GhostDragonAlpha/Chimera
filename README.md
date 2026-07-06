@@ -4,6 +4,9 @@ Chimera is an Unreal Engine 5.8 vehicle game project featuring **Earth-scale lan
 
 ---
 
+
+
+> **Current conventions (2026-07-06):** Pre-Flight is one command: `python -m core.preflight`; Post-Flight: `python -m core.postflight --phase "..." --result "<UBT verbatim>"`. Never hand-write mutation dicts — use the typed helpers (`record_feature`/`record_pathway`/`record_loop`/`record_phase`/`record_grade`/`record_build`) or `python -m core.graphify_record`; mis-keyed writes are rejected with `rejected_*` and every node is auto-stamped `recorded_by`+`run_id`. Generator-owned C++ (Flight, Ship, GameMode, PCG, Missions, Docking, QuantumTravel, Factions, Economy, Save, Combat suite, PirateAI) is regenerated every pipeline run — fix templates in `core/game_code_generator.py`, never the C++. Build failures auto-grade F; non-pass visual verification grades C; stale trees under `Source/` fail the build.
 ## 1. Project Overview
 
 | Attribute | Value |
