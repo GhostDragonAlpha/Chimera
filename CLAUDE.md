@@ -130,8 +130,9 @@ Key tools:
 ## Project Conventions
 
 - **C++**: UE 5.8, C++20, `CHIMERA_API` macro, Visual Studio 2022
-- **Generated code**: All under `Source/Chimera/ProceduralGenerated/` — regenerate, do not hand-edit
-- **Manual code**: Outside `ProceduralGenerated/` (e.g., `FlightComponent`, `FactionComponent`)
+- **Development flows top-down**: game content changes go in the DSL spec (`tests/dsl_grammar/deep_space_trader.chimera`); code-shape changes go in the generator (`core/game_code_generator.py`); the pipeline regenerates the C++.
+- **Generator-owned files** (regenerated every pipeline run — hand-edits WILL be clobbered; fix the generator template instead): Flight, Ship, GameMode, PCGVolumeManager, MissionData/MissionComponent, Docking, QuantumTravel, FactionComponent, Economy (CommodityData/EconomyManager/StationTradingData), DeepSpaceTraderSaveGame/SaveGameComponent, Weapon/Projectile/Shield/Damage/SystemDamage/CombatTarget, PirateAIController + behavior tree.
+- **Loop-built manual files** also live under `ProceduralGenerated/` (Tools, Interactions, Sound, UI, NPC AI, ChimeraMovementComponent, StationActor): no template exists, hand-edits are safe. When touching one substantively, migrate it under generator ownership (add a `generate_*` method) first.
 - **Do NOT edit** `Chimera.Build.cs` — regenerate instead
 - **Always record build results** to DNA graph (success AND failure with UBT output)
 - **Pre-Flight** before running pipeline: `python -m core.preflight`
