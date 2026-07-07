@@ -89,3 +89,28 @@ Sleepwalker provisionally collapses features with >=2 clean sim exercises
 dam development. The human's next sentence — anytime — reverses anything: rejection
 reopens a feature regardless of how many sims passed it. Per-feature verdict requests
 to the human are FORBIDDEN.
+
+
+## Growing a New Organ (the casting rule — how every roster seat gets hired)
+
+One `core/<organ>.py` + at most four touchpoints. The recipe:
+1. Module follows the CLI convention: `python -m core.<organ> --flags`, `--dry-run`/`--check`
+   idioms, exit-0 discipline (report findings, never die), typed records only.
+2. New record types = one registry branch + `_mutate_*` + `record_*` helper in
+   graphify_interface.py (the rejection guards stay).
+3. Optional touchpoints: one dream_loop call (nightly), one preflight line (dashboard),
+   one rehearsal_candidates.json entry (schedulable), one CYCLE_PROMPT constant (duty-facing).
+4. `python -m core.doc_audit` must come back CLEAN; dry-run test; commit.
+The hiring plan itself lives in docs/DREAM_ROSTER.md.
+
+## The Laws (digest — full text in CYCLE_PROMPT.md)
+
+- **NO DEAD ENDS**: a blocker fails the ITEM, never the SHIFT. unblock (known) -> solver
+  (unknown; fix-or-draft) -> next candidate. Bare "blocked" notes are forbidden.
+- **ANTI-IDLE**: one cycle = one work item + the close. FRESHLY VERIFIED = dead work
+  (cooldowns). Bookends are never waived. Other agents' NEXT items are protected.
+  A reverted attempt is a FAILURE, not a fix. A scheduled/loop tick with no state delta
+  since the last tick outputs one line ("no delta") and ends — never a full re-report.
+- **Level state is sacred**: generators seed levels, never overwrite them
+  (build_orchestrator seed-only guard, 2026-07-07); beats assert their world
+  (`world_is`); preflight fingerprints the template-stamp clobber.

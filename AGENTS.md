@@ -229,3 +229,10 @@ When the NEXT list is empty, duty cycles run branch C2 before the pipeline fallb
 (PIE beat scripts, SimPlaytest evidence, CHIMERA_AGENT_SIM=1 sentinel — automation can
 never record a human observation). Sim signals rank below human rejections everywhere.
 Spec: Chimera/docs/SLEEPWALKER_DESIGN.md; new MCP pathways 22-26 in docs/MCP_PATHWAYS.md.
+
+## No-blockers & anti-idle toolkit (2026-07-07)
+Known blockers: `python -m core.unblock --ensure all`. Unknown: `python -m core.solver
+--blocker "..." --context "<verbatim>"` (fix-or-draft). Heuristics: `python -m core.gardener
+--tend` (delegated; human veto-after). Observation: `python -m core.collapse_proxy` (whole-
+experience sweeps + provisional collapse — never ask the human per-feature). Docs-vs-code:
+`python -m core.doc_audit`. Laws digest: GENERATION_PROTOCOL.md; full text CYCLE_PROMPT.md.

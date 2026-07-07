@@ -274,3 +274,13 @@ If your task is NOT listed here:
 ## Promoted Heuristic Traps (auto-tended)
 
 - **[H-10] pathway: build_orchestrator.ue_shutdown -> killed_for_build** — killed_for_build is the build lifecycle working as designed, not a pathway failure — record intended shutdowns as success with a note, or routine builds pollute the failure ledger.
+
+### 27. Level-state protection (2026-07-07, root-cause fix)
+- **HISTORICAL TRAP (fixed)**: build_orchestrator stamped templates/DefaultLevel.umap over
+  Content/Levels/chimeradefaultlevel.umap on EVERY pipeline build — level content only survived
+  while the editor held the file lock. This erased the 2026-07-03 walkabout AND the 2026-07-07
+  Regolith Yard. Now seed-only (never overwrites an existing level).
+- Clobber fingerprint: umap md5 == B734CFF5B6D6343B7A2BCCA43A1CB756 -> template bytes.
+  Restore: editor closed -> copy L_RegolithYard.umap over -> relaunch (preflight [4.55] shouts).
+- Beat scripts assert their world: expect {"world_is": "<map>"} fails fast on a wrong level.
+- Sleepwalker action kinds now include {"interact"|"pickup": true} (E) and {"drop": true} (Q).

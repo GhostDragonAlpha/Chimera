@@ -61,7 +61,13 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `core/spiral_forks.py` | Bounded sacrificial research forks (3, one wild) |
 | `core/graph_compactor.py` | Archive-never-delete graph hygiene |
 | `core/sleepwalker.py` + `core/witness.py` | AI playtester (beat scripts in PIE) + shared session chronicler |
-| `core/rehearsal.py` | Data-level rollout decider (veto-table NEXT items) |
+| `core/rehearsal.py` | Data-level rollout decider (veto-table NEXT items; dead-end demotion, freshness cooldowns) |
+| `core/gardener.py` | Delegated Gardener — auto-tends the heuristic queue (human veto-after) |
+| `core/collapse_proxy.py` | Whole-experience observation: holistic sweeps + provisional collapse |
+| `core/unblock.py` | Self-heals known blockers (editor/LM/PIE/git/disk) |
+| `core/solver.py` | Figures out fixes for UNKNOWN blockers (fix-or-draft; bare 'blocked' forbidden) |
+| `core/doc_audit.py` | Mechanical docs-vs-code drift check (nightly via floor) |
+| `docs/DREAM_ROSTER.md` | The full studio cast as organs — hiring plan (Tier-1: Scholar/Muse/Visionkeeper) |
 | `docs/beats/` | Beat scripts (machine playtest scripts per demo) |
 | `core/dna/` | Graphify DNA knowledge graph interface |
 | `tests/dsl_grammar/` | DSL specification files |
@@ -200,6 +206,13 @@ The pipeline auto-detects running UE Editor, closes it, builds, then restarts UE
 Layer 1 (engine hard facts): the level may be empty or missing required actors.
 Layer 4 (vision): the rendered viewport may show a greybox/empty level — spawn required actors before verification.
 All layers are mandatory and non-skippable.
+
+### Demo level reverted to empty template
+`chimeradefaultlevel.umap` md5 == B734CFF5... means the level was template-stamped. ROOT CAUSE
+(fixed 2026-07-07): build_orchestrator copied templates/DefaultLevel.umap over it on EVERY build
+— now seed-only. Restore: close editor, copy `Content/Levels/L_RegolithYard.umap` over it,
+relaunch. Preflight [4.55] fingerprints this automatically. (This also explains the 2026-07-03
+walkabout loss — it was never an unsaved-state problem.)
 
 ### DNA key pollution
 Run `python fix_dna_key_mismatch_pollution.py` to quarantine junk nodes.

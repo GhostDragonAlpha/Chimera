@@ -180,3 +180,10 @@ UNKNOWN blockers -> `python -m core.solver --blocker "<line>" --context "<verbat
 drafts the fix — never write a bare 'blocked' note). Zero-dependency floor work always exists:
 the `Groundskeeping_floor` rehearsal candidate. Nightly rhythm is ARMED (00:45/01:00/02:15).
 Doc drift check: `python -m core.doc_audit`.
+
+**Level clobber recovery (2026-07-07)**: if preflight prints [4.55] DEMO LEVEL CLOBBERED
+(umap md5 B734CFF5... = template bytes): taskkill //F //IM UnrealEditor.exe -> copy
+Chimera/Content/Levels/L_RegolithYard.umap over chimeradefaultlevel.umap ->
+`python -m core.unblock --ensure editor` -> verify with a regolith sleepwalk (5/5).
+Root cause is FIXED (build_orchestrator seed-only) — if it recurs, something new is stamping
+levels: run the solver with the evidence.

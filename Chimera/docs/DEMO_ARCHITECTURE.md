@@ -10,6 +10,13 @@
 > (Phase 2 item 4) is SUPERSEDED by `core/witness.py`; the Sleepwalker
 > (`core/sleepwalker.py` + docs/beats/regolith_yard.beats.json) now walks these beats
 > automatically — 5/5 clean on 2026-07-07.
+>
+> **UPDATE 2026-07-07 (late)**: Phase 2 generator work LANDED via duty session (DemoTerminal.h/cpp,
+> GameMode astronaut DefaultPawnClass + double-spawn deletion + terminal self-spawn, MissionComponent
+> payout — commit c1be3cd; ke-verification suite still pending -> Phase 3). CORRECTION to the risk
+> table: the original walkabout was NOT lost to unsaved editor state — build_orchestrator template-
+> stamped the level on every build (fixed seed-only; see MCP_PATHWAYS #27). Protected copy:
+> L_RegolithYard.umap. Yard restored and sleepwalk-verified 5/5 after tonight's clobber.
 
 ## 1. Purpose
 

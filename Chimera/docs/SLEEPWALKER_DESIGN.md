@@ -94,3 +94,11 @@ Run `python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --se
 - Rehearsal priors may be thin (graph has 1300 nodes but uneven coverage) — policy must expose its confidence, and low-confidence decisions get an exploration flag rather than false certainty.
 - Constitution drift risk: sim signals slowly displacing human authority — mitigated structurally (separate node types, guarded human-only surfaces, human_rejection permanently outranks sim_rejection, veto table on every decision).
 - Cost: sleepwalks are local (MCP + optional LM Studio) — near-zero API usage; rehearsal LM pass optional.
+
+
+## Post-implementation additions (2026-07-07, late)
+- Action kinds: {"interact"|"pickup": true, "hold_s": s} -> E key; {"drop": true} -> Q key
+  (duty-session extension for verb_interactions.beats.json).
+- Expect kinds: {"world_is": "<substr>"} — every beat file's first beat should assert its map
+  (added after the level-clobber incident; a wrong world now fails in one line).
+- Editor-down self-heal via core.unblock; PIE-collision guard; both proven.
