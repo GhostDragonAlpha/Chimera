@@ -23526,6 +23526,29 @@
       "links": [],
       "recorded_by": "rehearsal.py",
       "run_id": "run_ce48936322e0"
+    },
+    {
+      "id": "phase_0ddffb52d2d75240",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T04:01:26.626829",
+      "phase": "Ground_Sand_Footprints MCP apply + save (setup_footstep_system + map_surface_to_sand + save_all, 3/3 success); anim_notify NOT_IMPLEMENTED confirmed (bridge-blocked)",
+      "result": "setup_footstep_system: success true (foot_l/foot_r/trace 100); map_surface_to_sound: success true (Sand surface map); save_all: savedCount=1; runtime_report: isPIE=false, level loaded, actors present",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Ground_Sand_Footprints MCP apply + save (setup_footstep_system + map_surface_to_sand + save_all, 3/3 success); anim_notify NOT_IMPLEMENTED confirmed (bridge-blocked)",
+      "error_category": "none",
+      "fix_description": "Phase 'Ground_Sand_Footprints MCP apply + save (setup_footstep_system + map_surface_to_sand + save_all, 3/3 success); anim_notify NOT_IMPLEMENTED confirmed (bridge-blocked)' complete: setup_footstep_system: success true (foot_l/foot_r/trace 100); map_surface_to_sound: success true (Sand surface map); save_all: savedCount=1; runtime_report: isPIE=false, level loaded, actors present",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge"
+      ],
+      "inheritance": "Ground_Sand_Footprints footstep system wired at BP level via MCP but footstep events still blocked (add_anim_notify NOT_IMPLEMENTED in bridge). Pipeline LM Studio URL fixed (localhost). Rehearsal now picks Ground_Sand_Footprints instead of blocked Phase 3. Three import-fallback bugs fixed. Next executable item: Ground_Sand_Footprints (need bridge fix for add_anim_notify) or Demo_Phase2_DemoTerminal (capable only, unblocks loop).",
+      "pain_verdicts": {
+        "phase_17828713d9c76201:P1": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_368b80ef399b"
     }
   ],
   "edges": [
