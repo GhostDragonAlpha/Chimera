@@ -34,11 +34,11 @@ try:
                                          collect_observation_queue)
     from core import heuristic_distiller, graph_compactor
 except ImportError:
-    sys.path.insert(0, str(Path(__file__).parent))
-    from graphify_interface import (load_dna_graph, collect_inheritance,
-                                    collect_observation_queue)
-    import heuristic_distiller
-    import graph_compactor
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # Chimera/
+    sys.path.insert(0, str(Path(__file__).resolve().parent))         # core/
+    from core.graphify_interface import (load_dna_graph, collect_inheritance,
+                                         collect_observation_queue)
+    from core import heuristic_distiller, graph_compactor
 
 CHIMERA_ROOT = Path(__file__).parent.parent
 REPORT_PATH = CHIMERA_ROOT / "docs" / "DREAM_REPORT.md"

@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T03:46:38Z
+consolidated: 2026-07-07T03:53:14Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
@@ -27,7 +27,7 @@ No pending heuristics — the constitution covers everything the night found.
 Record verdicts: `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`tend FAILED: No module named 'core'`
+`untouched:14`
 
 ## Tonight's distillation
 ```
@@ -53,6 +53,6 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1373  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1374  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

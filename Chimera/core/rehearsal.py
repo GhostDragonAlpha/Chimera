@@ -19,10 +19,15 @@ history is thin). All inputs printed; confidence exposed, never faked.
 
 import argparse
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from core.graphify_interface import load_dna_graph, record_rollout
+try:
+    from core.graphify_interface import load_dna_graph, record_rollout
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from graphify_interface import load_dna_graph, record_rollout
 
 ROOT = Path(__file__).resolve().parent.parent
 TASK_PROGRESS = ROOT.parent / "task_progress.md"

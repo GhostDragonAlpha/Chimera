@@ -23427,6 +23427,59 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_ba88c612d0a7"
+    },
+    {
+      "id": "rollout_b0013df08dd82f12",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-07T03:52:11.682302",
+      "chosen": "Demo_Phase3_SessionB_wiring",
+      "candidates": [
+        {
+          "name": "Demo_Phase3_SessionB_wiring",
+          "score": 1.15,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 3 \u2014 ke-routed verification + Session B handoff; blocked by Phase 2"
+        },
+        {
+          "name": "Ground_Sand_Footprints",
+          "score": 1.1,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "needs_refinement (reopened)"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.97,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "SLEEPWALKER_DESIGN.md M4 \u2014 schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams"
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.73,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.6 / cost 1.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Demo_Phase3_SessionB_wiring",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_0abec04cb36b"
     }
   ],
   "edges": [
