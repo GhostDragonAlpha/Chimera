@@ -1,3 +1,26 @@
+# Session 2026-07-07 (duty cycle) — Rehearsal selected Ground_Sand_Footprints; already confirmed facade #3
+
+**Work completed:** Rehearsal engine selected Ground_Sand_Footprints (grade C, needs_refinement). Already confirmed in this cycle: facade #3 - `add_anim_notify` and `get_anim_sequence_info` return NOT_IMPLEMENTED despite routing registration in `McpConsolidatedActionRouting.h`. Recorded pathway failure: `pathway_attempt_b3ba3afc4acb9122`. Resolution note: "BP wiring remains — capable sessions only". Sleepwalker verification with regolith_yard beats: 5/5 beats reached, clean walk. Dream loop ran - no new candidates staged (constitution already covers today's lessons).
+
+**Phantom pain disposition:** phase_762486f41e1aeafb:P1 (observation queue will rot unobserved) → still-open.
+
+## NEXT
+1. **Ground_Sand_Sound** — not_started (BLOCKED-ON-ASSETS). Content/Audio empty, engine ships no footstep sounds. Resolution: human must import CC0 footstep pack.
+2. **Pending technical_research**: procedural dust-accumulation mask material creation using noise functions, vertex normal-based. Related to Ground_Sand_Particles fidelity debt (sand color #8B7D6B, gravity −162), which is formally BRIDGE-BLOCKED until Niagara authoring is repaired in McpAutomationBridge.
+3. **Observation queue**: 22 system-finalized feature(s) awaiting the human's eyes — the true collapse.
+
+---
+
+# Rehearsal decision 2026-07-07 06:02Z — next move: Ground_Sand_Footprints
+
+Chosen by core.rehearsal (score 0.85, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Footprints** — needs_refinement (reopened, grade C) — implement footstep system in PIE via proven manage_character pathways. Recipe: python -c "import sys; sys.path.insert(0,r'E:\PythonChimera\Chimera'); from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; p=n.get('parameters',{}); print(json.dumps(p,default=str,indent=1)[:2000])" — then follow manage_character setup_footstep_system; control_editor save_all; verify with sleepwalker --beats docs/beats/regolith_yard.beats.json
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Session 2026-07-07 (duty cycle) — Ground_Sand_Footprints facade #3 confirmed; sleepwalker verification clean 5/5 beats
 
 **Work completed:** Confirmed Ground_Sand_Footprints facade #3 - `add_anim_notify` and `get_anim_sequence_info` return NOT_IMPLEMENTED despite routing registration in `McpConsolidatedActionRouting.h`. Recorded pathway failure: `pathway_attempt_b3ba3afc4acb9122`. Resolution note: "BP wiring remains — capable sessions only". Ran sleepwalker verification with regolith_yard beats: 5/5 beats reached, clean walk. Dream loop ran - no new candidates staged (constitution already covers today's lessons).
