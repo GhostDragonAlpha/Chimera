@@ -1,0 +1,8 @@
+* text=auto
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.uasset binary
+*.umap binary
+*.png binary
+*.jar binary
+*.exe binary
