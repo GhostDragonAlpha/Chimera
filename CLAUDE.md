@@ -18,6 +18,7 @@
 - **Dream loop** (`python -m core.dream_loop`, manual or scheduled): distills failures+surprises into ≤2 candidate heuristics per night, staged in `docs/PENDING_HEURISTICS.md`.
 - **The human Gardener approves EVERY heuristic** before promotion (gate / CLAUDE.md rule / MCP_PATHWAYS trap). Pending = inert. Vetoed entries stay as tombstones. Promote approved ones via `python -m core.graphify_record heuristic ...` and set status `promoted`.
 - **The human observation is the true collapse — and it arrives HOLISTICALLY**: the human playtests and gives a few-sentence temperature of the whole experience (`graphify_record playtest --notes "<verbatim>"`), not per-feature verdicts. The agent then ATTRIBUTES it across the queue with provenance (`observe --derived-from <playtest_id> --quote "..."` for direct mentions, `--tacit` for exercised-but-unmentioned, untouched if not exercised) and presents the attribution table for one-sentence overrules. Agents never originate verdicts — they route the human's words. Rejections → `needs_refinement`, first-priority dream fodder. Loops show `[DONE*]` until observed.
+- **Sleepwalker (the balance of automation and control)**: `python -m core.sleepwalker --beats docs/beats/<demo>.beats.json --session <name>` — the AI playtester plays PIE beat scripts and records SimPlaytest evidence (observer=agent-sim, NEVER a human verdict; CHIMERA_AGENT_SIM sentinel enforces it). `python -m core.rehearsal --decide` simulates candidate next-moves over graph priors and writes a veto-table-backed NEXT item. human_rejection permanently outranks sim_rejection in the distiller. See docs/SLEEPWALKER_DESIGN.md.
 - Graph hygiene: `python -m core.graph_compactor --dry-run` (archive-never-delete; apply is always manual).
 
 ## Architecture Overview
@@ -53,6 +54,9 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `core/dream_loop.py` | Circadian consolidation orchestrator (distill + compact preview + Dream Report) |
 | `core/spiral_forks.py` | Bounded sacrificial research forks (3, one wild) |
 | `core/graph_compactor.py` | Archive-never-delete graph hygiene |
+| `core/sleepwalker.py` + `core/witness.py` | AI playtester (beat scripts in PIE) + shared session chronicler |
+| `core/rehearsal.py` | Data-level rollout decider (veto-table NEXT items) |
+| `docs/beats/` | Beat scripts (machine playtest scripts per demo) |
 | `core/dna/` | Graphify DNA knowledge graph interface |
 | `tests/dsl_grammar/` | DSL specification files |
 | `docs/chimera_dna_graph.json` | DNA graph storage |

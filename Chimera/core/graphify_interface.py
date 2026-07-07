@@ -162,6 +162,12 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "playtest":
         return _mutate_playtest(details or {})
 
+    elif mutate_type == "simtest":
+        return _mutate_simtest(details or {})
+
+    elif mutate_type == "rollout":
+        return _mutate_rollout(details or {})
+
     else:
         raise ValueError(f"Unknown mutation type: {mutate_type}")
 
@@ -1340,7 +1346,101 @@ def record_playtest(notes: str, build_ref: str = "") -> str:
     return graphify_mutate("playtest", details={"notes": notes, "build_ref": build_ref})
 
 
+def _mutate_simtest(details: dict) -> str:
+    """Records a Sleepwalker run (SimPlaytest node, observer='agent-sim').
+
+    SLEEPWALKER_DESIGN.md: sim results NEVER occupy the human's surfaces —
+    this is a separate node type. human_rejection permanently outranks any
+    sim signal in the distiller. Failed beats cluster as kind='sim_rejection'."""
+    session = str(details.get("session") or "").strip()
+    if not session:
+        return "rejected_simtest: 'session' required; nothing recorded"
+    outcomes = details.get("outcomes") or []
+    total = int(details.get("beats_total") or len(outcomes))
+    reached = int(details.get("beats_reached") or
+                  sum(1 for o in outcomes if o.get("outcome") == "reached"))
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    node = {
+        "id": f"simtest_{hashlib.sha256(f'simtest_{session}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "SimPlaytest",
+        "timestamp": datetime.utcnow().isoformat(),
+        "observer": "agent-sim",
+        "session": session,
+        "demo": str(details.get("demo") or ""),
+        "beats_total": total,
+        "beats_reached": reached,
+        "outcomes": outcomes,
+        "timeline_path": str(details.get("timeline_path") or ""),
+        "temperature": str(details.get("temperature") or "")[:400],
+        "error_signature": "success_no_error" if reached == total else "sim_beats_failed",
+        "template_file": "sleepwalker/beat_run",
+        "error_category": "none" if reached == total else "sim_rejection",
+        "fix_description": f"Sleepwalk '{session}': {reached}/{total} beats reached",
+        "compilation_result": "n/a",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def record_simtest(session: str, demo: str, beats_total: int, beats_reached: int,
+                   outcomes: list, timeline_path: str = "", temperature: str = "") -> str:
+    """Record a Sleepwalker beat run. Agent-side evidence only — never a verdict."""
+    return graphify_mutate("simtest", details={
+        "session": session, "demo": demo, "beats_total": beats_total,
+        "beats_reached": beats_reached, "outcomes": outcomes,
+        "timeline_path": timeline_path, "temperature": temperature})
+
+
+def _mutate_rollout(details: dict) -> str:
+    """Records a Rehearsal decision (SimulationRollout node): candidates
+    considered, scores, the chosen next move, and rationale. Every decision
+    is reversible by one human sentence (the veto table)."""
+    chosen = str(details.get("chosen") or "").strip()
+    if not chosen:
+        return "rejected_rollout: 'chosen' required; nothing recorded"
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    node = {
+        "id": f"rollout_{hashlib.sha256(f'rollout_{chosen}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "SimulationRollout",
+        "timestamp": datetime.utcnow().isoformat(),
+        "chosen": chosen,
+        "candidates": details.get("candidates") or [],
+        "rationale": str(details.get("rationale") or "")[:400],
+        "vetoed": False,
+        "error_signature": "success_no_error",
+        "template_file": "rehearsal/decision",
+        "error_category": "none",
+        "fix_description": f"Rehearsal chose next move: {chosen}",
+        "compilation_result": "n/a",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def record_rollout(chosen: str, candidates: list, rationale: str = "") -> str:
+    """Record a Rehearsal next-move decision (agent-side; human may veto)."""
+    return graphify_mutate("rollout", details={
+        "chosen": chosen, "candidates": candidates, "rationale": rationale})
+
+
 def _mutate_observation(details: dict) -> str:
+    # Sleepwalker constitution guard (SLEEPWALKER_DESIGN.md): an agent-sim process
+    # (CHIMERA_AGENT_SIM=1) may only write observations that ATTRIBUTE a human
+    # playtest (derived_from required). Direct observations remain the human's
+    # honor-system surface; the env sentinel makes THIS automation unable to fake one.
+    import os as _os
+    if _os.environ.get("CHIMERA_AGENT_SIM") == "1" and not details.get("derived_from"):
+        return ("rejected_observation: CHIMERA_AGENT_SIM=1 — agent-sim processes may not "
+                "record direct observations (derived_from a human playtest required)")
+
     """Records the human's Observation of a system-finalized feature — the true
     quantum collapse (Generation Protocol increment 2). The system's verification
     is the preliminary measurement; the feature's state collapses only here."""

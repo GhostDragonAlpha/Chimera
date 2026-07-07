@@ -1,3 +1,33 @@
+# Session 2026-07-07 (capable session) — SLEEPWALKER IMPLEMENTED & INTEGRATED: the game plays itself, grade A 98.5
+
+**Built and live (SLEEPWALKER_DESIGN.md M1+M2+M3)**: core/witness.py (shared chronicler), core/sleepwalker.py
+(AI playtester: beat scripts in PIE via proven pathways, CHIMERA_AGENT_SIM=1 sentinel), core/rehearsal.py
+(rollout decider + veto table), docs/beats/regolith_yard.beats.json, docs/rehearsal_candidates.json,
+SimPlaytest/SimulationRollout node types + simtest/rollout CLI, distiller sim_rejection tier (below
+human_rejection), preflight [4.6], constitution amendments (GENERATION_PROTOCOL Sleepwalking section,
+CYCLE_PROMPT branch C2, CLAUDE.md).
+
+**First walks**: walk 1 = 4/5 beats (jump probe failed HONESTLY - weak expectation, surprise recorded,
+distiller clusters it as sim_rejection) -> executor gained pawn_z_above read-back -> walk 2 = 5/5 clean,
+astronaut caught mid-air at jump apex. Find->fix->verify loop closed same session.
+
+**CONSTITUTION FINDING (surprise_1451fd0fc19c66f3)**: the observe surface was honor-system only - a test
+faked a human verdict (immediately purged). CHIMERA_AGENT_SIM=1 processes are now technically rejected
+from direct observations. A stronger universal rule is Gardener's to decide (dream fodder staged).
+
+## NEXT (each item carries its recipe — the handoff invariant; execute exactly, add nothing)
+1. **HUMAN SESSION A RETRY (Regolith Yard)** — unchanged: press Play (WASD/mouse/Space), beats 1-8 of
+   DEMO_ARCHITECTURE.md §2, intake per §6. Skip-condition: no human → next item.
+2. **Duty cycles: use branch C2** — when NEXT is empty:
+   `python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide` and execute its item.
+3. **Nightly sleepwalk (M4)** — staged as rehearsal candidate Sleepwalker_M4_nightly_rhythm (recipe inside
+   docs/rehearsal_candidates.json). PRE-REQ per pain phase_34195900a1671e58:P1: add is-PIE-active check to
+   sleepwalker.run before play (one runtime_report call + retry) — small, weak-OK with the recipe:
+   guard at core/sleepwalker.py run(): if self._runtime().get('isPIE'): wait 120s, retry x3, else record pathway blocked.
+4. **Fallback**: pipeline health check (qwen3.6 must be loaded first: `lms load qwen3.6-35b-a3b-mtp@iq2_m`).
+
+---
+
 # Session 2026-07-06 close (capable session) — SLEEPWALKER SYSTEM DESIGNED + APPROVED
 
 **The Gardener approved the balance-of-automation-and-control system**: an AI playtester (Sleepwalker, in-engine

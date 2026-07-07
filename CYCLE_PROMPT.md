@@ -42,6 +42,11 @@ From preflight note: [4.5] open pain IDs, pending heuristic count, observation q
   `python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','<Name>')[-1]; print(json.dumps(n.get('parameters',{}),indent=1)[:2000])"`).
   Skip any item marked `capable sessions only` or lacking a recipe — go to the next
   item. Execute the recipe EXACTLY; add nothing to it.
+- **C2. If no NEXT item is executable: ask the Rehearsal engine** —
+  `python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide`
+  prints a veto table, records a SimulationRollout, and prepends a recipe-carrying NEXT
+  item; execute THAT item this cycle (respect its capable-only marking — if marked and you
+  are a weak session, go to D). The human may veto any rehearsal decision with one sentence.
 - **D. If no NEXT item is executable: pipeline health check** —
   `python run_deep_space_trader_pipeline.py`, record the UBT result line VERBATIM in
   Step 4. If it fails, do NOT touch generated C++; the recorded failure is the work.

@@ -216,6 +216,22 @@ def main():
                              or n.get("fix_description") == "build_completed"
                              or "ubt_output_excerpt" in n))
     last_visual = latest(lambda n: n.get("template_file") == "visual_verification/screenshot_analysis")
+
+    # 4.6. Sleepwalker / Rehearsal — the automation half of the balance
+    last_sim = latest(lambda n: n.get("type") == "SimPlaytest")
+    last_roll = latest(lambda n: n.get("type") == "SimulationRollout")
+    if last_sim or last_roll:
+        print("\n[4.6] Sleepwalker (agent-sim; the human's word overrides everything here):")
+        if last_sim:
+            print(f"    Last sleepwalk: {last_sim.get('session')} — "
+                  f"{last_sim.get('beats_reached')}/{last_sim.get('beats_total')} beats "
+                  f"({last_sim.get('demo')}) @ {str(last_sim.get('timestamp',''))[:19]}")
+            print(f"      {str(last_sim.get('temperature',''))[:100]}")
+        if last_roll:
+            print(f"    Last rehearsal decision: {last_roll.get('chosen')} "
+                  f"@ {str(last_roll.get('timestamp',''))[:19]}"
+                  f"{'  [VETOED]' if last_roll.get('vetoed') else ''}")
+
     print("\n[5] Last pipeline run:")
     for label, n in (("parse", last_parse), ("build", last_build), ("visual", last_visual)):
         if n:

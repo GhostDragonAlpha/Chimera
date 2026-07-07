@@ -54,3 +54,21 @@ recall from. `gate_node_count_bounded` is the tripwire that prompts a run.
 `core/graph_compactor.py` · `docs/PENDING_HEURISTICS.md` · `docs/DREAM_REPORT.md` ·
 preflight [4.5] / postflight inheritance flags · `record_surprise` /
 `record_heuristic` typed helpers · dashboard Inheritance Log + Grade Sawtooth.
+
+
+## Sleepwalking (amendment 2026-07-06, Gardener-approved — SLEEPWALKER_DESIGN.md)
+
+Between human sessions the game plays itself. The **Sleepwalker** (`core/sleepwalker.py`)
+executes beat scripts (`docs/beats/*.beats.json`) in PIE through proven MCP pathways and
+records **SimPlaytest** nodes (observer=agent-sim) plus surprises for the dream loop. The
+**Rehearsal** engine (`core/rehearsal.py`) rolls candidate next-moves through graph priors
+and records **SimulationRollout** decisions, each printed as a veto table.
+
+The balance of automation and control:
+- Sim evidence advances work (a feature may carry `sim_verified`); the human observation
+  remains the ONLY collapse. A human rejection reopens anything, at top priority.
+- `human_rejection` permanently outranks `sim_rejection` in the nightly distiller.
+- Agent-sim processes run under `CHIMERA_AGENT_SIM=1`: the interface rejects any direct
+  observation from them (attribution of a real human playtest is their only observe path).
+- Every rehearsal decision is reversible by one human sentence (the veto table).
+- Nightly rhythm (optional, M4): sleepwalk 01:00 → dream_loop 02:00 — play, then dream.

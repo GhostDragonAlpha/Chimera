@@ -1,0 +1,14 @@
+[
+  {"name": "Demo_Phase2_DemoTerminal", "value": 1.8, "capable_only": true,
+   "why": "DEMO_ARCHITECTURE.md §5 Phase 2 — kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)",
+   "recipe": "Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 2 items 1-5 exactly (DemoTerminal.h/cpp manual lane; GameMode template surgery; MissionComponent payout; core/demo_witness.py is SUPERSEDED by core/witness.py - reuse it; regen + UBT)."},
+  {"name": "Demo_Phase3_SessionB_wiring", "value": 1.5, "capable_only": false,
+   "why": "DEMO_ARCHITECTURE.md §5 Phase 3 — ke-routed verification + Session B handoff; blocked by Phase 2",
+   "recipe": "Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 3 items 1-3 exactly. Skip-condition: Phase 2 not built -> pick another candidate."},
+  {"name": "Ground_Sand_Sound_unblock", "value": 0.8, "capable_only": false,
+   "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first",
+   "recipe": "Skip-condition: Content/Audio still empty -> untouched (human task). If assets present: wire per feature node study guide."},
+  {"name": "Sleepwalker_M4_nightly_rhythm", "value": 1.2, "capable_only": false,
+   "why": "SLEEPWALKER_DESIGN.md M4 — schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams",
+   "recipe": "schtasks /Create /SC DAILY /ST 01:00 /TN ChimeraSleepwalk /TR \"cmd /c cd /d E:\\PythonChimera\\Chimera && python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session nightly_%DATE%\" /V1 — then verify with schtasks /Query /TN ChimeraSleepwalk. Requires editor running overnight; skip-condition: editor not left open."}
+]

@@ -22110,6 +22110,458 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_bb66226681ff"
+    },
+    {
+      "id": "simtest_6a0be0d290cf9c59",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-07T00:47:24.990469",
+      "observer": "agent-sim",
+      "session": "sim_firstwalk_20260706",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=65uu (loc x=1934.616436939719, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=132uu (loc x=3868.0122899637277, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "log_contains": "[DEMOBEAT]"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sim_firstwalk_20260706.json",
+      "temperature": "[SIM] 4/5 beats reached in 'regolith_yard'. Failures: jump_probe (failed: {\"expect\": {\"log_contains\": \"[DEMOBEAT]\"}, \"ok\": false, \"note\": \"log_hit=False\"})",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sim_firstwalk_20260706': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a2eb88c3f3ca"
+    },
+    {
+      "id": "surprise_561ad640d61383db",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T00:47:25.015307",
+      "context": "Sleepwalker expected beat 'jump_probe' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[DEMOBEAT]\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[DEMOBEAT]\"}, \"ok\": false, \"note\": \"log_hit'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a2eb88c3f3ca"
+    },
+    {
+      "id": "pathway_attempt_fddb0da7c8b8b33e",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T00:47:25.041975",
+      "tool": "sleepwalker",
+      "action": "beat_run",
+      "parameters_tried": {
+        "session": "sim_firstwalk_20260706",
+        "reached": "4/5"
+      },
+      "result": "partial",
+      "error_message": "",
+      "error_signature": "pathway_attempt_partial",
+      "template_file": "pathway_attempt/sleepwalker/beat_run",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'sleepwalker', action 'beat_run', result 'partial'",
+      "compilation_result": "partial",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a2eb88c3f3ca"
+    },
+    {
+      "id": "simtest_73ce1be773dade94",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-07T00:48:38.667608",
+      "observer": "agent-sim",
+      "session": "sim_secondwalk_20260706",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 5,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=66uu (loc x=1933.5122527189105, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=133uu (loc x=3866.905584466445, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": true,
+              "note": "z=164"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sim_secondwalk_20260706.json",
+      "temperature": "[SIM] 5/5 beats reached in 'regolith_yard'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sim_secondwalk_20260706': 5/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_01790c570e39"
+    },
+    {
+      "id": "pathway_attempt_556e8c8dad7d7297",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T00:48:38.695202",
+      "tool": "sleepwalker",
+      "action": "beat_run",
+      "parameters_tried": {
+        "session": "sim_secondwalk_20260706",
+        "reached": "5/5"
+      },
+      "result": "success",
+      "error_message": "",
+      "error_signature": "success_no_error",
+      "template_file": "pathway_attempt/sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Pathway attempt recorded: tool 'sleepwalker', action 'beat_run', result 'success'",
+      "compilation_result": "success",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_01790c570e39"
+    },
+    {
+      "id": "surprise_1451fd0fc19c66f3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T00:49:49.648721",
+      "context": "SLEEPWALKER_DESIGN guard test: expected observe-without-derived-from to be technically rejected for agents",
+      "expectation": "",
+      "reality": "It succeeded and flipped Verb_Step to observed - the human-provenance guard is procedural only (CLI cannot know who types). Test artifacts purged; env-sentinel guard added (CHIMERA_AGENT_SIM=1 rejects direct observe). Stronger rule needs Gardener decision.",
+      "lesson_hint": "direct observe is an honor-system surface; automation processes must set CHIMERA_AGENT_SIM",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'It succeeded and flipped Verb_Step to observed - the human-provenance guard is p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_edba10cd0825"
+    },
+    {
+      "id": "professor_grade_c672ff663bf3651b",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-07T00:55:15.211549",
+      "feature": "Sleepwalker_System",
+      "grade": "A",
+      "score": 4.0,
+      "reasoning": "[result-grader 98.5/100] correctness 40.0/40: 8/8 tests passed; coverage 8/8 declared criteria | stability 25.0/25: crash-free; fps 119.99904156496706 >= 60; no unbounded growth | design_checklist 20.0/20: met: feedback, consistency, meaningful_parameters, fail_safety, balance_sanity | spec_fidelity 13.5/15: 90% of spec parameters verified in the built result",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/Sleepwalker_System",
+      "error_category": "none",
+      "fix_description": "Professor grade recorded: Sleepwalker_System = A (4.0) \u2014 [result-grader 98.5/100] correctness 40.0/40: 8/8 tests passed; coverage 8/8 declared criteria | stability 25.0/25: crash-free; fps 119.99904156496706 >= 60; no unbounded growth | design_checklist 20.0/20: met: feedback, consistency, meaningful_parameters, fail_safety, balance_sanity | spec_fidelity 13.5/15: 90% of spec parameters verified in the built result",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "result_grader.py",
+      "run_id": "run_9d967013b7ef"
+    },
+    {
+      "id": "professor_gpa_8caefdc53cb91350",
+      "type": "ProfessorGPA",
+      "timestamp": "2026-07-07T00:55:15.211675",
+      "scope": "project_overall",
+      "gpa": 2.26,
+      "grades_count": 141,
+      "trend": "flat",
+      "previous_gpa": 2.25,
+      "date": "2026-07-07",
+      "error_signature": "success_no_error",
+      "template_file": "gpa/project_overall",
+      "error_category": "none",
+      "fix_description": "GPA for project_overall: 2.26 (flat), based on 141 grades",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "result_grader.py",
+      "run_id": "run_9d967013b7ef"
+    },
+    {
+      "id": "feature_c2ca5a3ba06fcaa6",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-07T00:55:15.393103",
+      "feature_name": "Sleepwalker_System",
+      "loop": 8,
+      "status": "verified",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_8/Sleepwalker_System",
+      "error_category": "none",
+      "fix_description": "Feature 'Sleepwalker_System' (Loop 8) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_e54f22daa214"
+    },
+    {
+      "id": "phase_34195900a1671e58",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T00:55:15.566957",
+      "phase": "Sleepwalker system implemented and integrated (SLEEPWALKER_DESIGN M1+M2+M3 essentials)",
+      "result": "grade A pending (8/8 criteria measured); first sleepwalk 4/5 beats (honest jump-probe failure), find->fix->verify loop closed at 5/5 clean walk; SimPlaytest simtest_73ce1be773dade94; rehearsal veto table live; distiller clusters sim_rejection (ranked below human_rejection); preflight [4.6] renders; CONSTITUTION FINDING: observe guard was procedural only - agent faked a verdict in testing (purged), CHIMERA_AGENT_SIM env sentinel now rejects agent-sim direct observations",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Sleepwalker system implemented and integrated (SLEEPWALKER_DESIGN M1+M2+M3 essentials)",
+      "error_category": "none",
+      "fix_description": "Phase 'Sleepwalker system implemented and integrated (SLEEPWALKER_DESIGN M1+M2+M3 essentials)' complete: grade A pending (8/8 criteria measured); first sleepwalk 4/5 beats (honest jump-probe failure), find->fix->verify loop closed at 5/5 clean walk; SimPlaytest simtest_73ce1be773dade94; rehearsal veto ta",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Nightly unattended sleepwalks will eventually collide with a human/agent session already using PIE - first collision strands PIE running or corrupts a chronicle; needs an is-PIE-already-active check before play (one runtime_report call) and a polite retry"
+      ],
+      "inheritance": "The game can now play itself: core/sleepwalker.py runs beat scripts in PIE, core/rehearsal.py decides next moves with veto tables, both feed the dream loop. Nightly rhythm (M4) staged as a rehearsal candidate. The human's word overrides everything; sim signals rank below human_rejection permanently.",
+      "pain_verdicts": {
+        "phase_1b01fac303f3c24e:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_e1184e1a2cd4"
     }
   ],
   "edges": [

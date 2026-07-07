@@ -19,6 +19,7 @@ try:
     from core.graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
         record_heuristic, record_surprise, record_observation, record_playtest,
+        record_simtest, record_rollout,
         parse_pain_verdicts,
     )
 except ImportError:
@@ -26,6 +27,7 @@ except ImportError:
     from graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
         record_heuristic, record_surprise, record_observation, record_playtest,
+        record_simtest, record_rollout,
         parse_pain_verdicts,
     )
 
@@ -116,6 +118,20 @@ def main():
     p.add_argument("--source", default="agent", choices=["agent", "human", "engine"],
                    help="who produced the surprise (human = a correction from the user)")
 
+    p = sub.add_parser("simtest", help="Sleepwalker beat-run record (agent-sim evidence, never a verdict)")
+    p.add_argument("--session", required=True)
+    p.add_argument("--demo", required=True)
+    p.add_argument("--beats-total", type=int, required=True, dest="beats_total")
+    p.add_argument("--beats-reached", type=int, required=True, dest="beats_reached")
+    p.add_argument("--outcomes-json", default="[]", dest="outcomes_json")
+    p.add_argument("--timeline", default="")
+    p.add_argument("--temperature", default="")
+
+    p = sub.add_parser("rollout", help="Rehearsal next-move decision (human may veto with one sentence)")
+    p.add_argument("--chosen", required=True)
+    p.add_argument("--candidates-json", default="[]", dest="candidates_json")
+    p.add_argument("--rationale", default="")
+
     args = parser.parse_args()
 
     if args.kind == "feature":
@@ -153,6 +169,11 @@ def main():
             fid = record_feature(args.feature, args.loop if args.loop is not None else 0,
                                  status, params)
             print(f"FeatureUpdate: {args.feature} -> {status} ({fid})")
+    elif args.kind == "simtest":
+        node_id = record_simtest(args.session, args.demo, args.beats_total, args.beats_reached,
+                                 json.loads(args.outcomes_json), args.timeline, args.temperature)
+    elif args.kind == "rollout":
+        node_id = record_rollout(args.chosen, json.loads(args.candidates_json), args.rationale)
     elif args.kind == "playtest":
         node_id = record_playtest(args.notes, args.build)
     else:

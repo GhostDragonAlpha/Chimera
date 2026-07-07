@@ -84,6 +84,13 @@ def collect_clusters(nodes: list, min_cluster: int) -> list:
             # the human's collapse said no — the highest-grade dream fodder there is
             add(f"human_rejection: {n.get('feature_name','?')}", "human_rejection", n,
                 str(n.get("notes", ""))[:160])
+        elif ntype == "SimPlaytest" and n.get("error_signature") == "sim_beats_failed":
+            # the sleepwalker found a gap — ranked below the human's voice, above machines
+            for o in n.get("outcomes", []):
+                if o.get("outcome") != "reached":
+                    add(f"sim_rejection: {n.get('demo','?')}/{o.get('beat','?')}",
+                        "sim_rejection", n,
+                        f"{o.get('outcome')}: {json.dumps(o.get('evidence', [])[-1:])[:120]}")
         elif ntype == "SurpriseMoment" and not n.get("consolidated"):
             # cluster surprises by their strongest shared tokens (context+reality)
             key = "surprise: " + " ".join(sorted(_tokens(
@@ -104,7 +111,8 @@ def collect_clusters(nodes: list, min_cluster: int) -> list:
     # and sort ahead of every machine-detected cluster
     out = [c for c in clusters.values()
            if c["count"] >= min_cluster or c["kind"] == "human_rejection"]
-    out.sort(key=lambda c: (0 if c["kind"] == "human_rejection" else 1,
+    out.sort(key=lambda c: (0 if c["kind"] == "human_rejection"
+                            else (1 if c["kind"] == "sim_rejection" else 2),
                             -c["count"], c["last_seen"]))
     return out
 
