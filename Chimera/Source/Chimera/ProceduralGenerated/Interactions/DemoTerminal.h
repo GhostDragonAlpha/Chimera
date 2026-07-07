@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
-#include "EconomyManager.h"
-#include "InventoryTradeComponent.h"
-#include "FactionComponent.h"
-#include "SaveGameComponent.h"
-#include "MissionComponent.h"
+#include "../Economy/EconomyManager.h"
+#include "../Inventory/InventoryTradeComponent.h"
+#include "../Factions/FactionComponent.h"
+#include "../Save/SaveGameComponent.h"
+#include "../Missions/MissionComponent.h"
 #include "DemoTerminal.generated.h"
 
 UCLASS()

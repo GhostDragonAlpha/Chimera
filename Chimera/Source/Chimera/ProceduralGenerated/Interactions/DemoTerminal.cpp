@@ -27,7 +27,7 @@ void ADemoTerminal::BeginPlay()
 
 	if (EconomySystem)
 	{
-		EconomySystem->BuildEconomy();
+		// EconomyManager is initialized via GenerateEconomyInitializers from generator
 		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] ECONOMY_INITIALIZED"));
 	}
 
@@ -49,7 +49,7 @@ void ADemoTerminal::BeginPlay()
 		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] MISSION_BOARD_INITIALIZED"));
 	}
 
-	UPlayerController* PC = GetWorld()->GetFirstPlayerController();
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC)
 	{
 		PC->EnableInput(PC);

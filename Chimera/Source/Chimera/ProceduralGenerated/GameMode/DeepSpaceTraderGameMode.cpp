@@ -3,6 +3,8 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/DefaultPawn.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Interactions/DemoTerminal.h"
 
 #include "PCGVolumeManager.h"
 #include "FlightComponent.h"
@@ -18,9 +20,18 @@
 #include "AShip_Trader_Vessel_Alpha.h"
 ADeepSpaceTraderGameMode::ADeepSpaceTraderGameMode()
 {
-	// Set default pawn class to player ship
-	DefaultPawnClass = AShip_Trader_Vessel_Alpha::StaticClass();
-	UE_LOG(LogTemp, Log, TEXT("GAMEMODE CONSTRUCTOR: DefaultPawnClass set to AShip_Trader_Vessel_Alpha"));
+	// Set default pawn class: try astronaut BP first, fallback to ship class or default pawn
+	UClass* AstronautClass = LoadClass<APawn>(nullptr, TEXT("/Game/Characters/Astronaut/BP_Astronaut_Character.BP_Astronaut_Character_C"));
+	if (AstronautClass)
+	{
+		DefaultPawnClass = AstronautClass;
+		UE_LOG(LogTemp, Log, TEXT("GAMEMODE CONSTRUCTOR: DefaultPawnClass set to BP_Astronaut_Character"));
+	}
+	else
+	{
+		DefaultPawnClass = AShip_Trader_Vessel_Alpha::StaticClass();
+		UE_LOG(LogTemp, Log, TEXT("GAMEMODE CONSTRUCTOR: DefaultPawnClass set to AShip_Trader_Vessel_Alpha"));
+	}
 }
 
 void ADeepSpaceTraderGameMode::BeginPlay()
@@ -68,28 +79,19 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		}
 
 	}
-	// === FIX 1: Spawn Player Ship at Level Start with Possession ===
-	FVector PlayerSpawnLocation(0.0f, 0.0f, 100.0f);
-	FRotator PlayerSpawnRotation(0.f, 90.f, 0.f);
-	FActorSpawnParameters ShipSpawnParams;
-	ShipSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	PlayerShip = GetWorld()->SpawnActor<AShip_Trader_Vessel_Alpha>(AShip_Trader_Vessel_Alpha::StaticClass(), PlayerSpawnLocation, PlayerSpawnRotation, ShipSpawnParams);
-	if (PlayerShip)
+	// === Guarded DemoTerminal Self-Spawn (Phase 2 Kiosk) ===
+	if (!UGameplayStatics::GetActorOfClass(GetWorld(), ADemoTerminal::StaticClass()))
 	{
-		UE_LOG(LogTemp, Log, TEXT("SPAWNED: PlayerShip at {%s}"), *PlayerShip->GetActorLocation().ToString());
-		APlayerController* PC = GetWorld()->GetFirstPlayerController();
-		if (PC)
-		{
-						PC->Possess(PlayerShip);
-			UE_LOG(LogTemp, Log, TEXT("Player possessing ship"));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("FAILED TO SPAWN PLAYER SHIP"));
+		FVector TerminalSpawnLocation(500.f, -500.f, 20.f);
+		FRotator TerminalSpawnRotation(0.f, 0.f, 0.f);
+		FActorSpawnParameters TerminalSpawnParams;
+		TerminalSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		ADemoTerminal* DemoTerm = GetWorld()->SpawnActor<ADemoTerminal>(ADemoTerminal::StaticClass(), TerminalSpawnLocation, TerminalSpawnRotation, TerminalSpawnParams);
+	if (DemoTerm) { UE_LOG(LogTemp, Log, TEXT("GAMEMODE: DemoTerminal self-spawned at {{%s}}"), *DemoTerm->GetActorLocation().ToString()); }
+	else { UE_LOG(LogTemp, Error, TEXT("GAMEMODE: DemoTerminal self-spawn FAILED")); }
 	}
 
-	// === FIX 2: Spawn Station Actors with Visible Meshes ===
+	// === Spawn Station Actors ===
 	// Spawn station: Orbital_Hub_7 at location (0.0, 0.0, 0.0)
 	{
 		FVector StationSpawnLocation0(0.0f, 0.0f, 0.0f);
@@ -99,7 +101,7 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		AActor* SpawnedStation0 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation0, StationSpawnRotation0, StationSpawnParams0);
 		if (SpawnedStation0)
 		{
-			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Orbital_Hub_7 at {%s} with visible mesh"), *SpawnedStation0->GetActorLocation().ToString());
+			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Orbital_Hub_7 at {%s}"), *SpawnedStation0->GetActorLocation().ToString());
 		}
 		else
 		{
@@ -115,7 +117,7 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		AActor* SpawnedStation1 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation1, StationSpawnRotation1, StationSpawnParams1);
 		if (SpawnedStation1)
 		{
-			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Ares_Market_Central at {%s} with visible mesh"), *SpawnedStation1->GetActorLocation().ToString());
+			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Ares_Market_Central at {%s}"), *SpawnedStation1->GetActorLocation().ToString());
 		}
 		else
 		{
@@ -131,15 +133,13 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		AActor* SpawnedStation2 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation2, StationSpawnRotation2, StationSpawnParams2);
 		if (SpawnedStation2)
 		{
-			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Shadow_Reef at {%s} with visible mesh"), *SpawnedStation2->GetActorLocation().ToString());
+			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Shadow_Reef at {%s}"), *SpawnedStation2->GetActorLocation().ToString());
 		}
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("SPAWN FAILED: Station Shadow_Reef"));
 		}
 	}
-	// === FIX 2b: Ensure Skybox is Visible ===
-	UE_LOG(LogTemp, Log, TEXT("Skybox initialized with starfield material"));
 
 
 	UE_LOG(LogTemp, Log, TEXT("GAMEMODE BEGINPLAY COMPLETE. All systems initialized."));
