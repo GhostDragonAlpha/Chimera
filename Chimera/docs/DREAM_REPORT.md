@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T02:09:17Z
+consolidated: 2026-07-07T03:06:44Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
@@ -40,7 +40,7 @@ clusters >= 3: 16  |  suppressed (covered/pending): 16  |  staged: 0
   covered   [ 20x] verification_fail  <- PENDING_HEURISTICS.md
   covered   [ 19x] verification_incomplete  <- PENDING_HEURISTICS.md
   covered   [ 18x] ralph_apply_<feature>_step  <- PENDING_HEURISTICS.md
-  covered   [ 15x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
+  covered   [ 16x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
   covered   [ 12x] grade_CF: Player_Character_Lighting  <- PENDING_HEURISTICS.md
   covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Lighting  <- PENDING_HEURISTICS.md
   covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Model  <- PENDING_HEURISTICS.md
@@ -53,6 +53,6 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1357  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1365  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

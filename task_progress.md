@@ -1,3 +1,13 @@
+# Rehearsal decision 2026-07-07 03:03Z — next move: Demo_Phase3_SessionB_wiring
+
+Chosen by core.rehearsal (score 1.15, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Demo_Phase3_SessionB_wiring** — DEMO_ARCHITECTURE.md §5 Phase 3 — ke-routed verification + Session B handoff; blocked by Phase 2. Recipe: Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 3 items 1-3 exactly. Skip-condition: Phase 2 not built -> pick another candidate.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Session 2026-07-07 (duty cycle) — fallback pipeline health check: grade B 75
 
 **One cycle, fallback item 3.** Ran full pipeline as health check. Result: exit code 0, all gates pass. Grade **B (75)**. Build succeeded, visual verification passed. 6 generated assets, 49 files. 3 tests skipped (no runtime surface). UBT result line: `Result: Succeeded Total execution time: 15.40 seconds`.
