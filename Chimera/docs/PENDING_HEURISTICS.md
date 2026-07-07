@@ -152,3 +152,12 @@ Wait, looking at the
 - sample: [result-grader 52.8/100] correctness 13.3/40: 1/1 tests passed; coverage 1/3 declared criteria | stability 15.0/25: crash-free; fps unmeasured (0/5); growth unm
 - sample: [result-grader 59.5/100] correctness 20.0/40: 2/2 tests passed; coverage 2/4 declared criteria | stability 15.0/25: crash-free; fps unmeasured (0/5); growth unm
 - draft_rule: Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps; run telemetry foregrounded and test every declared criterion before grading System_Economy.
+
+<!-- distilled 2026-07-07T00:17:27Z -->
+## H-14: human_rejection: Verb_Step
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-07T00:07:52
+- proposed_organ: claude_md
+- evidence: observation_f629252c5bdbcd07
+- sample: I have no ability to move my character
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

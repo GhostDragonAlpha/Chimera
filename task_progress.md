@@ -1,3 +1,36 @@
+# Session 2026-07-06 late (capable session) — HUMAN PLAYTEST #1 + INPUT HOTFIX: astronaut now actually walks, grade A 99.2
+
+**Temperature #1 (playtest_2211898b230aa5eb): "I have no ability to move my character"** → Verb_Step rejected →
+repaired same session → re-verified (re-queued for human). ROOT CAUSE (surprise_2b3d79676e3d4206): BP_Astronaut_Character
+has ZERO input graph — bridge can't author BP graphs; every prior locomotion evidence was CharMoveComp velocity
+injection (proxy-vs-target gap, systemic).
+
+**Fix (manual lane, D4-precedent)**: `Source/Chimera/ProceduralGenerated/Demo/DemoPlayerController.{h,cpp}` +
+`DemoOnFootGameMode.{h,cpp}` — legacy BindAxis (mappings appended INSIDE [/Script/Engine.InputSettings] of
+Config/DefaultInput.ini — the file has NO trailing newline and a GameInput section at EOF, append blindly and you
+corrupt it), runtime spring-arm camera attached at possession. UBT `Result: Succeeded, 16.82s` (mutation_54bfac97fc76).
+WorldSettings1 DefaultGameMode=/Script/Chimera.DemoOnFootGameMode (set_property pathway), save_all, survived restart.
+**PROOF**: simulate_input W 2.0s → possessed pawn displaced 1333uu (works because AutoPossess pawn IS the player pawn —
+DefaultPawn_0 trap refined, pathway_attempt_06941e7d0619e72d). Grade A 99.2 (6/6 measured).
+
+**Permanent trap-kill**: EditorPerProjectUserSettings.ini bThrottleCPUWhenNotForeground=False (FORCE-kill editor so
+shutdown doesn't overwrite the ini) → honest 120fps telemetry with NO foregrounding needed (pathway_attempt_2a1f870fc779b0cf).
+
+## NEXT (each item carries its recipe — the handoff invariant; execute exactly, add nothing)
+1. **HUMAN SESSION A RETRY (Regolith Yard, beats 1-8 of DEMO_ARCHITECTURE.md §2)** — editor is running, level saved;
+   human presses Play: WASD move, mouse look, Space jump. Intake per §6:
+   `python -m core.graphify_record playtest --notes "<EXACT words>"` → observe --derived-from <id> (direct/tacit) →
+   attribution table for overrules. Skip-condition: no human → next item.
+2. **`capable sessions only` — Phase 2 (DEMO_ARCHITECTURE.md §5 Phase 2)**: DemoTerminal (Interactions/ manual lane),
+   GameMode template surgery, MissionComponent payout, core/demo_witness.py, regen+UBT. NOTE phantom pain
+   phase_1b01fac303f3c24e:P1: verb TARGETS may be hollow like walking was — if Session A retry confirms, pull
+   BP_Verb interaction wiring (C++ overlap handlers on the targets) into this phase.
+3. **Phase 3 after Phase 2 (weak-OK, doc §5 Phase 3)**: ke-routed verification suite, Session B (20/20).
+4. **Fallback (always executable)**: pipeline health check `python run_deep_space_trader_pipeline.py`
+   (needs qwen3.6-35b-a3b-mtp@iq2_m loaded: `lms load qwen3.6-35b-a3b-mtp@iq2_m` first).
+
+---
+
 # Session 2026-07-06 evening (capable session) — DEMO ARCHITECTURE SHIPPED + REGOLITH YARD BUILT: grade A 98.5, HUMAN SESSION A READY
 
 **Design panel (11 agents, 4 lenses, 3 judges) → `Chimera/docs/DEMO_ARCHITECTURE.md`**: two-demo program.
