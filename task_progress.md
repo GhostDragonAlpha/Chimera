@@ -1,3 +1,13 @@
+# Rehearsal decision 2026-07-07 03:56Z — next move: Ground_Sand_Footprints
+
+Chosen by core.rehearsal (score 0.85, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Footprints** — needs_refinement (reopened, grade C) — implement footstep system in PIE via proven manage_character pathways. Recipe: python -c "import sys; sys.path.insert(0,r'E:\PythonChimera\Chimera'); from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; p=n.get('parameters',{}); print(json.dumps(p,default=str,indent=1)[:2000])" — then follow manage_character setup_footstep_system; control_editor save_all; verify with sleepwalker --beats docs/beats/regolith_yard.beats.json
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Rehearsal decision 2026-07-07 03:52Z — next move: Demo_Phase3_SessionB_wiring
 
 Chosen by core.rehearsal (score 1.15, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.

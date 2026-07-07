@@ -23480,6 +23480,52 @@
       "links": [],
       "recorded_by": "rehearsal.py",
       "run_id": "run_0abec04cb36b"
+    },
+    {
+      "id": "rollout_f9cab31af408a2d3",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-07T03:56:57.691774",
+      "chosen": "Ground_Sand_Footprints",
+      "candidates": [
+        {
+          "name": "Ground_Sand_Footprints",
+          "score": 0.85,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "needs_refinement (reopened, grade C) \u2014 implement footstep system in PIE via proven manage_character pathways"
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.73,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.61,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "SLEEPWALKER_DESIGN.md M4 \u2014 schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.5 / cost 1.0 + explore 0.1; evidence ['grade:C']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Ground_Sand_Footprints",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_ce48936322e0"
     }
   ],
   "edges": [

@@ -144,7 +144,7 @@ VERIFY_SCHEMA = {
 }
 
 HARNESS_CONFIG: Dict[str, Any] = {
-    "lm_studio_url": "http://192.168.3.169:1234/v1/chat/completions",
+    "lm_studio_url": "http://localhost:1234/v1/chat/completions",
     "lm_studio_model": "qwen3.6-35b-a3b-mtp@iq2_m",
     "mcp_cli_path": "E:\\ChiR24-Unreal_mcp-test\\dist\\cli.js",
     "mcp_port": 8091,
