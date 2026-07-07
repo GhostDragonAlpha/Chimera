@@ -1,53 +1,134 @@
 {
-  "demo": "regolith_yard",
-  "loop": 1,
-  "settle_s": 8,
-  "_provenance": "Machine transcription of DEMO_ARCHITECTURE.md section 2 beats 1-4 (Session A slice). Camera/mouse beats deferred: mouse-axis simulate_input unproven (SLEEPWALKER_DESIGN.md M1 declared unknown). Movement speed prior: ~660 uu/s measured 2026-07-06.",
-  "beats": [
+ "demo": "regolith_yard",
+ "loop": 1,
+ "settle_s": 8,
+ "_provenance": "Machine transcription of DEMO_ARCHITECTURE.md section 2 beats 1-4 (Session A slice). Camera/mouse beats deferred: mouse-axis simulate_input unproven (SLEEPWALKER_DESIGN.md M1 declared unknown). Movement speed prior: ~660 uu/s measured 2026-07-06.",
+ "beats": [
+  {
+   "name": "spawn_on_metal_pad",
+   "features": [
+    "Player_Character_Model",
+    "Player_Character_Lighting"
+   ],
+   "actions": [
     {
-      "name": "spawn_on_metal_pad",
-      "features": ["Player_Character_Model", "Player_Character_Lighting"],
-      "actions": [{"wait": 1.0}],
-      "expects": [
-        {"is_pie": true},
-        {"pawn_class": "BP_Astronaut_Character_C"},
-        {"pawn_within": {"x": 0, "y": 0, "r": 600}}
-      ]
-    },
-    {
-      "name": "walk_metal_to_rock",
-      "features": ["Verb_Step", "Ground_Metal_Surface", "Ground_Rock_Surface"],
-      "actions": [{"key": "W", "hold_s": 3.2}, {"wait": 0.6}],
-      "expects": [
-        {"pawn_within": {"x": 2000, "y": 0, "r": 900}}
-      ]
-    },
-    {
-      "name": "walk_rock_to_sand_basin",
-      "features": ["Verb_Step", "Ground_Sand_Surface", "Ground_Sand_Particles"],
-      "actions": [{"key": "W", "hold_s": 3.0}, {"wait": 0.6}],
-      "expects": [
-        {"pawn_within": {"x": 4000, "y": 0, "r": 1100}},
-        {"actor_exists": "SandDrift_FX"}
-      ]
-    },
-    {
-      "name": "sand_basin_dwell_and_frame",
-      "features": ["Ground_Sand_Particles", "Player_Character_Suit"],
-      "actions": [{"wait": 2.0}, {"screenshot": "sleepwalk_sand_basin"}],
-      "expects": [
-        {"actor_exists": "Display_Suit"},
-        {"is_pie": true}
-      ]
-    },
-    {
-      "name": "jump_probe",
-      "features": ["Verb_Step"],
-      "actions": [{"key": "SpaceBar", "hold_s": 0.2}],
-      "expects": [
-        {"pawn_z_above": 130}
-      ],
-      "_note": "Runtime read-back fires ~0.3-0.5s after key-down: mid-air z (ground ~102, apex ~190 at default JumpZVelocity). First run failed the old log_contains form honestly - sim found its own weak test (surprise recorded 2026-07-06)."
+     "wait": 1.0
     }
-  ]
+   ],
+   "expects": [
+    {
+     "world_is": "chimeradefaultlevel"
+    },
+    {
+     "is_pie": true
+    },
+    {
+     "pawn_class": "BP_Astronaut_Character_C"
+    },
+    {
+     "pawn_within": {
+      "x": 0,
+      "y": 0,
+      "r": 600
+     }
+    }
+   ]
+  },
+  {
+   "name": "walk_metal_to_rock",
+   "features": [
+    "Verb_Step",
+    "Ground_Metal_Surface",
+    "Ground_Rock_Surface"
+   ],
+   "actions": [
+    {
+     "key": "W",
+     "hold_s": 3.2
+    },
+    {
+     "wait": 0.6
+    }
+   ],
+   "expects": [
+    {
+     "pawn_within": {
+      "x": 2000,
+      "y": 0,
+      "r": 900
+     }
+    }
+   ]
+  },
+  {
+   "name": "walk_rock_to_sand_basin",
+   "features": [
+    "Verb_Step",
+    "Ground_Sand_Surface",
+    "Ground_Sand_Particles"
+   ],
+   "actions": [
+    {
+     "key": "W",
+     "hold_s": 3.0
+    },
+    {
+     "wait": 0.6
+    }
+   ],
+   "expects": [
+    {
+     "pawn_within": {
+      "x": 4000,
+      "y": 0,
+      "r": 1100
+     }
+    },
+    {
+     "actor_exists": "SandDrift_FX"
+    }
+   ]
+  },
+  {
+   "name": "sand_basin_dwell_and_frame",
+   "features": [
+    "Ground_Sand_Particles",
+    "Player_Character_Suit"
+   ],
+   "actions": [
+    {
+     "wait": 2.0
+    },
+    {
+     "screenshot": "sleepwalk_sand_basin"
+    }
+   ],
+   "expects": [
+    {
+     "actor_exists": "Display_Suit"
+    },
+    {
+     "is_pie": true
+    }
+   ]
+  },
+  {
+   "name": "jump_probe",
+   "features": [
+    "Verb_Step"
+   ],
+   "actions": [
+    {
+     "key": "SpaceBar",
+     "hold_s": 0.2
+    }
+   ],
+   "expects": [
+    {
+     "pawn_z_above": 130
+    }
+   ],
+   "_note": "Runtime read-back fires ~0.3-0.5s after key-down: mid-air z (ground ~102, apex ~190 at default JumpZVelocity). First run failed the old log_contains form honestly - sim found its own weak test (surprise recorded 2026-07-06)."
+  }
+ ]
 }

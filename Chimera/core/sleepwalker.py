@@ -87,6 +87,14 @@ class Sleepwalker:
             self._call("control_editor", {"action": "screenshot",
                                           "mode": "editor_viewport", "filename": a["screenshot"]})
             self.w.mark("screenshot", {"filename": a["screenshot"]})
+        elif "interact" in a or "pickup" in a:
+            self.w.mark("action", {"interact": True, "hold_s": a.get("hold_s", 0.2)})
+            # Simulate 'E' key for interact/pickup
+            self._key("E", float(a.get("hold_s", 0.2)))
+        elif "drop" in a:
+            self.w.mark("action", {"drop": True, "hold_s": a.get("hold_s", 0.2)})
+            # Simulate 'Q' key for drop
+            self._key("Q", float(a.get("hold_s", 0.2)))
         elif "call" in a:
             self.w.mark("action", {"call": a["call"].get("tool")})
             self._call(a["call"]["tool"], a["call"]["args"])
@@ -114,6 +122,9 @@ class Sleepwalker:
         if "log_contains" in e:
             hit = any(e["log_contains"] in ln for ln in new_log)
             return hit, f"log_hit={hit}"
+        if "world_is" in e:
+            w = str(rt.get("worldName", ""))
+            return e["world_is"] in w, f"world={w}"
         if "pawn_z_above" in e:
             z = float((((rt.get("pawn") or {}).get("transform") or {}).get("location") or {}).get("z", -1e9))
             return z > float(e["pawn_z_above"]), f"z={z:.0f}"

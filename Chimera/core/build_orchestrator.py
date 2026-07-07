@@ -512,8 +512,15 @@ class BuildOrchestrator:
         levels_dir = self.content_dir / "Levels"
         levels_dir.mkdir(parents=True, exist_ok=True)
 
-        # Copy template to target
+        # Copy template to target — SEED ONLY, never overwrite (root-cause fix
+        # 2026-07-07: this unconditional copy erased the Regolith Yard and, in
+        # retrospect, the original walkabout — the level only ever survived a
+        # pipeline run when the editor happened to hold the file lock).
         target_level_path = levels_dir / f"{level_name_base}.umap"
+        if target_level_path.exists():
+            print(f"  [INFO] Level '{level_name_base}' exists — template seed skipped (never overwrite level state).")
+            self._generate_project_config_files()
+            return
         try:
             shutil.copy2(template_source, target_level_path)
         except PermissionError as e:

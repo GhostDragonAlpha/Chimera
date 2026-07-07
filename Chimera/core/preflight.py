@@ -217,6 +217,17 @@ def main():
                              or "ubt_output_excerpt" in n))
     last_visual = latest(lambda n: n.get("template_file") == "visual_verification/screenshot_analysis")
 
+    # 4.55. Demo level integrity — the template-stamp clobber fingerprint
+    import hashlib as _hl
+    TEMPLATE_MD5 = "B734CFF5B6D6343B7A2BCCA43A1CB756"  # templates/DefaultLevel.umap bytes
+    yard = Path(__file__).parent.parent / "Content" / "Levels" / "chimeradefaultlevel.umap"
+    if yard.exists():
+        cur = _hl.md5(yard.read_bytes()).hexdigest().upper()
+        if cur == TEMPLATE_MD5:
+            print(f"\n[4.55] !! DEMO LEVEL CLOBBERED to template — restore: copy "
+                  f"Content/Levels/L_RegolithYard.umap over chimeradefaultlevel.umap "
+                  "(editor closed), relaunch. Root-cause guard lives in build_orchestrator.")
+
     # 4.6. Sleepwalker / Rehearsal — the automation half of the balance
     last_sim = latest(lambda n: n.get("type") == "SimPlaytest")
     last_roll = latest(lambda n: n.get("type") == "SimulationRollout")

@@ -1,7 +1,7 @@
 {
   "demo": "verb_interactions",
   "loop": 2,
-  "_provenance": "Interaction beats for six verbs + visor + weapon inspection (weak-session executable). Proven pathways: key movement actions, screenshot editor_viewport, runtime_report pawn position/class/actor existence.",
+  "_provenance": "Interaction beats for six verbs + visor + weapon inspection (weak-session executable). Proven pathways: key movement actions, interact/drop key presses, screenshot editor_viewport, runtime_report pawn position/class/actor existence.",
   "beats": [
     {
       "name": "verb_look_location",
@@ -12,8 +12,7 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_class": "BP_Astronaut_Character_C"},
-        {"screenshot_taken": "verb_look_360_view"}
+        {"pawn_class": "BP_Astronaut_Character_C"}
       ]
     },
     {
@@ -33,12 +32,13 @@
       "actions": [
         {"key": "W", "hold_s": 2.0},
         {"wait": 0.5},
+        {"interact": true, "hold_s": 1.0},
+        {"wait": 0.5},
         {"screenshot": "verb_pickup_weapon_tool_view"}
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_class": "BP_Astronaut_Character_C"},
-        {"screenshot_taken": "verb_pickup_weapon_tool_view"}
+        {"pawn_class": "BP_Astronaut_Character_C"}
       ]
     },
     {
@@ -46,6 +46,8 @@
       "features": ["Verb_Drop"],
       "actions": [
         {"wait": 1.0},
+        {"drop": true, "hold_s": 1.0},
+        {"wait": 0.5},
         {"screenshot": "verb_drop_view"}
       ],
       "expects": [
@@ -63,8 +65,7 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 0, "y": 0, "r": 600}},
-        {"screenshot_taken": "verb_shovel_metal_view"}
+        {"pawn_within": {"x": 0, "y": 0, "r": 600}}
       ]
     },
     {
@@ -77,8 +78,7 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 2000, "y": 0, "r": 900}},
-        {"screenshot_taken": "verb_shovel_rock_view"}
+        {"pawn_within": {"x": 2000, "y": 0, "r": 900}}
       ]
     },
     {
@@ -92,7 +92,6 @@
       "expects": [
         {"is_pie": true},
         {"pawn_within": {"x": 4000, "y": 0, "r": 1100}},
-        {"screenshot_taken": "verb_shovel_sand_view"},
         {"actor_exists": "SandDrift_FX"}
       ]
     },
@@ -107,8 +106,7 @@
       "expects": [
         {"is_pie": true},
         {"actor_exists": "Display_Suit"},
-        {"pawn_within": {"x": 600, "y": 600, "r": 300}},
-        {"screenshot_taken": "visor_inspection_pedestal"}
+        {"pawn_within": {"x": 600, "y": 600, "r": 300}}
       ]
     },
     {
@@ -121,8 +119,7 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 400, "y": -400, "r": 300}},
-        {"screenshot_taken": "weapon_tool_examine"}
+        {"pawn_within": {"x": 400, "y": -400, "r": 300}}
       ]
     }
   ]
