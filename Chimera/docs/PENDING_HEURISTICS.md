@@ -183,3 +183,25 @@ Wait, looking at the
 - evidence: pathway_attempt_fddb0da7c8b8b33e, pathway_attempt_bb59070e8142192f, pathway_attempt_98698af558567a7c
 - sample: Pathway attempt recorded: tool 'sleepwalker', action 'beat_run', result 'partial'
 - draft_rule: (subsumed by the level-clobber root-cause fix 2026-07-07 — this sim_rejection was a wrong-world artifact; beats now assert world_is)
+
+<!-- distilled 2026-07-07T13:37:34Z -->
+## H-17: sim_rejection: verb_interactions/visor_inspection_pedestal
+- status: pending
+- kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-07T07:25:01
+- proposed_organ: claude_md
+- evidence: simtest_0bb93cab8b7d662a, simtest_591e6833d4c01704, simtest_fbd1071132dfb65a
+- sample: blocked: [{"error": "unknown action {'move_to': {'x': 600, 'y': 600, 'z': 120}}"}]
+- sample: failed: [{"expect": {"screenshot_taken": "visor_inspection_pedestal"}, "ok": false, "note": "unknown expect ['screenshot_taken']
+- sample: failed: [{"expect": {"pawn_within": {"x": 600, "y": 600, "r": 300}}, "ok": false, "note": "dist=14216uu (loc x=14803.14792394638
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-18: sim_rejection: verb_interactions/weapon_tool_examine
+- status: pending
+- kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-07T07:25:01
+- proposed_organ: claude_md
+- evidence: simtest_0bb93cab8b7d662a, simtest_591e6833d4c01704, simtest_fbd1071132dfb65a
+- sample: blocked: [{"error": "unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}"}]
+- sample: failed: [{"expect": {"screenshot_taken": "weapon_tool_examine"}, "ok": false, "note": "unknown expect ['screenshot_taken']"}]
+- sample: failed: [{"expect": {"pawn_within": {"x": 400, "y": -400, "r": 300}}, "ok": false, "note": "dist=17209uu (loc x=17603.9282441139
+- possible_conflict_with: H-17  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

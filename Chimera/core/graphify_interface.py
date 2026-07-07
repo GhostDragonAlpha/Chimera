@@ -191,6 +191,12 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "rollout":
         return _mutate_rollout(details or {})
 
+    elif mutate_type == "proposal":
+        return _mutate_proposal(details or {})
+
+    elif mutate_type == "visionkeeper_judgment":
+        return _mutate_visionkeeper_judgment(details or {})
+
     else:
         raise ValueError(f"Unknown mutation type: {mutate_type}")
 
@@ -1781,6 +1787,109 @@ def record_build(passed: bool, ubt_output: str, template_file: str = "", failing
     return graphify_mutate("compilation", "pass" if passed else "fail", details={
         "ubt_output": ubt_output, "template_file": template_file,
         "failing_files": failing_files or []})
+
+
+def _mutate_proposal(details: dict) -> str:
+    """Records a Muse proposal (proposal node): a new feature/mechanic/content proposal
+    from playtest/witness evidence, DSL/STORY_BIBLE, scholar research. Each proposal lands
+    as a rehearsal candidate WITH recipe + a `proposal` record — never self-executing."""
+    title = str(details.get("title") or "").strip()
+    if not title:
+        return "rejected_proposal: 'title' is required; nothing recorded"
+    
+    source_evidence = str(details.get("source_evidence") or "").strip()
+    dsl_bible_source = str(details.get("dsl_bible_source") or "").strip()
+    scholar_research = str(details.get("scholar_research") or "").strip()
+    recipe = str(details.get("recipe") or "").strip()
+    visionkeeper_judgment = str(details.get("visionkeeper_judgment") or "")
+    rank = details.get("rank", 0)
+    wild_tier = bool(details.get("wild_tier", False))
+    
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    node = {
+        "id": f"proposal_{hashlib.sha256(f'proposal_{title}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "Proposal",
+        "timestamp": datetime.utcnow().isoformat(),
+        "title": title,
+        "source_evidence": source_evidence,
+        "dsl_bible_source": dsl_bible_source,
+        "scholar_research": scholar_research,
+        "recipe": recipe,
+        "visionkeeper_judgment": visionkeeper_judgment,
+        "rank": rank,
+        "wild_tier": wild_tier,
+        "error_signature": "success_no_error",
+        "template_file": f"proposal/{title[:60]}",
+        "error_category": "none",
+        "fix_description": f"Muse proposal recorded: '{title}' (rank {rank}, wild_tier={wild_tier})",
+        "compilation_result": "pass",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def record_proposal(title: str, source_evidence: str = "", dsl_bible_source: str = "",
+                    scholar_research: str = "", recipe: str = "", visionkeeper_judgment: str = "",
+                    rank: int = 0, wild_tier: bool = False) -> str:
+    """Record a Muse proposal (Proposal node). Each proposal lands as a rehearsal candidate
+    WITH recipe + a `proposal` record — never self-executing."""
+    return graphify_mutate("proposal", details={
+        "title": title, "source_evidence": source_evidence, "dsl_bible_source": dsl_bible_source,
+        "scholar_research": scholar_research, "recipe": recipe, "visionkeeper_judgment": visionkeeper_judgment,
+        "rank": rank, "wild_tier": wild_tier})
+
+
+def _mutate_visionkeeper_judgment(details: dict) -> str:
+    """Records a VisionKeeper judgment (visionkeeper_judgment node): vision_fit multiplier and one-line judgment."""
+    candidate_name = str(details.get("candidate_name") or "")
+    proposal_title = str(details.get("proposal_title") or "")
+    if not candidate_name and not proposal_title:
+        return "rejected_visionkeeper_judgment: 'candidate_name' or 'proposal_title' is required; nothing recorded"
+
+    vision_fit_multiplier = details.get("vision_fit_multiplier", 1.0)
+    judgment = str(details.get("judgment") or "").strip()
+    existing_visionkeeper_judgment = str(details.get("existing_visionkeeper_judgment") or "")
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    title_or_name = proposal_title if proposal_title else candidate_name
+    node_id = f"visionkeeper_judgment_{hashlib.sha256(f'visionkeeper_judgment_{title_or_name}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}"
+
+    node = {
+        "id": node_id,
+        "type": "VisionKeeperJudgment",
+        "timestamp": datetime.utcnow().isoformat(),
+        "candidate_name": candidate_name,
+        "proposal_title": proposal_title,
+        "vision_fit_multiplier": vision_fit_multiplier,
+        "judgment": judgment,
+        "existing_visionkeeper_judgment": existing_visionkeeper_judgment,
+        "error_signature": "success_no_error",
+        "template_file": f"visionkeeper/judgment/{title_or_name[:60]}",
+        "error_category": "none",
+        "fix_description": f"VisionKeeper judgment: {title_or_name} -> vision_fit={vision_fit_multiplier}, judgment='{judgment[:120]}'",
+        "compilation_result": "pass",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def record_visionkeeper_judgment(candidate_name: str = "", proposal_title: str = "", vision_fit_multiplier: float = 1.0,
+                                 judgment: str = "", existing_visionkeeper_judgment: str = "") -> str:
+    """Record a VisionKeeper judgment (VisionKeeperJudgment node): vision_fit multiplier (0.2–1.5) with a one-line judgment."""
+    return graphify_mutate("visionkeeper_judgment", details={
+        "candidate_name": candidate_name, "proposal_title": proposal_title,
+        "vision_fit_multiplier": vision_fit_multiplier, "judgment": judgment,
+        "existing_visionkeeper_judgment": existing_visionkeeper_judgment})
 
 
 # Convenience functions for backward compatibility

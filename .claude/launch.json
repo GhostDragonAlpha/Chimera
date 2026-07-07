@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "perpetual-orchestrator",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "core.perpetual_orchestrator"],
+      "cwd": "E:\PythonChimera\Chimera",
+      "port": null
+    },
+    {
+      "name": "dev-server",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    }
+  ]
+}

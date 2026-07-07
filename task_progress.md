@@ -1,3 +1,69 @@
+# Rehearsal decision 2026-07-07 14:38Z — next move: Hire_Scholar_organ
+
+Chosen by core.rehearsal (score 0.82, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Hire_Scholar_organ** `capable sessions only` — TIER-1 ROSTER GAP: nothing has ever consulted a source — research writes the exam on paper only (DREAM_ROSTER.md #1). Recipe: Write core/scholar.py per DREAM_ROSTER.md #1 (campus+web+local research_corpus/ retrieval; exam with citations -> research_discovery nodes + feature study guide). First milestone: clear the pending technical_research item (dust-accumulation mask) with 3+ cited sources. Wire: spiral_forks consumes scholar briefs; doc_audit clean; organ recipe touchpoints.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Session 2026-07-07 (dusk/night) — Tier-1 organs hired + dream_loop consolidation
+
+**Work completed:** Tier-1 organs hired: Scholar (`core/scholar.py`), Muse (`core/muse.py`), Visionkeeper (`core/visionkeeper.py`). Doc audit CLEAN — documentation lines up with code. Phantom pain disposition: phase_da55128aec6d109a:P1 [distiller token-coverage suppression], phase_762486f41e1aeafb:P1 [observation queue will rot unobserved] → still-open.
+
+**Dream loop consolidation:** 
+clusters >= 3: 22  |  suppressed (covered/pending): 20  |  staged: 2
+  covered   [  1x] human_rejection: Verb_Step  <- PENDING_HEURISTICS.md
+  covered   [ 74x] compilation_fail  <- PENDING_HEURISTICS.md
+  covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
+  covered   [ 28x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
+  covered   [ 25x] verification_not_verified  <- PENDING_HEURISTICS.md
+  covered   [ 25x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
+  covered   [ 21x] verification_aborted_wrong_window  <- PENDING_HEURISTICS.md
+  covered   [ 20x] verification_fail  <- PENDING_HEURISTICS.md
+  covered   [ 19x] verification_incomplete  <- PENDING_HEURISTICS.md
+  covered   [ 18x] ralph_apply_<feature>_step  <- PENDING_HEURISTICS.md
+  covered   [ 17x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
+  covered   [ 12x] grade_CF: Player_Character_Lighting  <- PENDING_HEURISTICS.md
+  covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Lighting  <- PENDING_HEURISTICS.md
+  covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Model  <- PENDING_HEURISTICS.md
+  covered   [  4x] grade_CF: Player_Character_Model  <- PENDING_HEURISTICS.md
+  covered   [  4x] pathway: sleepwalker.beat_run -> partial  <- PENDING_HEURISTICS.md
+  covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
+  covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
+  covered   [  3x] pathway: animation_physics.add_anim_notify -> failed  <- MCP_PATHWAYS.md
+  covered   [  3x] pathway: build_orchestrator.ue_shutdown -> success_intended_kill  <- PENDING_HEURISTICS.md
+  CANDIDATE [  3x] sim_rejection: verb_interactions/visor_inspection_pedestal
+  CANDIDATE [  3x] sim_rejection: verb_interactions/weapon_tool_examine
+
+staged 2 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
+next: agent drafts each draft_rule from evidence; human approves/vetoes; approved rules promote via graphify_record heuristic.
+[dream] gardener tend -> needs_draft:2; untouched:16
+[collapse_proxy] provisional: 0 collapsed, 14 awaiting evidence
+  waiting     Verb_Look (evidence 0/2)
+  waiting     Player_Character_Model_Visor_Apply (evidence 0/2)
+  waiting     Verb_Shovel (evidence 0/2)
+  waiting     Verb_Bend (evidence 0/2)
+  waiting     Verb_PickUp (evidence 0/2)
+  waiting     Verb_Drop (evidence 0/2)
+  waiting     Tool_Weapon_Model (evidence 0/2)
+  waiting     System_Economy (evidence 0/2)
+  waiting     System_SaveLoad (evidence 0/2)
+  waiting     System_Factions (evidence 0/2)
+  waiting     System_Missions (evidence 0/2)
+  waiting     Player_Character_Animation (evidence 0/2)
+live nodes: 1550  |  archivable (>30d, superseded, unreferenced): 0
+dry-run: nothing moved. Re-run with --apply to archive.
+
+## NEXT (recipe-carrying)
+1. **HUMAN SESSION A (Regolith Yard)** — press Play: WASD/mouse/Space, beats 1-8 of DEMO_ARCHITECTURE.md §2; intake per §6. Skip-condition: no human → next item.
+2. **Demo_Phase2_DemoTerminal** `capable sessions only` — DEMO_ARCHITECTURE.md §5 Phase 2, recipes inline — kiosk running real economy/mission/save systems; unblocks Session B (20-feature queue). Recipe: Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 2 items 1-5 exactly (DemoTerminal.h/cpp manual lane; GameMode template surgery; MissionComponent payout; core/witness.py reuse; regen + UBT).
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+3. **sim_rejection candidates** — verb_interactions/visor_inspection_pedestal, verb_interactions/weapon_tool_examine (staged in PENDING_HEURISTICS.md). Recipe: agent drafts each draft_rule from evidence; human approves/vetoes; approved rules promote via graphify_record heuristic.
+
+---
+
 # Rehearsal decision 2026-07-07 07:09Z — next move: Hire_Scholar_organ
 
 Chosen by core.rehearsal (score 0.82, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.

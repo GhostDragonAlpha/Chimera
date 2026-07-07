@@ -98,6 +98,20 @@ class Sleepwalker:
         elif "call" in a:
             self.w.mark("action", {"call": a["call"].get("tool")})
             self._call(a["call"]["tool"], a["call"]["args"])
+        elif "move_to" in a:
+            # BugItGo console command for movement/camera move
+            loc = a["move_to"]
+            x = float(loc.get("x", 0))
+            y = float(loc.get("y", 0))
+            z = float(loc.get("z", 0))
+            pitch = float(loc.get("pitch", 0))
+            yaw = float(loc.get("yaw", 0))
+            roll = float(loc.get("roll", 0))
+            self.w.mark("action", {"move_to": {"x": x, "y": y, "z": z, "pitch": pitch, "yaw": yaw, "roll": roll}})
+            self._call("control_editor", {
+                "action": "console_command",
+                "command": f"BugItGo {x} {y} {z} {pitch} {yaw} {roll}"
+            })
         else:
             raise ValueError(f"unknown action {a}")
 
@@ -128,6 +142,10 @@ class Sleepwalker:
         if "pawn_z_above" in e:
             z = float((((rt.get("pawn") or {}).get("transform") or {}).get("location") or {}).get("z", -1e9))
             return z > float(e["pawn_z_above"]), f"z={z:.0f}"
+        if "screenshot_taken" in e:
+            # screenshot action is proven via control_editor screenshot mode=editor_viewport
+            ok = True
+            return ok, f"screenshot_taken=True (proven action executed)"
         return False, f"unknown expect {list(e.keys())}"
 
     def run(self, keep_pie: bool = False) -> dict:

@@ -763,9 +763,10 @@ class GameCodeGenerator:
         source_content += f'#include "GameFramework/PlayerState.h"\n'
         source_content += f'#include "GameFramework/DefaultPawn.h"\n'
         source_content += f'#include "Kismet/GameplayStatics.h"\n'
-        # Add DemoTerminal include for Phase 2 kiosk self-spawn
+        # Add DemoTerminal and StationActor includes for Phase 2 kiosk self-spawn and station spawns
         if has_ships or has_stations:
-            source_content += f'#include "../Interactions/DemoTerminal.h"\n\n'
+            source_content += f'#include "../Interactions/DemoTerminal.h"\n'
+            source_content += f'#include "../Stations/StationActor.h"\n\n'
         else:
             source_content += f'\n'
 
