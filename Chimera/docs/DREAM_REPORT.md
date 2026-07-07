@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T00:17:27Z
+consolidated: 2026-07-07T01:39:25Z
 
 ## Awaiting your approval
 14 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
@@ -36,7 +36,8 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Tonight's distillation
 ```
-clusters >= 3: 16  |  suppressed (covered/pending): 15  |  staged: 1
+clusters >= 3: 16  |  suppressed (covered/pending): 16  |  staged: 0
+  covered   [  1x] human_rejection: Verb_Step  <- PENDING_HEURISTICS.md
   covered   [ 60x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 25x] verification_not_verified  <- PENDING_HEURISTICS.md
@@ -52,14 +53,11 @@ clusters >= 3: 16  |  suppressed (covered/pending): 15  |  staged: 1
   covered   [  4x] grade_CF: Player_Character_Model  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
-  CANDIDATE [  1x] human_rejection: Verb_Step
-
-staged 1 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
-next: agent drafts each draft_rule from evidence; human approves/vetoes; approved rules promote via graphify_record heuristic.
+nothing new to stage — the constitution already covers today's lessons
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1334  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1348  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

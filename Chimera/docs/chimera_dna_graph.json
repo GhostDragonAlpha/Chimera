@@ -22562,6 +22562,251 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_e1184e1a2cd4"
+    },
+    {
+      "id": "rollout_07b1f51f50410e58",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-07T01:36:56.222125",
+      "chosen": "Demo_Phase3_SessionB_wiring",
+      "candidates": [
+        {
+          "name": "Demo_Phase3_SessionB_wiring",
+          "score": 1.15,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 3 \u2014 ke-routed verification + Session B handoff; blocked by Phase 2"
+        },
+        {
+          "name": "Ground_Sand_Footprints",
+          "score": 1.1,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "needs_refinement (reopened)"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.97,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "SLEEPWALKER_DESIGN.md M4 \u2014 schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams"
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.73,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.6 / cost 1.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Demo_Phase3_SessionB_wiring",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_5ead36218c32"
+    },
+    {
+      "id": "simtest_9bc39ee5f178c051",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-07T01:39:11.451788",
+      "observer": "agent-sim",
+      "session": "sim_m4_nightly_20260707",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 5,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=67uu (loc x=1933.3933317475346, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=133uu (loc x=3867.238758765226, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": true,
+              "note": "z=164"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sim_m4_nightly_20260707.json",
+      "temperature": "[SIM] 5/5 beats reached in 'regolith_yard'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sim_m4_nightly_20260707': 5/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_4ac0e127edc4"
+    },
+    {
+      "id": "pathway_attempt_a11c497032edcbc4",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T01:39:11.481295",
+      "tool": "sleepwalker",
+      "action": "beat_run",
+      "parameters_tried": {
+        "session": "sim_m4_nightly_20260707",
+        "reached": "5/5"
+      },
+      "result": "success",
+      "error_message": "",
+      "error_signature": "success_no_error",
+      "template_file": "pathway_attempt/sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Pathway attempt recorded: tool 'sleepwalker', action 'beat_run', result 'success'",
+      "compilation_result": "success",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_4ac0e127edc4"
+    },
+    {
+      "id": "phase_3414a5cc1ff49e30",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T01:39:20.756925",
+      "phase": "Sleepwalker M4 nightly rhythm (sim_m4_nightly_20260707) + is-PIE-active guard implemented in core/sleepwalker.py",
+      "result": "[SIM] 5/5 beats reached in 'regolith_yard'. Clean walk.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Sleepwalker M4 nightly rhythm (sim_m4_nightly_20260707) + is-PIE-active guard implemented in core/sleepwalker.py",
+      "error_category": "none",
+      "fix_description": "Phase 'Sleepwalker M4 nightly rhythm (sim_m4_nightly_20260707) + is-PIE-active guard implemented in core/sleepwalker.py' complete: [SIM] 5/5 beats reached in 'regolith_yard'. Clean walk.",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Phase 2 dependencies may still block Phase 3 wiring"
+      ],
+      "inheritance": "Sleepwalker M4 nightly rhythm executed successfully with is-PIE-active check guard. Next: Demo_Phase3_SessionB_wiring or human session A retry.",
+      "pain_verdicts": {
+        "phase_34195900a1671e58:P1": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_91c9ccc1467b"
     }
   ],
   "edges": [
