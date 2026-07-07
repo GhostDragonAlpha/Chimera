@@ -48,10 +48,33 @@ def save_knowledge_graph(graph):
         json.dump(graph, f, indent=2)
 
 def save_dna_graph(graph):
+    """Atomic, lock-guarded write — concurrent writers (nightly dream_loop vs a duty
+    cycle vs the sleepwalker) must never corrupt or clobber the graph (no-blockers law)."""
+    import os as _os, time as _time
     _stamp_provenance(graph.get("nodes", []))
     DNA_GRAPH_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(DNA_GRAPH_PATH, 'w', encoding='utf-8') as f:
-        json.dump(graph, f, indent=2)
+    lock = str(DNA_GRAPH_PATH) + ".lock"
+    deadline = _time.monotonic() + 15
+    fd = None
+    while True:
+        try:
+            fd = _os.open(lock, _os.O_CREAT | _os.O_EXCL | _os.O_WRONLY)
+            break
+        except FileExistsError:
+            if _time.monotonic() > deadline:  # stale lock (crashed writer) — steal it
+                try: _os.remove(lock)
+                except OSError: pass
+            _time.sleep(0.25)
+    try:
+        tmp = str(DNA_GRAPH_PATH) + ".tmp"
+        with open(tmp, 'w', encoding='utf-8') as f:
+            json.dump(graph, f, indent=2)
+        _os.replace(tmp, str(DNA_GRAPH_PATH))
+    finally:
+        if fd is not None:
+            _os.close(fd)
+        try: _os.remove(lock)
+        except OSError: pass
 
 def hash_node_id(node_type: str, identifier: str) -> str:
     return hashlib.sha256(f"{node_type}:{identifier}".encode('utf-8')).hexdigest()[:16]
@@ -1671,9 +1694,13 @@ def parse_pain_verdicts(raw_list) -> dict:
     out = {}
     for raw in raw_list or []:
         pain_id, sep, verdict = str(raw).rpartition(":")
-        if not sep or not pain_id or ":P" not in pain_id:
-            raise SystemExit(
-                f"--pain-verdict must be '<phase_node_id>:P<n>:confirmed|refuted|still-open', got: {raw}")
+        if sep and pain_id and ":P" not in pain_id and pain_id.strip():
+            # forgiving normalization (no-blockers law): '<id>:<verdict>' -> '<id>:P1:<verdict>'
+            print(f"[postflight] WARNING: pain-verdict '{raw}' missing :P<n> — normalized to {pain_id}:P1:{verdict}")
+            pain_id = f"{pain_id}:P1"
+        if not sep or not pain_id:
+            print(f"[postflight] WARNING: unparseable pain-verdict '{raw}' skipped — phase still records")
+            continue
         out[pain_id] = verdict
     return out
 

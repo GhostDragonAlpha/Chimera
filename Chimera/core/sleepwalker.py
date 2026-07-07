@@ -122,8 +122,22 @@ class Sleepwalker:
     def run(self, keep_pie: bool = False) -> dict:
         settle = float(self.spec.get("settle_s", 6))
         self.w.mark("session_start", {"demo": self.spec.get("demo")})
+        # No-blockers law: editor down -> self-heal via unblock before giving up.
+        try:
+            rt = self._runtime()
+        except Exception:
+            from core.unblock import ensure_editor
+            ok, note = ensure_editor()
+            if not ok:
+                record_pathway("sleepwalker", "beat_run", "blocked",
+                               {"session": self.session}, f"editor unreachable, self-heal failed: {note[:100]}")
+                chronicle = self.w.finalize()
+                return {"session": self.session, "demo": self.spec.get("demo"),
+                        "beats_total": 0, "beats_reached": 0, "outcomes": [],
+                        "chronicle": chronicle,
+                        "temperature": f"[SIM] Sleepwalk skipped: editor unreachable ({note[:80]}) — recorded, shift continues."}
+            rt = self._runtime()
         # PIE-collision guard (prerequisite for nightly rhythm): check isPIE=false first.
-        rt = self._runtime()
         if rt.get('isPIE'):
             record_pathway("sleepwalker", "pie_collision_guard", "blocked", {"reason": "live session exists (isPIE=true)"})
             # skip and note it

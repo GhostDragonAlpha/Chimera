@@ -1,3 +1,13 @@
+# Rehearsal decision 2026-07-07 06:15Z — next move: Demo_Phase2_DemoTerminal
+
+Chosen by core.rehearsal (score 0.79, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Demo_Phase2_DemoTerminal** `capable sessions only` — DEMO_ARCHITECTURE.md §5 Phase 2 — kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue). Recipe: Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 2 items 1-5 exactly (DemoTerminal.h/cpp manual lane; GameMode template surgery; MissionComponent payout; core/witness.py reuse; regen + UBT).
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Session 2026-07-07 (duty cycle) — Rehearsal selected Ground_Sand_Footprints; already confirmed facade #3
 
 **Work completed:** Rehearsal engine selected Ground_Sand_Footprints (grade C, needs_refinement). Already confirmed in this cycle: facade #3 - `add_anim_notify` and `get_anim_sequence_info` return NOT_IMPLEMENTED despite routing registration in `McpConsolidatedActionRouting.h`. Recorded pathway failure: `pathway_attempt_b3ba3afc4acb9122`. Resolution note: "BP wiring remains — capable sessions only". Sleepwalker verification with regolith_yard beats: 5/5 beats reached, clean walk. Dream loop ran - no new candidates staged (constitution already covers today's lessons).

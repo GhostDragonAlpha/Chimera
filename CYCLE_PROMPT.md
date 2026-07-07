@@ -61,7 +61,11 @@ From preflight note: [4.5] open pain IDs, pending heuristic count, observation q
 - **D. Fallback: pipeline health check** — FIRST `lms load qwen3.6-35b-a3b-mtp@iq2_m`
   (gate_lm_available is a BLOCKER), then `python run_deep_space_trader_pipeline.py`,
   record the UBT result line VERBATIM in Step 4. If it fails, do NOT touch generated
-  C++; the recorded failure is the work.
+  C++. If it failed with the SAME error signature as the previous cycle, re-running it is a
+  RECORDED DEAD END, not work — run the FLOOR instead: the `Groundskeeping_floor` candidate
+  (always executable: gardener tend, distiller/compactor dry-runs, unblock --check, doc-drift
+  audit) plus a sleepwalk if the editor is up. The floor can never be blocked — a shift with
+  zero executable work is now impossible by construction.
 
 **STEP 3 — GRADE (only if you built/changed a feature):** write `ev.json`:
 
@@ -88,7 +92,7 @@ must be executable by your successor without searching — include the exact
 command(s) inline, or the feature name whose graph node carries the study guide,
 plus a skip-condition. Mark judgment-heavy items `capable sessions only`. An item
 without a recipe is a wish, not a task — do not write wishes. Then:
-`cd E:\PythonChimera && git add -A && git commit -m "<one line>" && git push origin master`
+`cd E:\PythonChimera && git add -A && git commit -m "<one line>" && (git push origin master || python -m core.unblock --ensure git)` — the COMMIT is mandatory; a failed push is deferred, never a blocker.
 
 **STEP 5 — REPORT ≤10 lines:** work item chosen · result/grade with breakdown · honest failures · what you left the successor · the one question you need answered (if any) · attribution table if B ran · veto table if C2 ran.
 

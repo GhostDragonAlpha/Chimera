@@ -24,9 +24,16 @@
  },
  {
   "name": "Sleepwalker_M4_nightly_rhythm",
-  "value": 1.2,
+  "value": 0.3,
   "capable_only": true,
-  "why": "SLEEPWALKER_DESIGN.md M4 \u2014 schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams",
-  "recipe": "schtasks /Create /SC DAILY /ST 01:00 /TN ChimeraSleepwalk /TR \"cmd /c cd /d E:\\PythonChimera\\Chimera && python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session nightly_%DATE%\" /V1 \u2014 then verify with schtasks /Query /TN ChimeraSleepwalk. Requires editor running overnight; skip-condition: editor not left open."
+  "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now",
+  "recipe": "schtasks /Query /TN ChimeraSleepwalk & schtasks /Query /TN ChimeraDream & schtasks /Query /TN ChimeraUnblock \u2014 all three Ready = done. Skip-condition: all Ready -> next candidate."
+ },
+ {
+  "name": "Groundskeeping_floor",
+  "value": 0.5,
+  "capable_only": false,
+  "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked",
+  "recipe": "cd E:\\PythonChimera\\Chimera && python -m core.gardener --tend && python -m core.heuristic_distiller --dry-run && python -m core.graph_compactor --dry-run && python -m core.unblock --check \u2014 then grep each auto-promoted rule in CLAUDE.md/MCP_PATHWAYS.md still present (doc-drift audit) and prepend findings to task_progress.md. Skip-condition: none (this item can never be blocked)."
  }
 ]

@@ -24196,6 +24196,86 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_2f2c868c07fb"
+    },
+    {
+      "id": "pathway_attempt_c69f87a703f477db",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T06:14:59.776508",
+      "tool": "unblock",
+      "action": "no_blockers_battery",
+      "parameters_tried": {
+        "note": "atomic locked save smoke test"
+      },
+      "result": "success",
+      "error_message": "",
+      "error_signature": "success_no_error",
+      "template_file": "pathway_attempt/unblock/no_blockers_battery",
+      "error_category": "none",
+      "fix_description": "Pathway attempt recorded: tool 'unblock', action 'no_blockers_battery', result 'success'",
+      "compilation_result": "success",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_7029a72d9566"
+    },
+    {
+      "id": "rollout_f66614e09ea72470",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-07T06:15:21.378856",
+      "chosen": "Demo_Phase2_DemoTerminal",
+      "candidates": [
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.73,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.61,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "SLEEPWALKER_DESIGN.md M4 \u2014 schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams"
+        },
+        {
+          "name": "Unblock_Ground_Sand_Footprints",
+          "score": 0.6,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "repairs the blocker holding Ground_Sand_Footprints (facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.55,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "Ground_Sand_Footprints",
+          "score": 0.043,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "DEAD-END DEMOTED (facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge) \u2014 do the unblocker instead"
+        }
+      ],
+      "rationale": "value 1.8 x p 0.6 / cost 2.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Demo_Phase2_DemoTerminal",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_45d2fccca9d0"
     }
   ],
   "edges": [
