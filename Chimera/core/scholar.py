@@ -23,10 +23,14 @@ from pathlib import Path
 from typing import Optional, List, Dict, Tuple
 
 try:
-    from core.graphify_interface import graphify_mutate, graphify_query, load_dna_graph, save_dna_graph
+    from core.graphify_interface import (
+        graphify_query, load_dna_graph, save_dna_graph, record_research
+    )
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from graphify_interface import graphify_mutate, graphify_query, load_dna_graph, save_dna_graph
+    from graphify_interface import (
+        graphify_query, load_dna_graph, save_dna_graph, record_research
+    )
 
 CHIMERA_ROOT = Path(__file__).parent.parent
 RESEARCH_CORPUS_DIR = CHIMERA_ROOT / "research_corpus"
@@ -109,24 +113,15 @@ def build_discovery_node(
     Returns:
         Discovery node ID if successful, error string if failed
     """
-    all_sources = (campus_sources or []) + (web_sources or []) + (corpus_sources or [])
-    if not all_sources:
-        return "rejected_no_sources: must provide at least one source"
-
-    discovery_details = {
-        "feature": feature,
-        "campus_sources": campus_sources or [],
-        "web_sources": web_sources or [],
-        "corpus_sources": corpus_sources or [],
-        "parameters": parameters or {},
-        "acceptance_criteria": acceptance_criteria or [],
-        "sources_consulted": len(all_sources),
-        "research_confidence": confidence,
-        "timestamp": datetime.utcnow().isoformat(),
-    }
-
-    result = graphify_mutate("research_discovery", None, discovery_details)
-    return result
+    return record_research(
+        feature=feature,
+        campus_sources=campus_sources,
+        web_sources=web_sources,
+        corpus_sources=corpus_sources,
+        parameters=parameters,
+        acceptance_criteria=acceptance_criteria,
+        confidence=confidence
+    )
 
 
 def write_study_guide(feature: str, discovery_node_id: str, brief: Dict) -> str:

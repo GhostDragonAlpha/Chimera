@@ -854,28 +854,43 @@ def _mutate_loop_complete(details: dict) -> str:
     return mutation_node["id"]
 
 def _mutate_research_discovery(details: dict) -> str:
-    """Records a research discovery mutation through Graphify."""
+    """Records a research discovery mutation through Graphify.
+
+    Comprehensive research discovery tracking with campus + corpus + web sources,
+    acceptance criteria, and numeric parameters with citations."""
     dna_graph = load_dna_graph()
     nodes = dna_graph.get("nodes", [])
     edges = dna_graph.get("edges", [])
 
-    source = details.get("source", "unknown_source")
-    campus = details.get("campus", "unknown_campus")
-    quality_rating = details.get("quality_rating", "B")
-    principles = details.get("principles", [])
+    feature = details.get("feature", "unknown_feature")
+    campus_sources = details.get("campus_sources", [])
+    web_sources = details.get("web_sources", [])
+    corpus_sources = details.get("corpus_sources", [])
+    parameters = details.get("parameters", {})
+    acceptance_criteria = details.get("acceptance_criteria", [])
+    sources_consulted = details.get("sources_consulted", 0)
+    research_confidence = details.get("research_confidence", "medium")
+
+    all_sources_count = len(campus_sources) + len(web_sources) + len(corpus_sources)
+    if all_sources_count == 0:
+        return "rejected_research_discovery: must have at least one source (campus/web/corpus)"
 
     mutation_node = {
-        "id": f"discovery_{hashlib.sha256(f'research_discovery_{source}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "id": f"discovery_{hashlib.sha256(f'research_discovery_{feature}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
         "type": "ResearchDiscovery",
         "timestamp": datetime.utcnow().isoformat(),
-        "source": source,
-        "campus": campus,
-        "quality_rating": quality_rating,
-        "principles": principles,
+        "feature": feature,
+        "campus_sources": campus_sources,
+        "web_sources": web_sources,
+        "corpus_sources": corpus_sources,
+        "sources_consulted": sources_consulted or all_sources_count,
+        "parameters": parameters,
+        "acceptance_criteria": acceptance_criteria,
+        "research_confidence": research_confidence,
         "error_signature": "success_no_error",
-        "template_file": f"research_discovery/{campus}/{source}",
+        "template_file": f"research_discovery/{feature}",
         "error_category": "none",
-        "fix_description": f"Research discovery recorded: source '{source}' for campus '{campus}' with quality rating '{quality_rating}'",
+        "fix_description": f"Research discovery for '{feature}': {all_sources_count} sources consulted, {len(acceptance_criteria)} criteria, confidence={research_confidence}",
         "compilation_result": "pass",
         "links": []
     }
@@ -1787,6 +1802,34 @@ def record_build(passed: bool, ubt_output: str, template_file: str = "", failing
     return graphify_mutate("compilation", "pass" if passed else "fail", details={
         "ubt_output": ubt_output, "template_file": template_file,
         "failing_files": failing_files or []})
+
+
+def record_research(feature: str, campus_sources: list = None, web_sources: list = None,
+                   corpus_sources: list = None, parameters: dict = None,
+                   acceptance_criteria: list = None, confidence: str = "medium") -> str:
+    """Record a research discovery with full source tracking and acceptance criteria.
+
+    Args:
+        feature: Feature name being researched
+        campus_sources: List of campus source names
+        web_sources: List of web URLs
+        corpus_sources: List of local corpus file paths
+        parameters: Dict of {param_name: value_or_details}
+        acceptance_criteria: List of measurable criteria with citations
+        confidence: low|medium|high confidence rating
+
+    Returns:
+        Discovery node ID if successful, error string if failed
+    """
+    return graphify_mutate("research_discovery", details={
+        "feature": feature,
+        "campus_sources": campus_sources or [],
+        "web_sources": web_sources or [],
+        "corpus_sources": corpus_sources or [],
+        "parameters": parameters or {},
+        "acceptance_criteria": acceptance_criteria or [],
+        "research_confidence": confidence
+    })
 
 
 def _mutate_proposal(details: dict) -> str:

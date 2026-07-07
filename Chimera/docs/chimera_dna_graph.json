@@ -28430,6 +28430,84 @@
       ],
       "recorded_by": "dream_loop.py",
       "run_id": "run_98a21907cdea"
+    },
+    {
+      "id": "discovery_64974dc6799665b6",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-07T15:10:35.122875",
+      "feature": "Ground_Sand_Particles",
+      "campus_sources": [
+        "NASA Technical Reports",
+        "Spacecraft Design Constraints and Requirements",
+        "Industrial Design Principles (Form Follows Function)",
+        "Engineering Form and Function Case Studies",
+        "Unreal Engine 5 Documentation: Modeling Mode",
+        "MCP Geometry Tools Documentation",
+        "Console Command References",
+        "UE5 Sculpting Tools Tutorials",
+        "Color Theory for Artists (online courses)",
+        "Composition Principles in Fine Art",
+        "PBR Materials Explained by Artists",
+        "Form and Silhouette Design Principles"
+      ],
+      "web_sources": [],
+      "corpus_sources": [
+        "research_corpus\\RESEARCH_CAMPUSES.md",
+        "research_corpus\\materials\\dust_accumulation_mask_procedural.md",
+        "research_corpus\\materials\\lunar_regolith_reference.md",
+        "research_corpus\\materials\\niagara_particle_systems.md"
+      ],
+      "sources_consulted": 16,
+      "parameters": {
+        "research_method": "campus_plus_corpus",
+        "sources_consulted": 16
+      },
+      "acceptance_criteria": [
+        "Parameters extracted from A+ campus sources",
+        "Verified against 4 local references",
+        "Observable in-engine via telemetry or screenshot"
+      ],
+      "research_confidence": "medium",
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Ground_Sand_Particles",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Ground_Sand_Particles': 16 sources consulted, 3 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "scholar.py",
+      "run_id": "run_06117348bdb4"
+    },
+    {
+      "id": "discovery_d571206ef7e63f63",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-07T15:11:15.407988",
+      "feature": "Ground_Sand_Particles",
+      "campus_sources": [
+        "NASA Technical Reports",
+        "UE5 Documentation"
+      ],
+      "web_sources": [],
+      "corpus_sources": [
+        "research_corpus/materials/dust_accumulation_mask_procedural.md",
+        "research_corpus/materials/lunar_regolith_reference.md",
+        "research_corpus/materials/niagara_particle_systems.md"
+      ],
+      "sources_consulted": 5,
+      "parameters": {},
+      "acceptance_criteria": [
+        "Parameters extracted from A+ campus sources",
+        "Verified against local references",
+        "Observable in-engine via telemetry or screenshot"
+      ],
+      "research_confidence": "medium",
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Ground_Sand_Particles",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Ground_Sand_Particles': 5 sources consulted, 3 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_98661ed1df49"
     }
   ],
   "edges": [

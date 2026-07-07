@@ -19,7 +19,7 @@ try:
     from core.graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
         record_heuristic, record_surprise, record_observation, record_playtest,
-        record_simtest, record_rollout,
+        record_simtest, record_rollout, record_research,
         parse_pain_verdicts,
     )
 except ImportError:
@@ -27,7 +27,7 @@ except ImportError:
     from graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
         record_heuristic, record_surprise, record_observation, record_playtest,
-        record_simtest, record_rollout,
+        record_simtest, record_rollout, record_research,
         parse_pain_verdicts,
     )
 
@@ -132,6 +132,18 @@ def main():
     p.add_argument("--candidates-json", default="[]", dest="candidates_json")
     p.add_argument("--rationale", default="")
 
+    p = sub.add_parser("research", help="Research discovery with source tracking")
+    p.add_argument("--feature", required=True, help="Feature being researched")
+    p.add_argument("--campus", action="append", dest="campus_sources", default=[],
+                   help="Campus source name (repeatable)")
+    p.add_argument("--web", action="append", dest="web_sources", default=[],
+                   help="Web URL or reference (repeatable)")
+    p.add_argument("--corpus", action="append", dest="corpus_sources", default=[],
+                   help="Local corpus file path (repeatable)")
+    p.add_argument("--criterion", action="append", dest="criteria", default=[],
+                   help="Acceptance criterion (repeatable)")
+    p.add_argument("--confidence", default="medium", choices=["low", "medium", "high"])
+
     args = parser.parse_args()
 
     if args.kind == "feature":
@@ -176,6 +188,10 @@ def main():
         node_id = record_rollout(args.chosen, json.loads(args.candidates_json), args.rationale)
     elif args.kind == "playtest":
         node_id = record_playtest(args.notes, args.build)
+    elif args.kind == "research":
+        node_id = record_research(args.feature, campus_sources=args.campus_sources,
+                                 web_sources=args.web_sources, corpus_sources=args.corpus_sources,
+                                 acceptance_criteria=args.criteria, confidence=args.confidence)
     else:
         node_id = record_grade(args.feature, args.grade.upper(), args.reasoning)
 
