@@ -1,3 +1,27 @@
+# Session 2026-07-06 close (capable session) — SLEEPWALKER SYSTEM DESIGNED + APPROVED
+
+**The Gardener approved the balance-of-automation-and-control system**: an AI playtester (Sleepwalker, in-engine
+beat scripts over proven MCP pathways) + a data-level Rehearsal engine (generational rollouts over graph priors)
+that together decide and advance development; human input becomes steering (one-line vetoes, temperatures,
+heuristic approvals) with human_rejection permanently outranking sim signals. Full design:
+`Chimera/docs/SLEEPWALKER_DESIGN.md`. Also shipped this session: `.claude/workflows/cinematic-resonance-proposal.js`
+(film->game extraction methodology; invoke by name when ready).
+
+## NEXT (each item carries its recipe — the handoff invariant; execute exactly, add nothing)
+1. **HUMAN SESSION A RETRY (Regolith Yard)** — unchanged from prior block: press Play (WASD/mouse/Space), beats 1-8
+   of DEMO_ARCHITECTURE.md §2, intake per §6. Skip-condition: no human → next item.
+2. **`capable sessions only` — Sleepwalker M1 (SLEEPWALKER_DESIGN.md Milestones §1)**: write core/witness.py,
+   core/sleepwalker.py, docs/beats/regolith_yard.beats.json (transcribe DEMO_ARCHITECTURE §2 beats 1-4);
+   probe the two declared unknowns (mouse-axis simulate_input; background input injection); verification
+   command + criteria in the design doc §Verification. Grade via ev.json; sim NEVER calls
+   graphify_record playtest (guard test required).
+3. **`capable sessions only` — Sleepwalker M2 (design §Milestones 2)**: core/rehearsal.py decider + veto table.
+4. **`capable sessions only` — Demo Phase 2 (DEMO_ARCHITECTURE.md §5 Phase 2)** — unchanged from prior block;
+   note pain phase_1b01fac303f3c24e:P1 (verb targets may be hollow).
+5. **Fallback (always executable)**: pipeline health check (qwen3.6 must be loaded: `lms load qwen3.6-35b-a3b-mtp@iq2_m`).
+
+---
+
 # Session 2026-07-06 late (capable session) — HUMAN PLAYTEST #1 + INPUT HOTFIX: astronaut now actually walks, grade A 99.2
 
 **Temperature #1 (playtest_2211898b230aa5eb): "I have no ability to move my character"** → Verb_Step rejected →
