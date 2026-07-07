@@ -1,3 +1,40 @@
+# Session 2026-07-06 evening (capable session) — DEMO ARCHITECTURE SHIPPED + REGOLITH YARD BUILT: grade A 98.5, HUMAN SESSION A READY
+
+**Design panel (11 agents, 4 lenses, 3 judges) → `Chimera/docs/DEMO_ARCHITECTURE.md`**: two-demo program.
+Demo 1 "Regolith Yard" closes all 20 queue features in two sessions; Demo 2 "Titan Run" = flight+economy+missions
+(user directive, cycles 4-6). Winner D2-queue-first; grafts from D1 (self-assembling GameMode, Canvas HUD path),
+D3 (GameMode surgery), D4 (demo witness, pedestal display suit).
+
+**Phase 1 EXECUTED (zero-build, all MCP, every step read back)**: 3 material pads (MAT_Metal/Rock/GroundSand
+OverrideMaterials verified), Player_Astronaut AutoPossessPlayer=Player0 (PIE pawn read back BP_Astronaut_Character_C),
+Display_Suit on pedestal (Disabled), SandDrift FX (renders), weapon prop on crate, 7 verb targets.
+Save-proof ritual: umap md5 B734... -> BF835B4337DA843A8B43AFF26C701AD4, mtime 18:57, 34 actors stable.
+Soak: 120fps foregrounded, crash-free. Grade A 98.5 (8/8 criteria). phase_4d2da4e032a4aa07.
+
+**Surprises recorded**: WorldSettings.DefaultGameMode was NULL (generated GameMode never ran in this map — double-ship
+bug was latent). New pathways: control_actor.set_property (objectPath/propertyName/value), BP spawn asset-form
+(/Game/X/BP_Y.BP_Y — the _C form fails), /Engine/BasicShapes/Plane.Plane spawns fine.
+
+## NEXT (each item carries its recipe — the handoff invariant; execute exactly, add nothing)
+1. **HUMAN SESSION A (Regolith Yard, 16/20 features)** — the Gardener plays beats 1-8 of
+   `Chimera/docs/DEMO_ARCHITECTURE.md` §2 in PIE (chimeradefaultlevel is the startup map; just press Play).
+   Then intake per §6: `python -m core.graphify_record playtest --notes "<their EXACT words>"` →
+   `observe --feature <X> --verdict <a|r> --derived-from <id> --quote "..." --loop <N>` (direct) /
+   `--tacit` (exercised-unmentioned) → present attribution table for overrules.
+   Skip-condition: no human available → next item.
+2. **`capable sessions only` — Phase 2 (DEMO_ARCHITECTURE.md §5 Phase 2, recipes inline)**: DemoTerminal.h/cpp
+   (manual lane, Interactions/), GameMode template surgery (astronaut FClassFinder DefaultPawnClass + delete
+   double-spawn cpp:72-86 + AStationActor spawns + guarded DemoTerminal self-spawn), MissionComponent payout branch,
+   core/demo_witness.py, regenerate + UBT (exact cmd in doc) → record_build verbatim.
+3. **Phase 3 after Phase 2 (weak-OK, recipes in doc §5 Phase 3)**: restore DeepSpaceTraderGameMode via proven
+   set_property pathway on WorldSettings1; ke-routed console verification suite (7 criteria); save ritual;
+   → HUMAN SESSION B (20/20).
+4. **Fallback (always executable)**: `cd E:\PythonChimera\Chimera && python run_deep_space_trader_pipeline.py`;
+   record UBT line verbatim. NOTE: pipeline needs qwen3.6-35b-a3b-mtp@iq2_m loaded in LM Studio (gate_lm_available);
+   currently UNLOADED — `lms load qwen3.6-35b-a3b-mtp@iq2_m` first.
+
+---
+
 # Session 2026-07-06 (duty cycle) — PIPELINE HEALTH CHECK: clean run, grade B
 
 **One cycle, fallback item 4.** No human verdicts; capable-only items skipped. Ran full pipeline as health check.

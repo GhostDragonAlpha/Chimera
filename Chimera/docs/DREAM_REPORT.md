@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-06T22:51:19Z
+consolidated: 2026-07-07T00:02:15Z
 
 ## Awaiting your approval
 13 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
@@ -57,6 +57,6 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1315  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1322  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
