@@ -79,6 +79,47 @@ def _priors(nodes, name):
     return p_success, exploration, evidence
 
 
+def _known_blockers(nodes):
+    """Mine recorded dead ends: bridge actions proven NOT_IMPLEMENTED/facade."""
+    blocked_actions = set()
+    for n in nodes:
+        if n.get("type") == "pathway_attempt" and n.get("result") not in ("success", None):
+            blob = json.dumps(n, default=str).lower()
+            if "not_implemented" in blob or "facade" in blob:
+                tool = str(n.get("tool", "")); action = str(n.get("action", ""))
+                if action:
+                    blocked_actions.add(action.lower())
+    return blocked_actions
+
+
+def apply_no_dead_ends(rows, nodes):
+    """NO-DEAD-ENDS LAW: a candidate whose recipe depends on a recorded dead end is
+    demoted to near-zero and REPLACED by its unblocker (the repair IS the work)."""
+    blocked_actions = _known_blockers(nodes)
+    out, spawned = [], []
+    for r in rows:
+        blob = (r.get("recipe", "") + " " + r.get("why", "")).lower()
+        hits = [a for a in blocked_actions if a in blob]
+        explicit = r.get("blocked_by")
+        if hits or explicit:
+            reason = explicit or f"recipe depends on dead-end action(s): {', '.join(hits)}"
+            r = {**r, "score": round(r["score"] * 0.05, 3),
+                 "why": f"DEAD-END DEMOTED ({reason}) — do the unblocker instead"}
+            ub_name = f"Unblock_{r['name']}"
+            if not any(x["name"] == ub_name for x in rows + spawned):
+                spawned.append({"name": ub_name, "value": r.get("value", 1.0) + 0.5,
+                    "capable_only": True, "cost": 2.0, "p_success": 0.6, "explore_bonus": 0.0,
+                    "score": round(((r.get("value", 1.0) + 0.5) * 0.6) / 2.0, 3),
+                    "why": f"repairs the blocker holding {r['name']} ({reason})",
+                    "evidence": ["no-dead-ends law"],
+                    "recipe": r.get("unblock_recipe",
+                        f"Implement the missing bridge capability blocking {r['name']} in Plugins/McpAutomationBridge, verify with a read-back, record_pathway, then rerun the original recipe.")})
+        out.append(r)
+    out.extend(spawned)
+    out.sort(key=lambda r: -r["score"])
+    return out
+
+
 def enumerate_candidates(nodes, candidates_file=None):
     cands = {}
     for name, status in _latest_feature_statuses(nodes).items():
@@ -91,6 +132,8 @@ def enumerate_candidates(nodes, candidates_file=None):
             cands[c["name"]] = {"name": c["name"], "value": float(c.get("value", 1.0)),
                                 "capable_only": bool(c.get("capable_only", False)),
                                 "why": c.get("why", "curated"),
+                                "blocked_by": c.get("blocked_by"),
+                                "unblock_recipe": c.get("unblock_recipe"),
                                 "recipe": c.get("recipe", "(no recipe provided — a wish, rank last)")}
     return list(cands.values())
 
@@ -146,6 +189,7 @@ def main():
         print("rehearsal: no candidates (queue empty and no candidates file) — nothing to decide")
         return
     rows = score_candidates(nodes, cands)
+    rows = apply_no_dead_ends(rows, nodes)
     print(veto_table(rows))
     if args.decide and not args.dry_run:
         top = rows[0]

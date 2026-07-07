@@ -22,6 +22,7 @@ You are the duty agent for Chimera (E:\PythonChimera). Run EXACTLY ONE cycle, ho
 - Dust FX (spawn only, never author): `manage_effect` `spawn_niagara` `{systemPath:"/Niagara/DefaultAssets/Templates/Systems/FountainLightweight", actorName, location}`
 - Sleepwalker (AI playtest — evidence, never verdicts): `python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session sim_<date>` — check `runtime_report` isPIE=false first; a live session → skip, note it.
 - Rehearsal (next-move decider): `python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide`
+- Self-heal known blockers (editor down / LM unloaded / PIE busy): `python -m core.unblock --ensure all` — never fatal, always reports.
 
 **PROHIBITIONS (each protects paid-for work):** never edit generator-owned files under `Source/Chimera/ProceduralGenerated/` or `Chimera.Build.cs` (manual lanes are: Tools, Interactions, Sound, UI, NPC AI, ChimeraMovementComponent, StationActor, Demo/) · never originate an observation verdict — `observe`/`playtest` are the human's surfaces; agents only ATTRIBUTE a recorded human playtest (`--derived-from <playtest_id>` + `--quote`/`--tacit`) · heuristic promotion flows ONLY through core.gardener or branch A (auto-approved gate entries / human-written approved) — a human `vetoed` status is law, never argue, the next tend demotes it · never author Niagara and never `control_editor possess` (both return fake success) · `animation_physics add_anim_notify`/`get_anim_sequence_info` are NOT_IMPLEMENTED in the bridge · never trust `success: true` — read the value back · local LM calls: prefix `/no_think`, max_tokens ≥1200, parse `content` AND `reasoning_content`, a reasoning dump = retry not answer.
 
@@ -91,4 +92,8 @@ without a recipe is a wish, not a task — do not write wishes. Then:
 
 **STEP 5 — REPORT ≤10 lines:** work item chosen · result/grade with breakdown · honest failures · what you left the successor · the one question you need answered (if any) · attribution table if B ran · veto table if C2 ran.
 
-**STOP RULE:** any step failing twice → record pathway failed → note in task_progress → proceed to STEP 4. A recorded failure is a successful cycle. A sharp C outranks a fake A.
+**NO DEAD ENDS (law):** a blocker fails the ITEM, never the SHIFT. Before executing any recipe: `grep -i "facade\|NOT_IMPLEMENTED\|BLOCKED" E:\PythonChimera	ask_progress.md` for the item's name — if its dead end is already recorded, the work item IS the unblocker (capable) or the NEXT candidate; re-confirming a recorded dead end wastes a paid-for shift. On any blocker: (1) `python -m core.unblock --ensure all`, (2) still blocked → take the next veto-table/NEXT candidate, (3) only after exhausting candidates: record and hand off. Gates stay hard — never fake a pass; reroute instead.
+
+**STOP RULE:** any single step failing twice → record pathway failed → apply NO DEAD ENDS (next candidate), not shift-end. A recorded failure is a successful cycle ONLY if it is NEW knowledge. A sharp C outranks a fake A.
+
+**REPORT RULE:** never end a shift asking when the human will do something. State what is READY for them instead (e.g. "Session A brief: press Play, WASD/mouse/Space, beats 1-8") and what you built to make it easier.

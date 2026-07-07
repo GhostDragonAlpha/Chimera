@@ -1,14 +1,32 @@
 [
-  {"name": "Demo_Phase2_DemoTerminal", "value": 1.8, "capable_only": true,
-   "why": "DEMO_ARCHITECTURE.md §5 Phase 2 — kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)",
-   "recipe": "Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 2 items 1-5 exactly (DemoTerminal.h/cpp manual lane; GameMode template surgery; MissionComponent payout; core/witness.py reuse; regen + UBT)."},
-  {"name": "Ground_Sand_Footprints", "value": 1.5, "capable_only": false,
-   "why": "needs_refinement (reopened, grade C) — implement footstep system in PIE via proven manage_character pathways",
-   "recipe": "python -c \"import sys; sys.path.insert(0,r'E:\\PythonChimera\\Chimera'); from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; p=n.get('parameters',{}); print(json.dumps(p,default=str,indent=1)[:2000])\" — then follow manage_character setup_footstep_system; control_editor save_all; verify with sleepwalker --beats docs/beats/regolith_yard.beats.json"},
-  {"name": "Ground_Sand_Sound_unblock", "value": 0.8, "capable_only": false,
-   "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first",
-   "recipe": "Skip-condition: Content/Audio still empty -> untouched (human task). If assets present: wire per feature node study guide."},
-  {"name": "Sleepwalker_M4_nightly_rhythm", "value": 1.2, "capable_only": true,
-   "why": "SLEEPWALKER_DESIGN.md M4 — schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams",
-   "recipe": "schtasks /Create /SC DAILY /ST 01:00 /TN ChimeraSleepwalk /TR \"cmd /c cd /d E:\\PythonChimera\\Chimera && python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session nightly_%DATE%\" /V1 — then verify with schtasks /Query /TN ChimeraSleepwalk. Requires editor running overnight; skip-condition: editor not left open."}
+ {
+  "name": "Demo_Phase2_DemoTerminal",
+  "value": 1.8,
+  "capable_only": true,
+  "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)",
+  "recipe": "Follow Chimera/docs/DEMO_ARCHITECTURE.md \u00a75 PHASE 2 items 1-5 exactly (DemoTerminal.h/cpp manual lane; GameMode template surgery; MissionComponent payout; core/witness.py reuse; regen + UBT)."
+ },
+ {
+  "name": "Ground_Sand_Footprints",
+  "value": 1.5,
+  "capable_only": false,
+  "why": "needs_refinement (reopened, grade C) \u2014 implement footstep system in PIE via proven manage_character pathways",
+  "recipe": "python -c \"import sys; sys.path.insert(0,r'E:\\PythonChimera\\Chimera'); from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; p=n.get('parameters',{}); print(json.dumps(p,default=str,indent=1)[:2000])\" \u2014 then follow manage_character setup_footstep_system; control_editor save_all; verify with sleepwalker --beats docs/beats/regolith_yard.beats.json",
+  "blocked_by": "facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge",
+  "unblock_recipe": "capable sessions only: implement add_anim_notify + get_anim_sequence_info handlers in Plugins/McpAutomationBridge (evidence pathway_attempt_e7fbb6ba12043a86), rebuild plugin, verify notify present via get_anim_sequence_info read-back, record_pathway success, THEN rerun the footprints recipe from task_progress 2026-07-06."
+ },
+ {
+  "name": "Ground_Sand_Sound_unblock",
+  "value": 0.8,
+  "capable_only": false,
+  "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first",
+  "recipe": "Skip-condition: Content/Audio still empty -> untouched (human task). If assets present: wire per feature node study guide."
+ },
+ {
+  "name": "Sleepwalker_M4_nightly_rhythm",
+  "value": 1.2,
+  "capable_only": true,
+  "why": "SLEEPWALKER_DESIGN.md M4 \u2014 schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams",
+  "recipe": "schtasks /Create /SC DAILY /ST 01:00 /TN ChimeraSleepwalk /TR \"cmd /c cd /d E:\\PythonChimera\\Chimera && python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session nightly_%DATE%\" /V1 \u2014 then verify with schtasks /Query /TN ChimeraSleepwalk. Requires editor running overnight; skip-condition: editor not left open."
+ }
 ]
