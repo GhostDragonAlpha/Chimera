@@ -1,3 +1,34 @@
+# Session 2026-07-07 (duty cycle, weak) — fallback pipeline health check (branch D): grade B, build pass
+
+**Work chosen:** Branch C2 → rehearsal chose Demo_Phase3_SessionB_wiring (again, blocked by Phase 2, skip-condition hit). Branch D fallback: pipeline health check.
+
+**Pipeline result:** `Result: Succeeded. Total execution time: 17.47 seconds`. 6 assets, 49 generated files, 0 C++ compilation errors. 3 skipped tests (no runtime UE editor). Grade B. LM Studio HTTP 400 on Stage 7.2 (professor review — retry needed next cycle). Pipeline screenshot stage still uses pyautogui (prohibited path).
+
+**No features built/changed — no grading ev.json needed.** Dream loop: no new candidates staged; existing heuristics cover today's lessons.
+
+**Phantom pains:** phase_fda9e71b0c0841b4:P1 → confirmed (the pipeline code still calls pyautogui despite the prohibition). phase_fda9e71b0c0841b4:P3 → still-open (zero human verdicts recorded). All others inherited still-open.
+
+## NEXT
+1. **Demo_Phase3_SessionB_wiring** — DEMO_ARCHITECTURE.md §5 Phase 3 — ke-routed verification + Session B handoff; blocked by Phase 2. Recipe: Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 3 items 1-3 exactly. Skip-condition: Phase 2 not built -> pick another candidate.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+2. **Ground_Sand_Footprints** — needs_refinement (grade C). Recipe: Use graph node study guide (`python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; print(json.dumps(n.get('parameters',{}),indent=1)[:2000])"`). Skip-condition: `capable sessions only` and you are a weak session.
+3. **Sleepwalker_M4_nightly_rhythm** — SLEEPWALKER_DESIGN.md M4 schtasks automation. Recipe: read SLEEPWALKER_DESIGN.md §M4 then implement task scheduler entry for nightly sleepwalk+dream_loop. Skip-condition: capable sessions only.
+4. **Demo_Phase2_DemoTerminal** — DEMO_ARCHITECTURE.md §5 Phase 2 (kiosk + economy/mission/save). Recipe: follow DEMO_ARCHITECTURE.md §5 PHASE 2 items 1-4 exactly. Skip-condition: capable sessions only.
+5. **Fix pipeline screenshot path** — the pipeline's Stage 7 uses pyautogui (prohibited); switch to MCP `control_editor screenshot mode=editor_viewport`. Recipe: grep the pipeline code for "pyautogui", replace with `from core.telemetry_probe import MCPStdioClient; c.call("control_editor","screenshot",{filename, mode:"editor_viewport"})`.
+6. **Fallback**: pipeline health check (qwen3.6 must be loaded first: `lms load qwen3.6-35b-a3b-mtp@iq2_m`).
+
+---
+
+# # Rehearsal decision 2026-07-07 03:42Z — next move: Demo_Phase3_SessionB_wiring
+
+# Chosen by core.rehearsal (score 1.15, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+# ## NEXT (rehearsal-chosen; recipe per handoff invariant)
+# 1. **Demo_Phase3_SessionB_wiring** — DEMO_ARCHITECTURE.md §5 Phase 3 — ke-routed verification + Session B handoff; blocked by Phase 2. Recipe: Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 3 items 1-3 exactly. Skip-condition: Phase 2 not built -> pick another candidate.
+#    Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+# ---
+
 # Rehearsal decision 2026-07-07 03:03Z — next move: Demo_Phase3_SessionB_wiring
 
 Chosen by core.rehearsal (score 1.15, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.

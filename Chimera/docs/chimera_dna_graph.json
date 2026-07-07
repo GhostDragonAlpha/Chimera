@@ -23252,6 +23252,181 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_b76a74b79dc4"
+    },
+    {
+      "id": "rollout_143c85c6bf6e54cf",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-07T03:42:57.860097",
+      "chosen": "Demo_Phase3_SessionB_wiring",
+      "candidates": [
+        {
+          "name": "Demo_Phase3_SessionB_wiring",
+          "score": 1.15,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 3 \u2014 ke-routed verification + Session B handoff; blocked by Phase 2"
+        },
+        {
+          "name": "Ground_Sand_Footprints",
+          "score": 1.1,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "needs_refinement (reopened)"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.97,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "SLEEPWALKER_DESIGN.md M4 \u2014 schtasks 01:00 sleepwalk + 02:00 dream_loop; the game plays itself, then dreams"
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.73,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.6 / cost 1.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Demo_Phase3_SessionB_wiring",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_d1cd796b2fb5"
+    },
+    {
+      "id": "mutation_d111782dccd3",
+      "type": "Mutation",
+      "timestamp": "2026-07-07T03:43:43.772989",
+      "error_signature": "success_no_error",
+      "template_file": "dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_direction_tests_flight_model_ship_systems_economy_systems_level_procedural_generation_missions_contracts",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "DSL parsed with 15 blocks: game, technical, narrative, gameplay, world",
+      "fix_diff": "Parsed DSL blocks: ['game', 'technical', 'narrative', 'gameplay', 'world', 'ui', 'audio', 'art_direction', 'tests', 'flight_model', 'ship_systems', 'economy_systems', 'level', 'procedural_generation', 'missions_contracts']",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_51470afacf8d"
+    },
+    {
+      "id": "pathway_attempt_89813232eec383e8",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T03:43:48.134447",
+      "tool": "build_orchestrator",
+      "action": "ue_shutdown",
+      "parameters_tried": {},
+      "result": "killed_for_build",
+      "error_message": "",
+      "error_signature": "pathway_attempt_killed_for_build",
+      "template_file": "pathway_attempt/build_orchestrator/ue_shutdown",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'build_orchestrator', action 'ue_shutdown', result 'killed_for_build'",
+      "compilation_result": "killed_for_build",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_51470afacf8d"
+    },
+    {
+      "id": "mutation_9cce8d8ab4c7",
+      "type": "Mutation",
+      "timestamp": "2026-07-07T03:44:05.884907",
+      "error_signature": "success_no_error",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "ded optional module 'ProceduralMeshComponent' with delay-load\nMcpAutomationBridge: Added optional module 'EnvironmentQueryEditor' with delay-load\nMcpAutomationBridge: Added optional module 'GeometryScriptingCore' with delay-load\nMcpAutomationBridge: Added optional module 'GeometryScriptingEditor' with delay-load\nMcpAutomationBridge: Added optional module 'PCG' (conditional)\nMcpAutomationBridge: Added optional module 'LevelSequenceEditor' with delay-load\nMcpAutomationBridge: Added optional module 'NiagaraEditor' with delay-load\nMcpAutomationBridge: Added optional module 'EnhancedInput' with delay-load\nMcpAutomationBridge: Added optional module 'InputEditor' with delay-load\nMcpAutomationBridge: Added optional module 'BehaviorTreeEditor' with delay-load\nMcpAutomationBridge: Added optional module 'DataValidation' with delay-load\nMcpAutomationBridge: Added optional module 'Synthesis' with delay-load\nMcpAutomationBridge: Added optional module 'IKRig' with delay-load\nMcpAutomationBridge: Added optional module 'ChaosVehicles' with delay-load\nMcpAutomationBridge: Added optional module 'AnimationData' with delay-load\nPlugin 'McpAutomationBridge' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nProject 'ChimeraEditor' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nE:\\PythonChimera\\Chimera\\Chimera.uproject does not list plugin 'GameplayAbilities' as a dependency, but module 'Chimera' depends on 'GameplayAbilities'.\n@progress push 5%\n@progress 'Generating code...' 0%\n@progress 'Generating code...' 33%\nUHT compiled-in object format Default\nPlugin 'McpAutomationBridge' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nProject 'ChimeraEditor' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nE:\\PythonChimera\\Chimera\\Chimera.uproject does not list plugin 'GameplayAbilities' as a dependency, but module 'Chimera' depends on 'GameplayAbilities'.\n@progress 'Generating code...' 67%\n@progress 'Generating code...' 100%\n@progress pop\n@progress push 5%\n@progress 'Generating code...' 0%\n@progress 'Generating code...' 67%\n@progress 'Generating code...' 100%\n@progress pop\nBuilding ChimeraEditor...\n===== Toolchain Information =====\nUsing ISPC compiler (C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\ThirdParty\\Intel\\ISPC\\bin\\Windows\\ispc.exe)\n  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) \nUsing Visual Studio 14.44.35228 toolchain (C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207) and Windows 10.0.22621.0 SDK (C:\\Program Files (x86)\\Windows Kits\\10).\n=================================\nUsing Unreal Build Accelerator local executor to run 5 action(s)\n  CPU 24 physical cores, 32 logical cores\n  Memory 127.78 GB physical, 78.05 GB/135.78 GB committed\n  UBA Storage capacity 40 GB\n@progress 'Compiling C++ source code...' 0%\n@progress 'Compiling C++ source code...' 20%\n** For ChimeraEditor-Win64-Development **\n@progress 'Compiling C++ source code...' 40%\n[1/5] Compile [x64] Module.Chimera.cpp\n[2/5] Link [x64] UnrealEditor-Chimera.lib\n@progress 'Compiling C++ source code...' 60%\n[3/5] Link [x64] UnrealEditor-Chimera.dll\n@progress 'Compiling C++ source code...' 80%\n[4/5] WriteMetadata ChimeraEditor.target [NoUba]\n@progress 'Compiling C++ source code...' 100%\n[5/5] WriteMetadata ChimeraEditor.target [NoUba]\n\nTotal time in Unreal Build Accelerator local executor: 8.99 seconds\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\n\nResult: Succeeded\nTotal execution time: 17.47 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 7.2kb",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_51470afacf8d"
+    },
+    {
+      "id": "mutation_96241ebea320",
+      "type": "Mutation",
+      "timestamp": "2026-07-07T03:44:05.921046",
+      "error_signature": "success_no_error",
+      "template_file": "code_generation_unknown",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Generated 0 files across 0 categories",
+      "fix_diff": "Generated files: []",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_51470afacf8d"
+    },
+    {
+      "id": "prof_grade_b6308414670e7339",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-07T03:46:09.648463+00:00",
+      "feature": "DeepSpaceTrader",
+      "grade": "B",
+      "score": 3.0,
+      "reasoning": "Pipeline verification pass",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/DeepSpaceTrader",
+      "error_category": "none",
+      "fix_description": "Professor grade: DeepSpaceTrader = B (3.0) - Pipeline verification pass",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_51470afacf8d"
+    },
+    {
+      "id": "mutation_da813e7e2661",
+      "type": "Mutation",
+      "timestamp": "2026-07-07T03:46:09.677116",
+      "error_signature": "success_no_error",
+      "template_file": "visual_verification/screenshot_analysis",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Visual verification pass: AI analysis completed",
+      "fix_diff": "Verification result: pass, Description: Stage 7 pass. Grade: B",
+      "screenshot_path": null,
+      "feature": "Visual_Verification",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_51470afacf8d"
+    },
+    {
+      "id": "phase_ef0be888042d96ff",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T03:46:26.758050",
+      "phase": "fallback pipeline health check (branch D)",
+      "result": "Result: Succeeded. Total execution time: 17.47 seconds. Build passed, 6 assets, 49 files, 3 tests skipped. Grade B. LM Studio HTTP 400 on Stage 7.2.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/fallback pipeline health check (branch D)",
+      "error_category": "none",
+      "fix_description": "Phase 'fallback pipeline health check (branch D)' complete: Result: Succeeded. Total execution time: 17.47 seconds. Build passed, 6 assets, 49 files, 3 tests skipped. Grade B. LM Studio HTTP 400 on Stage 7.2.",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The pipeline's visual stage used pyautogui desktop capture again (forbidden); the prohibition constants say use MCP screenshot mode=editor_viewport but the pipeline code still calls the old path."
+      ],
+      "inheritance": "Pipeline build succeeds cleanly (17.47s). Rehearsal again chose Demo_Phase3_SessionB_wiring (blocked by Phase 2, skip-cond hit again). LM Studio HTTP 400 on professor review stage. 22 observations still awaiting human verdicts. The pipeline's screenshot stage still uses pyautogui (prohibited by CYCLE_PROMPT) despite the successful compilation.",
+      "pain_verdicts": {
+        "phase_fda9e71b0c0841b4:P1": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_ba88c612d0a7"
     }
   ],
   "edges": [
