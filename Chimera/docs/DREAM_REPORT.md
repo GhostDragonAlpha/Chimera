@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T06:03:42Z
+consolidated: 2026-07-07T06:25:49Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
@@ -33,7 +33,7 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 ```
 clusters >= 3: 17  |  suppressed (covered/pending): 17  |  staged: 0
   covered   [  1x] human_rejection: Verb_Step  <- PENDING_HEURISTICS.md
-  covered   [ 60x] compilation_fail  <- PENDING_HEURISTICS.md
+  covered   [ 64x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 25x] verification_not_verified  <- PENDING_HEURISTICS.md
   covered   [ 21x] verification_aborted_wrong_window  <- PENDING_HEURISTICS.md
@@ -41,10 +41,10 @@ clusters >= 3: 17  |  suppressed (covered/pending): 17  |  staged: 0
   covered   [ 19x] verification_incomplete  <- PENDING_HEURISTICS.md
   covered   [ 18x] ralph_apply_<feature>_step  <- PENDING_HEURISTICS.md
   covered   [ 17x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
+  covered   [ 15x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [ 12x] grade_CF: Player_Character_Lighting  <- PENDING_HEURISTICS.md
   covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Lighting  <- PENDING_HEURISTICS.md
   covered   [ 12x] ralph_ralph_loop_complete_Player_Character_Model  <- PENDING_HEURISTICS.md
-  covered   [ 11x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [  4x] grade_CF: Player_Character_Model  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
@@ -54,6 +54,6 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1400  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1428  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
