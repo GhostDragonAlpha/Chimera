@@ -1,64 +1,72 @@
-# Chimera Workspace Rules (all modes)
+# Chimera Workspace Rules (all modes) — constitution core
 
-The master brief is `AGENTS.md` at the workspace root — read it before substantive work.
-These rules are the operational deltas every mode must follow.
+The master brief is `AGENTS.md` at the workspace root; the live spec of the circadian
+process is `Chimera/docs/GENERATION_PROTOCOL.md`. Read before substantive work.
+Workdir for ALL python commands: `E:/PythonChimera/Chimera`.
 
-## Recording (DNA graph)
+## Recording (DNA graph — typed surfaces only)
 
 - **Never hand-write `g.mutate` detail dicts.** Use the typed helpers from
-  `Chimera/core/graphify_interface.py` (`record_feature`, `record_pathway`,
-  `record_loop`, `record_phase`, `record_grade`, `record_build`) or the CLI:
-  `python -m core.graphify_record feature --name X --loop 8 --status verified --param k=v`
-  (run from `E:/PythonChimera/Chimera`).
-- Mis-keyed dicts are **rejected** with a `rejected_*` return string and nothing is
-  recorded — if you see that string, your keys are wrong; nothing happened.
-- Recording history after the fact? Pass `--backfilled` / `backfilled=True`.
-  Never fake timestamps. Every node is auto-stamped `recorded_by` + `run_id`.
+  `Chimera/core/graphify_interface.py` (`record_feature`, `record_pathway`, `record_loop`,
+  `record_phase`, `record_grade`, `record_build`, `record_surprise`, `record_simtest`,
+  `record_rollout`) or the CLI `python -m core.graphify_record <kind> ...`.
+  Mis-keyed dicts return a `rejected_*` string and record NOTHING.
+- `observe` and `playtest` are the HUMAN's surfaces. Agents may run `observe` only to
+  ATTRIBUTE a recorded human playtest (`--derived-from <playtest_id>` + `--quote`/`--tacit`).
+  Automation processes must run with `CHIMERA_AGENT_SIM=1` set — the interface then
+  technically rejects direct observations from them.
+- Capture surprises AS THEY HAPPEN: `python -m core.graphify_record surprise
+  --context "..." --reality "..." --source human|agent|engine`. They are dream fodder.
 
 ## The Contract (mandatory bookends)
 
-- Session start: `python -m core.preflight` — prints graph health, GPA trend, the
-  spiral loop board, pending technical_research, last pipeline run, and whether
-  LM Studio / Unreal / DNA API are reachable. Report findings before proceeding.
-- Session end: `python -m core.postflight --phase "..." --result "..."` — records
-  PhaseComplete and prints the closing checklist. Report UBT output **verbatim**.
+- Start: `python -m core.preflight` — read §[4.5] (Will, phantom pains, Observation queue,
+  pending heuristics) and §[4.6] (last sleepwalk / rehearsal decision).
+- End: `python -m core.postflight --phase "..." --result "<UBT verbatim>"
+  --inheritance "<=3 sentences" --phantom-pain "<one specific prediction>"
+  --pain-verdict "<phase_id>:P<n>:confirmed|refuted|still-open"`, then
+  `python -m core.dream_loop`, then prepend a session block + recipe-carrying NEXT list
+  to `task_progress.md` (the handoff invariant: an item without a recipe is a wish).
 
-## Building
+## Building & grading
 
-- The Pipeline is authoritative: `python run_deep_space_trader_pipeline.py`
-  (from `E:/PythonChimera/Chimera`). MCP is for discovery, not routine builds.
-- The build **fails fast** if anything besides `Chimera/` and the two `*.Target.cs`
-  files exists under `Chimera/Source/` (stale-tree guard, Known Bug #1). Do not
-  create parallel module trees; if the guard trips, delete the stale trees.
-- Compilation failures auto-record ProfessorGrade **F**, non-pass visual
-  verifications auto-record **C** — a falling GPA is signal, not noise. Report it
-  with corrective action, never suppress it.
+- The Pipeline is authoritative: `python run_deep_space_trader_pipeline.py`. It needs
+  qwen3.6-35b-a3b-mtp@iq2_m loaded in LM Studio (`lms load ...`) — gate_lm_available is a BLOCKER.
+- Direct UBT (no LM needed): close the editor first (DLL lock), build, relaunch:
+  `& "C:/Program Files/Epic Games/UE_5.8/Engine/Build/BatchFiles/Build.bat" ChimeraEditor Win64 Development "E:\PythonChimera\Chimera\Chimera.uproject" -waitmutex`
+- **The gate is the RESULT grade** (`core/result_grader.py`, zero-LM): A>=90 B>=75 C>=60;
+  C/F -> back to research with the study guide. Build failure auto-F. Unmeasured = omit
+  (scores zero) — never guess. Declare `criteria_total` up front; measure every criterion.
+- Stale-tree guard: only `Chimera/` + the two `*.Target.cs` under `Chimera/Source/`.
+- Never hand-edit generator-owned files under `Source/Chimera/ProceduralGenerated/`
+  (Flight, Ship, GameMode, Missions, Docking, Economy, Save, Combat, Factions, PirateAI,
+  QuantumTravel, PCGVolumeManager) or `Chimera.Build.cs` — fix templates in
+  `core/game_code_generator.py`. Manual loop-built files (Tools, Interactions, Sound, UI,
+  NPC AI, ChimeraMovementComponent, StationActor, Demo/) are hand-editable.
 
 ## MCP usage
 
-- Before any MCP call: `g.query("pathway", <action>)`. Pathway exists → follow it
-  exactly. No pathway → try the simplest approach, then record the attempt with
-  `record_pathway` (success **and** failure). 14 known-good sequences live in
-  `Chimera/docs/MCP_PATHWAYS.md`.
-- Material parameters: `manage_asset.add_*_parameter` creates **orphaned nodes**.
-  Use `system_control.execute_python` with a **single-line** semicolon-separated
-  script (the handler crashes on multi-line scripts).
+- Before any MCP call, check `Chimera/docs/MCP_PATHWAYS.md` (**26 proven pathways + traps**).
+  Pathway exists -> follow EXACTLY. None -> simplest attempt, then `record_pathway`
+  (success AND failure).
+- **Never trust `success: true` — read the value back.** Every mutation gets a read-back
+  (get_property / get_component_property / find_by_class / runtime_report).
 
-## Screenshots / visual verification
+## Screenshots / visual evidence (regime of 2026-07-06 — supersedes pyautogui doctrine)
 
-- Only `pyautogui` via `Chimera/core/visual_verifier.py` — never MCP screenshot
-  modes (wrong window / wrong camera / low-res). The verifier aborts unless
-  **Unreal Editor is the foreground window** and records `aborted_wrong_window`.
-- Prefer checklist verification: `run_visual_verification(project_path,
-  checklist=["criterion 1", ...], feature="Feature_Name")` — strict per-item
-  YES/NO; unanswered items count as NO. Verify PNG > 100 KB before sending.
+- Viewport captures via MCP: `control_editor screenshot {mode: "editor_viewport", filename}`.
+  Never desktop captures.
+- Foreground the editor before trusting ANY empty frame or fps number (background throttle
+  freezes Niagara/anim and clamps fps to exactly 3.0). Permanent fix is applied
+  (bThrottleCPUWhenNotForeground=False) but an actively-focused human still wins focus.
+- Camera moves: ONLY `control_editor console_command "BugItGo x y z pitch yaw roll"`.
+- LM vision (qwen) is tertiary evidence, only when explicitly requested.
 
-## Source conventions
+## Current game state (2026-07-07)
 
-- Canonical module: `Chimera/Source/Chimera/`, macro `CHIMERA_API`, UE 5.8, C++20.
-- UE gotchas already paid for here: `TMap::operator[]` asserts on missing keys —
-  use `FindOrAdd`; `TickComponent` must match the exact UActorComponent signature;
-  price/economy math lives in `ProceduralGenerated/Economy/` (formula:
-  `BasePrice * clamp(pow(D/S, elasticity), 0.25, 4.0)`).
-- Complete all features in Loop N before Loop N+1 (Spiral Growth). Current state
-  lives in the DNA graph — check `python -m core.preflight`, not assumptions.
+- The **Regolith Yard** demo (Chimera/docs/DEMO_ARCHITECTURE.md) is built and saved in
+  `chimeradefaultlevel`: 3 material pads, astronaut (AutoPossess Player0), display suit,
+  props. WorldSettings.DefaultGameMode = `/Script/Chimera.DemoOnFootGameMode`
+  (Demo/DemoPlayerController provides WASD+mouse+space and a runtime chase camera).
+  HUMAN SESSION A (playtest, beats 1-8) is the standing priority when the human is present.
+- Spiral Growth: complete Loop N before N+1; live state = preflight board, never assumptions.

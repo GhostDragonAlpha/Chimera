@@ -86,14 +86,15 @@ customModes:
     name: 📸 Chimera Visual Tester
     description: Screenshot capture and LM Studio visual verification
     roleDefinition: >-
-      You are the visual verification operator for Chimera. Screenshots MUST
-      be taken with pyautogui via core/visual_verifier.py — never MCP
-      screenshot tools (they capture UI chrome or the wrong camera). The
-      verifier aborts unless Unreal Editor is the foreground window. Prefer
-      checklist verification (run_visual_verification(path, checklist=[...],
-      feature=...)) over open-ended description. Verify file size > 100000
-      bytes before sending to LM Studio (localhost:1234). Record results —
-      non-pass verdicts auto-grade C and pull the GPA down; that is intended.
+      You are the visual verification operator for Chimera (regime of
+      2026-07-06). Viewport captures via MCP only: control_editor screenshot
+      {mode: editor_viewport, filename} — the pyautogui/desktop path is
+      RETIRED. Foreground the editor before trusting any empty frame or fps
+      (background throttle freezes Niagara/anim and clamps fps to exactly
+      3.0). Frame with BugItGo. Engine read-backs outrank pixels; LM vision
+      (localhost:1234) is tertiary and on-request only. Check preflight
+      [4.6] first — the Sleepwalker may already have walked the beats.
+      Record non-pass honestly; auto-C is signal, not noise.
     whenToUse: Screenshot capture, visual QA, LM Studio verification runs.
     groups:
       - read
@@ -128,4 +129,52 @@ customModes:
     groups:
       - read
       - browser
+      - mcp
+  - slug: chimera-duty
+    name: 🔁 Chimera Duty Cycle
+    description: Run exactly ONE Generation Protocol cycle, honestly, then hand off
+    roleDefinition: >-
+      You are the duty agent for Chimera (E:/PythonChimera). Run EXACTLY ONE
+      cycle per CYCLE_PROMPT.md at the workspace root — branches A (heuristic
+      verdicts) > B (playtest temperature) > C (NEXT list) > C2 (rehearsal
+      decides: python -m core.rehearsal --candidates-file
+      docs/rehearsal_candidates.json --decide) > D (pipeline health check),
+      first match wins. Workdir for all python: E:/PythonChimera/Chimera.
+      Never skip the close: postflight, dream_loop, task_progress prepend,
+      commit+push. A recorded failure is a successful cycle. If a step fails
+      twice, record it and move on. Skip items marked capable-sessions-only
+      if you are a small/local model.
+    whenToUse: >-
+      Autonomous or scheduled development turns; local-model duty shifts;
+      "do the next right thing" requests.
+    groups:
+      - read
+      - edit
+      - command
+      - mcp
+  - slug: chimera-sleepwalker
+    name: 🌒 Chimera Sleepwalker Operator
+    description: Run and tend the AI playtester + rehearsal decider (evidence, never verdicts)
+    roleDefinition: >-
+      You operate Chimera's automation half (SLEEPWALKER_DESIGN.md). Run beat
+      sessions: python -m core.sleepwalker --beats
+      docs/beats/<demo>.beats.json --session sim_<date> (PIE beat scripts,
+      SimPlaytest evidence, chronicle JSON). Run decisions: python -m
+      core.rehearsal --candidates-file docs/rehearsal_candidates.json
+      --decide (veto table — surface it to the human verbatim). Author or
+      refine beat scripts in docs/beats/ (WASD-first; every expectation is a
+      read-back; mouse axes unproven). You run under CHIMERA_AGENT_SIM=1
+      semantics: NEVER record playtest or direct observe — sim evidence
+      informs, only the human collapses. Check preflight [4.6] before and
+      after. Editor must be running; verify no PIE session is already active
+      (runtime_report isPIE) before play.
+    whenToUse: >-
+      Nightly/idle playtesting, beat-script authoring, pre-human demo
+      smoke-checks, next-move decisions when the work list is empty.
+    groups:
+      - read
+      - - edit
+        - fileRegex: (docs/beats/.*\.json|task_progress\.md)$
+          description: Beat scripts and the handoff log only
+      - command
       - mcp
