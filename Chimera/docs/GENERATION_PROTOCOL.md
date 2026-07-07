@@ -77,3 +77,15 @@ The balance of automation and control:
   gate-organ approvals queue for capable implementation; the human vetoes after the fact by
   editing a status to `vetoed` (auto-demotion, doc line removed, veto recorded). The human's
   remaining always-on powers: playtest at will, veto anything, human_rejection outranks all.
+
+## Whole-Experience Observation (amendment 2026-07-07)
+
+The human approves the EXPERIENCE AS A WHOLE — never feature-by-feature. Mechanics
+(core/collapse_proxy.py): one holistic acceptance sweeps accepted-tacit across every
+queue feature with exercise evidence (beat outcomes + witness chronicles); a holistic
+rejection indicts only the features the human's words name. Between temperatures the
+Sleepwalker provisionally collapses features with >=2 clean sim exercises
+(`observed_provisional`, nightly inside dream_loop) so the observation queue can never
+dam development. The human's next sentence — anytime — reverses anything: rejection
+reopens a feature regardless of how many sims passed it. Per-feature verdict requests
+to the human are FORBIDDEN.

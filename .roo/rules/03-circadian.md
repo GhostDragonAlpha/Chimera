@@ -8,10 +8,11 @@ Spec: `Chimera/docs/GENERATION_PROTOCOL.md` (incl. the Sleepwalking amendment) a
   auto-rules `docs/PENDING_HEURISTICS.md` — doc-organ rules self-promote, gate-organ approvals
   queue for capable implementation, subsumed entries tombstone. The human vetoes after the fact
   (edit status to `vetoed` -> auto-demotion); their rejections outrank everything.
-- **Observer**: the true collapse. Features finish only under human eyes. The human gives a
-  HOLISTIC temperature (`graphify_record playtest --notes "<verbatim>"`); the agent ATTRIBUTES
-  it across the queue (`observe --derived-from <id> --quote|--tacit`) and presents the
-  attribution table for one-sentence overrules. Agents never originate verdicts.
+- **Observer (whole-experience, amendment 2026-07-07)**: the human rules on the EXPERIENCE AS A
+  WHOLE, never feature-by-feature (asking is forbidden). Temperature -> record verbatim ->
+  quote-tier attributions -> `core.collapse_proxy --from-playtest <id> --valence <v>` sweeps
+  accepted-tacit across everything exercised. Nightly `--tend` provisionally collapses
+  sim-evidenced features. The human's one sentence overrides anything, anytime.
 
 ## The automation half (balance of automation and control)
 - **Sleepwalker** (`python -m core.sleepwalker --beats docs/beats/<demo>.beats.json

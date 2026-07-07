@@ -94,6 +94,9 @@ def main():
             report = gardener.tend(dry_run=False)
             tend_out = "; ".join(f"{k}:{len(v)}" for k, v in report.items() if v) or "queue clean"
             print(f"[dream] gardener tend -> {tend_out}")
+            from core import collapse_proxy
+            cp = collapse_proxy.tend(min_sessions=2)
+            tend_out += f" | provisional-collapse: {len(cp['collapsed'])} collapsed, {len(cp['waiting'])} awaiting evidence"
         except Exception as ex:
             tend_out = f"tend FAILED: {ex}"
             print(f"[dream] {tend_out}")

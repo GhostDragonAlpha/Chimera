@@ -227,6 +227,10 @@ def main():
                   f"{last_sim.get('beats_reached')}/{last_sim.get('beats_total')} beats "
                   f"({last_sim.get('demo')}) @ {str(last_sim.get('timestamp',''))[:19]}")
             print(f"      {str(last_sim.get('temperature',''))[:100]}")
+        prov = {n.get("feature_name") for n in nodes
+                if n.get("type") == "FeatureUpdate" and n.get("status") == "observed_provisional"}
+        if prov:
+            print(f"    Provisionally collapsed by sim (human sentence overrides anytime): {len(prov)}")
         if last_roll:
             print(f"    Last rehearsal decision: {last_roll.get('chosen')} "
                   f"@ {str(last_roll.get('timestamp',''))[:19]}"

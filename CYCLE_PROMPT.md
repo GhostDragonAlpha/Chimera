@@ -52,7 +52,12 @@ From preflight note: [4.5] open pain IDs, pending heuristic count, observation q
   1) `python -m core.graphify_record playtest --notes "<their EXACT words>"` → save the returned id.
   2) For each queue feature the temperature DIRECTLY mentions: `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --derived-from <playtest_id> --quote "<their exact phrase>" --loop <N>`
   3) Features clearly exercised but unmentioned (beat coverage or a witness chronicle in `Saved/SessionChronicles/` proves exercise — the honest-tacit rule): same command with `--verdict accepted --tacit` instead of --quote. Features the playtest never touched: leave alone.
-  4) End report with the full table: feature | tier | quote.
+  4) Whole-experience sweep (the human NEVER rules feature-by-feature):
+     `python -m core.collapse_proxy --from-playtest <playtest_id> --valence <accepted|rejected>`
+     — acceptance sweeps accepted-tacit across everything exercised; rejection indicts only
+     what their words name (step 2). Nightly `--tend` provisionally collapses sim-evidenced
+     features; the human's sentence overrides anytime.
+  5) End report with the full table: feature | tier | quote.
 - **C. Otherwise: execute the FIRST executable item in the NEXT list** (you already
   read it in STEP 1). The handoff invariant guarantees each NEXT item carries its own
   recipe — exact commands inline, or the feature name whose node holds the study
