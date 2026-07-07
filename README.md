@@ -26,6 +26,16 @@ SELECT → FORK (3 briefs, 1 wild — winner proceeds, losers autopsied)
       → observed | rejected → back to research with the human's words
 ```
 
+Since 2026-07-07 the loop also runs UNATTENDED: when the work list is empty, the
+**Rehearsal** engine (`core/rehearsal.py`) simulates candidate next-moves over the DNA
+graph's priors and writes a veto-table-backed work item (duty-cycle branch C2), and the
+**Sleepwalker** (`core/sleepwalker.py`) plays the built game in PIE via beat scripts,
+recording evidence the nightly dream loop consolidates. The human's word still overrides
+everything — sim signals rank permanently below human rejections, and agent-sim processes
+are technically barred (`CHIMERA_AGENT_SIM`) from recording human observations. See
+`Chimera/docs/SLEEPWALKER_DESIGN.md` and `Chimera/docs/DEMO_ARCHITECTURE.md` (the
+Regolith Yard — first human playtest target). Local-model runs: `claude-lmstudio.bat`.
+
 1. **SELECT** — next open feature in the lowest incomplete Spiral loop (the preflight board). Never skip forward.
 2. **RESEARCH WRITES THE EXAM** — research the feature (campus sources + web, Research Depth Protocol in `Chimera/docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md`). The output is the feature's **declared acceptance criteria** — the coverage denominator the grade is computed against — plus buildable parameters. Record everything with the typed helpers (`record_*` / `python -m core.graphify_record`); mis-keyed dicts are rejected.
 3. **APPLY AT THE RIGHT LAYER** — game content → the DSL (`Chimera/tests/dsl_grammar/deep_space_trader.chimera`); code shape → generator templates (`Chimera/core/game_code_generator.py`). **Never hand-edit generator-owned C++** (Flight, Ship, GameMode, PCG, Missions, Docking, QuantumTravel, Factions, Economy, Save, Combat suite, PirateAI) — regeneration clobbers it.

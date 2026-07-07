@@ -1,5 +1,16 @@
 # Demo Architecture — Regolith Yard (Demo 1) + Titan Run (Demo 2)
 
+> **STATUS 2026-07-07**: Phase 1 EXECUTED (grade A 98.5) — the yard is built, saved
+> (umap md5 BF835B43...), and walkable; Session A awaits the human. An input hotfix added
+> `Source/Chimera/ProceduralGenerated/Demo/DemoPlayerController + DemoOnFootGameMode`
+> (the astronaut BP had ZERO input wiring — surprise_2b3d79676e3d4206); WorldSettings
+> currently points at DemoOnFootGameMode, so Phase 2's GameMode surgery must either fold
+> these bindings into the generated GameMode or keep the demo mode for on-foot play.
+> Phase 1 item 2's WorldSettings write is PROVEN (MCP pathway 22). `core/demo_witness.py`
+> (Phase 2 item 4) is SUPERSEDED by `core/witness.py`; the Sleepwalker
+> (`core/sleepwalker.py` + docs/beats/regolith_yard.beats.json) now walks these beats
+> automatically — 5/5 clean on 2026-07-07.
+
 ## 1. Purpose
 
 Features finish only under human eyes. Twenty sit in the Observation queue as `[DONE*]`; the protocol closes them when the Gardener plays a build and gives a few-sentence holistic temperature, which the agent then attributes across the queue with provenance (direct quote / tacit / untouched — reversible by one human sentence). No demo, no verdicts: the demo is the collapse instrument.

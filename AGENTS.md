@@ -218,3 +218,14 @@ After 2 failed attempts on any feature, automatically create a technical_researc
 | `core/graphify_interface.py` | `g.query()` / `g.mutate()` interface |
 | `core/game_generation_orchestrator.py` | Pipeline orchestrator |
 | `run_deep_space_trader_pipeline.py` | Pipeline entry point |
+
+
+## Sleepwalker & Rehearsal (added 2026-07-07)
+
+When the NEXT list is empty, duty cycles run branch C2 before the pipeline fallback:
+`python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide`
+(veto-table decision -> recipe-carrying NEXT item). The game also plays itself:
+`python -m core.sleepwalker --beats docs/beats/<demo>.beats.json --session <name>`
+(PIE beat scripts, SimPlaytest evidence, CHIMERA_AGENT_SIM=1 sentinel — automation can
+never record a human observation). Sim signals rank below human rejections everywhere.
+Spec: Chimera/docs/SLEEPWALKER_DESIGN.md; new MCP pathways 22-26 in docs/MCP_PATHWAYS.md.

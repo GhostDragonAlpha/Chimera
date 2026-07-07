@@ -136,3 +136,35 @@ task 3/4 and leave the queues untouched.
 One task, honestly measured, honestly graded, honestly recorded, pushed. A C with a
 sharp study guide is worth more than a fake A. The system was built so that your
 successor inherits your lessons — write your Will like you mean it.
+
+
+## ADDENDUM 2026-07-07 — the Sleepwalker era (recipes for the new organs)
+
+**New PRIME DIRECTIVE 7**: if you are an automation process (not relaying a live human),
+run with `CHIMERA_AGENT_SIM=1` set. It makes faking a human observation technically
+impossible. `core/sleepwalker.py` sets it for itself.
+
+**When your NEXT list is empty (branch C2 — do this BEFORE the pipeline fallback):**
+```powershell
+python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide
+```
+It prints a veto table, records the decision, and prepends a recipe-carrying NEXT item.
+Execute THAT item. If it is marked `capable sessions only` and you are not: run the
+pipeline fallback instead.
+
+**To let the game play itself (evidence, never verdicts):**
+```powershell
+python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session sim_<date>
+```
+5/5 beats = healthy demo. Failures auto-record surprises the dream loop clusters
+(kind sim_rejection — always ranked below the human's voice).
+
+**New traps (paid for on 2026-07-06):**
+- `Config/DefaultInput.ini` has NO trailing newline and ends with a `[GameInputPlatformSettings...]`
+  section. Appending blindly corrupts it AND lands mappings in the wrong section — insert inside
+  `[/Script/Engine.InputSettings]`.
+- The editor overwrites `EditorPerProjectUserSettings.ini` on graceful shutdown. To make a
+  settings edit stick: write the ini, FORCE-kill (`taskkill //F //IM UnrealEditor.exe`), relaunch.
+- `graphify_record observe` without `--derived-from` is an HONOR-SYSTEM surface (it cannot know
+  who is typing). Directive 2 is what protects it. Automation must never touch it.
+- BP spawning: use `/Game/X/BP_Y.BP_Y` (asset form). The `_C` class form fails via the bridge.

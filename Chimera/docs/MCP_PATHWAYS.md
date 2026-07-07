@@ -8,7 +8,7 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 
 ---
 
-## Working Pathways (12)
+## Working Pathways (12 original + 22-26 below)
 
 ### 1. control_actor.spawn_actor
 - **Tool**: `unreal_engine_control_actor`
@@ -173,6 +173,32 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 - `manage_asset` has NO save action; `manage_level save_level` saves only the level.
 
 ---
+
+
+### 22. control_actor.set_property / inspect.get_property (2026-07-06)
+- **Parameters**: `{objectPath: "<ActorLabel>", propertyName, value}` — NOT actorName; missing `value` errors INVALID_VALUE.
+- **Proven on**: `WorldSettings1` DefaultGameMode (swap game modes per map; survives save/restart), pawn `AutoPossessPlayer` ("Player0"/"Disabled").
+- **Read back** with `inspect get_property {objectPath, propertyName}` -> result.value.
+
+### 23. Blueprint spawning — the asset-form rule (2026-07-06)
+- `control_actor spawn_actor {actorName, classPath: "/Game/X/BP_Y.BP_Y"}` — the ASSET-duplication form WORKS for Blueprints.
+- **TRAP**: the class form `/Game/X/BP_Y.BP_Y_C` fails CLASS_NOT_FOUND through this bridge.
+- **REVISION to pathway 1's note**: `/Engine/BasicShapes/Plane.Plane` DOES spawn — the old "no /Engine paths" lesson was specific to /Engine/EditorMeshes.
+- `manage_geometry create_box` names EVERY box "GeneratedBox" — address by FName `DynamicMeshActor_<n>` (find_by_class DynamicMeshActor gives paths).
+
+### 24. simulate_input drives AutoPossess pawns (2026-07-06, refines pathway 19's trap)
+- With a level-placed pawn possessed via `AutoPossessPlayer=Player0` and NO DefaultPawn in the world, `simulate_input {type: key_down/key_up, key}` reaches the REAL player pawn (verified: W 2.0s -> 1333uu displacement read back).
+- Pathway 19's "drives DefaultPawn_0" trap applies only when a DefaultPawn exists to steal input.
+- Mouse-axis simulation remains UNPROVEN — beat scripts are WASD-first.
+
+### 25. Honest fps — killing the 3fps background-throttle trap (2026-07-06)
+- Write `Saved/Config/WindowsEditor/EditorPerProjectUserSettings.ini` section `[/Script/UnrealEd.EditorPerformanceSettings]` -> `bThrottleCPUWhenNotForeground=False`, then **FORCE-kill** the editor (graceful shutdown overwrites the ini from memory) and relaunch.
+- **Residual**: if a human actively holds window focus, run the AppActivate one-liner in the SAME command as the probe. `set_viewport_realtime` succeeds but does NOT lift the throttle.
+- `get_performance_stats` reading exactly 3.0000 fps = throttle artifact, not game performance.
+
+### 26. Sleepwalker beat runs + the save-proof ritual (2026-07-07)
+- `python -m core.sleepwalker --beats docs/beats/<demo>.beats.json --session <name>` — PIE play -> beats (simulate_input + read-backs) -> stop_pie; records SimPlaytest + chronicle. Runs under CHIMERA_AGENT_SIM=1 (cannot fake human observations).
+- **Save-proof ritual** (the level-loss killer): `control_editor save_all` (savedCount>=1) -> md5 of the .umap CHANGED vs baseline -> mtime now -> `get_scene_stats` recount matches. All four or it did not happen.
 
 ## Failed Pathways (1)
 
