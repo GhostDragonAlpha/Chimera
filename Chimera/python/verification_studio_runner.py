@@ -215,50 +215,48 @@ def set_viewport_to_camera():
 # Screenshot
 # ---------------------------------------------------------------------------
 def take_screenshot(feature_name):
-    """Take a screenshot of the current viewport using pyautogui.screenshot()."""
-    print(f"[6/8] Taking screenshot via pyautogui...")
+    """Take a screenshot of the current viewport using MCP control_editor screenshot mode=editor_viewport per H-2 prohibition."""
+    print(f"[6/8] Taking screenshot via MCP control_editor mode=editor_viewport...")
     screenshot_path = os.path.join(SCREENSHOT_DIR, f"{feature_name}_verified.png")
     os.makedirs(SCREENSHOT_DIR, exist_ok=True)
-    
-    # UE5 Viewport preparation before taking screenshot using pyautogui
+
+    # Use MCP control_editor screenshot mode=editor_viewport (H-2 prohibition: never verify from desktop screenshots)
     try:
-        import subprocess
-        # Activate Unreal Editor window
-        subprocess.run(
-            'powershell "$wshell=New-Object -ComObject wscript.shell; $wshell.AppActivate(\'Unreal Editor\'); Start-Sleep 2"',
-            shell=True, check=False
-        )
-    except Exception:
-        pass
-    
-    # Take screenshot using pyautogui
-    try:
-        import pyautogui
-        pyautogui.screenshot(screenshot_path)
-        
-        # Verify file size > 100000 bytes
-        if os.path.exists(screenshot_path) and os.path.getsize(screenshot_path) > 100000:
-            size_kb = os.path.getsize(screenshot_path) / 1024
-            print(f"       Screenshot via pyautogui saved ({size_kb:.0f} KB)")
+        import sys
+        project_dir = Path(__file__).parent.parent
+        if str(project_dir / "core") not in sys.path:
+            sys.path.insert(0, str(project_dir / "core"))
+
+        from telemetry_probe import MCPStdioClient
+        client = MCPStdioClient()
+
+        # Call control_editor screenshot with mode=editor_viewport
+        result = client.call("control_editor", {
+            "action": "screenshot",
+            "filename": f"{feature_name}_verified.png",
+            "mode": "editor_viewport"
+        })
+
+        client.close()
+
+        # Check if the call was successful
+        structured_content = result.get("result", {}).get("structuredContent", {})
+        if structured_content.get("success"):
+            print(f"       Screenshot via MCP control_editor mode=editor_viewport saved: {screenshot_path}")
             return screenshot_path
         else:
-            print(f"       Warning: Screenshot file too small or missing: {os.path.getsize(screenshot_path) if os.path.exists(screenshot_path) else 0} bytes")
-            # Try to find the most recent valid screenshot
-            screenshots = [f for f in Path(SCREENSHOT_DIR).glob("*.png") if f.stat().st_size > 100000]
-            if screenshots:
-                screenshot_path = str(max(screenshots, key=os.path.getmtime))
-                print(f"       Using most recent valid screenshot: {screenshot_path}")
-                return screenshot_path
+            error_msg = structured_content.get("message", "Unknown error")
+            print(f"       Warning: MCP screenshot failed: {error_msg}")
     except Exception as e:
-        print(f"       pyautogui.screenshot failed: {e}")
-    
-    # Fallback: try to find any recent screenshot in the directory
-    screenshots = sorted(Path(SCREENSHOT_DIR).glob("*.png"), key=os.path.getmtime, reverse=True)
+        print(f"       MCP control_editor screenshot failed: {e}")
+
+    # Fallback: try to find any recent valid screenshot in the directory
+    screenshots = [f for f in Path(SCREENSHOT_DIR).glob("*.png") if f.stat().st_size > 10000]
     if screenshots:
-        screenshot_path = str(screenshots[0])
-        print(f"       Using most recent screenshot (fallback): {screenshot_path}")
+        screenshot_path = str(max(screenshots, key=os.path.getmtime))
+        print(f"       Using most recent valid screenshot (fallback): {screenshot_path}")
         return screenshot_path
-    
+
     print(f"       ERROR: No screenshot file found at {screenshot_path}")
     return None
 

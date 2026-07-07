@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T03:53:14Z
+consolidated: 2026-07-07T05:58:46Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
@@ -9,8 +9,8 @@ No pending heuristics — the constitution covers everything the night found.
 - phase_762486f41e1aeafb:P1 [0d] The 20-deep observation queue will rot unobserved unless verdicts become habitual - if none are recorded within a week the collapse step failed as designed
 - phase_762486f41e1aeafb:P3 [0d] Expect human rejections to reopen [DONE*] loops when observed (sand particles are white bubbles at B 79.3) - the first rejections will demote board state and that is the system working
 - phase_fda9e71b0c0841b4:P3 [0d] Zero human verdicts have been recorded since the queues opened - if a week passes with the Gardener and Observer idle, the protocol is running open-circuit and DONE* loops are quietly rotting
-- phase_17828713d9c76201:P1 [0d] When a capable session implements add_anim_notify and reruns the recipe, notifies will add and read back fine but PIE footstep events will STILL not fire, because configure_footstep_fx only echoed scale vars (facade-scent) and the BP AnimNotify event wiring was never confirmed.
 - phase_62a9bf8fa8e97b42:P1 [0d] phase_da55128aec6d109a:P1
+- phase_a3193c8fa52533c6:P1 [0d] phase_da55128aec6d109a:P1 distiller token-coverage suppression
 
 ## Observation queue — the true collapse awaits your eyes
 - Loop 2 **Verb_Look** (system-verified 2026-07-04T04:38:08)
@@ -31,7 +31,7 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Tonight's distillation
 ```
-clusters >= 3: 16  |  suppressed (covered/pending): 16  |  staged: 0
+clusters >= 3: 17  |  suppressed (covered/pending): 17  |  staged: 0
   covered   [  1x] human_rejection: Verb_Step  <- PENDING_HEURISTICS.md
   covered   [ 60x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
@@ -48,11 +48,12 @@ clusters >= 3: 16  |  suppressed (covered/pending): 16  |  staged: 0
   covered   [  4x] grade_CF: Player_Character_Model  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
+  covered   [  3x] pathway: animation_physics.add_anim_notify -> failed  <- MCP_PATHWAYS.md
 nothing new to stage — the constitution already covers today's lessons
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1374  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1398  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

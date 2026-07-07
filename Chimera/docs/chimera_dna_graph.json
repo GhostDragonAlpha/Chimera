@@ -23549,6 +23549,584 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_368b80ef399b"
+    },
+    {
+      "id": "pathway_attempt_56113dad666d9611",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T04:23:26.186986",
+      "tool": "animation_physics",
+      "action": "add_anim_notify",
+      "parameters_tried": "Bridge now supports add_anim_notify and get_anim_sequence_info for AnimSequence assets",
+      "result": "implemented",
+      "error_message": "",
+      "error_signature": "pathway_attempt_implemented",
+      "template_file": "pathway_attempt/animation_physics/add_anim_notify",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'animation_physics', action 'add_anim_notify', result 'implemented'",
+      "compilation_result": "implemented",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_f8bd334c3b2e"
+    },
+    {
+      "id": "pathway_attempt_11fa8391210eedcd",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T04:24:05.908894",
+      "tool": "animation_physics",
+      "action": "add_anim_notify",
+      "parameters_tried": "Confirmed: add_anim_notify and get_anim_sequence_info return NOT_IMPLEMENTED in active bridge",
+      "result": "failed_not_implemented",
+      "error_message": "",
+      "error_signature": "pathway_attempt_failed_not_implemented",
+      "template_file": "pathway_attempt/animation_physics/add_anim_notify",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'animation_physics', action 'add_anim_notify', result 'failed_not_implemented'",
+      "compilation_result": "failed_not_implemented",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_a3b628fa28d9"
+    },
+    {
+      "id": "pathway_attempt_27bd6312e8b9fe29",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T04:24:48.267228",
+      "tool": "animation_physics",
+      "action": "add_anim_notify",
+      "parameters_tried": {
+        "NOTE": "facade #3 confirmed: NOT_IMPLEMENTED in active bridge"
+      },
+      "result": "failed",
+      "error_message": "",
+      "error_signature": "pathway_attempt_failed",
+      "template_file": "pathway_attempt/animation_physics/add_anim_notify",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'animation_physics', action 'add_anim_notify', result 'failed'",
+      "compilation_result": "failed",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_23038e791345"
+    },
+    {
+      "id": "pathway_attempt_c264fd3d65646d0c",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T04:26:07.562653",
+      "tool": "control_editor",
+      "action": "screenshot_mode_editor_viewport",
+      "parameters_tried": {
+        "NOTE": "Replaced pyautogui desktop screenshots with MCP control_editor screenshot mode=editor_viewport per H-2 prohibition"
+      },
+      "result": "implemented",
+      "error_message": "",
+      "error_signature": "pathway_attempt_implemented",
+      "template_file": "pathway_attempt/control_editor/screenshot_mode_editor_viewport",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'control_editor', action 'screenshot_mode_editor_viewport', result 'implemented'",
+      "compilation_result": "implemented",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_74c0411ed6d6"
+    },
+    {
+      "id": "pathway_attempt_487c14505e619156",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T04:29:07.434526",
+      "tool": "control_editor",
+      "action": "screenshot_mode_editor_viewport_comprehensive",
+      "parameters_tried": {
+        "NOTE": "Replaced all pyautogui desktop screenshots with MCP control_editor screenshot mode=editor_viewport per H-2 prohibition in visual_verifier.py, ralph_loop_harness.py, and verification_studio_runner.py"
+      },
+      "result": "implemented",
+      "error_message": "",
+      "error_signature": "pathway_attempt_implemented",
+      "template_file": "pathway_attempt/control_editor/screenshot_mode_editor_viewport_comprehensive",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'control_editor', action 'screenshot_mode_editor_viewport_comprehensive', result 'implemented'",
+      "compilation_result": "implemented",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_39243ea3dbad"
+    },
+    {
+      "id": "surprise_f5f2b789f3768800",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T04:32:41.228091",
+      "context": "H-2 prohibition: Never verify from desktop screenshots \u2014 capture via MCP control_editor screenshot mode=editor_viewport",
+      "expectation": "",
+      "reality": "Successfully replaced all pyautogui.screenshot() usages with MCP control_editor screenshot mode=editor_viewport in visual_verifier.py, ralph_loop_harness.py, and verification_studio_runner.py",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Successfully replaced all pyautogui.screenshot() usages with MCP control_editor '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f45c61513307"
+    },
+    {
+      "id": "phase_3baeff0ccd0f4556",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T04:32:49.446554",
+      "phase": "fix_screenshot_pathway_and_verify_anim_notify",
+      "result": "Replaced pyautogui desktop screenshots with MCP control_editor screenshot mode=editor_viewport per H-2 prohibition; confirmed add_anim_notify/get_anim_sequence_info are NOT_IMPLEMENTED (facade #3) for Ground_Sand_Footprints",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/fix_screenshot_pathway_and_verify_anim_notify",
+      "error_category": "none",
+      "fix_description": "Phase 'fix_screenshot_pathway_and_verify_anim_notify' complete: Replaced pyautogui desktop screenshots with MCP control_editor screenshot mode=editor_viewport per H-2 prohibition; confirmed add_anim_notify/get_anim_sequence_info are NOT_IMPLEMENTED (facade #3) for",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3"
+      ],
+      "inheritance": "Fixed pipeline screenshot path to use MCP control_editor screenshot mode=editor_viewport per H-2 prohibition. Ground_Sand_Footprints remains blocked on add_anim_notify NOT_IMPLEMENTED (capable sessions only).",
+      "pain_verdicts": {
+        "phase_fda9e71b0c0841b4:P1:fixed, phase_da55128aec6d109a:P1:still-open, phase_762486f41e1aeafb:P1:still-open, phase_762486f41e1aeafb:P3:still-open, phase_fda9e71b0c0841b4:P3": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_cd3c106a789f"
+    },
+    {
+      "id": "pathway_attempt_914e24c87a6ad908",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T04:49:49.048643",
+      "tool": "build_orchestrator",
+      "action": "ue_shutdown",
+      "parameters_tried": {},
+      "result": "success_intended_kill_per_H10",
+      "error_message": "",
+      "error_signature": "pathway_attempt_success_intended_kill_per_H10",
+      "template_file": "pathway_attempt/build_orchestrator/ue_shutdown",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'build_orchestrator', action 'ue_shutdown', result 'success_intended_kill_per_H10'",
+      "compilation_result": "success_intended_kill_per_H10",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_7ae0edef9094"
+    },
+    {
+      "id": "pathway_attempt_11090b685f98378c",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T04:49:52.920532",
+      "tool": "ralph_loop_harness",
+      "action": "call_tool_timeout_handling",
+      "parameters_tried": {},
+      "result": "fixed_per_H7",
+      "error_message": "",
+      "error_signature": "pathway_attempt_fixed_per_H7",
+      "template_file": "pathway_attempt/ralph_loop_harness/call_tool_timeout_handling",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'ralph_loop_harness', action 'call_tool_timeout_handling', result 'fixed_per_H7'",
+      "compilation_result": "fixed_per_H7",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_526c40c7f152"
+    },
+    {
+      "id": "pathway_attempt_f797ad8b936146ea",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T04:49:56.522763",
+      "tool": "lmstudio_client/visual_verifier",
+      "action": "reasoning_dump_detection_and_retry",
+      "parameters_tried": {},
+      "result": "implemented_per_H3",
+      "error_message": "",
+      "error_signature": "pathway_attempt_implemented_per_H3",
+      "template_file": "pathway_attempt/lmstudio_client/visual_verifier/reasoning_dump_detection_and_retry",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'lmstudio_client/visual_verifier', action 'reasoning_dump_detection_and_retry', result 'implemented_per_H3'",
+      "compilation_result": "implemented_per_H3",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_2aaf242ffc2a"
+    },
+    {
+      "id": "phase_88190a038d6883e3",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T04:51:00.596890",
+      "phase": "remove_blocks_and_proceed_workflow_cycles",
+      "result": "Fixed screenshot pathway per H-2 prohibition; confirmed add_anim_notify NOT_IMPLEMENTED (facade #3); implemented heuristics H-10, H-7, H-3",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/remove_blocks_and_proceed_workflow_cycles",
+      "error_category": "none",
+      "fix_description": "Phase 'remove_blocks_and_proceed_workflow_cycles' complete: Fixed screenshot pathway per H-2 prohibition; confirmed add_anim_notify NOT_IMPLEMENTED (facade #3); implemented heuristics H-10, H-7, H-3",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3"
+      ],
+      "inheritance": "Removed pyautogui desktop screenshots in favor of MCP control_editor screenshot mode=editor_viewport. Fixed killed_for_build recording, MCP error field capture, and LM reasoning dump retry logic.",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1:still-open, phase_762486f41e1aeafb:P1:still-open, phase_762486f41e1aeafb:P3:still-open, phase_fda9e71b0c0841b4:P3": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_35b1f3dfaa4e"
+    },
+    {
+      "id": "pathway_attempt_fd8c2a5e75b993c2",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T05:11:21.794319",
+      "tool": "telemetry_probe",
+      "action": "foreground_execution_added_per_H13",
+      "parameters_tried": {},
+      "result": "implemented",
+      "error_message": "",
+      "error_signature": "pathway_attempt_implemented",
+      "template_file": "pathway_attempt/telemetry_probe/foreground_execution_added_per_H13",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'telemetry_probe', action 'foreground_execution_added_per_H13', result 'implemented'",
+      "compilation_result": "implemented",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_ec52cc894459"
+    },
+    {
+      "id": "phase_e51e3b3461665ef9",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T05:17:54.742071",
+      "phase": "remove_blocks_and_proceed_workflow_cycles_ultracode",
+      "result": "Fixed screenshot pathway per H-2; confirmed add_anim_notify NOT_IMPLEMENTED (facade #3); implemented heuristics H-10, H-7, H-3, H-13",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/remove_blocks_and_proceed_workflow_cycles_ultracode",
+      "error_category": "none",
+      "fix_description": "Phase 'remove_blocks_and_proceed_workflow_cycles_ultracode' complete: Fixed screenshot pathway per H-2; confirmed add_anim_notify NOT_IMPLEMENTED (facade #3); implemented heuristics H-10, H-7, H-3, H-13",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3"
+      ],
+      "inheritance": "Removed pyautogui desktop screenshots in favor of MCP control_editor screenshot mode=editor_viewport. Fixed killed_for_build recording, MCP error field capture, LM reasoning dump retry logic, and telemetry foreground execution for System_Economy grading.",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1:still-open, phase_762486f41e1aeafb:P1:still-open, phase_762486f41e1aeafb:P3:still-open, phase_fda9e71b0c0841b4:P3": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_1d15145ae02a"
+    },
+    {
+      "id": "heuristic_351b200ded96cdb0",
+      "type": "Heuristic",
+      "timestamp": "2026-07-07T05:20:01.716848",
+      "signature": "H-1 compilation_fail C2039 missing-member",
+      "rule": "A C2039 missing-member error in ProceduralGenerated/ means template drift \u2014 emit the accessor in the same generator change that emits its test.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "Already documented as [H-1, auto-promoted 2026-07-07] in CLAUDE.md"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/H-1 compilation_fail C2039 missing-member",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: A C2039 missing-member error in ProceduralGenerated/ means template drift \u2014 emit the accessor in the same generator change that emits its test.",
+      "compilation_result": "pass",
+      "links": [
+        "Already documented as [H-1, auto-promoted 2026-07-07] in CLAUDE.md"
+      ],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2743a1e463e7"
+    },
+    {
+      "id": "heuristic_7383762c5de528d3",
+      "type": "Heuristic",
+      "timestamp": "2026-07-07T05:20:54.704066",
+      "signature": "H-12 grade_CF Build_Pipeline",
+      "rule": "A build-failure grade must carry the failing file:line verbatim \u2014 'no error text captured' makes the F untriageable and wastes the retry.",
+      "organ": "gate",
+      "evidence_ids": [
+        "Requires capable cycle implementation"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/gate/H-12 grade_CF Build_Pipeline",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to gate: A build-failure grade must carry the failing file:line verbatim \u2014 'no error text captured' makes the F untriageable and wastes the retry.",
+      "compilation_result": "pass",
+      "links": [
+        "Requires capable cycle implementation"
+      ],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_41d4e08dec9c"
+    },
+    {
+      "id": "pathway_attempt_9acb752898309095",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T05:32:52.499488",
+      "tool": "McpConsolidatedActionRouting",
+      "action": "add_anim_notify_get_anim_sequence_info_registration",
+      "parameters_tried": {},
+      "result": "fixed",
+      "error_message": "",
+      "error_signature": "pathway_attempt_fixed",
+      "template_file": "pathway_attempt/McpConsolidatedActionRouting/add_anim_notify_get_anim_sequence_info_registration",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'McpConsolidatedActionRouting', action 'add_anim_notify_get_anim_sequence_info_registration', result 'fixed'",
+      "compilation_result": "fixed",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_54bac7c96740"
+    },
+    {
+      "id": "phase_48f85d284182082f",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T05:35:50.559497",
+      "phase": "remove_blocks_and_proceed_workflow_cycles_ultracode_mcp_fix",
+      "result": "Fixed screenshot pathway per H-2; fixed add_anim_notify/get_anim_sequence_info MCP command registration routing issue in McpConsolidatedActionRouting.h; implemented heuristics H-10, H-7, H-3, H-13",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/remove_blocks_and_proceed_workflow_cycles_ultracode_mcp_fix",
+      "error_category": "none",
+      "fix_description": "Phase 'remove_blocks_and_proceed_workflow_cycles_ultracode_mcp_fix' complete: Fixed screenshot pathway per H-2; fixed add_anim_notify/get_anim_sequence_info MCP command registration routing issue in McpConsolidatedActionRouting.h; implemented heuristics H-10, H-7, H-3, H-13",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3"
+      ],
+      "inheritance": "Removed pyautogui desktop screenshots in favor of MCP control_editor screenshot mode=editor_viewport. Fixed killed_for_build recording, MCP error field capture, LM reasoning dump retry logic, telemetry foreground execution, and added add_anim_notify/get_anim_sequence_info to MCP action routing lists.",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1:still-open, phase_762486f41e1aeafb:P1:still-open, phase_762486f41e1aeafb:P3:still-open, phase_fda9e71b0c0841b4:P3": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_161c36bb5946"
+    },
+    {
+      "id": "simtest_0dec5fc92db45fee",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-07T05:47:25.122884",
+      "observer": "agent-sim",
+      "session": "Ground_Sand_Footprints_verify",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 5,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=67uu (loc x=1933.3933317475346, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=133uu (loc x=3866.9831621275002, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": true,
+              "note": "z=164"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\Ground_Sand_Footprints_verify.json",
+      "temperature": "[SIM] 5/5 beats reached in 'regolith_yard'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'Ground_Sand_Footprints_verify': 5/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_711c9a7ca2a5"
+    },
+    {
+      "id": "pathway_attempt_47213a0c6a45b715",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T05:47:25.151157",
+      "tool": "sleepwalker",
+      "action": "beat_run",
+      "parameters_tried": {
+        "session": "Ground_Sand_Footprints_verify",
+        "reached": "5/5"
+      },
+      "result": "success",
+      "error_message": "",
+      "error_signature": "success_no_error",
+      "template_file": "pathway_attempt/sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Pathway attempt recorded: tool 'sleepwalker', action 'beat_run', result 'success'",
+      "compilation_result": "success",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_711c9a7ca2a5"
+    },
+    {
+      "id": "pathway_attempt_b3ba3afc4acb9122",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T05:50:08.515792",
+      "tool": "animation_physics",
+      "action": "add_anim_notify",
+      "parameters_tried": {
+        "NOTE": "facade #3 confirmed: add_anim_notify and get_anim_sequence_info still return NOT_IMPLEMENTED despite McpConsolidatedActionRouting.h registration"
+      },
+      "result": "failed",
+      "error_message": "",
+      "error_signature": "pathway_attempt_failed",
+      "template_file": "pathway_attempt/animation_physics/add_anim_notify",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'animation_physics', action 'add_anim_notify', result 'failed'",
+      "compilation_result": "failed",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_307e443d371d"
+    },
+    {
+      "id": "rollout_40ba88c2a126186d",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-07T05:53:31.433140",
+      "chosen": "Ground_Sand_Footprints",
+      "candidates": [
+        {
+          "name": "Ground_Sand_Footprints",
+          "score": 1.1,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "needs_refinement (reopened)"
+        }
+      ],
+      "rationale": "value 2.0 x p 0.5 / cost 1.0 + explore 0.1; evidence ['grade:C']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Ground_Sand_Footprints",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_4d7164d6cd55"
+    },
+    {
+      "id": "phase_0f0bac451e5ce1dd",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T05:58:38.489836",
+      "phase": "Confirmed Ground_Sand_Footprints facade #3 - add_anim_notify/get_anim_sequence_info NOT_IMPLEMENTED; sleepwalker verification 5/5 beats clean",
+      "result": "add_anim_notify and get_anim_sequence_info return NOT_IMPLEMENTED despite McpConsolidatedActionRouting.h registration. Sleepwalker: 5/5 beats reached in 'regolith_yard'. Clean walk.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Confirmed Ground_Sand_Footprints facade #3 - add_anim_notify/get_anim_sequence_info NOT_IMPLEMENTED; sleepwalker verification 5/5 beats clean",
+      "error_category": "none",
+      "fix_description": "Phase 'Confirmed Ground_Sand_Footprints facade #3 - add_anim_notify/get_anim_sequence_info NOT_IMPLEMENTED; sleepwalker verification 5/5 beats clean' complete: add_anim_notify and get_anim_sequence_info return NOT_IMPLEMENTED despite McpConsolidatedActionRouting.h registration. Sleepwalker: 5/5 beats reached in 'regolith_yard'. Clean walk.",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The 20-deep observation queue will rot unobserved unless verdicts become habitual"
+      ],
+      "inheritance": "Confirmed facade #3 for add_anim_notify/get_anim_sequence_info; BP wiring remains \u2013 capable sessions only. Removed pyautogui screenshots, fixed MCP error field capture, LM reasoning dump retry logic, telemetry foreground execution.",
+      "pain_verdicts": {
+        "phase_762486f41e1aeafb:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_f090ad7d878c"
     }
   ],
   "edges": [

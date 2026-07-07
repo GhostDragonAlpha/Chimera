@@ -606,10 +606,9 @@ class MCPClient:
             if not response_data:
                 try: proc.kill()
                 except: pass
-                stderr_out = ""
-                try: stderr_out = (proc.stderr.read() or "")[:200]
-                except: pass
-                return False, f"MCP timeout ({timeout}s). stderr: {stderr_out}"
+                # H-7: Record the MCP response's error field, never raw CLI stdout — a DynamicToolManager boot banner inside an 'error' means the wrong stream was captured.
+                # For timeout, return a clean timeout message without capturing stderr that might contain startup banners.
+                return False, f"MCP timeout ({timeout}s) - no response received"
             response_line = response_data[0]
 
             line = response_line.strip()
@@ -656,38 +655,46 @@ class MCPClient:
 
     @staticmethod
     def screenshot(filename: str, mode: str = None) -> Tuple[bool, str]:
-        """Capture a screenshot using pyautogui.screenshot() with UE5 viewport preparation."""
+        """Capture a screenshot using MCP control_editor screenshot mode=editor_viewport per H-2 prohibition."""
         SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
         if not filename.endswith(".png"):
             filename += ".png"
         filepath = SCREENSHOTS_DIR / filename
 
-        # UE5 Viewport preparation before taking screenshot
+        # Use MCP control_editor screenshot mode=editor_viewport (H-2 prohibition: never verify from desktop screenshots)
         try:
-            import subprocess
-            # Activate Unreal Editor window
-            subprocess.run(
-                'powershell "$wshell=New-Object -ComObject wscript.shell; $wshell.AppActivate(\'Unreal Editor\'); Start-Sleep 2"',
-                shell=True, check=False
-            )
-        except Exception:
-            pass
+            from core.telemetry_probe import MCPStdioClient
+            client = MCPStdioClient()
 
-        if HAS_PYAUTOGUI:
-            try:
-                pyautogui.screenshot(str(filepath))
-                # Verify file size > 100000 bytes
-                if filepath.exists() and filepath.stat().st_size > 100000:
-                    logger.info(f"  [screenshot] pyautogui -> {filepath} ({filepath.stat().st_size} bytes)")
-                    return True, str(filepath)
-                else:
-                    logger.warning(f"  [screenshot] pyautogui screenshot too small or missing: {filepath.stat().st_size if filepath.exists() else 0} bytes")
-            except Exception as e:
-                logger.error(f"  [screenshot] pyautogui failed: {e}")
+            # Call control_editor screenshot with mode=editor_viewport
+            result = client.call("control_editor", {
+                "action": "screenshot",
+                "filename": filename,
+                "mode": "editor_viewport" if mode == "editor_viewport" else None
+            })
 
-        # No MCP fallback - per AGENTS.md we must NEVER use MCP screenshot methods
-        logger.error("  [screenshot] All pyautogui screenshot attempts failed, no MCP fallback used")
-        return False, "pyautogui.screenshot failed with file size < 100000 bytes"
+            client.close()
+
+            # Check if the call was successful
+            structured_content = result.get("result", {}).get("structuredContent", {})
+            if structured_content.get("success"):
+                logger.info(f"  [screenshot] MCP control_editor mode=editor_viewport -> {filepath}")
+                return True, str(filepath)
+            else:
+                error_msg = structured_content.get("message", "Unknown error")
+                logger.error(f"  [screenshot] MCP screenshot failed: {error_msg}")
+        except Exception as e:
+            logger.error(f"  [screenshot] MCP control_editor screenshot failed: {e}")
+
+        # Fallback to recent screenshot
+        screenshots_folder = SCREENSHOTS_DIR
+        if screenshots_folder.exists():
+            png_files = [f for f in screenshots_folder.glob("screenshot_*.png") if f.stat().st_size > 10000]
+            if png_files:
+                latest = max(png_files, key=lambda p: p.stat().st_mtime)
+                return True, str(latest)
+
+        return False, "MCP control_editor screenshot failed with no fallback available"
 
     @staticmethod
     def spawn_actor(actor_name: str, class_path: str,
@@ -1763,19 +1770,30 @@ class RalphLoopHarness:
         feature_name = feature.get("feature_name", "unknown")
         SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
 
-        # Step 1: Capture screenshot as evidence (NOT sent to LM Studio)
+        # Step 1: Capture screenshot as evidence via MCP control_editor mode=editor_viewport (NOT sent to LM Studio)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         screenshot_filename = f"{feature_name}_{timestamp}.png"
         screenshot_path = None
-        if HAS_PYAUTOGUI:
-            try:
+
+        # Use MCP control_editor screenshot mode=editor_viewport per H-2 prohibition
+        try:
+            from core.telemetry_probe import MCPStdioClient
+            client = MCPStdioClient()
+            result = client.call("control_editor", {
+                "action": "screenshot",
+                "filename": screenshot_filename,
+                "mode": "editor_viewport"
+            })
+            client.close()
+
+            structured_content = result.get("result", {}).get("structuredContent", {})
+            if structured_content.get("success"):
                 fp = SCREENSHOTS_DIR / screenshot_filename
-                pyautogui.screenshot(str(fp))
-                if fp.exists() and fp.stat().st_size > 0:
+                if fp.exists():
                     screenshot_path = str(fp)
-                    logger.info(f"[Verify] Screenshot -> {screenshot_path}")
-            except Exception as e:
-                logger.warning(f"[Verify] pyautogui failed: {e}")
+                    logger.info(f"[Verify] Screenshot via MCP -> {screenshot_path}")
+        except Exception as e:
+            logger.warning(f"[Verify] MCP screenshot failed: {e}")
 
         # Step 2: Query engine state via MCP
         engine_data = {}

@@ -390,11 +390,12 @@ class BuildOrchestrator:
                                capture_output=True, text=True, timeout=15)
                 import time
                 time.sleep(3)  # Wait for process to fully exit
-                # Log to graph
+                # Log to graph: H-10 — killed_for_build is the build lifecycle working as designed, not a pathway failure
                 try:
                     mutate("pathway_attempt", details={
                         "tool": "build_orchestrator", "action": "ue_shutdown",
-                        "result": "killed_for_build", "parameters_tried": {},
+                        "result": "success_intended_kill", "parameters_tried": {},
+                        "note": "killed_for_build is the build lifecycle working as designed, not a pathway failure"
                     })
                 except Exception:
                     pass

@@ -129,13 +129,37 @@ def probe_growth(client: "MCPStdioClient", soak_seconds: int):
         return None, f"engine unreachable ({type(e).__name__})"
 
 
+def _foreground_appactivate():
+    """Ensure editor is foregrounded for honest fps measurement.
+
+    H-13: Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps;
+    run telemetry foregrounded and test every declared criterion before grading System_Economy.
+
+    Background throttle freezes fps AND all Niagara/anim simulation — need foreground execution."""
+    try:
+        import subprocess
+        # AppActivate one-liner to bring UE Editor to foreground for honest telemetry
+        subprocess.run(
+            ['powershell', '-Command',
+             "$wshell=New-Object -ComObject wscript.shell; $wshell.AppActivate('Unreal Editor'); Start-Sleep 1"],
+            shell=True, check=False, capture_output=True
+        )
+    except Exception:
+        pass
+
+
 def main():
     parser = argparse.ArgumentParser(description="Collect telemetry evidence for the result grader")
     parser.add_argument("--out", required=True, help="Path to write the telemetry evidence JSON")
     parser.add_argument("--soak", type=int, default=30, help="Seconds between growth samples")
     parser.add_argument("--log", help="Explicit UE log path (default: newest in Saved/Logs)")
     parser.add_argument("--skip-engine", action="store_true", help="Log-only probe (no MCP)")
+    parser.add_argument("--foreground", action="store_true", help="Ensure editor is foregrounded for honest fps measurement")
     args = parser.parse_args()
+
+    # H-13: Ensure foreground execution for honest telemetry if requested
+    if args.foreground:
+        _foreground_appactivate()
 
     telemetry, notes = {}, {}
 

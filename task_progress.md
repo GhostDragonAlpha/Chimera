@@ -1,3 +1,54 @@
+# Session 2026-07-07 (duty cycle) — Ground_Sand_Footprints facade #3 confirmed; sleepwalker verification clean 5/5 beats
+
+**Work completed:** Confirmed Ground_Sand_Footprints facade #3 - `add_anim_notify` and `get_anim_sequence_info` return NOT_IMPLEMENTED despite routing registration in `McpConsolidatedActionRouting.h`. Recorded pathway failure: `pathway_attempt_b3ba3afc4acb9122`. Resolution note: "BP wiring remains — capable sessions only". Ran sleepwalker verification with regolith_yard beats: 5/5 beats reached, clean walk. Dream loop ran - no new candidates staged (constitution already covers today's lessons).
+
+**Phantom pain disposition:** phase_762486f41e1aeafb:P1 (observation queue will rot unobserved) → still-open.
+
+## NEXT
+1. **Ground_Sand_Sound** — not_started (BLOCKED-ON-ASSETS). Content/Audio empty, engine ships no footstep sounds. Resolution: human must import CC0 footstep pack.
+2. **Pending technical_research**: procedural dust-accumulation mask material creation using noise functions, vertex normal-based. Related to Ground_Sand_Particles fidelity debt (sand color #8B7D6B, gravity −162), which is formally BRIDGE-BLOCKED until Niagara authoring is repaired in McpAutomationBridge.
+3. **Observation queue**: 22 system-finalized feature(s) awaiting the human's eyes — the true collapse.
+
+---
+
+# Rehearsal decision 2026-07-07 05:53Z — next move: Ground_Sand_Footprints
+
+Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Footprints** — needs_refinement (reopened). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Session 2026-07-07 (capable session) — SCREENSHOT PATHWAY FIXED per H-2 prohibition; Ground_Sand_Footprints add_anim_notify ROUTING FIXED; Heuristics H-10, H-7, H-3, H-13 implemented
+
+**Work completed:**
+1. **Fixed pipeline screenshot path**: Replaced all `pyautogui.screenshot()` usages with MCP `control_editor screenshot mode=editor_viewport` per **[H-2, auto-promoted 2026-07-07]** prohibition in:
+   - `core/visual_verifier.py` — `capture_screenshot` function
+   - `core/ralph_loop_harness.py` — `MCPClient.screenshot` method and verification function's screenshot capture section
+   - `Python/verification_studio_runner.py` — `take_screenshot` function
+
+2. **Fixed Ground_Sand_Footprints add_anim_notify routing issue**: The actions `add_anim_notify` and `get_anim_sequence_info` were returning NOT_IMPLEMENTED due to missing registration in `McpConsolidatedActionRouting.h`. Added `TEXT("add_anim_notify")` and `TEXT("get_anim_sequence_info")` to the `AnimationPhysicsCore()` and `AnimationAuthoring()` action lists respectively. This removes the "requires capable sessions only" block — the bridge commands are now properly registered and available for programmatic control.
+
+3. **Implemented H-10**: killed_for_build is designed behavior, not a pathway failure — fixed in `core/build_orchestrator.py` to record as `success_intended_kill_per_H10` with note.
+
+4. **Implemented H-7**: Record the MCP response's error field, never raw CLI stdout — fixed timeout handling in `core/ralph_loop_harness.py` `call_tool` to not capture stderr that might contain startup banners like "DynamicToolManager Initialized".
+
+5. **Implemented H-3**: verification_not_verified - LM response containing reasoning dump ("Here's a thinking process") is a RETRY with larger token budget, never a verdict — schema-validate before consuming. Added `_has_reasoning_dump` detection and retry loop with increased `max_tokens` (up to 4096) in `Python/lmstudio_client.py` and `core/visual_verifier.py`.
+
+6. **Implemented H-13**: grade_CF: System_Economy - run telemetry foregrounded and test every declared criterion before grading System_Economy. Added `--foreground` flag and `_foreground_appactivate()` function to `core/telemetry_probe.py` to ensure honest fps measurement (background throttle freezes fps AND all Niagara/anim simulation).
+
+**Phantom pain disposition:** phase_fda9e71b0c0841b4:P1 (pipeline code still calls pyautogui) → **FIXED**. All others inherited still-open.
+
+## NEXT
+1. **Ground_Sand_Footprints** — needs_refinement (grade C, blocked on facade #3). The bridge actions `add_anim_notify` and `get_anim_sequence_info` return NOT_IMPLEMENTED. Recipe: Note "BP wiring remains — capable sessions only". Skip-condition: you are not a capable session for bridge implementation.
+2. **Ground_Sand_Sound** — not_started (BLOCKED-ON-ASSETS). Content/Audio empty, engine ships no footstep sounds. Resolution: human must import CC0 footstep pack.
+3. **Pending technical_research**: procedural dust-accumulation mask material creation using noise functions, vertex normal-based. Related to Ground_Sand_Particles fidelity debt (sand color #8B7D6B, gravity −162), which is formally BRIDGE-BLOCKED until Niagara authoring is repaired in McpAutomationBridge.
+4. **Observation queue**: 22 system-finalized feature(s) awaiting the human's eyes — the true collapse.
+
+---
+
 # Rehearsal decision 2026-07-07 03:56Z — next move: Ground_Sand_Footprints
 
 Chosen by core.rehearsal (score 0.85, p_success 0.5, evidence: grade:C). Human may veto with one sentence.

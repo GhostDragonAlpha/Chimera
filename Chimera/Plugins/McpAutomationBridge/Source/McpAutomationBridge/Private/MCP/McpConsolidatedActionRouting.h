@@ -321,7 +321,7 @@ inline const TArray<FString>& AnimationPhysicsCore()
 		TEXT("add_montage_section"), TEXT("add_montage_slot"),
 		TEXT("set_section_timing"), TEXT("add_montage_notify"),
 		TEXT("set_blend_in"), TEXT("set_blend_out"), TEXT("link_sections"),
-		TEXT("add_notify"), TEXT("play_montage"),
+		TEXT("add_notify"), TEXT("add_anim_notify"), TEXT("play_montage"),
 		TEXT("play_anim_montage"), TEXT("setup_ragdoll"),
 		TEXT("activate_ragdoll"), TEXT("configure_vehicle"),
 		TEXT("setup_physics_simulation"), TEXT("add_blend_sample"),
@@ -354,7 +354,8 @@ inline const TArray<FString>& AnimationAuthoring()
 		TEXT("add_layered_blend_per_bone"),
 		TEXT("set_anim_graph_node_value"), TEXT("create_control_rig"),
 		TEXT("create_ik_rig"), TEXT("create_ik_retargeter"),
-		TEXT("set_retarget_chain_mapping"), TEXT("get_animation_info")
+		TEXT("set_retarget_chain_mapping"), TEXT("get_animation_info"),
+		TEXT("get_anim_sequence_info"), TEXT("add_anim_notify")
 	};
 	return Actions;
 }

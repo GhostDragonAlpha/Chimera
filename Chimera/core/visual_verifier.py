@@ -72,141 +72,57 @@ def _foreground_window_title():
 
 
 def capture_screenshot(project_path, screenshot_dir=None):
-    """Capture a screenshot from the UE5 viewport using pyautogui.screenshot()."""
+    """Capture a screenshot from the UE5 viewport using MCP control_editor screenshot mode=editor_viewport."""
     if screenshot_dir is None:
         # Use Saved/Screenshots/ directory relative to project path
         project_dir = Path(project_path).parent if Path(project_path).suffix == '.uproject' else Path(project_path)
         screenshot_dir = project_dir / "Saved" / "Screenshots"
-    
+
     screenshot_dir.mkdir(parents=True, exist_ok=True)
-    
+
     timestamp = int(time.time())
     screenshot_filename = f"screenshot_{timestamp}.png"
     screenshot_path = screenshot_dir / screenshot_filename
-    
-    # UE5 Viewport preparation: retry loop with window activation.
-    # The guard checks the foreground window; if it's not Unreal, we try to
-    # bring Unreal to front and re-check before aborting.
+
+    # Use MCP control_editor screenshot mode=editor_viewport (H-2 prohibition: never verify from desktop screenshots)
     try:
-        import subprocess
-        _activate_cmd = ('powershell "$wshell=New-Object -ComObject wscript.shell; '
-                         '$wshell.AppActivate(\'Unreal Editor\'); Start-Sleep 1"')
-    except Exception:
-        _activate_cmd = None
+        from core.telemetry_probe import MCPStdioClient
+        client = MCPStdioClient()
 
-    # Check: is UE even running? If it was just launched (e.g. post-build restart),
-    # give it time to initialize before the retry loop.
-    def _ue_process_running():
-        try:
-            out = subprocess.run(
-                ["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe"],
-                capture_output=True, text=True, timeout=5
-            ).stdout
-            return "UnrealEditor.exe" in out
-        except Exception:
-            return False
+        # Call control_editor screenshot with mode=editor_viewport
+        result = client.call("control_editor", {
+            "action": "screenshot",
+            "filename": screenshot_filename,
+            "mode": "editor_viewport"
+        })
 
-    ue_is_running = _ue_process_running()
-    if not ue_is_running:
-        # UE not running at all — wait a bit in case it was just launched
-        print(f"[VISUAL_VERIFIER] UE Editor process not detected yet. Waiting up to 60s for launch...")
-        for wait_sec in range(60):
-            time.sleep(1)
-            if _ue_process_running():
-                print(f"[VISUAL_VERIFIER] UE Editor process detected after ~{wait_sec+1}s wait")
-                ue_is_running = True
-                break
+        client.close()
 
-    if ue_is_running:
-        # UE process exists. Wait for its window to be ready (title contains "Unreal Editor").
-        # After a fresh launch, the process starts immediately but the window takes time.
-        print(f"[VISUAL_VERIFIER] Waiting for UE Editor window to be ready...")
-        for wait_sec in range(60):
-            title = _foreground_window_title()
-            if "unreal editor" in title.lower():
-                print(f"[VISUAL_VERIFIER] UE Editor window detected after ~{wait_sec+1}s")
-                break
-            # Also try activating to bring it forward
-            if _activate_cmd:
-                try:
-                    subprocess.run(_activate_cmd, shell=True, check=False, timeout=5)
-                except Exception:
-                    pass
-            time.sleep(1)
-        else:
-            print(f"[VISUAL_VERIFIER] UE Editor process is running but window not found in 60s")
-
-    if not ue_is_running:
-        print(f"[VISUAL_VERIFIER] ABORT: Unreal Editor process is not running. "
-              "Start the editor and focus its window, then re-run.")
-        try:
-            record_visual_verification("visual_verification", "aborted_no_ue_process",
-                                       details={"description": "UE Editor process not found", "activation_attempts": 0})
-        except Exception:
-            pass
-        return None
-
-    # UE is running. Now try to make it the foreground window.
-    MAX_RETRIES = 5  # increased from 3 for cold-launch scenarios
-    activation_attempts = 0
-    for attempt in range(1, MAX_RETRIES + 1):
-        foreground = _foreground_window_title()
-
-        if "unreal editor" in foreground.lower():
-            if attempt > 1:
-                print(f"[VISUAL_VERIFIER] Window found after {attempt} activation attempt(s)")
-            activation_attempts = attempt - 1
-            break
-
-        # Try to activate Unreal Editor window
-        if _activate_cmd:
-            try:
-                subprocess.run(_activate_cmd, shell=True, check=False, timeout=5)
-            except Exception:
-                pass
-
-        # Check again after activation
-        foreground = _foreground_window_title()
-        if "unreal editor" in foreground.lower():
-            print(f"[VISUAL_VERIFIER] Window activated after {attempt} attempt(s)")
-            activation_attempts = attempt
-            break
-
-        if attempt < MAX_RETRIES:
-            print(f"[VISUAL_VERIFIER] Attempt {attempt}/{MAX_RETRIES}: foreground is "
-                  f"'{foreground}', retrying...")
-    else:
-        # All retries exhausted
-        print(f"[VISUAL_VERIFIER] ABORT after {MAX_RETRIES} attempts: foreground window is "
-              f"'{foreground}', not Unreal Editor. UE is running but not in foreground.")
-        try:
-            record_visual_verification("visual_verification", "aborted_wrong_window",
-                                       details={"description": f"Foreground window was '{foreground}'",
-                                                "activation_attempts": activation_attempts})
-        except Exception:
-            pass
-        return None
-
-    # Take screenshot using pyautogui
-    try:
-        import pyautogui
-        pyautogui.screenshot(str(screenshot_path))
-        
-        # Verify file size > 100000 bytes
-        if screenshot_path.exists() and screenshot_path.stat().st_size > 100000:
+        # Check if the call was successful
+        structured_content = result.get("result", {}).get("structuredContent", {})
+        if structured_content.get("success"):
+            print(f"[VISUAL_VERIFIER] Screenshot captured via MCP control_editor mode=editor_viewport: {screenshot_path}")
             return str(screenshot_path)
         else:
-            print(f"[VISUAL_VERIFIER] Warning: Screenshot file too small or missing: {screenshot_path.stat().st_size if screenshot_path.exists() else 0} bytes")
+            error_msg = structured_content.get("message", "Unknown error")
+            print(f"[VISUAL_VERIFIER] MCP screenshot failed: {error_msg}")
             # Fallback to recent screenshot
             screenshots_folder = project_dir / "Saved" / "Screenshots"
             if screenshots_folder.exists():
-                png_files = [f for f in screenshots_folder.glob("*.png") if f.stat().st_size > 100000]
+                png_files = [f for f in screenshots_folder.glob("screenshot_*.png") if f.stat().st_size > 10000]
                 if png_files:
                     return str(max(png_files, key=lambda p: p.stat().st_mtime))
     except Exception as e:
-        print(f"[VISUAL_VERIFIER] pyautogui.screenshot failed: {e}")
-    
-    return str(screenshot_path)
+        print(f"[VISUAL_VERIFIER] MCP control_editor screenshot failed: {e}")
+
+    # Final fallback to recent screenshot
+    screenshots_folder = project_dir / "Saved" / "Screenshots"
+    if screenshots_folder.exists():
+        png_files = [f for f in screenshots_folder.glob("screenshot_*.png") if f.stat().st_size > 10000]
+        if png_files:
+            return str(max(png_files, key=lambda p: p.stat().st_mtime))
+
+    return None
 
 def analyze_screenshot(screenshot_path, prompt=None):
     """Analyze a screenshot by sending it to LM Studio.
@@ -240,22 +156,40 @@ def analyze_screenshot(screenshot_path, prompt=None):
                 "Be specific about what is likely rendered."
             )
 
-        result = send_to_lmstudio(
-            prompt=prompt,
-            image_path=screenshot_path,
-            model_id=LM_STUDIO_MODEL,
-            temperature=0.3,
-            max_tokens=1024,
-            timeout=120
-        )
+        # H-3: Retry with larger token budget if LM response contains reasoning dump
+        max_retry_attempts = 2
+        current_max_tokens = 1024
 
-        if result:
-            content = result.get('content', '')
-            reasoning_content = result.get('reasoning_content', '')
+        for attempt in range(max_retry_attempts + 1):
+            result = send_to_lmstudio(
+                prompt=prompt,
+                image_path=screenshot_path,
+                model_id=LM_STUDIO_MODEL,
+                temperature=0.3,
+                max_tokens=current_max_tokens,
+                timeout=120
+            )
 
-            description = content or reasoning_content or str(result)
-            if description:
-                return description
+            if result:
+                content = result.get('content', '')
+                reasoning_content = result.get('reasoning_content', '')
+                has_reasoning_dump = result.get('has_reasoning_dump', False)
+
+                # H-3: If reasoning dump detected, retry with larger token budget
+                if has_reasoning_dump and attempt < max_retry_attempts:
+                    current_max_tokens = min(current_max_tokens * 2, 4096)
+                    print(f"[VISUAL_VERIFIER] LM response contains reasoning dump. Retry {attempt+1}/{max_retry_attempts} with max_tokens={current_max_tokens}")
+                    continue
+                elif has_reasoning_dump:
+                    # Max retries reached, return error indicator
+                    print("[VISUAL_VERIFIER] LM response contains reasoning dump after max retries - schema-validation failed")
+                    return None
+
+                description = content or reasoning_content or str(result)
+                if description:
+                    return description
+
+            break  # No result or no reasoning dump, exit loop
 
         return None
 

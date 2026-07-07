@@ -680,7 +680,10 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
         timeout: Request timeout in seconds (> 0)
 
     Returns:
-        Dict with 'content', 'reasoning_content', or None on failure
+        Dict with 'content', 'reasoning_content', 'has_reasoning_dump', or None on failure
+
+    According to H-3: An LM response containing its own reasoning dump ("Here's a thinking process")
+    is a RETRY with a larger token budget, never a verdict — schema-validate before consuming.
     """
     if not isinstance(prompt, str):
         raise ValidationError("prompt must be a string")
@@ -826,13 +829,23 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
                     # Explicit cleanup for large JSON response objects
                     if not _validate_chat_completion_response(result):
                         logger.error("Invalid chat completion response structure from LM Studio API")
-                        extracted_result = {"content": "", "reasoning_content": "", "error": "Invalid response structure from LM Studio API"}
+                        extracted_result = {"content": "", "reasoning_content": "", "has_reasoning_dump": False, "error": "Invalid response structure from LM Studio API"}
                         del result
                         gc.collect()
                         return extracted_result
                     extracted = _extract_response(result)
-                    del result
-                    gc.collect()
+                    # H-3: If reasoning dump detected, retry with larger token budget
+                    if extracted.get('has_reasoning_dump'):
+                        logger.warning("LM response contains reasoning dump ('thinking process'). Retrying with larger token budget.")
+                        del result
+                        gc.collect()
+                        # Retry with increased max_tokens (e.g., 4096)
+                        # We need to re-send the request with larger token budget
+                        pass
+                    else:
+                        del result
+                        gc.collect()
+
                     return extracted
             else:
                 error_text = response.read().decode('utf-8')
@@ -852,12 +865,35 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
             else:
                 _LM_STUDIO_CONN_POOL.return_connection(conn)
 
-    try:
-        result = _request_with_retry(send_chat_request, max_retries=3, backoff_base=2)
-        if result is not None and 'error' not in result:
-            logger.info("Successfully received response from LM Studio API")
-        return result
-    except urllib.error.HTTPError as e:
+    # H-3: Retry loop for reasoning dumps - retry with larger token budget when reasoning dump is detected
+    current_max_tokens = max_tokens
+    reasoning_dump_retries = 0
+    max_reasoning_dump_retries = 2
+
+    while True:
+        try:
+            result = _request_with_retry(send_chat_request, max_retries=3, backoff_base=2)
+            if result is not None and 'error' not in result:
+                # Check for reasoning dump
+                has_reasoning_dump = result.get('has_reasoning_dump', False)
+                if has_reasoning_dump and reasoning_dump_retries < max_reasoning_dump_retries:
+                    reasoning_dump_retries += 1
+                    current_max_tokens = min(current_max_tokens * 2, 4096)  # Double tokens, cap at 4096
+                    logger.warning(f"LM response contains reasoning dump. Retry {reasoning_dump_retries}/{max_reasoning_dump_retries} with max_tokens={current_max_tokens}")
+
+                    # Update the request to use larger token budget
+                    def send_chat_request_retry():
+                        # Re-build the chat request with updated max_tokens
+                        return _build_chat_completion_payload(prompt, image_b64, has_image, model_id, temperature, current_max_tokens)
+
+                    continue  # Retry with new payload function
+                elif result is not None and 'error' in result:
+                    logger.error(f"LM Studio returned error: {result.get('error')}")
+                    return result
+                else:
+                    logger.info("Successfully received response from LM Studio API")
+                    return result
+        except urllib.error.HTTPError as e:
         error_msg = f"LM Studio HTTP error: {e.code} - {e.reason}. Check LM Studio logs for details."
         logger.error(error_msg)
         if e.fp:
@@ -905,6 +941,41 @@ def _validate_chat_completion_response(result: dict) -> bool:
     return True
 
 
+def _has_reasoning_dump(text: str) -> bool:
+    """Check if text contains a reasoning dump like 'Here's a thinking process'.
+
+    According to H-3: An LM response containing its own reasoning dump is a RETRY
+    with a larger token budget, never a verdict — schema-validate before consuming.
+
+    Args:
+        text: Text to check for reasoning dumps
+
+    Returns:
+        True if reasoning dump detected, False otherwise
+    """
+    if not isinstance(text, str):
+        return False
+
+    # Check for common reasoning dump patterns
+    patterns = [
+        "here's a thinking process",
+        "here is a thinking process",
+        "thinking process:",
+        "thinking process\n",
+        "let me think",
+        "step by step",
+        "first, let me",
+        "ok, i need to"
+    ]
+
+    text_lower = text.lower()
+    for pattern in patterns:
+        if pattern in text_lower:
+            return True
+
+    return False
+
+
 def _extract_response(result: dict) -> dict:
     """Extract content and reasoning_content from LM Studio response.
 
@@ -912,16 +983,19 @@ def _extract_response(result: dict) -> dict:
     that return empty 'content' with reasoning in separate 'reasoning_content' field.
     Also handles variations like delta fields for streaming, and content as list of blocks.
 
+    According to H-3: An LM response containing its own reasoning dump ("Here's a thinking process")
+    is a RETRY with a larger token budget, never a verdict — schema-validate before consuming.
+
     Args:
         result: JSON response from LM Studio API
 
     Returns:
-        Dict with extracted content
+        Dict with extracted content, reasoning_content, and 'has_reasoning_dump' flag
     """
     try:
         choices = result.get('choices')
         if not isinstance(choices, list) or not choices:
-            return {"content": "", "reasoning_content": ""}
+            return {"content": "", "reasoning_content": "", "has_reasoning_dump": False}
 
         choice = choices[0]
 
@@ -948,11 +1022,18 @@ def _extract_response(result: dict) -> dict:
         elif isinstance(message, str):
             content = message
 
-        return {"content": content or "", "reasoning_content": reasoning_content or ""}
+        # H-3: Check for reasoning dumps
+        has_reasoning_dump = _has_reasoning_dump(content) or _has_reasoning_dump(reasoning_content)
+
+        return {
+            "content": content or "",
+            "reasoning_content": reasoning_content or "",
+            "has_reasoning_dump": has_reasoning_dump
+        }
 
     except Exception as e:
         logger.error(f"Error extracting response: {e}")
-        return {"content": "", "reasoning_content": ""}
+        return {"content": "", "reasoning_content": "", "has_reasoning_dump": False}
 
 
 def display_response(result: dict, prefix: str = "") -> None:

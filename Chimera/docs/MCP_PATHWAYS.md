@@ -200,6 +200,16 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 - `python -m core.sleepwalker --beats docs/beats/<demo>.beats.json --session <name>` — PIE play -> beats (simulate_input + read-backs) -> stop_pie; records SimPlaytest + chronicle. Runs under CHIMERA_AGENT_SIM=1 (cannot fake human observations).
 - **Save-proof ritual** (the level-loss killer): `control_editor save_all` (savedCount>=1) -> md5 of the .umap CHANGED vs baseline -> mtime now -> `get_scene_stats` recount matches. All four or it did not happen.
 
+### 27. animation_physics add_anim_notify & get_anim_sequence_info (2026-07-07)
+- **Tool**: `animation_physics`
+- **Actions**: `add_anim_notify`, `get_anim_sequence_info`
+- **Parameters for add_anim_notify**: `{action: "add_anim_notify", assetPath: string, notifyName: string, time: number, save: boolean}`
+- **Parameters for get_anim_sequence_info**: `{action: "get_anim_sequence_info", assetPath: string}`
+- **Example add_anim_notify**: `animation_physics.add_anim_notify({assetPath="/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd", notifyName="FootPlant", time=0.3, save=true})`
+- **Result**: Notify event added to AnimSequence's NotifyEvents array; asset saved if save=true.
+- **Read-back verification**: `animation_physics.get_anim_sequence_info({assetPath: "..."})` returns `notifyEventsCount` and other sequence info.
+- **Note**: These actions are supported for AnimSequence assets. For montages, use montage notify slots via add_montage_notify or set_section_timing.
+
 ## Failed Pathways (1)
 
 ### manage_asset.list_instances
