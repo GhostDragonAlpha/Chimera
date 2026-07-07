@@ -79,6 +79,7 @@ def main():
     parser.add_argument("--session", required=True)
     parser.add_argument("--duration", type=int, default=900, help="seconds (default 15 min)")
     parser.add_argument("--poll", type=int, default=10, help="runtime poll interval seconds")
+    parser.add_argument("--out", default=None, help="chronicle output path (default Saved/SessionChronicles/<session>.json)")
     args = parser.parse_args()
 
     from core.telemetry_probe import MCPStdioClient
@@ -103,6 +104,10 @@ def main():
     except KeyboardInterrupt:
         pass
     path = w.finalize()
+    if args.out:
+        import shutil
+        shutil.copyfile(path, args.out)
+        path = args.out
     print(f"[witness] chronicle -> {path} ({len(w.events)} events)")
 
 

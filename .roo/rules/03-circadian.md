@@ -28,8 +28,9 @@ Spec: `Chimera/docs/GENERATION_PROTOCOL.md` (incl. the Sleepwalking amendment) a
 ## Night
 - `python -m core.dream_loop` — clusters failures/surprises into <=2 staged candidates/night
   (Gardener's queue). Never promote without approval.
-- Nightly rhythm (staged, M4): sleepwalk 01:00 -> dream 02:00. Pre-req: PIE-collision guard
-  (pain phase_34195900a1671e58:P1).
+- Nightly rhythm ARMED: unblock 00:45 -> sleepwalk 01:00 -> dream+tend 02:15 (schtasks).
+- Blockers: known -> `core.unblock --ensure all`; unknown -> `core.solver --blocker ...` (fix-or-draft;
+  bare 'blocked' notes forbidden); floor work (`Groundskeeping_floor`) can never be blocked.
 
 ## Handoff invariant
 Every NEXT item you write must be executable without searching: exact commands inline or a

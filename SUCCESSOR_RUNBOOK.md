@@ -174,3 +174,9 @@ python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session
 `approved (auto — implementation pending)` gate entries are YOUR branch-A work (capable
 sessions write the gate function + its test), tombstones are final. If the human edits any
 status to `vetoed`, the next tend demotes it automatically — never argue with a veto.
+
+**No-blockers toolkit (2026-07-07)**: known env blockers -> `python -m core.unblock --ensure all`.
+UNKNOWN blockers -> `python -m core.solver --blocker "<line>" --context "<verbatim>"` (fixes or
+drafts the fix — never write a bare 'blocked' note). Zero-dependency floor work always exists:
+the `Groundskeeping_floor` rehearsal candidate. Nightly rhythm is ARMED (00:45/01:00/02:15).
+Doc drift check: `python -m core.doc_audit`.

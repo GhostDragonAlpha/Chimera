@@ -1,3 +1,16 @@
+# Solver draft 2026-07-07 06:21Z — blocker: editor viewport renders black after level load
+
+Diagnosis: LM unavailable — template remediation for: editor viewport renders black after level load
+Confidence: 0.3
+
+## NEXT (solver-drafted fix plan; the blocker is NOT the note — this plan is)
+1. **Fix: editor viewport renders black after level load** `capable sessions only` — execute the remaining steps:
+   1. [python_module] python -m core.unblock --ensure all — heal the known environment blockers first
+   2. [capable_handoff]  — If still blocked: diagnose 'editor viewport renders black after level load' — attach the verbatim error, check docs/MCP_PATHWAYS.md traps, record the fix as a pathway.
+   Skip-condition: blocker no longer reproduces → record pathway success.
+
+---
+
 # Rehearsal decision 2026-07-07 06:15Z — next move: Demo_Phase2_DemoTerminal
 
 Chosen by core.rehearsal (score 0.79, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.

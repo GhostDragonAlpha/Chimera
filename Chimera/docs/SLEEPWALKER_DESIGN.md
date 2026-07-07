@@ -4,7 +4,7 @@
 > core/sleepwalker.py, core/rehearsal.py, beats/regolith_yard (5/5 clean walk after one
 > honest find->fix->verify loop on the jump probe), SimPlaytest/SimulationRollout node
 > types, distiller sim_rejection tier, preflight [4.6], constitution amendments live.
-> M4 (nightly rhythm) staged as rehearsal candidate pending the PIE-collision guard
+> M4 ARMED 2026-07-07 (ChimeraUnblock 00:45 / ChimeraSleepwalk 01:00 / ChimeraDream 02:15; PIE-collision guard + editor self-heal live)
 > (pain phase_34195900a1671e58:P1). GUARD FINDING: observe was honor-system only;
 > CHIMERA_AGENT_SIM=1 sentinel now technically blocks agent-sim direct observations
 > (surprise_1451fd0fc19c66f3 — stronger universal rule is the Gardener's call).

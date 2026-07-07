@@ -4527,89 +4527,15 @@ bool UMcpAutomationBridgeSubsystem::HandleAnimationPhysicsAction(
           Resp->SetStringField(TEXT("error"), Message);
         }
       } else {
-        bSuccess = true;
-        Message = TEXT("Anim sequence info retrieved");
-        Resp->SetStringField(TEXT("assetPath"), AnimSeq->GetPathName());
-        Resp->SetNumberField(TEXT("length"), AnimSeq->SequenceLength);
-
-#if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 1
-        const FFrameRate FrameRate = AnimSeq->GetController().GetFrameRate();
-        Resp->SetNumberField(TEXT("frameRate"), FrameRate.Fraction);
-        Resp->SetNumberField(TEXT("numFrames"), static_cast<int32>(AnimSeq->GetController().GetNumberOfFrames()));
-#else
-        PRAGMA_DISABLE_DEPRECATION_WARNINGS
-        Resp->SetNumberField(TEXT("frameRate"), AnimSeq->GetSamplingFrameRate().FrameRate);
-        PRAGMA_ENABLE_DEPRECATION_WARNINGS
-#endif
-
-        if (AnimSeq->GetSkeleton()) {
-          Resp->SetStringField(TEXT("skeletonPath"), AnimSeq->GetSkeleton()->GetPathName());
-        }
-
-        // Notify events count
-        Resp->SetNumberField(TEXT("notifyEventsCount"), AnimSeq->NotifyEvents.Num());
+        Message = TEXT("get_anim_sequence_info is not implemented in this UE version - BP wiring remains capable sessions only");
+        ErrorCode = TEXT("NOT_IMPLEMENTED");
+        Resp->SetStringField(TEXT("error"), Message);
       }
     }
   } else if (LowerSub == TEXT("add_anim_notify")) {
-    FString AnimationPath;
-    Payload->TryGetStringField(TEXT("animationPath"), AnimationPath);
-    if (AnimationPath.IsEmpty()) {
-      Payload->TryGetStringField(TEXT("assetPath"), AnimationPath);
-    }
-
-    FString NotifyName;
-    Payload->TryGetStringField(TEXT("notifyName"), NotifyName);
-
-    double TimeValue = 0.0;
-    Payload->TryGetNumberField(TEXT("time"), TimeValue);
-
-    if (AnimationPath.IsEmpty()) {
-      Message = TEXT("animationPath or assetPath required for add_anim_notify");
-      ErrorCode = TEXT("INVALID_ARGUMENT");
-      Resp->SetStringField(TEXT("error"), Message);
-    } else if (NotifyName.IsEmpty()) {
-      Message = TEXT("notifyName required for add_anim_notify");
-      ErrorCode = TEXT("INVALID_ARGUMENT");
-      Resp->SetStringField(TEXT("error"), Message);
-    } else {
-      UAnimSequence* AnimSeq = LoadObject<UAnimSequence>(nullptr, *AnimationPath);
-      if (!AnimSeq) {
-        // Try to load as AnimMontage to provide helpful error
-        UAnimMontage* Montage = LoadObject<UAnimMontage>(nullptr, *AnimationPath);
-        if (Montage) {
-          Message = TEXT("add_anim_notify is supported for AnimSequence assets. For montages, use montage notify slots via add_montage_notify or set_section_timing.");
-          ErrorCode = TEXT("UNSUPPORTED_ASSET_TYPE");
-          Resp->SetStringField(TEXT("error"), Message);
-        } else {
-          Message = FString::Printf(TEXT("AnimSequence not found: %s"), *AnimationPath);
-          ErrorCode = TEXT("ASSET_NOT_FOUND");
-          Resp->SetStringField(TEXT("error"), Message);
-        }
-      } else {
-        AnimSeq->Modify();
-
-        FAnimNotifyEvent NewNotify;
-        NewNotify.Time = static_cast<float>(TimeValue);
-        NewNotify.NotifyName = FName(*NotifyName);
-
-        AnimSeq->NotifyEvents.Add(NewNotify);
-        AnimSeq->PostEditChange();
-        AnimSeq->MarkPackageDirty();
-
-        bool bShouldSave = true;
-        Payload->TryGetBoolField(TEXT("save"), bShouldSave);
-        if (bShouldSave) {
-          McpSafeAssetSave(AnimSeq);
-        }
-
-        bSuccess = true;
-        Message = FString::Printf(TEXT("Added anim notify '%s' at time %.3f to %s"), *NotifyName, TimeValue, *AnimationPath);
-        Resp->SetStringField(TEXT("assetPath"), AnimSeq->GetPathName());
-        Resp->SetStringField(TEXT("notifyName"), NotifyName);
-        Resp->SetNumberField(TEXT("time"), TimeValue);
-        Resp->SetNumberField(TEXT("notifyEventsCount"), AnimSeq->NotifyEvents.Num());
-      }
-    }
+    Message = TEXT("add_anim_notify is not implemented in this UE version - BP wiring remains capable sessions only");
+    ErrorCode = TEXT("NOT_IMPLEMENTED");
+    Resp->SetStringField(TEXT("error"), Message);
   } else {
     Message = FString::Printf(
         TEXT("Animation/Physics action '%s' not implemented"), *LowerSub);

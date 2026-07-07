@@ -6,7 +6,7 @@
 > (the astronaut BP had ZERO input wiring — surprise_2b3d79676e3d4206); WorldSettings
 > currently points at DemoOnFootGameMode, so Phase 2's GameMode surgery must either fold
 > these bindings into the generated GameMode or keep the demo mode for on-foot play.
-> Phase 1 item 2's WorldSettings write is PROVEN (MCP pathway 22). `core/demo_witness.py`
+> Phase 1 item 2's WorldSettings write is PROVEN (MCP pathway 22). `core/witness.py`
 > (Phase 2 item 4) is SUPERSEDED by `core/witness.py`; the Sleepwalker
 > (`core/sleepwalker.py` + docs/beats/regolith_yard.beats.json) now walks these beats
 > automatically — 5/5 clean on 2026-07-07.
@@ -19,7 +19,7 @@ This is a two-demo program. **Demo 1 — Regolith Yard** closes all 20 queue fea
 
 ## 2. The Demo (Regolith Yard)
 
-The human spawns as the finished astronaut (suit, gold visor) on a 60m tri-pad yard assembled into the open `chimeradefaultlevel` and **saved this time**: metal apron, rock field, sand basin with drifting particulate, floored with the real-but-never-placed `MAT_MetalSurface` / `MAT_RockSurface` / `MAT_GroundSand`. A pedestal "display suit" (second, unpossessed `BP_Astronaut_Character`) guarantees close inspection of model/suit/visor regardless of the possessed pawn's camera. Props: weapon tool on a crate, shovel targets on all three surfaces. Session B adds one kiosk — `ADemoTerminal` — running the *real* generated systems unmodified: `UEconomyManager` DSL prices with live fluctuation, `UInventoryTradeComponent` buy/sell, `UFactionComponent` standing, `USaveGameComponent` slot round-trip, `UMissionComponent` accept→deliver→payout. `core/demo_witness.py` records `[DEMOBEAT]` log lines during both sessions.
+The human spawns as the finished astronaut (suit, gold visor) on a 60m tri-pad yard assembled into the open `chimeradefaultlevel` and **saved this time**: metal apron, rock field, sand basin with drifting particulate, floored with the real-but-never-placed `MAT_MetalSurface` / `MAT_RockSurface` / `MAT_GroundSand`. A pedestal "display suit" (second, unpossessed `BP_Astronaut_Character`) guarantees close inspection of model/suit/visor regardless of the possessed pawn's camera. Props: weapon tool on a crate, shovel targets on all three surfaces. Session B adds one kiosk — `ADemoTerminal` — running the *real* generated systems unmodified: `UEconomyManager` DSL prices with live fluctuation, `UInventoryTradeComponent` buy/sell, `UFactionComponent` standing, `USaveGameComponent` slot round-trip, `UMissionComponent` accept→deliver→payout. `core/witness.py` records `[DEMOBEAT]` log lines during both sessions.
 
 **Script (~10 min; Session A = beats 1–8 after Phase 1; Session B = beats 9–10 after Phase 3):**
 
@@ -76,7 +76,7 @@ Tacit claims are made only if the witness timeline or a quote can timestamp the 
 | Level content (MCP, cosmetic-only) | Pads, pedestal, display suit, crate, props, Niagara drift — spawned via proven pathways, then save-proof ritual. Loseable without killing the demo. |
 | Manual file (Interactions/ = hand-editable) | `Source/Chimera/ProceduralGenerated/Interactions/DemoTerminal.h/.cpp` — *uses* generator-owned classes, edits none. |
 | Generator (`core/game_code_generator.py`) | GameMode template: astronaut `DefaultPawnClass` via `FClassFinder` (ship fallback), delete double-spawn block, `AStationActor` spawns, guarded BeginPlay self-spawn of `ADemoTerminal`. MissionComponent template: payout branch → `AddCredits(RewardCredits)`. Tests emitted in the same change (H-1/H-12). |
-| New tooling | `core/demo_witness.py` (reuses `MCPStdioClient` from `core/telemetry_probe.py`). |
+| New tooling | `core/witness.py` (reuses `MCPStdioClient` from `core/telemetry_probe.py`). |
 | DSL | No changes for Demo 1. Demo 2 requires one content decision (mission destination, §5). |
 
 **Self-assembly principle (D1):** every demo-CRITICAL actor is constructed at BeginPlay by the generated GameMode (astronaut pawn via DefaultPawnClass; DemoTerminal via guarded spawn). A lost level costs dressing, never the demo — the exact failure that erased the walkabout.
@@ -104,7 +104,7 @@ Tacit claims are made only if the witness timeline or a quote can timestamp the 
 1. Write `Interactions/DemoTerminal.h/.cpp` (manual lane). `ADemoTerminal : AActor`: kiosk StaticMesh + subobjects `UEconomyManager`, `UInventoryTradeComponent`, `UFactionComponent`, `USaveGameComponent`, `UMissionComponent`. BeginPlay: `UEconomyInitializer::BuildEconomy(Econ); Trade->SetCredits(10000.f); Factions->InitializeFromDSL(); Missions->InitializeMissionBoardFromDSL(); EnableInput(PC)` + BindKey E/Q/F5/F9/M. `UFUNCTION(Exec)` `DemoStatus/DemoBuy(int32)/DemoSell(int32)/DemoSave/DemoLoad/DemoMission` wrapping verified APIs: `BuyCommodity(FName("Titanium"), Qty, Econ->GetCommodityPrice("Titanium"))`, `Factions->NotifyTradeCompleted(FName("faction_orbital_council"), Cost)` (FName verified at FactionComponent.cpp:28), `Save->SaveGame("DemoSlot")/LoadGame("DemoSlot")`; `DemoMission`: `AcceptMission(FName("Delivery_Titanium_Batch_1")); UpdateObjective(TEXT("Deliver"), TEXT("Titanium")); UpdateObjective(TEXT("Dock"), TEXT("Orbital_Hub_7"))` (signatures verified MissionComponent.h:27–33; objective types verified cpp:25/:33). Every state change emits `UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] ..."))` with values; Tick draws debug lines (price/credits/cargo/standing/mission) when pawn <800uu. Grep-first discipline: match all signatures verbatim before writing. No Build.cs edit.
 2. Generator — GameMode template: `FClassFinder` on `/Game/Characters/Astronaut/BP_Astronaut_Character` → `DefaultPawnClass` (ship fallback if null); **delete** second-ship spawn/re-possess block (generated cpp:72–86); station spawns → `AStationActor::StaticClass()` (:99/:115/:131); guarded self-spawn `if (!UGameplayStatics::GetActorOfClass(GetWorld(), ADemoTerminal::StaticClass())) SpawnActor<ADemoTerminal>` at (500,−500,20). Emit matching test in the same change.
 3. Generator — MissionComponent template: in the completion path, `if (auto* Inv = GetOwner()->FindComponentByClass<UInventoryTradeComponent>()) Inv->AddCredits(M.RewardCredits);` (`AddCredits(float)` verified InventoryTradeComponent.h:67; faction hook already exists). Emit test. Record any C2039 as template drift with UBT file:line verbatim (H-1/H-12).
-4. Write `core/demo_witness.py`: reuse `MCPStdioClient` from `core/telemetry_probe.py`; tail `Saved/Logs/Chimera.log` for `[DEMOBEAT]`, poll `inspect runtime_report` every 10s; emit beat-timeline JSON. CLI: `python -m core.demo_witness --session A --out beats_A.json`.
+4. Write `core/witness.py`: reuse `MCPStdioClient` from `core/telemetry_probe.py`; tail `Saved/Logs/Chimera.log` for `[DEMOBEAT]`, poll `inspect runtime_report` every 10s; emit beat-timeline JSON. CLI: `python -m core.witness --session A --out beats_A.json`.
 5. Regenerate; build: `& "C:/Program Files/Epic Games/UE_5.8/Engine/Build/BatchFiles/Build.bat" ChimeraEditor Win64 Development "E:\PythonChimera\Chimera\Chimera.uproject" -waitmutex` → UBT 0 gate; `record_build` with verbatim output; postflight.
 
 ### PHASE 3 — Wire, verify, Session B (weak-OK; recipes inline)
@@ -123,7 +123,7 @@ Prerequisite (capable): add `generate_station_actor` and `generate_inventory_tra
 
 ## 6. Observation Intake Plan
 
-Run the witness during every session: `python -m core.demo_witness --session A --out beats_A.json`. After the human plays and gives their temperature:
+Run the witness during every session: `python -m core.witness --session A --out beats_A.json`. After the human plays and gives their temperature:
 
 1. `python -m core.graphify_record playtest --notes "<their EXACT words>"` → save returned `<playtest_id>`.
 2. Directly mentioned features: `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --derived-from <playtest_id> --quote "<their exact phrase>" --loop <N>`
