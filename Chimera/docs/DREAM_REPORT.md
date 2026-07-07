@@ -1,8 +1,10 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T07:06:38Z
+consolidated: 2026-07-07T07:15:17Z
 
 ## Awaiting your approval
-No pending heuristics — the constitution covers everything the night found.
+2 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
+- H-15: surprise: beat discovered expected gap
+- H-16: pathway: sleepwalker.beat_run -> partial
 
 ## Open phantom pains
 - phase_da55128aec6d109a:P1 [0d] Distiller token-coverage will false-suppress genuinely new lessons once PENDING_HEURISTICS.md grows large - watch for repeat failures that never re-stage
@@ -27,11 +29,11 @@ No pending heuristics — the constitution covers everything the night found.
 Record verdicts: `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`untouched:14 | provisional-collapse: 0 collapsed, 14 awaiting evidence`
+`needs_draft:2; untouched:14 | provisional-collapse: 0 collapsed, 14 awaiting evidence`
 
 ## Tonight's distillation
 ```
-clusters >= 3: 18  |  suppressed (covered/pending): 18  |  staged: 0
+clusters >= 3: 20  |  suppressed (covered/pending): 20  |  staged: 0
   covered   [  1x] human_rejection: Verb_Step  <- PENDING_HEURISTICS.md
   covered   [ 74x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
@@ -40,6 +42,7 @@ clusters >= 3: 18  |  suppressed (covered/pending): 18  |  staged: 0
   covered   [ 21x] verification_aborted_wrong_window  <- PENDING_HEURISTICS.md
   covered   [ 20x] verification_fail  <- PENDING_HEURISTICS.md
   covered   [ 19x] verification_incomplete  <- PENDING_HEURISTICS.md
+  covered   [ 19x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
   covered   [ 18x] ralph_apply_<feature>_step  <- PENDING_HEURISTICS.md
   covered   [ 17x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
   covered   [ 12x] grade_CF: Player_Character_Lighting  <- PENDING_HEURISTICS.md
@@ -50,11 +53,12 @@ clusters >= 3: 18  |  suppressed (covered/pending): 18  |  staged: 0
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
   covered   [  3x] pathway: animation_physics.add_anim_notify -> failed  <- MCP_PATHWAYS.md
   covered   [  3x] pathway: build_orchestrator.ue_shutdown -> success_intended_kill  <- PENDING_HEURISTICS.md
+  covered   [  3x] pathway: sleepwalker.beat_run -> partial  <- PENDING_HEURISTICS.md
 nothing new to stage — the constitution already covers today's lessons
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1489  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1513  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

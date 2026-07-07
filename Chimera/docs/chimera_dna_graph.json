@@ -25921,6 +25921,955 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_c4770a74a6c7"
+    },
+    {
+      "id": "rollout_6baa070d25cdaf13",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-07T07:09:51.341650",
+      "chosen": "Hire_Scholar_organ",
+      "candidates": [
+        {
+          "name": "Hire_Scholar_organ",
+          "score": 0.82,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "TIER-1 ROSTER GAP: nothing has ever consulted a source \u2014 research writes the exam on paper only (DREAM_ROSTER.md #1)"
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Hire_Muse_organ",
+          "score": 0.76,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "TIER-1 ROSTER GAP: the system has never created a new idea (DREAM_ROSTER.md #2)"
+        },
+        {
+          "name": "Hire_Visionkeeper_organ",
+          "score": 0.76,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "TIER-1 ROSTER GAP: everything judges can-we, nothing judges should-we (DREAM_ROSTER.md #3)"
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.73,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Unblock_Ground_Sand_Footprints",
+          "score": 0.6,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "repairs the blocker holding Ground_Sand_Footprints (facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.55,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.34,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        },
+        {
+          "name": "Ground_Sand_Footprints",
+          "score": 0.043,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "DEAD-END DEMOTED (facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge) \u2014 do the unblocker instead"
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.034,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "FRESHLY VERIFIED 2026-07-06T20:03 \u2014 re-running adds nothing (cooldown 12h)"
+        }
+      ],
+      "rationale": "value 1.9 x p 0.6 / cost 2.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Hire_Scholar_organ",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_3deaca1cf547"
+    },
+    {
+      "id": "simtest_0bb93cab8b7d662a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-07T07:12:06.925235",
+      "observer": "agent-sim",
+      "session": "sim_verb_interactions",
+      "demo": "verb_interactions",
+      "beats_total": 9,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "verb_look_360",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Look",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'camera_yaw_rotate': 360}"
+            }
+          ]
+        },
+        {
+          "beat": "verb_bend_trigger",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'simulate_input': {'type': 'key_down', 'key': 'E'}}"
+            }
+          ]
+        },
+        {
+          "beat": "verb_pickup_weapon_tool",
+          "outcome": "blocked",
+          "features": [
+            "Verb_PickUp",
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}"
+            }
+          ]
+        },
+        {
+          "beat": "verb_drop_item",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'simulate_input': {'type': 'key_down', 'key': 'Q'}}"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_metal_surface",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Metal_Surface"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'move_to': {'x': 0, 'y': 0, 'z': 0}}"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_rock_surface",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'move_to': {'x': 2000, 'y': 0, 'z': 0}}"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_sand_surface",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'move_to': {'x': 4000, 'y': 0, 'z': 0}}"
+            }
+          ]
+        },
+        {
+          "beat": "visor_inspection_pedestal",
+          "outcome": "blocked",
+          "features": [
+            "Player_Character_Model_Visor_Apply",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'move_to': {'x': 600, 'y': 600, 'z': 120}}"
+            }
+          ]
+        },
+        {
+          "beat": "weapon_tool_examine",
+          "outcome": "blocked",
+          "features": [
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "error": "unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sim_verb_interactions.json",
+      "temperature": "[SIM] 0/9 beats reached in 'verb_interactions'. Failures: verb_look_360 (blocked: {\"error\": \"unknown action {'camera_yaw_rotate': 360}\"}); verb_bend_trigger (blocked: {\"error\": \"unknown action {'simulate_input': {'type': 'key_down', 'key': 'E'}}\"}); verb_pickup_weapon_tool (blocked: {\"error\": \"unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}\"}); verb_drop_item (blocked: {\"error\": \"unknow",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sim_verb_interactions': 0/9 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_f732e4e5178a9cc4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:06.954054",
+      "context": "Sleepwalker expected beat 'verb_look_360' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'camera_yaw_rotate': 360}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'camera_yaw_rotate': 360}\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_bd61a47547bc4f90",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:06.982624",
+      "context": "Sleepwalker expected beat 'verb_bend_trigger' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'simulate_input': {'type': 'key_down', 'key': 'E'}}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'simulate_input': {'type': 'key_down', 'key''",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_22575007835ae5b4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:07.011402",
+      "context": "Sleepwalker expected beat 'verb_pickup_weapon_tool' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_4723e5cef53ef4cf",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:07.039271",
+      "context": "Sleepwalker expected beat 'verb_drop_item' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'simulate_input': {'type': 'key_down', 'key': 'Q'}}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'simulate_input': {'type': 'key_down', 'key''",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_d0db022ba909e608",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:07.068402",
+      "context": "Sleepwalker expected beat 'verb_shovel_metal_surface' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'move_to': {'x': 0, 'y': 0, 'z': 0}}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'move_to': {'x': 0, 'y': 0, 'z': 0}}\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_717d27a484955a65",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:07.096601",
+      "context": "Sleepwalker expected beat 'verb_shovel_rock_surface' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'move_to': {'x': 2000, 'y': 0, 'z': 0}}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'move_to': {'x': 2000, 'y': 0, 'z': 0}}\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_b6864047f6143dfc",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:07.124572",
+      "context": "Sleepwalker expected beat 'verb_shovel_sand_surface' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'move_to': {'x': 4000, 'y': 0, 'z': 0}}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'move_to': {'x': 4000, 'y': 0, 'z': 0}}\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_a03f87954817bb5c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:07.152641",
+      "context": "Sleepwalker expected beat 'visor_inspection_pedestal' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'move_to': {'x': 600, 'y': 600, 'z': 120}}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'move_to': {'x': 600, 'y': 600, 'z': 120}}\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "surprise_8afbbfe69a873427",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:12:07.183380",
+      "context": "Sleepwalker expected beat 'weapon_tool_examine' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "pathway_attempt_bb59070e8142192f",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T07:12:07.215067",
+      "tool": "sleepwalker",
+      "action": "beat_run",
+      "parameters_tried": {
+        "session": "sim_verb_interactions",
+        "reached": "0/9"
+      },
+      "result": "partial",
+      "error_message": "",
+      "error_signature": "pathway_attempt_partial",
+      "template_file": "pathway_attempt/sleepwalker/beat_run",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'sleepwalker', action 'beat_run', result 'partial'",
+      "compilation_result": "partial",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_68b527aef245"
+    },
+    {
+      "id": "simtest_591e6833d4c01704",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-07T07:13:39.602773",
+      "observer": "agent-sim",
+      "session": "sim_verb_interactions_v2",
+      "demo": "verb_interactions",
+      "beats_total": 9,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "verb_look_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Look",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": false,
+              "note": "pawn_class=DefaultPawn"
+            },
+            {
+              "expect": {
+                "screenshot_taken": "verb_look_360_view"
+              },
+              "ok": false,
+              "note": "unknown expect ['screenshot_taken']"
+            }
+          ]
+        },
+        {
+          "beat": "verb_bend_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": false,
+              "note": "pawn_class=DefaultPawn"
+            }
+          ]
+        },
+        {
+          "beat": "verb_pickup_weapon_tool_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_PickUp",
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": false,
+              "note": "pawn_class=DefaultPawn"
+            },
+            {
+              "expect": {
+                "screenshot_taken": "verb_pickup_weapon_tool_view"
+              },
+              "ok": false,
+              "note": "unknown expect ['screenshot_taken']"
+            }
+          ]
+        },
+        {
+          "beat": "verb_drop_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": false,
+              "note": "pawn_class=DefaultPawn"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_metal_surface_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Metal_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": false,
+              "note": "dist=3600uu (loc x=3600.23775100708, y=0)"
+            },
+            {
+              "expect": {
+                "screenshot_taken": "verb_shovel_metal_view"
+              },
+              "ok": false,
+              "note": "unknown expect ['screenshot_taken']"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_rock_surface_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": false,
+              "note": "dist=5601uu (loc x=7601.32999420166, y=0)"
+            },
+            {
+              "expect": {
+                "screenshot_taken": "verb_shovel_rock_view"
+              },
+              "ok": false,
+              "note": "unknown expect ['screenshot_taken']"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_sand_surface_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": false,
+              "note": "dist=7602uu (loc x=11601.63767337799, y=0)"
+            },
+            {
+              "expect": {
+                "screenshot_taken": "verb_shovel_sand_view"
+              },
+              "ok": false,
+              "note": "unknown expect ['screenshot_taken']"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        },
+        {
+          "beat": "visor_inspection_pedestal",
+          "outcome": "failed",
+          "features": [
+            "Player_Character_Model_Visor_Apply",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": false,
+              "note": "present=False"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 600,
+                  "y": 600,
+                  "r": 300
+                }
+              },
+              "ok": false,
+              "note": "dist=14214uu (loc x=14801.638340950012, y=0)"
+            },
+            {
+              "expect": {
+                "screenshot_taken": "visor_inspection_pedestal"
+              },
+              "ok": false,
+              "note": "unknown expect ['screenshot_taken']"
+            }
+          ]
+        },
+        {
+          "beat": "weapon_tool_examine",
+          "outcome": "failed",
+          "features": [
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 400,
+                  "y": -400,
+                  "r": 300
+                }
+              },
+              "ok": false,
+              "note": "dist=17207uu (loc x=17602.316558361053, y=0)"
+            },
+            {
+              "expect": {
+                "screenshot_taken": "weapon_tool_examine"
+              },
+              "ok": false,
+              "note": "unknown expect ['screenshot_taken']"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sim_verb_interactions_v2.json",
+      "temperature": "[SIM] 0/9 beats reached in 'verb_interactions'. Failures: verb_look_location (failed: {\"expect\": {\"screenshot_taken\": \"verb_look_360_view\"}, \"ok\": false, \"note\": \"unknown expec); verb_bend_location (failed: {\"expect\": {\"pawn_class\": \"BP_Astronaut_Character_C\"}, \"ok\": false, \"note\": \"pawn_class=De); verb_pickup_weapon_tool_location (failed: {\"expect\": {\"screenshot_taken\": \"verb_pickup_weapon_tool_v",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sim_verb_interactions_v2': 0/9 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_4ca916118ba86493",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.631110",
+      "context": "Sleepwalker expected beat 'verb_look_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"screenshot_taken\": \"verb_look_360_view\"}, \"ok\": false, \"note\": \"unknown expect ['screenshot_taken']\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"screenshot_taken\": \"verb_look_360_view\"}, \"ok\": false, \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_7b6ab8193c62e8a2",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.659725",
+      "context": "Sleepwalker expected beat 'verb_bend_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_class\": \"BP_Astronaut_Character_C\"}, \"ok\": false, \"note\": \"pawn_class=DefaultPawn\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_class\": \"BP_Astronaut_Character_C\"}, \"ok\": false, \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_f8dd0e516ef4553a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.688234",
+      "context": "Sleepwalker expected beat 'verb_pickup_weapon_tool_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"screenshot_taken\": \"verb_pickup_weapon_tool_view\"}, \"ok\": false, \"note\": \"unknown expect ['screenshot_taken']\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"screenshot_taken\": \"verb_pickup_weapon_tool_view\"}, \"ok\": f'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_fa05843845be6fe7",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.719057",
+      "context": "Sleepwalker expected beat 'verb_drop_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_class\": \"BP_Astronaut_Character_C\"}, \"ok\": false, \"note\": \"pawn_class=DefaultPawn\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_class\": \"BP_Astronaut_Character_C\"}, \"ok\": false, \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_35b021b4eb279dce",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.749605",
+      "context": "Sleepwalker expected beat 'verb_shovel_metal_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"screenshot_taken\": \"verb_shovel_metal_view\"}, \"ok\": false, \"note\": \"unknown expect ['screenshot_taken']\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"screenshot_taken\": \"verb_shovel_metal_view\"}, \"ok\": false, '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_70650f765fecef2c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.777909",
+      "context": "Sleepwalker expected beat 'verb_shovel_rock_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"screenshot_taken\": \"verb_shovel_rock_view\"}, \"ok\": false, \"note\": \"unknown expect ['screenshot_taken']\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"screenshot_taken\": \"verb_shovel_rock_view\"}, \"ok\": false, \"'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_0f6a24638dbf6622",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.805493",
+      "context": "Sleepwalker expected beat 'verb_shovel_sand_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"prese'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_2bfb8bb8f4312a59",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.832762",
+      "context": "Sleepwalker expected beat 'visor_inspection_pedestal' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"screenshot_taken\": \"visor_inspection_pedestal\"}, \"ok\": false, \"note\": \"unknown expect ['screenshot_taken']\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"screenshot_taken\": \"visor_inspection_pedestal\"}, \"ok\": fals'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "surprise_45ac1f83e97fba3c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T07:13:39.860629",
+      "context": "Sleepwalker expected beat 'weapon_tool_examine' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"screenshot_taken\": \"weapon_tool_examine\"}, \"ok\": false, \"note\": \"unknown expect ['screenshot_taken']\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"screenshot_taken\": \"weapon_tool_examine\"}, \"ok\": false, \"no'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "pathway_attempt_98698af558567a7c",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-07T07:13:39.888218",
+      "tool": "sleepwalker",
+      "action": "beat_run",
+      "parameters_tried": {
+        "session": "sim_verb_interactions_v2",
+        "reached": "0/9"
+      },
+      "result": "partial",
+      "error_message": "",
+      "error_signature": "pathway_attempt_partial",
+      "template_file": "pathway_attempt/sleepwalker/beat_run",
+      "error_category": "pathway_failure",
+      "fix_description": "Pathway attempt recorded: tool 'sleepwalker', action 'beat_run', result 'partial'",
+      "compilation_result": "partial",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_34fa28ea18af"
+    },
+    {
+      "id": "phase_8de30540d66c25c6",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T07:15:10.740371",
+      "phase": "interaction beats authoring for verbs + visor + weapon inspection: docs/beats/verb_interactions.beats.json created but sleepwalker actions require extension (interaction key presses E/Q not supported by current beat action parser which only supports movement keys W/SpaceBar)",
+      "result": "Sleepwalker sim_verb_interactions_v2: 0/9 beats reached. Failures due to unsupported beat actions (camera_yaw_rotate, simulate_input, move_to) and invalid expects (screenshot_taken). Valid sleepwalker actions limited to: wait, key<movement>, screenshot.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/interaction beats authoring for verbs + visor + weapon inspection: docs/beats/verb_interactions.beats.json created but sleepwalker actions require extension (interaction key presses E/Q not supported by current beat action parser which only supports movement keys W/SpaceBar)",
+      "error_category": "none",
+      "fix_description": "Phase 'interaction beats authoring for verbs + visor + weapon inspection: docs/beats/verb_interactions.beats.json created but sleepwalker actions require extension (interaction key presses E/Q not supported by current beat action parser which only supports movement keys W/SpaceBar)' complete: Sleepwalker sim_verb_interactions_v2: 0/9 beats reached. Failures due to unsupported beat actions (camera_yaw_rotate, simulate_input, move_to) and invalid expects (screenshot_taken). Valid sleepwalker",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "phase_da55128aec6d109a:P1 [distiller token-coverage suppression]"
+      ],
+      "inheritance": "Interaction beats authoring attempted for verbs + visor + weapon inspection but requires sleepwalker action parser extension to support interaction key presses (E for interact/pickup, Q for drop). Phase 2 generator updates complete and compiled Grade B.",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_1bde03f6e529"
     }
   ],
   "edges": [

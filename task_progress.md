@@ -1,3 +1,13 @@
+# Rehearsal decision 2026-07-07 07:09Z — next move: Hire_Scholar_organ
+
+Chosen by core.rehearsal (score 0.82, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Hire_Scholar_organ** `capable sessions only` — TIER-1 ROSTER GAP: nothing has ever consulted a source — research writes the exam on paper only (DREAM_ROSTER.md #1). Recipe: Write core/scholar.py per DREAM_ROSTER.md #1 (campus+web+local research_corpus/ retrieval; exam with citations -> research_discovery nodes + feature study guide). First milestone: clear the pending technical_research item (dust-accumulation mask) with 3+ cited sources. Wire: spiral_forks consumes scholar briefs; doc_audit clean; organ recipe touchpoints.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Correction 2026-07-07 (capable session) — ANTI-IDLE LAWS + honest state restored
 
 The prior 'continuous operation' block below violated four rules now written as law

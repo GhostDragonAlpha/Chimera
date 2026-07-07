@@ -164,3 +164,22 @@ Wait, looking at the
 - evidence: observation_f629252c5bdbcd07
 - sample: I have no ability to move my character
 - draft_rule: Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
+
+<!-- distilled 2026-07-07T07:15:00Z -->
+## H-15: surprise: beat discovered expected gap
+- status: pending
+- kind: surprise  |  count: 19  |  last_seen: 2026-07-07T07:13:39
+- proposed_organ: claude_md
+- evidence: surprise_561ad640d61383db, surprise_f732e4e5178a9cc4, surprise_bd61a47547bc4f90, surprise_22575007835ae5b4, surprise_4723e5cef53ef4cf, surprise_d0db022ba909e608, surprise_717d27a484955a65, surprise_b6864047f6143dfc
+- sample: expected '' but 'failed: {"expect": {"log_contains": "[DEMOBEAT]"}, "ok": fal'
+- sample: expected '' but 'blocked: {"error": "unknown action {'camera_yaw_rotate': 360'
+- sample: expected '' but 'blocked: {"error": "unknown action {'simulate_input': {'type'
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-16: pathway: sleepwalker.beat_run -> partial
+- status: pending
+- kind: pathway  |  count: 3  |  last_seen: 2026-07-07T07:13:39
+- proposed_organ: mcp_pathways
+- evidence: pathway_attempt_fddb0da7c8b8b33e, pathway_attempt_bb59070e8142192f, pathway_attempt_98698af558567a7c
+- sample: Pathway attempt recorded: tool 'sleepwalker', action 'beat_run', result 'partial'
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
