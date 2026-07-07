@@ -28,8 +28,15 @@ Usage: python -m core.gardener --tend [--dry-run] [--min-count 3]
 
 import argparse
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+try:
+    from core.graphify_interface import record_heuristic, record_surprise
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from core.graphify_interface import record_heuristic, record_surprise
 
 ROOT = Path(__file__).resolve().parent.parent          # E:/PythonChimera/Chimera
 WSROOT = ROOT.parent                                   # E:/PythonChimera

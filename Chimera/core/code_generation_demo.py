@@ -18,88 +18,131 @@ if sys.platform == 'win32':
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-# Add project root to path for imports
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+# Fix import for CWD-independent execution
+try:
+    from core.code_generation_orchestrator import CodeGenerationOrchestrator
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from core.code_generation_orchestrator import CodeGenerationOrchestrator
 
-from core.code_generation_orchestrator import CodeGenerationOrchestrator
 
+def main():
+    """Run the Code Generation Demo."""
+    print("=" * 72)
+    print("Code Generation Demo — Generating C++ and Blueprint designs")
+    print("=" * 72)
 
-def run_demo():
-    """Run a demonstration of the code generation orchestrator."""
-    print("=" * 70)
-    print("CODE GENERATION ORCHESTRATOR DEMO")
-    print("=" * 70)
+    orchestrator = CodeGenerationOrchestrator()
 
-    # Initialize orchestrator
-    orchestrator = CodeGenerationOrchestrator(project_root=str(project_root))
+    # Example 1: Generate a character class
+    print("\n" + "-" * 72)
+    print("[1] Generating C++ Character Class: 'SM_Astronaut'")
+    print("-" * 72)
 
-    print(f"\n[1] Orchestrator initialized with project root: {project_root}")
-    print("-" * 70)
-
-    # Demo prompt 1: C++ code repair (based on git history: fix broken Kenney cockpit mesh refs)
-    cpp_prompt = "Fix broken Kenney cockpit mesh refs in ChimeraPilotPawn.cpp - remove broken references that cause CDO errors"
-    
-    print(f"\n[DEMO 1] Processing C++ code repair prompt:")
-    print(f"  '{cpp_prompt}'\n")
-
-    cpp_result = orchestrator.generate_cpp_code(
-        prompt=cpp_prompt,
-        file_path=project_root / "Source/Chimera/ChimeraPilotPawn.cpp",
-        model_id='qwen3.6-35b-a3b-mtp@iq2_m',
-        temperature=0.1,
-        max_tokens=2048,
-        timeout=180
+    character_result = orchestrator.generate_character_class(
+        class_name="SM_Astronaut",
+        parent_class="ACharacter",
+        description=(
+            "A space-faring astronaut character for the Chimera deep-space trading game. "
+            "Features an EVA suit with gold visor, jetpack, and basic locomotion animations. "
+            "Must have a spring-arm camera that follows the player, with standard movement input "
+            "for WASD movement and mouse look."
+        ),
+        movement_components=[
+            "CharacterMovementComponent with max walk speed 600 cm/s",
+            "SpringArmComponent with 300 cm arm length, camera lag enabled",
+            "CameraComponent attached to spring arm",
+        ],
+        animations=[
+            "Idle animation loop",
+            "Walk/Run blendspace based on speed",
+            "Jump animation with anticipation and landing",
+        ],
     )
+    print(f"  Generated: {character_result}")
+    print(f"  Files: {orchestrator.last_generated_files}")
 
-    if cpp_result.get("success"):
-        print("[DEMO 1] C++ CODE GENERATION SUCCESS:")
-        print(f"  Language: {cpp_result['language']}")
-        print(f"  Filename Hint: {cpp_result['filename_hint']}")
-        print(f"  Explanation: {cpp_result.get('explanation', 'N/A')[:100]}...")
-        
-        # Save generated code
-        saved_file = orchestrator.save_generated_code(cpp_result, target_dir=str(project_root / "GeneratedCode"))
-        print(f"  Saved to: {saved_file}")
-    else:
-        error_msg = str(cpp_result.get('error', 'Unknown error')).encode('utf-8', 'ignore').decode('utf-8')
-        print(f"[DEMO 1] C++ CODE GENERATION FAILED:")
-        print(f"  Error: {error_msg}")
+    # Example 2: Generate a spaceship class
+    print("\n" + "-" * 72)
+    print("[2] Generating C++ Ship Class: 'AShipBase'")
+    print("-" * 72)
 
-    print("-" * 70)
-
-    # Demo prompt 2: Blueprint design generation
-    bp_prompt = "Design a Blueprint for a spaceship shield component with directional shields, recharge delay, absorption, and EMP disable functionality"
-    
-    print(f"\n[DEMO 2] Processing Blueprint design prompt:")
-    print(f"  '{bp_prompt}'\n")
-
-    bp_result = orchestrator.generate_blueprint_code(
-        prompt=bp_prompt,
-        model_id='qwen3.6-35b-a3b-mtp@iq2_m',
-        temperature=0.1,
-        max_tokens=2048,
-        timeout=180
+    ship_result = orchestrator.generate_ship_class(
+        class_name="AShipBase",
+        ship_type="Freighter",
+        description=(
+            "A mid-size cargo freighter with QuantumDrive, ShieldGenerator, and CargoHold components. "
+            "Supports basic flight physics with roll, pitch, yaw, and thrust controls. "
+            "Interior has a cockpit, cargo bay, and airlock. "
+            "Can dock with stations and other ships via DockingComponent."
+        ),
+        systems=[
+            "Flight dynamics: max speed 8000 cm/s, acceleration 2000 cm/s², mass 50000 kg",
+            "QuantumDrive: jump range 25 LY, cooldown 60 seconds, requires fuel",
+            "ShieldGenerator: max shield 1000 HP, regen 50 HP/s, delay 5 seconds after hit",
+            "CargoHold: 100 slots, supports standard containers (1m³ each)",
+            "DockingComponent: proximity-based, 500 cm range, 10-second docking sequence",
+        ],
+        interior_rooms=["Cockpit", "Cargo Bay", "Airlock", "Crew Quarters"],
     )
+    print(f"  Generated: {ship_result}")
+    print(f"  Files: {orchestrator.last_generated_files}")
 
-    if bp_result.get("success"):
-        print("[DEMO 2] BLUEPRINT DESIGN GENERATION SUCCESS:")
-        print(f"  Language: {bp_result['language']}")
-        print(f"  Filename Hint: {bp_result['filename_hint']}")
-        print(f"  Explanation: {bp_result.get('explanation', 'N/A')[:100]}...")
-        
-        # Save generated code
-        saved_file = orchestrator.save_generated_code(bp_result, target_dir=str(project_root / "GeneratedCode"))
-        print(f"  Saved to: {saved_file}")
-    else:
-        error_msg = str(bp_result.get('error', 'Unknown error')).encode('utf-8', 'ignore').decode('utf-8')
-        print(f"[DEMO 2] BLUEPRINT DESIGN GENERATION FAILED:")
-        print(f"  Error: {error_msg}")
+    # Example 3: Generate a station blueprint design
+    print("\n" + "-" * 72)
+    print("[3] Generating Station Blueprint Design: 'TitanTradeHub'")
+    print("-" * 72)
 
-    print("-" * 70)
-    print("\n[COMPLETED] Code generation demo finished.")
-    print(f"Generated code files are available in: {project_root / 'GeneratedCode'}")
+    station_result = orchestrator.generate_blueprint_design(
+        actor_name="BP_TitanTradeHub",
+        actor_type="Station",
+        description=(
+            "A bustling deep-space trading station orbiting Titan. "
+            "Features a main concourse with 12 docking bays, a market area with 12 NPC traders, "
+            "a mission board with dynamic contracts, and a refueling depot. "
+            "Interior lighting is warm and inviting, with large windows showing Saturn's rings. "
+            "Components: TradeCenter, MissionBoard, RefuelingDepot, DockingSystem, LightingControl."
+        ),
+        components=[
+            "TradeCenter component with EconomyManager reference",
+            "MissionBoard component with dynamic mission generation",
+            "RefuelingDepot with fuel pricing based on local supply/demand",
+            "DockingSystem with 12 physical docking bay markers",
+            "LightingControl for day/night cycle simulation",
+            "AudioManager for ambient station sounds (hum, announcements, docking clamps)",
+        ],
+        interior_style="Sci-fi realistic with warm ambient lighting, metal panels, and holographic displays",
+    )
+    print(f"  Generated Blueprint Design: {station_result}")
+
+    # Example 4: Generate code from natural language description
+    print("\n" + "-" * 72)
+    print("[4] Natural Language Code Generation: Cargo Scanner Component")
+    print("-" * 72)
+
+    nl_result = orchestrator.generate_from_description(
+        description=(
+            "Create a UCargoScannerComponent that can be attached to ships and stations. "
+            "When activated, it scans nearby cargo containers within a configurable range (default 500m) "
+            "and returns a list of scanned items with their contents, mass, and value. "
+            "Higher scanner levels increase range and reduce scan time. "
+            "Base scanning range: 100m, Level 2: 250m, Level 3: 500m. "
+            "Scan time: 3 seconds base, Level 2: 2s, Level 3: 1s. "
+            "Should have a visual scanning effect (Niagara particle system)."
+        ),
+        preferred_pattern="Observer + Strategy for scanner levels",
+    )
+    print(f"  Generated Component: {nl_result}")
+
+    # Summary
+    print("\n" + "=" * 72)
+    print("Demo Complete!")
+    print("=" * 72)
+    print(f"\nTotal generations: 4")
+    print(f"Check orchestrator.last_generated_files for full file list.")
+    print(f"\nNote: This is a demonstration of code generation capabilities.")
+    print(f"Generated files are written to the Chimera/Source directory.")
 
 
 if __name__ == "__main__":
-    run_demo()
+    main()

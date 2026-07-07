@@ -32,14 +32,21 @@ Usage:
 import argparse
 import json
 import os
+import sys
 import time
 
 os.environ["CHIMERA_AGENT_SIM"] = "1"  # constitution sentinel: this process cannot fake human observations
 from pathlib import Path
 
-from core.telemetry_probe import MCPStdioClient
-from core.witness import Witness
-from core.graphify_interface import record_simtest, record_surprise, record_pathway
+try:
+    from core.telemetry_probe import MCPStdioClient
+    from core.witness import Witness
+    from core.graphify_interface import record_simtest, record_surprise, record_pathway
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from core.telemetry_probe import MCPStdioClient
+    from core.witness import Witness
+    from core.graphify_interface import record_simtest, record_surprise, record_pathway
 
 ROOT = Path(__file__).resolve().parent.parent
 
