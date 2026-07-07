@@ -44,5 +44,26 @@
   "fresh_marker": "build_completed",
   "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed",
   "recipe": "python -m core.unblock --ensure all && python run_deep_space_trader_pipeline.py \u2014 record UBT verbatim. Skip-condition: FRESHLY VERIFIED (cooldown) -> floor once, then END THE SHIFT with the full close."
+ },
+ {
+  "name": "Hire_Scholar_organ",
+  "value": 1.9,
+  "capable_only": true,
+  "why": "TIER-1 ROSTER GAP: nothing has ever consulted a source \u2014 research writes the exam on paper only (DREAM_ROSTER.md #1)",
+  "recipe": "Write core/scholar.py per DREAM_ROSTER.md #1 (campus+web+local research_corpus/ retrieval; exam with citations -> research_discovery nodes + feature study guide). First milestone: clear the pending technical_research item (dust-accumulation mask) with 3+ cited sources. Wire: spiral_forks consumes scholar briefs; doc_audit clean; organ recipe touchpoints."
+ },
+ {
+  "name": "Hire_Muse_organ",
+  "value": 1.7,
+  "capable_only": true,
+  "why": "TIER-1 ROSTER GAP: the system has never created a new idea (DREAM_ROSTER.md #2)",
+  "recipe": "Write core/muse.py per DREAM_ROSTER.md #2 (proposals from playtest/witness evidence + DSL + STORY_BIBLE + scholar research -> proposal records + rehearsal candidates with recipes; never self-executing). First milestone: 5 judged proposals for the Regolith Yard / Titan Run arc."
+ },
+ {
+  "name": "Hire_Visionkeeper_organ",
+  "value": 1.7,
+  "capable_only": true,
+  "why": "TIER-1 ROSTER GAP: everything judges can-we, nothing judges should-we (DREAM_ROSTER.md #3)",
+  "recipe": "Write core/visionkeeper.py per DREAM_ROSTER.md #3 (vision_fit multiplier 0.2-1.5 into rehearsal scoring from STORY_BIBLE + Design Laws + human temperatures; nightly taste pass on screenshots; never a hard gate). First milestone: score the current candidates file + judge the 8 provisionally-collapsed features' screenshots."
  }
 ]

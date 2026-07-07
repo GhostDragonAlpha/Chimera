@@ -761,7 +761,8 @@ class GameCodeGenerator:
         source_content += f'#include "{class_name}.h"\n'
         source_content += f'#include "GameFramework/PlayerController.h"\n'
         source_content += f'#include "GameFramework/PlayerState.h"\n'
-        source_content += f'#include "GameFramework/DefaultPawn.h"\n\n'
+        source_content += f'#include "GameFramework/DefaultPawn.h"\n'
+        source_content += f'#include "Kismet/GameplayStatics.h"\n\n'
 
         # Add PCGVolumeManager include if procedural generation is present
         if has_pcg:
@@ -794,9 +795,10 @@ class GameCodeGenerator:
 
         source_content += f"A{class_name}::A{class_name}()\n"
         source_content += "{\n"
-        
-        # Set DefaultPawnClass to the first ship class if ships exist, otherwise default pawn
+
+        # Set DefaultPawnClass: prefer astronaut character via FClassFinder, fallback to ship class if null, then ADefaultPawn
         ship_include = ""
+        ship_class_name_for_fallback = None
         if has_ships and len(ships_data) > 0:
             first_ship = ships_data[0]
             ship_name = first_ship.get("name", "") or first_ship.get("$name", "") or first_ship.get("ship_class", "")
@@ -807,16 +809,31 @@ class GameCodeGenerator:
                     ship_class_name = f"A{ship_name}"
                 else:
                     ship_class_name = f"AShip_{ship_name}"
-                
+
                 # Add ship include to source content
                 ship_include += f'#include "{ship_class_name}.h"\n'
-                
-                source_content += f"\t// Set default pawn class to player ship\n"
-                source_content += f"\tDefaultPawnClass = {ship_class_name}::StaticClass();\n"
-                source_content += f"\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: DefaultPawnClass set to {ship_class_name}\"));\n"
+                ship_class_name_for_fallback = ship_class_name
+
+        source_content += "\t// Set default pawn class: try astronaut BP first, fallback to ship class or default pawn\n"
+        source_content += f"\tUClass* AstronautClass = LoadClass<APawn>(nullptr, TEXT(\"/Game/Characters/Astronaut/BP_Astronaut_Character.BP_Astronaut_Character_C\"));\n"
+        source_content += "\tif (AstronautClass)\n\t{\n"
+        source_content += f"\t\tDefaultPawnClass = AstronautClass;\n"
+        source_content += f"\t\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: DefaultPawnClass set to BP_Astronaut_Character\"));\n"
+        source_content += "\t}\n"
+
+        if ship_class_name_for_fallback:
+            source_content += "\telse\n"
+            source_content += "\t{\n"
+            source_content += f"\t\tDefaultPawnClass = {ship_class_name_for_fallback}::StaticClass();\n"
+            source_content += f"\t\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: DefaultPawnClass set to {ship_class_name_for_fallback}\"));\n"
+            source_content += "\t}\n"
         else:
-            source_content += "\tDefaultPawnClass = ADefaultPawn::StaticClass();\n"
-            source_content += "\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: DefaultPawnClass set to ADefaultPawn\"));\n"
+            source_content += "\telse\n"
+            source_content += "\t{\n"
+            source_content += "\t\t// Final fallback: default pawn\n"
+            source_content += "\t\tDefaultPawnClass = ADefaultPawn::StaticClass();\n"
+            source_content += "\t\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: DefaultPawnClass set to ADefaultPawn\"));\n"
+            source_content += "\t}\n"
 
         source_content += "}\n\n"
 
@@ -881,63 +898,44 @@ class GameCodeGenerator:
                     source_content += "\t\t}\n\n"
             source_content += "\t}\n"
 
-        # Spawn player ship and stations if data is available
-        spawn_ship_code = ""
+        # Spawn stations if data is available (ship spawning handled by DefaultPawnClass + AutoPossessPlayer)
         spawn_station_code = ""
-        
-        if has_ships and len(ships_data) > 0:
-            first_ship = ships_data[0]
-            ship_name = first_ship.get("name", "") or first_ship.get("$name", "") or first_ship.get("ship_class", "")
-            
-            if ship_name:
-                # Generate correct ship class name based on naming convention
-                if ship_name.startswith("AShip_"):
-                    ship_class_name = ship_name
-                elif ship_name.startswith("Ship_"):
-                    ship_class_name = f"A{ship_name}"
-                else:
-                    ship_class_name = f"AShip_{ship_name}"
-                
-                # Determine player start location (FIX 1: higher Z for visibility)
-                p_start_x, p_start_y, p_start_z = 0.0, 0.0, 5000.0
-                if player_start_loc and len(player_start_loc) >= 3:
-                    p_start_x, p_start_y, p_start_z = float(player_start_loc[0]), float(player_start_loc[1]), float(player_start_loc[2])
-                
-                spawn_ship_code += "\t// === FIX 1: Spawn Player Ship at Level Start with Possession ===\n"
-                spawn_ship_code += f"\tFVector PlayerSpawnLocation({p_start_x}f, {p_start_y}f, {p_start_z}f);\n"
-                spawn_ship_code += "\tFRotator PlayerSpawnRotation(0.f, 90.f, 0.f);\n"
-                spawn_ship_code += f"\tFActorSpawnParameters ShipSpawnParams;\n"
-                spawn_ship_code += "\tShipSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;\n"
-                # Use the actual ship class from DSL (not hardcoded)
-                spawn_ship_code += f"\tPlayerShip = GetWorld()->SpawnActor<{ship_class_name}>({ship_class_name}::StaticClass(), PlayerSpawnLocation, PlayerSpawnRotation, ShipSpawnParams);\n"
-                spawn_ship_code += "\tif (PlayerShip)\n\t{\n"
-                spawn_ship_code += f"\t\tUE_LOG(LogTemp, Log, TEXT(\"SPAWNED: PlayerShip at {{%s}}\"), *PlayerShip->GetActorLocation().ToString());\n"
-                # Possess the ship with player controller
-                spawn_ship_code += "\t\tAPlayerController* PC = GetWorld()->GetFirstPlayerController();\n"
-                spawn_ship_code += "\t\tif (PC)\n\t\t{\n"
-                spawn_ship_code += f"\t\t\t			PC->Possess(PlayerShip);\n"
-                spawn_ship_code += f"\t\t\tUE_LOG(LogTemp, Log, TEXT(\"Player possessing ship\"));\n"
-                spawn_ship_code += "\t\t}\n"
-                spawn_ship_code += "\t}\n"
-                spawn_ship_code += "\telse\n\t{\n"
-                spawn_ship_code += f"\t\tUE_LOG(LogTemp, Error, TEXT(\"FAILED TO SPAWN PLAYER SHIP\"));\n"
-                spawn_ship_code += "\t}\n"
 
         if has_stations and station_placements:
-            spawn_station_code += "\t// === FIX 2: Spawn Station Actors with Visible Meshes ===\n"
+            spawn_station_code += "\t// === Spawn Station Actors ===\n"
             for idx, station in enumerate(station_placements):
                 station_name = station.get('station_name', '') or station.get('name', '') or 'UnknownStation'
                 loc = station.get('location', [0, 0, 100]) if isinstance(station, dict) else station.get('location', [0, 0, 100])
                 st_loc_x, st_loc_y, st_loc_z = float(loc[0]), float(loc[1]), float(loc[2]) if len(loc) >= 3 else 100.0
-                
+
                 spawn_station_code += f"\t// Spawn station: {station_name} at location ({st_loc_x}, {st_loc_y}, {st_loc_z})\n"
                 spawn_station_code += f"\t{{\n"
                 spawn_station_code += f"\t\tFVector StationSpawnLocation{idx}({st_loc_x}f, {st_loc_y}f, {st_loc_z}f);\n"
                 spawn_station_code += f"\t\tFRotator StationSpawnRotation{idx}(0.f, 0.f, 0.f);\n"
                 spawn_station_code += f"\t\tFActorSpawnParameters StationSpawnParams{idx};\n"
                 spawn_station_code += f"\t\tStationSpawnParams{idx}.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;\n"
-                # Spawn a visible station actor with sphere component instead of bare AActor
-                spawn_station_code += f"\t\tAActor* SpawnedStation{idx} = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation{idx}, StationSpawnRotation{idx}, StationSpawnParams{idx});\n"
+                # Spawn station actor using AStationActor::StaticClass()
+                spawn_station_code += f"\t\tAActor* SpawnedStation{idx} = GetWorld()->SpawnActor<AStationActor>(AStationActor::StaticClass(), StationSpawnLocation{idx}, StationSpawnRotation{idx}, StationSpawnParams{idx});\n"
+                spawn_station_code += f"\t\tif (SpawnedStation{idx})\n\t\t{{\n"
+                spawn_station_code += f"\t\t\tUE_LOG(LogTemp, Log, TEXT(\"SPAWNED: Station {station_name} at {{%s}}\"), *SpawnedStation{idx}->GetActorLocation().ToString());\n"
+                spawn_station_code += f"\t\t}}\n"
+                spawn_station_code += f"\t\telse\n\t\t{{\n"
+                spawn_station_code += f"\t\t\tUE_LOG(LogTemp, Error, TEXT(\"SPAWN FAILED: Station {station_name}\"));\n"
+                spawn_station_code += f"\t\t}}\n"
+                spawn_station_code += "\t}\n"
+
+        # Guarded self-spawn of DemoTerminal for Phase 2 kiosk
+        if has_ships or has_stations:
+            source_content += "\t// === Guarded DemoTerminal Self-Spawn (Phase 2 Kiosk) ===\n"
+            source_content += "\tif (!UGameplayStatics::GetActorOfClass(GetWorld(), ADemoTerminal::StaticClass()))\n\t{\n"
+            source_content += f"\t\tFVector TerminalSpawnLocation(500.f, -500.f, 20.f);\n"
+            source_content += "\t\tFRotator TerminalSpawnRotation(0.f, 0.f, 0.f);\n"
+            source_content += "\t\tFActorSpawnParameters TerminalSpawnParams;\n"
+            source_content += "\t\tTerminalSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;\n"
+            source_content += f"\t\tADemoTerminal* DemoTerm = GetWorld()->SpawnActor<ADemoTerminal>(ADemoTerminal::StaticClass(), TerminalSpawnLocation, TerminalSpawnRotation, TerminalSpawnParams);\n"
+            source_content += "\tif (DemoTerm) { UE_LOG(LogTemp, Log, TEXT(\"GAMEMODE: DemoTerminal self-spawned at {{%s}}\"), *DemoTerm->GetActorLocation().ToString()); }\n"
+            source_content += "\telse { UE_LOG(LogTemp, Error, TEXT(\"GAMEMODE: DemoTerminal self-spawn FAILED\")); }\n"
+            source_content += "\t}\n\n"
                 spawn_station_code += f"\t\tif (SpawnedStation{idx})\n\t\t{{\n"
                 spawn_station_code += f"\t\t\tUE_LOG(LogTemp, Log, TEXT(\"SPAWNED: Station {station_name} at {{%s}} with visible mesh\"), *SpawnedStation{idx}->GetActorLocation().ToString());\n"
                 spawn_station_code += f"\t\t}}\n"
@@ -1486,6 +1484,14 @@ if __name__ == "__main__":
         source_content += "\t\t\t\t\tif (UFactionComponent* Factions = GetOwner()->FindComponentByClass<UFactionComponent>())\n"
         source_content += "\t\t\t\t\t{\n"
         source_content += "\t\t\t\t\t\tFactions->NotifyMissionCompleted(Mission.FactionID, Mission.StandingChange);\n"
+        source_content += "\t\t\t\t\t}\n"
+        source_content += "\t\t\t\t}\n"
+        source_content += "\t\t\t\t// Payout credits on mission complete\n"
+        source_content += "\t\t\t\tif (GetOwner())\n"
+        source_content += "\t\t\t\t{\n"
+        source_content += "\t\t\t\t\tif (UInventoryTradeComponent* Inv = GetOwner()->FindComponentByClass<UInventoryTradeComponent>())\n"
+        source_content += "\t\t\t\t\t{\n"
+        source_content += f"\t\t\t\t\t\tInv->AddCredits(M.RewardCredits);\n"
         source_content += "\t\t\t\t\t}\n"
         source_content += "\t\t\t\t}\n"
         source_content += "\t\t\t}\n"
