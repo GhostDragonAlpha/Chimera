@@ -1,3 +1,16 @@
+# Session 2026-07-07 (postflight/dream_loop) — HUMAN SESSION A playtest initiated + rehearsal branch C2 executed + DSL/sleepwalker bridge mappings fixed
+
+**Work completed:** Postflight recorded phase_109f8d9c7f083d66 with phase "HUMAN SESSION A (Regolith Yard) playtest initiated + rehearsal branch C2 executed + DSL/sleepwalker bridge mappings fixed", result: "UBT build succeeded for Demo_Phase2_DemoTerminal (12.80s); sleepwalker verification regolith_yard.beats.json completed successfully (5 beats clean walk, simtest_98347a07e35e4443); rehearsal branch C2 executed VETO TABLE with Hire_Scholar_organ top candidate (already hired); HUMAN SESSION A PIE state verified isPIE=true worldName=chimeradefaultlevel pawn=BP_Astronaut_Character_C_0 playerController=DemoPlayerController_0 DemoOnFootGameMode_0 present 45 actors total". Inheritance: "Tier-1 organs hired (Scholar/Muse/Visionkeeper), DemoTerminal unblocked Session B, sleepwalker bridge mappings fixed for move_to/screenshot_taken, rehearsal C2 executed with VETO TABLE". Phantom pains declared: phase_da55128aec6d109a:P1 [distiller token-coverage suppression], phase_762486f41e1aeafb:P1 [observation queue will rot unobserved] → still-open.
+
+**Dream loop consolidation:** clusters >= 3: 22 | suppressed (covered/pending): 22 | staged: 0. Nothing new to stage — the constitution already covers today's lessons. Gardener tend -> promoted:2; untouched:16. Collapse proxy provisional: 0 collapsed, 14 awaiting evidence. Live nodes: 1563 | archivable (>30d, superseded, unreferenced): 0. Dry-run: nothing moved. Re-run with --apply to archive. DREAM_REPORT.md written.
+
+## NEXT (recipe-carrying)
+1. **HUMAN SESSION A (Regolith Yard)** — press Play: WASD/mouse/Space, beats 1-8 of DEMO_ARCHITECTURE.md §2; intake per §6. Skip-condition: no human → next item.
+2. **Demo_Phase2_DemoTerminal** `capable sessions only` — DEMO_ARCHITECTURE.md §5 Phase 2, recipes inline — kiosk running real economy/mission/save systems; unblocks Session B (20-feature queue). Recipe: Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 2 items 1-5 exactly (DemoTerminal.h/cpp manual lane; GameMode template surgery; MissionComponent payout; core/witness.py reuse; regen + UBT).
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Rehearsal decision 2026-07-07 14:38Z — next move: Hire_Scholar_organ
 
 Chosen by core.rehearsal (score 0.82, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.

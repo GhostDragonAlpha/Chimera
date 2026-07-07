@@ -39,7 +39,8 @@
 				"control_editor",
 				"control_actor",
 				"manage_asset",
-				"manage_level"
+				"manage_level",
+				"inspect"
 			]
 		},
 		"playwright": {

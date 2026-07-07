@@ -28304,6 +28304,132 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_93c884e541c5"
+    },
+    {
+      "id": "discovery_40e07096a740be2e",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-07T15:05:56.391277",
+      "source": "unknown_source",
+      "campus": "unknown_campus",
+      "quality_rating": "B",
+      "principles": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/unknown_campus/unknown_source",
+      "error_category": "none",
+      "fix_description": "Research discovery recorded: source 'unknown_source' for campus 'unknown_campus' with quality rating 'B'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "scholar.py",
+      "run_id": "run_f5b0a8977cff"
+    },
+    {
+      "id": "discovery_4853d961b64354a3",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-07T15:06:08.985342",
+      "source": "unknown_source",
+      "campus": "unknown_campus",
+      "quality_rating": "B",
+      "principles": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/unknown_campus/unknown_source",
+      "error_category": "none",
+      "fix_description": "Research discovery recorded: source 'unknown_source' for campus 'unknown_campus' with quality rating 'B'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "scholar.py",
+      "run_id": "run_db07f0ba2434"
+    },
+    {
+      "id": "discovery_7797b036814ce5b6",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-07T15:06:15.848301",
+      "source": "unknown_source",
+      "campus": "unknown_campus",
+      "quality_rating": "B",
+      "principles": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/unknown_campus/unknown_source",
+      "error_category": "none",
+      "fix_description": "Research discovery recorded: source 'unknown_source' for campus 'unknown_campus' with quality rating 'B'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "scholar.py",
+      "run_id": "run_e078bc2e722b"
+    },
+    {
+      "id": "phase_109f8d9c7f083d66",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T15:07:04.893638",
+      "phase": "HUMAN SESSION A (Regolith Yard) playtest initiated + rehearsal branch C2 executed + DSL/sleepwalker bridge mappings fixed",
+      "result": "UBT build succeeded for Demo_Phase2_DemoTerminal (12.80s); sleepwalker verification regolith_yard.beats.json completed successfully (5 beats clean walk, simtest_98347a07e35e4443); rehearsal branch C2 executed VETO TABLE with Hire_Scholar_organ top candidate (already hired); HUMAN SESSION A PIE state verified isPIE=true worldName=chimeradefaultlevel pawn=BP_Astronaut_Character_C_0 playerController=DemoPlayerController_0 DemoOnFootGameMode_0 present 45 actors total",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/HUMAN SESSION A (Regolith Yard) playtest initiated + rehearsal branch C2 executed + DSL/sleepwalker bridge mappings fixed",
+      "error_category": "none",
+      "fix_description": "Phase 'HUMAN SESSION A (Regolith Yard) playtest initiated + rehearsal branch C2 executed + DSL/sleepwalker bridge mappings fixed' complete: UBT build succeeded for Demo_Phase2_DemoTerminal (12.80s); sleepwalker verification regolith_yard.beats.json completed successfully (5 beats clean walk, simtest_98347a07e35e4443); rehearsal branch C2 ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "phase_da55128aec6d109a:P1 [distiller token-coverage suppression], phase_762486f41e1aeafb:P1 [observation queue will rot unobserved]"
+      ],
+      "inheritance": "Tier-1 organs hired (Scholar/Muse/Visionkeeper), DemoTerminal unblocked Session B, sleepwalker bridge mappings fixed for move_to/screenshot_taken, rehearsal C2 executed with VETO TABLE",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1:still-open, phase_762486f41e1aeafb:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_acda5a988f5a"
+    },
+    {
+      "id": "heuristic_5031dfdbe0e5667d",
+      "type": "Heuristic",
+      "timestamp": "2026-07-07T15:07:10.545025",
+      "signature": "sim_rejection: verb_interactions/visor_inspection_pedestal",
+      "rule": "Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "simtest_0bb93cab8b7d662a",
+        "simtest_591e6833d4c01704",
+        "simtest_fbd1071132dfb65a"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/sim_rejection: verb_interactions/visor_inspection_pedestal",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_0bb93cab8b7d662a",
+        "simtest_591e6833d4c01704",
+        "simtest_fbd1071132dfb65a"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_98a21907cdea"
+    },
+    {
+      "id": "heuristic_2dfd6804008ee83d",
+      "type": "Heuristic",
+      "timestamp": "2026-07-07T15:07:10.589151",
+      "signature": "sim_rejection: verb_interactions/weapon_tool_examine",
+      "rule": "Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "simtest_0bb93cab8b7d662a",
+        "simtest_591e6833d4c01704",
+        "simtest_fbd1071132dfb65a"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/sim_rejection: verb_interactions/weapon_tool_examine",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_0bb93cab8b7d662a",
+        "simtest_591e6833d4c01704",
+        "simtest_fbd1071132dfb65a"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_98a21907cdea"
     }
   ],
   "edges": [

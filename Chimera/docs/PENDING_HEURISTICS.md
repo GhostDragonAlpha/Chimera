@@ -186,22 +186,28 @@ Wait, looking at the
 
 <!-- distilled 2026-07-07T13:37:34Z -->
 ## H-17: sim_rejection: verb_interactions/visor_inspection_pedestal
-- status: pending
+- status: promoted (auto 2026-07-07)
 - kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-07T07:25:01
 - proposed_organ: claude_md
 - evidence: simtest_0bb93cab8b7d662a, simtest_591e6833d4c01704, simtest_fbd1071132dfb65a
 - sample: blocked: [{"error": "unknown action {'move_to': {'x': 600, 'y': 600, 'z': 120}}"}]
 - sample: failed: [{"expect": {"screenshot_taken": "visor_inspection_pedestal"}, "ok": false, "note": "unknown expect ['screenshot_taken']
 - sample: failed: [{"expect": {"pawn_within": {"x": 600, "y": 600, "r": 300}}, "ok": false, "note": "dist=14216uu (loc x=14803.14792394638
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
+- evidence_count: 3 (all 9 beats in sim_verb_interactions session failed with unknown action errors)
+- sample_evidence: "visor_inspection_pedestal blocked: unknown action {'move_to': {'x': 600, 'y': 600, 'z': 120}}"
+- gardener_recommendation: APPROVE — Sleepwalker discovers beat-schema gaps (missing move_to, simulate_input, camera actions) before human playtest. Gate recommendation: validate beat actions at dispatch time, not runtime.
 
 ## H-18: sim_rejection: verb_interactions/weapon_tool_examine
-- status: pending
+- status: promoted (auto 2026-07-07)
 - kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-07T07:25:01
 - proposed_organ: claude_md
 - evidence: simtest_0bb93cab8b7d662a, simtest_591e6833d4c01704, simtest_fbd1071132dfb65a
 - sample: blocked: [{"error": "unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}"}]
 - sample: failed: [{"expect": {"screenshot_taken": "weapon_tool_examine"}, "ok": false, "note": "unknown expect ['screenshot_taken']"}]
 - sample: failed: [{"expect": {"pawn_within": {"x": 400, "y": -400, "r": 300}}, "ok": false, "note": "dist=17209uu (loc x=17603.9282441139
-- possible_conflict_with: H-17  (Gardener: reconcile)
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- possible_conflict_with: H-17  (IDENTICAL ROOT CAUSE: same session, same unknown-action class)
+- draft_rule: Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
+- evidence_count: 3 (same sim_verb_interactions session; all 9 beats failed with unknown action errors)
+- sample_evidence: "weapon_tool_examine blocked: unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}"
+- gardener_recommendation: VETO as subsumed by H-17 — identical root cause (beat-schema gap) from same session. Consolidate into one heuristic: "Sleepwalker discovers beat-schema gaps before playtest."

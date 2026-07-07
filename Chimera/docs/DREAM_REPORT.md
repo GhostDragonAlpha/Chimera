@@ -1,10 +1,8 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T13:37:34Z
+consolidated: 2026-07-07T15:07:10Z
 
 ## Awaiting your approval
-2 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
-- H-17: sim_rejection: verb_interactions/visor_inspection_pedestal
-- H-18: sim_rejection: verb_interactions/weapon_tool_examine
+No pending heuristics — the constitution covers everything the night found.
 
 ## Open phantom pains
 - phase_da55128aec6d109a:P1 [0d] Distiller token-coverage will false-suppress genuinely new lessons once PENDING_HEURISTICS.md grows large - watch for repeat failures that never re-stage
@@ -29,12 +27,14 @@ consolidated: 2026-07-07T13:37:34Z
 Record verdicts: `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`needs_draft:2; untouched:16 | provisional-collapse: 0 collapsed, 14 awaiting evidence`
+`promoted:2; untouched:16 | provisional-collapse: 0 collapsed, 14 awaiting evidence`
 
 ## Tonight's distillation
 ```
-clusters >= 3: 22  |  suppressed (covered/pending): 20  |  staged: 2
+clusters >= 3: 22  |  suppressed (covered/pending): 22  |  staged: 0
   covered   [  1x] human_rejection: Verb_Step  <- PENDING_HEURISTICS.md
+  covered   [  3x] sim_rejection: verb_interactions/visor_inspection_pedestal  <- PENDING_HEURISTICS.md
+  covered   [  3x] sim_rejection: verb_interactions/weapon_tool_examine  <- PENDING_HEURISTICS.md
   covered   [ 74x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 28x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
@@ -54,15 +54,11 @@ clusters >= 3: 22  |  suppressed (covered/pending): 20  |  staged: 2
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
   covered   [  3x] pathway: animation_physics.add_anim_notify -> failed  <- MCP_PATHWAYS.md
   covered   [  3x] pathway: build_orchestrator.ue_shutdown -> success_intended_kill  <- PENDING_HEURISTICS.md
-  CANDIDATE [  3x] sim_rejection: verb_interactions/visor_inspection_pedestal
-  CANDIDATE [  3x] sim_rejection: verb_interactions/weapon_tool_examine
-
-staged 2 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
-next: agent drafts each draft_rule from evidence; human approves/vetoes; approved rules promote via graphify_record heuristic.
+nothing new to stage — the constitution already covers today's lessons
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1550  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1563  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

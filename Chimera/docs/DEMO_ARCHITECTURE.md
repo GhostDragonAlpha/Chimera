@@ -169,3 +169,11 @@ The handoff card given to the Gardener before each session pre-fills this skelet
 ## 8. Provenance
 
 Local-model draft absorbed for its economy/mission/trade beat structure; its fatal gaps (no input existed at all, no level content, no on-foot coverage, no observation protocol) drove the queue-first reframe. Panel winner D2 "Regolith Yard" provides the skeleton. Grafts applied: D4's demo_witness; D3's GameMode surgery (astronaut FClassFinder, double-spawn deletion, AStationActor spawns) and handoff-card skeleton; D1's mission-payout template (takes 19/20 → 20/20), self-assembling GameMode, migration discipline, Canvas HUD path, grep-first-verbatim rule, and honest-tacit rule; D3/D4's legacy-input-primary recipe and OpenLevel escape hatch for Titan Run. All judge fatal-flaw warnings fixed in-plan (`ke` exec routing, missions un-deferred, named Demo 2 for flight scope, unproven-pathway skip-conditions) or explicitly accepted with reason (foot-side systems context; one-cycle playtest slip if the WorldSettings write no-ops).
+
+---
+
+## 9. Phase 2 Architecture Review (2026-07-07)
+
+**Review Status**: BLOCKED — Station spawning uses AActor::StaticClass() instead of AStationActor::StaticClass(); payout test missing.
+
+See `docs/DEMO_PHASE2_ARCHITECTURE_REVIEW.md` for complete validation checklist and recommended fixes.
