@@ -1,16 +1,8 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T01:39:25Z
+consolidated: 2026-07-07T01:46:07Z
 
 ## Awaiting your approval
-14 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
-- H-1: compilation_fail
-- H-2: grade_CF: Visual_Verification
-- H-3: verification_not_verified
-- H-4: verification_aborted_wrong_window
-- H-5: verification_fail
-- H-6: verification_incomplete
-- H-7: ralph_apply_<feature>_step
-- H-8: grade_CF: Player_Character_Lighting
+No pending heuristics — the constitution covers everything the night found.
 
 ## Open phantom pains
 - phase_da55128aec6d109a:P1 [0d] Distiller token-coverage will false-suppress genuinely new lessons once PENDING_HEURISTICS.md grows large - watch for repeat failures that never re-stage
@@ -33,6 +25,9 @@ consolidated: 2026-07-07T01:39:25Z
 - Loop 2 **Verb_PickUp** (system-verified 2026-07-05T21:45:08)
 
 Record verdicts: `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
+
+## Gardener tend (delegated authority — veto any line by editing its status)
+`untouched:14`
 
 ## Tonight's distillation
 ```
@@ -58,6 +53,6 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1348  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1356  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

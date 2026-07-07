@@ -73,6 +73,8 @@ def main():
     parser.add_argument("--max-candidates", type=int, default=2,
                         help="circadian cap: new candidates per night (default 2)")
     parser.add_argument("--min-cluster", type=int, default=3)
+    parser.add_argument("--no-tend", action="store_true",
+                        help="skip the delegated-Gardener tend pass (amendment 2026-07-07)")
     args = parser.parse_args()
 
     stamp = datetime.now(timezone.utc).isoformat()[:19] + "Z"
@@ -82,6 +84,19 @@ def main():
         heuristic_distiller.main,
         ["--max-candidates", str(args.max_candidates), "--min-cluster", str(args.min_cluster)])
     print(distill_out, end="")
+
+    # Delegated Gardener (amendment 2026-07-07): auto-rule the pending queue.
+    # Human keeps veto-after: edit any status to `vetoed` and the next tend demotes it.
+    tend_out = ""
+    if not args.no_tend:
+        try:
+            from core import gardener
+            report = gardener.tend(dry_run=False)
+            tend_out = "; ".join(f"{k}:{len(v)}" for k, v in report.items() if v) or "queue clean"
+            print(f"[dream] gardener tend -> {tend_out}")
+        except Exception as ex:
+            tend_out = f"tend FAILED: {ex}"
+            print(f"[dream] {tend_out}")
 
     compact_out = _run_captured(graph_compactor.main, ["--dry-run"])
     print(compact_out, end="")
@@ -119,7 +134,9 @@ def main():
                      "--verdict accepted|rejected --notes \"...\" --loop N`")
     else:
         lines.append("Empty — every system-verified feature has been human-observed.")
-    lines += ["", "## Tonight's distillation", "```", distill_out.strip(), "```",
+    lines += ["", "## Gardener tend (delegated authority — veto any line by editing its status)",
+              f"`{tend_out or 'skipped (--no-tend)'}`",
+              "", "## Tonight's distillation", "```", distill_out.strip(), "```",
               "", "## Compaction preview (dry-run — apply is always manual)",
               "```", compact_out.strip(), "```", ""]
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")

@@ -168,3 +168,9 @@ python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session
 - `graphify_record observe` without `--derived-from` is an HONOR-SYSTEM surface (it cannot know
   who is typing). Directive 2 is what protects it. Automation must never touch it.
 - BP spawning: use `/Game/X/BP_Y.BP_Y` (asset form). The `_C` class form fails via the bridge.
+
+**Delegated Gardener (2026-07-07)**: you no longer wait for human heuristic approval.
+`python -m core.gardener --tend` runs inside every dream_loop: doc-organ rules self-promote,
+`approved (auto — implementation pending)` gate entries are YOUR branch-A work (capable
+sessions write the gate function + its test), tombstones are final. If the human edits any
+status to `vetoed`, the next tend demotes it automatically — never argue with a veto.

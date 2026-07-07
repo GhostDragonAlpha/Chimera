@@ -260,3 +260,7 @@ If your task is NOT listed here:
 2. If no pathway exists, test the simplest possible approach
 3. If it works → add this pathway to this document and record in DNA graph
 4. If it fails → note the error and try a different tool/action
+
+## Promoted Heuristic Traps (auto-tended)
+
+- **[H-10] pathway: build_orchestrator.ue_shutdown -> killed_for_build** — killed_for_build is the build lifecycle working as designed, not a pathway failure — record intended shutdowns as success with a note, or routine builds pollute the failure ledger.

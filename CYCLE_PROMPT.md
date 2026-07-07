@@ -35,7 +35,7 @@ head -40 E:\PythonChimera\task_progress.md
 From preflight note: [4.5] open pain IDs, pending heuristic count, observation queue; **[4.6] last sleepwalk + last rehearsal decision**; the NEXT list from task_progress.
 
 **STEP 2 — SELECT ONE work item (first match wins):**
-- **A. Human wrote `approved`/`vetoed` in `Chimera/docs/PENDING_HEURISTICS.md`** → for each approved H: add its draft_rule to the organ named in the entry (gate→copy an existing `gate_*` function shape in core/gates.py; claude_md→one bullet in CLAUDE.md "Generation Protocol" section; mcp_pathways→one TRAP line in docs/MCP_PATHWAYS.md), then:
+- **A. Heuristic queue needs hands** (doc-organ promotion is AUTOMATED — `core.gardener` runs inside dream_loop; your branch-A work is only what automation cannot do): for each entry marked `approved (auto — implementation pending)` (gate organ) or human-written `approved`: add its draft_rule to the organ named in the entry (gate→copy an existing `gate_*` function shape in core/gates.py; claude_md→one bullet in CLAUDE.md "Generation Protocol" section; mcp_pathways→one TRAP line in docs/MCP_PATHWAYS.md), then:
   `python -m core.graphify_record heuristic --signature "<sig>" --rule "<draft_rule>" --organ <organ> --evidence <first evidence id>` and set entry status→`promoted`. Vetoed: status→`vetoed`, touch nothing else.
 - **A2. Human vetoed a rehearsal decision** (one sentence against a veto-table line) →
   `python -m core.graphify_record surprise --context "rehearsal chose <X>" --reality "<their exact sentence>" --source human`, then rerun `python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide` and execute its new item.

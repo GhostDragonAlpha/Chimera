@@ -4,8 +4,10 @@ Spec: `Chimera/docs/GENERATION_PROTOCOL.md` (incl. the Sleepwalking amendment) a
 `Chimera/docs/SLEEPWALKER_DESIGN.md`. Digest:
 
 ## The human's two roles (inviolable)
-- **Gardener**: approves EVERY constitutional heuristic. `docs/PENDING_HEURISTICS.md` entries
-  are inert until the human writes `approved`; vetoed entries become tombstones.
+- **Gardener (delegated, amendment 2026-07-07)**: `core/gardener.py --tend` (inside dream_loop)
+  auto-rules `docs/PENDING_HEURISTICS.md` — doc-organ rules self-promote, gate-organ approvals
+  queue for capable implementation, subsumed entries tombstone. The human vetoes after the fact
+  (edit status to `vetoed` -> auto-demotion); their rejections outrank everything.
 - **Observer**: the true collapse. Features finish only under human eyes. The human gives a
   HOLISTIC temperature (`graphify_record playtest --notes "<verbatim>"`); the agent ATTRIBUTES
   it across the queue (`observe --derived-from <id> --quote|--tacit`) and presents the
