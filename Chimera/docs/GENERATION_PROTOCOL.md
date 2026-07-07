@@ -72,3 +72,8 @@ The balance of automation and control:
   observation from them (attribution of a real human playtest is their only observe path).
 - Every rehearsal decision is reversible by one human sentence (the veto table).
 - Nightly rhythm (optional, M4): sleepwalk 01:00 → dream_loop 02:00 — play, then dream.
+- **Delegated Gardener (amendment 2026-07-07)**: dream_loop's tend pass auto-rules the
+  pending-heuristics queue (core/gardener.py). Doc-organ rules self-promote with provenance;
+  gate-organ approvals queue for capable implementation; the human vetoes after the fact by
+  editing a status to `vetoed` (auto-demotion, doc line removed, veto recorded). The human's
+  remaining always-on powers: playtest at will, veto anything, human_rejection outranks all.
