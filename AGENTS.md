@@ -9,7 +9,7 @@
 ## Generation Protocol (mandatory rhythm — full spec: Chimera/docs/GENERATION_PROTOCOL.md)
 - **Fork before researching** (preferred): `python -m core.spiral_forks --feature X --use-lm` — 3 briefs (conservative/alternative/wild), winner proceeds after citation verification, losers autopsied. Forks never touch live state.
 - **Capture surprises live**: `python -m core.graphify_record surprise --context "..." --reality "..." --source human|agent|engine` on any correction, dead-end, or expectation violation.
-- **`verified` is the system's PRELIMINARY measurement.** The human's Observation is the true collapse: `graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N` — **agents NEVER record observations**. Accepted → `observed`; rejected → `needs_refinement` with the human's notes as first-priority dream fodder. Boards show `[DONE*]` until observed.
+- **`verified` is the system's PRELIMINARY measurement.** Observation is the true collapse: `graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`. **Full automation amendment (2026-07-07, see "Sleepwalker & Rehearsal" / "No-blockers" below): automated processes MAY record an Observation, but only through the attribution-gated path `core/collapse_proxy.py` uses** — `derived_from=<simtest_id>` plus either `quote`=the specific simulation evidence naming that feature, or `tacit=True` for exercised-but-unindicted (enforced in `_mutate_observation()`, `graphify_interface.py`; a free-form/un-derived automated write is rejected). A rejection indicts ONLY the features simulation evidence actually names — never a mass sweep. The human's direct verdict remains a first-class override at any time, but note that "override anytime" is a documented convention (a notes-string recorded to the graph), not a hard runtime lock — nothing currently blocks a later automated write, so the convention depends on agents honoring it. Accepted → `observed`; rejected → `needs_refinement` with the notes as first-priority dream fodder. Boards show `[DONE*]` until observed.
 - **The human Gardener approves EVERY heuristic** before it enters the constitution (`Chimera/docs/PENDING_HEURISTICS.md`; pending = inert; vetoed entries stay as tombstones).
 - **Nightly**: `python -m core.dream_loop` — distills ≤2 candidates, previews compaction, writes `Chimera/docs/DREAM_REPORT.md`.
 
@@ -76,7 +76,7 @@ cd E:\PythonChimera\Chimera
 python -m core.preflight
 ```
 Prints graph health, GPA trend, spiral loop board, pending technical_research,
-last pipeline run, environment reachability (LM Studio / UE / DNA API), junk count.
+last pipeline run, environment reachability (Vision/Testing Model / UE / DNA API), junk count.
 Report findings. Only then proceed. (Granular fallbacks: `g.query("health")`,
 `g.query("pattern", task)`, `g.query("mutation", task)`, `g.query("gpa", "trend")`.)
 
@@ -101,10 +101,10 @@ Every node is auto-stamped with `recorded_by` + per-process `run_id`.
 
 ## The Ralph Loop (Iterative Verification)
 
-Pick feature → Research → Professor grades → Apply → Screenshot → LM Studio compares → Refine → Repeat until verified.
+Pick feature → Research → Professor grades → Apply → Screenshot → Vision/Testing Model compares → Refine → Repeat until verified.
 
 ### Professor Review
-Submit research summary to LM Studio before any MCP calls. Grade gates: A/B → proceed. C/F → return to research. Record grade via `g.mutate("professor_grade", {...})`.
+Submit research summary to the Vision/Testing Model for verification before any MCP calls. Grade gates: A/B → proceed. C/F → return to research. Record grade via `g.mutate("professor_grade", {...})`.
 
 ### Research Depth Protocol (Gates)
 Research is not complete until all gates are passed:
@@ -159,15 +159,15 @@ Unknown MCP action → try 5+ parameter combos → record all attempts → spawn
 ## Critical Technical Reminders
 
 ### Screenshots for Verification
-**NEVER use MCP `control_editor.screenshot`.** It captures UI chrome, not the viewport. MCP `editor_viewport` mode captures the full editor window with overlays. MCP `game_viewport` mode uses the default pawn camera (not your placed CameraActor). Both produce small (1048x462) low-resolution images.
+**MCP `control_editor screenshot mode=editor_viewport` is the live, only screenshot path** (heuristic H-2, `docs/PENDING_HEURISTICS.md`, promoted 2026-07-07: "Never verify from desktop screenshots — capture via MCP control_editor screenshot mode=editor_viewport, which renders the viewport regardless of window focus." Confirmed in code: zero live `pyautogui.screenshot()` calls exist anywhere in `core/` or `Python/`; the `HAS_PYAUTOGUI` flag in `ralph_loop_harness.py` is set but never read). MCP `game_viewport` mode uses the default pawn camera (not your placed CameraActor); both modes can still produce small (1048x462) low-resolution images — a real limitation, but not a reason to fall back to desktop capture, which is what caused 41 wasted verification cycles from window-focus roulette before H-2 was promoted.
 
-**Use `pyautogui.screenshot()` only** — via `core/visual_verifier.py`, which now enforces:
+**Verification pipeline** — `core/visual_verifier.py`, `core/ralph_loop_harness.py`, `core/sleepwalker.py`, `Chimera/Python/verification_studio_runner.py` (all cite the H-2 prohibition in comments), which enforces:
 1. AppActivate 'Unreal Editor' + 2s settle
 2. **Foreground-window guard**: capture aborts (recording `aborted_wrong_window`) unless
    the foreground window title contains "Unreal Editor" — past runs graded a screenshot
-   of LM Studio itself
+   of the Vision/Testing Model interface itself
 3. Verify file size > 100000 bytes
-4. Send to LM Studio — prefer **checklist mode**:
+4. Send to Vision/Testing Model for verification — prefer **checklist mode**:
    `run_visual_verification(project_path, checklist=["criterion", ...], feature="Name")`
    does strict per-item YES/NO (unanswered = NO) instead of keyword sniffing
 

@@ -33,11 +33,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 try:
-    from core.graphify_interface import graphify_mutate
+    from core.graphify_interface import graphify_mutate, graphify_query
     from core.ralph_loop_harness import HARNESS_CONFIG
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from graphify_interface import graphify_mutate
+    from graphify_interface import graphify_mutate, graphify_query
     HARNESS_CONFIG = {"fork_budget": 3,
                       "lm_studio_url": "http://localhost:1234/v1/chat/completions",
                       "lm_studio_model": "qwen3.6-35b-a3b-mtp@iq2_m"}
@@ -62,16 +62,56 @@ BRIEF_SCHEMA_HINT = {
     "campus_sources": ["<source>", "..."], "parameters": {"<param>": "<exact value>"},
     "principles": ["<school principle applied>"], "emotional_anchor": "<from mapping table>",
     "acceptance_criteria": ["<criterion measurable in-engine>"],
+    "failure_sources": ["<source documenting what does NOT work>", "..."],
 }
+
+
+def _known_seed_sources() -> set:
+    """All seed source names across every campus, via the SAME graphify_query('campus',
+    'all') that retrieve_campus()/_query_campus() actually serve — validates against
+    exactly what the system told the researcher was available, no separate list that
+    could drift out of sync."""
+    try:
+        campuses = graphify_query("campus", "all")
+    except Exception:
+        campuses = {}
+    names = set()
+    for campus in (campuses or {}).values():
+        for seed in campus.get("seed_sources", []):
+            name = str(seed.get("name", "")).strip().lower()
+            if name:
+                names.add(name)
+    return names
+
+
+def is_reference_recognized(reference: str, known_seeds: set = None) -> bool:
+    """Research Depth Protocol Gate 3/6 (AGENTS.md ~109-119): does `reference` share a
+    recognizable keyword with ANY known campus seed? Catches wholly-invented citations
+    (e.g. the fake "JPL Planetary Science Archive: Regolith Rheology Datasets v2.1" that
+    previously scored a full 20/20 unchecked — docs/POST_THE_SYSTEM_THAT_SLEEPS.md)
+    without false-flagging a real citation that specializes a generic seed (e.g. a
+    specific report number under the seed "NASA Technical Reports")."""
+    if known_seeds is None:
+        known_seeds = _known_seed_sources()
+    ref_words = set(re.findall(r"[a-z]{4,}", reference.lower()))
+    if not ref_words:
+        return False
+    return any(ref_words & set(re.findall(r"[a-z]{4,}", seed)) for seed in known_seeds)
 
 
 def score_brief(brief: dict) -> tuple:
     """Deterministic Research Depth score, 0-100. Acceptance criteria weigh
     heaviest — research writes the exam."""
     pts, notes = 0.0, []
-    if str(brief.get("canonical_reference", "")).strip():
-        pts += 20
-        notes.append("locked reference +20")
+    ref = str(brief.get("canonical_reference", "")).strip()
+    if ref:
+        if is_reference_recognized(ref):
+            pts += 20
+            notes.append("locked reference +20 (recognized against campus seeds)")
+        else:
+            pts += 5
+            notes.append("locked reference present but NOT recognized against any "
+                         "campus seed source (+5/20) — verify this citation actually exists")
     else:
         notes.append("NO locked reference (0/20)")
     params = brief.get("parameters") or {}
@@ -99,6 +139,9 @@ def score_brief(brief: dict) -> tuple:
     c_pts = min(30, len(criteria) * 5)
     pts += c_pts
     notes.append(f"criteria {len(criteria)} (+{c_pts}/30)")
+    failure_sources = brief.get("failure_sources") or []
+    notes.append(f"failure_sources {len(failure_sources)} (Gate 4 met)" if failure_sources
+                 else "failure_sources 0 (Gate 4 unmet)")
     return round(pts, 1), "; ".join(notes)
 
 

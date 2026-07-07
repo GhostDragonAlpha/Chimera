@@ -144,8 +144,8 @@ VERIFY_SCHEMA = {
 }
 
 HARNESS_CONFIG: Dict[str, Any] = {
-    "lm_studio_url": "http://localhost:1234/v1/chat/completions",
-    "lm_studio_model": "qwen3.6-35b-a3b-mtp@iq2_m",
+    "lm_studio_url": "http://192.168.3.169:1234/v1/chat/completions",
+    "lm_studio_model": "dhruvallabs/qwen-agentworld-35b-a3b",
     "mcp_cli_path": "E:\\ChiR24-Unreal_mcp-test\\dist\\cli.js",
     "mcp_port": 8091,
     "playwright_url": "http://localhost:8342/mcp",
@@ -618,7 +618,14 @@ class MCPClient:
                 return False, f"Invalid JSON from MCP: {line[:200]}"
 
             if parsed.get("error"):
-                return False, json.dumps(parsed["error"])
+                err_msg = json.dumps(parsed["error"])
+                # H-7: Record the MCP response's error field, never raw CLI stdout — a DynamicToolManager boot banner inside an 'error' means the wrong stream was captured.
+                if "DynamicToolManager" in err_msg or "[UE-MCP]" in err_msg and "Initialized with" in err_msg:
+                    # Wrong stream captured - startup banner instead of actual error field
+                    logger.warning(f"[MCP call_tool] Detected DynamicToolManager boot banner in error field, ignoring as wrong stream capture")
+                    # Continue to extract content from result instead
+                else:
+                    return False, err_msg
 
             # Extract content from result
             result = parsed.get("result", {})
@@ -627,8 +634,16 @@ class MCPClient:
                 c.get("text", str(c)) for c in content
                 if isinstance(c, dict) and c.get("type") == "text"
             ]
-            if text_parts:
-                rt = "\n".join(text_parts)
+            # H-7: Filter out DynamicToolManager boot banners from CLI stdout
+            filtered_text_parts = []
+            for tp in text_parts:
+                if "DynamicToolManager" in str(tp) or "[UE-MCP] UE_PROJECT_PATH is not set" in str(tp):
+                    logger.info(f"[MCP call_tool] Filtering out DynamicToolManager boot banner from CLI stdout")
+                    continue
+                filtered_text_parts.append(tp)
+
+            if filtered_text_parts:
+                rt = "\n".join(filtered_text_parts)
                 if '"success":false' in rt.lower() or '"status":"error"' in rt.lower():
                     return False, rt
                 return True, rt
@@ -1100,28 +1115,45 @@ class LMStudioClient:
             {"role": "user", "content": user_prompt},
         ]
 
-        raw = LMStudioClient._chat(messages, temperature=0.2, max_tokens=1024, response_schema=VERIFY_SCHEMA)
-        if not raw:
-            return None
+        # H-3: Retry with larger token budget if LM response contains reasoning dump
+        max_retry_attempts = 2
+        current_max_tokens = 1024
 
-        logger.info(f"[Visual Verify] Raw response ({len(raw)} chars)")
+        for attempt in range(max_retry_attempts + 1):
+            raw = LMStudioClient._chat(messages, temperature=0.2, max_tokens=current_max_tokens, response_schema=VERIFY_SCHEMA)
+            if not raw:
+                return None
 
-        try:
-            json_match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', raw)
-            if json_match:
-                parsed = json.loads(json_match.group(1))
-            else:
-                parsed = json.loads(raw)
-            return parsed
-        except json.JSONDecodeError:
-            return {
-                "verified": "true" in raw.lower() and "false" not in raw.lower(),
-                "what_you_see": raw,
-                "match_assessment": "Could not parse structured JSON from response",
-                "issues": [],
-                "suggestions": [],
-                "raw_response": raw,
-            }
+            logger.info(f"[Visual Verify] Raw response ({len(raw)} chars), attempt {attempt+1}/{max_retry_attempts + 1}")
+
+            # H-3: Check for reasoning dump ("Here's a thinking process") - must retry with larger token budget or fail
+            if "here's a thinking process" in raw.lower() or "thinking process:" in raw.lower() or "thinking process:\n\n" in raw.lower():
+                if attempt < max_retry_attempts:
+                    current_max_tokens = min(current_max_tokens * 2, 4096)
+                    logger.warning(f"[Visual Verify] LM response contains reasoning dump. Retry {attempt+1}/{max_retry_attempts} with max_tokens={current_max_tokens}")
+                    continue
+                else:
+                    # Max retries reached, return error indicator - schema-validation failed
+                    logger.error("[Visual Verify] LM response contains reasoning dump after max retries - schema-validation failed")
+                    return None
+
+            try:
+                json_match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', raw)
+                if json_match:
+                    parsed = json.loads(json_match.group(1))
+                else:
+                    parsed = json.loads(raw)
+                return parsed
+            except json.JSONDecodeError:
+                # H-3: If JSON parse fails and we still have retry attempts, try with larger token budget
+                if attempt < max_retry_attempts:
+                    current_max_tokens = min(current_max_tokens * 2, 4096)
+                    logger.warning(f"[Visual Verify] JSON decode failed. Retry {attempt+1}/{max_retry_attempts} with max_tokens={current_max_tokens}")
+                    continue
+
+        # Max retries exhausted without valid JSON
+        logger.error("[Visual Verify] Max retry attempts exhausted without valid structured JSON")
+        return None
 
 
 # ─── MCP Pathways Parser ───────────────────────────────────────────────────
@@ -1546,14 +1578,29 @@ class RalphLoopHarness:
             logger.debug(traceback.format_exc())
             return False, str(e)
 
+        try:
+            from core.graphify_interface import record_pathway as _record_pathway
+        except ImportError:
+            _record_pathway = None
+
         all_success = True
         for i, (success, msg) in enumerate(results):
             status = "pass" if success else "failed"
-            self.graphify.record_mutation(
-                f"apply_{feature_name}_step{i + 1}",
-                status,
-                {"message": msg[:500], "feature": feature_name, "loop": feature_loop},
-            )
+            if _record_pathway:
+                # feature_type, not the per-call step label, is the pathway "tool" --
+                # f"apply_{feature_name}_step{i+1}" is not a recognized mutate_type and
+                # previously made record_mutation() silently swallow a ValueError (see
+                # graphify_interface.py's graphify_mutate() dispatcher, which raises
+                # "Unknown mutation type" for anything outside its known set).
+                _record_pathway(feature_type, f"apply_{feature_name}_step{i + 1}", status,
+                                parameters_tried={"feature": feature_name, "loop": feature_loop},
+                                error_message="" if success else str(msg)[:500])
+            else:
+                self.graphify.record_mutation(
+                    f"apply_{feature_name}_step{i + 1}",
+                    status,
+                    {"message": msg[:500], "feature": feature_name, "loop": feature_loop},
+                )
             if not success:
                 all_success = False
                 logger.error(f"  Step {i + 1} failed: {msg[:200]}")
@@ -1593,7 +1640,14 @@ class RalphLoopHarness:
         elif shape == "cone":
             size_params = {"radius": geo_params.get("radius", 80), "height": geo_params.get("height", 150)}
 
-        success, msg = MCPClient.create_geometry(shape, f"SM_{geo_name}", **size_params)
+        try:
+            from core.graphify_interface import call_with_pathway_rule
+            success, msg = call_with_pathway_rule(
+                "manage_geometry", f"create_{shape}",
+                lambda: MCPClient.create_geometry(shape, f"SM_{geo_name}", **size_params),
+                parameters_tried={"shape": shape, "name": f"SM_{geo_name}", **size_params})
+        except ImportError:
+            success, msg = MCPClient.create_geometry(shape, f"SM_{geo_name}", **size_params)
         results.append((success, msg))
         return results
 

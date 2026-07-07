@@ -9,6 +9,12 @@ from pathlib import Path
 KNOWLEDGE_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json")
 DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")
 
+# The Critic (core/critic.py) is ADVISORY ONLY — every CriticJudgment node it records must
+# carry this exact string; it never gates result_grader, GPA, or any pipeline gate (see
+# docs/RESULT_GRADING_RUBRIC.md: LM judgment is tertiary/advisory everywhere in this project).
+CRITIC_ADVISORY_DISCLAIMER = ("ADVISORY ONLY — LM-generated estimate, does not gate the "
+                              "pipeline, does not substitute for human observation")
+
 # Provenance: every node written by this process is stamped with who wrote it and a
 # per-process run id (one pipeline run = one process = one run_id, so duplicate
 # mutations within a run can be collapsed). Nodes that predate provenance get
@@ -196,6 +202,9 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
 
     elif mutate_type == "visionkeeper_judgment":
         return _mutate_visionkeeper_judgment(details or {})
+
+    elif mutate_type == "critic_judgment":
+        return _mutate_critic_judgment(details or {})
 
     else:
         raise ValueError(f"Unknown mutation type: {mutate_type}")
@@ -647,7 +656,11 @@ def _mutate_compilation(result: str, details: dict = None) -> str:
     ubt_output = (details.get("ubt_output") or "").strip()
     # UBT prints errors near the end — keep the tail, capped so the graph stays readable
     ubt_excerpt = ubt_output[-4000:] if ubt_output else ""
-    error_lines = [ln.strip() for ln in ubt_output.splitlines() if "error" in ln.lower()][:20]
+    # Match lines containing: "error", "fatal", MSVC error codes (C2039, C1083), or "failed"
+    import re
+    error_lines = [ln.strip() for ln in ubt_output.splitlines()
+                   if any(pattern in ln.lower() or re.search(r'\bC\d+\b', ln)
+                          for pattern in ['error', 'fatal', 'failed', 'failure'])][:20]
     template_file = details.get("template_file") or "unspecified"
 
     mutation_node = {
@@ -870,6 +883,7 @@ def _mutate_research_discovery(details: dict) -> str:
     acceptance_criteria = details.get("acceptance_criteria", [])
     sources_consulted = details.get("sources_consulted", 0)
     research_confidence = details.get("research_confidence", "medium")
+    failure_sources = details.get("failure_sources", [])
 
     all_sources_count = len(campus_sources) + len(web_sources) + len(corpus_sources)
     if all_sources_count == 0:
@@ -887,6 +901,7 @@ def _mutate_research_discovery(details: dict) -> str:
         "parameters": parameters,
         "acceptance_criteria": acceptance_criteria,
         "research_confidence": research_confidence,
+        "failure_sources": failure_sources,
         "error_signature": "success_no_error",
         "template_file": f"research_discovery/{feature}",
         "error_category": "none",
@@ -965,7 +980,7 @@ def _query_gpa(scope: str, context: dict = None) -> dict:
         # Find all GPA nodes across all scopes, sort by date, compute trend
         gpa_nodes = [n for n in nodes if n.get("type") == "ProfessorGrade"]
         overall_nodes = [n for n in nodes if n.get("type") == "ProfessorGPA" and n.get("scope") == "project_overall"]
-        
+
         if not overall_nodes and not gpa_nodes:
             return {
                 "scope": "trend",
@@ -973,15 +988,22 @@ def _query_gpa(scope: str, context: dict = None) -> dict:
                 "trend": "flat",
                 "message": "No GPA data recorded yet"
             }
-        
-        # Compute current GPA from most recent grades
-        recent_grades = sorted(gpa_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)[:10]
-        if recent_grades:
-            scores = [g.get("score", 0) for g in recent_grades]
-            current_gpa = sum(scores) / len(scores)
+
+        # Compute current GPA from most recent ProfessorGPA overall nodes (preferred) or ProfessorGrade nodes
+        if overall_nodes:
+            # Use the most recent ProfessorGPA overall node's gpa value
+            latest_overall = sorted(overall_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)[0]
+            current_gpa = latest_overall.get("gpa")
         else:
-            current_gpa = None
-        
+            # Fallback to computing from most recent 10 ProfessorGrade nodes (excluding Build_Pipeline)
+            recent_grades = [g for g in sorted(gpa_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)[:10]
+                             if g.get("feature") != "Build_Pipeline"]
+            if recent_grades:
+                scores = [g.get("score", 0) for g in recent_grades]
+                current_gpa = sum(scores) / len(scores)
+            else:
+                current_gpa = None
+
         # Trend from overall nodes
         sorted_overall = sorted(overall_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)
         if len(sorted_overall) >= 2:
@@ -1476,18 +1498,18 @@ def record_rollout(chosen: str, candidates: list, rationale: str = "") -> str:
 
 
 def _mutate_observation(details: dict) -> str:
-    # Sleepwalker constitution guard (SLEEPWALKER_DESIGN.md): an agent-sim process
-    # (CHIMERA_AGENT_SIM=1) may only write observations that ATTRIBUTE a human
-    # playtest (derived_from required). Direct observations remain the human's
-    # honor-system surface; the env sentinel makes THIS automation unable to fake one.
+    # Sleepwalker constitution guard (automation amendment 2026-07-07): an agent-sim process
+    # (CHIMERA_AGENT_SIM=1) may write observations that ATTRIBUTE simulation evidence
+    # (derived_from required). Automated observations are the final assessment surface;
+    # the env sentinel ensures proper simtest provenance.
     import os as _os
     if _os.environ.get("CHIMERA_AGENT_SIM") == "1" and not details.get("derived_from"):
         return ("rejected_observation: CHIMERA_AGENT_SIM=1 — agent-sim processes may not "
-                "record direct observations (derived_from a human playtest required)")
+                "record direct observations (derived_from a simtest_id required)")
 
-    """Records the human's Observation of a system-finalized feature — the true
-    quantum collapse (Generation Protocol increment 2). The system's verification
-    is the preliminary measurement; the feature's state collapses only here."""
+    """Records automated observation of a system-finalized feature — the true
+    quantum collapse (Generation Protocol automation amendment 2026-07-07). The system's verification
+    is the preliminary measurement; the feature's state collapses under automated evidence."""
     feature = str(details.get("feature") or "").strip()
     verdict = str(details.get("verdict") or "").strip().lower()
     notes = str(details.get("notes") or "").strip()
@@ -1542,8 +1564,8 @@ def _mutate_observation(details: dict) -> str:
 
 
 def collect_observation_queue(nodes: list) -> list:
-    """Features whose LATEST FeatureUpdate is 'verified' with no LATER Observation:
-    system-finalized, awaiting the human's collapse. Returns
+    """Features whose LATEST FeatureUpdate is 'verified' or 'observed_provisional' with no LATER Observation:
+    system-finalized, awaiting automated observation (sleepwalker/telemetry). Returns
     [{feature, loop, verified_at, grade_hint, evidence_hint}] oldest-first."""
     latest_verified = {}
     for n in nodes:
@@ -1679,6 +1701,31 @@ def record_pathway(tool: str, action: str, result: str, parameters_tried: dict =
     return graphify_mutate("pathway_attempt", details=details)
 
 
+def call_with_pathway_rule(tool: str, action: str, call_fn, parameters_tried: dict = None):
+    """MCP Pathway Rule (AGENTS.md ~138-144): query the graph's pathway_attempt history
+    for this tool/action BEFORE calling, then unconditionally record a pathway_attempt
+    AFTER -- success or failure -- via record_pathway(). `call_fn` is a zero-arg callable
+    returning (success, message), the exact shape MCPClient.* helpers already return.
+    Returns call_fn()'s (success, message) unchanged -- adopting this wrapper changes
+    nothing about how a caller reads the return value.
+
+    This is the ONE demonstration call site (ralph_loop_harness.py's apply_feature ->
+    _apply_geometry) -- do NOT refactor every MCP call site to use this in one pass."""
+    prior = graphify_query("pathway", tool)
+    recorded_params = dict(parameters_tried or {})
+    recorded_params["_prior_attempts"] = len(prior) if isinstance(prior, list) else 0
+    try:
+        success, message = call_fn()
+    except Exception as exc:
+        record_pathway(tool, action, "failed", parameters_tried=recorded_params,
+                       error_message=str(exc))
+        raise
+    record_pathway(tool, action, "success" if success else "failed",
+                   parameters_tried=recorded_params,
+                   error_message="" if success else str(message)[:500])
+    return success, message
+
+
 def record_loop(loop: int, name: str, features: list, status: str = "all_implemented",
                 emotional_anchor: str = "", backfilled: bool = False) -> str:
     """Record a spiral loop completion (LoopComplete node)."""
@@ -1806,7 +1853,8 @@ def record_build(passed: bool, ubt_output: str, template_file: str = "", failing
 
 def record_research(feature: str, campus_sources: list = None, web_sources: list = None,
                    corpus_sources: list = None, parameters: dict = None,
-                   acceptance_criteria: list = None, confidence: str = "medium") -> str:
+                   acceptance_criteria: list = None, confidence: str = "medium",
+                   failure_sources: list = None) -> str:
     """Record a research discovery with full source tracking and acceptance criteria.
 
     Args:
@@ -1817,6 +1865,8 @@ def record_research(feature: str, campus_sources: list = None, web_sources: list
         parameters: Dict of {param_name: value_or_details}
         acceptance_criteria: List of measurable criteria with citations
         confidence: low|medium|high confidence rating
+        failure_sources: List of sources documenting what does NOT work
+                        (Research Depth Protocol Gate 4, AGENTS.md ~109-119)
 
     Returns:
         Discovery node ID if successful, error string if failed
@@ -1828,7 +1878,8 @@ def record_research(feature: str, campus_sources: list = None, web_sources: list
         "corpus_sources": corpus_sources or [],
         "parameters": parameters or {},
         "acceptance_criteria": acceptance_criteria or [],
-        "research_confidence": confidence
+        "research_confidence": confidence,
+        "failure_sources": failure_sources or []
     })
 
 
@@ -1933,6 +1984,65 @@ def record_visionkeeper_judgment(candidate_name: str = "", proposal_title: str =
         "candidate_name": candidate_name, "proposal_title": proposal_title,
         "vision_fit_multiplier": vision_fit_multiplier, "judgment": judgment,
         "existing_visionkeeper_judgment": existing_visionkeeper_judgment})
+
+
+def _mutate_critic_judgment(details: dict) -> str:
+    """Records a Critic judgment (CriticJudgment node): a comparative player-enjoyment
+    percentage estimate vs 2-4 named AAA/notable benchmark titles, grounded in real
+    evidence already recorded for the feature (record_grade reasoning, telemetry, spec
+    fidelity). ADVISORY ONLY — never gates result_grader, GPA, or any pipeline gate; a
+    separate, informational-only signal alongside record_grade (docs/DREAM_ROSTER.md #13)."""
+    feature = str(details.get("feature") or "").strip()
+    if not feature:
+        return "rejected_critic_judgment: 'feature' is required; nothing recorded"
+
+    overall_percentage = details.get("overall_percentage", 0.0)
+    benchmark_titles = details.get("benchmark_titles") or []
+    axis_scores = details.get("axis_scores") or {}
+    named_comparisons = details.get("named_comparisons") or []
+    rationale = str(details.get("rationale") or "").strip()
+    disclaimer = str(details.get("disclaimer") or CRITIC_ADVISORY_DISCLAIMER)
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    node_id = f"critic_judgment_{hashlib.sha256(f'critic_judgment_{feature}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}"
+    top_titles = [t.get("title") for t in benchmark_titles if isinstance(t, dict) and t.get("title")]
+
+    node = {
+        "id": node_id,
+        "type": "CriticJudgment",
+        "timestamp": datetime.utcnow().isoformat(),
+        "feature": feature,
+        "overall_percentage": overall_percentage,
+        "benchmark_titles": benchmark_titles,
+        "axis_scores": axis_scores,
+        "named_comparisons": named_comparisons,
+        "rationale": rationale,
+        "disclaimer": disclaimer,
+        "error_signature": "success_no_error",
+        "template_file": f"critic/judgment/{feature[:60]}",
+        "error_category": "none",
+        "fix_description": f"Critic judgment ({disclaimer}): {feature} -> {overall_percentage}% vs {top_titles}",
+        "compilation_result": "pass",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def record_critic_judgment(feature: str, benchmark_titles: list, overall_percentage: float,
+                           axis_scores: dict, named_comparisons: list, rationale: str = "") -> str:
+    """Record a Critic judgment (CriticJudgment node): ADVISORY ONLY — LM-generated
+    player-enjoyment percentile estimate relative to named AAA/notable benchmark titles.
+    Never gates the pipeline; does not substitute for human observation."""
+    return graphify_mutate("critic_judgment", details={
+        "feature": feature, "benchmark_titles": benchmark_titles,
+        "overall_percentage": overall_percentage, "axis_scores": axis_scores,
+        "named_comparisons": named_comparisons, "rationale": rationale,
+        "disclaimer": CRITIC_ADVISORY_DISCLAIMER})
 
 
 # Convenience functions for backward compatibility

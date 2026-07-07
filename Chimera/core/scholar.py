@@ -90,6 +90,66 @@ def retrieve_corpus(query: str, max_results: int = 5) -> List[Dict]:
     return results
 
 
+SOURCE_TYPE_PATTERNS = {
+    "video": ("youtube.com", "vimeo.com", ".mp4", "/video/"),
+    "community": ("reddit.com", "forum", "discourse", "stackexchange"),
+    "3d_scans": ("sketchfab.com", "3dscan", "photogrammetry", "polycam"),
+    "historical": ("archive.org", "wayback"),
+    "primary_photography": ("flickr.com", "unsplash.com", "gettyimages", "/photos/"),
+    "technical_docs": (".gov", ".edu", "arxiv.org", "documentation", ".pdf"),
+}
+
+
+def classify_source_type(source: str) -> str:
+    """Research Depth Protocol Gate 1 (AGENTS.md ~109-119): cheap mechanical classifier
+    against the six source-type vocabulary. Defaults to 'technical_docs' for campus seeds
+    (curated professional references with no URL to pattern-match); never raises."""
+    s = str(source).lower()
+    for type_name, patterns in SOURCE_TYPE_PATTERNS.items():
+        if any(p in s for p in patterns):
+            return type_name
+    return "technical_docs"
+
+
+def check_source_diversity(campus_sources=None, web_sources=None, corpus_sources=None,
+                           min_types: int = 3) -> dict:
+    """Gate 1: >=3 distinct source TYPES, not just source count."""
+    types = {classify_source_type(s) for s in (campus_sources or [])}
+    types |= {classify_source_type(s) for s in (web_sources or [])}
+    if corpus_sources:
+        types.add("historical")
+    return {"gate": "source_diversity", "passed": len(types) >= min_types,
+            "distinct_types": sorted(types), "required": min_types}
+
+
+def check_domain_diversity(web_sources=None, min_domains: int = 3) -> dict:
+    """Gate 2: >=3 distinct domains among web sources (urlparse netloc)."""
+    domains = set()
+    for url in (web_sources or []):
+        try:
+            netloc = urllib.parse.urlparse(str(url)).netloc.lower()
+        except Exception:
+            netloc = ""
+        if netloc:
+            domains.add(netloc)
+    return {"gate": "domain_diversity", "passed": len(domains) >= min_domains,
+            "distinct_domains": sorted(domains), "required": min_domains}
+
+
+def score_parameter_confidence(parameters: Optional[Dict] = None,
+                               sources_by_param: Optional[Dict] = None) -> dict:
+    """Gate 3: >=2 independent sources per PARAMETER, else confidence is explicitly Low
+    ("document absence, mark Low", not a whole-brief medium/low proxy). A parameter absent
+    from sources_by_param is honestly Low, never guessed at medium."""
+    sources_by_param = sources_by_param or {}
+    result = {}
+    for param in (parameters or {}):
+        n = len(sources_by_param.get(param, []))
+        result[param] = {"sources": n, "confidence": "medium_or_higher" if n >= 2 else "low",
+                         "reason": "" if n >= 2 else f"only {n} source(s); Gate 3 requires 2"}
+    return result
+
+
 def build_discovery_node(
     feature: str,
     campus_sources: List[str],
@@ -97,7 +157,8 @@ def build_discovery_node(
     corpus_sources: Optional[List[str]] = None,
     parameters: Optional[Dict] = None,
     acceptance_criteria: Optional[List[str]] = None,
-    confidence: str = "medium"
+    confidence: str = "medium",
+    failure_sources: Optional[List[str]] = None
 ) -> str:
     """Record a research_discovery node to the graph.
 
@@ -109,6 +170,7 @@ def build_discovery_node(
         parameters: Dict of {param_name: {value, unit, source, confidence}}
         acceptance_criteria: List of measurable criteria with citations
         confidence: low|medium|high confidence rating
+        failure_sources: List of sources documenting what does NOT work (Gate 4)
 
     Returns:
         Discovery node ID if successful, error string if failed
@@ -120,7 +182,8 @@ def build_discovery_node(
         corpus_sources=corpus_sources,
         parameters=parameters,
         acceptance_criteria=acceptance_criteria,
-        confidence=confidence
+        confidence=confidence,
+        failure_sources=failure_sources
     )
 
 
@@ -178,7 +241,8 @@ def write_study_guide(feature: str, discovery_node_id: str, brief: Dict) -> str:
 def scholar_brief_from_research(
     feature: str,
     topic: str,
-    campus_names: Optional[List[str]] = None
+    campus_names: Optional[List[str]] = None,
+    failure_sources: Optional[List[str]] = None
 ) -> Dict:
     """Generate a CONSERVATIVE brief from research campuses + corpus.
 
@@ -239,6 +303,18 @@ def scholar_brief_from_research(
             "Numeric values (not adjectives)",
             "Observable in-engine (proposed measurement method)"
         ],
+        "failure_sources": failure_sources or [],
+    }
+
+    # Research Depth Protocol gates (AGENTS.md ~109-119) — surfaced in the brief so a
+    # reviewer sees the gap explicitly instead of it being silently absent. domain_diversity
+    # is checked against [] here because this function never receives real web sources
+    # today (see module-level note: web fetching is not yet wired into Scholar) — that
+    # remaining gap is visible in the output rather than hidden.
+    brief["research_depth_gates"] = {
+        "source_diversity": check_source_diversity(campus_sources_list, [], corpus_sources),
+        "domain_diversity": check_domain_diversity([]),
+        "failure_research": {"passed": bool(failure_sources), "count": len(failure_sources or [])},
     }
 
     return brief
@@ -255,6 +331,9 @@ def main():
                        help="Process pending technical_research queue")
     parser.add_argument("--generate-brief", action="store_true",
                        help="Generate a conservative brief (for spiral_forks)")
+    parser.add_argument("--failure-source", action="append", dest="failure_sources",
+                       help="Source documenting what does NOT work (Research Depth "
+                            "Protocol Gate 4; repeatable)")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be done, don't record")
 
     args = parser.parse_args()
@@ -325,13 +404,20 @@ def main():
                 f"Verified against {len(corpus_paths)} local references",
                 "Observable in-engine via telemetry or screenshot"
             ],
-            confidence="medium" if corpus_results else "low"
+            confidence="medium" if corpus_results else "low",
+            failure_sources=args.failure_sources or []
         )
 
         print(f"\nRecorded discovery node: {discovery_id}")
 
         if args.generate_brief:
-            brief = scholar_brief_from_research(args.feature, args.topic, campuses_to_query)
+            brief = scholar_brief_from_research(args.feature, args.topic, campuses_to_query,
+                                               failure_sources=args.failure_sources)
+            gates = brief["research_depth_gates"]
+            print("\nResearch Depth Protocol gates:")
+            for gate_name, gate_result in gates.items():
+                status = "PASS" if gate_result.get("passed") else "gap"
+                print(f"  [{status}] {gate_name}: {gate_result}")
             brief_file = CHIMERA_ROOT / "docs" / f"scholar_brief_{args.feature}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             brief_file.parent.mkdir(parents=True, exist_ok=True)
             brief_file.write_text(json.dumps(brief, indent=2))
