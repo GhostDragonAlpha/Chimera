@@ -92,6 +92,32 @@ def _known_blockers(nodes):
     return blocked_actions
 
 
+def apply_freshness(rows, nodes):
+    """Work-conservation: a candidate carrying cooldown_h + fresh_marker is dead work
+    while a successful matching record younger than the cooldown exists. Re-verifying
+    a clean system is idling, not working."""
+    from datetime import datetime, timezone, timedelta
+    now = datetime.now(timezone.utc)
+    for r in rows:
+        cd, marker = r.get("cooldown_h"), r.get("fresh_marker")
+        if not cd or not marker:
+            continue
+        for n in nodes:
+            if str(marker).lower() in str(n.get("fix_description", "")).lower()                     and n.get("error_signature") == "success_no_error":
+                try:
+                    ts = datetime.fromisoformat(str(n.get("timestamp", "")).replace("Z", "+00:00"))
+                    if ts.tzinfo is None:
+                        ts = ts.replace(tzinfo=timezone.utc)
+                except ValueError:
+                    continue
+                if now - ts < timedelta(hours=float(cd)):
+                    r["score"] = round(r["score"] * 0.05, 3)
+                    r["why"] = f"FRESHLY VERIFIED {str(n.get('timestamp',''))[:16]} — re-running adds nothing (cooldown {cd}h)"
+                    break
+    rows.sort(key=lambda x: -x["score"])
+    return rows
+
+
 def apply_no_dead_ends(rows, nodes):
     """NO-DEAD-ENDS LAW: a candidate whose recipe depends on a recorded dead end is
     demoted to near-zero and REPLACED by its unblocker (the repair IS the work)."""
@@ -133,6 +159,7 @@ def enumerate_candidates(nodes, candidates_file=None):
                                 "capable_only": bool(c.get("capable_only", False)),
                                 "why": c.get("why", "curated"),
                                 "blocked_by": c.get("blocked_by"),
+                                "cooldown_h": c.get("cooldown_h"), "fresh_marker": c.get("fresh_marker"),
                                 "unblock_recipe": c.get("unblock_recipe"),
                                 "recipe": c.get("recipe", "(no recipe provided — a wish, rank last)")}
     return list(cands.values())
@@ -190,6 +217,7 @@ def main():
         return
     rows = score_candidates(nodes, cands)
     rows = apply_no_dead_ends(rows, nodes)
+    rows = apply_freshness(rows, nodes)
     print(veto_table(rows))
     if args.decide and not args.dry_run:
         top = rows[0]

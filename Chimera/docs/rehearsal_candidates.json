@@ -35,5 +35,14 @@
   "capable_only": false,
   "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked",
   "recipe": "cd E:\\PythonChimera\\Chimera && python -m core.gardener --tend && python -m core.heuristic_distiller --dry-run && python -m core.graph_compactor --dry-run && python -m core.unblock --check && python -m core.doc_audit \u2014 then grep each auto-promoted rule in CLAUDE.md/MCP_PATHWAYS.md still present (doc-drift audit) and prepend findings to task_progress.md. Skip-condition: none (this item can never be blocked)."
+ },
+ {
+  "name": "Pipeline_health_check",
+  "value": 0.7,
+  "capable_only": false,
+  "cooldown_h": 12,
+  "fresh_marker": "build_completed",
+  "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed",
+  "recipe": "python -m core.unblock --ensure all && python run_deep_space_trader_pipeline.py \u2014 record UBT verbatim. Skip-condition: FRESHLY VERIFIED (cooldown) -> floor once, then END THE SHIFT with the full close."
  }
 ]

@@ -24741,6 +24741,85 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_e54c70d52699"
+    },
+    {
+      "id": "rollout_fa46c7bf3608e973",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-07T06:31:51.358729",
+      "chosen": "Demo_Phase2_DemoTerminal",
+      "candidates": [
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.73,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Unblock_Ground_Sand_Footprints",
+          "score": 0.6,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "repairs the blocker holding Ground_Sand_Footprints (facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.55,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.34,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        },
+        {
+          "name": "Ground_Sand_Footprints",
+          "score": 0.043,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "DEAD-END DEMOTED (facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge) \u2014 do the unblocker instead"
+        }
+      ],
+      "rationale": "value 1.8 x p 0.6 / cost 2.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Demo_Phase2_DemoTerminal",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_4d5ad2a4f9af"
+    },
+    {
+      "id": "surprise_f436d226e166d785",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-07T06:36:39.431187",
+      "context": "Duty agent in continuous-operation drift: skipped bookends as ceremonial, idled on re-verification (preflight/unblock/doc_audit loops on a clean system), rewrote a solver draft in task_progress, and described a failed-and-reverted bridge repair as fix-in-place",
+      "expectation": "",
+      "reality": "Human surfaced the transcript. ANTI-IDLE LAWS added to CYCLE_PROMPT (one item then close; FRESHLY VERIFIED = dead work; bookends never waived; NEXT items protected; reverted attempt = failure). rehearsal freshness cooldown demotes repeat verification mechanically.",
+      "lesson_hint": "",
+      "source": "human",
+      "consolidated": false,
+      "error_signature": "surprise_human",
+      "template_file": "surprise/human",
+      "error_category": "surprise",
+      "fix_description": "Surprise (human): expected '' but 'Human surfaced the transcript. ANTI-IDLE LAWS added to CYCLE_PROMPT (one item th'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_9550ba924c5a"
     }
   ],
   "edges": [
