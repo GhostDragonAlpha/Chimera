@@ -137,12 +137,18 @@ def tend(dry_run: bool = False, min_count: int = 3) -> dict:
         if status.startswith("vetoed") and "demoted" not in status and "promoted" not in status \
                 and "(auto" not in status and status != "vetoed-auto":
             # human wrote a bare `vetoed` — if we previously promoted it, demote
-            if rule and not rule.startswith("(") and _remove_doc_line(rule) and not dry_run:
-                record_surprise(context=f"Gardener-auto promoted {e['id']} ({e['signature']})",
-                                reality="Human vetoed it — demoted, doc line removed",
-                                source="human")
-                block = _set_status(block, f"vetoed (human — demoted {_now()})")
-                report["demoted_human"].append(e["id"])
+            if rule and not rule.startswith("(") and not dry_run:
+                removed = _remove_doc_line(rule)
+                if removed:
+                    record_surprise(context=f"Gardener-auto promoted {e['id']} ({e['signature']})",
+                                    reality="Human vetoed it — demoted, doc line removed",
+                                    source="human")
+                    block = _set_status(block, f"vetoed (human — demoted {_now()})")
+                    report["demoted_human"].append(e["id"])
+                else:
+                    report["untouched"].append(f"{e['id']} (vetoed, nothing to demote)")
+            elif dry_run and rule and not rule.startswith("("):
+                report["demoted_human"].append(f"{e['id']} (would demote)")
             else:
                 report["untouched"].append(e["id"])
         elif status == "pending":

@@ -115,16 +115,17 @@ class Sleepwalker:
     def run(self, keep_pie: bool = False) -> dict:
         settle = float(self.spec.get("settle_s", 6))
         self.w.mark("session_start", {"demo": self.spec.get("demo")})
-        # is-PIE-active check before play (pain phase_34195900a1671e58:P1 guard)
+        # PIE-collision guard (prerequisite for nightly rhythm): check isPIE=false first.
         rt = self._runtime()
         if rt.get('isPIE'):
-            for _ in range(3):
-                time.sleep(120)
-                rt = self._runtime()
-                if not rt.get('isPIE'):
-                    break
-            else:
-                record_pathway("sleepwalker", "pie_active_check", "blocked", {"reason": "isPIE remained true after 3 retries"})
+            record_pathway("sleepwalker", "pie_collision_guard", "blocked", {"reason": "live session exists (isPIE=true)"})
+            # skip and note it
+            chronicle = self.w.finalize()
+            return {"session": self.session, "demo": self.spec.get("demo"),
+                    "beats_total": 0, "beats_reached": 0,
+                    "outcomes": [], "chronicle": chronicle,
+                    "temperature": "[SIM] Sleepwalk skipped: live PIE session exists (isPIE=true). Prerequisite for nightly rhythm not met.",
+                    "skipped_pie_active": True}
         self._call("control_editor", {"action": "play"})
         try:
             time.sleep(settle)

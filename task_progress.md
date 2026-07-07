@@ -1,3 +1,16 @@
+# Session 2026-07-07 (duty cycle) — DUSK+NIGHT+PUSH: sleepwalker PIE-collision guard, gardener dry-run bug fixed, prohibitions verified
+
+**Work completed**: Fixed `sleepwalker.py` PIE-collision guard, fixed `gardener.py` dry-run bug, verified prohibitions documentation in `.roo/rules` and `AGENTS.md`. Postflight recorded; dream_loop ran with no new candidates staged (constitution already covers today's lessons).
+
+## NEXT
+1. **Demo_Phase3_SessionB_wiring** — DEMO_ARCHITECTURE.md §5 Phase 3 — ke-routed verification + Session B handoff; blocked by Phase 2. Recipe: Follow Chimera/docs/DEMO_ARCHITECTURE.md §5 PHASE 3 items 1-3 exactly. Skip-condition: Phase 2 not built -> pick another candidate.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+2. **Duty cycles: use branch C2** — when NEXT is empty:
+   `python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide` and execute its item.
+3. **Fallback**: pipeline health check (qwen3.6 must be loaded first: `lms load qwen3.6-35b-a3b-mtp@iq2_m`).
+
+---
+
 # Rehearsal decision 2026-07-07 01:36Z — next move: Demo_Phase3_SessionB_wiring
 
 Chosen by core.rehearsal (score 1.15, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.

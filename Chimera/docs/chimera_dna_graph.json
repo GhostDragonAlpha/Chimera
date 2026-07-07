@@ -23054,6 +23054,29 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_abc487bc30eb"
+    },
+    {
+      "id": "phase_33cc2d55125bc551",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-07T02:09:07.961210",
+      "phase": "fixed sleepwalker.py PIE-collision guard, gardener.py dry-run bug, verified prohibitions documentation",
+      "result": "sleepwalker.py PIE-collision guard added; gardener.py dry-run bug fixed; prohibitions documented.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/fixed sleepwalker.py PIE-collision guard, gardener.py dry-run bug, verified prohibitions documentation",
+      "error_category": "none",
+      "fix_description": "Phase 'fixed sleepwalker.py PIE-collision guard, gardener.py dry-run bug, verified prohibitions documentation' complete: sleepwalker.py PIE-collision guard added; gardener.py dry-run bug fixed; prohibitions documented.",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "sleepwalker may still attempt PIE if runtime_report is not checked properly"
+      ],
+      "inheritance": "PIE-collision guard and dry-run fix applied; prohibitions verified in .roo/rules and AGENTS.md.",
+      "pain_verdicts": {
+        "phase_sleepwalker_pie_guard:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_7ab07a53908f"
     }
   ],
   "edges": [
