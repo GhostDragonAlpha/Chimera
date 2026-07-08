@@ -4,6 +4,7 @@
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/DefaultPawn.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Demo/DemoPlayerController.h"
 #include "../Interactions/DemoTerminal.h"
 #include "../Stations/StationActor.h"
 
@@ -33,6 +34,9 @@ ADeepSpaceTraderGameMode::ADeepSpaceTraderGameMode()
 		DefaultPawnClass = AShip_Trader_Vessel_Alpha::StaticClass();
 		UE_LOG(LogTemp, Log, TEXT("GAMEMODE CONSTRUCTOR: DefaultPawnClass set to AShip_Trader_Vessel_Alpha"));
 	}
+
+	PlayerControllerClass = ADemoPlayerController::StaticClass();
+	UE_LOG(LogTemp, Log, TEXT("GAMEMODE CONSTRUCTOR: PlayerControllerClass set to ADemoPlayerController"));
 }
 
 void ADeepSpaceTraderGameMode::BeginPlay()

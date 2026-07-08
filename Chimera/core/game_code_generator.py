@@ -763,6 +763,7 @@ class GameCodeGenerator:
         source_content += f'#include "GameFramework/PlayerState.h"\n'
         source_content += f'#include "GameFramework/DefaultPawn.h"\n'
         source_content += f'#include "Kismet/GameplayStatics.h"\n'
+        source_content += f'#include "../Demo/DemoPlayerController.h"\n'
         # Add DemoTerminal and StationActor includes for Phase 2 kiosk self-spawn and station spawns
         if has_ships or has_stations:
             source_content += f'#include "../Interactions/DemoTerminal.h"\n'
@@ -840,6 +841,15 @@ class GameCodeGenerator:
             source_content += "\t\tDefaultPawnClass = ADefaultPawn::StaticClass();\n"
             source_content += "\t\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: DefaultPawnClass set to ADefaultPawn\"));\n"
             source_content += "\t}\n"
+
+        # Set player controller class: without this, GameModeBase falls back to the input-less base
+        # APlayerController and on-foot movement (W/A/S/D, Space jump) silently does nothing, even
+        # though DefaultPawnClass/AutoPossessPlayer is otherwise configured correctly (task_c11196d2).
+        # ADemoPlayerController is pawn-generic (APawn::AddMovementInput, safe Cast<ACharacter> for
+        # Jump, and a camera-if-missing guard) so it works for both the astronaut character and the
+        # ship-pawn fallback above without needing per-pawn-type branching.
+        source_content += "\n\tPlayerControllerClass = ADemoPlayerController::StaticClass();\n"
+        source_content += "\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: PlayerControllerClass set to ADemoPlayerController\"));\n"
 
         source_content += "}\n\n"
 

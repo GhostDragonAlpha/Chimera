@@ -141,7 +141,7 @@ def tend(dry_run: bool = False, min_count: int = 3) -> dict:
             rule = "" if not subsumed else rule
 
         if status.startswith("vetoed") and "demoted" not in status and "promoted" not in status \
-                and "(auto" not in status and status != "vetoed-auto":
+                and not status.startswith("vetoed-auto"):
             # human wrote a bare `vetoed` — if we previously promoted it, demote
             if rule and not rule.startswith("(") and not dry_run:
                 removed = _remove_doc_line(rule)

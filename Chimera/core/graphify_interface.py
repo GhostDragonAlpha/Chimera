@@ -1334,14 +1334,8 @@ def _mutate_technical_discovery(details: dict) -> str:
     
     nodes.append(mutation_node)
     save_dna_graph({"nodes": nodes, "edges": edges})
-    
-    return mutation_node["id"]
 
-def save_dna_graph(graph):
-    _stamp_provenance(graph.get("nodes", []))
-    DNA_GRAPH_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(DNA_GRAPH_PATH, 'w', encoding='utf-8') as f:
-        json.dump(graph, f, indent=2)
+    return mutation_node["id"]
 
 def _mutate_phase_complete(details: dict) -> str:
     """Records a phase completion (the Contract's Post-Flight g.mutate("phase_complete", ...))."""
@@ -1594,7 +1588,14 @@ def _mutate_observation(details: dict) -> str:
     # Attribution honesty: an agent-derived observation must trace to a playtest node,
     # and a non-tacit attribution must quote the human's actual words.
     if derived_from:
-        observer = "human-via-attribution"
+        if observer == "human":
+            # Caller didn't specify an automated (or other) observer — this is the
+            # legacy agent-quoting-a-human-playtest path, so label it as such. A
+            # caller that DID pass a specific observer (e.g. "automated-via-attribution",
+            # "agent-sim-provisional") is respected as-is — collapse_proxy.py's fully-
+            # automated sweeps must read as automated, not human (Generation Protocol
+            # automation amendment 2026-07-07).
+            observer = "human-via-attribution"
         if not tacit and not quote:
             return ("rejected_observation: attribution requires 'quote' (the human's "
                     "phrase) unless tacit=True; nothing recorded")

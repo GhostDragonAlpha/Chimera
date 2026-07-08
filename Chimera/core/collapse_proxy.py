@@ -14,6 +14,21 @@ MODE A  --from-simtest <id> --valence accepted|rejected
         left for provisional collapse. A whole-experience rejection never
         mass-fails features the simulation did not indict.
 
+MODE A'  --from-playtest <id> --valence accepted|rejected
+    The human-observer twin of MODE A (CYCLE_PROMPT.md Step B.4 / .roo/rules/03-circadian.md):
+    sweeps ONE holistic human temperature (a PlaytestObservation node — record_playtest /
+    _mutate_playtest in graphify_interface.py) across the whole queue:
+      valence accepted -> every queue feature EXERCISED (same _clean_exercises evidence
+        as MODE A — beat coverage/witness chronicles) is attributed accepted-tacit,
+        derived_from the playtest. Silence over an exercised feature = passed the glance.
+      valence rejected -> ONLY features already quoted against THIS playtest are rejected.
+        A PlaytestObservation carries just the human's verbatim notes, never structured
+        per-feature outcomes like SimPlaytest, so "the evidence" is whatever the agent
+        already attributed feature-by-feature (`graphify_record observe --derived-from
+        <playtest_id> --quote "..."` — CYCLE_PROMPT.md Step B.2, the normal branch-B flow)
+        before running this sweep. A whole-experience rejection never mass-fails features
+        the human's words did not name.
+
 MODE B  --tend  (runs nightly inside dream_loop)
     Automated collapse between cycles: any queue feature exercised
     cleanly in >= --min-sessions sleepwalk sessions is recorded
@@ -24,6 +39,7 @@ MODE B  --tend  (runs nightly inside dream_loop)
 Usage:
   python -m core.collapse_proxy --tend [--dry-run] [--min-sessions 2]
   python -m core.collapse_proxy --from-simtest simtest_xxx --valence accepted [--dry-run]
+  python -m core.collapse_proxy --from-playtest playtest_xxx --valence accepted [--dry-run]
 """
 
 import argparse
@@ -106,6 +122,32 @@ def _indicted_by_simtest(nodes, simtest_id):
     return indicted
 
 
+def _indicted_by_playtest(nodes, playtest_id):
+    """feature -> [quote strings], sourced from a human Playtest node instead of a
+    SimPlaytest node (MODE A'). A PlaytestObservation (record_playtest/_mutate_playtest
+    in graphify_interface.py) carries only the human's holistic verbatim notes — no
+    structured per-feature outcomes like SimPlaytest.outcomes. So unlike
+    _indicted_by_simtest (which reads evidence off the simtest node itself), the
+    per-feature breakdown here is whatever the agent already attributed to THIS
+    playtest via the normal branch-B flow: `graphify_record observe --derived-from
+    <playtest_id> --quote "..."` (CYCLE_PROMPT.md Step B.2) — i.e. Observation nodes
+    with derived_from == playtest_id and verdict == 'rejected'. Scoped to a single
+    playtest_id, matching _indicted_by_simtest's own contract — a different playtest's
+    rejections must never leak in."""
+    indicted = {}
+    for n in nodes:
+        if n.get("type") != "Observation" or n.get("derived_from") != playtest_id:
+            continue
+        if n.get("verdict") != "rejected":
+            continue
+        f = n.get("feature_name")
+        if not f:
+            continue
+        quote = n.get("quote") or n.get("notes") or "no quote recorded"
+        indicted.setdefault(f, []).append(quote)
+    return indicted
+
+
 def sweep(simtest_id: str, valence: str, dry_run: bool = False):
     from core.graphify_interface import record_observation, record_feature
     queue, nodes = _queue_and_nodes()
@@ -160,22 +202,89 @@ def sweep(simtest_id: str, valence: str, dry_run: bool = False):
     return {"swept": swept, "skipped": skipped}
 
 
+def sweep_playtest(playtest_id: str, valence: str, dry_run: bool = False):
+    """MODE A' — mirrors sweep() but sourced from a human PlaytestObservation node
+    instead of a SimPlaytest node (see module docstring). Same shape, same queue
+    contract ("never reach outside the queue"), same record_observation +
+    record_feature pairing per processed feature — only the evidence source and the
+    attribution provenance (derived_from a playtest_id, observer human-via-attribution)
+    differ."""
+    from core.graphify_interface import record_observation, record_feature
+    queue, nodes = _queue_and_nodes()
+    exercised = _clean_exercises(nodes)
+    if valence == "rejected":
+        indicted = _indicted_by_playtest(nodes, playtest_id)
+        queue_features = {q["feature"]: q for q in queue}
+        rejected = []
+        for f, quotes in indicted.items():
+            if f not in queue_features:
+                continue  # never reach outside the queue -- matches the module's own contract
+            q = queue_features[f]
+            if not dry_run:
+                record_observation(f, "rejected", observer="human-via-attribution",
+                                   derived_from=playtest_id, quote=" | ".join(quotes[:3]),
+                                   notes=f"playtest rejection sweep: the human's holistic "
+                                         f"temperature indicts this feature ({len(quotes)} "
+                                         f"quoted observation(s)) via {playtest_id}")
+                record_feature(f, int(q.get("loop") or 0), "needs_refinement",
+                               {"holistic_sweep": playtest_id, "indicted_by": quotes[:3]})
+            rejected.append(f)
+        skipped = [f for f in queue_features if f not in rejected]
+        mode = "DRY-RUN " if dry_run else ""
+        print(f"[collapse_proxy] {mode}playtest rejection sweep ({playtest_id}): "
+              f"{len(rejected)} rejected, {len(skipped)} left queued (not indicted)")
+        for f in rejected:
+            print(f"  rejected    {f}")
+        print("Playtest collapse complete. The human's one sentence overrides anytime.")
+        return {"rejected": rejected, "skipped": skipped}
+    swept, skipped = [], []
+    for q in queue:
+        f = q["feature"]
+        if exercised.get(f):
+            if not dry_run:
+                record_observation(f, "accepted", observer="human-via-attribution",
+                                   derived_from=playtest_id, tacit=True,
+                                   notes="playtest acceptance sweep: exercised, unindicted "
+                                         "by the human's holistic temperature")
+                record_feature(f, int(q.get("loop") or 0), "observed",
+                               {"holistic_sweep": playtest_id})
+            swept.append(f)
+        else:
+            skipped.append(f)
+    mode = "DRY-RUN " if dry_run else ""
+    print(f"[collapse_proxy] {mode}playtest sweep ({playtest_id}): {len(swept)} accepted-tacit, "
+          f"{len(skipped)} never exercised (stay queued for exercise evidence)")
+    for f in swept:
+        print(f"  swept       {f}")
+    for f in skipped[:12]:
+        print(f"  unexercised {f}")
+    print("Playtest collapse complete. The human's one sentence overrides anytime.")
+    return {"swept": swept, "skipped": skipped}
+
+
 def main():
     parser = argparse.ArgumentParser(description="Fully automated observation: sweep or provisional collapse")
     parser.add_argument("--tend", action="store_true")
     parser.add_argument("--from-simtest", dest="from_simtest")
+    parser.add_argument("--from-playtest", dest="from_playtest")
     parser.add_argument("--valence", choices=["accepted", "rejected"])
     parser.add_argument("--min-sessions", type=int, default=2)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
+    if args.from_simtest and args.from_playtest:
+        parser.error("use only one of --from-simtest or --from-playtest at a time")
     if args.from_simtest:
         if not args.valence:
             parser.error("--from-simtest requires --valence")
         sweep(args.from_simtest, args.valence, dry_run=args.dry_run)
+    elif args.from_playtest:
+        if not args.valence:
+            parser.error("--from-playtest requires --valence")
+        sweep_playtest(args.from_playtest, args.valence, dry_run=args.dry_run)
     elif args.tend:
         tend(min_sessions=args.min_sessions, dry_run=args.dry_run)
     else:
-        parser.error("use --tend or --from-simtest <id> --valence <v>")
+        parser.error("use --tend, --from-simtest <id> --valence <v>, or --from-playtest <id> --valence <v>")
     return 0
 
 

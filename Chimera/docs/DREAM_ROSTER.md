@@ -134,13 +134,13 @@ happily build a technically-perfect wrong thing.
 
 ## TIER 2 — the departments that make it a real studio
 
-### 4. BRIDGE ENGINEER (`core/bridge_engineer.py` + capable cycles)  **PARTIAL — 2/4 named backlog items fixed 2026-07-07, still no dedicated organ, fix UNCOMMITTED**
+### 4. BRIDGE ENGINEER (`core/bridge_engineer.py` + capable cycles)  **PARTIAL — 2/4 named backlog items fixed + COMMITTED 2026-07-07; Niagara authoring (3rd item) diagnosed but NOT fixed 2026-07-08; still no dedicated organ**
 (Status update 2026-07-07, `roster_and_bridge_progress` task: the line below describing "one
 failed reverted attempt" is now stale for `add_anim_notify`/`get_anim_sequence_info` — kept
 below for history, corrected here.)
 The McpAutomationBridge NOT_IMPLEMENTED/facade backlog (add_anim_notify, get_anim_sequence_info,
 Niagara authoring, exec-chain quirks) blocks whole departments (VFX, animation).
-- **Fixed and independently re-verified live, twice, by two different sessions**:
+- **Fixed, independently re-verified live twice, and now COMMITTED**:
   `add_anim_notify` and `get_anim_sequence_info` are real implementations now (not facades) in
   `McpAutomationBridge_AnimationAuthoringHandlers.cpp` — the handler actually reached via
   `IsAnimationAuthoringAction()` routing through the `animation_physics` tool — with matching
@@ -155,16 +155,77 @@ Niagara authoring, exec-chain quirks) blocks whole departments (VFX, animation).
   not silently zeroed) → disk-mtime-confirmed persistence → `git checkout --` revert →
   full editor restart to resync in-memory state → final read-back confirms clean (0 notifies
   again, git status clean). Recorded as `pathway_attempt_4bf27f49ed497dd1` and
-  `pathway_attempt_f938ca71b7dd2a7c`.
-- **Honestly still open**: (1) the fix exists ONLY as an uncommitted working-tree change —
-  same "sits silently until someone re-derives and tests it" risk this project's H-12 precedent
-  named explicitly; nobody has committed it. (2) Niagara authoring (the backlog's 3rd named
-  item) is untouched — SUCCESSOR_RUNBOOK's TRAPS section still applies verbatim:
-  `create_niagara_system`/`add_emitter_to_system`/`add_*_module`/`set_niagara_parameter` return
-  success and do nothing. (3) "exec-chain quirks" (4th named item) — not investigated by either
-  session; status unknown. (4) No `core/bridge_engineer.py` organ file exists — both fixes were
-  direct capable-session C++ edits, not output of a dedicated queue-owning organ per the Casting
-  Rule; the backlog still has no systematic owner, only ad hoc fixes against it.
+  `pathway_attempt_f938ca71b7dd2a7c`. **Update 2026-07-08 (`roster_and_bridge_progress`, 3rd
+  dispatch)**: the "fix exists only uncommitted" risk this entry warned about twice is resolved —
+  `git show HEAD --stat` confirms both `.cpp` files landed in commit `2c074d5` ("chore: add wind
+  system, dust accumulation materials... update DNA graph and documentation"), alongside this
+  file and `MCP_PATHWAYS.md`. `git status`/`git diff` at session start showed these files clean
+  (not `M`), and the current HEAD source still contains the real (non-stub) `add_notify`/
+  `add_anim_notify` and `get_anim_sequence_info` branches — re-confirmed by reading the live file,
+  not just trusting the commit message. This was almost certainly landed by the project's own
+  perpetual orchestrator (per CLAUDE.md's "Perpetual orchestrator v2" commits, active in this
+  window), not by a human `git commit`, but it is genuinely durable now either way.
+- **Niagara authoring (backlog's 3rd named item) — DIAGNOSED with fresh live evidence 2026-07-08,
+  still NOT FIXED; do not read the paragraph below as a fix.** SUCCESSOR_RUNBOOK's TRAP text
+  ("create_niagara_system / add_emitter_to_system / add_*_module / set_niagara_parameter all
+  return success and do NOTHING. get_niagara_info reports emitterCount=0 even for working
+  systems. validate_niagara_system says isValid for broken ones.") was re-tested live against the
+  actually-running editor rather than trusted at face value (confirmed first that the compiled
+  `UnrealEditor-McpAutomationBridge.dll`, mtime 2026-07-07T18:57:19, postdates
+  `McpAutomationBridge_NiagaraAuthoringHandlers.cpp`/`_EffectHandlers.cpp`, both untouched since
+  2026-06-30 — the live editor is running the code on disk today, not something stale). Three
+  live MCP round trips against the running editor (`manage_effect`), each with disk/asset
+  read-back, not just `success:true`:
+  1. `get_niagara_info` on the **known-good engine template** `FountainLightweight` (proven to
+     render real particles via `spawn_niagara`, MCP_PATHWAYS.md #21b) reports `emitterCount=0,
+     emitters=[]` — reproducing the TRAP's "lying instruments" claim on a system that is
+     definitely NOT empty. (`pathway_attempt_f02d476674795953`)
+  2. `create_niagara_system` (name+path under a scratch `/Game/_McpProbe*/` folder, deleted after
+     each test) returns `success:true` and genuinely creates a loadable `NiagaraSystem` asset
+     (confirmed via `manage_asset search_assets`) that `spawn_niagara` can place in the level as a
+     real `NiagaraActor` with a `NiagaraComponent0` (confirmed via `control_actor
+     get_components`) — no error anywhere in the chain. (`pathway_attempt_5e56a84a847139dc`,
+     result recorded as `success_unverified`, not `success` — see point 4.)
+  3. `get_niagara_info` on that SAME freshly-created system (which the C++ at
+     `NiagaraAuthoringHandlers.cpp:344-373` explicitly attaches one `DefaultEmitter` handle to,
+     via `AddEmitterHandleDirect`, before returning success) **also** reports `emitterCount=0`.
+     Tested both the undotted (`/Game/.../Name`) and fully-qualified dotted
+     (`/Game/.../Name.Name`) path forms — identical result either way, ruling out path format as
+     a confound. `validate_niagara_system` on the same asset returns `isValid:true` but
+     `warnings:["System has no emitters."]` — it calls the exact same
+     `System->GetEmitterHandles()` accessor as `get_niagara_info`, so this is the same bug
+     surfacing twice, not independent confirmation. (`pathway_attempt_f02d476674795953`,
+     `pathway_attempt_7c9316ed7278b9d9`)
+  4. **Conclusion, precisely scoped**: `get_niagara_info`/`validate_niagara_system`'s
+     `GetEmitterHandles()`-based introspection is unreliable/always-empty regardless of the
+     underlying system's real state — reproduced on a definitely-non-empty engine template AND a
+     freshly-authored system in the same test run. This means the TRAP's original framing
+     (create_niagara_system "does nothing") is **not proven** by the evidence gathered — the
+     write path visibly does something real (asset exists, loads, spawns, attaches a component)
+     — but it is also **not disproven**: whether the attached `DefaultEmitter` handle is a
+     functionally real, particle-emitting emitter or a cosmetically-attached empty one could not
+     be determined this session, because the only introspection tools available are the ones just
+     proven unreliable. Resolving that needs a foregrounded `editor_viewport` screenshot
+     comparing the authored system's spawn against a known-working template's spawn side by side
+     (H-2/pathway 25 discipline) — genuinely the next step, not attempted this session (scope
+     stop, not an oversight: two distinct introspection-layer bugs were already confirmed live,
+     matching SUCCESSOR_RUNBOOK PRIME DIRECTIVE 6's "stop after two, do not invent a third"
+     spirit, and a screenshot-based render check plus any actual C++ fix is a materially bigger
+     unit of work than one dispatch should improvise blind). **No code was changed for Niagara
+     authoring this session** — this paragraph is diagnosis only, sharper and live-dated evidence
+     replacing the previous vague TRAP citation, not a landed fix. Root cause of the
+     `GetEmitterHandles()` unreliability itself remains OPEN (candidate hypotheses considered but
+     not confirmed: async/deferred load state, a "lightweight" template using a different
+     internal representation than classic `EmitterHandles`, or a genuine `AddEmitterHandleDirect`
+     write-path defect — engine header at
+     `Engine/Plugins/FX/Niagara/Source/Niagara/Classes/NiagaraSystem.h` confirms
+     `GetEmitterHandles()`/`EmitterHandles` are plain always-present UPROPERTYs, not
+     editor-only-gated, so the accessor itself is not obviously wrong by inspection alone).
+- **Honestly still open**: (1) Niagara authoring's actual fix (see above — diagnosis only, still
+  broken). (2) "exec-chain quirks" (4th named item) — not investigated by any session yet; status
+  unknown. (3) No `core/bridge_engineer.py` organ file exists — every fix/diagnosis so far has
+  been a direct capable-session effort, not output of a dedicated queue-owning organ per the
+  Casting Rule; the backlog still has no systematic owner.
 Charter (unchanged): own the backlog as a queue, implement handler-by-handler with
 UBT verbatim evidence, read-back verification, pathway records. Every fix un-demotes dead-end
 candidates automatically (no-dead-ends law already wired).
