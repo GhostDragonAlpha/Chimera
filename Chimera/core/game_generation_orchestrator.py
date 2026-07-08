@@ -217,7 +217,12 @@ class GameGenerationOrchestrator:
             error = build_result.get("error", "Build failed")
             if DNA_AVAILABLE:
                 try:
-                    mutate("compilation", "fail", details={"ubt_output": error,
+                    # [H-12] Forward the full verbatim UBT text when build_orchestrator
+                    # captured one (it now always tries to — see build_project's compile
+                    # and static-analysis failure returns) so this mutation's F-grade
+                    # reasoning gets the real failing file:line, not just the short
+                    # "error" summary string.
+                    mutate("compilation", "fail", details={"ubt_output": build_result.get("ubt_output") or error,
                                                 "template_file": "game_generation_orchestrator"})
                     source_dir_str = str(self.source_dir)
                     fixed_count = 0

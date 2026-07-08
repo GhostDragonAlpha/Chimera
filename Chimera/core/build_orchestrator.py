@@ -9,11 +9,11 @@ import json
 
 # DNA Integration - Route through Graphify interface
 try:
-    from core.graphify_interface import query, mutate, load_dna_graph, save_dna_graph, graphify_mutate as record_compilation_success, graphify_mutate as record_compilation_failure
+    from core.graphify_interface import query, mutate, load_dna_graph, save_dna_graph, graphify_mutate as record_compilation_success, graphify_mutate as record_compilation_failure, extract_ubt_failure_line
     from core.dna.auto_fixer import auto_fix_brace_error
 except ImportError:
     try:
-        from graphify_interface import query, mutate, load_dna_graph, save_dna_graph, graphify_mutate as record_compilation_success, graphify_mutate as record_compilation_failure
+        from graphify_interface import query, mutate, load_dna_graph, save_dna_graph, graphify_mutate as record_compilation_success, graphify_mutate as record_compilation_failure, extract_ubt_failure_line
         from dna.auto_fixer import auto_fix_brace_error
     except ImportError:
         def query(*args, **kwargs): return {"canonical_output_dir": "E:/PythonChimera/Chimera", "module_name": "Chimera", "api_macro": "CHIMERA_API", "include_paths": ["ProceduralGenerated/Combat", "ProceduralGenerated/AI", "ProceduralGenerated/Flight", "ProceduralGenerated/PCG", "ProceduralGenerated/Stations", "ProceduralGenerated/Missions", "ProceduralGenerated/Factions", "ProceduralGenerated/Save", "ProceduralGenerated/GameMode", "ProceduralGenerated/Ships"]}
@@ -24,6 +24,7 @@ except ImportError:
         def record_compilation_failure(*args, **kwargs): return "error_dummy"
         def hash_error_signature(*args, **kwargs): return "hash_dummy"
         def auto_fix_brace_error(*args, **kwargs): return {"fixed": False}
+        def extract_ubt_failure_line(*args, **kwargs): return ""
 
 import shutil
 import os
@@ -173,10 +174,16 @@ class BuildOrchestrator:
         # Simplified source dir path
         self.source_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated")
         self.content_dir = self.output_dir / "Content"
-        
+
         # Ensure directories exist without creating new project directories
         self.source_dir.mkdir(parents=True, exist_ok=True)
         self.content_dir.mkdir(parents=True, exist_ok=True)
+
+        # [H-12] Verbatim UBT output from the most recent compile attempt (any
+        # of the up-to-3 retries in compile_with_ubt) — build_project()'s
+        # failure return reads this so callers never fall back to a generic
+        # "Compilation failed" string when real compiler text was captured.
+        self.last_ubt_output: str = ""
 
     def assemble_uproject(self, dsl_data: Dict[str, Any], generated_files: Dict[str, List[str]]) -> str:
         """Use the existing Chimera.uproject and update Build.cs dependencies."""
@@ -248,6 +255,10 @@ class BuildOrchestrator:
 
             success = builder.compile_project(self.sanitized_module_name, uproject_path, "Development")
             ubt_output = getattr(builder, "last_output", "")
+            # [H-12] Keep the verbatim text from THIS attempt regardless of pass/fail,
+            # so build_project() can surface it even after compile_with_ubt() exhausts
+            # its retries and only returns a bool.
+            self.last_ubt_output = ubt_output
 
             if success:
                 mutate("compilation", "pass", details={"ubt_output": ubt_output, "template_file": template_file})
@@ -258,6 +269,7 @@ class BuildOrchestrator:
 
         except Exception as e:
             print(f"Compilation error: {e}")
+            self.last_ubt_output = str(e)
             mutate("compilation", "error", details={"ubt_output": str(e), "template_file": template_file})
             return False
 
@@ -368,9 +380,15 @@ class BuildOrchestrator:
         if not analysis_success:
             error_msg = "Static analysis failed:\n" + "\n".join(analysis_errors)
             print(f"Static analysis errors: {error_msg}")
+            # [H-12] error_msg above already carries the real per-file diagnostic
+            # text (e.g. "Unbalanced braces in X.cpp: 3 open, 2 close") — return
+            # it verbatim instead of the generic "Pre-compilation static analysis
+            # failed" label, which is exactly the untriageable-placeholder pattern
+            # the heuristic flags.
             return {
                 "success": False,
-                "error": "Pre-compilation static analysis failed",
+                "error": error_msg,
+                "ubt_output": error_msg,
                 "static_analysis_errors": analysis_errors
             }
         print("Static analysis passed")
@@ -406,11 +424,18 @@ class BuildOrchestrator:
         # Step 2: Compile with UBT
         compile_success = self.compile_with_ubt(uproject_path)
         if not compile_success:
+            # [H-12] _single_compile already captured the real UBT text into
+            # self.last_ubt_output on every attempt — surface the verbatim
+            # failing file:line here too, instead of the generic "Compilation
+            # failed" string that used to mask it from every downstream
+            # caller (game_generation_orchestrator's grade/mutation included).
+            failing_line = extract_ubt_failure_line(self.last_ubt_output)
             return {
                 "success": False,
-                "error": "Compilation failed"
+                "error": failing_line or "Compilation failed (no UBT output was captured for any attempt)",
+                "ubt_output": self.last_ubt_output,
             }
-            
+
         print("Compilation successful")
 
         # Step 2.4: Generated-file integrity check — verify all files specified

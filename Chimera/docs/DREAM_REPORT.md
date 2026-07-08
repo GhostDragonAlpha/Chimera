@@ -1,13 +1,13 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-07T15:07:10Z
+consolidated: 2026-07-07T17:39:10Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
 
 ## Open phantom pains
-- phase_da55128aec6d109a:P1 [0d] Distiller token-coverage will false-suppress genuinely new lessons once PENDING_HEURISTICS.md grows large - watch for repeat failures that never re-stage
-- phase_762486f41e1aeafb:P1 [0d] The 20-deep observation queue will rot unobserved unless verdicts become habitual - if none are recorded within a week the collapse step failed as designed
-- phase_762486f41e1aeafb:P3 [0d] Expect human rejections to reopen [DONE*] loops when observed (sand particles are white bubbles at B 79.3) - the first rejections will demote board state and that is the system working
+- phase_da55128aec6d109a:P1 [1d] Distiller token-coverage will false-suppress genuinely new lessons once PENDING_HEURISTICS.md grows large - watch for repeat failures that never re-stage
+- phase_762486f41e1aeafb:P1 [1d] The 20-deep observation queue will rot unobserved unless verdicts become habitual - if none are recorded within a week the collapse step failed as designed
+- phase_762486f41e1aeafb:P3 [1d] Expect human rejections to reopen [DONE*] loops when observed (sand particles are white bubbles at B 79.3) - the first rejections will demote board state and that is the system working
 - phase_fda9e71b0c0841b4:P3 [0d] Zero human verdicts have been recorded since the queues opened - if a week passes with the Gardener and Observer idle, the protocol is running open-circuit and DONE* loops are quietly rotting
 - phase_62a9bf8fa8e97b42:P1 [0d] phase_da55128aec6d109a:P1
 - phase_a3193c8fa52533c6:P1 [0d] phase_da55128aec6d109a:P1 distiller token-coverage suppression
@@ -27,7 +27,7 @@ No pending heuristics — the constitution covers everything the night found.
 Record verdicts: `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`promoted:2; untouched:16 | provisional-collapse: 0 collapsed, 14 awaiting evidence`
+`untouched:18 | provisional-collapse: 0 collapsed, 14 awaiting evidence`
 
 ## Tonight's distillation
 ```
@@ -59,6 +59,6 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 1563  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 1573  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```

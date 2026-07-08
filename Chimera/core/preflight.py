@@ -28,9 +28,8 @@ LOOP_NAMES = {
 }
 
 DONE_STATUSES = {"verified", "encoded", "deferred", "observed"}
-# 'verified' = system's eyes (preliminary measurement); 'observed' = human's eyes
-# (the true collapse). Loops complete on 'verified' show [DONE*] until observed.
-HUMAN_DONE_STATUSES = {"encoded", "deferred", "observed"}
+# 'verified' = system's preliminary measurement; 'observed' = automated observation (sleepwalker/telemetry) — the true collapse. Loops complete on 'verified' show [DONE*] until observed_provisional or observed.
+AUTOMATED_DONE_STATUSES = {"encoded", "deferred", "observed", "observed_provisional"}
 
 
 def _http_ok(url, timeout=3):
@@ -145,9 +144,9 @@ def main():
             statuses[fname] = status
         done = sum(1 for s in statuses.values() if s in DONE_STATUSES)
         open_feats = [f"{f}({s})" for f, s in statuses.items() if s not in DONE_STATUSES]
-        human_done = sum(1 for s in statuses.values() if s in HUMAN_DONE_STATUSES)
+        automated_done = sum(1 for s in statuses.values() if s in AUTOMATED_DONE_STATUSES)
         if done == len(feats):
-            marker = "DONE" if human_done == len(feats) else "DONE*"
+            marker = "DONE" if automated_done == len(feats) else "DONE*"
         else:
             marker = f"{done}/{len(feats)}"
         if open_feats and current_loop is None:
@@ -182,9 +181,9 @@ def main():
                   f"Gardener approval (docs/PENDING_HEURISTICS.md)")
         if obs_queue:
             print(f"    Observation queue: {len(obs_queue)} system-finalized feature(s) "
-                  f"awaiting the human's eyes — the true collapse")
+                  f"awaiting automated observation — the true collapse")
             print(f"      (record: python -m core.graphify_record observe --feature X "
-                  f"--verdict accepted|rejected --notes ... --loop N)")
+                  f"--verdict accepted|rejected --notes ... --loop N --derived-from <simtest_id>)")
             for q in obs_queue[:6]:
                 hint = f"  {q['grade_hint']}" if q["grade_hint"] else ""
                 shots = f"  [{q['evidence_hint']}]" if q["evidence_hint"] else ""
@@ -232,20 +231,30 @@ def main():
     last_sim = latest(lambda n: n.get("type") == "SimPlaytest")
     last_roll = latest(lambda n: n.get("type") == "SimulationRollout")
     if last_sim or last_roll:
-        print("\n[4.6] Sleepwalker (agent-sim; the human's word overrides everything here):")
+        print("\n[4.6] Sleepwalker (fully automated verification; machine signals are final in the distiller):")
         if last_sim:
             print(f"    Last sleepwalk: {last_sim.get('session')} — "
                   f"{last_sim.get('beats_reached')}/{last_sim.get('beats_total')} beats "
                   f"({last_sim.get('demo')}) @ {str(last_sim.get('timestamp',''))[:19]}")
             print(f"      {str(last_sim.get('temperature',''))[:100]}")
         prov = {n.get("feature_name") for n in nodes
-                if n.get("type") == "FeatureUpdate" and n.get("status") == "observed_provisional"}
+                if n.get("type") == "FeatureUpdate" and n.get("status") in {"observed_provisional", "observed"}}
         if prov:
-            print(f"    Provisionally collapsed by sim (human sentence overrides anytime): {len(prov)}")
+            print(f"    Collapsed by automated simulation evidence: {len(prov)}")
         if last_roll:
             print(f"    Last rehearsal decision: {last_roll.get('chosen')} "
                   f"@ {str(last_roll.get('timestamp',''))[:19]}"
                   f"{'  [VETOED]' if last_roll.get('vetoed') else ''}")
+
+    # 4.7. The Critic — ADVISORY ONLY comparative-enjoyment estimate (never a gate)
+    last_critic = latest(lambda n: n.get("type") == "CriticJudgment")
+    if last_critic:
+        top_titles = [t.get("title") for t in (last_critic.get("benchmark_titles") or [])
+                     if isinstance(t, dict) and t.get("title")]
+        print(f"\n[4.7] The Critic (ADVISORY ONLY — does not gate the pipeline): "
+              f"{last_critic.get('feature')} ~ {last_critic.get('overall_percentage')}% "
+              f"vs {top_titles[0] if top_titles else '?'} "
+              f"@ {str(last_critic.get('timestamp',''))[:19]}")
 
     print("\n[5] Last pipeline run:")
     for label, n in (("parse", last_parse), ("build", last_build), ("visual", last_visual)):

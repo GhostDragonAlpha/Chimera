@@ -2507,7 +2507,13 @@ bool UMcpAutomationBridgeSubsystem::HandleAnimationPhysicsAction(
     // expects
     return HandlePlayAnimMontage(RequestId, TEXT("play_anim_montage"), Payload,
                                  RequestingSocket);
-  } else if (LowerSub == TEXT("add_notify")) {
+  } else if (LowerSub == TEXT("add_notify") ||
+             LowerSub == TEXT("add_anim_notify")) {
+    // add_anim_notify is an alias of add_notify (same AnimSequence notify-add
+    // logic; MCP_PATHWAYS.md documents callers using the add_anim_notify
+    // name). Previously add_anim_notify fell through to a NOT_IMPLEMENTED
+    // stub near the end of this function even though this working
+    // implementation existed under the add_notify name the whole time.
     FString AssetPath;
     if (!Payload->TryGetStringField(TEXT("animationPath"), AssetPath) ||
         AssetPath.IsEmpty()) {
@@ -4527,15 +4533,34 @@ bool UMcpAutomationBridgeSubsystem::HandleAnimationPhysicsAction(
           Resp->SetStringField(TEXT("error"), Message);
         }
       } else {
-        Message = TEXT("get_anim_sequence_info is not implemented in this UE version - BP wiring remains capable sessions only");
-        ErrorCode = TEXT("NOT_IMPLEMENTED");
-        Resp->SetStringField(TEXT("error"), Message);
+        // Read back the AnimSequence's notify track. Uses only non-deprecated,
+        // public ENGINE_API accessors confirmed against UE 5.8 engine headers
+        // (Animation/AnimSequenceBase.h, Animation/AnimTypes.h,
+        // Animation/AnimLinkableElement.h): GetPlayLength(), the public
+        // Notifies TArray<FAnimNotifyEvent>, and FAnimNotifyEvent::GetTime()/
+        // GetDuration() (inherited from FAnimLinkableElement).
+        TArray<TSharedPtr<FJsonValue>> NotifyArray;
+        for (const FAnimNotifyEvent &Event : AnimSeq->Notifies) {
+          TSharedPtr<FJsonObject> NotifyObj = MakeShared<FJsonObject>();
+          NotifyObj->SetStringField(TEXT("notifyName"), Event.NotifyName.ToString());
+          NotifyObj->SetNumberField(TEXT("time"), Event.GetTime());
+          NotifyObj->SetNumberField(TEXT("duration"), Event.GetDuration());
+          NotifyObj->SetStringField(
+              TEXT("notifyClass"),
+              Event.Notify ? Event.Notify->GetClass()->GetName() : TEXT("None"));
+          NotifyArray.Add(MakeShared<FJsonValueObject>(NotifyObj));
+        }
+
+        bSuccess = true;
+        Message = FString::Printf(
+            TEXT("AnimSequence %s has %d notify event(s)"), *AnimationPath,
+            AnimSeq->Notifies.Num());
+        Resp->SetStringField(TEXT("assetPath"), AnimationPath);
+        Resp->SetNumberField(TEXT("notifyEventsCount"), AnimSeq->Notifies.Num());
+        Resp->SetNumberField(TEXT("playLength"), AnimSeq->GetPlayLength());
+        Resp->SetArrayField(TEXT("notifies"), NotifyArray);
       }
     }
-  } else if (LowerSub == TEXT("add_anim_notify")) {
-    Message = TEXT("add_anim_notify is not implemented in this UE version - BP wiring remains capable sessions only");
-    ErrorCode = TEXT("NOT_IMPLEMENTED");
-    Resp->SetStringField(TEXT("error"), Message);
   } else {
     Message = FString::Printf(
         TEXT("Animation/Physics action '%s' not implemented"), *LowerSub);

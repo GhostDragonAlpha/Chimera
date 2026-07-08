@@ -920,8 +920,8 @@ class GameCodeGenerator:
                 spawn_station_code += f"\t\tFRotator StationSpawnRotation{idx}(0.f, 0.f, 0.f);\n"
                 spawn_station_code += f"\t\tFActorSpawnParameters StationSpawnParams{idx};\n"
                 spawn_station_code += f"\t\tStationSpawnParams{idx}.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;\n"
-                # Spawn station actor as generic AActor (StationActor.h not yet generated)
-                spawn_station_code += f"\t\tAActor* SpawnedStation{idx} = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation{idx}, StationSpawnRotation{idx}, StationSpawnParams{idx});\n"
+                # Spawn station actor with full specialization (AStationActor available)
+                spawn_station_code += f"\t\tAStationActor* SpawnedStation{idx} = GetWorld()->SpawnActor<AStationActor>(AStationActor::StaticClass(), StationSpawnLocation{idx}, StationSpawnRotation{idx}, StationSpawnParams{idx});\n"
                 spawn_station_code += f"\t\tif (SpawnedStation{idx})\n\t\t{{\n"
                 spawn_station_code += f"\t\t\tUE_LOG(LogTemp, Log, TEXT(\"SPAWNED: Station {station_name} at {{%s}}\"), *SpawnedStation{idx}->GetActorLocation().ToString());\n"
                 spawn_station_code += f"\t\t}}\n"
@@ -2502,6 +2502,53 @@ bool FShipStateSaveRoundtrip::RunTest(const FString& Parameters)
 	TestTrue(TEXT("Hull restored"), FMath::IsNearlyEqual(Damage->CurrentHullHealth, 77.0f));
 
 	UGameplayStatics::DeleteGameInSlot(TEXT("ShipStateSlot"), 0);
+	Actor->Destroy();
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMissionCompletePayoutCredits,
+	"ChimeraTests.Acceptance.MissionCompletePayoutCredits",
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FMissionCompletePayoutCredits::RunTest(const FString& Parameters)
+{
+	UWorld* World = nullptr;
+	if (GEngine)
+	{
+		for (const FWorldContext& Context : GEngine->GetWorldContexts())
+		{
+			if (Context.World()) { World = Context.World(); break; }
+		}
+	}
+	if (!TestNotNull(TEXT("World available"), World)) return false;
+
+	AActor* Actor = World->SpawnActor<AActor>();
+	if (!TestNotNull(TEXT("Actor spawned"), Actor)) return false;
+
+	UInventoryTradeComponent* Inv = NewObject<UInventoryTradeComponent>(Actor);
+	Inv->RegisterComponent();
+	Inv->SetCredits(1000.0f);
+
+	UMissionComponent* Missions = NewObject<UMissionComponent>(Actor);
+	Missions->RegisterComponent();
+
+	FMissionData Mission;
+	Mission.MissionID = FName(TEXT("PAYOUT1"));
+	Mission.RewardCredits = 5000.0f;
+	FMissionObjective Dock;
+	Dock.Type = TEXT("Dock");
+	Mission.Objectives.Add(Dock);
+	Missions->AvailableMissions.Add(Mission);
+
+	Missions->AcceptMission(FName(TEXT("PAYOUT1")));
+	const float CreditsBeforeCompletion = Inv->GetCredits();
+	Missions->UpdateObjective(TEXT("Dock"), TEXT(""));
+	const float CreditsAfterCompletion = Inv->GetCredits();
+
+	TestTrue(TEXT("Credits increased by exact payout amount"),
+		FMath::IsNearlyEqual(CreditsAfterCompletion, CreditsBeforeCompletion + 5000.0f));
+	TestTrue(TEXT("Mission completed"),
+		Missions->CompletedMissions.Contains(FName(TEXT("PAYOUT1"))));
+
 	Actor->Destroy();
 	return true;
 }

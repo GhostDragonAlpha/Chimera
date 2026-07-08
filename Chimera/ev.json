@@ -1,0 +1,24 @@
+{
+  "tests": {
+    "passed": 6,
+    "failed": 1,
+    "skipped": 0,
+    "ran_in_editor": true,
+    "criteria_total": 7,
+    "notes": "Phase 3 item 2, DEMO_ARCHITECTURE.md Sec5: 1) DemoStatus price/credits PASS 2) DemoBuy100 credits/cargo/standing PASS 3) DemoSave file exists PASS 4) DemoSell/DemoBuy40/DemoLoad snap-back credits/cargo/standing PASS 5) DemoMission FAIL-partial: credits +25000 and CompletedMissions verified via component read-back, but the doc-specified literal '[DEMOBEAT] MISSION_COMPLETE' log line does not exist in generated code (MissionComponent.cpp completion path has no UE_LOG; CompleteMission is an empty BlueprintImplementableEvent) - recorded as surprise_283c9e05dec076ef"
+  },
+  "telemetry": {
+    "crash_free": true,
+    "fps": 119.99904156496706,
+    "target_fps": 60,
+    "unbounded_growth": false
+  },
+  "checklist": {
+    "feedback": true,
+    "consistency": true,
+    "meaningful_parameters": true,
+    "fail_safety": false,
+    "balance_sanity": false
+  },
+  "spec_fidelity": 0.9286
+}

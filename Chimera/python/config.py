@@ -291,7 +291,7 @@ KLO_EXTENSION_DIR = r"C:\Users\allen\.vscode\extensions\kilocode.kilo-code-7.3.5
 LM_STUDIO_BASE_URL = "http://192.168.3.169:1234"
 LM_STUDIO_MODELS_ENDPOINT = f"{LM_STUDIO_BASE_URL}/api/v1/models"
 LM_STUDIO_CHAT_COMPLETIONS_ENDPOINT = f"{LM_STUDIO_BASE_URL}/v1/chat/completions"
-LM_STUDIO_MODEL = "qwen3.6-35b-a3b-mtp@iq2_m"
+LM_STUDIO_MODEL = "dhruvallabs/qwen-agentworld-35b-a3b"
 
 
 # ============================================================================

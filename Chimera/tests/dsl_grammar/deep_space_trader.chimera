@@ -26,6 +26,21 @@ technical {
     network_model = "standalone";
     performance { target_fps=60, LOD_strategy="standard" };
     module_dependencies = ["GameplayAbilities", "EnhancedInput", "AIModule"];
+
+    environmental {
+        wind_system_enabled = true;
+        wind_response = 1.0;  # Full wind interaction (0.0-1.0)
+        wind_base_speed = 500.0;  # UU/s
+        wind_base_direction = (1.0, 0.0, 0.0);  # Eastward
+        wind_variance = 0.3;  # 30% oscillation (gust patterns)
+        wind_cycle_time = 10.0;  # 10 second cycle
+
+        dust_particles {
+            wind_response = 1.0;  # Particles respond fully to wind
+            gravity_scale = 0.3;  # Slower settling
+            accumulation_enabled = true;
+        }
+    }
 }
 
 art_direction {

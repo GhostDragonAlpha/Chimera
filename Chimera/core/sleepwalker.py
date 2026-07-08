@@ -1,14 +1,13 @@
-"""Sleepwalker — the AI playtester (SLEEPWALKER_DESIGN.md M1).
+"""Sleepwalker — the AI playtester (automation amendment 2026-07-07).
 
 Plays the built game in PIE by executing a BEAT SCRIPT (docs/beats/*.beats.json)
 through proven MCP pathways: simulated key input, runtime read-backs, screenshots.
 Emits a witness chronicle and typed graph records.
 
-CONSTITUTION (the balance of automation and control):
-  - The sleepwalker NEVER records a human playtest or a human-provenance
-    observation. Its results are SimPlaytest nodes (observer='agent-sim'),
-    surprises (source='agent'), and pathway records. The human's word remains
-    the only collapse; human_rejection permanently outranks sim signals.
+CONSTITUTION (fully automated verification):
+  - The sleepwalker records SimPlaytest evidence (observer='agent-sim'),
+    surprises (source='agent'), and pathway records. Automated observation is
+    the final collapse; machine signals are final in the distiller.
   - Never trusts success:true — every beat expectation is a read-back.
 
 Beat schema (docs/beats/<demo>.beats.json):

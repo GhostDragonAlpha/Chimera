@@ -1,6 +1,7 @@
 import json
 import hashlib
 import os
+import re
 import sys
 import uuid
 from datetime import datetime
@@ -641,12 +642,68 @@ def _query_campus(campus_name: str, context: dict = None) -> dict:
         "quality_ratings": campus["quality_ratings"]
     }
 
+_UBT_DIAG_RE = re.compile(r'\(\d+,\d+\)\s*:\s*(fatal error|error)\b', re.IGNORECASE)
+_UBT_KEYWORD_RE = re.compile(r'\b(error|fatal|failure|failed)\b', re.IGNORECASE)
+# MSVC/UBT diagnostic codes: C#### (compiler), LNK#### (linker), MSB#### (MSBuild),
+# RC#### (resource compiler). Real captured linker failures in this project's own
+# history pair the code with the literal word "error" (e.g. "error LNK2019: ..."),
+# which _UBT_KEYWORD_RE already catches — this pattern is a defensive second net
+# for tool output that prints a bare code without that word nearby.
+_UBT_CODE_RE = re.compile(r'\b(?:C|LNK|MSB|RC)\d+\b')
+
+
+def extract_ubt_failure_line(ubt_output: str) -> str:
+    """Pull the single most useful verbatim line out of raw UBT/compiler output.
+
+    [H-12, docs/PENDING_HEURISTICS.md]: a build-failure grade must carry the
+    failing file:line verbatim — "no error text captured" makes the F
+    untriageable and wastes the retry. This is the ONE place that decides
+    what counts as "the error text": both the compilation-mutation/grade
+    path (_mutate_compilation below) and build_orchestrator's failure
+    return call it, so the two never disagree or independently regress to
+    a generic placeholder.
+
+    Tiered so the most actionable line always wins over a vague summary:
+      1. MSVC/UBT diagnostic 'path(line,col): error|fatal error CNNNN: msg'
+         — the exact "failing file:line" shape the heuristic asks for.
+      2. Any line carrying an explicit error/fatal/failure keyword or an
+         MSVC error code (catches linker errors, "ERROR:" tool messages).
+      3. The last non-blank line of the captured output — still real,
+         verbatim text, which beats a placeholder even when it doesn't
+         match a known compiler-error shape (e.g. a locked-DLL message).
+
+    Returns "" ONLY when ubt_output itself has no content — that is a
+    distinct, upstream failure to capture anything at all, and callers
+    must say so plainly rather than inventing error text.
+    """
+    if not ubt_output:
+        return ""
+    lines = [ln.strip() for ln in ubt_output.splitlines() if ln.strip()]
+    if not lines:
+        return ""
+
+    for ln in lines:
+        if _UBT_DIAG_RE.search(ln):
+            return ln
+
+    for ln in lines:
+        if _UBT_KEYWORD_RE.search(ln) or _UBT_CODE_RE.search(ln):
+            return ln
+
+    return lines[-1]
+
+
 def _mutate_compilation(result: str, details: dict = None) -> str:
     """Records a compilation mutation through Graphify.
 
     details may carry: ubt_output (full compiler text — the tail is stored),
     template_file, failing_files. Failures also record an automatic F grade so
     the GPA reflects build health, not just professor reviews.
+
+    [H-12] The F grade's reasoning always carries a verbatim line from the
+    captured output (see extract_ubt_failure_line). A placeholder is only
+    ever used when the caller passed no output at all, and even then the
+    message names the gap instead of silently swallowing it.
     """
     details = details or {}
     dna_graph = load_dna_graph()
@@ -657,10 +714,12 @@ def _mutate_compilation(result: str, details: dict = None) -> str:
     # UBT prints errors near the end — keep the tail, capped so the graph stays readable
     ubt_excerpt = ubt_output[-4000:] if ubt_output else ""
     # Match lines containing: "error", "fatal", MSVC error codes (C2039, C1083), or "failed"
-    import re
     error_lines = [ln.strip() for ln in ubt_output.splitlines()
                    if any(pattern in ln.lower() or re.search(r'\bC\d+\b', ln)
                           for pattern in ['error', 'fatal', 'failed', 'failure'])][:20]
+    # Single most-actionable verbatim line (prioritizes "file(line,col): error CNNNN" —
+    # see extract_ubt_failure_line). Guaranteed non-empty whenever ubt_output is.
+    failure_line = extract_ubt_failure_line(ubt_output)
     template_file = details.get("template_file") or "unspecified"
 
     mutation_node = {
@@ -672,9 +731,9 @@ def _mutate_compilation(result: str, details: dict = None) -> str:
         "template_line": 0,
         "error_category": "none" if result == "pass" else "compilation_error",
         "fix_description": "build_completed" if result == "pass" else (
-            error_lines[0] if error_lines else f"compilation_{result}"),
+            failure_line or f"compilation_{result}: no UBT output was captured"),
         "fix_diff": "build_completed" if result == "pass" else (
-            "\n".join(error_lines) if error_lines else f"compilation_{result}"),
+            "\n".join(error_lines) if error_lines else (failure_line or f"compilation_{result}")),
         "ubt_output_excerpt": ubt_excerpt,
         "failing_files": details.get("failing_files", []),
         "compilation_result": result,
@@ -686,13 +745,20 @@ def _mutate_compilation(result: str, details: dict = None) -> str:
     # Save back to DNA graph (which is part of the knowledge base)
     save_dna_graph({"nodes": nodes, "edges": edges})
 
-    # A failed build is an automatic F — GPA must be able to fall
+    # A failed build is an automatic F — GPA must be able to fall.
+    # [H-12] reasoning must carry the verbatim failing line, never a bare
+    # "no error text captured" when the caller actually gave us output.
     if result != "pass":
+        if failure_line:
+            reasoning = f"UBT compilation {result}: {failure_line[:300]}"
+        else:
+            reasoning = (f"UBT compilation {result}: no UBT output was captured for this "
+                         f"attempt — the caller passed empty ubt_output; fix the caller's "
+                         f"capture, this is not a code-level failure")
         _mutate_professor_grade({
             "feature": details.get("feature", "Build_Pipeline"),
             "grade": "F",
-            "reasoning": (f"UBT compilation {result}: " +
-                          (error_lines[0][:300] if error_lines else "no error text captured")),
+            "reasoning": reasoning,
         })
 
     return mutation_node["id"]

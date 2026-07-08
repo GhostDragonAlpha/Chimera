@@ -989,14 +989,28 @@ static TSharedPtr<FJsonObject> HandleAnimationAuthoringRequest(const TSharedPtr<
         return Response;
     }
 
-if (SubAction == TEXT("add_notify"))
+if (SubAction == TEXT("add_notify") || SubAction == TEXT("add_anim_notify"))
 {
+        // add_anim_notify is an alias of add_notify. It was previously routed here
+        // by the animation_physics dispatcher's IsAnimationAuthoringAction() check
+        // (McpConsolidatedActionRouting.h) but had no matching SubAction branch in
+        // this function, so every call fell through to the "Unknown animation
+        // authoring action" default below (confirmed live via MCP read-back:
+        // errorCode UNKNOWN_ACTION), regardless of any add_anim_notify logic
+        // elsewhere in the plugin (e.g. HandleAnimationPhysicsAction in
+        // McpAutomationBridge_AnimationHandlers.cpp is dead code for this tool/
+        // subAction combination — the router never reaches it).
         FString AssetPath = NormalizeAnimPath(GetStringFieldAnimAuth(Params, TEXT("assetPath"), TEXT("")));
     FString NotifyClass = GetStringFieldAnimAuth(Params, TEXT("notifyClass"), TEXT(""));
     int32 Frame = static_cast<int32>(GetNumberFieldAnimAuth(Params, TEXT("frame"), 0));
     int32 TrackIndex = static_cast<int32>(GetNumberFieldAnimAuth(Params, TEXT("trackIndex"), 0));
     FString NotifyName = GetStringFieldAnimAuth(Params, TEXT("notifyName"), TEXT(""));
     bool bSave = GetBoolFieldAnimAuth(Params, TEXT("save"), true);
+    // add_anim_notify callers (MCP_PATHWAYS.md #27) pass an explicit "time" in
+    // seconds rather than a frame index; honor it when present so it is not
+    // silently dropped in favor of the frame-based default (Frame=0 -> t=0).
+    const bool bHasExplicitTime = Params.IsValid() && Params->HasField(TEXT("time"));
+    const float ExplicitTime = static_cast<float>(GetNumberFieldAnimAuth(Params, TEXT("time"), 0.0));
 
     if (NotifyClass.IsEmpty() && NotifyName.IsEmpty())
     {
@@ -1058,7 +1072,7 @@ if (SubAction == TEXT("add_notify"))
         FrameRate = Seq->GetSamplingFrameRate().AsDecimal();
     }
 #endif
-    float TriggerTime = static_cast<float>(Frame) / FrameRate;
+    float TriggerTime = bHasExplicitTime ? ExplicitTime : (static_cast<float>(Frame) / FrameRate);
 
     FAnimNotifyEvent& NotifyEvent = AnimAsset->Notifies.AddDefaulted_GetRef();
     NotifyEvent.SetTime(TriggerTime);
@@ -3789,6 +3803,47 @@ Retargeter->TargetIKRigAsset = TargetRig;
 
         Response->SetObjectField(TEXT("animationInfo"), AnimInfo);
         ANIM_SUCCESS_RESPONSE(TEXT("Animation info retrieved"));
+        return Response;
+    }
+
+    if (SubAction == TEXT("get_anim_sequence_info"))
+    {
+        FString AssetPath = NormalizeAnimPath(GetStringFieldAnimAuth(Params, TEXT("assetPath"), TEXT("")));
+        if (AssetPath.IsEmpty())
+        {
+            AssetPath = NormalizeAnimPath(GetStringFieldAnimAuth(Params, TEXT("animationPath"), TEXT("")));
+        }
+        if (AssetPath.IsEmpty())
+        {
+            ANIM_ERROR_RESPONSE(TEXT("assetPath or animationPath required for get_anim_sequence_info"), TEXT("INVALID_ARGUMENT"));
+        }
+
+        UAnimSequence* Sequence = LoadAnimSequenceFromPath(AssetPath);
+        if (!Sequence)
+        {
+            ANIM_ERROR_RESPONSE(FString::Printf(TEXT("AnimSequence not found: %s"), *AssetPath), TEXT("ASSET_NOT_FOUND"));
+        }
+
+        // Read-back accessors confirmed against UE 5.8 engine headers (non-deprecated,
+        // public ENGINE_API): GetPlayLength(), the public Notifies TArray<FAnimNotifyEvent>,
+        // and FAnimNotifyEvent::GetTime()/GetDuration() (inherited from FAnimLinkableElement).
+        TArray<TSharedPtr<FJsonValue>> NotifyArray;
+        for (const FAnimNotifyEvent& Event : Sequence->Notifies)
+        {
+            TSharedPtr<FJsonObject> NotifyObj = MakeShared<FJsonObject>();
+            NotifyObj->SetStringField(TEXT("notifyName"), Event.NotifyName.ToString());
+            NotifyObj->SetNumberField(TEXT("time"), Event.GetTime());
+            NotifyObj->SetNumberField(TEXT("duration"), Event.GetDuration());
+            NotifyObj->SetStringField(TEXT("notifyClass"), Event.Notify ? Event.Notify->GetClass()->GetName() : TEXT("None"));
+            NotifyArray.Add(MakeShared<FJsonValueObject>(NotifyObj));
+        }
+
+        Response->SetStringField(TEXT("assetPath"), AssetPath);
+        Response->SetNumberField(TEXT("notifyEventsCount"), Sequence->Notifies.Num());
+        Response->SetNumberField(TEXT("playLength"), Sequence->GetPlayLength());
+        Response->SetArrayField(TEXT("notifies"), NotifyArray);
+
+        ANIM_SUCCESS_RESPONSE(FString::Printf(TEXT("AnimSequence %s has %d notify event(s)"), *AssetPath, Sequence->Notifies.Num()));
         return Response;
     }
 

@@ -44,7 +44,7 @@ set "CLAUDE_CODE_SUBAGENT_MODEL=%LMS_MODEL%"
 set "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1"
 set "API_TIMEOUT_MS=600000"
 
-call claude %*
+call claude --dangerously-skip-permissions%*
 exit /b %ERRORLEVEL%
 
 :no_model

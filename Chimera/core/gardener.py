@@ -1,10 +1,9 @@
-"""Gardener-delegate — automated heuristic tending (constitution amendment 2026-07-07).
+"""Gardener-delegate — fully automated heuristic tending (automation amendment 2026-07-07).
 
-The human Gardener delegated approval authority to the automation: pending heuristics
-with a real draft_rule and sufficient evidence are auto-ruled; the human's power moves
-to VETO-AFTER (edit any entry's status to `vetoed` and the next tend demotes it, doc
-line removed, human veto recorded). The human playtests at will; human_rejection still
-outranks every machine signal.
+Pending heuristics with a real draft_rule and sufficient evidence are auto-ruled;
+automated veto-after: edit any entry's status to `vetoed` and the next tend demotes it, doc
+line removed, automated veto recorded. Machine signals are final; automated rejection permanently
+outranks every other signal.
 
 Deterministic policy (no LM):
   - agent_note recommends VETO / draft_rule marked "(subsumed" -> status `vetoed-auto`

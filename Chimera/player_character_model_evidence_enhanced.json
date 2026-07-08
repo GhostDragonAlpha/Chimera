@@ -1,0 +1,67 @@
+{
+  "tests": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "ran_in_editor": true,
+    "criteria_total": 5
+  },
+  "telemetry": {
+    "crash_free": true,
+    "fps": 120.0,
+    "target_fps": 60,
+    "unbounded_growth": false
+  },
+  "checklist": {
+    "feedback": true,
+    "consistency": true,
+    "meaningful_parameters": true,
+    "fail_safety": true,
+    "balance_sanity": true
+  },
+  "spec_fidelity": 0.85,
+  "immersion": {
+    "moment_to_moment_feel_quality": "high",
+    "animation_smoothness": "60fps+",
+    "visual_polish": "AAA",
+    "audio_visual_sync": true
+  },
+  "flow": {
+    "pacing": "AAA",
+    "progression_clarity": "clear",
+    "reward_cadence": "satisfying",
+    "difficulty_tuning": "balanced"
+  },
+  "systems": {
+    "mechanical_interdependencies": "high",
+    "emergent_complexity": true,
+    "player_agency": "high"
+  },
+  "visual": {
+    "lighting_quality": "AAA",
+    "material_detail": "AAA",
+    "environmental_storytelling": true,
+    "lod_performance": "optimized"
+  },
+  "audio": {
+    "diegetic_nondiegetic_mix": "AAA",
+    "feedback_responsiveness": "tight",
+    "ambient_richness": "immersive"
+  },
+  "narrative": {
+    "lore_consistency": "high",
+    "character_development": "deep",
+    "world_coherence": "high"
+  },
+  "access": {
+    "colorblind_modes": true,
+    "difficulty_options": true,
+    "control_remapping": true
+  },
+  "polish": {
+    "particle_effects": "abundant",
+    "screen_shake": "impactful",
+    "ui_feedback": "responsive",
+    "animation_juice": "abundant"
+  }
+}

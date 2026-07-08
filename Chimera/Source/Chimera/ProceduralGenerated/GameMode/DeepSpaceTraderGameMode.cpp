@@ -5,6 +5,7 @@
 #include "GameFramework/DefaultPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Interactions/DemoTerminal.h"
+#include "../Stations/StationActor.h"
 
 #include "PCGVolumeManager.h"
 #include "FlightComponent.h"
@@ -98,7 +99,7 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		FRotator StationSpawnRotation0(0.f, 0.f, 0.f);
 		FActorSpawnParameters StationSpawnParams0;
 		StationSpawnParams0.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		AActor* SpawnedStation0 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation0, StationSpawnRotation0, StationSpawnParams0);
+		AStationActor* SpawnedStation0 = GetWorld()->SpawnActor<AStationActor>(AStationActor::StaticClass(), StationSpawnLocation0, StationSpawnRotation0, StationSpawnParams0);
 		if (SpawnedStation0)
 		{
 			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Orbital_Hub_7 at {%s}"), *SpawnedStation0->GetActorLocation().ToString());
@@ -114,7 +115,7 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		FRotator StationSpawnRotation1(0.f, 0.f, 0.f);
 		FActorSpawnParameters StationSpawnParams1;
 		StationSpawnParams1.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		AActor* SpawnedStation1 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation1, StationSpawnRotation1, StationSpawnParams1);
+		AStationActor* SpawnedStation1 = GetWorld()->SpawnActor<AStationActor>(AStationActor::StaticClass(), StationSpawnLocation1, StationSpawnRotation1, StationSpawnParams1);
 		if (SpawnedStation1)
 		{
 			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Ares_Market_Central at {%s}"), *SpawnedStation1->GetActorLocation().ToString());
@@ -130,7 +131,7 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 		FRotator StationSpawnRotation2(0.f, 0.f, 0.f);
 		FActorSpawnParameters StationSpawnParams2;
 		StationSpawnParams2.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		AActor* SpawnedStation2 = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), StationSpawnLocation2, StationSpawnRotation2, StationSpawnParams2);
+		AStationActor* SpawnedStation2 = GetWorld()->SpawnActor<AStationActor>(AStationActor::StaticClass(), StationSpawnLocation2, StationSpawnRotation2, StationSpawnParams2);
 		if (SpawnedStation2)
 		{
 			UE_LOG(LogTemp, Log, TEXT("SPAWNED: Station Shadow_Reef at {%s}"), *SpawnedStation2->GetActorLocation().ToString());
