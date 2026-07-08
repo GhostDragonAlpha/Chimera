@@ -36030,6 +36030,150 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_11cd0524882a"
+    },
+    {
+      "id": "pathway_attempt_0cae6a3477739e89",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-08T05:37:27.221501",
+      "tool": "unblock",
+      "action": "ensure_editor",
+      "parameters_tried": {
+        "note": "launched + bridge up within 300s"
+      },
+      "result": "success",
+      "error_message": "",
+      "error_signature": "success_no_error",
+      "template_file": "pathway_attempt/unblock/ensure_editor",
+      "error_category": "none",
+      "fix_description": "Pathway attempt recorded: tool 'unblock', action 'ensure_editor', result 'success'",
+      "compilation_result": "success",
+      "links": [],
+      "recorded_by": "unblock.py",
+      "run_id": "run_2432585eac98"
+    },
+    {
+      "id": "pathway_attempt_d9daf8354a927c89",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-08T05:55:06.965418",
+      "tool": "control_actor",
+      "action": "get_component_property",
+      "parameters_tried": {
+        "actorName": "Player_Astronaut",
+        "componentName": "CharMoveComp",
+        "propertyName": "NavAgentProps",
+        "recipe": "To verify whether a Blueprint class-default (CDO) property edit already landed (vs. trusting a shared TaskList 'completed' label, or a prior session's transient PIE-instance-only probe), read the property on the PERSISTENT LEVEL's placed instance of that Blueprint OUTSIDE PIE (objectPath has no UEDPIE_ prefix). If the instance has no per-instance override, its value reflects the CDO. Cross-check against git diff --stat on the .uasset: a nonzero byte-size delta (here +3102 bytes, 44714->47816) independently confirms a real, disk-persisted asset write, not an in-memory-only editor state that would vanish on relaunch. Confirmed live: NavAgentProps read back as (...,bCanCrouch=True,bCanJump=True,bCanWalk=True,bCanSwim=True) -- explicit True is written for a non-default bool (contrast with the PRIOR session's failed instance-only write, whose readback OMITTED bCanCrouch entirely, i.e. omission == still-default == false)."
+      },
+      "result": "success",
+      "error_message": "",
+      "error_signature": "success_no_error",
+      "template_file": "pathway_attempt/control_actor/get_component_property",
+      "error_category": "none",
+      "fix_description": "Pathway attempt recorded: tool 'control_actor', action 'get_component_property', result 'success'",
+      "compilation_result": "success",
+      "links": [],
+      "recorded_by": "record_results2.py",
+      "run_id": "run_73042519d7eb"
+    },
+    {
+      "id": "pathway_attempt_9c870046fa64e2c6",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-08T05:55:07.004989",
+      "tool": "git+python_bytediff",
+      "action": "root_cause_binary_package_diff",
+      "parameters_tried": {
+        "recipe": "git show HEAD:<path> > head.bin, then byte-for-byte compare against the working-tree file. Equal total size (here 158221==158221 bytes) does NOT mean byte-identical -- found 7856 differing bytes despite zero size delta. Grouping differences into contiguous runs and reading the surrounding ASCII context is enough to classify each region without a UE package parser: (a) offset 24-43, a 20-byte package header GUID -- benign, changes on every resave regardless of content; (b) an embedded save-timestamp string ('2026-07-07-23.32.08' -> '2026-07-08-00.23.22') matching the file's own mtime exactly -- confirms a genuine resave event, timestamped; (c) offsets ~56735-61000+, a metadata/tag table keyed by actor path, showing renamed/reordered entries (NiagaraActor_1->_4, DynamicMeshActor_2/3/4->3/4/8, WeaponBody/WeaponBarrel, GeneratedCylinder/GeneratedCone, MCP_ManageEffectDefaultActor_56856) -- all traceable to OTHER concurrent sessions' geometry/Niagara-authoring work (Tool_Weapon_Model, MCPTest ManageEffectDefaults probes), zero occurrences of the feature under test (grepped full diff for Astronaut/CharMoveComp/NavAgentProps/Crouch/CollisionCylinder/Player_Astronaut -- none found); (d) a level-bounds float recalculation near the end, consistent with (c)'s actor churn. This lets an agent answer 'is this diff meaningful or noise' with actual evidence instead of a shrug -- prior sessions (Ground_Sand_Footprints, task_9c0d4fd9 chain) only ever flagged chimeradefaultlevel.umap's multi-agent-dirty state as unresolved without root-causing a specific instance this precisely."
+      },
+      "result": "success",
+      "error_message": "",
+      "error_signature": "success_no_error",
+      "template_file": "pathway_attempt/git+python_bytediff/root_cause_binary_package_diff",
+      "error_category": "none",
+      "fix_description": "Pathway attempt recorded: tool 'git+python_bytediff', action 'root_cause_binary_package_diff', result 'success'",
+      "compilation_result": "success",
+      "links": [],
+      "recorded_by": "record_results2.py",
+      "run_id": "run_73042519d7eb"
+    },
+    {
+      "id": "feature_b308fbc2583d9836",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-08T05:55:07.042343",
+      "feature_name": "Verb_Bend",
+      "loop": 2,
+      "status": "needs_refinement",
+      "parameters": {
+        "current_blocker": "RESOLVED AND RE-VERIFIED this session (independent of the fix itself, which a concurrent orchestrator subagent applied): BP_Astronaut_Character's CharacterMovementComponent.NavAgentProps.bCanCrouch is now True on the Blueprint CDO (confirmed live outside PIE, zero level-file footprint, git diff +3102 bytes on the .uasset). Fresh, independent real-PIE measurement (separate from the fixing session's own task #38 test): bIsCrouched false->true->false and CollisionCylinder.CapsuleHalfHeight 90->40->90 across press-C/hold/release-C, CrouchedHalfHeight=40 confirmed as the target. W-hold movement (velocity 0->[600,0,0]) and a Space jump arc (Z 102.15->164.37 at t+0.15s->102.15 landed by t+0.30s, byte-for-byte matching the task_c11196d2 fix session's own jump numbers) both sanity-checked clean post-crouch, no regression. REMAINING gap before this feature can honestly move past needs_refinement: a fresh automated sleepwalk pass (verb_interactions.beats.json) is still the Generation Protocol's 'true collapse' evidence -- this session's direct MCP measurement, however clean, is not that. Interact()/DropItem() remain honest UE_LOG-only stubs (no UPickupInteractionComponent, no placed APickupActor) -- unchanged, out of this session's scope."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_2/Verb_Bend",
+      "error_category": "none",
+      "fix_description": "Feature 'Verb_Bend' (Loop 2) recorded as 'needs_refinement'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "record_results2.py",
+      "run_id": "run_73042519d7eb"
+    },
+    {
+      "id": "surprise_0b5d88c408d670f4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-08T05:55:07.079864",
+      "context": "Tasked with determining whether an uncommitted, unexplained BP_Astronaut_Character.uasset change (left by 'a separate, independent process, still running right now') had already flipped NavAgentProps.bCanCrouch=true, and to fix it myself if not.",
+      "expectation": "Expected to have to diagnose from scratch and possibly apply the Blueprint CDO edit myself, per the task's own explicit 'If bCanCrouch is still false ... fix it yourself' branch.",
+      "reality": "The shared cross-session TaskList already contained tasks #34-38 ('Find MCP pathway for Blueprint CDO component property edits' / 'Set bCanCrouch=true and verify CrouchedHalfHeight on the Blueprint CDO' / 'Real PIE functional test of crouch') marked completed by a DIFFERENT concurrent session, with only #39 ('Record results via typed helpers and update task_progress.md') still pending. The DNA graph's own bCanCrouch-related nodes were still the OLD, pre-fix phantom-pain entries (no new record existed yet) -- i.e. the code fix had genuinely landed (confirmed independently via live MCP query + git diff --stat, not by trusting the TaskList label) but had not yet been recorded to the graph or task_progress.md. Live verification confirmed the fix is real and correct; this session's own record_feature/record_pathway calls are the first DNA-graph record of it, and task_progress.md still needed updating (left for the user's review per 'do not commit' -- but flagged here so task #39 isn't silently duplicated by two different sessions).",
+      "lesson_hint": "When a task references 'a separate, independent process, still running right now' that already touched the exact files under investigation, check the shared TaskList for matching task descriptions BEFORE assuming the fix hasn't happened -- it can complete the underlying work (tasks marked completed) well before its own recording/handoff step (a separate, later task) has run, leaving a window where git/live-engine state is ahead of both the DNA graph and task_progress.md.",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Expected to have to diagnose from scratch and possibly apply the Blueprint CDO e' but 'The shared cross-session TaskList already contained tasks #34-38 ('Find MCP path'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "record_results2.py",
+      "run_id": "run_73042519d7eb"
+    },
+    {
+      "id": "surprise_577895b9f3334bce",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-08T05:55:07.117157",
+      "context": "Asked to give an honest read on whether chimeradefaultlevel.umap's uncommitted diff (byte-identical total size, 158221->158221) was meaningful new content or transient PIE/editor noise (selection state, camera position).",
+      "expectation": "Expected either a clean 'it's just noise' or 'it's a real feature addition' answer; the actual finding is a third category this project's own docs don't yet name: incidental cross-contamination from a DIFFERENT concurrent session's real (but unrelated) work, captured by a shared save_all against one live editor/level multiple orchestrator subagents hold open simultaneously.",
+      "reality": "Neither, precisely: a byte-level diff against HEAD (git show + manual comparison) found 7856 differing bytes despite zero size delta. It is real, disk-persisted content, but traces entirely to a metadata/tag table listing OTHER concurrent sessions' actor churn (Tool_Weapon_Model's WeaponBody/WeaponBarrel geometry parts, GeneratedCylinder/GeneratedCone placeholders, MCP_ManageEffectDefaultActor_56856 Niagara-authoring test probes -- matching the untracked Content/MCPTest/ManageEffectDefaults/*_56856 files also sitting in git status), plus a benign package-GUID and save-timestamp resave artifact. Zero bytes anywhere in the diff reference Astronaut/CharMoveComp/NavAgentProps/Crouch/CollisionCylinder -- the level diff has nothing to do with the crouch fix that triggered this investigation.",
+      "lesson_hint": "'Equal file size' is not evidence of 'no change' for UE binary packages -- always byte-diff against HEAD, not just git diff --stat, before calling a binary asset's uncommitted change 'noise'. task_progress.md has flagged chimeradefaultlevel.umap's multi-agent-dirty state as an open, unresolved complaint at least 4 times (Ground_Sand_Footprints, task_9c0d4fd9-chain sessions) without ever root-causing a specific instance this precisely -- the byte-diff technique in this session's companion record_pathway call is a reusable answer for next time, though the underlying multi-agent-shared-level-save collision itself is still architecturally unfixed.",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Expected either a clean 'it's just noise' or 'it's a real feature addition' answ' but 'Neither, precisely: a byte-level diff against HEAD (git show + manual comparison'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "record_results2.py",
+      "run_id": "run_73042519d7eb"
+    },
+    {
+      "id": "phase_c10a54d8174ff536",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-08T05:56:58.415630",
+      "phase": "Verb_Bend/DemoCrouch: verify+reverify orchestrator's concurrent bCanCrouch CDO fix",
+      "result": "No build/code change this session -- the fix (BP_Astronaut_Character CDO NavAgentProps.bCanCrouch=false->true) had ALREADY been applied and saved by a concurrent orchestrator subagent (shared TaskList #34-38, completed) before this session started; independently re-confirmed live (not trusted from the TaskList label) via control_actor get_component_property on Player_Astronaut/CharMoveComp outside PIE: NavAgentProps=(...,bCanCrouch=True,bCanJump=True,bCanWalk=True,bCanSwim=True), plus git diff --stat showing BP_Astronaut_Character.uasset 44714->47816 bytes (+3102, real disk-persisted CDO write). Fresh independent PIE verification this session (single persistent MCP connection, explicit play/stop): bIsCrouched false->true->false and CollisionCylinder.CapsuleHalfHeight 90->40->90 across press-C(hold 1.0s)/release-C(+1.0s settle); CrouchedHalfHeight=40 confirmed as the target value. Movement/jump sanity (post-uncrouch, no regression): W-hold 1.0s velocity [0,0,0]->[600,0,0]; Space jump Z 102.15->164.37(t+0.15s)->102.15(t+0.30s, landed)->102.15(t+0.60s, settled) -- matches the task_c11196d2 fix session's own jump numbers almost to the decimal. PIE stopped cleanly, editor-world actor reverted to its exact pre-PIE transform (0,0,130), zero lasting side effects. Separately: byte-level diffed chimeradefaultlevel.umap against HEAD (git show + manual byte compare) to answer whether its uncommitted, byte-identical-size (158221==158221) diff was meaningful or noise -- found 7856 differing bytes tracing to a metadata/tag table churned by OTHER concurrent sessions' work (Tool_Weapon_Model geometry parts, MCP ManageEffectDefaults Niagara-authoring test probes) plus a benign package-GUID/save-timestamp resave artifact; zero bytes anywhere reference Astronaut/CharMoveComp/NavAgentProps/Crouch/CollisionCylinder. Not committed, per explicit instruction.",
+      "notes": "Investigation-and-verification session; the underlying CDO fix was applied by a different concurrent orchestrator subagent (TaskList #34-38) before this session began -- this session's job was to independently confirm it (not trust the TaskList label), re-verify live in PIE with fresh numbers, sanity-check for regressions, and root-cause the separate chimeradefaultlevel.umap diff. No C++ change, no UBT build this session.",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Verb_Bend/DemoCrouch: verify+reverify orchestrator's concurrent bCanCrouch CDO fix",
+      "error_category": "none",
+      "fix_description": "Phase 'Verb_Bend/DemoCrouch: verify+reverify orchestrator's concurrent bCanCrouch CDO fix' complete: No build/code change this session -- the fix (BP_Astronaut_Character CDO NavAgentProps.bCanCrouch=false->true) had ALREADY been applied and saved by a concurrent orchestrator subagent (shared TaskList",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "chimeradefaultlevel.umap will keep looking 'dirty' every session as long as multiple orchestrator subagents share one live editor + one open level with save_all sweeping in whoever's incidental scratch actors (GeneratedBox/Cylinder/Cone, MCP_ManageEffectDefaultActor_*) happen to exist at save time -- the byte-diff technique recorded this session (pathway_attempt_9c870046fa64e2c6) diagnoses a specific instance but does not prevent recurrence; a real fix needs either a dedicated scratch level for MCP tool-authoring probes or a pre-save sweep that deletes MCPTest/Generated* leftovers.",
+        "Verb_Bend/PickUp/Drop's remaining gaps are unchanged and still real: Interact()/DropItem() are honest UE_LOG-only stubs (no UPickupInteractionComponent, no placed APickupActor) -- confirming crouch works does not touch this."
+      ],
+      "inheritance": "BP_Astronaut_Character's NavAgentProps.bCanCrouch is now confirmably True on the Blueprint CDO and DemoCrouch (C/LeftControl) is a fully working, player-visible, regression-free feature end to end -- the last blocker task_progress.md's NEXT list named for this is closed. The only thing separating Verb_Bend from a real automated collapse now is a fresh sleepwalk pass; direct MCP PIE measurement, however clean, still isn't that evidence per this project's own Generation Protocol.",
+      "pain_verdicts": {
+        "phase_f701aa4ec446f47f:P1": "confirmed"
+      },
+      "recorded_by": "run_postflight_crouch_reverify.py",
+      "run_id": "run_a231e9e21daa"
     }
   ],
   "edges": [
