@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "PickupActor.h"
 #include "DropActor.generated.h"
 
 UENUM(BlueprintType)
@@ -13,8 +13,18 @@ enum class EDropActorState : uint8
 	Stabilized UMETA(DisplayName = "Stabilized")
 };
 
+/**
+ * A dropped item in the world. Derives from APickupActor (not AActor) so that
+ * PickupInteractionComponent's existing APickupActor-based overlap checks and
+ * TActorIterator<APickupActor> fallback recognize it for free — inherits
+ * RootScene/PickupMesh/CollisionComponent/ItemName/InteractionState/PickUp()
+ * unchanged, and layers only the drop-specific physics-settling lifecycle
+ * (DropState) on top. Without this, a dropped item could never be picked back
+ * up: it was previously its own AActor sibling, invisible to every pickup
+ * query, with an OnPickedUp event nothing ever called.
+ */
 UCLASS()
-class CHIMERA_API ADropActor : public AActor
+class CHIMERA_API ADropActor : public APickupActor
 {
 	GENERATED_BODY()
 
@@ -24,39 +34,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drop|Components")
-	class USceneComponent* RootScene;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drop|Components")
-	class UStaticMeshComponent* DropMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Drop|Components")
-	class UBoxComponent* CollisionComponent;
-
-	/** Interaction state of the drop actor */
+	/** Physics-settling state of the drop (independent of inherited InteractionState, which governs whether it can be picked back up) */
 	UPROPERTY(BlueprintReadOnly, Category = "Drop|State")
 	EDropActorState DropState;
-
-	/** Name or display name of the dropped item */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop|Item")
-	FText ItemName;
-
-	/** Whether this drop item can be picked up multiple times (stackable) */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop|Item")
-	bool bIsStackable;
-
-	/** Maximum stack size for stackable items */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop|Item", meta = (EditCondition = "bIsStackable"))
-	int32 MaxStackSize;
-
-	/** Current stack count */
-	UPROPERTY(BlueprintReadOnly, Category = "Drop|Item")
-	int32 CurrentStackSize;
 
 	/** Initial drop velocity for physics simulation */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop|Physics")
@@ -69,10 +54,6 @@ public:
 	/** Physics friction (0.0 to 1.0) */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drop|Physics")
 	float Friction;
-
-	/** Called when the drop item is picked up by a player */
-	UFUNCTION(BlueprintImplementableEvent, Category = "Drop|Events")
-	void OnPickedUp();
 
 	/** Get the current drop state */
 	EDropActorState GetDropState() const;
