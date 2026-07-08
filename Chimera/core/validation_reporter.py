@@ -99,7 +99,12 @@ class ValidationReporter:
                 deviations.append({
                     "type": "missing_generation",
                     "category": "characters",
-                    "description": "No character class files generated despite DSL declarations"
+                    "description": (
+                        "No character class files generated despite DSL declarations. "
+                        "Ensure the 'gameplay.characters' block is present in your DSL spec "
+                        "and that game_code_generator.py has a 'character_class' template registered. "
+                        "See core/game_code_generator.py for available templates."
+                    )
                 })
 
         # Check if all declared abilities have corresponding GAS ability files
@@ -109,7 +114,26 @@ class ValidationReporter:
                 deviations.append({
                     "type": "missing_generation",
                     "category": "abilities",
-                    "description": "No GAS ability class files generated despite DSL declarations"
+                    "description": (
+                        "No GAS ability class files generated despite DSL declarations. "
+                        "Ensure the 'gameplay.abilities' block is present in your DSL spec "
+                        "and that game_code_generator.py has a 'gas_ability_class' template registered."
+                    )
+                })
+
+        # Check if all declared meshes have corresponding generated mesh files
+        if "world" in dsl_data and "levels" in dsl_data["world"]:
+            level_count = len(dsl_data["world"]["levels"])
+            mesh_files = generated_files.get("meshes", [])
+            if level_count > 0 and not mesh_files:
+                deviations.append({
+                    "type": "missing_generation",
+                    "category": "environment_meshes",
+                    "description": (
+                        f"DSL declares {level_count} levels but no environment meshes were generated. "
+                        "Asset providers default to procedural/fallback when no API keys are configured. "
+                        "See core/asset_config.py for provider configuration options."
+                    )
                 })
 
         return deviations

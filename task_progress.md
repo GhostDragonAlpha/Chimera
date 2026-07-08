@@ -1,3 +1,53 @@
+# Rehearsal decision 2026-07-08 20:32Z — next move: Verb_Look
+
+Chosen by core.rehearsal (score 1.0, p_success 0.5, evidence: grade:A, sim:7/10, failure_mentions:9). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Verb_Look** — needs_refinement (reopened). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Verb_Look')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-08 20:24Z — next move: Ground_Sand_Footprints
+
+Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Footprints** — needs_refinement (reopened). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-08 20:06Z — next move: Ground_Sand_Footprints
+
+Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Footprints** — needs_refinement (reopened). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-08 19:40Z — next move: Ground_Sand_Footprints
+
+Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Footprints** — needs_refinement (reopened). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-08 18:41Z — next move: Ground_Sand_Particles
+
+Chosen by core.rehearsal (score 1.44, p_success 0.72, evidence: grade:B, sim:19/25, failure_mentions:1). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Particles** — needs_refinement (reopened). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Particles')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Session 2026-07-08 ("fix any issues" sweep — McpAutomationBridge C4702 + ADropActor unify-the-classes + stale heuristic queue) — closed the exact "drop-then-repickup is not wired" gap the immediately-prior session deliberately left open, fixed a real pre-existing DebugGame build error, and caught a stale automated rejection before it could self-promote a false claim into CLAUDE.md; PIE verification of pickup/drop is still the one open item, now blocked on a direct, unanswered question rather than an unclear one
 
 **Task:** open-ended "fix any issues" continuation. No new feature request — investigate what's actually broken and fix it directly (no subagents, per standing instruction this session), given PIE verification of the pickup/drop work remains blocked pending explicit user authorization to close the shared `UnrealEditor.exe`.

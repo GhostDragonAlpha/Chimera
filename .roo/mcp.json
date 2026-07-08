@@ -40,7 +40,8 @@
 				"control_actor",
 				"manage_asset",
 				"manage_level",
-				"inspect"
+				"inspect",
+				"system_control"
 			]
 		},
 		"playwright": {

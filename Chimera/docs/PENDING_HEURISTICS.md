@@ -234,3 +234,24 @@ Wait, looking at the
 - sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Verb_Bend has NO input binding anywhere in the codebase: BP_Astronaut_Charac
 - sample: Rig re-verified clean post-input-fix (2 sessions), but the beat only checks is_pie/pawn_class -- it does not test crouch functionally. The immediately-prior ses
 - draft_rule: (subsumed by H-19 -- identical stale-rejection root cause, same simtest_fbd1071132dfb65a already refuted by 2 later clean sessions; its functional-gap concern is separately covered by H-14)
+
+<!-- distilled 2026-07-08T19:41:42Z -->
+## H-21: human_rejection: Verb_Shovel
+- status: pending
+- kind: human_rejection  |  count: 4  |  last_seen: 2026-07-08T15:37:57
+- proposed_organ: claude_md
+- evidence: observation_45b8b52d04bb680f, observation_bb1ac7c1c90f2343, observation_c1af4475a658d6b3, observation_d30ab5686b763ed3
+- sample: automated rejection sweep: simulation evidence indicts this feature (3 failing outcome(s)) in simtest_fbd1071132dfb65a
+- sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Two additional, separate gaps found: (1) ATool_Shovel (Source/Chimera/Proced
+- sample: Beats FAILED (not reached) in both fresh sessions (simtest_fadc939050ee23a7: dist=9735/10535uu; simtest_e9854be8cf3d0d83: dist=9535/10335uu) -- but this is the 
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-22: human_rejection: Verb_PickUp
+- status: pending
+- kind: human_rejection  |  count: 4  |  last_seen: 2026-07-08T15:38:23
+- proposed_organ: claude_md
+- evidence: observation_e9e42a55deceea63, observation_bbd3824598c5d283, observation_894b90c0c982fb7e, observation_ed0254872e5fb7b9
+- sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_fbd1071132dfb65a
+- sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Triple gap, each confirmed directly rather than inferred: (1) BP_Astronaut_C
+- sample: Rig re-verified clean post-input-fix (2 sessions), same shallow is_pie/pawn_class check as before. The immediately-prior session's direct component-listing evid
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
