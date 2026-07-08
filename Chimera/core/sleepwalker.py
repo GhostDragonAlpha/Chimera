@@ -80,6 +80,17 @@ class Sleepwalker:
         if "key" in a:
             self.w.mark("action", {"key": a["key"], "hold_s": a.get("hold_s", 0.2)})
             self._key(a["key"], float(a.get("hold_s", 0.2)))
+        elif "key_down" in a:
+            # Press-and-leave-held (no auto-release): for verifying a state that only
+            # exists while a key is down (e.g. crouch), since expects are only checked
+            # after all of a beat's actions complete -- a normal "key" action would
+            # already have released by then. Pair with a "key_up" action (this beat or
+            # the next) to release it before subsequent beats run.
+            self.w.mark("action", {"key_down": a["key_down"]})
+            self._call("control_editor", {"action": "simulate_input", "type": "key_down", "key": a["key_down"]})
+        elif "key_up" in a:
+            self.w.mark("action", {"key_up": a["key_up"]})
+            self._call("control_editor", {"action": "simulate_input", "type": "key_up", "key": a["key_up"]})
         elif "wait" in a:
             time.sleep(float(a["wait"]))
         elif "screenshot" in a:
@@ -141,6 +152,9 @@ class Sleepwalker:
         if "pawn_z_above" in e:
             z = float((((rt.get("pawn") or {}).get("transform") or {}).get("location") or {}).get("z", -1e9))
             return z > float(e["pawn_z_above"]), f"z={z:.0f}"
+        if "pawn_z_below" in e:
+            z = float((((rt.get("pawn") or {}).get("transform") or {}).get("location") or {}).get("z", 1e9))
+            return z < float(e["pawn_z_below"]), f"z={z:.0f}"
         if "screenshot_taken" in e:
             # screenshot action is proven via control_editor screenshot mode=editor_viewport
             ok = True
