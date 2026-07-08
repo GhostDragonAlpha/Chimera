@@ -50,6 +50,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Pickup Interaction|State")
 	EPickupInteractionState CurrentState;
 
+	/** Whether this component is currently holding a picked-up item */
+	UPROPERTY(BlueprintReadOnly, Category = "Pickup Interaction|State")
+	bool bIsHoldingItem;
+
+	/** Display name of the currently held item (valid only while bIsHoldingItem is true) */
+	UPROPERTY(BlueprintReadOnly, Category = "Pickup Interaction|State")
+	FText HeldItemName;
+
 	/** Called when a pickup actor is within interaction radius */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup Interaction|Events")
 	void OnPickupReady(APickupActor* PickupActor);
@@ -62,9 +70,20 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup Interaction|Events")
 	void OnPickupCompleted(APickupActor* PickupActor);
 
-	/** Get the closest overlapping pickup actor within interaction radius */
+	/**
+	 * Get the closest pickup actor within interaction radius. Prefers live
+	 * overlap tracking (populated when this component's owner has a physical
+	 * primitive root, e.g. attached directly to a Character); falls back to a
+	 * direct world radius-query anchored on the owner's possessed pawn when
+	 * overlap tracking is empty (covers the case where this component is
+	 * owned by a PlayerController instead, which has no physical presence of
+	 * its own to overlap with).
+	 */
 	APickupActor* GetClosestPickup() const;
 
-	/** Attempt to interact with the current closest pickup */
-	void TryInteract();
+	/** Attempt to interact with the current closest pickup. Returns true if an item was actually picked up. */
+	bool TryInteract();
+
+	/** Attempt to drop the currently held item back into the world as a physics-simulated ADropActor. Returns true if something was actually dropped. */
+	bool TryDrop();
 };

@@ -37002,6 +37002,45 @@
       "links": [],
       "recorded_by": "-c",
       "run_id": "run_c6c40328e7c9"
+    },
+    {
+      "id": "mutation_e4149ee361c6",
+      "type": "Mutation",
+      "timestamp": "2026-07-08T13:47:46.694388",
+      "error_signature": "success_no_error",
+      "template_file": "Chimera/Plugins/McpAutomationBridge/Source/McpAutomationBridge/McpAutomationBridge.Build.cs + Source/Chimera/ProceduralGenerated/Demo/DemoPlayerController.cpp+h + Source/Chimera/ProceduralGenerated/Interactions/*.cpp+h",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "[19/27]..[27/27] all succeeded. Total time in Unreal Build Accelerator local executor: 47.45 seconds. Output binary: UnrealEditor-Win64-DebugGame.exe. Result: Succeeded. Total execution time: 59.28 seconds. Only pre-existing C4996 deprecation warnings remain (ForEachObjectWithPackage, GIsSavingPackage) -- informational, not errors.",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_001dc2186093"
+    },
+    {
+      "id": "pathway_attempt_5276f974ccb95df9",
+      "type": "pathway_attempt",
+      "timestamp": "2026-07-08T13:47:46.738450",
+      "tool": "UnrealBuildTool",
+      "action": "fix_unreachable_code_warning_as_error",
+      "parameters_tried": {
+        "setting": "CppCompileWarningSettings.UnreachableCodeWarningLevel",
+        "method": "reflection, mirrors existing SetShadowVariableWarningLevel pattern",
+        "root_cause": "UE recently defaulted this to Error for MSVC; only manifests in DebugGame config for this project (inlining/optimization differences), not Development"
+      },
+      "result": "success",
+      "error_message": "",
+      "error_signature": "success_no_error",
+      "template_file": "pathway_attempt/UnrealBuildTool/fix_unreachable_code_warning_as_error",
+      "error_category": "none",
+      "fix_description": "Pathway attempt recorded: tool 'UnrealBuildTool', action 'fix_unreachable_code_warning_as_error', result 'success'",
+      "compilation_result": "success",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_001dc2186093"
     }
   ],
   "edges": [

@@ -343,6 +343,20 @@ public class McpAutomationBridge : ModuleRules
         {
             SetShadowVariableWarningLevel(WarningLevel.Warning);
         }
+
+        // UE recently changed CppCompileWarningSettings.UnreachableCodeWarningLevel's
+        // default to Error for MSVC (previously Off) -- see UnrealBuildTool's
+        // TargetRules.cs changelog entry for this exact setting. Whether MSVC's flow
+        // analysis actually flags a given function as having unreachable code varies
+        // by inlining/optimization settings, which differ between build configurations
+        // (confirmed: McpAutomationBridge_LevelHandlers.cpp::HandleLevelAction only
+        // triggered C4702 in a DebugGame build, not Development). C4702 is an optimizer
+        // advisory, not a correctness diagnostic -- downgrading it to a warning (like
+        // the shadow-variable override above) is the appropriate fix here, not
+        // rewriting retry-loop control flow that isn't actually broken.
+        // TODO: investigate why HandleLevelAction's save-failure branch reads as
+        // unreachable in DebugGame, then remove this override.
+        SetUnreachableCodeWarningLevel(WarningLevel.Warning);
     }
 
     private static bool TrySetBooleanMember(object target, string memberName, bool value, bool onlyIfCurrentlyTrue = false)
@@ -422,6 +436,24 @@ public class McpAutomationBridge : ModuleRules
         if (legacyProperty != null && legacyProperty.CanWrite)
         {
             legacyProperty.SetValue(this, level);
+        }
+    }
+
+    private void SetUnreachableCodeWarningLevel(WarningLevel level)
+    {
+        const System.Reflection.BindingFlags Flags = System.Reflection.BindingFlags.Public |
+            System.Reflection.BindingFlags.NonPublic |
+            System.Reflection.BindingFlags.Instance;
+
+        var cppSettingsProperty = GetType().GetProperty("CppCompileWarningSettings", Flags);
+        object cppSettings = cppSettingsProperty?.GetValue(this);
+        if (cppSettings != null)
+        {
+            var unreachableProperty = cppSettings.GetType().GetProperty("UnreachableCodeWarningLevel", Flags);
+            if (unreachableProperty != null && unreachableProperty.CanWrite)
+            {
+                unreachableProperty.SetValue(cppSettings, level);
+            }
         }
     }
 

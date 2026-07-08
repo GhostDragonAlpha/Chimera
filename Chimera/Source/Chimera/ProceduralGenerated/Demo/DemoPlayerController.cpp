@@ -2,6 +2,15 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Engine/World.h"
+#include "../Interactions/PickupInteractionComponent.h"
+#include "../Interactions/PickupActor.h"
+
+ADemoPlayerController::ADemoPlayerController()
+{
+	PickupInteraction = CreateDefaultSubobject<UPickupInteractionComponent>(TEXT("PickupInteraction"));
+	bDemoPickupSpawned = false;
+}
 
 void ADemoPlayerController::SetupInputComponent()
 {
@@ -23,6 +32,7 @@ void ADemoPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	EnsureThirdPersonCamera(InPawn);
+	SpawnDemoPickupIfNeeded(InPawn);
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Possessed %s"), *GetNameSafe(InPawn));
 }
 
@@ -90,14 +100,26 @@ void ADemoPlayerController::StopCrouch()
 
 void ADemoPlayerController::Interact()
 {
-	// Trigger pickup/interaction logic - to be handled by UPickupInteractionComponent
-	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Interact action triggered"));
+	if (PickupInteraction && PickupInteraction->TryInteract())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Interact action triggered - picked up '%s'"), *PickupInteraction->HeldItemName.ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Interact action triggered - nothing in range to pick up"));
+	}
 }
 
 void ADemoPlayerController::DropItem()
 {
-	// Trigger drop logic - to be handled by APickupActor/Audio/Inventory components
-	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Drop action triggered"));
+	if (PickupInteraction && PickupInteraction->TryDrop())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Drop action triggered - item dropped"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Drop action triggered - nothing currently held"));
+	}
 }
 
 void ADemoPlayerController::EnsureThirdPersonCamera(APawn* InPawn)
@@ -119,4 +141,37 @@ void ADemoPlayerController::EnsureThirdPersonCamera(APawn* InPawn)
 	Cam->RegisterComponent();
 
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Third-person demo camera attached to %s"), *GetNameSafe(InPawn));
+}
+
+void ADemoPlayerController::SpawnDemoPickupIfNeeded(APawn* InPawn)
+{
+	if (bDemoPickupSpawned || !InPawn)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	// Deterministic, drift-proof placement: always relative to wherever the
+	// pawn actually spawned this session, rather than an absolute level
+	// coordinate (the level's own spawn point has drifted across sessions).
+	// Named PickupSpawnLocation, not SpawnLocation, to avoid shadowing
+	// APlayerController::SpawnLocation (a real inherited member).
+	const FVector PickupSpawnLocation = InPawn->GetActorLocation() + InPawn->GetActorForwardVector() * 300.0f;
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Name = FName(TEXT("Demo_PickupActor"));
+
+	APickupActor* DemoPickup = World->SpawnActor<APickupActor>(APickupActor::StaticClass(), PickupSpawnLocation, InPawn->GetActorRotation(), SpawnParams);
+	if (DemoPickup)
+	{
+		DemoPickup->ItemName = FText::FromString(TEXT("Multitool"));
+		bDemoPickupSpawned = true;
+		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Demo pickup '%s' spawned at %s"), *DemoPickup->ItemName.ToString(), *PickupSpawnLocation.ToString());
+	}
 }

@@ -3,6 +3,8 @@
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Engine/StaticMesh.h"
+#include "UObject/ConstructorHelpers.h"
 
 APickupActor::APickupActor()
 {
@@ -13,6 +15,15 @@ APickupActor::APickupActor()
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
 	PickupMesh->SetupAttachment(RootScene);
+
+	// Default visual: reuse the project's existing weapon mesh so a spawned
+	// pickup reads clearly as a real, held-able item rather than an invisible
+	// collision box. Individual spawns may override PickupMesh afterward.
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshFinder(TEXT("/Game/Tools/Geometry/SM_Weapon.SM_Weapon"));
+	if (MeshFinder.Succeeded())
+	{
+		PickupMesh->SetStaticMesh(MeshFinder.Object);
+	}
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
 	CollisionComponent->SetupAttachment(RootScene);

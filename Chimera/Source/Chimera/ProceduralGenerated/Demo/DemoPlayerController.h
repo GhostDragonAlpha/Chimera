@@ -16,9 +16,16 @@ class CHIMERA_API ADemoPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	ADemoPlayerController();
+
 protected:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
+
+	/** Owns pickup/drop detection and "currently held item" state. Lives on the controller (not the Blueprint character) because BP_Astronaut_Character carries no input/component graph the bridge can author into — see the class comment above. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interactions")
+	class UPickupInteractionComponent* PickupInteraction;
 
 private:
 	void MoveForward(float Value);
@@ -33,4 +40,9 @@ private:
 	void DropItem();
 
 	void EnsureThirdPersonCamera(APawn* InPawn);
+
+	/** Spawns one demo APickupActor near the possessed pawn, once per controller lifetime, so there is always something real to test Interact/Drop against. */
+	void SpawnDemoPickupIfNeeded(APawn* InPawn);
+
+	bool bDemoPickupSpawned;
 };

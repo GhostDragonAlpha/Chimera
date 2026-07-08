@@ -3,6 +3,8 @@
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Engine/StaticMesh.h"
+#include "UObject/ConstructorHelpers.h"
 
 ADropActor::ADropActor()
 {
@@ -13,6 +15,14 @@ ADropActor::ADropActor()
 
 	DropMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DropMesh"));
 	DropMesh->SetupAttachment(RootScene);
+
+	// Same default visual as APickupActor so a dropped item still reads as
+	// the same real object once it's back in the world.
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshFinder(TEXT("/Game/Tools/Geometry/SM_Weapon.SM_Weapon"));
+	if (MeshFinder.Succeeded())
+	{
+		DropMesh->SetStaticMesh(MeshFinder.Object);
+	}
 
 	CollisionComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComponent"));
 	CollisionComponent->SetupAttachment(DropMesh);
@@ -38,6 +48,7 @@ void ADropActor::BeginPlay()
 	if (DropMesh)
 	{
 		DropMesh->SetSimulatePhysics(true);
+		DropState = EDropActorState::PhysicsSimulating;
 
 		// Apply initial drop velocity
 		DropMesh->AddImpulse(DropVelocity, NAME_None, true);
