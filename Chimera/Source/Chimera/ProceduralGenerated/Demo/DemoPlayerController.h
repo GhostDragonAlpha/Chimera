@@ -27,6 +27,10 @@ private:
 	void LookUp(float Value);
 	void StartJump();
 	void StopJump();
+	void StartCrouch();
+	void StopCrouch();
+	void Interact();
+	void DropItem();
 
 	void EnsureThirdPersonCamera(APawn* InPawn);
 };

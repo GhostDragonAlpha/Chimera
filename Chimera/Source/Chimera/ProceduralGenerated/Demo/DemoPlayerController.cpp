@@ -12,7 +12,11 @@ void ADemoPlayerController::SetupInputComponent()
 	InputComponent->BindAxis(TEXT("DemoLookUp"), this, &ADemoPlayerController::LookUp);
 	InputComponent->BindAction(TEXT("DemoJump"), IE_Pressed, this, &ADemoPlayerController::StartJump);
 	InputComponent->BindAction(TEXT("DemoJump"), IE_Released, this, &ADemoPlayerController::StopJump);
-	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] DemoPlayerController input bound (WASD/mouse/space)"));
+	InputComponent->BindAction(TEXT("DemoCrouch"), IE_Pressed, this, &ADemoPlayerController::StartCrouch);
+	InputComponent->BindAction(TEXT("DemoCrouch"), IE_Released, this, &ADemoPlayerController::StopCrouch);
+	InputComponent->BindAction(TEXT("DemoInteract"), IE_Pressed, this, &ADemoPlayerController::Interact);
+	InputComponent->BindAction(TEXT("DemoDrop"), IE_Pressed, this, &ADemoPlayerController::DropItem);
+	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] DemoPlayerController input bound (WASD/mouse/space/C/interact/drop)"));
 }
 
 void ADemoPlayerController::OnPossess(APawn* InPawn)
@@ -66,6 +70,34 @@ void ADemoPlayerController::StopJump()
 	{
 		C->StopJumping();
 	}
+}
+
+void ADemoPlayerController::StartCrouch()
+{
+	if (ACharacter* C = Cast<ACharacter>(GetPawn()))
+	{
+		C->Crouch();
+	}
+}
+
+void ADemoPlayerController::StopCrouch()
+{
+	if (ACharacter* C = Cast<ACharacter>(GetPawn()))
+	{
+		C->UnCrouch();
+	}
+}
+
+void ADemoPlayerController::Interact()
+{
+	// Trigger pickup/interaction logic - to be handled by UPickupInteractionComponent
+	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Interact action triggered"));
+}
+
+void ADemoPlayerController::DropItem()
+{
+	// Trigger drop logic - to be handled by APickupActor/Audio/Inventory components
+	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Drop action triggered"));
 }
 
 void ADemoPlayerController::EnsureThirdPersonCamera(APawn* InPawn)
