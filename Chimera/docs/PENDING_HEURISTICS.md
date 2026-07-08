@@ -213,3 +213,24 @@ Wait, looking at the
 - evidence_count: 3 (same sim_verb_interactions session; all 9 beats failed with unknown action errors)
 - sample_evidence: "weapon_tool_examine blocked: unknown action {'move_to': {'x': 400, 'y': -400, 'z': 50}}"
 - gardener_recommendation: VETO as subsumed by H-17 — identical root cause (beat-schema gap) from same session. Consolidate into one heuristic: "Sleepwalker discovers beat-schema gaps before playtest."
+
+<!-- distilled 2026-07-08T07:15:02Z -->
+## H-19: human_rejection: Verb_Look
+- status: promoted (auto 2026-07-08)
+- kind: human_rejection  |  count: 3  |  last_seen: 2026-07-08T04:19:38
+- proposed_organ: claude_md
+- evidence: observation_4f5df1d23ee81c4b, observation_29973953faf496a2, observation_bdbc5d02c1f55134
+- sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_fbd1071132dfb65a
+- sample: Independently re-verified beyond the suspect beat evidence. The ORIGINAL task_9c0d4fd9 caveat (wrong pawn class DefaultPawn + unregistered MCP actions) is REFUT
+- sample: Rig re-verified clean post-input-fix across 2 consecutive sleepwalk sessions (simtest_fadc939050ee23a7, simtest_e9854be8cf3d0d83): world_is/is_pie/pawn_class al
+- draft_rule: Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and re-verified since.
+
+## H-20: human_rejection: Verb_Bend
+- status: vetoed-auto (tombstone 2026-07-08 — subsumed)
+- kind: human_rejection  |  count: 3  |  last_seen: 2026-07-08T04:19:38
+- proposed_organ: claude_md
+- evidence: observation_44efdff7a36a3d5c, observation_f425fa8d8104e1ab, observation_895434ae9b085bf4
+- sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_fbd1071132dfb65a
+- sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Verb_Bend has NO input binding anywhere in the codebase: BP_Astronaut_Charac
+- sample: Rig re-verified clean post-input-fix (2 sessions), but the beat only checks is_pie/pawn_class -- it does not test crouch functionally. The immediately-prior ses
+- draft_rule: (subsumed by H-19 -- identical stale-rejection root cause, same simtest_fbd1071132dfb65a already refuted by 2 later clean sessions; its functional-gap concern is separately covered by H-14)

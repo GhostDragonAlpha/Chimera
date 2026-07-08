@@ -29,6 +29,7 @@
 - **[H-13, auto-promoted 2026-07-07]** Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps; run telemetry foregrounded and test every declared criterion before grading System_Economy.
 - **[H-14, auto-promoted 2026-07-07]** Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
 - **[H-17, auto-promoted 2026-07-07]** Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
+- **[H-19, auto-promoted 2026-07-08]** Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and re-verified since.
 
 ## Architecture Overview
 
