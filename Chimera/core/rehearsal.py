@@ -29,6 +29,25 @@ except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from graphify_interface import load_dna_graph, record_rollout
 
+try:
+    from core.visionkeeper import score_candidate_for_vision_fit
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    try:
+        from visionkeeper import score_candidate_for_vision_fit
+    except ImportError:
+        # VisionKeeper not available — no-op (graceful degradation)
+        def score_candidate_for_vision_fit(name, why, recipe):
+            return 1.0, "VisionKeeper unavailable"
+
+def _vision_fit_multiplier(candidate_name: str, candidate_why: str, candidate_recipe: str) -> tuple[float, str]:
+    """Apply VisionKeeper's vision_fit multiplier to a candidate.
+    
+    This closes the Visionkeeper -> rehearsal wiring gap (DREAM_ROSTER #3).
+    Scores each candidate for STORY_BIBLE alignment before rehearsal ranks it.
+    Returns: (vision_fit_multiplier, one-line judgment)
+    """
+    return score_candidate_for_vision_fit(candidate_name, candidate_why, candidate_recipe)
 ROOT = Path(__file__).resolve().parent.parent
 TASK_PROGRESS = ROOT.parent / "task_progress.md"
 
@@ -146,10 +165,41 @@ def apply_no_dead_ends(rows, nodes):
     return out
 
 
+def apply_vision_fit(rows, nodes):
+    """Apply VisionKeeper's vision_fit multiplier to candidates.
+    
+    This closes the Visionkeeper -> rehearsal wiring gap (DREAM_ROSTER #3).
+    Scores each candidate for STORY_BIBLE alignment before rehearsal ranks it:
+    - Directly embodies Design Law #2 / Observation Collapse: 1.3x
+    - Aligns with resonant minimalism / regolith-grey palette: 1.2x
+    - Tier-1 roster gap hire (scholar/muse/visionkeeper): 1.4x
+    - System infrastructure (demo/terminal/economy): 1.0x
+    - Operational / CI/CD rhythm: 0.8x
+    - The floor work (groundskeeping/gardener): 0.9x
+    - Neutral fit: 1.0x
+    
+    Multiplier range: 0.2–1.5, clamped.
+    """
+    for r in rows:
+        name = r.get("name", "")
+        why = r.get("why", "")
+        recipe = r.get("recipe", "")
+        
+        vision_fit, judgment = _vision_fit_multiplier(name, why, recipe)
+        
+        # Apply multiplier to score
+        original_score = r["score"]
+        r["score"] = round(original_score * vision_fit, 3)
+        r["vision_fit"] = vision_fit
+        r["vision_judgment"] = judgment
+    
+    rows.sort(key=lambda x: -x["score"])
+    return rows
+
+
 def enumerate_candidates(nodes, candidates_file=None):
     cands = {}
     for name, status in _latest_feature_statuses(nodes).items():
-        if status == "needs_refinement":
             cands[name] = {"name": name, "value": 2.0, "capable_only": False,
                            "why": "needs_refinement (reopened)",
                            "recipe": f"fetch study guide: python -c \"from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','{name}')[-1]; print(json.dumps(n.get('parameters',{{}}),default=str,indent=1)[:2000])\""}
@@ -184,10 +234,12 @@ def veto_table(rows):
     lines = ["", "REHEARSAL DECISION — veto any line with one sentence to the agent",
              f"{'rank':<5}{'score':<8}{'p':<6}{'cost':<6}{'candidate':<38}why / evidence"]
     for i, r in enumerate(rows[:10], 1):
+        vf = r.get("vision_fit", "")
+        vj = r.get("vision_judgment", "")
+        extra = f" [vf={vf}] {vj}" if vf else ""
         lines.append(f"{i:<5}{r['score']:<8}{r['p_success']:<6}{r['cost']:<6}"
-                     f"{r['name'][:36]:<38}{r['why']} | {','.join(r['evidence'])}")
+                     f"{r['name'][:36]:<38}{r['why']} | {','.join(r['evidence'])}{extra}")
     return "\n".join(lines)
-
 
 def write_next_item(top):
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%MZ")
@@ -216,8 +268,8 @@ def main():
         print("rehearsal: no candidates (queue empty and no candidates file) — nothing to decide")
         return
     rows = score_candidates(nodes, cands)
+    rows = apply_vision_fit(rows, nodes)  # VisionKeeper -> rehearsal wiring (DREAM_ROSTER #3)
     rows = apply_no_dead_ends(rows, nodes)
-    rows = apply_freshness(rows, nodes)
     print(veto_table(rows))
     if args.decide and not args.dry_run:
         top = rows[0]
