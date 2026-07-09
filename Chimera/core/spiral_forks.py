@@ -42,6 +42,18 @@ except ImportError:
                       "lm_studio_url": "http://localhost:1234/v1/chat/completions",
                       "lm_studio_model": "qwen3.6-35b-a3b-mtp@iq2_m"}
 
+try:
+    from core.scholar import scholar_brief_from_research, retrieve_corpus
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).parent))
+    try:
+        from scholar import scholar_brief_from_research, retrieve_corpus
+    except ImportError:
+        # Scholar not available — fall back to LM-only mode (graceful degradation)
+        def _scholar_unavailable(feature: str, topic: str) -> dict:
+            raise RuntimeError("Scholar organ not installed; use --use-lm or --briefs-dir")
+        scholar_brief_from_research = _scholar_unavailable
+        retrieve_corpus = lambda *a, **k: []
 CHIMERA_ROOT = Path(__file__).parent.parent
 REPORT_DIR = CHIMERA_ROOT / "docs" / "fork_reports"
 
@@ -191,6 +203,35 @@ def _lm_generate(feature: str, seed_name: str, directive: str) -> dict:
                 continue
     raise ValueError(f"LM returned no valid JSON for fork {seed_name} "
                      f"(schema-validate before consuming; see heuristic H-3)")
+    raise ValueError(f"LM returned no valid JSON for fork {seed_name} "
+                     f"(schema-validate before consuming; see heuristic H-3)")
+
+
+def _scholar_generate(feature: str, seed_name: str) -> dict:
+    """Generate a research-backed brief via Scholar instead of raw LM memory.
+    
+    This closes the Scholar -> spiral_forks wiring gap (DREAM_ROSTER #1).
+    Queries campus sources + local corpus to produce deterministic, cited briefs
+    that score higher on the Research Depth rubric than un-cited LM output.
+    """
+    from core.scholar import scholar_brief_from_research
+    
+    # Map fork type to topic keywords for campus auto-detection
+    topic_map = {
+        "conservative": f"{feature} canonical approach",
+        "alternative": f"{feature} alternative reference family",
+        "wild": f"{feature} unconventional approaches"
+    }
+    
+    try:
+        brief = scholar_brief_from_research(
+            feature=feature,
+            topic=topic_map.get(seed_name, f"{feature} research")
+        )
+        brief["fork"] = seed_name
+        return brief
+    except Exception as e:
+        raise RuntimeError(f"Scholar generation failed for fork {seed_name}: {e}")
 
 
 def main():
@@ -199,6 +240,8 @@ def main():
     parser.add_argument("--budget", type=int, default=HARNESS_CONFIG.get("fork_budget", 3))
     parser.add_argument("--use-lm", action="store_true",
                         help="generate briefs via LM Studio (serial; needs localhost:1234)")
+    parser.add_argument("--use-scholar", action="store_true",
+                        help="generate research-backed briefs via Scholar (campus + corpus sources)")
     parser.add_argument("--briefs-dir", help="read fork_*.json briefs authored by agent/subagents")
     parser.add_argument("--dry-run", action="store_true",
                         help="score and rank only; record no autopsies")
@@ -213,6 +256,16 @@ def main():
             print(f"no fork_*.json briefs in {args.briefs_dir}")
             print(f"expected schema:\n{json.dumps(BRIEF_SCHEMA_HINT, indent=1)}")
             return 1
+    elif args.use_scholar:
+        # Scholar -> spiral_forks wiring (DREAM_ROSTER #1): research-backed briefs
+        for name, directive in seeds:
+            print(f"[fork:{name}] generating via Scholar (campus + corpus)...")
+            try:
+                briefs.append(_scholar_generate(args.feature, name))
+            except Exception as e:
+                print(f"[fork:{name}] generation failed: {e} — fork dies, autopsy recorded")
+                briefs.append({"fork": name, "feature": args.feature,
+                               "approach": f"(generation failed: {e})"})
     elif args.use_lm:
         for name, directive in seeds:
             print(f"[fork:{name}] generating via LM Studio (serial)...")
@@ -223,7 +276,7 @@ def main():
                 briefs.append({"fork": name, "feature": args.feature,
                                "approach": f"(generation failed: {e})"})
     else:
-        print("choose --use-lm or --briefs-dir. For subagent-parallel mode, have each "
+        print("choose --use-lm, --use-scholar, or --briefs-dir. For subagent-parallel mode, have each "
               "subagent write fork_<name>.json into a dir, then pass --briefs-dir.")
         print(f"brief schema:\n{json.dumps(BRIEF_SCHEMA_HINT, indent=1)}")
         return 1
