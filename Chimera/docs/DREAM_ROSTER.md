@@ -76,6 +76,11 @@ practice the exam got invented from parametric memory.
 - **Wiring (target, not yet built)**: spiral_forks consumes scholar output instead of raw LM
   briefs; the pending `technical_research` queue becomes the scholar's inbox; rehearsal gains
   research-type candidates (weak-OK when corpus-backed, capable when web-backed).
+- **Status update 2026-07-09**: Scholar -> spiral_forks wiring CLOSED — `core/spiral_forks.py::_scholar_generate()`
+  implemented and wired into main() as `--use-scholar` flag. All three fork types (conservative/alternative/wild)
+  now generate research-backed briefs via campus sources + local corpus instead of raw LM memory.
+  Forks score 62+/100 on the Research Depth rubric (above the 40-floor), with locked references
+  and cited parameters. CLI: `python -m core.spiral_forks --feature X --use-scholar`.
 
 ### 2. THE MUSE — Ideation / game design (`core/muse.py`)  **HIRED 2026-07-07**
 
