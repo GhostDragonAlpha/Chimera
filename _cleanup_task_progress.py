@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Clean up task_progress.md by removing duplicate rehearsal decisions."""
+
 from pathlib import Path
 
 tp = Path("task_progress.md")
@@ -15,6 +16,7 @@ print(f"Found {len(rehearsal_lines)} rehearsal decisions")
 
 # Group by feature name (extract from title)
 from collections import defaultdict
+
 by_feature = defaultdict(list)
 for i, line in rehearsal_lines:
     # Extract feature name from title like "next move: Verb_Look"

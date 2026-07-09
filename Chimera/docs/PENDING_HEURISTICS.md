@@ -329,3 +329,15 @@ Wait, looking at the
 - sample: failed: [{"expect": {"actor_exists": "SandDrift_FX"}, "ok": true, "note": "present=True"}]
 - possible_conflict_with: H-28  (Gardener: reconcile)
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-09T07:15:01Z -->
+## H-30: sim_rejection: verb_interactions/verb_look_location
+- status: pending
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-09T06:38:38
+- proposed_organ: claude_md
+- evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_f276468c8122d640, simtest_f06ba5fb30ea6ffc
+- sample: failed: [{"expect": {"screenshot_taken": "verb_look_360_view"}, "ok": false, "note": "unknown expect ['screenshot_taken']"}]
+- sample: failed: [{"expect": {"pawn_class": "BP_Astronaut_Character_C"}, "ok": false, "note": "pawn_class=DefaultPawn"}]
+- sample: failed: [{"expect": {"control_rotation_yaw_delta": 0.5}, "ok": false, "note": "inspect.get_property failed on all controller pat
+- possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
