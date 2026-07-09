@@ -9,7 +9,6 @@ Chosen by core.rehearsal (score 2.28, p_success 0.9, evidence: grade:A). Human m
 
 ---
 
-# Rehearsal decision 2026-07-09 06:50Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.05, p_success 0.52, evidence: grade:A, sim:15/20, failure_mentions:11). Human may veto with one sentence.
 
@@ -189,7 +188,6 @@ Forks score 62/100 on the Research Depth rubric (above the 40-floor), with:
 
 ---
 
-# Rehearsal decision 2026-07-09 00:43Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.133, p_success 0.57, evidence: grade:A, sim:15/18, failure_mentions:11). Human may veto with one sentence.
 
@@ -220,7 +218,6 @@ Chosen by core.rehearsal (score 1.133, p_success 0.57, evidence: grade:A, sim:15
 
 ---
 
-# Rehearsal decision 2026-07-09 00:32Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.133, p_success 0.57, evidence: grade:A, sim:15/18, failure_mentions:11). Human may veto with one sentence.
 
@@ -231,7 +228,6 @@ Chosen by core.rehearsal (score 1.133, p_success 0.57, evidence: grade:A, sim:15
 
 ---
 
-# Rehearsal decision 2026-07-09 00:31Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.133, p_success 0.57, evidence: grade:A, sim:15/18, failure_mentions:11). Human may veto with one sentence.
 
@@ -242,7 +238,6 @@ Chosen by core.rehearsal (score 1.133, p_success 0.57, evidence: grade:A, sim:15
 
 ---
 
-# Rehearsal decision 2026-07-08 23:50Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.133, p_success 0.57, evidence: grade:A, sim:15/18, failure_mentions:11). Human may veto with one sentence.
 
@@ -253,7 +248,6 @@ Chosen by core.rehearsal (score 1.133, p_success 0.57, evidence: grade:A, sim:15
 
 ---
 
-# Rehearsal decision 2026-07-08 23:47Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.124, p_success 0.56, evidence: grade:A, sim:14/17, failure_mentions:11). Human may veto with one sentence.
 
@@ -264,7 +258,6 @@ Chosen by core.rehearsal (score 1.124, p_success 0.56, evidence: grade:A, sim:14
 
 ---
 
-# Rehearsal decision 2026-07-08 23:45Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.112, p_success 0.56, evidence: grade:A, sim:13/16, failure_mentions:11). Human may veto with one sentence.
 
@@ -275,7 +268,6 @@ Chosen by core.rehearsal (score 1.112, p_success 0.56, evidence: grade:A, sim:13
 
 ---
 
-# Rehearsal decision 2026-07-08 23:44Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.1, p_success 0.55, evidence: grade:A, sim:12/15, failure_mentions:11). Human may veto with one sentence.
 
@@ -286,7 +278,6 @@ Chosen by core.rehearsal (score 1.1, p_success 0.55, evidence: grade:A, sim:12/1
 
 ---
 
-# Rehearsal decision 2026-07-08 23:33Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.086, p_success 0.54, evidence: grade:A, sim:11/14, failure_mentions:11). Human may veto with one sentence.
 
@@ -297,7 +288,6 @@ Chosen by core.rehearsal (score 1.086, p_success 0.54, evidence: grade:A, sim:11
 
 ---
 
-# Rehearsal decision 2026-07-08 23:30Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.069, p_success 0.53, evidence: grade:A, sim:10/13, failure_mentions:11). Human may veto with one sentence.
 
@@ -308,7 +298,6 @@ Chosen by core.rehearsal (score 1.069, p_success 0.53, evidence: grade:A, sim:10
 
 ---
 
-# Rehearsal decision 2026-07-08 23:19Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.069, p_success 0.53, evidence: grade:A, sim:10/13, failure_mentions:11). Human may veto with one sentence.
 
@@ -319,7 +308,6 @@ Chosen by core.rehearsal (score 1.069, p_success 0.53, evidence: grade:A, sim:10
 
 ---
 
-# Rehearsal decision 2026-07-08 23:19Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.069, p_success 0.53, evidence: grade:A, sim:10/13, failure_mentions:11). Human may veto with one sentence.
 
@@ -330,7 +318,6 @@ Chosen by core.rehearsal (score 1.069, p_success 0.53, evidence: grade:A, sim:10
 
 ---
 
-# Rehearsal decision 2026-07-08 23:14Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.05, p_success 0.52, evidence: grade:A, sim:9/12, failure_mentions:11). Human may veto with one sentence.
 
@@ -341,7 +328,6 @@ Chosen by core.rehearsal (score 1.05, p_success 0.52, evidence: grade:A, sim:9/1
 
 ---
 
-# Rehearsal decision 2026-07-08 21:28Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.027, p_success 0.51, evidence: grade:A, sim:8/11, failure_mentions:10). Human may veto with one sentence.
 
@@ -352,7 +338,6 @@ Chosen by core.rehearsal (score 1.027, p_success 0.51, evidence: grade:A, sim:8/
 
 ---
 
-# Rehearsal decision 2026-07-08 20:54Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.0, p_success 0.5, evidence: grade:A, sim:7/10, failure_mentions:9). Human may veto with one sentence.
 
@@ -363,7 +348,6 @@ Chosen by core.rehearsal (score 1.0, p_success 0.5, evidence: grade:A, sim:7/10,
 
 ---
 
-# Rehearsal decision 2026-07-08 20:54Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.0, p_success 0.5, evidence: grade:A, sim:7/10, failure_mentions:9). Human may veto with one sentence.
 
@@ -374,7 +358,6 @@ Chosen by core.rehearsal (score 1.0, p_success 0.5, evidence: grade:A, sim:7/10,
 
 ---
 
-# Rehearsal decision 2026-07-08 20:47Z — next move: Verb_Look
 
 Chosen by core.rehearsal (score 1.0, p_success 0.5, evidence: grade:A, sim:7/10, failure_mentions:9). Human may veto with one sentence.
 
@@ -396,7 +379,6 @@ Chosen by core.rehearsal (score 1.0, p_success 0.5, evidence: grade:A, sim:7/10,
 
 ---
 
-# Rehearsal decision 2026-07-08 20:24Z — next move: Ground_Sand_Footprints
 
 Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
 
@@ -407,7 +389,6 @@ Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human ma
 
 ---
 
-# Rehearsal decision 2026-07-08 20:06Z — next move: Ground_Sand_Footprints
 
 Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
 
@@ -418,7 +399,6 @@ Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human ma
 
 ---
 
-# Rehearsal decision 2026-07-08 19:40Z — next move: Ground_Sand_Footprints
 
 Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
 
@@ -1263,7 +1243,6 @@ Pipeline verified passing (grade B) — under 12h cooldown, re-checking is dead 
 
 ---
 
-# Rehearsal decision 2026-07-07 06:31Z — next move: Demo_Phase2_DemoTerminal
 
 Chosen by core.rehearsal (score 0.79, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
 
@@ -1313,7 +1292,6 @@ Chosen by core.rehearsal (score 0.79, p_success 0.6, evidence: no history (explo
 
 ---
 
-# Rehearsal decision 2026-07-07 06:02Z — next move: Ground_Sand_Footprints
 
 Chosen by core.rehearsal (score 0.85, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
 
@@ -1338,7 +1316,6 @@ Chosen by core.rehearsal (score 0.85, p_success 0.5, evidence: grade:C). Human m
 
 ---
 
-# Rehearsal decision 2026-07-07 05:53Z — next move: Ground_Sand_Footprints
 
 Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: grade:C). Human may veto with one sentence.
 
@@ -1390,7 +1367,6 @@ Chosen by core.rehearsal (score 0.85, p_success 0.5, evidence: grade:C). Human m
 
 ---
 
-# Rehearsal decision 2026-07-07 03:52Z — next move: Demo_Phase3_SessionB_wiring
 
 Chosen by core.rehearsal (score 1.15, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
 
@@ -1435,7 +1411,6 @@ Chosen by core.rehearsal (score 1.15, p_success 0.6, evidence: no history (explo
 
 # ---
 
-# Rehearsal decision 2026-07-07 03:03Z — next move: Demo_Phase3_SessionB_wiring
 
 Chosen by core.rehearsal (score 1.15, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
 
