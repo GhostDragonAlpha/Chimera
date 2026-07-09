@@ -255,3 +255,77 @@ Wait, looking at the
 - sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Triple gap, each confirmed directly rather than inferred: (1) BP_Astronaut_C
 - sample: Rig re-verified clean post-input-fix (2 sessions), same shallow is_pie/pawn_class check as before. The immediately-prior session's direct component-listing evid
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-08T23:20:13Z -->
+## H-23: human_rejection: Verb_Drop
+- status: pending
+- kind: human_rejection  |  count: 4  |  last_seen: 2026-07-08T15:38:32
+- proposed_organ: claude_md
+- evidence: observation_22aff4c35c846157, observation_837c826fac9186ed, observation_2d845fd5545f3279, observation_6bea305cf7f95767
+- sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_fbd1071132dfb65a
+- sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Same missing-binding gap as Verb_PickUp: no Drop key binding exists anywhere
+- sample: Rig re-verified clean post-input-fix (2 sessions), same shallow is_pie/pawn_class check as before. ADropActor exists as a reasonably complete physics-drop imple
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-24: human_rejection: Ground_Rock_Surface
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-08T04:18:59
+- proposed_organ: claude_md
+- evidence: observation_cf32cafa76fd3b40
+- sample: Reopening the 2026-07-07T06:46:59 observed_provisional acceptance (simtest_0dec5fc92db45fee, 4 clean sessions). walk_metal_to_rock -- the only beat tagging this
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-08T23:31:30Z -->
+## H-25: sim_rejection: verb_interactions/verb_shovel_rock_surface_location
+- status: pending
+- kind: sim_rejection  |  count: 13  |  last_seen: 2026-07-08T23:31:23
+- proposed_organ: claude_md
+- evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_c18e964f43800746, simtest_fadc939050ee23a7, simtest_efc1292c57ce8798, simtest_e9854be8cf3d0d83, simtest_33f22bb0dbe1ec5f, simtest_4c757e3acd6ad033
+- sample: failed: [{"expect": {"screenshot_taken": "verb_shovel_rock_view"}, "ok": false, "note": "unknown expect ['screenshot_taken']"}]
+- sample: failed: [{"expect": {"pawn_within": {"x": 2000, "y": 0, "r": 900}}, "ok": false, "note": "dist=5601uu (loc x=7600.763583183289, 
+- sample: failed: [{"expect": {"pawn_within": {"x": 2000, "y": 0, "r": 900}}, "ok": false, "note": "dist=2000uu (loc x=0, y=0)"}]
+- possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-26: sim_rejection: verb_interactions/verb_shovel_sand_surface_location
+- status: pending
+- kind: sim_rejection  |  count: 13  |  last_seen: 2026-07-08T23:31:23
+- proposed_organ: claude_md
+- evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_c18e964f43800746, simtest_fadc939050ee23a7, simtest_efc1292c57ce8798, simtest_e9854be8cf3d0d83, simtest_33f22bb0dbe1ec5f, simtest_4c757e3acd6ad033
+- sample: failed: [{"expect": {"actor_exists": "SandDrift_FX"}, "ok": false, "note": "present=False"}]
+- sample: failed: [{"expect": {"actor_exists": "SandDrift_FX"}, "ok": true, "note": "present=True"}]
+- sample: blocked: [{"error": "control_editor.console_command: Command not executed: BugItGo 4000.0 0.0 150.0 0.0 0.0 0.0"}]
+- possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-08T23:36:25Z -->
+## H-27: sim_rejection: verb_interactions/verb_shovel_metal_surface_location
+- status: pending
+- kind: sim_rejection  |  count: 13  |  last_seen: 2026-07-08T23:34:54
+- proposed_organ: claude_md
+- evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_fadc939050ee23a7, simtest_efc1292c57ce8798, simtest_e9854be8cf3d0d83, simtest_33f22bb0dbe1ec5f, simtest_4c757e3acd6ad033, simtest_04c6edf075c50145
+- sample: failed: [{"expect": {"screenshot_taken": "verb_shovel_metal_view"}, "ok": false, "note": "unknown expect ['screenshot_taken']"}]
+- sample: failed: [{"expect": {"pawn_within": {"x": 0, "y": 0, "r": 600}}, "ok": false, "note": "dist=3600uu (loc x=3600.0008583068848, y=
+- sample: failed: [{"expect": {"pawn_within": {"x": 0, "y": 0, "r": 600}}, "ok": false, "note": "dist=9735uu (loc x=9727.041600935105, y=4
+- possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-28: sim_rejection: regolith_yard/jump_probe
+- status: pending
+- kind: sim_rejection  |  count: 8  |  last_seen: 2026-07-08T20:26:54
+- proposed_organ: claude_md
+- evidence: simtest_6a0be0d290cf9c59, simtest_d6e2cb58b97175ad, simtest_613400f2fcc63327, simtest_9cd9a1ac25867a73, simtest_b9c246f4cef92293, simtest_1c77ee388da8bbd4, simtest_96d43b91bd6167e2, simtest_8d3a74728559a85a
+- sample: failed: [{"expect": {"log_contains": "[DEMOBEAT]"}, "ok": false, "note": "log_hit=False"}]
+- sample: failed: [{"expect": {"pawn_z_above": 130}, "ok": false, "note": "z=102"}]
+- sample: failed: [{"expect": {"pawn_z_above": 130}, "ok": false, "note": "z=-26947"}]
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-08T23:45:34Z -->
+## H-29: sim_rejection: regolith_yard/walk_rock_to_sand_basin
+- status: pending
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-08T04:13:49
+- proposed_organ: claude_md
+- evidence: simtest_d6e2cb58b97175ad, simtest_613400f2fcc63327, simtest_9cd9a1ac25867a73, simtest_b9c246f4cef92293
+- sample: failed: [{"expect": {"actor_exists": "SandDrift_FX"}, "ok": true, "note": "present=True"}]
+- possible_conflict_with: H-28  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

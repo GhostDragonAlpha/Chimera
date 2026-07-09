@@ -236,3 +236,83 @@ Known blockers: `python -m core.unblock --ensure all`. Unknown: `python -m core.
 --tend` (delegated; human veto-after). Observation: `python -m core.collapse_proxy` (whole-
 experience sweeps + provisional collapse — never ask the human per-feature). Docs-vs-code:
 `python -m core.doc_audit`. Laws digest: GENERATION_PROTOCOL.md; full text CYCLE_PROMPT.md.
+
+## Windows Shell & Command Reference (added 2026-07-09)
+
+This machine runs coding agents (Pi, Claude Code) **natively on Windows** — not inside WSL.
+Chimera's Python pipeline is installed against **native Python 3.14** (`C:\Python314\python.exe`).
+WSL exists on this machine and has its own separate Python 3.12 with none of this project's
+dependencies — if a command silently routes through WSL, `python -m core.X` imports will fail
+or behave unpredictably even though the command "looks right." Pi's `bash` tool is explicitly
+configured (`.pi/settings.json` → `shellPath`) to use **Git Bash**, not WSL's `system32\bash.exe`.
+Do not "fix" that back to a bare `bash`/`/usr/bin/bash` value — on native Windows there is no
+`/usr/bin/` root, so that path resolves to nothing and silently falls back to WSL.
+
+### Two path formats — know which tool expects which
+- **Pi/Claude built-in tools** (`read`, `write`, `edit`, `grep`, `find`, `ls`): native Windows
+  paths. `E:\PythonChimera\Chimera\core\preflight.py` or `E:/PythonChimera/Chimera/core/preflight.py`
+  (forward slashes are accepted and safer to type — no escaping).
+- **Anything run through the `bash` tool** (Git Bash): POSIX-mounted paths. Drive `E:` becomes
+  `/e/`, `C:` becomes `/c/`. So `E:\PythonChimera` → `/e/PythonChimera`.
+- **Never use `/mnt/e/...`** — that is WSL's drive-mount convention. Git Bash mounts drives at
+  `/e/`, not `/mnt/e/`. A command written for WSL will not resolve under Git Bash and vice versa.
+
+### Python & git
+- Always `python`, never `python3` — native Windows Python registers only as `python`.
+- Invoke Chimera's `core/` tools as modules from the `Chimera/` directory, exactly as documented
+  elsewhere in this file: `cd /e/PythonChimera/Chimera && python -m core.preflight`.
+- `git` on this machine is PortableGit, already on PATH — no `/usr/bin/git` path exists natively.
+
+### Writing files that contain backticks or `${...}` (template literals)
+**Never** write a `.ts`/`.js` file containing template literals via a bash heredoc
+(`cat > file <<'EOF' ... EOF`). Backticks trigger command substitution in POSIX shells —
+anything between `` ` `` `...` `` ` `` gets *executed*, and its output silently splices into the
+file in place of the intended literal text. This is exactly what happened to
+`.pi/extensions/chimera-tools.ts`: every `execSync(\`cd ... && python3 ...\`)` call lost its
+template-literal contents this way, leaving syntactically broken `let cmd = ;` lines. Use a
+real file-write tool (Pi's/Claude's `write`/`edit`) instead — it writes literal bytes with no
+shell interpretation in between.
+
+### Executing native Windows things from Git Bash
+- `.bat` / `.exe` files run directly by path: `./Chimera/lm.bat`. If a `.bat` needs `cmd.exe`'s
+  own argument parsing, use `cmd //c script.bat` — note the **doubled** `//c`; a single `/c` gets
+  mangled by Git Bash's automatic POSIX-to-Windows path conversion.
+- UBT builds (`Build.bat ...`) run the same way — native batch files execute fine from Git Bash.
+
+### What NOT to assume about Git Bash
+It is MSYS2 userland on top of Windows, not a real Linux kernel: no `systemd`, no real `/proc`,
+no `sudo`. Common coreutils (`ls`, `grep`, `find`, `rm`, `mv`, `cp`, `cat`, `sed`, `awk`) are real
+(Git for Windows bundles them) and behave as expected. One real gotcha hit directly: `node -e`
+with a POSIX path embedded inside the script string (e.g. `node -e "require('fs').readFileSync('/e/...')"`)
+can get mangled by MSYS's automatic path conversion in a way a bare path argument wouldn't be —
+use native Windows-style paths (`E:/...`) inside inline `node -e`/`python -c` script bodies, not `/e/...`.
+
+## LSP servers for Pi/pi-shazam (added 2026-07-09)
+
+All languages Shazam detects now have a real, working LSP server — portable installs, same
+pattern as Node/Go above (download official release, extract, add to PATH):
+
+| Language | Server | Install location |
+|---|---|---|
+| C++ (the actual game code) | clangd 22.1.6 | `C:\Users\allen\clangd-portable\clangd_22.1.6\bin\` |
+| C# (`.Build.cs`/`.Target.cs`) | csharp-ls 0.25.0 | `dotnet tool` (`~\.dotnet\tools\`) |
+| Rust | rust-analyzer 1.93.1 | `rustup component` (was a dangling shim before — `rustup component add rust-analyzer` actually installed it) |
+| Go | gopls v0.22.0 | needed the Go toolchain installed first: `C:\Users\allen\go-portable\go1.26.5\` |
+| Python | pyright-langserver | npm global (`pyright` package) |
+| TypeScript | typescript-language-server 5.3.0 | npm global |
+| JSON | vscode-json-language-server | npm global (`vscode-langservers-extracted`) |
+| YAML | yaml-language-server 1.24.0 | npm global |
+
+**clangd needs `Chimera/compile_commands.json` to understand UE macros/includes** — without it,
+clangd can't resolve engine headers at all. Generated via UBT's VS Code project mode (works
+without a separate Clang compiler install; `-Mode=GenerateClangDatabase` needs one, this doesn't):
+```
+"/c/Program Files/Epic Games/UE_5.8/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe" \
+  -Mode=GenerateProjectFiles -VSCode -Project="E:/PythonChimera/Chimera/Chimera.uproject" -Game
+cp Chimera/.vscode/compileCommands_Default.json Chimera/compile_commands.json
+```
+**Regenerate this after adding/removing source files or modules** — it's a snapshot, not live.
+clangd will still report a handful of errors on UHT-reflected classes (`UCLASS`/`GENERATED_BODY`
+mismatches) even with a correct database — that's expected: clangd doesn't run UnrealHeaderTool,
+so it sees slightly different class shapes than the real UBT+UHT+MSVC build does. UBT/Build.bat
+remains the authoritative compiler; clangd is for navigation/completion, not the gate.

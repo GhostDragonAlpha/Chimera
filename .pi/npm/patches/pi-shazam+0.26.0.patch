@@ -1,0 +1,62 @@
+diff --git a/node_modules/pi-shazam/dist/core/cache.js b/node_modules/pi-shazam/dist/core/cache.js
+index 63b59f6..205148d 100644
+--- a/node_modules/pi-shazam/dist/core/cache.js
++++ b/node_modules/pi-shazam/dist/core/cache.js
+@@ -42,7 +42,7 @@ export function getProjectCacheDir(projectPath) {
+     // #584: Strip both Unix (/) and Windows (\) trailing separators
+     const canonical = projectPath.replace(/[\\/]$/, "");
+     const hash = createHash("sha256").update(canonical).digest("hex").slice(0, 8);
+-    const projectName = canonical.split("/").pop() || "unknown";
++    const projectName = canonical.split(/[\\/]/).pop() || "unknown";
+     const cacheDir = join(CACHE_ROOT, `${projectName}_${hash}`);
+     try {
+         mkdirSync(cacheDir, { recursive: true });
+diff --git a/node_modules/pi-shazam/dist/hooks/pre-edit.js b/node_modules/pi-shazam/dist/hooks/pre-edit.js
+index ab353f6..d73242b 100644
+--- a/node_modules/pi-shazam/dist/hooks/pre-edit.js
++++ b/node_modules/pi-shazam/dist/hooks/pre-edit.js
+@@ -228,7 +228,7 @@ export function registerPreEditGuard(pi) {
+         // Global configs affect the entire project and warrant an impact
+         // analysis even when only a single file is being edited.
+         for (const f of allFiles) {
+-            const basename = f.split("/").pop() ?? "";
++            const basename = f.split(/[\\/]/).pop() ?? "";
+             if (GLOBAL_CONFIG_FILENAMES.has(basename)) {
+                 hasGlobalConfig = true;
+                 reasons.push(`editing global config \`${basename}\``);
+@@ -236,7 +236,7 @@ export function registerPreEditGuard(pi) {
+             }
+             // Also match well-known config sub-paths like ".github/workflows/ci.yml"
+             if (f.includes("/.github/") || f.includes("/.config/")) {
+-                const relName = f.split("/").slice(-2).join("/");
++                const relName = f.split(/[\\/]/).slice(-2).join("/");
+                 if (GLOBAL_CONFIG_FILENAMES.has(relName)) {
+                     hasGlobalConfig = true;
+                     reasons.push(`editing global config \`${relName}\``);
+@@ -247,7 +247,7 @@ export function registerPreEditGuard(pi) {
+         // Condition 3: Current files include a global config (single-file warning)
+         if (!hasGlobalConfig) {
+             for (const f of files) {
+-                const basename = f.split("/").pop() ?? "";
++                const basename = f.split(/[\\/]/).pop() ?? "";
+                 if (GLOBAL_CONFIG_FILENAMES.has(basename)) {
+                     hasGlobalConfig = true;
+                     reasons.push(`editing global config \`${basename}\``);
+diff --git a/node_modules/pi-shazam/dist/tools/overview.js b/node_modules/pi-shazam/dist/tools/overview.js
+index 2c9484e..7a50a3c 100644
+--- a/node_modules/pi-shazam/dist/tools/overview.js
++++ b/node_modules/pi-shazam/dist/tools/overview.js
+@@ -217,11 +217,11 @@ function _buildOverviewText(graph, projectRoot, filter) {
+     // Show 2 levels of directory depth for better project structure visibility
+     const dirs = new Map();
+     for (const file of files) {
+-        if (!file.includes("/")) {
++        if (!file.includes("/") && !file.includes("\\")) {
+             dirs.set("(root)", (dirs.get("(root)") ?? 0) + 1);
+         }
+         else {
+-            const parts = file.split("/");
++            const parts = file.split(/[\\/]/);
+             const twoLevels = parts.slice(0, 2).join("/");
+             dirs.set(twoLevels, (dirs.get(twoLevels) ?? 0) + 1);
+         }
