@@ -138,6 +138,10 @@ happily build a technically-perfect wrong thing.
 - **Wiring (target, not yet built)**: rehearsal calls it during scoring; muse proposals must
   carry its judgment before entering the candidates file; nightly taste pass on new
   screenshots.
+- **Status update 2026-07-09**: VisionKeeper -> rehearsal wiring CLOSED — `core/rehearsal.py::apply_vision_fit()`
+  implemented and called in scoring pipeline (after score_candidates, before apply_no_dead_ends).
+  All candidates now get a vision_fit multiplier (0.8–1.4x) based on STORY_BIBLE alignment.
+  Nightly taste pass on screenshots remains TODO.
 
 ---
 

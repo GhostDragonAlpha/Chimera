@@ -1,3 +1,24 @@
+# Rehearsal decision 2026-07-09 07:06Z — next move: Demo_RegolithYard_L1
+
+Chosen by core.rehearsal (score 2.28, p_success 0.9, evidence: grade:A). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Demo_RegolithYard_L1** — needs_refinement (reopened). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Demo_RegolithYard_L1')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-09 06:50Z — next move: Verb_Look
+
+Chosen by core.rehearsal (score 1.05, p_success 0.52, evidence: grade:A, sim:15/20, failure_mentions:11). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+
+1. **Verb_Look** — needs_refinement (reopened). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query['feature','Verb_Look'](-1); print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 ## Session 2026-07-09 (Verb_Look verification improvements + additional expect types) — improved control_rotation_yaw_delta implementation with better fallback paths, added pawn_velocity_magnitude and actor_count_min expect types, verified all code compiles correctly
 
 **Task:** Improve Verb_Look verification expect type, add additional useful expect types for sleepwalker, verify code quality.
@@ -36,11 +57,75 @@ Removed from both `sleepwalker.py` and `docs/beats/verb_interactions.beats.json`
 
 **Recorded:** PhaseComplete, graph updates for sleepwalker.py changes.
 
+## Session 2026-07-09 (Muse wiring + DREAM_ROSTER integration) — closed Muse -> rehearsal_candidates.json wiring gap, merged 5 proposals into candidates file
+
+**Task:** Close the Tier-1 roster wiring gaps identified in DREAM_ROSTER.md. The three organs (Scholar/Muse/Visionkeeper) are implemented but not wired together.
+
+**Fix — Muse -> rehearsal_candidates.json wiring.** Added `core/muse.py::merge_muse_proposals_to_candidates()` function that:
+
+1. Reads judged proposals from `docs/muse_proposals.json` (already scored by visionkeeper)
+2. Converts them to candidate format with scaled value (rank * 0.3)
+3. Merges into `docs/rehearsal_candidates.json` avoiding duplicates
+4. CLI: `python -m core.muse --merge`
+
+**Result:** All 5 muse proposals now in rehearsal_candidates.json:
+
+- Regolith Dust Accumulation Visual Feedback (value=0.3)
+- Titan Run Gravity Shift Mechanics (value=0.6)
+- The Erisaid Audio Attunement Minigame (value=0.9, wild_tier=True)
+- Will & Forewarning Inheritance UI (value=1.2)
+- Costless Life Bad Ending Trigger (value=1.5, wild_tier=True)
+
+Candidates file grew from 9 to 14 entries.
+
+**DREAM_ROSTER.md updated:** Marked Muse wiring gap as CLOSED with citation to the new function.
+
+**Remaining wiring gaps (not yet done):**
+
+- Scholar -> spiral_forks: `core/spiral_forks.py` does not import/call `core.scholar` yet
+- Visionkeeper -> rehearsal: `core/rehearsal.py` does not call `core.visionkeeper` during scoring pass
+
+These are larger changes requiring modifications to higher-traffic files. The Muse wiring was the smallest of the three gaps and is now complete.
+
+**Recorded:** PhaseComplete, graph updates for muse.py/DREAM_ROSTER.md/rehearsal_candidates.json changes.
+
+## Session 2026-07-09 (VisionKeeper wiring + DREAM_ROSTER integration) — closed Visionkeeper -> rehearsal wiring gap, applied vision_fit multiplier to all candidates
+
+**Task:** Close the Visionkeeper -> rehearsal wiring gap (DREAM_ROSTER #3). The VisionKeeper organ is implemented but not wired into rehearsal's scoring pipeline.
+
+**Fix — Visionkeeper -> rehearsal wiring.** Added `core/rehearsal.py::apply_vision_fit()` function that:
+
+1. Calls `score_candidate_for_vision_fit()` for each candidate (from DREAM_ROSTER #3)
+2. Applies vision_fit multiplier to score (0.8–1.4x based on STORY_BIBLE alignment):
+   - Directly embodies Design Law #2 / Observation Collapse: 1.3x
+   - Aligns with resonant minimalism / regolith-grey palette: 1.2x
+   - Tier-1 roster gap hire (scholar/muse/visionkeeper): 1.4x
+   - System infrastructure (demo/terminal/economy): 1.0x
+   - Operational / CI/CD rhythm: 0.8x
+   - The floor work (groundskeeping/gardener): 0.9x
+3. Inserts multiplier into scoring pipeline between `score_candidates()` and `apply_no_dead_ends()`
+4. Enhances veto_table to show `[vf=X.X]` with judgment text for visibility
+
+**Result:** All candidates now get a vision_fit multiplier applied before ranking:
+
+- Demo_RegolithYard_L1: score 2.28 (vf=1.2, "Aligns with resonant minimalism")
+- Player_Character_Animation: score 1.90 (vf=1.0, "Neutral fit")
+- System_Economy: score 1.90 (vf=1.0, "System infrastructure")
+
+**DREAM_ROSTER.md updated:** Marked Visionkeeper wiring gap as CLOSED with citation to the new function.
+
+**Remaining wiring gaps (not yet done):**
+
+- Scholar -> spiral_forks: `core/spiral_forks.py` does not import/call `core.scholar` yet
+- Nightly taste pass on screenshots: TODO (VisionKeeper's full charter)
+
+**Recorded:** PhaseComplete, graph updates for rehearsal.py/DREAM_ROSTER.md changes.
+
 ## NEXT
 
-1. **Restore the ChiR24-Unreal_mcp-test bridge** — this is the fundamental blocker for ALL PIE verification (sleepwalker, manual testing, screenshots). Without it, no MCP tool can communicate with Unreal Editor. The directory `E:\ChiR24-Unreal_mcp-test\` needs to be restored/installed and pointed to by `ralph_loop_harness.py` line 149.
-2. **Verb_Look** — gameplay code is correct (Turn/LookUp use AddYawInput/AddPitchInput). The feature was collapsed due to pawn_class mismatch (DefaultPawn vs BP_Astronaut_Character), which is a level/asset issue, not camera logic. Once the bridge is restored, run sleepwalker with `verb_interactions.beats.json` and verify.
-3. **Commit changes** — git add core/sleepwalker.py core/telemetry_probe.py docs/beats/verb_interactions.beats.json && git commit -m "Remove dead control_rotation_yaw_delta expect; fix Node.js path"
+1. **Scholar -> spiral_forks wiring** — `core/spiral_forks.py` does not import/call `core.scholar`. This is the largest remaining gap (requires modifying fork generation to consume scholar briefs instead of raw LM memory). Recipe: add `from core.scholar import scholar_brief_from_research` in spiral_forks; replace raw LM briefs with scholar output; record pathway_attempt.
+2. **Nightly taste pass on screenshots** — VisionKeeper's full charter includes running a taste pass on new screenshots vs art direction (flagging drift like "pads read as void-black, the bible says regolith-grey"). TODO: implement screenshot analysis pipeline.
+3. **Restore the ChiR24-Unreal_mcp-test bridge** — this is the fundamental blocker for ALL PIE verification (sleepwalker, manual testing, screenshots). Without it, no MCP tool can communicate with Unreal Editor. The directory `E:\ChiR24-Unreal_mcp-test\` needs to be restored/installed and pointed to by `ralph_loop_harness.py` line 149.
 
 ---
 
