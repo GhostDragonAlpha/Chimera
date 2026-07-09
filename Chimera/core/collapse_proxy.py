@@ -44,13 +44,20 @@ Usage:
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
+# Handle relative imports when run as script vs module
+try:
+    from core.graphify_interface import load_dna_graph, collect_observation_queue
+except ImportError:
+    sys.path.insert(0, str(ROOT))
+    from graphify_interface import load_dna_graph, collect_observation_queue
+
 
 def _queue_and_nodes():
-    from core.graphify_interface import load_dna_graph, collect_observation_queue
     nodes = load_dna_graph().get("nodes", [])
     return collect_observation_queue(nodes), nodes
 
@@ -74,7 +81,11 @@ def _clean_exercises(nodes):
 
 
 def tend(min_sessions: int = 2, dry_run: bool = False):
-    from core.graphify_interface import record_observation, record_feature
+    try:
+        from core.graphify_interface import record_observation, record_feature
+    except ImportError:
+        sys.path.insert(0, str(ROOT))
+        from graphify_interface import record_observation, record_feature
     queue, nodes = _queue_and_nodes()
     exercised = _clean_exercises(nodes)
     collapsed, waiting = [], []
@@ -263,6 +274,12 @@ def sweep_playtest(playtest_id: str, valence: str, dry_run: bool = False):
 
 
 def main():
+    # Ensure imports work at module level too
+    try:
+        from core.graphify_interface import load_dna_graph, collect_observation_queue
+    except ImportError:
+        sys.path.insert(0, str(ROOT))
+        from graphify_interface import load_dna_graph, collect_observation_queue
     parser = argparse.ArgumentParser(description="Fully automated observation: sweep or provisional collapse")
     parser.add_argument("--tend", action="store_true")
     parser.add_argument("--from-simtest", dest="from_simtest")

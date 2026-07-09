@@ -13,6 +13,7 @@ Usage:
     python -m core.scholar --feature Ground_Sand_Particles --topic "dust accumulation"
     python -m core.scholar --technical-research --dry-run
 """
+
 import argparse
 import json
 import re
@@ -24,12 +25,18 @@ from typing import Optional, List, Dict, Tuple
 
 try:
     from core.graphify_interface import (
-        graphify_query, load_dna_graph, save_dna_graph, record_research
+        graphify_query,
+        load_dna_graph,
+        save_dna_graph,
+        record_research,
     )
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
     from graphify_interface import (
-        graphify_query, load_dna_graph, save_dna_graph, record_research
+        graphify_query,
+        load_dna_graph,
+        save_dna_graph,
+        record_research,
     )
 
 CHIMERA_ROOT = Path(__file__).parent.parent
@@ -67,21 +74,23 @@ def retrieve_corpus(query: str, max_results: int = 5) -> List[Dict]:
     for fpath in RESEARCH_CORPUS_DIR.rglob("*"):
         if fpath.is_file() and fpath.suffix in {".md", ".txt", ".json"}:
             try:
-                content = fpath.read_text(encoding='utf-8', errors='ignore')
+                content = fpath.read_text(encoding="utf-8", errors="ignore")
                 if query_lower in content.lower():
                     match_pos = content.lower().find(query_lower)
                     start = max(0, match_pos - 100)
                     end = min(len(content), match_pos + 200)
-                    snippet = content[start:end].replace('\n', ' ')[:250]
+                    snippet = content[start:end].replace("\n", " ")[:250]
 
-                    results.append({
-                        "source": fpath.name,
-                        "path": str(fpath.relative_to(CHIMERA_ROOT)),
-                        "campus": "local_corpus",
-                        "quality_rating": "B",
-                        "snippet": snippet,
-                        "file_size": len(content)
-                    })
+                    results.append(
+                        {
+                            "source": fpath.name,
+                            "path": str(fpath.relative_to(CHIMERA_ROOT)),
+                            "campus": "local_corpus",
+                            "quality_rating": "B",
+                            "snippet": snippet,
+                            "file_size": len(content),
+                        }
+                    )
                     if len(results) >= max_results:
                         break
             except Exception:
@@ -111,42 +120,55 @@ def classify_source_type(source: str) -> str:
     return "technical_docs"
 
 
-def check_source_diversity(campus_sources=None, web_sources=None, corpus_sources=None,
-                           min_types: int = 3) -> dict:
+def check_source_diversity(
+    campus_sources=None, web_sources=None, corpus_sources=None, min_types: int = 3
+) -> dict:
     """Gate 1: >=3 distinct source TYPES, not just source count."""
     types = {classify_source_type(s) for s in (campus_sources or [])}
     types |= {classify_source_type(s) for s in (web_sources or [])}
     if corpus_sources:
         types.add("historical")
-    return {"gate": "source_diversity", "passed": len(types) >= min_types,
-            "distinct_types": sorted(types), "required": min_types}
+    return {
+        "gate": "source_diversity",
+        "passed": len(types) >= min_types,
+        "distinct_types": sorted(types),
+        "required": min_types,
+    }
 
 
 def check_domain_diversity(web_sources=None, min_domains: int = 3) -> dict:
     """Gate 2: >=3 distinct domains among web sources (urlparse netloc)."""
     domains = set()
-    for url in (web_sources or []):
+    for url in web_sources or []:
         try:
             netloc = urllib.parse.urlparse(str(url)).netloc.lower()
         except Exception:
             netloc = ""
         if netloc:
             domains.add(netloc)
-    return {"gate": "domain_diversity", "passed": len(domains) >= min_domains,
-            "distinct_domains": sorted(domains), "required": min_domains}
+    return {
+        "gate": "domain_diversity",
+        "passed": len(domains) >= min_domains,
+        "distinct_domains": sorted(domains),
+        "required": min_domains,
+    }
 
 
-def score_parameter_confidence(parameters: Optional[Dict] = None,
-                               sources_by_param: Optional[Dict] = None) -> dict:
+def score_parameter_confidence(
+    parameters: Optional[Dict] = None, sources_by_param: Optional[Dict] = None
+) -> dict:
     """Gate 3: >=2 independent sources per PARAMETER, else confidence is explicitly Low
     ("document absence, mark Low", not a whole-brief medium/low proxy). A parameter absent
     from sources_by_param is honestly Low, never guessed at medium."""
     sources_by_param = sources_by_param or {}
     result = {}
-    for param in (parameters or {}):
+    for param in parameters or {}:
         n = len(sources_by_param.get(param, []))
-        result[param] = {"sources": n, "confidence": "medium_or_higher" if n >= 2 else "low",
-                         "reason": "" if n >= 2 else f"only {n} source(s); Gate 3 requires 2"}
+        result[param] = {
+            "sources": n,
+            "confidence": "medium_or_higher" if n >= 2 else "low",
+            "reason": "" if n >= 2 else f"only {n} source(s); Gate 3 requires 2",
+        }
     return result
 
 
@@ -158,7 +180,7 @@ def build_discovery_node(
     parameters: Optional[Dict] = None,
     acceptance_criteria: Optional[List[str]] = None,
     confidence: str = "medium",
-    failure_sources: Optional[List[str]] = None
+    failure_sources: Optional[List[str]] = None,
 ) -> str:
     """Record a research_discovery node to the graph.
 
@@ -183,7 +205,7 @@ def build_discovery_node(
         parameters=parameters,
         acceptance_criteria=acceptance_criteria,
         confidence=confidence,
-        failure_sources=failure_sources
+        failure_sources=failure_sources,
     )
 
 
@@ -216,7 +238,7 @@ def write_study_guide(feature: str, discovery_node_id: str, brief: Dict) -> str:
             "type": "FeatureUpdate",
             "feature_name": feature,
             "timestamp": datetime.utcnow().isoformat(),
-            "recorded_by": "core.scholar"
+            "recorded_by": "core.scholar",
         }
         nodes.append(feature_node)
 
@@ -242,7 +264,7 @@ def scholar_brief_from_research(
     feature: str,
     topic: str,
     campus_names: Optional[List[str]] = None,
-    failure_sources: Optional[List[str]] = None
+    failure_sources: Optional[List[str]] = None,
 ) -> Dict:
     """Generate a CONSERVATIVE brief from research campuses + corpus.
 
@@ -288,12 +310,14 @@ def scholar_brief_from_research(
         "fork": "conservative",
         "feature": feature,
         "approach": f"Campus-canonical approach using {campus_names[0] if campus_names else 'trusted'} sources and local research corpus.",
-        "canonical_reference": campus_sources_list[0] if campus_sources_list else "Research campus seed source",
+        "canonical_reference": campus_sources_list[0]
+        if campus_sources_list
+        else "Research campus seed source",
         "campus_sources": campus_sources_list,
         "parameters": {
             "research_method": "campus_canonical",
             "sources_consulted": len(campus_sources_list) + len(corpus_sources),
-            "confidence": "medium" if corpus_results else "low"
+            "confidence": "medium" if corpus_results else "low",
         },
         "principles": all_principles[:3],
         "emotional_anchor": f"Grounded in {campus_names[0].replace('_', ' ').title()} expertise",
@@ -301,7 +325,7 @@ def scholar_brief_from_research(
             "Parameters extracted from A+ campus sources",
             f"At least {len(corpus_sources)} corpus references consulted",
             "Numeric values (not adjectives)",
-            "Observable in-engine (proposed measurement method)"
+            "Observable in-engine (proposed measurement method)",
         ],
         "failure_sources": failure_sources or [],
     }
@@ -312,9 +336,14 @@ def scholar_brief_from_research(
     # today (see module-level note: web fetching is not yet wired into Scholar) — that
     # remaining gap is visible in the output rather than hidden.
     brief["research_depth_gates"] = {
-        "source_diversity": check_source_diversity(campus_sources_list, [], corpus_sources),
+        "source_diversity": check_source_diversity(
+            campus_sources_list, [], corpus_sources
+        ),
         "domain_diversity": check_domain_diversity([]),
-        "failure_research": {"passed": bool(failure_sources), "count": len(failure_sources or [])},
+        "failure_research": {
+            "passed": bool(failure_sources),
+            "count": len(failure_sources or []),
+        },
     }
 
     return brief
@@ -322,26 +351,47 @@ def scholar_brief_from_research(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Scholar — research retrieval system for Chimera game development")
+        description="Scholar — research retrieval system for Chimera game development"
+    )
     parser.add_argument("--feature", help="Feature name to research")
     parser.add_argument("--topic", help="Research topic/query string")
-    parser.add_argument("--campus", action="append", dest="campuses",
-                       help="Specific campus to query (repeatable)")
-    parser.add_argument("--technical-research", action="store_true",
-                       help="Process pending technical_research queue")
-    parser.add_argument("--generate-brief", action="store_true",
-                       help="Generate a conservative brief (for spiral_forks)")
-    parser.add_argument("--failure-source", action="append", dest="failure_sources",
-                       help="Source documenting what does NOT work (Research Depth "
-                            "Protocol Gate 4; repeatable)")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be done, don't record")
+    parser.add_argument(
+        "--campus",
+        action="append",
+        dest="campuses",
+        help="Specific campus to query (repeatable)",
+    )
+    parser.add_argument(
+        "--technical-research",
+        action="store_true",
+        help="Process pending technical_research queue",
+    )
+    parser.add_argument(
+        "--generate-brief",
+        action="store_true",
+        help="Generate a conservative brief (for spiral_forks)",
+    )
+    parser.add_argument(
+        "--failure-source",
+        action="append",
+        dest="failure_sources",
+        help="Source documenting what does NOT work (Research Depth "
+        "Protocol Gate 4; repeatable)",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be done, don't record"
+    )
 
     args = parser.parse_args()
 
     if args.technical_research:
         dna = load_dna_graph()
         nodes = dna.get("nodes", [])
-        pending = [n for n in nodes if n.get("type") == "TechnicalResearch" and n.get("status") == "pending"]
+        pending = [
+            n
+            for n in nodes
+            if n.get("type") == "TechnicalResearch" and n.get("status") == "pending"
+        ]
 
         if not pending:
             print("No pending technical_research items found.")
@@ -357,13 +407,19 @@ def main():
 
     if not args.feature or not args.topic:
         print("Scholar: Usage requires --feature and --topic, or --technical-research")
-        print("Try: python -m core.scholar --feature Ground_Sand_Particles --topic 'dust accumulation'")
+        print(
+            "Try: python -m core.scholar --feature Ground_Sand_Particles --topic 'dust accumulation'"
+        )
         return 1
 
     print(f"\nScholar researching: {args.feature}")
     print(f"Topic: {args.topic}\n")
 
-    campuses_to_query = args.campuses or ["engineering_school", "unreal_engine_craft", "art_school"]
+    campuses_to_query = args.campuses or [
+        "engineering_school",
+        "unreal_engine_craft",
+        "art_school",
+    ]
     campus_sources = []
 
     for campus_name in campuses_to_query:
@@ -402,23 +458,31 @@ def main():
             acceptance_criteria=[
                 "Parameters extracted from A+ campus sources",
                 f"Verified against {len(corpus_paths)} local references",
-                "Observable in-engine via telemetry or screenshot"
+                "Observable in-engine via telemetry or screenshot",
             ],
             confidence="medium" if corpus_results else "low",
-            failure_sources=args.failure_sources or []
+            failure_sources=args.failure_sources or [],
         )
 
         print(f"\nRecorded discovery node: {discovery_id}")
 
         if args.generate_brief:
-            brief = scholar_brief_from_research(args.feature, args.topic, campuses_to_query,
-                                               failure_sources=args.failure_sources)
+            brief = scholar_brief_from_research(
+                args.feature,
+                args.topic,
+                campuses_to_query,
+                failure_sources=args.failure_sources,
+            )
             gates = brief["research_depth_gates"]
             print("\nResearch Depth Protocol gates:")
             for gate_name, gate_result in gates.items():
                 status = "PASS" if gate_result.get("passed") else "gap"
                 print(f"  [{status}] {gate_name}: {gate_result}")
-            brief_file = CHIMERA_ROOT / "docs" / f"scholar_brief_{args.feature}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            brief_file = (
+                CHIMERA_ROOT
+                / "docs"
+                / f"scholar_brief_{args.feature}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            )
             brief_file.parent.mkdir(parents=True, exist_ok=True)
             brief_file.write_text(json.dumps(brief, indent=2))
             print(f"Wrote brief: {brief_file}")

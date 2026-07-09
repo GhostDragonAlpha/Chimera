@@ -15,6 +15,7 @@ recipe, judged and ranked.
 Usage:
     python -m core.muse [--dry-run]
 """
+
 import argparse
 import json
 import sys
@@ -43,7 +44,7 @@ PROPOSALS_REGOLITH_YARD_TITAN_RUN = [
         "recipe": "Add a visual dust overlay component to the suit/material that accumulates over time based on surface exposure and movement, tied to the Observation Collapse mechanic (dust solidifies when witnessed by another player or NPC).",
         "visionkeeper_judgment": "Fits art bible's regolith-grey palette; enhances the provisional/unwitnessed aesthetic.",
         "rank": 1,
-        "wild_tier": False
+        "wild_tier": False,
     },
     {
         "title": "Titan Run Gravity Shift Mechanics",
@@ -53,7 +54,7 @@ PROPOSALS_REGOLITH_YARD_TITAN_RUN = [
         "recipe": "Implement a dynamic gravity shift mechanic where movement controls adapt based on proximity to 'nucleus' objects (stations, large asteroids), with visual resonance effects (interference shimmer) indicating gravity zones.",
         "visionkeeper_judgment": "Aligns with cosmology's resonant doctrine; adds mechanical depth to traversal.",
         "rank": 2,
-        "wild_tier": False
+        "wild_tier": False,
     },
     {
         "title": "The Erisaid Audio Attunement Minigame",
@@ -63,7 +64,7 @@ PROPOSALS_REGOLITH_YARD_TITAN_RUN = [
         "recipe": "Create an audio attunement sequence where players must tune their receiver to specific frequencies to reveal the Erisaid's resonance signature, using spatial audio cues and frequency-matching mechanics.",
         "visionkeeper_judgment": "Directly implements the Erisaid cosmology; elevates sound design to primary gameplay layer.",
         "rank": 3,
-        "wild_tier": True
+        "wild_tier": True,
     },
     {
         "title": "Will & Forewarning Inheritance UI",
@@ -73,7 +74,7 @@ PROPOSALS_REGOLITH_YARD_TITAN_RUN = [
         "recipe": "Implement an interactive UI for Wills and Forewarnings that visually maps predecessor predictions to current world states, with confirmation/refutation mechanics tied to the Assay process.",
         "visionkeeper_judgment": "Strengthens the Circadian Protocol's Dawn phase; makes inheritance diegetic and actionable.",
         "rank": 4,
-        "wild_tier": False
+        "wild_tier": False,
     },
     {
         "title": "Costless Life Bad Ending Trigger",
@@ -83,8 +84,8 @@ PROPOSALS_REGOLITH_YARD_TITAN_RUN = [
         "recipe": "Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.",
         "visionkeeper_judgment": "Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.",
         "rank": 5,
-        "wild_tier": True
-    }
+        "wild_tier": True,
+    },
 ]
 
 
@@ -105,7 +106,7 @@ def record_proposals_to_graph(proposals: list):
             recipe=p["recipe"],
             visionkeeper_judgment=p["visionkeeper_judgment"],
             rank=p["rank"],
-            wild_tier=p["wild_tier"]
+            wild_tier=p["wild_tier"],
         )
         recorded_ids.append(node_id)
     return recorded_ids
@@ -114,83 +115,97 @@ def record_proposals_to_graph(proposals: list):
 def write_proposals_to_candidates_file(proposals: list):
     """Write proposals to docs/muse_proposals.json for visionkeeper to judge before entering candidates file."""
     muse_proposals_path = DOCS_DIR / "muse_proposals.json"
-    with open(muse_proposals_path, 'w', encoding='utf-8') as f:
-        json.dump({
-            "source": "core/muse.py",
-            "milestone": "Regolith Yard / Titan Run arc - 5 proposals",
-            "proposals": proposals
-        }, f, indent=2)
+    with open(muse_proposals_path, "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "source": "core/muse.py",
+                "milestone": "Regolith Yard / Titan Run arc - 5 proposals",
+                "proposals": proposals,
+            },
+            f,
+            indent=2,
+        )
 
     return muse_proposals_path
 
 
 def merge_muse_proposals_to_candidates():
     """Merge judged muse proposals into rehearsal_candidates.json.
-    
+
     This closes the Muse -> rehearsal_candidates.json wiring gap (DREAM_ROSTER #2).
     Reads from docs/muse_proposals.json (already scored by visionkeeper),
     converts to candidate format, and merges into docs/rehearsal_candidates.json.
     """
     muse_path = DOCS_DIR / "muse_proposals.json"
     candidates_path = REHEARSAL_CANDIDATES_PATH
-    
+
     if not muse_path.exists():
         print("[muse] no muse_proposals.json found — nothing to merge")
         return 0
-    
-    with open(muse_path, 'r', encoding='utf-8') as f:
+
+    with open(muse_path, "r", encoding="utf-8") as f:
         data = json.load(f)
-    proposals = data.get('proposals', [])
-    
+    proposals = data.get("proposals", [])
+
     if not proposals:
         print("[muse] muse_proposals.json has no proposals — nothing to merge")
         return 0
-    
+
     # Load existing candidates
     existing_candidates = []
     if candidates_path.exists():
-        with open(candidates_path, 'r', encoding='utf-8') as f:
+        with open(candidates_path, "r", encoding="utf-8") as f:
             existing_candidates = json.load(f)
-    
+
     # Convert proposals to candidate format and merge
     merged_count = 0
     for p in proposals:
-        title = p.get('title', '')
-        recipe = p.get('recipe', '')
-        vision_judgment = p.get('visionkeeper_judgment', '')
-        wild_tier = p.get('wild_tier', False)
-        rank = p.get('rank', 0)
-        
+        title = p.get("title", "")
+        recipe = p.get("recipe", "")
+        vision_judgment = p.get("visionkeeper_judgment", "")
+        wild_tier = p.get("wild_tier", False)
+        rank = p.get("rank", 0)
+
         # Check if already merged (avoid duplicates)
-        if any(c.get('name') == title for c in existing_candidates):
+        if any(c.get("name") == title for c in existing_candidates):
             print(f"[muse] '{title}' already in candidates — skipping")
             continue
-        
+
         candidate = {
-            'name': title,
-            'value': rank * 0.3,  # Scale rank (1-5) to value (0.3-1.5)
-            'capable_only': True,  # Muse proposals require capable sessions
-            'why': f"Muse proposal #{rank} — {vision_judgment}",
-            'recipe': recipe,
-            'source': 'muse_proposal',
-            'wild_tier': wild_tier
+            "name": title,
+            "value": rank * 0.3,  # Scale rank (1-5) to value (0.3-1.5)
+            "capable_only": True,  # Muse proposals require capable sessions
+            "why": f"Muse proposal #{rank} — {vision_judgment}",
+            "recipe": recipe,
+            "source": "muse_proposal",
+            "wild_tier": wild_tier,
         }
-        
+
         existing_candidates.append(candidate)
         merged_count += 1
-    
+
     # Write back
-    with open(candidates_path, 'w', encoding='utf-8') as f:
+    with open(candidates_path, "w", encoding="utf-8") as f:
         json.dump(existing_candidates, f, indent=2)
-    
+
     print(f"[muse] merged {merged_count} proposal(s) into rehearsal_candidates.json")
     return merged_count
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Muse organ: generate NEW feature/mechanic/content proposals")
-    parser.add_argument("--dry-run", action="store_true", help="Print proposals; record nothing to graph or files")
-    parser.add_argument("--merge", action="store_true", help="Merge judged muse proposals into rehearsal_candidates.json")
+    parser = argparse.ArgumentParser(
+        description="Muse organ: generate NEW feature/mechanic/content proposals"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print proposals; record nothing to graph or files",
+    )
+    parser.add_argument(
+        "--merge",
+        action="store_true",
+        help="Merge judged muse proposals into rehearsal_candidates.json",
+    )
     args = parser.parse_args()
 
     if args.merge:
@@ -213,11 +228,15 @@ def main():
 
     # Record proposals to graph
     recorded_ids = record_proposals_to_graph(proposals)
-    print(f"[muse] recorded {len(recorded_ids)} proposal nodes to graph: {recorded_ids}")
+    print(
+        f"[muse] recorded {len(recorded_ids)} proposal nodes to graph: {recorded_ids}"
+    )
 
     # Write proposals to candidates file for visionkeeper to judge
     write_proposals_to_candidates_file(proposals)
-    print("[muse] wrote proposals to docs/muse_proposals.json for visionkeeper judgment")
+    print(
+        "[muse] wrote proposals to docs/muse_proposals.json for visionkeeper judgment"
+    )
 
     print("[muse] exit-0")
     return 0

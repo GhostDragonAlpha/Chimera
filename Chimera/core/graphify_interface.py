@@ -7,8 +7,8 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 
-KNOWLEDGE_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json")
-DNA_GRAPH_PATH = Path("E:/PythonChimera/Chimera/docs/chimera_dna_graph.json")
+KNOWLEDGE_GRAPH_PATH = Path(__file__).parent.parent / "docs" / "chimera_knowledge_graph.json"
+DNA_GRAPH_PATH = Path(__file__).parent.parent / "docs" / "chimera_dna_graph.json"
 
 # The Critic (core/critic.py) is ADVISORY ONLY — every CriticJudgment node it records must
 # carry this exact string; it never gates result_grader, GPA, or any pipeline gate (see
