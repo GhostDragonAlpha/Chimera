@@ -1,69 +1,114 @@
 [
- {
-  "name": "Demo_Phase2_DemoTerminal",
-  "value": 1.8,
-  "capable_only": true,
-  "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)",
-  "recipe": "Follow Chimera/docs/DEMO_ARCHITECTURE.md \u00a75 PHASE 2 items 1-5 exactly (DemoTerminal.h/cpp manual lane; GameMode template surgery; MissionComponent payout; core/witness.py reuse; regen + UBT)."
- },
- {
-  "name": "Ground_Sand_Footprints",
-  "value": 1.5,
-  "capable_only": false,
-  "why": "needs_refinement (reopened, grade C) \u2014 implement footstep system in PIE via proven manage_character pathways",
-  "recipe": "python -c \"import sys; sys.path.insert(0,r'E:\\PythonChimera\\Chimera'); from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; p=n.get('parameters',{}); print(json.dumps(p,default=str,indent=1)[:2000])\" \u2014 then follow manage_character setup_footstep_system; control_editor save_all; verify with sleepwalker --beats docs/beats/regolith_yard.beats.json",
-  "blocked_by": "facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge",
-  "unblock_recipe": "capable sessions only: implement add_anim_notify + get_anim_sequence_info handlers in Plugins/McpAutomationBridge (evidence pathway_attempt_e7fbb6ba12043a86), rebuild plugin, verify notify present via get_anim_sequence_info read-back, record_pathway success, THEN rerun the footprints recipe from task_progress 2026-07-06."
- },
- {
-  "name": "Ground_Sand_Sound_unblock",
-  "value": 0.8,
-  "capable_only": false,
-  "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first",
-  "recipe": "Skip-condition: Content/Audio still empty -> untouched (human task). If assets present: wire per feature node study guide."
- },
- {
-  "name": "Sleepwalker_M4_nightly_rhythm",
-  "value": 0.3,
-  "capable_only": true,
-  "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now",
-  "recipe": "schtasks /Query /TN ChimeraSleepwalk & schtasks /Query /TN ChimeraDream & schtasks /Query /TN ChimeraUnblock \u2014 all three Ready = done. Skip-condition: all Ready -> next candidate."
- },
- {
-  "name": "Groundskeeping_floor",
-  "value": 0.5,
-  "capable_only": false,
-  "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked",
-  "recipe": "cd E:\\PythonChimera\\Chimera && python -m core.gardener --tend && python -m core.heuristic_distiller --dry-run && python -m core.graph_compactor --dry-run && python -m core.unblock --check && python -m core.doc_audit \u2014 then grep each auto-promoted rule in CLAUDE.md/MCP_PATHWAYS.md still present (doc-drift audit) and prepend findings to task_progress.md. Skip-condition: none (this item can never be blocked)."
- },
- {
-  "name": "Pipeline_health_check",
-  "value": 0.7,
-  "capable_only": false,
-  "cooldown_h": 12,
-  "fresh_marker": "build_completed",
-  "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed",
-  "recipe": "python -m core.unblock --ensure all && python run_deep_space_trader_pipeline.py \u2014 record UBT verbatim. Skip-condition: FRESHLY VERIFIED (cooldown) -> floor once, then END THE SHIFT with the full close."
- },
- {
-  "name": "Hire_Scholar_organ",
-  "value": 1.9,
-  "capable_only": true,
-  "why": "TIER-1 ROSTER GAP: nothing has ever consulted a source \u2014 research writes the exam on paper only (DREAM_ROSTER.md #1)",
-  "recipe": "Write core/scholar.py per DREAM_ROSTER.md #1 (campus+web+local research_corpus/ retrieval; exam with citations -> research_discovery nodes + feature study guide). First milestone: clear the pending technical_research item (dust-accumulation mask) with 3+ cited sources. Wire: spiral_forks consumes scholar briefs; doc_audit clean; organ recipe touchpoints."
- },
- {
-  "name": "Hire_Muse_organ",
-  "value": 1.7,
-  "capable_only": true,
-  "why": "TIER-1 ROSTER GAP: the system has never created a new idea (DREAM_ROSTER.md #2)",
-  "recipe": "Write core/muse.py per DREAM_ROSTER.md #2 (proposals from playtest/witness evidence + DSL + STORY_BIBLE + scholar research -> proposal records + rehearsal candidates with recipes; never self-executing). First milestone: 5 judged proposals for the Regolith Yard / Titan Run arc."
- },
- {
-  "name": "Hire_Visionkeeper_organ",
-  "value": 1.7,
-  "capable_only": true,
-  "why": "TIER-1 ROSTER GAP: everything judges can-we, nothing judges should-we (DREAM_ROSTER.md #3)",
-  "recipe": "Write core/visionkeeper.py per DREAM_ROSTER.md #3 (vision_fit multiplier 0.2-1.5 into rehearsal scoring from STORY_BIBLE + Design Laws + human temperatures; nightly taste pass on screenshots; never a hard gate). First milestone: score the current candidates file + judge the 8 provisionally-collapsed features' screenshots."
- }
+  {
+    "name": "Demo_Phase2_DemoTerminal",
+    "value": 1.8,
+    "capable_only": true,
+    "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)",
+    "recipe": "Follow Chimera/docs/DEMO_ARCHITECTURE.md \u00a75 PHASE 2 items 1-5 exactly (DemoTerminal.h/cpp manual lane; GameMode template surgery; MissionComponent payout; core/witness.py reuse; regen + UBT)."
+  },
+  {
+    "name": "Ground_Sand_Footprints",
+    "value": 1.5,
+    "capable_only": false,
+    "why": "needs_refinement (reopened, grade C) \u2014 implement footstep system in PIE via proven manage_character pathways",
+    "recipe": "python -c \"import sys; sys.path.insert(0,r'E:\\PythonChimera\\Chimera'); from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; p=n.get('parameters',{}); print(json.dumps(p,default=str,indent=1)[:2000])\" \u2014 then follow manage_character setup_footstep_system; control_editor save_all; verify with sleepwalker --beats docs/beats/regolith_yard.beats.json",
+    "blocked_by": "facade #3 CONFIRMED 2026-07-06: animation_physics add_anim_notify AND get_anim_sequence_info NOT_IMPLEMENTED in bridge",
+    "unblock_recipe": "capable sessions only: implement add_anim_notify + get_anim_sequence_info handlers in Plugins/McpAutomationBridge (evidence pathway_attempt_e7fbb6ba12043a86), rebuild plugin, verify notify present via get_anim_sequence_info read-back, record_pathway success, THEN rerun the footprints recipe from task_progress 2026-07-06."
+  },
+  {
+    "name": "Ground_Sand_Sound_unblock",
+    "value": 0.8,
+    "capable_only": false,
+    "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first",
+    "recipe": "Skip-condition: Content/Audio still empty -> untouched (human task). If assets present: wire per feature node study guide."
+  },
+  {
+    "name": "Sleepwalker_M4_nightly_rhythm",
+    "value": 0.3,
+    "capable_only": true,
+    "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now",
+    "recipe": "schtasks /Query /TN ChimeraSleepwalk & schtasks /Query /TN ChimeraDream & schtasks /Query /TN ChimeraUnblock \u2014 all three Ready = done. Skip-condition: all Ready -> next candidate."
+  },
+  {
+    "name": "Groundskeeping_floor",
+    "value": 0.5,
+    "capable_only": false,
+    "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked",
+    "recipe": "cd E:\\PythonChimera\\Chimera && python -m core.gardener --tend && python -m core.heuristic_distiller --dry-run && python -m core.graph_compactor --dry-run && python -m core.unblock --check && python -m core.doc_audit \u2014 then grep each auto-promoted rule in CLAUDE.md/MCP_PATHWAYS.md still present (doc-drift audit) and prepend findings to task_progress.md. Skip-condition: none (this item can never be blocked)."
+  },
+  {
+    "name": "Pipeline_health_check",
+    "value": 0.7,
+    "capable_only": false,
+    "cooldown_h": 12,
+    "fresh_marker": "build_completed",
+    "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed",
+    "recipe": "python -m core.unblock --ensure all && python run_deep_space_trader_pipeline.py \u2014 record UBT verbatim. Skip-condition: FRESHLY VERIFIED (cooldown) -> floor once, then END THE SHIFT with the full close."
+  },
+  {
+    "name": "Hire_Scholar_organ",
+    "value": 1.9,
+    "capable_only": true,
+    "why": "TIER-1 ROSTER GAP: nothing has ever consulted a source \u2014 research writes the exam on paper only (DREAM_ROSTER.md #1)",
+    "recipe": "Write core/scholar.py per DREAM_ROSTER.md #1 (campus+web+local research_corpus/ retrieval; exam with citations -> research_discovery nodes + feature study guide). First milestone: clear the pending technical_research item (dust-accumulation mask) with 3+ cited sources. Wire: spiral_forks consumes scholar briefs; doc_audit clean; organ recipe touchpoints."
+  },
+  {
+    "name": "Hire_Muse_organ",
+    "value": 1.7,
+    "capable_only": true,
+    "why": "TIER-1 ROSTER GAP: the system has never created a new idea (DREAM_ROSTER.md #2)",
+    "recipe": "Write core/muse.py per DREAM_ROSTER.md #2 (proposals from playtest/witness evidence + DSL + STORY_BIBLE + scholar research -> proposal records + rehearsal candidates with recipes; never self-executing). First milestone: 5 judged proposals for the Regolith Yard / Titan Run arc."
+  },
+  {
+    "name": "Hire_Visionkeeper_organ",
+    "value": 1.7,
+    "capable_only": true,
+    "why": "TIER-1 ROSTER GAP: everything judges can-we, nothing judges should-we (DREAM_ROSTER.md #3)",
+    "recipe": "Write core/visionkeeper.py per DREAM_ROSTER.md #3 (vision_fit multiplier 0.2-1.5 into rehearsal scoring from STORY_BIBLE + Design Laws + human temperatures; nightly taste pass on screenshots; never a hard gate). First milestone: score the current candidates file + judge the 8 provisionally-collapsed features' screenshots."
+  },
+  {
+    "name": "Regolith Dust Accumulation Visual Feedback",
+    "value": 0.3,
+    "capable_only": true,
+    "why": "Muse proposal #1 \u2014 Fits art bible's regolith-grey palette; enhances the provisional/unwitnessed aesthetic.",
+    "recipe": "Add a visual dust overlay component to the suit/material that accumulates over time based on surface exposure and movement, tied to the Observation Collapse mechanic (dust solidifies when witnessed by another player or NPC).",
+    "source": "muse_proposal",
+    "wild_tier": false
+  },
+  {
+    "name": "Titan Run Gravity Shift Mechanics",
+    "value": 0.6,
+    "capable_only": true,
+    "why": "Muse proposal #2 \u2014 Aligns with cosmology's resonant doctrine; adds mechanical depth to traversal.",
+    "recipe": "Implement a dynamic gravity shift mechanic where movement controls adapt based on proximity to 'nucleus' objects (stations, large asteroids), with visual resonance effects (interference shimmer) indicating gravity zones.",
+    "source": "muse_proposal",
+    "wild_tier": false
+  },
+  {
+    "name": "The Erisaid Audio Attunement Minigame",
+    "value": 0.8999999999999999,
+    "capable_only": true,
+    "why": "Muse proposal #3 \u2014 Directly implements the Erisaid cosmology; elevates sound design to primary gameplay layer.",
+    "recipe": "Create an audio attunement sequence where players must tune their receiver to specific frequencies to reveal the Erisaid's resonance signature, using spatial audio cues and frequency-matching mechanics.",
+    "source": "muse_proposal",
+    "wild_tier": true
+  },
+  {
+    "name": "Will & Forewarning Inheritance UI",
+    "value": 1.2,
+    "capable_only": true,
+    "why": "Muse proposal #4 \u2014 Strengthens the Circadian Protocol's Dawn phase; makes inheritance diegetic and actionable.",
+    "recipe": "Implement an interactive UI for Wills and Forewarnings that visually maps predecessor predictions to current world states, with confirmation/refutation mechanics tied to the Assay process.",
+    "source": "muse_proposal",
+    "wild_tier": false
+  },
+  {
+    "name": "Costless Life Bad Ending Trigger",
+    "value": 1.5,
+    "capable_only": true,
+    "why": "Muse proposal #5 \u2014 Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.",
+    "recipe": "Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.",
+    "source": "muse_proposal",
+    "wild_tier": true
+  }
 ]

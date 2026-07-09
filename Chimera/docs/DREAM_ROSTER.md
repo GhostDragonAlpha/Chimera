@@ -13,7 +13,7 @@
 ## The crew already hired (consider what we have)
 
 | Studio seat | Organ | Status / gap |
-|---|---|---|
+| --- | --- | --- |
 | Production coordinator (dailies, handoffs) | preflight / postflight / task_progress | HIRED |
 | Retrospective facilitator | dream_loop + heuristic_distiller | HIRED |
 | Process & standards owner | gardener (delegated authority) | HIRED |
@@ -46,11 +46,13 @@
 > and the Gardener's original quote above are kept as-is for history.
 
 ### 1. THE SCHOLAR — Research department (`core/scholar.py`)  **HIRED 2026-07-07**
+
 (Doc-drift fix, same date: this entry said EMPTY after the organ was already built and
 running — see commit `0762c63` "Implement Scholar organ (DREAM_ROSTER #1): research
 retrieval system". Caught during `roster_and_bridge_progress` task processing.)
 Nothing had ever consulted a source. The constitution says "research writes the exam"; in
 practice the exam got invented from parametric memory.
+
 - **Charter**: given a feature/topic: fetch and READ real sources — Research Campuses
   (docs/RESEARCH_CAMPUSES.md), web (capable sessions with WebSearch/WebFetch), and a LOCAL
   REFERENCE CORPUS (`research_corpus/` — cached pages/papers/docs) so local duty agents can
@@ -76,11 +78,13 @@ practice the exam got invented from parametric memory.
   research-type candidates (weak-OK when corpus-backed, capable when web-backed).
 
 ### 2. THE MUSE — Ideation / game design (`core/muse.py`)  **HIRED 2026-07-07**
+
 (Doc-drift fix, same date: this entry said EMPTY after the organ was already built and
 running — file committed at HEAD as of commit `3e08d14`. Caught during
 `roster_and_bridge_progress` task processing.)
 The system had never created a new idea; every feature came from the original DSL or the
 human. Rehearsal picks among knowns; nothing widened the candidate pool.
+
 - **Charter**: generate NEW feature/mechanic/content proposals from (a) playtest + witness
   evidence (what players do/miss), (b) the DSL and STORY_BIBLE, (c) scholar research on the
   genre. Each proposal lands as a rehearsal candidate WITH recipe + a `proposal` record —
@@ -98,14 +102,19 @@ human. Rehearsal picks among knowns; nothing widened the candidate pool.
   — none of its 5 titles appear in `docs/rehearsal_candidates.json` yet, so `core.rehearsal
   --decide` cannot select them. The "enters the candidates file" wiring below has not run.
 - **Wiring (target, not yet built)**: nightly (after dream) or on-demand; merge judged
+  proposals into `docs/rehearsal_candidates.json` with vision_fit_multiplier applied.
+- **Status update 2026-07-09**: wiring gap CLOSED — `core/muse.py::merge_muse_proposals_to_candidates()`
+  implemented. Run `python -m core.muse --merge` to merge judged proposals into candidates file.
   `muse_proposals.json` entries into `rehearsal_candidates.json` so rehearsal can pick them.
 
 ### 3. THE VISIONKEEPER — Creative direction / taste (`core/visionkeeper.py`)  **HIRED 2026-07-07**
+
 (Doc-drift fix, same date: this entry said EMPTY after the organ was already built and
 running — file committed at HEAD as of commit `3e08d14`. Caught during
 `roster_and_bridge_progress` task processing.)
 Everything judged CAN-we (gates, grades, priors); nothing judged SHOULD-we. Rehearsal would
 happily build a technically-perfect wrong thing.
+
 - **Charter**: hold the vision (STORY_BIBLE "Those who love", the two Design Laws, the DSL's
   intent, the human's recorded temperatures) and SCORE every candidate/proposal for vision
   fit before rehearsal ranks it: `vision_fit` multiplier (0.2–1.5) with a one-line judgment,
@@ -135,11 +144,13 @@ happily build a technically-perfect wrong thing.
 ## TIER 2 — the departments that make it a real studio
 
 ### 4. BRIDGE ENGINEER (`core/bridge_engineer.py` + capable cycles)  **PARTIAL — 2/4 named backlog items fixed + COMMITTED 2026-07-07; Niagara authoring (3rd item) diagnosed but NOT fixed 2026-07-08; still no dedicated organ**
+
 (Status update 2026-07-07, `roster_and_bridge_progress` task: the line below describing "one
 failed reverted attempt" is now stale for `add_anim_notify`/`get_anim_sequence_info` — kept
 below for history, corrected here.)
 The McpAutomationBridge NOT_IMPLEMENTED/facade backlog (add_anim_notify, get_anim_sequence_info,
 Niagara authoring, exec-chain quirks) blocks whole departments (VFX, animation).
+
 - **Fixed, independently re-verified live twice, and now COMMITTED**:
   `add_anim_notify` and `get_anim_sequence_info` are real implementations now (not facades) in
   `McpAutomationBridge_AnimationAuthoringHandlers.cpp` — the handler actually reached via
@@ -231,49 +242,58 @@ UBT verbatim evidence, read-back verification, pathway records. Every fix un-dem
 candidates automatically (no-dead-ends law already wired).
 
 ### 5. CHAOS TESTER (`core/chaos.py`)  **EMPTY**
+
 Sleepwalker walks the happy path. Chaos walks everything else: random-input fuzzing in PIE,
 boundary probing (walk off the world, spam interactions, alt-tab storms), soak-with-abuse.
 Output: SimPlaytest-style records with crash/hang evidence; every crash becomes a beat in the
 regression suite. Weak-OK once written (pure MCP).
 
 ### 6. REGRESSION CURATOR (`core/regression.py`)  **EMPTY**
+
 Every human rejection, chaos crash, and solver fix should automatically become a permanent
 beat/test. Charter: mine rejections + fixed blockers nightly, emit/extend beat scripts and
 FeatureAcceptanceTests entries, keep the suite pruned (freshness law applies to tests too).
 
 ### 7. AUDIO SOURCER (`core/audio_sourcer.py`)  **EMPTY — kills a standing BLOCKED-ON-ASSETS**
+
 Ground_Sand_Sound has waited on a human CC0 import for days. Charter: search/download license-safe
 audio (CC0 packs), verify license, import via editor automation, record provenance. Capable
 sessions with web; the license ledger is non-negotiable (records the source + license per asset).
 
 ### 8. LIGHTING ARTIST (`core/lumen_rig.py`)  **EMPTY — the dark-pads pain is its first ticket**
+
 Mood-driven light rigs per scene (key/fill/rim recipes already proven in L_VerificationStudio
 pathways), exposure sanity checks on screenshots, day/night variants. Declared pain
 phase_4d2da4e032a4aa07:P1 (pads read near-black) is its first work item.
 
 ### 9. PRODUCER (`core/producer.py`)  **EMPTY**
+
 Rehearsal is a sprint-picker; nobody plans a milestone. Charter: hold the roadmap (Demo 1 →
 Session B → Titan Run → beyond) as a dependency graph, measure velocity from phase records,
 forecast, and re-order the candidates file weekly so rehearsal's single-step choices serve a
 multi-week arc. Reports in one table; the human steers with one sentence.
 
 ### 10. PERFORMANCE ENGINEER (`core/perf_engineer.py`)  **PARTIAL → deep**
+
 telemetry_probe reads fps/crash/growth. Charter: per-system budgets (Niagara, anim, draw calls
 via `stat` captures + Unreal Insights traces), regression detection between builds, budget
 table per feature. Its findings become rehearsal priors automatically.
 
 ### 11. ART DIRECTOR (`core/art_director.py`)  **EMPTY**
+
 Style-bible enforcement: palette extraction from screenshots vs the DSL's color_palette,
 composition checks on demo shots, reference-matching (research_references/ finally gets used).
 Vision-LM tertiary layer, engine hard-facts first (material/palette read-backs).
 
 ### 12. TRAILER DIRECTOR (`core/trailer.py`)  **EMPTY, cheap, morale-critical**
+
 Every clean sleepwalk can end with a beauty pass: BugItGo cinematic path, screenshot sequence,
 ffmpeg into a nightly 20-second gif/mp4 dropped in Saved/Trailers/. The human wakes to a daily
 trailer of what the game became overnight — the single best lure for whole-experience
 temperatures.
 
 ### 13. THE CRITIC — Games critic / benchmark analyst (`core/critic.py`)  **HIRED 2026-07-07**
+
 result_grader.py/ProfessorGPA measure pure technical correctness (test pass rate, stability,
 design checklist, spec fidelity) and never comparative enjoyment — nothing answers "does this
 feel like a AAA game, or a tech demo?" Charter: given a feature, pull its real recorded
@@ -298,7 +318,7 @@ exactly the proxy-vs-target gap this organ exists to surface in plain percentage
 ## TIER 3 — hire as the game grows
 
 | Seat | Organ sketch |
-|---|---|
+| --- | --- |
 | Level designer | `level_smith.py` — composes spaces from beat requirements + scholar reference; greybox via proven geometry pathways, save-proof ritual |
 | Narrative designer | `narrator.py` — quests/dialogue from STORY_BIBLE; first consumer of the cinematic-resonance workflow when invoked |
 | Systems/economy designer | promote chimera-balance from analyst to designer: proposes DSL parameter changes as candidates with simulated outcomes |

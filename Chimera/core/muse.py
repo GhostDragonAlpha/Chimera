@@ -121,11 +121,82 @@ def write_proposals_to_candidates_file(proposals: list):
             "proposals": proposals
         }, f, indent=2)
 
+    return muse_proposals_path
+
+
+def merge_muse_proposals_to_candidates():
+    """Merge judged muse proposals into rehearsal_candidates.json.
+    
+    This closes the Muse -> rehearsal_candidates.json wiring gap (DREAM_ROSTER #2).
+    Reads from docs/muse_proposals.json (already scored by visionkeeper),
+    converts to candidate format, and merges into docs/rehearsal_candidates.json.
+    """
+    muse_path = DOCS_DIR / "muse_proposals.json"
+    candidates_path = REHEARSAL_CANDIDATES_PATH
+    
+    if not muse_path.exists():
+        print("[muse] no muse_proposals.json found — nothing to merge")
+        return 0
+    
+    with open(muse_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    proposals = data.get('proposals', [])
+    
+    if not proposals:
+        print("[muse] muse_proposals.json has no proposals — nothing to merge")
+        return 0
+    
+    # Load existing candidates
+    existing_candidates = []
+    if candidates_path.exists():
+        with open(candidates_path, 'r', encoding='utf-8') as f:
+            existing_candidates = json.load(f)
+    
+    # Convert proposals to candidate format and merge
+    merged_count = 0
+    for p in proposals:
+        title = p.get('title', '')
+        recipe = p.get('recipe', '')
+        vision_judgment = p.get('visionkeeper_judgment', '')
+        wild_tier = p.get('wild_tier', False)
+        rank = p.get('rank', 0)
+        
+        # Check if already merged (avoid duplicates)
+        if any(c.get('name') == title for c in existing_candidates):
+            print(f"[muse] '{title}' already in candidates — skipping")
+            continue
+        
+        candidate = {
+            'name': title,
+            'value': rank * 0.3,  # Scale rank (1-5) to value (0.3-1.5)
+            'capable_only': True,  # Muse proposals require capable sessions
+            'why': f"Muse proposal #{rank} — {vision_judgment}",
+            'recipe': recipe,
+            'source': 'muse_proposal',
+            'wild_tier': wild_tier
+        }
+        
+        existing_candidates.append(candidate)
+        merged_count += 1
+    
+    # Write back
+    with open(candidates_path, 'w', encoding='utf-8') as f:
+        json.dump(existing_candidates, f, indent=2)
+    
+    print(f"[muse] merged {merged_count} proposal(s) into rehearsal_candidates.json")
+    return merged_count
+
 
 def main():
     parser = argparse.ArgumentParser(description="Muse organ: generate NEW feature/mechanic/content proposals")
     parser.add_argument("--dry-run", action="store_true", help="Print proposals; record nothing to graph or files")
+    parser.add_argument("--merge", action="store_true", help="Merge judged muse proposals into rehearsal_candidates.json")
     args = parser.parse_args()
+
+    if args.merge:
+        count = merge_muse_proposals_to_candidates()
+        print(f"[muse] merge complete — {count} proposal(s) merged")
+        return 0
 
     print("[muse] generating proposals for Regolith Yard / Titan Run arc...")
 
