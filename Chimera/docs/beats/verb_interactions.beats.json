@@ -9,6 +9,9 @@
       "features": ["Verb_Look", "Player_Character_Lighting"],
       "actions": [
         {"wait": 1.0},
+        {"key_down": "MouseX", "hold_s": 0.5},
+        {"key_up": "MouseX"},
+        {"wait": 0.3},
         {"screenshot": "verb_look_360_view"}
       ],
       "expects": [

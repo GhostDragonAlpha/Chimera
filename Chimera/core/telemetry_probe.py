@@ -10,6 +10,7 @@ NEVER fabricates: anything unmeasurable is omitted (scores zero in the rubric).
 Usage:
     python -m core.telemetry_probe --out evidence.json [--soak 30] [--log path]
 """
+
 import argparse
 import json
 import os
@@ -19,7 +20,12 @@ import time
 from pathlib import Path
 
 LOG_DIR = Path("E:/PythonChimera/Chimera/Saved/Logs")
-FATAL_MARKERS = ("Fatal error", "Assertion failed", "LowLevelFatalError", "=== Critical error")
+FATAL_MARKERS = (
+    "Fatal error",
+    "Assertion failed",
+    "LowLevelFatalError",
+    "=== Critical error",
+)
 MCP_CLI = r"E:\ChiR24-Unreal_mcp-test\dist\cli.js"
 
 
@@ -41,7 +47,9 @@ def check_crash_free(log_path: Path | None):
     except OSError as e:
         return None, f"log unreadable: {e}"
     hits = [m for m in FATAL_MARKERS if m in text]
-    return (len(hits) == 0), (f"markers found: {hits}" if hits else f"clean ({log_path.name})")
+    return (len(hits) == 0), (
+        f"markers found: {hits}" if hits else f"clean ({log_path.name})"
+    )
 
 
 class MCPStdioClient:
@@ -49,12 +57,29 @@ class MCPStdioClient:
 
     def __init__(self):
         env = dict(os.environ, UE_PROJECT_PATH=r"E:\PythonChimera\Chimera")
-        self.proc = subprocess.Popen(["node", MCP_CLI], stdin=subprocess.PIPE,
-                                     stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=env)
+        self.proc = subprocess.Popen(
+            [
+                r"C:\\Users\\allen\\node-portable\\node-v22.23.1-win-x64\\node.exe",
+                MCP_CLI,
+            ],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            env=env,
+        )
         self._id = 0
-        self._send({"jsonrpc": "2.0", "id": self._next(), "method": "initialize",
-                    "params": {"protocolVersion": "2024-11-05", "capabilities": {},
-                               "clientInfo": {"name": "telemetry-probe", "version": "1.0"}}})
+        self._send(
+            {
+                "jsonrpc": "2.0",
+                "id": self._next(),
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {},
+                    "clientInfo": {"name": "telemetry-probe", "version": "1.0"},
+                },
+            }
+        )
         if not self._read(self._id):
             raise RuntimeError("MCP initialize failed")
         self._send({"jsonrpc": "2.0", "method": "notifications/initialized"})
@@ -83,8 +108,14 @@ class MCPStdioClient:
         return None
 
     def call(self, tool: str, arguments: dict):
-        self._send({"jsonrpc": "2.0", "id": self._next(), "method": "tools/call",
-                    "params": {"name": tool, "arguments": arguments}})
+        self._send(
+            {
+                "jsonrpc": "2.0",
+                "id": self._next(),
+                "method": "tools/call",
+                "params": {"name": tool, "arguments": arguments},
+            }
+        )
         return self._read(self._id)
 
     def close(self):
@@ -115,6 +146,7 @@ def probe_growth(client: "MCPStdioClient", soak_seconds: int):
         result = client.call("inspect", {"action": "get_performance_stats"})
         count = _extract(r'actorCount"?\s*[:=]\s*"?(\d+)', result)
         return int(count) if count is not None else None
+
     try:
         first = actor_count()
         if first is None:
@@ -138,23 +170,43 @@ def _foreground_appactivate():
     Background throttle freezes fps AND all Niagara/anim simulation — need foreground execution."""
     try:
         import subprocess
+
         # AppActivate one-liner to bring UE Editor to foreground for honest telemetry
         subprocess.run(
-            ['powershell', '-Command',
-             "$wshell=New-Object -ComObject wscript.shell; $wshell.AppActivate('Unreal Editor'); Start-Sleep 1"],
-            shell=True, check=False, capture_output=True
+            [
+                "powershell",
+                "-Command",
+                "$wshell=New-Object -ComObject wscript.shell; $wshell.AppActivate('Unreal Editor'); Start-Sleep 1",
+            ],
+            shell=True,
+            check=False,
+            capture_output=True,
         )
     except Exception:
         pass
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Collect telemetry evidence for the result grader")
-    parser.add_argument("--out", required=True, help="Path to write the telemetry evidence JSON")
-    parser.add_argument("--soak", type=int, default=30, help="Seconds between growth samples")
-    parser.add_argument("--log", help="Explicit UE log path (default: newest in Saved/Logs)")
-    parser.add_argument("--skip-engine", action="store_true", help="Log-only probe (no MCP)")
-    parser.add_argument("--foreground", action="store_true", help="Ensure editor is foregrounded for honest fps measurement")
+    parser = argparse.ArgumentParser(
+        description="Collect telemetry evidence for the result grader"
+    )
+    parser.add_argument(
+        "--out", required=True, help="Path to write the telemetry evidence JSON"
+    )
+    parser.add_argument(
+        "--soak", type=int, default=30, help="Seconds between growth samples"
+    )
+    parser.add_argument(
+        "--log", help="Explicit UE log path (default: newest in Saved/Logs)"
+    )
+    parser.add_argument(
+        "--skip-engine", action="store_true", help="Log-only probe (no MCP)"
+    )
+    parser.add_argument(
+        "--foreground",
+        action="store_true",
+        help="Ensure editor is foregrounded for honest fps measurement",
+    )
     args = parser.parse_args()
 
     # H-13: Ensure foreground execution for honest telemetry if requested
@@ -188,7 +240,9 @@ def main():
             client.close()
 
     out = Path(args.out)
-    out.write_text(json.dumps({"telemetry": telemetry, "notes": notes}, indent=2), encoding="utf-8")
+    out.write_text(
+        json.dumps({"telemetry": telemetry, "notes": notes}, indent=2), encoding="utf-8"
+    )
     print(json.dumps({"telemetry": telemetry, "notes": notes}, indent=2))
 
 
