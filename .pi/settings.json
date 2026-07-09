@@ -2,15 +2,14 @@
   "shellPath": "C:/Users/allen/AppData/Local/Programs/PortableGit/bin/bash.exe",
   "gitPath": "C:/Users/allen/AppData/Local/Programs/PortableGit/cmd/git.exe",
   "extensions": [
-    ".pi/extensions/chimera-tools.ts"
+    ".pi/extensions/chimera-tools.ts",
+    ".pi/extensions/compaction-recovery.ts"
   ],
   "packages": [
     "npm:@tintinweb/pi-subagents@^0.13.0",
-    "npm:cc-safety-net@^1.0.6",
     "npm:pi-readseek",
     "npm:pi-lens",
-    "npm:pi-hermes-memory@^0.7.23",
-    "npm:pi-web-access"
+    "npm:pi-hermes-memory@^0.7.23"
   ],
   "_removed_pi-shazam": "Removed 2026-07-09: its synchronous before_agent_start scanProject() hangs 75s+ on this project (999 source files -> pathological parse/edge/PageRank build), freezing Pi at startup. Confirmed in isolation via scan-probe. It also bundles no C++ grammar, so it never indexed the main UE codebase anyway. pi-readseek + pi-lens cover code navigation. Re-add 'npm:pi-shazam' only if upstream fixes the large-project scan.",
   "environment": {
