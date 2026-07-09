@@ -8,10 +8,9 @@
   "packages": [
     "npm:@tintinweb/pi-subagents@^0.13.0",
     "npm:pi-readseek",
-    "npm:pi-lens",
     "npm:pi-hermes-memory@^0.7.23"
   ],
-  "_removed_pi-shazam": "Removed 2026-07-09: its synchronous before_agent_start scanProject() hangs 75s+ on this project (999 source files -> pathological parse/edge/PageRank build), freezing Pi at startup. Confirmed in isolation via scan-probe. It also bundles no C++ grammar, so it never indexed the main UE codebase anyway. pi-readseek + pi-lens cover code navigation. Re-add 'npm:pi-shazam' only if upstream fixes the large-project scan.",
+  "_removed_pi-shazam": "Removed 2026-07-09: its synchronous before_agent_start scanProject() hangs 75s+ on this project (999 source files -> pathological parse/edge/PageRank build), freezing Pi at startup. Confirmed in isolation via scan-probe. It also bundles no C++ grammar, so it never indexed the main UE codebase anyway. pi-readseek covers code navigation. Re-add 'npm:pi-shazam' only if upstream fixes the large-project scan.",
   "environment": {
     "nodePath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64",
     "npmPath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64/npm.cmd",

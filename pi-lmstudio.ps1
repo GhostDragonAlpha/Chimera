@@ -65,6 +65,14 @@ $config['providers']['lmstudio'] = [ordered]@{
 }
 $config | ConvertTo-Json -Depth 10 | Set-Content -Path $modelsJsonPath -Encoding utf8
 
+# -- silence Pi's startup update nags -------------------------------------------------------------
+# This setup runs entirely against local LM Studio, so Pi has no reason to phone the npm registry
+# on every launch. PI_OFFLINE disables ALL startup network ops: the "New version available" banner,
+# the package-update banner, install telemetry, and auto-downloading optional helper binaries
+# (fd/ripgrep -- already present, system versions used as fallback). Model inference, MCP,
+# extensions, and subagents are NOT affected. To re-enable update checks, run:  pi update --all
+$env:PI_OFFLINE = "1"
+
 # -- point settings.json's default at the active model, preserve every other field -----------------
 $settingsPath = "$env:USERPROFILE\.pi\agent\settings.json"
 $settings = if (Test-Path $settingsPath) { Get-Content $settingsPath -Raw | ConvertFrom-Json -AsHashtable } else { @{} }

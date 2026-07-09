@@ -3,12 +3,8 @@
   "private": true,
   "dependencies": {
     "@tintinweb/pi-subagents": "^0.13.0",
-    "cc-safety-net": "^1.0.6",
     "pi-hermes-memory": "^0.7.23",
-    "pi-lens": "^3.8.67",
-    "pi-readseek": "^0.4.29",
-    "pi-shazam": "^0.26.0",
-    "pi-web-access": "^0.13.0"
+    "pi-readseek": "^0.4.29"
   },
   "devDependencies": {
     "patch-package": "^8.0.1"
