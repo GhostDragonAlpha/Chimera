@@ -286,8 +286,19 @@ def record_visionkeeper_judgments(judgments: list):
 def main():
     parser = argparse.ArgumentParser(description="VisionKeeper organ: score candidates/proposals for vision fit")
     parser.add_argument("--dry-run", action="store_true", help="Print judgments; record nothing to graph or files")
+    parser.add_argument("--taste-pass", action="store_true", help="Run nightly taste pass on screenshots")
     args = parser.parse_args()
 
+    if args.taste_pass:
+        # Run nightly taste pass on all screenshots
+        result = run_nightly_taste_pass()
+        print(f"[visionkeeper] Taste pass complete: {result['screenshots_analyzed']} screenshots analyzed")
+        print(f"  Drift flags found: {len(result['drift_flags'])}")
+        for flag in result['drift_flags'][:5]:  # Show first 5
+            print(f"    - {flag}")
+        if len(result['drift_flags']) > 5:
+            print(f"    ... and {len(result['drift_flags'])-5} more")
+        return 0
     print("[visionkeeper] holding the vision: STORY_BIBLE 'Those who love', Design Laws 1 & 2, DSL intent, art bible palette (regolith-grey).")
 
     # Score candidates file

@@ -146,7 +146,10 @@ happily build a technically-perfect wrong thing.
 - **Status update 2026-07-09**: VisionKeeper -> rehearsal wiring CLOSED — `core/rehearsal.py::apply_vision_fit()`
   implemented and called in scoring pipeline (after score_candidates, before apply_no_dead_ends).
   All candidates now get a vision_fit multiplier (0.8–1.4x) based on STORY_BIBLE alignment.
-  Nightly taste pass on screenshots remains TODO.
+  Nightly taste pass on screenshots CLOSED — `core/visionkeeper.py::run_nightly_taste_pass()`
+  implemented. Scans Saved/Screenshots/*.png, analyzes color distribution against art bible
+  criteria (regolith-grey palette, resonant minimalism), flags void-black and vivid colors.
+  CLI: `python -m core.visionkeeper --taste-pass`
 
 ---
 
