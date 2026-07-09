@@ -155,6 +155,72 @@ class Sleepwalker:
         if "pawn_z_below" in e:
             z = float((((rt.get("pawn") or {}).get("transform") or {}).get("location") or {}).get("z", 1e9))
             return z < float(e["pawn_z_below"]), f"z={z:.0f}"
+        if "control_rotation_yaw_delta" in e:
+            # Reads controller ControlRotation yaw via inspect.get_property, checks delta >= threshold
+            try:
+                from core.telemetry_probe import MCPStdioClient
+                c = MCPStdioClient()
+                pawn_name = rt.get("pawn", {}).get("name", "DefaultPawn0")
+                # Try multiple possible controller object paths (order matters: most specific first)
+                candidate_paths = [
+                    f"{pawn_name}_Controller",
+                    f"{pawn_name}PlayerController",
+                    pawn_name,
+                    "PlayerController_0",
+                    "DefaultPawn0_PlayerController",
+                ]
+                yaw_found = None
+                for obj_path in candidate_paths:
+                    try:
+                        resp = c.call("inspect", {"action": "get_property",
+                            "objectPath": obj_path,
+                            "propertyName": "ControlRotation"})
+                        if isinstance(resp, dict) and "value" in resp:
+                            val = resp["value"]
+                            yaw = None
+                            # Handle string format: "Yaw: 123.456 Pitch: ... Roll: ..."
+                            if isinstance(val, str):
+                                import re
+                                m = re.search(r'Yaw:\s*([\d.]+)', val)
+                                if m:
+                                    yaw = float(m.group(1))
+                            # Handle dict format: {"Yaw": 123.456, "Pitch": ..., "Roll": ...}
+                            elif isinstance(val, dict):
+                                yaw = val.get("Yaw", val.get("Y", None))
+                            if yaw is not None and isinstance(yaw, (int, float)):
+                                yaw_found = float(yaw)
+                                break  # Found valid yaw, stop trying paths
+                    except Exception:
+                        pass  # Try next object path
+                
+                if yaw_found is not None:
+                    threshold = float(e.get("control_rotation_yaw_delta", 0.5))
+                    return abs(yaw_found) >= threshold, f"yaw={yaw_found:.2f} (threshold={threshold})"
+                else:
+                    return False, "inspect.get_property failed on all controller paths (no valid yaw found)"
+            except Exception as ex:
+                return False, f"control_rotation check error: {str(ex)[:80]}"
+        if "pawn_velocity_magnitude" in e:
+            # Reads pawn velocity magnitude from runtime_report, checks against threshold
+            try:
+                vel = (((rt.get("pawn") or {}).get("transform") or {}).get("velocity") or {})
+                vx = float(vel.get("x", 0))
+                vy = float(vel.get("y", 0))
+                vz = float(vel.get("z", 0))
+                magnitude = (vx * vx + vy * vy + vz * vz) ** 0.5
+                threshold = float(e["pawn_velocity_magnitude"])
+                return magnitude >= threshold, f"velocity_mag={magnitude:.2f} (threshold={threshold})"
+            except Exception:
+                return False, "Failed to read pawn velocity from runtime_report"
+        if "actor_count_min" in e:
+            # Checks that actor count meets minimum threshold
+            try:
+                actors = rt.get("actors") or []
+                count = len(actors)
+                min_count = int(e["actor_count_min"])
+                return count >= min_count, f"actor_count={count} (min={min_count})"
+            except Exception:
+                return False, "Failed to read actor count from runtime_report"
         if "screenshot_taken" in e:
             # screenshot action is proven via control_editor screenshot mode=editor_viewport
             ok = True
