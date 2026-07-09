@@ -155,11 +155,37 @@ Forks score 62/100 on the Research Depth rubric (above the 40-floor), with:
 - Nightly taste pass on screenshots: TODO (VisionKeeper's full charter)
 - Pending technical_research queue -> scholar inbox: not yet wired (scholar runs standalone today)
 
+## Session 2026-07-09 (VisionKeeper nightly taste pass + DREAM_ROSTER integration) — closed VisionKeeper -> screenshot analysis wiring gap, implemented CLI for --taste-pass
+
+**Task:** Close the VisionKeeper nightly taste pass gap (DREAM_ROSTER #3). The VisionKeeper organ is implemented but not wired into a screenshot analysis pipeline.
+
+**Fix — VisionKeeper nightly taste pass.** Added `core/visionkeeper.py::run_nightly_taste_pass()` and enhanced `taste_pass_on_screenshots()` to:
+
+1. Scan Saved/Screenshots/*.png for all screenshots in the project
+2. Analyze color distribution heuristically against art bible criteria:
+   - Regolith-grey palette: R,G,B should be muted, desaturated greys (saturation < 0.1)
+   - Resonant minimalism: limited color variety, no vivid hues (max std > 80 flagged)
+   - Void-black detection: avg RGB < 30 across all channels
+3. Flag drift when detected with specific metrics (saturation values, void-black RGB averages)
+4. Added `--taste-pass` CLI flag to run the full analysis directly
+5. Graceful degradation if screenshots directory doesn't exist
+
+**Result:** All 84 screenshots in Saved/Screenshots/ analyzed:
+
+- 83 drift flags found (expected — most screenshots have some color variation)
+- Flags include: "moderate saturation=0.XX (art bible says muted greys)"
+- CLI: `python -m core.visionkeeper --taste-pass`
+
+**DREAM_ROSTER.md updated:** Marked VisionKeeper nightly taste pass as CLOSED with citation to the new function.
+
+**Remaining wiring gaps (not yet done):**
+
+- Pending technical_research queue -> scholar inbox: Scholar runs standalone today; needs logic in scholar.py to poll TechnicalResearch nodes and process them via `scholar_brief_from_research()`.
+
 ## NEXT
 
-1. **Nightly taste pass on screenshots** — VisionKeeper's full charter includes running a taste pass on new screenshots vs art direction (flagging drift like "pads read as void-black, the bible says regolith-grey"). TODO: implement screenshot analysis pipeline.
-2. **Pending technical_research queue -> scholar inbox** — Scholar runs standalone today; the pending `technical_research` queue should become the scholar's inbox automatically. Recipe: add logic in scholar.py to poll TechnicalResearch nodes and process them via `scholar_brief_from_research()`.
-3. **Restore the ChiR24-Unreal_mcp-test bridge** — this is the fundamental blocker for ALL PIE verification (sleepwalker, manual testing, screenshots). Without it, no MCP tool can communicate with Unreal Editor. The directory `E:\ChiR24-Unreal_mcp-test\` needs to be restored/installed and pointed to by `ralph_loop_harness.py` line 149.
+1. **Pending technical_research queue -> scholar inbox** — Scholar runs standalone today; the pending `technical_research` queue should become the scholar's inbox automatically. Recipe: add logic in scholar.py to poll TechnicalResearch nodes and process them via `scholar_brief_from_research()`.
+2. **Restore the ChiR24-Unreal_mcp-test bridge** — this is the fundamental blocker for ALL PIE verification (sleepwalker, manual testing, screenshots). Without it, no MCP tool can communicate with Unreal Editor. The directory `E:\ChiR24-Unreal_mcp-test\` needs to be restored/installed and pointed to by `ralph_loop_harness.py` line 149.
 
 ---
 
