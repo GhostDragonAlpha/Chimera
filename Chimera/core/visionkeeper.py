@@ -20,6 +20,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Optional
 
 # Chimera root and paths
 CHIMERA_ROOT = Path(__file__).parent.parent
@@ -28,19 +29,19 @@ REHEARSAL_CANDIDATES_PATH = DOCS_DIR / "rehearsal_candidates.json"
 MUSE_PROPOSALS_PATH = DOCS_DIR / "muse_proposals.json"
 
 try:
-    from core.graphify_interface import load_dna_graph, record_visionkeeper_judgment
+    from core.graphify_interface import record_visionkeeper_judgment
 except ImportError:
     sys.path.insert(0, str(CHIMERA_ROOT))
     sys.path.insert(0, str(Path(__file__).parent))
-    from core.graphify_interface import load_dna_graph, record_visionkeeper_judgment
+    from graphify_interface import record_visionkeeper_judgment
 
 
-# The Vision — STORY_BIBLE "Those who love", the two Design Laws, DSL's intent, human's recorded temperatures
+# The Vision - STORY_BIBLE "Those who love", the two Design Laws, DSL's intent, human's recorded temperatures
 VISION_STORY_BIBLE = {
     "core_phrase": "Those who love",
     "design_law_1": "The game never explains the player's why. It shows them the shape of what they protected; the reason stays theirs alone.",
-    "design_law_2": "Identity never gates anything in this game; love does. And love has exactly one machine-readable signature — cost paid and attention given.",
-    "failure_ending": "The game's bad ending is not death — it is a costless life.",
+    "design_law_2": "Identity never gates anything in this game; love does. And love has exactly one machine-readable signature - cost paid and attention given.",
+    "failure_ending": "The game's bad ending is not death - it is a costless life.",
     "art_bible_palette": "regolith-grey, resonant minimalism, interference shimmer on the provisional, solidity as a reward for witness",
     "drift_warning": "the pads read as void-black, the bible says regolith-grey"
 }
@@ -89,17 +90,119 @@ def score_candidate_for_vision_fit(candidate_name: str, candidate_why: str, cand
 
 
 def taste_pass_on_screenshots(feature_name: str, screenshot_paths: list) -> str:
-    """Run a taste pass on evidence (screenshots vs art direction) flagging drift."""
-    drift_flag = ""
-    # The art bible says regolith-grey; if pads read as void-black, flag drift.
-    # For now, return the standard drift warning if no specific screenshot analysis is provided.
-    if not screenshot_paths:
-        drift_flag = VISION_STORY_BIBLE["drift_warning"] + " — awaiting screenshot evidence for taste pass."
-    else:
-        # In a full implementation, this would analyze screenshots vs art direction.
-        drift_flag = "Taste pass pending on screenshot analysis; art bible says regolith-grey, resonant minimalism."
-    return drift_flag
+    """Run a taste pass on evidence (screenshots vs art direction) flagging drift.
+    
+    This closes the VisionKeeper nightly taste pass gap (DREAM_ROSTER #3).
+    Analyzes screenshots heuristically against the art bible criteria:
+    - regolith-grey palette: R,G,B should be muted, desaturated greys
+    - resonant minimalism: limited color variety, no vivid hues
+    - interference shimmer on provisional: subtle gradients acceptable
+    
+    Returns drift_flag string if issues detected.
+    """
+    from PIL import Image
+    import random
 
+    # Art bible criteria for taste pass
+    ART_BIBLE = {
+        "palette": "regolith-grey, resonant minimalism",
+        "drift_keywords": ["void-black", "neon", "vivid", "saturated", "garish"],
+        "acceptable_colors": ["grey", "muted", "desaturated", "warm", "cool"]
+    }
+
+    if not screenshot_paths:
+        return ART_BIBLE["drift_keywords"][0] + " — awaiting screenshot evidence for taste pass."
+
+    drift_flags = []
+
+    for spath in screenshot_paths:
+        try:
+            img = Image.open(spath)
+            pixels_data = list(img.get_flattened_data())
+            if not pixels_data:
+                continue
+            sampled_pixels = random.sample(pixels_data, min(100, len(pixels_data)))
+
+            # Analyze color distribution
+            r_vals = [p[0] for p in sampled_pixels]
+            g_vals = [p[1] for p in sampled_pixels]
+            b_vals = [p[2] for p in sampled_pixels]
+
+            avg_r = sum(r_vals) / len(r_vals)
+            avg_g = sum(g_vals) / len(g_vals)
+            avg_b = sum(b_vals) / len(b_vals)
+
+            # Check for void-black (very dark, near-zero values)
+            if avg_r < 30 and avg_g < 30 and avg_b < 30:
+                drift_flags.append(f"{spath}: void-black detected (avg RGB=({avg_r:.1f},{avg_g:.1f},{avg_b:.1f}))")
+
+            # Check for vivid/saturated colors (high variance in one channel)
+            r_std = (sum((x - avg_r)**2 for x in r_vals) / len(r_vals)) ** 0.5
+            g_std = (sum((x - avg_g)**2 for x in g_vals) / len(g_vals)) ** 0.5
+            b_std = (sum((x - avg_b)**2 for x in b_vals) / len(b_vals)) ** 0.5
+
+            max_std = max(r_std, g_std, b_std)
+            if max_std > 80:  # High variance suggests vivid colors
+                drift_flags.append(f"{spath}: possible vivid color detected (max std={max_std:.1f})")
+
+            # Check for regolith-grey palette alignment
+            # Regolith grey should be muted, desaturated (low saturation)
+            max_channel = max(avg_r, avg_g, avg_b)
+            min_channel = min(avg_r, avg_g, avg_b)
+            if max_channel > 0:
+                saturation = (max_channel - min_channel) / max_channel
+                if saturation < 0.1:  # Very desaturated = grey-ish (good for regolith-grey)
+                    pass  # This is acceptable per art bible
+                else:
+                    drift_flags.append(f"{spath}: moderate saturation={saturation:.2f} (art bible says muted greys)")
+
+        except Exception as e:
+            drift_flags.append(f"{spath}: analysis failed ({e})")
+
+    if not drift_flags:
+        return "Taste pass clean: screenshots align with regolith-grey palette, resonant minimalism."
+
+    # Return first drift flag (most critical)
+    return f"Drift detected: {drift_flags[0]}"
+
+
+def run_nightly_taste_pass(screenshot_dir: Optional[str] = None) -> dict:
+    """Run a full nightly taste pass on all screenshots in the project.
+
+    This is VisionKeeper's nightly duty cycle (DREAM_ROSTER #3).
+    Scans for new screenshots, analyzes them against art bible criteria,
+    and flags drift for review.
+
+    Returns dict with analysis results.
+    """
+    from pathlib import Path
+    
+    if screenshot_dir is None:
+        screenshot_dir = str(CHIMERA_ROOT / "Saved" / "Screenshots")
+    
+    screenshot_path = Path(screenshot_dir)
+    if not screenshot_path.exists():
+        return {"status": "no_screenshots", "drift_flags": [], "screenshots_analyzed": 0}
+    
+    # Find all PNG/JPG files
+    image_files = list(screenshot_path.glob("*.png")) + list(screenshot_path.glob("*.jpg"))
+    
+    if not image_files:
+        return {"status": "no_images", "drift_flags": [], "screenshots_analyzed": 0}
+    
+    # Run taste pass on each screenshot
+    drift_flags = []
+    for img_path in image_files:
+        flag = taste_pass_on_screenshots(str(img_path), [str(img_path)])
+        if "Drift" in flag or "void-black" in flag:
+            drift_flags.append(flag)
+    
+    return {
+        "status": "complete",
+        "screenshots_analyzed": len(image_files),
+        "drift_flags": drift_flags,
+        "art_bible_criteria": VISION_STORY_BIBLE["art_bible_palette"]
+    }
 
 def score_candidates_file():
     """Score the current candidate file (rehearsal_candidates.json) for vision fit."""
