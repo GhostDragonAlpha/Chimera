@@ -43,6 +43,7 @@ private:
 
 	/** Spawns one demo APickupActor near the possessed pawn, once per controller lifetime, so there is always something real to test Interact/Drop against. */
 	void SpawnDemoPickupIfNeeded(APawn* InPawn);
+	void ConfigureCrouchCapsule(APawn* InPawn);
 
 	bool bDemoPickupSpawned;
 };

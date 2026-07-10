@@ -1,6 +1,8 @@
 #include "DemoPlayerController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
 #include "../Interactions/PickupInteractionComponent.h"
@@ -10,6 +12,8 @@ ADemoPlayerController::ADemoPlayerController()
 {
 	PickupInteraction = CreateDefaultSubobject<UPickupInteractionComponent>(TEXT("PickupInteraction"));
 	bDemoPickupSpawned = false;
+	// Enable mouse look: show cursor for UI.
+	bShowMouseCursor = true;
 }
 
 void ADemoPlayerController::SetupInputComponent()
@@ -33,6 +37,7 @@ void ADemoPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	EnsureThirdPersonCamera(InPawn);
 	SpawnDemoPickupIfNeeded(InPawn);
+	ConfigureCrouchCapsule(InPawn);
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Possessed %s"), *GetNameSafe(InPawn));
 }
 
@@ -121,6 +126,38 @@ void ADemoPlayerController::DropItem()
 		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Drop action triggered - nothing currently held"));
 	}
 }
+
+void ADemoPlayerController::ConfigureCrouchCapsule(APawn* InPawn)
+{
+	if (!InPawn) return;
+
+	// Crouch is driven by the real engine API, not by resizing the standing
+	// capsule at possess time. ACharacter::Crouch() (bound to C via StartCrouch)
+	// is a no-op unless the movement component is allowed to crouch; the
+	// crouched half-height then determines how far the view drops.
+	ACharacter* Char = Cast<ACharacter>(InPawn);
+	if (!Char) return;
+
+	UCharacterMovementComponent* Move = Char->GetCharacterMovement();
+	if (!Move) return;
+
+	// Allow crouching. CanEverCrouch() reads this flag live, so setting it at
+	// possess time (rather than in the pawn's constructor) is sufficient.
+	Move->GetNavAgentPropertiesRef().bCanCrouch = true;
+
+	// Crouched capsule half-height. With a default standing half-height of ~88,
+	// 40 yields a visible ~48-unit view drop while C is held.
+	Move->SetCrouchedHalfHeight(40.0f);
+
+	const float StandingHalfHeight = Char->GetCapsuleComponent()
+		? Char->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()
+		: 0.0f;
+	UE_LOG(LogTemp, Display,
+		TEXT("[VERB_BEND] Crouch enabled on %s: standing=%.1f crouched=%.1f can_crouch=%d"),
+		*GetNameSafe(Char), StandingHalfHeight, Move->CrouchedHalfHeight,
+		(int32)Move->GetNavAgentPropertiesRef().bCanCrouch);
+	}
+
 
 void ADemoPlayerController::EnsureThirdPersonCamera(APawn* InPawn)
 {

@@ -1,3 +1,25 @@
+# Session 2026-07-10 (game dev resumed) — Build greened + Verb_Bend crouch REALLY fixed & hard-fact verified
+
+**Scope: game development** (operator: "make the game"). Branch still `workflow/proof-of-use`; the prior session's tooling stays uncommitted & operator-pending (NEXT #1). My game-dev changes are a separate, focused commit.
+
+**Build was RED — fixed (gate_build_succeeded blocker):**
+- `ProceduralGenerated/UI/HUDWidget.h` (new manual UI file) failed C1083 on `#include "UI/Components/CanvasComponent.h"` — a phantom header never written (empty `Components/` dir). It also extended `UUserWidget` without `#include "Blueprint/UserWidget.h"`, and had no `.cpp` (would fail at link).
+- Fix: removed the phantom include, added `Blueprint/UserWidget.h`, dropped the stray `UHUDWidget()` ctor (init → `NativeConstruct`, matching WID_TradeUI — UUserWidget has no zero-arg ctor and BindWidget ptrs are null in the ctor), authored `HUDWidget.cpp` (credits/inventory/missions/faction/messages/loop) with `TMap<FString,UTextBlock*> MissionEntries` so RemoveMission works.
+- Cleaned NTFS debris: a garbage DIRECTORY literally named `HUDWidget.h\n<` (Cygwin PUA byte-encoding 0xF00A=\n, 0xF03C=< from a botched redirection) + the empty `Components/` dir. (The garbage dir held 1 child, removed recursively — untracked, unreferenced; the real HUDWidget.h is intact.)
+- Build: ChimeraEditor Win64 Development → **Result: Succeeded**, exit 0. Recorded mutation_1c13f47eb1f0, mutation_8a62799efe44.
+
+**Verb_Bend crouch — the LIVE bug (falsely "verified" before) is now REALLY fixed + hard-fact verified:**
+- Root cause confirmed exactly as the prior handoff flagged: `ConfigureCrouchCapsule` read `GetUnscaledCapsuleRadius()` as a "half height", called `SetCapsuleSize` on the STANDING capsule at possess (permanent squash), and NEVER set `bCanCrouch`/`SetCrouchedHalfHeight` → `ACharacter::Crouch()` was a no-op.
+- Fix (DemoPlayerController.cpp — a MANUAL file, clobber-checked, NOT generator-owned): `Move->GetNavAgentPropertiesRef().bCanCrouch = true; Move->SetCrouchedHalfHeight(40.f);`. The input path (C→StartCrouch→Crouch) was already correct.
+- **Verified by a hard-fact REVERSIBLE transition in PIE** (NOT a sleepwalker self-report): real C press/release, `CapsuleHalfHeight` read off CollisionCylinder + pawn Z off runtime_report → standing 90/102 → crouch 40/52 → release 90/102 (drop==restore==50uu). simtest_6a2f3c8433e30d90 → observe → Verb_Bend = **observed**. Lesson: surprise_58ed433f8221338e.
+
+## NEXT
+1. **Operator decision still pending (unchanged):** keep or discard `workflow/proof-of-use` (prior session's research-enforcement tooling, uncommitted). My game-dev fixes (HUDWidget.*, DemoPlayerController.cpp) are a separate commit and belong on master regardless of that decision.
+2. **Flawed crouch beat proxy** — `docs/beats/verb_interactions.beats.json` `verb_bend_location` still uses `pawn_z_below:90`, which the OLD bug also satisfied. Chip spawned (task_085f9c2f): replace with a reversible-transition / capsule-half-height expect so a no-op crouch actually FAILS the beat.
+3. **Continue Loop 2 Basic Verbs**, or run `python -m core.rehearsal --decide` for the next candidate.
+
+---
+
 # Session 2026-07-10 (later) — Research enforcement workflow (Pi); Verb_Bend "verified" claim is FALSE
 
 **Scope was Pi workflow tooling, NOT game development** (per operator instruction). Branch: `workflow/proof-of-use` (3 commits, NOT pushed, NOT merged to master).
