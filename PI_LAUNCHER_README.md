@@ -143,3 +143,41 @@ To add a provider, edit `pi-launcher.ps1` and add an entry to the `$providers` a
 - `description`: What it does
 - `apiKeyVar`: Environment variable name (or "none" if not applicable)
 - `defaultModel`: Default model ID for that provider
+
+## Extensions
+
+Project-local extensions live in `.pi/extensions/` and load per the list in
+`.pi/settings.json`. Two of note (added/repaired 2026-07-10):
+
+### `web-browsing.ts` — real browsing via local Chromium
+
+Provides `web_browse`, `web_search_real`, `web_extract`, `web_screenshot`. **This
+was silently non-functional and is now repaired** — worth knowing if an agent has
+been "refusing to research":
+
+- `web_browse` passed `params` into `page.evaluate()` as a closure. That callback
+  runs *inside the browser*, where `params` doesn't exist, so every call threw
+  `ReferenceError` and the `catch` returned a polite string. It had never worked.
+- `web_search_real` scraped Google `div.g`, which returns nothing headless (bot
+  wall) and reported `status: "success"` anyway.
+
+Repaired: arguments are passed into `evaluate()`; search uses **Startpage**
+(primary) with a **Bing** fallback (its `ck/a` redirects are base64-unwrapped);
+**zero results is now an error, never success.** Backend survey, headless, realistic
+UA: `startpage 200` / `bing 200 (needs networkidle)` / `ddg-lite 403` /
+`ddg-html 403` / `mojeek captcha` / `marginalia 502`.
+
+### `proof-of-use.ts` — research enforced at the harness
+
+Blocks any `write`/`edit` into `Source/` that introduces an Unreal API symbol the
+agent has not read, blocks calls to symbols that do not exist, and reverts any file
+whose `#include`s do not resolve. Enforcement is external (ripgrep + the engine
+source on disk), fails closed, and provides `research_engine` / `research_cite`
+tools plus a `/proof` command to inspect the citation ledger.
+
+Full design, measured evidence, and known limitations:
+[`Chimera/docs/RESEARCH_ENFORCEMENT.md`](Chimera/docs/RESEARCH_ENFORCEMENT.md).
+
+```powershell
+CHIMERA_PROOF_OF_USE=0   # make the gate advisory (records citations, never blocks)
+```
