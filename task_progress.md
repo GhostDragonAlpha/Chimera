@@ -1,3 +1,33 @@
+# Session 2026-07-10 (game dev cont.) — Ground_Sand_Footprints: movement-driven footprint system, mechanic hard-fact verified
+
+**Scope: game development** ("make the game"; rehearsal-chosen move below). Additive, non-invasive.
+
+**3-attempts-stuck; the real problem was DEAD CODE, not blend spaces:**
+- The study guide blamed blend-space notify propagation. True but incomplete — ALL prior footprint code is dead on the demo pawn. (a) Anim-notify FootPlant on MF_Unarmed_Walk_Fwd never propagates through BS_Idle_Walk_Run (MCP_PATHWAYS #28). (b) `ChimeraMovementComponent::SpawnFootprintDecal` is a **log-only placeholder**, and ChimeraMovementComponent is **never installed** on BP_Astronaut_Character (no CreateDefaultSubobject anywhere; the pawn runs stock CharMoveComp — confirmed via the crouch work + FindComponentByClass on the live PIE pawn).
+- **Fix: new additive `UFootprintComponent`** (`ProceduralGenerated/Environment/FootprintComponent.{h,cpp}`), attached to the pawn in `ADemoPlayerController::OnPossess` (like the camera/pickup). Movement-driven: accumulate horizontal ground distance, lay one mesh imprint (plane + MAT_Moon_Regolith) per StrideLength (80uu), alternating L/R, line-traced to the ground. No anim/blend-space dependency. Exposes `FootprintsSpawned` (UPROPERTY) for hard-fact verification.
+- **Hard-fact verified in PIE** (real W input): walked 3805uu → FootprintsSpawned 0→47 = **0.99x** expected (dist/stride). Build Succeeded (exit 0). DNA: mutation_d8dbca5e870e, mutation_5cd8b7213ce9, simtest_fab70a5ce82bb878, feature_be1680bfb99a3290 (→ sim_verified), surprise_f95646ffe1b4584a.
+- **Verification CAUGHT a real bug**: initial one-print-per-tick logic undercounted (20 prints / 0.42x) at the ~6fps editor throttle — count was frame-rate-DEPENDENT. Fixed with a per-step interpolation loop (one print per stride covered this frame); re-verified 0.99x at the SAME fps. Also cleared a C4996 I'd introduced (`Move->CrouchedHalfHeight` → `GetCrouchedHalfHeight()`).
+
+**Honest status: MECHANIC verified (sim_verified); VISUAL is first-pass.** Prints render as grey regolith planes on the dark default level — reads as a ribbon, not boot prints. Distinct boot-shape projected DECALS (no decal-domain material exists project-wide — must author one), subtler dark coloring, and running on L_RegolithYard are refinement. Chip queued: task_64c56aa1.
+
+## NEXT
+1. **Footprint visual polish** (chip task_64c56aa1): swap the plane imprint for a projected deferred-decal (author a dark-oval decal material), boot shape, subtler coloring, verify on L_RegolithYard.
+2. **Operator decision still pending:** keep/discard `workflow/proof-of-use` (prior session's tooling). My game-dev commits (build/crouch + footprints) are separate and belong on master regardless.
+3. **Flawed crouch beat proxy** — chip task_085f9c2f (details in the entry below).
+4. **Continue** via `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-10 22:24Z — next move: Ground_Sand_Footprints  [DONE — see entry above]
+
+Chosen by core.rehearsal (score 0.84, p_success 0.35, evidence: grade:C, failure_mentions:3). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Footprints** — needs_refinement (status=needs_refinement). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Ground_Sand_Footprints')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Session 2026-07-10 (game dev resumed) — Build greened + Verb_Bend crouch REALLY fixed & hard-fact verified
 
 **Scope: game development** (operator: "make the game"). Branch still `workflow/proof-of-use`; the prior session's tooling stays uncommitted & operator-pending (NEXT #1). My game-dev changes are a separate, focused commit.

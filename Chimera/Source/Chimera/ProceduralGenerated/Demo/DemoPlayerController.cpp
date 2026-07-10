@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "../Interactions/PickupInteractionComponent.h"
 #include "../Interactions/PickupActor.h"
+#include "../Environment/FootprintComponent.h"
 
 ADemoPlayerController::ADemoPlayerController()
 {
@@ -38,6 +39,7 @@ void ADemoPlayerController::OnPossess(APawn* InPawn)
 	EnsureThirdPersonCamera(InPawn);
 	SpawnDemoPickupIfNeeded(InPawn);
 	ConfigureCrouchCapsule(InPawn);
+	EnsureFootprints(InPawn);
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Possessed %s"), *GetNameSafe(InPawn));
 }
 
@@ -154,10 +156,25 @@ void ADemoPlayerController::ConfigureCrouchCapsule(APawn* InPawn)
 		: 0.0f;
 	UE_LOG(LogTemp, Display,
 		TEXT("[VERB_BEND] Crouch enabled on %s: standing=%.1f crouched=%.1f can_crouch=%d"),
-		*GetNameSafe(Char), StandingHalfHeight, Move->CrouchedHalfHeight,
+		*GetNameSafe(Char), StandingHalfHeight, Move->GetCrouchedHalfHeight(),
 		(int32)Move->GetNavAgentPropertiesRef().bCanCrouch);
 	}
 
+
+void ADemoPlayerController::EnsureFootprints(APawn* InPawn)
+{
+	if (!InPawn || InPawn->FindComponentByClass<UFootprintComponent>())
+	{
+		return;
+	}
+
+	UFootprintComponent* Footprints = NewObject<UFootprintComponent>(InPawn, TEXT("FootprintComponent"));
+	if (Footprints)
+	{
+		Footprints->RegisterComponent();
+		UE_LOG(LogTemp, Display, TEXT("[GROUND_FOOTPRINTS] FootprintComponent attached to %s"), *GetNameSafe(InPawn));
+	}
+}
 
 void ADemoPlayerController::EnsureThirdPersonCamera(APawn* InPawn)
 {
