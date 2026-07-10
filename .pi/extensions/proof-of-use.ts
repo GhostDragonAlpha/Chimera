@@ -185,17 +185,27 @@ function gateOperable(): boolean {
 	return haveRipgrep() && ENGINE_ROOTS.length > 0;
 }
 
-/** True if `sym` is declared anywhere in the engine source we care about. */
-function isEngineSymbol(sym: string): boolean {
-	if (sym in symCache) return symCache[sym];
+/**
+ * True if `sym` is declared in THIS PROJECT's own source.
+ *
+ * The gate's question is not "does this symbol exist in the engine" — asking
+ * that exempts hallucinated API calls, since an invented name is never found and
+ * so was never checked. (Measured: `SetCapsuleHalfHeightXYZ` passed clean.)
+ *
+ * The question is "is this call ours". Anything that isn't ours is a foreign API
+ * and needs a citation. A symbol that exists nowhere therefore has no citation
+ * available, and can never pass — which is the correct outcome.
+ */
+function isProjectSymbol(sym: string): boolean {
+	const key = `proj:${sym}`;
+	if (key in symCache) return symCache[key];
 	let found = false;
-	if (gateOperable()) {
+	const src = path.join(PROJECT_ROOT, "Source");
+	if (haveRipgrep() && fs.existsSync(src)) {
 		try {
-			// -w whole word, -l list files, -m1 stop at first hit per file.
-			// rg exits 1 on no-match (a real answer) and 2 on error (not an answer).
 			const out = execFileSync(
 				"rg",
-				["-l", "-w", "-m", "1", "--no-messages", "-g", "*.h", sym, ...ENGINE_ROOTS],
+				["-l", "-m", "1", "--no-messages", "-g", "*.h", "-g", "*.cpp", `\\b${sym}\\s*\\(`, src],
 				{ encoding: "utf8", timeout: 20_000, stdio: ["ignore", "pipe", "ignore"] },
 			);
 			found = out.trim().length > 0;
@@ -204,9 +214,24 @@ function isEngineSymbol(sym: string): boolean {
 			found = false;
 		}
 	}
-	symCache[sym] = found;
+	symCache[key] = found;
 	symCacheDirty = true;
 	return found;
+}
+
+/** Classes and methods DEFINED by the incoming text itself. Never foreign. */
+function locallyDefined(src: string): Set<string> {
+	const code = stripNonCode(src);
+	const out = new Set<string>();
+	for (const m of code.matchAll(/\b(?:class|struct)\s+(?:\w+_API\s+)?([A-Za-z_]\w*)/g)) out.add(m[1]);
+	for (const m of code.matchAll(DEF_RE)) {
+		const q = m[0].match(/\b([A-Za-z_]\w*)::([A-Za-z_]\w*)/);
+		if (q) {
+			out.add(q[1]); // the class being defined
+			out.add(q[2]); // the method being defined
+		}
+	}
+	return out;
 }
 
 function flushSymCache() {
@@ -237,32 +262,60 @@ function stripNonCode(src: string): string {
 }
 
 /**
- * Engine API surface *used* by this code: methods invoked on an object, and
- * Unreal-conventioned type names.
+ * Engine API surface *used* by this code: methods invoked on an object or
+ * through a scope qualifier, plus Unreal-conventioned type names.
  *
  * MEASURED: a naive "any identifier that appears in an engine header" rule
  * classifies `Configure` and `Move` as engine symbols. Requiring citations for
  * ordinary local names would make the gate intolerable, and an intolerable gate
  * gets disabled — which is how safety theatre happens.
  *
- * Known gap: `::` calls (e.g. `Super::BeginPlay()`) are NOT captured, because a
- * definition `void AFoo::Configure()` is syntactically identical to a call. This
- * under-blocks rather than over-blocks. Stated openly rather than hidden.
+ * `::` is handled by first locating DEFINITIONS — `Ret AFoo::Configure(...) {` —
+ * and excluding those exact spans. What remains (`Super::BeginPlay()`,
+ * `UGameplayStatics::GetPlayerPawn()`) is a call, and calls need evidence.
  */
-function apiSymbols(src: string): Set<string> {
+const DEF_RE = /\b[A-Za-z_]\w*::[A-Za-z_]\w*\s*\([^;{)]*\)\s*(?:const\s*)?(?:override\s*)?\{/g;
+const SCOPE_CALL_RE = /\b([A-Za-z_]\w*)::([A-Za-z_]\w*)\s*\(/g;
+
+/**
+ * A used symbol has a DISPLAY name (what the code wrote) and a SEARCH TERM
+ * (what to grep for). They differ for scope calls.
+ *
+ * The qualifier must be part of the identity. `void AFoo::BeginPlay() { Super::BeginPlay(); }`
+ * both defines a method named BeginPlay and calls a foreign one spelled the same.
+ * Keyed on the bare name, the definition exempts the call. Keyed on `Super::BeginPlay`,
+ * it does not.
+ */
+interface Used {
+	display: string; // "Super::BeginPlay" | "SetCapsuleSize" | "UCapsuleComponent"
+	term: string; // "BeginPlay"         | "SetCapsuleSize" | "UCapsuleComponent"
+	qualifier?: string; // "Super"
+}
+
+function apiSymbols(src: string): Map<string, Used> {
 	const code = stripNonCode(src);
-	const out = new Set<string>();
-	for (const m of code.matchAll(/(?:->|\.)\s*([A-Za-z_][A-Za-z0-9_]{2,})\s*\(/g)) out.add(m[1]);
-	for (const m of code.matchAll(/\b([UAFE][A-Z][A-Za-z0-9_]{2,})\b/g)) out.add(m[1]);
+	const out = new Map<string, Used>();
+	const put = (u: Used) => out.set(u.display, u);
+
+	for (const m of code.matchAll(/(?:->|\.)\s*([A-Za-z_][A-Za-z0-9_]{2,})\s*\(/g)) put({ display: m[1], term: m[1] });
+	for (const m of code.matchAll(/\b([UAFE][A-Z][A-Za-z0-9_]{2,})\b/g)) put({ display: m[1], term: m[1] });
+
+	// Spans occupied by out-of-line definitions; a call cannot start inside one.
+	const defSpans: [number, number][] = [];
+	for (const m of code.matchAll(DEF_RE)) defSpans.push([m.index!, m.index! + m[0].length]);
+	const insideDef = (i: number) => defSpans.some(([s, e]) => i >= s && i < e);
+
+	for (const m of code.matchAll(SCOPE_CALL_RE)) {
+		if (insideDef(m.index!)) continue; // `void AFoo::Configure(` — a definition, not a use
+		put({ display: `${m[1]}::${m[2]}`, term: m[2], qualifier: m[1] });
+	}
 	return out;
 }
 
 /** API symbols present in `after` but not in `before`. */
-function introduced(before: string, after: string): Set<string> {
+function introduced(before: string, after: string): Used[] {
 	const b = apiSymbols(before);
-	const out = new Set<string>();
-	for (const id of apiSymbols(after)) if (!b.has(id)) out.add(id);
-	return out;
+	return [...apiSymbols(after).values()].filter((u) => !b.has(u.display));
 }
 
 function isGuarded(p: string): boolean {
@@ -274,10 +327,43 @@ function isGuarded(p: string): boolean {
 	return guardedTree && guardedFile;
 }
 
+/** Raw ripgrep over the engine roots. Returns [] on no-match, throws on error. */
+function engineGrep(pattern: string, maxHits: number): Citation[] {
+	const stdout = (() => {
+		try {
+			return execFileSync(
+				"rg",
+				["--no-heading", "--line-number", "--color", "never", "--no-messages",
+				 "-m", String(maxHits), "-g", "*.h", "-g", "*.cpp", pattern, ...ENGINE_ROOTS],
+				{ encoding: "utf8", timeout: 60_000, stdio: ["ignore", "pipe", "ignore"] },
+			);
+		} catch (e: any) {
+			if (e?.status === 1) return ""; // no match: a real answer
+			throw e; // exit 2: the search did not run
+		}
+	})();
+
+	const hits: Citation[] = [];
+	for (const raw of stdout.split(/\r?\n/)) {
+		const m = raw.match(/^(.*?):(\d+):(.*)$/);
+		if (!m) continue;
+		hits.push({ kind: "engine", locator: m[1], line: Number(m[2]), quote: m[3].trim(), at: new Date().toISOString() });
+		if (hits.length >= maxHits) break;
+	}
+	return hits;
+}
+
 // ── the extension ───────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
 	const ledger = loadLedger();
+
+	/**
+	 * A block that offers no way through is a hang, not a gate.
+	 * Counts identical refusals so we can escalate instead of spinning forever.
+	 */
+	const strikes = new Map<string, number>();
+	const MAX_STRIKES = 3;
 
 	const record = (c: Citation) => {
 		// Dedupe on (kind, locator, line, quote).
@@ -457,46 +543,117 @@ export default function (pi: ExtensionAPI) {
 			};
 		}
 
-		// What identifiers does this change INTRODUCE?
-		let newIds: Set<string>;
+		// What API symbols does this change INTRODUCE, and what does it define itself?
+		let newIds: Used[];
+		let afterText: string;
 		if (event.toolName === "write") {
 			const before = fs.existsSync(input.path) ? fs.readFileSync(input.path, "utf8") : "";
-			newIds = introduced(before, input.content ?? "");
+			afterText = input.content ?? "";
+			newIds = introduced(before, afterText);
 		} else {
-			newIds = new Set<string>();
-			for (const e of input.edits ?? []) {
-				for (const id of introduced(e.oldText, e.newText)) newIds.add(id);
-			}
+			afterText = (input.edits ?? []).map((e) => e.newText).join("\n");
+			const seen = new Map<string, Used>();
+			for (const e of input.edits ?? []) for (const u of introduced(e.oldText, e.newText)) seen.set(u.display, u);
+			newIds = [...seen.values()];
 		}
 
-		// Of those, which are Unreal API symbols? Those are the ones that need evidence.
-		const needEvidence = [...newIds].filter(isEngineSymbol);
+		// Foreign = not ours. Everything foreign needs evidence — including symbols
+		// that exist nowhere, which is how invented API calls get caught instead of
+		// exempted. A qualified call is ours only if we own the QUALIFIER: we may
+		// define `BeginPlay` and still be calling someone else's `Super::BeginPlay`.
+		const local = locallyDefined(afterText);
+		const ours = (u: Used) =>
+			u.qualifier
+				? local.has(u.qualifier) || isProjectSymbol(u.qualifier)
+				: local.has(u.display) || isProjectSymbol(u.display);
+
+		const needEvidence = newIds.filter((u) => !ours(u));
 		flushSymCache();
 		if (!needEvidence.length) return;
 
-		const unproven = needEvidence.filter((s) => provenBy(s) === null);
-		const proven = needEvidence.filter((s) => provenBy(s) !== null);
+		const unproven = needEvidence.filter((u) => provenBy(u.term) === null);
+		const proven = needEvidence.filter((u) => provenBy(u.term) !== null);
 
 		if (!unproven.length) {
-			ctx.ui?.setStatus?.(
-				"proof-of-use",
-				`✓ ${proven.length} engine symbol(s) backed by citation`,
-			);
+			ctx?.ui?.setStatus?.("proof-of-use", `✓ ${proven.length} foreign symbol(s) backed by citation`);
 			return;
 		}
 
-		const reason =
-			`PROOF-OF-USE: this ${event.toolName} introduces Unreal API symbols with no verified citation.\n\n` +
-			unproven.map((s) => `  UNPROVEN  ${s}`).join("\n") +
-			(proven.length ? `\n` + proven.map((s) => `  proven    ${s}`).join("\n") : "") +
-			`\n\nYou may not write an engine API call you have not read. Run:\n` +
-			unproven.slice(0, 4).map((s) => `  research_engine pattern="${s}"`).join("\n") +
-			`\n\nIf a symbol returns 0 hits it does not exist in UE 5.8 — do not write it.\n` +
-			`(Comments do not count as use; a comment claiming "verified" proves nothing.)`;
-
 		if (!ENFORCE) {
-			ctx.ui?.notify?.(`proof-of-use (advisory): ${unproven.length} unproven symbol(s)`, "warn");
+			ctx?.ui?.notify?.(`proof-of-use (advisory): ${unproven.length} unproven symbol(s)`, "warn");
 			return;
+		}
+
+		// ── Refuse, but hand over the evidence ───────────────────────────────
+		// The agent cannot comply with "go read the source" if refusing is all we
+		// do; it will reissue the same write forever. So we perform the read now,
+		// return the actual engine lines in the refusal, and record them. The
+		// retry is then genuinely informed by retrieved text — which is the point.
+		// Symbols with zero hits get no citation and stay blocked: they do not exist.
+		const found: string[] = [];
+		const absent: string[] = [];
+		const evidence: string[] = [];
+
+		for (const u of unproven) {
+			let hits: Citation[];
+			try {
+				hits = engineGrep(`\\b${u.term}\\b`, 4);
+			} catch {
+				return {
+					block: true,
+					reason: `PROOF-OF-USE: the engine search failed while checking "${u.display}". ` +
+						`The verifier is broken; it will not approve what it cannot check.`,
+				};
+			}
+			if (!hits.length) {
+				absent.push(u.display);
+				continue;
+			}
+			found.push(u.display);
+			for (const h of hits) record(h);
+			evidence.push(
+				`  ${u.display}\n` +
+					hits.map((h) => `    ${path.relative(ENGINE_SOURCE, h.locator)}:${h.line}\n      ${h.quote.slice(0, 140)}`).join("\n"),
+			);
+		}
+		flushSymCache();
+
+		const key = `${path.resolve(input.path)}|${unproven.map((u) => u.display).sort().join(",")}`;
+		const n = (strikes.get(key) ?? 0) + 1;
+		strikes.set(key, n);
+
+		if (n >= MAX_STRIKES) {
+			return {
+				block: true,
+				reason:
+					`PROOF-OF-USE: blocked ${n} times on the same symbols: ${unproven.map((u) => u.display).join(", ")}.\n` +
+					(absent.length
+						? `These do not exist in UE 5.8: ${absent.join(", ")}. No amount of retrying will create them.\n`
+						: "") +
+					`STOP retrying this write. Change the approach, or report that you are stuck and why.`,
+			};
+		}
+
+		const reason =
+			`PROOF-OF-USE: this ${event.toolName} introduces foreign API symbols you had not read.\n\n` +
+			unproven.map((u) => `  UNPROVEN  ${u.display}`).join("\n") +
+			(proven.length ? "\n" + proven.map((u) => `  proven    ${u.display}`).join("\n") : "") +
+			(absent.length
+				? `\n\nNOT FOUND IN UE 5.8 — these symbols do not exist. Do not write them:\n` +
+					absent.map((s) => `  ${s}`).join("\n")
+				: "") +
+			(evidence.length
+				? `\n\nI have now read the engine source for you. This is what it says:\n\n${evidence.join("\n\n")}\n\n` +
+					`These are recorded as citations. Reissue the write ONLY if the code above supports it — ` +
+					`if it contradicts what you were about to write, change the code, not the citation.`
+				: "") +
+			`\n\n(Comments do not count as use. A comment saying "verified" proves nothing.)` +
+			`\n(Attempt ${n}/${MAX_STRIKES} on these symbols.)`;
+
+		if (!process.stdout.isTTY) {
+			console.error(
+				`[proof-of-use] BLOCKED ${input.path}: unproven=${unproven.map((u) => u.display).join(",")} absent=${absent.join(",") || "-"}`,
+			);
 		}
 		return { block: true, reason };
 	});
@@ -523,20 +680,15 @@ export default function (pi: ExtensionAPI) {
 		},
 	});
 
+	// `--print` / RPC modes have no TUI. Every ui call is optional; a missing
+	// notifier must never take the gate down with it.
 	pi.on("session_start", async (_e, ctx) => {
 		const mode = ENFORCE ? "ENFORCING" : "advisory (CHIMERA_PROOF_OF_USE=0)";
-		if (!gateOperable()) {
-			const why = !haveRipgrep() ? "ripgrep not on PATH" : `no engine roots under ${ENGINE_SOURCE}`;
-			ctx.ui.notify(
-				`proof-of-use: CANNOT VERIFY (${why}). Guarded writes will be BLOCKED until fixed.`,
-				"error",
-			);
-			return;
-		}
-		ctx.ui.notify(
-			`proof-of-use: ${mode}; ${ledger.citations.length} citations; ${ENGINE_ROOTS.length} engine roots`,
-			"info",
-		);
+		const msg = !gateOperable()
+			? `proof-of-use: CANNOT VERIFY (${!haveRipgrep() ? "ripgrep not on PATH" : `no engine roots under ${ENGINE_SOURCE}`}). Guarded writes will be BLOCKED.`
+			: `proof-of-use: ${mode}; ${ledger.citations.length} citations; ${ENGINE_ROOTS.length} engine roots`;
+		ctx?.ui?.notify?.(msg, gateOperable() ? "info" : "error");
+		if (!process.stdout.isTTY) console.error(`[proof-of-use] ${msg}`);
 	});
 
 	pi.on("session_shutdown", async () => {
