@@ -168,16 +168,47 @@ try {
 }
 let symCacheDirty = false;
 
-let ripgrepAvailable: boolean | null = null;
-function haveRipgrep(): boolean {
-	if (ripgrepAvailable !== null) return ripgrepAvailable;
-	try {
-		execFileSync("rg", ["--version"], { stdio: "ignore" });
-		ripgrepAvailable = true;
-	} catch {
-		ripgrepAvailable = false;
+/**
+ * Resolve the ripgrep binary ONCE, by absolute path — do not trust the ambient
+ * PATH. Pi launched from a normal shell does not inherit every tool's directory,
+ * and a gate that disables itself because `rg` isn't on PATH fails closed and
+ * blocks every guarded write. (Reported in the field 2026-07-10.)
+ *
+ * Order: explicit override, then PATH, then known install locations including the
+ * Amp CLI's bundled copy and @vscode/ripgrep. Returns an absolute path or null.
+ */
+let rgResolved: string | null | undefined; // undefined = not yet resolved
+
+function ripgrepPath(): string | null {
+	if (rgResolved !== undefined) return rgResolved;
+
+	const home = process.env.USERPROFILE ?? process.env.HOME ?? "";
+	const local = process.env.LOCALAPPDATA ?? "";
+	const candidates = [
+		process.env.CHIMERA_RG, // explicit override wins
+		"rg", // PATH
+		path.join(home, ".amp", "bin", "rg.exe"),
+		path.join(local, "Programs", "Microsoft VS Code", "resources", "app", "node_modules.asar.unpacked", "@vscode", "ripgrep", "bin", "rg.exe"),
+		"C:\\Program Files\\Microsoft VS Code\\resources\\app\\node_modules.asar.unpacked\\@vscode\\ripgrep\\bin\\rg.exe",
+		path.join(home, "scoop", "shims", "rg.exe"),
+		"C:\\ProgramData\\chocolatey\\bin\\rg.exe",
+	].filter((c): c is string => !!c);
+
+	for (const cand of candidates) {
+		try {
+			execFileSync(cand, ["--version"], { stdio: "ignore", timeout: 10_000 });
+			rgResolved = cand;
+			return rgResolved;
+		} catch {
+			/* try next */
+		}
 	}
-	return ripgrepAvailable;
+	rgResolved = null;
+	return rgResolved;
+}
+
+function haveRipgrep(): boolean {
+	return ripgrepPath() !== null;
 }
 
 /** Can this gate verify anything at all? If not, it must refuse, not wave through. */
@@ -204,7 +235,7 @@ function isProjectSymbol(sym: string): boolean {
 	if (haveRipgrep() && fs.existsSync(src)) {
 		try {
 			const out = execFileSync(
-				"rg",
+				ripgrepPath()!,
 				["-l", "-m", "1", "--no-messages", "-g", "*.h", "-g", "*.cpp", `\\b${sym}\\s*\\(`, src],
 				{ encoding: "utf8", timeout: 20_000, stdio: ["ignore", "pipe", "ignore"] },
 			);
@@ -334,7 +365,7 @@ function engineGrep(pattern: string, maxHits: number): Citation[] {
 	const stdout = (() => {
 		try {
 			return execFileSync(
-				"rg",
+				ripgrepPath()!,
 				["--no-heading", "--line-number", "--color", "never", "--no-messages",
 				 "-m", String(maxHits), "-g", "*.h", "-g", "*.cpp", pattern, ...ENGINE_ROOTS],
 				{ encoding: "utf8", timeout: 60_000, stdio: ["ignore", "pipe", "ignore"] },
@@ -418,7 +449,7 @@ export default function (pi: ExtensionAPI) {
 			let stdout = "";
 			try {
 				stdout = execFileSync(
-					"rg",
+					ripgrepPath()!,
 					["--no-heading", "--line-number", "--color", "never", "--no-messages",
 					 "-m", String(params.maxHits), "-g", "*.h", "-g", "*.cpp",
 					 params.pattern, ...ENGINE_ROOTS],
@@ -538,7 +569,7 @@ export default function (pi: ExtensionAPI) {
 			// or bare ("Bend.h"). Match on the tail of the path.
 			try {
 				const out = execFileSync(
-					"rg",
+					ripgrepPath()!,
 					["--files", "--no-messages", "-g", `**/${inc.replace(/\\/g, "/")}`, root],
 					{ encoding: "utf8", timeout: 20_000, stdio: ["ignore", "pipe", "ignore"] },
 				);
@@ -628,7 +659,7 @@ export default function (pi: ExtensionAPI) {
 		// FAIL CLOSED. If the verifier cannot verify, it does not consent.
 		if (!gateOperable()) {
 			const why = !haveRipgrep()
-				? "ripgrep (rg) is not on PATH"
+				? "ripgrep (rg) could not be found (checked PATH, ~/.amp/bin, VS Code, scoop, choco; set CHIMERA_RG to its path)"
 				: `no engine source roots exist under ${ENGINE_SOURCE}`;
 			if (!ENFORCE) return;
 			return {
@@ -782,7 +813,7 @@ export default function (pi: ExtensionAPI) {
 	pi.on("session_start", async (_e, ctx) => {
 		const mode = ENFORCE ? "ENFORCING" : "advisory (CHIMERA_PROOF_OF_USE=0)";
 		const msg = !gateOperable()
-			? `proof-of-use: CANNOT VERIFY (${!haveRipgrep() ? "ripgrep not on PATH" : `no engine roots under ${ENGINE_SOURCE}`}). Guarded writes will be BLOCKED.`
+			? `proof-of-use: CANNOT VERIFY (${!haveRipgrep() ? "ripgrep not found — set CHIMERA_RG" : `no engine roots under ${ENGINE_SOURCE}`}). Guarded writes will be BLOCKED.`
 			: `proof-of-use: ${mode}; ${ledger.citations.length} citations; ${ENGINE_ROOTS.length} engine roots`;
 		ctx?.ui?.notify?.(msg, gateOperable() ? "info" : "error");
 		if (!process.stdout.isTTY) console.error(`[proof-of-use] ${msg}`);
