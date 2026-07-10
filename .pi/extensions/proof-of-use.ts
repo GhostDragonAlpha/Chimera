@@ -254,11 +254,13 @@ function flushSymCache() {
  * failure this gate exists to catch was a comment reading "verified crouch
  * mechanics" above a line that measured the wrong axis. Prose proves nothing.
  */
+function stripComments(src: string): string {
+	return src.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/\/\/[^\n]*/g, " ");
+}
+
+/** Comments AND string literals gone. Wrong for `#include "x.h"` — use stripComments there. */
 function stripNonCode(src: string): string {
-	return src
-		.replace(/\/\*[\s\S]*?\*\//g, " ")
-		.replace(/\/\/[^\n]*/g, " ")
-		.replace(/"(?:[^"\\]|\\.)*"/g, '""');
+	return stripComments(src).replace(/"(?:[^"\\]|\\.)*"/g, '""');
 }
 
 /**
@@ -503,6 +505,97 @@ export default function (pi: ExtensionAPI) {
 		},
 	});
 
+	// ─── post-write: the preprocessor's verdict, not the agent's ─────────────
+	//
+	// Proof-of-use guarantees the agent READ the symbol. It cannot guarantee the
+	// agent understood it. Measured live: the model read `SetCrouchedHalfHeight(40.0f)`
+	// out of CharacterMovementComponent.cpp:751, took the 40.0f, ignored the method,
+	// hand-resized the capsule instead, and wrote `#include "Bend.h"` for a header
+	// that does not exist. Every citation verified. The file would not compile.
+	//
+	// Nothing that reads the diff catches that, because the diff looks reasonable.
+	// So let an external, non-negotiable oracle speak: does the include resolve?
+	// The header exists on disk or it does not. No judgment involved.
+
+	const includeCache: Record<string, boolean> = {};
+
+	/**
+	 * Bytes on disk immediately before a guarded write, so a write that turns out
+	 * not to compile can be undone. `null` means the file did not exist.
+	 *
+	 * Without this, `tool_result` only *reports* the bad file — it stays on disk.
+	 * A gate that leaves the artifact it rejected is a smoke alarm, not a gate.
+	 */
+	const priorContent = new Map<string, string | null>();
+
+	const resolveInclude = (inc: string): boolean => {
+		if (inc in includeCache) return includeCache[inc];
+		let ok = false;
+		const projSrc = path.join(PROJECT_ROOT, "Source");
+		const roots = [projSrc, ...ENGINE_ROOTS].filter((r) => fs.existsSync(r));
+		for (const root of roots) {
+			// Includes are written engine-relative ("Components/CapsuleComponent.h")
+			// or bare ("Bend.h"). Match on the tail of the path.
+			try {
+				const out = execFileSync(
+					"rg",
+					["--files", "--no-messages", "-g", `**/${inc.replace(/\\/g, "/")}`, root],
+					{ encoding: "utf8", timeout: 20_000, stdio: ["ignore", "pipe", "ignore"] },
+				);
+				if (out.trim()) { ok = true; break; }
+			} catch (e: any) {
+				if (e?.status !== 1) { ok = true; break; } // search broke: do not accuse
+			}
+		}
+		includeCache[inc] = ok;
+		return ok;
+	};
+
+	pi.on("tool_result", async (event) => {
+		if (event.isError) return;
+		if (event.toolName !== "write" && event.toolName !== "edit") return;
+		const p = (event.input as { path?: string }).path;
+		if (!p || !isGuarded(p) || !gateOperable() || !fs.existsSync(p)) return;
+
+		const text = fs.readFileSync(p, "utf8");
+		const missing: string[] = [];
+		for (const m of stripComments(text).matchAll(/^\s*#\s*include\s*"([^"]+)"/gm)) {
+			const inc = m[1];
+			if (path.basename(inc).toLowerCase() === path.basename(p, path.extname(p)).toLowerCase() + ".h") {
+				// A .cpp including its own not-yet-written header is a normal ordering.
+				if (!fs.existsSync(path.join(path.dirname(p), path.basename(inc)))) missing.push(`${inc}  (its own header — write it)`);
+				continue;
+			}
+			if (inc.endsWith(".generated.h")) continue; // emitted by UHT at build time
+			if (!resolveInclude(inc)) missing.push(inc);
+		}
+		if (!missing.length) {
+			priorContent.delete(path.resolve(p));
+			return;
+		}
+
+		// Undo it. A rejected artifact does not get to stay on disk.
+		const abs = path.resolve(p);
+		const prior = priorContent.get(abs);
+		let undo = "no prior state recorded; file left as written";
+		if (prior === null) {
+			fs.rmSync(abs, { force: true });
+			undo = "the file has been DELETED (it did not exist before this write)";
+		} else if (typeof prior === "string") {
+			fs.writeFileSync(abs, prior, "utf8");
+			undo = "the file has been REVERTED to its previous contents";
+		}
+		priorContent.delete(abs);
+
+		const msg =
+			`WRITE REJECTED — unresolvable includes in ${path.basename(p)}:\n` +
+			missing.map((m) => `  #include "${m}"`).join("\n") +
+			`\n\nThis is the preprocessor, not an opinion: ${undo}.\n` +
+			`Create the header first, then write the source that includes it.`;
+		if (!process.stdout.isTTY) console.error(`[proof-of-use] INCLUDE-FAIL ${p}: ${missing.join(", ")} — reverted`);
+		return { isError: true, content: [{ type: "text" as const, text: msg }] };
+	});
+
 	// ─── harvest citations from builtin grep over the engine tree ────────────
 
 	pi.on("tool_result", async (event) => {
@@ -527,6 +620,10 @@ export default function (pi: ExtensionAPI) {
 
 		const input = event.input as { path?: string; content?: string; edits?: { oldText: string; newText: string }[] };
 		if (!input.path || !isGuarded(input.path)) return;
+
+		// Remember the bytes we may have to put back.
+		const abs = path.resolve(input.path);
+		priorContent.set(abs, fs.existsSync(abs) ? fs.readFileSync(abs, "utf8") : null);
 
 		// FAIL CLOSED. If the verifier cannot verify, it does not consent.
 		if (!gateOperable()) {
