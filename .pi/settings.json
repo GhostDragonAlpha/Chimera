@@ -3,7 +3,11 @@
   "gitPath": "C:/Users/allen/AppData/Local/Programs/PortableGit/cmd/git.exe",
   "extensions": [
     ".pi/extensions/chimera-tools.ts",
-    ".pi/extensions/compaction-recovery.ts"
+    ".pi/extensions/compaction-recovery.ts",
+    ".pi/extensions/mcp-bridge.ts",
+    ".pi/extensions/mcp-pathways-index.ts",
+    ".pi/extensions/web-browsing.ts",
+    ".pi/extensions/visual-dev.ts"
   ],
   "packages": [
     "npm:@tintinweb/pi-subagents@^0.13.0",
@@ -11,6 +15,74 @@
     "npm:pi-hermes-memory@^0.7.23"
   ],
   "_removed_pi-shazam": "Removed 2026-07-09: its synchronous before_agent_start scanProject() hangs 75s+ on this project (999 source files -> pathological parse/edge/PageRank build), freezing Pi at startup. Confirmed in isolation via scan-probe. It also bundles no C++ grammar, so it never indexed the main UE codebase anyway. pi-readseek covers code navigation. Re-add 'npm:pi-shazam' only if upstream fixes the large-project scan.",
+  "mcp": {
+    "enabled": true,
+    "servers": {
+      "unreal-engine": {
+        "url": "http://localhost:3000/mcp",
+        "tools": [
+          "control_editor",
+          "control_actor",
+          "manage_asset",
+          "manage_level"
+        ]
+      },
+      "graphify": {
+        "type": "stdio",
+        "command": "C:\\Users\\allen\\.local\\bin\\graphify-mcp.exe",
+        "args": ["E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json"]
+      },
+      "chiR24-unreal-mcp": {
+        "type": "stdio",
+        "command": "node",
+        "args": ["E:/ChiR24-Unreal_mcp-test/dist/cli.js"]
+      },
+      "playwright": {
+        "url": "http://localhost:8342/sse",
+        "tools": [
+          "browser_navigate",
+          "browser_snapshot",
+          "browser_screenshot",
+          "browser_click"
+        ]
+      }
+    },
+    "fallbackToDirect": false,
+    "alwaysUseMcpForDevelopment": true
+  },
+  "visual_dev": {
+    "enabled": true,
+    "mcp_server": "http://localhost:3000/mcp",
+    "images_dir": "E:/PythonChimera/Chimera/Saved/Images",
+    "tools": [
+      "write_solid_color_image",
+      "write_gradient_image",
+      "write_noise_texture",
+      "write_procedural_art",
+      "mcp_capture_viewport",
+      "mcp_create_material",
+      "mcp_create_geometry",
+      "mcp_setup_lighting",
+      "mcp_set_camera",
+      "mcp_spawn_actor",
+      "visual_dev_workflow_capture_and_analyze",
+      "visual_dev_material_preview"
+    ]
+  },
+  "research": {
+    "playwright": {
+      "enabled": true,
+      "browser": "chromium",
+      "headless": true,
+      "timeoutMs": 30000,
+      "tools": [
+        "web_browse",
+        "web_search_real",
+        "web_extract",
+        "web_screenshot"
+      ]
+    }
+  },
   "environment": {
     "nodePath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64",
     "npmPath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64/npm.cmd",
