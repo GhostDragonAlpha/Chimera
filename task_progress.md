@@ -1,3 +1,14 @@
+# Session 2026-07-10 (hardening) — Crouch verification: reversible hard-fact expect (chip task_085f9c2f resolved)
+
+Replaced the false-positive-prone `verb_bend_location` proxy `{pawn_z_below:90}` (it passed even when crouch was fully broken — the permanent-shrink bug sat the pawn low, and gravity after `reset_position z=130` also satisfies z<90).
+
+- New **`pawn_property_toggles`** expect in `core/sleepwalker.py`: reads a component property (standing) → key_down → read (active) → key_up → read (released); requires a DROP that RESTORES. Reading `CollisionCylinder/CapsuleHalfHeight` makes it immune to gravity; the reversibility requirement kills the no-op AND permanent-shrink false positives.
+- `verb_bend_location` rewritten to `{pawn_property_toggles: key C, CollisionCylinder/CapsuleHalfHeight, min_drop 20}` (90→40→90).
+- **Proven both directions** (sleepwalker, throwaway beats): key C (real crouch) → beat REACHED; key K (unbound, a no-op stand-in) → beat FAILED. The old proxy could not tell them apart.
+- Commit also captures the prior-session `reset_position` action handler (this beat depends on it) — it was uncommitted.
+
+---
+
 # Session 2026-07-10 (game dev cont.) — Ground_Sand_Footprints: movement-driven footprint system, mechanic hard-fact verified
 
 **Scope: game development** ("make the game"; rehearsal-chosen move below). Additive, non-invasive.

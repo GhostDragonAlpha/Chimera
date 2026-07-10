@@ -2,7 +2,7 @@
   "demo": "verb_interactions",
   "loop": 2,
   "settle_s": 6,
-  "_provenance": "Interaction beats for six verbs + visor + weapon inspection (weak-session executable). Proven pathways: key movement actions, interact/drop key presses, screenshot editor_viewport, runtime_report pawn position/class/actor existence. world_is assertion added (task_9c0d4fd9) for parity with regolith_yard/audio_visual_sync beat files -- the 3 historical failures (simtest_0bb93cab8b7d662a/591e6833d4c01704/fbd1071132dfb65a, all pawn_class=DefaultPawn) had no world-mismatch diagnostic, so a stale/wrong level load could not be distinguished from a genuine pawn-possession bug; this assertion closes that gap going forward. KNOWN LIVE GAP (post task_c11196d2 input-fix reverify, simtest_fadc939050ee23a7): now that real movement works, the 5 pawn_within-checking beats (shovel x3, visor, weapon) fail on real accumulated forward drift (x: 9727->19929uu across the beats while y stays pinned at spawn's 400 -- confirmed genuine W-movement, not a verb defect) because the beats run sequentially in one PIE session with no position reset, and the level's actual spawn (3200,400,130, left there by an unrelated prior session's sand-footstep testing, never restored) was never near Pad_Metal(0,0) as the original walk-forward-through-pads choreography assumed. A move_to-based reset (teleport to each beat's own pawn_within target before its hold, using live-confirmed coords Pad_Metal(0,0,10)/Pad_Rock(2000,0,10)/Pad_Sand(4000,0,10)/Display_Suit(600,600,160)/Prop_Weapon(400,-400,140)) was tried and REVERTED: BugItGo (the only registered teleport action, via console_command) works in editor mode (confirmed success:true) but is hard-rejected once PIE is active ('Command not executed: BugItGo ...') -- a harder, now-doubly-confirmed form of MCP_PATHWAYS.md's existing BugItGo-during-PIE trap (previously only silent no-op). Needs either cheats-enabled on ADemoPlayerController's CheatManager or a different reset mechanism before position-based beats can be made order-independent; until then, only run this file's shovel/visor/weapon beats expecting position-based failures unrelated to verb-logic health.",
+  "_provenance": "Interaction beats for six verbs + visor + weapon inspection. Position-based beats now use reset_position (control_actor set_transform on pawn) between each beat to prevent accumulated drift from W-key movement. BugItGo move_to is editor-only and fails during PIE.",
   "beats": [
     {
       "name": "verb_look_location",
@@ -23,21 +23,22 @@
     {
       "name": "verb_bend_location",
       "features": ["Verb_Bend"],
+      "_note": "Crouch is verified as a REVERSIBLE hard fact: pawn_property_toggles presses C, reads CapsuleHalfHeight off CollisionCylinder (90->40), releases C (->90), and requires a drop that restores. This FAILS if crouch is a no-op / permanent shrink / gravity fall — unlike the old pawn_z_below:90 proxy, which passed even when crouch was broken.",
       "actions": [
-        {"wait": 0.5},
-        {"key_down": "C"},
-        {"wait": 0.5}
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 1.5}
       ],
       "expects": [
         {"is_pie": true},
         {"pawn_class": "BP_Astronaut_Character_C"},
-        {"pawn_z_below": 90}
+        {"pawn_property_toggles": {"key": "C", "component": "CollisionCylinder", "property": "CapsuleHalfHeight", "min_drop": 20, "settle_s": 1.2}}
       ]
     },
     {
       "name": "verb_pickup_weapon_tool_location",
       "features": ["Verb_PickUp", "Tool_Weapon_Model"],
       "actions": [
+        {"reset_position": {"x": 400, "y": -400, "z": 130}},
         {"key_up": "C"},
         {"key": "W", "hold_s": 2.0},
         {"wait": 0.5},
@@ -54,6 +55,7 @@
       "name": "verb_drop_location",
       "features": ["Verb_Drop"],
       "actions": [
+        {"reset_position": {"x": 400, "y": -400, "z": 130}},
         {"wait": 1.0},
         {"drop": true, "hold_s": 1.0},
         {"wait": 0.5},
@@ -68,6 +70,7 @@
       "name": "verb_shovel_metal_surface_location",
       "features": ["Verb_Shovel", "Ground_Metal_Surface"],
       "actions": [
+        {"reset_position": {"x": 0, "y": 0, "z": 130}},
         {"key": "W", "hold_s": 0.5},
         {"wait": 0.3},
         {"screenshot": "verb_shovel_metal_view"}
@@ -81,6 +84,7 @@
       "name": "verb_shovel_rock_surface_location",
       "features": ["Verb_Shovel", "Ground_Rock_Surface"],
       "actions": [
+        {"reset_position": {"x": 2000, "y": 0, "z": 130}},
         {"key": "W", "hold_s": 3.2},
         {"wait": 0.5},
         {"screenshot": "verb_shovel_rock_view"}
@@ -94,6 +98,7 @@
       "name": "verb_shovel_sand_surface_location",
       "features": ["Verb_Shovel", "Ground_Sand_Surface"],
       "actions": [
+        {"reset_position": {"x": 4000, "y": 0, "z": 130}},
         {"key": "W", "hold_s": 3.0},
         {"wait": 0.5},
         {"screenshot": "verb_shovel_sand_view"}
@@ -108,6 +113,7 @@
       "name": "visor_inspection_pedestal",
       "features": ["Player_Character_Model_Visor_Apply", "Player_Character_Suit"],
       "actions": [
+        {"reset_position": {"x": 600, "y": 600, "z": 130}},
         {"key": "W", "hold_s": 2.5},
         {"wait": 0.5},
         {"screenshot": "visor_inspection_pedestal"}
@@ -122,6 +128,7 @@
       "name": "weapon_tool_examine",
       "features": ["Tool_Weapon_Model"],
       "actions": [
+        {"reset_position": {"x": 400, "y": -400, "z": 130}},
         {"key": "W", "hold_s": 2.0},
         {"wait": 0.5},
         {"screenshot": "weapon_tool_examine"}

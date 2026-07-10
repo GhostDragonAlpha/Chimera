@@ -74,6 +74,34 @@ class Sleepwalker:
     def _runtime(self) -> dict:
         return self._call("inspect", {"action": "runtime_report"})
 
+    def _read_component_float(self, actor: str, component: str, prop: str):
+        """Read a numeric component property as a hard fact. Returns float or
+        None (graceful — never raises) so an expect can distinguish an
+        unreadable property from a failed transition."""
+        try:
+            r = self.c.call(
+                "control_actor",
+                {
+                    "action": "get_component_property",
+                    "actorName": actor,
+                    "componentName": component,
+                    "propertyName": prop,
+                },
+            ) or {}
+        except Exception:
+            return None
+        sc = (r.get("result") or {}).get("structuredContent") or {}
+        if not sc.get("success"):
+            return None
+        res = sc.get("result") or {}
+        val = (res.get("data") or {}).get("value")
+        if val is None:
+            val = res.get("value")
+        try:
+            return float(val)
+        except (TypeError, ValueError):
+            return None
+
     def _key(self, key: str, hold_s: float):
         self._call(
             "control_editor",
@@ -130,7 +158,7 @@ class Sleepwalker:
             self.w.mark("action", {"call": a["call"].get("tool")})
             self._call(a["call"]["tool"], a["call"]["args"])
         elif "move_to" in a:
-            # BugItGo console command for movement/camera move
+            # BugItGo console command for movement/camera move (editor mode only)
             loc = a["move_to"]
             x = float(loc.get("x", 0))
             y = float(loc.get("y", 0))
@@ -156,6 +184,33 @@ class Sleepwalker:
                 {
                     "action": "console_command",
                     "command": f"BugItGo {x} {y} {z} {pitch} {yaw} {roll}",
+                },
+            )
+
+        elif "reset_position" in a:
+            # Position reset for pawn during PIE (BugItGo doesn't work in PIE).
+            # Uses control_actor set_transform on the possessed pawn directly.
+            loc = a["reset_position"]
+            x = float(loc.get("x", 0))
+            y = float(loc.get("y", 0))
+            z = float(loc.get("z", 0))
+            self.w.mark(
+                "action",
+                {"reset_position": {"x": x, "y": y, "z": z}},
+            )
+            # Find the possessed pawn name from runtime_report first
+            rt = self._runtime()
+            pawn_name = (rt.get("pawn") or {}).get("name", "")
+            if not pawn_name:
+                raise RuntimeError(
+                    f"reset_position failed: no possessed pawn found in runtime_report"
+                )
+            self._call(
+                "control_actor",
+                {
+                    "actorName": pawn_name,
+                    "action": "set_transform",
+                    "location": {"x": x, "y": y, "z": z},
                 },
             )
         else:
@@ -203,6 +258,47 @@ class Sleepwalker:
                 ).get("z", 1e9)
             )
             return z < float(e["pawn_z_below"]), f"z={z:.0f}"
+        if "pawn_property_toggles" in e:
+            # Active, reversible HARD-FACT check for a state TOGGLE (e.g. crouch):
+            # read a component property (standing) -> press key -> read (active) ->
+            # release key -> read (released); require a DROP that then RESTORES.
+            # Fails on a no-op toggle, a permanently-changed value, AND a gravity
+            # fall (none produce a reversible drop). Replaces the pawn_z_below
+            # proxy that passed even when Verb_Bend crouch was completely broken.
+            spec = e["pawn_property_toggles"]
+            key = str(spec.get("key", "C"))
+            comp = str(spec.get("component", "CollisionCylinder"))
+            prop = str(spec.get("property", "CapsuleHalfHeight"))
+            min_drop = float(spec.get("min_drop", 20.0))
+            settle = float(spec.get("settle_s", 1.2))
+            pawn = (rt.get("pawn") or {}).get("name", "")
+            if not pawn:
+                return False, "pawn_property_toggles: no possessed pawn"
+            standing = self._read_component_float(pawn, comp, prop)
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_down", "key": key},
+            )
+            time.sleep(settle)
+            active = self._read_component_float(pawn, comp, prop)
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_up", "key": key},
+            )
+            time.sleep(settle)
+            released = self._read_component_float(pawn, comp, prop)
+            if standing is None or active is None or released is None:
+                return False, (
+                    f"pawn_property_toggles: {comp}.{prop} unreadable "
+                    f"(standing={standing} active={active} released={released})"
+                )
+            drop = standing - active
+            restore = released - active
+            ok = bool(drop >= min_drop and restore >= 0.5 * drop)
+            return ok, (
+                f"{prop} {standing:.0f}->{active:.0f}->{released:.0f} "
+                f"drop={drop:.0f} restore={restore:.0f} min_drop={min_drop:.0f}"
+            )
         # NOTE: control_rotation_yaw_delta removed 2026-07-09 — requires MCP bridge
         # to read ControlRotation from controller (ChiR24-Unreal_mcp-test not installed).
         # Mouse look is correctly implemented in ADemoPlayerController::Turn/LookUp
