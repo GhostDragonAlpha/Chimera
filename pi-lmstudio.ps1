@@ -18,13 +18,26 @@ $ErrorActionPreference = 'Stop'
 
 $LmsUrl = if ($env:LMS_URL) { $env:LMS_URL } else { "http://192.168.3.169:1234" }
 
-# Models that are not chat endpoints, regardless of how LM Studio types them. LM Studio
-# reports TTS and image-edit models as "llm", so type alone is not a sufficient filter.
-$NotChatPattern = '(?i)(embed|-tts-|image-edit|reranker|whisper|voicedesign)'
+# Models that are not chat endpoints, regardless of how LM Studio types them: it reports
+# TTS and image-edit models as "llm", so `type` alone is not a sufficient filter. Match on
+# `arch` (the model architecture) rather than the id -- ids are branding, arch is structural.
+$NotChatArch = '(?i)(bert|tts|image|whisper|clip|rerank)'
 
-# Families that emit <think> blocks; Pi needs `reasoning: true` to fold them out of the
-# visible transcript. Override with:  $env:PI_LMS_REASONING = "0"  (force all off)
-$ReasoningPattern = '(?i)(qwen3|qwq|deepseek-r1|nemotron|magistral|gpt-oss|reasoning|thinking)'
+# Whether Pi may send `reasoning_effort`. Set `reasoning: true` and LM Studio honours it:
+# "none" disables thinking, any other value enables it (measured, see PI_LAUNCHER_README).
+# This is deliberately NOT inferred from the model id. Thinking is a per-request server-side
+# setting, not a property of the weights -- the same model answers with or without a
+# reasoning_content block depending on what the request asks for. Marking every chat model
+# `reasoning: true` hands the switch to Pi's own /thinking control, which is where you want
+# it. Escape hatch:  $env:PI_LMS_REASONING = "0"  (never send reasoning_effort)
+$ThinkingLevelMap = [ordered]@{
+    off     = 'none'
+    minimal = 'low'
+    low     = 'low'
+    medium  = 'medium'
+    high    = 'high'
+    xhigh   = 'high'
+}
 
 # ─── Parse args: consume ours, forward the rest to pi ───────────────────────────────────
 $ForceModel = ""
@@ -80,7 +93,7 @@ try {
 }
 
 $chat = @($all | Where-Object {
-    ($_.type -eq 'llm' -or $_.type -eq 'vlm') -and ($_.id -notmatch $NotChatPattern)
+    ($_.type -eq 'llm' -or $_.type -eq 'vlm') -and ($_.arch -notmatch $NotChatArch)
 })
 
 if ($chat.Count -eq 0) {
@@ -119,19 +132,24 @@ function New-ModelEntry($m, [bool]$IsActive) {
            elseif ($m.max_context_length) { $m.max_context_length }
            else { 8192 }
 
-    $inputTypes = if ($m.type -eq 'vlm') { @('text', 'image') } else { @('text') }
-    $reasoning = (-not $reasoningOff) -and ($m.id -match $ReasoningPattern)
+    # Assign, don't return-from-if: PowerShell unrolls a single-element array coming out of
+    # an if-statement into a bare scalar, so `@('text')` would serialize as "text" and Pi's
+    # schema check rejects it with `input: must be array`.
+    $inputTypes = @('text')
+    if ($m.type -eq 'vlm') { $inputTypes = @('text', 'image') }
 
     $tag = if ($IsActive) { 'loaded' } else { $m.state }
 
-    return [ordered]@{
+    $entry = [ordered]@{
         id            = $m.id
         name          = "$($m.id) [$tag]"
-        reasoning     = [bool]$reasoning
-        input         = $inputTypes
+        reasoning     = (-not $reasoningOff)
+        input         = [string[]]$inputTypes
         contextWindow = [int]$ctx
         cost          = [ordered]@{ input = 0; output = 0; cacheRead = 0; cacheWrite = 0 }
     }
+    if (-not $reasoningOff) { $entry['thinkingLevelMap'] = $ThinkingLevelMap }
+    return $entry
 }
 
 $entries = @()
@@ -147,11 +165,11 @@ if ($ListOnly) {
     $entries | ForEach-Object {
         $mark = if ($_.id -eq $active.id) { '*' } else { ' ' }
         $vis  = if ($_.input -contains 'image') { 'vision' } else { '      ' }
-        $rsn  = if ($_.reasoning) { 'reasoning' } else { '         ' }
-        "{0} {1,-40} {2,9} ctx  {3}  {4}" -f $mark, $_.id, $_.contextWindow, $vis, $rsn
+        "{0} {1,-40} {2,9} ctx  {3}" -f $mark, $_.id, $_.contextWindow, $vis
     }
     Write-Host ""
     Write-Host "  * = default (currently loaded). Others JIT-load when selected via /model." -ForegroundColor DarkGray
+    Write-Host "  Thinking is controlled from inside Pi (/thinking), not by LM Studio's toggle." -ForegroundColor DarkGray
     Write-Host ""
     exit 0
 }
@@ -170,7 +188,7 @@ Set-Prop $providers 'lmstudio' ([ordered]@{
     baseUrl = "$LmsUrl/v1"
     api     = "openai-completions"
     apiKey  = "lm-studio"
-    models  = $entries
+    models  = @($entries)   # @() so a lone model still serializes as a JSON array
 })
 Set-Prop $config 'providers' $providers
 Write-JsonFile $modelsJsonPath $config

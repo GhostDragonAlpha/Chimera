@@ -73,8 +73,33 @@ makes the **currently loaded** one the default, so:
 
 - Launching always lands on whatever you have loaded — no hardcoded model id to go stale.
 - Pi's in-session `/model` picker lists the others; LM Studio JIT-loads whichever you pick.
-- TTS, image-edit, and embedding models are filtered out (they aren't chat endpoints).
-- Vision models get `input: [text, image]`; `<think>`-emitting families get `reasoning: true`.
+- TTS, image-edit, and embedding models are filtered out by `arch` (they aren't chat endpoints).
+- Vision models get `input: [text, image]`.
+
+### Thinking / reasoning
+
+Thinking is **not** a property of the weights — it's decided per request by the
+`reasoning_effort` parameter, so it cannot be inferred from the model id. Measured against
+this server with the LM Studio UI toggle *off*:
+
+| request | completion tokens | reasoning emitted |
+|---|---|---|
+| no `reasoning_effort` sent | 122 | yes (633 chars) |
+| `reasoning_effort=none` | 2 | no |
+| `reasoning_effort=low`/`medium`/`high` | ~150–170 | yes (~700–800 chars) |
+
+Note the first row: **omitting the parameter leaves thinking on**, and the per-request value
+overrides the UI toggle. So every chat model is published with `reasoning: true` plus a
+`thinkingLevelMap` mapping Pi's `off` level to `"none"`. That puts the switch in Pi, where you
+can reach it — `/thinking` in-session, or `--model <id>:off` / `:high` on the command line:
+
+```
+<id>:off   ->  0 thinking blocks,  2 output tokens
+<id>:high  -> 28 thinking blocks, 24 output tokens
+```
+
+Set `$env:PI_LMS_REASONING = "0"` to publish `reasoning: false` instead, which makes Pi never
+send the parameter at all (and therefore leaves thinking at the server's default: on).
 
 ```powershell
 .\pi-lmstudio.ps1                 # launch on the loaded model
