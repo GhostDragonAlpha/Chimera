@@ -1,23 +1,76 @@
 #!/usr/bin/env pwsh
-# pi-lmstudio.ps1 -- launch the Pi coding agent against whatever model is CURRENTLY LOADED in LM Studio.
+# pi-lmstudio.ps1 -- launch the Pi coding agent against LM Studio.
 #
-# Re-detects the active model on every run and rewrites Pi's config (~/.pi/agent/models.json,
-# ~/.pi/agent/settings.json) to match. Never trusts a stale hardcoded model id -- LM Studio can
-# report the same weights under different ids depending on how they were loaded (full GGUF path
-# vs. short alias), and the loaded model can change between runs.
+# Publishes EVERY chat-capable model LM Studio knows about into Pi's model list, and makes
+# whichever one is CURRENTLY LOADED the default. That means:
+#   * `pi` starts on the loaded model, always -- no stale hardcoded id.
+#   * Pi's in-session `/model` picker lists all the others, and LM Studio JIT-loads
+#     whichever you pick.
 #
-# Usage:   .\pi-lmstudio.ps1 [any pi args]
-#          e.g. .\pi-lmstudio.ps1 -c        (continue last session)
-# Remote LM Studio box: set LMS_URL before running, e.g.
-#          $env:LMS_URL = "http://192.168.3.169:1234"
+# Runs on Windows PowerShell 5.1 and PowerShell 7+ (no version-specific cmdlet params).
+#
+# Usage:   .\pi-lmstudio.ps1 [any pi args]      e.g.  .\pi-lmstudio.ps1 -c
+#          .\pi-lmstudio.ps1 -List              show what LM Studio is serving, then exit
+#          .\pi-lmstudio.ps1 -Model <id>        force a specific model as the default
+# Remote LM Studio box: set LMS_URL first, e.g.  $env:LMS_URL = "http://192.168.3.169:1234"
 
 $ErrorActionPreference = 'Stop'
-$PiArgs = $args
 
 $LmsUrl = if ($env:LMS_URL) { $env:LMS_URL } else { "http://192.168.3.169:1234" }
 
+# Models that are not chat endpoints, regardless of how LM Studio types them. LM Studio
+# reports TTS and image-edit models as "llm", so type alone is not a sufficient filter.
+$NotChatPattern = '(?i)(embed|-tts-|image-edit|reranker|whisper|voicedesign)'
+
+# Families that emit <think> blocks; Pi needs `reasoning: true` to fold them out of the
+# visible transcript. Override with:  $env:PI_LMS_REASONING = "0"  (force all off)
+$ReasoningPattern = '(?i)(qwen3|qwq|deepseek-r1|nemotron|magistral|gpt-oss|reasoning|thinking)'
+
+# ─── Parse args: consume ours, forward the rest to pi ───────────────────────────────────
+$ForceModel = ""
+$ListOnly = $false
+$PiArgs = @()
+$i = 0
+while ($i -lt $args.Count) {
+    $a = [string]$args[$i]
+    if (($a -eq '-List' -or $a -eq '--list') ) {
+        $ListOnly = $true; $i++
+    } elseif (($a -eq '-Model' -or $a -eq '--model') -and $i + 1 -lt $args.Count) {
+        $ForceModel = [string]$args[$i + 1]; $i += 2
+    } else {
+        $PiArgs += $a; $i++
+    }
+}
+
+# ─── JSON helpers that behave the same on 5.1 and 7+ ────────────────────────────────────
+# ConvertFrom-Json -AsHashtable does not exist before PowerShell 6, so we work with
+# PSCustomObject and set properties defensively.
+function Read-JsonObject([string]$Path) {
+    if (Test-Path $Path) {
+        $raw = Get-Content $Path -Raw
+        if ($raw -and $raw.Trim()) {
+            try { return ($raw | ConvertFrom-Json) } catch { }
+        }
+    }
+    return [pscustomobject]@{}
+}
+
+function Set-Prop($Object, [string]$Name, $Value) {
+    if ($Object.PSObject.Properties.Name -contains $Name) { $Object.$Name = $Value }
+    else { $Object | Add-Member -NotePropertyName $Name -NotePropertyValue $Value }
+}
+
+# Set-Content -Encoding utf8 emits a BOM on 5.1, which some JSON parsers reject.
+function Write-JsonFile([string]$Path, $Object) {
+    $dir = Split-Path -Parent $Path
+    if ($dir -and -not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    $json = $Object | ConvertTo-Json -Depth 10
+    [System.IO.File]::WriteAllText($Path, $json, (New-Object System.Text.UTF8Encoding $false))
+}
+
+# ─── Ask LM Studio what it is serving ───────────────────────────────────────────────────
 try {
-    $models = (Invoke-RestMethod "$LmsUrl/api/v0/models" -TimeoutSec 5).data
+    $all = (Invoke-RestMethod "$LmsUrl/api/v0/models" -TimeoutSec 5).data
 } catch {
     Write-Host ""
     Write-Host "  [ERROR] Can't reach LM Studio at $LmsUrl" -ForegroundColor Red
@@ -26,65 +79,125 @@ try {
     exit 1
 }
 
-$active = $models | Where-Object { $_.state -eq 'loaded' -and ($_.type -eq 'llm' -or $_.type -eq 'vlm') } | Select-Object -First 1
+$chat = @($all | Where-Object {
+    ($_.type -eq 'llm' -or $_.type -eq 'vlm') -and ($_.id -notmatch $NotChatPattern)
+})
 
-if (-not $active) {
+if ($chat.Count -eq 0) {
     Write-Host ""
-    Write-Host "  [ERROR] No LLM/VLM is loaded in LM Studio at $LmsUrl" -ForegroundColor Red
-    Write-Host "  Load a model in the LM Studio UI (or: lms load <model>), then run this again."
+    Write-Host "  [ERROR] LM Studio at $LmsUrl is serving no chat-capable models." -ForegroundColor Red
+    Write-Host "  Download or load one in the LM Studio UI, then run this again."
     Write-Host ""
     exit 1
 }
 
-$contextWindow = if ($active.loaded_context_length) { $active.loaded_context_length } elseif ($active.max_context_length) { $active.max_context_length } else { 8192 }
-$inputTypes = if ($active.type -eq 'vlm') { @('text', 'image') } else { @('text') }
+# Pick the default: an explicit -Model wins, then whatever is loaded, then the first available.
+# Falling through to "first available" is deliberate -- LM Studio JIT-loads on the first
+# request, so an unloaded model is a valid target, not an error.
+$loaded = @($chat | Where-Object { $_.state -eq 'loaded' })
 
-# -- refresh models.json: replace only the "lmstudio" provider, preserve any others ----------------
-$modelsJsonPath = "$env:USERPROFILE\.pi\agent\models.json"
-$config = if (Test-Path $modelsJsonPath) {
-    Get-Content $modelsJsonPath -Raw | ConvertFrom-Json -AsHashtable
+if ($ForceModel) {
+    $active = $chat | Where-Object { $_.id -eq $ForceModel } | Select-Object -First 1
+    if (-not $active) {
+        Write-Host ""
+        Write-Host "  [ERROR] '$ForceModel' is not served by LM Studio at $LmsUrl" -ForegroundColor Red
+        Write-Host "  Run with -List to see available model ids."
+        Write-Host ""
+        exit 1
+    }
+} elseif ($loaded.Count -gt 0) {
+    $active = $loaded[0]
 } else {
-    @{ providers = @{} }
+    $active = $chat[0]
 }
-if (-not $config.ContainsKey('providers')) { $config['providers'] = @{} }
 
-$config['providers']['lmstudio'] = [ordered]@{
+# ─── Build one Pi model entry per LM Studio model, active one first ─────────────────────
+$reasoningOff = ($env:PI_LMS_REASONING -eq '0')
+
+function New-ModelEntry($m, [bool]$IsActive) {
+    $ctx = if ($m.loaded_context_length) { $m.loaded_context_length }
+           elseif ($m.max_context_length) { $m.max_context_length }
+           else { 8192 }
+
+    $inputTypes = if ($m.type -eq 'vlm') { @('text', 'image') } else { @('text') }
+    $reasoning = (-not $reasoningOff) -and ($m.id -match $ReasoningPattern)
+
+    $tag = if ($IsActive) { 'loaded' } else { $m.state }
+
+    return [ordered]@{
+        id            = $m.id
+        name          = "$($m.id) [$tag]"
+        reasoning     = [bool]$reasoning
+        input         = $inputTypes
+        contextWindow = [int]$ctx
+        cost          = [ordered]@{ input = 0; output = 0; cacheRead = 0; cacheWrite = 0 }
+    }
+}
+
+$entries = @()
+$entries += (New-ModelEntry $active $true)
+foreach ($m in $chat) {
+    if ($m.id -ne $active.id) { $entries += (New-ModelEntry $m $false) }
+}
+
+if ($ListOnly) {
+    Write-Host ""
+    Write-Host "  LM Studio @ $LmsUrl" -ForegroundColor Cyan
+    Write-Host ""
+    $entries | ForEach-Object {
+        $mark = if ($_.id -eq $active.id) { '*' } else { ' ' }
+        $vis  = if ($_.input -contains 'image') { 'vision' } else { '      ' }
+        $rsn  = if ($_.reasoning) { 'reasoning' } else { '         ' }
+        "{0} {1,-40} {2,9} ctx  {3}  {4}" -f $mark, $_.id, $_.contextWindow, $vis, $rsn
+    }
+    Write-Host ""
+    Write-Host "  * = default (currently loaded). Others JIT-load when selected via /model." -ForegroundColor DarkGray
+    Write-Host ""
+    exit 0
+}
+
+# ─── Refresh models.json: replace only the "lmstudio" provider, preserve any others ─────
+$modelsJsonPath = Join-Path $env:USERPROFILE ".pi\agent\models.json"
+$config = Read-JsonObject $modelsJsonPath
+
+$providers = if ($config.PSObject.Properties.Name -contains 'providers' -and $config.providers) {
+    $config.providers
+} else {
+    [pscustomobject]@{}
+}
+
+Set-Prop $providers 'lmstudio' ([ordered]@{
     baseUrl = "$LmsUrl/v1"
     api     = "openai-completions"
     apiKey  = "lm-studio"
-    models  = @(
-        [ordered]@{
-            id            = $active.id
-            name          = "$($active.id) (LM Studio, live)"
-            reasoning     = $false
-            input         = $inputTypes
-            contextWindow = $contextWindow
-            cost          = [ordered]@{ input = 0; output = 0; cacheRead = 0; cacheWrite = 0 }
-        }
-    )
-}
-$config | ConvertTo-Json -Depth 10 | Set-Content -Path $modelsJsonPath -Encoding utf8
+    models  = $entries
+})
+Set-Prop $config 'providers' $providers
+Write-JsonFile $modelsJsonPath $config
 
-# -- silence Pi's startup update nags -------------------------------------------------------------
-# This setup runs entirely against local LM Studio, so Pi has no reason to phone the npm registry
-# on every launch. PI_OFFLINE disables ALL startup network ops: the "New version available" banner,
-# the package-update banner, install telemetry, and auto-downloading optional helper binaries
-# (fd/ripgrep -- already present, system versions used as fallback). Model inference, MCP,
-# extensions, and subagents are NOT affected. To re-enable update checks, run:  pi update --all
+# ─── Point settings.json's default at the active model, preserve every other field ──────
+$settingsPath = Join-Path $env:USERPROFILE ".pi\agent\settings.json"
+$settings = Read-JsonObject $settingsPath
+Set-Prop $settings 'defaultProvider' 'lmstudio'
+Set-Prop $settings 'defaultModel' $active.id
+Write-JsonFile $settingsPath $settings
+
+# ─── Silence Pi's startup update nags ───────────────────────────────────────────────────
+# This setup runs entirely against local LM Studio, so Pi has no reason to phone the npm
+# registry on every launch. PI_OFFLINE disables ALL startup network ops: the "New version
+# available" banner, the package-update banner, install telemetry, and auto-downloading
+# optional helper binaries (fd/ripgrep -- already present, system versions used as
+# fallback). Model inference, MCP, extensions, and subagents are NOT affected.
+# To re-enable update checks, run:  pi update --all
 $env:PI_OFFLINE = "1"
 
-# -- point settings.json's default at the active model, preserve every other field -----------------
-$settingsPath = "$env:USERPROFILE\.pi\agent\settings.json"
-$settings = if (Test-Path $settingsPath) { Get-Content $settingsPath -Raw | ConvertFrom-Json -AsHashtable } else { @{} }
-$settings['defaultProvider'] = 'lmstudio'
-$settings['defaultModel'] = $active.id
-$settings | ConvertTo-Json -Depth 10 | Set-Content -Path $settingsPath -Encoding utf8
-
+$ctxActive = ($entries[0]).contextWindow
 Write-Host ""
 Write-Host "  ==================================================" -ForegroundColor Cyan
 Write-Host "   Pi  --  LOCAL via LM Studio" -ForegroundColor Cyan
 Write-Host "   endpoint : $LmsUrl"
-Write-Host "   model    : $($active.id)"
+Write-Host "   model    : $($active.id)  ($ctxActive ctx)"
+Write-Host "   also available : $($chat.Count - 1) more via /model"
 Write-Host "  ==================================================" -ForegroundColor Cyan
 Write-Host ""
 

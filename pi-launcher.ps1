@@ -19,7 +19,8 @@ $providers = @(
     display = "LM Studio (local)"
     description = "Local models via LM Studio server (192.168.3.169:1234)"
     apiKeyVar = "none"
-    defaultModel = "qwen3.6-35b-a3b-mtp@q2_k_xl"
+    # Never hardcode an id here -- pi-lmstudio.ps1 detects whatever is loaded at launch.
+    defaultModel = "(currently loaded)"
   },
   @{
     name = "openrouter"
@@ -163,52 +164,21 @@ Write-Host "  Provider: $($selectedProvider.display)" -ForegroundColor Cyan
 Write-Host "  Model:    $modelName" -ForegroundColor Cyan
 Write-Host ""
 
-# LM Studio special case (set up config instead of env var)
+# LM Studio special case: delegate to pi-lmstudio.ps1, which publishes every served model
+# and defaults to whichever one is currently loaded. Keeping the detection in one place means
+# the two launchers can never disagree about which model is live.
 if ($providerName -eq "lm-studio") {
-  $modelsJsonPath = "$env:USERPROFILE\.pi\agent\models.json"
-  $settingsPath = "$env:USERPROFILE\.pi\agent\settings.json"
-
-  # Query LM Studio for loaded model
-  try {
-    $models = (Invoke-RestMethod "http://192.168.3.169:1234/api/v0/models" -TimeoutSec 5).data
-    $active = $models | Where-Object { $_.state -eq 'loaded' -and ($_.type -eq 'llm' -or $_.type -eq 'vlm') } | Select-Object -First 1
-    if (-not $active) {
-      throw "No model loaded in LM Studio"
-    }
-    $contextWindow = if ($active.loaded_context_length) { $active.loaded_context_length } elseif ($active.max_context_length) { $active.max_context_length } else { 8192 }
-    $modelName = $active.id
-  } catch {
-    Write-Host "  [ERROR] Can't reach LM Studio at http://192.168.3.169:1234" -ForegroundColor Red
-    Write-Host "  Start LM Studio's local server (Developer tab), then run this again." -ForegroundColor Red
+  $lmsScript = Join-Path $PSScriptRoot "pi-lmstudio.ps1"
+  if (-not (Test-Path $lmsScript)) {
+    Write-Host "  [ERROR] pi-lmstudio.ps1 not found next to this script." -ForegroundColor Red
     exit 1
   }
 
-  # Update models.json + settings.json
-  $config = if (Test-Path $modelsJsonPath) { Get-Content $modelsJsonPath -Raw | ConvertFrom-Json -AsHashtable } else { @{ providers = @{} } }
-  if (-not $config.ContainsKey('providers')) { $config['providers'] = @{} }
-  $config['providers']['lmstudio'] = [ordered]@{
-    baseUrl = "http://192.168.3.169:1234/v1"
-    api     = "openai-completions"
-    apiKey  = "lm-studio"
-    models  = @(
-      [ordered]@{
-        id            = $active.id
-        name          = "$($active.id) (LM Studio, live)"
-        reasoning     = $false
-        input         = @('text')
-        contextWindow = $contextWindow
-        cost          = [ordered]@{ input = 0; output = 0; cacheRead = 0; cacheWrite = 0 }
-      }
-    )
-  }
-  $config | ConvertTo-Json -Depth 10 | Set-Content -Path $modelsJsonPath -Encoding utf8
+  $delegateArgs = @()
+  if (-not [string]::IsNullOrEmpty($model)) { $delegateArgs += @('-Model', $model) }
+  $delegateArgs += $piArgs
 
-  $settings = if (Test-Path $settingsPath) { Get-Content $settingsPath -Raw | ConvertFrom-Json -AsHashtable } else { @{} }
-  $settings['defaultProvider'] = 'lmstudio'
-  $settings['defaultModel'] = $active.id
-  $settings | ConvertTo-Json -Depth 10 | Set-Content -Path $settingsPath -Encoding utf8
-
-  & pi --provider lmstudio --model $active.id @piArgs
+  & $lmsScript @delegateArgs
 } else {
   # Non-local providers: verify env var is set, then launch
   $envVar = $selectedProvider.apiKeyVar
