@@ -154,6 +154,55 @@ def conflict_check(signature: str, nodes: list, pending_text: str) -> list:
     return conflicts
 
 
+def synthesize_draft_rule(signature: str, kind: str, samples: list) -> str:
+    """Generate an initial actionable draft rule from evidence patterns.
+
+    Deterministic synthesis (no LM): extract failure keywords, propose a fix or
+    observation strategy. Returns rule <=25 words, or fallback placeholder if synthesis fails.
+    """
+    if not samples:
+        return "(agent: write ONE sentence from the evidence, <=25 words)"
+
+    # Concatenate all samples for pattern matching
+    evidence_text = " ".join(samples).lower()
+
+    # Pattern families for different failure types (ordered by specificity).
+    # More specific patterns first; if multiple match, first wins.
+    patterns = [
+        # Specific missing-item failures
+        (r"(atool_shovel|missing.*\btool\b)", "Implement missing tool actor and verify scene spawning."),
+        (r"(no|missing).*\b(input|key|binding)\b", "Implement missing input bindings and verify actor registration."),
+        (r"(sanddrift|sandrift_fx|missing.*\beffect\b)", "Verify environmental effects spawn and render correctly."),
+        (r"(no|missing).*\b(component|actor|asset)\b", "Verify required components and assets are spawned and registered."),
+        # Log/output failures (usually indicate silent path)
+        (r"(\blog_contains\b|\bdemobeat\b.*false|log.*false|log_hit)", "Verify event logging and signal traces on success path."),
+        # Screenshot/state-capture failures (beat schema gap)
+        (r"(screenshot|screenshot_taken|screenshot_.*unknown)", "Implement screenshot action and state-capture in sleepwalker beat registry."),
+        # Pawn class/rig failures (character setup gap)
+        (r"(defaultpawn|pawn_class|incorrect.*pawn)", "Verify correct pawn class and rig bindings on initialization."),
+        # Movement/distance failures (navigation gap)
+        (r"(\bdist\s*=|\bpawn_within\b|distance.*\d+|too.*far)", "Verify beat spawn location distances and pawn navigation constraints."),
+        # Generic log expectation failures
+        (r"(\bexpect\b.*log|\blog\b|\bprint\b)", "Verify event logging and signal traces on success path."),
+    ]
+
+    # Test each pattern in order; first match wins
+    for regex, rule_template in patterns:
+        if re.search(regex, evidence_text):
+            # Trim to exactly 25 words max
+            words = rule_template.split()[:25]
+            return " ".join(words) + ("." if not words[-1].endswith(".") else "")
+
+    # Fallback: try to extract prominent keywords and build a generic rule
+    sig_tokens = sorted(_tokens(signature))
+    if sig_tokens:
+        key_sig = " ".join(sig_tokens[:2])  # first 2 significant tokens from signature
+        return f"Investigate {key_sig}; verify test harness and beat registration."[:80]
+
+    # Last resort: placeholder
+    return "(agent: write ONE sentence from the evidence, <=25 words)"
+
+
 def propose_organ(signature: str) -> str:
     s = signature.lower()
     if any(k in s for k in ("pathway:", "mcp", "viewport", "screenshot", "window", "camera")):
@@ -178,7 +227,9 @@ def render_entry(num: int, c: dict, conflicts: list) -> str:
         lines.append(f"- sample: {s}")
     if conflicts:
         lines.append(f"- possible_conflict_with: {'; '.join(conflicts[:4])}  (Gardener: reconcile)")
-    lines.append("- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)")
+    # Synthesize a draft rule from evidence; agent can refine or replace
+    draft = synthesize_draft_rule(c['signature'], c['kind'], c['samples'])
+    lines.append(f"- draft_rule: {draft}")
     lines.append("")
     return "\n".join(lines)
 
