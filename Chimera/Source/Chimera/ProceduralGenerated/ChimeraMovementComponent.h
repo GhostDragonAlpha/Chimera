@@ -50,6 +50,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Audio")
 	float FootstepInterval;
 
+	// Auto-load default CC0 footstep assets from /Game/Audio/Footsteps when not explicitly set
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Audio")
+	bool bAutoLoadDefaultFootsteps = true;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Dust")
 	TObjectPtr<UDustAccumulationParticleComponent> DustAccumulationComponent;
 
@@ -160,6 +164,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Movement|Audio")
 	TObjectPtr<UAudioComponent> ServoAudioComponent;
 
+	// Cache for auto-loaded default footstep sounds
+	TMap<ESurfaceMaterialType, TObjectPtr<USoundBase>> DefaultFootstepCache;
+
 	// === Weight Shift Animation Internals ===
 	// Track previous velocity to detect acceleration/deceleration
 	FVector LastFrameVelocity;
@@ -182,6 +189,9 @@ public:
 
 	// Play contextual footstep sound based on surface type with spatialization
 	void PlayFootstepSound(ESurfaceMaterialType SurfaceMaterial, const FVector& Location, float SpeedMagnitude);
+
+	// Resolve a default footstep sound asset (CC0 Fantozzi pack) for a surface type
+	USoundBase* GetDefaultFootstepSound(ESurfaceMaterialType SurfaceMaterial);
 
 	// Play servo/pneumatic sound for suit actuators (speed-based volume layering)
 	void PlayServoSound(float SpeedMagnitude, const FVector& Location);

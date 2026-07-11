@@ -86,6 +86,16 @@ except ImportError:
         def record_compilation_success(*args, **kwargs): return "mutation_dummy"
         def record_compilation_failure(*args, **kwargs): return "error_dummy"
 
+# Research Mandate enforcement imports (Phase 3 Pipeline Integration)
+try:
+    from core.research_enforcement import check_documentation_review as _check_doc_review, get_research_compliance_score as _get_research_compliance_score
+except ImportError:
+    try:
+        from research_enforcement import check_documentation_review as _check_doc_review, get_research_compliance_score as _get_research_compliance_score
+    except ImportError:
+        def _check_doc_review(*args, **kwargs): return {"task_name": "unknown", "compliance_rate": 0.0, "reviews": {}}
+        def _get_research_compliance_score(*args, **kwargs): return {"research_summaries_count": 0, "pathway_attempts_count": 0, "documentation_reviews_count": 0}
+
 # DNA Integration status
 DNA_AVAILABLE = True
 DNA_VERIFY_AVAILABLE = True
@@ -125,6 +135,11 @@ class GameGenerationOrchestrator:
             print(f"\n  [GATE BLOCKED] Pipeline refused: {gv.short_str()}")
             print(f"  [REMEDIATION] {gv.remediation}")
             raise
+
+        # =====================================================================
+        # RESEARCH MANDATE COMPLIANCE CHECK (Phase 3 Pipeline Integration)
+        # =====================================================================
+        _research_compliance_check(project_name, parsed_dsl)
 
         # =====================================================================
         # Stage 1: Parse & Validate DSL
@@ -548,6 +563,44 @@ class GameGenerationOrchestrator:
             "build_result": build_result if changed_blocks else None,
         }
 
+
+
+def _research_compliance_check(project_name: str, parsed_dsl: dict) -> None:
+    """Research Mandate compliance check — called before Stage 1 (Phase 3 Pipeline Integration).
+
+    Checks documentation review status for the current pipeline run and logs results.
+    Non-blocking: warns on missing reviews but proceeds regardless.
+    """
+    print("\n[Research Mandate] Compliance Check...")
+    try:
+        # Build a task name from project + DSL blocks
+        dsl_blocks = ", ".join(str(k) for k in (parsed_dsl.keys() if isinstance(parsed_dsl, dict) else []))
+        task_name = f"{project_name}_pipeline_{dsl_blocks[:80]}"
+
+        # Check documentation review compliance
+        doc_review = _check_doc_review(task_name, project_name)
+        compliance_rate = doc_review.get("compliance_rate", 0.0)
+        print(f"  [Research Mandate] Documentation review compliance: {compliance_rate:.1%}")
+
+        for doc_file, info in doc_review.get("reviews", {}).items():
+            status = "REVIEWED" if info.get("reviewed") else "NOT REVIEWED"
+            purpose = info.get("purpose", "")[:60]
+            print(f"    {doc_file}: {status} ({purpose})")
+
+        # Record compliance score to DNA graph via mutation
+        try:
+            score = _get_research_compliance_score()
+            mutate("research_compliance", "check", details={
+                "project_name": project_name,
+                "compliance_rate": compliance_rate,
+                "documentation_reviews_count": score.get("documentation_reviews_count", 0),
+                "task_name": task_name,
+            })
+        except Exception:
+            print("  [Research Mandate] Compliance mutation skipped")
+
+    except Exception as e:
+        print(f"  [Research Mandate] Warning: compliance check failed — {e}")
 
 
 # Utility function for running the pipeline

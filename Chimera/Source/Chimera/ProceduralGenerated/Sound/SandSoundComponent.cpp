@@ -26,6 +26,22 @@ void USandSoundComponent::BeginPlay()
 			AudioComponent = NewObject<UAudioComponent>(Owner, TEXT("SandAudioComponent"));
 			AudioComponent->RegisterComponent();
 		}
+
+		// Continuous wind layer (auto-start if a wind loop asset is provided and not in vacuum)
+		if (WindLoopSound && !bIsVacuum)
+		{
+			WindAudioComponent = NewObject<UAudioComponent>(Owner, TEXT("SandWindComponent"));
+			if (WindAudioComponent)
+			{
+				WindAudioComponent->RegisterComponent();
+				WindAudioComponent->SetLowPassFilterEnabled(true);
+				WindAudioComponent->SetSound(WindLoopSound);
+				WindAudioComponent->SetVolumeMultiplier(WindMinVolume);
+				WindAudioComponent->SetLowPassFilterFrequency(WindLowPassMin);
+				WindAudioComponent->Play();
+				bWindActive = true;
+			}
+		}
 	}
 }
 
@@ -41,6 +57,7 @@ void USandSoundComponent::PlayImpactSound(FVector Location)
 		AudioComponent->SetSound(ImpactSound);
 		AudioComponent->SetVolumeMultiplier(VolumeMultiplier);
 		AudioComponent->SetPitchMultiplier(PitchMultiplier);
+		AudioComponent->SetLowPassFilterEnabled(true);
 		AudioComponent->SetLowPassFilterFrequency(LowPassFrequency);
 		AudioComponent->SetWorldLocation(Location);
 		AudioComponent->Play();
@@ -50,4 +67,63 @@ void USandSoundComponent::PlayImpactSound(FVector Location)
 void USandSoundComponent::SetVacuumMode(bool bInIsVacuum)
 {
 	bIsVacuum = bInIsVacuum;
+	if (bIsVacuum)
+	{
+		StopWind();
+	}
+	else if (WindLoopSound)
+	{
+		StartWind();
+	}
+}
+
+// ------------------------------------------------------------------
+// Wind Layer - continuous speed-driven wind synthesis
+// ------------------------------------------------------------------
+void USandSoundComponent::StartWind()
+{
+	if (!WindLoopSound || bIsVacuum || bWindActive)
+	{
+		return;
+	}
+
+	if (AActor* Owner = GetOwner())
+	{
+		if (!WindAudioComponent)
+		{
+			WindAudioComponent = NewObject<UAudioComponent>(Owner, TEXT("SandWindComponent"));
+			WindAudioComponent->RegisterComponent();
+		}
+		WindAudioComponent->SetLowPassFilterEnabled(true);
+		WindAudioComponent->SetSound(WindLoopSound);
+		WindAudioComponent->SetVolumeMultiplier(WindMinVolume);
+		WindAudioComponent->SetLowPassFilterFrequency(WindLowPassMin);
+		WindAudioComponent->Play();
+		bWindActive = true;
+	}
+}
+
+void USandSoundComponent::StopWind()
+{
+	if (WindAudioComponent && bWindActive)
+	{
+		WindAudioComponent->Stop();
+	}
+	bWindActive = false;
+}
+
+void USandSoundComponent::SetWindIntensity(float WindSpeed)
+{
+	if (!WindAudioComponent || !bWindActive)
+	{
+		return;
+	}
+
+	const float Fraction = FMath::Clamp(WindSpeed / FMath::Max(WindSpeedForMaxVolume, 1.0f), 0.0f, 1.0f);
+	const float Volume = FMath::Lerp(WindMinVolume, WindMaxVolume, Fraction);
+	const float LowPass = FMath::Lerp(WindLowPassMin, WindLowPassMax, Fraction);
+	const float Pitch = 0.8f + (Fraction * 0.6f); // 0.8x -> 1.4x
+	WindAudioComponent->SetVolumeMultiplier(Volume);
+	WindAudioComponent->SetLowPassFilterFrequency(LowPass);
+	WindAudioComponent->SetPitchMultiplier(Pitch);
 }

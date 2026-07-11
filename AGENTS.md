@@ -62,6 +62,52 @@ Loop 8: Systems (economy, factions, missions)           → Consequence
 Loop 9: The Universe (planets, moons, asteroids)        → Infinity
 ```
 
+## Research Agent Invocation Protocol (chimera-research mode)
+
+Any agent mode can invoke on-demand web research without going through the Orchestrator. The Research Agent is a dedicated specialist whose ONLY job is to research questions, perform web searches, gather documentation, and return structured findings — it never writes code or implements features.
+
+**Spawn via new_task (preferred):**
+```python
+new_task(mode="chimera-research", message="Research: <your question here>")
+```
+
+**Or spawn via Roo subagent pattern:**
+```
+Agent(subagent_type: "mode-research", prompt: "Research: <your query here>")
+```
+
+**What the Research Agent does:**
+1. Queries DNA graph first (`g.query("pathway", ...)`, `g.query("feature", ...)`) — if answer exists, reports it and stops
+2. Reviews mandatory docs (AGENTS.md known bugs/traps, GENERATION_PROTOCOL.md, MCP_PATHWAYS.md)
+3. Performs Google search via Playwright MCP with minimum 3 sources
+4. Classifies source types: official_docs, community, video_tutorial, technical_blog, general_web
+5. Cross-references parameters across at least 2 independent sources
+6. Searches for failure cases (what doesn't work) — minimum 1 failure source
+7. Records findings to DNA graph via `record_research_summary()` when applicable
+8. Returns structured markdown report with confidence ratings per finding
+
+**Tier mapping (updated 2026-07-10):**
+- **Quick (Tier 1):** DNA query + single search, ≥3 domains if web search performed, ~5 min max
+- **Standard (Tier 2):** Multi-source verification + cross-reference, ≥5 domains + ≥3 source types, ~15 min max
+- **Deep (Tier 3):** Source diversity (all 5 types) + failure research + multi-site (≥8 domains), ~30 min max
+
+**Fallback chain:** Playwright MCP → DNA graph cache only → report gaps for manual review. If LM Studio is down, returns raw search results without analysis.
+
+**Full spec:** [`.roo/modes/research-agent.md`](.roo/modes/research-agent.md) — complete role definition, capabilities, protocol steps, and known MCP traps.
+
+### Context Exhaustion Controls (added 2026-07-10)
+
+Every research task has minimum source requirements per tier (documented in [`.roo/modes/research-agent.md`](.roo/modes/research-agent.md)). The Research Agent MUST NOT report results until all context exhaustion checks pass:
+
+| Check | Requirement |
+|-------|-------------|
+| Actual page visits | ≥2 real content pages (not just Google snippets) |
+| Domain diversity | ≥3 different domains from different providers |
+| Failure research | At least 1 source on what doesn't work |
+| Related query follow-up | "People also ask" explored and followed up |
+
+**Orchestrator validation:** The orchestrator validates that the returned report meets minimum thresholds before accepting it as complete. If a report fails validation, the orchestrator re-delegates to the Research Agent with explicit instructions to dig deeper, citing which thresholds were not met. See [`Chimera/core/research_enforcement.py:validate_research_depth()`](Chimera/core/research_enforcement.py) for programmatic enforcement.
+
 ## Feature Ledger (60+ Features)
 
 Tracked in Graphify. Each feature node: name, type, loop, status (`not_started` → `researching` → `verified` → `encoded`), parameters, references, iteration history.
@@ -85,6 +131,21 @@ Report findings. Only then proceed. (Granular fallbacks: `g.query("health")`,
 python -m core.postflight --phase "<what you did>" --result "<UBT output verbatim>" [--feature X --loop N --status S]
 ```
 Records PhaseComplete (+ optional FeatureUpdate) and prints the closing checklist.
+
+**Research Mandate compliance (Phase 3 Pipeline Integration):** After postflight, record a ResearchSummary for the completed phase:
+```python
+from core.graphify_interface import record_research_summary
+record_research_summary(
+    task_name="<phase name>",
+    tier=<1|2|3>,
+    sources_count=<N>,
+    domains_visited=<M>,
+    confidence_rating="high",
+    source_table=[{"type": "primary_docs", "url_or_path": "...", "confidence": "high"}],
+    discrepancies_resolved=["..."],
+)
+```
+
 1. Report exact UBT output verbatim. Never summarize.
 2. Update Feature Ledger. Record all MCP pathway results.
 3. If GPA falling, report with corrective action. (Build failures auto-grade F,
@@ -94,10 +155,22 @@ Records PhaseComplete (+ optional FeatureUpdate) and prints the closing checklis
 **Never hand-write `g.mutate` detail dicts** — mis-keyed dicts are rejected with a
 `rejected_*` string (nothing recorded). Use the typed helpers from
 `core/graphify_interface.py`: `record_feature`, `record_pathway`, `record_loop`,
-`record_phase`, `record_grade`, `record_build` — or the CLI
+`record_phase`, `record_grade`, `record_build`, `record_research_summary`, `record_documentation_review`, `record_pathway_attempt` — or the CLI
 `python -m core.graphify_record {feature|pathway|loop|phase|grade} ...`.
 Backfilling history? Add `backfilled=True` / `--backfilled`; never fake timestamps.
 Every node is auto-stamped with `recorded_by` + per-process `run_id`.
+
+### Research Mandate Quick Reference (added 2026-07-10)
+**Full spec**: [`Chimera/docs/RESEARCH_MANDATE.md`](Chimera/docs/RESEARCH_MANDATE.md)
+
+| Tier | Complexity | Requirements |
+|------|-----------|--------------|
+| 1 | Simple, single MCP tool call | DNA query + pathway follow (5 min max) |
+| 2 | Multiple tools, new combination | DNA query + multi-source research + summary required |
+| 3 | New feature/architecture | Tier 2 + reference images + >=3 domains + failure research |
+
+**Enforcement**: [`Chimera/core/research_enforcement.py`](Chimera/core/research_enforcement.py) — `classify_task_tier()`, `validate_research_completed()`, `check_documentation_review()`, `build_subtask_message()`
+**Dry-run tests**: `python -m core.test_research_enforcement` (validates tier classification, subtask builder, doc review checker on 5 mandatory docs)
 
 ## The Ralph Loop (Iterative Verification)
 
@@ -133,7 +206,7 @@ Record metrics to DNA: sources_consulted, websites_visited, parameters_cross_ref
 | `dna_dashboard.py` | Streamlit dashboard |
 | `docs/dna_graph_quarantine_unknown_nodes.json` | Archive of quarantined junk nodes |
 
-**DNA Node Types**: Mutation, Error, Fix, Health, Pathway, FeatureUpdate, VisualVerification, ProfessorGrade, ProfessorGPA, TechnicalDiscovery, ResearchDiscovery, PhaseComplete, LoopComplete
+**DNA Node Types**: Mutation, Error, Fix, Health, Pathway, FeatureUpdate, VisualVerification, ProfessorGrade, ProfessorGPA, TechnicalDiscovery, ResearchDiscovery, PhaseComplete, LoopComplete, ResearchSummary, PathwayAttempt, DocumentationReview
 
 ## MCP Pathway Rule
 
@@ -184,6 +257,22 @@ If the UE5 viewport renders black after MCP operations, reset with:
 
 ### Automatic Research Scheduling
 After 2 failed attempts on any feature, automatically create a technical_research task in the Feature Ledger, record pathway_attempt mutations, and move to the next feature. See `Chimera/ORCHESTRATOR_PROMPT.md` § AUTOMATIC RESEARCH SCHEDULING. Future agents must query technical_research tasks before starting work.
+
+## Research Mandate (2026-07-10)
+
+**Every task requires research before execution.** Full policy: [`Chimera/docs/RESEARCH_MANDATE.md`](Chimera/docs/RESEARCH_MANDATE.md).
+
+### Quick Reference
+1. **Before any MCP call:** Query DNA graph + check MCP_PATHWAYS.md for traps
+2. **Tier 1 tasks:** DNA query → follow pathway (5 min max)
+3. **Tier 2+ tasks:** Complete research summary (§5 template in mandate doc), multi-source verification
+4. **Post-execution:** Read-back verify, record deviations as surprises
+
+### Enforcement
+- Orchestrator validates research checklist before delegation
+- Subtask `message` parameter MUST include embedded research summary for Tier 2+
+- Postflight cannot declare phase complete without research compliance note
+- New mutation types: `ResearchSummary`, `PathwayAttempt`, `DocumentationReview` (see §7.3 in mandate doc)
 
 ## Known Fixed Bugs
 

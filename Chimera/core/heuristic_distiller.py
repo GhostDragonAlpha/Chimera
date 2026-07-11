@@ -64,6 +64,15 @@ def _normalize_signature(sig: str) -> str:
     return sig
 
 
+def _is_pathway_success(result) -> bool:
+    """Success-family pathway results are not failures. H-10 (promoted
+    2026-07-07) had intended UE shutdowns recorded as success with a note —
+    they landed as 'success_intended_kill'/'success_unverified' etc., which the
+    old exact-match filter kept clustering as failures forever (18x noise
+    cluster observed 2026-07-11)."""
+    return result is None or str(result).lower().startswith("success")
+
+
 def collect_clusters(nodes: list, min_cluster: int) -> list:
     """Returns cluster dicts: {signature, kind, count, evidence, samples, last_seen}."""
     clusters = {}

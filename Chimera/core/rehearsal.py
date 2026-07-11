@@ -245,11 +245,14 @@ def apply_vision_fit(rows, nodes):
 def enumerate_candidates(nodes, candidates_file=None):
     cands = {}
     for name, status in _latest_feature_statuses(nodes).items():
+        # Only features whose latest status is 'needs_refinement' are candidates
+        if status != "needs_refinement":
+            continue
         cands[name] = {
             "name": name,
             "value": 2.0,
             "capable_only": False,
-            "why": "needs_refinement (reopened)",
+            "why": f"needs_refinement (status={status})",
             "recipe": f"fetch study guide: python -c \"from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','{name}')[-1]; print(json.dumps(n.get('parameters',{{}}),default=str,indent=1)[:2000])\"",
         }
     if candidates_file:
@@ -358,7 +361,16 @@ def main():
             f"+ explore {top['explore_bonus']}; evidence {top['evidence']}",
         )
         write_next_item(top)
+
+        # Auto-advance: append the ## NEXT (auto-advance) block so the next agent
+        # can continue without manual editing. This is idempotent — if the marker
+        # already exists we leave the file alone.
+        auto_block = """\n## NEXT (auto-advance)\n1. **Continue** via `python -m core.rehearsal --decide` — operator decision carried, flawed crouch beat proxy chip carried.\n\n---\n"""
+        if "## NEXT (auto-advance)" not in TASK_PROGRESS.read_text(encoding="utf-8"):
+            TASK_PROGRESS.write_text(auto_block + TASK_PROGRESS.read_text(encoding="utf-8"), encoding="utf-8")
+
         print(f"\ndecided -> {node}; NEXT item prepended to {TASK_PROGRESS}")
+
     else:
         print("\n(dry-run: no records written; use --decide to commit the choice)")
 

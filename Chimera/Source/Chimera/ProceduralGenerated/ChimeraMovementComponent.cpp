@@ -9,6 +9,7 @@
 #include "GameFramework/Pawn.h"
 #include "Logging/LogMacros.h"
 #include "Sound/SoundBase.h"
+#include "UObject/UObjectGlobals.h" // LoadObject for default footstep assets
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
@@ -64,17 +65,19 @@ void UChimeraMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	if (!GetOwner() || !GetOwner()->GetRootComponent())
 		return;
 
+	// Drive from the owner's actual movement (CharacterMovementComponent),
+	// not the unpopulated external CurrentVelocity source. This makes footstep
+	// detection, dust emission, and audio fire on real walking without the
+	// component re-applying movement (which would double-move the pawn).
+	CurrentVelocity = GetOwner()->GetVelocity();
+
 	// Update weight shift animation (based on velocity changes)
 	UpdateWeightShift(DeltaTime);
 
-	// Accumulate velocity (already set by caller or external system).
-	// For a simple walking character we move the root component forward.
-	const FVector Delta = CurrentVelocity * DeltaTime;
-
-	if (Delta.SizeSquared() > KINDA_SMALL_NUMBER)
-	{
-		GetOwner()->AddActorWorldOffset(Delta, false, nullptr, ETeleportType::None);
-	}
+	// NOTE: This component is an ADDITIVE footstep/dust/sound detector that rides
+	// on the pawn alongside CharacterMovementComponent. It must NOT re-apply
+	// movement (that would double-move the pawn); the owner's real velocity above
+	// is used only for footstep detection, surface tracing, and volume scaling.
 
 	// Footstep timer — increment and trigger when interval reached.
 	FootstepTimer += DeltaTime;
@@ -247,6 +250,11 @@ void UChimeraMovementComponent::PlayFootstepSound(ESurfaceMaterialType SurfaceMa
 		default:
 			SelectedSound = GroundFootstepSound;
 			break;
+	}
+
+	if (!SelectedSound && bAutoLoadDefaultFootsteps)
+	{
+		SelectedSound = GetDefaultFootstepSound(SurfaceMaterial);
 	}
 
 	if (!SelectedSound)
@@ -448,4 +456,36 @@ void UChimeraMovementComponent::ClearFootstepSyncTelemetry()
 {
 	GFootstepSyncTelemetry.Empty();
 	UE_LOG(LogTemp, Log, TEXT("Footstep sync telemetry cleared"));
+}
+// ------------------------------------------------------------------
+// GetDefaultFootstepSound - auto-resolve CC0 footstep asset by surface type
+// ------------------------------------------------------------------
+USoundBase* UChimeraMovementComponent::GetDefaultFootstepSound(ESurfaceMaterialType SurfaceMaterial)
+{
+	if (TObjectPtr<USoundBase>* Cached = DefaultFootstepCache.Find(SurfaceMaterial))
+	{
+		return Cached->Get();
+	}
+
+	FString AssetPath;
+	switch (SurfaceMaterial)
+	{
+		case ESurfaceMaterialType::Sand:
+			AssetPath = TEXT("/Game/Audio/Footsteps/Fantozzi-SandL1");
+			break;
+		case ESurfaceMaterialType::Rock:
+		case ESurfaceMaterialType::Metal:
+		case ESurfaceMaterialType::Water:
+			AssetPath = TEXT("/Game/Audio/Footsteps/Fantozzi-StoneL1");
+			break;
+		case ESurfaceMaterialType::Ground:
+		case ESurfaceMaterialType::Custom:
+		default:
+			AssetPath = TEXT("/Game/Audio/Footsteps/Fantozzi-SandL1");
+			break;
+	}
+
+	USoundBase* Loaded = LoadObject<USoundBase>(nullptr, *AssetPath);
+	DefaultFootstepCache.Add(SurfaceMaterial, Loaded);
+	return Loaded;
 }

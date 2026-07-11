@@ -207,6 +207,13 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "critic_judgment":
         return _mutate_critic_judgment(details or {})
 
+    # Research Mandate mutation types (added 2026-07-10)
+    elif mutate_type == "research_summary":
+        return _mutate_research_summary(details or {})
+
+    elif mutate_type == "documentation_review":
+        return _mutate_documentation_review(details or {})
+
     else:
         raise ValueError(f"Unknown mutation type: {mutate_type}")
 
@@ -2110,6 +2117,197 @@ def record_critic_judgment(feature: str, benchmark_titles: list, overall_percent
         "overall_percentage": overall_percentage, "axis_scores": axis_scores,
         "named_comparisons": named_comparisons, "rationale": rationale,
         "disclaimer": CRITIC_ADVISORY_DISCLAIMER})
+
+
+# ============================================================================
+# Research Mandate mutation types (added 2026-07-10)
+# ============================================================================
+
+def _mutate_research_summary(details: dict) -> str:
+    """Records a ResearchSummary node documenting completed research phase.
+
+    Fields: task_name, tier (1/2/3), sources_count, domains_visited, confidence_rating,
+            source_table (list of {type, url_or_path, confidence, notes}),
+            parameter_table (dict of param->{value, citations, confidence}),
+            discrepancies_resolved (list), failure_research (list),
+            new_discoveries_recorded (list of node_ids)."""
+    task_name = str(details.get("task_name") or "").strip()
+    tier = details.get("tier", 1)
+    if not task_name:
+        return "rejected_research_summary: 'task_name' is required; nothing recorded"
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    node_id = f"research_summary_{hashlib.sha256(f'research_summary_{task_name}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}"
+    source_table = details.get("source_table") or []
+    parameter_table = details.get("parameter_table") or {}
+    discrepancies_resolved = details.get("discrepancies_resolved") or []
+    failure_research = details.get("failure_research") or []
+    new_discoveries_recorded = details.get("new_discoveries_recorded") or []
+
+    node = {
+        "id": node_id,
+        "type": "ResearchSummary",
+        "timestamp": datetime.utcnow().isoformat(),
+        "task_name": task_name,
+        "tier": tier,
+        "sources_count": details.get("sources_count", len(source_table)),
+        "domains_visited": details.get("domains_visited", 0),
+        "confidence_rating": str(details.get("confidence_rating", "medium")),
+        "source_table": source_table,
+        "parameter_table": parameter_table,
+        "discrepancies_resolved": discrepancies_resolved,
+        "failure_research": failure_research,
+        "new_discoveries_recorded": new_discoveries_recorded,
+        "error_signature": "success_no_error",
+        "template_file": f"research_summary/{task_name[:60]}",
+        "error_category": "none",
+        "fix_description": f"Research summary recorded: '{task_name}' (Tier {tier}, {len(source_table)} sources, confidence={details.get('confidence_rating', 'medium')})",
+        "compilation_result": "pass",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node_id
+
+
+def _mutate_pathway_attempt(details: dict) -> str:
+    """Records a PathwayAttempt node documenting failed pathway discovery.
+
+    Fields: task_name, attempted_pathway, error_category (pathway_failed, timeout, trap_hit),
+            workaround_applied (list of strings)."""
+    task_name = str(details.get("task_name") or "").strip()
+    if not task_name:
+        return "rejected_pathway_attempt: 'task_name' is required; nothing recorded"
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    node_id = f"pathway_attempt_{hashlib.sha256(f'pathway_attempt_{task_name}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}"
+    attempted_pathway = str(details.get("attempted_pathway") or "").strip()
+    error_category = str(details.get("error_category", "pathway_failed"))
+    workaround_applied = details.get("workaround_applied") or []
+
+    node = {
+        "id": node_id,
+        "type": "PathwayAttempt",
+        "timestamp": datetime.utcnow().isoformat(),
+        "task_name": task_name,
+        "attempted_pathway": attempted_pathway,
+        "error_category": error_category,
+        "workaround_applied": workaround_applied,
+        "error_signature": f"failed_{error_category}" if error_category != "success_no_error" else "success_no_error",
+        "template_file": f"pathway_attempt/{task_name[:60]}",
+        "error_category_detail": error_category,
+        "fix_description": f"Pathway attempt recorded: '{task_name}' -> {attempted_pathway} ({error_category})",
+        "compilation_result": "fail",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node_id
+
+
+def _mutate_documentation_review(details: dict) -> str:
+    """Records a DocumentationReview node confirming mandatory docs were checked.
+
+    Fields: doc_file (relative path), section_reviewed, relevant_findings (list of strings)."""
+    doc_file = str(details.get("doc_file") or "").strip()
+    if not doc_file:
+        return "rejected_documentation_review: 'doc_file' is required; nothing recorded"
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+
+    node_id = f"documentation_review_{hashlib.sha256(f'documentation_review_{doc_file}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}"
+    section_reviewed = str(details.get("section_reviewed") or "").strip()
+    relevant_findings = details.get("relevant_findings") or []
+
+    node = {
+        "id": node_id,
+        "type": "DocumentationReview",
+        "timestamp": datetime.utcnow().isoformat(),
+        "doc_file": doc_file,
+        "section_reviewed": section_reviewed,
+        "relevant_findings": relevant_findings,
+        "error_signature": "success_no_error",
+        "template_file": f"documentation_review/{doc_file[:60]}",
+        "error_category": "none",
+        "fix_description": f"Documentation review recorded: '{doc_file}' (section='{section_reviewed}', findings={len(relevant_findings)})",
+        "compilation_result": "pass",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node_id
+
+
+def record_research_summary(task_name: str, tier: int = 1, sources_count: int = 0,
+                            domains_visited: int = 0, confidence_rating: str = "medium",
+                            source_table: list = None, parameter_table: dict = None,
+                            discrepancies_resolved: list = None, failure_research: list = None,
+                            new_discoveries_recorded: list = None) -> str:
+    """Record a ResearchSummary node (Research Mandate §7.3).
+
+    Args:
+        task_name: Name of the task this research was for
+        tier: 1/2/3 complexity tier
+        sources_count: Total number of sources consulted
+        domains_visited: Number of distinct domains (Tier 3 requires >=3)
+        confidence_rating: 'low'|'medium'|'high'
+        source_table: List of {type, url_or_path, confidence, notes} dicts
+        parameter_table: Dict of param_name -> {value, citations, confidence}
+        discrepancies_resolved: List of strings describing resolved conflicts
+        failure_research: List of strings documenting what doesn't work (Tier 3)
+        new_discoveries_recorded: List of DNA node IDs for discoveries recorded during research
+
+    Returns:
+        Node ID on success, rejected_* string on validation failure"""
+    return graphify_mutate("research_summary", details={
+        "task_name": task_name, "tier": tier, "sources_count": sources_count,
+        "domains_visited": domains_visited, "confidence_rating": confidence_rating,
+        "source_table": source_table or [], "parameter_table": parameter_table or {},
+        "discrepancies_resolved": discrepancies_resolved or [],
+        "failure_research": failure_research or [],
+        "new_discoveries_recorded": new_discoveries_recorded or []})
+
+
+def record_pathway_attempt(task_name: str, attempted_pathway: str = "",
+                           error_category: str = "pathway_failed",
+                           workaround_applied: list = None) -> str:
+    """Record a PathwayAttempt node (Research Mandate §7.3).
+
+    Args:
+        task_name: Name of the task that encountered this attempt
+        attempted_pathway: The pathway string or tool/action being tested
+        error_category: 'pathway_failed' | 'timeout' | 'trap_hit' | 'success_no_error'
+        workaround_applied: List of strings describing what was tried instead
+
+    Returns:
+        Node ID on success, rejected_* string on validation failure"""
+    return graphify_mutate("pathway_attempt", details={
+        "task_name": task_name, "attempted_pathway": attempted_pathway,
+        "error_category": error_category, "workaround_applied": workaround_applied or []})
+
+
+def record_documentation_review(doc_file: str, section_reviewed: str = "",
+                                relevant_findings: list = None) -> str:
+    """Record a DocumentationReview node (Research Mandate §7.3).
+
+    Args:
+        doc_file: Relative path to the document reviewed
+        section_reviewed: Which section(s) were checked
+        relevant_findings: List of strings describing any traps, bugs, or notes found
+
+    Returns:
+        Node ID on success, rejected_* string on validation failure"""
+    return graphify_mutate("documentation_review", details={
+        "doc_file": doc_file, "section_reviewed": section_reviewed,
+        "relevant_findings": relevant_findings or []})
 
 
 # Convenience functions for backward compatibility

@@ -69,10 +69,10 @@ def _score_correctness(tests: dict) -> tuple[float, str]:
 def _score_stability(t: dict) -> tuple[float, str]:
     pts, notes = 0.0, []
     if t.get("crash_free") is True:
-        pts += 15
+        pts += 12
         notes.append("crash-free")
     else:
-        notes.append("crash evidence or unknown (0/15)")
+        notes.append("crash evidence or unknown (0/12)")
     fps, target = t.get("fps"), t.get("target_fps", 60)
     if fps is not None:
         if float(fps) >= float(target):
@@ -83,10 +83,15 @@ def _score_stability(t: dict) -> tuple[float, str]:
     else:
         notes.append("fps unmeasured (0/5)")
     if t.get("unbounded_growth") is False:
-        pts += 5
-        notes.append("no unbounded growth")
+        pts += 4
+        notes.append("actor growth bounded")
     else:
-        notes.append("growth unmeasured or unbounded (0/5)")
+        notes.append("actor growth unmeasured or unbounded (0/4)")
+    if t.get("memory_bounded") is True:
+        pts += 4
+        notes.append("memory growth bounded (<10%)")
+    else:
+        notes.append("memory growth unmeasured or unbounded (0/4)")
     return pts, "; ".join(notes)
 
 

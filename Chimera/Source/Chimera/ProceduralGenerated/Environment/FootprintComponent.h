@@ -8,6 +8,8 @@
 class UStaticMesh;
 class UMaterialInterface;
 class UCharacterMovementComponent;
+class USoundBase;
+struct FHitResult;
 
 /**
  * Movement-driven footprint trail. Attach to any pawn; every StrideLength of
@@ -16,6 +18,14 @@ class UCharacterMovementComponent;
  * blend spaces (those never propagated for the demo character — see
  * Ground_Sand_Footprints research) so footprints are deterministic and
  * hard-fact verifiable via the FootprintsSpawned counter.
+ *
+ * Ground_Sand_Sound: each footfall also plays a surface-aware footstep sound
+ * (CC0 Fantozzi pack, see Content/Audio/Footsteps/SOURCES.md) selected from
+ * per-foot variant pools with pitch jitter and speed-scaled volume. Sand
+ * surfaces get the sand set; everything else falls back to the stone set
+ * (generic hard-contact) until metal/water CC0 sources are added. Hard-fact
+ * verifiable via the FootstepsPlayed counter and [DEMOBEAT] [GROUND_SOUND]
+ * log lines (sleepwalker log_contains / pawn_property_min).
  */
 UCLASS(ClassGroup = (Chimera), meta = (BlueprintSpawnableComponent))
 class CHIMERA_API UFootprintComponent : public UActorComponent

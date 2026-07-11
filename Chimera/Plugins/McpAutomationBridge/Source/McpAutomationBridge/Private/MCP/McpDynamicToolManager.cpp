@@ -1,4 +1,6 @@
 #include "MCP/McpDynamicToolManager.h"
+#include "Components/AudioComponent.h"  // UAudioComponent (used by ChimeraMovementComponent.h)
+#include "ChimeraMovementComponent.h"  // Audio-visual sync telemetry accessors (CHIMERA_API)
 #include "MCP/McpToolRegistry.h"
 #include "Misc/ScopeLock.h"
 
@@ -203,6 +205,35 @@ TSharedPtr<FJsonObject> FMcpDynamicToolManager::HandleAction(
 		return Result;
 	}
 
+	// --- Audio-visual sync telemetry (Ground_Sand_Sound verification) ---
+	if (Action == TEXT("ClearFootstepSyncTelemetry"))
+	{
+		UChimeraMovementComponent::ClearFootstepSyncTelemetry();
+		auto R = MakeShared<FJsonObject>();
+		R->SetBoolField(TEXT("success"), true);
+		return R;
+	}
+	if (Action == TEXT("GetFootstepSyncEventCount"))
+	{
+		auto R = MakeShared<FJsonObject>();
+		R->SetBoolField(TEXT("success"), true);
+		R->SetNumberField(TEXT("count"), UChimeraMovementComponent::GetFootstepSyncEventCount());
+		return R;
+	}
+	if (Action == TEXT("GetAverageFootstepSyncLatencyMs"))
+	{
+		auto R = MakeShared<FJsonObject>();
+		R->SetBoolField(TEXT("success"), true);
+		R->SetNumberField(TEXT("avg_latency_ms"), UChimeraMovementComponent::GetAverageFootstepSyncLatencyMs());
+		return R;
+	}
+	if (Action == TEXT("GetMaxFootstepSyncLatencyMs"))
+	{
+		auto R = MakeShared<FJsonObject>();
+		R->SetBoolField(TEXT("success"), true);
+		R->SetNumberField(TEXT("max_latency_ms"), UChimeraMovementComponent::GetMaxFootstepSyncLatencyMs());
+		return R;
+	}
 	// Unknown action — no lock needed
 	auto Err = MakeShared<FJsonObject>();
 	Err->SetBoolField(TEXT("success"), false);

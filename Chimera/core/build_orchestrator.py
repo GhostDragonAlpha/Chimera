@@ -32,8 +32,88 @@ import re
 from pathlib import Path
 from typing import Dict, Any, List
 import subprocess
+import time
 
 from .ubt_builder import UBTBuilder
+
+
+# ==============================================================================
+# MODULE-LEVEL EDITOR LIFECYCLE MANAGEMENT (Optimization: H-20)
+# ==============================================================================
+# These are called ONCE per pipeline run, not per build attempt.
+# Avoids redundant tasklist I/O and repeated taskkill calls on retry attempts.
+
+_editor_was_closed = False
+
+
+def ensure_editor_closed() -> bool:
+	"""
+	Check if UE Editor is running. If so, close it and log to graph.
+	Idempotent — safe to call multiple times.
+	Returns True if editor was running and successfully closed, False otherwise.
+	"""
+	global _editor_was_closed
+	if _editor_was_closed:
+		return True  # Already handled
+
+	try:
+		ue_check = subprocess.run(
+			["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe"],
+			capture_output=True, text=True, timeout=10,
+		)
+		if "UnrealEditor.exe" not in ue_check.stdout:
+			_editor_was_closed = True
+			return True  # Editor not running, nothing to do
+
+		print("  [LIFECYCLE] Unreal Editor is running — module DLL is locked.")
+		print("  [LIFECYCLE] Closing UE Editor to free the linker...")
+		subprocess.run(["taskkill", "/F", "/IM", "UnrealEditor.exe"],
+		               capture_output=True, text=True, timeout=15)
+		time.sleep(3)  # Wait for process to fully exit
+		_editor_was_closed = True
+
+		# Log to graph: H-10 — killed_for_build is the build lifecycle working as designed
+		try:
+			mutate("pathway_attempt", details={
+				"tool": "build_orchestrator", "action": "ue_shutdown",
+				"result": "success_intended_kill", "parameters_tried": {},
+				"note": "killed_for_build is the build lifecycle working as designed, not a pathway failure"
+			})
+		except Exception:
+			pass
+
+		print("  [LIFECYCLE] UE Editor closed. Build can proceed.")
+		return True
+
+	except Exception as e:
+		print(f"  [LIFECYCLE] Note: could not check UE Editor state: {e}")
+		_editor_was_closed = True  # Mark done to avoid retry loop
+		return False
+
+
+def restore_editor_async():
+	"""
+	Launch the UE Editor in the background after pipeline completes.
+	Non-blocking, does not wait for the editor to fully load.
+	"""
+	try:
+		import sys
+		editor_path = r"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe"
+		uproject_path = r"E:\PythonChimera\Chimera\Chimera.uproject"
+
+		if os.path.exists(editor_path) and os.path.exists(uproject_path):
+			print("  [LIFECYCLE] Launching UE Editor in background...")
+			# Use CREATE_NEW_PROCESS_GROUP to detach from pipeline process
+			subprocess.Popen(
+				[editor_path, uproject_path],
+				stdout=subprocess.DEVNULL,
+				stderr=subprocess.DEVNULL,
+				creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if sys.platform == "win32" else 0
+			)
+		else:
+			print(f"  [LIFECYCLE] Editor path or project not found; skipping restore")
+	except Exception as e:
+		print(f"  [LIFECYCLE] Could not restore editor: {e}")
 
 
 def run_static_analysis(source_dir: str) -> tuple[bool, list[str]]:
@@ -393,33 +473,9 @@ class BuildOrchestrator:
             }
         print("Static analysis passed")
 
-        # Step 1.6: If UE Editor is running, it holds the module DLL lock and blocks the linker.
-        # Close it before building so the cycle can proceed autonomously.
-        try:
-            import subprocess
-            ue_check = subprocess.run(
-                ["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe"],
-                capture_output=True, text=True, timeout=10,
-            )
-            if "UnrealEditor.exe" in ue_check.stdout:
-                print("  [BUILD] Unreal Editor is running — module DLL is locked.")
-                print("  [BUILD] Closing UE Editor to free the linker...")
-                subprocess.run(["taskkill", "/F", "/IM", "UnrealEditor.exe"],
-                               capture_output=True, text=True, timeout=15)
-                import time
-                time.sleep(3)  # Wait for process to fully exit
-                # Log to graph: H-10 — killed_for_build is the build lifecycle working as designed, not a pathway failure
-                try:
-                    mutate("pathway_attempt", details={
-                        "tool": "build_orchestrator", "action": "ue_shutdown",
-                        "result": "success_intended_kill", "parameters_tried": {},
-                        "note": "killed_for_build is the build lifecycle working as designed, not a pathway failure"
-                    })
-                except Exception:
-                    pass
-                print("  [BUILD] UE Editor closed. Proceeding with compilation.")
-        except Exception as e:
-            print(f"  [BUILD] Note: could not check UE Editor state: {e}")
+        # [OPTIMIZATION H-20] Editor lifecycle is managed at pipeline level, not per-build.
+        # Call ensure_editor_closed() at pipeline start (e.g., in run_deep_space_trader_pipeline.py)
+        # to avoid redundant tasklist I/O and multiple taskkill calls on retry attempts.
 
         # Step 2: Compile with UBT
         compile_success = self.compile_with_ubt(uproject_path)

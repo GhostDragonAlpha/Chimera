@@ -31,15 +31,51 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Audio")
 	float LowPassFrequency;
 
+	// === Wind Layer (continuous, speed-driven) ===
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+	TObjectPtr<USoundBase> WindLoopSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+	float WindMinVolume = 0.05f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+	float WindMaxVolume = 0.6f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+	float WindSpeedForMaxVolume = 600.0f; // cm/s that maps to max wind volume/pitch
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+	float WindLowPassMin = 300.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+	float WindLowPassMax = 2200.0f;
+
 	UFUNCTION(BlueprintCallable, Category = "Audio")
 	void PlayImpactSound(FVector Location);
 
 	UFUNCTION(BlueprintCallable, Category = "Audio")
 	void SetVacuumMode(bool bIsVacuum);
 
+	// Start / stop the continuous wind layer (no-op if no WindLoopSound or in vacuum)
+	UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
+	void StartWind();
+
+	UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
+	void StopWind();
+
+	// Drive wind intensity from a wind speed (cm/s). Volume / pitch / low-pass scale with speed.
+	UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
+	void SetWindIntensity(float WindSpeed);
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Audio")
 	TObjectPtr<UAudioComponent> AudioComponent;
 
 	bool bIsVacuum;
+
+	// Dedicated looping audio component for the wind layer
+	UPROPERTY(VisibleAnywhere, Category = "Audio|Wind")
+	TObjectPtr<UAudioComponent> WindAudioComponent;
+
+	bool bWindActive = false;
 };

@@ -351,3 +351,12 @@ candidates entry, one CYCLE_PROMPT constant. Tier-1 organs are LM-heavy (capable
 write them; local agents run them). Nothing self-executes into the game without the existing
 gates; nothing outranks the human's sentence. The roster is itself a rehearsal input: the
 three Tier-1 hires are seeded as candidates.
+
+> **Status 2026-07-11**: the three Tier-1 hire candidates (Hire_Scholar_organ,
+> Hire_Muse_organ, Hire_Visionkeeper_organ) were RETIRED from
+> `docs/rehearsal_candidates.json` — all three organs are HIRED with wiring closed
+> (see each entry's status updates above), yet the stale entries kept winning
+> `rehearsal --decide` (rollout_0e24132948383658 chose Hire_Visionkeeper_organ on
+> 2026-07-11 at score 0.988, boosted 1.3x by the very visionkeeper it proposed to
+> hire). The seeding sentence above is kept for history; future organ hires should
+> be seeded as candidates and retired on hire completion the same way.

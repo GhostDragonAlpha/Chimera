@@ -161,6 +161,109 @@ def probe_growth(client: "MCPStdioClient", soak_seconds: int):
         return None, f"engine unreachable ({type(e).__name__})"
 
 
+def probe_memory(client: "MCPStdioClient", soak_seconds: int):
+    """Probe memory growth over soak period. Detects unbounded memory accumulation.
+
+    Returns: (is_bounded, note_string)
+    - is_bounded: False if memory grew >10% (unbounded), True if stable, None if unmeasurable
+    - note: human-readable measurement summary
+    """
+    def get_memory_mb():
+        result = client.call("inspect", {"action": "get_memory_stats"})
+        # Try multiple field names for memory (varies by MCP implementation)
+        for pattern in [
+            r'usedPhysical"?\s*[:=]\s*"?([0-9.]+)',  # Used physical RAM
+            r'usedVirtual"?\s*[:=]\s*"?([0-9.]+)',   # Used virtual
+            r'peakUsed"?\s*[:=]\s*"?([0-9.]+)',      # Peak memory
+            r'currentUsed"?\s*[:=]\s*"?([0-9.]+)',   # Current usage
+            r'memoryUsedMB"?\s*[:=]\s*"?([0-9.]+)',  # Generic "used MB"
+        ]:
+            val = _extract(pattern, result)
+            if val is not None:
+                return val
+        return None
+
+    try:
+        first = get_memory_mb()
+        if first is None:
+            return None, "no memory data in get_memory_stats"
+        time.sleep(soak_seconds)
+        second = get_memory_mb()
+        if second is None:
+            return None, "second memory sample failed"
+
+        delta_mb = second - first
+        pct_growth = (delta_mb / first * 100) if first > 0 else 0
+
+        # >10% growth over soak window is suspicious (unbounded)
+        is_bounded = pct_growth <= 10.0
+
+        return is_bounded, f"memory {first:.1f}MB -> {second:.1f}MB ({pct_growth:+.1f}%) over {soak_seconds}s"
+    except Exception as e:
+        return None, f"engine unreachable ({type(e).__name__})"
+
+
+def probe_frame_time_stability(client: "MCPStdioClient", soak_seconds: int):
+    """Probe frame time variance and hitches over soak period. Detects micro-stutters.
+
+    Collects frame time samples at ~10Hz intervals during soak.
+    Returns: (is_stable, note_string)
+    - is_stable: False if variance exceeds threshold (>15ms stddev or >50% frame spike), True if stable, None if unmeasurable
+    - note: human-readable variance summary with hitch count
+    """
+    def get_frame_time_ms():
+        result = client.call("inspect", {"action": "get_performance_stats"})
+        # Try multiple frame time field names (varies by MCP implementation)
+        for pattern in [
+            r'frameTime"?\s*[:=]\s*"?([0-9.]+)',         # Generic frame time
+            r'avgFrameTime"?\s*[:=]\s*"?([0-9.]+)',       # Average frame time
+            r'lastFrameTime"?\s*[:=]\s*"?([0-9.]+)',      # Last frame time
+            r'deltaTime"?\s*[:=]\s*"?([0-9.]+)',          # Delta time (can be in ms or s)
+        ]:
+            val = _extract(pattern, result)
+            if val is not None:
+                # If value looks like seconds (< 1), convert to ms
+                return val * 1000 if val < 1 else val
+        return None
+
+    try:
+        frame_times = []
+        samples = max(3, soak_seconds // 2)  # Sample at ~2Hz over soak period
+        interval = soak_seconds / samples
+
+        for i in range(samples):
+            ft = get_frame_time_ms()
+            if ft is not None:
+                frame_times.append(ft)
+            if i < samples - 1:
+                time.sleep(interval)
+
+        if len(frame_times) < 2:
+            return None, "insufficient frame time samples"
+
+        # Calculate statistics
+        mean_ft = sum(frame_times) / len(frame_times)
+        variance = sum((x - mean_ft) ** 2 for x in frame_times) / len(frame_times)
+        stddev = variance ** 0.5
+        max_ft = max(frame_times)
+        min_ft = min(frame_times)
+
+        # Detect hitches: frames >50% slower than average
+        hitch_threshold = mean_ft * 1.5
+        hitches = [ft for ft in frame_times if ft > hitch_threshold]
+
+        # Frame time is stable if stddev <= 15ms AND no major hitches
+        is_stable = stddev <= 15.0 and len(hitches) == 0
+
+        note = (
+            f"frame times: avg={mean_ft:.2f}ms, stddev={stddev:.2f}ms, "
+            f"range=[{min_ft:.2f}, {max_ft:.2f}]ms, hitches={len(hitches)}"
+        )
+        return is_stable, note
+    except Exception as e:
+        return None, f"engine unreachable ({type(e).__name__})"
+
+
 def _foreground_appactivate():
     """Ensure editor is foregrounded for honest fps measurement.
 
@@ -237,6 +340,17 @@ def main():
             notes["unbounded_growth"] = note
             if grew is not None:
                 telemetry["unbounded_growth"] = grew
+
+            is_memory_bounded, note = probe_memory(client, args.soak)
+            notes["memory_bounded"] = note
+            if is_memory_bounded is not None:
+                telemetry["memory_bounded"] = is_memory_bounded
+
+            is_frame_stable, note = probe_frame_time_stability(client, args.soak)
+            notes["frame_time_stable"] = note
+            if is_frame_stable is not None:
+                telemetry["frame_time_stable"] = is_frame_stable
+
             client.close()
 
     out = Path(args.out)

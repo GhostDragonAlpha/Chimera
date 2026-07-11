@@ -22,7 +22,7 @@ and records its reasoning with the grade (`record_grade`).
 | Weight | Category | Source of truth |
 |---|---|---|
 | 40 | **Correctness** — acceptance tests pass | UE Automation test results (`Automation RunTests ChimeraTests`). Score = pass_rate × **coverage** (tests executed ÷ declared acceptance criteria) × 40 — one passing test of three declared criteria earns 13/40, never 40/40. Headless skip ≠ pass (cap 20/40). Every feature MUST declare its acceptance criteria count. |
-| 25 | **Stability & performance budgets** | Telemetry via MCP `inspect`: no crashes/asserts in log, frame rate ≥ DSL `target_fps` (60), no unbounded actor/memory growth across a 60s soak. |
+| 25 | **Stability & performance budgets** | Telemetry via MCP `inspect`: crash-free log (12 pts), frame rate ≥ DSL `target_fps` 60 (5 pts), no unbounded actor growth (4 pts, via get_performance_stats), no unbounded memory growth (4 pts, via get_memory_stats <10% delta). |
 | 20 | **Design-standard conformance** (agent-judged checklist below) | Engine state + feature parameters vs. the checklist — each item is a concrete yes/no. |
 | 15 | **Spec fidelity** | Built result matches the DSL block and researched parameters (names, counts, values, placements verified via telemetry queries). |
 

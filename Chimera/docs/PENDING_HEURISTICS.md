@@ -244,7 +244,8 @@ Wait, looking at the
 - sample: automated rejection sweep: simulation evidence indicts this feature (3 failing outcome(s)) in simtest_fbd1071132dfb65a
 - sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Two additional, separate gaps found: (1) ATool_Shovel (Source/Chimera/Proced
 - sample: Beats FAILED (not reached) in both fresh sessions (simtest_fadc939050ee23a7: dist=9735/10535uu; simtest_e9854be8cf3d0d83: dist=9535/10335uu) -- but this is the 
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: A verb needs behavior, not metadata: ATool_Shovel had DigRadius but no Dig() — beats must press the verb key and assert a world-state change.
+- agent_note: drafted 2026-07-11 from observation_bb1ac7c1c90f2343 (static prop, numeric metadata, zero digging logic; beat only walked pad proximity). Distinct from H-14: even with input wired there is no function to call. APPROVE -> claude_md.
 
 ## H-22: human_rejection: Verb_PickUp
 - status: pending
@@ -254,7 +255,8 @@ Wait, looking at the
 - sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_fbd1071132dfb65a
 - sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Triple gap, each confirmed directly rather than inferred: (1) BP_Astronaut_C
 - sample: Rig re-verified clean post-input-fix (2 sessions), same shallow is_pie/pawn_class check as before. The immediately-prior session's direct component-listing evid
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: Read back live-PIE pawn components before staging an interaction verb — PickUp's component was never attached, bound, or given a level actor to grab.
+- agent_note: drafted 2026-07-11 from observation_bbd3824598c5d283 (two independent live-PIE component listings: 5 components, no UPickupInteractionComponent; no Interact binding; no APickupActor in level). APPROVE -> claude_md.
 
 <!-- distilled 2026-07-08T23:20:13Z -->
 ## H-23: human_rejection: Verb_Drop
@@ -265,7 +267,7 @@ Wait, looking at the
 - sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_fbd1071132dfb65a
 - sample: Independently verified beyond beat evidence (rig defects refuted -- see Verb_Look). Same missing-binding gap as Verb_PickUp: no Drop key binding exists anywhere
 - sample: Rig re-verified clean post-input-fix (2 sessions), same shallow is_pie/pawn_class check as before. ADropActor exists as a reasonably complete physics-drop imple
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: (subsumed by H-22 — same never-wired gap: ADropActor physics is complete but no input path and nothing in inventory until PickUp lands; input-wiring lesson already covered by H-14)
 
 ## H-24: human_rejection: Ground_Rock_Surface
 - status: pending
@@ -273,7 +275,8 @@ Wait, looking at the
 - proposed_organ: claude_md
 - evidence: observation_cf32cafa76fd3b40
 - sample: Reopening the 2026-07-07T06:46:59 observed_provisional acceptance (simtest_0dec5fc92db45fee, 4 clean sessions). walk_metal_to_rock -- the only beat tagging this
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: A feature tagged only by movement beats is hostage to rig health — zero-displacement failures (GameMode PlayerControllerClass unset) indict the rig, not the surface.
+- agent_note: drafted 2026-07-11 from observation_cf32cafa76fd3b40 (material acceptance reopened by frozen-at-spawn beats; root cause was the rig, fixed task_c11196d2 and re-verified at ~727-867uu/s). APPROVE -> claude_md.
 
 <!-- distilled 2026-07-08T23:31:30Z -->
 ## H-25: sim_rejection: verb_interactions/verb_shovel_rock_surface_location
@@ -285,7 +288,8 @@ Wait, looking at the
 - sample: failed: [{"expect": {"pawn_within": {"x": 2000, "y": 0, "r": 900}}, "ok": false, "note": "dist=5601uu (loc x=7600.763583183289, 
 - sample: failed: [{"expect": {"pawn_within": {"x": 2000, "y": 0, "r": 900}}, "ok": false, "note": "dist=2000uu (loc x=0, y=0)"}]
 - possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: Position-expect beats must reset_position at beat start — W-drift accumulates across sequential beats and BugItGo is refused during PIE.
+- agent_note: drafted 2026-07-11; reconciles the H-17/H-18 conflict flag: H-17 covers unregistered ACTIONS at dispatch, this covers runtime drift between position expects (regolith_yard already carries the fix in its provenance note). H-26/H-27 are the same root cause and are subsumed here. APPROVE -> claude_md.
 
 ## H-26: sim_rejection: verb_interactions/verb_shovel_sand_surface_location
 - status: pending
@@ -296,7 +300,7 @@ Wait, looking at the
 - sample: failed: [{"expect": {"actor_exists": "SandDrift_FX"}, "ok": true, "note": "present=True"}]
 - sample: blocked: [{"error": "control_editor.console_command: Command not executed: BugItGo 4000.0 0.0 150.0 0.0 0.0 0.0"}]
 - possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: (subsumed by H-25 — same accumulated-drift root cause, sand-pad facet; its BugItGo-refused sample is the one H-25's rule quotes)
 
 <!-- distilled 2026-07-08T23:36:25Z -->
 ## H-27: sim_rejection: verb_interactions/verb_shovel_metal_surface_location
@@ -308,7 +312,7 @@ Wait, looking at the
 - sample: failed: [{"expect": {"pawn_within": {"x": 0, "y": 0, "r": 600}}, "ok": false, "note": "dist=3600uu (loc x=3600.0008583068848, y=
 - sample: failed: [{"expect": {"pawn_within": {"x": 0, "y": 0, "r": 600}}, "ok": false, "note": "dist=9735uu (loc x=9727.041600935105, y=4
 - possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: (subsumed by H-25 — same accumulated-drift root cause, metal-pad facet)
 
 ## H-28: sim_rejection: regolith_yard/jump_probe
 - status: pending
@@ -318,7 +322,8 @@ Wait, looking at the
 - sample: failed: [{"expect": {"log_contains": "[DEMOBEAT]"}, "ok": false, "note": "log_hit=False"}]
 - sample: failed: [{"expect": {"pawn_z_above": 130}, "ok": false, "note": "z=102"}]
 - sample: failed: [{"expect": {"pawn_z_above": 130}, "ok": false, "note": "z=-26947"}]
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: Probe jumps by timed pawn_z read-back, not log_contains — and reset_position first: z=-26947 shows the pawn had already drifted off the world.
+- agent_note: drafted 2026-07-11; the beat file's _note records the sim finding its own weak log_contains test (surprise 2026-07-06); z=102 samples are the pre-input-fix era, z=-26947 is drift off the playable floor. APPROVE -> claude_md.
 
 <!-- distilled 2026-07-08T23:45:34Z -->
 ## H-29: sim_rejection: regolith_yard/walk_rock_to_sand_basin
@@ -328,7 +333,8 @@ Wait, looking at the
 - evidence: simtest_d6e2cb58b97175ad, simtest_613400f2fcc63327, simtest_9cd9a1ac25867a73, simtest_b9c246f4cef92293
 - sample: failed: [{"expect": {"actor_exists": "SandDrift_FX"}, "ok": true, "note": "present=True"}]
 - possible_conflict_with: H-28  (Gardener: reconcile)
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: Compound beats fail for shifting root causes (frozen input, then missing SandDrift_FX) — attribute rejection to the failing expect's subsystem, not every tagged feature.
+- agent_note: drafted 2026-07-11; reconciles the H-28 flag: H-28 is the jump-probe read-back lesson, this is compound-beat attribution. Deliberately NOT subsumed/tombstoned — the signature has a LIVE new failure mode (simtest_ef8ab7dcb8119386 2026-07-11: pawn_within ok at dist=1uu, actor_exists SandDrift_FX present=False, the inverse of these four evidenced runs) and a tombstone would false-suppress it (open phantom pain phase_da55128aec6d109a:P1). APPROVE -> claude_md.
 
 <!-- distilled 2026-07-09T07:15:01Z -->
 ## H-30: sim_rejection: verb_interactions/verb_look_location
@@ -340,4 +346,5 @@ Wait, looking at the
 - sample: failed: [{"expect": {"pawn_class": "BP_Astronaut_Character_C"}, "ok": false, "note": "pawn_class=DefaultPawn"}]
 - sample: failed: [{"expect": {"control_rotation_yaw_delta": 0.5}, "ok": false, "note": "inspect.get_property failed on all controller pat
 - possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
-- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+- draft_rule: Expects are schema-bound like actions — unknown expects (screenshot_taken, unreadable controller properties) fail beats at runtime; validate the expect vocabulary at dispatch.
+- agent_note: drafted 2026-07-11; reconciles the H-17/H-18 conflict flag: H-17's promoted rule covers ACTIONS only, this extends the dispatch-time validation lesson to EXPECTS (pawn_class=DefaultPawn samples are the fixed rig era, not the live lesson). APPROVE -> claude_md.

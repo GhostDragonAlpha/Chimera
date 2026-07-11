@@ -153,13 +153,43 @@ LOOP0_COMPLETE = {  # record_loop0_complete.py
 }
 
 
+def already_backfilled(nodes):
+    """Return (feature_names, loop_keys) already re-recorded by this script.
+
+    Re-running this fixer used to re-record every LOST_FEATURES entry with a
+    fresh `datetime.now()` timestamp, so 2026-07-05-era statuses shadowed every
+    genuine FeatureUpdate recorded since (observed 2026-07-11: the loop board
+    showed Player_Character_Animation 'blocked' over a real 'verified' and
+    Verb_Shovel 'verified' over a real 'needs_refinement'). The backfill is a
+    one-time repair: skip anything the graph already carries.
+    """
+    feats, loops = set(), set()
+    for n in nodes:
+        if not n.get("backfilled"):
+            continue
+        if n.get("type") == "FeatureUpdate" and \
+                (n.get("parameters") or {}).get("re_recorded") == REPAIR_NOTE:
+            feats.add(n.get("feature_name"))
+        elif n.get("type") == "LoopComplete":
+            loops.add((n.get("loop"), n.get("name")))
+    return feats, loops
+
+
 def re_record():
+    dna = load_dna_graph()
+    done_feats, done_loops = already_backfilled(dna.get("nodes", []))
     for d in LOST_FEATURES:
+        if d["feature"] in done_feats:
+            print(f"skip FeatureUpdate {d['feature']} — already re-recorded (idempotent)")
+            continue
         rid = record_feature(
             feature=d["feature"], loop=d["loop"], status=d["status"],
             parameters=d.get("parameters", {}), backfilled=True,
         )
         print(f"re-recorded FeatureUpdate {d['feature']} (loop {d['loop']}, {d['status']}) -> {rid}")
+    if (LOOP0_COMPLETE["loop"], LOOP0_COMPLETE["name"]) in done_loops:
+        print("skip LoopComplete 'The Player' (loop 0) — already re-recorded (idempotent)")
+        return
     rid = record_loop(
         loop=LOOP0_COMPLETE["loop"], name=LOOP0_COMPLETE["name"],
         features=LOOP0_COMPLETE["features"],

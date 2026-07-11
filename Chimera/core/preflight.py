@@ -52,7 +52,17 @@ def _ue_running():
 
 
 def _latest_feature_statuses(nodes):
-    """Latest FeatureUpdate status per feature name (by timestamp)."""
+    """Latest FeatureUpdate status per feature name (by timestamp).
+
+    Backfilled re-records (``backfilled: true``) carry the timestamp of the
+    repair RUN, not of the work they describe, so a re-run of the pollution
+    fixer can stamp 2026-07-05-era statuses with today's date and shadow every
+    genuine status recorded since (observed 2026-07-11: Player_Character_Animation
+    showed 'blocked' over a real 'verified'; Verb_Shovel showed 'verified' over a
+    real 'needs_refinement'). A live-recorded update therefore always outranks a
+    backfilled one; backfilled statuses are used only for features that have no
+    live-recorded update at all.
+    """
     latest = {}
     for n in nodes:
         if n.get("type") != "FeatureUpdate":
@@ -61,9 +71,51 @@ def _latest_feature_statuses(nodes):
         if not name or name == "unknown_feature":
             continue
         ts = n.get("timestamp", "")
-        if name not in latest or ts > latest[name][0]:
-            latest[name] = (ts, n.get("status", "?"), n.get("loop"))
+        rank = (not bool(n.get("backfilled")), ts)  # live-recorded first, then newest
+        if name not in latest or rank > latest[name][0]:
+            latest[name] = (rank, n.get("status", "?"), n.get("loop"))
     return latest
+
+
+def _compute_gpa_trend(nodes: list) -> dict:
+    """Fast inline GPA trend computation (replaces graphify_query call).
+    Eliminates redundant graph load. Scope='trend' path inlined for speed."""
+    gpa_nodes = [n for n in nodes if n.get("type") == "ProfessorGrade"]
+    overall_nodes = [n for n in nodes if n.get("type") == "ProfessorGPA" and n.get("scope") == "project_overall"]
+
+    if not overall_nodes and not gpa_nodes:
+        return {"scope": "trend", "gpa": None, "trend": "flat", "message": "No GPA data recorded yet"}
+
+    # Compute current GPA
+    if overall_nodes:
+        latest_overall = sorted(overall_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)[0]
+        current_gpa = latest_overall.get("gpa")
+    else:
+        recent_grades = [g for g in sorted(gpa_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)[:10]
+                         if g.get("feature") != "Build_Pipeline"]
+        if recent_grades:
+            scores = [g.get("score", 0) for g in recent_grades]
+            current_gpa = sum(scores) / len(scores)
+        else:
+            current_gpa = None
+
+    # Trend from overall nodes
+    sorted_overall = sorted(overall_nodes, key=lambda x: x.get("timestamp", ""), reverse=True)
+    trend = "flat"
+    if len(sorted_overall) >= 2:
+        prev_gpa = sorted_overall[1].get("gpa", 0)
+        curr_gpa = sorted_overall[0].get("gpa", 0)
+        if curr_gpa > prev_gpa + 0.05:
+            trend = "rising"
+        elif curr_gpa < prev_gpa - 0.05:
+            trend = "falling"
+
+    return {
+        "scope": "trend",
+        "gpa": current_gpa,
+        "trend": trend,
+        "grades_count": len(set(g.get("feature") for g in gpa_nodes))
+    }
 
 
 def main():
@@ -83,11 +135,11 @@ def main():
     for t, c in top:
         print(f"    {t}: {c}")
 
-    # 2. GPA + Build failure trend
-    gpa = graphify_query("gpa", "trend") or {}
+    # 2. GPA + Build failure trend (OPTIMIZED: inline computation, no graph reload)
+    gpa = _compute_gpa_trend(nodes)
     print(f"\n[2] GPA: {gpa.get('gpa')}  trend: {gpa.get('trend')}  grades: {gpa.get('grades_count')}")
 
-    # Build failure trend: analyze recent compilation results
+    # Build failure trend: analyze recent compilation results (CACHED for reuse below)
     compilations = [n for n in nodes
                     if n.get("compilation_result") in ("pass", "fail")
                     and n.get("error_category") in ("none", "compilation_error")]
@@ -273,7 +325,7 @@ def main():
     print(f"    DNA API   (localhost:8766): {'UP' if dna_api else 'down (optional)'}")
     print(f"    Unreal Editor process:      {'RUNNING' if ue else ('NOT RUNNING' if ue is not None else 'unknown')}")
 
-    # 7. Residual junk
+    # 7. Residual junk (CACHED: computed once at start, reused here and below in gate checks)
     junk = [n for n in nodes if n.get("feature_name") == "unknown_feature"
             or (n.get("tool") == "unknown_tool" and n.get("action") == "unknown_action")]
     print(f"\n[7] Junk nodes remaining: {len(junk)}"
@@ -284,24 +336,19 @@ def main():
     # if pre-flight conditions aren't met.
     critical_violations = []
 
-    # Check 1: Junk nodes must be zero
+    # Check 1: GPA critically low
     if gpa.get("gpa") is not None and gpa.get("gpa") < 1.0:
         critical_violations.append("GPA critically low")
 
-    # Check 2: Junk nodes (reported in [7])
-    junk = [n for n in nodes if n.get("feature_name") == "unknown_feature"
-            or (n.get("tool") == "unknown_tool" and n.get("action") == "unknown_action")]
+    # Check 2: Junk nodes (REUSING cached junk list — no re-filter)
     if junk:
         critical_violations.append("Junk nodes must be cleaned first")
 
-    # Check 3: Build failure rate check (from [2] trend)
-    compilations = [n for n in nodes
-                    if n.get("compilation_result") in ("pass", "fail")
-                    and n.get("error_category") in ("none", "compilation_error")]
-    recents = sorted(compilations, key=lambda n: n.get("timestamp", ""), reverse=True)[:10]
-    recent_fails = [n for n in recents if n.get("compilation_result") == "fail"]
-    if len(recents) >= 3 and len(recent_fails) > len(recents) * 0.5:
-        critical_violations.append(f"Build failure rate > 50% in last {len(recents)} runs")
+    # Check 3: Build failure rate check (REUSING cached compilations — no re-filter)
+    recents_for_gate = sorted(compilations, key=lambda n: n.get("timestamp", ""), reverse=True)[:10]
+    recent_fails_for_gate = [n for n in recents_for_gate if n.get("compilation_result") == "fail"]
+    if len(recents_for_gate) >= 3 and len(recent_fails_for_gate) > len(recents_for_gate) * 0.5:
+        critical_violations.append(f"Build failure rate > 50% in last {len(recents_for_gate)} runs")
 
     if critical_violations:
         print(f"\n!! {len(critical_violations)} CRITICAL VIOLATION(S):")

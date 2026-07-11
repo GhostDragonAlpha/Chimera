@@ -68,6 +68,77 @@ def pending_summary() -> tuple:
     return len(pending), pending[:8]
 
 
+def _research_compliance_report(nodes) -> str:
+    """Build the Research Compliance section for DREAM_REPORT.md (Phase 3 Pipeline Integration).
+
+    Reads recent ResearchSummary and PathwayAttempt nodes from the DNA graph,
+    calculates aggregate compliance rate, and flags Tier 3 tasks without proper research.
+    Returns a markdown string suitable for appending to the dream report.
+    """
+    try:
+        # Import research_enforcement only when needed (avoid circular import)
+        sys.path.insert(0, str(CHIMERA_ROOT))
+        from core.research_enforcement import get_research_compliance_score as _rcs
+
+        score = _rcs({"nodes": nodes})
+        rs_count = score.get("research_summaries_count", 0)
+        pa_count = score.get("pathway_attempts_count", 0)
+        dr_count = score.get("documentation_reviews_count", 0)
+        tier_dist = score.get("tier_distribution", {1: 0, 2: 0, 3: 0})
+        traps = score.get("traps_avoided_count", 0)
+
+        # Calculate compliance rate from ResearchSummary nodes directly
+        research_summaries = [n for n in nodes if n.get("type") == "ResearchSummary"]
+        doc_reviews = [n for n in nodes if n.get("type") == "DocumentationReview"]
+
+        # Count tasks that had documentation review (unique task names)
+        reviewed_tasks = set()
+        for dr in doc_reviews:
+            # Extract task context from relevant_findings or fix_description
+            findings = dr.get("relevant_findings", [])
+            for f in findings:
+                if isinstance(f, dict):
+                    task_ctx = str(f.get("task_name", ""))[:60]
+                    if task_ctx:
+                        reviewed_tasks.add(task_ctx)
+
+        # Flag Tier 3 tasks without proper research (tasks with pathway attempts but no ResearchSummary)
+        unresearched_tier3 = []
+        for pa in [n for n in nodes if n.get("type") == "PathwayAttempt"]:
+            task_name = str(pa.get("task_name", ""))[:60]
+            # Check if this task has a corresponding ResearchSummary
+            has_rs = any(
+                rs.get("task_name", "") == task_name or task_name in str(rs.get("task_name", ""))
+                for rs in research_summaries
+            )
+            if not has_rs and pa.get("tier") == 3:
+                unresearched_tier3.append(task_name)
+
+        lines = [
+            "## Research Mandate Compliance (Phase 3 Pipeline Integration)",
+            "",
+            f"- **Research summaries recorded:** {rs_count}",
+            f"- **Documentation reviews completed:** {dr_count}",
+            f"- **Pathway attempts logged:** {pa_count}",
+            f"- **Tier distribution:** Tier 1={tier_dist.get(1, 0)}, Tier 2={tier_dist.get(2, 0)}, Tier 3={tier_dist.get(3, 0)}",
+            f"- **Traps avoided (PathwayAttempt trap_hit + workaround):** {traps}",
+        ]
+
+        if unresearched_tier3:
+            lines.append("")
+            lines.append("### ⚠️ Tier 3 Tasks Without Research Summary")
+            for t in unresearched_tier3[:10]:
+                lines.append(f"- `{t}` — executed without recorded ResearchSummary")
+        else:
+            lines.append("")
+            lines.append("### Tier 3 Compliance")
+            lines.append("- All Tier 3 tasks have associated research summaries (or none exist)")
+
+        return "\n".join(lines)
+    except Exception as ex:
+        return f"## Research Mandate Compliance\n- **Status:** Error collecting metrics — {ex}"
+
+
 def main():
     parser = argparse.ArgumentParser(description="Nightly consolidation: distill, preview, brief the Gardener")
     parser.add_argument("--max-candidates", type=int, default=2,
@@ -108,6 +179,9 @@ def main():
     inh = collect_inheritance(nodes)
     n_pending, pending = pending_summary()
 
+    # Research Mandate compliance processing (Phase 3 Pipeline Integration)
+    research_compliance_section = _research_compliance_report(nodes)
+
     lines = [
         "# DREAM REPORT — morning briefing for the Gardener",
         f"consolidated: {stamp}",
@@ -141,7 +215,10 @@ def main():
               f"`{tend_out or 'skipped (--no-tend)'}`",
               "", "## Tonight's distillation", "```", distill_out.strip(), "```",
               "", "## Compaction preview (dry-run — apply is always manual)",
-              "```", compact_out.strip(), "```", ""]
+              "```", compact_out.strip(), "```"]
+
+    # Append research compliance section
+    lines += ["", research_compliance_section, ""]
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
     print(f"[dream] report -> {REPORT_PATH}")
     return 0

@@ -147,6 +147,9 @@ public class McpAutomationBridge : ModuleRules
 
         if (Target.bBuildEditor)
         {
+            // Allow the bridge to call the game module's audio-visual sync telemetry accessors
+            PrivateDependencyModuleNames.Add("Chimera");
+            PrivateIncludePaths.Add(System.IO.Path.Combine(ModuleDirectory, "../../../../Source/Chimera/ProceduralGenerated"));
             // Editor-only Public Dependencies (required for all editor builds)
             PublicDependencyModuleNames.AddRange(new string[]
             {

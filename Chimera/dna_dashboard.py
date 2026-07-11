@@ -158,6 +158,53 @@ for nt, count in node_types.items():
 
 st.plotly_chart(fig_nodes, use_container_width=True)
 
+# Research Mandate Compliance Metrics (Phase 3 Pipeline Integration)
+st.subheader("📋 Research Mandate Compliance")
+try:
+    sys.path.insert(0, str(DNA_GRAPH_PATH.parent))
+    from core.research_enforcement import get_research_compliance_score as _rcs
+    score = _rcs(graph)
+
+    col_rc1, col_rc2, col_rc3, col_rc4 = st.columns(4)
+    with col_rc1:
+        rs_count = score.get("research_summaries_count", 0)
+        total_tasks = sum(score.get("tier_distribution", {}).values()) or 1
+        compliance_pct = (rs_count / max(total_tasks, 1)) * 100
+        st.metric("Research Summaries", f"{rs_count} ({compliance_pct:.0f}% of tasks)")
+    with col_rc2:
+        st.metric("Documentation Reviews", score.get("documentation_reviews_count", 0))
+    with col_rc3:
+        st.metric("Pathway Attempts", score.get("pathway_attempts_count", 0))
+    with col_rc4:
+        st.metric("Traps Avoided", score.get("traps_avoided_count", 0))
+
+    # Tier distribution chart
+    tier_dist = score.get("tier_distribution", {1: 0, 2: 0, 3: 0})
+    tier_df = __import__('pandas').DataFrame([
+        {"Tier": f"T{i}", "Count": tier_dist.get(i, 0)} for i in [1, 2, 3]
+    ])
+    fig_tier = px.bar(tier_df, x='Tier', y='Count', title="Task Tier Distribution",
+                      labels={"Tier": "Tier", "Count": "Count"})
+    st.plotly_chart(fig_tier, use_container_width=True)
+
+    # Most-reviewed documentation files
+    doc_review_nodes = [n for n in nodes if n.get("type") == "DocumentationReview"]
+    doc_counts = {}
+    for dr in doc_review_nodes:
+        doc_file = dr.get("doc_file", "unknown")
+        doc_counts[doc_file] = doc_counts.get(doc_file, 0) + 1
+
+    st.markdown("### Most-Reviewed Documentation Files")
+    if doc_counts:
+        sorted_docs = sorted(doc_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+        for doc_path, count in sorted_docs:
+            st.caption(f"**{doc_path}** — {count} review(s)")
+    else:
+        st.caption("No documentation reviews recorded yet.")
+
+except Exception as ex:
+    st.warning(f"Research compliance metrics unavailable: {ex}")
+
 # Recent fixes and status
 st.subheader("Recent Fixes")
 recent_fixes = sorted(fixes, key=lambda x: x.get('timestamp', ''), reverse=True)[:10]
