@@ -481,7 +481,8 @@ class Movement:
         clog_pen = 1.0 - SUIT["dust_clog_move_penalty"] * (clog / SUIT["dust_clog_max"])
         surf = self.ground.surface_at(self.pos)
         basin_pen = 0.55 if surf == Surface.BASIN else 1.0
-        return base * clog_pen * basin_pen
+        carry_pen = getattr(self, "external_speed_scale", 1.0)   # set by GameWorld
+        return base * clog_pen * basin_pen * carry_pen
 
     def choose_gait(self, inp: InputState) -> None:
         mag = inp.move.length2d()
@@ -997,9 +998,12 @@ class Dot:
             self.pos = self.pos + step
             if d < 25.0:
                 self.state = DotState.NEAR
-        elif self.state == DotState.NEAR and d < 4.0:
-            self.state = DotState.ENCOUNTER
-            self.on_meet(world)
+        elif self.state == DotState.NEAR:
+            step = (player_pos - self.pos).normalized() * (self.walk_speed * 0.6 * dt)
+            self.pos = self.pos + step          # people close the last meters
+            if d < 4.0:
+                self.state = DotState.ENCOUNTER
+                self.on_meet(world)
         elif self.state == DotState.LEAVING:
             away = (self.pos - player_pos).normalized() * (self.walk_speed * dt)
             self.pos = self.pos + away
@@ -1027,8 +1031,8 @@ class Dot:
                 self.memory["helped_by_generation"] = world.generation
                 self.need = None
                 if not self.can_pay:
-                    world.sacrifice.record(SacrificeKind.GAVE_CARGO,
-                                           note=f"gave {given.kind.name} to {self.name}"
+                    world.record_sacrifice(SacrificeKind.GAVE_CARGO,
+                                           f"gave {given.kind.name} to {self.name}"
                                            " who could not pay")
                 else:
                     world.credits += ITEM_TABLE[given.kind][1] * 1.2
@@ -1037,11 +1041,13 @@ class Dot:
             if given is not None:
                 world.carry.pick_up(given)   # wrong item — handed back gently
             return Gesture.REFUSE
-        if g == Gesture.REFUSE and self.need is not None and not self.can_pay:
-            self.state = DotState.LEAVING
-            world.flags["refused_unpayable"] = world.flags.get(
-                "refused_unpayable", 0) + 1   # the world keeps quiet score
-            return Gesture.GRIEVE
+        if g == Gesture.REFUSE and self.need is not None:
+            self.state = DotState.LEAVING     # refused people don't linger
+            if not self.can_pay:
+                world.flags["refused_unpayable"] = world.flags.get(
+                    "refused_unpayable", 0) + 1   # the world keeps quiet score
+                return Gesture.GRIEVE
+            return Gesture.REFUSE
         if g == Gesture.WAVE:
             return Gesture.WAVE
         return Gesture.REFUSE
@@ -1190,4 +1196,686 @@ class SacrificeLog:
         return self.weight_for_generation(generation) <= 0.0
 
 
-# === CONTINUED IN PART 3 (shelter, travel, universe, generations, endings, director, main) ===
+# =============================================================================
+# 12. SHELTER (Loop 6) — habitat modules, the station
+# UE5: AShelterHabitat (manual lane) + AStationActor; persists across lives
+# =============================================================================
+
+class ModuleKind(Enum):
+    AIRLOCK = auto(); BUNK = auto(); O2_GARDEN = auto()
+    BATTERY_BANK = auto(); WORKBENCH = auto(); BEACON_MAST = auto()
+
+
+HABITAT_MODULE_TABLE = {
+    #                       parts  glass  power_w   effect
+    ModuleKind.AIRLOCK:      (2,     1,    -20.0,  "entry; scrubs 30 dust_clog"),
+    ModuleKind.BUNK:         (1,     0,    -10.0,  "sleep to dawn; heals integrity 10"),
+    ModuleKind.O2_GARDEN:    (3,     4,    -60.0,  "+0.8 o2/min while inside"),
+    ModuleKind.BATTERY_BANK: (2,     0,   +150.0,  "+2.0 suit battery/min inside"),
+    ModuleKind.WORKBENCH:    (2,     1,    -15.0,  "repair tools; +40 durability/use"),
+    ModuleKind.BEACON_MAST:  (1,     2,    -25.0,  "visible 2 km; strangers find YOU"),
+}
+
+
+@dataclass
+class HabitatModule:
+    kind: ModuleKind
+    integrity: float = 100.0
+
+
+class Habitat:
+    """Built by hand, inherited by heirs. An empty pad at gen 1; a home by gen 4."""
+    RADIUS_M = 6.0
+
+    def __init__(self, pos: V3):
+        self.pos = pos
+        self.modules: list[HabitatModule] = []
+
+    def has(self, kind: ModuleKind) -> bool:
+        return any(m.kind == kind and m.integrity > 0 for m in self.modules)
+
+    def build(self, kind: ModuleKind, carry: CarrySystem) -> bool:
+        parts_needed, glass_needed = HABITAT_MODULE_TABLE[kind][:2]
+        parts = [i for i in carry.pack if i.kind == ItemKind.MACHINE_PARTS]
+        glass = [i for i in carry.pack if i.kind == ItemKind.REGOLITH_GLASS]
+        if len(parts) < parts_needed or len(glass) < glass_needed:
+            return False
+        for it in parts[:parts_needed] + glass[:glass_needed]:
+            carry.pack.remove(it)
+        self.modules.append(HabitatModule(kind))
+        return True
+
+    def inside(self, p: V3) -> bool:
+        return (p - self.pos).length2d() <= self.RADIUS_M
+
+    def tick(self, minutes: float, suit: SuitState, player_pos: V3) -> None:
+        if not self.inside(player_pos):
+            return
+        if self.has(ModuleKind.O2_GARDEN):
+            suit.o2 = min(SUIT["o2_max"], suit.o2 + 0.8 * minutes)
+        if self.has(ModuleKind.BATTERY_BANK):
+            suit.battery = min(SUIT["battery_max"], suit.battery + 2.0 * minutes)
+        if self.has(ModuleKind.AIRLOCK):
+            suit.dust_clog = max(0.0, suit.dust_clog - 1.0 * minutes)
+        suit.temperature_c = 20.0
+
+
+# =============================================================================
+# 13. TRAVEL (Loop 7) — feet, rover, hopper, ship, quantum, and the TITAN RUN
+# UE5: generator-owned Flight/Ship/Docking/QuantumTravel — this is their spec
+# =============================================================================
+
+class Rover:
+    SPEED = 8.0          # m/s
+    CARGO_KG = 120.0
+    CHARGE_PER_KM = 4.0
+
+    def __init__(self, pos: V3):
+        self.pos = pos
+        self.charge = 100.0
+        self.stuck = False
+        self.driven = False
+
+    def drive(self, dt: float, toward: V3, ground: GroundField) -> None:
+        if self.stuck or self.charge <= 0.0:
+            return
+        step = (toward - self.pos).normalized() * (Rover.SPEED * dt)
+        nxt = self.pos + step
+        if ground.surface_at(nxt) == Surface.BASIN:
+            self.stuck = True      # dig out the wheels — shovel meets rover
+            return
+        self.pos = nxt
+        self.charge -= Rover.CHARGE_PER_KM * (step.length() / 1000.0)
+
+    def dig_out(self, shovel_tool: Tool, grid: DigGrid, dust: DustFX,
+                sand: SandSoundComponent, now: float) -> None:
+        Shovel.dig(shovel_tool, self.pos, grid, dust, sand, Surface.BASIN, now)
+        self.stuck = False
+
+
+class Hopper:
+    """Suborbital dust-jumper. Point at the horizon, commit fuel, fly the arc."""
+    FUEL_PER_KM = 5.0
+
+    def __init__(self):
+        self.fuel = 100.0
+
+    def hop(self, frm: V3, to: V3) -> Optional[float]:
+        km = (to - frm).length2d() / 1000.0
+        cost = km * Hopper.FUEL_PER_KM
+        if cost > self.fuel:
+            return None
+        self.fuel -= cost
+        return 8.0 + km * 30.0      # seconds of committed, hands-off flight
+
+
+class Ship:
+    """Orbit-capable trader hull. Dock at stations; quantum between bodies."""
+    QUANTUM_FUEL_PER_LS = 2.0       # per light-second
+
+    def __init__(self):
+        self.fuel = 200.0
+        self.docked_at: Optional[str] = None
+        self.hold: list[Item] = []
+        self.hold_kg_max = 400.0
+
+    def quantum_jump(self, dist_ls: float) -> bool:
+        cost = dist_ls * Ship.QUANTUM_FUEL_PER_LS
+        if cost > self.fuel:
+            return False
+        self.fuel -= cost
+        return True
+
+
+class TitanRun:
+    """The pilgrimage race: 2.4 km of alternating gravity corridors. Ancestor
+    best-times persist; their faint ghost-dots run beside you (Design Law 4)."""
+
+    def __init__(self, start: V3):
+        self.start = start
+        self.gates = [start + V3((i + 1) * TITAN_RUN["length_m"]
+                                 / TITAN_RUN["gravity_zones"], 0, 0)
+                      for i in range(TITAN_RUN["gravity_zones"])]
+        self.best_times: dict[int, float] = {}     # generation -> seconds
+
+    def gravity_at(self, p: V3) -> float:
+        if not (self.start.x <= p.x <= self.start.x + TITAN_RUN["length_m"]
+                and abs(p.y - self.start.y) < 40.0):
+            return GRAVITY_YARD
+        zone = int((p.x - self.start.x) / (TITAN_RUN["length_m"]
+                                           / TITAN_RUN["gravity_zones"]))
+        return GRAVITY_TITAN_ZONE if zone % 2 == 1 else GRAVITY_YARD
+
+    def finish(self, generation: int, seconds: float) -> bool:
+        best = self.best_times.get(generation)
+        record = best is None or seconds < best
+        if record:
+            self.best_times[generation] = seconds
+        return record
+
+
+# =============================================================================
+# 14. THE UNIVERSE (Loop 9) — golden-angle generation + observation collapse
+# UE5: core.world_store.around() is the streaming primitive; World Partition
+# =============================================================================
+
+class BodyKind(Enum):
+    PLANETOID = auto(); MOONLET = auto(); ASTEROID_FIELD = auto()
+    DEBRIS_FIELD = auto(); STATION = auto()
+
+
+@dataclass
+class Body:
+    body_id: str
+    kind: BodyKind
+    pos: V3                 # km scale in system space
+    seed: int
+    observed: bool = False  # unobserved bodies stay in superposition
+
+
+class Universe:
+    """Bodies grow outward from the Yard on the golden spiral. Nothing is
+    finalized until first observed (scanner ping / arrival) — then it is
+    PERMANENT. The dev pipeline's observation-collapse, made playable."""
+    OBS_CELL_M = 50.0
+
+    def __init__(self, seed: int):
+        self.seed = seed
+        kinds = [BodyKind.MOONLET, BodyKind.ASTEROID_FIELD, BodyKind.DEBRIS_FIELD,
+                 BodyKind.PLANETOID, BodyKind.STATION]
+        self.bodies = [Body(f"body_{i}", kinds[i % len(kinds)],
+                            spiral_point(i, spacing=5000.0), seed * 31 + i)
+                       for i in range(24)]
+        self.observed_cells: set[tuple] = set()
+
+    def observe_region(self, at: V3, radius: float) -> int:
+        newly = 0
+        c = int(radius / Universe.OBS_CELL_M)
+        cx, cy = int(at.x / Universe.OBS_CELL_M), int(at.y / Universe.OBS_CELL_M)
+        for dx in range(-c, c + 1):
+            for dy in range(-c, c + 1):
+                k = (cx + dx, cy + dy)
+                if k not in self.observed_cells:
+                    self.observed_cells.add(k)
+                    newly += 1
+        return newly    # UE5: collapse = bake PCG cell + persist to world_store
+
+    def around(self, pos: V3, radius: float) -> list:
+        return [b for b in self.bodies if (b.pos - pos).length() <= radius]
+
+
+# =============================================================================
+# 15. THE ERISAID — the found thing at the edge; the mirror; the attunement
+# UE5: AErisaidActor + attunement MetaSound; progress persists across lives
+# =============================================================================
+
+@dataclass
+class MirrorVision:
+    empty: bool
+    figures: list        # sacrifice notes rendered as a figure of given things
+
+
+class Erisaid:
+    """A half-buried leviathan shell at the Yard's edge. Its face is regolith
+    glass. It hums at 41 Hz. Tune your suit radio to all three harmonics —
+    across at least three different days — and it will show you exactly one
+    thing: what you gave away. Nothing else. Ever."""
+
+    def __init__(self, pos: V3):
+        self.pos = pos
+        self.deaf_until_day = -1
+        self.matched: set = set()
+        self.visit_days: set = set()
+
+    def hum_hz(self) -> tuple:
+        return tuple(ERISAID["hum_base_hz"] * r for r in ERISAID["harmonics"])
+
+    def tune(self, dial_hz: float, day: int) -> Optional[int]:
+        """ATTUNE verb: returns matched harmonic index, or None. Deaf = silence."""
+        if day < self.deaf_until_day:
+            return None
+        self.visit_days.add(day)
+        for i, target in enumerate(self.hum_hz()):
+            if i not in self.matched and abs(dial_hz - target) <= ERISAID[
+                    "dial_tolerance_hz"]:
+                self.matched.add(i)
+                return i
+        return None
+
+    @property
+    def attuned(self) -> bool:
+        return (len(self.matched) == len(ERISAID["harmonics"])
+                and len(self.visit_days) >= ERISAID["attune_visits_min"])
+
+    def mirror(self, sacrifice: SacrificeLog, generation: int) -> MirrorVision:
+        entries = [e for e in sacrifice.entries if e.generation == generation]
+        if not entries:
+            return MirrorVision(empty=True, figures=[])
+        return MirrorVision(empty=False, figures=[e.note or e.kind.name
+                                                  for e in entries])
+
+
+class EndingKind(Enum):
+    COSTLESS_LIFE = auto()   # dim star; if found, the mirror is empty
+    QUIET_STAR = auto()      # gave a little; a modest light
+    BRIGHT_STAR = auto()     # gave enough that the Yard is lit at night
+    MIRROR_KEEPER = auto()   # attuned + gave: the figure of given things
+
+
+def evaluate_ending(world: "GameWorld") -> EndingKind:
+    w = world.sacrifice.weight_for_generation(world.generation)
+    if w <= 0.0:
+        return EndingKind.COSTLESS_LIFE
+    brightness = 1.0 - math.exp(-w / STAR["brightness_k"])
+    if world.erisaid.attuned:
+        return EndingKind.MIRROR_KEEPER
+    return (EndingKind.BRIGHT_STAR if brightness >= STAR["bright_lights_yard"]
+            else EndingKind.QUIET_STAR)
+
+
+# =============================================================================
+# 16. GENERATIONS — the Will, forewarnings, heirlooms, the next life
+# UE5: DeepSpaceTraderSaveGame + Will & Forewarning Inheritance UI (exists)
+# =============================================================================
+
+@dataclass
+class Forewarning:
+    glyph: str            # wordless: an etched pictogram, not a sentence
+    source: str
+
+
+@dataclass
+class Will:
+    from_generation: int
+    heirloom: Optional[Item]
+    forewarnings: list          # max 3; drawn from this life's worst moments
+    map_marks: list             # dug pits + buried caches the heir inherits
+
+
+@dataclass
+class LifeRecord:
+    name: str
+    generation: int
+    days_lived: float
+    cause: str
+    sacrifice_weight: float
+    ending: EndingKind
+
+
+class GenerationSystem:
+    def __init__(self):
+        self.records: list[LifeRecord] = []
+        self.current_will: Optional[Will] = None
+
+    def end_life(self, world: "GameWorld", cause: str) -> LifeRecord:
+        # The held-weapon grace: threatened, armed, and never fired.
+        if (world.flags.get("threatened_this_life")
+                and not world.flags.get("weapon_fired_this_life")):
+            world.record_sacrifice(SacrificeKind.WEAPON_NEVER_FIRED,
+                                   "was threatened; the weapon stayed cold")
+        weight = world.sacrifice.weight_for_generation(world.generation)
+        pains = world.flags.get("refused_unpayable", 0)
+        ending = evaluate_ending(world)
+        star = world.memorial.add_life(
+            f"gen_{world.generation}", world.generation, weight, pains)
+        rec = LifeRecord(f"gen_{world.generation}", world.generation,
+                         world.sky.day + world.sky.time_h / DAY_LENGTH_HOURS,
+                         cause, weight, ending)
+        self.records.append(rec)
+        # --- compose the Will
+        heirloom = (world.carry.hands
+                    if world.carry.hands and world.carry.hands.kind == ItemKind.HEIRLOOM
+                    else None)
+        warns = [Forewarning("storm-glyph", "died outside in weather")
+                 ] if "cold" in cause else []
+        if pains:
+            warns.append(Forewarning("turned-back-glyph",
+                                     f"{pains} refusals still walking the Yard"))
+        marks = [k for k, v in world.dig_grid.buried.items() if v]
+        self.current_will = Will(world.generation, heirloom, warns[:3], marks)
+        # --- the heir wakes at the habitat
+        world.generation += 1
+        world.player_suit = SuitState()
+        world.carry = CarrySystem()
+        if heirloom:
+            world.carry.pick_up(heirloom)
+        world.credits = round(world.credits * 0.5)     # estates leak
+        world.movement.reset_position(world.habitat.pos + V3(2.0, 0, 0))
+        for k in ("weapon_fired_this_life", "threatened_this_life"):
+            world.flags.pop(k, None)
+        _ = star
+        return rec
+
+
+# =============================================================================
+# 17. MISSIONS (wordless) — a dot points; a station runs short; a beacon blinks
+# =============================================================================
+
+class MissionKind(Enum):
+    DELIVER = auto(); RESCUE = auto(); DIG_AT = auto(); ESCORT = auto()
+
+
+@dataclass
+class Mission:
+    kind: MissionKind
+    target_pos: V3
+    payload: Optional[ItemKind]
+    units: int
+    reward_credits: float
+    faction: str
+    done: bool = False
+
+
+class MissionBoard:
+    def generate(self, world: "GameWorld") -> list:
+        out = []
+        for st in world.stations:
+            for kind, mult in st.demand.items():
+                if mult > 1.6:      # a shortage is a mission, no text needed
+                    out.append(Mission(MissionKind.DELIVER, st.pos, kind, 3,
+                                       ITEM_TABLE[kind][1] * 3 * 1.8, "combine"))
+        for d in world.dots:
+            if d.archetype == DotArchetype.STRANGER and d.need is not None:
+                out.append(Mission(MissionKind.RESCUE, d.pos,
+                                   NEED_FULFILLMENT[d.need], 1,
+                                   0.0 if not d.can_pay else 45.0, "yardfolk"))
+        return out
+
+
+# =============================================================================
+# 18. ACCESSIBILITY & DIEGETIC UI (curriculum: the 4-lens exam, made real)
+# =============================================================================
+
+ACCESSIBILITY = dict(
+    colorblind_palettes=("default", "deuteranopia", "protanopia", "tritanopia"),
+    audio_muted_visual_pulses=True,   # footstep rings + hum ripples on screen
+    gesture_glyph_subtitles=True,     # optional pictogram strip, still no words
+    input_forgiveness_scale=(1.0, 1.5, 2.0),   # multiplies coyote/buffer windows
+    gravity_assist_mode=False,        # halves fall damage, widens Titan gates
+    remappable_all_verbs=True,
+)
+
+DIEGETIC_HUD = dict(
+    o2="wrist gauge needle (glance down = BEND micro-verb)",
+    battery="chest LED bar reflected in visor at night",
+    compass="helmet-rim tick lights; Earth itself is north",
+    warnings="suit breath pitch rises; glove haptic taps",
+    credits="coin-pouch weight sound on movement",
+    sacrifice_log="NOTHING. It has no gauge. See Design Law 2.",
+    star_band="look up.",
+)
+
+
+# =============================================================================
+# 19. SAVE / LOAD (schema of DeepSpaceTraderSaveGame)
+# =============================================================================
+
+def save_game(world: "GameWorld") -> dict:
+    return dict(
+        version=3,
+        seed=world.seed,
+        generation=world.generation,
+        credits=world.credits,
+        day=world.sky.day, time_h=world.sky.time_h,
+        player=dict(pos=vars(world.movement.pos), o2=world.player_suit.o2,
+                    battery=world.player_suit.battery,
+                    dust_clog=world.player_suit.dust_clog),
+        dig_delta={f"{k[0]},{k[1]}": v for k, v in world.dig_grid.delta.items()},
+        buried={f"{k[0]},{k[1]}": [(b.item.kind.name, b.depth) for b in v]
+                for k, v in world.dig_grid.buried.items()},
+        footprints=len(world.prints.prints),
+        stars=[vars(s) for s in world.memorial.stars],
+        sacrifices=[(e.kind.name, e.weight, e.note, e.generation)
+                    for e in world.sacrifice.entries],
+        dot_memories={d.name: d.memory for d in world.dots},
+        habitat=[m.kind.name for m in world.habitat.modules],
+        erisaid=dict(matched=sorted(world.erisaid.matched),
+                     visit_days=sorted(world.erisaid.visit_days),
+                     deaf_until_day=world.erisaid.deaf_until_day),
+        titan_best=world.titan_run.best_times,
+        markets={s.station_id: s.demand for s in world.stations},
+        flags=world.flags,
+    )
+
+
+# =============================================================================
+# 20. THE DIRECTOR — circadian rhythm of the world (the game's dream loop)
+# =============================================================================
+
+class Director:
+    """Dawn: calm, traders wake. Day: traffic. Dusk: wind rises, light goes
+    amber and long. Night: cold, hums, the memorial overhead — and sometimes
+    a stranger's beacon in the dark. Strangers arrive on golden-angle bearings
+    every 1.0–2.2 days. Pirates only bother the visibly rich."""
+
+    def __init__(self, rng: random.Random):
+        self.rng = rng
+        self.stranger_cadence_days = (1.0, 2.2)   # real game; demos compress
+        self._next_stranger_day = 0.5
+        self._next_trader_day = 0.8
+
+    def phase(self, sky: SkyDome) -> str:
+        t = sky.time_h / DAY_LENGTH_HOURS
+        if t < 0.20: return "night"
+        if t < 0.30: return "dawn"
+        if t < 0.70: return "day"
+        if t < 0.80: return "dusk"
+        return "night"
+
+    def tick(self, world: "GameWorld") -> list:
+        events = []
+        now_days = world.sky.day + world.sky.time_h / DAY_LENGTH_HOURS
+        if now_days >= self._next_stranger_day:
+            self._next_stranger_day = now_days + self.rng.uniform(
+                *self.stranger_cadence_days)
+            dot = world.stranger_forge.maybe_spawn(world)
+            if dot:
+                world.dots.append(dot)
+                events.append(f"stranger_on_horizon({dot.memory['blurb']})")
+        if now_days >= self._next_trader_day:
+            self._next_trader_day = now_days + self.rng.uniform(0.7, 1.5)
+            t = Dot(f"trader_{world.sky.day}_{len(world.dots)}",
+                    DotArchetype.TRADER,
+                    world.stations[0].pos + V3(self.rng.uniform(-30, 30),
+                                               self.rng.uniform(-30, 30), 0),
+                    faction="combine")
+            world.dots.append(t)
+        if (world.credits > 200 and world.weather.storm_active
+                and self.rng.random() < 0.15):
+            p = Dot(f"pirate_{world.sky.day}", DotArchetype.PIRATE,
+                    world.movement.pos + V3(180, 40, 0), faction="drifters")
+            world.dots.append(p)
+            world.flags["threatened_this_life"] = True
+            events.append("a dot that does not wave")
+        world.dots = [d for d in world.dots if d.state != DotState.GONE]
+        return events
+
+
+# =============================================================================
+# 21. GAME WORLD — everything, wired
+# =============================================================================
+
+class GameWorld:
+    def __init__(self, seed: int = 7):
+        self.seed = seed
+        self.rng = random.Random(seed)
+        self.now_s = 0.0
+        self.generation = 1
+        self.credits = 40.0
+        self.flags: dict = {}
+        # --- the ground and what marks it
+        self.ground = GroundField(seed)
+        self.dig_grid = DigGrid()
+        self.prints = FootprintLedger()
+        self.dust = DustFX()
+        # --- the player
+        self.movement = Movement(self.ground)
+        self.camera = CameraRig()
+        self.player_suit = SuitState()
+        self.carry = CarrySystem()
+        self.input = InputState()
+        self.belt = {k: Tool(k) for k in ToolKind}
+        self.belt[ToolKind.WEAPON].ammo = 6
+        # --- sound
+        self.sand = SandSoundComponent()
+        self.ambient = AmbientAudio()
+        # --- sky & weather
+        self.sky = SkyDome()
+        self.weather = WeatherSystem(self.rng)
+        self.memorial = StarMemorial()
+        # --- world furniture
+        self.habitat = Habitat(V3(8.0, 6.0, 0.0))
+        self.erisaid = Erisaid(V3(310.0, -180.0, 0.0))
+        self.titan_run = TitanRun(V3(-200.0, 150.0, 0.0))
+        self.stations = [
+            StationMarket("yard_gate", V3(60.0, 20.0, 0.0),
+                          stock={ItemKind.OXYGEN_CAN: 20, ItemKind.MACHINE_PARTS: 8},
+                          demand={ItemKind.ORE_ILMENITE: 1.4, ItemKind.ICE_WATER: 1.7}),
+            StationMarket("far_pads", V3(-900.0, 400.0, 0.0),
+                          stock={ItemKind.FUEL_CELL: 12, ItemKind.SEEDS: 6},
+                          demand={ItemKind.REGOLITH_GLASS: 1.8}),
+        ]
+        self.factions = FactionLedger()
+        self.universe = Universe(seed)
+        # --- people & meaning
+        self.dots: list[Dot] = []
+        self.stranger_forge = StrangerForge(self.rng)
+        self.sacrifice = SacrificeLog()
+        self.generations = GenerationSystem()
+        self.missions = MissionBoard()
+        self.director = Director(self.rng)
+        # --- vehicles
+        self.rover = Rover(V3(12.0, -4.0, 0.0))
+        self.hopper = Hopper()
+        self.ship = Ship()
+        # --- seed the ground with buried history (golden spiral, of course)
+        kinds = [ItemKind.ORE_ILMENITE, ItemKind.RELIC_SHARD, ItemKind.ICE_WATER,
+                 ItemKind.ERISAID_FRAGMENT]
+        for i in range(24):
+            p = spiral_point(i * 3 + 2, spacing=11.0)
+            self.dig_grid.bury(p, BuriedItem(Item(kinds[i % len(kinds)]),
+                                             depth=0.15 + (i % 4) * 0.15))
+        # --- wire footstep event stream: audio + prints + dust, ONE source
+        self.movement.on_footstep.append(self.sand.on_footstep)
+        self.movement.on_footstep.append(
+            lambda pos, yaw, srf, left, spd, t, land:
+                self.prints.stamp(pos, yaw, srf, left, t, self.generation))
+        self.movement.on_footstep.append(
+            lambda pos, yaw, srf, left, spd, t, land:
+                self.dust.footfall(pos, srf, spd, t))
+
+    # -- the one honest way to write the log (stamps gen + day)
+    def record_sacrifice(self, kind: SacrificeKind, note: str = "") -> None:
+        self.sacrifice.record(kind, note, self.generation, self.sky.day)
+
+    def tick(self, dt: float) -> list:
+        events = []
+        self.now_s += dt
+        hours = dt / 3600.0
+        minutes = dt / 60.0
+        # movement + external mass penalty
+        self.movement.external_speed_scale = self.carry.speed_penalty()
+        self.movement.gravity = self.titan_run.gravity_at(self.movement.pos)
+        self.movement.tick(dt, self.now_s, self.input, self.player_suit)
+        # suit + shelter
+        indoors = self.habitat.inside(self.movement.pos)
+        self.player_suit.temperature_c = (20.0 if indoors
+                                          else self.sky.temperature_c())
+        self.player_suit.tick(minutes, self.movement.gait, self.sky.is_night,
+                              digging=False, in_storm=self.weather.storm_active)
+        self.habitat.tick(minutes, self.player_suit, self.movement.pos)
+        # sky / weather / dust
+        self.sky.tick(hours)
+        ev = self.weather.tick(self.sky, hours, self.prints, self.dust)
+        if ev:
+            events.append(ev)
+        self.sand.wind_speed = self.weather.wind_speed
+        self.ambient.tick(self.player_suit,
+                          (self.movement.pos - self.erisaid.pos).length2d(),
+                          indoors, self.weather.storm_active)
+        # people
+        for d in self.dots:
+            d.tick(dt, self.movement.pos, self)
+        events.extend(self.director.tick(self))
+        for st in self.stations:
+            st.drift(self.rng)
+        # death
+        if self.player_suit.suffocating:
+            self.generations.end_life(self, "suffocation")
+            events.append("a life ends: no air")
+        elif self.player_suit.frozen:
+            self.generations.end_life(self, "cold at night")
+            events.append("a life ends: cold")
+        return events
+
+
+# =============================================================================
+# 22. HEADLESS PROOF — two lives: one generous, one costless. Look up.
+# =============================================================================
+
+def _live_one_life(world: GameWorld, generous: bool, minutes: float = 95.0) -> None:
+    """Scripted policy: wander, dig, answer the horizon; give or refuse."""
+    world.carry.pack = [Item(ItemKind.OXYGEN_CAN), Item(ItemKind.ICE_WATER),
+                        Item(ItemKind.MACHINE_PARTS), Item(ItemKind.FUEL_CELL)]
+    for step in range(int(minutes * 6)):          # dt = 10 s
+        needy = [d for d in world.dots
+                 if d.need is not None and d.state != DotState.GONE]
+        if needy:                                  # answer the horizon
+            delta = needy[0].pos - world.movement.pos
+            world.input.move = (V3() if delta.length2d() < 30.0
+                                else delta.normalized() * 0.5)
+        else:                                      # wander / rest cycle
+            world.input.move = (V3(0.35, 0.15, 0.0)
+                                if (step // 90) % 2 == 0 else V3())
+        world.tick(10.0)
+        if world.rng.random() < 0.003:             # the ground remembers anyway
+            Shovel.dig(world.belt[ToolKind.SHOVEL], world.movement.pos,
+                       world.dig_grid, world.dust, world.sand,
+                       world.ground.surface_at(world.movement.pos), world.now_s)
+        for d in list(world.dots):
+            if d.state != DotState.ENCOUNTER or d.need is None:
+                continue
+            if not generous:
+                d.receive_gesture(Gesture.REFUSE, world)
+                continue
+            wanted = NEED_FULFILLMENT[d.need]
+            if wanted is None:                     # RIDE / BURIAL: pay in body
+                if d.need == NeedKind.BURIAL:
+                    Shovel.dig(world.belt[ToolKind.SHOVEL], d.pos,
+                               world.dig_grid, world.dust, world.sand,
+                               Surface.SAND, world.now_s)
+                    world.record_sacrifice(SacrificeKind.BURIED_STRANGER,
+                                           f"dug a grave for {d.name}'s burden")
+                else:
+                    world.record_sacrifice(SacrificeKind.TOOK_RISK_FOR_OTHER,
+                                           f"walked {d.name} home before night")
+                d.need, d.state = None, DotState.LEAVING
+                continue
+            have = next((i for i in world.carry.pack if i.kind == wanted), None)
+            if have and world.carry.hands is None:
+                world.carry.pack.remove(have)
+                world.carry.hands = have
+                d.receive_gesture(Gesture.OFFER, world)
+            else:
+                d.receive_gesture(Gesture.REFUSE, world)
+    world.generations.end_life(world, "retired under the memorial")
+
+
+if __name__ == "__main__":
+    w = GameWorld(seed=7)
+    # demo compression: the Yard road is busy today (real cadence = days)
+    w.director.stranger_cadence_days = (0.02, 0.06)
+    w.director._next_stranger_day = 0.02
+    _live_one_life(w, generous=True)      # gen 1: gives to those who can't pay
+    _live_one_life(w, generous=False)     # gen 2: profitable. costless.
+    print("=== THE MEMORIAL ===")
+    for rec, star in zip(w.generations.records, w.memorial.stars):
+        vision = w.erisaid.mirror(w.sacrifice, rec.generation)
+        print(f"gen {rec.generation}: ending={rec.ending.name:14s} "
+              f"sacrifice={rec.sacrifice_weight:5.2f} "
+              f"star_brightness={star.brightness:4.2f} "
+              f"twinkle={star.twinkle} "
+              f"mirror={'EMPTY' if vision.empty else vision.figures}")
+    print(f"night light from ancestors: {w.memorial.night_light_level():.3f}")
+    print(f"footprints on the yard: {len(w.prints.prints)} "
+          f"(gen-tagged; storms erase sand, never metal, never pits)")
