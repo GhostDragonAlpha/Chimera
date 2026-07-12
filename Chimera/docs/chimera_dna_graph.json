@@ -50999,6 +50999,47 @@
       "links": [],
       "recorded_by": "-",
       "run_id": "run_5edde3725668"
+    },
+    {
+      "id": "phase_d6e885cba02c5b39",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:38:53.840763",
+      "phase": "The Breakdown Process: decomposition is now a processed, recorded step",
+      "result": "core/decomposer.py live (11/11): template-driven part breakdown -> board tasks w/ deps+not_scope, rep atoms at birth, Decomposition graph nodes, monolith guard. First input dc_b1af6b6e2f33: Sprint_Input -> tb-0013..16; birth atoms: state RED, binding RED, harness_parity GREEN (stale concern retired), readback pie. Book chapter VIII. Test-leak junk caught by Book FTS, cleaned, test stubbed (surprise_e3944cb57b2994f0).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/The Breakdown Process: decomposition is now a processed, recorded step",
+      "error_category": "none",
+      "fix_description": "Phase 'The Breakdown Process: decomposition is now a processed, recorded step' complete: core/decomposer.py live (11/11): template-driven part breakdown -> board tasks w/ deps+not_scope, rep atoms at birth, Decomposition graph nodes, monolith guard. First input dc_b1af6b6e2f33: Sprint_Inp",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Two founding templates cannot cover every compound shape \u2014 the first indictment that fits neither input_rig nor component_attachment will tempt an agent to work the blob; Faculty should grow templates from scars like it grows exams"
+      ],
+      "inheritance": "Nothing gets decreed anymore \u2014 not even 'use the Shift key'. Compound indictments go to the decomposer; the parts ride the conveyor; the monolith cannot be claimed. Next agent: claim tb-0013 (Sprint_Input/state) through the board like anything else.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_0dcadb2fd041"
+    },
+    {
+      "id": "elim_e1ceb1b092b179af",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T17:38:54.132945",
+      "feature": "Sprint_Input/harness_parity",
+      "boundary": "bridge LShift-vs-LeftShift mismatch as a live blocker",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "birth atom green, rep ledger 2026-07-12",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_Sprint_Input/harness_parity",
+      "template_file": "elimination/Sprint_Input/harness_parity",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Sprint_Input/harness_parity: bridge LShift-vs-LeftShift mismatch as a live blocker",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_0dcadb2fd041"
     }
   ],
   "edges": [
