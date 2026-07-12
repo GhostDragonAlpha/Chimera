@@ -50618,6 +50618,46 @@
       "links": [],
       "recorded_by": "test_rep_engine.py",
       "run_id": "run_b583269cf29f"
+    },
+    {
+      "id": "phase_791426be1f3c7462",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:18:04.240595",
+      "phase": "Satellite spec sweep: 100% DSL coverage",
+      "result": "generate_satellite_spec_binding_files() emits 9 file-pairs (8 domain components + carrier); System_DSL_Fidelity 169/169 green atoms (19%->50%->100% today); remaining subsystem reds are exclusively pre-existing debt; suites 17/17+11/11; UBT deferred",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Satellite spec sweep: 100% DSL coverage",
+      "error_category": "none",
+      "fix_description": "Phase 'Satellite spec sweep: 100% DSL coverage' complete: generate_satellite_spec_binding_files() emits 9 file-pairs (8 domain components + carrier); System_DSL_Fidelity 169/169 green atoms (19%->50%->100% today); remaining subsystem reds are exclusively pre",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Auto-generated ValidateSpec() satisfies the used-in-cpp atom by construction \u2014 if a future author leans on it as the ONLY consumer, properties will be 'used' but still functionally dead; the atom needs a tier-2 upgrade: used somewhere BESIDES the validator"
+      ],
+      "inheritance": "Every declared spec token now surfaces in generated code with behavior reading it. The pre-existing dead-metadata reds (UUniverseGenerationComponent, UTravelVehicleComponent, StationTradingData, DustAccumulationMaterial, Ship_Trader props) are the next honest queue \u2014 same recipe: spawn or consume.",
+      "pain_verdicts": {
+        "phase_acaf769240f9ae7c:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_4629339ccb3c"
+    },
+    {
+      "id": "feature_a986ec1bfbb462a9",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-12T17:18:04.440219",
+      "feature_name": "System_DSL_Fidelity",
+      "loop": 8,
+      "status": "verified",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_8/System_DSL_Fidelity",
+      "error_category": "none",
+      "fix_description": "Feature 'System_DSL_Fidelity' (Loop 8) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_4629339ccb3c"
     }
   ],
   "edges": [
