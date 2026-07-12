@@ -1,3 +1,38 @@
+# Session 2026-07-12 — Parallel task board (core/task_board.py)
+
+**Parallel development is now board-driven.** Instead of every agent taking the same
+rehearsal NEXT item, claim work with:
+
+```powershell
+python -m core.task_board claim --agent <your-id>      # best parallel-safe open task
+python -m core.task_board done --agent <id> --id tb-N --result "<verbatim evidence>"
+python -m core.task_board block --agent <id> --id tb-N --reason "..."   # bare 'blocked' forbidden
+python -m core.task_board list                          # the whole board
+```
+
+- Every task declares a **resource footprint** (file globs, editor mode, named
+  exclusives like `pie`/`build`, feature identity). `claim` only grants tasks disjoint
+  from all active claims, so claimed tasks are safe to run concurrently. Conflicts err
+  conservative. Runtime editor arbitration is still `core/editor_scheduler.py`'s job.
+- Claims heartbeat (`heartbeat --agent <id>`); a 2h-silent claim is reaped back to open.
+- `python -m core.task_board seed` re-syncs the board from rehearsal's deterministic
+  scoring + pending technical_research (idempotent, atomic under the lock).
+- Preflight section **[3.7]** shows the board + parallel frontier every session.
+  Human-readable snapshot: `Chimera/docs/TASK_BOARD.md` (generated).
+- State is machine-local (`core/task_board_state.json`, gitignored); durable history
+  still belongs in the DNA graph via record_* helpers and postflight.
+- 10/10 tests: `python core/test_task_board.py`.
+- Also fixed this session: `editor_scheduler.py` `_ensure_editor_open` passed undefined
+  `uproj` to Popen (silent NameError — "open" mode never launched the editor); surprise
+  recorded as surprise_7f3a37600c618ca9.
+
+**Board seeded (4 tasks):** tb-0001 audio_visual_sync/telemetry_accessors (p=1.2, =
+rehearsal NEXT below), tb-0002 audio_visual_sync/report_telemetry (file-conflicts with
+tb-0001 by design — same SandSoundComponent root cause), tb-0003 Verb_Shovel, tb-0004
+dust-accumulation research (parallel-safe with any of them).
+
+---
+
 # Rehearsal decision 2026-07-12 00:16Z — next move: audio_visual_sync/telemetry_accessors
 
 Chosen by core.rehearsal (score 1.2, p_success 0.55, evidence: failure_mentions:1). Human may veto with one sentence.
@@ -101,6 +136,35 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 ## NEXT (rehearsal-chosen; recipe per handoff invariant)
 1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
    Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Session 2026-07-11 — Editor scheduler + build-lifecycle fixes
+
+**Scope:** Fix pipeline build blockers and add a parallel-agent editor scheduler so concurrent agents stop stomping on each other's editor / module-DLL lock.
+
+**What was broken:**
+1. Pipeline gate `gate_node_count_bounded` failed — graph had 2150 nodes (>2000 max). Archived old Mutation nodes via `core/archive_old_mutations.py` (now ~1868 nodes, gate passes).
+2. `game_generation_orchestrator.py`: `_research_compliance_check(project_name, parsed_dsl)` was called before `parsed_dsl` was defined → `UnboundLocalError`. Moved the call to after DSL parse/validate.
+3. Build failed with `LNK1104: cannot open file UnrealEditor-Chimera.dll` — the running UE Editor (and CrashReportClientEditor.exe) locked the module DLL. `ensure_editor_closed()` only killed `UnrealEditor.exe`, never `CrashReportClientEditor.exe`, and never verified the lock was released.
+
+**Fixes:**
+- `core/build_orchestrator.py`: rewrote `ensure_editor_closed()` to kill ALL Unreal processes (`UnrealEditor.exe`, `UnrealEditor-Cmd.exe`, `CrashReportClientEditor.exe`) and poll until the DLL is actually released before returning.
+- `core/editor_scheduler.py` (NEW): file-locked coordinator granting exclusive editor access in a requested mode (`open` for MCP/verification, `closed` for builds). Parallel agents queue behind the lock; a heartbeat reclaims crashed owners so a dead agent can never wedge the editor.
+- `run_deep_space_trader_pipeline.py`: claims the editor via `request_editor("closed", agent_id)` at startup, passes `agent_id` to the orchestrator, and `release_editor(agent_id)` in a finally block.
+- `core/game_generation_orchestrator.py`: accepts `agent_id`; at Stage 4.25 it transitions the lock to `open` via `request_editor("open", agent_id)` instead of launching the editor directly.
+- `core/sleepwalker.py`: claims the editor via `request_editor("open", agent_id)` around the beat run and releases in a finally block.
+
+**Verification:**
+- Pipeline runs to completion (Exit code 0); build passes; editor restarts for verification; Ralph Loop grades B.
+- Scheduler CLI verified: `request`/`release`/`state` work; `closed` request kills the editor; `open` request launches it.
+- Two background subagents verifying full pipeline + sleepwalker integration in parallel (scheduler coordinates the editor lock between them).
+
+## NEXT
+1. Verify subagent pipeline + sleepwalker runs (scheduler integration) — in flight.
+2. After evidence lands, run `python -m core.collapse_proxy --tend` to collapse the 5 observation-queue features (Verb_Shovel has a beat; others may need tacit collapse).
+3. Pending technical_research: procedural dust-accumulation mask material (noise functions, vertex normals) — research + implement.
+4. Rehearsal queue is empty → either generate candidates or continue Loop 1 (The Ground) open features.
 
 ---
 

@@ -137,7 +137,7 @@ def _ensure_editor_open():
         editor_path = r"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe"
         uproject = str(HERE.parent / "Chimera.uproject")
         if os.path.exists(editor_path) and os.path.exists(uproject):
-            subprocess.Popen([editor_path, uproj], stdout=subprocess.DEVNULL,
+            subprocess.Popen([editor_path, uproject], stdout=subprocess.DEVNULL,
                              stderr=subprocess.DEVNULL,
                              creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
     except Exception:

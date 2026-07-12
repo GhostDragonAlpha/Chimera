@@ -208,6 +208,23 @@ def main():
     if current_loop is not None:
         print(f"    -> NEXT: Loop {current_loop} ({LOOP_NAMES.get(current_loop)})")
 
+    # 3.7. Parallel task board — what concurrent agents can claim RIGHT NOW
+    try:
+        from core.task_board import board_summary
+        s = board_summary()
+        if s["total"]:
+            counts = "  ".join(f"{k}:{v}" for k, v in sorted(s["counts"].items()))
+            print(f"\n[3.7] Task board: {s['total']} task(s)  {counts}")
+            print(f"    Parallel frontier: {len(s['frontier'])} task(s) can proceed simultaneously")
+            for t in s["frontier"][:3]:
+                cap = " `capable`" if t.get("capable_only") else ""
+                print(f"      - {t['id']} p={t.get('priority', 1):.2g} {t['title'][:70]}{cap}")
+            for tid, title, agent in s["claims"][:4]:
+                print(f"    claimed: {tid} {title[:56]} <- {agent}")
+            print(f"    claim: python -m core.task_board claim --agent <your-id>")
+    except Exception as e:
+        print(f"\n[3.7] Task board: unavailable ({e})")
+
     # 4. Pending technical_research
     pending = [n for n in nodes
                if n.get("feature_type") == "technical_research"

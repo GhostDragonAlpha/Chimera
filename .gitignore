@@ -14,6 +14,15 @@ Chimera/Plugins/**/Intermediate/
 *.sarif
 $null
 
+# Multi-agent coordination state (machine-local; advisory locks + volatile
+# heartbeats — committing them would churn every claim/heartbeat)
+Chimera/core/editor_scheduler.lock
+Chimera/core/editor_scheduler_state.json
+Chimera/core/task_board.lock
+Chimera/core/task_board_state.json
+Chimera/core/task_board_state.json.bak
+Chimera/core/task_board_state.json.tmp
+
 # Test output files
 tdd_pipeline_output*.txt
 demo_output.txt
