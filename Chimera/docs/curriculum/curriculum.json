@@ -363,7 +363,8 @@
               "id": "ma.vision.bible",
               "prompt": "Quote the STORY_BIBLE phrase or Design Law that <feature> serves, self-score its vision_fit (0.2-1.5, one decimal), and defend the score in three sentences. If it serves no phrase, score it honestly and say what that means.",
               "artifact": "ma_vision_bible.md",
-              "verify": [{"type": "artifact", "min_chars": 200, "require_numeric": 1, "must_match": ["vision|bible|Design Law|Those who love"]}]
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["vision|bible|Design Law|Those who love", "vision_fit\\s*[0-9]\\.[0-9]"]}],
+              "calibration_note": "2026-07-12 first full run: was require_numeric, but vision_fit is a bare multiplier — the number-with-unit vocabulary (fps/ms/%) punished the checkpoint's own subject. Score pattern matched directly instead."
             },
             {
               "id": "ma.vision.palette",
@@ -508,7 +509,7 @@
               "id": "phd.defense.falsifiable",
               "prompt": "State <feature>'s falsifiable claim: 'if MEASUREMENT misses THRESHOLD, this feature is wrong and should be reworked.' One sentence, with a real number. If you cannot write this sentence, the feature is a belief, not a design.",
               "artifact": "phd_defense_falsifiable.md",
-              "verify": [{"type": "artifact", "min_chars": 100, "require_numeric": 1, "must_match": ["if ", "wrong|falsif|refute|rework"]}]
+              "verify": [{"type": "artifact", "min_chars": 100, "require_numeric": 1, "must_match": ["\\bif\\b", "wrong|falsif|refute|rework"]}]
             }
           ]
         },

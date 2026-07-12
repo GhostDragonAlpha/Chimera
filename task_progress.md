@@ -1,3 +1,16 @@
+# Solver draft 2026-07-12 03:47Z — blocker: graph node count 2024 > max 2000
+
+Diagnosis: The pipeline is blocked by the gate_node_count_bounded check because the UE5.8 graph has 2018 nodes, exceeding the maximum allowed limit of 2000 nodes. The error context explicitly instructs to archive old Mutation nodes to reduce the graph node count below the threshold and unblock the workflow.
+Confidence: 0.9
+
+## NEXT (solver-drafted fix plan; the blocker is NOT the note — this plan is)
+1. **Fix: graph node count 2024 > max 2000** `capable sessions only` — execute the remaining steps:
+   1. [python_module] python -m core.gardener — Archive old Mutation nodes to reduce graph node count below the max 2000 limit and unblock the pipeline. (attempted: FAIL:  [-h] [--tend] [--dry-run]
+                                   [--min-count MIN_C)
+   Skip-condition: blocker no longer reproduces → record pathway success.
+
+---
+
 # Session 2026-07-12d — THE CURRICULUM: features go to school, K -> PhD
 
 **Human's full vision landed:** the gauntlet is the ENTIRE EDUCATION SYSTEM, hyper-focused

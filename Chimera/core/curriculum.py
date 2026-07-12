@@ -143,18 +143,22 @@ def _h_rule_ids():
 
 
 def _latest_feature_status(feature, nodes):
-    best_ts, best_status = "", None
-    for n in nodes:
-        if n.get("type") != "FeatureUpdate":
-            continue
-        params = n.get("parameters") if isinstance(n.get("parameters"), dict) else {}
-        name = n.get("feature_name") or n.get("feature") or params.get("feature")
-        if name != feature:
-            continue
-        ts = n.get("timestamp", "")
-        if ts >= best_ts:
-            best_ts, best_status = ts, (n.get("status") or params.get("status"))
-    return best_status
+    """Backfill-aware: live-recorded updates outrank backfilled re-records
+    (same trap preflight._latest_feature_statuses documents — a re-run of the
+    pollution fixer stamps old statuses with today's date)."""
+    try:
+        from core.preflight import _latest_feature_statuses
+        entry = _latest_feature_statuses(nodes).get(feature)
+        return entry[1] if entry else None
+    except ImportError:
+        best = None
+        for n in nodes:
+            if n.get("type") != "FeatureUpdate" or n.get("feature_name") != feature:
+                continue
+            rank = (not bool(n.get("backfilled")), n.get("timestamp", ""))
+            if best is None or rank > best[0]:
+                best = (rank, n.get("status"))
+        return best[1] if best else None
 
 
 # ---------------------------------------------------------------------------

@@ -150,9 +150,14 @@ def collect_facts() -> dict:
         except (TypeError, ValueError):
             pass
 
-    # Loop board (same derivation preflight uses). NOTE: 'parameters' can be a
-    # STRING on real nodes (surprise_79acef63880dfc4d) — guard every access.
-    ledger, latest = {}, {}
+    # The exam key must BE the textbook: reuse preflight's exact helpers instead
+    # of re-deriving. Two student-discovered bugs live in re-derivation: (1) a
+    # different DONE_STATUSES set graded 'Loop 3' while preflight taught 'Loop 1';
+    # (2) backfilled re-records shadow live statuses unless ranked below them
+    # (preflight._latest_feature_statuses docstring, observed 2026-07-11).
+    from core.preflight import _latest_feature_statuses, DONE_STATUSES
+    updates = _latest_feature_statuses(nodes)
+    ledger = {}
     for n in nodes:
         if n.get("type") == "Feature" and str(n.get("spiral_loop", "")).startswith("Loop"):
             try:
@@ -160,22 +165,14 @@ def collect_facts() -> dict:
             except (ValueError, IndexError):
                 continue
             ledger.setdefault(ln, {})[n.get("name")] = n.get("status", "not_started")
-        if n.get("type") == "FeatureUpdate":
-            params = n.get("parameters") if isinstance(n.get("parameters"), dict) else {}
-            name = n.get("feature_name") or n.get("feature") or params.get("feature")
-            status = n.get("status") or params.get("status")
-            if name and n.get("timestamp", "") >= latest.get(name, ("", ""))[0]:
-                latest[name] = (n.get("timestamp", ""), status)
-    done_statuses = {"verified", "encoded", "observed", "accepted", "accepted_tacit",
-                     "observed_provisional", "sim_verified"}
     for ln in sorted(ledger):
-        open_feats = [f for f, s in ledger[ln].items()
-                      if (latest.get(f, ("", s))[1] or s) not in done_statuses]
+        statuses = {f: updates.get(f, (None, s))[1] for f, s in ledger[ln].items()}
+        open_feats = [f for f, s in statuses.items() if s not in DONE_STATUSES]
         if open_feats:
             facts["current_loop"] = ln
             facts["open_features"] = open_feats
             break
-    facts["feature_statuses"] = {f: (latest.get(f, ("", None))[1]) for f in latest}
+    facts["feature_statuses"] = {f: v[1] for f, v in updates.items()}
 
     builds = sorted((n for n in nodes if n.get("compilation_result") in ("pass", "fail")),
                     key=lambda n: n.get("timestamp", ""))
@@ -194,8 +191,14 @@ def collect_facts() -> dict:
 
     try:
         from core.task_board import get_state
-        facts["open_task_ids"] = [t["id"] for t in get_state()["tasks"]
-                                  if t["status"] == "open"]
+        tasks = get_state()["tasks"]
+        facts["open_task_ids"] = [t["id"] for t in tasks if t["status"] == "open"]
+        # Drift tolerance (pain phase_c2b05e119221ff60:P1, confirmed live within
+        # the hour): the board moves between a student reading and submitting —
+        # an id that was open can be claimed/blocked minutes later. Anchoring to
+        # any LIVE task (not done/abandoned) is still honest work.
+        facts["live_task_ids"] = [t["id"] for t in tasks
+                                  if t["status"] in ("open", "claimed", "blocked")]
     except Exception:
         pass
 
@@ -240,8 +243,9 @@ def _v_orientation(agent, facts):
                    loop is not None and re.search(rf"\bLoop {loop}\b", text) is not None))
     checks.append(("names one of that loop's OPEN features",
                    any(f in text for f in facts.get("open_features", []))))
-    checks.append(("cites an open board task id (tb-NNNN)",
-                   any(tid in text for tid in facts.get("open_task_ids", []))))
+    live = facts.get("live_task_ids") or facts.get("open_task_ids", [])
+    checks.append(("cites a live board task id (tb-NNNN)",
+                   any(tid in text for tid in live)))
     checks.append(("cites one open phantom pain id",
                    any(pid in text for pid in facts.get("open_pain_ids", []))))
     return checks
@@ -262,8 +266,9 @@ def _v_scholar(agent, facts):
     checks = [("artifact research.md exists", text is not None)]
     if text is None:
         return checks
-    checks.append(("anchored to an open board task id",
-                   any(tid in text for tid in facts.get("open_task_ids", []))))
+    live = facts.get("live_task_ids") or facts.get("open_task_ids", [])
+    checks.append(("anchored to a live board task id",
+                   any(tid in text for tid in live)))
     cited = re.findall(r"(?:docs|research_corpus)[/\\][\w\-./\\]+", text)
     real = [c for c in cited if (ROOT / c).exists() or (ROOT.parent / c).exists()]
     checks.append((f"cites >=2 sources that exist on disk (found {len(real)})",
