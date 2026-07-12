@@ -35,17 +35,10 @@ class CppSyntaxValidator:
         except Exception as e:
             return False, [f"Failed to read file {file_path}: {str(e)}"]
         
-        # Check for balanced braces
-        open_braces = content.count('{')
-        close_braces = content.count('}')
-        if open_braces != close_braces:
-            errors.append(f"Unbalanced braces in {file_path}: {open_braces} open, {close_braces} close")
-        
-        # Check for balanced parentheses
-        open_parens = content.count('(')
-        close_parens = content.count(')')
-        if open_parens != close_parens:
-            errors.append(f"Unbalanced parentheses in {file_path}: {open_parens} open, {close_parens} close")
+        # Literal-aware structural balance (core.cpp_lint) — braces inside
+        # string/char literals are valid C++, not imbalances.
+        from core.cpp_lint import brace_paren_errors
+        errors.extend(brace_paren_errors(str(file_path), content))
         
         # Check for .generated.h placement (must be last include before GENERATED_BODY or class definition)
         generated_h_pattern = r'#include\s+"([^"]+\.generated\.h)"'
@@ -3018,7 +3011,17 @@ bool FMissionCompletePayoutCredits::RunTest(const FString& Parameters)
             return (m.group(0) if m else default) + ("f" if "." in (m.group(0) if m else default) else ".0f")
 
         def s(token: str, default: str) -> str:
-            return first(token, f'"{default}"').strip('"').replace('"', "'")
+            # A value that opens a block/array ('{', '[', '(') is a nested
+            # structure, not a scalar — the regex grabbed the delimiter (the
+            # declared spec-parser pain phase_acaf769240f9ae7c:P1, made real
+            # by 'activation = {' -> TEXT("{") -> unbalanced-brace gate). Fall
+            # back, then hard-strip any structural char so nothing can ever
+            # land inside a TEXT("...") literal.
+            raw = first(token, None)
+            if raw is None or not raw.strip() or raw.strip()[0] in "{[(":
+                raw = default
+            cleaned = _re.sub(r'[{}\[\]()"]', "", raw).strip()
+            return cleaned or default
 
         def vec(token: str, default: str = "(1.0, 0.0, 0.0)") -> str:
             raw = first(token, default)
@@ -3493,7 +3496,15 @@ void ASpecBindingsActor::BeginPlay()
                 return m.group(0) if m else default
 
             def s(token, default):
-                return first(token, f'"{default}"').strip('"').replace('"', "'")
+                # Block/array openers are not scalars — fall back and hard-strip
+                # any structural char (the 'activation = {' -> TEXT("{") bug,
+                # pain phase_acaf769240f9ae7c:P1). Nothing structural may reach
+                # a TEXT("...") literal.
+                raw = first(token, None)
+                if raw is None or not raw.strip() or raw.strip()[0] in "{[(":
+                    raw = default
+                cleaned = _re.sub(r'[{}\[\]()"]', "", raw).strip()
+                return cleaned or default
 
             def b(token, default="true"):
                 return "true" if "true" in first(token, default).lower() else "false"

@@ -239,17 +239,11 @@ def _basic_static_analysis(source_dir: str) -> tuple[bool, list[str]]:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
                     
-                # Check for balanced braces
-                open_braces = content.count('{')
-                close_braces = content.count('}')
-                if open_braces != close_braces:
-                    errors.append(f"Unbalanced braces in {file_path.name}: {open_braces} open, {close_braces} close")
-                
-                # Check for balanced parentheses
-                open_parens = content.count('(')
-                close_parens = content.count(')')
-                if open_parens != close_parens:
-                    errors.append(f"Unbalanced parentheses in {file_path.name}: {open_parens} open, {close_parens} close")
+                # Literal-aware structural balance (core.cpp_lint): a brace
+                # inside TEXT("{") is valid C++, not an imbalance. str.count()
+                # false-positived here and blocked the whole build 2026-07-12.
+                from core.cpp_lint import brace_paren_errors
+                errors.extend(brace_paren_errors(file_path.name, content))
                     
                 # Check for proper API macro usage (CHIMERA_API is correct for this module)
                 if 'DEEPSPACETRADER_API' in content:
