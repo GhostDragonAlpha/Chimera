@@ -106,6 +106,27 @@ def main():
             capture_output=True, text=True, timeout=10
         )
         git_lines = [l for l in git_out.stdout.splitlines() if l.strip()]
+        # Snapshot choreography (tuning pass 2026-07-12): every postflight
+        # dirties docs/chimera_dna_graph.json by design (save_dna_graph
+        # refreshes the durability copy). When the snapshot is the ONLY dirt,
+        # commit it here — the recording step finishes its own paperwork
+        # instead of leaving a trailing chore for every session.
+        snapshot_rel = "Chimera/docs/chimera_dna_graph.json"
+        if git_lines and all(l[3:].strip().strip('"') == snapshot_rel for l in git_lines):
+            try:
+                repo = str(Path(__file__).parent.parent.parent)
+                subprocess.run(["git", "-C", repo, "add", snapshot_rel],
+                               check=True, timeout=15, capture_output=True)
+                subprocess.run(["git", "-C", repo, "commit", "-q", "-m",
+                                "chore(dna): snapshot via postflight\n\n"
+                                "Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"],
+                               check=True, timeout=30, capture_output=True)
+                subprocess.run(["git", "-C", repo, "push", "-q"],
+                               timeout=120, capture_output=True)
+                print("[Git] DNA snapshot auto-committed + pushed (only dirt was the snapshot)")
+                git_lines = []
+            except Exception as e:
+                print(f"[Git] snapshot auto-commit failed ({e}) — commit manually")
         if git_lines:
             print(f"[Git] {len(git_lines)} uncommitted change(s):")
             for l in git_lines[:10]:

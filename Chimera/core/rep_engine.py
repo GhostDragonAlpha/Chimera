@@ -65,8 +65,11 @@ PIE_MANIFEST = ROOT / "docs" / "rep_batteries" / "pie_manifest.json"
 DB_PATH = ROOT / "docs" / "world" / "reps.db"
 CLAUDE_MD = ROOT.parent / "CLAUDE.md"
 
-# shaping / gate tuning (the dog numbers)
-REP_GATE = dict(min_reps=200, streak_runs=8, streak_rate=0.95)
+# shaping / gate tuning (the dog numbers). per_atom scales the rep threshold
+# to the battery: a 1-atom feature needs 25 trials of its one constraint, not
+# 200 nightly runs (~7 months) — the threshold measures TRIALS PER CONSTRAINT,
+# capped at min_reps for big batteries (tuning pass 2026-07-12).
+REP_GATE = dict(min_reps=200, per_atom=25, streak_runs=8, streak_rate=0.95)
 PROMOTE = dict(streak_runs=8, streak_rate=0.95, min_reps_per_tier=100)
 TIER_NAMES = {0: "exists", 1: "behaves", 2: "measures", 3: "perceptual", 4: "comparative"}
 
@@ -518,7 +521,11 @@ def gen_envelope(cache: _FileCache) -> list:
         return atoms
     headless_axes = {"open_board_tasks", "atoms_per_battery", "decomposition_depth",
                      "generated_loc", "generated_files", "graph_nodes",
-                     "heuristics_per_night", "engine_surprise_rate_per_week"}
+                     "heuristics_per_night", "engine_surprise_rate_per_week",
+                     # sensor-fed since the sleepwalk wire (tuning pass):
+                     # every walk refreshes telemetry_last.json; the probe
+                     # skips honestly when the snapshot is absent.
+                     "frame_time_ms", "system_memory_gb"}
     for name, axis in env.get("axes", {}).items():
         kind = "headless" if name in headless_axes else "pie"
         probe = ({"type": "envelope_axis", "axis": name} if kind == "headless"
@@ -648,24 +655,29 @@ def status(feature_file: str) -> dict:
 
 def rep_gate(feature: str) -> tuple:
     """Collapse eligibility by repetition: the dog-sit threshold as a gate.
-    (eligible, reason). Advisory unless CHIMERA_ENFORCE_REP_GATE=1."""
+    (eligible, reason). Threshold scales to the battery — trials PER
+    CONSTRAINT, capped at min_reps. Advisory unless CHIMERA_ENFORCE_REP_GATE=1."""
     con = _db()
     total = con.execute("SELECT COUNT(*) FROM reps WHERE feature=?", (feature,)).fetchone()[0]
     rates = _run_rates(con, feature, REP_GATE["streak_runs"])
     con.close()
+    battery_size = len(load_battery(feature)) or 1
+    required = min(REP_GATE["min_reps"], battery_size * REP_GATE["per_atom"])
     if total == 0:
         return (False, f"no reps recorded for '{feature}' "
-                       f"(need >={REP_GATE['min_reps']}) — build+run a battery")
-    if total < REP_GATE["min_reps"]:
-        return (False, f"{total}/{REP_GATE['min_reps']} reps — below threshold")
+                       f"(need >={required}) — build+run a battery")
+    if total < required:
+        return (False, f"{total}/{required} reps — below threshold "
+                       f"({battery_size} atoms x {REP_GATE['per_atom']}/atom, "
+                       f"cap {REP_GATE['min_reps']})")
     if len(rates) < REP_GATE["streak_runs"]:
         return (False, f"only {len(rates)}/{REP_GATE['streak_runs']} runs on record")
     weak = [f"{r:.0%}" for r in rates if r < REP_GATE["streak_rate"]]
     if weak:
         return (False, f"streak broken: recent runs at {', '.join(weak[:3])} "
                        f"(need >={REP_GATE['streak_rate']:.0%} x{REP_GATE['streak_runs']})")
-    return (True, f"{total} reps, {REP_GATE['streak_runs']}-run streak "
-                  f">={REP_GATE['streak_rate']:.0%}")
+    return (True, f"{total} reps (>= {required} for {battery_size} atoms), "
+                  f"{REP_GATE['streak_runs']}-run streak >={REP_GATE['streak_rate']:.0%}")
 
 
 def maybe_promote(feature_file: str) -> str:
