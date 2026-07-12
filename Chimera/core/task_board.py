@@ -291,7 +291,7 @@ def _locked(fn):
 def _new_task(state, title: str, recipe: str, files=None, editor: str = "none",
               exclusive=None, feature: str = None, loop: int = None,
               priority: float = 1.0, depends_on=None, capable_only: bool = False,
-              created_by: str = "manual") -> dict:
+              created_by: str = "manual", not_scope: dict = None) -> dict:
     """Append a task to an already-locked state. Callers hold the lock."""
     if editor not in EDITOR_MODES:
         raise ValueError(f"editor must be one of {EDITOR_MODES}, got {editor!r}")
@@ -311,6 +311,8 @@ def _new_task(state, title: str, recipe: str, files=None, editor: str = "none",
         "created_at": _now_iso(), "created_by": created_by,
         "notes": [], "result": None,
     }
+    if not_scope:
+        task["not_scope"] = not_scope    # inversion boundary, printed at claim
     state["next_id"] += 1
     state["tasks"].append(task)
     return task
@@ -321,6 +323,24 @@ def add_task(state, *args, **kwargs) -> dict:
     task = _new_task(state, *args, **kwargs)
     _render_md(state)
     return task
+
+
+@_locked
+def mark_superseded_by_decomposition(state, feature_or_id: str, dc_id: str) -> list:
+    """The Decomposition Process's monolith guard: once a compound target is
+    broken into parts, its bare-parent task can no longer be claimed — the
+    parts get processed, never the system. Returns the tasks it blocked."""
+    blocked = []
+    for t in state["tasks"]:
+        if t["status"] == OPEN and (t["id"] == feature_or_id
+                                    or t.get("feature") == feature_or_id):
+            t["status"] = BLOCKED
+            t["notes"].append({"ts": _now_iso(), "agent": "decomposer",
+                               "text": f"blocked: superseded by decomposition {dc_id} "
+                                       f"— claim the parts, not the system"})
+            blocked.append(t["id"])
+    _render_md(state)
+    return blocked
 
 
 @_locked
@@ -689,6 +709,32 @@ def main(argv=None):
                 print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
                 sys.exit(2)
             _print_packet(packet)
+            # NOT-THIS: the task's inversion boundary — eliminated scope +
+            # the feature's recorded eliminations. Hard negatives with
+            # provenance; do not re-explore without new evidence.
+            try:
+                task = packet.get("task") or {}
+                not_scope = task.get("not_scope") or {}
+                elim_lines = []
+                for sub, why in (not_scope.get("rationale") or {}).items():
+                    elim_lines.append(f"x {sub}  — {why}")
+                for sub in not_scope.get("subsystems") or []:
+                    if sub not in (not_scope.get("rationale") or {}):
+                        elim_lines.append(f"x {sub}")
+                feat = task.get("feature")
+                if feat:
+                    from core.graphify_interface import load_dna_graph
+                    for n in load_dna_graph().get("nodes", []):
+                        if n.get("type") == "Elimination" and n.get("feature") == feat:
+                            elim_lines.append(
+                                f"x {n.get('boundary', '')[:70]}  "
+                                f"— eliminated ({n.get('evidence_ref') or n.get('id')})")
+                if elim_lines:
+                    print("\nNOT THIS (eliminated / out of lane — needs NEW evidence to reopen):")
+                    for line in elim_lines[:10]:
+                        print(f"  {line}")
+            except Exception:
+                pass
     elif args.cmd in ("done", "block", "release"):
         # Exiting through the board closes the tunnel session too (releases the
         # editor, checks the footprint, prints the postflight command).

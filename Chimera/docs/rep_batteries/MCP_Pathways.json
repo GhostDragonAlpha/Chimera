@@ -1,0 +1,16 @@
+[
+ {
+  "id": "atom_79cefdd19983",
+  "feature": "MCP_Pathways",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_lacks",
+   "root": "core",
+   "glob": "*.py",
+   "regex": "mode\\s*=\\s*[\\\"']desktop[\\\"']"
+  },
+  "desc": "no desktop screenshot captures anywhere in core",
+  "provenance": "H-2"
+ }
+]

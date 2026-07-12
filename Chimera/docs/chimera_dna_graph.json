@@ -50257,6 +50257,1739 @@
       ],
       "recorded_by": "dream_loop.py",
       "run_id": "run_c52f7e979164"
+    },
+    {
+      "id": "phase_dea979617900fe8d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:14:38.288437",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_c8e19d8c49b2"
+    },
+    {
+      "id": "phase_ef329fd418ae94e0",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:19:55.323356",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_0c232376ccd5"
+    },
+    {
+      "id": "elim_65f84a195c149377",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:21:19.825658",
+      "feature": "audio_visual_sync/telemetry_accessors",
+      "boundary": "MCP action handlers / command dispatch as root cause",
+      "observed": "handlers verified working; telemetry still returned defaults",
+      "eliminates": [
+        "hypothesis: McpAutomationBridge HandleAction broken"
+      ],
+      "survives": [
+        "hypothesis: SandSoundComponent never attached at runtime"
+      ],
+      "evidence_ref": "H-31 lineage, sim_av_sync_test 2026-07-11",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_audio_visual_sync/telemetry_accessors",
+      "template_file": "elimination/audio_visual_sync/telemetry_accessors",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for audio_visual_sync/telemetry_accessors: MCP action handlers / command dispatch as root cause",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_6650e6dfa326"
+    },
+    {
+      "id": "elim_71b935361cee2319",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:21:20.396161",
+      "feature": "audio_visual_sync/telemetry_accessors",
+      "boundary": "beat expect schema as root cause",
+      "observed": "all expects schema-valid after H-30 validation; failures persisted",
+      "eliminates": [
+        "hypothesis: beat scripts malformed"
+      ],
+      "survives": [
+        "hypothesis: backend component not populating at BeginPlay"
+      ],
+      "evidence_ref": "H-32 lineage, sim_av_sync_test 2026-07-11",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_audio_visual_sync/telemetry_accessors",
+      "template_file": "elimination/audio_visual_sync/telemetry_accessors",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for audio_visual_sync/telemetry_accessors: beat expect schema as root cause",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_d892a2ff90af"
+    },
+    {
+      "id": "elim_b39ca7951a8cd8f8",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:21:36.753063",
+      "feature": "audio_visual_sync/report_telemetry",
+      "boundary": "hardcoded fallback sentinels masking absent backend data",
+      "observed": "count=0, latency=999 defaults where live data should be",
+      "eliminates": [
+        "hypothesis: telemetry pipeline healthy"
+      ],
+      "survives": [
+        "hypothesis: component attachment (CONFIRMED by rep atom, red on first pass)"
+      ],
+      "evidence_ref": "H-31/H-34, rep_engine first pass 2026-07-12",
+      "probe": {
+        "type": "tree_lacks",
+        "root": "Source/Chimera/ProceduralGenerated/Sound",
+        "glob": "*.cpp",
+        "regex": "=\\s*999(\\.0f?)?\\b"
+      },
+      "tier": 2,
+      "error_signature": "elimination_audio_visual_sync/report_telemetry",
+      "template_file": "elimination/audio_visual_sync/report_telemetry",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for audio_visual_sync/report_telemetry: hardcoded fallback sentinels masking absent backend data",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_49916e1d97cc"
+    },
+    {
+      "id": "phase_07e3b4c4d5eb6d64",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:24:05.794420",
+      "phase": "Rep engine: resolution through repetition (human vision 2026-07-12)",
+      "result": "core/rep_engine.py live: 29 batteries, 475 atoms, 466 verdicts/pass; 17/17 + 10/10 + 11/11 suites green; preflight [3.9] renders; first pass mechanically confirmed tb-0001 root cause (SandSoundComponent attach atom RED, 3/5 accessors ABSENT) and DSL drift (7% pass)",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Rep engine: resolution through repetition (human vision 2026-07-12)",
+      "error_category": "none",
+      "fix_description": "Phase 'Rep engine: resolution through repetition (human vision 2026-07-12)' complete: core/rep_engine.py live: 29 batteries, 475 atoms, 466 verdicts/pass; 17/17 + 10/10 + 11/11 suites green; preflight [3.9] renders; first pass mechanically confirmed tb-0001 root cause (SandSoundCompone",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "System_DSL_Fidelity's 145 red atoms are part real drift, part token-regex noise \u2014 grading anything on that battery before a triage pass will punish innocents",
+        "The rep gate at 200 reps assumes daily tend runs; if the nightly scheduler stalls, every feature stalls at the gate with no one noticing"
+      ],
+      "inheritance": "Resolution = reps x constraints: the container walls are negative constraints, repetition fills the container, promotion only on streaks. The engine found in milliseconds what four dream-loop nights found by hand \u2014 trust the red atoms, fix generators not symptoms.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_581832cce9cd"
+    },
+    {
+      "id": "elim_043bb7affad30ff4",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:24:06.097642",
+      "feature": "audio_visual_sync/telemetry_accessors",
+      "boundary": "beat schema or MCP dispatch as root cause",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "H-31/H-32 lineage + rep atom evidence 2026-07-12",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_audio_visual_sync/telemetry_accessors",
+      "template_file": "elimination/audio_visual_sync/telemetry_accessors",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for audio_visual_sync/telemetry_accessors: beat schema or MCP dispatch as root cause",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_581832cce9cd"
+    },
+    {
+      "id": "feature_1184c0fadac4695f",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-12T16:37:22.084016",
+      "feature_name": "audio_visual_sync/telemetry_accessors",
+      "loop": 9,
+      "status": "implemented",
+      "parameters": {
+        "fix": "H-34 runtime attach in ChimeraMovementComponent::BeginPlay + 4 tb-0001 accessors (Avg/Max/VolumeScalesWithSpeed w/ speed buckets) on SandSoundComponent",
+        "verified_by": "rep_engine battery 6/6 headless atoms green x2 runs; UBT+PIE deferred per speed-run directive"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_9/audio_visual_sync/telemetry_accessors",
+      "error_category": "none",
+      "fix_description": "Feature 'audio_visual_sync/telemetry_accessors' (Loop 9) recorded as 'implemented'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2efcd7a6ac0c"
+    },
+    {
+      "id": "phase_531fb6fad420ef8c",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:47:43.330133",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_546da7886802"
+    },
+    {
+      "id": "surprise_5d2e7f3b87bedb0e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T16:48:44.102830",
+      "context": "Triaging 145 red System_DSL_Fidelity atoms, expecting mostly probe/regex noise",
+      "expectation": "most reds are token-matching artifacts (snake vs CamelCase)",
+      "reality": "only 13/145 were camel-noise + 1 config-class; 131 tokens have ZERO trace in Source/Config/uproject in any casing \u2014 the generator implements ~19% of the declared spec surface (33/169 project-wide, probe v2)",
+      "lesson_hint": "the spec is aspirational; treat DSL coverage % as a first-class fill-level metric",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'most reds are token-matching artifacts (snake vs CamelCase)' but 'only 13/145 were camel-noise + 1 config-class; 131 tokens have ZERO trace in Sou'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ff8e7a671d1d"
+    },
+    {
+      "id": "elim_5db874e721a6c962",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:48:44.441321",
+      "feature": "System_DSL_Fidelity",
+      "boundary": "probe token-noise as the dominant cause of DSL battery reds",
+      "observed": "v1 probe (literal snake, ProceduralGenerated-only) produced 13 false reds of 145; camel-aware Source-wide v2 probe leaves 136 reds standing",
+      "eliminates": [
+        "hypothesis: DSL battery reds are mostly regex artifacts"
+      ],
+      "survives": [
+        "fact: generator coverage of declared spec is ~19% \u2014 136 unkept promises, ledgered in docs/rep_batteries/dsl_drift.json"
+      ],
+      "evidence_ref": "rep ledger System_DSL_Fidelity 962 reps + triage 2026-07-12",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_System_DSL_Fidelity",
+      "template_file": "elimination/System_DSL_Fidelity",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for System_DSL_Fidelity: probe token-noise as the dominant cause of DSL battery reds",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_03e54242c130"
+    },
+    {
+      "id": "phase_4fcf9803344ee7cc",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:51:42.887071",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_ae0e47dfbbfb"
+    },
+    {
+      "id": "phase_92144425dd70d3d0",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:52:52.259810",
+      "phase": "DSL triage + THE HISTORY BOOK",
+      "result": "19% spec coverage measured (33/169 tokens, probe v2 camel-aware Source-wide); 131 true-drift tokens ledgered; history_book.py live: 985 entries/7 chapters FTS-searchable, nightly rewrite wired; suites 17/17+11/11",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/DSL triage + THE HISTORY BOOK",
+      "error_category": "none",
+      "fix_description": "Phase 'DSL triage + THE HISTORY BOOK' complete: 19% spec coverage measured (33/169 tokens, probe v2 camel-aware Source-wide); 131 true-drift tokens ledgered; history_book.py live: 985 entries/7 chapters FTS-searchable, nightly rewrite wired; suites",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "HISTORY_BOOK.md will merge-conflict constantly if two agents regenerate it concurrently \u2014 nightly-only rewrite may need a lock or generation stamp"
+      ],
+      "inheritance": "The Book is the studio's memory made queryable \u2014 search it BEFORE re-deriving anything. The drift ledger is the generator's backlog: every kept promise flips a red atom green.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_85d812320248"
+    },
+    {
+      "id": "elim_fc1e3b5e9ce65fbe",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:52:52.462794",
+      "feature": "System_DSL_Fidelity",
+      "boundary": "probe token-noise as dominant cause of battery reds",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "triage 2026-07-12 + rep ledger 962 reps",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_System_DSL_Fidelity",
+      "template_file": "elimination/System_DSL_Fidelity",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for System_DSL_Fidelity: probe token-noise as dominant cause of battery reds",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_85d812320248"
+    },
+    {
+      "id": "phase_6558a247edaa8511",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:01:37.830667",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_2af17aafa151"
+    },
+    {
+      "id": "phase_acaf769240f9ae7c",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:02:18.023245",
+      "phase": "Spec promise-keeping: deep_space_trader drift eliminated via generator",
+      "result": "generate_dsl_spec_binding_files() emits 5 systems (10 files) with values re-extracted from the .chimera per generation; DSL coverage 33->86 green atoms (19%->50%); deep_space_trader.chimera zero remaining drift; rep engine's own H-34 atom caught the new components unspawned -> SpecBindingsActor carrier added; suites 17/17+11/11; UBT deferred (speed-run)",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Spec promise-keeping: deep_space_trader drift eliminated via generator",
+      "error_category": "none",
+      "fix_description": "Phase 'Spec promise-keeping: deep_space_trader drift eliminated via generator' complete: generate_dsl_spec_binding_files() emits 5 systems (10 files) with values re-extracted from the .chimera per generation; DSL coverage 33->86 green atoms (19%->50%); deep_space_trader.chimera zero remai",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Spec-extraction regexes take FIRST occurrence per token \u2014 multi-route/multi-commodity blocks collapse to one default; per-instance arrays (routes[], commodities[]) will need the real DSL parser, not regex",
+        "10 new generated files have never seen UBT \u2014 reflection macros (TObjectPtr includes, generated.h order) are the likely first build breaks"
+      ],
+      "inheritance": "Drift backlog is now a ranked generator roadmap: quantum_travel 16, planet_generation 16, flight_components 15, economy 10 \u2014 same recipe (spec-bound component + behavior + carrier spawn) per file. The engine grades its own author; let it.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_f577702b3345"
+    },
+    {
+      "id": "feature_913dd6a8ebdafce4",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-12T17:02:18.226683",
+      "feature_name": "System_DSL_Fidelity",
+      "loop": 8,
+      "status": "implemented",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_8/System_DSL_Fidelity",
+      "error_category": "none",
+      "fix_description": "Feature 'System_DSL_Fidelity' (Loop 8) recorded as 'implemented'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f577702b3345"
+    },
+    {
+      "id": "phase_3de92a5568df6f38",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:17:29.541400",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_b583269cf29f"
+    },
+    {
+      "id": "phase_791426be1f3c7462",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:18:04.240595",
+      "phase": "Satellite spec sweep: 100% DSL coverage",
+      "result": "generate_satellite_spec_binding_files() emits 9 file-pairs (8 domain components + carrier); System_DSL_Fidelity 169/169 green atoms (19%->50%->100% today); remaining subsystem reds are exclusively pre-existing debt; suites 17/17+11/11; UBT deferred",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Satellite spec sweep: 100% DSL coverage",
+      "error_category": "none",
+      "fix_description": "Phase 'Satellite spec sweep: 100% DSL coverage' complete: generate_satellite_spec_binding_files() emits 9 file-pairs (8 domain components + carrier); System_DSL_Fidelity 169/169 green atoms (19%->50%->100% today); remaining subsystem reds are exclusively pre",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Auto-generated ValidateSpec() satisfies the used-in-cpp atom by construction \u2014 if a future author leans on it as the ONLY consumer, properties will be 'used' but still functionally dead; the atom needs a tier-2 upgrade: used somewhere BESIDES the validator"
+      ],
+      "inheritance": "Every declared spec token now surfaces in generated code with behavior reading it. The pre-existing dead-metadata reds (UUniverseGenerationComponent, UTravelVehicleComponent, StationTradingData, DustAccumulationMaterial, Ship_Trader props) are the next honest queue \u2014 same recipe: spawn or consume.",
+      "pain_verdicts": {
+        "phase_acaf769240f9ae7c:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_4629339ccb3c"
+    },
+    {
+      "id": "feature_a986ec1bfbb462a9",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-12T17:18:04.440219",
+      "feature_name": "System_DSL_Fidelity",
+      "loop": 8,
+      "status": "verified",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_8/System_DSL_Fidelity",
+      "error_category": "none",
+      "fix_description": "Feature 'System_DSL_Fidelity' (Loop 8) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_4629339ccb3c"
+    },
+    {
+      "id": "mutation_65b7c784b1ca",
+      "type": "Mutation",
+      "timestamp": "2026-07-12T17:23:29.379095",
+      "error_signature": "success_no_error",
+      "template_file": "generate_dsl_spec_binding_files+generate_satellite_spec_binding_files",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "[1/8] Compile Module.Chimera.cpp -> [3/8] Link UnrealEditor-Chimera.dll -> [8/8] WriteMetadata ChimeraEditor.target. Result: Succeeded. Total execution time: 55.47s. Warnings only (pre-existing C5038 init-order x3, plugin C4996 deprecations). FIRST UBT judgment on the entire speed-run corpus: tb-0001 SandSound fix + ChimeraMovementComponent BeginPlay + 4 spec-binding components + SpecBindingsActor + 8 satellite spec components + SatelliteSpecBindingsActor (19 new file-pairs) \u2014 zero errors.",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_25f59d4bd82e"
+    },
+    {
+      "id": "simtest_536c81002961d807",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-12T17:24:44.567173",
+      "observer": "agent-sim",
+      "session": "post_h34_ubt_green",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=100uu (loc x=1600.1577367553846, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=5"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1200
+                }
+              },
+              "ok": true,
+              "note": "dist=1000uu (loc x=3000.046936734451, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": false,
+              "note": "walk_volume=1 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=10"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=4.023313522338867e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\post_h34_ubt_green.json",
+      "temperature": "[SIM] 4/5 beats reached in 'audio_visual_sync'. Failures: walk_fast_on_sand (failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'post_h34_ubt_green': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2f41557e73d1"
+    },
+    {
+      "id": "surprise_0aee78fcf6ac4c5f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T17:24:44.770989",
+      "context": "Sleepwalker expected beat 'walk_fast_on_sand' to be reachable (audio_visual_sync)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder than walk\"}, \"ok\": false, \"note\": \"walk_volume=1 sprint_volume=1\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume sho'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2f41557e73d1"
+    },
+    {
+      "id": "elim_b58535a07e3675b0",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T17:25:48.375798",
+      "feature": "Verb_Step",
+      "boundary": "audio volume-scaling as the walk_fast_on_sand failure cause",
+      "observed": "beat RAN (no Shift block) but GetVolumeScalesWithSpeed()==false: all samples landed in the slow bucket",
+      "eliminates": [
+        "hypothesis: SandSoundComponent telemetry/accessors broken (they returned live, honest data)"
+      ],
+      "survives": [
+        "sprint input (Shift modifier) never raises pawn speed >= 300 cm/s bucket threshold \u2014 the input rig, not the audio"
+      ],
+      "evidence_ref": "simtest_536c81002961d807 post_h34_ubt_green 2026-07-12",
+      "probe": {},
+      "tier": 2,
+      "error_signature": "elimination_Verb_Step",
+      "template_file": "elimination/Verb_Step",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Verb_Step: audio volume-scaling as the walk_fast_on_sand failure cause",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_382f9115cf64"
+    },
+    {
+      "id": "phase_ac024b0d825b07d7",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:26:15.815746",
+      "phase": "Cycle close under full delegation: verification phase",
+      "result": "UBT: Result Succeeded 55.47s ZERO errors first try on entire speed-run corpus (mutation_65b7c784b1ca). Sleepwalker post_h34_ubt_green: 4/5 beats reached (was 0/5 in H-31 era) \u2014 spawn_and_verify + walk_slow + dwell + report_telemetry ALL reached with live data; walk_fast failed HONESTLY on volume_scales_with_speed=false exposing sprint-input rig (elim_b58535a07e3675b0). simtest_536c81002961d807. Acceptance sweep: queue clean.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Cycle close under full delegation: verification phase",
+      "error_category": "none",
+      "fix_description": "Phase 'Cycle close under full delegation: verification phase' complete: UBT: Result Succeeded 55.47s ZERO errors first try on entire speed-run corpus (mutation_65b7c784b1ca). Sleepwalker post_h34_ubt_green: 4/5 beats reached (was 0/5 in H-31 era) \u2014 spawn_and_verify + walk",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "walk_fast will keep failing until the Shift/sprint input mapping raises pawn speed past 300 cm/s \u2014 fix EnhancedInput mapping or ChimeraMovementComponent sprint handling, then volume_scales_with_speed should flip true"
+      ],
+      "inheritance": "tb-0001 is closed at runtime: attach + accessors verified in live PIE. The one red is the sprint/Shift input rig \u2014 a NEW, narrower target with typed provenance. Blind speed-run authoring went 100% first-compile; end every burst with a build.",
+      "pain_verdicts": {
+        "phase_acaf769240f9ae7c:P2": "refuted",
+        "phase_791426be1f3c7462:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_d5d5b910ec6a"
+    },
+    {
+      "id": "dc_b1af6b6e2f33",
+      "type": "Decomposition",
+      "timestamp": "2026-07-12T17:35:44.561576",
+      "target": "Sprint_Input",
+      "kind": "input_rig",
+      "evidence": [
+        "simtest_536c81002961d807",
+        "elim_b58535a07e3675b0"
+      ],
+      "parts": [
+        {
+          "slug": "state",
+          "task_id": "tb-0013",
+          "feature": "Sprint_Input/state"
+        },
+        {
+          "slug": "binding",
+          "task_id": "tb-0014",
+          "feature": "Sprint_Input/binding"
+        },
+        {
+          "slug": "harness_parity",
+          "task_id": "tb-0015",
+          "feature": "Sprint_Input/harness_parity"
+        },
+        {
+          "slug": "readback",
+          "task_id": "tb-0016",
+          "feature": "Sprint_Input/readback"
+        }
+      ],
+      "error_signature": "decomposition_Sprint_Input",
+      "template_file": "decomposition/input_rig",
+      "error_category": "decomposition",
+      "fix_description": "Decomposed Sprint_Input (input_rig) into 4 processed parts",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "decomposer.py",
+      "run_id": "run_11d29e3b40f6"
+    },
+    {
+      "id": "phase_92d44ed97642eebc",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:37:05.077048",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_2cb8f7088f07"
+    },
+    {
+      "id": "surprise_e3944cb57b2994f0",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T17:37:32.759009",
+      "context": "test_decomposer live-decompose cases ran against the sandboxed board",
+      "expectation": "graph record would fail in the sandbox (wrong \u2014 nothing redirected it)",
+      "reality": "record_decomposition inside decompose() wrote THREE junk nodes to the REAL DNA graph \u2014 the test sandboxed task_board + rep_engine paths but not graphify writes; the History Book's FTS search surfaced the leak within seconds",
+      "lesson_hint": "any test that exercises a function with graph side-effects must stub graphify_interface.record_* explicitly; sandboxing one store is not sandboxing",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'graph record would fail in the sandbox (wrong \u2014 nothing redirected it)' but 'record_decomposition inside decompose() wrote THREE junk nodes to the REAL DNA g'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_5edde3725668"
+    },
+    {
+      "id": "phase_d6e885cba02c5b39",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:38:53.840763",
+      "phase": "The Breakdown Process: decomposition is now a processed, recorded step",
+      "result": "core/decomposer.py live (11/11): template-driven part breakdown -> board tasks w/ deps+not_scope, rep atoms at birth, Decomposition graph nodes, monolith guard. First input dc_b1af6b6e2f33: Sprint_Input -> tb-0013..16; birth atoms: state RED, binding RED, harness_parity GREEN (stale concern retired), readback pie. Book chapter VIII. Test-leak junk caught by Book FTS, cleaned, test stubbed (surprise_e3944cb57b2994f0).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/The Breakdown Process: decomposition is now a processed, recorded step",
+      "error_category": "none",
+      "fix_description": "Phase 'The Breakdown Process: decomposition is now a processed, recorded step' complete: core/decomposer.py live (11/11): template-driven part breakdown -> board tasks w/ deps+not_scope, rep atoms at birth, Decomposition graph nodes, monolith guard. First input dc_b1af6b6e2f33: Sprint_Inp",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Two founding templates cannot cover every compound shape \u2014 the first indictment that fits neither input_rig nor component_attachment will tempt an agent to work the blob; Faculty should grow templates from scars like it grows exams"
+      ],
+      "inheritance": "Nothing gets decreed anymore \u2014 not even 'use the Shift key'. Compound indictments go to the decomposer; the parts ride the conveyor; the monolith cannot be claimed. Next agent: claim tb-0013 (Sprint_Input/state) through the board like anything else.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_0dcadb2fd041"
+    },
+    {
+      "id": "elim_e1ceb1b092b179af",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T17:38:54.132945",
+      "feature": "Sprint_Input/harness_parity",
+      "boundary": "bridge LShift-vs-LeftShift mismatch as a live blocker",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "birth atom green, rep ledger 2026-07-12",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_Sprint_Input/harness_parity",
+      "template_file": "elimination/Sprint_Input/harness_parity",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Sprint_Input/harness_parity: bridge LShift-vs-LeftShift mismatch as a live blocker",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_0dcadb2fd041"
+    },
+    {
+      "id": "phase_8236016acfcc415b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:53:34.701892",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_72032b6c949c"
+    },
+    {
+      "id": "discovery_b005b2c85fb70e72",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-12T17:54:02.363364",
+      "feature": "Malcolm_Envelope",
+      "campus_sources": [],
+      "web_sources": [
+        "https://dev.epicgames.com/documentation/en-us/unreal-engine/guidelines-for-optimizing-rendering-for-real-time-in-unreal-engine",
+        "https://unrealartoptimization.github.io/book/process/measuring-performance/",
+        "https://medium.com/@mumbamweni3/best-vram-for-unreal-engine-5-in-2026-stop-freezing-during-real-time-rendering-f4d2539299e2",
+        "https://vagon.io/blog/picking-the-best-gpu-for-unreal-engine",
+        "https://www.codeitbro.com/blog/unreal-engine-5-system-requirements"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 5,
+      "parameters": {},
+      "acceptance_criteria": [
+        "frame budget expressed in ms not fps; 60fps => 16.67ms shared CPU+GPU",
+        "VRAM wall: 12GB mid-range fit target (8GB breaks under Nanite+Lumen, 16GB safe dev)",
+        "every wall carries provenance kind: researched|measured|design|existing|provisional"
+      ],
+      "research_confidence": "high",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Malcolm_Envelope",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Malcolm_Envelope': 5 sources consulted, 3 criteria, confidence=high",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_f2003fce2266"
+    },
+    {
+      "id": "surprise_17fda10a5eba4cf3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T17:54:02.588218",
+      "context": "Malcolm container's FIRST gauge reading, minutes after birth",
+      "expectation": "first reading would be all-OK or catch a real leak",
+      "reality": "reported heuristics_per_night=11 vs max 2 \u2014 but the 11 were rejection-lineage bookkeeping nodes, not distiller candidates; the sensor counted a superset of what the wall means. Fixed by narrowing the census, not moving the fence.",
+      "lesson_hint": "every envelope sensor must measure what the wall MEANS \u2014 the Jurassic census error (counting what you expect to find) is the default failure mode of containment sensors",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'first reading would be all-OK or catch a real leak' but 'reported heuristics_per_night=11 vs max 2 \u2014 but the 11 were rejection-lineage bo'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_f2003fce2266"
+    },
+    {
+      "id": "phase_207c976e3926f1f5",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:55:03.349117",
+      "phase": "The Container: edge-of-chaos regulator live",
+      "result": "malcolm.py 20/20; 15 walls banded w/ provenance; gate_envelope in PRE_FLIGHT_GATES; 15 envelope atoms (8 headless green x2, 7 pie); decomposer admission control; nightly tune breath; emergence gauge 7/wk inside [2,20]; first breath caught + fixed its own census error; 80/80 suites",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/The Container: edge-of-chaos regulator live",
+      "error_category": "none",
+      "fix_description": "Phase 'The Container: edge-of-chaos regulator live' complete: malcolm.py 20/20; 15 walls banded w/ provenance; gate_envelope in PRE_FLIGHT_GATES; 15 envelope atoms (8 headless green x2, 7 pie); decomposer admission control; nightly tune breath; emergence gauge 7",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The emergence gauge counts engine surprises, which require agents/sleepwalker RUNNING to be minted \u2014 a quiet week reads as sterile and tune will propose loosening walls that aren't the cause"
+      ],
+      "inheritance": "The container holds the system at the edge: ceilings for chaos, floors for sterility, a reserve for surprise, and a breath that proposes but never rules. Build the 7 missing sensors next (telemetry_last.json) \u2014 until then hardware walls gate admission only.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_3b5b2206c5aa"
+    },
+    {
+      "id": "elim_58026efcf3adc442",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T17:55:03.558507",
+      "feature": "Malcolm_Envelope",
+      "boundary": "heuristics_per_night breach as a real leak",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "census error, rejection-lineage records excluded, surprise_17fda10a5eba4cf3",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_Malcolm_Envelope",
+      "template_file": "elimination/Malcolm_Envelope",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Malcolm_Envelope: heuristics_per_night breach as a real leak",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_3b5b2206c5aa"
+    },
+    {
+      "id": "mutation_47132f6f201c",
+      "type": "Mutation",
+      "timestamp": "2026-07-12T18:20:26.309422",
+      "error_signature": "success_no_error",
+      "template_file": "ChimeraMovementComponent (manual lane)",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "Result: Succeeded. Total execution time: 43.76s. Sprint state (tb-0013) + LeftShift binding (tb-0014) in ChimeraMovementComponent \u2014 zero errors.",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_5ca0aeb0837b"
+    },
+    {
+      "id": "simtest_b1e7984ff89a9bdc",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-12T18:23:15.110911",
+      "observer": "agent-sim",
+      "session": "sprint_chain_closed",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=100uu (loc x=1600.1150195999664, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=5"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1200
+                }
+              },
+              "ok": true,
+              "note": "dist=400uu (loc x=4399.939850887096, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": false,
+              "note": "walk_volume=1 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=10"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=5.9977173805236816e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sprint_chain_closed.json",
+      "temperature": "[SIM] 4/5 beats reached in 'audio_visual_sync'. Failures: walk_fast_on_sand (failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sprint_chain_closed': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_df92a69112b7"
+    },
+    {
+      "id": "surprise_d522438bf182d04c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T18:23:15.342625",
+      "context": "Sleepwalker expected beat 'walk_fast_on_sand' to be reachable (audio_visual_sync)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder than walk\"}, \"ok\": false, \"note\": \"walk_volume=1 sprint_volume=1\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume sho'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_df92a69112b7"
+    },
+    {
+      "id": "simtest_1e4fe7b372af6644",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-12T18:26:17.187456",
+      "observer": "agent-sim",
+      "session": "sprint_realkey",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=100uu (loc x=1599.8894048700363, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=5"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 1600
+                }
+              },
+              "ok": false,
+              "note": "dist=2801uu (loc x=2801.2417468038707, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": false,
+              "note": "walk_volume=1 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=10"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=5.9977173805236816e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sprint_realkey.json",
+      "temperature": "[SIM] 4/5 beats reached in 'audio_visual_sync'. Failures: walk_fast_on_sand (failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sprint_realkey': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3929a03c15ee"
+    },
+    {
+      "id": "surprise_c9dbe6e7aa4c76bc",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T18:26:17.404570",
+      "context": "Sleepwalker expected beat 'walk_fast_on_sand' to be reachable (audio_visual_sync)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder than walk\"}, \"ok\": false, \"note\": \"walk_volume=1 sprint_volume=1\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume sho'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3929a03c15ee"
+    },
+    {
+      "id": "simtest_9aac4a49214915ad",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-12T18:33:35.721401",
+      "observer": "agent-sim",
+      "session": "sprint_norm_fixed",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=100uu (loc x=1600.0249650960388, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=5"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 1600
+                }
+              },
+              "ok": false,
+              "note": "dist=2800uu (loc x=2799.7340647291057, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": false,
+              "note": "walk_volume=0.5 sprint_volume=0.4311109781265259"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=11"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=1.8287788407178596e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sprint_norm_fixed.json",
+      "temperature": "[SIM] 4/5 beats reached in 'audio_visual_sync'. Failures: walk_fast_on_sand (failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sprint_norm_fixed': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_80723b4d1732"
+    },
+    {
+      "id": "surprise_5b260fba5d659cc7",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T18:33:35.983744",
+      "context": "Sleepwalker expected beat 'walk_fast_on_sand' to be reachable (audio_visual_sync)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder than walk\"}, \"ok\": false, \"note\": \"walk_volume=0.5 sprint_volume=0.43",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume sho'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_80723b4d1732"
+    },
+    {
+      "id": "simtest_2d3122d6cefb0009",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-12T18:38:27.426373",
+      "observer": "agent-sim",
+      "session": "sprint_peak_capture",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 5,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=100uu (loc x=1599.9009383688003, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=5"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 3200
+                }
+              },
+              "ok": true,
+              "note": "dist=2801uu (loc x=2801.3480330479097, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": true,
+              "note": "walk_volume=0.5 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=10"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=1.9744038581848145e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sprint_peak_capture.json",
+      "temperature": "[SIM] 5/5 beats reached in 'audio_visual_sync'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sprint_peak_capture': 5/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a6e5142c69dd"
+    },
+    {
+      "id": "elim_1b283361406a25a0",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T18:39:02.583675",
+      "feature": "Sprint_Input/capture_peak",
+      "boundary": "last-footstep volume as a valid sprint measurement",
+      "observed": "post-key_up captures read the deceleration tail (0.431 @ 517cm/s) while the pawn provably sprinted 2800uu",
+      "eliminates": [
+        "hypothesis: sprint state/binding/normalizer broken (all confirmed working by UE log + distance)"
+      ],
+      "survives": [
+        "rule: capture PEAKS for hold-verbs; instantaneous 'last' samples race the release"
+      ],
+      "evidence_ref": "simtest_9aac4a49214915ad -> fixed in simtest_2d3122d6cefb0009",
+      "probe": {},
+      "tier": 2,
+      "error_signature": "elimination_Sprint_Input/capture_peak",
+      "template_file": "elimination/Sprint_Input/capture_peak",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Sprint_Input/capture_peak: last-footstep volume as a valid sprint measurement",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_5a41af543300"
+    },
+    {
+      "id": "phase_e4064f12ece21859",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T18:39:29.019493",
+      "phase": "Sprint chain closed through the conveyor: 5/5 beats, decomposition dc_b1af6b6e2f33 complete",
+      "result": "All 5 Sprint_Input parts DONE via board claims (tb-0013 state, tb-0014 binding, tb-0015 parity, tb-0017 volume_norm discovered, tb-0018 capture_peak discovered, tb-0016 readback): UBT green x2; UE log 'Sprint ON: MaxWalkSpeed=1200'; simtest_2d3122d6cefb0009 5/5 CLEAN WALK \u2014 volume_scales_with_speed passed (walk 0.5 / sprint 1.0). Sensors: telemetry_probe now writes docs/world/telemetry_last.json (fps + editor memory).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Sprint chain closed through the conveyor: 5/5 beats, decomposition dc_b1af6b6e2f33 complete",
+      "error_category": "none",
+      "fix_description": "Phase 'Sprint chain closed through the conveyor: 5/5 beats, decomposition dc_b1af6b6e2f33 complete' complete: All 5 Sprint_Input parts DONE via board claims (tb-0013 state, tb-0014 binding, tb-0015 parity, tb-0017 volume_norm discovered, tb-0018 capture_peak discovered, tb-0016 readback): UBT green x2; UE log",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "walk_slow's walk_volume=0.5 now equals sprint threshold semantics only because Clear runs at spawn \u2014 if beats reorder or Clear moves, max-volume comparisons silently break across beats"
+      ],
+      "inheritance": "The conveyor works end-to-end: decompose -> claim -> atoms -> UBT -> beats -> done, twice discovering NEW parts mid-task and seeding them back through the board instead of scope-creeping. Capture PEAKS for hold-verbs; 'last' samples race the release.",
+      "pain_verdicts": {
+        "phase_ac024b0d825b07d7:P1": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_023251d4a055"
     }
   ],
   "edges": [

@@ -274,6 +274,63 @@ def main():
     except Exception as e:
         print(f"\n[3.8] Fractal spiral: unavailable ({e})")
 
+    # 3.9. Rep ledger — resolution through repetition (the dog-sit threshold).
+    # A feature earns collapse eligibility by ACCUMULATED constraint reps
+    # (>=200 with a >=95% 8-run streak), not by one good night.
+    try:
+        from core.rep_engine import status_lines, all_battery_features
+        feats = all_battery_features()
+        if feats:
+            print(f"\n[3.9] Rep ledger ({len(feats)} batteries; "
+                  f"resolution = reps x constraints):")
+            for line in status_lines(limit=8):
+                print(f"    {line}")
+            print("    run a pass: python -m core.rep_engine tend   "
+                  "gate check: python -m core.rep_engine gate --feature <X>")
+        else:
+            print("\n[3.9] Rep ledger: no batteries yet -> "
+                  "python -m core.rep_engine build")
+    except Exception as e:
+        print(f"\n[3.9] Rep ledger: unavailable ({e})")
+
+    # 3.95. The History Book — everything learned, searchable.
+    try:
+        from core.history_book import stats as _book_stats, CHAPTERS as _book_chapters
+        counts = _book_stats()
+        total = sum(counts.values())
+        print(f"\n[3.95] History Book: {total} entries / {len(counts)} chapters "
+              f"(docs/HISTORY_BOOK.md, rewritten nightly)")
+        print("    search it: python -m core.history_book search --query <anything> "
+              "[--chapter closed-doors]")
+    except Exception as e:
+        print(f"\n[3.95] History Book: unavailable ({e})")
+
+    # 3.96. The Container (core.malcolm) — the edge-of-chaos gauge: every
+    # wall's pressure, drawn each morning. Breaches gate; floors advise.
+    try:
+        from core.malcolm import status as _malcolm_status
+        rows = _malcolm_status()
+        interesting = [r for r in rows if r["state"] != "UNMEASURED"]
+        unmeasured = sum(1 for r in rows if r["state"] == "UNMEASURED")
+        print(f"\n[3.96] The Container ({len(rows)} walls, {unmeasured} awaiting sensors):")
+        for r in interesting[:9]:
+            val = "—" if r["value"] is None else (
+                f"{r['value']:.1f}" if isinstance(r["value"], float) else str(r["value"]))
+            print(f"    {r['state']:>11}  {r['axis']:<32} {val:>9} {r['band']:>14} {r['pct']:>7}")
+        pend = []
+        try:
+            from core.malcolm import load_envelope
+            pend = [p for p in load_envelope().get("pending_adjustments", [])
+                    if p.get("status") == "pending"]
+        except Exception:
+            pass
+        if pend:
+            print(f"    {len(pend)} pending wall adjustment(s) awaiting a ruling "
+                  f"(docs/envelope.json)")
+        print("    gauge: python -m core.malcolm status   breath: python -m core.malcolm tune")
+    except Exception as e:
+        print(f"\n[3.96] The Container: unavailable ({e})")
+
     # 4. Pending technical_research
     pending = [n for n in nodes
                if n.get("feature_type") == "technical_research"

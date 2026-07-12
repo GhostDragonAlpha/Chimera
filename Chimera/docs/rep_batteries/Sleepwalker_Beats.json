@@ -1,0 +1,116 @@
+[
+ {
+  "id": "atom_daa2c2b97458",
+  "feature": "Sleepwalker_Beats",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "json_valid",
+   "pattern": "docs/beats/*.beats.json"
+  },
+  "desc": "all beat scripts parse",
+  "provenance": "asset-standards:beats"
+ },
+ {
+  "id": "atom_fa1653e7f870",
+  "feature": "Sleepwalker_Beats",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "beats_registered"
+  },
+  "desc": "beat scripts declare only registered sleepwalker actions",
+  "provenance": "H-17"
+ },
+ {
+  "id": "atom_005234adebc4",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-19",
+   "note": "Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and r"
+  },
+  "desc": "H-19 (PIE-judged): Before running a rejection sweep, use the most recent simtest for that feature -",
+  "provenance": "H-19"
+ },
+ {
+  "id": "atom_594988d24778",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-24",
+   "note": "A feature tagged only by movement beats is hostage to rig health \u2014 zero-displacement failures (GameMode PlayerControllerClass unset) indict "
+  },
+  "desc": "H-24 (PIE-judged): A feature tagged only by movement beats is hostage to rig health \u2014 zero-displace",
+  "provenance": "H-24"
+ },
+ {
+  "id": "atom_5f25eb2b6a10",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-22",
+   "note": "Read back live-PIE pawn components before staging an interaction verb \u2014 PickUp's component was never attached, bound, or given a level actor"
+  },
+  "desc": "H-22 (PIE-judged): Read back live-PIE pawn components before staging an interaction verb \u2014 PickUp's",
+  "provenance": "H-22"
+ },
+ {
+  "id": "atom_7e2caadfec60",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-29",
+   "note": "Compound beats fail for shifting root causes (frozen input, then missing SandDrift_FX) \u2014 attribute rejection to the failing expect's subsyst"
+  },
+  "desc": "H-29 (PIE-judged): Compound beats fail for shifting root causes (frozen input, then missing SandDri",
+  "provenance": "H-29"
+ },
+ {
+  "id": "atom_8612dc419b3b",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-14",
+   "note": "Verified-by-injection is not playable \u2014 never stage a feature for observation until real player input drives it end-to-end, read back in PIE"
+  },
+  "desc": "H-14 (PIE-judged): Verified-by-injection is not playable \u2014 never stage a feature for observation un",
+  "provenance": "H-14"
+ },
+ {
+  "id": "atom_dda2858f149b",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-28",
+   "note": "Probe jumps by timed pawn_z read-back, not log_contains \u2014 and reset_position first: z=-26947 shows the pawn had already drifted off the worl"
+  },
+  "desc": "H-28 (PIE-judged): Probe jumps by timed pawn_z read-back, not log_contains \u2014 and reset_position fir",
+  "provenance": "H-28"
+ },
+ {
+  "id": "atom_f0b9d8a33ee9",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-25",
+   "note": "Position-expect beats must reset_position at beat start \u2014 W-drift accumulates across sequential beats and BugItGo is refused during PIE."
+  },
+  "desc": "H-25 (PIE-judged): Position-expect beats must reset_position at beat start \u2014 W-drift accumulates ac",
+  "provenance": "H-25"
+ }
+]

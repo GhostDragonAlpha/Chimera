@@ -30,11 +30,29 @@ class CHIMERA_API UChimeraMovementComponent : public UActorComponent
 public:
 	UChimeraMovementComponent();
 
+protected:
+	// Runtime-attach guarantee (H-34): BeginPlay ensures the owner carries a
+	// USandSoundComponent even when no Blueprint ever wired one.
+	virtual void BeginPlay() override;
+
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// === Speed ===
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Walking")
 	float WalkSpeed;
+
+	// === Sprint (Sprint_Input/state, decomposition dc_b1af6b6e2f33) ===
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Sprint")
+	float SprintMultiplier;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement|Sprint")
+	bool bSprinting;
+
+	// The verb flag must CHANGE simulated numbers (H-21): scales the owner
+	// CharacterMovementComponent's MaxWalkSpeed by SprintMultiplier.
+	UFUNCTION(BlueprintCallable, Category = "Movement|Sprint")
+	void SetSprinting(bool bNewSprinting);
 
 	// === Camera offset ===
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Camera")
@@ -174,6 +192,9 @@ private:
 	// === Weight Shift Animation Internals ===
 	// Track previous velocity to detect acceleration/deceleration
 	FVector LastFrameVelocity;
+
+	// Sprint: cached pre-sprint MaxWalkSpeed (<0 = not yet captured)
+	float BaseMaxWalkSpeed = -1.0f;
 
 	// Weight shift velocity (for damped oscillator)
 	FVector WeightShiftVelocity;

@@ -1,0 +1,86 @@
+[
+ {
+  "id": "atom_5411eaae017f",
+  "feature": "subsystem/VFX",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UErisaidResonanceVFXComponent\\b|UErisaidResonanceVFXComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UErisaidResonanceVFXComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:ErisaidResonanceVFXComponent.h"
+ },
+ {
+  "id": "atom_0edba05dfb07",
+  "feature": "subsystem/VFX",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbEnableStandingWaveEdges\\b"
+  },
+  "desc": "UPROPERTY bEnableStandingWaveEdges (ErisaidResonanceVFXComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ErisaidResonanceVFXComponent.h"
+ },
+ {
+  "id": "atom_33171fca4f89",
+  "feature": "subsystem/VFX",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bResonanceIntensity\\b"
+  },
+  "desc": "UPROPERTY ResonanceIntensity (ErisaidResonanceVFXComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ErisaidResonanceVFXComponent.h"
+ },
+ {
+  "id": "atom_59bbe596d69c",
+  "feature": "subsystem/VFX",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbEnableInterferenceShimmer\\b"
+  },
+  "desc": "UPROPERTY bEnableInterferenceShimmer (ErisaidResonanceVFXComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ErisaidResonanceVFXComponent.h"
+ },
+ {
+  "id": "atom_95cd7fc8e6ed",
+  "feature": "subsystem/VFX",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bInterferenceShimmerEffect\\b"
+  },
+  "desc": "UPROPERTY InterferenceShimmerEffect (ErisaidResonanceVFXComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ErisaidResonanceVFXComponent.h"
+ },
+ {
+  "id": "atom_e6d6364bb94a",
+  "feature": "subsystem/VFX",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bResonanceVisualEffect\\b"
+  },
+  "desc": "UPROPERTY ResonanceVisualEffect (ErisaidResonanceVFXComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ErisaidResonanceVFXComponent.h"
+ }
+]

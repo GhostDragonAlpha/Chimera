@@ -156,6 +156,36 @@ def main():
         ["--max-candidates", str(args.max_candidates), "--min-cluster", str(args.min_cluster)])
     print(distill_out, end="")
 
+    # Rep engine (2026-07-12): resolution through repetition — refresh
+    # constraint batteries, run every headless atom, promote on streaks.
+    # This is the high-frequency loop (hundreds of verdicts/night) that the
+    # <=2-heuristics-per-night distiller sits on top of.
+    rep_out = ""
+    try:
+        from core import rep_engine
+        rep_out = rep_engine.tend()
+        print(rep_out)
+    except Exception as ex:
+        rep_out = f"[rep] tend FAILED: {ex}"
+        print(rep_out)
+
+    # THE HISTORY BOOK (2026-07-12): what good is learning if we can't write
+    # it down? Rewrite the book + its searchable index from tonight's state.
+    try:
+        from core import history_book
+        print(history_book.write())
+    except Exception as ex:
+        print(f"[book] write FAILED: {ex}")
+
+    # THE CONTAINER BREATHES (core.malcolm): edge-of-chaos homeostat — reads
+    # the emergence gauge vs its band, PROPOSES wall adjustments (never
+    # self-applies; pending_adjustments in docs/envelope.json).
+    try:
+        from core import malcolm
+        print(malcolm.tune())
+    except Exception as ex:
+        print(f"[malcolm] tune FAILED: {ex}")
+
     # Delegated Gardener (amendment 2026-07-07): auto-rule the pending queue.
     # Human keeps veto-after: edit any status to `vetoed` and the next tend demotes it.
     tend_out = ""
@@ -213,6 +243,8 @@ def main():
         lines.append("Empty — every system-verified feature has been human-observed.")
     lines += ["", "## Gardener tend (delegated authority — veto any line by editing its status)",
               f"`{tend_out or 'skipped (--no-tend)'}`",
+              "", "## Rep ledger (resolution through repetition — the dog-sit threshold)",
+              "```", (rep_out or "no rep pass").strip(), "```",
               "", "## Tonight's distillation", "```", distill_out.strip(), "```",
               "", "## Compaction preview (dry-run — apply is always manual)",
               "```", compact_out.strip(), "```"]

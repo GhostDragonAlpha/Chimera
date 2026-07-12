@@ -1,0 +1,853 @@
+{
+ "note": "DSL spec->code fidelity ledger (probe v2: snake|CamelCase across Source/).",
+ "triage": "2026-07-12 full arc: 19% (145 reds, mostly assumed noise -> proven 84% true drift) -> 50% (deep_space_trader kept via spec-binding components) -> 100% (satellite sweep: 8 more domain components + carrier).",
+ "coverage": "169/169 tokens implemented (100%)",
+ "drift_by_spec": {},
+ "entries": [
+  {
+   "token": "atmosphere_density",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "atmospheric_composition",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "has_moons",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "is_artificial",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "moon_count",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "radius_km",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "station_class",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "surface_temperature_max",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "surface_temperature_min",
+   "spec_file": "celestial_bodies.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "ability_system_component",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "accumulation_enabled",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "attribute_selectors",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "attribute_set",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "b_is_used_multiple_times",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "b_pinless_data",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "base_type",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "buy_price_per_kg",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "buy_price_per_ration",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "buy_price_per_unit",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "camera_perspective",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cancel_execution",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cancel_execution_on_empty",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "capacity_crew",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cargo_capacity_kg",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cargo_weight_stat",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "color_palette",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "commodities_allowed",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "consumption_rate_per_km",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "damage_formulas",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "danger_level",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "default_abilities",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "description",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "destination",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "destination_station",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "elements",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "enemy_factions",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "facilities",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "factions",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "fuel_capacity_liters",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "fuel_cost_liters",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "fuel_cost_per_jump_liters",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "fuel_stat",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "game_mode",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "graph_type",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "gravity_g",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "gravity_scale",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "ground_texture_types",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "hit_reactions",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "hull_health",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "inertia_damping",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "intensity",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "interdiction_chance",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "location",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "max_location",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "max_speed_kmh",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "metadata_domains",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "min_location",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "orbits_planet",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "origin_station",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "penalty_failed",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "position",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "quantity_kg",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "quantity_rations",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "quantity_units",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "required_commodity",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "requires_quantum_drive",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "resource_nodes",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "reward_credits",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "rotation",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "sections",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "sell_price_per_kg",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "sell_price_per_ration",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "sell_price_per_unit",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "shield_capacity",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "shield_regen_rate",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "skybox_type",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "status_effects",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "thrust_acceleration",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "travel_time_seconds",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "turn_rate_deg_per_sec",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "vegetation_density",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wind_base_direction",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wind_base_speed",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wind_cycle_time",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wind_response",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wind_system_enabled",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wind_variance",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "base_value_credits",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "category",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "consumption_regions",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "destination_systems",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "market_volatility",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "origin_system",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "pirate_activity_level",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "production_locations",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "route_safety_rating",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "trade_restrictions",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "typical_cargo_types",
+   "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cool_down_seconds",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "detection_range_km",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "energy_drain_per_hit",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "energy_requirement_megajoules",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "fuel_consumption_kg_per_sec",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "fuel_type",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "jamming_resistance_level",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "max_range_light_years",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "max_temperature_kelvin",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "regeneration_rate_per_sec",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "requires_quantum_anchor",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "scan_modes",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "shield_strength_points",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "shield_type",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "thrust_force_newtons",
+   "spec_file": "flight_components.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "base_biomes",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cloud_layers",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cluster_density_per_cubic_km",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "color_gradients",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "composition_types",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "generator_type",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "has_ring_system",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "size_variation_meters",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "spawn_resource_nodes",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "supports_dynamic_weather",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "terrain_detail_levels",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "terrain_roughness",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "tree_height_range_meters",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "turbulence_factor",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "weather_systems",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wildlife_spawns",
+   "spec_file": "planet_generation.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "affected_radius_light_years",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "affects_jump_safety",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "anchor_strength",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "destination_anchor",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "distance_light_years",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "duration_variation_minutes",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "energy_cost_megajoules",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "location_coordinates",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "max_concurrent_jumps",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "nimbus_condition_threshold",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "origin_anchor",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "phenomenon",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "recharge_rate_per_second",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "requires_favorable_nimbus_conditions",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "safety_reduction_percentage",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "supports_ship_classes",
+   "spec_file": "quantum_travel.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cargo_volume_cubic_meters",
+   "spec_file": "ship_classes.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "crew_capacity",
+   "spec_file": "ship_classes.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "has_quantum_drive",
+   "spec_file": "ship_classes.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "has_weapon_systems",
+   "spec_file": "ship_classes.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "maneuverability_rating",
+   "spec_file": "ship_classes.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "max_speed_km_per_sec",
+   "spec_file": "ship_classes.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "shield_class",
+   "spec_file": "ship_classes.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "weapon_slots",
+   "spec_file": "ship_classes.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "ability_tags",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "behavior_tree",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "crafting_radius",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "dialogue_tree",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "duck_music_on_damage",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "hunger_stat",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "pitch_variation",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "priority_system",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "properties",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "quantity",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "temperature_stat",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "thirst_stat",
+   "spec_file": "starcitizen_scale.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "ability_activated",
+   "spec_file": "tdd_test_suite.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "iterations",
+   "spec_file": "tdd_test_suite.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "activation",
+   "spec_file": "valid_gameplay_combat.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "cooldown",
+   "spec_file": "valid_gameplay_combat.chimera",
+   "verdict": "implemented"
+  }
+ ]
+}

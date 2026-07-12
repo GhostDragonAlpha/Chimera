@@ -269,8 +269,9 @@ def enter(agent_id: str, task_id: str = None, capable: bool = False,
 
     packet = {
         "agent": agent_id,
-        "task": {k: task[k] for k in ("id", "title", "recipe", "feature", "loop",
-                                      "priority", "resources", "capable_only")},
+        "task": {k: task.get(k) for k in ("id", "title", "recipe", "feature", "loop",
+                                          "priority", "resources", "capable_only",
+                                          "not_scope")},
         "editor_held": editor_held,
         "editor_mode": mode,
         "exit_contract": EXIT_CONTRACT,

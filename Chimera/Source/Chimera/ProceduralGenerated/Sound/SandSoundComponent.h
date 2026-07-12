@@ -69,13 +69,40 @@ public:
 
 	// --- Telemetry counters for audio-visual sync verification ---
 
-	/** Call this every time a footstep particle is spawned + audio triggered */
+	/** Call this every time a footstep particle is spawned + audio triggered.
+	 *  SpeedCmS < 0 means "speed unknown" — the event still counts but is
+	 *  excluded from the volume-vs-speed comparison buckets. */
 	UFUNCTION(BlueprintCallable, Category = "Telemetry")
-	void RecordFootstepSyncEvent(float LatencyMs, float Volume);
+	void RecordFootstepSyncEvent(float LatencyMs, float Volume, float SpeedCmS = -1.0f);
 
 	/** Reset all counters (call at start of measurement period) */
 	UFUNCTION(BlueprintCallable, Category = "Telemetry")
 	void ClearFootstepSyncTelemetry();
+
+	// --- tb-0001 accessor contract: these exact names are what the MCP
+	// bridge queries. The old bridge queried names that existed nowhere
+	// (movement had GetAverageFootstepSyncLatencyMs, not ...AvgLatencyMs),
+	// so telemetry fell back to defaults (H-31/H-32/H-33 lineage). ---
+
+	UFUNCTION(BlueprintCallable, Category = "Telemetry")
+	int32 GetFootstepSyncEventCount() const { return FootstepSyncEventCount; }
+
+	UFUNCTION(BlueprintCallable, Category = "Telemetry")
+	float GetFootstepSyncAvgLatencyMs() const { return AverageFootstepSyncLatencyMs; }
+
+	UFUNCTION(BlueprintCallable, Category = "Telemetry")
+	float GetFootstepSyncMaxLatencyMs() const { return MaxFootstepSyncLatencyMs; }
+
+	/** True iff both speed buckets have samples AND mean fast-bucket volume
+	 *  exceeds mean slow-bucket volume — the beat expect
+	 *  volume_scales_with_speed, answered from measured data, never assumed. */
+	UFUNCTION(BlueprintCallable, Category = "Telemetry")
+	bool GetVolumeScalesWithSpeed() const;
+
+	/** Boundary between the slow/fast volume buckets (cm/s). Walk ~WalkSpeed,
+	 *  sprint ~2x — 300 splits them for the default rig. */
+	UPROPERTY(EditAnywhere, Category = "Telemetry")
+	float SpeedBucketThresholdCmS = 300.0f;
 
 	/** Number of sync events recorded */
 	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
@@ -108,4 +135,10 @@ private:
 	/** Running total of latency for averaging */
 	UPROPERTY()
 	float TotalFootstepSyncLatencyMs;
+
+	// Volume-vs-speed buckets backing GetVolumeScalesWithSpeed()
+	float SlowBucketVolumeSum = 0.0f;
+	int32 SlowBucketCount = 0;
+	float FastBucketVolumeSum = 0.0f;
+	int32 FastBucketCount = 0;
 };

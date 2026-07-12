@@ -1,0 +1,408 @@
+[
+ {
+  "id": "atom_7f8b0879fca0",
+  "feature": "subsystem/Materials",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UDustAccumulationParticleComponent\\b|UDustAccumulationParticleComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UDustAccumulationParticleComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_07fb8b1e954a",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSettlingTime\\b"
+  },
+  "desc": "UPROPERTY SettlingTime (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_0c9e19d2e38e",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bNormalThreshold\\b"
+  },
+  "desc": "UPROPERTY NormalThreshold (DustAccumulationMaterial.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationMaterial.h"
+ },
+ {
+  "id": "atom_0eda31b7339c",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootstepEmitRadius\\b"
+  },
+  "desc": "UPROPERTY FootstepEmitRadius (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_19204392523e",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustColor\\b"
+  },
+  "desc": "UPROPERTY DustColor (DustAccumulationMaterial.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationMaterial.h"
+ },
+ {
+  "id": "atom_227b78eff7ec",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbIsSettled\\b"
+  },
+  "desc": "UPROPERTY bIsSettled (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_253eaca236bf",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCachedWindSystem\\b"
+  },
+  "desc": "UPROPERTY CachedWindSystem (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_2dcdf602420b",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bNoiseFrequency\\b"
+  },
+  "desc": "UPROPERTY NoiseFrequency (DustAccumulationMaterial.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationMaterial.h"
+ },
+ {
+  "id": "atom_4668b70186b4",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAverageWindDriftVector\\b"
+  },
+  "desc": "UPROPERTY AverageWindDriftVector (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_5d02ec9db839",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAccumulationRate\\b"
+  },
+  "desc": "UPROPERTY AccumulationRate (DustAccumulationMaterial.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationMaterial.h"
+ },
+ {
+  "id": "atom_5e961786ee68",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSettlingSpeedScale\\b"
+  },
+  "desc": "UPROPERTY SettlingSpeedScale (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_8281bbecb1f6",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSurfaceAngleBias\\b"
+  },
+  "desc": "UPROPERTY SurfaceAngleBias (DustAccumulationMaterial.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationMaterial.h"
+ },
+ {
+  "id": "atom_86981cf8aef6",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAccumulationStrength\\b"
+  },
+  "desc": "UPROPERTY AccumulationStrength (DustAccumulationMaterial.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationMaterial.h"
+ },
+ {
+  "id": "atom_8e2d9a733b74",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbUseGlobalWindSystem\\b"
+  },
+  "desc": "UPROPERTY bUseGlobalWindSystem (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_8e429c08f66e",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bNoiseScale\\b"
+  },
+  "desc": "UPROPERTY NoiseScale (DustAccumulationMaterial.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationMaterial.h"
+ },
+ {
+  "id": "atom_99677ced1b9f",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentAccumulationLayer\\b"
+  },
+  "desc": "UPROPERTY CurrentAccumulationLayer (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_9a519ae1bc68",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbEmitOnFootstep\\b"
+  },
+  "desc": "UPROPERTY bEmitOnFootstep (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_9e4c85af95f7",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustParticleSystem\\b"
+  },
+  "desc": "UPROPERTY DustParticleSystem (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_9feb799ba33c",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDecayRate\\b"
+  },
+  "desc": "UPROPERTY DecayRate (DustAccumulationMaterial.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationMaterial.h"
+ },
+ {
+  "id": "atom_a890435de181",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAccumulationStartTime\\b"
+  },
+  "desc": "UPROPERTY AccumulationStartTime (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_a8bebf7dc5ca",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bParticleEmissionRate\\b"
+  },
+  "desc": "UPROPERTY ParticleEmissionRate (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_b7b6a2d657ba",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bParticleLifetime\\b"
+  },
+  "desc": "UPROPERTY ParticleLifetime (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_c7b81ddd09af",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bParticleGravityScale\\b"
+  },
+  "desc": "UPROPERTY ParticleGravityScale (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_cadc0dc6112f",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindResponse\\b"
+  },
+  "desc": "UPROPERTY WindResponse (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_d734b5c5a5d8",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxAccumulationHeight\\b"
+  },
+  "desc": "UPROPERTY MaxAccumulationHeight (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_d7a6a588afcf",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustMaterial\\b"
+  },
+  "desc": "UPROPERTY DustMaterial (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_d7d8bc2a59c8",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTotalWindDriftDistance\\b"
+  },
+  "desc": "UPROPERTY TotalWindDriftDistance (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_df4bbf0f7c69",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAccumulationThreshold\\b"
+  },
+  "desc": "UPROPERTY AccumulationThreshold (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ },
+ {
+  "id": "atom_fd5946cc2ff3",
+  "feature": "subsystem/Materials",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootstepParticleCount\\b"
+  },
+  "desc": "UPROPERTY FootstepParticleCount (DustAccumulationParticleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DustAccumulationParticleComponent.h"
+ }
+]

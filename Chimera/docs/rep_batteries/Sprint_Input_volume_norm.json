@@ -1,0 +1,16 @@
+[
+ {
+  "id": "atom_e908e5f6e908",
+  "feature": "Sprint_Input/volume_norm",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "BaseMaxWalkSpeed\\s*\\*\\s*SprintMultiplier"
+  },
+  "desc": "volume normalized by base*multiplier, not stale WalkSpeed*2",
+  "provenance": "discovered:tb-0016"
+ }
+]

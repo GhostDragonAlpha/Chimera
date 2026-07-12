@@ -133,7 +133,7 @@ void USandSoundComponent::SetWindIntensity(float WindSpeed)
 	WindAudioComponent->SetPitchMultiplier(Pitch);
 }
 
-void USandSoundComponent::RecordFootstepSyncEvent(float LatencyMs, float Volume)
+void USandSoundComponent::RecordFootstepSyncEvent(float LatencyMs, float Volume, float SpeedCmS)
 {
 	// Increment event count
 	++FootstepSyncEventCount;
@@ -147,6 +147,33 @@ void USandSoundComponent::RecordFootstepSyncEvent(float LatencyMs, float Volume)
 
 	// Store last volume
 	LastFootstepVolume = Volume;
+
+	// Speed-bucketed volume tracking: SpeedCmS < 0 means unknown — counted
+	// above, excluded here so it can't poison the comparison.
+	if (SpeedCmS >= 0.0f)
+	{
+		if (SpeedCmS >= SpeedBucketThresholdCmS)
+		{
+			FastBucketVolumeSum += Volume;
+			++FastBucketCount;
+		}
+		else
+		{
+			SlowBucketVolumeSum += Volume;
+			++SlowBucketCount;
+		}
+	}
+}
+
+bool USandSoundComponent::GetVolumeScalesWithSpeed() const
+{
+	if (SlowBucketCount == 0 || FastBucketCount == 0)
+	{
+		return false; // one-sided evidence proves nothing either way
+	}
+	const float SlowAvg = SlowBucketVolumeSum / static_cast<float>(SlowBucketCount);
+	const float FastAvg = FastBucketVolumeSum / static_cast<float>(FastBucketCount);
+	return FastAvg > SlowAvg;
 }
 
 void USandSoundComponent::ClearFootstepSyncTelemetry()
@@ -156,4 +183,8 @@ void USandSoundComponent::ClearFootstepSyncTelemetry()
 	AverageFootstepSyncLatencyMs = 0.0f;
 	LastFootstepVolume = 0.0f;
 	TotalFootstepSyncLatencyMs = 0.0f;
+	SlowBucketVolumeSum = 0.0f;
+	SlowBucketCount = 0;
+	FastBucketVolumeSum = 0.0f;
+	FastBucketCount = 0;
 }

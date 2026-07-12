@@ -7,7 +7,10 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
 #include "GameFramework/Pawn.h"
+#include "InputCoreTypes.h"
 #include "Logging/LogMacros.h"
 #include "Sound/SoundBase.h"
 #include "UObject/UObjectGlobals.h" // LoadObject for default footstep assets
@@ -45,6 +48,8 @@ UChimeraMovementComponent::UChimeraMovementComponent()
 	CameraOffsetY    = 0.0f;
 	CameraOffsetZ    = 80.0f;
 	FootstepInterval = 0.5f;
+	SprintMultiplier = 2.0f;     // walk 200 -> sprint 400 cm/s (> the 300 telemetry bucket threshold)
+	bSprinting       = false;
 
 	// Weight shift animation defaults
 	MaxWeightShiftMagnitude = 3.5f;     // 3.5 cm max offset (subtle)
@@ -57,6 +62,80 @@ UChimeraMovementComponent::UChimeraMovementComponent()
 }
 
 // ------------------------------------------------------------------
+// BeginPlay — the H-34 runtime-attach guarantee. Four dream-loop nights
+// (H-31..H-34) traced dead telemetry to one absence: nothing ever created
+// the USandSoundComponent, so every query fell back to defaults. Attach it
+// here, unconditionally-if-missing, so no Blueprint wiring can drop it.
+// ------------------------------------------------------------------
+void UChimeraMovementComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		return;
+	}
+	// Sprint_Input/volume_norm (tb-0017): capture the pawn's REAL base speed
+	// up front — the BP overrides MaxWalkSpeed (600) far above this
+	// component's WalkSpeed property (200), and every speed-derived number
+	// must normalize against reality, not the stale default.
+	if (const ACharacter* OwnerCharacter = Cast<ACharacter>(Owner))
+	{
+		if (const UCharacterMovementComponent* CharMove = OwnerCharacter->GetCharacterMovement())
+		{
+			if (BaseMaxWalkSpeed < 0.0f)
+			{
+				BaseMaxWalkSpeed = CharMove->MaxWalkSpeed;
+			}
+		}
+	}
+	if (!Owner->FindComponentByClass<USandSoundComponent>())
+	{
+		USandSoundComponent* SoundComp =
+			NewObject<USandSoundComponent>(Owner, TEXT("SandSoundComponent"));
+		if (SoundComp)
+		{
+			SoundComp->RegisterComponent();
+			UE_LOG(LogTemp, Log,
+				TEXT("ChimeraMovementComponent: runtime-attached USandSoundComponent to %s (H-34)"),
+				*Owner->GetName());
+		}
+	}
+}
+
+// ------------------------------------------------------------------
+// SetSprinting — Sprint_Input/state (decomposition dc_b1af6b6e2f33).
+// The verb flag must CHANGE simulated numbers (H-21): the pawn's real
+// locomotion ceiling lives on its CharacterMovementComponent, so sprint
+// scales MaxWalkSpeed there and restores the cached base on release.
+// ------------------------------------------------------------------
+void UChimeraMovementComponent::SetSprinting(bool bNewSprinting)
+{
+	if (bSprinting == bNewSprinting)
+	{
+		return;
+	}
+	bSprinting = bNewSprinting;
+
+	if (ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner()))
+	{
+		if (UCharacterMovementComponent* CharMove = OwnerCharacter->GetCharacterMovement())
+		{
+			if (BaseMaxWalkSpeed < 0.0f)
+			{
+				BaseMaxWalkSpeed = CharMove->MaxWalkSpeed;
+			}
+			CharMove->MaxWalkSpeed = BaseMaxWalkSpeed * (bSprinting ? SprintMultiplier : 1.0f);
+			UE_LOG(LogTemp, Log, TEXT("Sprint %s: MaxWalkSpeed=%.0f (base %.0f x %.2f)"),
+				bSprinting ? TEXT("ON") : TEXT("OFF"),
+				CharMove->MaxWalkSpeed, BaseMaxWalkSpeed,
+				bSprinting ? SprintMultiplier : 1.0f);
+		}
+	}
+}
+
+// ------------------------------------------------------------------
 // TickComponent — apply velocity to owner root / mesh
 // ------------------------------------------------------------------
 void UChimeraMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -65,6 +144,22 @@ void UChimeraMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	if (!GetOwner() || !GetOwner()->GetRootComponent())
 		return;
+
+	// Sprint_Input/binding (dc_b1af6b6e2f33): the physical LeftShift key
+	// drives the sprint state through the REAL input path — PlayerController
+	// key state, which the bridge's simulate_input key_down also lands on —
+	// never a test injection (H-14).
+	if (UWorld* World = GetOwner()->GetWorld())
+	{
+		if (const APlayerController* PC = World->GetFirstPlayerController())
+		{
+			const bool bShiftDown = PC->IsInputKeyDown(EKeys::LeftShift);
+			if (bShiftDown != bSprinting)
+			{
+				SetSprinting(bShiftDown);
+			}
+		}
+	}
 
 	// Drive from the owner's actual movement (CharacterMovementComponent),
 	// not the unpopulated external CurrentVelocity source. This makes footstep
@@ -126,17 +221,24 @@ void UChimeraMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			SyncEvent.Surface = SurfaceMaterial;
 			SyncEvent.MovementSpeed = SpeedMagnitude;
 
-			// Calculate volume based on speed (walk=0.4, sprint=1.0)
-			const float MaxSpeed = WalkSpeed * 2.0f; // Sprint = 2x walk
+			// Volume normalizer (tb-0017): walk ~0.5, sprint ~1.0. Normalize
+			// by the REAL top speed (captured base x sprint multiplier) so the
+			// curve cannot saturate below sprint — the stale WalkSpeed*2=400
+			// ceiling sat under the pawn's actual 600 base and clamped walk
+			// AND sprint to identical 1.0 (simtest_1e4fe7b372af6644).
+			const float MaxSpeed = (BaseMaxWalkSpeed > 0.0f)
+				? BaseMaxWalkSpeed * SprintMultiplier
+				: WalkSpeed * 2.0f;
 			SyncEvent.AudioVolume = FMath::Clamp(SpeedMagnitude / MaxSpeed, 0.0f, 1.0f);
 
 			GFootstepSyncTelemetry.Add(SyncEvent);
 
 
-			// Also record to SandSoundComponent telemetry if attached
+			// Also record to SandSoundComponent telemetry (BeginPlay guarantees
+			// attachment — H-34); speed feeds the volume-vs-speed buckets.
 			if (USandSoundComponent* SoundComp = Cast<USandSoundComponent>(GetOwner()->GetComponentByClass(USandSoundComponent::StaticClass())))
 			{
-				SoundComp->RecordFootstepSyncEvent(SyncLatencyMs, SyncEvent.AudioVolume);
+				SoundComp->RecordFootstepSyncEvent(SyncLatencyMs, SyncEvent.AudioVolume, SpeedMagnitude);
 			}
 
 			// UE_LOG for monitoring (CHIMERA_AGENT_SIM will capture)

@@ -60,8 +60,12 @@ STORE_AS_KEY_ALIASES = {
     "avg_latency_ms": "avg_latency_ms",
     "max_latency_ms": "max_latency_ms",
     "sync_latency_ms_max": "max_latency_ms",
-    "walk_volume": "last_volume",
-    "sprint_volume": "last_volume",
+    # Peak capture (tb-0018): last_volume reads the post-key_up DECELERATION
+    # TAIL (simtest_9aac4a49214915ad: sprint captured 0.431 while the pawn
+    # provably covered 2800uu at full sprint). GetMaxFootstepVolume's peak is
+    # immune to when the capture lands, so walk/sprint compare honestly.
+    "walk_volume": "max_volume",
+    "sprint_volume": "max_volume",
 }
 
 # ── execute_python telemetry fallback ──────────────────────────────────────

@@ -40,6 +40,11 @@ def main():
     parser.add_argument("--pain-verdict", action="append", dest="pain_verdict",
                         help="Disposition an inherited pain: "
                              "'<phase_node_id>:P<n>:confirmed|refuted|still-open' (repeatable)")
+    parser.add_argument("--eliminated", action="append", dest="eliminated",
+                        help="Inversion record, the pain's proven twin: "
+                             "'<feature> : <boundary now PROVEN wrong> : <evidence ref>' "
+                             "(repeatable; becomes an Elimination node + narrows the "
+                             "next agent's search space)")
     args = parser.parse_args()
 
     node_id = record_phase(args.phase, args.result, args.notes,
@@ -51,6 +56,20 @@ def main():
         raise SystemExit(1)
     for i, pain in enumerate(args.phantom_pain or [], start=1):
         print(f"  phantom pain declared -> {node_id}:P{i}  {pain[:80]}")
+
+    for spec in args.eliminated or []:
+        parts = [s.strip() for s in spec.split(":", 2)]
+        if len(parts) < 2:
+            print(f"  !! --eliminated needs '<feature> : <boundary> [: <evidence>]' — got: {spec[:60]}")
+            continue
+        feature, boundary = parts[0], parts[1]
+        evidence = parts[2] if len(parts) > 2 else ""
+        try:
+            from core.graphify_interface import record_elimination
+            eid = record_elimination(feature, boundary, evidence_ref=evidence)
+            print(f"  elimination recorded -> {eid}  {feature}: NOT {boundary[:60]}")
+        except Exception as e:
+            print(f"  !! elimination failed to record: {e}")
 
     if args.feature:
         if args.loop is None or not args.status:

@@ -1,0 +1,16 @@
+[
+ {
+  "id": "atom_295a1fcae9b3",
+  "feature": "subsystem/Factions",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UFactionComponent\\b|UFactionComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UFactionComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:FactionComponent.h"
+ }
+]
