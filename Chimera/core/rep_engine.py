@@ -374,7 +374,7 @@ def gen_assets(cache: _FileCache) -> list:
 
 
 _UPROP_RE = re.compile(
-    r"UPROPERTY\s*\([^)]*\)\s*\n\s*(?:[\w:<>*&\s]+?)\b(\w+)\s*(?:=[^;]*)?;",
+    r"UPROPERTY\s*\(([^)]*)\)\s*\n\s*(?:[\w:<>*&\s]+?)\b(\w+)\s*(?:=[^;]*)?;",
     re.MULTILINE)
 _UCLASS_COMPONENT_RE = re.compile(r"class\s+CHIMERA_API\s+(U\w+Component)\b")
 
@@ -398,8 +398,18 @@ def gen_code_reflection(cache: _FileCache) -> list:
     for h in headers:
         feature = _dir_feature(h, cache)
         text = cache.text(h)
-        for prop in sorted(set(_UPROP_RE.findall(text))):
-            if len(prop) < 4:
+        seen_props = set()
+        for specifiers, prop in _UPROP_RE.findall(text):
+            if len(prop) < 4 or prop in seen_props:
+                continue
+            seen_props.add(prop)
+            # SaveGame-flagged UPROPERTYs are serialized DATA (persistence,
+            # Blueprint-facing) — legitimately never referenced by name in a
+            # .cpp. The used-in-cpp atom (H-21) is for behavior-bearing
+            # properties; minting it for save data was a false-positive class
+            # (ChimeraSaveGame/InheritanceData, the atom-precision pain
+            # phase_791426be:P1). Skip them so red means real.
+            if "SaveGame" in specifiers:
                 continue
             atoms.append(make_atom(
                 feature, 1, "tree_contains",

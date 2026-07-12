@@ -52523,6 +52523,64 @@
       "links": [],
       "recorded_by": "dream_loop.py",
       "run_id": "run_6616211bf902"
+    },
+    {
+      "id": "phase_4e4a26f6c8b71628",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T22:24:40.005639",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_870bfac12b7f"
+    },
+    {
+      "id": "mutation_3353bc04f9c1",
+      "type": "Mutation",
+      "timestamp": "2026-07-12T22:26:46.346069",
+      "error_signature": "success_no_error",
+      "template_file": "ChimeraMovementComponent (manual lane)",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "Result: Succeeded 27.06s. USacrificeLogComponent runtime-attach in ChimeraMovementComponent::BeginPlay (H-34). Zero errors.",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_555503622bbd"
+    },
+    {
+      "id": "elim_8f4f3dbdf1bd7e24",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T22:26:46.574957",
+      "feature": "System_SaveGame",
+      "boundary": "SaveGame UPROPERTY fields as dead metadata (used-in-cpp atom false positives)",
+      "observed": "12 of 13 System_SaveGame reds were UPROPERTY(SaveGame) data/BP fields in ChimeraSaveGame/InheritanceData \u2014 serialized, not .cpp-referenced by design",
+      "eliminates": [
+        "hypothesis: SaveGame struct fields are dead metadata needing .cpp use"
+      ],
+      "survives": [
+        "rule: SaveGame-flagged UPROPERTYs are data; gen_code_reflection now skips them, so red means real"
+      ],
+      "evidence_ref": "rep prune System_SaveGame 40->15 atoms, 13 red -> 1 real (H-34)",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_System_SaveGame",
+      "template_file": "elimination/System_SaveGame",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for System_SaveGame: SaveGame UPROPERTY fields as dead metadata (used-in-cpp atom false positives)",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_555503622bbd"
     }
   ],
   "edges": [
