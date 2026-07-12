@@ -10,9 +10,9 @@
 
 ## NEW AGENT? START HERE (in order)
 1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment, **and section [4.5]: the previous generation's Will, open phantom pains, and Dream Report candidates awaiting automated observation**.
-2. Read `E:\PythonChimera\task_progress.md` — session handoff log; the top **NEXT** section is your work list.
-3. Work under the Contract: typed recording only (`record_*` helpers), fix generator templates never generated C++, and answer the Frame Audit (`Chimera/docs/RESULT_GRADING_RUBRIC.md`) before declaring anything complete.
-4. Finish with `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"` and update `task_progress.md` for the next agent.
+2. Read `E:\PythonChimera\task_progress.md` — session handoff log — then **claim your lane from the TASK LIST (the single entry): `python -m core.task_board claim --agent <your-id>`**. The claim opens your tunnel session, reserves the editor mode your task declares, and prints your work packet (recipe, matching H-heuristics, study guide, open pains). It only grants work whose resource footprint is disjoint from every other active agent — stay inside your footprint.
+3. Work under the Contract: typed recording only (`record_*` helpers), fix generator templates never generated C++, and answer the Frame Audit (`Chimera/docs/RESULT_GRADING_RUBRIC.md`) before declaring anything complete. Heartbeat long work: `python -m core.agent_tunnel heartbeat --agent <id>` (refreshes claim + editor in one call).
+4. **Exit the tunnel before you finish** — `python -m core.task_board done --agent <id> --id tb-N --result "<verbatim evidence>"` (or `block --reason` / `release --note`; bare 'blocked' is forbidden). Then `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"` (it shouts about any tunnel you left open) and update `task_progress.md` for the next agent.
 
 ## Generation Protocol (Circadian rhythm — see docs/GENERATION_PROTOCOL.md)
 - **Capture surprises live**: on any automation correction, dead-end, or expectation violation, run `python -m core.graphify_record surprise --context "..." --reality "..." --source agent|engine`. These feed the nightly distiller.

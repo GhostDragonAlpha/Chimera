@@ -221,7 +221,15 @@ def main():
                 print(f"      - {t['id']} p={t.get('priority', 1):.2g} {t['title'][:70]}{cap}")
             for tid, title, agent in s["claims"][:4]:
                 print(f"    claimed: {tid} {title[:56]} <- {agent}")
-            print(f"    claim: python -m core.task_board claim --agent <your-id>")
+            print(f"    ENTER HERE: python -m core.task_board claim --agent <your-id>  "
+                  f"(opens tunnel: editor + work packet; exit only with evidence)")
+            try:
+                from core.agent_tunnel import active_sessions
+                for sess in active_sessions()[:4]:
+                    print(f"    tunnel: {sess['agent']} in {sess['task_id']} "
+                          f"since {sess['entered_at'][11:16]}Z")
+            except Exception:
+                pass
     except Exception as e:
         print(f"\n[3.7] Task board: unavailable ({e})")
 

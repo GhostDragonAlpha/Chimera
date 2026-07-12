@@ -592,11 +592,16 @@ def main(argv=None):
     pa.add_argument("--capable-only", action="store_true")
     pa.add_argument("--agent", default="manual")
 
-    pc = sub.add_parser("claim", help="Claim a specific task, or the best parallel-safe one")
+    pc = sub.add_parser("claim", help="Claim a task — THE single entry: opens your tunnel "
+                                      "session, reserves the editor mode the task declares, "
+                                      "prints the work packet")
     pc.add_argument("--agent", required=True)
     pc.add_argument("--id", default=None)
     pc.add_argument("--capable", action="store_true",
                     help="this session may take capable_only tasks")
+    pc.add_argument("--raw", action="store_true",
+                    help="bare claim only: no tunnel session, no editor, no packet")
+    pc.add_argument("--editor-timeout", type=float, default=120.0)
 
     for name, extra in (("done", "result"), ("block", "reason")):
         px = sub.add_parser(name)
@@ -635,22 +640,62 @@ def main(argv=None):
                      capable_only=args.capable_only, created_by=args.agent)
         _print_task(t)
     elif args.cmd == "claim":
+        if args.raw:
+            try:
+                t = claim_task(args.agent, task_id=args.id, capable=args.capable)
+            except (KeyError, ValueError) as e:
+                print(f"REFUSED: {e}")
+                sys.exit(1)
+            if t is None:
+                print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
+                sys.exit(2)
+            _print_task(t)
+        else:
+            # The task list is the single entry — a claim IS a tunnel enter.
+            try:
+                from core.agent_tunnel import enter, _print_packet
+            except ImportError:
+                from agent_tunnel import enter, _print_packet
+            try:
+                packet = enter(args.agent, task_id=args.id, capable=args.capable,
+                               editor_timeout=args.editor_timeout)
+            except (KeyError, ValueError, TimeoutError) as e:
+                print(f"REFUSED: {e}")
+                sys.exit(1)
+            if packet is None:
+                print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
+                sys.exit(2)
+            _print_packet(packet)
+    elif args.cmd in ("done", "block", "release"):
+        # Exiting through the board closes the tunnel session too (releases the
+        # editor, checks the footprint, prints the postflight command).
         try:
-            t = claim_task(args.agent, task_id=args.id, capable=args.capable)
+            from core.agent_tunnel import _read_session, exit_tunnel
+        except ImportError:
+            from agent_tunnel import _read_session, exit_tunnel
+        sess = _read_session(args.agent)
+        in_tunnel = (sess and not sess.get("exited_at") and sess.get("task_id") == args.id)
+        outcome = {"done": "done", "block": "blocked", "release": "release"}[args.cmd]
+        try:
+            if in_tunnel:
+                out = exit_tunnel(args.agent, outcome,
+                                  result=getattr(args, "result", ""),
+                                  reason=getattr(args, "reason", ""),
+                                  note=getattr(args, "note", ""))
+                print(f"{args.cmd.upper()}: {args.id} (tunnel exited)")
+                for w in out.get("footprint_warnings", []):
+                    print(f"  !! outside your footprint: {w}")
+                print(f"record it: {out['postflight']}")
+            elif args.cmd == "done":
+                _print_task(complete_task(args.agent, args.id, args.result))
+            elif args.cmd == "block":
+                _print_task(block_task(args.agent, args.id, args.reason))
+            else:
+                t = release_task(args.agent, args.id, note=args.note)
+                print("RELEASED" if t else "NOT_YOUR_CLAIM")
         except (KeyError, ValueError) as e:
             print(f"REFUSED: {e}")
             sys.exit(1)
-        if t is None:
-            print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
-            sys.exit(2)
-        _print_task(t)
-    elif args.cmd == "done":
-        _print_task(complete_task(args.agent, args.id, args.result))
-    elif args.cmd == "block":
-        _print_task(block_task(args.agent, args.id, args.reason))
-    elif args.cmd == "release":
-        t = release_task(args.agent, args.id, note=args.note)
-        print("RELEASED" if t else "NOT_YOUR_CLAIM")
     elif args.cmd == "reopen":
         _print_task(reopen_task(args.agent, args.id, note=args.note))
     elif args.cmd == "heartbeat":

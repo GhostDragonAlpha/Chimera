@@ -1,3 +1,44 @@
+# Session 2026-07-12b — Agent Tunnel: the task list is the single entry
+
+**Human directive (verbatim intent):** entry was never the problem — agents already find
+the task list and proceed. The hard part is KEEPING them in the tunnel until the end. So:
+
+- **Single entry = the task list.** `python -m core.task_board claim --agent <id>` now
+  opens your tunnel session, reserves the editor mode your task declares (editor_scheduler),
+  and prints your WORK PACKET: recipe + the H-heuristics that mention your feature + study
+  guide from the graph + open phantom pains + MCP traps. (`--raw` for a bare claim.)
+- **Containment walls (the actual new machinery, core/agent_tunnel.py):**
+  1. `done` demands verbatim evidence; `block` demands a cause (board-enforced).
+  2. Exit through the board (`done`/`block`/`release`) closes the tunnel, frees the editor,
+     warns on working-tree changes OUTSIDE your declared footprint, prints your postflight.
+  3. `postflight` shouts about any tunnel left open (the #1 leak: evaporating agents).
+  4. `tend` (runs at every enter + CLI) closes sessions whose claim was reaped and frees
+     the dead agent's editor — the pool self-cleans the moment anyone new walks in.
+  5. One heartbeat refreshes claim + editor together: `agent_tunnel heartbeat --agent <id>`.
+- CLAUDE.md START-HERE steps 2–4 updated to this protocol. 11/11 tunnel + 10/10 board tests.
+- **Board grew to 10 tasks**: tb-0005..tb-0010 are the DREAM_ROSTER hires from the studio
+  audit (Audio Sourcer p1.5 — kills Ground_Sand_Sound BLOCKED-ON-ASSETS, Regression Curator
+  p1.4, Chaos Tester p1.2, Lighting Artist p1.1 — first ticket is the dark-pads pain,
+  Trailer Director p1.0, Producer roadmap half p0.9), all `capable_only`, footprint-scoped.
+  DREAM_ROSTER updated: seat #9 PARTIAL (traffic half hired), 4 new Tier-3 seats from the
+  2026-07-12 audit (release manager, persona pool, license ledger, save/load QA).
+- Live proof: agent `preflight-checker-1` claimed tb-0001 + tb-0004 through the board while
+  this session was still building it (raw claims — its stale claims will be reaped/tended).
+- Surprise recorded: graph nodes exist whose `parameters` is a STRING not a dict
+  (surprise_79acef63880dfc4d) — any `(n.get('parameters') or {}).get(...)` is a latent crash.
+
+---
+
+# Rehearsal decision 2026-07-12 02:46Z — next move: audio_visual_sync/telemetry_accessors
+
+Chosen by core.rehearsal (score 1.2, p_success 0.55, evidence: failure_mentions:1). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **audio_visual_sync/telemetry_accessors** — needs_refinement (status=needs_refinement). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','audio_visual_sync/telemetry_accessors')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Session 2026-07-12 — Parallel task board (core/task_board.py)
 
 **Parallel development is now board-driven.** Instead of every agent taking the same

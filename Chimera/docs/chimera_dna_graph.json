@@ -49736,6 +49736,106 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_95917002ff38"
+    },
+    {
+      "id": "phase_53b5b6473eaab4b5",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T02:39:36.291690",
+      "phase": "Parallel task board (core/task_board.py): resource-conflict-aware claims for concurrent agents; preflight [3.7]; editor_scheduler uproj NameError fix; board seeded with 4 tasks (frontier=2)",
+      "result": "python core/test_task_board.py: 10/10 task_board tests passed. Seed: 4 tasks; parallel frontier 2 (tb-0001 audio p=1.2 + tb-0004 research p=0.8); conflict logic verified live (Sound/** overlap + pie exclusive serialize tb-0001/0002/0003). Pushed 50548ad+469c831 to workflow/proof-of-use.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Parallel task board (core/task_board.py): resource-conflict-aware claims for concurrent agents; preflight [3.7]; editor_scheduler uproj NameError fix; board seeded with 4 tasks (frontier=2)",
+      "error_category": "none",
+      "fix_description": "Phase 'Parallel task board (core/task_board.py): resource-conflict-aware claims for concurrent agents; preflight [3.7]; editor_scheduler uproj NameError fix; board seeded with 4 tasks (frontier=2)' complete: python core/test_task_board.py: 10/10 task_board tests passed. Seed: 4 tasks; parallel frontier 2 (tb-0001 audio p=1.2 + tb-0004 research p=0.8); conflict logic verified live (Sound/** overlap + pie e",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The conservative glob-prefix conflict test will quietly collapse the parallel frontier to 1 as the board grows: seeded defaults use wide scopes (ProceduralGenerated/** for unknown features), and wide scopes conflict with everything \u2014 parallelism dies unless agents narrow file scopes when adding tasks"
+      ],
+      "inheritance": "Agents now claim work from python -m core.task_board claim --agent <id> instead of all taking the same rehearsal NEXT item; the board only grants resource-disjoint tasks, so claimed work is parallel-safe by construction. Seed is idempotent and pulls from rehearsal scoring, so re-seeding after collapses is cheap. The editor_scheduler open-mode relaunch was silently broken (uproj NameError) since birth \u2014 fixed; distrust bare-except blocks in coordination code.",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_7f555cdd1e1c"
+    },
+    {
+      "id": "rollout_3372da2c584064b6",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-12T02:46:21.169364",
+      "chosen": "audio_visual_sync/telemetry_accessors",
+      "candidates": [
+        {
+          "name": "audio_visual_sync/telemetry_accessors",
+          "score": 1.2,
+          "p_success": 0.55,
+          "cost": 1.0,
+          "why": "needs_refinement (status=needs_refinement)"
+        },
+        {
+          "name": "audio_visual_sync/report_telemetry",
+          "score": 1.2,
+          "p_success": 0.55,
+          "cost": 1.0,
+          "why": "needs_refinement (status=needs_refinement)"
+        },
+        {
+          "name": "Verb_Shovel",
+          "score": 0.4,
+          "p_success": 0.2,
+          "cost": 1.0,
+          "why": "needs_refinement (status=needs_refinement)"
+        }
+      ],
+      "rationale": "value 2.0 x p 0.55 / cost 1.0 + explore 0.1; evidence ['failure_mentions:1']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: audio_visual_sync/telemetry_accessors",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_ec150d79a0a1"
+    },
+    {
+      "id": "surprise_79acef63880dfc4d",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T02:51:28.352374",
+      "context": "DNA graph node 'parameters' field assumed to always be a dict (rehearsal/preflight treat it as one)",
+      "expectation": "",
+      "reality": "live graph contains nodes whose parameters is a plain STRING - agent_tunnel's integration test against the real graph crashed on .get(); type-guard added; any consumer doing (n.get('parameters') or {}).get(...) has the same latent crash",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'live graph contains nodes whose parameters is a plain STRING - agent_tunnel's in'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_345d0f0d1f0b"
+    },
+    {
+      "id": "feature_91c9ba904e55cb68",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-12T02:59:49.810935",
+      "feature_name": "Verb_Shovel",
+      "loop": 2,
+      "status": "encoded",
+      "parameters": {
+        "notes": "Implemented ATool_Shovel::Dig() (was rejected earlier: 'had DigRadius but no Dig() \u2014 needs behavior'). Dig() does a downward line trace from the shovel; on hit it emits a dust burst via UDustAccumulationParticleComponent::EmitDustAtLocation (scaled by DigRadius), plays a surface-aware impact via USandSoundComponent::PlayImpactSound, drops a visible decal mark (UMaterial::GetDefaultMaterial MD_DeferredDecal, no asset dependency), and decrements Durability. Wires into existing project systems. Also added 'Chimera/ProceduralGenerated/Materials' to PrivateIncludePaths in Chimera.Build.cs (the Materials subdir was missing from include roots, so any cross-dir Materials include failed to compile). VERIFICATION STATUS: compiled clean (Development build, EXIT=0); in-editor PIE verification still PENDING \u2014 editor not running this session and task board holds the 'pie' exclusive on tb-0003 (claimed by preflight-checker-1), so a human/PIE observation is still required to collapse the prior rejection."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_2/Verb_Shovel",
+      "error_category": "none",
+      "fix_description": "Feature 'Verb_Shovel' (Loop 2) recorded as 'encoded'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_106092aee681"
     }
   ],
   "edges": [

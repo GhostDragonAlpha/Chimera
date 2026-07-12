@@ -63,6 +63,22 @@ def main():
     if gpa.get("trend") == "falling":
         print("!! GPA is FALLING — the Contract requires reporting this with corrective action.")
 
+    # Tunnel containment — a session that postflights while still inside the
+    # tunnel is the #1 leak (claim + editor left dangling for the reaper).
+    try:
+        from core.agent_tunnel import active_sessions
+        open_sessions = active_sessions()
+        if open_sessions:
+            print("\n!! STILL IN THE TUNNEL — exit with evidence before you finish:")
+            for s in open_sessions:
+                print(f"   {s['agent']} holds {s['task_id']} ({s['task_title'][:48]})"
+                      f"{' + editor ' + s['editor_mode'] if s.get('editor_held') else ''}")
+                print(f"   -> python -m core.task_board done --agent {s['agent']} "
+                      f"--id {s['task_id']} --result \"<verbatim evidence>\"  "
+                      f"(or block --reason / release --note)")
+    except Exception:
+        pass
+
     # Git status check — surfaces uncommitted changes
     print()
     try:

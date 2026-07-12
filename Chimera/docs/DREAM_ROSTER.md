@@ -31,6 +31,7 @@
 | Balance analyst | chimera-balance mode | PARTIAL — read-only analysis, proposes nothing |
 | Engineering modes (code/debug/ue5/architect/orchestrate) | .roomodes + Claude modes | HIRED |
 | Research department | scholar | HIRED 2026-07-07 — standalone; not yet wired into spiral_forks |
+| Traffic control / dispatch (who works what, in parallel) | task_board + agent_tunnel | HIRED 2026-07-12 — resource-footprint claims; tunnel exit demands evidence |
 | Ideation / game design | muse | HIRED 2026-07-07 — standalone; proposals not yet merged into rehearsal_candidates.json |
 | Creative direction / taste | visionkeeper | HIRED 2026-07-07 — standalone; not yet called from rehearsal's own scoring pass |
 
@@ -278,12 +279,19 @@ Mood-driven light rigs per scene (key/fill/rim recipes already proven in L_Verif
 pathways), exposure sanity checks on screenshots, day/night variants. Declared pain
 phase_4d2da4e032a4aa07:P1 (pads read near-black) is its first work item.
 
-### 9. PRODUCER (`core/producer.py`)  **EMPTY**
+### 9. PRODUCER (`core/producer.py`)  **PARTIAL — traffic-control half HIRED 2026-07-12**
 
 Rehearsal is a sprint-picker; nobody plans a milestone. Charter: hold the roadmap (Demo 1 →
 Session B → Titan Run → beyond) as a dependency graph, measure velocity from phase records,
 forecast, and re-order the candidates file weekly so rehearsal's single-step choices serve a
 multi-week arc. Reports in one table; the human steers with one sentence.
+
+- **Status update 2026-07-12**: the WHO-works-WHAT-now half is HIRED as
+  `core/task_board.py` + `core/agent_tunnel.py` — parallel claims by declared resource
+  footprint (file globs / editor mode / exclusives), heartbeat-reaped stale claims, and a
+  tunnel whose exit demands verbatim evidence (the task list is the single entry per the
+  human's 2026-07-12 directive). The roadmap/velocity/forecast half remains this seat's
+  charter — seeded as board task `Producer_Roadmap_Layer`.
 
 ### 10. PERFORMANCE ENGINEER (`core/perf_engineer.py`)  **PARTIAL → deep**
 
@@ -340,6 +348,10 @@ exactly the proxy-vs-target gap this organ exists to surface in plain percentage
 | Localization | far future; strings audit organ |
 | Compatibility/cert | packaged-build (not PIE) nightly verification once a shippable target exists |
 | Community/analytics | witness chronicles → funnels/heatmaps when there is more than one player |
+| Release manager | `release_manager.py` — owns shippable builds: drives uat_packager nightly, versions/tags, changelog from PhaseComplete records; precondition for compat/cert above (2026-07-12 audit) |
+| Playtest persona pool | extend sleepwalker with input-policy personas (cautious explorer / speedrunner / completionist) — one persona biases the holistic enjoyment measure the ULTIMATE GOAL rests on (2026-07-12 audit) |
+| Asset license ledger | generalize audio_sourcer's ledger to EVERY imported asset (models/textures/fonts): source + license per asset in docs/ASSET_LICENSES.md (2026-07-12 audit) |
+| Save/load integrity QA | fold into chaos tester's charter: save/load round-trips under abuse; SaveGame components exist but nothing round-trips them (2026-07-12 audit) |
 
 ---
 
