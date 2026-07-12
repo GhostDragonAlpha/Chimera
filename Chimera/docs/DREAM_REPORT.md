@@ -66,7 +66,7 @@ clusters >= 3: 40  |  suppressed (covered/pending): 39  |  staged: 1
   CANDIDATE [  5x] sim_rejection: audio_visual_sync/report_telemetry
 
 staged 1 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
-next: agent drafts each draft_rule from evidence; human approves/vetoes; approved rules promote via graphify_record heuristic.
+next: agent drafts each draft_rule from evidence; the delegated Gardener (automation) auto-rules the queue — doc-organ rules self-promote via graphify_record heuristic (a human may veto after the fact).
 ```
 
 ## Compaction preview (dry-run — apply is always manual)

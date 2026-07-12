@@ -165,7 +165,7 @@ Wait, looking at the
 - proposed_organ: claude_md
 - evidence: observation_f629252c5bdbcd07
 - sample: I have no ability to move my character
-- draft_rule: Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
+- draft_rule: Verified-by-injection is not playable — never stage a feature for observation until real player input drives it end-to-end, read back in PIE.
 
 <!-- distilled 2026-07-07T07:15:00Z -->
 ## H-15: surprise: beat discovered expected gap

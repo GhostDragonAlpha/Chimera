@@ -16,7 +16,7 @@
 
 The Gardener wants the primary engine of development to become **an AI playtester that informs what to build next**, with human input as an additive/steering signal — "a balance of automation and control." Today the protocol is human-gated: features stall at `[DONE*]` until the human observes; when queues are empty, duty cycles fall back to pipeline health checks. Tonight proved the seed works: the agent simulated a W-keypress in PIE and measured a 1333uu walk — a playtest without a player. This plan turns that seed into a system with two staged layers (user-confirmed: staged-both; outputs land both in the NEXT list and as graph evidence; full design).
 
-Naming follows the protocol's circadian register: the **Sleepwalker** plays the game at night; the **Rehearsal** engine simulates generations as data to decide what deserves real cycles; both feed the existing **Dream** (distiller). Human observation remains the supreme override — the sim advances work, the human's one sentence can reverse anything (the reversibility pattern already proven in the attribution table).
+Naming follows the protocol's circadian register: the **Sleepwalker** plays the game at night; the **Rehearsal** engine simulates generations as data to decide what deserves real cycles; both feed the existing **Dream** (distiller). Automated observation (sleepwalker simulations + telemetry + result grading) is the measure — the sim advances work, and a human's one sentence may still reverse anything (the reversibility pattern already proven in the attribution table).
 
 ## What exists to reuse (verified by exploration)
 
@@ -24,7 +24,7 @@ Naming follows the protocol's circadian register: the **Sleepwalker** plays the 
 - `[DEMOBEAT]` log convention (Demo/DemoPlayerController.cpp) + the unbuilt `demo_witness` design (DEMO_ARCHITECTURE.md §5 P2 item 4) — beat-timeline JSON from log tail + runtime polls.
 - `core/spiral_forks.py` — the candidate→deterministic-rubric→winner-proceeds→loser-autopsy pattern (spiral_forks.py:68–102 scoring; :224–230 autopsy recording). Rehearsal generalizes this from research briefs to development actions.
 - `core/heuristic_distiller.py` — clusters Observation/SurpriseMoment/pathway_attempt/grade failures; `human_rejection` ranked first (keep that supremacy).
-- `core/graphify_interface.py` provenance guards — `playtest` is human-only (:1307–1310); `observe` requires human provenance or `--derived-from <playtest_id>` (:1364–1370). **Keep these guards untouched** — they are the control half of the balance. Sim gets NEW node types instead.
+- `core/graphify_interface.py` provenance guards — `observe` requires evidence provenance — `--derived-from <simtest_id>` (:1364–1370); the `playtest` recorder (:1307–1310) still captures an optional human temperature. **Keep these guards untouched** — they are the control half of the balance. Sim gets NEW node types instead.
 - `run_deep_space_trader_pipeline.py` stage 6 / `core/playtest_runner.py` — headless automation tests (unit-level); unchanged, complementary.
 - Windows Task Scheduler pattern documented in dream_loop.py:20–22.
 
@@ -61,7 +61,7 @@ Beat-timeline recorder used by BOTH human sessions and sleepwalks: tails `Saved/
 - **Output**: (a) `SimulationRollout` node per decision (candidates, scores, chosen, rationale, run_id); (b) prepends a **recipe-carrying NEXT item** to task_progress.md (handoff invariant: exact commands or feature node with study guide, skip-condition, capable-only marking); (c) prints a **decision table** for the human to veto with one line — same reversibility pattern as the attribution table.
 
 ### 4. Protocol amendment — the balance of automation and control
-- New feature status **`sim_verified`** between `verified` and observed. Loop board renders `[DONE~]`. **Dependent work may proceed on sim_verified**; human observation remains the true collapse — a later human rejection reopens `needs_refinement` at top priority (existing behavior).
+- New feature status **`sim_verified`** between `verified` and observed. Loop board renders `[DONE~]`. **Dependent work may proceed on sim_verified**; automated observation (sleepwalker simulations + telemetry + result grading) is the true collapse — a later human rejection may still reopen `needs_refinement` at top priority (existing behavior).
 - Duty-cycle Step 2 gains branch **C-half**: "no human verdicts and NEXT empty of executable items → run `python -m core.rehearsal --decide` and execute the item it writes." Fallback pipeline health check drops to last.
 - Distiller: ingest SimPlaytest failures as kind=`sim_rejection`, ranked strictly BELOW `human_rejection` in staging order.
 - Nightly rhythm: Sleepwalker 01:00 → dream_loop 02:00 (schtasks, same pattern dream_loop documents). The game plays itself, then dreams about it.

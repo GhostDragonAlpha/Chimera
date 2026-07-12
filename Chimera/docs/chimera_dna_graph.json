@@ -49965,6 +49965,276 @@
       "links": [],
       "recorded_by": "test_faculty.py",
       "run_id": "run_281e8c0b54aa"
+    },
+    {
+      "id": "phase_0982c780c8d03945",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T05:55:45.154178",
+      "phase": "Gauntlet completed: trial-1",
+      "result": "roles=['initiate', 'journeyman', 'researcher', 'cartographer', 'tunnel-runner'] scores={'orientation': 100, 'scribe': 100, 'scholar': 100, 'cartographer': 100, 'gatekeeper': 100, 'tunnel_run': 100, 'exit_gate': 100} attempts=7",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Gauntlet completed: trial-1",
+      "error_category": "none",
+      "fix_description": "Phase 'Gauntlet completed: trial-1' complete: roles=['initiate', 'journeyman', 'researcher', 'cartographer', 'tunnel-runner'] scores={'orientation': 100, 'scribe': 100, 'scholar': 100, 'cartographer': 100, 'gatekeeper': 100, 'tunnel_run': 100, 'e",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_gauntlet.py",
+      "run_id": "run_16cc873a5c15"
+    },
+    {
+      "id": "phase_d8c39aae3f933762",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T05:55:45.518226",
+      "phase": "Curriculum graduation: Dust_Kickup completes kindergarten",
+      "result": "2 checkpoints passed; advances to bachelor",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Curriculum graduation: Dust_Kickup completes kindergarten",
+      "error_category": "none",
+      "fix_description": "Phase 'Curriculum graduation: Dust_Kickup completes kindergarten' complete: 2 checkpoints passed; advances to bachelor",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_curriculum.py",
+      "run_id": "run_679e180f4974"
+    },
+    {
+      "id": "phase_87eabd8e8cf62df7",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T05:55:45.739568",
+      "phase": "Curriculum graduation: Dust_Kickup completes kindergarten",
+      "result": "2 checkpoints passed; advances to bachelor",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Curriculum graduation: Dust_Kickup completes kindergarten",
+      "error_category": "none",
+      "fix_description": "Phase 'Curriculum graduation: Dust_Kickup completes kindergarten' complete: 2 checkpoints passed; advances to bachelor",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_curriculum.py",
+      "run_id": "run_679e180f4974"
+    },
+    {
+      "id": "phase_1e8cacbd7fc430a7",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T05:55:45.937187",
+      "phase": "Curriculum graduation: Dust_Kickup completes bachelor",
+      "result": "3 checkpoints passed; PhD CONFERRED \u2014 ready for deployment to observation",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Curriculum graduation: Dust_Kickup completes bachelor",
+      "error_category": "none",
+      "fix_description": "Phase 'Curriculum graduation: Dust_Kickup completes bachelor' complete: 3 checkpoints passed; PhD CONFERRED \u2014 ready for deployment to observation",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_curriculum.py",
+      "run_id": "run_679e180f4974"
+    },
+    {
+      "id": "phase_f424fe97f79bfdef",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T05:55:46.276346",
+      "phase": "Faculty promoted checkpoint fac.h-92",
+      "result": "from h_rule H-92 into band master",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Faculty promoted checkpoint fac.h-92",
+      "error_category": "none",
+      "fix_description": "Phase 'Faculty promoted checkpoint fac.h-92' complete: from h_rule H-92 into band master",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_faculty.py",
+      "run_id": "run_b84fe38ec670"
+    },
+    {
+      "id": "phase_02523634b3835b61",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T05:55:46.485944",
+      "phase": "Faculty promoted checkpoint fac.h-93",
+      "result": "from h_rule H-93 into band bachelor",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Faculty promoted checkpoint fac.h-93",
+      "error_category": "none",
+      "fix_description": "Phase 'Faculty promoted checkpoint fac.h-93' complete: from h_rule H-93 into band bachelor",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_faculty.py",
+      "run_id": "run_b84fe38ec670"
+    },
+    {
+      "id": "simtest_ce11ab7280e0d6a8",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-12T06:00:27.604087",
+      "observer": "agent-sim",
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=5uu (loc x=2005.4933195481435, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=4000.092825807104, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": true,
+              "note": "z=164"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 4/5 beats reached in 'regolith_yard'. Failures: walk_rock_to_sand_basin (failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"present=False\"})",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8de8f739392a"
+    },
+    {
+      "id": "surprise_e2cb17ac027fc3e5",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T06:00:27.813556",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"prese'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8de8f739392a"
     }
   ],
   "edges": [

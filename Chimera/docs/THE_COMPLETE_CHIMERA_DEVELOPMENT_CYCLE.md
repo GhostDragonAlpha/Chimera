@@ -124,7 +124,7 @@ Before any building begins, attend all 13 schools. Research the principles, extr
 *The Michelangelo Procedure:* Rough-cut first. Then refine. Then detail. Then polish.
 *Iteration Principles:* Start with the biggest elements. Verify before moving to details. Each pass smaller and more precise.
 *Knowing When to Stop:* Capture the essence — the feeling, the principles, the truth. Stop when adding more doesn't make it truer.
-*Failure Protocol:* If 10 iterations fail: (1) Return to research. (2) Return to education. (3) Ask the human. (4) Never iterate randomly.
+*Failure Protocol:* If 10 iterations fail: (1) Return to research. (2) Return to education. (3) Optionally, ask a human for direction. (4) Never iterate randomly.
 
 **Search queries:** "Michelangelo carving process how he worked", "iterative design process refinement"
 
@@ -410,8 +410,8 @@ PHASE 4: Compile → UBT → executable
     ↓
 PHASE 5: Visual Verification (system's eyes — preliminary)
     ↓
-PHASE 5.5: HUMAN OBSERVATION — the true quantum collapse
-    (accepted → observed · rejected → needs_refinement + the human's words)
+PHASE 5.5: AUTOMATED OBSERVATION — the true quantum collapse
+    (accepted → observed · rejected → needs_refinement; a human sentence may still redirect)
     ↓
 PHASE 6: Iterate → return to Education or Research
     ↓
@@ -445,17 +445,17 @@ All paths relative to `E:\PythonChimera\Chimera\`:
 - **DNA Nodes**: ~1280 (0 junk; archive-never-delete hygiene via `core/graph_compactor.py`)
 - **GPA**: 3.5 · build trend 20/20 pass
 - **MCP Pathways**: 21+ documented pathway families incl. TRAPS (docs/MCP_PATHWAYS.md)
-- **Board**: Loops 0/2/8 `[DONE*]` (system-verified, awaiting human observation); Loop 1 4/6;
+- **Board**: Loops 0/2/8 `[DONE*]` (system-verified, awaiting automated observation); Loop 1 4/6;
   spiral head = Loop 1 (The Ground)
 - **Loop 0 highlights**: rigged astronaut (SKM_Manny, 161 bones) + ABP locomotion verified A/A
   in-engine (PIE walk telemetry + independent vision verdicts); gold-visor helmet attached
 - **Loop 8**: all four systems (Economy/Factions/SaveLoad/Missions) at A/B on 14/14 in-engine tests
 - **Generation Protocol LIVE**: Wills + phantom pains flow between sessions; distiller has staged
   10 heuristic candidates for the Gardener; the Observation queue holds every system-verified
-  feature awaiting the human collapse
+  feature awaiting automated observation (a human sentence may still redirect it)
 
 ### Next Steps
-1. Human queues: PENDING_HEURISTICS.md verdicts + the Observation queue (preflight [4.5])
+1. Automated queues: PENDING_HEURISTICS.md (auto-tended) + the Observation queue (preflight [4.5])
 2. Loop 1: Ground_Sand_Particles fidelity debt (sand color, lunar gravity −162, owned Niagara
    system), Ground_Sand_Footprints, Ground_Sand_Sound, dust-accumulation mask research task
 3. Player as GameMode default pawn (generator template) + helmet into BP as SCS component
