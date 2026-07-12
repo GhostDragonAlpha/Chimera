@@ -1,5 +1,19 @@
 [
  {
+  "id": "atom_16c890888c5f",
+  "feature": "System_SaveGame",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UStarMemorialComponent\\b|UStarMemorialComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UStarMemorialComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:StarMemorialComponent.h"
+ },
+ {
   "id": "atom_177a395c2dd7",
   "feature": "System_SaveGame",
   "tier": 0,
@@ -84,6 +98,20 @@
   "provenance": "reflection:UPROPERTY:SacrificeLogComponent.h"
  },
  {
+  "id": "atom_35fdc6da66e9",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDimThreshold\\b"
+  },
+  "desc": "UPROPERTY DimThreshold (StarMemorialComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StarMemorialComponent.h"
+ },
+ {
   "id": "atom_743c408f0881",
   "feature": "System_SaveGame",
   "tier": 1,
@@ -166,6 +194,20 @@
   "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
  },
  {
+  "id": "atom_98dbcdc347e1",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBrightnessK\\b"
+  },
+  "desc": "UPROPERTY BrightnessK (StarMemorialComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StarMemorialComponent.h"
+ },
+ {
   "id": "atom_a5033db70a3b",
   "feature": "System_SaveGame",
   "tier": 1,
@@ -192,6 +234,20 @@
   },
   "desc": "UPROPERTY AbilityTags (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
+ },
+ {
+  "id": "atom_d25d8f9cd86a",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBrightLightsYardThreshold\\b"
+  },
+  "desc": "UPROPERTY BrightLightsYardThreshold (StarMemorialComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StarMemorialComponent.h"
  },
  {
   "id": "atom_f1fdc113f038",

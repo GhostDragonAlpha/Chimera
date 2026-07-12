@@ -4,6 +4,7 @@
 #include "Materials/DustAccumulationParticleComponent.h"
 #include "Sound/SandSoundComponent.h"
 #include "Save/SacrificeLogComponent.h"
+#include "Save/StarMemorialComponent.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/AudioComponent.h"
@@ -116,6 +117,22 @@ void UChimeraMovementComponent::BeginPlay()
 			SacrificeLog->RegisterComponent();
 			UE_LOG(LogTemp, Log,
 				TEXT("ChimeraMovementComponent: runtime-attached USacrificeLogComponent to %s (H-34)"),
+				*Owner->GetName());
+		}
+	}
+	// The star memorial is the other half of Design Law 2 — every finished
+	// life becomes a star whose brightness IS its sacrifice, and bright
+	// ancestors light the Yard's night. Persists across generations via its
+	// SaveGame star array even though this pawn is recreated each life (H-34).
+	if (!Owner->FindComponentByClass<UStarMemorialComponent>())
+	{
+		UStarMemorialComponent* Memorial =
+			NewObject<UStarMemorialComponent>(Owner, TEXT("StarMemorialComponent"));
+		if (Memorial)
+		{
+			Memorial->RegisterComponent();
+			UE_LOG(LogTemp, Log,
+				TEXT("ChimeraMovementComponent: runtime-attached UStarMemorialComponent to %s (H-34)"),
 				*Owner->GetName());
 		}
 	}
