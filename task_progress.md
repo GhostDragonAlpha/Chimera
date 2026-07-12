@@ -28,6 +28,21 @@ BALANCED against "emergence from complexity."
 - Suites: malcolm 20/20, rep 17/17, decomposer 11/11, book 11/11, board 10/10,
   tunnel 11/11 (80/80).
 
+# Session 2026-07-12j — THE TUNING PASS: last wires + FIRST GRADUATION
+
+Six operating frictions fixed (commit b254215 + 3f244df): tunnel footprint
+baselines (warnings now mean NOW), sleepwalker prints failing-expect evidence,
+core/testkit.py universal sandbox (leak class impossible), postflight snapshot
+auto-commit (path-frame fixed after live refusal proved the guard), every
+sleepwalk feeds telemetry_last.json (frame+memory walls now play-measured),
+rep-gate scales per-atom (min(200, atoms x 25)). 81/81 suites.
+**FIRST REP-GATE GRADUATION: Ground_Sand_Sound — 380 reps / 32 atoms /
+8-run streak >=95%. The first feature to earn its trust is the sound.**
+Remaining wires (declared): pie-manifest auto-beats, not_scope exit refusal,
+block --boundary; pain: auto-commit pushes current branch.
+
+---
+
 ## NEXT
 1. ~~Sensors~~ **PARTIAL (commit 4b74fca)**: telemetry_probe now writes
    docs/world/telemetry_last.json (fps -> frame_time_ms + editor working-set ->
