@@ -877,7 +877,8 @@ class LMStudioClient:
         )
 
         try:
-            response = urllib.request.urlopen(req, timeout=timeout)
+            from core.lm_gateway import lm_urlopen
+            response = lm_urlopen(req, timeout=timeout, agent="ralph_loop")
             raw = response.read().decode("utf-8")
             parsed = json.loads(raw)
             choices = parsed.get("choices", [])
