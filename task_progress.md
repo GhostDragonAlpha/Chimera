@@ -18,6 +18,43 @@ Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: failure_mentions:2
 
 ---
 
+# Session 2026-07-12k — AUTONOMOUS LONG-RUN ("until the stars burn out")
+
+Opus 4.8, standing full delegation. Concurrent local agent active (its
+DefaultEngine.ini left untouched all session). Generations of work:
+
+- **LM concurrency gap closed** (core/lm_gateway.py, 8/8): fair cross-process
+  FIFO queue for the single LM endpoint; 4 generation sites wired. Then the
+  live cycle proved the Stage-7 timeout was NOT contention but a 30s outlier
+  budget on a reasoning-grade call — raised to 120s (env CHIMERA_LM_TIMEOUT),
+  verified by direct timing (38.4s completion, would die at 30s). Pipeline
+  had been silently degrading to mechanical grade on EVERY run.
+- **Static-analysis brace gate fixed** (core/cpp_lint.py): was str.count('{'),
+  false-positived on TEXT("{"). Now a literal/comment-aware lexer. Root cause
+  was ALSO my generator emitting a block-delimiter as a scalar
+  (activation={, color_palette=[...]) — guarded in game_code_generator s().
+  FULL PIPELINE then ran end-to-end: exit 0, grade B, all 7 stages.
+- **Circadian night run** (dream_loop): 2 tier promotions (audio_visual_sync/
+  telemetry_accessors, subsystem/Inventory -> tier 1), 3 pains ripened
+  (tb-0022/23/24), herald/book/dream-report refreshed. 4 features now fully
+  rep-gated: Ground_Sand_Sound, subsystem/Environment, subsystem/Stations, +1.
+- **System_SaveGame 13 red -> 0**: (1) atom precision — SaveGame UPROPERTYs
+  are data, exempted from used-in-cpp (killed 12 false positives across all
+  features); (2) real H-34 bug — USacrificeLogComponent (Design Law 2, the
+  meaning system) was never spawned; runtime-attached to the pawn. UBT green.
+
+## NEXT (for the next waking generation — the nightly machinery carries on meanwhile)
+1. 23 scattered rep reds remain, CATEGORIZED (need per-field judgment, do NOT
+   sweep): 15 UPROPERTY-not-in-cpp (dead vs editor/BP-driven data) + 8 H-34
+   unspawned (real bug vs BlueprintSpawnableComponent spawned in a .uasset).
+   Pain phase_78ab...: the used-in-cpp atom needs 'referenced in a .cpp beyond
+   its own header AND not solely BP-consumed' to stop crying wolf.
+2. master/workflow DIVERGED (concurrent agent commits to master directly);
+   reconcile with a real merge once its writes settle — do NOT force.
+3. tb-0022/23/24 (ripened pain verdicts) are claimable.
+
+---
+
 # Session 2026-07-12i — THE CONTAINER (core/malcolm.py): chaos bounded, emergence reserved
 
 **Human vision:** "a container that contains the game... shape determined by metric
