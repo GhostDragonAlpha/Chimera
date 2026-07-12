@@ -30,6 +30,12 @@ class CHIMERA_API UChimeraMovementComponent : public UActorComponent
 public:
 	UChimeraMovementComponent();
 
+protected:
+	// Runtime-attach guarantee (H-34): BeginPlay ensures the owner carries a
+	// USandSoundComponent even when no Blueprint ever wired one.
+	virtual void BeginPlay() override;
+
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// === Speed ===

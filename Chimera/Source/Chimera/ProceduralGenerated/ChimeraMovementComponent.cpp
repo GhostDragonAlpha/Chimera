@@ -57,6 +57,35 @@ UChimeraMovementComponent::UChimeraMovementComponent()
 }
 
 // ------------------------------------------------------------------
+// BeginPlay — the H-34 runtime-attach guarantee. Four dream-loop nights
+// (H-31..H-34) traced dead telemetry to one absence: nothing ever created
+// the USandSoundComponent, so every query fell back to defaults. Attach it
+// here, unconditionally-if-missing, so no Blueprint wiring can drop it.
+// ------------------------------------------------------------------
+void UChimeraMovementComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		return;
+	}
+	if (!Owner->FindComponentByClass<USandSoundComponent>())
+	{
+		USandSoundComponent* SoundComp =
+			NewObject<USandSoundComponent>(Owner, TEXT("SandSoundComponent"));
+		if (SoundComp)
+		{
+			SoundComp->RegisterComponent();
+			UE_LOG(LogTemp, Log,
+				TEXT("ChimeraMovementComponent: runtime-attached USandSoundComponent to %s (H-34)"),
+				*Owner->GetName());
+		}
+	}
+}
+
+// ------------------------------------------------------------------
 // TickComponent — apply velocity to owner root / mesh
 // ------------------------------------------------------------------
 void UChimeraMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -133,10 +162,11 @@ void UChimeraMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			GFootstepSyncTelemetry.Add(SyncEvent);
 
 
-			// Also record to SandSoundComponent telemetry if attached
+			// Also record to SandSoundComponent telemetry (BeginPlay guarantees
+			// attachment — H-34); speed feeds the volume-vs-speed buckets.
 			if (USandSoundComponent* SoundComp = Cast<USandSoundComponent>(GetOwner()->GetComponentByClass(USandSoundComponent::StaticClass())))
 			{
-				SoundComp->RecordFootstepSyncEvent(SyncLatencyMs, SyncEvent.AudioVolume);
+				SoundComp->RecordFootstepSyncEvent(SyncLatencyMs, SyncEvent.AudioVolume, SpeedMagnitude);
 			}
 
 			// UE_LOG for monitoring (CHIMERA_AGENT_SIM will capture)

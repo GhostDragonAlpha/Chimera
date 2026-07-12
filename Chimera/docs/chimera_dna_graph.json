@@ -50411,6 +50411,26 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_581832cce9cd"
+    },
+    {
+      "id": "feature_1184c0fadac4695f",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-12T16:37:22.084016",
+      "feature_name": "audio_visual_sync/telemetry_accessors",
+      "loop": 9,
+      "status": "implemented",
+      "parameters": {
+        "fix": "H-34 runtime attach in ChimeraMovementComponent::BeginPlay + 4 tb-0001 accessors (Avg/Max/VolumeScalesWithSpeed w/ speed buckets) on SandSoundComponent",
+        "verified_by": "rep_engine battery 6/6 headless atoms green x2 runs; UBT+PIE deferred per speed-run directive"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_9/audio_visual_sync/telemetry_accessors",
+      "error_category": "none",
+      "fix_description": "Feature 'audio_visual_sync/telemetry_accessors' (Loop 9) recorded as 'implemented'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2efcd7a6ac0c"
     }
   ],
   "edges": [
