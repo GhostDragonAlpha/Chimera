@@ -1,5 +1,17 @@
 [
  {
+  "id": "atom_54d1e3ac2917",
+  "feature": "Malcolm_Envelope",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "heuristics_per_night breach as a real leak"
+  },
+  "desc": "regression (PIE): heuristics_per_night breach as a real leak",
+  "provenance": "elimination:elim_58026efcf3adc442"
+ },
+ {
   "id": "atom_16b75550ee22",
   "feature": "Malcolm_Envelope",
   "tier": 2,
@@ -97,6 +109,30 @@
    "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
   },
   "desc": "container wall audio_voices holds: band [None,32] concurrent (provisional)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_73bf7cf73ce6",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "headless",
+  "probe": {
+   "type": "envelope_axis",
+   "axis": "frame_time_ms"
+  },
+  "desc": "container wall frame_time_ms holds: band [None,16.6] ms (researched)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_7ed4fee32fe4",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "headless",
+  "probe": {
+   "type": "envelope_axis",
+   "axis": "system_memory_gb"
+  },
+  "desc": "container wall system_memory_gb holds: band [None,12.0] GB (provisional)",
   "provenance": "malcolm:envelope"
  },
  {

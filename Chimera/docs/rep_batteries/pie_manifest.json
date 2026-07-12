@@ -1,5 +1,144 @@
 [
  {
+  "id": "atom_825e22fef6a1",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "beat schema or MCP dispatch as root cause"
+  },
+  "desc": "regression (PIE): beat schema or MCP dispatch as root cause",
+  "provenance": "elimination:elim_043bb7affad30ff4"
+ },
+ {
+  "id": "atom_e177b8f4639f",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "beat expect schema as root cause"
+  },
+  "desc": "regression (PIE): beat expect schema as root cause",
+  "provenance": "elimination:elim_71b935361cee2319"
+ },
+ {
+  "id": "atom_f8b931c24756",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "MCP action handlers / command dispatch as root cause"
+  },
+  "desc": "regression (PIE): MCP action handlers / command dispatch as root cause",
+  "provenance": "elimination:elim_65f84a195c149377"
+ },
+ {
+  "id": "atom_54d1e3ac2917",
+  "feature": "Malcolm_Envelope",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "heuristics_per_night breach as a real leak"
+  },
+  "desc": "regression (PIE): heuristics_per_night breach as a real leak",
+  "provenance": "elimination:elim_58026efcf3adc442"
+ },
+ {
+  "id": "atom_5dd9d400019c",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "interacting_systems_per_slice",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall interacting_systems_per_slice holds: band [3,7] systems (design)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_6253d5ddcc75",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "system_memory_gb",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall system_memory_gb holds: band [None,12.0] GB (provisional)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_694afde79fd6",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "coupling_degree_k",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall coupling_degree_k holds: band [1,4] systems (design)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_70501328fb95",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "audio_voices",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall audio_voices holds: band [None,32] concurrent (provisional)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_973ba12d9844",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "frame_time_ms",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall frame_time_ms holds: band [None,16.6] ms (researched)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_ad6dc26f36da",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "vram_gb",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall vram_gb holds: band [None,12.0] GB (researched)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_e60ec42bb189",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "active_dots",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall active_dots holds: band [2,24] NPCs (provisional)",
+  "provenance": "malcolm:envelope"
+ },
+ {
   "id": "atom_005234adebc4",
   "feature": "Sleepwalker_Beats",
   "tier": 2,
@@ -91,27 +230,75 @@
   "provenance": "H-25"
  },
  {
-  "id": "atom_e177b8f4639f",
-  "feature": "audio_visual_sync/telemetry_accessors",
-  "tier": 1,
+  "id": "atom_f918fbdf2961",
+  "feature": "Sprint_Input/capture_peak",
+  "tier": 2,
   "kind": "pie",
   "probe": {
    "type": "pie",
-   "boundary": "beat expect schema as root cause"
+   "boundary": "last-footstep volume as a valid sprint measurement"
   },
-  "desc": "regression (PIE): beat expect schema as root cause",
-  "provenance": "elimination:elim_71b935361cee2319"
+  "desc": "regression (PIE): last-footstep volume as a valid sprint measurement",
+  "provenance": "elimination:elim_1b283361406a25a0"
  },
  {
-  "id": "atom_f8b931c24756",
-  "feature": "audio_visual_sync/telemetry_accessors",
+  "id": "atom_1821a9771ce9",
+  "feature": "Sprint_Input/harness_parity",
   "tier": 1,
   "kind": "pie",
   "probe": {
    "type": "pie",
-   "boundary": "MCP action handlers / command dispatch as root cause"
+   "boundary": "bridge LShift-vs-LeftShift mismatch as a live blocker"
   },
-  "desc": "regression (PIE): MCP action handlers / command dispatch as root cause",
-  "provenance": "elimination:elim_65f84a195c149377"
+  "desc": "regression (PIE): bridge LShift-vs-LeftShift mismatch as a live blocker",
+  "provenance": "elimination:elim_e1ceb1b092b179af"
+ },
+ {
+  "id": "atom_0e27a9381e7a",
+  "feature": "Sprint_Input/readback",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "note": "beat: key_down LeftShift -> pawn speed read-back >= 300cm/s"
+  },
+  "desc": "part 'readback' of Sprint_Input: live read-back: a beat proves the verb changed the world",
+  "provenance": "decomposition:dc_b1af6b6e2f33"
+ },
+ {
+  "id": "atom_80e981b2a84c",
+  "feature": "System_DSL_Fidelity",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "probe token-noise as the dominant cause of DSL battery reds"
+  },
+  "desc": "regression (PIE): probe token-noise as the dominant cause of DSL battery reds",
+  "provenance": "elimination:elim_5db874e721a6c962"
+ },
+ {
+  "id": "atom_fbfbbf3d4952",
+  "feature": "System_DSL_Fidelity",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "probe token-noise as dominant cause of battery reds"
+  },
+  "desc": "regression (PIE): probe token-noise as dominant cause of battery reds",
+  "provenance": "elimination:elim_fc1e3b5e9ce65fbe"
+ },
+ {
+  "id": "atom_7e07a59820c3",
+  "feature": "Verb_Step",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "audio volume-scaling as the walk_fast_on_sand failure cause"
+  },
+  "desc": "regression (PIE): audio volume-scaling as the walk_fast_on_sand failure cause",
+  "provenance": "elimination:elim_b58535a07e3675b0"
  }
 ]

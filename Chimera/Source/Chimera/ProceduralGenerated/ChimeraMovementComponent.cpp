@@ -3,6 +3,7 @@
 #include "ChimeraMovementComponent.h"
 #include "Materials/DustAccumulationParticleComponent.h"
 #include "Sound/SandSoundComponent.h"
+#include "Save/SacrificeLogComponent.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/AudioComponent.h"
@@ -99,6 +100,22 @@ void UChimeraMovementComponent::BeginPlay()
 			SoundComp->RegisterComponent();
 			UE_LOG(LogTemp, Log,
 				TEXT("ChimeraMovementComponent: runtime-attached USandSoundComponent to %s (H-34)"),
+				*Owner->GetName());
+		}
+	}
+	// The sacrifice log IS Design Law 2 — it records what the player protected
+	// at cost, and the ending (dim star / empty mirror) reads it. Nothing
+	// spawned it (H-34, same class as SandSound). Attach it to the player pawn
+	// so the meaning system can actually accumulate.
+	if (!Owner->FindComponentByClass<USacrificeLogComponent>())
+	{
+		USacrificeLogComponent* SacrificeLog =
+			NewObject<USacrificeLogComponent>(Owner, TEXT("SacrificeLogComponent"));
+		if (SacrificeLog)
+		{
+			SacrificeLog->RegisterComponent();
+			UE_LOG(LogTemp, Log,
+				TEXT("ChimeraMovementComponent: runtime-attached USacrificeLogComponent to %s (H-34)"),
 				*Owner->GetName());
 		}
 	}

@@ -21,7 +21,7 @@ public:
 	bool bAbilityActivated = false;
 	// spec: activation (valid_gameplay_combat)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spec")
-	FString Activation = TEXT("{");
+	FString Activation = TEXT("on_input_pressed");
 
 	UFUNCTION(BlueprintCallable, Category = "Spec")
 	bool RunSelfTest();

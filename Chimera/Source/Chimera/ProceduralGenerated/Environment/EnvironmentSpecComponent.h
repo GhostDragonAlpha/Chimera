@@ -30,7 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky")
 	FString SkyboxType = TEXT("deep_space");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sky")
-	FString ColorPalette = TEXT("['dark_space', 'metallic_grey', 'blue_hologram', 'orange_alert']");
+	FString ColorPalette = TEXT("regolith_amber");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Surface")
 	TArray<FString> Elements;
 	// spec: gravity_g (per body) / world bounds min_location..max_location / camera_perspective

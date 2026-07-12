@@ -158,7 +158,12 @@ HARNESS_CONFIG: Dict[str, Any] = {
     "graphify_path": str(GRAPHIFY_PATH),
     "mcp_pathways": str(MCP_PATHWAYS_PATH),
     "research_campuses": str(RESEARCH_CAMPUSES_PATH),
-    "lm_studio_timeout": 30,
+    # 30s was far too short for a reasoning-grade professor-review generation
+    # on a local model — Stage 7.2 timed out and silently degraded to the
+    # mechanical grade on EVERY run (2026-07-12). Every other LM site uses
+    # 300-600s; 120s gives the review a fair chance while still bounding a
+    # hung model (Stage 7 degrades gracefully either way). Env-overridable.
+    "lm_studio_timeout": int(os.environ.get("CHIMERA_LM_TIMEOUT", "120")),
     "lm_studio_retries": 3,
     "mcp_timeout": 60,
     "screenshot_mode": "editor_viewport",
@@ -877,7 +882,8 @@ class LMStudioClient:
         )
 
         try:
-            response = urllib.request.urlopen(req, timeout=timeout)
+            from core.lm_gateway import lm_urlopen
+            response = lm_urlopen(req, timeout=timeout, agent="ralph_loop")
             raw = response.read().decode("utf-8")
             parsed = json.loads(raw)
             choices = parsed.get("choices", [])
