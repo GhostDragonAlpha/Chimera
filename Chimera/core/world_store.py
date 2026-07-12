@@ -70,9 +70,7 @@ CREATE INDEX IF NOT EXISTS idx_node_kind ON node(kind);
 # FTS5 (full-text) and R-tree (spatial) are compile-time optional. We probe for
 # them and degrade gracefully so the store works on any SQLite build.
 _FTS_SCHEMA = """
-CREATE VIRTUAL TABLE IF NOT EXISTS node_fts USING fts5(
-    label, body, content='node', content_rowid='rowid'
-);
+CREATE VIRTUAL TABLE IF NOT EXISTS node_fts USING fts5(label, body);
 """
 _RTREE_SCHEMA = """
 CREATE VIRTUAL TABLE IF NOT EXISTS node_rtree USING rtree(
@@ -177,14 +175,23 @@ def neighbors(con, node_id, direction="out", rel=None, limit=200):
     return [{"id": r[0], "rel": r[1]} for r in con.execute(sql, params)]
 
 
+def _fts_query(text):
+    """Quote each token as a literal phrase so hyphens, colons and other FTS5
+    operators in raw search text are matched literally, not parsed as syntax
+    (an unquoted 'external-content' makes FTS5 read 'content' as a column)."""
+    toks = [t for t in text.split() if t]
+    return " ".join('"' + t.replace('"', '""') + '"' for t in toks)
+
+
 def search(con, text, limit=25):
     """Full-text search — the AI-findability primitive. FTS5 when available;
     otherwise an indexed LIKE fallback so it always works."""
     caps = getattr(con, "_caps", {})
-    if caps.get("fts5"):
+    fts = _fts_query(text)
+    if caps.get("fts5") and fts:
         rows = con.execute(
             "SELECT n.id,n.kind,n.label FROM node_fts f JOIN node n ON n.rowid=f.rowid "
-            "WHERE node_fts MATCH ? LIMIT ?", (text, limit)).fetchall()
+            "WHERE node_fts MATCH ? LIMIT ?", (fts, limit)).fetchall()
     else:
         rows = con.execute(
             "SELECT id,kind,label FROM node WHERE label LIKE ? LIMIT ?",

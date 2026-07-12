@@ -232,6 +232,20 @@ walkabout loss — it was never an unsaved-state problem.)
 Run `python fix_dna_key_mismatch_pollution.py` to quarantine junk nodes.
 Use typed helpers (`record_*`) to prevent future pollution.
 
+### DNA graph storage (migrated 2026-07-12 — SQLite, not JSON)
+The DNA graph now lives in `core.world_store` (SQLite + FTS5) behind the same
+`graphify_interface.load_dna_graph`/`save_dna_graph` seam — `core/dna_sqlite_backend.py`.
+The 2000-node gate and the `archive_old_mutations.py` dance are **obsolete**: the
+substrate is indexed with no whole-file bottleneck (proven at 1M nodes, sub-ms search),
+so the graph grows freely (gate ceiling is now 5M, a runaway-loop backstop). Fast
+AI search: `python -m core.dna_sqlite_backend search --query <term>` (this replaces
+graphify's JSON+NetworkX search — the graphify MCP server can be removed from the Claude
+Code config). `docs/chimera_dna_graph.json` is kept as a committed durability snapshot
+(refreshed on every save); `docs/world/dna.db` is the machine-local working store
+(gitignored). Fall back with `CHIMERA_DNA_BACKEND=json` if ever needed. The world MODEL
+(millions of entities) uses `core.world_store` directly — `around(player, r)` streams the
+local neighborhood; UE5 World Partition is the spatial layer.
+
 ## Session Memory
 
 Stored at: `C:\Users\allen\.claude\projects\E--PythonChimera\memory\`

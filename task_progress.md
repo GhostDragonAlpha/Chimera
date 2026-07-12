@@ -37,17 +37,27 @@ Confidence: 0.9
   - **PROVEN:** 1,000,000 nodes + 2,000,000 edges in 21s (341MB); FTS search 0.5ms,
     around(player,r=60) 0.8ms, neighbor 0.05ms. Real DNA graph (2000 nodes) migrated in 73ms,
     real-content search ~0.01ms. 6/6 world_store tests. Committed, additive (pipeline untouched).
-  - **NEXT (the actual retirement, do as ONE verified migration — high blast radius):**
-    1. Add a world_store-backed backend behind core/graphify_interface.py's SAME API
-       (load_dna_graph/save_dna_graph/record_*/query) — opt-in via env flag first.
-    2. Migration script JSON->SQLite (import_graph; the throwaway proof lives in $TEMP).
-    3. Flip the pipeline to the SQLite backend; run ALL suites + preflight/postflight green.
-    4. Retire graphify: replace its MCP search with a thin world_store search MCP wrapper
-       (same shape: search/neighbors/around); remove the 2000-node gate (obsolete).
-    5. World model proper: node schema (entity/region/relation), player-trunk generates
-       outward by the fractal/golden-angle law, UE5 World Partition streams around(player).
-    Do NOT rip out graphify_interface blind — it's the seam the whole pipeline goes through;
-    swap storage behind it, verify, then retire the tool.
+  - **DONE 2026-07-12 — the retirement migration shipped, verified, default flipped:**
+    * core/dna_sqlite_backend.py — DNA graph on world_store (SQLite+FTS5) behind the SAME
+      load_dna_graph/save_dna_graph seam. LOSSLESS (verify: 2000 nodes/1448 edges in==out,
+      content-identical). Durability: committed JSON snapshot refreshed on save; ensure_seeded
+      rebuilds dna.db on a fresh clone. dna.db is machine-local (docs/world/, gitignored).
+    * graphify_interface.py — DNA_BACKEND flag; DEFAULT NOW sqlite (CHIMERA_DNA_BACKEND=json
+      falls back). One two-function swap migrated the whole pipeline (every write goes through
+      save_dna_graph).
+    * gates.py — 2000-node gate RETIRED (ceiling now 5M, a runaway-loop backstop). Graph is
+      already at 2007 nodes with All gates pass. archive_old_mutations.py dance is obsolete.
+    * Verified: lossless round-trip, read-parity preflight (identical GPA/nodes/loop),
+      live write round-trip + FTS search, all suites green WITH flag and on the new default
+      (55 tests: task_board 10, agent_tunnel 11, gauntlet 5, curriculum 5, faculty 7,
+      fractal_spiral 7, world_store 6, dna_sqlite_backend 4). FTS gotcha fixed: quote tokens
+      (hyphens like 'external-content' were parsed as FTS operators).
+    * graphify SEARCH replaced by `python -m core.dna_sqlite_backend search --query X`
+      (or world_store.search). MANUAL step for human: remove the graphify MCP server from the
+      Claude Code config — the codebase no longer depends on it.
+  - **NEXT (world model proper):** node schema (entity/region/relation), player-trunk
+    generates outward by the fractal/golden-angle law, UE5 World Partition streams
+    around(player). world_store.around() is the streaming primitive.
 
 ---
 

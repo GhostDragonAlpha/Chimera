@@ -10,6 +10,15 @@ from pathlib import Path
 KNOWLEDGE_GRAPH_PATH = Path(__file__).parent.parent / "docs" / "chimera_knowledge_graph.json"
 DNA_GRAPH_PATH = Path(__file__).parent.parent / "docs" / "chimera_dna_graph.json"
 
+# Storage backend for the DNA graph: "json" (flat file, legacy) or "sqlite"
+# (core.world_store — fast full-text search, no node ceiling). The whole pipeline
+# reads/writes through load_dna_graph/save_dna_graph, so this one flag migrates
+# everything. Verified green 2026-07-12 (lossless round-trip on the real 2000-
+# node graph, read-parity preflight, live write round-trip, all suites) — default
+# is now sqlite. Set CHIMERA_DNA_BACKEND=json to fall back to the flat-file path;
+# the JSON snapshot stays committed for git durability either way.
+DNA_BACKEND = os.environ.get("CHIMERA_DNA_BACKEND", "sqlite").lower()
+
 # The Critic (core/critic.py) is ADVISORY ONLY — every CriticJudgment node it records must
 # carry this exact string; it never gates result_grader, GPA, or any pipeline gate (see
 # docs/RESULT_GRADING_RUBRIC.md: LM judgment is tertiary/advisory everywhere in this project).
@@ -44,6 +53,13 @@ def load_knowledge_graph():
     return {"nodes": [], "edges": [], "metadata": {"canonical_output_dir": "E:/PythonChimera/Chimera", "module_name": "Chimera", "api_macro": "CHIMERA_API", "include_paths": ["ProceduralGenerated/Combat", "ProceduralGenerated/AI", "ProceduralGenerated/Flight", "ProceduralGenerated/PCG", "ProceduralGenerated/Stations", "ProceduralGenerated/Missions", "ProceduralGenerated/Factions", "ProceduralGenerated/Save", "ProceduralGenerated/GameMode", "ProceduralGenerated/Ships"]}}
 
 def load_dna_graph():
+    if DNA_BACKEND == "sqlite":
+        try:
+            from core.dna_sqlite_backend import load_graph, ensure_seeded
+        except ImportError:
+            from dna_sqlite_backend import load_graph, ensure_seeded
+        ensure_seeded()          # fresh clone has the JSON snapshot, not the db
+        return load_graph()
     if DNA_GRAPH_PATH.exists():
         with open(DNA_GRAPH_PATH, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -59,6 +75,13 @@ def save_dna_graph(graph):
     cycle vs the sleepwalker) must never corrupt or clobber the graph (no-blockers law)."""
     import os as _os, time as _time
     _stamp_provenance(graph.get("nodes", []))
+    if DNA_BACKEND == "sqlite":
+        try:
+            from core.dna_sqlite_backend import save_graph
+        except ImportError:
+            from dna_sqlite_backend import save_graph
+        save_graph(graph)        # SQLite working store + committed JSON snapshot
+        return
     DNA_GRAPH_PATH.parent.mkdir(parents=True, exist_ok=True)
     lock = str(DNA_GRAPH_PATH) + ".lock"
     deadline = _time.monotonic() + 15

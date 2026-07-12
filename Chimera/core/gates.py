@@ -171,17 +171,24 @@ def gate_provenance_complete() -> bool:
 
 
 def gate_node_count_bounded() -> bool:
-    """Hard fail if graph exceeds reasonable node count (2000).
-    Prevents graph bloat from degrading performance."""
+    """Runaway-growth sanity ceiling. The old 2000 cap existed because the DNA
+    graph was a flat JSON file loaded/rewritten whole on every op — a real
+    performance cliff. With the SQLite substrate (core.world_store, indexed +
+    FTS) there is no whole-file bottleneck, so this is now just a very high
+    backstop against an unbounded-loop bug, not an archival trigger."""
+    import os as _os
     from graphify_interface import load_dna_graph
+    ceiling = int(_os.environ.get("CHIMERA_MAX_NODES", 5_000_000))
     dna = load_dna_graph()
     nodes = dna.get("nodes", [])
-    if len(nodes) > 2000:
+    if len(nodes) > ceiling:
         raise GateViolation(
             "gate_node_count_bounded",
-            f"Graph has {len(nodes)} nodes (max 2000). Archive old Mutation nodes.",
+            f"Graph has {len(nodes):,} nodes (ceiling {ceiling:,}) — likely a "
+            f"runaway loop, not legitimate growth.",
             "warning",
-            "Implement graph archival: move pre-2026 Mutation nodes to archive file."
+            "Investigate the writer that exploded the node count; the substrate "
+            "itself scales, so the fix is the bug, not archival."
         )
     return True
 
