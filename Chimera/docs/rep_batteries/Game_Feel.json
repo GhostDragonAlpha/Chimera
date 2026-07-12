@@ -1,0 +1,41 @@
+[
+ {
+  "id": "atom_1adb4b0c1ca8",
+  "feature": "Game_Feel",
+  "tier": 3,
+  "kind": "headless",
+  "probe": {
+   "type": "feel_metric",
+   "metric": "dead_air_max_s",
+   "max": 3.0
+  },
+  "desc": "feel wall dead_air_max_s holds band {'max': 3.0} (metronome, mined from chronicle x UE log)",
+  "provenance": "metronome:feel-canon"
+ },
+ {
+  "id": "atom_3cb3ffd4815e",
+  "feature": "Game_Feel",
+  "tier": 3,
+  "kind": "headless",
+  "probe": {
+   "type": "feel_metric",
+   "metric": "juice_density",
+   "min": 0.5
+  },
+  "desc": "feel wall juice_density holds band {'min': 0.5} (metronome, mined from chronicle x UE log)",
+  "provenance": "metronome:feel-canon"
+ },
+ {
+  "id": "atom_fd3a95aae828",
+  "feature": "Game_Feel",
+  "tier": 3,
+  "kind": "headless",
+  "probe": {
+   "type": "feel_metric",
+   "metric": "input_feedback_ms",
+   "max": 150.0
+  },
+  "desc": "feel wall input_feedback_ms holds band {'max': 150.0} (metronome, mined from chronicle x UE log)",
+  "provenance": "metronome:feel-canon"
+ }
+]

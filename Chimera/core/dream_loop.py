@@ -186,6 +186,17 @@ def main():
     except Exception as ex:
         print(f"[malcolm] tune FAILED: {ex}")
 
+    # The improvement-wave organs (2026-07-12): pains ripen into work, fresh
+    # red flips get their guilty commit named, and the human gets a morning
+    # page in plain words. Each guarded — no organ may wedge the night.
+    for organ, call in (("ripener", lambda: __import__("core.ripener", fromlist=["tend"]).tend()),
+                        ("bloodhound", lambda: __import__("core.bloodhound", fromlist=["hunt"]).hunt()),
+                        ("herald", lambda: print(__import__("core.herald", fromlist=["write"]).write()))):
+        try:
+            call()
+        except Exception as ex:
+            print(f"[{organ}] FAILED: {ex}")
+
     # Delegated Gardener (amendment 2026-07-07): auto-rule the pending queue.
     # Human keeps veto-after: edit any status to `vetoed` and the next tend demotes it.
     tend_out = ""
