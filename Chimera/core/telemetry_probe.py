@@ -359,6 +359,53 @@ def main():
     )
     print(json.dumps({"telemetry": telemetry, "notes": notes}, indent=2))
 
+    _write_malcolm_snapshot(telemetry)
+
+
+def _editor_memory_gb() -> float:
+    """System-memory sensor without extra deps: tasklist reports the editor
+    process working set (KB). Honest scope: this is the EDITOR's footprint,
+    the closest measurable proxy until packaged-build telemetry exists."""
+    import subprocess
+    try:
+        out = subprocess.run(
+            ["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe", "/FO", "CSV",
+             "/NH"],
+            capture_output=True, text=True, timeout=10).stdout
+        total_kb = 0
+        for line in out.splitlines():
+            cells = [c.strip('" ') for c in line.split('","')]
+            if len(cells) >= 5 and "UnrealEditor" in cells[0]:
+                total_kb += int(cells[4].replace(",", "").replace(".", "")
+                                .replace(" K", "").replace("K", "") or 0)
+        return round(total_kb / (1024 * 1024), 2) if total_kb else None
+    except Exception:
+        return None
+
+
+def _write_malcolm_snapshot(telemetry: dict) -> None:
+    """Feed THE CONTAINER (core.malcolm): every foregrounded soak refreshes
+    docs/world/telemetry_last.json with the axes malcolm can read — the
+    sensors that turn hardware walls from admission-only into gated. Only
+    honestly-measured keys are written; absent keys stay UNMEASURED."""
+    snapshot = {}
+    if telemetry.get("fps"):
+        snapshot["fps"] = telemetry["fps"]           # malcolm derives frame_time_ms
+    mem = _editor_memory_gb()
+    if mem is not None:
+        snapshot["system_memory_gb"] = mem
+    if not snapshot:
+        return
+    try:
+        path = Path(__file__).resolve().parents[1] / "docs" / "world" / "telemetry_last.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        snapshot["ts"] = __import__("datetime").datetime.now(
+            __import__("datetime").timezone.utc).isoformat()[:19]
+        path.write_text(json.dumps(snapshot, indent=1), encoding="utf-8")
+        print(f"[malcolm] sensor snapshot -> {path.name}: {sorted(snapshot)}")
+    except Exception as e:
+        print(f"[malcolm] sensor snapshot failed: {e}")
+
 
 if __name__ == "__main__":
     main()
