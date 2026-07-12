@@ -37,10 +37,14 @@ process." Inversion/elimination defines the container walls; repetition fills th
 - Suites green: rep_engine 17/17, task_board 10/10, agent_tunnel 11/11.
 
 ## NEXT
-1. Fix the RED atoms rep_engine surfaced: attach SandSoundComponent (generator template,
-   not hand-edit) + implement the 3 missing accessors — then watch the battery go green
-   and the streak build toward the first rep-gated collapse.
-2. Triage System_DSL_Fidelity reds: real drift vs token noise; prune noise atoms
+1. ~~Fix the RED atoms~~ **DONE same session (commit 3c3d584)**: SandSoundComponent
+   runtime-attached in ChimeraMovementComponent::BeginPlay (manual-lane file, hand-edit
+   legal per CLAUDE.md); 4 tb-0001 accessors implemented incl. GetVolumeScalesWithSpeed
+   (speed-bucketed). Battery 6/6 headless atoms green x2 runs (was 4 red). NOT yet
+   UBT-built or beat-verified (speed-run contract) — first UBT build + sleepwalker
+   audio_visual_sync rerun is the next capable session's opening move; the rep gate
+   holds collapse until 200 reps + 8-run streak either way.
+2. Triage System_DSL_Fidelity reds (145): real drift vs token noise; prune noise atoms
    deliberately (battery edits are manual by design).
 3. Seed not_scope on tb-0001/tb-0002 (they file-conflict by design — each is the
    other's hard negative).
