@@ -34,9 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Materials|Dust")
 	float GetDustIntensity(FVector VertexNormal, float Time);
 
-	/** Calculate surface angle-based dust factor using threshold logic */
+	/** Calculate normal-based dust factor using threshold logic */
 	UFUNCTION(BlueprintCallable, Category = "Materials|Dust")
-	float CalculateSurfaceAngleFactor(float NormalZ, float SurfaceAngleBias);
+	float CalculateNormalFactor(const FVector& VertexNormal, float Threshold);
 
 	/** Apply procedural noise mask for dust accumulation (2-octave Perlin + 1-octave Cellular) */
 	UFUNCTION(BlueprintCallable, Category = "Materials|Dust")
@@ -62,6 +62,19 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials|Dust")
 	FLinearColor DustColor;
+
+	// Accumulation/decay tuning (matched to constructor member-initializer-list)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials|Dust")
+	float AccumulationRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials|Dust")
+	float DecayRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials|Dust")
+	float NormalThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials|Dust")
+	float NoiseFrequency;
 
 private:
 	float CurrentAccumulation;

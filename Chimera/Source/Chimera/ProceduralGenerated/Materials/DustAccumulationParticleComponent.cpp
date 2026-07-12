@@ -105,8 +105,11 @@ void UDustAccumulationParticleComponent::TickComponent(float DeltaTime, ELevelTi
 
 		if (bIsSettled && SettlingTime == 0.0f)
 		{
-			SettlingTime = GetWorld()->GetTimeSeconds() - AccumulationStartTime;
-			UE_LOG(LogTemp, Warning, TEXT("[DustAccumulationParticleComponent] Dust settled at %.2f seconds"), SettlingTime);
+			if (UWorld* World = GetWorld())
+			{
+				SettlingTime = World->GetTimeSeconds() - AccumulationStartTime;
+				UE_LOG(LogTemp, Warning, TEXT("[DustAccumulationParticleComponent] Dust settled at %.2f seconds"), SettlingTime);
+			}
 		}
 	}
 }
@@ -173,7 +176,10 @@ float UDustAccumulationParticleComponent::CalculateSettlingProgression(float Age
 
 void UDustAccumulationParticleComponent::EmitDustAtLocation(FVector Location, int32 ParticleCount)
 {
-	LastEmissionTime = GetWorld()->GetTimeSeconds();
+	if (UWorld* World = GetWorld())
+	{
+		LastEmissionTime = World->GetTimeSeconds();
+	}
 
 	for (int32 i = 0; i < ParticleCount; ++i)
 	{
@@ -206,7 +212,7 @@ void UDustAccumulationParticleComponent::EmitDustAtLocation(FVector Location, in
 		ParticleCount, Location.X, Location.Y, Location.Z);
 
 	// Also emit via Niagara if system is available
-	if (DustParticleSystem)
+	if (DustParticleSystem && GetWorld())
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), DustParticleSystem, Location);
 	}
@@ -234,13 +240,20 @@ float UDustAccumulationParticleComponent::GetDustIntensityAtNormal(FVector Verte
 		return 0.0f;
 	}
 
-	float CurrentTime = GetWorld()->GetTimeSeconds() - AccumulationStartTime;
-	return DustMaterial->GetDustIntensity(VertexNormal, CurrentTime);
+	if (UWorld* World = GetWorld())
+	{
+		float CurrentTime = World->GetTimeSeconds() - AccumulationStartTime;
+		return DustMaterial->GetDustIntensity(VertexNormal, CurrentTime);
+	}
+	return 0.0f;
 }
 
 void UDustAccumulationParticleComponent::StartAccumulationMeasurement()
 {
-	AccumulationStartTime = GetWorld()->GetTimeSeconds();
+	if (UWorld* World = GetWorld())
+	{
+		AccumulationStartTime = World->GetTimeSeconds();
+	}
 	SettlingTime = 0.0f;
 	bIsSettled = false;
 	CurrentAccumulationLayer = 0.0f;
