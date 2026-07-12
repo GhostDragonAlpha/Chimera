@@ -113,14 +113,19 @@ def tick(run: bool = False, now: datetime = None) -> dict:
     st["ran_night"] = False
     if st["night_due"] and run:
         print(f"[circadian] night is due ({st['reason']}) — running consolidation")
+        # Run the night as a SUBPROCESS: it's a heavy independent job, and
+        # isolating it keeps the always-on agent's argv/exceptions/memory
+        # clean (calling dream_loop.main() in-process collided with argv).
+        import subprocess
+        import sys
         try:
-            from core import dream_loop
-            dream_loop.main([])                 # the night
-            mark_night_ran(now)
-            st["ran_night"] = True
-        except SystemExit:
-            mark_night_ran(now)
-            st["ran_night"] = True
+            r = subprocess.run([sys.executable, "-m", "core.dream_loop"],
+                               cwd=str(ROOT), timeout=1200)
+            if r.returncode == 0:
+                mark_night_ran(now)
+                st["ran_night"] = True
+            else:
+                print(f"[circadian] night exited {r.returncode} — not marking")
         except Exception as e:                  # a failed night must not wedge the agent
             print(f"[circadian] night FAILED: {e}")
     return st

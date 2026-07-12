@@ -290,6 +290,18 @@
   "provenance": "elimination:elim_fc1e3b5e9ce65fbe"
  },
  {
+  "id": "atom_8b318e36b0d8",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "SaveGame UPROPERTY fields as dead metadata (used-in-cpp atom false positives)"
+  },
+  "desc": "regression (PIE): SaveGame UPROPERTY fields as dead metadata (used-in-cpp atom false positives)",
+  "provenance": "elimination:elim_8f4f3dbdf1bd7e24"
+ },
+ {
   "id": "atom_7e07a59820c3",
   "feature": "Verb_Step",
   "tier": 2,

@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**899 entries** across 8 chapters.
+**907 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -213,7 +213,7 @@
 
 ## II. Closed Doors (eliminations — proven negatives)
 
-*10 entries; showing 10.*
+*11 entries; showing 11.*
 
 ### audio_visual_sync/telemetry_accessors: NOT MCP action handlers / command dispatch as root cause `2026-07-12T16:21`
 <sub>`elim_65f84a195c149377`</sub>
@@ -305,9 +305,18 @@
 > SURVIVES (the narrowed search space): rule: capture PEAKS for hold-verbs; instantaneous 'last' samples race the release
 > evidence: simtest_9aac4a49214915ad -> fixed in simtest_2d3122d6cefb0009
 
+### System_SaveGame: NOT SaveGame UPROPERTY fields as dead metadata (used-in-cpp atom false pos `2026-07-12T22:26`
+<sub>`elim_8f4f3dbdf1bd7e24`</sub>
+
+> NOT: SaveGame UPROPERTY fields as dead metadata (used-in-cpp atom false positives)
+> observed: 12 of 13 System_SaveGame reds were UPROPERTY(SaveGame) data/BP fields in ChimeraSaveGame/InheritanceData — serialized, not .cpp-referenced by design
+> eliminates: hypothesis: SaveGame struct fields are dead metadata needing .cpp use
+> SURVIVES (the narrowed search space): rule: SaveGame-flagged UPROPERTYs are data; gen_code_reflection now skips them, so red means real
+> evidence: rep prune System_SaveGame 40->15 atoms, 13 red -> 1 real (H-34)
+
 ## III. Surprises (expectation vs reality)
 
-*262 entries; showing 40.*
+*263 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -950,7 +959,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*238 entries; showing 40.*
+*242 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1202,7 +1211,7 @@
 
 ## VI. Rep Milestones (resolution through repetition)
 
-*39 entries; showing 39.*
+*41 entries; showing 40.*
 
 ### Ground_Sand_Sound promoted to tier 1
 <sub>`promo:Ground_Sand_Sound:1`</sub>
@@ -1239,20 +1248,30 @@
 
 > shaping promotion (streak rule): streak 8 @ 100%
 
+### subsystem/Combat promoted to tier 1
+<sub>`promo:subsystem/Combat:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 97%
+
+### subsystem/Travel promoted to tier 1
+<sub>`promo:subsystem/Travel:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 97%
+
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry     17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/2
+> audio_visual_sync/report_telemetry     19 reps  100%  streak  8  battery   1 (0 pie)  tier 0/2
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access    102 reps  100%  streak  8  battery   9 (3 pie)  tier 1/1
+> audio_visual_sync/telemetry_access    114 reps  100%  streak  8  battery   9 (3 pie)  tier 1/1
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                             15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Demo_Level                             17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Game_Feel — ledger standing
 <sub>`repstat:Game_Feel`</sub>
@@ -1262,32 +1281,32 @@
 ### Ground_Sand_Sound — ledger standing
 <sub>`repstat:Ground_Sand_Sound`</sub>
 
-> Ground_Sand_Sound                     476 reps  100%  streak  8  battery  32 (0 pie)  READY
+> Ground_Sand_Sound                     540 reps  100%  streak  8  battery  32 (0 pie)  READY
 
 ### Ground_Sand_Surface — ledger standing
 <sub>`repstat:Ground_Sand_Surface`</sub>
 
-> Ground_Sand_Surface                    15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> Ground_Sand_Surface                    17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Malcolm_Envelope — ledger standing
 <sub>`repstat:Malcolm_Envelope`</sub>
 
-> Malcolm_Envelope                       40 reps  100%  streak  5  battery  18 (8 pie)  tier 0/2
+> Malcolm_Envelope                       56 reps  100%  streak  7  battery  18 (8 pie)  tier 0/2
 
 ### MCP_Pathways — ledger standing
 <sub>`repstat:MCP_Pathways`</sub>
 
-> MCP_Pathways                           15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> MCP_Pathways                           17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Sleepwalker_Beats — ledger standing
 <sub>`repstat:Sleepwalker_Beats`</sub>
 
-> Sleepwalker_Beats                      32 reps  100%  streak  8  battery   9 (7 pie)  tier 0/2
+> Sleepwalker_Beats                      36 reps  100%  streak  8  battery   9 (7 pie)  tier 0/2
 
 ### Sprint_Input/binding — ledger standing
 <sub>`repstat:Sprint_Input/binding`</sub>
 
-> Sprint_Input/binding                    6 reps   83%  streak  5  battery   1 (0 pie)  tier 0/1
+> Sprint_Input/binding                    8 reps   88%  streak  7  battery   1 (0 pie)  tier 0/1
 
 ### Sprint_Input/capture_peak — ledger standing
 <sub>`repstat:Sprint_Input/capture_peak`</sub>
@@ -1297,7 +1316,7 @@
 ### Sprint_Input/harness_parity — ledger standing
 <sub>`repstat:Sprint_Input/harness_parity`</sub>
 
-> Sprint_Input/harness_parity             6 reps  100%  streak  6  battery   2 (1 pie)  tier 0/1
+> Sprint_Input/harness_parity             8 reps  100%  streak  8  battery   2 (1 pie)  tier 0/1
 
 ### Sprint_Input/readback — ledger standing
 <sub>`repstat:Sprint_Input/readback`</sub>
@@ -1307,97 +1326,92 @@
 ### Sprint_Input/state — ledger standing
 <sub>`repstat:Sprint_Input/state`</sub>
 
-> Sprint_Input/state                      6 reps   83%  streak  5  battery   1 (0 pie)  tier 0/1
+> Sprint_Input/state                      8 reps   88%  streak  7  battery   1 (0 pie)  tier 0/1
 
 ### Sprint_Input/volume_norm — ledger standing
 <sub>`repstat:Sprint_Input/volume_norm`</sub>
 
-> Sprint_Input/volume_norm                5 reps  100%  streak  5  battery   1 (0 pie)  tier 0/1
+> Sprint_Input/volume_norm                7 reps  100%  streak  7  battery   1 (0 pie)  tier 0/1
 
 ### subsystem/AI — ledger standing
 <sub>`repstat:subsystem/AI`</sub>
 
-> subsystem/AI                          360 reps   79%  streak  0  battery  24 (0 pie)  tier 0/1
+> subsystem/AI                          408 reps   79%  streak  0  battery  24 (0 pie)  tier 0/1
 
 ### subsystem/Combat — ledger standing
 <sub>`repstat:subsystem/Combat`</sub>
 
-> subsystem/Combat                      423 reps   97%  streak  7  battery  33 (0 pie)  tier 0/1
+> subsystem/Combat                      489 reps   97%  streak  8  battery  33 (0 pie)  READY
 
 ### subsystem/Demo — ledger standing
 <sub>`repstat:subsystem/Demo`</sub>
 
-> subsystem/Demo                         15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
+> subsystem/Demo                         17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
 
 ### subsystem/Economy — ledger standing
 <sub>`repstat:subsystem/Economy`</sub>
 
-> subsystem/Economy                     280 reps   95%  streak  5  battery  26 (0 pie)  tier 0/1
+> subsystem/Economy                     332 reps   96%  streak  7  battery  26 (0 pie)  tier 0/1
 
 ### subsystem/Environment — ledger standing
 <sub>`repstat:subsystem/Environment`</sub>
 
-> subsystem/Environment                 521 reps  100%  streak  8  battery  47 (0 pie)  READY
+> subsystem/Environment                 615 reps  100%  streak  8  battery  47 (0 pie)  READY
 
 ### subsystem/Factions — ledger standing
 <sub>`repstat:subsystem/Factions`</sub>
 
-> subsystem/Factions                     15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> subsystem/Factions                     17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### subsystem/Flight — ledger standing
 <sub>`repstat:subsystem/Flight`</sub>
 
-> subsystem/Flight                      170 reps  100%  streak  8  battery  22 (0 pie)  tier 1/1
+> subsystem/Flight                      214 reps  100%  streak  8  battery  22 (0 pie)  READY
 
 ### subsystem/GameMode — ledger standing
 <sub>`repstat:subsystem/GameMode`</sub>
 
-> subsystem/GameMode                     30 reps   50%  streak  0  battery   2 (0 pie)  tier 0/1
+> subsystem/GameMode                     34 reps   50%  streak  0  battery   2 (0 pie)  tier 0/1
 
 ### subsystem/Inventory — ledger standing
 <sub>`repstat:subsystem/Inventory`</sub>
 
-> subsystem/Inventory                   105 reps  100%  streak  8  battery   7 (0 pie)  tier 1/1
+> subsystem/Inventory                   119 reps  100%  streak  8  battery   7 (0 pie)  tier 1/1
 
 ### subsystem/Materials — ledger standing
 <sub>`repstat:subsystem/Materials`</sub>
 
-> subsystem/Materials                   435 reps   90%  streak  0  battery  29 (0 pie)  tier 0/1
+> subsystem/Materials                   493 reps   90%  streak  0  battery  29 (0 pie)  tier 0/1
 
 ### subsystem/Missions — ledger standing
 <sub>`repstat:subsystem/Missions`</sub>
 
-> subsystem/Missions                     15 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
+> subsystem/Missions                     17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### subsystem/PCG — ledger standing
 <sub>`repstat:subsystem/PCG`</sub>
 
-> subsystem/PCG                         130 reps   84%  streak  5  battery  20 (0 pie)  tier 0/1
+> subsystem/PCG                         170 reps   91%  streak  7  battery  20 (0 pie)  tier 0/1
 
 ### subsystem/root — ledger standing
 <sub>`repstat:subsystem/root`</sub>
 
-> subsystem/root                        659 reps   87%  streak  0  battery  53 (0 pie)  tier 0/1
+> subsystem/root                        765 reps   88%  streak  0  battery  53 (0 pie)  tier 0/1
 
 ### subsystem/Shelter — ledger standing
 <sub>`repstat:subsystem/Shelter`</sub>
 
-> subsystem/Shelter                      45 reps   67%  streak  0  battery   3 (0 pie)  tier 0/1
+> subsystem/Shelter                      51 reps   67%  streak  0  battery   3 (0 pie)  tier 0/1
 
 ### subsystem/Ships — ledger standing
 <sub>`repstat:subsystem/Ships`</sub>
 
-> subsystem/Ships                        95 reps   85%  streak  0  battery  11 (0 pie)  tier 0/1
+> subsystem/Ships                       117 reps   89%  streak  0  battery  11 (0 pie)  tier 0/1
 
 ### subsystem/Stations — ledger standing
 <sub>`repstat:subsystem/Stations`</sub>
 
-> subsystem/Stations                    258 reps   99%  streak  8  battery  20 (0 pie)  READY
-
-### subsystem/Tests — ledger standing
-<sub>`repstat:subsystem/Tests`</sub>
-
-> subsystem/Tests                        20 reps  100%  streak  5  battery   4 (0 pie)  tier 0/1
+> subsystem/Stations                    298 reps  100%  streak  8  battery  20 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1461,6 +1475,7 @@
 - **System_Economy** — 7 entries: `professor_grade_7886af92f495ccd1`, `professor_grade_987966987f9c8be5`, `professor_grade_cbdfff41c119fe65`, `professor_grade_364a07e3116f20a6`, `professor_grade_bf25d5d3a1fc673f`, `professor_grade_c5197b91a28559eb` ...
 - **System_Factions** — 5 entries: `professor_grade_eed210f4ab52757d`, `professor_grade_490fe77b72f70388`, `professor_grade_b2bb156bf98b0f0a`, `professor_grade_2cef42bbe0482227`, `professor_grade_311a8a7ca7b93bff`
 - **System_Missions** — 6 entries: `professor_grade_2a09ab2aa52757cf`, `professor_grade_f0b8a52f650f4cf9`, `professor_grade_a43257c7bf4c0783`, `professor_grade_df839bc8e137db81`, `professor_grade_8b0cf44f4627423c`, `professor_grade_cdfa82d2982b429b`
+- **System_SaveGame** — 1 entry: `elim_8f4f3dbdf1bd7e24`
 - **System_SaveLoad** — 6 entries: `professor_grade_48116037dcbb5a91`, `professor_grade_d3df7c53cd313883`, `professor_grade_38cb65693e29e58e`, `professor_grade_ef959c286f6fb9a6`, `professor_grade_4acb446775c3c0ba`, `professor_grade_10f28412a70cf5a4`
 - **Test_Feature** — 1 entry: `professor_grade_194f6be1dc1b74ec`
 - **Tool_Shovel_Model** — 1 entry: `professor_grade_ef64717b4d520850`
@@ -1475,7 +1490,7 @@
 - **audio_visual_sync/telemetry_access** — 1 entry: `repstat:audio_visual_sync/telemetry_access`
 - **audio_visual_sync/telemetry_accessors** — 4 entries: `elim_65f84a195c149377`, `elim_71b935361cee2319`, `elim_043bb7affad30ff4`, `promo:audio_visual_sync/telemetry_accessors:1`
 - **subsystem/AI** — 1 entry: `repstat:subsystem/AI`
-- **subsystem/Combat** — 1 entry: `repstat:subsystem/Combat`
+- **subsystem/Combat** — 2 entries: `promo:subsystem/Combat:1`, `repstat:subsystem/Combat`
 - **subsystem/Demo** — 1 entry: `repstat:subsystem/Demo`
 - **subsystem/Economy** — 1 entry: `repstat:subsystem/Economy`
 - **subsystem/Environment** — 2 entries: `promo:subsystem/Environment:1`, `repstat:subsystem/Environment`
@@ -1490,4 +1505,5 @@
 - **subsystem/Ships** — 1 entry: `repstat:subsystem/Ships`
 - **subsystem/Stations** — 2 entries: `promo:subsystem/Stations:1`, `repstat:subsystem/Stations`
 - **subsystem/Tests** — 1 entry: `repstat:subsystem/Tests`
+- **subsystem/Travel** — 1 entry: `promo:subsystem/Travel:1`
 - **subsystem/root** — 1 entry: `repstat:subsystem/root`

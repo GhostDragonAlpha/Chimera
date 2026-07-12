@@ -1,11 +1,11 @@
 # The Herald — 2026-07-12
 
-**Good news:** 4 feature(s) have now earned full trust through repeated testing — Ground_Sand_Sound, subsystem/Environment, subsystem/Stations and more.
-**Watch:** 12 feature(s) failed some checks recently (Sprint_Input/binding, Sprint_Input/state, subsystem/AI); they are on the work board with evidence attached.
-**The queue:** 13 task(s) open for agents; 111 old worries await a confirm-or-refute verdict.
+**Good news:** 7 feature(s) have now earned full trust through repeated testing — Ground_Sand_Sound, subsystem/Combat, subsystem/Environment and more.
+**Watch:** 9 feature(s) failed some checks recently (Sprint_Input/binding, Sprint_Input/state, subsystem/AI); they are on the work board with evidence attached.
+**The queue:** 16 task(s) open for agents; 112 old worries await a confirm-or-refute verdict.
 **The container:** holding steady at the edge; no changes proposed.
 **Needs you today:** nothing — rest.
 
-*Last will:* The studio can now explain itself to its owner (Herald), turn worry into work (Ripener), name guilty commits (Bloodhound), measure feel (Metronome), and shake what works (fuzz).
+*Last will:* The meaning system (sacrifice log) is now wired. Remaining reds need per-field judgment: 15 UPROPERTY-not-in-cpp (dead vs BP-data) + 8 H-34 (real vs BP-spawned). Do NOT sweep them blindly — the used-i
 
 *(Generated nightly. The machinery underneath: docs/HISTORY_BOOK.md is searchable; preflight has the dials.)*

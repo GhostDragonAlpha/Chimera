@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-12T22:22:07Z
+consolidated: 2026-07-12T22:39:34Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
@@ -20,12 +20,12 @@ Empty — every system-verified feature has been human-observed.
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 35 batteries, 678 atoms, 653 reps this pass (36 failing), 24 PIE atoms exported
-[rep] PROMOTED: audio_visual_sync/telemetry_accessors: tier 0 -> 1 (behaves)
-[rep] PROMOTED: subsystem/Inventory: tier 0 -> 1 (behaves)
-[rep] failing: System_SaveGame (13 atoms red)
+[rep] 35 batteries, 654 atoms, 628 reps this pass (23 failing), 25 PIE atoms exported
+[rep] PROMOTED: subsystem/Combat: tier 0 -> 1 (behaves)
+[rep] PROMOTED: subsystem/Travel: tier 0 -> 1 (behaves)
 [rep] failing: subsystem_root (6 atoms red)
 [rep] failing: subsystem_AI (5 atoms red)
+[rep] failing: subsystem_Materials (3 atoms red)
 ```
 
 ## Tonight's distillation
@@ -79,16 +79,16 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 2097  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 2105  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 
 ## Research Mandate Compliance (Phase 3 Pipeline Integration)
 
-- **Research summaries recorded:** 4
+- **Research summaries recorded:** 5
 - **Documentation reviews completed:** 1
 - **Pathway attempts logged:** 3
-- **Tier distribution:** Tier 1=0, Tier 2=3, Tier 3=1
+- **Tier distribution:** Tier 1=0, Tier 2=4, Tier 3=1
 - **Traps avoided (PathwayAttempt trap_hit + workaround):** 0
 
 ### Tier 3 Compliance

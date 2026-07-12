@@ -52620,6 +52620,69 @@
       "inheritance": "The meaning system (sacrifice log) is now wired. Remaining reds need per-field judgment: 15 UPROPERTY-not-in-cpp (dead vs BP-data) + 8 H-34 (real vs BP-spawned). Do NOT sweep them blindly \u2014 the used-in-cpp atom is noisy in a data/BP-heavy codebase.",
       "recorded_by": "postflight.py",
       "run_id": "run_af9da6973a4c"
+    },
+    {
+      "id": "research_summary_52a13d16a4017e42",
+      "type": "ResearchSummary",
+      "timestamp": "2026-07-12T22:39:13.382658",
+      "task_name": "procedural dust-accumulation mask material creation using noise functions, vertex normal-b",
+      "tier": 2,
+      "sources_count": 1,
+      "domains_visited": 1,
+      "confidence_rating": "high",
+      "source_table": [
+        {
+          "type": "primary_docs",
+          "url_or_path": "CHIMERA_VISION.py",
+          "confidence": "high"
+        }
+      ],
+      "parameter_table": {},
+      "discrepancies_resolved": [
+        "none"
+      ],
+      "failure_research": [],
+      "new_discoveries_recorded": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_summary/procedural dust-accumulation mask material creation using no",
+      "error_category": "none",
+      "fix_description": "Research summary recorded: 'procedural dust-accumulation mask material creation using noise functions, vertex normal-b' (Tier 2, 1 sources, confidence=high)",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_c37281878a66"
+    },
+    {
+      "id": "phase_b929412fa45a546d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T22:39:45.443337",
+      "phase": "rep_promotion:subsystem/Combat",
+      "result": "tier 0 -> 1 (behaves) after 489 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Combat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Combat' complete: tier 0 -> 1 (behaves) after 489 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_908a9017397e"
+    },
+    {
+      "id": "phase_d68cb352f684741f",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T22:39:45.878523",
+      "phase": "rep_promotion:subsystem/Travel",
+      "result": "tier 0 -> 1 (behaves) after 469 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Travel",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Travel' complete: tier 0 -> 1 (behaves) after 469 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_908a9017397e"
     }
   ],
   "edges": [
