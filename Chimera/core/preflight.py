@@ -135,6 +135,15 @@ def main():
     except Exception as e:
         print(f"\n[0] Circadian: unavailable ({e})")
 
+    # 0.7 Helm — the hand on the wheel: seed (CHIMERA_VISION.py) - state = the
+    # gap; the helm turns it into this cycle's heading. The agent should work
+    # the recommended focus unless it has a sharper reason.
+    try:
+        from core.helm import preflight_line as _helm_line
+        print("\n" + _helm_line())
+    except Exception as e:
+        print(f"\n[0.7] Helm: unavailable ({e})")
+
     # 1. Graph health
     counts = {}
     for n in nodes:
