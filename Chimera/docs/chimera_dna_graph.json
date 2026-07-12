@@ -50369,6 +50369,48 @@
       "links": [],
       "recorded_by": "-",
       "run_id": "run_49916e1d97cc"
+    },
+    {
+      "id": "phase_07e3b4c4d5eb6d64",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:24:05.794420",
+      "phase": "Rep engine: resolution through repetition (human vision 2026-07-12)",
+      "result": "core/rep_engine.py live: 29 batteries, 475 atoms, 466 verdicts/pass; 17/17 + 10/10 + 11/11 suites green; preflight [3.9] renders; first pass mechanically confirmed tb-0001 root cause (SandSoundComponent attach atom RED, 3/5 accessors ABSENT) and DSL drift (7% pass)",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Rep engine: resolution through repetition (human vision 2026-07-12)",
+      "error_category": "none",
+      "fix_description": "Phase 'Rep engine: resolution through repetition (human vision 2026-07-12)' complete: core/rep_engine.py live: 29 batteries, 475 atoms, 466 verdicts/pass; 17/17 + 10/10 + 11/11 suites green; preflight [3.9] renders; first pass mechanically confirmed tb-0001 root cause (SandSoundCompone",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "System_DSL_Fidelity's 145 red atoms are part real drift, part token-regex noise \u2014 grading anything on that battery before a triage pass will punish innocents",
+        "The rep gate at 200 reps assumes daily tend runs; if the nightly scheduler stalls, every feature stalls at the gate with no one noticing"
+      ],
+      "inheritance": "Resolution = reps x constraints: the container walls are negative constraints, repetition fills the container, promotion only on streaks. The engine found in milliseconds what four dream-loop nights found by hand \u2014 trust the red atoms, fix generators not symptoms.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_581832cce9cd"
+    },
+    {
+      "id": "elim_043bb7affad30ff4",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:24:06.097642",
+      "feature": "audio_visual_sync/telemetry_accessors",
+      "boundary": "beat schema or MCP dispatch as root cause",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "H-31/H-32 lineage + rep atom evidence 2026-07-12",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_audio_visual_sync/telemetry_accessors",
+      "template_file": "elimination/audio_visual_sync/telemetry_accessors",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for audio_visual_sync/telemetry_accessors: beat schema or MCP dispatch as root cause",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_581832cce9cd"
     }
   ],
   "edges": [
