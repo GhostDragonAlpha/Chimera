@@ -1,3 +1,23 @@
+# Rehearsal decision 2026-07-12 22:10Z — next move: audio_visual_sync/report_telemetry
+
+Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: failure_mentions:2). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **audio_visual_sync/report_telemetry** — needs_refinement (status=needs_refinement). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','audio_visual_sync/report_telemetry')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-12 21:42Z — next move: audio_visual_sync/report_telemetry
+
+Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: failure_mentions:2). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **audio_visual_sync/report_telemetry** — needs_refinement (status=needs_refinement). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','audio_visual_sync/report_telemetry')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Session 2026-07-12i — THE CONTAINER (core/malcolm.py): chaos bounded, emergence reserved
 
 **Human vision:** "a container that contains the game... shape determined by metric

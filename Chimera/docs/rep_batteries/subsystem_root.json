@@ -112,6 +112,20 @@
   "provenance": "reflection:UPROPERTY:SpecBindingsActor.h"
  },
  {
+  "id": "atom_209dd8717fb7",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbSprinting\\b"
+  },
+  "desc": "UPROPERTY bSprinting (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
   "id": "atom_243adcdbcc2c",
   "feature": "subsystem/root",
   "tier": 1,
@@ -431,6 +445,20 @@
    "regex": "\\bFootprintSizeX\\b"
   },
   "desc": "UPROPERTY FootprintSizeX (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
+  "id": "atom_a26c588213b6",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSprintMultiplier\\b"
+  },
+  "desc": "UPROPERTY SprintMultiplier (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {

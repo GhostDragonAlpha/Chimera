@@ -391,3 +391,14 @@ Wait, looking at the
 - evidence: observation_b7a437ed43c79e13
 - sample: SandSoundComponent either not attached to BP_Astronaut_Character or not populating footstep counters at runtime; verify component attachment and initialization 
 - draft_rule: Verify required components and assets are spawned and registered.
+
+<!-- distilled 2026-07-12T22:19:43Z -->
+## H-35: elimination_audio_visual_sync/telemetry_accessors
+- status: promoted (auto 2026-07-12)
+- kind: failure  |  count: 3  |  last_seen: 2026-07-12T16:24:06
+- proposed_organ: claude_md
+- evidence: elim_65f84a195c149377, elim_71b935361cee2319, elim_043bb7affad30ff4
+- sample: Eliminated for audio_visual_sync/telemetry_accessors: MCP action handlers / command dispatch as root cause
+- sample: Eliminated for audio_visual_sync/telemetry_accessors: beat expect schema as root cause
+- sample: Eliminated for audio_visual_sync/telemetry_accessors: beat schema or MCP dispatch as root cause
+- draft_rule: Investigate elimination_audio_visual_sync telemetry_accessors; verify test harne

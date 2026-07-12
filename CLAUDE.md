@@ -43,6 +43,7 @@
 - **[H-32, auto-promoted 2026-07-11]** When telemetry queries return hardcoded defaults (count=0, latency=999), the beat's expectations fail not because of beat schema but because the backend component isn't populating data — verify SandSoundComponent attachment and footstep event tracking at runtime before debugging beat expectations.
 - **[H-33, auto-promoted 2026-07-11]** Investigate audio_visual_sync report_telemetry; verify test harness and beat reg
 - **[H-34, auto-promoted 2026-07-12]** Verify required components and assets are spawned and registered.
+- **[H-35, auto-promoted 2026-07-12]** Investigate elimination_audio_visual_sync telemetry_accessors; verify test harne
 
 ## Architecture Overview
 
