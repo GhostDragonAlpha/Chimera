@@ -258,7 +258,8 @@ def load_battery(feature: str) -> list:
     if not p.exists():
         return []
     try:
-        return json.loads(p.read_text(encoding="utf-8"))
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return data if isinstance(data, list) else []   # non-battery json (drift ledger etc.)
     except Exception:
         return []
 
@@ -281,10 +282,20 @@ def merge_battery(feature: str, new_atoms: list) -> list:
 
 
 def all_battery_features() -> list:
+    """Battery files only — a battery is a json LIST of atoms; sibling json
+    (pie manifest, drift ledger) is data the Book reads, not a battery."""
     if not BATTERY_DIR.exists():
         return []
-    return sorted(p.stem for p in BATTERY_DIR.glob("*.json")
-                  if p.name != PIE_MANIFEST.name)
+    out = []
+    for p in sorted(BATTERY_DIR.glob("*.json")):
+        if p.name == PIE_MANIFEST.name:
+            continue
+        try:
+            if isinstance(json.loads(p.read_text(encoding="utf-8")), list):
+                out.append(p.stem)
+        except Exception:
+            continue
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -439,19 +450,37 @@ def gen_eliminations(cache: _FileCache) -> list:
 
 _DSL_KEY_RE = re.compile(r"^\s*([A-Za-z_][A-Za-z0-9_]{7,})\s*[:=]", re.MULTILINE)
 
+# Tokens the PIPELINE consumes (uproject/Build.cs/config), never expected to
+# surface as C++ identifiers — probing generated code for them is a category
+# error (triage 2026-07-12: the config class).
+DSL_CONFIG_TOKENS = {"engine_version", "target_platforms", "network_model",
+                     "module_dependencies"}
 
-def gen_dsl_fidelity(cache: _FileCache, cap: int = 60) -> list:
+
+def _camel(token: str) -> str:
+    return "".join(w.capitalize() for w in token.split("_"))
+
+
+def gen_dsl_fidelity(cache: _FileCache, cap: int = 160) -> list:
     """E: declared spec tokens must surface in generated code — the DSL is
-    the top of the top-down flow; silence in the C++ is drift."""
+    the top of the top-down flow; silence in the C++ is drift.
+    Probe v2 (triage 2026-07-12): match snake OR CamelCase (the generator
+    emits identifiers in CamelCase — 13 false reds came from probing the
+    literal snake token), scan all of Source/ (Build.cs included), and skip
+    the config-token class entirely."""
     atoms = []
     for spec_file in cache.paths("tests/dsl_grammar", "*.chimera"):
         keys = sorted(set(_DSL_KEY_RE.findall(cache.text(spec_file))))[:cap]
         for key in keys:
+            if key in DSL_CONFIG_TOKENS:
+                continue
             atoms.append(make_atom(
                 "System_DSL_Fidelity", 0, "tree_contains",
-                {"root": SOURCE_TREE, "glob": "*.*", "regex": rf"{re.escape(key)}"},
-                f"DSL token '{key}' ({spec_file.name}) surfaces in generated code",
-                f"dsl:{spec_file.name}"))
+                {"root": "Source", "glob": "*.*",
+                 "regex": rf"({re.escape(key)}|{re.escape(_camel(key))})"},
+                f"DSL token '{key}' ({spec_file.name}) surfaces in Source "
+                f"(snake or CamelCase)",
+                f"dsl2:{spec_file.name}"))
     return atoms
 
 
@@ -631,6 +660,25 @@ def status_lines(limit: int = 8) -> list:
     return lines
 
 
+def prune_to_current(feature: str, cache: _FileCache = None) -> tuple:
+    """Deliberate battery surgery: drop atoms whose ids no longer appear in
+    the CURRENT generator output for this feature (stale probe specs after a
+    fidelity upgrade). Prints what it removes — pruning is loud by design;
+    the ledger keeps the old atoms' rep history untouched (archive-never-
+    delete applies to evidence, not to obsolete probes)."""
+    cache = cache or _FileCache(ROOT)
+    current_ids = set()
+    for gen in GENERATORS:
+        for atom in gen(cache):
+            if _safe_name(atom["feature"]) == _safe_name(feature):
+                current_ids.add(atom["id"])
+    existing = load_battery(feature)
+    keep = [a for a in existing if a["id"] in current_ids]
+    dropped = [a for a in existing if a["id"] not in current_ids]
+    save_battery(feature, keep)
+    return keep, dropped
+
+
 def export_pie() -> int:
     """Manifest of PIE-bound atoms for the sleepwalker's nightly batch."""
     atoms = []
@@ -675,6 +723,9 @@ def main() -> int:
     p_status.add_argument("--feature")
     p_gate = sub.add_parser("gate")
     p_gate.add_argument("--feature", required=True)
+    p_prune = sub.add_parser("prune", help="drop atoms not in the current generator "
+                                           "output for a feature (loud, deliberate)")
+    p_prune.add_argument("--feature", required=True)
     sub.add_parser("tend")
     sub.add_parser("export-pie")
     args = parser.parse_args()
@@ -699,6 +750,13 @@ def main() -> int:
         ok, reason = rep_gate(args.feature)
         print(f"{'ELIGIBLE' if ok else 'NOT ELIGIBLE'}: {reason}")
         return 0 if ok else 1
+    elif args.cmd == "prune":
+        keep, dropped = prune_to_current(args.feature)
+        print(f"battery {args.feature}: kept {len(keep)}, pruned {len(dropped)}")
+        for a in dropped[:20]:
+            print(f"  pruned {a['id']}  {a['desc'][:70]}")
+        if len(dropped) > 20:
+            print(f"  ... and {len(dropped) - 20} more")
     elif args.cmd == "tend":
         print(tend())
     elif args.cmd == "export-pie":

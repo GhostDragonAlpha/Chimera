@@ -44,8 +44,20 @@ process." Inversion/elimination defines the container walls; repetition fills th
    UBT-built or beat-verified (speed-run contract) — first UBT build + sleepwalker
    audio_visual_sync rerun is the next capable session's opening move; the rep gate
    holds collapse until 200 reps + 8-run streak either way.
-2. Triage System_DSL_Fidelity reds (145): real drift vs token noise; prune noise atoms
-   deliberately (battery edits are manual by design).
+2. ~~Triage System_DSL_Fidelity reds~~ **DONE same session**: of 145 v1 reds only 13
+   were probe noise (snake vs CamelCase) + 1 config-class — **131 were TRUE DRIFT**.
+   Probe v2 (camel-aware, Source-wide, all .chimera files) measures **19% spec
+   coverage (33/169)** — the generator implements a fifth of its own spec. Ledger:
+   docs/rep_batteries/dsl_drift.json (drift by spec file: deep_space_trader 52,
+   quantum_travel 16, planet_generation 16, flight_components 15...). Recorded as
+   surprise_5d2e7f3b + elim_5db874e7. rep_engine gained `prune` (loud battery surgery).
+2b. NEW: **THE HISTORY BOOK** (core/history_book.py, 11/11 tests) — 985 entries /
+   7 chapters (constitution, closed doors, surprises, verdicts, wills, rep milestones,
+   drift ledger), FTS5-searchable (`python -m core.history_book search --query X`),
+   docs/HISTORY_BOOK.md rewritten nightly by dream_loop; preflight [3.95].
+2c. FOLLOW-UP for a capable session: feed the 136-token drift backlog into
+   core/game_code_generator.py system by system (biggest first: deep_space_trader
+   spec keys) — every kept promise flips a red atom green and raises the 19%.
 3. Seed not_scope on tb-0001/tb-0002 (they file-conflict by design — each is the
    other's hard negative).
 

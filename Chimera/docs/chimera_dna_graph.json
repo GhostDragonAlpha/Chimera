@@ -50431,6 +50431,82 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_2efcd7a6ac0c"
+    },
+    {
+      "id": "phase_531fb6fad420ef8c",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:47:43.330133",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_546da7886802"
+    },
+    {
+      "id": "surprise_5d2e7f3b87bedb0e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T16:48:44.102830",
+      "context": "Triaging 145 red System_DSL_Fidelity atoms, expecting mostly probe/regex noise",
+      "expectation": "most reds are token-matching artifacts (snake vs CamelCase)",
+      "reality": "only 13/145 were camel-noise + 1 config-class; 131 tokens have ZERO trace in Source/Config/uproject in any casing \u2014 the generator implements ~19% of the declared spec surface (33/169 project-wide, probe v2)",
+      "lesson_hint": "the spec is aspirational; treat DSL coverage % as a first-class fill-level metric",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'most reds are token-matching artifacts (snake vs CamelCase)' but 'only 13/145 were camel-noise + 1 config-class; 131 tokens have ZERO trace in Sou'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ff8e7a671d1d"
+    },
+    {
+      "id": "elim_5db874e721a6c962",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:48:44.441321",
+      "feature": "System_DSL_Fidelity",
+      "boundary": "probe token-noise as the dominant cause of DSL battery reds",
+      "observed": "v1 probe (literal snake, ProceduralGenerated-only) produced 13 false reds of 145; camel-aware Source-wide v2 probe leaves 136 reds standing",
+      "eliminates": [
+        "hypothesis: DSL battery reds are mostly regex artifacts"
+      ],
+      "survives": [
+        "fact: generator coverage of declared spec is ~19% \u2014 136 unkept promises, ledgered in docs/rep_batteries/dsl_drift.json"
+      ],
+      "evidence_ref": "rep ledger System_DSL_Fidelity 962 reps + triage 2026-07-12",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_System_DSL_Fidelity",
+      "template_file": "elimination/System_DSL_Fidelity",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for System_DSL_Fidelity: probe token-noise as the dominant cause of DSL battery reds",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_03e54242c130"
+    },
+    {
+      "id": "phase_4fcf9803344ee7cc",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:51:42.887071",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_ae0e47dfbbfb"
     }
   ],
   "edges": [

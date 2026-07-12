@@ -293,6 +293,18 @@ def main():
     except Exception as e:
         print(f"\n[3.9] Rep ledger: unavailable ({e})")
 
+    # 3.95. The History Book — everything learned, searchable.
+    try:
+        from core.history_book import stats as _book_stats, CHAPTERS as _book_chapters
+        counts = _book_stats()
+        total = sum(counts.values())
+        print(f"\n[3.95] History Book: {total} entries / {len(counts)} chapters "
+              f"(docs/HISTORY_BOOK.md, rewritten nightly)")
+        print("    search it: python -m core.history_book search --query <anything> "
+              "[--chapter closed-doors]")
+    except Exception as e:
+        print(f"\n[3.95] History Book: unavailable ({e})")
+
     # 4. Pending technical_research
     pending = [n for n in nodes
                if n.get("feature_type") == "technical_research"

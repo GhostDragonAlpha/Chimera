@@ -169,6 +169,14 @@ def main():
         rep_out = f"[rep] tend FAILED: {ex}"
         print(rep_out)
 
+    # THE HISTORY BOOK (2026-07-12): what good is learning if we can't write
+    # it down? Rewrite the book + its searchable index from tonight's state.
+    try:
+        from core import history_book
+        print(history_book.write())
+    except Exception as ex:
+        print(f"[book] write FAILED: {ex}")
+
     # Delegated Gardener (amendment 2026-07-07): auto-rule the pending queue.
     # Human keeps veto-after: edit any status to `vetoed` and the next tend demotes it.
     tend_out = ""

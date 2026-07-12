@@ -90,7 +90,8 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `core/curriculum.py` + `docs/curriculum/curriculum.json` | K→PhD education a FEATURE graduates through (54 checkpoints) |
 | `core/faculty.py` | The curriculum writes its own exams from the studio's scars (propose→gate→promote) |
 | `core/fractal_spiral.py` | The whole structure as a golden-angle DNA spiral rooted at the player |
-| `core/rep_engine.py` | Resolution through repetition: constraint-atom batteries (docs/rep_batteries/), rep ledger (docs/world/reps.db), shaping tiers, collapse rep-gate (`tend`/`status`/`gate`) |
+| `core/rep_engine.py` | Resolution through repetition: constraint-atom batteries (docs/rep_batteries/), rep ledger (docs/world/reps.db), shaping tiers, collapse rep-gate (`tend`/`status`/`gate`/`prune`) |
+| `core/history_book.py` + `docs/HISTORY_BOOK.md` | THE BOOK: everything learned, 7 chapters (constitution/eliminations/surprises/verdicts/wills/rep-milestones/drift), FTS-searchable: `python -m core.history_book search --query X` — rewritten nightly by dream_loop |
 | `core/world_store.py` | SQLite world-model substrate (millions of nodes, FTS + R-tree; sub-ms search) |
 | `core/dna_sqlite_backend.py` | DNA graph on world_store behind the load/save seam (retires JSON+graphify) |
 | `docs/GAUNTLET.md` | Spec for the gauntlet (agents) + curriculum (features) |
