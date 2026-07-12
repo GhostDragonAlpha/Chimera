@@ -208,7 +208,8 @@ def gate_lm_available() -> bool:
                 "gate_lm_available",
                 f"LM Studio not ready: {msg}",
                 "blocker",
-                "Ensure LM Studio is running with qwen3.6-35b-a3b-mtp@iq2_m loaded."
+                "Ensure LM Studio is running with qwen-agentworld-35b-a3b-nvfp4 loaded "
+                "(or set CHIMERA_LM_MODEL to whatever is loaded)."
             )
         return True
     except GateViolation:

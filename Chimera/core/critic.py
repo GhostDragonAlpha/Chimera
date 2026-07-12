@@ -57,7 +57,10 @@ except ImportError:
 CHIMERA_ROOT = Path(__file__).parent.parent
 
 LM_STUDIO_URL = "http://localhost:1234/v1/chat/completions"
-LM_STUDIO_MODEL = "qwen3.6-35b-a3b-mtp@iq2_m"
+try:
+    from core.lm_gateway import LM_MODEL as LM_STUDIO_MODEL   # single source of truth
+except Exception:
+    LM_STUDIO_MODEL = "qwen-agentworld-35b-a3b-nvfp4"
 
 DISCLAIMER = CRITIC_ADVISORY_DISCLAIMER
 

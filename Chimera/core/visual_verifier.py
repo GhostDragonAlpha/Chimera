@@ -6,7 +6,10 @@ import urllib.parse
 from pathlib import Path
 
 # LM Studio configuration — align with Python/config.py
-LM_STUDIO_MODEL = "qwen3.6-35b-a3b-mtp@iq2_m"
+try:
+    from core.lm_gateway import LM_MODEL as LM_STUDIO_MODEL   # single source of truth
+except Exception:
+    LM_STUDIO_MODEL = "qwen-agentworld-35b-a3b-nvfp4"
 LM_STUDIO_BASE_URL = "http://192.168.3.169:1234"
 
 # Graphify interface imports

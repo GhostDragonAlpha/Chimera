@@ -210,7 +210,7 @@ def _lm_generate(feature: str, seed_name: str, directive: str) -> dict:
     # H-3 lesson applied: /no_think suppresses qwen's reasoning phase, the budget
     # is generous, and BOTH content and reasoning_content are schema-checked.
     payload = {
-        "model": HARNESS_CONFIG.get("lm_studio_model", "qwen3.6-35b-a3b-mtp@iq2_m"),
+        "model": HARNESS_CONFIG.get("lm_studio_model", "qwen-agentworld-35b-a3b-nvfp4"),
         "messages": [
             {
                 "role": "user",

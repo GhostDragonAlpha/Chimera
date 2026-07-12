@@ -125,7 +125,7 @@ Evidence layers (in order of authority):
 | Engine state hard facts | MCP queries: read-backs, bounds, transforms, actor lists | Deterministic; the workhorse |
 | Telemetry | `python -m core.telemetry_probe --soak 30` | crash-free log, fps vs target, growth — **measure FOREGROUNDED** (background throttle freezes fps AND all Niagara/anim simulation) |
 | MCP screenshot | `control_editor screenshot mode=editor_viewport` | Never desktop captures |
-| LM text/vision (qwen3.6) | tertiary evidence only, when explicitly requested | `gate_lm_available` applies only to explicitly-requested vision layers |
+| LM text/vision (qwen-agentworld-35b-a3b-nvfp4) | tertiary evidence only, when explicitly requested | model id centralized in `core.lm_gateway.LM_MODEL` (env `CHIMERA_LM_MODEL`); `gate_lm_available` applies only to explicitly-requested vision layers |
 | **Automated observation** | `graphify_record observe --derived-from <simtest_id>` | **The true collapse** — `verified` is the system's measurement; features finish under automated sleepwalker/telemetry evidence |
 
 ## Pipeline Commands
@@ -197,7 +197,7 @@ Key tools:
 | `gate_no_stale_trees` | Only Chimera/ under Source/ | BLOCKER |
 | `gate_build_succeeded` | UBT must return 0 | BLOCKER |
 | `gate_playtest_no_failures` | Zero test failures before Stage 7 | BLOCKER |
-| `gate_lm_available` | qwen3.6 must be loaded | BLOCKER |
+| `gate_lm_available` | LM Studio reachable (qwen-agentworld-35b-a3b-nvfp4) | BLOCKER |
 | `stage_7_visual` | All 4 scene verification layers must pass | BLOCKER |
 
 ### Exit code contract

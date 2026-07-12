@@ -36,6 +36,12 @@ QUEUE_DIR = Path(__file__).resolve().parents[1] / "docs" / "world" / "lm_queue"
 COUNTER = QUEUE_DIR / ".counter"
 LOCK_PATH = QUEUE_DIR / ".lock"
 
+# The single source of truth for the LM Studio model id — set once, read
+# everywhere (critic/solver/spiral_forks/ralph/visual_verifier), so a model
+# swap is one env var, not a scavenger hunt through hardcoded strings. Verified
+# against LM Studio's /v1/models 2026-07-12.
+LM_MODEL = os.environ.get("CHIMERA_LM_MODEL", "qwen-agentworld-35b-a3b-nvfp4")
+
 MAX_CONCURRENT = max(1, int(os.environ.get("CHIMERA_LM_CONCURRENCY", "1")))
 STALE_TTL = 25.0            # a ticket unheartbeated this long = dead holder
 HEARTBEAT_S = 8.0
