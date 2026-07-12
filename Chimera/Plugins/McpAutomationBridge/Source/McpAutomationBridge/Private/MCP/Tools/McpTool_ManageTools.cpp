@@ -15,7 +15,9 @@ public:
 	{
 		return TEXT("Dynamic MCP tool management. Enable/disable tools and categories at runtime. "
 			"Actions: list_tools, list_categories, enable_tools, disable_tools, "
-			"enable_category, disable_category, get_status, reset.");
+			"enable_category, disable_category, get_status, reset, "
+			"ClearFootstepSyncTelemetry, GetFootstepSyncEventCount, GetAverageFootstepSyncLatencyMs, "
+			"GetMaxFootstepSyncLatencyMs, GetLastFootstepVolume, GetMaxFootstepVolume.");
 	}
 
 	FString GetCategory() const override { return TEXT("core"); }
@@ -31,10 +33,22 @@ public:
 				TEXT("enable_category"),
 				TEXT("disable_category"),
 				TEXT("get_status"),
-				TEXT("reset")
+				TEXT("reset"),
+				TEXT("ClearFootstepSyncTelemetry"),
+				TEXT("GetFootstepSyncEventCount"),
+				TEXT("GetAverageFootstepSyncLatencyMs"),
+				TEXT("GetMaxFootstepSyncLatencyMs"),
+				TEXT("GetLastFootstepVolume"),
+				TEXT("GetMaxFootstepVolume")
 			}, TEXT("list_tools: show all tools with status. list_categories: show categories. "
 				"enable/disable_tools: toggle specific tools. enable/disable_category: toggle category. "
-				"get_status: current state. reset: restore defaults."))
+				"get_status: current state. reset: restore defaults. "
+				"ClearFootstepSyncTelemetry: clear footstep sync telemetry. "
+				"GetFootstepSyncEventCount: get footstep count. "
+				"GetAverageFootstepSyncLatencyMs: get average sync latency. "
+				"GetMaxFootstepSyncLatencyMs: get maximum sync latency. "
+				"GetLastFootstepVolume: get last footstep volume. "
+				"GetMaxFootstepVolume: get maximum footstep volume."))
 			.Array(TEXT("tools"), TEXT("Tool names to enable/disable"))
 			.String(TEXT("category"), TEXT("Category name to enable/disable (core, world, gameplay, utility, all)"))
 			.Required({TEXT("action")})

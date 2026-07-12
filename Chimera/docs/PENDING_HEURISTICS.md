@@ -237,7 +237,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-08T19:41:42Z -->
 ## H-21: human_rejection: Verb_Shovel
-- status: pending
+- status: promoted (auto 2026-07-11)
 - kind: human_rejection  |  count: 4  |  last_seen: 2026-07-08T15:37:57
 - proposed_organ: claude_md
 - evidence: observation_45b8b52d04bb680f, observation_bb1ac7c1c90f2343, observation_c1af4475a658d6b3, observation_d30ab5686b763ed3
@@ -248,7 +248,7 @@ Wait, looking at the
 - agent_note: drafted 2026-07-11 from observation_bb1ac7c1c90f2343 (static prop, numeric metadata, zero digging logic; beat only walked pad proximity). Distinct from H-14: even with input wired there is no function to call. APPROVE -> claude_md.
 
 ## H-22: human_rejection: Verb_PickUp
-- status: pending
+- status: promoted (auto 2026-07-11)
 - kind: human_rejection  |  count: 4  |  last_seen: 2026-07-08T15:38:23
 - proposed_organ: claude_md
 - evidence: observation_e9e42a55deceea63, observation_bbd3824598c5d283, observation_894b90c0c982fb7e, observation_ed0254872e5fb7b9
@@ -260,7 +260,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-08T23:20:13Z -->
 ## H-23: human_rejection: Verb_Drop
-- status: pending
+- status: vetoed-auto (tombstone 2026-07-11 — subsumed)
 - kind: human_rejection  |  count: 4  |  last_seen: 2026-07-08T15:38:32
 - proposed_organ: claude_md
 - evidence: observation_22aff4c35c846157, observation_837c826fac9186ed, observation_2d845fd5545f3279, observation_6bea305cf7f95767
@@ -270,7 +270,7 @@ Wait, looking at the
 - draft_rule: (subsumed by H-22 — same never-wired gap: ADropActor physics is complete but no input path and nothing in inventory until PickUp lands; input-wiring lesson already covered by H-14)
 
 ## H-24: human_rejection: Ground_Rock_Surface
-- status: pending
+- status: promoted (auto 2026-07-11)
 - kind: human_rejection  |  count: 1  |  last_seen: 2026-07-08T04:18:59
 - proposed_organ: claude_md
 - evidence: observation_cf32cafa76fd3b40
@@ -280,7 +280,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-08T23:31:30Z -->
 ## H-25: sim_rejection: verb_interactions/verb_shovel_rock_surface_location
-- status: pending
+- status: promoted (auto 2026-07-11)
 - kind: sim_rejection  |  count: 13  |  last_seen: 2026-07-08T23:31:23
 - proposed_organ: claude_md
 - evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_c18e964f43800746, simtest_fadc939050ee23a7, simtest_efc1292c57ce8798, simtest_e9854be8cf3d0d83, simtest_33f22bb0dbe1ec5f, simtest_4c757e3acd6ad033
@@ -292,7 +292,7 @@ Wait, looking at the
 - agent_note: drafted 2026-07-11; reconciles the H-17/H-18 conflict flag: H-17 covers unregistered ACTIONS at dispatch, this covers runtime drift between position expects (regolith_yard already carries the fix in its provenance note). H-26/H-27 are the same root cause and are subsumed here. APPROVE -> claude_md.
 
 ## H-26: sim_rejection: verb_interactions/verb_shovel_sand_surface_location
-- status: pending
+- status: vetoed-auto (tombstone 2026-07-11 — subsumed)
 - kind: sim_rejection  |  count: 13  |  last_seen: 2026-07-08T23:31:23
 - proposed_organ: claude_md
 - evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_c18e964f43800746, simtest_fadc939050ee23a7, simtest_efc1292c57ce8798, simtest_e9854be8cf3d0d83, simtest_33f22bb0dbe1ec5f, simtest_4c757e3acd6ad033
@@ -304,7 +304,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-08T23:36:25Z -->
 ## H-27: sim_rejection: verb_interactions/verb_shovel_metal_surface_location
-- status: pending
+- status: vetoed-auto (tombstone 2026-07-11 — subsumed)
 - kind: sim_rejection  |  count: 13  |  last_seen: 2026-07-08T23:34:54
 - proposed_organ: claude_md
 - evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_fadc939050ee23a7, simtest_efc1292c57ce8798, simtest_e9854be8cf3d0d83, simtest_33f22bb0dbe1ec5f, simtest_4c757e3acd6ad033, simtest_04c6edf075c50145
@@ -315,7 +315,7 @@ Wait, looking at the
 - draft_rule: (subsumed by H-25 — same accumulated-drift root cause, metal-pad facet)
 
 ## H-28: sim_rejection: regolith_yard/jump_probe
-- status: pending
+- status: promoted (auto 2026-07-11)
 - kind: sim_rejection  |  count: 8  |  last_seen: 2026-07-08T20:26:54
 - proposed_organ: claude_md
 - evidence: simtest_6a0be0d290cf9c59, simtest_d6e2cb58b97175ad, simtest_613400f2fcc63327, simtest_9cd9a1ac25867a73, simtest_b9c246f4cef92293, simtest_1c77ee388da8bbd4, simtest_96d43b91bd6167e2, simtest_8d3a74728559a85a
@@ -327,7 +327,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-08T23:45:34Z -->
 ## H-29: sim_rejection: regolith_yard/walk_rock_to_sand_basin
-- status: pending
+- status: promoted (auto 2026-07-11)
 - kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-08T04:13:49
 - proposed_organ: claude_md
 - evidence: simtest_d6e2cb58b97175ad, simtest_613400f2fcc63327, simtest_9cd9a1ac25867a73, simtest_b9c246f4cef92293
@@ -338,7 +338,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-09T07:15:01Z -->
 ## H-30: sim_rejection: verb_interactions/verb_look_location
-- status: pending
+- status: promoted (auto 2026-07-11)
 - kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-09T06:38:38
 - proposed_organ: claude_md
 - evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_f276468c8122d640, simtest_f06ba5fb30ea6ffc
@@ -348,3 +348,37 @@ Wait, looking at the
 - possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); H-17; H-18  (Gardener: reconcile)
 - draft_rule: Expects are schema-bound like actions — unknown expects (screenshot_taken, unreadable controller properties) fail beats at runtime; validate the expect vocabulary at dispatch.
 - agent_note: drafted 2026-07-11; reconciles the H-17/H-18 conflict flag: H-17's promoted rule covers ACTIONS only, this extends the dispatch-time validation lesson to EXPECTS (pawn_class=DefaultPawn samples are the fixed rig era, not the live lesson). APPROVE -> claude_md.
+
+<!-- distilled 2026-07-11T22:27:44Z -->
+## H-31: sim_rejection: audio_visual_sync/spawn_and_verify_audio_system
+- status: promoted (auto 2026-07-11)
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-11T19:09:25
+- proposed_organ: claude_md
+- evidence: simtest_dbe50ff88351edb2, simtest_f2dc4faedd6ac1c6, simtest_f2425d6b7d751016, simtest_750dc02ab4f67c81
+- sample: blocked: [{"error": "unknown action {'command': 'ClearFootstepSyncTelemetry'}"}]
+- sample: blocked: [{"error": "manage_tools.ClearFootstepSyncTelemetry: failed"}]
+- draft_rule: Telemetry commands that fall back to hardcoded defaults indicate missing component integration at runtime (UComponent not attached, or not populating properties at BeginPlay) — verify component attachment in character blueprint and initialization order before blaming MCP action handlers.
+- agent_note: Investigated 2026-07-11 via av_sync_agent5_investigation (simtest). ClearFootstepSyncTelemetry hits both manage_tools and execute_python fallbacks but beat passes because real beat expectations haven't been checked yet. Downstrea m walk_slow_on_sand (H-32) hits same root cause when expecting telemetry data. Root cause: SandSoundComponent (Source/Chimera/SandSoundComponent.cpp) either not attached to BP_Astronaut_Character or not populating footstep counters at runtime. APPROVE -> claude_md (component integration protocol).
+
+## H-32: sim_rejection: audio_visual_sync/walk_slow_on_sand
+- status: promoted (auto 2026-07-11)
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-11T19:09:25
+- proposed_organ: claude_md
+- evidence: simtest_dbe50ff88351edb2, simtest_f2dc4faedd6ac1c6, simtest_f2425d6b7d751016, simtest_750dc02ab4f67c81
+- sample: failed: [{"expect": {"sync_events_recorded": 3, "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"}, "ok": false, "
+- sample: blocked: [{"error": "manage_tools.GetFootstepSyncEventCount: failed"}]
+- possible_conflict_with: H-31  (Gardener: reconcile)
+- draft_rule: When telemetry queries return hardcoded defaults (count=0, latency=999), the beat's expectations fail not because of beat schema but because the backend component isn't populating data — verify SandSoundComponent attachment and footstep event tracking at runtime before debugging beat expectations.
+- agent_note: Investigated 2026-07-11 via av_sync_agent5_investigation (simtest av_sync_agent5_investigation). All 6 footstep telemetry getters (GetFootstepSyncEventCount, GetMaxFootstepSyncLatencyMs, GetLastFootstepVolume) hit fallback defaults. Beat walked 1600uu (pawn_within passed), then expected sync_events_recorded >= 3 and sync_latency_ms_max < 100 but got 0 and 999. Shared root cause with H-31: SandSoundComponent integration. Reconcile H-31 + H-32 into one rule (component integration protocol) or keep separate for beat-schema vs backend-integration distinction. APPROVE -> claude_md (Shift key naming is separate issue; 3rd beat walk_fast_on_sand hit "Invalid key: Shift" error — sleepwalker sends "Shift" but control_editor expects LShift/RShift).
+
+<!-- distilled 2026-07-11T23:32:56Z -->
+## H-33: sim_rejection: audio_visual_sync/report_telemetry
+- status: promoted (auto 2026-07-11)
+- kind: sim_rejection  |  count: 5  |  last_seen: 2026-07-11T23:10:40
+- proposed_organ: claude_md
+- evidence: simtest_dbe50ff88351edb2, simtest_f2dc4faedd6ac1c6, simtest_f2425d6b7d751016, simtest_750dc02ab4f67c81, simtest_b8f7b2ffb83d2b12
+- sample: blocked: [{"error": "unknown action {'command': 'GetFootstepSyncEventCount', 'store_as': 'total_events'}"}]
+- sample: blocked: [{"error": "manage_tools.GetFootstepSyncEventCount: failed"}]
+- sample: blocked: [{"error": "inspect.runtime_report: failed"}]
+- possible_conflict_with: heuristic_fe52b1dc74838df6 (Investigate audio_visual_sync sim_rejection; verify test har); heuristic_f3583c561cfd251c (Investigate audio_visual_sync sim_rejection; verify test har); H-31; H-32  (Gardener: reconcile)
+- draft_rule: Investigate audio_visual_sync report_telemetry; verify test harness and beat reg

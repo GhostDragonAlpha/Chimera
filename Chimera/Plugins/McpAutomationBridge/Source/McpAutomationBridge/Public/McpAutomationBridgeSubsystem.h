@@ -686,6 +686,13 @@ private:
   bool HandleInspectAction(const FString &RequestId, const FString &Action,
                            const TSharedPtr<FJsonObject> &Payload,
                            TSharedPtr<FMcpBridgeWebSocket> RequestingSocket);
+  // Audio-visual sync telemetry only (Ground_Sand_Sound verification) — the
+  // admin manage_tools actions (list_tools, enable_tools, ...) are answered
+  // locally by the JS bridge and were never wired into this WebSocket
+  // transport; only McpNativeTransport.cpp's HTTP path handles those.
+  bool HandleManageToolsAction(const FString &RequestId, const FString &Action,
+                                const TSharedPtr<FJsonObject> &Payload,
+                                TSharedPtr<FMcpBridgeWebSocket> RequestingSocket);
   bool HandleInspectCdoAction(const FString &RequestId,
                               const TSharedPtr<FJsonObject> &Payload,
                               TSharedPtr<FMcpBridgeWebSocket> RequestingSocket);

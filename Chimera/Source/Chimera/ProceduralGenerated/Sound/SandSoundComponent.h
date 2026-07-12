@@ -67,6 +67,32 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
 	void SetWindIntensity(float WindSpeed);
 
+	// --- Telemetry counters for audio-visual sync verification ---
+
+	/** Call this every time a footstep particle is spawned + audio triggered */
+	UFUNCTION(BlueprintCallable, Category = "Telemetry")
+	void RecordFootstepSyncEvent(float LatencyMs, float Volume);
+
+	/** Reset all counters (call at start of measurement period) */
+	UFUNCTION(BlueprintCallable, Category = "Telemetry")
+	void ClearFootstepSyncTelemetry();
+
+	/** Number of sync events recorded */
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	int32 FootstepSyncEventCount;
+
+	/** Maximum latency in ms across all recorded events */
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	float MaxFootstepSyncLatencyMs;
+
+	/** Average latency in ms across all recorded events */
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	float AverageFootstepSyncLatencyMs;
+
+	/** Last recorded volume */
+	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+	float LastFootstepVolume;
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Audio")
 	TObjectPtr<UAudioComponent> AudioComponent;
@@ -78,4 +104,8 @@ private:
 	TObjectPtr<UAudioComponent> WindAudioComponent;
 
 	bool bWindActive = false;
+
+	/** Running total of latency for averaging */
+	UPROPERTY()
+	float TotalFootstepSyncLatencyMs;
 };

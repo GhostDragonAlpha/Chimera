@@ -205,33 +205,60 @@ TSharedPtr<FJsonObject> FMcpDynamicToolManager::HandleAction(
 		return Result;
 	}
 
-	// --- Audio-visual sync telemetry (Ground_Sand_Sound verification) ---
+// --- Audio-visual sync telemetry (Ground_Sand_Sound verification) ---
 	if (Action == TEXT("ClearFootstepSyncTelemetry"))
 	{
 		UChimeraMovementComponent::ClearFootstepSyncTelemetry();
 		auto R = MakeShared<FJsonObject>();
+		auto ResultObj = MakeShared<FJsonObject>();
+		ResultObj->SetBoolField(TEXT("telemetry_cleared"), true);
 		R->SetBoolField(TEXT("success"), true);
+		R->SetObjectField(TEXT("result"), ResultObj);
 		return R;
 	}
 	if (Action == TEXT("GetFootstepSyncEventCount"))
 	{
 		auto R = MakeShared<FJsonObject>();
+		auto ResultObj = MakeShared<FJsonObject>();
+		ResultObj->SetNumberField(TEXT("count"), UChimeraMovementComponent::GetFootstepSyncEventCount());
 		R->SetBoolField(TEXT("success"), true);
-		R->SetNumberField(TEXT("count"), UChimeraMovementComponent::GetFootstepSyncEventCount());
+		R->SetObjectField(TEXT("result"), ResultObj);
 		return R;
 	}
 	if (Action == TEXT("GetAverageFootstepSyncLatencyMs"))
 	{
 		auto R = MakeShared<FJsonObject>();
+		auto ResultObj = MakeShared<FJsonObject>();
+		ResultObj->SetNumberField(TEXT("avg_latency_ms"), UChimeraMovementComponent::GetAverageFootstepSyncLatencyMs());
 		R->SetBoolField(TEXT("success"), true);
-		R->SetNumberField(TEXT("avg_latency_ms"), UChimeraMovementComponent::GetAverageFootstepSyncLatencyMs());
+		R->SetObjectField(TEXT("result"), ResultObj);
 		return R;
 	}
 	if (Action == TEXT("GetMaxFootstepSyncLatencyMs"))
 	{
 		auto R = MakeShared<FJsonObject>();
+		auto ResultObj = MakeShared<FJsonObject>();
+		ResultObj->SetNumberField(TEXT("max_latency_ms"), UChimeraMovementComponent::GetMaxFootstepSyncLatencyMs());
 		R->SetBoolField(TEXT("success"), true);
-		R->SetNumberField(TEXT("max_latency_ms"), UChimeraMovementComponent::GetMaxFootstepSyncLatencyMs());
+		R->SetObjectField(TEXT("result"), ResultObj);
+		return R;
+	}
+	if (Action == TEXT("GetLastFootstepVolume"))
+	{
+		auto R = MakeShared<FJsonObject>();
+		auto ResultObj = MakeShared<FJsonObject>();
+		ResultObj->SetNumberField(TEXT("last_volume"), UChimeraMovementComponent::GetLastFootstepVolume());
+		R->SetBoolField(TEXT("success"), true);
+		R->SetObjectField(TEXT("result"), ResultObj);
+		return R;
+	}
+	if (Action == TEXT("GetMaxFootstepVolume"))
+	{
+		auto R = MakeShared<FJsonObject>();
+		auto ResultObj = MakeShared<FJsonObject>();
+		ResultObj->SetNumberField(TEXT("max_volume"), UChimeraMovementComponent::GetMaxFootstepVolume());
+		R->SetBoolField(TEXT("success"), true);
+		R->SetObjectField(TEXT("result"), ResultObj);
 		return R;
 	}
 	// Unknown action — no lock needed

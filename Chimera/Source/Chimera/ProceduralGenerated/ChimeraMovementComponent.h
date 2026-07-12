@@ -151,6 +151,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement|Audio|Telemetry")
 	static void ClearFootstepSyncTelemetry();
 
+	// Last / max footstep audio volume (0..1), for audio-visual sync verification
+	static float GetLastFootstepVolume();
+	static float GetMaxFootstepVolume();
+
 protected:
 	float FootstepTimer;
 	float FootprintTimer;

@@ -1,0 +1,14 @@
+- generic [ref=f3e2]:
+  - separator [ref=f3e3]
+  - iframe [ref=f3e8]:
+    - generic [ref=f4e2]:
+      - generic [ref=f4e3]:
+        - checkbox "I'm not a robot" [ref=f4e7]
+        - generic [ref=f4e9]: I'm not a robot
+      - generic [ref=f4e12]: reCAPTCHA
+  - separator [ref=f3e9]
+  - generic [ref=f3e10]:
+    - text: About this page Our systems have detected unusual traffic from your computer network. This page checks to see if it's really you sending the requests, and not a robot.
+    - link "Why did this happen?" [ref=f3e11] [cursor=pointer]:
+      - /url: "#"
+    - generic [ref=f3e12]: "IP address: 68.235.76.85Time: 2026-07-10T17:10:41ZURL: https://www.google.com/search?q=Playwright+MCP+browser+automation+testing&sca_esv=8d865a5c8f1695d2&source=hp&ei=iidRavC2C9HUruEPhdSiyQ0&iflsig=ABILxe8AAAAAalE1mvIYmFlh_gdKTrIcQDzJXXpHMdMM&ved=0ahUKEwjwo9GMzciVAxVRqisGHQWqKNkQ4dUDCA4&uact=5&oq=Playwright+MCP+browser+automation+testing&gs_lp=Egdnd3Mtd2l6IilQbGF5d3JpZ2h0IE1DUCBicm93c2VyIGF1dG9tYXRpb24gdGVzdGluZzIFECEYoAEyBRAhGKABMgUQIRigATIFECEYqwJI_xZQAFgAcAB4AJABAJgBKaABKaoBATG4AQPIAQD4AQGYAgGgAi2YAwCSBwExoAffA7IHATG4By3CBwMwLjHIBwGACAE&sclient=gws-wiz&sei=kCdRapbGIbHBruEP66Lb8AM"

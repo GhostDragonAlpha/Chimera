@@ -46,30 +46,86 @@ from .ubt_builder import UBTBuilder
 _editor_was_closed = False
 
 
+# All Unreal processes that can hold a module-DLL lock during linking.
+# UnrealEditor.exe (GUI), UnrealEditor-Cmd.exe (headless cook/commandlet),
+# and CrashReportClientEditor.exe (spawned on forced kill and retains the lock).
+_UE_PROCESS_NAMES = (
+	"UnrealEditor.exe",
+	"UnrealEditor-Cmd.exe",
+	"CrashReportClientEditor.exe",
+)
+
+
+def _kill_ue_processes() -> None:
+	"""Force-kill every Unreal process that can lock the module DLL."""
+	for name in _UE_PROCESS_NAMES:
+		try:
+			subprocess.run(["taskkill", "/F", "/IM", name],
+			               capture_output=True, text=True, timeout=15)
+		except Exception:
+			pass
+
+
+def _any_ue_process_running() -> bool:
+	"""Return True if any tracked Unreal process is still alive."""
+	try:
+		out = subprocess.run(
+			["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe"],
+			capture_output=True, text=True, timeout=10,
+		).stdout
+		return "UnrealEditor.exe" in out
+	except Exception:
+		return False
+
+
+def _dll_released(dll_path: str, retries: int = 6, wait: float = 2.0) -> bool:
+	"""Poll until the module DLL can be opened for writing (lock released)."""
+	import os
+	if not os.path.exists(dll_path):
+		return True  # Nothing to lock
+	for _ in range(retries):
+		try:
+			with open(dll_path, "a+b"):
+				return True
+		except (PermissionError, OSError):
+			time.sleep(wait)
+	return False
+
+
 def ensure_editor_closed() -> bool:
 	"""
-	Check if UE Editor is running. If so, close it and log to graph.
+	Check if UE Editor is running. If so, close it (and any CrashReportClient
+	or headless commandlet that also holds the module DLL) and verify the
+	lock is released before returning.
+
 	Idempotent — safe to call multiple times.
-	Returns True if editor was running and successfully closed, False otherwise.
+	Returns True if the editor is confirmed not locking the DLL, False otherwise.
 	"""
 	global _editor_was_closed
 	if _editor_was_closed:
 		return True  # Already handled
 
 	try:
-		ue_check = subprocess.run(
-			["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe"],
-			capture_output=True, text=True, timeout=10,
-		)
-		if "UnrealEditor.exe" not in ue_check.stdout:
+		if not _any_ue_process_running():
 			_editor_was_closed = True
 			return True  # Editor not running, nothing to do
 
 		print("  [LIFECYCLE] Unreal Editor is running — module DLL is locked.")
-		print("  [LIFECYCLE] Closing UE Editor to free the linker...")
-		subprocess.run(["taskkill", "/F", "/IM", "UnrealEditor.exe"],
-		               capture_output=True, text=True, timeout=15)
-		time.sleep(3)  # Wait for process to fully exit
+		print("  [LIFECYCLE] Closing UE Editor (and crash/cmdlet helpers) to free the linker...")
+		_kill_ue_processes()
+
+		# Wait for the OS to release the module DLL; CrashReportClient can lag.
+		dll_path = os.path.join(
+			os.path.dirname(os.path.abspath(__file__)),
+			"..", "Binaries", "Win64", "UnrealEditor-Chimera.dll",
+		)
+		dll_path = os.path.normpath(dll_path)
+		_released = _dll_released(dll_path)
+		if not _released:
+			print("  [LIFECYCLE] DLL still locked after first pass — re-killing helpers and retrying.")
+			_kill_ue_processes()
+			_released = _dll_released(dll_path)
+
 		_editor_was_closed = True
 
 		# Log to graph: H-10 — killed_for_build is the build lifecycle working as designed
@@ -82,7 +138,10 @@ def ensure_editor_closed() -> bool:
 		except Exception:
 			pass
 
-		print("  [LIFECYCLE] UE Editor closed. Build can proceed.")
+		if _released:
+			print("  [LIFECYCLE] UE Editor closed and DLL released. Build can proceed.")
+		else:
+			print("  [LIFECYCLE] WARNING: UE processes killed but DLL lock not confirmed released.")
 		return True
 
 	except Exception as e:

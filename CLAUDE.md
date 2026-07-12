@@ -30,6 +30,16 @@
 - **[H-14, auto-promoted 2026-07-07]** Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
 - **[H-17, auto-promoted 2026-07-07]** Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
 - **[H-19, auto-promoted 2026-07-08]** Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and re-verified since.
+- **[H-21, auto-promoted 2026-07-11]** A verb needs behavior, not metadata: ATool_Shovel had DigRadius but no Dig() — beats must press the verb key and assert a world-state change.
+- **[H-22, auto-promoted 2026-07-11]** Read back live-PIE pawn components before staging an interaction verb — PickUp's component was never attached, bound, or given a level actor to grab.
+- **[H-24, auto-promoted 2026-07-11]** A feature tagged only by movement beats is hostage to rig health — zero-displacement failures (GameMode PlayerControllerClass unset) indict the rig, not the surface.
+- **[H-25, auto-promoted 2026-07-11]** Position-expect beats must reset_position at beat start — W-drift accumulates across sequential beats and BugItGo is refused during PIE.
+- **[H-28, auto-promoted 2026-07-11]** Probe jumps by timed pawn_z read-back, not log_contains — and reset_position first: z=-26947 shows the pawn had already drifted off the world.
+- **[H-29, auto-promoted 2026-07-11]** Compound beats fail for shifting root causes (frozen input, then missing SandDrift_FX) — attribute rejection to the failing expect's subsystem, not every tagged feature.
+- **[H-30, auto-promoted 2026-07-11]** Expects are schema-bound like actions — unknown expects (screenshot_taken, unreadable controller properties) fail beats at runtime; validate the expect vocabulary at dispatch.
+- **[H-31, auto-promoted 2026-07-11]** Telemetry commands that fall back to hardcoded defaults indicate missing component integration at runtime (UComponent not attached, or not populating properties at BeginPlay) — verify component attachment in character blueprint and initialization order before blaming MCP action handlers.
+- **[H-32, auto-promoted 2026-07-11]** When telemetry queries return hardcoded defaults (count=0, latency=999), the beat's expectations fail not because of beat schema but because the backend component isn't populating data — verify SandSoundComponent attachment and footstep event tracking at runtime before debugging beat expectations.
+- **[H-33, auto-promoted 2026-07-11]** Investigate audio_visual_sync report_telemetry; verify test harness and beat reg
 
 ## Architecture Overview
 

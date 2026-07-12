@@ -162,15 +162,26 @@ def already_backfilled(nodes):
     showed Player_Character_Animation 'blocked' over a real 'verified' and
     Verb_Shovel 'verified' over a real 'needs_refinement'). The backfill is a
     one-time repair: skip anything the graph already carries.
+
+    Idempotency check (2026-07-11 enhanced): Accept backfilled entries with:
+    - backfilled flag + REPAIR_NOTE (primary marker), OR
+    - backfilled flag + feature matches LOST_FEATURES (fallback)
+    This prevents re-recording even if the repair note text ever changes.
     """
     feats, loops = set(), set()
+    lost_feature_names = {d["feature"] for d in LOST_FEATURES}
     for n in nodes:
         if not n.get("backfilled"):
             continue
-        if n.get("type") == "FeatureUpdate" and \
-                (n.get("parameters") or {}).get("re_recorded") == REPAIR_NOTE:
-            feats.add(n.get("feature_name"))
-        elif n.get("type") == "LoopComplete":
+        if n.get("type") == "FeatureUpdate":
+            fname = n.get("feature_name")
+            # Accept if repair note matches OR if feature is in LOST_FEATURES (fallback)
+            if (n.get("parameters") or {}).get("re_recorded") == REPAIR_NOTE or \
+                    fname in lost_feature_names:
+                feats.add(fname)
+        elif n.get("type") == "LoopComplete" and \
+                n.get("loop") == LOOP0_COMPLETE["loop"] and \
+                n.get("name") == LOOP0_COMPLETE["name"]:
             loops.add((n.get("loop"), n.get("name")))
     return feats, loops
 

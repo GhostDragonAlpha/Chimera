@@ -43,7 +43,7 @@ UChimeraMovementComponent::UChimeraMovementComponent()
 	CameraOffsetX    = 170.0f;
 	CameraOffsetY    = 0.0f;
 	CameraOffsetZ    = 80.0f;
-	FootstepInterval = 1.75f;
+	FootstepInterval = 0.5f;
 
 	// Weight shift animation defaults
 	MaxWeightShiftMagnitude = 3.5f;     // 3.5 cm max offset (subtle)
@@ -456,6 +456,25 @@ void UChimeraMovementComponent::ClearFootstepSyncTelemetry()
 {
 	GFootstepSyncTelemetry.Empty();
 	UE_LOG(LogTemp, Log, TEXT("Footstep sync telemetry cleared"));
+}
+
+float UChimeraMovementComponent::GetLastFootstepVolume()
+{
+	if (GFootstepSyncTelemetry.Num() == 0)
+	{
+		return 0.0f;
+	}
+	return GFootstepSyncTelemetry.Last().AudioVolume;
+}
+
+float UChimeraMovementComponent::GetMaxFootstepVolume()
+{
+	float MaxVol = 0.0f;
+	for (const FAudioVisualSyncEvent& Event : GFootstepSyncTelemetry)
+	{
+		MaxVol = FMath::Max(MaxVol, Event.AudioVolume);
+	}
+	return MaxVol;
 }
 // ------------------------------------------------------------------
 // GetDefaultFootstepSound - auto-resolve CC0 footstep asset by surface type

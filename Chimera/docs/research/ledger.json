@@ -1,0 +1,2356 @@
+{
+  "citations": [
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\NavTestRenderingComponent.h",
+      "line": 14,
+      "quote": "class APlayerController;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\NavMeshRenderingComponent.h",
+      "line": 19,
+      "quote": "class APlayerController;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationPath.h",
+      "line": 10,
+      "quote": "class APlayerController;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundWaveProxyReader.h",
+      "line": 19,
+      "quote": "class UE_DEPRECATED(5.8, \"Use FSoundWaveProxyPlayer instead.\") FSoundWaveProxyReader",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundWaveProxyPlayer.h",
+      "line": 19,
+      "quote": "class UE_INTERNAL FSoundWaveProxyPlayer",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundNodeWavePlayer.h",
+      "line": 23,
+      "quote": "class USoundNodeWavePlayer : public USoundNodeAssetReferencer",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundNodeDialoguePlayer.h",
+      "line": 23,
+      "quote": "class USoundNodeDialoguePlayer : public USoundNode",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Animation\\AnimationInstanceScope.h",
+      "line": 12,
+      "quote": "class FAnimNotifyAssetPlayerInstanceContext : public UE::Anim::IAnimNotifyEventContextDataInterface",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CameraPhotographyModule.h",
+      "line": 11,
+      "quote": "class APlayerCameraManager;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugRenderSceneProxy.h",
+      "line": 20,
+      "quote": "class APlayerController;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugCameraManager.h",
+      "line": 20,
+      "quote": "ENGINE_API void EnableDebugCamera(class APlayerController* PlayerController);",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugCameraManager.h",
+      "line": 21,
+      "quote": "ENGINE_API void DisableDebugCamera(class APlayerController* PlayerController);",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugCameraManager.h",
+      "line": 23,
+      "quote": "ENGINE_API bool IsDebugCameraActive(const class APlayerController* PlayerController) const;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugCameraManager.h",
+      "line": 25,
+      "quote": "ENGINE_API class ADebugCameraController* GetCameraController(const class APlayerController* PlayerController);",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugCameraManager.h",
+      "line": 38,
+      "quote": "FDebugCameraControllerStatus* GetDebugCameraControllerStatus(const class APlayerController* PlayerController);",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugCameraManager.h",
+      "line": 39,
+      "quote": "const FDebugCameraControllerStatus* GetDebugCameraControllerStatus(const class APlayerController* PlayerController) const;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugCameraManager.h",
+      "line": 42,
+      "quote": "TMap<TObjectKey<class UPlayer>, FDebugCameraControllerStatus> PlayerToDebugCameraControllerMap;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 19,
+      "quote": "class APlayerCameraManager;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 20,
+      "quote": "class APlayerController;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 21,
+      "quote": "class APlayerState;",
+      "at": "2026-07-11T12:34:37.460Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CharacterMovementComponentAsync.h",
+      "line": 624,
+      "quote": "class FCharacterMovementComponentAsyncCallback : public Chaos::TSimCallbackObject<FCharacterMovementComponentAsyncInput, FCharacterMovementComponentAsyncOutput>",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 45,
+      "quote": "class UCharacterMovementComponent;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 2224,
+      "quote": "class UAnimMontage * ACharacter::GetCurrentMontage() const",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 8807,
+      "quote": "MutableThis->ClientPredictionData = static_cast<class FNetworkPredictionData_Client_Character*>(GetPredictionData_Client());",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 8824,
+      "quote": "MutableThis->ServerPredictionData = static_cast<class FNetworkPredictionData_Server_Character*>(GetPredictionData_Server());",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 8861,
+      "quote": "float FNetworkPredictionData_Client_Character::UpdateTimeStampAndDeltaTime(float DeltaTime, class ACharacter & CharacterOwner, class UCharacterMovementComponent & CharacterMovementComponent)",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 12761,
+      "quote": "void FSavedMove_Character::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character & ClientData)",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Lightmass\\LightmassCharacterIndirectDetailVolume.h",
+      "line": 14,
+      "quote": "class ALightmassCharacterIndirectDetailVolume : public AVolume",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Kismet\\GameplayStatics.h",
+      "line": 210,
+      "quote": "static ENGINE_API class ACharacter* GetPlayerCharacter(const UObject* WorldContextObject, int32 PlayerIndex);",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementReplication.h",
+      "line": 17,
+      "quote": "class FSavedMove_Character;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementReplication.h",
+      "line": 18,
+      "quote": "class UCharacterMovementComponent;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Character.h",
+      "line": 21,
+      "quote": "class ACharacter;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Character.h",
+      "line": 27,
+      "quote": "class UCharacterMovementComponent;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Character.h",
+      "line": 35,
+      "quote": "DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMovementModeChangedSignature, class ACharacter*, Character, EMovementMode, PrevMovementMode, uint8, PreviousCustomMode);",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Character.h",
+      "line": 338,
+      "quote": "class ACharacter : public APawn",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Controller.h",
+      "line": 11,
+      "quote": "class ACharacter;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+      "line": 26,
+      "quote": "class ACharacter;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+      "line": 28,
+      "quote": "class FNetworkPredictionData_Server_Character;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+      "line": 29,
+      "quote": "class FSavedMove_Character;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+      "line": 32,
+      "quote": "class UCharacterMovementComponent;",
+      "at": "2026-07-11T12:34:48.065Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 331,
+      "quote": "VER_UE4_BP_ACTOR_VARIABLE_DEFAULT_PREVENTING,",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 506,
+      "quote": "VER_UE4_BP_MATH_VECTOR_EQUALITY_USES_EPSILON,",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 681,
+      "quote": "VER_UE4_NO_ANIM_BP_CLASS_IN_GAMEPLAY_CODE,",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\WorldSettings.cpp",
+      "line": 93,
+      "quote": ": DmgType_Environmental_Object(TEXT(\"/Engine/EngineDamageTypes/DmgTypeBP_Environmental.DmgTypeBP_Environmental_C\"))",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\BlueprintGeneratedClass.cpp",
+      "line": 2713,
+      "quote": "OutLifetimeProps.AddUnique(FLifetimeProperty(Prop->RepIndex, Prop->GetBlueprintReplicationCondition(), REPNOTIFY_OnChanged, PUSH_MAKE_BP_PROPERTIES_PUSH_MODEL()));",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\ForceFeedbackComponent.cpp",
+      "line": 367,
+      "quote": "bool UForceFeedbackComponent::BP_GetAttenuationSettingsToApply(FForceFeedbackAttenuationSettings& OutAttenuationSettings) const",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\AudioComponent.cpp",
+      "line": 1407,
+      "quote": "bool UAudioComponent::BP_GetAttenuationSettingsToApply(FSoundAttenuationSettings& OutAttenuationSettings)",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\SkeletalMeshComponent.cpp",
+      "line": 619,
+      "quote": "if (Ar.IsLoading() && (Ar.UEVer() < VER_UE4_NO_ANIM_BP_CLASS_IN_GAMEPLAY_CODE))",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\PlayerState.cpp",
+      "line": 516,
+      "quote": "FUniqueNetIdRepl APlayerState::BP_GetUniqueId() const",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 9,
+      "quote": "#define VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, Format, ...) \\",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 42,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogText: '%s'\"), *Text);",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 54,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogLocation: '%s' - Location: (%s)\"), *Text, *Location.ToString());",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 66,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogSphere: '%s' - Center: (%s) | Radius: %f\"), *Text, *Center.ToString(), Radius);",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 78,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogCone: '%s' - Origin: (%s) | Direction: (%s) | Length: %f | Angle: %f\"), *Text, *Origin.ToString(), *Direction.ToString(), Length, Angle);",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 89,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogCylinder: '%s' - Start: (%s) | End: (%s) | Radius: %f\"), *Text, *Start.ToString(), *End.ToString(), Radius);",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 101,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogCapsule: '%s' - Base: (%s) | HalfHeight: %f | Radius: %f | Rotation: (%s)\"), *Text, *Base.ToString(), HalfHeight, Radius, *Rotation.ToString());",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 113,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogBox: '%s' - BoxMin: (%s) | BoxMax: (%s)\"), *Text, *Box.Min.ToString(), *Box.Max.ToString());",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 125,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogOrientedBox: '%s' - BoxMin: (%s) | BoxMax: (%s) | Transform: (%s)\"), *Text, *Box.Min.ToString(), *Box.Max.ToString(), *Transform.ToString());",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 136,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogArrow: '%s' - SegmentStart: (%s) | SegmentEnd:(%s)\"), *Text, *SegmentStart.ToString(), *SegmentStart.ToString());",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\VisualLogger\\VisualLoggerKismetLibrary.cpp",
+      "line": 147,
+      "quote": "VLOG_BP_LIBRARY_ADD_TO_LOG(CategoryName, TEXT(\"LogCircle: '%s' - Center: (%s) | UpAxis: (%s) | Radius: %f\")\t, *Text, *Center.ToString(), *UpAxis.ToString(), Radius);",
+      "at": "2026-07-11T12:35:33.804Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Materials\\Material.h",
+      "line": 1855,
+      "quote": "* @param\tExpression\tThe expression node to inspect.",
+      "at": "2026-07-11T19:28:06.007Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Materials\\Material.h",
+      "line": 1862,
+      "quote": "* @param\tExpression\tThe expression node to inspect.",
+      "at": "2026-07-11T19:28:06.007Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ObjectEditorUtils.h",
+      "line": 97,
+      "quote": "* @param Class the class to inspect.",
+      "at": "2026-07-11T19:28:06.007Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Net\\RepLayout.h",
+      "line": 1298,
+      "quote": "* @param RepState\t\t\t\t\tThe RepState whose shadow buffer we'll inspect.",
+      "at": "2026-07-11T19:28:06.007Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavRelevantComponent.h",
+      "line": 11,
+      "quote": "class UNavRelevantComponent : public UActorComponent, public INavRelevantInterface",
+      "at": "2026-07-11T19:48:47.356Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavRelevantComponent.h",
+      "line": 15,
+      "quote": "//~ Begin UActorComponent Interface",
+      "at": "2026-07-11T19:48:47.356Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavRelevantComponent.h",
+      "line": 18,
+      "quote": "//~ End UActorComponent Interface",
+      "at": "2026-07-11T19:48:47.356Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavModifierComponent.h",
+      "line": 61,
+      "quote": "//~ Begin UActorComponent Interface",
+      "at": "2026-07-11T19:48:47.356Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\SplineNavModifierComponent.h",
+      "line": 53,
+      "quote": "USplineNavModifierComponent(const FObjectInitializer& ObjectInitializer);",
+      "at": "2026-07-11T19:48:47.579Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavSystemConfigOverride.h",
+      "line": 45,
+      "quote": "NAVIGATIONSYSTEM_API ANavSystemConfigOverride(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());",
+      "at": "2026-07-11T19:48:47.579Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavModifierVolume.h",
+      "line": 49,
+      "quote": "NAVIGATIONSYSTEM_API ANavModifierVolume(const FObjectInitializer& ObjectInitializer);",
+      "at": "2026-07-11T19:48:47.579Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationSystem.h",
+      "line": 298,
+      "quote": "NAVIGATIONSYSTEM_API UNavigationSystemV1(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());",
+      "at": "2026-07-11T19:48:47.579Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\CoreGlobals.h",
+      "line": 143,
+      "quote": "/** allow AActor object to execute script in the editor from specific entry points, such as when running a construction script */",
+      "at": "2026-07-11T19:51:09.610Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavSystemConfigOverride.h",
+      "line": 23,
+      "quote": "class ANavSystemConfigOverride : public AActor",
+      "at": "2026-07-11T19:51:09.610Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavSystemConfigOverride.h",
+      "line": 54,
+      "quote": "//~ Begin AActor Interface",
+      "at": "2026-07-11T19:51:09.610Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavSystemConfigOverride.h",
+      "line": 60,
+      "quote": "//~ End AActor Interface",
+      "at": "2026-07-11T19:51:09.610Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationTestingActor.h",
+      "line": 157,
+      "quote": "FVector2D TextCanvasOffset;",
+      "at": "2026-07-11T20:26:02.908Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\RecastNavMeshGenerator.h",
+      "line": 873,
+      "quote": "NAVIGATIONSYSTEM_API virtual void GetSeedLocations(UWorld& World, TArray<FVector2D>& OutSeedLocations) const;",
+      "at": "2026-07-11T20:26:02.908Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\RecastNavMeshDataChunk.h",
+      "line": 88,
+      "quote": "NAVIGATIONSYSTEM_API void MoveTiles(FPImplRecastNavMesh& NavMeshImpl, const FIntPoint& Offset, const FVector::FReal RotationDeg, const FVector2D& RotationCenter);",
+      "at": "2026-07-11T20:26:02.908Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\ConvexHull2d.h",
+      "line": 249,
+      "quote": "[[nodiscard]] inline FVector2D::FReal ComputeDeterminant2D(const FVector2D& A, const FVector2D& B, const FVector2D& C)",
+      "at": "2026-07-11T20:26:02.908Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\RecastNavMeshGenerator.h",
+      "line": 247,
+      "quote": "return FMath::Max(ClampToInt32(FMath::FloorToInt(MaxAsFloat) - 1), MinCoord);",
+      "at": "2026-07-11T20:26:03.125Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\RecastNavMeshGenerator.h",
+      "line": 250,
+      "quote": "return ClampToInt32(FMath::FloorToInt(MaxAsFloat));",
+      "at": "2026-07-11T20:26:03.125Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\RecastNavMeshGenerator.h",
+      "line": 254,
+      "quote": "XMin = ClampToInt32(FMath::FloorToInt((RcAreaBounds.Min.X - RcNavMeshOrigin.X) / TileSizeInWorldUnits));",
+      "at": "2026-07-11T20:26:03.125Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\RecastNavMeshGenerator.h",
+      "line": 256,
+      "quote": "YMin = ClampToInt32(FMath::FloorToInt((RcAreaBounds.Min.Z - RcNavMeshOrigin.Z) / TileSizeInWorldUnits));",
+      "at": "2026-07-11T20:26:03.125Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\RecastNavMeshGenerator.cpp",
+      "line": 1573,
+      "quote": "return FMath::TruncToInt(static_cast<float>(bufferSize) * 1.1f) + sizeof(FCompressedCacheHeader);",
+      "at": "2026-07-11T20:26:03.368Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\RecastNavMeshGenerator.cpp",
+      "line": 5270,
+      "quote": "OutConfig.tileSize = FMath::Max(FMath::TruncToInt(DestNavMesh->TileSizeUU / CellSize), 1);",
+      "at": "2026-07-11T20:26:03.368Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\RecastNavMeshGenerator.cpp",
+      "line": 5390,
+      "quote": "OutConfig.tileSize = FMath::Max(FMath::TruncToInt(DestNavMesh->TileSizeUU / CellSize), 1);",
+      "at": "2026-07-11T20:26:03.368Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\PImplRecastNavMesh.cpp",
+      "line": 648,
+      "quote": "const FVector::FReal ActorsTileSize = static_cast<FVector::FReal>(FMath::TruncToInt(NavMeshOwner->TileSizeUU / DefaultCellSize)) * DefaultCellSize;",
+      "at": "2026-07-11T20:26:03.368Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\GenericPlatform\\GenericPlatformMath.h",
+      "line": 450,
+      "quote": "[[nodiscard]] static UE_FORCEINLINE_HINT float Frac(float Value)",
+      "at": "2026-07-11T20:26:03.607Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\GenericPlatform\\GenericPlatformMath.h",
+      "line": 456,
+      "quote": "[[nodiscard]] static UE_FORCEINLINE_HINT double Frac(double Value)",
+      "at": "2026-07-11T20:26:03.607Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Misc\\FrameTime.h",
+      "line": 162,
+      "quote": "LHS.SubFrame    = FMath::Frac(NewSubFrame);",
+      "at": "2026-07-11T20:26:03.607Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Misc\\FrameTime.h",
+      "line": 173,
+      "quote": "return FFrameTime(static_cast<int32>(NewFrameNumber), FMath::Frac(NewSubFrame));",
+      "at": "2026-07-11T20:26:03.607Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AnimEncoding_VariableKeyLerp.h",
+      "line": 277,
+      "quote": "OutAtom.SetTranslation( (FVector)FMath::Lerp( P0, P1, Alpha ) );",
+      "at": "2026-07-11T20:26:03.841Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AnimEncoding_VariableKeyLerp.h",
+      "line": 321,
+      "quote": "OutAtom.SetScale3D( (FVector)FMath::Lerp( P0, P1, Alpha ) );",
+      "at": "2026-07-11T20:26:03.841Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AnimEncoding_ConstantKeyLerp.h",
+      "line": 272,
+      "quote": "OutAtom.SetTranslation( (FVector)FMath::Lerp( P0, P1, Alpha ) );",
+      "at": "2026-07-11T20:26:03.841Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AnimEncoding_ConstantKeyLerp.h",
+      "line": 314,
+      "quote": "OutAtom.SetScale3D( (FVector)FMath::Lerp( P0, P1, Alpha ) );",
+      "at": "2026-07-11T20:26:03.841Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 588,
+      "quote": "// Deprecate the variables used for sizing in the designer on UUserWidget",
+      "at": "2026-07-11T20:36:27.898Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\AudioWidgetSubsystem.h",
+      "line": 35,
+      "quote": "ENGINE_API TArray<UUserWidget*> CreateUserWidgets(",
+      "at": "2026-07-11T20:36:27.898Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\AudioWidgetSubsystem.h",
+      "line": 38,
+      "quote": "TFunction<bool(UUserWidget*)> FilterFunction = TFunction<bool(UUserWidget*)>(),",
+      "at": "2026-07-11T20:36:27.898Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Audio\\AudioWidgetSubsystem.cpp",
+      "line": 20,
+      "quote": "TArray<UUserWidget*> UAudioWidgetSubsystem::CreateUserWidgets(",
+      "at": "2026-07-11T20:36:27.898Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\AbstractNavData.h",
+      "line": 32,
+      "quote": "virtual void Reset() override {}",
+      "at": "2026-07-11T20:49:41.304Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Hash\\xxhash.h",
+      "line": 207,
+      "quote": "inline FXxHash64Builder() { Reset(); }",
+      "at": "2026-07-11T20:49:41.304Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Hash\\xxhash.h",
+      "line": 212,
+      "quote": "CORE_API void Reset();",
+      "at": "2026-07-11T20:49:41.304Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Hash\\xxhash.h",
+      "line": 228,
+      "quote": "inline FXxHash128Builder() { Reset(); }",
+      "at": "2026-07-11T20:49:41.304Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Tests\\AutomationCommon.cpp",
+      "line": 582,
+      "quote": "SWidget& ChildWidget = Widget->GetChildren()->GetChildAt(ChildIndex).Get();",
+      "at": "2026-07-11T20:49:41.583Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystem.cpp",
+      "line": 6238,
+      "quote": "void UNavigationSystemV1::GetOnScreenMessages(TMultiMap<FCoreDelegates::EOnScreenMessageSeverity, FText>& OutMessages)",
+      "at": "2026-07-11T20:49:41.852Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\CoreGlobals.h",
+      "line": 25,
+      "quote": "class FText;",
+      "at": "2026-07-11T20:49:41.852Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\CoreGlobals.h",
+      "line": 110,
+      "quote": "const FText& True;",
+      "at": "2026-07-11T20:49:41.852Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\CoreGlobals.h",
+      "line": 111,
+      "quote": "const FText& False;",
+      "at": "2026-07-11T20:49:41.852Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\UserInterfaceSettings.h",
+      "line": 60,
+      "quote": "class UWidget;",
+      "at": "2026-07-11T20:49:41.982Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Hash\\xxhash.h",
+      "line": 86,
+      "quote": "CORE_API void FromString(FStringView Src);",
+      "at": "2026-07-11T20:49:42.384Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Experimental\\UnifiedError\\UnifiedError.h",
+      "line": 768,
+      "quote": "UE_DECLARE_ERROR_INTERNAL(DeclareApi, ErrorName, ErrorCode, ModuleName, FText::FromString(UTF8TEXT(\"{\"#ModuleName\"_F\"#ErrorName\"}\")) ) \\",
+      "at": "2026-07-11T20:49:42.384Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Experimental\\UnifiedError\\UnifiedError.h",
+      "line": 796,
+      "quote": "UE_DECLARE_ERROR_INTERNAL(DeclareApi, ErrorName, ErrorCode, ModuleName, FText::FromString(UTF8TEXT(\"{\"#ModuleName\"_F\"#ErrorName\"}\")) ) \\",
+      "at": "2026-07-11T20:49:42.384Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Containers\\UnrealString.h",
+      "line": 224,
+      "quote": "static void FromString(T& Value, const CharType* Buffer)",
+      "at": "2026-07-11T20:49:42.384Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Animation\\AnimationAsset.h",
+      "line": 1085,
+      "quote": "return (T*)FindMetaDataByClass(T::StaticClass());",
+      "at": "2026-07-11T20:49:42.520Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystem.cpp",
+      "line": 861,
+      "quote": "UNavigationSystemBase::GetDefaultNavDataClassDelegate().BindLambda([]() { return ARecastNavMesh::StaticClass(); });",
+      "at": "2026-07-11T20:49:42.520Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystem.cpp",
+      "line": 964,
+      "quote": "else if (GetClass() == UNavigationSystemV1::StaticClass())",
+      "at": "2026-07-11T20:49:42.520Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystem.cpp",
+      "line": 966,
+      "quote": "SetDefaultWalkableArea(UNavArea_Default::StaticClass());",
+      "at": "2026-07-11T20:49:42.520Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Concepts\\StaticClassProvider.h",
+      "line": 8,
+      "quote": "* Describes a type with a StaticClass (static) member.",
+      "at": "2026-07-11T20:49:42.658Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Concepts\\StaticClassProvider.h",
+      "line": 14,
+      "quote": "ClassRef = T::StaticClass()",
+      "at": "2026-07-11T20:49:42.658Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Containers\\Array.h",
+      "line": 3563,
+      "quote": "UClass* SearchClass = SearchType::StaticClass();",
+      "at": "2026-07-11T20:49:42.658Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavFilters\\NavigationQueryFilter.h",
+      "line": 127,
+      "quote": "static FSharedConstNavQueryFilter GetQueryFilter(const ANavigationData& NavData, TSubclassOf<UNavigationQueryFilter> FilterClass = T::StaticClass())",
+      "at": "2026-07-11T20:49:42.658Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationOctreeController.h",
+      "line": 79,
+      "quote": "inline void AddChild(FNavigationElementHandle Parent, const TSharedRef<const FNavigationElement>& Child);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationOctreeController.h",
+      "line": 143,
+      "quote": "void FNavigationOctreeController::AddChild(const FNavigationElementHandle Parent, const TSharedRef<const FNavigationElement>& Child)",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationDataHandler.cpp",
+      "line": 94,
+      "quote": "OctreeController.AddChild(FNavigationElementHandle(NavigationParent), ElementRef);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\WorldPartitionEditorSpatialHash.h",
+      "line": 152,
+      "quote": "inline void AddChildNode(uint32 ChildIndex)",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\ActorDescContainer.h",
+      "line": 171,
+      "quote": "void AddChildActorToParentMap(FWorldPartitionActorDesc* ActorDesc);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\VisualLogger\\VisualLoggerTypes.h",
+      "line": 153,
+      "quote": "void AddChild(const FVisualLogStatusCategory& Child);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\VisualLogger\\VisualLoggerTypes.h",
+      "line": 477,
+      "quote": "void FVisualLogStatusCategory::AddChild(const FVisualLogStatusCategory& Child)",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Blueprint.cpp",
+      "line": 1993,
+      "quote": "Graph->GetAllChildrenGraphs(Graphs);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Blueprint.cpp",
+      "line": 2002,
+      "quote": "Graph->GetAllChildrenGraphs(Graphs);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Blueprint.cpp",
+      "line": 2012,
+      "quote": "Graph->GetAllChildrenGraphs(Graphs);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Blueprint.cpp",
+      "line": 2022,
+      "quote": "Graph->GetAllChildrenGraphs(Graphs);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Blueprint.cpp",
+      "line": 2035,
+      "quote": "Graph->GetAllChildrenGraphs(Graphs);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Blueprint.cpp",
+      "line": 2052,
+      "quote": "Graph->GetAllChildrenGraphs(Graphs);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\Filter\\WorldPartitionActorFilter.h",
+      "line": 38,
+      "quote": "ENGINE_API void AddChildFilter(const FGuid& InGuid, FWorldPartitionActorFilter* InChildFilter);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\DataLayer\\DataLayerInstance.h",
+      "line": 248,
+      "quote": "ENGINE_API void AddChild(UDataLayerInstance* DataLayer);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\WorldPartition\\WorldPartitionSubsystem.cpp",
+      "line": 343,
+      "quote": "Filter.AddChildFilter(ContainerActorDesc->GetGuid(), ChildFilter);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\WorldPartition\\WorldPartitionEditorSpatialHash.cpp",
+      "line": 184,
+      "quote": "ParentCellNode.AddChildNode(ChildIndex);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\WorldPartition\\WorldPartitionEditorSpatialHash.cpp",
+      "line": 222,
+      "quote": "CellNode.AddChildNode(ChildIndex);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\EdGraph\\EdGraph.cpp",
+      "line": 323,
+      "quote": "void UEdGraph::GetAllChildrenGraphs(TArray<UEdGraph*>& Graphs) const",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\EdGraph\\EdGraph.cpp",
+      "line": 332,
+      "quote": "Graph->GetAllChildrenGraphs(Graphs);",
+      "at": "2026-07-11T20:52:19.244Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\EditorObjectVersion.h",
+      "line": 78,
+      "quote": "// Change to UScrollBar and UScrollBox thickness property (removed implicit padding of 2, so thickness value must be incremented by 4).",
+      "at": "2026-07-11T20:52:36.385Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationDataHandler.cpp",
+      "line": 368,
+      "quote": "OctreeController.GetChildren(Element->GetHandle(), ChildNodes);",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationDataHandler.cpp",
+      "line": 372,
+      "quote": "bool bShouldRegisterChildren = true;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationDataHandler.cpp",
+      "line": 384,
+      "quote": "bShouldRegisterChildren = NewId.IsValidId();",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationDataHandler.cpp",
+      "line": 388,
+      "quote": "bShouldRegisterChildren = false;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationDataHandler.cpp",
+      "line": 391,
+      "quote": "return bShouldRegisterChildren;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationDataHandler.cpp",
+      "line": 406,
+      "quote": "if (const bool bShouldRegisterChildren = ElementOwnerUpdateFunc())",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationDataHandler.cpp",
+      "line": 610,
+      "quote": "OctreeController.GetChildren(ElementData.SourceElement->GetHandle(), ChildNodes);",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationOctreeController.h",
+      "line": 81,
+      "quote": "inline void GetChildren(FNavigationElementHandle Parent, TArray<const TSharedRef<const FNavigationElement>>& OutChildren) const;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationOctreeController.h",
+      "line": 163,
+      "quote": "void FNavigationOctreeController::GetChildren(const FNavigationElementHandle Parent, TArray<const TSharedRef<const FNavigationElement>>& OutChildren) const",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationOctreeController.h",
+      "line": 165,
+      "quote": "OctreeParentChildNodesMap.MultiFind(Parent, OutChildren);",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\SoundEffectPresetWidgetInterface.h",
+      "line": 6,
+      "quote": "#include \"AudioPanelWidgetInterface.h\"",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\SoundEffectPresetWidgetInterface.h",
+      "line": 18,
+      "quote": "class USoundEffectPresetWidgetInterface : public UAudioPanelWidgetInterface",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\SoundEffectPresetWidgetInterface.h",
+      "line": 23,
+      "quote": "class ISoundEffectPresetWidgetInterface : public IAudioPanelWidgetInterface",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\AudioPanelWidgetInterface.h",
+      "line": 10,
+      "quote": "#include \"AudioPanelWidgetInterface.generated.h\"",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\AudioPanelWidgetInterface.h",
+      "line": 14,
+      "quote": "class UAudioPanelWidgetInterface : public UInterface",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\AudioPanelWidgetInterface.h",
+      "line": 19,
+      "quote": "class IAudioPanelWidgetInterface",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundNodeLooping.h",
+      "line": 46,
+      "quote": "void ResetChildren(const UPTRINT NodeWaveInstanceHash, FActiveSound& ActiveSound, int32& CurrentLoopCount);",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundMix.h",
+      "line": 151,
+      "quote": "uint32 bApplyToChildren:1;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundMix.h",
+      "line": 162,
+      "quote": ", bApplyToChildren(false)",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundMix.h",
+      "line": 224,
+      "quote": "bool CheckForDependencyLoop(USoundClass* SoundClass, TArray<USoundClass*>& ProblemClasses, bool CheckChildren) const;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 374,
+      "quote": "[[nodiscard]] FOctreeChildNodeSubset GetIntersectingChildren(const FBoxCenterAndExtent& BoundingBox) const;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 656,
+      "quote": "const FOctreeChildNodeSubset IntersectingChildSubset = NodeContext.GetIntersectingChildren(BoxBounds);",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 688,
+      "quote": "const FOctreeChildNodeSubset IntersectingChildSubset = NodeContext.GetIntersectingChildren(BoxBounds);",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 1116,
+      "quote": "Children[ChildRef.Index] = NULL;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 1125,
+      "quote": "delete Children[ChildRef.Index];",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 1140,
+      "quote": "return Children[ChildRef.Index] != NULL && Children[ChildRef.Index]->InclusiveNumElements > 0;",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 1144,
+      "quote": "return Children[ChildRef.Index];",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 1163,
+      "quote": "if (Children[ChildRef.Index])",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 1165,
+      "quote": "Children[ChildRef.Index]->ShrinkElements();",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GenericOctree.h",
+      "line": 1179,
+      "quote": "if (Children[ChildRef.Index])",
+      "at": "2026-07-11T20:52:40.709Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Internationalization\\PolyglotTextData.h",
+      "line": 137,
+      "quote": "CORE_API FText GetText() const;",
+      "at": "2026-07-11T20:54:57.109Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Misc\\ConfigCacheIni.h",
+      "line": 464,
+      "quote": "CORE_API bool GetText(const TCHAR* Section, const TCHAR* Key, FText& Value) const;",
+      "at": "2026-07-11T20:54:57.109Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Misc\\ConfigCacheIni.h",
+      "line": 824,
+      "quote": "bool GetText(const TCHAR* Section, const TCHAR* Key, FText& Value) const",
+      "at": "2026-07-11T20:54:57.109Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Misc\\ConfigCacheIni.h",
+      "line": 828,
+      "quote": "return ConfigSection->GetText(Section, Key, Value);",
+      "at": "2026-07-11T20:54:57.109Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundWave.h",
+      "line": 416,
+      "quote": "class USoundWave : public USoundBase, public IAudioProxyDataFactory, public IInterface_AsyncCompilation",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundWave.h",
+      "line": 1179,
+      "quote": "//~ Begin USoundBase Interface.",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundWave.h",
+      "line": 1189,
+      "quote": "//~ End USoundBase Interface.",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundSourceBus.h",
+      "line": 24,
+      "quote": "// A source bus is a type of USoundBase and can be \"played\" like any sound.",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundSourceBus.h",
+      "line": 77,
+      "quote": "//~ Begin USoundBase Interface.",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundSourceBus.h",
+      "line": 80,
+      "quote": "//~ End USoundBase Interface.",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundCue.h",
+      "line": 90,
+      "quote": "class USoundCue : public USoundBase",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundCue.h",
+      "line": 170,
+      "quote": "//~ Begin USoundBase Interface.",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundCue.h",
+      "line": 186,
+      "quote": "//~ End USoundBase Interface.",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundCue.h",
+      "line": 365,
+      "quote": "ENGINE_API void CreateChildTransmitter(UPTRINT InWaveInstanceHash, USoundBase& InSound, Audio::FParameterTransmitterInitParams InTransmitterInitParams);",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundConcurrency.h",
+      "line": 25,
+      "quote": "/** Sound instance (USoundBase) object ID. */",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundBase.h",
+      "line": 108,
+      "quote": "class USoundBase : public UObject, public IAudioPropertiesSheetAssetUserInterface, public IInterface_AssetUserData",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundBase.h",
+      "line": 120,
+      "quote": "/** Supplement the USoundBase with a list of transient editor-only properties */",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\QuartzSubscription.h",
+      "line": 38,
+      "quote": "*\t\t(see UQuartzClockHandle or UAudioComponent as implementation examples)",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\DialogueWave.h",
+      "line": 19,
+      "quote": "class USoundBase;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\DialogueWave.h",
+      "line": 136,
+      "quote": "ENGINE_API USoundBase* GetWaveFromContext(const FDialogueContext& Context) const;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\DialogueWave.h",
+      "line": 137,
+      "quote": "ENGINE_API USoundBase* GetWaveFromContext(const FDialogueContextMapping& ContextMapping) const;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\DialogueWave.h",
+      "line": 158,
+      "quote": "void CopySoundBasePropertiesToProxy(const USoundBase* InSoundBase, USoundBase* Proxy);",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\DialogueSoundWaveProxy.h",
+      "line": 17,
+      "quote": "class UDialogueSoundWaveProxy : public USoundBase",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 72,
+      "quote": "class UAudioComponent;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\AmbientSound.h",
+      "line": 19,
+      "quote": "TObjectPtr<class UAudioComponent> AudioComponent;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\AmbientSound.h",
+      "line": 47,
+      "quote": "class UAudioComponent* GetAudioComponent() const { return AudioComponent; }",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\SoundParameterControllerInterface.h",
+      "line": 13,
+      "quote": "class USoundBase;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\SoundParameterControllerInterface.h",
+      "line": 57,
+      "quote": "/** Returns the USoundBase used to initialize instance parameters to update. */",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\SoundParameterControllerInterface.h",
+      "line": 58,
+      "quote": "virtual USoundBase* GetSound() = 0;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\ISoundHandleSystem.h",
+      "line": 8,
+      "quote": "class USoundBase;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\ISoundHandleSystem.h",
+      "line": 48,
+      "quote": "virtual Audio::FSoundHandleID CreateSoundHandle(USoundBase* Sound, ISoundHandleOwner* Owner) { return INDEX_NONE; }",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio\\ISoundHandleOwner.h",
+      "line": 17,
+      "quote": "Audio::EResult CreateSoundHandle(USoundBase* Sound, Audio::FSoundHandleID& OutSoundHandleID)",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ActiveSound.h",
+      "line": 19,
+      "quote": "class USoundBase;",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ActiveSound.h",
+      "line": 98,
+      "quote": "// The priority of sound, which is the product of the component priority and the USoundBased priority",
+      "at": "2026-07-11T21:02:29.019Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundNodeAttenuation.h",
+      "line": 8,
+      "quote": "#include \"Sound/SoundAttenuation.h\"",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundNodeAttenuation.h",
+      "line": 25,
+      "quote": "TObjectPtr<USoundAttenuation> AttenuationSettings;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundNodeAttenuation.h",
+      "line": 28,
+      "quote": "FSoundAttenuationSettings AttenuationOverrides;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundNodeAttenuation.h",
+      "line": 40,
+      "quote": "ENGINE_API const FSoundAttenuationSettings* GetAttenuationSettingsToApply() const;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 16,
+      "quote": "#include \"Sound/SoundAttenuation.h\"",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 125,
+      "quote": "/** accessor for our Spatialization enabled CVar. */",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 126,
+      "quote": "ENGINE_API bool IsSpatializationCVarEnabled();",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 277,
+      "quote": "uint32 bSpatializationIsExternalSend : 1;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 281,
+      "quote": "uint32 bUseSpatialization:1;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 309,
+      "quote": "uint32 bReportedSpatializationWarning:1;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 321,
+      "quote": "ESoundSpatializationAlgorithm SpatializationMethod;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 324,
+      "quote": "USpatializationPluginSourceSettingsBase* SpatializationPluginSettings;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 496,
+      "quote": "void SetUseSpatialization(const bool InUseSpatialization) { bUseSpatialization = InUseSpatialization; }",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 499,
+      "quote": "ENGINE_API bool GetUseSpatialization() const;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 502,
+      "quote": "void SetSpatializationIsExternalSend(const bool InSpatializationIsExternalSend) { bSpatializationIsExternalSend = InSpatializationIsExternalSend; }",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 505,
+      "quote": "bool GetSpatializationIsExternalSend() const {\treturn bSpatializationIsExternalSend;}",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Audio.h",
+      "line": 715,
+      "quote": "ENGINE_API FSpatializationParams GetSpatializationParams();",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundEffectSource.h",
+      "line": 103,
+      "quote": "FSpatializationParams SpatParams;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundEffectSource.h",
+      "line": 111,
+      "quote": ", SpatParams(FSpatializationParams())",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundCue.h",
+      "line": 8,
+      "quote": "#include \"Sound/SoundAttenuation.h\"",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundCue.h",
+      "line": 107,
+      "quote": "FSoundAttenuationSettings AttenuationOverrides;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundCue.h",
+      "line": 179,
+      "quote": "ENGINE_API virtual const FSoundAttenuationSettings* GetAttenuationSettingsToApply() const override;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundBase.h",
+      "line": 31,
+      "quote": "class USoundAttenuation;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundBase.h",
+      "line": 43,
+      "quote": "struct FSoundAttenuationSettings;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundBase.h",
+      "line": 222,
+      "quote": "TObjectPtr<USoundAttenuation> AttenuationSettings;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundBase.h",
+      "line": 305,
+      "quote": "ENGINE_API virtual const FSoundAttenuationSettings* GetAttenuationSettingsToApply() const;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuationEditorSettings.h",
+      "line": 5,
+      "quote": "#include \"SoundAttenuationEditorSettings.generated.h\"",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuationEditorSettings.h",
+      "line": 11,
+      "quote": "class USoundAttenuationEditorSettings : public UObject",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 8,
+      "quote": "#include \"SoundAttenuationEditorSettings.h\"",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 11,
+      "quote": "#include \"SoundAttenuation.generated.h\"",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 17,
+      "quote": "class USpatializationPluginSourceSettingsBase;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 31,
+      "quote": "enum ESoundSpatializationAlgorithm : int",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 36,
+      "quote": "// Spatialization method provided by spatialization plugin currently selected in the project settings",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 79,
+      "quote": "struct FSoundAttenuationPluginSettings",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 84,
+      "quote": "UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttenuationSpatialization, meta = (DisplayName = \"Spatialization Plugin Settings\"))",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 85,
+      "quote": "TArray<TObjectPtr<USpatializationPluginSourceSettingsBase>> SpatializationPluginSettingsArray;",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 103,
+      "quote": "struct TStructOpsTypeTraits<FSoundAttenuationPluginSettings> : public TStructOpsTypeTraitsBase2<FSoundAttenuationPluginSettings>",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 138,
+      "quote": "struct FSoundAttenuationSettings : public FBaseAttenuationSettings",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 147,
+      "quote": "UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttenuationSpatialization, meta = (DisplayName = \"Enable Spatialization\"))",
+      "at": "2026-07-11T21:02:39.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\SplineNavModifierComponent.h",
+      "line": 66,
+      "quote": "virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;",
+      "at": "2026-07-11T21:04:55.218Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationSystem.h",
+      "line": 1401,
+      "quote": "void OnWorldPostActorTick(UWorld* World, ELevelTick TickType, float DeltaTime)",
+      "at": "2026-07-11T21:04:55.218Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationData.h",
+      "line": 635,
+      "quote": "NAVIGATIONSYSTEM_API virtual void TickActor(float DeltaTime, enum ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;",
+      "at": "2026-07-11T21:04:55.218Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\SplineNavModifierComponent.cpp",
+      "line": 147,
+      "quote": "void USplineNavModifierComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)",
+      "at": "2026-07-11T21:04:55.218Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 165,
+      "quote": "struct FActorComponentTickFunction;",
+      "at": "2026-07-11T21:04:55.365Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\PhysicsField\\PhysicsFieldComponent.h",
+      "line": 237,
+      "quote": "ENGINE_API virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;",
+      "at": "2026-07-11T21:04:55.365Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\AudioComponent.cpp",
+      "line": 1359,
+      "quote": "void UAudioComponent::SetAttenuationSettings(USoundAttenuation* InSoundAttenuation)",
+      "at": "2026-07-11T21:07:36.998Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\AudioComponent.h",
+      "line": 379,
+      "quote": "UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attenuation, BlueprintSetter = SetAttenuationSettings, meta = (EditCondition = \"!bOverrideAttenuation\", DisplayAfter = \"bOverrideAttenuation\", EditConditionHides))",
+      "at": "2026-07-11T21:07:36.998Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\AudioComponent.h",
+      "line": 383,
+      "quote": "ENGINE_API void SetAttenuationSettings(USoundAttenuation* InAttenuationSettings);",
+      "at": "2026-07-11T21:07:36.998Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ComponentInstanceDataCache.cpp",
+      "line": 797,
+      "quote": "SceneComponent->AttachToComponent(Actor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);",
+      "at": "2026-07-11T21:07:37.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Controller.cpp",
+      "line": 223,
+      "quote": "RootComponent->AttachToComponent(InPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);",
+      "at": "2026-07-11T21:07:37.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActorConstruction.cpp",
+      "line": 366,
+      "quote": "SceneComp->AttachToComponent(AttachParent, FAttachmentTransformRules::KeepRelativeTransform, SceneComp->GetAttachSocketName());",
+      "at": "2026-07-11T21:07:37.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActorConstruction.cpp",
+      "line": 625,
+      "quote": "ChildRoot->AttachToComponent(AttachParentComponent, FAttachmentTransformRules::KeepWorldTransform, SocketName);",
+      "at": "2026-07-11T21:07:37.260Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Tests\\NetTestHelpers.h",
+      "line": 45,
+      "quote": "UGameplayStatics::GetAllActorsOfClass(Cast<UObject>(World), T::StaticClass(), Actors);",
+      "at": "2026-07-11T21:07:37.400Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Actor.cpp",
+      "line": 6612,
+      "quote": "APlayerController* PC = UGameplayStatics::GetPlayerController(this, PlayerIndex);",
+      "at": "2026-07-11T21:07:37.400Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Camera\\CameraActor.cpp",
+      "line": 112,
+      "quote": "APlayerController* PC = UGameplayStatics::GetPlayerController(this, PlayerIndex);",
+      "at": "2026-07-11T21:07:37.400Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\AudioComponent.cpp",
+      "line": 280,
+      "quote": "UGameplayStatics::PrimeSound(Sound);",
+      "at": "2026-07-11T21:07:37.400Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\VT\\RuntimeVirtualTexture.h",
+      "line": 108,
+      "quote": "static int32 GetClampedTileCount(int32 InTileCount, bool InAdaptive) { return 1 << FMath::Clamp(InTileCount, 0, GetMaxTileCountLog2(InAdaptive)); }",
+      "at": "2026-07-11T21:07:37.812Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\VT\\RuntimeVirtualTexture.h",
+      "line": 113,
+      "quote": "static int32 GetClampedTileSize(int32 InTileSize) { return 1 << FMath::Clamp(InTileSize + 6, 6, 10); }",
+      "at": "2026-07-11T21:07:37.812Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\VT\\RuntimeVirtualTexture.h",
+      "line": 116,
+      "quote": "int32 GetTileBorderSize() const { return 2 * FMath::Clamp(TileBorderSize, 0, 4); }",
+      "at": "2026-07-11T21:07:37.812Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\VT\\RuntimeVirtualTexture.h",
+      "line": 138,
+      "quote": "int32 GetRemoveLowMips() const { return FMath::Clamp(RemoveLowMips, 0, 5); }",
+      "at": "2026-07-11T21:07:37.812Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1649,
+      "quote": "UAudioComponent* UGameplayStatics::CreateSound2D(const UObject* WorldContextObject, USoundBase* Sound, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundConcurrency* ConcurrencySettings, bool bPersistAcrossLevelTransition, bool bAutoDestroy)",
+      "at": "2026-07-11T21:07:37.955Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1693,
+      "quote": "UAudioComponent* AudioComponent = CreateSound2D(WorldContextObject, Sound, VolumeMultiplier, PitchMultiplier, StartTime, ConcurrencySettings, bPersistAcrossLevelTransition, bAutoDestroy);",
+      "at": "2026-07-11T21:07:37.955Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Kismet\\GameplayStatics.h",
+      "line": 715,
+      "quote": "static ENGINE_API UAudioComponent* CreateSound2D(const UObject* WorldContextObject, USoundBase* Sound, float VolumeMultiplier = 1.f, float PitchMultiplier = 1.f, float StartTime = 0.f, USoundConcurrency* ConcurrencySettings = nullptr, bool bPersistAcrossLevelTransition = false, bool bAutoDestroy = true);",
+      "at": "2026-07-11T21:07:37.955Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GuardedInt.h",
+      "line": 371,
+      "quote": "[[nodiscard]] TGuardedInt Abs() const",
+      "at": "2026-07-11T21:07:38.090Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\GuardedInt.h",
+      "line": 386,
+      "quote": "// Abs on unsigned integers is the identity function, and can't overflow.",
+      "at": "2026-07-11T21:07:38.090Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\Color.h",
+      "line": 344,
+      "quote": "return FMath::Abs(this->R - ColorB.R) < Tolerance && FMath::Abs(this->G - ColorB.G) < Tolerance && FMath::Abs(this->B - ColorB.B) < Tolerance && FMath::Abs(this->A - ColorB.A) < Tolerance;",
+      "at": "2026-07-11T21:07:38.090Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\OrientedBox.h",
+      "line": 100,
+      "quote": "FVector::FReal AbsProjectedAxisX = FMath::Abs(ExtentX * (Axis | AxisX));",
+      "at": "2026-07-11T21:07:38.090Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 443,
+      "quote": "class USoundAttenuation : public UObject",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 38,
+      "quote": "class USoundAttenuation;",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 711,
+      "quote": "USoundAttenuation* AttenuationSettings;",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 755,
+      "quote": "ENGINE_API void PlaySoundAtLocation(USoundBase* Sound, UWorld* World, float VolumeMultiplier, float PitchMultiplier, float StartTime, const FVector& Location, const FRotator& Rotation, USoundAttenuation* AttenuationSettings = nullptr, USoundConcurrency* ConcurrencySettings = nullptr, const TArray<FAudioParameter>* Params = nullptr, const AActor* OwningActor = nullptr);",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 757,
+      "quote": "ENGINE_API void PlaySoundAtLocation(USoundBase* Sound, UWorld* World, float VolumeMultiplier, float PitchMultiplier, float StartTime, const FVector& Location, const FRotator& Rotation, USoundAttenuation* AttenuationSettings, USoundConcurrency* Concurrency, TArray<FAudioParameter>&& Params, const AActor* OwningActor = nullptr);",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ActiveSound.h",
+      "line": 298,
+      "quote": "TObjectPtr<USoundAttenuation> SoundAttenuation;",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ActiveSound.h",
+      "line": 355,
+      "quote": "ENGINE_API void SetAttenuationSettingsAsset(TObjectPtr<USoundAttenuation> InSoundAttenuation);",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Net\\VoiceConfig.h",
+      "line": 43,
+      "quote": "class USoundAttenuation;",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Net\\VoiceConfig.h",
+      "line": 59,
+      "quote": "TObjectPtr<USoundAttenuation> AttenuationSettings;",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActiveSound.cpp",
+      "line": 413,
+      "quote": "void FActiveSound::SetAttenuationSettingsAsset(TObjectPtr<USoundAttenuation> InSoundAttenuation)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\AudioDevice.cpp",
+      "line": 6679,
+      "quote": "void FAudioDevice::PlaySoundAtLocation(USoundBase* Sound, UWorld* World, float VolumeMultiplier, float PitchMultiplier, float StartTime, const FVector& Location, const FRotator& Rotation, USoundAttenuation* AttenuationSettings, USoundConcurrency* Concurrency, TArray<FAudioParameter>&& Params, const AActor* OwningActor)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\AudioDevice.cpp",
+      "line": 6753,
+      "quote": "void FAudioDevice::PlaySoundAtLocation(USoundBase* Sound, UWorld* World, float VolumeMultiplier, float PitchMultiplier, float StartTime, const FVector& Location, const FRotator& Rotation, USoundAttenuation* AttenuationSettings, USoundConcurrency* Concurrency, const TArray<FAudioParameter>* Params, const AActor* OwningActor)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\AudioComponent.cpp",
+      "line": 1329,
+      "quote": "const TObjectPtr<USoundAttenuation> UAudioComponent::GetAttenuationSettingsAsset() const",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1701,
+      "quote": "void UGameplayStatics::PlaySoundAtLocation(const UObject* WorldContextObject, class USoundBase* Sound, FVector Location, FRotator Rotation, float VolumeMultiplier, float PitchMultiplier, float StartTime, class USoundAttenuation* AttenuationSettings, class USoundConcurrency* ConcurrencySettings, const AActor* OwningActor, const UInitialActiveSoundParams* InitialParams)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1732,
+      "quote": "UAudioComponent* UGameplayStatics::SpawnSoundAtLocation(const UObject* WorldContextObject, USoundBase* Sound, FVector Location, FRotator Rotation, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundAttenuation* AttenuationSettings, USoundConcurrency* ConcurrencySettings, bool bAutoDestroy)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1779,
+      "quote": "UAudioComponent* UGameplayStatics::SpawnSoundAttached(USoundBase* Sound, USceneComponent* AttachToComponent, FName AttachPointName, FVector Location, FRotator Rotation, EAttachLocation::Type LocationType, bool bStopWhenAttachedToDestroyed, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundAttenuation* AttenuationSettings, USoundConcurrency* ConcurrencySettings, bool bAutoDestroy)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1884,
+      "quote": "void UGameplayStatics::PlayDialogueAtLocation(const UObject* WorldContextObject, UDialogueWave* Dialogue, const FDialogueContext& Context, FVector Location, FRotator Rotation, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundAttenuation* AttenuationSettings)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1892,
+      "quote": "UAudioComponent* UGameplayStatics::SpawnDialogueAtLocation(const UObject* WorldContextObject, UDialogueWave* Dialogue, const FDialogueContext& Context, FVector Location, FRotator Rotation, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundAttenuation* AttenuationSettings, bool bAutoDestroy)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1901,
+      "quote": "UAudioComponent* UGameplayStatics::SpawnDialogueAttached(UDialogueWave* Dialogue, const FDialogueContext& Context, USceneComponent* AttachToComponent, FName AttachPointName, FVector Location, FRotator Rotation, EAttachLocation::Type LocationType, bool bStopWhenAttachedToDestroyed, float VolumeMultiplier, float PitchMultiplier, float StartTime, USoundAttenuation* AttenuationSettings, bool bAutoDestroy)",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\SoundAttenuation.cpp",
+      "line": 12,
+      "quote": "USoundAttenuation implementation.",
+      "at": "2026-07-11T21:07:45.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\SoundAttenuation.cpp",
+      "line": 85,
+      "quote": "if (const USoundAttenuationEditorSettings* SoundAttenuationEditorSettings = GetDefault<USoundAttenuationEditorSettings>())",
+      "at": "2026-07-11T21:07:45.661Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\SoundAttenuation.cpp",
+      "line": 250,
+      "quote": "USoundAttenuation::USoundAttenuation(const FObjectInitializer& ObjectInitializer)",
+      "at": "2026-07-11T21:07:45.661Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Kismet\\GameplayStatics.h",
+      "line": 33,
+      "quote": "class USoundAttenuation;",
+      "at": "2026-07-11T21:07:45.661Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Kismet\\GameplayStatics.h",
+      "line": 732,
+      "quote": "static ENGINE_API void PlaySoundAtLocation(const UObject* WorldContextObject, USoundBase* Sound, FVector Location, FRotator Rotation, float VolumeMultiplier = 1.f, float PitchMultiplier = 1.f, float StartTime = 0.f, class USoundAttenuation* AttenuationSettings = nullptr, USoundConcurrency* ConcurrencySettings = nullptr, const AActor* OwningActor = nullptr, const UInitialActiveSoundParams* InitialParams = nullptr);",
+      "at": "2026-07-11T21:07:45.661Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Kismet\\GameplayStatics.h",
+      "line": 734,
+      "quote": "static void PlaySoundAtLocation(const UObject* WorldContextObject, USoundBase* Sound, FVector Location, float VolumeMultiplier = 1.f, float PitchMultiplier = 1.f, float StartTime = 0.f, class USoundAttenuation* AttenuationSettings = nullptr, USoundConcurrency* ConcurrencySettings = nullptr, const UInitialActiveSoundParams* InitialParams = nullptr)",
+      "at": "2026-07-11T21:07:45.661Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Sound\\SoundAttenuation.h",
+      "line": 418,
+      "quote": "ENGINE_API virtual void CollectAttenuationShapesForVisualization(TMultiMap<EAttenuationShape::Type, FBaseAttenuationSettings::AttenuationShapeDetails>& ShapeDetailsMap) const override;",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ActiveSound.h",
+      "line": 716,
+      "quote": "ENGINE_API void CollectAttenuationShapesForVisualization(TMultiMap<EAttenuationShape::Type, FBaseAttenuationSettings::AttenuationShapeDetails>& ShapeDetailsMap) const;",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActiveSound.cpp",
+      "line": 1808,
+      "quote": "void FActiveSound::CollectAttenuationShapesForVisualization(TMultiMap<EAttenuationShape::Type, FBaseAttenuationSettings::AttenuationShapeDetails>& ShapeDetailsMap) const",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActiveSound.cpp",
+      "line": 1816,
+      "quote": "AttenuationSettings.CollectAttenuationShapesForVisualization(ShapeDetailsMap);",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActiveSound.cpp",
+      "line": 1820,
+      "quote": "SoundAttenuation->Attenuation.CollectAttenuationShapesForVisualization(ShapeDetailsMap);",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActiveSound.cpp",
+      "line": 1835,
+      "quote": "AttenuationSettingsToApply->CollectAttenuationShapesForVisualization(ShapeDetailsMap);",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActiveSound.cpp",
+      "line": 2143,
+      "quote": "if (Settings->AttenuationShape == EAttenuationShape::Sphere)",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 19,
+      "quote": ", AttenuationShape(EAttenuationShape::Sphere)",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 22,
+      "quote": ", AttenuationShapeExtents(400.f, 0.f, 0.f)",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 36,
+      "quote": "switch (AttenuationShape)",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 38,
+      "quote": "case EAttenuationShape::Sphere:",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 39,
+      "quote": "case EAttenuationShape::Cone:",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 41,
+      "quote": "MaxDimension += AttenuationShapeExtents.X;",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 44,
+      "quote": "case EAttenuationShape::Box:",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 46,
+      "quote": "MaxDimension += FMath::Max3(AttenuationShapeExtents.X, AttenuationShapeExtents.Y, AttenuationShapeExtents.Z);",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 49,
+      "quote": "case EAttenuationShape::Capsule:",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 51,
+      "quote": "MaxDimension += FMath::Max(AttenuationShapeExtents.X, AttenuationShapeExtents.Y);",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 142,
+      "quote": "switch (AttenuationShape)",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 144,
+      "quote": "case EAttenuationShape::Sphere:",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Attenuation.cpp",
+      "line": 146,
+      "quote": "const float Distance = FMath::Max<float>(FVector::Dist( Origin.GetTranslation(), Location ) - AttenuationShapeExtents.X, 0.f);",
+      "at": "2026-07-11T21:08:01.410Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationInvokerComponent.h",
+      "line": 51,
+      "quote": "NAVIGATIONSYSTEM_API virtual void Deactivate() override;",
+      "at": "2026-07-11T21:16:07.511Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationInvokerComponent.cpp",
+      "line": 32,
+      "quote": "void UNavigationInvokerComponent::Deactivate()",
+      "at": "2026-07-11T21:16:07.511Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationInvokerComponent.cpp",
+      "line": 34,
+      "quote": "Super::Deactivate();",
+      "at": "2026-07-11T21:16:07.511Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Misc\\CoreDelegates.h",
+      "line": 351,
+      "quote": "// Called when the application has been reactivated (reverse any processing done in the Deactivate delegate)",
+      "at": "2026-07-11T21:16:07.511Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Particles\\ParticleSystemComponent.h",
+      "line": 332,
+      "quote": "/** Parameters controlling the spawning behavior of FX systems via the SpawnSystemAtLocation and SpawnSystemAttached. */",
+      "at": "2026-07-11T21:16:08.048Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\UnrealMathUtility.h",
+      "line": 1084,
+      "quote": "[[nodiscard]] static inline auto GetMappedRangeValueClamped(const UE::Math::TVector2<T>& InputRange, const UE::Math::TVector2<T>& OutputRange, const T2 Value)",
+      "at": "2026-07-11T21:32:09.253Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\UnrealMathUtility.h",
+      "line": 1111,
+      "quote": "[[nodiscard]] static inline T GetMappedRangeValueClamped(const TRange<T>& InputRange, const TRange<T>& OutputRange, const T Value)",
+      "at": "2026-07-11T21:32:09.253Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActiveSound.cpp",
+      "line": 1873,
+      "quote": "OutputFrequency = FMath::GetMappedRangeValueClamped(AbsorptionDistanceRange, FrequencyRange, ListenerData.AttenuationDistance);",
+      "at": "2026-07-11T21:32:09.253Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActiveSound.cpp",
+      "line": 1897,
+      "quote": "OutputFrequency = FMath::GetMappedRangeValueClamped(FVector2f(0.0f, 1.0f), FVector2f(ActualFreqRange), MappedFrequencyValue);",
+      "at": "2026-07-11T21:32:09.253Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavMesh\\RecastNavMeshGenerator.h",
+      "line": 269,
+      "quote": "UE_CLOG(!IntFitsIn<int32>(Value), LogNavigation, Warning,",
+      "at": "2026-07-11T22:05:37.798Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Logging\\LogMacros.h",
+      "line": 209,
+      "quote": "#define UE_CLOG(Condition, CategoryName, Verbosity, Format, ...) \\",
+      "at": "2026-07-11T22:05:37.798Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Logging\\LogMacros.h",
+      "line": 325,
+      "quote": "#define UE_CLOG(Condition, CategoryName, Verbosity, Format, ...) \\",
+      "at": "2026-07-11T22:05:37.798Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\RecastNavMesh.cpp",
+      "line": 731,
+      "quote": "UE_CLOG(TileSizeUU < GetCellSize((ENavigationDataResolution)Index), LogNavigation, Error, TEXT(\"%s: TileSizeUU (%f) being less than CellSize (%f) is an invalid case and will cause navmesh generation issues.\")",
+      "at": "2026-07-11T22:05:37.798Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\GenericPlatform\\GenericPlatformMath.h",
+      "line": 521,
+      "quote": "[[nodiscard]] static UE_FORCEINLINE_HINT float Sin( float Value ) { return sinf(Value); }",
+      "at": "2026-07-11T22:05:37.945Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\GenericPlatform\\GenericPlatformMath.h",
+      "line": 522,
+      "quote": "[[nodiscard]] static UE_FORCEINLINE_HINT double Sin( double Value ) { return sin(Value); }",
+      "at": "2026-07-11T22:05:37.945Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\RecastNavMeshGenerator.cpp",
+      "line": 905,
+      "quote": "SpherePos.Y = SphylInfo.Radius * FMath::Sin(Angle);",
+      "at": "2026-07-11T22:05:37.945Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\RecastNavMeshGenerator.cpp",
+      "line": 971,
+      "quote": "ArcVert.Y = SphereInfo.Radius * FMath::Sin(Angle);",
+      "at": "2026-07-11T22:05:37.945Z"
+    }
+  ]
+}

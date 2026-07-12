@@ -51,6 +51,61 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parent.parent
 
+# Maps a beat's `store_as` name to the canonical field the manage_tools bridge
+# returns. Lets beats use intent-named telemetry keys (sync_events_recorded,
+# walk_volume, ...) without the bridge having to mirror every alias.
+STORE_AS_KEY_ALIASES = {
+    "total_events": "count",
+    "sync_events_recorded": "count",
+    "avg_latency_ms": "avg_latency_ms",
+    "max_latency_ms": "max_latency_ms",
+    "sync_latency_ms_max": "max_latency_ms",
+    "walk_volume": "last_volume",
+    "sprint_volume": "last_volume",
+}
+
+# ── execute_python telemetry fallback ──────────────────────────────────────
+# Single-line UE Python scripts (MUST be semicolon-separated; multi-line
+# crashes the execute_python handler at line ~22). Each getter ends with the
+# property value as the last expression so execute_python returns it.
+_TELEMETRY_SCRIPTS = {
+    "ClearFootstepSyncTelemetry": (
+        "import unreal; "
+        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
+        "for c in unreal.get_all_actor_components(a) "
+        "if 'SandSound' in str(type(c).__name__)]; "
+        "_cs[0].ClearFootstepSyncTelemetry() if _cs else None"
+    ),
+    "GetFootstepSyncEventCount": (
+        "import unreal; "
+        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
+        "for c in unreal.get_all_actor_components(a) "
+        "if 'SandSound' in str(type(c).__name__)]; "
+        "_cs[0].FootstepSyncEventCount if _cs else -1"
+    ),
+    "GetMaxFootstepSyncLatencyMs": (
+        "import unreal; "
+        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
+        "for c in unreal.get_all_actor_components(a) "
+        "if 'SandSound' in str(type(c).__name__)]; "
+        "_cs[0].MaxFootstepSyncLatencyMs if _cs else 999.0"
+    ),
+    "GetAverageFootstepSyncLatencyMs": (
+        "import unreal; "
+        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
+        "for c in unreal.get_all_actor_components(a) "
+        "if 'SandSound' in str(type(c).__name__)]; "
+        "_cs[0].AverageFootstepSyncLatencyMs if _cs else 999.0"
+    ),
+    "GetLastFootstepVolume": (
+        "import unreal; "
+        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
+        "for c in unreal.get_all_actor_components(a) "
+        "if 'SandSound' in str(type(c).__name__)]; "
+        "_cs[0].LastFootstepVolume if _cs else 0.0"
+    ),
+}
+
 
 class Sleepwalker:
     def __init__(self, beats_path: str, session: str, record: bool = True):
@@ -70,6 +125,13 @@ class Sleepwalker:
                 f"{tool}.{args.get('action')}: {sc.get('message', 'failed')[:120]}"
             )
         return sc.get("result") or {}
+
+    def _call_or_default(self, tool: str, args: dict, default: dict = None) -> dict:
+        """Like _call but returns default dict on failure instead of raising."""
+        try:
+            return self._call(tool, args)
+        except (RuntimeError, Exception):
+            return default or {}
 
     def _runtime(self) -> dict:
         return self._call("inspect", {"action": "runtime_report"})
@@ -102,7 +164,70 @@ class Sleepwalker:
         except (TypeError, ValueError):
             return None
 
-    def _key(self, key: str, hold_s: float):
+    # ── execute_python telemetry helpers ────────────────────────────────────
+    def _build_telemetry_python(self, cmd: str, action: dict) -> str | None:
+        """Return the single-line UE Python script for *cmd*, or None if
+        *cmd* is not a known telemetry command.
+
+        The returned string contains NO literal newlines — the MCP server's
+        execute_python handler crashes at line ~22 on multi-line code.
+        """
+        script = _TELEMETRY_SCRIPTS.get(cmd)
+        if script is not None:
+            # Verify the script is truly single-line (no \n)
+            if "\n" in script:
+                from warnings import warn
+
+                warn(f"_build_telemetry_python({cmd}): script contains newline!")
+        return script
+
+    @staticmethod
+    def _extract_scalar(result) -> float | int | None:
+        """Extract a numeric scalar from an execute_python MCP response.
+
+        Handles several common wrapping patterns the bridge may use:
+          - Raw value (42, 3.14)
+          - ``{"value": 42}`` or ``{"data": 42}`` or ``{"return_value": 42}``
+          - ``{"result": 42}``
+          - Nested ``{"data": {"value": 42}}``
+        Returns ``None`` when no numeric value can be extracted.
+        """
+        if result is None:
+            return None
+        if isinstance(result, (int, float)):
+            return result
+        if isinstance(result, str):
+            try:
+                return float(result)
+            except (ValueError, TypeError):
+                return None
+        if isinstance(result, dict):
+            # Direct key paths
+            for key in ("value", "data", "return_value", "result"):
+                val = result.get(key)
+                if isinstance(val, (int, float)):
+                    return val
+                if isinstance(val, str):
+                    try:
+                        return float(val)
+                    except (ValueError, TypeError):
+                        pass
+            # Nested dict: result.data.value / result.result.value
+            for outer_key in ("data", "result"):
+                outer = result.get(outer_key)
+                if isinstance(outer, dict):
+                    for inner_key in ("value", "data", "result"):
+                        val = outer.get(inner_key)
+                        if isinstance(val, (int, float)):
+                            return val
+        return None
+
+    def _key(self, key: str, hold_s: float, modifier: str | None = None):
+        if modifier:
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_down", "key": modifier},
+            )
         self._call(
             "control_editor",
             {"action": "simulate_input", "type": "key_down", "key": key},
@@ -111,12 +236,18 @@ class Sleepwalker:
         self._call(
             "control_editor", {"action": "simulate_input", "type": "key_up", "key": key}
         )
+        if modifier:
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_up", "key": modifier},
+            )
 
     # ---- beat machinery ----
     def _do_action(self, a: dict):
         if "key" in a:
             self.w.mark("action", {"key": a["key"], "hold_s": a.get("hold_s", 0.2)})
-            self._key(a["key"], float(a.get("hold_s", 0.2)))
+            modifier = "LeftShift" if a.get("shift") else None
+            self._key(a["key"], float(a.get("hold_s", 0.2)), modifier=modifier)
         elif "key_down" in a:
             # Press-and-leave-held (no auto-release): for verifying a state that only
             # exists while a key is down (e.g. crouch), since expects are only checked
@@ -213,6 +344,84 @@ class Sleepwalker:
                     "location": {"x": x, "y": y, "z": z},
                 },
             )
+        elif "command" in a:
+            cmd = a["command"]
+            self.w.mark("action", {"command": cmd})
+            call_args = {"action": cmd}
+            for k, v in a.items():
+                if k not in ("command",):
+                    call_args[k] = v
+
+            # ── Tier 1: manage_tools bridge ──
+            result = self._call_or_default("manage_tools", call_args)
+            command_succeeded = bool(result)
+
+            # ── Tier 2: execute_python fallback for telemetry commands ──
+            if not command_succeeded and cmd in _TELEMETRY_SCRIPTS:
+                py_script = self._build_telemetry_python(cmd, a)
+                if py_script:
+                    self.w.mark(
+                        "action_warning",
+                        {
+                            "command": cmd,
+                            "note": "manage_tools failed; trying execute_python",
+                        },
+                    )
+                    py_result = self._call_or_default(
+                        "system_control",
+                        {"action": "execute_python", "code": py_script},
+                    )
+                    if py_result:
+                        scalar = self._extract_scalar(py_result)
+                        if scalar is not None:
+                            # Getters returned a real value — store it.
+                            store_as = a.get("store_as")
+                            if store_as:
+                                if not hasattr(self, "telemetry_results"):
+                                    self.telemetry_results = {}
+                                self.telemetry_results[store_as] = scalar
+                            result = py_result
+                            command_succeeded = True
+                        elif cmd in (
+                            "ClearFootstepSyncTelemetry",
+                        ):
+                            # Void command: marked as succeeded even with no
+                            # return value — the call completed.
+                            result = {"telemetry_cleared": True}
+                            command_succeeded = True
+
+            # ── Tier 3: graceful degradation ──
+            if not command_succeeded:
+                self.w.mark(
+                    "action_warning",
+                    {
+                        "command": cmd,
+                        "error": (
+                            "manage_tools + execute_python failed; "
+                            "falling back to defaults"
+                        ),
+                    },
+                )
+                if not hasattr(self, "telemetry_results"):
+                    self.telemetry_results = {}
+                self.telemetry_results.setdefault("total_events", 0)
+                self.telemetry_results.setdefault("sync_events_recorded", 0)
+                self.telemetry_results.setdefault("avg_latency_ms", 999)
+                self.telemetry_results.setdefault("max_latency_ms", 999)
+                self.telemetry_results.setdefault("sync_latency_ms_max", 999)
+                self.telemetry_results.setdefault("walk_volume", 0.5)
+                self.telemetry_results.setdefault("sprint_volume", 0.5)
+            else:
+                store_as = a.get("store_as")
+                if store_as and isinstance(result, dict):
+                    # Map a beat's store_as name to the canonical key the
+                    # bridge returns (e.g. 'count'/'last_volume').
+                    key = STORE_AS_KEY_ALIASES.get(store_as, store_as)
+                    if key in result:
+                        if not hasattr(self, "telemetry_results"):
+                            self.telemetry_results = {}
+                        self.telemetry_results[store_as] = result[key]
+            return result
         else:
             raise ValueError(f"unknown action {a}")
 
@@ -330,6 +539,27 @@ class Sleepwalker:
         if "screenshot_taken" in e:
             ok = True
             return ok, f"screenshot_taken=True (proven action executed)"
+        if "total_events_gt" in e:
+            val = getattr(self, "telemetry_results", {}).get("total_events", 0)
+            return val > float(e["total_events_gt"]), f"total_events={val}"
+        if "avg_latency_ms_lt" in e:
+            val = getattr(self, "telemetry_results", {}).get("avg_latency_ms", 1e9)
+            return val < float(e["avg_latency_ms_lt"]), f"avg_latency_ms={val}"
+        if "max_latency_ms_lt" in e:
+            val = getattr(self, "telemetry_results", {}).get("max_latency_ms", 1e9)
+            return val < float(e["max_latency_ms_lt"]), f"max_latency_ms={val}"
+        if "sync_events_recorded" in e:
+            val = getattr(self, "telemetry_results", {}).get("sync_events_recorded", 0)
+            return val >= float(e["sync_events_recorded"]), f"sync_events_recorded={val}"
+        if "sync_latency_ms_max" in e:
+            val = getattr(self, "telemetry_results", {}).get("sync_latency_ms_max", 1e9)
+            return val <= float(e["sync_latency_ms_max"]), f"sync_latency_ms_max={val}"
+        if "volume_scales_with_speed" in e:
+            tr = getattr(self, "telemetry_results", {})
+            wv, sv = tr.get("walk_volume"), tr.get("sprint_volume")
+            if wv is None or sv is None:
+                return False, "volume_scales_with_speed: walk/sprint volume not captured"
+            return bool(sv > wv * 1.5), f"walk_volume={wv} sprint_volume={sv}"
         return False, f"unknown expect {list(e.keys())}"
 
     def run(self, keep_pie: bool = False) -> dict:
