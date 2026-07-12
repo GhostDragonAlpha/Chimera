@@ -224,6 +224,20 @@
   "provenance": "reflection:UPROPERTY:WeightShiftApplierComponent.h"
  },
  {
+  "id": "atom_45f28a4739fe",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bQuantumTravelSpec\\b"
+  },
+  "desc": "UPROPERTY QuantumTravelSpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
+ },
+ {
   "id": "atom_4b04b6658e44",
   "feature": "subsystem/root",
   "tier": 1,
@@ -236,6 +250,20 @@
   },
   "desc": "UPROPERTY StationSpec (SpecBindingsActor.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:SpecBindingsActor.h"
+ },
+ {
+  "id": "atom_4ce2f36d4d02",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bEconomyRouteSpec\\b"
+  },
+  "desc": "UPROPERTY EconomyRouteSpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
  },
  {
   "id": "atom_57efa357085e",
@@ -280,6 +308,20 @@
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {
+  "id": "atom_6e19f93b5cc5",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSurvivalMetaSpec\\b"
+  },
+  "desc": "UPROPERTY SurvivalMetaSpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
+ },
+ {
   "id": "atom_753035391c97",
   "feature": "subsystem/root",
   "tier": 1,
@@ -322,6 +364,20 @@
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {
+  "id": "atom_88a7c01e1614",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFlightSystemsSpec\\b"
+  },
+  "desc": "UPROPERTY FlightSystemsSpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
+ },
+ {
   "id": "atom_8c9e7301c87d",
   "feature": "subsystem/root",
   "tier": 1,
@@ -334,6 +390,20 @@
   },
   "desc": "UPROPERTY ServoAudioComponent (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
+  "id": "atom_91685beff4e0",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTestHarnessSpec\\b"
+  },
+  "desc": "UPROPERTY TestHarnessSpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
  },
  {
   "id": "atom_9a081c40fdc9",
@@ -404,6 +474,20 @@
   },
   "desc": "UPROPERTY AppliedOffset (WeightShiftApplierComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WeightShiftApplierComponent.h"
+ },
+ {
+  "id": "atom_aeed4be9286b",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCelestialBodySpec\\b"
+  },
+  "desc": "UPROPERTY CelestialBodySpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
  },
  {
   "id": "atom_b0c5990b66c9",
@@ -504,6 +588,20 @@
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {
+  "id": "atom_cce9ef6cc2c3",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPlanetGenerationSpec\\b"
+  },
+  "desc": "UPROPERTY PlanetGenerationSpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
+ },
+ {
   "id": "atom_d3d96394990c",
   "feature": "subsystem/root",
   "tier": 1,
@@ -572,6 +670,20 @@
   },
   "desc": "UPROPERTY FootprintSpawnInterval (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
+  "id": "atom_f6688c70ce93",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShipClassSpec\\b"
+  },
+  "desc": "UPROPERTY ShipClassSpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
  },
  {
   "id": "atom_fc572d8a7b1c",

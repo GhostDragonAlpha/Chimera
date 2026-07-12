@@ -14,6 +14,20 @@
   "provenance": "reflection:UCLASS:EnvironmentSpecComponent.h"
  },
  {
+  "id": "atom_3f1ce6b4b12c",
+  "feature": "subsystem/Environment",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UCelestialBodySpecComponent\\b|UCelestialBodySpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UCelestialBodySpecComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:CelestialBodySpecComponent.h"
+ },
+ {
   "id": "atom_70d660efb7f7",
   "feature": "subsystem/Environment",
   "tier": 0,
@@ -40,6 +54,20 @@
   },
   "desc": "component UWindSystemComponent is spawned/registered somewhere (H-34)",
   "provenance": "reflection:UCLASS:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_05eb97e310b2",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMoonCount\\b"
+  },
+  "desc": "UPROPERTY MoonCount (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
  },
  {
   "id": "atom_0654d247ffa0",
@@ -224,6 +252,20 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_4ea13efd8440",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSurfaceTemperatureMax\\b"
+  },
+  "desc": "UPROPERTY SurfaceTemperatureMax (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
+ },
+ {
   "id": "atom_5142997fd08f",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -250,6 +292,34 @@
   },
   "desc": "UPROPERTY BaseWindDirection (WindSystemComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_5a742900ea38",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbHasMoons\\b"
+  },
+  "desc": "UPROPERTY bHasMoons (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
+ },
+ {
+  "id": "atom_5b7a48afe2a4",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAtmosphereDensity\\b"
+  },
+  "desc": "UPROPERTY AtmosphereDensity (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
  },
  {
   "id": "atom_5c9d405fa1fc",
@@ -350,6 +420,20 @@
   "provenance": "reflection:UPROPERTY:FootprintComponent.h"
  },
  {
+  "id": "atom_8895b3c23fff",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbIsArtificial\\b"
+  },
+  "desc": "UPROPERTY bIsArtificial (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
+ },
+ {
   "id": "atom_912fe13d08f6",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -376,6 +460,34 @@
   },
   "desc": "UPROPERTY WindVariance (WindSystemComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_a8e2708cbf89",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSurfaceTemperatureMin\\b"
+  },
+  "desc": "UPROPERTY SurfaceTemperatureMin (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
+ },
+ {
+  "id": "atom_a93e8a3ed9fe",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRadiusKm\\b"
+  },
+  "desc": "UPROPERTY RadiusKm (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
  },
  {
   "id": "atom_b83dd20b286f",
@@ -418,6 +530,20 @@
   },
   "desc": "UPROPERTY MaxInstantaneousWindSpeed (WindSystemComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_ca7963e7d9aa",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStationClass\\b"
+  },
+  "desc": "UPROPERTY StationClass (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
  },
  {
   "id": "atom_d78921e92c51",
@@ -516,5 +642,19 @@
   },
   "desc": "UPROPERTY bAccumulationEnabled (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
+  "id": "atom_fed0b8d3cac9",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAtmosphericComposition\\b"
+  },
+  "desc": "UPROPERTY AtmosphericComposition (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
  }
 ]

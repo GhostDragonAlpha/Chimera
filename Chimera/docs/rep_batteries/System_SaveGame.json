@@ -1,5 +1,19 @@
 [
  {
+  "id": "atom_177a395c2dd7",
+  "feature": "System_SaveGame",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USurvivalMetaSpecComponent\\b|USurvivalMetaSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USurvivalMetaSpecComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:SurvivalMetaSpecComponent.h"
+ },
+ {
   "id": "atom_b65ebc73c4dd",
   "feature": "System_SaveGame",
   "tier": 0,
@@ -70,6 +84,34 @@
   "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
  },
  {
+  "id": "atom_0c9d3d8f11c1",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPrioritySystem\\b"
+  },
+  "desc": "UPROPERTY PrioritySystem (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
+ },
+ {
+  "id": "atom_1f99c5e43e3c",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCraftingRadius\\b"
+  },
+  "desc": "UPROPERTY CraftingRadius (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
+ },
+ {
   "id": "atom_2aea6293a9e9",
   "feature": "System_SaveGame",
   "tier": 1,
@@ -138,6 +180,20 @@
   },
   "desc": "UPROPERTY InventoryItems (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_743c408f0881",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTemperatureStat\\b"
+  },
+  "desc": "UPROPERTY TemperatureStat (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
  },
  {
   "id": "atom_774033b6474c",
@@ -238,6 +294,20 @@
   "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
  },
  {
+  "id": "atom_8bfbef356136",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bThirstStat\\b"
+  },
+  "desc": "UPROPERTY ThirstStat (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
+ },
+ {
   "id": "atom_8fd2b48b3b17",
   "feature": "System_SaveGame",
   "tier": 1,
@@ -250,6 +320,20 @@
   },
   "desc": "UPROPERTY Shield (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_969d737daa24",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bHungerStat\\b"
+  },
+  "desc": "UPROPERTY HungerStat (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
  },
  {
   "id": "atom_9789a83854d3",
@@ -278,6 +362,34 @@
   },
   "desc": "UPROPERTY Sentence2 (InheritanceData.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_a5033db70a3b",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbDuckMusicOnDamage\\b"
+  },
+  "desc": "UPROPERTY bDuckMusicOnDamage (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
+ },
+ {
+  "id": "atom_a684d660fb01",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAbilityTags\\b"
+  },
+  "desc": "UPROPERTY AbilityTags (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
  },
  {
   "id": "atom_b3d46e4a3d5d",
@@ -348,6 +460,20 @@
   },
   "desc": "UPROPERTY Forewarnings (InheritanceData.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_f1fdc113f038",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDialogueTree\\b"
+  },
+  "desc": "UPROPERTY DialogueTree (SurvivalMetaSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SurvivalMetaSpecComponent.h"
  },
  {
   "id": "atom_f493aa66d4bf",
