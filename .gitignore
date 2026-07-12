@@ -125,3 +125,6 @@ Chimera/Content/Qwen2Audio/
 # Voice/STT test capture artifacts (regenerated per test run)
 Chimera/test_audio.wav
 Chimera/test_audio.wav.txt
+
+# Gitignore the world-model data store (SQLite DB + WAL) — it is data, regenerated
+Chimera/docs/world/
