@@ -264,6 +264,13 @@ def main():
     lines += ["", research_compliance_section, ""]
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
     print(f"[dream] report -> {REPORT_PATH}")
+    # Stamp the studio's clock so circadian knows a night just happened (the
+    # agent self-paces off this — no OS scheduler).
+    try:
+        from core import circadian
+        circadian.mark_night_ran()
+    except Exception:
+        pass
     return 0
 
 

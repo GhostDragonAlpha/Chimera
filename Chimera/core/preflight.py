@@ -126,6 +126,15 @@ def main():
     print("CHIMERA PRE-FLIGHT")
     print("=" * 64)
 
+    # 0. Circadian — the studio reads its OWN clock (no OS scheduler). This is
+    # the qualification: system time determines the phase, and whether a night
+    # is due. A 24/7 agent should honor the directive each cycle.
+    try:
+        from core.circadian import preflight_line
+        print("\n" + preflight_line())
+    except Exception as e:
+        print(f"\n[0] Circadian: unavailable ({e})")
+
     # 1. Graph health
     counts = {}
     for n in nodes:
