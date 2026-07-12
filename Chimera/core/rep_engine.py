@@ -242,6 +242,25 @@ def _probe_envelope_axis(spec: dict, cache: _FileCache):
         return (None, f"malcolm unavailable; skip ({e})")
 
 
+def _probe_feel_metric(spec: dict, cache: _FileCache):
+    """Tier-3 feel wall (core.metronome): reads docs/world/feel_last.json —
+    refreshed by every sleepwalk. Skips honestly when no walk has run."""
+    try:
+        from core.metronome import FEEL_LAST
+        if not FEEL_LAST.exists():
+            return (None, "no feel snapshot yet (run a sleepwalk); skip")
+        data = json.loads(FEEL_LAST.read_text(encoding="utf-8"))
+        val = data.get(spec["metric"])
+        if val is None:
+            return (None, f"{spec['metric']} unmeasured in last walk; skip")
+        mx, mn = spec.get("max"), spec.get("min")
+        ok = (mx is None or val <= mx) and (mn is None or val >= mn)
+        return (ok, f"{spec['metric']}={val} band[min={mn},max={mx}] "
+                    f"(session {data.get('session', '?')})")
+    except Exception as e:                          # noqa: BLE001
+        return (None, f"metronome unavailable; skip ({e})")
+
+
 PROBES = {
     "glob_nonempty": _probe_glob_nonempty,
     "file_contains": _probe_file_contains,
@@ -252,6 +271,7 @@ PROBES = {
     "beats_registered": _probe_beats_registered,
     "graph_status": _probe_graph_status,
     "envelope_axis": _probe_envelope_axis,
+    "feel_metric": _probe_feel_metric,
 }
 
 
@@ -540,8 +560,22 @@ def gen_envelope(cache: _FileCache) -> list:
     return atoms
 
 
+def gen_feel(cache: _FileCache) -> list:
+    """G: the Metronome's tier-3 feel walls — the first perceptual atoms.
+    Bands from game-feel canon (~100ms response rule)."""
+    try:
+        from core.metronome import FEEL_BANDS
+    except Exception:
+        return []
+    return [make_atom("Game_Feel", 3, "feel_metric", {"metric": name, **band},
+                      f"feel wall {name} holds band {band} (metronome, "
+                      f"mined from chronicle x UE log)",
+                      "metronome:feel-canon")
+            for name, band in FEEL_BANDS.items()]
+
+
 GENERATORS = [gen_assets, gen_code_reflection, gen_h_rules, gen_eliminations,
-              gen_dsl_fidelity, gen_envelope]
+              gen_dsl_fidelity, gen_envelope, gen_feel]
 
 
 def build(feature: str = None, cache: _FileCache = None) -> dict:

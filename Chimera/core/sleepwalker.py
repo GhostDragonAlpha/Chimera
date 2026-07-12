@@ -54,6 +54,25 @@ ROOT = Path(__file__).resolve().parent.parent
 # Maps a beat's `store_as` name to the canonical field the manage_tools bridge
 # returns. Lets beats use intent-named telemetry keys (sync_events_recorded,
 # walk_volume, ...) without the bridge having to mirror every alias.
+def fuzz_spec(spec: dict, seed: int = None) -> dict:
+    """FUZZ-THE-GREEN (weekly perturbation): jitter hold/wait durations on a
+    copy of the beat spec — beat ORDER is preserved (spawn-first invariants),
+    but timing wobbles ±40%. A green suite that breaks under jitter was
+    brittle; an odd-but-fine outcome is an engine-sourced surprise — exactly
+    what the container's emergence gauge eats. Deterministic per seed."""
+    import copy, random as _random
+    rng = _random.Random(seed)
+    fuzzed = copy.deepcopy(spec)
+    for beat in fuzzed.get("beats", []):
+        for a in beat.get("actions", []):
+            if "hold_s" in a:
+                a["hold_s"] = round(float(a["hold_s"]) * rng.uniform(0.6, 1.4), 2)
+            if "wait" in a:
+                a["wait"] = round(float(a["wait"]) * rng.uniform(0.5, 1.5), 2)
+        beat["_fuzzed"] = True
+    return fuzzed
+
+
 STORE_AS_KEY_ALIASES = {
     "total_events": "count",
     "sync_events_recorded": "count",
@@ -698,6 +717,16 @@ class Sleepwalker:
             pass                                    # sensors never wedge a walk
 
         chronicle = self.w.finalize()
+
+        # THE METRONOME (tier-3 feel): every walk refreshes feel_last.json —
+        # input->feedback latency, juice density, dead air — mined from this
+        # chronicle x the UE log. Guarded: feel never wedges a walk.
+        try:
+            from core.metronome import analyze as _feel
+            _feel(session=self.session)
+        except Exception:
+            pass
+
         total = len(self.outcomes)
         reached = sum(1 for o in self.outcomes if o["outcome"] == "reached")
         fails = [o for o in self.outcomes if o["outcome"] != "reached"]
@@ -768,6 +797,10 @@ def main():
     parser.add_argument("--session", required=True)
     parser.add_argument("--no-record", action="store_true")
     parser.add_argument("--keep-pie", action="store_true")
+    parser.add_argument("--fuzz", type=int, metavar="SEED", default=None,
+                        help="Fuzz-the-Green: jitter hold/wait timings ±40%% "
+                             "(deterministic per SEED); breakage = brittleness, "
+                             "oddness = emergence-gauge food")
     parser.add_argument("--agent-id", default=None,
                         help="Editor-scheduler agent id (for parallel runs)")
     args = parser.parse_args()
@@ -788,6 +821,9 @@ def main():
         agent_id = None
 
     sw = Sleepwalker(args.beats, args.session, record=not args.no_record)
+    if args.fuzz is not None:
+        sw.spec = fuzz_spec(sw.spec, seed=args.fuzz)
+        print(f"[fuzz] timings jittered (seed {args.fuzz}) — green that breaks was brittle")
     try:
         result = sw.run(keep_pie=args.keep_pie)
     finally:
