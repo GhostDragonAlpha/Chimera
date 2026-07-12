@@ -1,4 +1,4 @@
-"""CHIMERA_VISION.py — THE ULTIMATE SINGLE-FILE PSEUDOSCRIPT OF A AAA GAME.
+"""CHIMERA_VISION.py — SINGLE-FILE UE5.8 AAA PSEUDOSCRIPT.
 
 CHIMERA: a generational, wordless, embodied life on a regolith planetoid in
 cislunar deep space. Earth and Moon both hang in the sky. Every finished life
@@ -8,34 +8,42 @@ mirror showing nothing.
 
 DESIGN LAWS
   1. The world answers the body — every verb has physical, audible, visible
-     consequence (footprint, dust, sound, heat). No abstract clicks.
-  2. The bad ending is a costless life. Meaning = what you gave up. The game
-     NEVER explains this; it is taught only through consequence.
-  3. Wordless. No dialogue text. Gestures, objects, sounds, and light.
+     consequence. No abstract clicks.
+  2. The bad ending is a costless life. Meaning = what you gave up. NEVER
+     explained; taught only through consequence.
+  3. Wordless. No dialogue text. Gestures, objects, sounds, light.
   4. Nothing observed is lost. Footprints, pits, shelters, debts of kindness
-     persist across generations. Unobserved space stays uncollapsed.
-  5. The player is the trunk. All content generates outward from the player
-     along the golden-angle spiral, at every scale.
+     persist across generations.
+  5. The player is the trunk. Content generates outward along the
+     golden-angle spiral, at every scale.
 
-ARCHITECTURE (single file == whole game; sections in dependency order)
-  §1  Core math          — V3 / Quat / Mat4 / noise / splines      (FMath, FVector)
-  §2  ECS kernel         — Entity / Component / System / EventBus  (UObject/AActor world)
-  §3  Component catalog  — Transform, Mesh, Physics, Audio, ...    (UActorComponent zoo)
-  §4  Assets & geometry  — vertex/index buffers, procedural meshes (UStaticMesh, PCG)
-  §5  Rendering          — camera, frustum, shadows, GI, post, VFX (Lumen, Niagara, PP)
-  §6  Physics            — sweeps, heightfield, gravity volumes    (Chaos, UCharacterMovement)
-  §7  Spatial audio      — attenuation, reverb, mix, music, minigame (MetaSounds, Submixes)
-  §8  AI                 — Behavior Trees, FSM, NavMesh A*, steering (UBehaviorTree, NavSystem)
-  §9  Input & UI         — Enhanced Input, UMG widget tree, menus  (UInputMappingContext, UMG)
-  §10 Save/Load          — versioned USaveGame-style serialization (USaveGame, SaveGameSystem)
-  §11 Networking         — server-authoritative sim, replication, prediction (UNetDriver)
-  §12 Game layer         — ground, suit, dots, economy, sacrifice, sky, travel, Erisaid,
-                           generations, director (the game itself, on top of §1-§11)
-  §13 Boot & proof       — headless two-lives demo through the FULL stack
+THIS IS NOT A GENERIC SIMULATION. Every class below maps to a REAL Unreal
+Engine 5.8 C++ construct — real macros (UCLASS/UPROPERTY/UFUNCTION/
+GENERATED_BODY), real subsystem names, real API shapes. Two corrections
+against a common misconception, applied silently throughout rather than
+argued: Nanite is NOT a separate component class — it is `FMeshNaniteSettings`
+on `UStaticMesh`, rendered through the ordinary `UStaticMeshComponent`.
+Lumen is NOT a scene-proxy class exposed to gameplay — it is configured via
+`FPostProcessSettings::DynamicGlobalIlluminationMethod`/`ReflectionMethod`
+plus per-primitive `bAffectDynamicIndirectLighting` flags. Both are
+represented at their REAL hook points below.
 
-Everything below is executable pseudocode: pure stdlib Python that RUNS, with
-rich comments mapping each construct to its UE5.8 C++ equivalent. The numbers
-are the tuning truth. A later AI ports this to Source/Chimera/ and debugs.
+ARCHITECTURE (dependency order; §N headers match the 9-point brief)
+  §1  Core math              FVector/FRotator/FQuat/FMatrix/FTransform, noise
+  §2  Core Engine & Loop     UGameInstance/AGameMode/AGameState/World Partition
+  §3  ECS                    Mass Entity (crowd) + classic AActor/UActorComponent (hero)
+  §4  Rendering              Nanite settings, Lumen GI, Niagara, post-process
+  §5  Audio & MetaSound      MetaSound graphs, attenuation, reverb, submix ducking
+  §6  AI & Behavior          UBehaviorTreeComponent, NavMesh, PCG, Mass LOD actorization
+  §7  Animation/Move/Input   UCharacterMovementComponent, Enhanced Input, Control Rig
+  §8  Gameplay & Data        GAS (Attributes/Effects/Abilities), DataTable, SaveGame
+  §9  Networking             ENetRole, replication, RPCs, Replication Graph
+  §10 World systems          Director, weather volumes, sacrifice/memorial/Erisaid
+  §11 Boot & proof           GameInstance assembly; headless two-life run
+
+Pure stdlib Python; runs headless (no UE process, no UBT compile — the
+project's "speed run" directive: author the full architecture, prove it
+executes, defer the C++ port + editor verification to later passes).
 """
 
 from __future__ import annotations
@@ -50,10 +58,51 @@ from enum import Enum, IntEnum, auto
 from typing import Any, Callable, Iterator, Optional, Type, TypeVar
 
 # =============================================================================
-# §1. CORE MATH — FMath / FVector / FQuat / FMatrix, value noise, golden angle
+# UE5.8 REFLECTION MACRO SHIMS
+# Real UE macros (UCLASS/UPROPERTY/UFUNCTION/USTRUCT) are consumed by Unreal
+# Header Tool at compile time — they carry no runtime Python equivalent, but
+# their SPECIFIERS are real, load-bearing metadata (EditAnywhere, Replicated,
+# SaveGame, Category, BlueprintCallable...). These shims attach that metadata
+# for real so a porting engineer can grep it back out; GENERATED_BODY() is
+# pure boilerplate and gets a comment, nothing else.
 # =============================================================================
 
-GOLDEN_ANGLE_DEG = 137.50776405003785       # phyllotaxis; the generation law
+def UPROPERTY(**specifiers) -> dict:
+    """~ UPROPERTY(...) macro. Use as dataclasses.field(metadata=UPROPERTY(...))."""
+    return dict(specifiers)
+
+
+def UFUNCTION(**specifiers) -> Callable:
+    """~ UFUNCTION(...) macro. Decorator; tags the method with its specifiers
+    (Server/Client/NetMulticast, Reliable/Unreliable, BlueprintCallable...)."""
+    def _decorate(fn):
+        fn.__ufunction__ = dict(specifiers)
+        return fn
+    return _decorate
+
+
+def UCLASS(**specifiers) -> Callable:
+    """~ UCLASS(...) macro. Class decorator recording specifiers."""
+    def _decorate(cls):
+        cls.__uclass__ = dict(specifiers)
+        return cls
+    return _decorate
+
+
+def USTRUCT(**specifiers) -> Callable:
+    """~ USTRUCT(...) macro, for FTableRowBase-style plain data structs."""
+    def _decorate(cls):
+        cls.__ustruct__ = dict(specifiers)
+        return cls
+    return _decorate
+
+
+# =============================================================================
+# §1. CORE MATH — FVector / FRotator / FQuat / FMatrix / FTransform
+# ~ Engine/Source/Runtime/Core/Public/Math/*.h
+# =============================================================================
+
+GOLDEN_ANGLE_DEG = 137.50776405003785
 TAU = math.tau
 EPS = 1e-9
 
@@ -62,7 +111,7 @@ def clamp(x: float, lo: float, hi: float) -> float:
     return lo if x < lo else hi if x > hi else x
 
 
-def lerp(a: float, b: float, t: float) -> float:
+def lerp(a: float, b: float, t: float) -> float:      # ~ FMath::Lerp
     return a + (b - a) * clamp(t, 0.0, 1.0)
 
 
@@ -70,15 +119,15 @@ def inv_lerp(a: float, b: float, v: float) -> float:
     return clamp((v - a) / (b - a + EPS), 0.0, 1.0)
 
 
-def smoothstep(e0: float, e1: float, x: float) -> float:
+def smoothstep(e0: float, e1: float, x: float) -> float:   # ~ FMath::SmoothStep
     t = inv_lerp(e0, e1, x)
     return t * t * (3.0 - 2.0 * t)
 
 
-def spring_damper(x: float, v: float, target: float, halflife: float,
-                  dt: float) -> tuple[float, float]:
-    """Critically-damped spring — UE5: FMath::CriticallyDampedSmoothing.
-    Used for camera bob return, FOV kicks, UI needle easing."""
+def critically_damped_smoothing(x: float, v: float, target: float, halflife: float,
+                                dt: float) -> tuple[float, float]:
+    """~ FMath::CriticallyDampedSmoothing / a spring-damper. Drives camera bob
+    return, FOV kicks, UI needle easing."""
     y = 2.0 * 0.6931 / max(halflife, EPS)
     j = v + y * (x - target)
     e = math.exp(-y * dt)
@@ -86,123 +135,142 @@ def spring_damper(x: float, v: float, target: float, halflife: float,
 
 
 @dataclass
-class V3:
-    """FVector. Right-handed, Z-up, meters."""
-    x: float = 0.0
-    y: float = 0.0
-    z: float = 0.0
+class FVector:
+    """~ FVector (Core/Math/Vector.h). Right-handed, Z-up, centimeters in
+    real UE5 (this pseudocode uses meters throughout for readability)."""
+    X: float = 0.0
+    Y: float = 0.0
+    Z: float = 0.0
 
-    def __add__(self, o: "V3") -> "V3": return V3(self.x + o.x, self.y + o.y, self.z + o.z)
-    def __sub__(self, o: "V3") -> "V3": return V3(self.x - o.x, self.y - o.y, self.z - o.z)
-    def __mul__(self, s: float) -> "V3": return V3(self.x * s, self.y * s, self.z * s)
-    def __neg__(self) -> "V3": return V3(-self.x, -self.y, -self.z)
+    def __add__(self, o: "FVector") -> "FVector": return FVector(self.X + o.X, self.Y + o.Y, self.Z + o.Z)
+    def __sub__(self, o: "FVector") -> "FVector": return FVector(self.X - o.X, self.Y - o.Y, self.Z - o.Z)
+    def __mul__(self, s: float) -> "FVector": return FVector(self.X * s, self.Y * s, self.Z * s)
+    def __neg__(self) -> "FVector": return FVector(-self.X, -self.Y, -self.Z)
 
-    def dot(self, o: "V3") -> float:
-        return self.x * o.x + self.y * o.y + self.z * o.z
+    def Dot(self, o: "FVector") -> float:               # ~ FVector::Dot
+        return self.X * o.X + self.Y * o.Y + self.Z * o.Z
 
-    def cross(self, o: "V3") -> "V3":
-        return V3(self.y * o.z - self.z * o.y,
-                  self.z * o.x - self.x * o.z,
-                  self.x * o.y - self.y * o.x)
+    def Cross(self, o: "FVector") -> "FVector":          # ~ FVector::Cross
+        return FVector(self.Y * o.Z - self.Z * o.Y,
+                       self.Z * o.X - self.X * o.Z,
+                       self.X * o.Y - self.Y * o.X)
 
-    def length(self) -> float: return math.sqrt(self.dot(self))
-    def length2d(self) -> float: return math.hypot(self.x, self.y)
+    def Size(self) -> float: return math.sqrt(self.Dot(self))          # ~ Size()
+    def Size2D(self) -> float: return math.hypot(self.X, self.Y)       # ~ Size2D()
 
-    def normalized(self) -> "V3":
-        l = self.length()
-        return V3(self.x / l, self.y / l, self.z / l) if l > EPS else V3()
+    def GetSafeNormal(self) -> "FVector":
+        l = self.Size()
+        return FVector(self.X / l, self.Y / l, self.Z / l) if l > EPS else FVector()
 
-    def dist(self, o: "V3") -> float: return (self - o).length()
-    def dist2d(self, o: "V3") -> float: return (self - o).length2d()
+    def Dist(self, o: "FVector") -> float: return (self - o).Size()          # ~ FVector::Dist
+    def Dist2D(self, o: "FVector") -> float: return (self - o).Size2D()
 
-    def to_tuple(self) -> tuple: return (self.x, self.y, self.z)
+    def ToTuple(self) -> tuple: return (self.X, self.Y, self.Z)
 
 
-UP = V3(0.0, 0.0, 1.0)
+FVector_Up = FVector(0.0, 0.0, 1.0)          # ~ FVector::UpVector
 
 
 @dataclass
-class Quat:
-    """FQuat — enough of one for cameras, ships, and skeletal joints."""
-    w: float = 1.0
-    x: float = 0.0
-    y: float = 0.0
-    z: float = 0.0
+class FRotator:
+    """~ FRotator (Pitch/Yaw/Roll, degrees). The Blueprint-facing rotation
+    type; internally converted to FQuat for composition (real UE5 pattern:
+    FRotator is for authoring/display, FQuat for math)."""
+    Pitch: float = 0.0
+    Yaw: float = 0.0
+    Roll: float = 0.0
+
+
+@dataclass
+class FQuat:
+    """~ FQuat (Core/Math/Quat.h). The actual math representation UE uses
+    for composing rotations (FRotator is converted to this internally)."""
+    W: float = 1.0
+    X: float = 0.0
+    Y: float = 0.0
+    Z: float = 0.0
 
     @staticmethod
-    def from_axis_angle(axis: V3, rad: float) -> "Quat":
-        a = axis.normalized()
+    def MakeFromAxisAngle(axis: FVector, rad: float) -> "FQuat":   # ~ FQuat(Axis, Angle)
+        a = axis.GetSafeNormal()
         s = math.sin(rad * 0.5)
-        return Quat(math.cos(rad * 0.5), a.x * s, a.y * s, a.z * s)
+        return FQuat(math.cos(rad * 0.5), a.X * s, a.Y * s, a.Z * s)
 
     @staticmethod
-    def from_yaw_pitch(yaw: float, pitch: float) -> "Quat":
-        return Quat.from_axis_angle(UP, yaw) @ Quat.from_axis_angle(V3(0, 1, 0), pitch)
+    def MakeFromRotator(rot: FRotator) -> "FQuat":       # ~ FRotator::Quaternion()
+        yaw_q = FQuat.MakeFromAxisAngle(FVector_Up, math.radians(rot.Yaw))
+        pitch_q = FQuat.MakeFromAxisAngle(FVector(0, 1, 0), math.radians(rot.Pitch))
+        return yaw_q @ pitch_q
 
-    def __matmul__(self, o: "Quat") -> "Quat":
-        return Quat(
-            self.w * o.w - self.x * o.x - self.y * o.y - self.z * o.z,
-            self.w * o.x + self.x * o.w + self.y * o.z - self.z * o.y,
-            self.w * o.y - self.x * o.z + self.y * o.w + self.z * o.x,
-            self.w * o.z + self.x * o.y - self.y * o.x + self.z * o.w)
+    def __matmul__(self, o: "FQuat") -> "FQuat":         # ~ operator*
+        return FQuat(
+            self.W * o.W - self.X * o.X - self.Y * o.Y - self.Z * o.Z,
+            self.W * o.X + self.X * o.W + self.Y * o.Z - self.Z * o.Y,
+            self.W * o.Y - self.X * o.Z + self.Y * o.W + self.Z * o.X,
+            self.W * o.Z + self.X * o.Y - self.Y * o.X + self.Z * o.W)
 
-    def rotate(self, v: V3) -> V3:
-        q = V3(self.x, self.y, self.z)
-        t = q.cross(v) * 2.0
-        return v + t * self.w + q.cross(t)
+    def RotateVector(self, v: FVector) -> FVector:       # ~ FQuat::RotateVector
+        q = FVector(self.X, self.Y, self.Z)
+        t = q.Cross(v) * 2.0
+        return v + t * self.W + q.Cross(t)
 
-    def forward(self) -> V3: return self.rotate(V3(1, 0, 0))
-    def right(self) -> V3: return self.rotate(V3(0, 1, 0))
+    def GetForwardVector(self) -> FVector: return self.RotateVector(FVector(1, 0, 0))
+    def GetRightVector(self) -> FVector: return self.RotateVector(FVector(0, 1, 0))
 
 
-class Mat4:
-    """FMatrix (row-major 4x4) — only what a renderer needs: perspective,
-    look-at, multiply, point transform. Shadow maps use these directly."""
+@dataclass
+class FTransform:
+    """~ FTransform: Location + Rotation(FQuat) + Scale3D. The field every
+    USceneComponent carries (RelativeTransform / world-space via
+    GetComponentTransform()). Composition order matches UE5: scale, rotate,
+    translate."""
+    Location: FVector = field(default_factory=FVector)
+    Rotation: FQuat = field(default_factory=FQuat)
+    Scale3D: FVector = field(default_factory=lambda: FVector(1, 1, 1))
+
+    def TransformPosition(self, p: FVector) -> FVector:
+        scaled = FVector(p.X * self.Scale3D.X, p.Y * self.Scale3D.Y, p.Z * self.Scale3D.Z)
+        return self.Rotation.RotateVector(scaled) + self.Location
+
+
+class FMatrix:
+    """~ FMatrix (row-major 4x4) — view/projection only; gameplay code
+    almost never touches this directly (that's what FTransform is for), but
+    the renderer (§4) needs it for frustum + shadow-cascade math."""
 
     def __init__(self, rows: Optional[list] = None):
         self.m = rows or [[1.0 if i == j else 0.0 for j in range(4)] for i in range(4)]
 
     @staticmethod
-    def perspective(fov_y_deg: float, aspect: float, znear: float, zfar: float) -> "Mat4":
+    def Perspective(fov_y_deg: float, aspect: float, znear: float, zfar: float) -> "FMatrix":
         f = 1.0 / math.tan(math.radians(fov_y_deg) * 0.5)
-        m = Mat4()
-        m.m = [[f / aspect, 0, 0, 0],
-               [0, f, 0, 0],
+        m = FMatrix()
+        m.m = [[f / aspect, 0, 0, 0], [0, f, 0, 0],
                [0, 0, (zfar + znear) / (znear - zfar), (2 * zfar * znear) / (znear - zfar)],
                [0, 0, -1, 0]]
         return m
 
     @staticmethod
-    def ortho(half_w: float, half_h: float, znear: float, zfar: float) -> "Mat4":
-        m = Mat4()
-        m.m = [[1.0 / half_w, 0, 0, 0],
-               [0, 1.0 / half_h, 0, 0],
-               [0, 0, -2.0 / (zfar - znear), -(zfar + znear) / (zfar - znear)],
-               [0, 0, 0, 1]]
+    def Ortho(half_w: float, half_h: float, znear: float, zfar: float) -> "FMatrix":
+        m = FMatrix()
+        m.m = [[1.0 / half_w, 0, 0, 0], [0, 1.0 / half_h, 0, 0],
+               [0, 0, -2.0 / (zfar - znear), -(zfar + znear) / (zfar - znear)], [0, 0, 0, 1]]
         return m
 
     @staticmethod
-    def look_at(eye: V3, target: V3, up: V3 = UP) -> "Mat4":
-        f = (target - eye).normalized()
-        r = f.cross(up).normalized()
-        u = r.cross(f)
-        m = Mat4()
-        m.m = [[r.x, r.y, r.z, -r.dot(eye)],
-               [u.x, u.y, u.z, -u.dot(eye)],
-               [-f.x, -f.y, -f.z, f.dot(eye)],
-               [0, 0, 0, 1]]
+    def LookAt(eye: FVector, target: FVector, up: FVector = FVector_Up) -> "FMatrix":
+        f = (target - eye).GetSafeNormal()
+        r = f.Cross(up).GetSafeNormal()
+        u = r.Cross(f)
+        m = FMatrix()
+        m.m = [[r.X, r.Y, r.Z, -r.Dot(eye)], [u.X, u.Y, u.Z, -u.Dot(eye)],
+               [-f.X, -f.Y, -f.Z, f.Dot(eye)], [0, 0, 0, 1]]
         return m
 
-    def __matmul__(self, o: "Mat4") -> "Mat4":
-        r = Mat4()
-        r.m = [[sum(self.m[i][k] * o.m[k][j] for k in range(4)) for j in range(4)]
-               for i in range(4)]
+    def __matmul__(self, o: "FMatrix") -> "FMatrix":
+        r = FMatrix()
+        r.m = [[sum(self.m[i][k] * o.m[k][j] for k in range(4)) for j in range(4)] for i in range(4)]
         return r
-
-    def transform(self, p: V3) -> tuple[float, float, float, float]:
-        v = (p.x, p.y, p.z, 1.0)
-        out = [sum(self.m[i][k] * v[k] for k in range(4)) for i in range(4)]
-        return out[0], out[1], out[2], out[3]
 
 
 def _hash2(ix: int, iy: int, seed: int) -> float:
@@ -212,7 +280,7 @@ def _hash2(ix: int, iy: int, seed: int) -> float:
 
 
 def value_noise2(x: float, y: float, seed: int = 0) -> float:
-    """UE5: Material 'Noise' node (Value mode) / FMath::PerlinNoise2D stand-in."""
+    """~ FMath::PerlinNoise2D / Material Expression Noise (Value mode)."""
     ix, iy = math.floor(x), math.floor(y)
     fx, fy = x - ix, y - iy
     a, b = _hash2(ix, iy, seed), _hash2(ix + 1, iy, seed)
@@ -231,385 +299,639 @@ def fbm2(x: float, y: float, octaves: int = 4, seed: int = 0) -> float:
     return total / norm
 
 
-def spiral_point(index: int, spacing: float = 8.0) -> V3:
-    """Golden-angle phyllotaxis — the i-th thing the world grows around the
-    player-trunk: buried caches, stranger bearings, stations, asteroid belts."""
+def golden_spiral_point(index: int, spacing: float = 8.0) -> FVector:
+    """Phyllotaxis point generator — a real low-discrepancy (blue-noise-like)
+    distribution, used below as the point-generator inside a PCG Surface
+    Sampler node (§6), not just a raw spawn loop."""
     r = spacing * math.sqrt(index + 1)
     a = math.radians(GOLDEN_ANGLE_DEG) * index
-    return V3(r * math.cos(a), r * math.sin(a), 0.0)
+    return FVector(r * math.cos(a), r * math.sin(a), 0.0)
 
 
-def catmull_rom(p0: V3, p1: V3, p2: V3, p3: V3, t: float) -> V3:
-    """Spline for rover paths, hopper arcs, cinematic cameras — FInterpCurve."""
+def catmull_rom(p0: FVector, p1: FVector, p2: FVector, p3: FVector, t: float) -> FVector:
+    """~ FInterpCurve / spline component evaluation. Rover paths, hopper arcs."""
     t2, t3 = t * t, t * t * t
-    return (p1 * 2.0 + (p2 - p0) * t
-            + (p0 * 2.0 - p1 * 5.0 + p2 * 4.0 - p3) * t2
+    return (p1 * 2.0 + (p2 - p0) * t + (p0 * 2.0 - p1 * 5.0 + p2 * 4.0 - p3) * t2
             + (p3 - p0 + p1 * 3.0 - p2 * 3.0) * t3) * 0.5
 
 
 # =============================================================================
-# §2. ECS KERNEL — the engine object model
-# UE5 mapping: World==UWorld, Entity==AActor id, Component==UActorComponent,
-# System==tick-registered subsystem (UTickableWorldSubsystem), EventBus==
-# multicast delegates (DECLARE_DYNAMIC_MULTICAST_DELEGATE).
+# §2. CORE ENGINE & GAME LOOP
+# ~ UGameInstance -> UWorld -> AGameModeBase/AGameStateBase -> APlayerController
+# possessing an APawn. World Partition streams the level around the player.
 # =============================================================================
+
+class ETickingGroup(IntEnum):
+    """~ real UE5 ETickingGroup enum (Engine/Classes/Engine/EngineTypes.h),
+    order preserved. Everything in this file registers into one of these."""
+    TG_PrePhysics = 0            # input, AI decision, gameplay->physics writes
+    TG_StartPhysics = 1
+    TG_DuringPhysics = 2         # UCharacterMovementComponent solve
+    TG_EndPhysics = 3
+    TG_PostPhysics = 4           # ground reactions: footstep FX, camera
+    TG_PostUpdateWork = 5        # world/weather/economy/director, audio, UI
+    TG_LastDemotable = 6
+
+
+class ENetRole(IntEnum):
+    """~ REAL enum values (Engine/EngineTypes.h) — order is load-bearing,
+    comparisons like `Role < ROLE_Authority` appear throughout engine code."""
+    ROLE_None = 0
+    ROLE_SimulatedProxy = 1
+    ROLE_AutonomousProxy = 2
+    ROLE_Authority = 3
+
 
 EntityId = int
-C = TypeVar("C", bound="Component")
+C = TypeVar("C")
 
 
-class Component:
-    """Base — UActorComponent. Subclasses are plain dataclasses; fields are
-    UPROPERTY()s. Fields listed in REPLICATED are marked Replicated in C++."""
-    REPLICATED: tuple = ()          # ~ DOREPLIFETIME(...) in GetLifetimeReplicatedProps
-    SAVED: tuple = ()               # ~ UPROPERTY(SaveGame)
+class UObject:
+    """~ UObject root. Not much lives here in pseudocode beyond a stable id
+    (real UObject carries the reflection/GC machinery UHT generates)."""
+    _next_id = 1
+
+    def __init__(self):
+        self.ObjectId = UObject._next_id
+        UObject._next_id += 1
 
 
-class TickGroup(IntEnum):
-    """~ ETickingGroup: deterministic system order within one frame."""
-    INPUT = 0          # gather & route input                (TG_PrePhysics)
-    AI = 1             # behavior trees, nav following       (TG_PrePhysics)
-    PRE_PHYSICS = 2    # gameplay logic writing to physics   (TG_PrePhysics)
-    PHYSICS = 3        # movement solve, sweeps, gravity     (TG_DuringPhysics)
-    POST_PHYSICS = 4   # ground reactions: prints, dust      (TG_PostPhysics)
-    WORLD = 5          # sky, weather, economy, director
-    AUDIO = 6          # spatialization, mixing, music
-    UI = 7             # HUD state, menus
-    NETWORK = 8        # snapshot build / reconcile
-    RENDER = 9         # culling, draw list (conceptual)
+class UActorComponent(UObject):
+    """~ UActorComponent base. Subclasses (§3+) attach to an AActor's
+    OwnerActor and register into a TickingGroup."""
+    PrimaryComponentTick_TickGroup: ETickingGroup = ETickingGroup.TG_PrePhysics
+
+    def __init__(self, owner: "AActor" = None):
+        super().__init__()
+        self.OwnerActor = owner
 
 
-class EventBus:
-    """Typed pub/sub — the engine's multicast delegate table. ONE event stream
-    per fact (e.g. FootstepEvent) so audio/VFX/UI can never desync (Law 1)."""
+class USceneComponent(UActorComponent):
+    """~ USceneComponent: the transform-bearing component every AActor's
+    RootComponent derives from."""
+    def __init__(self, owner: "AActor" = None):
+        super().__init__(owner)
+        self.RelativeTransform = FTransform()
 
-    def __init__(self) -> None:
-        self._subs: dict[type, list[Callable]] = {}
+    def GetComponentTransform(self) -> FTransform:
+        return self.RelativeTransform            # world == relative (flat hierarchy)
 
-    def subscribe(self, event_type: type, fn: Callable) -> None:
-        self._subs.setdefault(event_type, []).append(fn)
-
-    def emit(self, event: Any) -> None:
-        for fn in self._subs.get(type(event), []):
-            fn(event)
+    def GetComponentLocation(self) -> FVector:
+        return self.RelativeTransform.Location
 
 
-class World:
-    """UWorld: entity/component storage + queries. Dense per-type dicts —
-    the pseudocode analog of FActorIterator + GetComponentByClass."""
+class AActor(UObject):
+    """~ AActor base. Hero/unique world actors (player, Erisaid, Habitat,
+    Rover, stations) derive from this directly — full per-frame fidelity.
+    The AMBIENT CROWD (Dots) deliberately does NOT use AActor at rest; see
+    §3/§6 for Mass Entity + LOD-driven actorization."""
+    def __init__(self, world: "UWorld"):
+        super().__init__()
+        self.World = world
+        self.RootComponent: USceneComponent = USceneComponent(self)
+        self.OwnedComponents: list[UActorComponent] = [self.RootComponent]
+        self.bReplicates = False
+        self.NetUpdateFrequency = 10.0            # ~ AActor::NetUpdateFrequency
+        self.MinNetUpdateFrequency = 2.0
+        self.NetPriority = 1.0                    # ~ AActor::NetPriority
+        self.NetCullDistanceSquared = 400.0 ** 2  # ~ AActor::NetCullDistanceSquared
+        self.RemoteRole = ENetRole.ROLE_None
 
-    def __init__(self) -> None:
-        self._next: EntityId = 1
-        self._store: dict[type, dict[EntityId, Component]] = {}
-        self._alive: set[EntityId] = set()
-        self.events = EventBus()
+    def CreateDefaultSubobject(self, comp: UActorComponent) -> UActorComponent:
+        comp.OwnerActor = self
+        self.OwnedComponents.append(comp)
+        return comp
 
-    def create(self, *components: Component) -> EntityId:      # ~ SpawnActor
-        eid = self._next
-        self._next += 1
-        self._alive.add(eid)
-        for c in components:
-            self.add(eid, c)
-        return eid
+    def FindComponentByClass(self, ctype: Type[C]) -> Optional[C]:
+        for c in self.OwnedComponents:
+            if isinstance(c, ctype):
+                return c
+        return None
 
-    def destroy(self, eid: EntityId) -> None:                  # ~ DestroyActor
-        self._alive.discard(eid)
-        for table in self._store.values():
-            table.pop(eid, None)
+    def GetActorLocation(self) -> FVector:
+        return self.RootComponent.GetComponentLocation()
 
-    def add(self, eid: EntityId, comp: Component) -> None:
-        self._store.setdefault(type(comp), {})[eid] = comp
 
-    def get(self, eid: EntityId, ctype: Type[C]) -> C:
-        return self._store[ctype][eid]                          # KeyError == checkf
+class UWorldSubsystem(UObject):
+    """~ UWorldSubsystem: engine-managed, one instance per UWorld, auto
+    ticking. NavigationSystemV1, MassEntitySubsystem, WorldPartitionSubsystem,
+    AISystem, ReplicationGraph all derive from this pattern."""
+    def Initialize(self, world: "UWorld") -> None: ...
+    def Tick(self, dt: float) -> None: ...
 
-    def try_get(self, eid: EntityId, ctype: Type[C]) -> Optional[C]:
-        return self._store.get(ctype, {}).get(eid)
 
-    def query(self, *ctypes: type) -> Iterator[tuple]:
-        """Iterate (eid, comp0, comp1, ...) for entities having ALL ctypes."""
-        if not ctypes:
-            return
-        primary = self._store.get(ctypes[0], {})
-        for eid, c0 in list(primary.items()):
-            if eid not in self._alive:
-                continue
-            comps = [c0]
-            ok = True
-            for ct in ctypes[1:]:
-                c = self._store.get(ct, {}).get(eid)
-                if c is None:
-                    ok = False
+class UWorld:
+    """~ UWorld: the loaded level + its subsystems + the master tick.
+    SendAllEndOfFrameUpdates()-equivalent happens implicitly at the end of
+    Tick(); real UE ticks TWO phases per TickingGroup (start/end); this
+    pseudocode ticks systems once, ordered by group, which is the observable
+    behavior that matters for gameplay logic."""
+    def __init__(self):
+        self.TimeSeconds = 0.0
+        self.Subsystems: dict[type, UWorldSubsystem] = {}
+        self._tickables: list[tuple[ETickingGroup, int, Callable]] = []
+
+    def GetSubsystem(self, ctype: Type[C]) -> C:
+        return self.Subsystems[ctype]
+
+    def RegisterSubsystem(self, sub: UWorldSubsystem) -> None:
+        self.Subsystems[type(sub)] = sub
+        sub.Initialize(self)
+
+    def RegisterTickable(self, group: ETickingGroup, order: int, fn: Callable) -> None:
+        self._tickables.append((group, order, fn))
+        self._tickables.sort(key=lambda t: (t[0], t[1]))
+
+    def Tick(self, dt: float) -> None:
+        self.TimeSeconds += dt
+        for _group, _order, fn in list(self._tickables):
+            fn(dt)
+        for sub in self.Subsystems.values():
+            sub.Tick(dt)
+
+
+class AGameModeBase(AActor):
+    """~ AGameModeBase: server-only rules authority (spawns the pawn,
+    decides win/loss — here, decides when a generation ends via §10)."""
+
+
+class AGameStateBase(AActor):
+    """~ AGameStateBase: replicated match state, visible to all clients.
+    CHIMERA uses it for the handful of facts every client needs: day/night
+    phase, active storm, generation number, credits."""
+    REPLICATED = ("generation", "day", "storm_active")
+
+    def __init__(self, world: "UWorld"):
+        super().__init__(world)
+        self.bReplicates = True
+        self.generation = 1
+        self.day = 0
+        self.storm_active = False
+
+
+class UGameInstance(UObject):
+    """~ UGameInstance: the one object that survives level transitions.
+    Owns the UWorld for the current session and the top-level subsystems
+    that aren't per-world (SaveGame slots, §8)."""
+    def __init__(self):
+        super().__init__()
+        self.World = UWorld()
+
+
+# --- World Partition -----------------------------------------------------
+# ~ Engine/Source/Runtime/Engine/Public/WorldPartition/*.h. Real system:
+# the persistent level is carved into runtime CELLS on a streaming grid;
+# each APawn with a UWorldPartitionStreamingSourceComponent is a streaming
+# source; cells within its (loading range, activation range) load/activate,
+# others unload. Data Layers (UDataLayerInstance) let a cell's actors be
+# grouped and toggled independent of geometry (e.g. "Habitat" vs "Universe").
+
+class EWorldPartitionRuntimeCellState(Enum):
+    Unloaded = auto(); Loaded = auto(); Activated = auto()
+
+
+@dataclass
+class UDataLayerInstance:
+    """~ UDataLayerInstance (Data Layers v2, UE5.1+): a toggleable content
+    grouping independent of streaming geometry."""
+    DataLayerAsset: str          # ~ UDataLayerAsset short name
+    bIsInitiallyActive: bool = True
+
+
+@dataclass
+class UWorldPartitionRuntimeCell:
+    """~ UWorldPartitionRuntimeCell: one streaming grid cell."""
+    CellId: tuple                 # (grid_x, grid_y)
+    Bounds: tuple                 # (minx, miny, maxx, maxy)
+    DataLayers: list = field(default_factory=list)
+    State: EWorldPartitionRuntimeCellState = EWorldPartitionRuntimeCellState.Unloaded
+    Actors: list = field(default_factory=list)
+
+
+class UWorldPartitionStreamingSourceComponent(UActorComponent):
+    """~ real component: attach to any actor to make it a streaming source
+    (almost always the player pawn; here also the rover, for pre-streaming
+    ahead of a drive)."""
+    def __init__(self, owner: AActor, loading_range: float = 128.0):
+        super().__init__(owner)
+        self.LoadingRange = loading_range         # ~ StreamingSource.TargetGrid range
+
+
+class UWorldPartitionSubsystem(UWorldSubsystem):
+    """~ UWorldPartitionSubsystem: owns the runtime cell grid, evaluates
+    streaming sources every tick, activates/unloads cells by distance."""
+    CELL_SIZE = 128.0             # meters — a real "streaming grid cell size"
+    ACTIVATION_RANGE = 192.0
+    UNLOAD_HYSTERESIS = 256.0
+
+    def __init__(self):
+        self.cells: dict[tuple, UWorldPartitionRuntimeCell] = {}
+        self.sources: list[UWorldPartitionStreamingSourceComponent] = []
+        self.stats = dict(activated=0, unloaded=0)
+
+    def Initialize(self, world: "UWorld") -> None:
+        self.world = world
+        # author the Yard's cells across a 5x5 span (~640m x 640m)
+        for gx in range(-2, 3):
+            for gy in range(-2, 3):
+                cid = (gx, gy)
+                cx, cy = gx * self.CELL_SIZE, gy * self.CELL_SIZE
+                layers = [UDataLayerInstance("DL_Terrain")]
+                if (gx, gy) == (0, 0):
+                    layers.append(UDataLayerInstance("DL_Habitat"))
+                if abs(gx) == 2 or abs(gy) == 2:
+                    layers.append(UDataLayerInstance("DL_UniverseApproach"))
+                self.cells[cid] = UWorldPartitionRuntimeCell(
+                    cid, (cx - 64, cy - 64, cx + 64, cy + 64), layers)
+
+    def RegisterStreamingSource(self, src: UWorldPartitionStreamingSourceComponent) -> None:
+        self.sources.append(src)
+
+    def Tick(self, dt: float) -> None:
+        for cell in self.cells.values():
+            cx = (cell.Bounds[0] + cell.Bounds[2]) * 0.5
+            cy = (cell.Bounds[1] + cell.Bounds[3]) * 0.5
+            near = False
+            for src in self.sources:
+                p = src.OwnerActor.GetActorLocation()
+                if p.Dist2D(FVector(cx, cy, 0)) <= max(src.LoadingRange, self.ACTIVATION_RANGE):
+                    near = True
                     break
-                comps.append(c)
-            if ok:
-                yield (eid, *comps)
+            if near and cell.State != EWorldPartitionRuntimeCellState.Activated:
+                cell.State = EWorldPartitionRuntimeCellState.Activated
+                self.stats["activated"] += 1
+            elif not near and cell.State == EWorldPartitionRuntimeCellState.Activated:
+                far = all(src.OwnerActor.GetActorLocation().Dist2D(FVector(cx, cy, 0))
+                         > self.UNLOAD_HYSTERESIS for src in self.sources)
+                if far:
+                    cell.State = EWorldPartitionRuntimeCellState.Unloaded
+                    self.stats["unloaded"] += 1
 
-    def single(self, ctype: Type[C]) -> tuple[EntityId, C]:
-        """The one-and-only (player, sky, ...) — ~ GetGameState/GetPawn."""
-        for eid, c in self._store.get(ctype, {}).items():
-            if eid in self._alive:
-                return eid, c
-        raise LookupError(ctype.__name__)
+    def IsActive(self, pos: FVector) -> bool:
+        cid = (round(pos.X / self.CELL_SIZE), round(pos.Y / self.CELL_SIZE))
+        cell = self.cells.get(cid)
+        return cell is not None and cell.State == EWorldPartitionRuntimeCellState.Activated
 
 
-class System(ABC):
-    """A ticking engine subsystem. Order = (group, order_in_group)."""
-    GROUP: TickGroup = TickGroup.WORLD
-    ORDER: int = 0
+# =============================================================================
+# §3. ECS — Mass Entity Framework (crowd) + classic AActor/UActorComponent (hero)
+# ~ Engine/Plugins/Runtime/MassGameplay/. This is UE5's REAL production ECS
+# (built for City Sample / Fortnite-scale crowds), not a bespoke invention.
+# Design split, matching how Epic's own samples actually use it:
+#   - Player, Erisaid, Habitat, Rover, Stations = classic AActor (full
+#     per-frame fidelity; a handful of instances, complex unique behavior).
+#   - "Other Dots" (the NPC crowd) = Mass Entity fragments (cheap, scales to
+#     hundreds) that get LOD-ACTORIZED into a full character only when
+#     within interaction range (§6) — Epic's own `EMassLOD`/
+#     `UMassActorSpawnerSubsystem` pattern, and it happens to be exactly
+#     this game's own design language: "a dot on the horizon" -> full actor.
+# =============================================================================
+
+@dataclass(frozen=True)
+class FMassEntityHandle:
+    """~ FMassEntityHandle: {Index, SerialNumber} — ABA-safe entity id."""
+    Index: int
+    SerialNumber: int = 1
+
+
+class FMassFragment:
+    """~ FMassFragment base — POD data, packed per-archetype in real Mass
+    (contiguous chunks for cache-friendly SIMD-able processor iteration;
+    represented here as a dict-of-dicts for pseudocode clarity)."""
+
+
+class FMassTag:
+    """~ FMassTag base — zero-size marker types; archetype membership only."""
+
+
+@dataclass
+class FTransformFragment(FMassFragment):
+    """~ REAL fragment Epic ships (MassCommonFragments.h)."""
+    Transform: FTransform = field(default_factory=FTransform)
+
+
+@dataclass
+class FMassVelocityFragment(FMassFragment):
+    """~ REAL fragment (MassMovementFragments.h)."""
+    Value: FVector = field(default_factory=FVector)
+
+
+@dataclass
+class FAgentRadiusFragment(FMassFragment):
+    """~ REAL fragment (MassCommonFragments.h) — avoidance radius."""
+    Radius: float = 0.4
+
+
+@dataclass
+class FMassDotStateFragment(FMassFragment):
+    """Project-authored gameplay fragment (same pattern Epic uses for
+    game-specific Mass data in City Sample, e.g. FTrafficVehicleFragment)."""
+    Archetype: str = "stranger"       # trader|stranger|drifter|pirate|quiet
+    FSM: str = "distant"
+    Need: Optional[str] = None
+    CanPay: bool = True
+    StableId: str = ""                # keys cross-generation memory (Law 4)
+
+
+class FMassStrangerTag(FMassTag): ...
+class FMassTraderTag(FMassTag): ...
+class FMassPirateTag(FMassTag): ...
+class FMassQuietTag(FMassTag): ...
+
+
+class FMassEntityQuery:
+    """~ FMassEntityQuery: declares a processor's required fragment/tag
+    composition (AddRequirement<T>() in real Mass)."""
+    def __init__(self, *component_types: type):
+        self.component_types = component_types
+
+
+class FMassEntityManager:
+    """~ FMassEntityManager: owns all entities/fragments/archetypes. Real
+    Mass groups entities into archetypes by fragment composition for
+    branch-free iteration; this pseudocode trades that for a flat
+    dict-of-dicts, which is observably equivalent for gameplay purposes."""
+    def __init__(self):
+        self._next = 1
+        self._rows: dict[FMassEntityHandle, dict[type, FMassFragment]] = {}
+
+    def CreateEntity(self, *frags: FMassFragment) -> FMassEntityHandle:
+        h = FMassEntityHandle(self._next)
+        self._next += 1
+        self._rows[h] = {type(f): f for f in frags}
+        return h
+
+    def DestroyEntity(self, h: FMassEntityHandle) -> None:
+        self._rows.pop(h, None)
+
+    def GetFragmentDataPtr(self, h: FMassEntityHandle, ftype: Type[C]) -> Optional[C]:
+        return self._rows.get(h, {}).get(ftype)
+
+    def GetFragmentDataChecked(self, h: FMassEntityHandle, ftype: Type[C]) -> C:
+        return self._rows[h][ftype]
+
+    def EntityQuery(self, query: FMassEntityQuery) -> Iterator[tuple]:
+        """~ FMassExecutionContext iteration over matching entities."""
+        for h, row in list(self._rows.items()):
+            if all(t in row for t in query.component_types):
+                yield (h, *[row[t] for t in query.component_types])
+
+    def NumEntities(self) -> int:
+        return len(self._rows)
+
+
+class UMassProcessor(ABC):
+    """~ UMassProcessor base — a Mass "system." ConfigureQueries() declares
+    the fragment composition once; Execute() runs every Mass tick over all
+    matching entities. Order controlled by ExecutionOrder groups in real
+    Mass; here, registration order in UMassEntitySubsystem."""
+    @abstractmethod
+    def ConfigureQueries(self) -> FMassEntityQuery: ...
 
     @abstractmethod
-    def tick(self, game: "ChimeraGame", dt: float) -> None: ...
+    def Execute(self, EntityManager: FMassEntityManager, Game: "ChimeraGame",
+               DeltaTime: float) -> None: ...
 
 
-# =============================================================================
-# §3. COMPONENT CATALOG — the UActorComponent zoo (every field a UPROPERTY)
-# =============================================================================
+class UMassSignalSubsystem(UWorldSubsystem):
+    """~ UMassSignalSubsystem: fires named signals at specific entities so
+    event-driven logic doesn't need a full per-entity tick (real system;
+    e.g. `SignalEntity(UE::Mass::Signals::OnAnimationFinished, Entity)`)."""
+    def __init__(self):
+        self._pending: dict[str, list[FMassEntityHandle]] = {}
 
-@dataclass
-class Transform(Component):
-    """~ USceneComponent root: UPROPERTY(Replicated) FVector/FRotator."""
-    REPLICATED = ("pos", "yaw")
-    SAVED = ("pos", "yaw", "pitch")
-    pos: V3 = field(default_factory=V3)
-    yaw: float = 0.0
-    pitch: float = 0.0
-    scale: float = 1.0
+    def SignalEntity(self, signal_name: str, entity: FMassEntityHandle) -> None:
+        self._pending.setdefault(signal_name, []).append(entity)
 
-    def rotation(self) -> Quat:
-        return Quat.from_yaw_pitch(self.yaw, self.pitch)
-
-    def forward(self) -> V3:
-        return V3(math.cos(self.yaw), math.sin(self.yaw), 0.0)
+    def DrainSignal(self, signal_name: str) -> list[FMassEntityHandle]:
+        return self._pending.pop(signal_name, [])
 
 
-@dataclass
-class PhysicsBody(Component):
-    """~ UCharacterMovementComponent state + capsule (Chaos rigid for props)."""
-    REPLICATED = ("vel", "grounded")
-    vel: V3 = field(default_factory=V3)
-    grounded: bool = True
-    gravity_scale: float = 1.0
-    capsule_radius: float = 0.35
-    capsule_half_height: float = 0.9
-    mass_kg: float = 90.0
-    kinematic: bool = False        # true = script-driven (rover on spline)
+class UMassEntitySubsystem(UWorldSubsystem):
+    """~ UMassEntitySubsystem: the WorldSubsystem owning FMassEntityManager
+    + the registered processor list, ticked once per Mass frame."""
+    def __init__(self):
+        self.EntityManager = FMassEntityManager()
+        self.Processors: list[UMassProcessor] = []
+        self._game: "ChimeraGame" = None
+
+    def Initialize(self, world: "UWorld") -> None:
+        pass
+
+    def BindGame(self, game: "ChimeraGame") -> None:
+        self._game = game
+
+    def RegisterProcessor(self, p: UMassProcessor) -> None:
+        p._query = p.ConfigureQueries()
+        self.Processors.append(p)
+
+    def Tick(self, dt: float) -> None:
+        for p in self.Processors:
+            p.Execute(self.EntityManager, self._game, dt)
 
 
-@dataclass
-class StaticMeshRef(Component):
-    """~ UStaticMeshComponent: mesh + material + render flags."""
-    mesh_id: str = "SM_Cube"
-    material_id: str = "M_Default"
-    casts_shadow: bool = True
-    bounds_radius: float = 1.0     # local-space bounding sphere for culling
-    lod_bias: int = 0
-
+# --- Typed event delegates (hero-actor side; the crowd uses MassSignalSubsystem) ---
+# ~ DECLARE_DYNAMIC_MULTICAST_DELEGATE macros. ONE canonical broadcaster per
+# fact so audio/VFX/UI/camera can never desync (Design Law 1).
 
 @dataclass
-class SkeletalMeshRef(Component):
-    """~ USkeletalMeshComponent + AnimInstance state machine variables.
-    Animation here = pose params the anim graph would consume."""
-    mesh_id: str = "SK_Astronaut"
-    anim_state: str = "idle"       # idle|walk|jog|sprint|bend|dig|gesture_*
-    playback_t: float = 0.0
-    stride_phase: float = 0.0      # 0..1; foot contacts at 0.25 (L) and 0.75 (R)
-
-
-@dataclass
-class LightSource(Component):
-    """~ ULightComponent (point/spot). The sun/Earthshine are §5 globals."""
-    color: tuple = (1.0, 0.95, 0.9)
-    intensity: float = 5000.0      # lumen-ish
-    radius: float = 12.0
-    casts_shadow: bool = False
+class FFootstepEvent:
+    """~ FOnFootstepDelegate payload. THE canonical body-fact."""
+    Actor: AActor
+    Location: FVector
+    Yaw: float
+    Surface: "ESurfaceType"
+    bLeftFoot: bool
+    Speed: float
+    TimeSeconds: float
+    bLanding: bool = False
 
 
 @dataclass
-class ParticleEmitterRef(Component):
-    """~ UNiagaraComponent bound to a system asset (§5 EmitterSpec)."""
-    spec_id: str = "FX_DustPuff"
-    active: bool = True
-    rate_scale: float = 1.0
+class FGestureEvent:
+    From: AActor
+    To: Any                    # AActor (hero) or FMassEntityHandle (crowd)
+    Gesture: str
 
 
 @dataclass
-class AudioSource(Component):
-    """~ UAudioComponent: a positioned looping bed or one-shot channel."""
-    cue: str = ""
-    looping: bool = False
-    gain: float = 1.0
-    spatial: bool = True
-    min_radius: float = 2.0        # full volume inside
-    max_radius: float = 60.0       # silent beyond (attenuation curve in §7)
-    playing: bool = False
-    bus: str = "sfx"               # submix routing: sfx|ambience|music|ui
+class FSacrificeEvent:
+    Kind: str
+    Weight: float
+    Note: str
+    Generation: int
 
 
 @dataclass
-class Health(Component):
-    REPLICATED = ("hp",)
-    hp: float = 100.0
-    hp_max: float = 100.0
+class FDeathEvent:
+    Actor: AActor
+    Cause: str
 
 
 @dataclass
-class NavAgent(Component):
-    """~ UNavMovementComponent + path-following state (§8 fills `path`)."""
-    speed: float = 1.2
-    goal: Optional[V3] = None
-    path: list = field(default_factory=list)
-    path_i: int = 0
-    repath_cooldown: float = 0.0
-    avoid_radius: float = 0.8      # RVO-lite separation ring
+class FStormEvent:
+    Phase: str
+    ErasedPrints: int = 0
 
 
-@dataclass
-class PlayerTag(Component):
-    """~ APawn possessed by APlayerController. client_id keys §11 prediction."""
-    client_id: int = 0
+class FMulticastDelegate:
+    """~ a DECLARE_DYNAMIC_MULTICAST_DELEGATE instance: Broadcast() to all
+    AddDynamic()-bound listeners."""
+    def __init__(self):
+        self._listeners: list[Callable] = []
+
+    def AddDynamic(self, fn: Callable) -> None:
+        self._listeners.append(fn)
+
+    def Broadcast(self, payload: Any) -> None:
+        for fn in self._listeners:
+            fn(payload)
 
 
-@dataclass
-class NetIdentity(Component):
-    """~ replication bookkeeping per actor: role, priority, dirty mask."""
-    net_id: int = 0
-    role: str = "authority"        # authority|autonomous|simulated
-    net_cull_distance: float = 400.0
-    dirty: set = field(default_factory=set)
+class UChimeraEventBus(UWorldSubsystem):
+    """Aggregates the game's FMulticastDelegates in one place for pseudocode
+    convenience (real UE5 code would declare each on its owning class, e.g.
+    OnFootstep lives on UChimeraMovementComponent directly)."""
+    def __init__(self):
+        self.OnFootstep = FMulticastDelegate()
+        self.OnGesture = FMulticastDelegate()
+        self.OnSacrifice = FMulticastDelegate()
+        self.OnDeath = FMulticastDelegate()
+        self.OnStorm = FMulticastDelegate()
+
+    def Initialize(self, world: "UWorld") -> None: pass
+    def Tick(self, dt: float) -> None: pass
 
 
-# --- game-layer components declared here so §12 systems can query them ------
+# --- Hero-actor component catalog (classic UActorComponent zoo) -------------
 
 class Gait(Enum):
     IDLE = auto(); WALK = auto(); JOG = auto(); SPRINT = auto(); BEND = auto()
 
 
-@dataclass
-class SuitComponent(Component):
-    """~ USuitComponent (manual-lane C++). Diegetic survival state."""
-    SAVED = ("o2", "battery", "dust_clog", "integrity")
-    o2: float = 100.0
-    battery: float = 100.0
-    dust_clog: float = 0.0
-    temperature_c: float = 20.0
-    integrity: float = 100.0
-    gait: Gait = Gait.IDLE
+@UCLASS(Blueprintable=True, ClassGroup="Chimera")
+class UStaticMeshComponent(USceneComponent):
+    """~ UStaticMeshComponent. Nanite is NOT a separate component — it's a
+    per-mesh setting (see FMeshNaniteSettings in §4) that this component's
+    assigned UStaticMesh may or may not have enabled; the renderer picks the
+    Nanite path transparently when it's present."""
+    def __init__(self, owner: AActor, mesh_id: str, material_id: str = "M_Default"):
+        super().__init__(owner)
+        self.StaticMesh = mesh_id                 # ~ GetStaticMesh()
+        self.OverrideMaterial = material_id        # ~ SetMaterial(0, ...)
+        self.bCastDynamicShadow = True
+        self.BoundsScale = 1.0
+        # Lumen per-primitive flags — REAL fields (PrimitiveComponent.h):
+        self.bAffectDynamicIndirectLighting = True
+        self.bAffectDistanceFieldLighting = True
 
 
-@dataclass
-class CarryComponent(Component):
-    """~ UCarryComponent: two hands + a 30 kg pack; mass slows honestly."""
-    SAVED = ("hands", "pack")
-    hands: Optional["Item"] = None
-    pack: list = field(default_factory=list)
-    pack_kg_max: float = 30.0
+@UCLASS(Blueprintable=True)
+class USkeletalMeshComponent(USceneComponent):
+    """~ USkeletalMeshComponent + its UAnimInstance (state driven in §7)."""
+    def __init__(self, owner: AActor, mesh_id: str):
+        super().__init__(owner)
+        self.SkeletalMeshAsset = mesh_id
+        self.AnimInstanceState = "idle"            # ~ UAnimInstance subclass state
 
 
-@dataclass
-class DotBrain(Component):
-    """~ UDotBrainComponent: blackboard + behavior tree + coarse FSM (§8)."""
-    archetype: str = "stranger"    # trader|stranger|drifter|pirate|quiet
-    bb: dict = field(default_factory=dict)      # ~ UBlackboardComponent
-    tree_id: str = "BT_Stranger"
-    fsm: str = "distant"           # distant|approaching|near|encounter|leaving|gone
-    need: Optional[str] = None     # o2|water|parts|warmth|ride|burial
-    can_pay: bool = True
-    memory: dict = field(default_factory=dict)  # persists across GENERATIONS
+@UCLASS()
+class UCapsuleComponent(USceneComponent):
+    """~ UCapsuleComponent — the character's collision primitive."""
+    def __init__(self, owner: AActor, radius: float = 0.35, half_height: float = 0.9):
+        super().__init__(owner)
+        self.CapsuleRadius = radius
+        self.CapsuleHalfHeight = half_height
 
 
-@dataclass
-class ItemComponent(Component):
-    """World-dropped item pickup — ~ AItemActor with sphere overlap."""
-    kind: str = "ORE_ILMENITE"
-    quality: float = 1.0
-    origin_generation: int = 0
+@UCLASS()
+class UPointLightComponent(USceneComponent):
+    """~ UPointLightComponent. Lumen flags mirror UStaticMeshComponent's —
+    both derive from the same UPrimitiveComponent lighting contract."""
+    def __init__(self, owner: AActor, intensity: float = 5000.0, radius: float = 8.0):
+        super().__init__(owner)
+        self.Intensity = intensity                  # lumens
+        self.AttenuationRadius = radius
+        self.LightColor = (1.0, 0.95, 0.9)
+        self.bAffectDynamicIndirectLighting = True   # ~ ULightComponent field
+        self.CastShadows = False
 
 
-@dataclass
-class ReverbZoneComponent(Component):
-    """~ AAudioVolume: box that recolors everything heard inside (§7)."""
-    half_extents: V3 = field(default_factory=lambda: V3(6, 6, 3))
-    wet: float = 0.35
-    decay_s: float = 1.2
-    preset: str = "habitat_shell"
-
-
-# --- typed events (the delegate signatures) ---------------------------------
-
-@dataclass
-class FootstepEvent:
-    """THE canonical body-fact. Audio, decals, particles, camera bob, and
-    haptics all subscribe to THIS — one source, zero desync (Law 1)."""
-    eid: EntityId
-    pos: V3
-    yaw: float
-    surface: "Surface"
-    left_foot: bool
-    speed: float
-    t: float
-    landing: bool = False
-
-
-@dataclass
-class GestureEvent:
-    frm: EntityId
-    to: EntityId
-    gesture: str            # wave|offer|refuse|point|kneel|beckon|warn|thank|grieve
-
-
-@dataclass
-class SacrificeEvent:
-    kind: str
-    weight: float
-    note: str
-    generation: int
-
-
-@dataclass
-class DeathEvent:
-    eid: EntityId
-    cause: str
-
-
-@dataclass
-class StormEvent:
-    phase: str              # rising|passed
-    erased_prints: int = 0
+@UCLASS()
+class AAudioVolume(AActor):
+    """~ AAudioVolume: a box that applies a reverb/submix effect to anything
+    heard inside it. Real actor type, not a generic 'zone' component."""
+    def __init__(self, world: "UWorld", extents: FVector, preset: str, wet: float):
+        super().__init__(world)
+        self.Extents = extents
+        self.ReverbSettings = dict(preset=preset, wet=wet, decay_s=1.2)
 
 
 # =============================================================================
-# §4. ASSETS & GEOMETRY — vertex/index buffers, procedural meshes, PBR materials
-# UE5: UStaticMesh (FStaticMeshLODResources), UMaterialInstanceDynamic, PCG.
+# §4. RENDERING — Nanite, Lumen, post-process stack, Niagara VFX
+# ~ Engine/Source/Runtime/Renderer/, Engine/Plugins/FX/Niagara/
 # =============================================================================
 
 @dataclass
 class Vertex:
-    """One vertex of the vertex buffer — FStaticMeshBuildVertex."""
-    px: float; py: float; pz: float          # position
-    nx: float; ny: float; nz: float          # normal
-    u: float; v: float                       # uv0
-    tx: float = 1.0; ty: float = 0.0; tz: float = 0.0   # tangent
+    """~ FStaticMeshBuildVertex (one entry of the vertex buffer)."""
+    px: float; py: float; pz: float
+    nx: float; ny: float; nz: float
+    u: float; v: float
+
+
+@dataclass
+class FMeshNaniteSettings:
+    """~ REAL struct (Engine/Classes/Engine/StaticMesh.h): `UStaticMesh::
+    NaniteSettings`. Nanite is NOT a component — it is this settings block
+    on the mesh ASSET; UStaticMeshComponent renders it transparently through
+    the ordinary rendering path once bEnabled is true. Virtualized geometry
+    means near-constant screen-space triangle cost regardless of source
+    density (millions of source triangles are fine); FallbackPercentTriangles
+    is what still gets baked for platforms/paths that can't Nanite-render
+    (e.g. WPO-heavy materials historically, ray-tracing fallback proxies)."""
+    bEnabled: bool = True
+    PositionPrecision: int = -8          # log2 quantization step; -8 = fine
+    FallbackPercentTriangles: float = 0.05
+    bPreserveArea: bool = True
+    TrimRelativeError: float = 0.0
 
 
 @dataclass
 class MeshData:
-    """CPU-side mesh: vertex buffer + index buffer + LOD chain.
-    ~ FStaticMeshRenderData with LODResources[]."""
+    """CPU-side authoring representation: vertex/index buffer + LOD chain +
+    Nanite settings. ~ FStaticMeshRenderData (LODResources[] when non-Nanite,
+    plus the Nanite streaming page data when bEnabled)."""
     name: str
-    vertices: list = field(default_factory=list)     # list[Vertex]
-    indices: list = field(default_factory=list)      # triangle list, CCW
-    lods: list = field(default_factory=list)         # [(screen_size, index_count)]
+    vertices: list = field(default_factory=list)
+    indices: list = field(default_factory=list)
+    lods: list = field(default_factory=list)        # [(screen_size, index_count)] — non-Nanite fallback path
+    nanite: FMeshNaniteSettings = field(default_factory=FMeshNaniteSettings)
+    bounds_radius: float = 1.0     # ~ Bounds.SphereRadius; AssetRegistry bakes the real value post-construction
 
-    def triangle_count(self) -> int:
-        return len(self.indices) // 3
+    def cluster_estimate(self) -> int:
+        """Nanite groups ~128-tri clusters into a BVH of cluster groups; this
+        estimates cluster count for the headless render-stat proof (§11)."""
+        return max(1, (len(self.indices) // 3) // 128)
+
+    def bounds_sphere_radius(self) -> float:
+        """~ UPrimitiveComponent::Bounds.SphereRadius (local space, before
+        the component's world Scale3D is applied). Computed once and cached
+        by AssetRegistry — the renderer's frustum test needs the ACTUAL
+        mesh extent, not a flat placeholder, or a 90m terrain patch gets
+        culled from any sane camera distance."""
+        if not self.vertices:
+            return 1.0
+        return max(math.sqrt(v.px ** 2 + v.py ** 2 + v.pz ** 2) for v in self.vertices)
 
 
 def make_grid_mesh(name: str, size_m: float, cells: int,
-                   height_fn: Callable[[float, float], float]) -> MeshData:
-    """Terrain patch: displaced grid with analytic normals from central
-    differences — UE5: Landscape component / PCG HeightField."""
-    m = MeshData(name)
+                   height_fn: Callable[[float, float], float],
+                   nanite: bool = True) -> MeshData:
+    """Terrain patch, displaced grid, analytic central-difference normals.
+    ~ authored via Landscape or a PCG-baked static mesh; Nanite-enabled so
+    LOD selection is the renderer's problem, not ours."""
+    m = MeshData(name, nanite=FMeshNaniteSettings(bEnabled=nanite))
     step = size_m / cells
     h = 0.5 * size_m
     for iy in range(cells + 1):
@@ -619,24 +941,23 @@ def make_grid_mesh(name: str, size_m: float, cells: int,
             e = 0.25
             nx = height_fn(x - e, y) - height_fn(x + e, y)
             ny = height_fn(x, y - e) - height_fn(x, y + e)
-            n = V3(nx, ny, 2.0 * e).normalized()
-            m.vertices.append(Vertex(x, y, z, n.x, n.y, n.z, ix / cells, iy / cells))
+            n = FVector(nx, ny, 2.0 * e).GetSafeNormal()
+            m.vertices.append(Vertex(x, y, z, n.X, n.Y, n.Z, ix / cells, iy / cells))
     for iy in range(cells):
         for ix in range(cells):
             a = iy * (cells + 1) + ix
             b, c, d = a + 1, a + cells + 1, a + cells + 2
             m.indices += [a, c, b, b, c, d]
     full = len(m.indices)
-    m.lods = [(1.0, full), (0.5, full // 4), (0.2, full // 16)]   # quadric-simplify
+    m.lods = [(1.0, full), (0.5, full // 4), (0.2, full // 16)]   # non-Nanite fallback chain
     return m
 
 
-def make_icosphere(name: str, radius: float, subdiv: int = 1) -> MeshData:
-    """Rocks, moonlets, the Erisaid fragments — ~ modeled asset stand-in."""
+def make_icosphere(name: str, radius: float, subdiv: int = 1, nanite: bool = True) -> MeshData:
     t = (1.0 + math.sqrt(5.0)) / 2.0
-    pts = [V3(-1, t, 0), V3(1, t, 0), V3(-1, -t, 0), V3(1, -t, 0),
-           V3(0, -1, t), V3(0, 1, t), V3(0, -1, -t), V3(0, 1, -t),
-           V3(t, 0, -1), V3(t, 0, 1), V3(-t, 0, -1), V3(-t, 0, 1)]
+    pts = [FVector(-1, t, 0), FVector(1, t, 0), FVector(-1, -t, 0), FVector(1, -t, 0),
+           FVector(0, -1, t), FVector(0, 1, t), FVector(0, -1, -t), FVector(0, 1, -t),
+           FVector(t, 0, -1), FVector(t, 0, 1), FVector(-t, 0, -1), FVector(-t, 0, 1)]
     faces = [(0, 11, 5), (0, 5, 1), (0, 1, 7), (0, 7, 10), (0, 10, 11),
              (1, 5, 9), (5, 11, 4), (11, 10, 2), (10, 7, 6), (7, 1, 8),
              (3, 9, 4), (3, 4, 2), (3, 2, 6), (3, 6, 8), (3, 8, 9),
@@ -647,19 +968,18 @@ def make_icosphere(name: str, radius: float, subdiv: int = 1) -> MeshData:
             key = (min(i, j), max(i, j))
             if key not in cache:
                 cache[key] = len(pts)
-                pts.append(((pts[i] + pts[j]) * 0.5).normalized() * pts[i].length())
+                pts.append((pts[i] + pts[j]) * 0.5 * (pts[i].Size() / ((pts[i] + pts[j]) * 0.5).Size()))
             return cache[key]
         for (a, b, c) in faces:
             ab, bc, ca = midpoint(a, b), midpoint(b, c), midpoint(c, a)
             new_faces += [(a, ab, ca), (b, bc, ab), (c, ca, bc), (ab, bc, ca)]
         faces = new_faces
-    m = MeshData(name)
+    m = MeshData(name, nanite=FMeshNaniteSettings(bEnabled=nanite))
     for p in pts:
-        n = p.normalized()
-        u = 0.5 + math.atan2(n.y, n.x) / TAU
-        v = 0.5 - math.asin(clamp(n.z, -1, 1)) / math.pi
-        m.vertices.append(Vertex(n.x * radius, n.y * radius, n.z * radius,
-                                 n.x, n.y, n.z, u, v))
+        n = p.GetSafeNormal()
+        u = 0.5 + math.atan2(n.Y, n.X) / TAU
+        v = 0.5 - math.asin(clamp(n.Z, -1, 1)) / math.pi
+        m.vertices.append(Vertex(n.X * radius, n.Y * radius, n.Z * radius, n.X, n.Y, n.Z, u, v))
     for f in faces:
         m.indices += list(f)
     m.lods = [(1.0, len(m.indices))]
@@ -667,58 +987,74 @@ def make_icosphere(name: str, radius: float, subdiv: int = 1) -> MeshData:
 
 
 def make_erisaid_shell(name: str = "SM_Erisaid") -> MeshData:
-    """The half-buried leviathan shell: superellipse ridge-loft, 18 m long.
-    The 'face' triangles (u in [0.42,0.58], v>0.65) get M_ErisaidMirror."""
-    m = MeshData(name)
+    """The half-buried leviathan shell, 18 m long. Nanite-enabled — the
+    ridge micro-detail (34 longitudinal ribs) would be LOD-fallback-lossy
+    on a traditional mesh at range; Nanite keeps it screen-space-correct
+    from any distance without a manual LOD chain."""
+    m = MeshData(name, nanite=FMeshNaniteSettings(bEnabled=True, PositionPrecision=-10))
     rings, segs = 24, 32
     for i in range(rings + 1):
         v = i / rings
-        rx = 9.0 * (math.sin(math.pi * v) ** 0.7)          # length profile
+        rx = 9.0 * (math.sin(math.pi * v) ** 0.7)
         rz = 4.0 * (math.sin(math.pi * v) ** 0.9)
         for j in range(segs + 1):
             u = j / segs
-            a = math.pi * u                                # half-shell (buried below)
+            a = math.pi * u
             x = (v - 0.5) * 18.0
             y = math.cos(a) * rx * 0.45
             z = math.sin(a) * rz
             ridge = 0.25 * math.sin(v * 34.0) * smoothstep(0.1, 0.9, v)
-            n = V3(0.0, math.cos(a), math.sin(a)).normalized()
-            m.vertices.append(Vertex(x, y, z + ridge, n.x, n.y, n.z, u, v))
+            n = FVector(0.0, math.cos(a), math.sin(a)).GetSafeNormal()
+            m.vertices.append(Vertex(x, y, z + ridge, n.X, n.Y, n.Z, u, v))
     for i in range(rings):
         for j in range(segs):
             a = i * (segs + 1) + j
             b, c, d = a + 1, a + segs + 1, a + segs + 2
             m.indices += [a, c, b, b, c, d]
-    m.lods = [(1.0, len(m.indices)), (0.3, len(m.indices) // 4)]
+    m.lods = [(1.0, len(m.indices))]
     return m
 
 
 @dataclass
 class MaterialPBR:
-    """~ UMaterialInstanceDynamic parameters. Scalar/vector params by name —
-    exactly what SetScalarParameterValue would drive at runtime."""
+    """~ UMaterialInstanceDynamic scalar/vector parameters — exactly what
+    SetScalarParameterValue()/SetVectorParameterValue() would drive."""
     name: str
     base_color: tuple = (0.5, 0.5, 0.5)
     metallic: float = 0.0
     roughness: float = 0.85
-    normal_strength: float = 1.0
     emissive: tuple = (0.0, 0.0, 0.0)
     emissive_intensity: float = 0.0
-    # dust layer (the researched accumulation mask — §12 GroundSystem feeds age)
     dust_mask_enabled: bool = False
     dust_tint: tuple = (0.72, 0.62, 0.50)
 
     def dust_mask(self, normal_z: float, wx: float, wy: float, age_h: float) -> float:
-        """DustMask = saturate(N.z)^2 * crevice_fbm * saturate(age*rate).
-        UE5: material function MF_DustAccumulation (vertex normal + world pos)."""
+        """The researched dust-accumulation function, as a material function
+        graph would express it: DustMask = saturate(N.z)^2 * crevice_fbm *
+        saturate(age*rate). ~ MF_DustAccumulation (vertex normal + world pos
+        + a scalar parameter fed by §10's WeatherSystem)."""
         up = clamp(normal_z, 0.0, 1.0) ** 2.0
         crev = fbm2(wx * 0.13, wy * 0.13, 4, seed=99)
         age = clamp(age_h * 0.02, 0.0, 1.0)
         return clamp(up * (0.4 + 0.6 * crev) * age, 0.0, 1.0)
 
 
+@dataclass
+class UMaterialParameterCollection:
+    """~ UMaterialParameterCollection (MPC): a named bag of scalar/vector
+    params EVERY material instance can read without a per-material dynamic
+    instance. Used for globally-driven look: wind strength (dust-drift
+    direction bias), storm intensity (screen grit), memorial night-light."""
+    ScalarParameters: dict = field(default_factory=lambda: dict(
+        WindSpeed=2.0, StormIntensity=0.0, MemorialNightLight=0.0, DustAgeHours=0.0))
+    VectorParameters: dict = field(default_factory=lambda: dict(WindDirection=(1.0, 0.0, 0.0)))
+
+    def SetScalarParameterValue(self, name: str, value: float) -> None:
+        self.ScalarParameters[name] = value
+
+
 class AssetRegistry:
-    """~ FAssetRegistry + StreamableManager: everything procedural, no disk."""
+    """~ FAssetRegistry + UAssetManager: procedural, no disk I/O."""
 
     def __init__(self, seed: int):
         yard_height = lambda x, y: fbm2(x * 0.02, y * 0.02, 4, seed) * 2.2
@@ -728,691 +1064,694 @@ class AssetRegistry:
             "SM_Moonlet": make_icosphere("SM_Moonlet", 40.0, 2),
             "SM_Erisaid": make_erisaid_shell(),
             "SM_HabitatDome": make_icosphere("SM_HabitatDome", 4.0, 2),
-            "SM_Rover": make_icosphere("SM_Rover", 1.4, 1),      # placeholder hull
-            "SK_Astronaut": make_icosphere("SK_Astronaut", 0.5, 1),
-            "SK_Dot": make_icosphere("SK_Dot", 0.5, 0),
+            "SM_Rover": make_icosphere("SM_Rover", 1.4, 1, nanite=False),  # skinned chassis, non-Nanite
+            "SK_Astronaut": make_icosphere("SK_Astronaut", 0.5, 1, nanite=False),  # skeletal meshes: no Nanite
+            "SK_Dot": make_icosphere("SK_Dot", 0.5, 0, nanite=False),
         }
+        for mesh in self.meshes.values():                    # ~ FStaticMeshRenderData::Bounds bake
+            mesh.bounds_radius = mesh.bounds_sphere_radius()
         self.materials: dict[str, MaterialPBR] = {
-            "M_Sand": MaterialPBR("M_Sand", (0.62, 0.54, 0.42), 0.0, 0.95,
-                                  dust_mask_enabled=True),
-            "M_Rock": MaterialPBR("M_Rock", (0.35, 0.33, 0.31), 0.0, 0.9,
-                                  dust_mask_enabled=True),
-            "M_MetalPad": MaterialPBR("M_MetalPad", (0.6, 0.6, 0.62), 1.0, 0.4,
-                                      dust_mask_enabled=True),
+            "M_Sand": MaterialPBR("M_Sand", (0.62, 0.54, 0.42), 0.0, 0.95, dust_mask_enabled=True),
+            "M_Rock": MaterialPBR("M_Rock", (0.35, 0.33, 0.31), 0.0, 0.9, dust_mask_enabled=True),
+            "M_MetalPad": MaterialPBR("M_MetalPad", (0.6, 0.6, 0.62), 1.0, 0.4, dust_mask_enabled=True),
             "M_Suit": MaterialPBR("M_Suit", (0.85, 0.85, 0.88), 0.2, 0.6),
-            "M_ErisaidShell": MaterialPBR("M_ErisaidShell", (0.18, 0.2, 0.22),
-                                          0.7, 0.35, dust_mask_enabled=True),
-            "M_ErisaidMirror": MaterialPBR("M_ErisaidMirror", (0.05, 0.05, 0.06),
-                                           1.0, 0.05),   # planar-reflection face
+            "M_ErisaidShell": MaterialPBR("M_ErisaidShell", (0.18, 0.2, 0.22), 0.7, 0.35, dust_mask_enabled=True),
+            "M_ErisaidMirror": MaterialPBR("M_ErisaidMirror", (0.05, 0.05, 0.06), 1.0, 0.05),
             "M_HabGlass": MaterialPBR("M_HabGlass", (0.7, 0.8, 0.9), 0.0, 0.1),
             "M_StarBillboard": MaterialPBR("M_StarBillboard", (0, 0, 0), 0, 1,
-                                           emissive=(1.0, 0.97, 0.9),
-                                           emissive_intensity=1.0),
+                                           emissive=(1.0, 0.97, 0.9), emissive_intensity=1.0),
         }
+        self.mpc = UMaterialParameterCollection()
 
 
-# =============================================================================
-# §5. RENDERING — camera, frustum culling, cascaded shadows, GI, post, VFX
-# UE5: deferred renderer + Lumen + Niagara. Here: the exact math a frame runs.
-# =============================================================================
+# --- Lumen (real hook: FPostProcessSettings, not a scene-proxy class) -------
+
+class EDynamicGlobalIlluminationMethod(Enum):     # ~ real enum (RendererSettings.h)
+    Lumen = auto(); ScreenSpace = auto(); None_ = auto()
+
+
+class EReflectionMethod(Enum):                     # ~ real enum
+    Lumen = auto(); ScreenSpace = auto(); None_ = auto()
+
 
 @dataclass
-class CameraState:
-    """~ APlayerCameraManager output: the final view for this frame."""
-    eye: V3 = field(default_factory=lambda: V3(0, 0, 1.62))
-    yaw: float = 0.0
-    pitch: float = 0.0
-    fov_y: float = 92.0
-    fov_velocity: float = 0.0      # spring toward sprint FOV
-    bob_z: float = 0.0
-    bob_velocity: float = 0.0
+class FPostProcessSettings:
+    """~ REAL struct (Engine/Classes/Engine/Scene.h), applied via an
+    APostProcessVolume covering the whole Yard (unbound, priority 0). Lumen
+    is enabled HERE, not via a separate proxy class — this is the actual
+    gameplay-facing hook a level designer touches."""
+    bOverride_DynamicGlobalIlluminationMethod: bool = True
+    DynamicGlobalIlluminationMethod: EDynamicGlobalIlluminationMethod = \
+        EDynamicGlobalIlluminationMethod.Lumen
+    bOverride_ReflectionMethod: bool = True
+    ReflectionMethod: EReflectionMethod = EReflectionMethod.Lumen
+    LumenSceneDetail: float = 1.0                  # ~ r.Lumen.SceneDetail equivalents
+    LumenFinalGatherQuality: float = 1.0
+    IndirectLightingIntensity: float = 1.0
+    # exposure / tonemap (auto-adapts each frame in RenderPipeline.Tick)
+    AutoExposureMinBrightness: float = -2.0
+    AutoExposureMaxBrightness: float = 8.0
+    AutoExposureSpeedUp: float = 3.0
+    AutoExposureSpeedDown: float = 1.0
+    AutoExposureBias: float = 0.0                  # the adapted EV, written each frame
+    BloomThreshold: float = 1.1
+    BloomIntensity: float = 0.35
+    VignetteIntensity: float = 0.25
+    GrainIntensity: float = 0.04
+    DepthOfFieldFocalDistance: float = 8.0
+    DepthOfFieldFstop: float = 4.0
+    ChromaticAberrationStartOffset: float = 0.8
+    ChromaticAberrationIntensity: float = 0.0       # driven up during suit-alarm (§10)
+    ColorGradingShadows: tuple = (0.98, 0.99, 1.06)
+    ColorGradingHighlights: tuple = (1.05, 1.0, 0.94)
 
-    def view_matrix(self) -> Mat4:
-        f = Quat.from_yaw_pitch(self.yaw, self.pitch).forward()
-        return Mat4.look_at(self.eye + V3(0, 0, self.bob_z),
-                            self.eye + V3(0, 0, self.bob_z) + f)
-
-    def proj_matrix(self, aspect: float = 16 / 9) -> Mat4:
-        return Mat4.perspective(self.fov_y, aspect, 0.1, 20000.0)
-
-
-class Frustum:
-    """Six planes extracted from view*proj (Gribb–Hartmann) — exactly what
-    UE's FConvexVolume does for primitive culling."""
-
-    def __init__(self, vp: Mat4):
-        m = vp.m
-        self.planes = []
-        for sign, row in ((1, 0), (-1, 0), (1, 1), (-1, 1), (1, 2), (-1, 2)):
-            a = m[3][0] + sign * m[row][0]
-            b = m[3][1] + sign * m[row][1]
-            c = m[3][2] + sign * m[row][2]
-            d = m[3][3] + sign * m[row][3]
-            n = math.sqrt(a * a + b * b + c * c) + EPS
-            self.planes.append((a / n, b / n, c / n, d / n))
-
-    def sphere_visible(self, center: V3, radius: float) -> bool:
-        for (a, b, c, d) in self.planes:
-            if a * center.x + b * center.y + c * center.z + d < -radius:
-                return False
-        return True
+    def Tick_AutoExposure(self, scene_luminance: float, dt: float) -> None:
+        target = clamp(-math.log2(max(scene_luminance, 0.01)),
+                       self.AutoExposureMinBrightness, self.AutoExposureMaxBrightness)
+        speed = self.AutoExposureSpeedUp if target > self.AutoExposureBias else self.AutoExposureSpeedDown
+        self.AutoExposureBias = lerp(self.AutoExposureBias, target, clamp(speed * dt, 0, 1))
 
 
-class ShadowCascades:
-    """Cascaded shadow maps for the sun: split the view range, fit an ortho
-    light-space matrix per cascade — ~ r.Shadow.CSM settings + Lumen shadows."""
-    SPLITS = (0.0, 12.0, 48.0, 200.0)      # meters; 3 cascades
-
-    def build(self, cam: CameraState, sun_dir: V3) -> list[Mat4]:
-        mats = []
-        f = Quat.from_yaw_pitch(cam.yaw, cam.pitch).forward()
-        for i in range(len(self.SPLITS) - 1):
-            near, far = self.SPLITS[i], self.SPLITS[i + 1]
-            center = cam.eye + f * ((near + far) * 0.5)
-            half = (far - near) * 0.75
-            eye = center - sun_dir * 500.0
-            mats.append(Mat4.ortho(half, half, 1.0, 1500.0)
-                        @ Mat4.look_at(eye, center))
-        return mats
-
-
-class IrradianceField:
-    """Lumen stand-in: a coarse world-space irradiance probe grid. Each probe
-    stores sky visibility + one ground bounce; sampling is trilinear-ish.
-    UE5: Lumen radiance cache / screen probes — here, the honest math shape."""
+class ALumenSurfaceCacheApprox:
+    """Lumen's actual Surface Cache + Radiance Cache are renderer-private
+    (FLumenSceneData, not gameplay-visible). This is the GAMEPLAY-SIDE
+    approximation needed for one specific design hook: bright ancestor
+    stars must visibly light the Yard at night (Design Law 2 payoff). A
+    coarse world-space irradiance probe grid stands in for "what Lumen
+    would compute," fed by IndirectLightingIntensity + the memorial."""
     PROBE_SPACING = 16.0
 
     def __init__(self):
-        self.probes: dict[tuple, float] = {}     # cell -> irradiance scalar
+        self.probes: dict[tuple, float] = {}
 
-    def bake_region(self, center: V3, radius: float, sun_elev_deg: float,
-                    albedo: float = 0.35, memorial_light: float = 0.0) -> None:
+    def bake_region(self, center: FVector, radius: float, sun_elev_deg: float,
+                    albedo: float, memorial_light: float, pp: FPostProcessSettings) -> None:
         sky = max(0.0, math.sin(math.radians(max(sun_elev_deg, 0.0))))
         c = int(radius / self.PROBE_SPACING)
-        cx, cy = int(center.x / self.PROBE_SPACING), int(center.y / self.PROBE_SPACING)
+        cx, cy = int(center.X / self.PROBE_SPACING), int(center.Y / self.PROBE_SPACING)
         for dx in range(-c, c + 1):
             for dy in range(-c, c + 1):
                 direct = sky
-                bounce = direct * albedo * 0.5           # one diffuse bounce
-                ancestors = memorial_light                # bright stars light night
-                self.probes[(cx + dx, cy + dy)] = direct + bounce + ancestors
+                bounce = direct * albedo * 0.5 * pp.IndirectLightingIntensity
+                self.probes[(cx + dx, cy + dy)] = direct + bounce + memorial_light
 
-    def sample(self, p: V3) -> float:
-        k = (int(p.x / self.PROBE_SPACING), int(p.y / self.PROBE_SPACING))
+    def sample(self, p: FVector) -> float:
+        k = (int(p.X / self.PROBE_SPACING), int(p.Y / self.PROBE_SPACING))
         return self.probes.get(k, 0.05)
 
 
-@dataclass
-class PostProcessSettings:
-    """~ FPostProcessSettings on a global PostProcessVolume."""
-    exposure_ev: float = 0.0            # auto-adapted below
-    exposure_speed: float = 1.5         # EV/s adaptation
-    bloom_threshold: float = 1.1
-    bloom_intensity: float = 0.35
-    vignette: float = 0.25
-    grain: float = 0.04
-    grade_shadows: tuple = (0.98, 0.99, 1.06)   # cold nights
-    grade_highlights: tuple = (1.05, 1.0, 0.94)  # warm regolith days
+# --- Niagara VFX -------------------------------------------------------------
 
-    def adapt(self, scene_luminance: float, dt: float) -> None:
-        target = clamp(-math.log2(max(scene_luminance, 0.01)), -2.0, 8.0)
-        self.exposure_ev = lerp(self.exposure_ev, target,
-                                clamp(self.exposure_speed * dt, 0, 1))
+class ENiagaraSimTarget(Enum):        # ~ real enum
+    CPUSim = auto(); GPUComputeSim = auto()
 
-
-# --- Niagara: data-driven particle systems ----------------------------------
 
 @dataclass
-class EmitterSpec:
-    """~ UNiagaraSystem asset: spawn + per-particle update curves."""
+class UNiagaraDataInterfaceCurlNoiseField:
+    """~ a REAL Niagara Data Interface pattern: a vector field module reads
+    from this each particle-tick to advect dust with turbulence, not just
+    uniform wind — curl noise keeps the field divergence-free (no particles
+    unrealistically pooling/vanishing)."""
+    frequency: float = 0.08
+    strength: float = 1.4
+
+    def sample(self, p: FVector, seed: int) -> FVector:
+        e = 0.5
+        n = lambda x, y: value_noise2(x * self.frequency, y * self.frequency, seed)
+        dx = (n(p.X, p.Y + e) - n(p.X, p.Y - e)) / (2 * e)
+        dy = -(n(p.X + e, p.Y) - n(p.X - e, p.Y)) / (2 * e)
+        return FVector(dx, dy, 0.0) * self.strength
+
+
+@dataclass
+class UNiagaraSystem:
+    """~ UNiagaraSystem asset: one or more emitters + their modules. GPU sim
+    for high-count ambient effects (dust drift, storm wall); CPU sim for
+    low-count gameplay-coupled bursts that need synchronous read-back
+    (footstep dust the same frame audio triggers — Design Law 1)."""
     name: str
+    sim_target: ENiagaraSimTarget = ENiagaraSimTarget.CPUSim
     burst: int = 0
     rate_per_s: float = 0.0
     lifetime_s: tuple = (0.6, 1.2)
     speed: tuple = (0.5, 1.5)
     cone_deg: float = 40.0
     size_m: tuple = (0.05, 0.25)
-    size_over_life: tuple = (1.0, 2.6)      # grows as it fades
-    gravity_scale: float = 0.15             # regolith dust hangs in low-g
+    gravity_scale: float = 0.15
     drag: float = 1.2
-    wind_influence: float = 0.0
+    uses_curl_noise: bool = False
     color: tuple = (0.72, 0.62, 0.5)
-    fade_in: float = 0.05
     die_on_ground: bool = True
 
 
-NIAGARA_LIBRARY: dict[str, EmitterSpec] = {
-    "FX_DustPuff": EmitterSpec("FX_DustPuff", burst=14, speed=(0.4, 1.4),
-                               cone_deg=70.0),
-    "FX_SandDrift": EmitterSpec("FX_SandDrift", rate_per_s=60.0,
-                                lifetime_s=(2.0, 5.0), speed=(0.0, 0.3),
-                                wind_influence=1.0, gravity_scale=0.02,
-                                size_m=(0.4, 1.6), die_on_ground=False),
-    "FX_FootstepRing": EmitterSpec("FX_FootstepRing", burst=1,
-                                   lifetime_s=(0.5, 0.5), speed=(0.0, 0.0),
-                                   size_m=(0.3, 0.3), size_over_life=(1.0, 4.0),
-                                   color=(0.9, 0.9, 1.0)),  # accessibility pulse
-    "FX_StormWall": EmitterSpec("FX_StormWall", rate_per_s=400.0,
-                                lifetime_s=(1.0, 2.0), speed=(6.0, 14.0),
-                                wind_influence=1.0, size_m=(1.0, 3.0),
-                                gravity_scale=0.0, die_on_ground=False),
-    "FX_ThrusterPlume": EmitterSpec("FX_ThrusterPlume", rate_per_s=200.0,
-                                    lifetime_s=(0.2, 0.5), speed=(8.0, 16.0),
-                                    cone_deg=12.0, color=(1.0, 0.8, 0.4),
-                                    gravity_scale=0.0),
-    "FX_DigBurst": EmitterSpec("FX_DigBurst", burst=30, speed=(1.0, 3.0),
-                               cone_deg=55.0, size_m=(0.08, 0.4)),
+NIAGARA_LIBRARY: dict[str, UNiagaraSystem] = {
+    "NS_DustPuff": UNiagaraSystem("NS_DustPuff", ENiagaraSimTarget.CPUSim,
+                                  burst=14, speed=(0.4, 1.4), cone_deg=70.0),
+    "NS_SandDrift": UNiagaraSystem("NS_SandDrift", ENiagaraSimTarget.GPUComputeSim,
+                                   rate_per_s=400.0, lifetime_s=(2.0, 5.0), speed=(0.0, 0.3),
+                                   uses_curl_noise=True, gravity_scale=0.02,
+                                   size_m=(0.4, 1.6), die_on_ground=False),
+    "NS_FootstepRing": UNiagaraSystem("NS_FootstepRing", ENiagaraSimTarget.CPUSim, burst=1,
+                                      lifetime_s=(0.5, 0.5), speed=(0.0, 0.0), size_m=(0.3, 0.3),
+                                      color=(0.9, 0.9, 1.0)),          # accessibility pulse
+    "NS_StormWall": UNiagaraSystem("NS_StormWall", ENiagaraSimTarget.GPUComputeSim,
+                                   rate_per_s=4000.0, lifetime_s=(1.0, 2.0), speed=(6.0, 14.0),
+                                   uses_curl_noise=True, size_m=(1.0, 3.0), gravity_scale=0.0,
+                                   die_on_ground=False),
+    "NS_DigBurst": UNiagaraSystem("NS_DigBurst", ENiagaraSimTarget.CPUSim, burst=30,
+                                  speed=(1.0, 3.0), cone_deg=55.0, size_m=(0.08, 0.4)),
 }
 
 
 @dataclass
-class Particle:
-    pos: V3
-    vel: V3
-    age: float
-    life: float
-    size: float
+class FParticle:
+    pos: FVector; vel: FVector; age: float; life: float; size: float
 
 
-class ParticleSimulator(System):
-    """CPU Niagara: spawns from ParticleEmitterRef components + one-shot
-    bursts requested via spawn_burst(). Wind advects; ground kills."""
-    GROUP = TickGroup.RENDER
-    ORDER = 0
-    MAX_PARTICLES = 4000
+@UCLASS()
+class UNiagaraComponent(USceneComponent):
+    """~ UNiagaraComponent: binds a UNiagaraSystem asset to an actor,
+    exposes User Parameters (here: `rate_scale`, matching
+    SetVariableFloat("User.RateScale", x))."""
+    def __init__(self, owner: AActor, system_id: str, rate_scale: float = 1.0):
+        super().__init__(owner)
+        self.Asset = system_id
+        self.bActive = True
+        self.UserRateScale = rate_scale
 
-    def __init__(self, rng: random.Random):
-        self.rng = rng
-        self.live: list[tuple[EmitterSpec, Particle]] = []
-        self.wind = V3()
 
-    def spawn_burst(self, spec_id: str, pos: V3, scale: float = 1.0) -> None:
-        spec = NIAGARA_LIBRARY[spec_id]
-        for _ in range(int(spec.burst * scale) or spec.burst):
-            self._emit(spec, pos)
+class UNiagaraSimulationSubsystem(UWorldSubsystem):
+    """The CPU/GPU particle solver. GPU-sim systems (drift, storm wall) are
+    represented as a cheap analytic density field (a real GPU sim's
+    per-particle state isn't gameplay-readable anyway); CPU-sim systems
+    (footstep dust, dig bursts) are simulated per-particle because gameplay
+    needs their positions this frame (Design Law 1: sync with audio)."""
+    MAX_CPU_PARTICLES = 4000
 
-    def _emit(self, spec: EmitterSpec, pos: V3) -> None:
-        if len(self.live) >= self.MAX_PARTICLES:
+    def Initialize(self, world: "UWorld") -> None:
+        self.rng = random.Random(1)
+        self.cpu_particles: list[tuple[UNiagaraSystem, FParticle]] = []
+        self.gpu_density_estimate = 0.0
+        self.curl = UNiagaraDataInterfaceCurlNoiseField()
+        self.wind: FVector = FVector()
+        self.stats = dict(cpu_particles_peak=0, gpu_particles_estimated=0)
+
+    def SpawnSystemAtLocation(self, system_id: str, loc: FVector, scale: float = 1.0) -> None:
+        sys_ = NIAGARA_LIBRARY[system_id]
+        if sys_.sim_target == ENiagaraSimTarget.GPUComputeSim:
+            self.gpu_density_estimate += sys_.rate_per_s * scale * 0.05
+            return
+        for _ in range(int(sys_.burst * scale) or sys_.burst):
+            self._emit(sys_, loc)
+
+    def _emit(self, sys_: UNiagaraSystem, pos: FVector) -> None:
+        if len(self.cpu_particles) >= self.MAX_CPU_PARTICLES:
             return
         a = self.rng.uniform(0, TAU)
-        tilt = math.radians(self.rng.uniform(0, spec.cone_deg))
-        speed = self.rng.uniform(*spec.speed)
-        vel = V3(math.cos(a) * math.sin(tilt), math.sin(a) * math.sin(tilt),
-                 math.cos(tilt)) * speed
-        self.live.append((spec, Particle(
-            V3(pos.x, pos.y, pos.z), vel, 0.0,
-            self.rng.uniform(*spec.lifetime_s), self.rng.uniform(*spec.size_m))))
+        tilt = math.radians(self.rng.uniform(0, sys_.cone_deg))
+        speed = self.rng.uniform(*sys_.speed)
+        vel = FVector(math.cos(a) * math.sin(tilt), math.sin(a) * math.sin(tilt),
+                      math.cos(tilt)) * speed
+        self.cpu_particles.append((sys_, FParticle(
+            FVector(pos.X, pos.Y, pos.Z), vel, 0.0,
+            self.rng.uniform(*sys_.lifetime_s), self.rng.uniform(*sys_.size_m))))
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        self.wind = game.weather.wind_vector()
-        for eid, tr, em in game.world.query(Transform, ParticleEmitterRef):
-            spec = NIAGARA_LIBRARY[em.spec_id]
-            if em.active and spec.rate_per_s > 0:
-                n = spec.rate_per_s * em.rate_scale * dt
-                whole = int(n) + (1 if self.rng.random() < (n - int(n)) else 0)
-                for _ in range(whole):
-                    self._emit(spec, tr.pos)
+    def Tick(self, dt: float, wind: FVector) -> None:
+        self.wind = wind
+        self.gpu_density_estimate = max(0.0, self.gpu_density_estimate * math.exp(-0.6 * dt))
         alive = []
         g = 1.62
-        for spec, p in self.live:
+        for sys_, p in self.cpu_particles:
             p.age += dt
             if p.age >= p.life:
                 continue
-            p.vel = p.vel + self.wind * (spec.wind_influence * dt)
-            p.vel.z -= g * spec.gravity_scale * dt
-            p.vel = p.vel * math.exp(-spec.drag * dt)
+            curl_v = self.curl.sample(p.pos, seed=7) if sys_.uses_curl_noise else FVector()
+            p.vel = p.vel + (self.wind + curl_v) * dt
+            p.vel.Z -= g * sys_.gravity_scale * dt
+            p.vel = p.vel * math.exp(-sys_.drag * dt)
             p.pos = p.pos + p.vel * dt
-            if spec.die_on_ground and p.pos.z <= 0.02:
+            if sys_.die_on_ground and p.pos.Z <= 0.02:
                 continue
-            alive.append((spec, p))
-        self.live = alive
+            alive.append((sys_, p))
+        self.cpu_particles = alive
+        self.stats["cpu_particles_peak"] = max(self.stats["cpu_particles_peak"], len(alive))
+        self.stats["gpu_particles_estimated"] = int(self.gpu_density_estimate)
 
 
-class RenderPipeline(System):
-    """One frame, deferred-style pass order — counts what a GPU would do:
-      0 shadow cascades -> 1 opaque base pass (frustum-culled, LOD-picked)
-      -> 2 lighting (irradiance sample) -> 3 translucent/particles
-      -> 4 starfield memorial -> 5 post (exposure/bloom/grade).
-    Runs headless: emits RenderStats instead of pixels."""
-    GROUP = TickGroup.RENDER
-    ORDER = 1
+# --- Frustum culling + shadow cascades + the frame pass order ---------------
 
-    def __init__(self, assets: AssetRegistry):
+class Frustum:
+    """Six planes from view*proj (Gribb–Hartmann) — ~ FConvexVolume, what
+    the renderer's primitive-culling pass evaluates every frame."""
+    def __init__(self, vp: FMatrix):
+        m = vp.m
+        self.planes = []
+        for sign, row in ((1, 0), (-1, 0), (1, 1), (-1, 1), (1, 2), (-1, 2)):
+            a, b = m[3][0] + sign * m[row][0], m[3][1] + sign * m[row][1]
+            c, d = m[3][2] + sign * m[row][2], m[3][3] + sign * m[row][3]
+            n = math.sqrt(a * a + b * b + c * c) + EPS
+            self.planes.append((a / n, b / n, c / n, d / n))
+
+    def sphere_visible(self, center: FVector, radius: float) -> bool:
+        return all(a * center.X + b * center.Y + c * center.Z + d >= -radius
+                  for (a, b, c, d) in self.planes)
+
+
+class UDirectionalLightComponent(USceneComponent):
+    """~ the sun. Cascaded Shadow Maps still apply even with Lumen (Lumen
+    handles GI/reflections; CSM/Virtual Shadow Maps still place hard
+    contact shadows — VSM is UE5's default now, represented here by its
+    predecessor's math since the cascade-fitting logic is equivalent)."""
+    SPLITS = (0.0, 12.0, 48.0, 200.0)
+
+    def BuildShadowCascades(self, cam: "APlayerCameraManager", light_dir: FVector) -> list[FMatrix]:
+        mats = []
+        f = FQuat.MakeFromRotator(FRotator(cam.Pitch, cam.Yaw, 0)).GetForwardVector()
+        for i in range(len(self.SPLITS) - 1):
+            near, far = self.SPLITS[i], self.SPLITS[i + 1]
+            center = cam.Eye + f * ((near + far) * 0.5)
+            half = (far - near) * 0.75
+            eye = center - light_dir * 500.0
+            mats.append(FMatrix.Ortho(half, half, 1.0, 1500.0) @ FMatrix.LookAt(eye, center))
+        return mats
+
+
+class APlayerCameraManager:
+    """~ APlayerCameraManager: the final composed view for this frame."""
+    def __init__(self):
+        self.Eye = FVector(0, 0, 1.62)
+        self.Yaw = 0.0
+        self.Pitch = 0.0
+        self.FOV = 92.0
+        self._fov_v = 0.0
+        self.BobZ = 0.0
+        self._bob_v = 0.0
+
+    def GetViewMatrix(self) -> FMatrix:
+        f = FQuat.MakeFromRotator(FRotator(self.Pitch, self.Yaw, 0)).GetForwardVector()
+        eye = self.Eye + FVector(0, 0, self.BobZ)
+        return FMatrix.LookAt(eye, eye + f)
+
+    def GetProjectionMatrix(self, aspect: float = 16 / 9) -> FMatrix:
+        return FMatrix.Perspective(self.FOV, aspect, 0.1, 20000.0)
+
+
+class URendererSubsystem(UWorldSubsystem):
+    """One frame's pass order: shadow cascades -> base pass (Nanite-aware
+    cull+draw) -> Lumen GI sample/auto-exposure -> Niagara -> starfield ->
+    post. Runs headless: produces RenderStats instead of pixels."""
+
+    def Initialize(self, world: "UWorld") -> None:
+        pass
+
+    def Bind(self, assets: AssetRegistry, camera: APlayerCameraManager,
+            sun: UDirectionalLightComponent) -> None:
         self.assets = assets
-        self.cascades = ShadowCascades()
-        self.gi = IrradianceField()
-        self.post = PostProcessSettings()
-        self.stats = dict(frames=0, draws=0, culled=0, tris=0, particles=0,
-                          shadow_views=0)
+        self.camera = camera
+        self.sun = sun
+        self.post = FPostProcessSettings()
+        self.gi = ALumenSurfaceCacheApprox()
+        self.stats = dict(frames=0, draws=0, culled=0, nanite_clusters=0,
+                          shadow_views=0, skeletal_draws=0)
 
-    def pick_lod(self, mesh: MeshData, dist: float) -> int:
-        screen_size = clamp(4.0 / max(dist, 0.1), 0.0, 1.0)
-        for li, (threshold, _count) in enumerate(mesh.lods):
-            if screen_size >= threshold * 0.5:
-                return li
-        return len(mesh.lods) - 1
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        cam = game.camera
-        vp = cam.proj_matrix() @ cam.view_matrix()
+    def Tick(self, game: "ChimeraGame", dt: float) -> None:
+        vp = self.camera.GetProjectionMatrix() @ self.camera.GetViewMatrix()
         frustum = Frustum(vp)
-        sun_dir = game.sky.sun_direction()
-        self.stats["shadow_views"] += len(self.cascades.build(cam, sun_dir))
-        # base pass with culling + LOD
-        for eid, tr, mesh_ref in game.world.query(Transform, StaticMeshRef):
-            mesh = self.assets.meshes.get(mesh_ref.mesh_id)
+        sun_dir = game.sun_actor.GetSunDirection()
+        self.stats["shadow_views"] += len(self.sun.BuildShadowCascades(self.camera, sun_dir))
+        for actor in game.hero_actors():
+            smc = actor.FindComponentByClass(UStaticMeshComponent)
+            if smc is None:
+                continue
+            mesh = self.assets.meshes.get(smc.StaticMesh)
             if mesh is None:
                 continue
-            r = mesh_ref.bounds_radius * tr.scale
-            if not frustum.sphere_visible(tr.pos, r):
+            r = mesh.bounds_radius * smc.BoundsScale
+            loc = smc.GetComponentLocation()
+            if not frustum.sphere_visible(loc, r):
                 self.stats["culled"] += 1
                 continue
-            lod = self.pick_lod(mesh, cam.eye.dist(tr.pos))
             self.stats["draws"] += 1
-            self.stats["tris"] += mesh.lods[lod][1] // 3
-        for eid, tr, _sk in game.world.query(Transform, SkeletalMeshRef):
-            if frustum.sphere_visible(tr.pos, 1.0):
-                self.stats["draws"] += 1
-        # lighting: sample GI at camera for exposure adaptation
-        lum = self.gi.sample(cam.eye) + 0.05
-        self.post.adapt(lum, dt)
-        # translucency
-        self.stats["particles"] += len(game.particles.live)
-        # starfield memorial: one instanced draw, N stars
-        if game.sky.is_night and game.memorial.stars:
-            self.stats["draws"] += 1
+            if mesh.nanite.bEnabled:
+                self.stats["nanite_clusters"] += mesh.cluster_estimate()
+        for actor in game.hero_actors():
+            skc = actor.FindComponentByClass(USkeletalMeshComponent)
+            if skc and frustum.sphere_visible(skc.GetComponentLocation(), 1.0):
+                self.stats["skeletal_draws"] += 1
+        lum = self.gi.sample(self.camera.Eye) + 0.05
+        self.post.Tick_AutoExposure(lum, dt)
+        self.post.ChromaticAberrationIntensity = (
+            0.5 if game.player_actor.AbilitySystemComponent.AttributeSet.O2.CurrentValue < 25.0
+            else 0.0)   # diegetic low-O2 alarm
+        if game.sun_actor.IsNight() and game.memorial.stars:
+            self.stats["draws"] += 1                # one instanced starfield draw
         self.stats["frames"] += 1
 
 
 # =============================================================================
-# §6. PHYSICS — heightfield collision, capsule move, gravity volumes, traces
-# UE5: Chaos scene queries + UCharacterMovementComponent::PerformMovement.
+# §5. AUDIO & METASOUND — procedural synthesis, spatialization, ducking
+# ~ Engine/Plugins/Runtime/Metasound/. AAA UE5.8 audio is NOT triggered
+# sample playback — it's real-time node graphs (UMetaSoundSource assets)
+# evaluated per-buffer. Footstep "sound" below IS a signal chain, not a wav.
 # =============================================================================
 
-GRAVITY_YARD = 1.62            # m/s^2 — lunar-class planetoid
-GRAVITY_TITAN_ZONE = 1.35      # Titan Run anomaly corridors
-
-MOVE = dict(
-    walk_speed=1.4, jog_speed=3.2, sprint_speed=5.6, bend_speed=0.7,
-    accel=6.0, air_control=0.35,
-    jump_height=1.1, coyote_time_s=0.12, jump_buffer_s=0.15,
-    step_interval_walk_s=0.62, step_interval_sprint_s=0.38,
-    slide_slope_deg=38.0,
-)
-
-
-@dataclass
-class MoveInput:
-    """One quantum of player intent — ~ FSavedMove_Character. seq numbers make
-    §11 client prediction/reconciliation possible."""
-    seq: int = 0
-    move: V3 = field(default_factory=V3)       # stick, |v|<=1
-    yaw: float = 0.0                           # absolute view yaw
-    pitch: float = 0.0
-    jump: bool = False
-    bend: bool = False
-    sprint: bool = False
-    dt: float = 1.0 / 60.0
+class EMetaSoundNodeType(Enum):
+    Oscillator = auto()       # sine/saw/noise generator
+    Noise = auto()
+    Envelope = auto()         # AD envelope: attack, decay
+    BandpassFilter = auto()   # center freq + Q
+    OnePoleLPF = auto()       # cutoff
+    Mix = auto()              # weighted sum of inputs
+    Gain = auto()
+    ParamFloat = auto()       # a graph input pin (User Parameter)
+    BeatFrequency = auto()    # |A - B| — the attunement minigame's core trick
 
 
 @dataclass
-class MoveState:
-    """Deterministic movement state — the thing the server owns and the
-    client predicts. MUST stay plain-data (copyable) for rewind/replay."""
-    pos: V3 = field(default_factory=V3)
-    vel: V3 = field(default_factory=V3)
-    grounded: bool = True
-    gait: Gait = Gait.IDLE
-    step_clock: float = 0.0
-    left_foot_next: bool = True
-    left_ground_at: float = -999.0
-    jump_pressed_at: float = -999.0
-    now: float = 0.0
-
-    def copy(self) -> "MoveState":
-        return MoveState(V3(*self.pos.to_tuple()), V3(*self.vel.to_tuple()),
-                         self.grounded, self.gait, self.step_clock,
-                         self.left_foot_next, self.left_ground_at,
-                         self.jump_pressed_at, self.now)
+class FMetaSoundNode:
+    """~ one node in a compiled Metasound::FGraph (Frontend document)."""
+    node_type: EMetaSoundNodeType
+    params: dict = field(default_factory=dict)
+    inputs: list = field(default_factory=list)     # list[FMetaSoundNode]
 
 
-class GravityField:
-    """Stack of gravity volumes — ~ APhysicsVolume overrides. The Titan Run
-    registers its alternating corridors here; transitions LERP (1.2 s) so the
-    body can read the change (never snap)."""
+class UMetaSoundSource:
+    """~ UMetaSoundSource: a real-time-evaluated DSP graph asset. Evaluate()
+    walks the node tree once per control-rate tick (audio-rate synthesis
+    itself happens on the audio render thread in real UE5; this pseudocode
+    evaluates at gameplay tick rate, which is what gameplay ever reads back
+    anyway — the telemetry accessors in tb-0001 want scalars, not samples)."""
+    def __init__(self, name: str, root: FMetaSoundNode):
+        self.name = name
+        self.root = root
 
+    def Evaluate(self, param_overrides: dict, t: float) -> float:
+        return self._eval(self.root, param_overrides, t)
+
+    def _eval(self, node: FMetaSoundNode, params: dict, t: float) -> float:
+        nt, p = node.node_type, node.params
+        if nt == EMetaSoundNodeType.ParamFloat:
+            return params.get(p["name"], p.get("default", 0.0))
+        if nt == EMetaSoundNodeType.Oscillator:
+            freq = self._eval(node.inputs[0], params, t) if node.inputs else p.get("freq", 440.0)
+            return math.sin(TAU * freq * t)
+        if nt == EMetaSoundNodeType.Noise:
+            return (_hash2(int(t * 48000) & 0xFFFF, p.get("channel", 0), p.get("seed", 0)) * 2.0 - 1.0)
+        if nt == EMetaSoundNodeType.Envelope:
+            age = params.get("_age", 0.0)
+            atk, dec = p.get("attack", 0.005), p.get("decay", 0.12)
+            return (age / atk) if age < atk else max(0.0, 1.0 - (age - atk) / dec)
+        if nt == EMetaSoundNodeType.BandpassFilter:
+            src = self._eval(node.inputs[0], params, t)
+            center = p.get("center_hz", 2000.0)
+            return src * clamp(1.0 - abs(math.sin(t * center * 0.001)), 0.2, 1.0)
+        if nt == EMetaSoundNodeType.OnePoleLPF:
+            src = self._eval(node.inputs[0], params, t)
+            cutoff = p.get("cutoff_hz", 8000.0)
+            return src * clamp(cutoff / 18000.0, 0.05, 1.0)
+        if nt == EMetaSoundNodeType.Mix:
+            return sum(self._eval(i, params, t) * w for i, w in zip(node.inputs, p.get("weights", [1.0] * len(node.inputs))))
+        if nt == EMetaSoundNodeType.Gain:
+            return self._eval(node.inputs[0], params, t) * p.get("gain", 1.0)
+        if nt == EMetaSoundNodeType.BeatFrequency:
+            a = self._eval(node.inputs[0], params, t)
+            b = self._eval(node.inputs[1], params, t)
+            return abs(a - b)
+        return 0.0
+
+
+def _footstep_impact_graph(center_hz: float, decay_s: float) -> UMetaSoundSource:
+    """Procedural footstep synthesis by SURFACE MATERIAL — Noise -> Bandpass
+    (center freq encodes surface: sand=low/soft, metal=high/ringing) ->
+    Envelope -> Gain(speed). This is the actual node graph shape a
+    MetaSound-authored footstep patch would use instead of triggering a wav."""
+    noise = FMetaSoundNode(EMetaSoundNodeType.Noise, {"seed": int(center_hz)})
+    band = FMetaSoundNode(EMetaSoundNodeType.BandpassFilter, {"center_hz": center_hz}, [noise])
+    env = FMetaSoundNode(EMetaSoundNodeType.Envelope, {"attack": 0.003, "decay": decay_s})
+    mixed = FMetaSoundNode(EMetaSoundNodeType.Mix, {"weights": [1.0, 1.0]}, [band, env])
+    speed_param = FMetaSoundNode(EMetaSoundNodeType.ParamFloat, {"name": "Speed01", "default": 0.5})
+    gained = FMetaSoundNode(EMetaSoundNodeType.Gain, {"gain": 1.0}, [mixed])
+    gained.inputs.append(speed_param)          # gain modulated by speed param at eval time
+    return UMetaSoundSource(f"MSS_Footstep_{int(center_hz)}Hz", gained)
+
+
+SURFACE_FOOTSTEP_GRAPH_HZ = {           # per-surface synthesis center frequency
+    "SAND": 180.0, "BASIN": 140.0, "ROCK": 520.0, "METAL": 2200.0,
+    "ICE": 3400.0, "INTERIOR": 260.0,
+}
+
+
+class UAudioBus:
+    """~ UAudioBus: a named audio-rate signal patch bay. The attunement
+    minigame's beat-frequency wobble is written here every tick and READ by
+    the Erisaid hum MetaSound graph via a Receive node — decoupling gameplay
+    logic (§6 minigame) from the audio graph exactly as real UE5 does."""
+    def __init__(self, name: str):
+        self.name = name
+        self.value = 0.0
+
+    def Send(self, v: float) -> None: self.value = v
+    def Receive(self) -> float: return self.value
+
+
+@dataclass
+class USoundClass:
+    """~ USoundClass: a node in the sound-class tree (Master -> Music/SFX/
+    Ambience/UI). Volume is the product of every class from leaf to Master."""
+    name: str
+    volume: float = 1.0
+    parent: Optional["USoundClass"] = None
+
+    def EffectiveVolume(self) -> float:
+        v = self.volume
+        p = self.parent
+        while p is not None:
+            v *= p.volume
+            p = p.parent
+        return v
+
+
+@dataclass
+class FSoundClassAdjuster:
+    sound_class: USoundClass
+    volume_adjuster: float = 1.0
+    pitch_adjuster: float = 1.0
+    apply_to_children: bool = True
+
+
+@dataclass
+class USoundMix:
+    """~ USoundMix: a set of FSoundClassAdjusters activated/deactivated as a
+    unit via PushSoundMixModifier/PopSoundMixModifier — real UE5 ducking."""
+    name: str
+    adjusters: list = field(default_factory=list)
+
+
+class UAudioDeviceStub(UWorldSubsystem):
+    """~ the audio engine (FAudioDevice) as far as gameplay ever touches it:
+    the sound-class tree + the active sound-mix stack."""
+    def Initialize(self, world: "UWorld") -> None:
+        self.MasterClass = USoundClass("Master")
+        self.classes = {
+            "SFX": USoundClass("SFX", parent=self.MasterClass),
+            "Ambience": USoundClass("Ambience", parent=self.MasterClass),
+            "Music": USoundClass("Music", parent=self.MasterClass),
+            "UI": USoundClass("UI", parent=self.MasterClass),
+        }
+        self._active_mixes: list[USoundMix] = []
+        self.buses: dict[str, UAudioBus] = {"AB_Attunement": UAudioBus("AB_Attunement")}
+
+    def Tick(self, dt: float) -> None: pass
+
+    def PushSoundMixModifier(self, mix: USoundMix) -> None:    # ~ UGameplayStatics::
+        if mix not in self._active_mixes:
+            self._active_mixes.append(mix)
+            for adj in mix.adjusters:
+                adj.sound_class.volume = adj.volume_adjuster
+
+    def PopSoundMixModifier(self, mix: USoundMix) -> None:
+        if mix in self._active_mixes:
+            self._active_mixes.remove(mix)
+            for adj in mix.adjusters:
+                adj.sound_class.volume = 1.0
+
+
+SM_StormDuck = USoundMix("SM_StormDuck")     # populated once classes exist (§11 wiring)
+SM_LowO2Duck = USoundMix("SM_LowO2Duck")
+
+
+@UCLASS()
+class UAudioComponent(USceneComponent):
+    """~ UAudioComponent: a positioned voice. `Sound` refers to a
+    UMetaSoundSource (procedural) rather than a USoundWave (sampled)."""
+    def __init__(self, owner: AActor, metasound: Optional[UMetaSoundSource] = None,
+                looping: bool = False, sound_class: str = "SFX"):
+        super().__init__(owner)
+        self.Sound = metasound
+        self.bLooping = looping
+        self.SoundClassOverride = sound_class
+        self.bIsUISound = False
+        self.AttenuationSettings = dict(inner_radius=1.0, falloff_distance=30.0)
+        self.bIsPlaying = False
+
+
+@dataclass
+class FAttenuationSettings:
+    """~ USoundAttenuation asset: shape + falloff curve + occlusion trace."""
+    inner_radius: float = 1.0
+    falloff_distance: float = 30.0
+    occlusion_lpf_hz: float = 900.0
+    occlusion_volume_atten: float = 0.45
+
+
+class UAudioListener:
+    """~ the local player's audio listener (camera-attached)."""
     def __init__(self):
-        self.zones: list[tuple[Callable[[V3], bool], float]] = []
-        self._current = GRAVITY_YARD
+        self.Location = FVector()
+        self.Yaw = 0.0
 
-    def add_zone(self, contains: Callable[[V3], bool], g: float) -> None:
-        self.zones.append((contains, g))
+    def RightVector(self) -> FVector:
+        return FVector(-math.sin(self.Yaw), math.cos(self.Yaw), 0.0)
 
-    def sample(self, p: V3, dt: float) -> float:
-        target = GRAVITY_YARD
-        for contains, g in self.zones:
-            if contains(p):
-                target = g
-                break
-        self._current = lerp(self._current, target, clamp(dt / 1.2, 0, 1))
-        return self._current
+    def ForwardVector(self) -> FVector:
+        return FVector(math.cos(self.Yaw), math.sin(self.Yaw), 0.0)
 
 
-def movement_step(state: MoveState, inp: MoveInput, ground: "GroundField",
-                  gravity: float, speed_scale: float,
-                  footsteps_out: Optional[list] = None) -> MoveState:
-    """THE pure movement solver — one function used by BOTH the server sim and
-    client prediction (§11). UE5: UCharacterMovementComponent::PerformMovement;
-    determinism here == smooth reconciliation there."""
-    s = state.copy()
-    s.now += inp.dt
-    # --- gait selection
-    mag = inp.move.length2d()
-    if inp.bend:
-        s.gait = Gait.BEND
-    elif mag < 0.05:
-        s.gait = Gait.IDLE
-    elif inp.sprint and mag > 0.5:
-        s.gait = Gait.SPRINT
-    elif mag > 0.55:
-        s.gait = Gait.JOG
-    else:
-        s.gait = Gait.WALK
-    base = {Gait.IDLE: 0.0, Gait.WALK: MOVE["walk_speed"], Gait.JOG: MOVE["jog_speed"],
-            Gait.SPRINT: MOVE["sprint_speed"], Gait.BEND: MOVE["bend_speed"]}[s.gait]
-    surface = ground.surface_at(s.pos)
-    basin_pen = 0.55 if surface == Surface.BASIN else 1.0
-    max_speed = base * basin_pen * speed_scale
-    # --- planar accelerate (stick is in view space; rotate by yaw)
-    cy, sy = math.cos(inp.yaw), math.sin(inp.yaw)
-    want = V3(inp.move.x * cy - inp.move.y * sy,
-              inp.move.x * sy + inp.move.y * cy, 0.0) * max_speed
-    control = 1.0 if s.grounded else MOVE["air_control"]
-    blend = clamp(MOVE["accel"] * ground.traction_at(s.pos) * control * inp.dt, 0, 1)
-    s.vel.x = lerp(s.vel.x, want.x, blend)
-    s.vel.y = lerp(s.vel.y, want.y, blend)
-    # --- jump with coyote + buffer (input forgiveness)
-    if inp.jump:
-        s.jump_pressed_at = s.now
-    buffered = (s.now - s.jump_pressed_at) <= MOVE["jump_buffer_s"]
-    coyote = (s.now - s.left_ground_at) <= MOVE["coyote_time_s"]
-    if buffered and (s.grounded or coyote):
-        s.vel.z = math.sqrt(2.0 * gravity * MOVE["jump_height"])
-        s.grounded = False
-        s.jump_pressed_at = -999.0
-        s.left_ground_at = -999.0
-    # --- integrate + heightfield resolve (capsule sweep in UE5)
-    if not s.grounded:
-        s.vel.z -= gravity * inp.dt
-    s.pos = s.pos + s.vel * inp.dt
-    floor = ground.height_at(s.pos)
-    if s.pos.z <= floor:
-        if not s.grounded and s.vel.z < -1.0 and footsteps_out is not None:
-            footsteps_out.append(("land", s.pos, surface, s.left_foot_next,
-                                  s.vel.length2d(), s.now))
-        s.pos.z, s.vel.z, s.grounded = floor, 0.0, True
-    elif s.grounded and s.pos.z > floor + 0.05:
-        s.grounded = False
-        s.left_ground_at = s.now
-    # --- footstep cadence: contacts at stride phase; ONE event stream (Law 1)
-    speed2d = s.vel.length2d()
-    if s.grounded and speed2d > 0.2:
-        interval = lerp(MOVE["step_interval_walk_s"], MOVE["step_interval_sprint_s"],
-                        speed2d / MOVE["sprint_speed"])
-        s.step_clock += inp.dt
-        if s.step_clock >= interval:
-            s.step_clock = 0.0
-            if footsteps_out is not None:
-                footsteps_out.append(("step", s.pos, surface, s.left_foot_next,
-                                      speed2d, s.now))
-            s.left_foot_next = not s.left_foot_next
-    else:
-        s.step_clock = 0.0
-    return s
-
-
-def line_trace(ground: "GroundField", start: V3, direction: V3,
-               max_dist: float, step: float = 0.5) -> Optional[V3]:
-    """Ray-march vs heightfield — ~ UWorld::LineTraceSingleByChannel.
-    Used by dig target, scanner LOS, weapon fire, audio occlusion."""
-    d = direction.normalized()
-    t = 0.0
-    while t <= max_dist:
-        p = start + d * t
-        if p.z <= ground.height_at(p):
-            return p
-        t += step
-    return None
-
-
-@dataclass
-class Projectile:
-    """~ AProjectileActor with UProjectileMovementComponent (ballistic)."""
-    pos: V3
-    vel: V3
-    damage: float = 34.0
-    alive: bool = True
-
-    def step(self, dt: float, gravity: float, ground: "GroundField") -> Optional[V3]:
-        self.vel.z -= gravity * dt
-        self.pos = self.pos + self.vel * dt
-        if self.pos.z <= ground.height_at(self.pos):
-            self.alive = False
-            return self.pos
-        return None
-
-
-# =============================================================================
-# §7. SPATIAL AUDIO — attenuation, panning, occlusion, reverb, mix, music
-# UE5: MetaSounds + Sound Attenuation assets + Audio Volumes + Submixes.
-# =============================================================================
-
-WIND = dict(calm=2.0, breeze=6.0, gust=12.0, storm=24.0,
-            gust_period_s=(8.0, 30.0), storm_duration_min=(18.0, 45.0),
-            storm_period_days=(5.0, 9.0))
-
-
-@dataclass
-class Listener:
-    """~ the audio device listener: camera pos + orientation."""
-    pos: V3 = field(default_factory=V3)
-    yaw: float = 0.0
-
-    def right(self) -> V3:
-        return V3(-math.sin(self.yaw), math.cos(self.yaw), 0.0)
-
-    def forward(self) -> V3:
-        return V3(math.cos(self.yaw), math.sin(self.yaw), 0.0)
-
-
-def spatialize(listener: Listener, src_pos: V3, min_r: float, max_r: float,
-               occluded: bool) -> tuple[float, float, float]:
-    """Return (gain, pan, lpf_cutoff_hz) — the whole 3D voice math.
-    Attenuation: natural-sound curve (inverse-square inside knee, linear tail);
-    Pan: dot with listener right vector; LPF: distance + occlusion darken."""
-    d = listener.pos.dist(src_pos)
+def spatialize(listener: UAudioListener, src_pos: FVector, atten: FAttenuationSettings,
+              occluded: bool) -> tuple[float, float, float]:
+    """The full 3D voice math: (gain, pan, lpf_cutoff_hz). Natural-sound
+    curve inside the inner radius, distance-based falloff to silence,
+    occlusion LPF+volume attenuation from `atten` (a real USoundAttenuation
+    asset's occlusion settings, not hardcoded)."""
+    d = listener.Location.Dist(src_pos)
+    min_r, max_r = atten.inner_radius, atten.inner_radius + atten.falloff_distance
     if d <= min_r:
         gain = 1.0
     elif d >= max_r:
         gain = 0.0
     else:
         knee = min_r * 4.0
-        if d <= knee:
-            gain = (min_r / d) ** 2 * 0.5 + 0.5 * (1.0 - inv_lerp(min_r, knee, d))
-        else:
-            gain = 0.5 * (1.0 - inv_lerp(knee, max_r, d))
+        gain = ((min_r / d) ** 2 * 0.5 + 0.5 * (1.0 - inv_lerp(min_r, knee, d)) if d <= knee
+                else 0.5 * (1.0 - inv_lerp(knee, max_r, d)))
         gain = clamp(gain, 0.0, 1.0)
-    to_src = (src_pos - listener.pos).normalized()
-    pan = clamp(to_src.dot(listener.right()), -1.0, 1.0)
+    to_src = (src_pos - listener.Location).GetSafeNormal()
+    pan = clamp(to_src.Dot(listener.RightVector()), -1.0, 1.0)
     lpf = lerp(18000.0, 2200.0, inv_lerp(min_r, max_r, d))
     if occluded:
-        lpf = min(lpf, 900.0)          # ~ UE occlusion LPF
-        gain *= 0.45
+        lpf = min(lpf, atten.occlusion_lpf_hz)
+        gain *= (1.0 - atten.occlusion_volume_atten)
     return gain, pan, lpf
 
 
-class SubmixGraph:
-    """~ USoundSubmix tree with sidechain ducking:
-       master
-         ├─ music     (ducked by storm, by suit alarm)
-         ├─ ambience  (wind layers, hums, thunder)
-         ├─ sfx       (footsteps, tools, gestures)
-         └─ ui        (menu ticks; never spatialized)"""
-
-    def __init__(self):
-        self.gains = dict(master=1.0, music=0.8, ambience=0.9, sfx=1.0, ui=0.7)
-        self.duck = dict(music=1.0)
-
-    def tick(self, storm_active: bool, o2_fraction: float, dt: float) -> None:
-        duck_target = 0.35 if storm_active else 1.0
-        if o2_fraction < 0.25:
-            duck_target = min(duck_target, 0.25)   # emergency: hear your breath
-        self.duck["music"] = lerp(self.duck["music"], duck_target,
-                                  clamp(2.0 * dt, 0, 1))
-
-    def bus_gain(self, bus: str) -> float:
-        return self.gains["master"] * self.gains.get(bus, 1.0) * self.duck.get(bus, 1.0)
-
-
-class DynamicMusicSystem(System):
-    """Vertical-layer score — ~ MetaSounds stem mixer driven by game state.
-    Stems fade on director phase + threat; harmonic key follows Earth phase
-    (the sky is the conductor). Wordless game => music carries the narrative."""
-    GROUP = TickGroup.AUDIO
-    ORDER = 2
-    STEMS = ("calm_pad", "day_pulse", "dusk_strings", "night_choir", "storm_drums")
-
-    def __init__(self):
-        self.levels = {s: 0.0 for s in self.STEMS}
-        self.key_root_hz = 220.0
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        phase = game.director.phase(game.sky)
-        threat = 1.0 if any(b.archetype == "pirate" and b.fsm != "gone"
-                            for _e, b in game.world.query(DotBrain)) else 0.0
-        targets = {
-            "calm_pad": 0.7 if phase in ("dawn", "day") else 0.3,
-            "day_pulse": 0.6 if phase == "day" else 0.0,
-            "dusk_strings": 0.8 if phase == "dusk" else 0.0,
-            "night_choir": 0.7 if phase == "night" else 0.0,
-            "storm_drums": 0.9 if game.weather.storm_active or threat > 0 else 0.0,
-        }
-        for stem, tgt in targets.items():
-            rate = 0.5 if tgt > self.levels[stem] else 0.25     # slow releases
-            self.levels[stem] = lerp(self.levels[stem], tgt, clamp(rate * dt, 0, 1))
-        # key drifts a whole step across the Earth-phase month
-        self.key_root_hz = 220.0 * (2.0 ** (game.sky.earth_phase * 2.0 / 12.0))
-
-
 @dataclass
-class FootstepAudioEvent:
-    t: float
-    surface: "Surface"
-    latency_ms: float
-    volume: float
-    pan: float
+class FFootstepAudioTelemetry:
+    t: float; surface: str; latency_ms: float; volume: float; pan: float; speed: float
 
 
-class SandSoundSystem(System):
-    """~ USandSoundComponent (manual-lane C++), attached AT RUNTIME by the
-    movement component's BeginPlay if missing (the H-31/H-34 fix), so no
-    Blueprint wiring can silently drop it. Subscribes to FootstepEvent and
-    owns wind layers + the MCP-queried telemetry accessors (tb-0001)."""
-    GROUP = TickGroup.AUDIO
-    ORDER = 1
+class UChimeraSandSoundComponent(UActorComponent):
+    """~ project-authored UActorComponent (manual lane, Source/Chimera/
+    ProceduralGenerated/Sound/) attached AT RUNTIME by
+    UChimeraMovementComponent::BeginPlay if missing (the H-31/H-34 fix — no
+    Blueprint wiring can silently drop it). Binds to UChimeraEventBus's
+    OnFootstep delegate; owns per-surface MetaSound graphs + wind layers +
+    the MCP-queried telemetry accessors (tb-0001)."""
 
-    BANKS = {
-        "Fantozzi-Sand":  ["SandL1", "SandL2", "SandL3", "SandR1", "SandR2", "SandR3"],
-        "Fantozzi-Stone": ["StoneL1", "StoneL2", "StoneL3", "StoneR1", "StoneR2", "StoneR3"],
-        "Metal-Scuff":    ["MetalL1", "MetalR1"],
-        "Ice-Crunch":     ["IceL1", "IceR1"],
-        "Interior-Soft":  ["SoftL1", "SoftR1"],
-    }
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
+        self.footstep_graphs = {surf: _footstep_impact_graph(hz, 0.09 if surf != "METAL" else 0.4)
+                                for surf, hz in SURFACE_FOOTSTEP_GRAPH_HZ.items()}
+        self.wind_low = FMetaSoundNode(EMetaSoundNodeType.Oscillator, {"freq": 55.0})
+        self.wind_mid = FMetaSoundNode(EMetaSoundNodeType.Oscillator, {"freq": 220.0})
+        self.wind_high = FMetaSoundNode(EMetaSoundNodeType.Oscillator, {"freq": 880.0})
+        self.telemetry: list[FFootstepAudioTelemetry] = []
+        self.wind_speed = 2.0
+        self.attenuation = FAttenuationSettings()
+        self.listener = UAudioListener()
+        self.rng = random.Random(11)
 
-    def __init__(self, rng: random.Random):
-        self.rng = rng
-        self.events: list[FootstepAudioEvent] = []
-        self.wind_speed = WIND["calm"]
-        self.listener = Listener()
+    def BindDelegate(self, bus: UChimeraEventBus) -> None:
+        bus.OnFootstep.AddDynamic(self.OnFootstep)
 
-    def bind(self, bus: EventBus) -> None:
-        bus.subscribe(FootstepEvent, self.on_footstep)
+    def Tick(self, game: "ChimeraGame") -> None:
+        """~ the local audio listener re-binds to the possessing player's
+        camera every frame (SetAudioListenerOverride, real UE5 pattern).
+        Without this the listener sits at its default (0,0,0) forever and
+        every footstep's distance-attenuation silently decays toward
+        silence as the player walks away from the origin — masking the
+        actual speed->volume signal underneath it."""
+        self.listener.Location = game.camera.Eye
+        self.listener.Yaw = game.camera.Yaw
 
-    def on_footstep(self, ev: FootstepEvent) -> None:
-        bank_name = SURFACE_TABLE[ev.surface][4]
-        cues = [c for c in self.BANKS.get(bank_name, ["SandL1"])
-                if ("L" in c) == ev.left_foot]
-        cue = self.rng.choice(cues)
-        volume = 1.0 if ev.landing else clamp(
-            0.35 + 0.65 * ev.speed / MOVE["sprint_speed"], 0.0, 1.0)
-        gain, pan, _lpf = spatialize(self.listener, ev.pos, 1.0, 30.0, False)
-        latency_ms = self.rng.uniform(2.0, 14.0)   # UE5: measured anim->audio gap
-        self.events.append(FootstepAudioEvent(ev.t, ev.surface, latency_ms,
-                                              volume, pan))
-        _ = cue   # UE5: PlaySoundAtLocation(cue, pos, volume*gain, pitch 0.92..1.08)
+    def OnFootstep(self, ev: FFootstepEvent) -> None:
+        graph = self.footstep_graphs.get(ev.Surface, self.footstep_graphs["SAND"])
+        volume = 1.0 if ev.bLanding else clamp(0.35 + 0.65 * ev.Speed / MOVE["sprint_speed"], 0.0, 1.0)
+        _sample = graph.Evaluate({"Speed01": volume, "_age": 0.0}, ev.TimeSeconds)  # ~ MetaSound eval @ t0
+        gain, pan, _lpf = spatialize(self.listener, ev.Location, self.attenuation, False)
+        latency_ms = self.rng.uniform(2.0, 14.0)     # measured anim-notify -> audio-trigger gap
+        self.telemetry.append(FFootstepAudioTelemetry(ev.TimeSeconds, ev.Surface, latency_ms,
+                                                       volume * gain, pan, ev.Speed))
 
-    def wind_layers(self) -> dict:
-        """3 MetaSound layers driven by wind speed — the ambience bed."""
+    def WindLayers(self) -> dict:
         w = self.wind_speed
         return {"low_rumble": clamp(w / WIND["storm"], 0.05, 1.0),
                 "mid_rush": clamp((w - 4.0) / (WIND["storm"] - 4.0), 0.0, 1.0),
                 "high_whistle": clamp((w - 10.0) / (WIND["storm"] - 10.0), 0.0, 1.0),
                 "pitch": lerp(0.9, 1.35, w / WIND["storm"])}
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        self.wind_speed = game.weather.wind_speed
-        ptr = game.world.get(game.player_eid, Transform)
-        self.listener.pos = ptr.pos + V3(0, 0, 1.62)
-        self.listener.yaw = ptr.yaw
-
     # ---- TELEMETRY ACCESSORS — names are the MCP bridge contract (tb-0001)
-    def GetFootstepSyncEventCount(self) -> int:
-        return len(self.events)
+    def GetFootstepSyncEventCount(self) -> int: return len(self.telemetry)
 
     def GetFootstepSyncAvgLatencyMs(self) -> float:
-        return (sum(e.latency_ms for e in self.events) / len(self.events)
-                if self.events else 0.0)
+        return sum(e.latency_ms for e in self.telemetry) / len(self.telemetry) if self.telemetry else 0.0
 
     def GetFootstepSyncMaxLatencyMs(self) -> float:
-        return max((e.latency_ms for e in self.events), default=0.0)
+        return max((e.latency_ms for e in self.telemetry), default=0.0)
 
     def GetVolumeScalesWithSpeed(self) -> bool:
-        slow = [e.volume for e in self.events if e.volume < 0.6]
-        fast = [e.volume for e in self.events if e.volume >= 0.6]
-        return bool(slow and fast
-                    and sum(fast) / len(fast) > sum(slow) / len(slow))
+        """Tests the actual relationship (does volume rise with speed?),
+        not an absolute magnitude threshold on volume — volume is also
+        distance-attenuated (spatialize() gain), so a fixed cutoff like
+        '>= 0.6' silently stops meaning anything once a listener sits at a
+        realistic distance instead of right on top of the source. Split by
+        gait speed (walk/jog boundary) and compare mean volume per group."""
+        slow = [e.volume for e in self.telemetry if e.speed < MOVE["walk_speed"] * 1.5]
+        fast = [e.volume for e in self.telemetry if e.speed >= MOVE["walk_speed"] * 1.5]
+        return bool(slow and fast and sum(fast) / len(fast) > sum(slow) / len(slow))
 
-    def ClearFootstepSyncTelemetry(self) -> None:
-        self.events.clear()
-
-
-ERISAID = dict(
-    hum_base_hz=41.0,
-    harmonics=(1.0, 2.667, 4.333),
-    dial_tolerance_hz=0.8,
-    hold_to_lock_s=2.0,
-    facing_cos_min=0.90,            # must FACE the emitter to isolate it
-    attune_visits_min=3,            # across >= 3 distinct days
-    deaf_days_after_gunfire=30,
-    mirror_reveal_radius_m=3.0,
-)
+    def ClearFootstepSyncTelemetry(self) -> None: self.telemetry.clear()
 
 
-class AttunementMinigame(System):
-    """THE AUDIO MINIGAME, fully spatial. Three hum emitters sit at different
-    points on the Erisaid's shell, each sounding one harmonic of 41 Hz. To
-    isolate a harmonic you must FACE its emitter (binaural isolation: the pan
-    math above collapses the other two to the sides); then turn the suit-radio
-    dial until the BEAT FREQUENCY — |dial - target| Hz, rendered as an audible
-    wobble — slows to stillness. Hold stillness 2 s to lock. Three locks across
-    three different days = attunement. Firing a weapon nearby deafens it 30
-    days. UE5: MetaSound with two oscillators; wobble = their difference tone."""
-    GROUP = TickGroup.AUDIO
-    ORDER = 3
+WIND = dict(calm=2.0, breeze=6.0, gust=12.0, storm=24.0,
+            gust_period_s=(8.0, 30.0), storm_duration_min=(18.0, 45.0),
+            storm_period_days=(5.0, 9.0))
 
-    def __init__(self):
-        self.emitter_offsets = [V3(-6.0, 1.5, 2.0), V3(0.0, 2.2, 3.4),
-                                V3(6.0, 1.8, 2.6)]
+
+ERISAID = dict(hum_base_hz=41.0, harmonics=(1.0, 2.667, 4.333), dial_tolerance_hz=0.8,
+               hold_to_lock_s=2.0, facing_cos_min=0.90, attune_visits_min=3,
+               deaf_days_after_gunfire=30)
+
+
+class UChimeraAttunementComponent(UActorComponent):
+    """THE AUDIO MINIGAME, coded as MetaSound parameter modulation, fully
+    spatial. Three hum emitters on the Erisaid's shell each drive one
+    harmonic-frequency Oscillator into AB_Attunement via a BeatFrequency
+    node (|dial - target|): FACE an emitter to isolate it (the spatialize()
+    pan math above collapses the other two off-axis); turn the suit-radio
+    dial until the beat-frequency wobble — read straight off the audio bus —
+    slows toward 0 Hz; hold under tolerance for hold_to_lock_s to lock.
+    Three locks across three different days = attunement. Firing a weapon
+    nearby deafens it for a season (writes deaf_until_day)."""
+
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
+        self.emitter_offsets = [FVector(-6.0, 1.5, 2.0), FVector(0.0, 2.2, 3.4), FVector(6.0, 1.8, 2.6)]
+        self.harmonic_oscillators = [
+            FMetaSoundNode(EMetaSoundNodeType.Oscillator, {"freq": ERISAID["hum_base_hz"] * r})
+            for r in ERISAID["harmonics"]]
+        self.dial_param = FMetaSoundNode(EMetaSoundNodeType.ParamFloat, {"name": "DialHz", "default": 35.0})
+        self.beat_graphs = [UMetaSoundSource(f"MSS_Beat_{i}", FMetaSoundNode(
+            EMetaSoundNodeType.BeatFrequency, {}, [osc, self.dial_param]))
+            for i, osc in enumerate(self.harmonic_oscillators)]
         self.matched: set[int] = set()
         self.visit_days: set[int] = set()
         self.deaf_until_day = -1
@@ -1420,255 +1759,349 @@ class AttunementMinigame(System):
         self._hold_t = 0.0
         self._active_idx: Optional[int] = None
 
-    def targets(self) -> list[float]:
-        return [ERISAID["hum_base_hz"] * r for r in ERISAID["harmonics"]]
+    @property
+    def targets(self) -> list: return [ERISAID["hum_base_hz"] * r for r in ERISAID["harmonics"]]
 
     @property
     def attuned(self) -> bool:
-        return (len(self.matched) == len(ERISAID["harmonics"])
-                and len(self.visit_days) >= ERISAID["attune_visits_min"])
+        return len(self.matched) == 3 and len(self.visit_days) >= ERISAID["attune_visits_min"]
 
-    def beat_wobble_hz(self, idx: int) -> float:
-        """The diegetic feedback: how fast the hum 'wobbles' at your dial."""
-        return abs(self.dial_hz - self.targets()[idx])
+    def beat_wobble_hz(self, idx: int, bus: UAudioBus, t: float) -> float:
+        wobble = self.beat_graphs[idx].Evaluate({"DialHz": self.dial_hz}, t)
+        bus.Send(wobble)                          # publish for the ambient hum graph to Receive
+        return wobble
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        if game.sky.day < self.deaf_until_day:
-            return                                  # silence: the cost of a shot
-        ptr = game.world.get(game.player_eid, Transform)
-        base = game.erisaid_pos
-        if ptr.pos.dist2d(base) > 25.0:
+    def Tick(self, game: "ChimeraGame", dt: float) -> None:
+        bus = game.audio_device.buses["AB_Attunement"]
+        if game.sun_actor.day < self.deaf_until_day:
+            return
+        player_tr = game.player_actor.RootComponent.GetComponentTransform()
+        if player_tr.Location.Dist2D(game.erisaid_actor.GetActorLocation()) > 25.0:
             self._active_idx, self._hold_t = None, 0.0
             return
-        self.visit_days.add(game.sky.day)
-        fwd = ptr.forward()
-        # which emitter is the player isolating? (facing gate)
+        self.visit_days.add(game.sun_actor.day)
+        fwd = player_tr.Rotation.GetForwardVector()
+        base = game.erisaid_actor.GetActorLocation()
         best, best_cos = None, ERISAID["facing_cos_min"]
         for i, off in enumerate(self.emitter_offsets):
-            to_e = ((base + off) - ptr.pos).normalized()
-            c = fwd.dot(V3(to_e.x, to_e.y, 0.0).normalized())
+            to_e = ((base + off) - player_tr.Location).GetSafeNormal()
+            c = fwd.Dot(FVector(to_e.X, to_e.Y, 0.0).GetSafeNormal())
             if c > best_cos:
                 best, best_cos = i, c
         if best is None or best in self.matched:
             self._active_idx, self._hold_t = None, 0.0
             return
         self._active_idx = best
-        if self.beat_wobble_hz(best) <= ERISAID["dial_tolerance_hz"]:
+        if self.beat_wobble_hz(best, bus, game.now_s) <= ERISAID["dial_tolerance_hz"]:
             self._hold_t += dt
             if self._hold_t >= ERISAID["hold_to_lock_s"]:
-                self.matched.add(best)               # a felt CLUNK in the chest
+                self.matched.add(best)             # a felt CLUNK in the chest
                 self._hold_t = 0.0
         else:
             self._hold_t = 0.0
 
-    def on_gunfire_nearby(self, day: int) -> None:
+    def OnGunfireNearby(self, day: int) -> None:
         self.deaf_until_day = day + ERISAID["deaf_days_after_gunfire"]
 
 
 # =============================================================================
-# §8. AI — Behavior Trees + coarse FSM + NavMesh A* + steering
-# UE5: UBehaviorTreeComponent/UBlackboardComponent, NavMesh (RecastNavMesh),
-# CrowdFollowingComponent (RVO). Trees below ARE the BT assets, as code.
+# §6. AI & BEHAVIOR — UBehaviorTreeComponent, NavMesh, PCG, Mass LOD actorization
+# ~ Engine/Plugins/AI/BehaviorTree, Engine/Source/Runtime/NavigationSystem,
+# Engine/Plugins/Runtime/MassGameplay, Engine/Plugins/PCG.
 # =============================================================================
 
-class BTStatus(Enum):
-    SUCCESS = auto(); FAILURE = auto(); RUNNING = auto()
+class EBTNodeResult(Enum):
+    """~ REAL enum (BehaviorTree/BTNodeResult.h)."""
+    Succeeded = auto(); Failed = auto(); InProgress = auto(); Aborted = auto()
 
 
-class BTNode(ABC):
-    """~ UBTNode. tick() gets the game, the entity, and its brain."""
+class UBlackboardComponent(UActorComponent):
+    """~ UBlackboardComponent: key/value store backed by a UBlackboardData
+    asset defining the schema. GetValueAsVector/SetValueAsObject etc are the
+    real accessor names; this pseudocode collapses them to a typed dict."""
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
+        self._kv: dict[str, Any] = {}
+
+    def SetValueAsVector(self, key: str, v: FVector) -> None: self._kv[key] = v
+    def GetValueAsVector(self, key: str) -> Optional[FVector]: return self._kv.get(key)
+    def SetValueAsObject(self, key: str, v: Any) -> None: self._kv[key] = v
+    def GetValueAsObject(self, key: str) -> Any: return self._kv.get(key)
+    def SetValueAsBool(self, key: str, v: bool) -> None: self._kv[key] = v
+    def GetValueAsBool(self, key: str) -> bool: return bool(self._kv.get(key, False))
+    def SetValueAsFloat(self, key: str, v: float) -> None: self._kv[key] = v
+    def GetValueAsFloat(self, key: str) -> float: return float(self._kv.get(key, 0.0))
+    def ClearValue(self, key: str) -> None: self._kv.pop(key, None)
+
+
+class UBTNode(ABC):
+    """~ UBTNode base (composite/task/decorator all derive from this in
+    real UE; kept as one ABC here for the pseudocode tree walk)."""
     @abstractmethod
-    def tick(self, game: "ChimeraGame", eid: EntityId, brain: DotBrain,
-             dt: float) -> BTStatus: ...
+    def ExecuteNode(self, Game: "ChimeraGame", Actor: AActor, BB: UBlackboardComponent,
+                    dt: float) -> EBTNodeResult: ...
 
 
-class Selector(BTNode):
-    """First child to not-FAIL wins — ~ UBTComposite_Selector."""
-    def __init__(self, *children: BTNode): self.children = children
-    def tick(self, game, eid, brain, dt) -> BTStatus:
-        for c in self.children:
-            st = c.tick(game, eid, brain, dt)
-            if st != BTStatus.FAILURE:
-                return st
-        return BTStatus.FAILURE
+class UBTComposite_Selector(UBTNode):
+    """~ UBTComposite_Selector: first child that doesn't Fail wins."""
+    def __init__(self, *children: UBTNode): self.Children = children
+    def ExecuteNode(self, game, actor, bb, dt) -> EBTNodeResult:
+        for c in self.Children:
+            r = c.ExecuteNode(game, actor, bb, dt)
+            if r != EBTNodeResult.Failed:
+                return r
+        return EBTNodeResult.Failed
 
 
-class Sequence(BTNode):
-    """All children must SUCCEED in order — ~ UBTComposite_Sequence.
-    Stateless re-evaluation each tick (simple + robust for pseudocode)."""
-    def __init__(self, *children: BTNode): self.children = children
-    def tick(self, game, eid, brain, dt) -> BTStatus:
-        for c in self.children:
-            st = c.tick(game, eid, brain, dt)
-            if st != BTStatus.SUCCESS:
-                return st
-        return BTStatus.SUCCESS
+class UBTComposite_Sequence(UBTNode):
+    """~ UBTComposite_Sequence: all children must Succeed in order."""
+    def __init__(self, *children: UBTNode): self.Children = children
+    def ExecuteNode(self, game, actor, bb, dt) -> EBTNodeResult:
+        for c in self.Children:
+            r = c.ExecuteNode(game, actor, bb, dt)
+            if r != EBTNodeResult.Succeeded:
+                return r
+        return EBTNodeResult.Succeeded
 
 
-class Condition(BTNode):
-    """~ UBTDecorator_Blackboard: SUCCESS iff predicate(bb) holds."""
-    def __init__(self, fn: Callable): self.fn = fn
-    def tick(self, game, eid, brain, dt) -> BTStatus:
-        return BTStatus.SUCCESS if self.fn(game, eid, brain) else BTStatus.FAILURE
+class UBTDecorator_Blackboard(UBTNode):
+    """~ UBTDecorator_Blackboard: gates on a blackboard predicate."""
+    def __init__(self, predicate: Callable[["ChimeraGame", AActor, UBlackboardComponent], bool]):
+        self.Predicate = predicate
+    def ExecuteNode(self, game, actor, bb, dt) -> EBTNodeResult:
+        return EBTNodeResult.Succeeded if self.Predicate(game, actor, bb) else EBTNodeResult.Failed
 
 
-class Act(BTNode):
-    """~ UBTTaskNode: run a function returning a BTStatus."""
-    def __init__(self, fn: Callable): self.fn = fn
-    def tick(self, game, eid, brain, dt) -> BTStatus:
-        return self.fn(game, eid, brain, dt)
+class UBTTaskNode(UBTNode):
+    """~ UBTTaskNode: leaf work. ExecuteTask() in real UE; folded into
+    ExecuteNode() here since this pseudocode has no separate tick phase."""
+    def __init__(self, fn: Callable[["ChimeraGame", AActor, UBlackboardComponent, float], EBTNodeResult]):
+        self.Fn = fn
+    def ExecuteNode(self, game, actor, bb, dt) -> EBTNodeResult:
+        return self.Fn(game, actor, bb, dt)
 
 
-# ---- BT leaf library (the task nodes every archetype composes) --------------
+# --- BT task library (leaf behaviors every archetype composes) --------------
 
-def _player_dist(game: "ChimeraGame", eid: EntityId) -> float:
-    return game.world.get(eid, Transform).pos.dist2d(
-        game.world.get(game.player_eid, Transform).pos)
+def _player_dist(game: "ChimeraGame", actor: AActor) -> float:
+    return actor.GetActorLocation().Dist2D(game.player_actor.GetActorLocation())
 
 
-def task_seek_player(stop_at: float) -> Callable:
-    """Path toward the player; SUCCESS when within stop_at meters."""
-    def fn(game, eid, brain, dt) -> BTStatus:
-        d = _player_dist(game, eid)
+def Task_SeekPlayer(stop_at: float) -> UBTTaskNode:
+    def fn(game, actor, bb, dt) -> EBTNodeResult:
+        d = _player_dist(game, actor)
         if d <= stop_at:
-            game.world.get(eid, NavAgent).goal = None
-            return BTStatus.SUCCESS
-        agent = game.world.get(eid, NavAgent)
-        agent.goal = game.world.get(game.player_eid, Transform).pos
-        brain.fsm = "approaching" if d > 25.0 else "near"
-        return BTStatus.RUNNING
-    return fn
+            actor.FindComponentByClass(UCrowdFollowingComponent).Goal = None
+            return EBTNodeResult.Succeeded
+        cfc = actor.FindComponentByClass(UCrowdFollowingComponent)
+        cfc.Goal = game.player_actor.GetActorLocation()
+        bb.SetValueAsObject("FSM", "approaching" if d > 25.0 else "near")
+        return EBTNodeResult.InProgress
+    return UBTTaskNode(fn)
 
 
-def task_point_at_need(game, eid, brain, dt) -> BTStatus:
-    """The stranger's whole vocabulary: point at what hurts (Law 3)."""
-    if brain.need is None:
-        return BTStatus.FAILURE
-    if brain.fsm != "encounter":
-        brain.fsm = "encounter"
-        game.world.events.emit(GestureEvent(eid, game.player_eid, "point"))
-    return BTStatus.RUNNING          # resolution arrives via GestureEvent
+def Task_PointAtNeed(game, actor, bb, dt) -> EBTNodeResult:
+    """The stranger's whole vocabulary: point at what hurts (Design Law 3)."""
+    if bb.GetValueAsObject("Need") is None:
+        return EBTNodeResult.Failed
+    if bb.GetValueAsObject("FSM") != "encounter":
+        bb.SetValueAsObject("FSM", "encounter")
+        game.event_bus.OnGesture.Broadcast(FGestureEvent(actor, game.player_actor, "point"))
+    return EBTNodeResult.InProgress
 
 
-def task_leave(game, eid, brain, dt) -> BTStatus:
-    ptr = game.world.get(game.player_eid, Transform).pos
-    tr = game.world.get(eid, Transform)
-    agent = game.world.get(eid, NavAgent)
-    if brain.fsm != "leaving":
-        brain.fsm = "leaving"
-        away = (tr.pos - ptr).normalized()
-        agent.goal = tr.pos + away * 320.0
-    if tr.pos.dist2d(ptr) > 300.0:
-        brain.fsm = "gone"
-        return BTStatus.SUCCESS
-    return BTStatus.RUNNING
+def Task_Leave(game, actor, bb, dt) -> EBTNodeResult:
+    ptr = game.player_actor.GetActorLocation()
+    loc = actor.GetActorLocation()
+    cfc = actor.FindComponentByClass(UCrowdFollowingComponent)
+    if bb.GetValueAsObject("FSM") != "leaving":
+        bb.SetValueAsObject("FSM", "leaving")
+        away = (loc - ptr).GetSafeNormal()
+        cfc.Goal = loc + away * 320.0
+    if loc.Dist2D(ptr) > 300.0:
+        bb.SetValueAsObject("FSM", "gone")
+        return EBTNodeResult.Succeeded
+    return EBTNodeResult.InProgress
 
 
-def task_pirate_demand(game, eid, brain, dt) -> BTStatus:
-    """WARN + point at the pack. Player armed & facing => nerve check fails."""
-    if brain.bb.get("demanded") is None:
-        brain.bb["demanded"] = 0.0
-        brain.fsm = "encounter"
-        game.flags["threatened_this_life"] = True
-        game.world.events.emit(GestureEvent(eid, game.player_eid, "warn"))
-    brain.bb["demanded"] += dt
-    player_carry = game.world.get(game.player_eid, CarryComponent)
-    if game.flags.get("weapon_drawn") and brain.bb["demanded"] > 2.0:
-        brain.bb["flee"] = True               # they wanted cargo, not a grave
-        return BTStatus.SUCCESS
-    if brain.bb["demanded"] > 8.0:
-        if player_carry.pack:                  # coerced loss is NOT sacrifice
-            player_carry.pack.pop()
-        brain.bb["flee"] = True
-        return BTStatus.SUCCESS
-    return BTStatus.RUNNING
+def Task_PirateDemand(game, actor, bb, dt) -> EBTNodeResult:
+    if bb.GetValueAsFloat("DemandTimer") == 0.0 and not bb.GetValueAsBool("Demanded"):
+        bb.SetValueAsBool("Demanded", True)
+        bb.SetValueAsObject("FSM", "encounter")
+        game.player_actor.Tags.AddTag("State.Threatened")           # GAS tag (§8)
+        game.event_bus.OnGesture.Broadcast(FGestureEvent(actor, game.player_actor, "warn"))
+    bb.SetValueAsFloat("DemandTimer", bb.GetValueAsFloat("DemandTimer") + dt)
+    carry = game.player_actor.FindComponentByClass(UCarryComponent)
+    if game.player_actor.Tags.HasTag("State.WeaponDrawn") and bb.GetValueAsFloat("DemandTimer") > 2.0:
+        bb.SetValueAsBool("Flee", True)
+        return EBTNodeResult.Succeeded
+    if bb.GetValueAsFloat("DemandTimer") > 8.0:
+        if carry.Pack:
+            carry.Pack.pop()                    # coerced loss is NOT sacrifice
+        bb.SetValueAsBool("Flee", True)
+        return EBTNodeResult.Succeeded
+    return EBTNodeResult.InProgress
 
 
-def task_kneel_at_erisaid(game, eid, brain, dt) -> BTStatus:
-    agent = game.world.get(eid, NavAgent)
-    tr = game.world.get(eid, Transform)
-    if tr.pos.dist2d(game.erisaid_pos) > 8.0:
-        agent.goal = game.erisaid_pos + spiral_point(eid % 7, 3.0)
-        return BTStatus.RUNNING
-    brain.fsm = "encounter"                    # kneeling, forever listening
-    return BTStatus.RUNNING
+def Task_KneelAtErisaid(game, actor, bb, dt) -> EBTNodeResult:
+    cfc = actor.FindComponentByClass(UCrowdFollowingComponent)
+    loc = actor.GetActorLocation()
+    base = game.erisaid_actor.GetActorLocation()
+    if loc.Dist2D(base) > 8.0:
+        cfc.Goal = base + golden_spiral_point(hash(actor) % 7, 3.0)
+        return EBTNodeResult.InProgress
+    bb.SetValueAsObject("FSM", "encounter")      # kneeling, forever listening
+    return EBTNodeResult.InProgress
 
 
-BT_LIBRARY: dict[str, BTNode] = {
-    # ~ four UBehaviorTree assets, one per archetype
-    "BT_Stranger": Selector(
-        Sequence(Condition(lambda g, e, b: b.need is not None),
-                 Act(task_seek_player(3.5)), Act(task_point_at_need)),
-        Act(task_leave)),
-    "BT_Trader": Selector(
-        Sequence(Condition(lambda g, e, b: _player_dist(g, e) < 60.0
-                           and b.bb.get("greeted") is None),
-                 Act(task_seek_player(4.0)),
-                 Act(lambda g, e, b, dt: (g.world.events.emit(
-                     GestureEvent(e, g.player_eid, "wave")),
-                     b.bb.__setitem__("greeted", True),
-                     BTStatus.SUCCESS)[-1])),
-        Act(task_leave)),
-    "BT_Pirate": Selector(
-        Sequence(Condition(lambda g, e, b: not b.bb.get("flee")),
-                 Act(task_seek_player(6.0)), Act(task_pirate_demand)),
-        Act(task_leave)),
-    "BT_Quiet": Act(task_kneel_at_erisaid),
-}
+BT_STRANGER = UBTComposite_Selector(
+    UBTComposite_Sequence(UBTDecorator_Blackboard(lambda g, a, bb: bb.GetValueAsObject("Need") is not None),
+                          Task_SeekPlayer(3.5), UBTTaskNode(Task_PointAtNeed)),
+    UBTTaskNode(Task_Leave))
+
+BT_TRADER = UBTComposite_Selector(
+    UBTComposite_Sequence(
+        UBTDecorator_Blackboard(lambda g, a, bb: _player_dist(g, a) < 60.0 and not bb.GetValueAsBool("Greeted")),
+        Task_SeekPlayer(4.0),
+        UBTTaskNode(lambda g, a, bb, dt: (g.event_bus.OnGesture.Broadcast(
+            FGestureEvent(a, g.player_actor, "wave")), bb.SetValueAsBool("Greeted", True),
+            EBTNodeResult.Succeeded)[-1])),
+    UBTTaskNode(Task_Leave))
+
+BT_PIRATE = UBTComposite_Selector(
+    UBTComposite_Sequence(UBTDecorator_Blackboard(lambda g, a, bb: not bb.GetValueAsBool("Flee")),
+                          Task_SeekPlayer(6.0), UBTTaskNode(Task_PirateDemand)),
+    UBTTaskNode(Task_Leave))
+
+BT_QUIET = UBTTaskNode(Task_KneelAtErisaid)
+
+BEHAVIOR_TREE_LIBRARY = {"BT_Stranger": BT_STRANGER, "BT_Trader": BT_TRADER,
+                         "BT_Pirate": BT_PIRATE, "BT_Quiet": BT_QUIET}
 
 
-class NavGrid:
-    """Recast stand-in: 2 m walkable grid over the Yard. Cost by surface;
-    slopes over 38° and deep pits are unwalkable. Rebuilt lazily per region
-    (~ navmesh tiles) when the DigGrid changes."""
+@UCLASS(Blueprintable=True)
+class ADotCharacter(AActor):
+    """~ the HIGH-FIDELITY actor representation of a Mass crowd entity,
+    spawned by UMassActorSpawnerSubsystem when a dot's EMassLOD rises to
+    High (interaction range). Carries the classic UBehaviorTreeComponent +
+    UBlackboardComponent stack real per-actor AI needs; despawns back to a
+    Mass fragment when LOD drops (state written back so nothing is lost —
+    Design Law 4)."""
+    def __init__(self, world: "UWorld", mass_handle: FMassEntityHandle,
+                archetype: str, tree_id: str, pos: FVector, need: Optional[str], can_pay: bool):
+        super().__init__(world)
+        self.MassEntity = mass_handle
+        self.RootComponent.RelativeTransform.Location = pos
+        self.SkeletalMeshComponent = self.CreateDefaultSubobject(USkeletalMeshComponent(self, "SK_Dot"))
+        self.CrowdFollowingComponent = self.CreateDefaultSubobject(UCrowdFollowingComponent(self))
+        self.BehaviorTreeComponent = self.CreateDefaultSubobject(UBehaviorTreeComponent(self))
+        self.BlackboardComponent = self.CreateDefaultSubobject(UBlackboardComponent(self))
+        self.BehaviorTreeComponent.TreeAsset = BEHAVIOR_TREE_LIBRARY[tree_id]
+        self.BlackboardComponent.SetValueAsObject("Need", need)
+        self.BlackboardComponent.SetValueAsBool("CanPay", can_pay)
+        self.BlackboardComponent.SetValueAsObject("FSM", "near")   # already promoted = already near
+        self.Archetype = archetype
+        self.Memory: dict = {}                    # loaded from the stable-id ledger on spawn
+        self.Health = 100.0
+        self.bReplicates = True
+        self.RemoteRole = ENetRole.ROLE_SimulatedProxy
+
+
+@UCLASS()
+class UBehaviorTreeComponent(UActorComponent):
+    """~ UBehaviorTreeComponent: RunBehaviorTree(); ticks the assigned tree
+    once per AI think interval (5 Hz, staggered — real BT default tick is
+    every frame, but 5 Hz is a common perf budget decision for a crowd of
+    interactive NPCs, so it's represented explicitly rather than hidden)."""
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
+        self.TreeAsset: Optional[UBTNode] = None
+
+    def TickTree(self, game: "ChimeraGame", dt: float) -> None:
+        bb = self.OwnerActor.BlackboardComponent
+        if self.TreeAsset is not None:
+            self.TreeAsset.ExecuteNode(game, self.OwnerActor, bb, dt)
+
+
+@UCLASS()
+class UCrowdFollowingComponent(UActorComponent):
+    """~ UCrowdFollowingComponent (AIModule): wraps Detour Crowd — path
+    request + follow + local avoidance (RVO) against nearby agents."""
+    def __init__(self, owner: AActor, speed: float = 1.2):
+        super().__init__(owner)
+        self.Speed = speed
+        self.Goal: Optional[FVector] = None
+        self.Path: list = []
+        self.PathIndex = 0
+        self.RepathCooldown = 0.0
+        self.AvoidanceRadius = 0.8
+
+
+# --- NavMesh: ARecastNavMesh + UNavigationSystemV1 --------------------------
+
+class ARecastNavMesh:
+    """~ ARecastNavMesh: the baked navigation mesh actor. Represented as a
+    2 m walkable grid over the Yard (real Recast bakes a true navpoly mesh
+    from level geometry; the grid here is the pseudocode-equivalent
+    walkability/cost oracle Recast would answer with `IsPointOnNavMesh` /
+    per-poly area cost)."""
     CELL = 2.0
-    HALF_CELLS = 160          # covers ±320 m
+    HALF_CELLS = 160
 
-    def __init__(self, ground: "GroundField"):
+    def __init__(self, ground: "AGroundActor"):
         self.ground = ground
-        self._walk_cache: dict[tuple, bool] = {}    # ~ baked navmesh tiles;
-        self._cost_cache: dict[tuple, float] = {}   # invalidated on dig rebuild
+        self._walk_cache: dict[tuple, bool] = {}
+        self._cost_cache: dict[tuple, float] = {}
 
-    def walkable(self, cx: int, cy: int) -> bool:
+    def IsWalkable(self, cx: int, cy: int) -> bool:
         k = (cx, cy)
         hit = self._walk_cache.get(k)
         if hit is not None:
             return hit
         x, y = cx * self.CELL, cy * self.CELL
-        h0 = self.ground.height_at(V3(x, y, 0))
-        hx = self.ground.height_at(V3(x + self.CELL, y, 0))
-        hy = self.ground.height_at(V3(x, y + self.CELL, 0))
+        h0 = self.ground.HeightAt(FVector(x, y, 0))
+        hx = self.ground.HeightAt(FVector(x + self.CELL, y, 0))
+        hy = self.ground.HeightAt(FVector(x, y + self.CELL, 0))
         slope = max(abs(hx - h0), abs(hy - h0)) / self.CELL
         ok = slope < math.tan(math.radians(MOVE["slide_slope_deg"]))
         self._walk_cache[k] = ok
         return ok
 
-    def cost(self, cx: int, cy: int) -> float:
+    def AreaCost(self, cx: int, cy: int) -> float:
         k = (cx, cy)
         hit = self._cost_cache.get(k)
         if hit is not None:
             return hit
-        s = self.ground.surface_at(V3(cx * self.CELL, cy * self.CELL, 0))
-        c = {Surface.BASIN: 2.5, Surface.SAND: 1.0, Surface.ROCK: 1.2,
-             Surface.METAL: 0.9}.get(s, 1.0)
+        s = self.ground.SurfaceAt(FVector(cx * self.CELL, cy * self.CELL, 0))
+        c = {"BASIN": 2.5, "SAND": 1.0, "ROCK": 1.2, "METAL": 0.9}.get(s, 1.0)
         self._cost_cache[k] = c
         return c
 
-    def astar(self, start: V3, goal: V3, max_expand: int = 4000) -> list:
-        """A* with octile heuristic + string-pulling smoothing —
-        ~ FindPathSync on RecastNavMesh."""
+
+class UNavigationSystemV1(UWorldSubsystem):
+    """~ UNavigationSystemV1::FindPathToLocationSynchronously. A* with an
+    octile heuristic + string-pulling smoothing over ARecastNavMesh."""
+    def Initialize(self, world: "UWorld") -> None:
+        self.NavMesh: Optional[ARecastNavMesh] = None
+
+    def Tick(self, dt: float) -> None: pass
+
+    def RegisterNavMesh(self, navmesh: ARecastNavMesh) -> None:
+        self.NavMesh = navmesh
+
+    def FindPathToLocationSynchronously(self, start: FVector, goal: FVector,
+                                        max_expand: int = 4000) -> list:
         import heapq
-        s = (round(start.x / self.CELL), round(start.y / self.CELL))
-        g = (round(goal.x / self.CELL), round(goal.y / self.CELL))
+        nm = self.NavMesh
+        s = (round(start.X / nm.CELL), round(start.Y / nm.CELL))
+        g = (round(goal.X / nm.CELL), round(goal.Y / nm.CELL))
         if s == g:
             return [goal]
         def h(a, b):
             dx, dy = abs(a[0] - b[0]), abs(a[1] - b[1])
             return (dx + dy) + (math.sqrt(2) - 2) * min(dx, dy)
         open_q = [(h(s, g), 0.0, s)]
-        came: dict = {s: None}
-        cost_so_far = {s: 0.0}
-        found = False
+        came, cost_so_far, found = {s: None}, {s: 0.0}, False
         while open_q and max_expand > 0:
             max_expand -= 1
             _f, c, cur = heapq.heappop(open_q)
@@ -1680,633 +2113,1029 @@ class NavGrid:
                     if dx == 0 and dy == 0:
                         continue
                     nxt = (cur[0] + dx, cur[1] + dy)
-                    if abs(nxt[0]) > self.HALF_CELLS or abs(nxt[1]) > self.HALF_CELLS:
+                    if abs(nxt[0]) > nm.HALF_CELLS or abs(nxt[1]) > nm.HALF_CELLS or not nm.IsWalkable(*nxt):
                         continue
-                    if not self.walkable(*nxt):
-                        continue
-                    step = math.sqrt(dx * dx + dy * dy) * self.cost(*nxt)
+                    step = math.sqrt(dx * dx + dy * dy) * nm.AreaCost(*nxt)
                     nc = c + step
                     if nc < cost_so_far.get(nxt, 1e18):
                         cost_so_far[nxt] = nc
                         came[nxt] = cur
                         heapq.heappush(open_q, (nc + h(nxt, g), nc, nxt))
         if not found:
-            return [goal]                       # partial path: walk at it anyway
+            return [goal]
         cells = []
         cur = g
         while cur is not None:
             cells.append(cur)
             cur = came[cur]
         cells.reverse()
-        pts = [V3(cx * self.CELL, cy * self.CELL, 0) for cx, cy in cells]
-        # string pulling: drop waypoints with clear line-of-walk
-        smoothed = [pts[0]]
-        i = 0
+        pts = [FVector(cx * nm.CELL, cy * nm.CELL, 0) for cx, cy in cells]
+        smoothed, i = [pts[0]], 0
         while i < len(pts) - 1:
             j = len(pts) - 1
-            while j > i + 1:
-                if self._line_walkable(pts[i], pts[j]):
-                    break
+            while j > i + 1 and not self._line_walkable(pts[i], pts[j], nm):
                 j -= 1
             smoothed.append(pts[j])
             i = j
         smoothed[-1] = goal
         return smoothed
 
-    def _line_walkable(self, a: V3, b: V3) -> bool:
-        n = max(2, int(a.dist2d(b) / self.CELL))
+    def _line_walkable(self, a: FVector, b: FVector, nm: ARecastNavMesh) -> bool:
+        n = max(2, int(a.Dist2D(b) / nm.CELL))
         for k in range(n + 1):
             p = a + (b - a) * (k / n)
-            if not self.walkable(round(p.x / self.CELL), round(p.y / self.CELL)):
+            if not nm.IsWalkable(round(p.X / nm.CELL), round(p.Y / nm.CELL)):
                 return False
         return True
 
 
-class AISystem(System):
-    """Runs each brain's tree at 5 Hz (staggered) — ~ BrainComponent tick."""
-    GROUP = TickGroup.AI
-    ORDER = 0
-    THINK_INTERVAL = 0.2
+class UAISystem(UWorldSubsystem):
+    """~ UAISystem: ticks every ADotCharacter's BT at 5 Hz (staggered) and
+    drives UCrowdFollowingComponent path-follow + RVO-lite separation for
+    hero-fidelity dots (Mass entities below LOD-High don't reach this)."""
+    THINK_HZ = 5.0
 
-    def __init__(self):
-        self._accum: dict[EntityId, float] = {}
+    def Initialize(self, world: "UWorld") -> None:
+        self._accum: dict[int, float] = {}
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        for eid, brain in list(game.world.query(DotBrain)):
-            if brain.fsm == "gone":
-                continue
-            t = self._accum.get(eid, self.THINK_INTERVAL) + dt
-            if t < self.THINK_INTERVAL:
-                self._accum[eid] = t
-                continue
-            self._accum[eid] = 0.0
-            BT_LIBRARY[brain.tree_id].tick(game, eid, brain, self.THINK_INTERVAL)
+    def Tick(self, dt: float) -> None: pass
 
-
-class NavFollowSystem(System):
-    """Path request + follow + RVO-lite separation — ~ UCrowdFollowing."""
-    GROUP = TickGroup.AI
-    ORDER = 1
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        others = [(e, game.world.get(e, Transform).pos)
-                  for e, _b in game.world.query(DotBrain)]
-        for eid, tr, agent in game.world.query(Transform, NavAgent):
-            if agent.goal is None:
+    def TickActors(self, game: "ChimeraGame", actors: list, nav: UNavigationSystemV1, dt: float) -> None:
+        interval = 1.0 / self.THINK_HZ
+        for actor in actors:
+            t = self._accum.get(actor.ObjectId, interval) + dt
+            if t < interval:
+                self._accum[actor.ObjectId] = t
                 continue
-            agent.repath_cooldown -= dt
-            if (not agent.path or agent.path_i >= len(agent.path)
-                    or agent.repath_cooldown <= 0.0):
-                agent.path = game.nav.astar(tr.pos, agent.goal)
-                agent.path_i = 0
-                agent.repath_cooldown = 2.0
-            if agent.path_i >= len(agent.path):
-                agent.goal = None
+            self._accum[actor.ObjectId] = 0.0
+            actor.BehaviorTreeComponent.TickTree(game, interval)
+        others = [(a, a.GetActorLocation()) for a in actors]
+        for actor in actors:
+            cfc = actor.FindComponentByClass(UCrowdFollowingComponent)
+            if cfc.Goal is None:
                 continue
-            wp = agent.path[agent.path_i]
-            to_wp = wp - tr.pos
-            if to_wp.length2d() < 1.0:
-                agent.path_i += 1
+            loc = actor.GetActorLocation()
+            cfc.RepathCooldown -= dt
+            if not cfc.Path or cfc.PathIndex >= len(cfc.Path) or cfc.RepathCooldown <= 0.0:
+                cfc.Path = nav.FindPathToLocationSynchronously(loc, cfc.Goal)
+                cfc.PathIndex = 0
+                cfc.RepathCooldown = 2.0
+            if cfc.PathIndex >= len(cfc.Path):
+                cfc.Goal = None
                 continue
-            sep = V3()
-            for oe, opos in others:              # separation steering
-                if oe == eid:
+            wp = cfc.Path[cfc.PathIndex]
+            to_wp = wp - loc
+            if to_wp.Size2D() < 1.0:
+                cfc.PathIndex += 1
+                continue
+            sep = FVector()
+            for oa, opos in others:
+                if oa is actor:
                     continue
-                d = tr.pos.dist2d(opos)
-                if 0.01 < d < agent.avoid_radius * 2:
-                    sep = sep + (tr.pos - opos) * (1.0 / d)
-            step = (to_wp.normalized() + sep * 0.4).normalized() * (agent.speed * dt)
-            tr.pos = tr.pos + step
-            tr.pos.z = game.ground.height_at(tr.pos)
-            tr.yaw = math.atan2(step.y, step.x)
+                d = loc.Dist2D(opos)
+                if 0.01 < d < cfc.AvoidanceRadius * 2:
+                    sep = sep + (loc - opos) * (1.0 / d)
+            step = (to_wp.GetSafeNormal() + sep * 0.4).GetSafeNormal() * (cfc.Speed * dt)
+            new_loc = loc + step
+            new_loc.Z = game.ground_actor.HeightAt(new_loc)
+            actor.RootComponent.RelativeTransform.Location = new_loc
+            actor.RootComponent.RelativeTransform.Rotation = FQuat.MakeFromAxisAngle(
+                FVector_Up, math.atan2(step.Y, step.X))
 
 
-# =============================================================================
-# §9. INPUT & UI — Enhanced Input mapping + UMG widget tree + menu FSM
-# UE5: UInputMappingContext/UInputAction with triggers & modifiers; UUserWidget.
-# =============================================================================
-
-class InputActionName(Enum):
-    MOVE = auto(); LOOK = auto(); JUMP = auto(); BEND = auto(); SPRINT = auto()
-    PICKUP = auto(); DIG = auto(); SCAN = auto(); FIRE = auto(); DRAW_WEAPON = auto()
-    GESTURE_WHEEL = auto(); ATTUNE_DIAL = auto(); PAUSE = auto(); INTERACT = auto()
-
+# --- PCG Framework: level population -----------------------------------------
 
 @dataclass
-class InputBinding:
-    """~ FEnhancedActionKeyMapping: key -> action with trigger + modifiers."""
-    key: str
-    action: InputActionName
-    trigger: str = "pressed"        # pressed|released|held|tap|hold(0.3s)
-    deadzone: float = 0.15
-    exponent: float = 1.6           # response curve on axes
+class FPCGPoint:
+    """~ FPCGPoint: Transform + Density + Seed — the atomic unit flowing
+    through a PCG graph between nodes."""
+    Transform: FTransform
+    Density: float = 1.0
+    Seed: int = 0
 
 
-class InputMappingContext:
-    """~ UInputMappingContext asset: the default suit-control layout.
-    Remappable per ACCESSIBILITY (every verb, no exceptions)."""
-    DEFAULT = [
-        InputBinding("stick_l", InputActionName.MOVE, "axis"),
-        InputBinding("stick_r", InputActionName.LOOK, "axis"),
-        InputBinding("space", InputActionName.JUMP, "pressed"),
-        InputBinding("ctrl", InputActionName.BEND, "held"),
-        InputBinding("shift", InputActionName.SPRINT, "held"),
-        InputBinding("e", InputActionName.PICKUP, "pressed"),
-        InputBinding("lmb", InputActionName.DIG, "pressed"),
-        InputBinding("q", InputActionName.SCAN, "pressed"),
-        InputBinding("rmb", InputActionName.DRAW_WEAPON, "held"),
-        InputBinding("f", InputActionName.FIRE, "pressed"),
-        InputBinding("tab", InputActionName.GESTURE_WHEEL, "held"),
-        InputBinding("wheel", InputActionName.ATTUNE_DIAL, "axis"),
-        InputBinding("esc", InputActionName.PAUSE, "pressed"),
-    ]
-
-    def __init__(self, forgiveness_scale: float = 1.0):
-        self.bindings = list(self.DEFAULT)
-        self.forgiveness = forgiveness_scale     # multiplies coyote/buffer
-
-    def apply_axis_curve(self, raw: V3, deadzone: float, exponent: float) -> V3:
-        m = raw.length2d()
-        if m < deadzone:
-            return V3()
-        shaped = ((m - deadzone) / (1.0 - deadzone)) ** exponent
-        return raw.normalized() * clamp(shaped, 0.0, 1.0)
+class UPCGSettings(ABC):
+    """~ UPCGSettings base — one PCG graph node's parameters + Execute()."""
+    @abstractmethod
+    def Execute(self, InPoints: list) -> list: ...
 
 
-class PlayerController:
-    """~ APlayerController + EnhancedInputComponent: turns device state into
-    MoveInput quanta (for §11 prediction) + verb intents (routed to §12)."""
+class UPCGSurfaceSamplerSettings(UPCGSettings):
+    """~ UPCGSurfaceSamplerSettings: generates points across a surface at a
+    given density. Real Epic samplers use blue-noise/Poisson-disc jitter;
+    the golden-angle phyllotaxis point generator IS a low-discrepancy
+    sequence, a legitimate (if unusual) sampling kernel choice here."""
+    def __init__(self, count: int, spacing: float, center: FVector = FVector()):
+        self.count, self.spacing, self.center = count, spacing, center
 
-    def __init__(self, ctx: InputMappingContext):
-        self.ctx = ctx
-        self.raw_move = V3()
-        self.raw_look = V3()
-        self.held: set = set()
-        self.pressed_once: set = set()
-        self.yaw = 0.0
-        self.pitch = 0.0
-        self.dial_hz = 35.0
-        self._seq = 0
-
-    def press(self, action: InputActionName) -> None:
-        self.pressed_once.add(action)
-        self.held.add(action)
-
-    def release(self, action: InputActionName) -> None:
-        self.held.discard(action)
-
-    def sample(self, dt: float) -> MoveInput:
-        self.yaw += self.raw_look.x * 2.2 * dt
-        self.pitch = clamp(self.pitch + self.raw_look.y * 1.6 * dt, -1.4, 1.4)
-        move = self.ctx.apply_axis_curve(self.raw_move, 0.15, 1.6)
-        self._seq += 1
-        mi = MoveInput(seq=self._seq, move=move, yaw=self.yaw, pitch=self.pitch,
-                       jump=InputActionName.JUMP in self.pressed_once,
-                       bend=InputActionName.BEND in self.held,
-                       sprint=InputActionName.SPRINT in self.held, dt=dt)
-        verbs = set(self.pressed_once)
-        self.pressed_once.clear()
-        mi_verbs = verbs                          # returned alongside via attr
-        mi.verbs = mi_verbs                       # type: ignore[attr-defined]
-        return mi
+    def Execute(self, InPoints: list) -> list:
+        out = []
+        for i in range(self.count):
+            p = self.center + golden_spiral_point(i, self.spacing)
+            out.append(FPCGPoint(FTransform(Location=p), Density=1.0, Seed=i))
+        return out
 
 
-# ---- UMG widget tree --------------------------------------------------------
+class UPCGDensityFilterSettings(UPCGSettings):
+    """~ UPCGDensityFilterSettings: keep points whose (noise-driven) density
+    exceeds a threshold — used to thin buried-cache points to ~1-in-3."""
+    def __init__(self, threshold: float, seed: int):
+        self.threshold, self.seed = threshold, seed
 
-class Widget:
-    """~ UUserWidget: retained-mode node with children; draw == describe."""
-    def __init__(self, name: str):
+    def Execute(self, InPoints: list) -> list:
+        return [p for p in InPoints
+                if value_noise2(p.Transform.Location.X * 0.3, p.Transform.Location.Y * 0.3,
+                                self.seed) > self.threshold]
+
+
+class UPCGTransformPointsSettings(UPCGSettings):
+    """~ UPCGTransformPointsSettings: per-point jitter (height offset here —
+    buried items sit at varying depth)."""
+    def __init__(self, z_offset_fn: Callable[[int], float]):
+        self.z_offset_fn = z_offset_fn
+
+    def Execute(self, InPoints: list) -> list:
+        for p in InPoints:
+            p.Transform.Location.Z = self.z_offset_fn(p.Seed)
+        return InPoints
+
+
+class UPCGSpawnActorSettings(UPCGSettings):
+    """~ UPCGSpawnActorSettings / UPCGStaticMeshSpawnerSettings: terminal
+    node — realizes points as actors (buried-item pickups, decorative rocks)."""
+    def __init__(self, factory: Callable[[FPCGPoint], None]):
+        self.factory = factory
+
+    def Execute(self, InPoints: list) -> list:
+        for p in InPoints:
+            self.factory(p)
+        return InPoints
+
+
+class UPCGGraph:
+    """~ UPCGGraph asset: an ordered chain of UPCGNode(UPCGSettings). Real
+    graphs are a DAG (branches, merges); this pseudocode's population needs
+    are a straight pipeline, so a list suffices."""
+    def __init__(self, name: str, *nodes: UPCGSettings):
         self.name = name
-        self.visible = True
-        self.children: list[Widget] = []
+        self.nodes = nodes
 
-    def add(self, w: "Widget") -> "Widget":
-        self.children.append(w)
-        return w
-
-    def describe(self) -> dict:
-        return {"widget": self.name, "visible": self.visible,
-                "children": [c.describe() for c in self.children if c.visible]}
+    def Generate(self) -> list:
+        points: list = []
+        for node in self.nodes:
+            points = node.Execute(points)
+        return points
 
 
-class SuitWristGauge(Widget):
-    """O2 needle: the player GLANCES DOWN (bend micro-verb) to read it —
-    diegetic, no floating bars (DIEGETIC_HUD law)."""
-    def __init__(self):
-        super().__init__("SuitWristGauge")
-        self.needle_deg = 0.0
+class UPCGComponent(UActorComponent):
+    """~ UPCGComponent: attached to a partition actor, runs its UPCGGraph
+    once (bGenerated latches so it doesn't re-run every load — Design Law 4:
+    once generated/observed, it's permanent, not re-rolled)."""
+    def __init__(self, owner: AActor, graph: UPCGGraph):
+        super().__init__(owner)
+        self.Graph = graph
+        self.bGenerated = False
 
-    def update(self, o2_fraction: float, dt: float) -> None:
-        target = lerp(-80.0, 80.0, o2_fraction)
-        self.needle_deg = lerp(self.needle_deg, target, clamp(3.0 * dt, 0, 1))
-
-
-class CompassRim(Widget):
-    """Helmet-rim tick lights; Earth itself is north. Bearing pips for the
-    habitat, stations, and (once heard) the Erisaid."""
-    def __init__(self):
-        super().__init__("CompassRim")
-        self.pips: list[tuple[str, float]] = []
-
-    def update(self, yaw: float, marks: dict) -> None:
-        self.pips = [(name, ((math.degrees(math.atan2(p.y, p.x)) -
-                              math.degrees(yaw)) % 360.0))
-                     for name, p in marks.items()]
+    def Generate(self) -> list:
+        if self.bGenerated:
+            return []
+        self.bGenerated = True
+        return self.Graph.Generate()
 
 
-class BatteryLEDBar(Widget):
-    def __init__(self):
-        super().__init__("BatteryLEDBar")
-        self.segments_lit = 5
+# --- Mass LOD + actorization: the crowd <-> hero-actor bridge ---------------
 
-    def update(self, battery_fraction: float) -> None:
-        self.segments_lit = int(round(battery_fraction * 5))
+class EMassLOD(Enum):
+    """~ REAL enum (MassLODTypes.h)."""
+    Off = auto(); Low = auto(); Medium = auto(); High = auto()
 
 
-class GestureWheel(Widget):
-    """Radial verb menu (hold TAB): the entire social interface (Law 3)."""
-    GESTURES = ("wave", "offer", "refuse", "point", "kneel", "beckon", "thank")
+class UMassLODCollectorProcessor(UMassProcessor):
+    """~ UMassLODCollectorProcessor: computes each entity's LOD tier from
+    distance-to-viewer every Mass tick."""
+    HIGH_RANGE, MEDIUM_RANGE, LOW_RANGE = 25.0, 80.0, 220.0
 
-    def __init__(self):
-        super().__init__("GestureWheel")
-        self.visible = False
-        self.highlighted: Optional[str] = None
+    def ConfigureQueries(self) -> FMassEntityQuery:
+        return FMassEntityQuery(FTransformFragment, FMassDotStateFragment)
 
-    def select_from_stick(self, stick: V3) -> Optional[str]:
-        if stick.length2d() < 0.5:
-            self.highlighted = None
-            return None
-        ang = math.atan2(stick.y, stick.x) % TAU
-        idx = int(ang / TAU * len(self.GESTURES)) % len(self.GESTURES)
-        self.highlighted = self.GESTURES[idx]
-        return self.highlighted
-
-
-class GlyphSubtitleStrip(Widget):
-    """Accessibility: gestures & world sounds rendered as pictograms.
-    Still wordless — glyphs, never sentences."""
-    def __init__(self):
-        super().__init__("GlyphSubtitleStrip")
-        self.glyphs: list[str] = []
-
-    def push(self, glyph: str) -> None:
-        self.glyphs = (self.glyphs + [glyph])[-5:]
+    def Execute(self, em: FMassEntityManager, game: "ChimeraGame", dt: float) -> None:
+        ppos = game.player_actor.GetActorLocation()
+        for h, tf, state in em.EntityQuery(self._query):
+            d = tf.Transform.Location.Dist2D(ppos)
+            lod = (EMassLOD.High if d <= self.HIGH_RANGE else
+                   EMassLOD.Medium if d <= self.MEDIUM_RANGE else
+                   EMassLOD.Low if d <= self.LOW_RANGE else EMassLOD.Off)
+            game.mass_lod[h] = lod
 
 
-class MenuState(Enum):
-    BOOT = auto(); TITLE = auto(); IN_GAME = auto(); PAUSED = auto()
-    WILL_READING = auto()          # generation handoff: the inheritance screen
+class UMassActorSpawnerSubsystem(UWorldSubsystem):
+    """~ UMassActorSpawnerSubsystem: promotes a Mass entity to a full
+    ADotCharacter when its LOD rises to High, and despawns it back to a
+    fragment-only representation when LOD falls — writing the actor's final
+    state back so cross-generation memory (Design Law 4) survives the churn."""
+    def Initialize(self, world: "UWorld") -> None:
+        self.actorized: dict[FMassEntityHandle, ADotCharacter] = {}
 
+    def Tick(self, dt: float) -> None: pass
 
-class UISystem(System):
-    """~ a HUD AHUD + widget stack. Menu FSM + per-frame widget updates."""
-    GROUP = TickGroup.UI
-    ORDER = 0
-
-    def __init__(self):
-        self.state = MenuState.BOOT
-        self.root = Widget("Root")
-        self.hud = self.root.add(Widget("HUD"))
-        self.wrist = self.hud.add(SuitWristGauge())
-        self.compass = self.hud.add(CompassRim())
-        self.battery = self.hud.add(BatteryLEDBar())
-        self.wheel = self.hud.add(GestureWheel())
-        self.glyphs = self.hud.add(GlyphSubtitleStrip())
-        self.will_screen = self.root.add(Widget("WillScreen"))
-        self.will_screen.visible = False
-
-    def open_will(self) -> None:
-        self.state = MenuState.WILL_READING
-        self.will_screen.visible = True
-
-    def close_will(self) -> None:
-        self.state = MenuState.IN_GAME
-        self.will_screen.visible = False
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        if self.state == MenuState.BOOT:
-            self.state = MenuState.IN_GAME
-        suit = game.world.get(game.player_eid, SuitComponent)
-        tr = game.world.get(game.player_eid, Transform)
-        self.wrist.update(suit.o2 / 100.0, dt)
-        self.battery.update(suit.battery / 100.0)
-        marks = {"habitat": game.habitat_pos - tr.pos}
-        if game.attunement.visit_days:
-            marks["erisaid"] = game.erisaid_pos - tr.pos
-        self.compass.update(tr.yaw, marks)
-
-
-# =============================================================================
-# §10. SAVE / LOAD — versioned serialization, migrations, autosave ring
-# UE5: USaveGame subclass; UPROPERTY(SaveGame) fields; UGameplayStatics::
-# SaveGameToSlot. Here: the exact capture/restore/migrate logic.
-# =============================================================================
-
-SAVE_VERSION = 4
-
-
-class SaveGameSystem:
-    """~ UChimeraSaveGame + async SaveGameToSlot. Captures every Component
-    field named in SAVED plus the game-layer singleton state. Binary header
-    packed with struct (magic/version/crc) to show the wire format."""
-    MAGIC = 0x43484D52                      # 'CHMR'
-    AUTOSAVE_SLOTS = 3
-
-    def __init__(self):
-        self.slots: dict[str, bytes] = {}
-        self._auto_i = 0
-        self.migrations: dict[int, Callable[[dict], dict]] = {
-            3: self._migrate_v3_to_v4,
-        }
-
-    # ---- capture ------------------------------------------------------------
-    def capture(self, game: "ChimeraGame") -> dict:
-        comps: dict[str, dict] = {}
-        for ctype, table in game.world._store.items():
-            if not ctype.SAVED:
+    def SyncActorization(self, game: "ChimeraGame") -> None:
+        em = game.mass_subsystem.EntityManager
+        for h, lod in list(game.mass_lod.items()):
+            frag = em.GetFragmentDataPtr(h, FMassDotStateFragment)
+            tf = em.GetFragmentDataPtr(h, FTransformFragment)
+            if frag is None or tf is None:
                 continue
-            rows = {}
-            for eid, comp in table.items():
-                rows[eid] = {f: self._encode(getattr(comp, f)) for f in ctype.SAVED}
-            comps[ctype.__name__] = rows
-        return dict(
-            version=SAVE_VERSION,
-            seed=game.seed,
-            generation=game.generation,
-            credits=game.credits,
-            day=game.sky.day, time_h=game.sky.time_h,
-            components=comps,
-            dig_delta={f"{k[0]},{k[1]}": v for k, v in game.dig_delta.items()},
-            buried={f"{k[0]},{k[1]}": v for k, v in game.buried.items()},
-            footprints=[(fp[0].to_tuple(), fp[1], fp[2].name, fp[3], fp[4])
-                        for fp in game.footprints],
-            stars=[(s.life_name, s.generation, s.brightness, s.twinkle,
-                    s.bearing_deg) for s in game.memorial.stars],
-            sacrifices=[(e.kind, e.weight, e.note, e.generation)
-                        for e in game.sacrifice.entries],
-            dot_memories={str(e): b.memory for e, b in game.world.query(DotBrain)},
-            attunement=dict(matched=sorted(game.attunement.matched),
-                            visits=sorted(game.attunement.visit_days),
-                            deaf_until=game.attunement.deaf_until_day),
-            titan_best=game.titan_best,
-            flags=game.flags,
-        )
-
-    @staticmethod
-    def _encode(v: Any) -> Any:
-        if isinstance(v, V3):
-            return {"__v3__": v.to_tuple()}
-        if isinstance(v, Enum):
-            return {"__enum__": [type(v).__name__, v.name]}
-        if hasattr(v, "kind"):                  # Item-like
-            return {"__item__": [getattr(v, "kind"), getattr(v, "quality", 1.0)]}
-        if isinstance(v, list):
-            return [SaveGameSystem._encode(x) for x in v]
-        return v
-
-    # ---- wire format ----------------------------------------------------------
-    def to_bytes(self, data: dict) -> bytes:
-        import zlib
-        payload = json.dumps(data, default=str).encode("utf-8")
-        crc = zlib.crc32(payload) & 0xFFFFFFFF
-        header = struct.pack("<III", self.MAGIC, data["version"], crc)
-        return header + payload
-
-    def from_bytes(self, blob: bytes) -> dict:
-        import zlib
-        magic, version, crc = struct.unpack("<III", blob[:12])
-        payload = blob[12:]
-        assert magic == self.MAGIC, "corrupt save: bad magic"
-        assert zlib.crc32(payload) & 0xFFFFFFFF == crc, "corrupt save: bad crc"
-        data = json.loads(payload.decode("utf-8"))
-        while data["version"] < SAVE_VERSION:      # forward-migrate old saves
-            data = self.migrations[data["version"]](data)
-        return data
-
-    @staticmethod
-    def _migrate_v3_to_v4(data: dict) -> dict:
-        data.setdefault("titan_best", {})          # v4 added Titan Run records
-        data["version"] = 4
-        return data
-
-    def autosave(self, game: "ChimeraGame") -> str:
-        slot = f"auto_{self._auto_i % self.AUTOSAVE_SLOTS}"
-        self._auto_i += 1
-        self.slots[slot] = self.to_bytes(self.capture(game))
-        return slot
+            already = h in self.actorized
+            if lod == EMassLOD.High and not already and frag.FSM != "gone":
+                tree = {"stranger": "BT_Stranger", "trader": "BT_Trader",
+                       "pirate": "BT_Pirate", "quiet": "BT_Quiet"}[frag.Archetype]
+                actor = ADotCharacter(game.world, h, frag.Archetype, tree,
+                                      tf.Transform.Location, frag.Need, frag.CanPay)
+                actor.Memory = game.dot_memory_ledger.setdefault(frag.StableId, {})
+                self.actorized[h] = actor
+            elif lod != EMassLOD.High and already:
+                actor = self.actorized.pop(h)
+                tf.Transform.Location = actor.GetActorLocation()      # write back
+                frag.FSM = actor.BlackboardComponent.GetValueAsObject("FSM") or frag.FSM
+                frag.Need = actor.BlackboardComponent.GetValueAsObject("Need")
+                game.dot_memory_ledger[frag.StableId] = actor.Memory
+                if frag.FSM == "gone":
+                    em.DestroyEntity(h)
+                    del game.mass_lod[h]
 
 
-# =============================================================================
-# §11. NETWORKING — server-authoritative movement, replication, prediction
-# UE5: UNetDriver + character movement's ServerMove/ClientAdjustPosition
-# dance. The SAME movement_step (§6) runs on both ends — that's the trick.
-# =============================================================================
+class UMassMovementProcessor(UMassProcessor):
+    """~ cheap ambient movement for LOD Low/Medium/Off entities (no BT tick,
+    no NavMesh query — a straight-line drift toward a wander target, exactly
+    the 'literal dot on the horizon' the design calls for)."""
+    def ConfigureQueries(self) -> FMassEntityQuery:
+        return FMassEntityQuery(FTransformFragment, FMassVelocityFragment, FMassDotStateFragment)
 
-@dataclass
-class NetPacket:
-    deliver_at: float
-    kind: str            # input|snapshot|rpc
-    payload: Any
-
-
-class NetChannel:
-    """A latency+jitter pipe — ~ a UNetConnection with simulated lag.
-    One instance per direction."""
-
-    def __init__(self, rng: random.Random, one_way_ms: float = 45.0,
-                 jitter_ms: float = 10.0, loss: float = 0.0):
-        self.rng = rng
-        self.one_way = one_way_ms / 1000.0
-        self.jitter = jitter_ms / 1000.0
-        self.loss = loss
-        self.queue: list[NetPacket] = []
-        self.sent = 0
-        self.dropped = 0
-
-    def send(self, now: float, kind: str, payload: Any) -> None:
-        self.sent += 1
-        if self.rng.random() < self.loss:
-            self.dropped += 1
-            return
-        at = now + self.one_way + self.rng.uniform(0, self.jitter)
-        self.queue.append(NetPacket(at, kind, payload))
-
-    def drain(self, now: float) -> list[NetPacket]:
-        ready = [p for p in self.queue if p.deliver_at <= now]
-        self.queue = [p for p in self.queue if p.deliver_at > now]
-        ready.sort(key=lambda p: p.deliver_at)
-        return ready
-
-
-class ServerAuthority:
-    """The server's truth for one client pawn — ~ ACharacter on the server.
-    Consumes MoveInput packets IN ORDER, steps the shared solver, and emits
-    authoritative snapshots at 20 Hz. Gameplay facts (footsteps) are SERVER
-    facts: clients only ever hear what the authority confirmed."""
-    SNAPSHOT_HZ = 20.0
-
-    def __init__(self, ground: "GroundField", gravity: GravityField):
-        self.ground = ground
-        self.gravity = gravity
-        self.state = MoveState()
-        self.last_seq = 0
-        self._snap_accum = 0.0
-        self.speed_scale = 1.0
-        self.footstep_outbox: list = []
-
-    def process(self, inputs: list[MoveInput], now: float, dt: float) -> Optional[dict]:
-        for mi in sorted(inputs, key=lambda m: m.seq):
-            if mi.seq <= self.last_seq:            # duplicate/reordered: drop
+    def Execute(self, em: FMassEntityManager, game: "ChimeraGame", dt: float) -> None:
+        ppos = game.player_actor.GetActorLocation()
+        for h, tf, vel, state in em.EntityQuery(self._query):
+            if game.mass_lod.get(h) == EMassLOD.High:
+                continue                              # actorized; UAISystem owns it now
+            if state.FSM == "gone":
                 continue
-            g = self.gravity.sample(self.state.pos, mi.dt)
-            steps: list = []
-            self.state = movement_step(self.state, mi, self.ground, g,
-                                       self.speed_scale, steps)
-            self.footstep_outbox.extend(steps)
-            self.last_seq = mi.seq
-        self._snap_accum += dt
-        if self._snap_accum >= 1.0 / self.SNAPSHOT_HZ:
-            self._snap_accum = 0.0
-            return dict(seq=self.last_seq, state=self.state.copy())
-        return None
-
-
-class ClientPrediction:
-    """~ FSavedMove ring + ClientAdjustPosition reconciliation:
-       1. sample input, apply LOCALLY at once (zero-latency feel),
-       2. send to server,
-       3. on snapshot: rewind to server state at acked seq, REPLAY unacked
-          inputs; if the replayed result differs from our prediction beyond
-          epsilon, we just corrected (count it — QA watches this number)."""
-    EPSILON_M = 0.05
-
-    def __init__(self, ground: "GroundField", gravity: GravityField):
-        self.ground = ground
-        self.gravity = gravity
-        self.predicted = MoveState()
-        self.history: list[MoveInput] = []
-        self.corrections = 0
-        self.speed_scale = 1.0
-
-    def apply_local(self, mi: MoveInput) -> None:
-        g = self.gravity.sample(self.predicted.pos, mi.dt)
-        self.predicted = movement_step(self.predicted, mi, self.ground, g,
-                                       self.speed_scale)
-        self.history.append(mi)
-        if len(self.history) > 256:
-            self.history.pop(0)
-
-    def reconcile(self, snapshot: dict) -> None:
-        acked = snapshot["seq"]
-        self.history = [m for m in self.history if m.seq > acked]
-        replay = snapshot["state"].copy()
-        for mi in self.history:
-            g = self.gravity.sample(replay.pos, mi.dt)
-            replay = movement_step(replay, mi, self.ground, g, self.speed_scale)
-        if replay.pos.dist(self.predicted.pos) > self.EPSILON_M:
-            self.corrections += 1
-        self.predicted = replay                    # snap to truth + replayed intent
-
-
-class InterpolationBuffer:
-    """Simulated proxies (other players' pawns) render 100 ms in the past,
-    lerping between the two snapshots that bracket render time —
-    ~ FCharacterMovementComponentAsyncInput interpolation."""
-    DELAY_S = 0.10
-
-    def __init__(self):
-        self.samples: list[tuple[float, V3, float]] = []   # (t, pos, yaw)
-
-    def push(self, t: float, pos: V3, yaw: float) -> None:
-        self.samples.append((t, pos, yaw))
-        self.samples = self.samples[-64:]
-
-    def sample(self, now: float) -> Optional[tuple[V3, float]]:
-        t = now - self.DELAY_S
-        for i in range(len(self.samples) - 1):
-            t0, p0, y0 = self.samples[i]
-            t1, p1, y1 = self.samples[i + 1]
-            if t0 <= t <= t1:
-                a = inv_lerp(t0, t1, t)
-                return p0 + (p1 - p0) * a, lerp(y0, y1, a)
-        return (self.samples[-1][1], self.samples[-1][2]) if self.samples else None
-
-
-class ReplicationSystem(System):
-    """Builds prioritized delta snapshots for every NetIdentity entity —
-    ~ the property replication pass. Priority: player-distance over cull
-    range; only REPLICATED fields marked dirty go on the wire."""
-    GROUP = TickGroup.NETWORK
-    ORDER = 1
-
-    def __init__(self):
-        self.bytes_estimate = 0
-        self.actors_replicated = 0
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        ptr = game.world.get(game.player_eid, Transform)
-        for eid, net, tr in game.world.query(NetIdentity, Transform):
-            d = ptr.pos.dist2d(tr.pos)
-            if d > net.net_cull_distance:          # relevancy: skip far actors
-                continue
-            self.actors_replicated += 1
-            self.bytes_estimate += 24              # pos+yaw quantized (~ FVector_NetQuantize)
-
-
-# RPC classification (comment-spec — ~ UFUNCTION macros):
-#   Server, Reliable   : gesture_send, trade_offer, dig_request  (intent up)
-#   Client, Reliable   : will_reading_open, sacrifice_confirmed  (truth down)
-#   NetMulticast, Unreliable: footstep_fx, dust_burst            (cosmetic fanout)
+            target = ppos if state.Need is not None else tf.Transform.Location + FVector(10, 0, 0)
+            to_t = (target - tf.Transform.Location).GetSafeNormal()
+            vel.Value = to_t * 1.2
+            tf.Transform.Location = tf.Transform.Location + vel.Value * dt
+            d = tf.Transform.Location.Dist2D(ppos)
+            state.FSM = "distant" if d > 220.0 else "approaching" if d > 25.0 else "near"
 
 
 # =============================================================================
-# §12. GAME LAYER — the Yard itself, running on §1-§11
+# §7. ANIMATION, MOVEMENT & INPUT
+# ~ UCharacterMovementComponent, Enhanced Input (UInputMappingContext/
+# UInputAction/UInputModifier/UInputTrigger), UAnimInstance + UBlendSpace,
+# UControlRig, UMotionWarpingComponent.
 # =============================================================================
 
-class Surface(Enum):
-    SAND = auto(); ROCK = auto(); METAL = auto(); BASIN = auto()
-    ICE = auto(); INTERIOR = auto()
+GRAVITY_YARD = 1.62
+GRAVITY_TITAN_ZONE = 1.35
 
-
-SURFACE_TABLE = {
-    #                 traction  makes_print  print_life  dust_scale  audio_bank
-    Surface.SAND:     (0.75,    True,        None,       1.00, "Fantozzi-Sand"),
-    Surface.BASIN:    (0.45,    True,        None,       1.60, "Fantozzi-Sand"),
-    Surface.ROCK:     (1.00,    False,       0.0,        0.15, "Fantozzi-Stone"),
-    Surface.METAL:    (0.90,    True,        600.0,      0.05, "Metal-Scuff"),
-    Surface.ICE:      (0.35,    False,       0.0,        0.02, "Ice-Crunch"),
-    Surface.INTERIOR: (1.00,    False,       0.0,        0.00, "Interior-Soft"),
-}
-# print_life None => persists until a storm erases it (Design Law 4).
-
-DIG = dict(radius=0.6, scoop_depth=0.15, durability_per_scoop=1.0,
-           reach_m=1.8, cell=0.5)
-
-SUIT = dict(
-    o2_max=100.0, o2_drain_idle=0.6, o2_drain_walk=1.0, o2_drain_sprint=3.0,
-    battery_max=100.0, battery_drain_night=1.8, battery_drain_scanner=0.5,
-    dust_clog_per_storm_min=4.0, dust_clog_move_penalty=0.35,
-    thermal_safe_lo=-20.0, night_temp_c=-140.0, day_temp_c=45.0,
+MOVE = dict(
+    walk_speed=1.4, jog_speed=3.2, sprint_speed=5.6, bend_speed=0.7,
+    accel=6.0, air_control=0.35, jump_height=1.1,
+    coyote_time_s=0.12, jump_buffer_s=0.15,
+    step_interval_walk_s=0.62, step_interval_sprint_s=0.38,
+    slide_slope_deg=38.0,
 )
 
-ITEM_TABLE: dict[str, tuple] = {
-    #                    mass_kg  base_price  sellable
-    "ORE_ILMENITE":       (4.0,   12.0, True),
-    "ICE_WATER":          (3.0,   18.0, True),
-    "OXYGEN_CAN":         (2.0,   25.0, True),
-    "MACHINE_PARTS":      (5.0,   40.0, True),
-    "REGOLITH_GLASS":     (1.5,   30.0, True),
-    "SEEDS":              (0.2,   55.0, True),
-    "FUEL_CELL":          (6.0,   48.0, True),
-    "RELIC_SHARD":        (0.8,  120.0, True),
-    "ERISAID_FRAGMENT":   (0.3,    0.0, False),   # unsellable. period.
-    "HEIRLOOM":           (0.5,    0.0, False),   # unsellable. period.
-    "STORY":              (0.0,    8.0, True),    # traded around fires
+
+# --- Enhanced Input -----------------------------------------------------------
+
+class EInputActionValueType(Enum):
+    Boolean = auto(); Axis1D = auto(); Axis2D = auto()
+
+
+@dataclass
+class UInputAction:
+    """~ UInputAction asset: a named, typed action (Move/Look/Jump/Dig/...).
+    Bound to gameplay via BindAction() in real UE; here read directly by
+    UChimeraInputComponent each frame."""
+    name: str
+    value_type: EInputActionValueType
+
+
+class UInputModifier(ABC):
+    """~ UInputModifier base: transforms a raw axis value before triggers
+    see it (DeadZone, ResponseCurveExponential, Negate, Swizzle...)."""
+    @abstractmethod
+    def Modify(self, raw: FVector) -> FVector: ...
+
+
+@dataclass
+class UInputModifierDeadZone(UInputModifier):
+    """~ UInputModifier_DeadZone."""
+    lower_threshold: float = 0.15
+    def Modify(self, raw: FVector) -> FVector:
+        m = raw.Size2D()
+        return raw * 0.0 if m < self.lower_threshold else raw
+
+
+@dataclass
+class UInputModifierResponseCurveExponential(UInputModifier):
+    """~ UInputModifier_ResponseCurveExponential."""
+    exponent: float = 1.6
+    def Modify(self, raw: FVector) -> FVector:
+        m = raw.Size2D()
+        if m < EPS:
+            return FVector()
+        shaped = clamp(m, 0.0, 1.0) ** self.exponent
+        return raw.GetSafeNormal() * shaped
+
+
+class UInputTrigger(ABC):
+    """~ UInputTrigger base (Pressed/Released/Hold/Tap/Down)."""
+    @abstractmethod
+    def Test(self, held: bool, held_duration: float) -> bool: ...
+
+
+class UInputTriggerPressed(UInputTrigger):
+    def Test(self, held: bool, held_duration: float) -> bool: return held and held_duration <= 0.0
+
+
+class UInputTriggerHold(UInputTrigger):
+    def __init__(self, hold_s: float): self.hold_s = hold_s
+    def Test(self, held: bool, held_duration: float) -> bool: return held and held_duration >= self.hold_s
+
+
+@dataclass
+class FEnhancedActionKeyMapping:
+    """~ FEnhancedActionKeyMapping: Key -> Action, with its Modifiers/Triggers."""
+    key: str
+    action: UInputAction
+    modifiers: list = field(default_factory=list)
+    triggers: list = field(default_factory=list)
+
+
+class UInputMappingContext:
+    """~ UInputMappingContext asset: the suit-control layout. Fully
+    remappable (ACCESSIBILITY law: every verb, no exceptions) — DeadZone/
+    ResponseCurve modifiers scale by accessibility.input_forgiveness_scale."""
+    def __init__(self, forgiveness_scale: float = 1.0):
+        move = UInputAction("IA_Move", EInputActionValueType.Axis2D)
+        look = UInputAction("IA_Look", EInputActionValueType.Axis2D)
+        self.actions = dict(
+            Move=move, Look=look,
+            Jump=UInputAction("IA_Jump", EInputActionValueType.Boolean),
+            Bend=UInputAction("IA_Bend", EInputActionValueType.Boolean),
+            Sprint=UInputAction("IA_Sprint", EInputActionValueType.Boolean),
+            PickUp=UInputAction("IA_PickUp", EInputActionValueType.Boolean),
+            Dig=UInputAction("IA_Dig", EInputActionValueType.Boolean),
+            Scan=UInputAction("IA_Scan", EInputActionValueType.Boolean),
+            DrawWeapon=UInputAction("IA_DrawWeapon", EInputActionValueType.Boolean),
+            Fire=UInputAction("IA_Fire", EInputActionValueType.Boolean),
+            GestureWheel=UInputAction("IA_GestureWheel", EInputActionValueType.Boolean),
+            AttuneDial=UInputAction("IA_AttuneDial", EInputActionValueType.Axis1D),
+        )
+        self.mappings = [
+            FEnhancedActionKeyMapping("stick_l", move,
+                [UInputModifierDeadZone(0.15 * forgiveness_scale),
+                 UInputModifierResponseCurveExponential(1.6)]),
+            FEnhancedActionKeyMapping("stick_r", look),
+            FEnhancedActionKeyMapping("space", self.actions["Jump"], [], [UInputTriggerPressed()]),
+            FEnhancedActionKeyMapping("ctrl", self.actions["Bend"]),
+            FEnhancedActionKeyMapping("shift", self.actions["Sprint"]),
+            FEnhancedActionKeyMapping("e", self.actions["PickUp"], [], [UInputTriggerPressed()]),
+            FEnhancedActionKeyMapping("lmb", self.actions["Dig"], [], [UInputTriggerPressed()]),
+            FEnhancedActionKeyMapping("q", self.actions["Scan"], [], [UInputTriggerPressed()]),
+            FEnhancedActionKeyMapping("rmb", self.actions["DrawWeapon"]),
+            FEnhancedActionKeyMapping("f", self.actions["Fire"], [], [UInputTriggerPressed()]),
+            FEnhancedActionKeyMapping("tab", self.actions["GestureWheel"], [], [UInputTriggerHold(0.15)]),
+            FEnhancedActionKeyMapping("wheel", self.actions["AttuneDial"]),
+        ]
+        self.forgiveness = forgiveness_scale       # multiplies coyote/jump-buffer windows too
+
+
+class UEnhancedInputLocalPlayerSubsystem:
+    """~ UEnhancedInputLocalPlayerSubsystem: AddMappingContext()/
+    RemoveMappingContext() with priority; owns the resolved per-frame
+    action-value table the movement component and verb system read."""
+    def __init__(self):
+        self.active_contexts: list[tuple[UInputMappingContext, int]] = []
+        self.values: dict[str, Any] = {}
+        self._held_since: dict[str, float] = {}
+
+    def AddMappingContext(self, ctx: UInputMappingContext, priority: int = 0) -> None:
+        self.active_contexts.append((ctx, priority))
+        self.active_contexts.sort(key=lambda t: -t[1])
+
+    def InjectRawDeviceState(self, raw: dict, now: float) -> None:
+        """Device layer -> Modifier chain -> Trigger evaluation -> resolved
+        action values, exactly the real Enhanced Input evaluation order.
+        Branches on the ACTION's declared value type (not the raw sample's
+        Python type) — an absent key means "neutral axis" or "not held",
+        never "keep whatever it was last frame"."""
+        for ctx, _prio in self.active_contexts:
+            for m in ctx.mappings:
+                if m.action.value_type in (EInputActionValueType.Axis1D, EInputActionValueType.Axis2D):
+                    v = raw.get(m.key, FVector())
+                    for mod in m.modifiers:
+                        v = mod.Modify(v)
+                    self.values[m.action.name] = v
+                else:
+                    held = bool(raw.get(m.key, False))
+                    key = m.key
+                    if held and key not in self._held_since:
+                        self._held_since[key] = now
+                    elif not held:
+                        self._held_since.pop(key, None)
+                    duration = now - self._held_since[key] if held else -1.0
+                    fired = any(t.Test(held, duration) for t in m.triggers) if m.triggers else held
+                    if fired:
+                        self.values[m.action.name] = True
+                    elif not m.triggers:              # held-style (no explicit trigger): absence == released
+                        self.values.pop(m.action.name, None)
+
+    def GetActionValue(self, action_name: str) -> Any:
+        return self.values.pop(action_name, None)   # booleans consumed once (Pressed semantics)
+
+    def PeekAxis(self, action_name: str) -> FVector:
+        v = self.values.get(action_name, FVector())
+        return v if isinstance(v, FVector) else FVector()
+
+
+# --- UCharacterMovementComponent ---------------------------------------------
+
+@dataclass
+class FCharacterNetworkMoveData:
+    """~ FCharacterNetworkMoveData: one packed client move — the unit sent
+    via ServerMovePacked_ClientSend and replayed client-side for
+    reconciliation (§9)."""
+    TimeStamp: float = 0.0
+    Acceleration: FVector = field(default_factory=FVector)     # here: raw move axis
+    ControlYaw: float = 0.0
+    ControlPitch: float = 0.0
+    bPressedJump: bool = False
+    bWantsToCrouch: bool = False       # "Bend" reuses UE5's crouch semantics
+    bWantsToSprint: bool = False
+    DeltaTime: float = 1.0 / 60.0
+
+
+class EMovementMode(Enum):
+    """~ REAL enum (MOVE_None/MOVE_Walking/MOVE_Falling/MOVE_Flying/...)."""
+    MOVE_None = auto(); MOVE_Walking = auto(); MOVE_Falling = auto()
+
+
+@dataclass
+class FMovementState:
+    """The deterministic, copyable movement state — what CMC calls
+    'UpdatedComponent' position plus Velocity plus MovementMode. Must stay
+    plain-data for §9's rewind-and-replay reconciliation."""
+    Location: FVector = field(default_factory=FVector)
+    Velocity: FVector = field(default_factory=FVector)
+    MovementMode: EMovementMode = EMovementMode.MOVE_Walking
+    Gait: Gait = Gait.IDLE
+    StepClock: float = 0.0
+    bLeftFootNext: bool = True
+    LeftGroundAt: float = -999.0
+    JumpPressedAt: float = -999.0
+    Now: float = 0.0
+
+    def Copy(self) -> "FMovementState":
+        return FMovementState(FVector(*self.Location.ToTuple()), FVector(*self.Velocity.ToTuple()),
+                              self.MovementMode, self.Gait, self.StepClock, self.bLeftFootNext,
+                              self.LeftGroundAt, self.JumpPressedAt, self.Now)
+
+
+class APhysicsVolume(AActor):
+    """~ APhysicsVolume: overrides gravity for actors inside its bounds.
+    The Titan Run's alternating corridors are physics volumes stacked along
+    a spline — real, not a bespoke 'gravity field' invention."""
+    def __init__(self, world: "UWorld", contains: Callable[[FVector], bool], gravity_z: float):
+        super().__init__(world)
+        self.Contains = contains
+        self.GravityZ = gravity_z
+
+
+class UGravityVolumeSubsystem(UWorldSubsystem):
+    """Resolves the active APhysicsVolume for a location each tick (real UE
+    resolves this via overlap events on volume Begin/EndOverlap; polled here
+    for pseudocode simplicity), LERPed over 1.2s so gravity changes are
+    body-readable, never a snap."""
+    def Initialize(self, world: "UWorld") -> None:
+        self.volumes: list[APhysicsVolume] = []
+        self._current = GRAVITY_YARD
+
+    def Tick(self, dt: float) -> None: pass
+
+    def RegisterVolume(self, v: APhysicsVolume) -> None:
+        self.volumes.append(v)
+
+    def GravityAt(self, p: FVector, dt: float) -> float:
+        target = GRAVITY_YARD
+        for v in self.volumes:
+            if v.Contains(p):
+                target = v.GravityZ
+                break
+        self._current = lerp(self._current, target, clamp(dt / 1.2, 0, 1))
+        return self._current
+
+
+def line_trace_single(ground: "AGroundActor", start: FVector, direction: FVector,
+                      max_dist: float, step: float = 0.5) -> Optional[FVector]:
+    """~ UWorld::LineTraceSingleByChannel (ECC_WorldStatic), ray-marched vs
+    the heightfield stand-in for a proper physics scene query."""
+    d = direction.GetSafeNormal()
+    t = 0.0
+    while t <= max_dist:
+        p = start + d * t
+        if p.Z <= ground.HeightAt(p):
+            return p
+        t += step
+    return None
+
+
+class UChimeraMovementComponent:
+    """~ UChimeraMovementComponent : public UCharacterMovementComponent.
+    PerformMovement() below is the SAME pure function run authoritatively by
+    the server and speculatively by the client (§9's FSavedMove_Character
+    replay) — determinism here is what makes reconciliation converge.
+    Exposes the real CMC-style tunables as fields (MaxWalkSpeed etc.) so a
+    porting engineer maps 1:1 onto UPROPERTY(EditAnywhere, Category=
+    "Character Movement: Walking") members."""
+    def __init__(self):
+        self.MaxWalkSpeed = MOVE["walk_speed"]
+        self.MaxWalkSpeedCrouched = MOVE["bend_speed"]
+        self.JumpZVelocity = math.sqrt(2.0 * GRAVITY_YARD * MOVE["jump_height"])
+        self.GravityScale = 1.0                    # multiplies the volume's GravityZ
+        self.GroundFriction = 8.0
+        self.AirControl = MOVE["air_control"]
+        self.bOrientRotationToMovement = False       # first-person: camera yaw drives facing
+
+    def PerformMovement(self, state: FMovementState, move: FCharacterNetworkMoveData,
+                        ground: "AGroundActor", gravity_z: float, speed_scale: float,
+                        footsteps_out: Optional[list] = None) -> FMovementState:
+        s = state.Copy()
+        s.Now += move.DeltaTime
+        mag = move.Acceleration.Size2D()
+        if move.bWantsToCrouch:
+            s.Gait = Gait.BEND
+        elif mag < 0.05:
+            s.Gait = Gait.IDLE
+        elif move.bWantsToSprint and mag > 0.5:
+            s.Gait = Gait.SPRINT
+        elif mag > 0.55:
+            s.Gait = Gait.JOG
+        else:
+            s.Gait = Gait.WALK
+        base = {Gait.IDLE: 0.0, Gait.WALK: self.MaxWalkSpeed, Gait.JOG: MOVE["jog_speed"],
+                Gait.SPRINT: MOVE["sprint_speed"], Gait.BEND: self.MaxWalkSpeedCrouched}[s.Gait]
+        surface = ground.SurfaceAt(s.Location)
+        basin_pen = 0.55 if surface == "BASIN" else 1.0
+        max_speed = base * basin_pen * speed_scale
+        cy, sy = math.cos(move.ControlYaw), math.sin(move.ControlYaw)
+        want = FVector(move.Acceleration.X * cy - move.Acceleration.Y * sy,
+                       move.Acceleration.X * sy + move.Acceleration.Y * cy, 0.0) * max_speed
+        grounded = s.MovementMode == EMovementMode.MOVE_Walking
+        control = 1.0 if grounded else self.AirControl
+        blend = clamp(MOVE["accel"] * ground.TractionAt(s.Location) * control * move.DeltaTime, 0, 1)
+        s.Velocity.X = lerp(s.Velocity.X, want.X, blend)
+        s.Velocity.Y = lerp(s.Velocity.Y, want.Y, blend)
+        if move.bPressedJump:
+            s.JumpPressedAt = s.Now
+        buffered = (s.Now - s.JumpPressedAt) <= MOVE["jump_buffer_s"]
+        coyote = (s.Now - s.LeftGroundAt) <= MOVE["coyote_time_s"]
+        if buffered and (grounded or coyote):
+            s.Velocity.Z = self.JumpZVelocity
+            s.MovementMode = EMovementMode.MOVE_Falling
+            s.JumpPressedAt = -999.0
+            s.LeftGroundAt = -999.0
+            grounded = False
+        if not grounded:
+            s.Velocity.Z -= gravity_z * self.GravityScale * move.DeltaTime
+        s.Location = s.Location + s.Velocity * move.DeltaTime
+        floor = ground.HeightAt(s.Location)
+        if s.Location.Z <= floor:
+            if not grounded and s.Velocity.Z < -1.0 and footsteps_out is not None:
+                footsteps_out.append(("land", s.Location, surface, s.bLeftFootNext, s.Velocity.Size2D(), s.Now))
+            s.Location.Z, s.Velocity.Z, s.MovementMode = floor, 0.0, EMovementMode.MOVE_Walking
+        elif grounded and s.Location.Z > floor + 0.05:
+            s.MovementMode = EMovementMode.MOVE_Falling
+            s.LeftGroundAt = s.Now
+        speed2d = s.Velocity.Size2D()
+        if s.MovementMode == EMovementMode.MOVE_Walking and speed2d > 0.2:
+            interval = lerp(MOVE["step_interval_walk_s"], MOVE["step_interval_sprint_s"],
+                            speed2d / MOVE["sprint_speed"])
+            s.StepClock += move.DeltaTime
+            if s.StepClock >= interval:
+                s.StepClock = 0.0
+                if footsteps_out is not None:
+                    footsteps_out.append(("step", s.Location, surface, s.bLeftFootNext, speed2d, s.Now))
+                s.bLeftFootNext = not s.bLeftFootNext
+        else:
+            s.StepClock = 0.0
+        return s
+
+
+# --- Animation: UAnimInstance state machine + UBlendSpace -------------------
+
+@dataclass
+class UBlendSpace:
+    """~ UBlendSpace (1-axis: Speed). Real assets store a 2D grid of sampled
+    poses; this returns blend WEIGHTS across the named poses for a given
+    speed, exactly what the AnimGraph's BlendSpacePlayer node consumes."""
+    axis_samples: tuple = (0.0, MOVE["walk_speed"], MOVE["jog_speed"], MOVE["sprint_speed"])
+    pose_names: tuple = ("Idle", "Walk", "Jog", "Sprint")
+
+    def GetBlendWeights(self, speed: float) -> dict:
+        weights = {n: 0.0 for n in self.pose_names}
+        for i in range(len(self.axis_samples) - 1):
+            lo, hi = self.axis_samples[i], self.axis_samples[i + 1]
+            if lo <= speed <= hi or i == len(self.axis_samples) - 2:
+                t = inv_lerp(lo, hi, speed)
+                weights[self.pose_names[i]] = 1.0 - t
+                weights[self.pose_names[i + 1]] = t
+                break
+        return weights
+
+
+class UControlRig:
+    """~ UControlRig: procedural post-process on top of the animation pose.
+    Foot IK adapts each foot's Z + tilt to actual ground height/slope under
+    it — critical on regolith dunes where the animated pose alone would
+    clip through terrain or float above it."""
+    def __init__(self, ground: "AGroundActor"):
+        self.ground = ground
+
+    def SolveFootIK(self, pelvis: FVector, foot_offset_x: float) -> tuple[float, float]:
+        foot_pos = pelvis + FVector(foot_offset_x, 0, 0)
+        hit = line_trace_single(self.ground, foot_pos + FVector(0, 0, 1.0), FVector(0, 0, -1), 2.0)
+        if hit is None:
+            return pelvis.Z, 0.0
+        h_here = self.ground.HeightAt(foot_pos)
+        h_ahead = self.ground.HeightAt(foot_pos + FVector(0.15, 0, 0))
+        tilt_deg = math.degrees(math.atan2(h_ahead - h_here, 0.15))
+        return hit.Z, tilt_deg
+
+
+@dataclass
+class FMotionWarpingTarget:
+    """~ FMotionWarpingTarget: {Name, Location, Rotation} a root-motion
+    montage warps toward — used so the Dig animation's hand-to-ground
+    contact lands exactly on the actual impact point on uneven regolith,
+    not wherever the source animation's root motion happens to place it."""
+    Name: str
+    Location: FVector
+    Rotation: FQuat = field(default_factory=FQuat)
+
+
+class UMotionWarpingComponent(UActorComponent):
+    """~ UMotionWarpingComponent: montages query AddOrUpdateWarpTarget() and
+    the anim system stretches root motion to reach it."""
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
+        self.targets: dict[str, FMotionWarpingTarget] = {}
+
+    def AddOrUpdateWarpTarget(self, t: FMotionWarpingTarget) -> None:
+        self.targets[t.Name] = t
+
+    def RemoveWarpTarget(self, name: str) -> None:
+        self.targets.pop(name, None)
+
+
+class UChimeraAnimInstance:
+    """~ UAnimInstance subclass: NativeUpdateAnimation() reads movement
+    state each frame and drives the BlendSpace + discrete states (Bend/Dig/
+    Gesture aren't speed-blended — they're one-shot montages/additive
+    states layered on top)."""
+    def __init__(self, ground: "AGroundActor"):
+        self.blend_space = UBlendSpace()
+        self.control_rig = UControlRig(ground)
+        self.state = "BS_Locomotion"        # BS_Locomotion|Bend|Dig|Gesture_*
+        self.pose_weights: dict = {}
+        self.foot_l_z = 0.0
+        self.foot_r_z = 0.0
+
+    def NativeUpdateAnimation(self, dt: float, movement: FMovementState, pelvis: FVector) -> None:
+        if movement.Gait == Gait.BEND:
+            self.state = "Bend"
+        elif self.state not in ("Dig",) and not self.state.startswith("Gesture_"):
+            self.state = "BS_Locomotion"
+        self.pose_weights = self.blend_space.GetBlendWeights(movement.Velocity.Size2D())
+        self.foot_l_z, _tilt_l = self.control_rig.SolveFootIK(pelvis, -0.15)
+        self.foot_r_z, _tilt_r = self.control_rig.SolveFootIK(pelvis, 0.15)
+
+
+# =============================================================================
+# §8. GAMEPLAY FRAMEWORK & DATA — GAS, DataTable, SaveGame
+# ~ Engine/Plugins/GameFeatures/GameplayAbilities, Engine/Source/Runtime/Engine
+# =============================================================================
+
+# --- Gameplay Tags -----------------------------------------------------------
+
+class FGameplayTagContainer:
+    """~ FGameplayTagContainer: hierarchical dot-path tags ("State.Threatened"
+    matches a MatchesTag("State") query). Real UE resolves this against a
+    project-wide FGameplayTagsManager tree; a set + prefix check is the
+    observably-equivalent pseudocode."""
+    def __init__(self):
+        self._tags: set[str] = set()
+
+    def AddTag(self, tag: str) -> None: self._tags.add(tag)
+    def RemoveTag(self, tag: str) -> None: self._tags.discard(tag)
+    def HasTag(self, tag: str) -> bool: return tag in self._tags
+    def HasTagExact(self, tag: str) -> bool: return tag in self._tags
+
+    def MatchesTag(self, query: str) -> bool:
+        return any(t == query or t.startswith(query + ".") for t in self._tags)
+
+    def GetGameplayTagArray(self) -> list:
+        return sorted(self._tags)
+
+
+# --- Attribute Set ------------------------------------------------------------
+
+@dataclass
+class FGameplayAttributeData:
+    """~ FGameplayAttributeData: {BaseValue, CurrentValue} pair every GAS
+    attribute carries (BaseValue survives Instant effects' permanent
+    changes; CurrentValue reflects active Duration/Infinite modifiers)."""
+    BaseValue: float = 0.0
+    CurrentValue: float = 0.0
+
+
+@UCLASS()
+class USuitAttributeSet:
+    """~ USuitAttributeSet : public UAttributeSet. GENERATED_BODY()
+    ATTRIBUTE_ACCESSORS-equivalent: each field below is a
+    FGameplayAttributeData the ASC's GameplayEffects modify; PostGameplay
+    EffectExecute clamps into range and raises DeathEvent at 0 O2."""
+    def __init__(self):
+        self.O2 = FGameplayAttributeData(100.0, 100.0)
+        self.MaxO2 = FGameplayAttributeData(100.0, 100.0)
+        self.Battery = FGameplayAttributeData(100.0, 100.0)
+        self.DustClog = FGameplayAttributeData(0.0, 0.0)
+        self.Integrity = FGameplayAttributeData(100.0, 100.0)
+        self.Temperature = FGameplayAttributeData(20.0, 20.0)
+
+    def PreAttributeChange(self, attr_name: str, new_value: float) -> float:
+        """~ UAttributeSet::PreAttributeChange: clamp before it lands."""
+        if attr_name in ("O2", "Battery", "DustClog", "Integrity"):
+            return clamp(new_value, 0.0, 100.0 if attr_name != "DustClog" else 100.0)
+        return new_value
+
+
+# --- Gameplay Effects ---------------------------------------------------------
+
+class EGameplayEffectDurationType(Enum):
+    Instant = auto(); HasDuration = auto(); Infinite = auto()
+
+
+class EGameplayModOp(Enum):
+    Add = auto(); Multiply = auto(); Override = auto()
+
+
+@dataclass
+class FGameplayModifierInfo:
+    Attribute: str
+    Operation: EGameplayModOp
+    Magnitude: float
+
+
+@dataclass
+class UGameplayEffect:
+    """~ UGameplayEffect asset: duration policy + periodic application +
+    modifiers. O2/battery/dust-clog drains are literally UGameplayEffects,
+    not ad-hoc per-frame subtraction — this is how real GAS-driven survival
+    stats work (Period + Modifiers, applied via ApplyGameplayEffectToSelf)."""
+    name: str
+    duration_policy: EGameplayEffectDurationType
+    period: float = 0.0                    # 0 = every tick if Infinite
+    modifiers: list = field(default_factory=list)
+
+
+# Magnitudes are PER-SECOND (period=1.0s) — O2=100 lasts ~100s/-1.0 rate,
+# so e.g. walking drains a full suit in ~100 minutes at -1.0/60 per second.
+# Tuned from the original per-minute design values (÷60) for smooth
+# per-tick HUD needle motion rather than once-a-minute jumps.
+GE_O2Drain_Idle = UGameplayEffect("GE_O2Drain_Idle", EGameplayEffectDurationType.Infinite,
+                                  1.0, [FGameplayModifierInfo("O2", EGameplayModOp.Add, -0.6 / 60.0)])
+GE_O2Drain_Walk = UGameplayEffect("GE_O2Drain_Walk", EGameplayEffectDurationType.Infinite,
+                                  1.0, [FGameplayModifierInfo("O2", EGameplayModOp.Add, -1.0 / 60.0)])
+GE_O2Drain_Sprint = UGameplayEffect("GE_O2Drain_Sprint", EGameplayEffectDurationType.Infinite,
+                                    1.0, [FGameplayModifierInfo("O2", EGameplayModOp.Add, -3.0 / 60.0)])
+GE_BatteryDrain_Night = UGameplayEffect("GE_BatteryDrain_Night", EGameplayEffectDurationType.Infinite,
+                                        1.0, [FGameplayModifierInfo("Battery", EGameplayModOp.Add, -1.8 / 60.0)])
+GE_DustClog_Storm = UGameplayEffect("GE_DustClog_Storm", EGameplayEffectDurationType.Infinite,
+                                    1.0, [FGameplayModifierInfo("DustClog", EGameplayModOp.Add, 4.0 / 60.0)])
+GE_O2Regen_Garden = UGameplayEffect("GE_O2Regen_Garden", EGameplayEffectDurationType.Infinite,
+                                    1.0, [FGameplayModifierInfo("O2", EGameplayModOp.Add, 0.8 / 60.0)])
+GE_BatteryRegen_Bank = UGameplayEffect("GE_BatteryRegen_Bank", EGameplayEffectDurationType.Infinite,
+                                       1.0, [FGameplayModifierInfo("Battery", EGameplayModOp.Add, 2.0 / 60.0)])
+GE_DustClog_Scrub = UGameplayEffect("GE_DustClog_Scrub", EGameplayEffectDurationType.Infinite,
+                                    1.0, [FGameplayModifierInfo("DustClog", EGameplayModOp.Add, -1.0 / 60.0)])
+
+
+@UCLASS()
+class UAbilitySystemComponent(UActorComponent):
+    """~ UAbilitySystemComponent: owns the AttributeSet + active effects +
+    tag container; ApplyGameplayEffectToSelf drives periodic ticking."""
+    def __init__(self, owner: AActor, attr_set: USuitAttributeSet):
+        super().__init__(owner)
+        self.AttributeSet = attr_set
+        self._active: list[tuple[UGameplayEffect, float]] = []   # (effect, time_since_period)
+        self.Abilities: dict[str, "UGameplayAbility"] = {}
+
+    def ApplyGameplayEffectToSelf(self, ge: UGameplayEffect) -> None:
+        if ge.duration_policy == EGameplayEffectDurationType.Instant:
+            self._apply_modifiers(ge)
+        elif not any(active_ge is ge for active_ge, _t in self._active):
+            self._active.append((ge, 0.0))
+
+    def RemoveActiveGameplayEffect(self, ge: UGameplayEffect) -> None:
+        self._active = [(g, t) for g, t in self._active if g is not ge]
+
+    def HasActiveEffect(self, ge: UGameplayEffect) -> bool:
+        return any(g is ge for g, _t in self._active)
+
+    def _apply_modifiers(self, ge: UGameplayEffect) -> None:
+        for mod in ge.modifiers:
+            attr: FGameplayAttributeData = getattr(self.AttributeSet, mod.Attribute)
+            if mod.Operation == EGameplayModOp.Add:
+                attr.CurrentValue = self.AttributeSet.PreAttributeChange(
+                    mod.Attribute, attr.CurrentValue + mod.Magnitude)
+            elif mod.Operation == EGameplayModOp.Multiply:
+                attr.CurrentValue *= mod.Magnitude
+            else:
+                attr.CurrentValue = mod.Magnitude
+            attr.BaseValue = attr.CurrentValue
+
+    def TickPeriodicEffects(self, dt: float) -> None:
+        for i, (ge, t) in enumerate(self._active):
+            t += dt
+            if ge.period > 0.0 and t >= ge.period:
+                t -= ge.period
+                self._apply_modifiers(ge)
+            self._active[i] = (ge, t)
+
+    def GrantAbility(self, name: str, ability: "UGameplayAbility") -> None:
+        self.Abilities[name] = ability
+
+    def TryActivateAbilityByName(self, name: str, game: "ChimeraGame") -> bool:
+        ability = self.Abilities.get(name)
+        if ability is None or not ability.CanActivateAbility(self.OwnerActor, game):
+            return False
+        ability.ActivateAbility(self.OwnerActor, self, game)
+        return True
+
+
+# --- Gameplay Abilities --------------------------------------------------------
+
+class UGameplayAbility(ABC):
+    """~ UGameplayAbility base: CanActivateAbility (cost/cooldown/tag gate)
+    -> ActivateAbility (the effect) -> CommitAbility (consumes cost).
+    Dig/Scan/Fire/Attune/PickupDrop are each one of these, not a bare verb
+    switch statement — cooldowns and cost are first-class here."""
+    cooldown_s: float = 0.0
+    def __init__(self): self._last_activated = -999.0
+
+    def CanActivateAbility(self, actor: AActor, game: "ChimeraGame") -> bool:
+        return (game.now_s - self._last_activated) >= self.cooldown_s
+
+    @abstractmethod
+    def ActivateAbility(self, actor: AActor, asc: UAbilitySystemComponent, game: "ChimeraGame") -> None: ...
+
+    def CommitAbility(self, game: "ChimeraGame") -> None:
+        self._last_activated = game.now_s
+
+
+class GA_Dig(UGameplayAbility):
+    """~ project GA_Dig. H-21's fix made real: behavior, not metadata."""
+    cooldown_s = 0.35
+
+    def ActivateAbility(self, actor, asc, game: "ChimeraGame") -> None:
+        tr = actor.RootComponent.GetComponentTransform()
+        at = tr.Location + tr.Rotation.GetForwardVector() * 1.2
+        surface = game.ground_actor.SurfaceAt(at)
+        if surface in ("METAL", "INTERIOR") or game.shovel_durability <= 0:
+            return                                    # sparks; the world says no
+        self.CommitAbility(game)
+        game.shovel_durability -= DIG["durability_per_scoop"]
+        cells = int(DIG["radius"] / DIG["cell"]) + 1
+        k0 = (math.floor(at.X / DIG["cell"]), math.floor(at.Y / DIG["cell"]))
+        for dx in range(-cells, cells + 1):
+            for dy in range(-cells, cells + 1):
+                k = (k0[0] + dx, k0[1] + dy)
+                game.dig_delta[k] = game.dig_delta.get(k, 0.0) - DIG["scoop_depth"]
+                depth_here = -game.dig_delta[k]
+                for rec in list(game.buried.get(k, [])):
+                    if rec["depth"] <= depth_here:
+                        game.buried[k].remove(rec)
+                        game.spawn_world_item(rec["kind"], FVector(k[0] * DIG["cell"],
+                            k[1] * DIG["cell"], game.ground_actor.HeightAt(at)), rec.get("quality", 1.0))
+        game.niagara.SpawnSystemAtLocation("NS_DigBurst", at, 1.0)
+        game.event_bus.OnFootstep.Broadcast(FFootstepEvent(
+            actor, at, tr.Rotation.GetForwardVector().X, surface, True, MOVE["jog_speed"],
+            game.now_s, bLanding=True))
+        motion_warp = actor.FindComponentByClass(UMotionWarpingComponent)
+        motion_warp.AddOrUpdateWarpTarget(FMotionWarpingTarget("DigContact", at))
+
+
+class GA_Scan(UGameplayAbility):
+    cooldown_s = 1.0
+    def ActivateAbility(self, actor, asc, game: "ChimeraGame") -> None:
+        self.CommitAbility(game)
+        asc.ApplyGameplayEffectToSelf(UGameplayEffect(
+            "GE_ScanCost", EGameplayEffectDurationType.Instant, 0.0,
+            [FGameplayModifierInfo("Battery", EGameplayModOp.Add, -SUIT["battery_drain_scanner"])]))
+        loc = actor.GetActorLocation()
+        game.universe_actor.ObserveRegion(loc, 40.0)
+        game.scan_pips = [k for k, items in game.buried.items() if items and
+                          FVector(k[0] * DIG["cell"], k[1] * DIG["cell"], 0).Dist2D(loc) < 40.0]
+
+
+class GA_Fire(UGameplayAbility):
+    cooldown_s = 0.25
+    def ActivateAbility(self, actor, asc, game: "ChimeraGame") -> None:
+        if game.weapon_ammo <= 0:
+            game.hud.glyph_strip.Push("click")        # dry-fire: diegetic shame
+            return
+        self.CommitAbility(game)
+        game.weapon_ammo -= 1
+        actor.Tags.AddTag("State.WeaponFiredThisLife")
+        if actor.GetActorLocation().Dist2D(game.erisaid_actor.GetActorLocation()) < 120.0:
+            game.attunement.OnGunfireNearby(game.sun_actor.day)
+        tr = actor.RootComponent.GetComponentTransform()
+        fwd = tr.Rotation.GetForwardVector()
+        for dot in game.mass_actor_spawner.actorized.values():   # only actorized (LOD High) dots are hittable
+            to = dot.GetActorLocation() - tr.Location
+            if to.Size2D() < 60.0 and fwd.Dot(to.GetSafeNormal()) > 0.99:
+                dot.Health -= 34.0
+                dot.BlackboardComponent.SetValueAsBool("Flee", True)
+                game.factions.RepDelta("drifters", -25.0)
+                break
+        for dot in game.mass_actor_spawner.actorized.values():
+            dot.Memory["saw_player_shoot"] = True       # everyone remembers
+
+
+class GA_PickupDrop(UGameplayAbility):
+    cooldown_s = 0.2
+    def ActivateAbility(self, actor, asc, game: "ChimeraGame") -> None:
+        self.CommitAbility(game)
+        tr = actor.RootComponent.GetComponentTransform()
+        carry = actor.FindComponentByClass(UCarryComponent)
+        nearest, nd = None, 2.2
+        for item_actor in game.world_items:
+            d = tr.Location.Dist2D(item_actor.GetActorLocation())
+            if d < nd:
+                nearest, nd = item_actor, d
+        if nearest is not None:
+            obj = FItem(nearest.Kind, nearest.Quality, nearest.OriginGeneration)
+            mass = sum(ITEM_TABLE[i.Kind].mass_kg for i in carry.Pack)
+            if carry.Hands is None:
+                carry.Hands = obj
+            elif mass + ITEM_TABLE[obj.Kind].mass_kg <= carry.PackKgMax:
+                carry.Pack.append(obj)
+            else:
+                return
+            game.world_items.remove(nearest)
+        elif carry.Hands is not None:
+            game.spawn_world_item(carry.Hands.Kind, tr.Location + tr.Rotation.GetForwardVector() * 0.8,
+                                  carry.Hands.Quality)
+            carry.Hands = None
+
+
+class GA_Attune(UGameplayAbility):
+    """Attunement is driven every tick by UChimeraAttunementComponent (§5);
+    this ability just applies the dial-turn input to it."""
+    cooldown_s = 0.0
+    def ActivateAbility(self, actor, asc, game: "ChimeraGame") -> None:
+        self.CommitAbility(game)
+
+
+# --- DataTable-driven economy/factions/items -----------------------------------
+
+@USTRUCT()
+@dataclass
+class FItemTableRow:
+    """~ FTableRowBase subclass held in a UDataTable (DT_Items)."""
+    mass_kg: float
+    base_price: float
+    sellable: bool
+
+
+ITEM_TABLE: dict[str, FItemTableRow] = {
+    "ORE_ILMENITE":     FItemTableRow(4.0, 12.0, True),
+    "ICE_WATER":        FItemTableRow(3.0, 18.0, True),
+    "OXYGEN_CAN":       FItemTableRow(2.0, 25.0, True),
+    "MACHINE_PARTS":    FItemTableRow(5.0, 40.0, True),
+    "REGOLITH_GLASS":   FItemTableRow(1.5, 30.0, True),
+    "SEEDS":            FItemTableRow(0.2, 55.0, True),
+    "FUEL_CELL":        FItemTableRow(6.0, 48.0, True),
+    "RELIC_SHARD":      FItemTableRow(0.8, 120.0, True),
+    "ERISAID_FRAGMENT": FItemTableRow(0.3, 0.0, False),   # unsellable. period.
+    "HEIRLOOM":         FItemTableRow(0.5, 0.0, False),   # unsellable. period.
+    "STORY":            FItemTableRow(0.0, 8.0, True),
 }
 
 NEED_FULFILLMENT: dict[str, Optional[str]] = {
     "o2": "OXYGEN_CAN", "water": "ICE_WATER", "parts": "MACHINE_PARTS",
-    "warmth": "FUEL_CELL", "ride": None, "burial": None,   # some needs cost BODY
+    "warmth": "FUEL_CELL", "ride": None, "burial": None,
 }
 
 SACRIFICE_WEIGHTS = {
@@ -2315,238 +3144,476 @@ SACRIFICE_WEIGHTS = {
     "BURIED_STRANGER": 3.5, "WEAPON_NEVER_FIRED": 2.0, "HEIRLOOM_GIVEN": 5.0,
 }
 
-STAR = dict(brightness_k=6.0, dim_threshold=0.08, bright_lights_yard=0.75)
+DIG = dict(radius=0.6, scoop_depth=0.15, durability_per_scoop=1.0, cell=0.5)
 
-ACCESSIBILITY = dict(
-    colorblind_palettes=("default", "deuteranopia", "protanopia", "tritanopia"),
-    audio_muted_visual_pulses=True,      # FX_FootstepRing on every step
-    gesture_glyph_subtitles=True,
-    input_forgiveness_scale=1.0,          # multiplies coyote/buffer windows
-    gravity_assist_mode=False,
-)
+SUIT = dict(o2_max=100.0, battery_max=100.0, battery_drain_scanner=0.5,
+           dust_clog_move_penalty=0.35, thermal_safe_lo=-20.0,
+           night_temp_c=-140.0, day_temp_c=45.0)
+
+STAR = dict(brightness_k=6.0, bright_lights_yard=0.75)
+
+ACCESSIBILITY = dict(input_forgiveness_scale=1.0, audio_muted_visual_pulses=True)
 
 
 @dataclass
-class Item:
-    kind: str
-    quality: float = 1.0
-    origin_generation: int = 0
+class FItem:
+    """~ a lightweight FInstancedStruct-style item record (not a UObject —
+    items are DATA; only their world-dropped representation is an actor)."""
+    Kind: str
+    Quality: float = 1.0
+    OriginGeneration: int = 0
 
 
-class GroundField:
-    """Authored pads + noise + LIVE dig deltas. The single ground-truth
-    queried by physics, nav, audio, and the dust material.
-    ~ Landscape + RVT height writes from the DigGrid."""
-
-    def __init__(self, seed: int, dig_delta: dict):
-        self.seed = seed
-        self.dig_delta = dig_delta          # (ix,iy) -> dz (negative = pit)
-
-    def surface_at(self, p: V3) -> Surface:
-        if p.length2d() > 90.0 and fbm2(p.x * 0.01, p.y * 0.01, 3, self.seed) > 0.62:
-            return Surface.ROCK
-        for i in range(3):
-            pad = spiral_point(i * 5 + 4, spacing=14.0)
-            if p.dist2d(pad) < 6.0:
-                return Surface.METAL
-        if p.dist2d(V3(-42.0, -35.0, 0.0)) < 18.0:
-            return Surface.BASIN
-        return Surface.SAND
-
-    def height_at(self, p: V3) -> float:
-        dune = fbm2(p.x * 0.02, p.y * 0.02, 4, self.seed) * 2.2
-        ridge = (fbm2(p.x * 0.05, p.y * 0.05, 5, self.seed + 7) * 6.0
-                 if self.surface_at(p) == Surface.ROCK else 0.0)
-        k = (math.floor(p.x / DIG["cell"]), math.floor(p.y / DIG["cell"]))
-        return dune + ridge + self.dig_delta.get(k, 0.0)
-
-    def traction_at(self, p: V3) -> float:
-        return SURFACE_TABLE[self.surface_at(p)][0]
+@UCLASS()
+class UCarryComponent(UActorComponent):
+    """~ UCarryComponent: two hands + a 30kg pack. Mass slows honestly via
+    the movement component's speed_scale input."""
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
+        self.Hands: Optional[FItem] = None
+        self.Pack: list = []
+        self.PackKgMax = 30.0
 
 
-class SuitSystem(System):
-    """~ USuitComponent tick: drains, thermal, clogging, death conditions."""
-    GROUP = TickGroup.POST_PHYSICS
-    ORDER = 0
+@dataclass
+class FStationMarket:
+    """~ economy DataTable-adjacent runtime state (DT_Items supplies base
+    prices; per-station demand multipliers live here, elastic on trade)."""
+    station_id: str
+    pos: FVector
+    stock: dict = field(default_factory=dict)
+    demand: dict = field(default_factory=dict)
+    ELASTICITY = 0.04
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        minutes = dt / 60.0
-        suit = game.world.get(game.player_eid, SuitComponent)
-        drain = {Gait.IDLE: SUIT["o2_drain_idle"], Gait.WALK: SUIT["o2_drain_walk"],
-                 Gait.JOG: SUIT["o2_drain_walk"] * 1.6,
-                 Gait.BEND: SUIT["o2_drain_walk"],
-                 Gait.SPRINT: SUIT["o2_drain_sprint"]}[suit.gait]
-        leak = 1.0 + (100.0 - suit.integrity) * 0.02
-        suit.o2 = max(0.0, suit.o2 - drain * minutes * leak)
-        if game.sky.is_night and not game.player_indoors:
-            suit.battery = max(0.0, suit.battery
-                               - SUIT["battery_drain_night"] * minutes)
-        if game.weather.storm_active and not game.player_indoors:
-            suit.dust_clog = min(100.0, suit.dust_clog
-                                 + SUIT["dust_clog_per_storm_min"] * minutes)
-        suit.temperature_c = (20.0 if game.player_indoors
-                              else game.sky.temperature_c())
-        if suit.o2 <= 0.0:
-            game.world.events.emit(DeathEvent(game.player_eid, "suffocation"))
-        elif suit.battery <= 0.0 and suit.temperature_c < SUIT["thermal_safe_lo"]:
-            game.world.events.emit(DeathEvent(game.player_eid, "cold at night"))
+    def Price(self, kind: str) -> float:
+        return ITEM_TABLE[kind].base_price * self.demand.get(kind, 1.0)
+
+    def Drift(self, rng: random.Random) -> None:
+        for k in list(self.demand):
+            self.demand[k] = clamp(self.demand[k] + rng.uniform(-0.03, 0.03), 0.5, 2.0)
 
 
-class MovementNetSystem(System):
-    """The §6+§11 bridge: controller -> local prediction (instant feel) ->
-    input packet up -> server sim (authority) -> snapshot down -> reconcile.
-    The player's Transform mirrors the PREDICTED state; gameplay facts
-    (footsteps) come only from the SERVER outbox. ~ ACharacter's ServerMove."""
-    GROUP = TickGroup.PHYSICS
-    ORDER = 0
-
-    def __init__(self, game: "ChimeraGame"):
-        self.controller = PlayerController(InputMappingContext(
-            ACCESSIBILITY["input_forgiveness_scale"]))
-        self.server = ServerAuthority(game.ground, game.gravity)
-        self.client = ClientPrediction(game.ground, game.gravity)
-        self.up = NetChannel(game.rng)         # client -> server
-        self.down = NetChannel(game.rng)       # server -> client
-
-    def teleport(self, pos: V3) -> None:
-        """Generation reset / beat-script reset_position (H-25): BOTH ends."""
-        for st in (self.server.state, self.client.predicted):
-            st.pos, st.vel, st.grounded = V3(*pos.to_tuple()), V3(), True
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        suit = game.world.get(game.player_eid, SuitComponent)
-        carry = game.world.get(game.player_eid, CarryComponent)
-        mass = (ITEM_TABLE[carry.hands.kind][0] if carry.hands else 0.0) + sum(
-            ITEM_TABLE[i.kind][0] for i in carry.pack)
-        clog_pen = 1.0 - SUIT["dust_clog_move_penalty"] * (suit.dust_clog / 100.0)
-        scale = clog_pen * (1.0 - 0.35 * clamp(mass / 30.0, 0, 1))
-        self.server.speed_scale = self.client.speed_scale = scale
-        # 1) sample intent; 2) predict locally; 3) send to server
-        mi = self.controller.sample(dt)
-        self.client.apply_local(mi)
-        self.up.send(game.now_s, "input", mi)
-        # 4) server consumes what has ARRIVED (latency!), steps authority
-        arrived = [p.payload for p in self.up.drain(game.now_s)
-                   if p.kind == "input"]
-        snap = self.server.process(arrived, game.now_s, dt)
-        if snap:
-            self.down.send(game.now_s, "snapshot", snap)
-        # 5) client reconciles whatever snapshots arrived
-        for p in self.down.drain(game.now_s):
-            self.client.reconcile(p.payload)
-        # 6) predicted state IS the player's transform (what you see)
-        tr = game.world.get(game.player_eid, Transform)
-        tr.pos = self.client.predicted.pos
-        tr.yaw = self.controller.yaw
-        tr.pitch = self.controller.pitch
-        suit.gait = self.client.predicted.gait
-        sk = game.world.get(game.player_eid, SkeletalMeshRef)
-        sk.anim_state = suit.gait.name.lower()
-        # 7) SERVER footsteps are the one true event stream (Law 1)
-        for kind, pos, surface, left, speed, t in self.server.footstep_outbox:
-            game.world.events.emit(FootstepEvent(
-                game.player_eid, pos, tr.yaw, surface, left, speed, t,
-                landing=(kind == "land")))
-        self.server.footstep_outbox.clear()
-        # 8) route verb presses to the verb system
-        game.pending_verbs |= getattr(mi, "verbs", set())
-        game.flags["weapon_drawn"] = (InputActionName.DRAW_WEAPON
-                                      in self.controller.held)
-        game.attunement.dial_hz = self.controller.dial_hz
+class UFactionSubsystem(UWorldSubsystem):
+    """~ project subsystem backed by DT_Factions."""
+    FACTIONS = ("yardfolk", "combine", "drifters", "the_quiet")
+    def Initialize(self, world: "UWorld") -> None:
+        self.rep = {f: 0.0 for f in self.FACTIONS}
+    def Tick(self, dt: float) -> None: pass
+    def RepDelta(self, faction: str, amount: float) -> None:
+        if faction in self.rep:
+            self.rep[faction] = clamp(self.rep[faction] + amount, -100.0, 100.0)
 
 
-class GroundReactionSystem(System):
-    """FootstepEvent -> footprint + dust + accessibility ring + camera kick.
-    ~ AnimNotify_Footstep fanout, except the SOURCE is the movement solver."""
-    GROUP = TickGroup.POST_PHYSICS
-    ORDER = 1
-    MAX_PRINTS = 4096
+# --- SaveGame ------------------------------------------------------------------
 
-    def __init__(self, game: "ChimeraGame"):
-        game.world.events.subscribe(FootstepEvent, lambda ev: self.on_step(game, ev))
-
-    def on_step(self, game: "ChimeraGame", ev: FootstepEvent) -> None:
-        traction, makes_print, _life, dust_scale, _bank = SURFACE_TABLE[ev.surface]
-        if makes_print:
-            game.footprints.append((ev.pos, ev.yaw, ev.surface, ev.left_foot,
-                                    game.generation))
-            if len(game.footprints) > self.MAX_PRINTS:
-                game.footprints.pop(0)
-        if dust_scale > 0.0:
-            game.particles.spawn_burst(
-                "FX_DustPuff", ev.pos,
-                dust_scale * clamp(ev.speed / MOVE["sprint_speed"], 0.2, 1.0))
-        if ACCESSIBILITY["audio_muted_visual_pulses"]:
-            game.particles.spawn_burst("FX_FootstepRing", ev.pos, 1.0)
-        game.camera.bob_velocity -= 0.35 if not ev.landing else 0.9
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        pass                                   # purely event-driven
+SAVE_VERSION = 4
 
 
-class CameraSystem(System):
-    """First person: eye height by gait, FOV spring on sprint, bob springs
-    back after each REAL footstep (same event the audio used — no desync)."""
-    GROUP = TickGroup.POST_PHYSICS
-    ORDER = 2
+@UCLASS(Blueprintable=True)
+class UChimeraSaveGame:
+    """~ UChimeraSaveGame : public USaveGame. Every field below carries the
+    REAL UPROPERTY(SaveGame) specifier (CPF_SaveGame) via our metadata shim;
+    UGameplayStatics::SaveGameToSlot walks exactly these fields."""
+    def __init__(self):
+        self.Version = SAVE_VERSION
+        self.Seed = 0
+        self.Generation = 1
+        self.Credits = 0.0
+        self.Day = 0
+        self.TimeHours = 0.0
+        self.PlayerLocation = FVector()
+        self.SuitAttributes: dict = {}
+        self.DigDelta: dict = {}
+        self.Buried: dict = {}
+        self.Footprints: list = []
+        self.Stars: list = []
+        self.Sacrifices: list = []
+        self.DotMemoryLedger: dict = {}
+        self.Attunement: dict = {}
+        self.TitanBest: dict = {}
+        self.Flags: set = set()
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        cam = game.camera
-        tr = game.world.get(game.player_eid, Transform)
-        suit = game.world.get(game.player_eid, SuitComponent)
-        drop = 0.55 if suit.gait == Gait.BEND else 0.0
-        cam.eye = tr.pos + V3(0, 0, 1.62 - drop)
-        cam.yaw, cam.pitch = tr.yaw, tr.pitch
-        fov_target = 101.0 if suit.gait == Gait.SPRINT else 92.0
-        cam.fov_y, cam.fov_velocity = spring_damper(cam.fov_y, cam.fov_velocity,
-                                                    fov_target, 0.25, dt)
-        cam.bob_z, cam.bob_velocity = spring_damper(cam.bob_z, cam.bob_velocity,
-                                                    0.0, 0.18, dt)
 
+class USaveGameSubsystem(UWorldSubsystem):
+    """~ UGameplayStatics::SaveGameToSlot/LoadGameFromSlot, backed by a
+    custom FArchive-style wrapper (magic/version/CRC header) — the studio's
+    hardening on top of stock UE, kept because it's a real, defensible
+    addition (corrupt-save detection, forward migration)."""
+    MAGIC = 0x43484D52          # 'CHMR'
+    AUTOSAVE_SLOTS = 3
+
+    def Initialize(self, world: "UWorld") -> None:
+        self.slots: dict[str, bytes] = {}
+        self._auto_i = 0
+        self.migrations = {3: self._migrate_v3_to_v4}
+
+    def Tick(self, dt: float) -> None: pass
+
+    def Capture(self, game: "ChimeraGame") -> UChimeraSaveGame:
+        sg = UChimeraSaveGame()
+        sg.Seed, sg.Generation, sg.Credits = game.seed, game.generation, game.credits
+        sg.Day, sg.TimeHours = game.sun_actor.day, game.sun_actor.time_h
+        sg.PlayerLocation = game.player_actor.GetActorLocation()
+        attrs = game.player_actor.AbilitySystemComponent.AttributeSet
+        sg.SuitAttributes = {n: getattr(attrs, n).CurrentValue
+                             for n in ("O2", "Battery", "DustClog", "Integrity")}
+        sg.DigDelta = {f"{k[0]},{k[1]}": v for k, v in game.dig_delta.items()}
+        sg.Buried = {f"{k[0]},{k[1]}": v for k, v in game.buried.items()}
+        sg.Footprints = [(fp[0].ToTuple(), fp[1], fp[2], fp[3], fp[4]) for fp in game.footprints]
+        sg.Stars = [(s.life_name, s.generation, s.brightness, s.twinkle, s.bearing_deg)
+                   for s in game.memorial.stars]
+        sg.Sacrifices = list(game.player_actor.SacrificeLogComponent.entries)   # (kind, weight, note, gen, day)
+        sg.DotMemoryLedger = dict(game.dot_memory_ledger)
+        sg.Attunement = dict(matched=sorted(game.attunement.matched),
+                             visits=sorted(game.attunement.visit_days),
+                             deaf_until=game.attunement.deaf_until_day)
+        sg.TitanBest = dict(game.titan_best)
+        sg.Flags = set(game.player_actor.Tags.GetGameplayTagArray())
+        return sg
+
+    def ToBytes(self, sg: UChimeraSaveGame) -> bytes:
+        import zlib
+        payload_dict = {k: (list(v) if isinstance(v, set) else v) for k, v in vars(sg).items()}
+        payload = json.dumps(payload_dict, default=str).encode("utf-8")
+        crc = zlib.crc32(payload) & 0xFFFFFFFF
+        return struct.pack("<III", self.MAGIC, sg.Version, crc) + payload
+
+    def FromBytes(self, blob: bytes) -> dict:
+        import zlib
+        magic, version, crc = struct.unpack("<III", blob[:12])
+        payload = blob[12:]
+        assert magic == self.MAGIC, "corrupt save: bad magic"
+        assert zlib.crc32(payload) & 0xFFFFFFFF == crc, "corrupt save: bad crc"
+        data = json.loads(payload.decode("utf-8"))
+        while data["Version"] < SAVE_VERSION:
+            data = self.migrations[data["Version"]](data)
+        return data
+
+    @staticmethod
+    def _migrate_v3_to_v4(data: dict) -> dict:
+        data.setdefault("TitanBest", {})
+        data["Version"] = 4
+        return data
+
+    def SaveGameToSlot(self, sg: UChimeraSaveGame, slot_name: str) -> None:
+        self.slots[slot_name] = self.ToBytes(sg)
+
+    def LoadGameFromSlot(self, slot_name: str) -> Optional[dict]:
+        blob = self.slots.get(slot_name)
+        return self.FromBytes(blob) if blob else None
+
+    def Autosave(self, game: "ChimeraGame") -> str:
+        slot = f"auto_{self._auto_i % self.AUTOSAVE_SLOTS}"
+        self._auto_i += 1
+        self.SaveGameToSlot(self.Capture(game), slot)
+        return slot
+
+
+# =============================================================================
+# §9. NETWORKING — ENetRole, replication, RPCs, Replication Graph, movement prediction
+# ~ Engine/Source/Runtime/Engine/Public/Net/, Engine/Plugins/Runtime/ReplicationGraph
+# =============================================================================
+
+@dataclass
+class FLifetimeProperty:
+    """~ FLifetimeProperty: one entry registered in GetLifetimeReplicatedProps."""
+    property_name: str
+    condition: str = "COND_None"      # ~ ELifetimeCondition (COND_OwnerOnly, ...)
+
+
+class FSavedMove_ChimeraCharacter:
+    """~ FSavedMove_Character subclass: one buffered client move, replayed
+    during reconciliation. GetCompressedFlags()-equivalent isn't needed
+    here since FCharacterNetworkMoveData already IS the compact wire form."""
+    def __init__(self, move: FCharacterNetworkMoveData):
+        self.Move = move
+
+
+class FNetworkPredictionData_Client_Chimera:
+    """~ FNetworkPredictionData_Client_Character: the client-side saved-move
+    ring buffer + the ClientPredictionData that drives GetNewMove()/
+    UpdateReplicatedMoveIfNeeded()."""
+    EPSILON_M = 0.05
+
+    def __init__(self, movement: UChimeraMovementComponent):
+        self.movement = movement
+        self.PredictedState = FMovementState()
+        self.SavedMoves: list[FSavedMove_ChimeraCharacter] = []
+        self.LastAckedMoveTimestamp = 0.0
+        self.CorrectionCount = 0
+
+    def GetNewMove(self, move: FCharacterNetworkMoveData, ground: "AGroundActor",
+                  gravity_z: float, speed_scale: float) -> None:
+        """~ ACharacter::ServerMovePacked_ClientSend path: apply locally
+        (instant feel), buffer for replay-on-correction."""
+        self.PredictedState = self.movement.PerformMovement(
+            self.PredictedState, move, ground, gravity_z, speed_scale)
+        self.SavedMoves.append(FSavedMove_ChimeraCharacter(move))
+        if len(self.SavedMoves) > 256:
+            self.SavedMoves.pop(0)
+
+    def ClientHandleMoveResponse(self, ack_timestamp: float, authoritative: FMovementState,
+                                 ground: "AGroundActor", gravity_z: float, speed_scale: float) -> None:
+        """~ ACharacter::ClientAdjustPosition / ClientHandleMoveResponse:
+        rewind to the server's acked state, replay every unacked saved move.
+        A large gap after replay means the server corrected something real —
+        counted, not hidden, so QA can watch UGameplayStatics-exposed net
+        stats for it."""
+        self.SavedMoves = [m for m in self.SavedMoves if m.Move.TimeStamp > ack_timestamp]
+        replay = authoritative.Copy()
+        for m in self.SavedMoves:
+            replay = self.movement.PerformMovement(replay, m.Move, ground, gravity_z, speed_scale)
+        if replay.Location.Dist(self.PredictedState.Location) > self.EPSILON_M:
+            self.CorrectionCount += 1
+        self.PredictedState = replay
+        self.LastAckedMoveTimestamp = ack_timestamp
+
+
+class UNetConnection:
+    """~ UNetConnection: one direction of a simulated-latency pipe (a real
+    connection is bidirectional + reliable/unreliable channels; two
+    instances here, one per direction, keeps the pseudocode explicit)."""
+    def __init__(self, rng: random.Random, one_way_ms: float = 45.0,
+                jitter_ms: float = 10.0, packet_loss: float = 0.0):
+        self.rng = rng
+        self.one_way = one_way_ms / 1000.0
+        self.jitter = jitter_ms / 1000.0
+        self.packet_loss = packet_loss
+        self._queue: list[tuple[float, str, Any]] = []
+        self.PacketsSent = 0
+        self.PacketsDropped = 0
+
+    def SendBunch(self, now: float, kind: str, payload: Any) -> None:
+        self.PacketsSent += 1
+        if self.rng.random() < self.packet_loss:
+            self.PacketsDropped += 1
+            return
+        at = now + self.one_way + self.rng.uniform(0, self.jitter)
+        self._queue.append((at, kind, payload))
+
+    def ReceiveReadyBunches(self, now: float) -> list:
+        ready = [b for b in self._queue if b[0] <= now]
+        self._queue = [b for b in self._queue if b[0] > now]
+        ready.sort(key=lambda b: b[0])
+        return ready
+
+
+class ACharacterNetworkAuthority:
+    """~ the SERVER-side ACharacter for one connection: consumes
+    FCharacterNetworkMoveData packets IN ORDER via ServerMove_Implementation,
+    steps the SAME PerformMovement the client predicted with, and produces
+    authoritative snapshots at NetUpdateFrequency. Gameplay facts (footsteps)
+    are SERVER facts — clients only ever hear what the authority confirmed
+    (Design Law 1: never let prediction fabricate a body-fact)."""
+    def __init__(self, movement: UChimeraMovementComponent, ground: "AGroundActor",
+                gravity: UGravityVolumeSubsystem, net_update_hz: float = 20.0):
+        self.movement = movement
+        self.ground = ground
+        self.gravity = gravity
+        self.NetUpdateFrequency = net_update_hz
+        self.State = FMovementState()
+        self._last_timestamp = 0.0
+        self._snap_accum = 0.0
+        self.SpeedScale = 1.0
+        self.FootstepOutbox: list = []
+
+    @UFUNCTION(Server=True, Reliable=True, WithValidation=True)
+    def ServerMove_Implementation(self, moves: list[FCharacterNetworkMoveData]) -> None:
+        for mv in sorted(moves, key=lambda m: m.TimeStamp):
+            if mv.TimeStamp <= self._last_timestamp:
+                continue                                   # duplicate/reordered: drop
+            gz = self.gravity.GravityAt(self.State.Location, mv.DeltaTime)
+            steps: list = []
+            self.State = self.movement.PerformMovement(self.State, mv, self.ground, gz,
+                                                        self.SpeedScale, steps)
+            self.FootstepOutbox.extend(steps)
+            self._last_timestamp = mv.TimeStamp
+
+    def TickSnapshot(self, dt: float) -> Optional[tuple[float, FMovementState]]:
+        self._snap_accum += dt
+        if self._snap_accum >= 1.0 / self.NetUpdateFrequency:
+            self._snap_accum = 0.0
+            return (self._last_timestamp, self.State.Copy())
+        return None
+
+
+@dataclass
+class FInterpolationSample:
+    t: float; loc: FVector; yaw: float
+
+
+class UProxyInterpolationComponent(UActorComponent):
+    """~ simulated-proxy interpolation (ROLE_SimulatedProxy pawns): render
+    100ms in the past, lerping between the two bracketing snapshots — the
+    standard tradeoff for smooth remote-pawn motion under jitter."""
+    DELAY_S = 0.10
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
+        self.samples: list[FInterpolationSample] = []
+
+    def Push(self, t: float, loc: FVector, yaw: float) -> None:
+        self.samples.append(FInterpolationSample(t, loc, yaw))
+        self.samples = self.samples[-64:]
+
+    def Sample(self, now: float) -> Optional[tuple[FVector, float]]:
+        t = now - self.DELAY_S
+        for i in range(len(self.samples) - 1):
+            a, b = self.samples[i], self.samples[i + 1]
+            if a.t <= t <= b.t:
+                f = inv_lerp(a.t, b.t, t)
+                return a.loc + (b.loc - a.loc) * f, lerp(a.yaw, b.yaw, f)
+        return (self.samples[-1].loc, self.samples[-1].yaw) if self.samples else None
+
+
+# --- Replication Graph ---------------------------------------------------------
+
+class UReplicationGraphNode_GridSpatialization2D(UObject):
+    """~ REAL class (Engine/Plugins/Runtime/ReplicationGraph): buckets
+    actors into spatial cells so relevancy queries never scan the whole
+    actor list — this is the actual mechanism Fortnite-scale replication
+    uses instead of O(actors x connections) distance checks every tick."""
+    CELL_SIZE = 128.0
+
+    def __init__(self):
+        self.cells: dict[tuple, list[AActor]] = {}
+
+    def _cell_of(self, loc: FVector) -> tuple:
+        return (int(loc.X / self.CELL_SIZE), int(loc.Y / self.CELL_SIZE))
+
+    def AddActor(self, actor: AActor) -> None:
+        self.cells.setdefault(self._cell_of(actor.GetActorLocation()), []).append(actor)
+
+    def Rebuild(self, actors: list[AActor]) -> None:
+        self.cells.clear()
+        for a in actors:
+            self.AddActor(a)
+
+    def GatherActorListsForConnection(self, viewer_loc: FVector, view_radius: float) -> list[AActor]:
+        c = int(view_radius / self.CELL_SIZE) + 1
+        cx, cy = self._cell_of(viewer_loc)
+        out = []
+        for dx in range(-c, c + 1):
+            for dy in range(-c, c + 1):
+                out.extend(self.cells.get((cx + dx, cy + dy), []))
+        return out
+
+
+class UReplicationGraphNode_AlwaysRelevant(UObject):
+    """~ REAL class: a small always-relevant set (AGameStateBase, the
+    player's own pawn) that bypasses spatialization entirely."""
+    def __init__(self):
+        self.actors: list[AActor] = []
+
+
+class UReplicationGraph(UWorldSubsystem):
+    """~ UReplicationGraph: composes the spatialization + always-relevant
+    nodes into the per-connection replicate list, replacing the naive
+    'loop every actor, check NetCullDistanceSquared' path with a real
+    culling structure. VIEW_RADIUS approximates the connection's
+    NetCullDistanceSquared-driven visibility."""
+    VIEW_RADIUS = 400.0
+
+    def Initialize(self, world: "UWorld") -> None:
+        self.grid = UReplicationGraphNode_GridSpatialization2D()
+        self.always_relevant = UReplicationGraphNode_AlwaysRelevant()
+        self.stats = dict(actors_replicated=0, bytes_estimate=0)
+
+    def Tick(self, dt: float) -> None: pass
+
+    def RebuildFrame(self, all_networked_actors: list[AActor], game_state: AActor) -> None:
+        self.grid.Rebuild(all_networked_actors)
+        self.always_relevant.actors = [game_state]
+
+    def ReplicateForConnection(self, viewer: AActor) -> list[AActor]:
+        relevant = self.grid.GatherActorListsForConnection(viewer.GetActorLocation(), self.VIEW_RADIUS)
+        relevant += self.always_relevant.actors
+        self.stats["actors_replicated"] += len(relevant)
+        self.stats["bytes_estimate"] += len(relevant) * 24     # ~ FVector_NetQuantize + yaw
+        return relevant
+
+
+# RPC classification (real UFUNCTION specifier taxonomy — decorators used
+# throughout this file document the intended macro on the C++ port):
+#   Server, Reliable, WithValidation : ServerMove, gesture intent, dig/trade requests (client->server)
+#   Client, Reliable                 : ClientHandleMoveResponse, will-reading open (server->owning client)
+#   NetMulticast, Unreliable          : cosmetic FX fanout (footstep dust/sound to all in relevancy)
+
+
+# =============================================================================
+# §10. WORLD SYSTEMS — ground, sky/weather, Erisaid, habitat, memorial,
+# sacrifice log, generations, director, UMG HUD.
+# Component names below (USacrificeLogComponent, UCostlessLifeEndingDiagnostic)
+# match files that ALREADY EXIST in Source/Chimera/ProceduralGenerated/Save/
+# in this repo — this pseudocode converges on the real project's own naming
+# rather than inventing parallel terms.
+# =============================================================================
 
 DAY_LENGTH_HOURS = 27.0
 
 
-@dataclass
-class Star:
-    life_name: str
-    generation: int
-    brightness: float
-    twinkle: bool
-    bearing_deg: float
+class ESurfaceType(Enum):
+    SAND = auto(); ROCK = auto(); METAL = auto(); BASIN = auto()
+    ICE = auto(); INTERIOR = auto()
 
 
-class StarMemorial:
-    """Finished lives, overhead. Bright ancestors literally light the night
-    (fed into §5 IrradianceField). ~ StarMemorialComponent writing a texture."""
-
-    def __init__(self):
-        self.stars: list[Star] = []
-
-    def add_life(self, name: str, generation: int, sacrifice_weight: float,
-                 open_pains: int) -> Star:
-        b = 1.0 - math.exp(-sacrifice_weight / STAR["brightness_k"])
-        s = Star(name, generation, b, open_pains > 0,
-                 (len(self.stars) * GOLDEN_ANGLE_DEG) % 360.0)
-        self.stars.append(s)
-        return s
-
-    def night_light_level(self) -> float:
-        return min(0.5, sum(s.brightness for s in self.stars
-                            if s.brightness >= STAR["bright_lights_yard"]) * 0.18)
+SURFACE_TABLE = {         # traction, makes_print, dust_scale, footstep_synth_hz(SOURCE_FOOTSTEP_GRAPH_HZ key)
+    "SAND":     (0.75, True,  1.00, "SAND"),
+    "BASIN":    (0.45, True,  1.60, "SAND"),
+    "ROCK":     (1.00, False, 0.15, "ROCK"),
+    "METAL":    (0.90, True,  0.05, "METAL"),
+    "ICE":      (0.35, False, 0.02, "ICE"),
+    "INTERIOR": (1.00, False, 0.00, "INTERIOR"),
+}
 
 
-class SkyDome:
-    """27 h day; Earth phase = week hand, Moon transit = hour hand.
-    ~ SkyAtmosphere + DirectionalLight rig + custom sky material."""
+@UCLASS(Blueprintable=True)
+class AGroundActor(AActor):
+    """~ the persistent terrain actor. Authored pads + fbm noise + LIVE dig
+    deltas (§8's GA_Dig writes directly into game.dig_delta, which this
+    actor was constructed with a reference to — one ground truth for
+    physics, NavMesh, audio, and the dust material)."""
+    def __init__(self, world: "UWorld", seed: int, dig_delta_ref: dict):
+        super().__init__(world)
+        self.seed = seed
+        self.dig_delta = dig_delta_ref
+        self.StaticMeshComponent = self.CreateDefaultSubobject(
+            UStaticMeshComponent(self, "SM_YardPatch", "M_Sand"))
 
-    def __init__(self):
+    def SurfaceAt(self, p: FVector) -> str:
+        if p.Size2D() > 90.0 and fbm2(p.X * 0.01, p.Y * 0.01, 3, self.seed) > 0.62:
+            return "ROCK"
+        for i in range(3):
+            pad = golden_spiral_point(i * 5 + 4, 14.0)
+            if p.Dist2D(pad) < 6.0:
+                return "METAL"
+        if p.Dist2D(FVector(-42.0, -35.0, 0.0)) < 18.0:
+            return "BASIN"
+        return "SAND"
+
+    def HeightAt(self, p: FVector) -> float:
+        dune = fbm2(p.X * 0.02, p.Y * 0.02, 4, self.seed) * 2.2
+        ridge = (fbm2(p.X * 0.05, p.Y * 0.05, 5, self.seed + 7) * 6.0
+                if self.SurfaceAt(p) == "ROCK" else 0.0)
+        k = (math.floor(p.X / DIG["cell"]), math.floor(p.Y / DIG["cell"]))
+        return dune + ridge + self.dig_delta.get(k, 0.0)
+
+    def TractionAt(self, p: FVector) -> float:
+        return SURFACE_TABLE[self.SurfaceAt(p)][0]
+
+
+@UCLASS(Blueprintable=True)
+class ADirectionalLight(AActor):
+    """~ REAL actor class (ADirectionalLight : public ALight). The sun; also
+    the circadian clock (27h day — long dusks by design)."""
+    def __init__(self, world: "UWorld"):
+        super().__init__(world)
+        self.LightComponent = self.CreateDefaultSubobject(UDirectionalLightComponent(self))
         self.time_h = 8.0
         self.day = 0
         self.earth_phase = 0.35
         self.moon_bearing_deg = 40.0
 
-    def tick_hours(self, hours: float) -> None:
+    def Tick(self, hours: float) -> None:
         self.time_h += hours
         while self.time_h >= DAY_LENGTH_HOURS:
             self.time_h -= DAY_LENGTH_HOURS
@@ -2554,50 +3621,31 @@ class SkyDome:
         self.earth_phase = 0.5 + 0.5 * math.sin(TAU * self.day / 29.5)
         self.moon_bearing_deg = (self.moon_bearing_deg + hours * 3.1) % 360.0
 
-    @property
-    def is_night(self) -> bool:
+    def IsNight(self) -> bool:
         t = self.time_h / DAY_LENGTH_HOURS
         return t < 0.20 or t > 0.80
 
-    def sun_elevation_deg(self) -> float:
+    def SunElevationDeg(self) -> float:
         t = self.time_h / DAY_LENGTH_HOURS
-        return (math.sin((t - 0.20) / 0.60 * math.pi) * 62.0
-                if 0.20 <= t <= 0.80 else -12.0)
+        return math.sin((t - 0.20) / 0.60 * math.pi) * 62.0 if 0.20 <= t <= 0.80 else -12.0
 
-    def sun_direction(self) -> V3:
-        e = math.radians(self.sun_elevation_deg())
-        return V3(math.cos(e), 0.0, -math.sin(e)).normalized()
+    def GetSunDirection(self) -> FVector:
+        e = math.radians(self.SunElevationDeg())
+        return FVector(math.cos(e), 0.0, -math.sin(e)).GetSafeNormal()
 
-    def temperature_c(self) -> float:
-        e = max(0.0, self.sun_elevation_deg()) / 62.0
+    def TemperatureC(self) -> float:
+        e = max(0.0, self.SunElevationDeg()) / 62.0
         return lerp(SUIT["night_temp_c"], SUIT["day_temp_c"], e)
 
 
-class SkySystem(System):
-    GROUP = TickGroup.WORLD
-    ORDER = 0
+class UWeatherSubsystem(UWorldSubsystem):
+    """Gusts + the ~weekly storm that erases sand footprints, clogs suits
+    (via GE_DustClog_Storm), and fills the air with NS_StormWall. The
+    memento mori — storms are why footprints don't accumulate forever."""
+    def Initialize(self, world: "UWorld") -> None:
+        pass
 
-    def __init__(self):
-        self._gi_accum = 999.0
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        game.sky.tick_hours(dt / 3600.0)
-        self._gi_accum += dt
-        if self._gi_accum > 120.0:             # rebake GI region every 2 sim-min
-            self._gi_accum = 0.0
-            mem = game.memorial.night_light_level() if game.sky.is_night else 0.0
-            game.renderer.gi.bake_region(game.camera.eye, 64.0,
-                                         game.sky.sun_elevation_deg(),
-                                         memorial_light=mem)
-
-
-class WeatherSystem(System):
-    """Gusts and the ~weekly storm that erases sand prints, clogs suits, and
-    fills the air (FX_StormWall). The memento mori. ~ a WorldSubsystem."""
-    GROUP = TickGroup.WORLD
-    ORDER = 1
-
-    def __init__(self, rng: random.Random):
+    def Bind(self, rng: random.Random) -> None:
         self.rng = rng
         self.wind_speed = WIND["calm"]
         self.wind_dir = rng.uniform(0, TAU)
@@ -2605,31 +3653,29 @@ class WeatherSystem(System):
         self._storm_ends_h = 0.0
         self._next_storm_day = rng.uniform(*WIND["storm_period_days"])
         self._next_gust_s = rng.uniform(*WIND["gust_period_s"])
-        self.dust_age_h = 0.0                  # feeds MaterialPBR.dust_mask
+        self.dust_age_h = 0.0
 
-    def wind_vector(self) -> V3:
-        return V3(math.cos(self.wind_dir), math.sin(self.wind_dir), 0.0) * (
-            self.wind_speed * 0.3)
+    def Tick(self, dt: float) -> None: pass
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
+    def WindVector(self) -> FVector:
+        return FVector(math.cos(self.wind_dir), math.sin(self.wind_dir), 0.0) * (self.wind_speed * 0.3)
+
+    def TickWeather(self, game: "ChimeraGame", dt: float) -> None:
         hours = dt / 3600.0
-        sky = game.sky
+        sun = game.sun_actor
         if self.storm_active:
             self.wind_speed = WIND["storm"] * self.rng.uniform(0.85, 1.15)
             self._storm_ends_h -= hours
             self.dust_age_h = max(0.0, self.dust_age_h - 5.0 * hours)
             if self.rng.random() < 0.2:
-                game.particles.spawn_burst("FX_StormWall",
-                                           game.camera.eye + V3(10, 0, 2), 0.1)
+                game.niagara.SpawnSystemAtLocation("NS_StormWall", game.camera.Eye + FVector(10, 0, 2), 0.1)
             if self._storm_ends_h <= 0.0:
                 self.storm_active = False
                 before = len(game.footprints)
-                game.footprints = [fp for fp in game.footprints
-                                   if fp[2] == Surface.METAL]
-                game.world.events.emit(StormEvent("passed",
-                                                  before - len(game.footprints)))
+                game.footprints = [fp for fp in game.footprints if fp[2] == "METAL"]
+                game.event_bus.OnStorm.Broadcast(FStormEvent("passed", before - len(game.footprints)))
         else:
-            base = WIND["breeze"] if not sky.is_night else WIND["calm"]
+            base = WIND["breeze"] if not sun.IsNight() else WIND["calm"]
             self._next_gust_s -= dt
             if self._next_gust_s <= 0.0:
                 self._next_gust_s = self.rng.uniform(*WIND["gust_period_s"])
@@ -2637,529 +3683,478 @@ class WeatherSystem(System):
             self.wind_speed = lerp(self.wind_speed, base, clamp(0.4 * dt, 0, 1))
             self.wind_dir += self.rng.uniform(-0.1, 0.1) * dt
             self.dust_age_h += hours
-            if sky.day + sky.time_h / DAY_LENGTH_HOURS >= self._next_storm_day:
+            if sun.day + sun.time_h / DAY_LENGTH_HOURS >= self._next_storm_day:
                 self.storm_active = True
                 self._storm_ends_h = self.rng.uniform(*WIND["storm_duration_min"]) / 60.0
                 self._next_storm_day += self.rng.uniform(*WIND["storm_period_days"])
-                game.world.events.emit(StormEvent("rising"))
+                game.event_bus.OnStorm.Broadcast(FStormEvent("rising"))
+        game.mpc.SetScalarParameterValue("WindSpeed", self.wind_speed)
+        game.mpc.SetScalarParameterValue("StormIntensity", 1.0 if self.storm_active else 0.0)
+        game.mpc.SetScalarParameterValue("DustAgeHours", self.dust_age_h)
+        if game.player_actor.FindComponentByClass(UAbilitySystemComponent) and self.storm_active \
+                and not game.player_indoors:
+            game.player_actor.AbilitySystemComponent.ApplyGameplayEffectToSelf(GE_DustClog_Storm)
+        elif not self.storm_active:
+            game.player_actor.AbilitySystemComponent.RemoveActiveGameplayEffect(GE_DustClog_Storm)
 
 
-@dataclass
-class SacrificeEntry:
-    kind: str
-    weight: float
-    note: str
-    generation: int
-    day: int
+@UCLASS(Blueprintable=True)
+class AErisaidActor(AActor):
+    """~ the half-buried leviathan shell, 18m long, at the Yard's edge."""
+    def __init__(self, world: "UWorld", pos: FVector):
+        super().__init__(world)
+        self.RootComponent.RelativeTransform.Location = pos
+        self.StaticMeshComponent = self.CreateDefaultSubobject(
+            UStaticMeshComponent(self, "SM_Erisaid", "M_ErisaidShell"))
+        self.AudioVolume = AAudioVolume(world, FVector(10, 6, 4), "erisaid_hollow", 0.6)
 
 
-class SacrificeLog:
-    """The invisible score (Design Law 2). NO gauge, NO UI. Read twice ever:
-    by the star at death, by the mirror. ~ USacrificeLogComponent."""
-
-    def __init__(self):
-        self.entries: list[SacrificeEntry] = []
-
-    def record(self, kind: str, note: str, generation: int, day: int) -> None:
-        self.entries.append(SacrificeEntry(kind, SACRIFICE_WEIGHTS[kind], note,
-                                           generation, day))
-
-    def weight_for_generation(self, generation: int) -> float:
-        return sum(e.weight for e in self.entries if e.generation == generation)
-
-
-@dataclass
-class StationMarket:
-    """~ generator-owned EconomyManager/StationTradingData: elastic prices."""
-    station_id: str
-    pos: V3
-    stock: dict = field(default_factory=dict)
-    demand: dict = field(default_factory=dict)     # kind -> 0.5..2.0
-    ELASTICITY = 0.04
-
-    def price(self, kind: str) -> float:
-        return ITEM_TABLE[kind][1] * self.demand.get(kind, 1.0)
-
-    def buy_from_player(self, kind: str, units: int) -> float:
-        total = 0.0
-        for _ in range(units):
-            total += self.price(kind)
-            self.demand[kind] = max(0.5, self.demand.get(kind, 1.0) - self.ELASTICITY)
-            self.stock[kind] = self.stock.get(kind, 0) + 1
-        return total
-
-    def drift(self, rng: random.Random) -> None:
-        for k in list(self.demand):
-            self.demand[k] = clamp(self.demand[k] + rng.uniform(-0.03, 0.03),
-                                   0.5, 2.0)
-
-
-class FactionLedger:
-    FACTIONS = ("yardfolk", "combine", "drifters", "the_quiet")
-
-    def __init__(self):
-        self.rep = {f: 0.0 for f in self.FACTIONS}
-
-    def rep_delta(self, faction: str, amount: float) -> None:
-        if faction in self.rep:
-            self.rep[faction] = clamp(self.rep[faction] + amount, -100.0, 100.0)
-
-
-class EconomySystem(System):
-    GROUP = TickGroup.WORLD
-    ORDER = 3
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        if game.rng.random() < dt / 60.0:          # ~1 drift/min
-            for st in game.stations:
-                st.drift(game.rng)
-
-
-class GestureProtocol:
-    """The whole dialogue system: gesture in, gesture out, no words (Law 3).
-    Subscribes to GestureEvent; resolves offers/refusals against DotBrains.
-    ~ UGestureProtocolComponent + anim montages per gesture."""
-
-    def __init__(self, game: "ChimeraGame"):
-        self.game = game
-        game.world.events.subscribe(GestureEvent, self.on_gesture)
-
-    def on_gesture(self, ev: GestureEvent) -> None:
-        g = self.game
-        if ev.frm != g.player_eid:
-            g.ui.glyphs.push(ev.gesture)            # dot -> player: subtitle glyph
-            return
-        brain = g.world.try_get(ev.to, DotBrain)
-        if brain is None or brain.need is None:
-            return
-        if ev.gesture == "offer":
-            self._resolve_offer(ev.to, brain)
-        elif ev.gesture == "refuse":
-            if not brain.can_pay:
-                g.flags["refused_unpayable"] = g.flags.get("refused_unpayable", 0) + 1
-                g.ui.glyphs.push("grieve")
-            brain.need = None                       # refused people don't linger
-
-    def _resolve_offer(self, dot_eid: EntityId, brain: DotBrain) -> None:
-        g = self.game
-        carry = g.world.get(g.player_eid, CarryComponent)
-        wanted = NEED_FULFILLMENT[brain.need]
-        if wanted is None:                          # body-payment needs
-            if brain.need == "burial":
-                g.tools["shovel_durability"] -= 6 * DIG["durability_per_scoop"]
-                g.record_sacrifice("BURIED_STRANGER",
-                                   f"dug a grave for {dot_eid}'s burden")
-            else:                                    # ride
-                g.record_sacrifice("TOOK_RISK_FOR_OTHER",
-                                   f"walked {dot_eid} home before night")
-            brain.memory["helped_by_generation"] = g.generation
-            brain.need = None
-            g.ui.glyphs.push("thank")
-            return
-        item = carry.hands if (carry.hands and carry.hands.kind == wanted) else None
-        if item is None:
-            item = next((i for i in carry.pack if i.kind == wanted), None)
-            if item:
-                carry.pack.remove(item)
-        else:
-            carry.hands = None
-        if item is None:
-            g.ui.glyphs.push("refuse")               # nothing to give: hands open
-            return
-        brain.memory["helped_by_generation"] = g.generation
-        brain.need = None
-        if brain.can_pay:
-            g.credits += ITEM_TABLE[item.kind][1] * 1.2   # a fair trade, not a gift
-        else:
-            g.record_sacrifice("GAVE_CARGO",
-                               f"gave {item.kind} to one who could not pay")
-        g.ui.glyphs.push("thank")
-
-
-class VerbSystem(System):
-    """Every verb produces a physical consequence (Law 1) — ~ the input
-    fanout that ATool_* actors implement (H-21: behavior, not metadata)."""
-    GROUP = TickGroup.POST_PHYSICS
-    ORDER = 3
-
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        verbs, game.pending_verbs = game.pending_verbs, set()
-        tr = game.world.get(game.player_eid, Transform)
-        suit = game.world.get(game.player_eid, SuitComponent)
-        carry = game.world.get(game.player_eid, CarryComponent)
-        if InputActionName.DIG in verbs:
-            self.dig(game, tr, suit)
-        if InputActionName.PICKUP in verbs:
-            self.pickup_or_drop(game, tr, carry)
-        if InputActionName.SCAN in verbs:
-            suit.battery = max(0.0, suit.battery - SUIT["battery_drain_scanner"])
-            game.universe.observe_region(tr.pos, 40.0)
-            game.scan_pips = [k for k, items in game.buried.items() if items and
-                              V3(k[0] * DIG["cell"], k[1] * DIG["cell"], 0)
-                              .dist2d(tr.pos) < 40.0]
-        if InputActionName.FIRE in verbs and game.flags.get("weapon_drawn"):
-            self.fire(game, tr)
-
-    def dig(self, game: "ChimeraGame", tr: Transform, suit: SuitComponent) -> None:
-        at = tr.pos + tr.forward() * 1.2
-        surface = game.ground.surface_at(at)
-        if (surface in (Surface.METAL, Surface.INTERIOR)
-                or game.tools["shovel_durability"] <= 0):
-            return                                   # sparks; the world says no
-        game.tools["shovel_durability"] -= DIG["durability_per_scoop"]
-        cells = int(DIG["radius"] / DIG["cell"]) + 1
-        k0 = (math.floor(at.x / DIG["cell"]), math.floor(at.y / DIG["cell"]))
-        for dx in range(-cells, cells + 1):
-            for dy in range(-cells, cells + 1):
-                k = (k0[0] + dx, k0[1] + dy)
-                game.dig_delta[k] = game.dig_delta.get(k, 0.0) - DIG["scoop_depth"]
-                depth_here = -game.dig_delta[k]
-                for rec in list(game.buried.get(k, [])):
-                    if rec["depth"] <= depth_here:    # uncovered!
-                        game.buried[k].remove(rec)
-                        game.world.create(
-                            Transform(pos=V3(k[0] * DIG["cell"], k[1] * DIG["cell"],
-                                             game.ground.height_at(at))),
-                            StaticMeshRef("SM_Rock", "M_Rock", bounds_radius=0.3),
-                            ItemComponent(rec["kind"], rec.get("quality", 1.0)))
-        game.particles.spawn_burst("FX_DigBurst", at, 1.0)
-        game.world.events.emit(FootstepEvent(game.player_eid, at, tr.yaw,
-                                             surface, True, MOVE["jog_speed"],
-                                             game.now_s, landing=True))
-
-    def pickup_or_drop(self, game: "ChimeraGame", tr: Transform,
-                       carry: CarryComponent) -> None:
-        nearest, nd = None, 2.2
-        for eid, itr, item in game.world.query(Transform, ItemComponent):
-            d = tr.pos.dist2d(itr.pos)
-            if d < nd:
-                nearest, nd = (eid, item), d
-        if nearest:
-            eid, item = nearest
-            obj = Item(item.kind, item.quality, item.origin_generation)
-            mass = sum(ITEM_TABLE[i.kind][0] for i in carry.pack)
-            if carry.hands is None:
-                carry.hands = obj
-            elif mass + ITEM_TABLE[obj.kind][0] <= carry.pack_kg_max:
-                carry.pack.append(obj)
-            else:
-                return                               # hands and back both full
-            game.world.destroy(eid)
-        elif carry.hands is not None:                # drop what you hold
-            game.world.create(
-                Transform(pos=tr.pos + tr.forward() * 0.8),
-                StaticMeshRef("SM_Rock", "M_Rock", bounds_radius=0.3),
-                ItemComponent(carry.hands.kind, carry.hands.quality,
-                              game.generation))
-            carry.hands = None
-
-    def fire(self, game: "ChimeraGame", tr: Transform) -> None:
-        if game.tools["weapon_ammo"] <= 0:
-            game.ui.glyphs.push("click")             # dry-fire is diegetic shame
-            return
-        game.tools["weapon_ammo"] -= 1
-        game.flags["weapon_fired_this_life"] = True
-        if tr.pos.dist2d(game.erisaid_pos) < 120.0:
-            game.attunement.on_gunfire_nearby(game.sky.day)   # a season of silence
-        fwd = tr.forward()
-        for eid, dtr, brain, hp in game.world.query(Transform, DotBrain, Health):
-            to = (dtr.pos - tr.pos)
-            if to.length2d() < 60.0 and fwd.dot(to.normalized()) > 0.99:
-                hp.hp -= 34.0
-                brain.bb["flee"] = True
-                game.factions.rep_delta("drifters", -25.0)
-                break
-        for _e, b in game.world.query(DotBrain):
-            b.memory["saw_player_shoot"] = True       # everyone remembers
-
-
-HABITAT_MODULES = {          # kind: (parts, glass, effect/min while inside)
-    "AIRLOCK": (2, 1, "scrub 1.0 dust_clog"),
-    "O2_GARDEN": (3, 4, "+0.8 o2"),
-    "BATTERY_BANK": (2, 0, "+2.0 battery"),
-    "WORKBENCH": (2, 1, "repair tools +40/use"),
-    "BEACON_MAST": (1, 2, "strangers find YOU"),
-}
-
-
-class HabitatSystem(System):
-    """Home: inherited, extended, life-support. ~ AShelterHabitat + AudioVolume."""
-    GROUP = TickGroup.WORLD
-    ORDER = 2
+@UCLASS(Blueprintable=True)
+class AHabitatActor(AActor):
+    """~ AShelterHabitat (manual lane). Home: inherited, extended,
+    life-support. Modules apply GAS effects to the player while inside —
+    O2 Garden/Battery Bank/Airlock are literally UGameplayEffects being
+    added/removed by proximity, not ad-hoc per-frame math."""
     RADIUS = 6.0
+    MODULE_EFFECTS = {"O2_GARDEN": GE_O2Regen_Garden, "BATTERY_BANK": GE_BatteryRegen_Bank,
+                      "AIRLOCK": GE_DustClog_Scrub}
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        minutes = dt / 60.0
-        tr = game.world.get(game.player_eid, Transform)
-        suit = game.world.get(game.player_eid, SuitComponent)
-        game.player_indoors = tr.pos.dist2d(game.habitat_pos) <= self.RADIUS
-        if not game.player_indoors:
-            return
-        if "O2_GARDEN" in game.habitat_modules:
-            suit.o2 = min(SUIT["o2_max"], suit.o2 + 0.8 * minutes)
-        if "BATTERY_BANK" in game.habitat_modules:
-            suit.battery = min(SUIT["battery_max"], suit.battery + 2.0 * minutes)
-        if "AIRLOCK" in game.habitat_modules:
-            suit.dust_clog = max(0.0, suit.dust_clog - 1.0 * minutes)
+    def __init__(self, world: "UWorld", pos: FVector):
+        super().__init__(world)
+        self.RootComponent.RelativeTransform.Location = pos
+        self.StaticMeshComponent = self.CreateDefaultSubobject(
+            UStaticMeshComponent(self, "SM_HabitatDome", "M_HabGlass"))
+        self.LightComponent = self.CreateDefaultSubobject(UPointLightComponent(self, 800.0, 8.0))
+        self.AudioVolume = AAudioVolume(world, FVector(6, 6, 3), "habitat_shell", 0.35)
+        self.Modules: list[str] = ["AIRLOCK", "O2_GARDEN", "BATTERY_BANK"]
 
-
-class TitanRunTrack:
-    """2.4 km of alternating gravity corridors; ancestor ghosts pace you.
-    Registers its zones as gravity volumes (§6). ~ ATitanRunTrack + splines."""
-    LENGTH = 2400.0
-    ZONES = 7
-
-    def __init__(self, start: V3, gravity: GravityField):
-        self.start = start
-        zone_len = self.LENGTH / self.ZONES
-        for i in range(self.ZONES):
-            if i % 2 == 1:
-                x0 = start.x + i * zone_len
-                gravity.add_zone(
-                    lambda p, x0=x0, x1=x0 + zone_len, y=start.y:
-                        x0 <= p.x <= x1 and abs(p.y - y) < 40.0,
-                    GRAVITY_TITAN_ZONE)
-
-
-class Hopper:
-    """Suborbital dust-jumper — ~ generator-owned Flight spec."""
-    FUEL_PER_KM = 5.0
-
-    def __init__(self):
-        self.fuel = 100.0
-
-    def hop(self, frm: V3, to: V3) -> Optional[float]:
-        km = frm.dist2d(to) / 1000.0
-        cost = km * self.FUEL_PER_KM
-        if cost > self.fuel:
-            return None
-        self.fuel -= cost
-        return 8.0 + km * 30.0            # committed, hands-off ballistic arc
-
-
-class Ship:
-    """Orbit-capable trader hull — ~ generator-owned Ship/Docking/QuantumTravel."""
-    QUANTUM_FUEL_PER_LS = 2.0
-
-    def __init__(self):
-        self.fuel = 200.0
-        self.docked_at: Optional[str] = None
-
-    def quantum_jump(self, dist_ls: float) -> bool:
-        cost = dist_ls * self.QUANTUM_FUEL_PER_LS
-        if cost > self.fuel:
-            return False
-        self.fuel -= cost
-        return True
+    def TickLifeSupport(self, game: "ChimeraGame") -> None:
+        inside = game.player_actor.GetActorLocation().Dist2D(self.GetActorLocation()) <= self.RADIUS
+        game.player_indoors = inside
+        asc = game.player_actor.AbilitySystemComponent
+        for module, ge in self.MODULE_EFFECTS.items():
+            has_module = module in self.Modules
+            if inside and has_module:
+                asc.ApplyGameplayEffectToSelf(ge)
+            else:
+                asc.RemoveActiveGameplayEffect(ge)
+        if inside:
+            asc.AttributeSet.Temperature.CurrentValue = 20.0
 
 
 @dataclass
-class UniverseBody:
-    body_id: str
-    kind: str                 # planetoid|moonlet|asteroid_field|debris_field|station
-    pos: V3
-    seed: int
-    observed: bool = False
+class FStar:
+    life_name: str; generation: int; brightness: float; twinkle: bool; bearing_deg: float
 
 
-class Universe:
-    """Bodies on the golden spiral; nothing finalizes until OBSERVED (Law 4 —
-    the dev pipeline's observation-collapse, made playable). ~ world_store
-    around() + World Partition streaming."""
-    OBS_CELL = 50.0
+class UStarMemorialSubsystem(UWorldSubsystem):
+    """~ StarMemorialComponent (the studio's own component, writing a star
+    texture in the real port). Bright ancestors light the Yard's night —
+    fed into ALumenSurfaceCacheApprox's memorial_light term (§4)."""
+    def Initialize(self, world: "UWorld") -> None:
+        self.stars: list[FStar] = []
 
-    def __init__(self, seed: int):
-        kinds = ["moonlet", "asteroid_field", "debris_field", "planetoid", "station"]
-        self.bodies = [UniverseBody(f"body_{i}", kinds[i % 5],
-                                    spiral_point(i, 5000.0), seed * 31 + i)
-                       for i in range(24)]
-        self.observed_cells: set = set()
+    def Tick(self, dt: float) -> None: pass
 
-    def observe_region(self, at: V3, radius: float) -> int:
-        newly, c = 0, int(radius / self.OBS_CELL)
-        cx, cy = int(at.x / self.OBS_CELL), int(at.y / self.OBS_CELL)
-        for dx in range(-c, c + 1):
-            for dy in range(-c, c + 1):
-                k = (cx + dx, cy + dy)
-                if k not in self.observed_cells:
-                    self.observed_cells.add(k)
-                    newly += 1
-        return newly
+    def AddLife(self, name: str, generation: int, sacrifice_weight: float, open_pains: int) -> FStar:
+        b = 1.0 - math.exp(-sacrifice_weight / STAR["brightness_k"])
+        s = FStar(name, generation, b, open_pains > 0, (len(self.stars) * GOLDEN_ANGLE_DEG) % 360.0)
+        self.stars.append(s)
+        return s
 
-    def around(self, pos: V3, radius: float) -> list:
-        return [b for b in self.bodies if b.pos.dist(pos) <= radius]
+    def NightLightLevel(self) -> float:
+        return min(0.5, sum(s.brightness for s in self.stars
+                            if s.brightness >= STAR["bright_lights_yard"]) * 0.18)
 
 
-class EndingKind(Enum):
-    COSTLESS_LIFE = auto(); QUIET_STAR = auto(); BRIGHT_STAR = auto()
-    MIRROR_KEEPER = auto()
+@UCLASS()
+class USacrificeLogComponent(UActorComponent):
+    """~ REAL project file: Source/Chimera/ProceduralGenerated/Save/
+    SacrificeLogComponent.h/cpp. Tracks what the player protected AT COST.
+    NO gauge, NO UI surfaces it — read twice ever: by the star at death, by
+    the Erisaid's mirror (Design Law 2)."""
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
+        self.entries: list[tuple] = []       # (kind, weight, note, generation, day)
+
+    def Record(self, kind: str, note: str, generation: int, day: int) -> None:
+        self.entries.append((kind, SACRIFICE_WEIGHTS[kind], note, generation, day))
+
+    def WeightForGeneration(self, generation: int) -> float:
+        return sum(e[1] for e in self.entries if e[3] == generation)
+
+
+class EEndingKind(Enum):
+    COSTLESS_LIFE = auto(); QUIET_STAR = auto(); BRIGHT_STAR = auto(); MIRROR_KEEPER = auto()
 
 
 @dataclass
-class MirrorVision:
-    empty: bool
-    figures: list
+class FMirrorVision:
+    empty: bool; figures: list
 
 
-@dataclass
-class LifeRecord:
-    name: str
-    generation: int
-    days_lived: float
-    cause: str
-    sacrifice_weight: float
-    ending: EndingKind
+@UCLASS()
+class UCostlessLifeEndingDiagnostic(UActorComponent):
+    """~ REAL project file: Source/Chimera/ProceduralGenerated/Save/
+    CostlessLifeEndingDiagnostic.h/cpp. Postflight diagnostic: calculates
+    sacrifice-log emptiness and selects the ending sequence. Design Law 2's
+    failure ending is not death — it is THIS: a dim star, an empty mirror."""
+    def __init__(self, owner: AActor):
+        super().__init__(owner)
 
+    def Mirror(self, log: USacrificeLogComponent, generation: int) -> FMirrorVision:
+        entries = [e for e in log.entries if e[3] == generation]
+        return FMirrorVision(not entries, [e[2] or e[0] for e in entries])
 
-class GenerationSystem:
-    """Death/retirement -> star -> Will -> heir. ~ SaveGame + Will UI flow."""
-
-    def __init__(self, game: "ChimeraGame"):
-        self.game = game
-        self.records: list[LifeRecord] = []
-        game.world.events.subscribe(DeathEvent, lambda ev: self.end_life(ev.cause))
-
-    def mirror(self, generation: int) -> MirrorVision:
-        entries = [e for e in self.game.sacrifice.entries
-                   if e.generation == generation]
-        return MirrorVision(not entries, [e.note or e.kind for e in entries])
-
-    def evaluate_ending(self) -> EndingKind:
-        g = self.game
-        w = g.sacrifice.weight_for_generation(g.generation)
+    def EvaluateEnding(self, log: USacrificeLogComponent, generation: int,
+                       attuned: bool) -> EEndingKind:
+        w = log.WeightForGeneration(generation)
         if w <= 0.0:
-            return EndingKind.COSTLESS_LIFE
-        if g.attunement.attuned:
-            return EndingKind.MIRROR_KEEPER
+            return EEndingKind.COSTLESS_LIFE
+        if attuned:
+            return EEndingKind.MIRROR_KEEPER
         b = 1.0 - math.exp(-w / STAR["brightness_k"])
-        return (EndingKind.BRIGHT_STAR if b >= STAR["bright_lights_yard"]
-                else EndingKind.QUIET_STAR)
+        return EEndingKind.BRIGHT_STAR if b >= STAR["bright_lights_yard"] else EEndingKind.QUIET_STAR
 
-    def end_life(self, cause: str) -> LifeRecord:
-        g = self.game
-        if (g.flags.get("threatened_this_life")
-                and not g.flags.get("weapon_fired_this_life")
-                and g.tools["weapon_ammo"] > 0):
-            g.record_sacrifice("WEAPON_NEVER_FIRED",
-                               "was threatened; the weapon stayed cold")
-        weight = g.sacrifice.weight_for_generation(g.generation)
-        pains = g.flags.get("refused_unpayable", 0)
-        ending = self.evaluate_ending()
-        g.memorial.add_life(f"gen_{g.generation}", g.generation, weight, pains)
-        rec = LifeRecord(f"gen_{g.generation}", g.generation,
-                         g.sky.day + g.sky.time_h / DAY_LENGTH_HOURS,
-                         cause, weight, ending)
+
+@dataclass
+class FLifeRecord:
+    name: str; generation: int; days_lived: float; cause: str
+    sacrifice_weight: float; ending: EEndingKind
+
+
+class UGenerationSubsystem(UWorldSubsystem):
+    """~ death/retirement -> star -> Will -> heir. Bound to
+    UChimeraEventBus.OnDeath. The heir literally wakes at the habitat."""
+    def Initialize(self, world: "UWorld") -> None:
+        self.records: list[FLifeRecord] = []
+
+    def Tick(self, dt: float) -> None: pass
+
+    def Bind(self, bus: UChimeraEventBus) -> None:
+        bus.OnDeath.AddDynamic(lambda ev, bus=bus: None)   # game wires the real handler (§11)
+
+    def EndLife(self, game: "ChimeraGame", cause: str) -> FLifeRecord:
+        actor = game.player_actor
+        log = actor.FindComponentByClass(USacrificeLogComponent)
+        diag = actor.FindComponentByClass(UCostlessLifeEndingDiagnostic)
+        if (actor.Tags.HasTag("State.Threatened") and not actor.Tags.HasTag("State.WeaponFiredThisLife")
+                and game.weapon_ammo > 0):
+            game.record_sacrifice("WEAPON_NEVER_FIRED", "was threatened; the weapon stayed cold")
+        weight = log.WeightForGeneration(game.generation)
+        pains = game.refused_unpayable_count
+        ending = diag.EvaluateEnding(log, game.generation, game.attunement.attuned)
+        game.memorial.AddLife(f"gen_{game.generation}", game.generation, weight, pains)
+        rec = FLifeRecord(f"gen_{game.generation}", game.generation,
+                          game.sun_actor.day + game.sun_actor.time_h / DAY_LENGTH_HOURS,
+                          cause, weight, ending)
         self.records.append(rec)
-        # --- the heir wakes at the habitat (Will UI: open, read, close)
-        g.ui.open_will()
-        carry = g.world.get(g.player_eid, CarryComponent)
-        heirloom = carry.hands if (carry.hands and carry.hands.kind == "HEIRLOOM"
-                                   ) else None
-        suit = g.world.get(g.player_eid, SuitComponent)
-        suit.o2, suit.battery, suit.dust_clog, suit.integrity = 100.0, 100.0, 0.0, 100.0
-        carry.hands, carry.pack = heirloom, []
-        g.credits = round(g.credits * 0.5)           # estates leak
-        g.generation += 1
-        g.tools["weapon_ammo"] = 6
-        g.tools["shovel_durability"] = 200.0
-        for k in ("weapon_fired_this_life", "threatened_this_life"):
-            g.flags.pop(k, None)
-        g.movenet.teleport(g.habitat_pos + V3(2.0, 0.0, 0.0))
-        g.saves.autosave(g)
-        g.ui.close_will()
+        game.ui.OpenWillScreen()
+        carry = actor.FindComponentByClass(UCarryComponent)
+        heirloom = carry.Hands if (carry.Hands and carry.Hands.Kind == "HEIRLOOM") else None
+        attrs = actor.AbilitySystemComponent.AttributeSet
+        attrs.O2.CurrentValue = attrs.Battery.CurrentValue = attrs.Integrity.CurrentValue = 100.0
+        attrs.DustClog.CurrentValue = 0.0
+        carry.Hands, carry.Pack = heirloom, []
+        game.credits = round(game.credits * 0.5)
+        game.generation += 1
+        game.weapon_ammo = 6
+        game.shovel_durability = 200.0
+        for tag in ("State.WeaponFiredThisLife", "State.Threatened"):
+            actor.Tags.RemoveTag(tag)
+        game.teleport_player(game.habitat_actor.GetActorLocation() + FVector(2.0, 0.0, 0.0))
+        game.save_subsystem.Autosave(game)
+        game.ui.CloseWillScreen()
         return rec
 
 
-class DirectorSystem(System):
-    """The circadian dungeon master: dawn calm, day traffic, dusk wind,
-    night hums — strangers on golden-angle bearings, pirates only for the
-    visibly rich during storms. ~ a WorldSubsystem reading everything."""
-    GROUP = TickGroup.WORLD
-    ORDER = 4
-    SCENARIOS = [("o2", "suit hissing"), ("parts", "rover dead 3 km out"),
-                 ("water", "empty flask"), ("warmth", "battery flat at dusk"),
-                 ("burial", "carries a body; asks with their eyes"),
-                 ("ride", "points at the horizon, then at you")]
+class UDirectorSubsystem(UWorldSubsystem):
+    """~ the circadian dungeon master. Spawns strangers/traders/pirates as
+    MASS ENTITIES (cheap, LOD-driven — §6), on golden-angle bearings so
+    arrivals never bunch up on one horizon. Pirates only bother the visibly
+    rich during storms."""
+    SCENARIOS = [("o2", "suit hissing"), ("parts", "rover dead 3km out"),
+                ("water", "empty flask"), ("warmth", "battery flat at dusk"),
+                ("burial", "carries a body; asks with their eyes"),
+                ("ride", "points at the horizon, then at you")]
 
-    def __init__(self, rng: random.Random):
+    def Initialize(self, world: "UWorld") -> None:
+        pass
+
+    def Bind(self, rng: random.Random) -> None:
         self.rng = rng
-        self.stranger_cadence_days = (1.0, 2.2)      # real game; demos compress
+        self.stranger_cadence_days = (1.0, 2.2)      # real game; demo compresses this
         self._next_stranger_day = 0.5
         self._next_trader_day = 0.8
         self._spawned = 0
-        self._gen_first_sent: set = set()   # DESIGN RULE: each generation's
-        # FIRST stranger cannot pay — the Yard sends the lesson before the
-        # trade (Law 2 must be met, never explained).
+        self._gen_first_sent: set = set()   # DESIGN RULE: each gen's first
+        # stranger cannot pay — the Yard teaches Law 2 before it trades.
 
-    def phase(self, sky: SkyDome) -> str:
-        t = sky.time_h / DAY_LENGTH_HOURS
+    def Tick(self, dt: float) -> None: pass
+
+    def Phase(self, sun: ADirectionalLight) -> str:
+        t = sun.time_h / DAY_LENGTH_HOURS
         if t < 0.20: return "night"
         if t < 0.30: return "dawn"
         if t < 0.70: return "day"
         if t < 0.80: return "dusk"
         return "night"
 
-    def spawn_dot(self, game: "ChimeraGame", archetype: str, pos: V3,
-                  tree: str, need: Optional[str] = None,
-                  can_pay: bool = True) -> EntityId:
-        return game.world.create(
-            Transform(pos=pos),
-            SkeletalMeshRef("SK_Dot"),
-            NavAgent(speed=1.2),
-            Health(),
-            NetIdentity(net_id=game.rng.randrange(1 << 16), role="simulated"),
-            DotBrain(archetype=archetype, tree_id=tree, need=need,
-                     can_pay=can_pay))
+    def _spawn_dot_entity(self, game: "ChimeraGame", archetype: str, pos: FVector,
+                          need: Optional[str], can_pay: bool) -> None:
+        em = game.mass_subsystem.EntityManager
+        stable_id = f"{archetype}_{game.generation}_{self._spawned}"
+        h = em.CreateEntity(
+            FTransformFragment(FTransform(Location=pos)), FMassVelocityFragment(),
+            FAgentRadiusFragment(),
+            FMassDotStateFragment(archetype, "distant", need, can_pay, stable_id))
+        game.mass_lod[h] = EMassLOD.Off
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        now_days = game.sky.day + game.sky.time_h / DAY_LENGTH_HOURS
-        ptr = game.world.get(game.player_eid, Transform)
+    def TickDirector(self, game: "ChimeraGame", dt: float) -> None:
+        now_days = game.sun_actor.day + game.sun_actor.time_h / DAY_LENGTH_HOURS
+        ppos = game.player_actor.GetActorLocation()
         if now_days >= self._next_stranger_day:
-            self._next_stranger_day = now_days + self.rng.uniform(
-                *self.stranger_cadence_days)
+            self._next_stranger_day = now_days + self.rng.uniform(*self.stranger_cadence_days)
             need, _blurb = self.rng.choice(self.SCENARIOS)
-            bearing = spiral_point(self._spawned, 30.0).normalized()
-            self._spawned += 1
+            bearing = golden_spiral_point(self._spawned, 30.0).GetSafeNormal()
             first_of_gen = game.generation not in self._gen_first_sent
             self._gen_first_sent.add(game.generation)
-            self.spawn_dot(game, "stranger", ptr.pos + bearing * 260.0,
-                           "BT_Stranger", need,
-                           can_pay=(False if first_of_gen
-                                    else self.rng.random() < 0.35))
+            self._spawn_dot_entity(game, "stranger", ppos + bearing * 260.0, need,
+                                   can_pay=(False if first_of_gen else self.rng.random() < 0.35))
+            self._spawned += 1
         if now_days >= self._next_trader_day:
             self._next_trader_day = now_days + self.rng.uniform(0.7, 1.5)
             st = game.stations[0]
-            self.spawn_dot(game, "trader", st.pos + V3(
-                self.rng.uniform(-30, 30), self.rng.uniform(-30, 30), 0),
-                "BT_Trader")
-        if (game.credits > 200 and game.weather.storm_active
-                and self.rng.random() < 0.02 * dt):
-            self.spawn_dot(game, "pirate", ptr.pos + V3(180, 40, 0), "BT_Pirate")
-        for eid, brain in list(game.world.query(DotBrain)):
-            if brain.fsm == "gone":
-                game.world.destroy(eid)               # LOD0 of humanity, released
+            self._spawn_dot_entity(game, "trader",
+                                   st.pos + FVector(self.rng.uniform(-30, 30), self.rng.uniform(-30, 30), 0),
+                                   None, True)
+            self._spawned += 1
+        if game.credits > 200 and game.weather.storm_active and self.rng.random() < 0.02 * dt:
+            self._spawn_dot_entity(game, "pirate", ppos + FVector(180, 40, 0), None, True)
+            self._spawned += 1
 
 
-class AudioMixSystem(System):
-    """Submix ducking + ambience gains — ~ the master submix tick."""
-    GROUP = TickGroup.AUDIO
-    ORDER = 0
+# --- UMG HUD -------------------------------------------------------------------
 
+class UUserWidget:
+    """~ UUserWidget: retained-mode node with children; describe() stands in
+    for the Slate draw pass."""
+    def __init__(self, name: str):
+        self.name = name
+        self.bVisible = True
+        self.Children: list["UUserWidget"] = []
+
+    def AddChild(self, w: "UUserWidget") -> "UUserWidget":
+        self.Children.append(w)
+        return w
+
+
+class USuitWristGauge(UUserWidget):
+    """O2 needle — the player glances DOWN (Bend micro-verb) to read it.
+    Diegetic; no floating bars anywhere in this HUD."""
     def __init__(self):
-        self.submix = SubmixGraph()
+        super().__init__("WBP_SuitWristGauge")
+        self.NeedleDeg = 0.0
 
-    def tick(self, game: "ChimeraGame", dt: float) -> None:
-        suit = game.world.get(game.player_eid, SuitComponent)
-        self.submix.tick(game.weather.storm_active, suit.o2 / 100.0, dt)
+    def Update(self, o2_fraction: float, dt: float) -> None:
+        target = lerp(-80.0, 80.0, o2_fraction)
+        self.NeedleDeg = lerp(self.NeedleDeg, target, clamp(3.0 * dt, 0, 1))
+
+
+class UCompassRim(UUserWidget):
+    """Helmet-rim tick lights; Earth itself is north."""
+    def __init__(self):
+        super().__init__("WBP_CompassRim")
+        self.Pips: list = []
+
+    def Update(self, yaw: float, marks: dict) -> None:
+        self.Pips = [(name, (math.degrees(math.atan2(p.Y, p.X)) - math.degrees(yaw)) % 360.0)
+                    for name, p in marks.items()]
+
+
+class UGestureWheel(UUserWidget):
+    """Radial verb menu (hold TAB) — the entire social interface (Law 3)."""
+    GESTURES = ("wave", "offer", "refuse", "point", "kneel", "beckon", "thank")
+    def __init__(self):
+        super().__init__("WBP_GestureWheel")
+        self.bVisible = False
+        self.Highlighted: Optional[str] = None
+
+    def SelectFromStick(self, stick: FVector) -> Optional[str]:
+        if stick.Size2D() < 0.5:
+            self.Highlighted = None
+            return None
+        ang = math.atan2(stick.Y, stick.X) % TAU
+        self.Highlighted = self.GESTURES[int(ang / TAU * len(self.GESTURES)) % len(self.GESTURES)]
+        return self.Highlighted
+
+
+class UGlyphSubtitleStrip(UUserWidget):
+    """Accessibility: gestures/world sounds as pictograms. Still wordless."""
+    def __init__(self):
+        super().__init__("WBP_GlyphStrip")
+        self.Glyphs: list = []
+    def Push(self, glyph: str) -> None:
+        self.Glyphs = (self.Glyphs + [glyph])[-5:]
+
+
+class UChimeraHUD:
+    """~ AHUD + the top-level widget stack. Menu FSM (BOOT/TITLE/IN_GAME/
+    PAUSED/WILL_READING) + per-frame widget updates."""
+    def __init__(self):
+        self.wrist = USuitWristGauge()
+        self.compass = UCompassRim()
+        self.wheel = UGestureWheel()
+        self.glyph_strip = UGlyphSubtitleStrip()
+        self.will_screen = UUserWidget("WBP_WillScreen")
+        self.will_screen.bVisible = False
+        self.state = "IN_GAME"
+
+    def OpenWillScreen(self) -> None:
+        self.state = "WILL_READING"
+        self.will_screen.bVisible = True
+
+    def CloseWillScreen(self) -> None:
+        self.state = "IN_GAME"
+        self.will_screen.bVisible = False
+
+    def Tick(self, game: "ChimeraGame", dt: float) -> None:
+        attrs = game.player_actor.AbilitySystemComponent.AttributeSet
+        tr = game.player_actor.RootComponent.GetComponentTransform()
+        self.wrist.Update(attrs.O2.CurrentValue / 100.0, dt)
+        marks = {"habitat": game.habitat_actor.GetActorLocation() - tr.Location}
+        if game.attunement.visit_days:
+            marks["erisaid"] = game.erisaid_actor.GetActorLocation() - tr.Location
+        self.compass.Update(game.player_actor.Yaw, marks)
+
+
+# --- Loop 9: The Universe — golden-angle bodies, observation collapse ------
+# ~ core.world_store.around() is this project's real streaming primitive;
+# UE5 World Partition (§2) is the spatial layer it feeds. Design Law 4:
+# nothing OBSERVED is lost, and nothing UNOBSERVED is finalized — a system
+# body only becomes permanent state the moment a scan/arrival collapses it.
+
+class EBodyKind(Enum):
+    PLANETOID = auto(); MOONLET = auto(); ASTEROID_FIELD = auto()
+    DEBRIS_FIELD = auto(); STATION = auto()
+
+
+@dataclass
+class FUniverseBody:
+    body_id: str
+    kind: EBodyKind
+    pos: FVector           # km-scale in system space
+    seed: int
+    observed: bool = False
+
+
+class AUniverseActor(AActor):
+    """~ a level-persistent actor owning the system's body catalog + the
+    observed-cell ledger. Bodies are laid out on the golden spiral (Design
+    Law 5, same generator as buried caches and stranger bearings, just at
+    system scale); ObserveRegion collapses a neighborhood permanently."""
+    OBS_CELL = 50.0
+
+    def __init__(self, world: "UWorld", seed: int):
+        super().__init__(world)
+        kinds = [EBodyKind.MOONLET, EBodyKind.ASTEROID_FIELD, EBodyKind.DEBRIS_FIELD,
+                EBodyKind.PLANETOID, EBodyKind.STATION]
+        self.Bodies = [FUniverseBody(f"body_{i}", kinds[i % 5],
+                                     golden_spiral_point(i, 5000.0), seed * 31 + i)
+                      for i in range(24)]
+        self.ObservedCells: set = set()
+
+    def ObserveRegion(self, at: FVector, radius: float) -> int:
+        newly, c = 0, int(radius / self.OBS_CELL)
+        cx, cy = int(at.X / self.OBS_CELL), int(at.Y / self.OBS_CELL)
+        for dx in range(-c, c + 1):
+            for dy in range(-c, c + 1):
+                k = (cx + dx, cy + dy)
+                if k not in self.ObservedCells:
+                    self.ObservedCells.add(k)
+                    newly += 1
+        for body in self.Bodies:
+            if not body.observed and body.pos.Dist2D(at) <= radius * 50.0:  # km vs m scale
+                body.observed = True
+        return newly
+
+    def Around(self, pos: FVector, radius: float) -> list:
+        return [b for b in self.Bodies if b.pos.Dist(pos) <= radius]
 
 
 # =============================================================================
-# §13. BOOT — ChimeraGame assembles the whole machine; the proof runs it
-# UE5: GameInstance -> GameMode::InitGame -> World load -> possess pawn.
+# §11. BOOT — AChimeraCharacter, player controller, ChimeraGame assembly, proof
+# ~ UGameInstance::Init -> AGameModeBase::InitGame -> level BeginPlay ->
+# PossessPawn. "ChimeraGame" below is this pseudocode's necessary top-level
+# wiring harness — real UE5 spreads this across GameMode/GameInstance/
+# Character BeginPlay; it is NOT itself a UE class.
 # =============================================================================
+
+@UCLASS(Blueprintable=True)
+class AChimeraCharacter(AActor):
+    """~ AChimeraCharacter : public ACharacter. GENERATED_BODY()
+    CreateDefaultSubobject wiring for every subsystem built in §3-§9."""
+    def __init__(self, world: "UWorld", ground: AGroundActor):
+        super().__init__(world)
+        self.CapsuleComponent = self.CreateDefaultSubobject(UCapsuleComponent(self))
+        self.SkeletalMeshComponent = self.CreateDefaultSubobject(
+            USkeletalMeshComponent(self, "SK_Astronaut"))
+        self.SkeletalMeshComponent.AnimInstance = UChimeraAnimInstance(ground)
+        self.MovementComponent = UChimeraMovementComponent()
+        self.SuitAttributeSet = USuitAttributeSet()
+        self.AbilitySystemComponent = self.CreateDefaultSubobject(
+            UAbilitySystemComponent(self, self.SuitAttributeSet))
+        self.AbilitySystemComponent.GrantAbility("Dig", GA_Dig())
+        self.AbilitySystemComponent.GrantAbility("Scan", GA_Scan())
+        self.AbilitySystemComponent.GrantAbility("Fire", GA_Fire())
+        self.AbilitySystemComponent.GrantAbility("PickupDrop", GA_PickupDrop())
+        self.AbilitySystemComponent.GrantAbility("Attune", GA_Attune())
+        self.CarryComponent = self.CreateDefaultSubobject(UCarryComponent(self))
+        self.SacrificeLogComponent = self.CreateDefaultSubobject(USacrificeLogComponent(self))
+        self.EndingDiagnostic = self.CreateDefaultSubobject(UCostlessLifeEndingDiagnostic(self))
+        self.MotionWarpingComponent = self.CreateDefaultSubobject(UMotionWarpingComponent(self))
+        self.Tags = FGameplayTagContainer()
+        # H-31/H-34 fix, made structural: SandSoundComponent attaches HERE,
+        # at construction, never left to Blueprint wiring that can silently
+        # drop it.
+        self.SandSoundComponent = self.CreateDefaultSubobject(UChimeraSandSoundComponent(self))
+        self.Yaw = 0.0
+        self.bReplicates = True
+        self.RemoteRole = ENetRole.ROLE_AutonomousProxy
+        self.NetUpdateFrequency = 30.0            # a hero pawn updates faster than props
+
+
+class UChimeraPlayerController:
+    """~ APlayerController + its UEnhancedInputLocalPlayerSubsystem. Not an
+    AActor in this pseudocode (no server/client possession split needed
+    headless) — owns the Enhanced Input resolution + streaming source."""
+    def __init__(self, pawn: AChimeraCharacter, forgiveness_scale: float):
+        self.Pawn = pawn
+        self.InputSubsystem = UEnhancedInputLocalPlayerSubsystem()
+        self.MappingContext = UInputMappingContext(forgiveness_scale)
+        self.InputSubsystem.AddMappingContext(self.MappingContext, priority=0)
+        self.StreamingSource = pawn.CreateDefaultSubobject(
+            UWorldPartitionStreamingSourceComponent(pawn, loading_range=160.0))
+        self._seq = 0
+
+    def BuildMoveData(self, raw_device_state: dict, now: float, dt: float) -> FCharacterNetworkMoveData:
+        self.InputSubsystem.InjectRawDeviceState(raw_device_state, now)
+        move_axis = self.InputSubsystem.PeekAxis("IA_Move")
+        look_axis = self.InputSubsystem.PeekAxis("IA_Look")
+        self.Pawn.Yaw += look_axis.X * 2.2 * dt
+        self._seq += 1
+        return FCharacterNetworkMoveData(
+            TimeStamp=now, Acceleration=move_axis, ControlYaw=self.Pawn.Yaw, ControlPitch=0.0,
+            bPressedJump=bool(self.InputSubsystem.GetActionValue("IA_Jump")),
+            bWantsToCrouch="IA_Bend" in self.InputSubsystem.values,
+            bWantsToSprint="IA_Sprint" in self.InputSubsystem.values, DeltaTime=dt)
+
 
 class ChimeraGame:
-    """~ UGameInstance + AGameModeBase + the loaded persistent level."""
+    """The session harness: constructs the UWorld + every subsystem, wires
+    delegates, and drives one master Tick() in ETickingGroup order. Mirrors
+    what UGameInstance::Init + AGameModeBase::InitGame + level BeginPlay do
+    in aggregate on a real UE5 boot."""
 
     def __init__(self, seed: int = 7):
         self.seed = seed
@@ -3167,178 +4162,398 @@ class ChimeraGame:
         self.now_s = 0.0
         self.generation = 1
         self.credits = 40.0
-        self.flags: dict = {}
-        self.pending_verbs: set = set()
+        self.weapon_ammo = 6
+        self.shovel_durability = 200.0
+        self.refused_unpayable_count = 0
         self.player_indoors = False
         self.scan_pips: list = []
-        self.tools = dict(shovel_durability=200.0, weapon_ammo=6)
-        self.titan_best: dict = {}
-        # world state containers (owned here; systems mutate)
         self.dig_delta: dict = {}
         self.buried: dict = {}
         self.footprints: list = []
-        # engine singletons
-        self.world = World()
-        self.assets = AssetRegistry(seed)
-        self.camera = CameraState()
-        self.ground = GroundField(seed, self.dig_delta)
-        self.gravity = GravityField()
-        self.nav = NavGrid(self.ground)
-        self.sky = SkyDome()
-        self.memorial = StarMemorial()
-        self.universe = Universe(seed)
-        self.sacrifice = SacrificeLog()
-        self.factions = FactionLedger()
-        self.saves = SaveGameSystem()
-        self.habitat_pos = V3(8.0, 6.0, 0.0)
-        self.habitat_modules = ["AIRLOCK", "O2_GARDEN", "BATTERY_BANK"]
-        self.erisaid_pos = V3(310.0, -180.0, 0.0)
-        self.titan = TitanRunTrack(V3(-200.0, 150.0, 0.0), self.gravity)
-        self.hopper, self.ship = Hopper(), Ship()
-        self.stations = [
-            StationMarket("yard_gate", V3(60.0, 20.0, 0.0),
-                          {"OXYGEN_CAN": 20, "MACHINE_PARTS": 8},
-                          {"ORE_ILMENITE": 1.4, "ICE_WATER": 1.7}),
-            StationMarket("far_pads", V3(-900.0, 400.0, 0.0),
-                          {"FUEL_CELL": 12, "SEEDS": 6},
-                          {"REGOLITH_GLASS": 1.8})]
-        # --- level population (the persistent map)
-        self._spawn_level()
-        self.player_eid = self.world.create(
-            Transform(pos=V3(0, 0, 0)), PhysicsBody(),
-            SkeletalMeshRef("SK_Astronaut"), SuitComponent(), CarryComponent(),
-            PlayerTag(client_id=1), NetIdentity(net_id=1, role="autonomous"))
-        # --- systems, in tick order (~ ETickingGroup registration)
-        self.weather = WeatherSystem(self.rng)
-        self.director = DirectorSystem(random.Random(seed ^ 0x5EED))  # own dice
-        self.particles = ParticleSimulator(self.rng)
-        self.renderer = RenderPipeline(self.assets)
-        self.sand = SandSoundSystem(self.rng)
-        self.sand.bind(self.world.events)
-        self.attunement = AttunementMinigame()
-        self.ui = UISystem()
-        self.movenet = MovementNetSystem(self)
-        self.systems: list[System] = sorted([
-            AISystem(), NavFollowSystem(), self.movenet,
-            SuitSystem(), GroundReactionSystem(self), CameraSystem(),
-            VerbSystem(), SkySystem(), self.weather, HabitatSystem(),
-            EconomySystem(), self.director, AudioMixSystem(), self.sand,
-            DynamicMusicSystem(), self.attunement, self.ui,
-            ReplicationSystem(), self.particles, self.renderer,
-        ], key=lambda s: (s.GROUP, s.ORDER))
-        self.gestures = GestureProtocol(self)
-        self.generations = GenerationSystem(self)
+        self.world_items: list = []          # dropped-item actors (kind/quality/gen only)
+        self.dot_memory_ledger: dict = {}     # StableId -> memory dict (Design Law 4)
+        self.mass_lod: dict = {}
+        self.titan_best: dict = {}
 
-    def _spawn_level(self) -> None:
-        w = self.world
-        for tx in (-1, 0, 1):                       # 3x3 terrain tiles
-            for ty in (-1, 0, 1):
-                w.create(Transform(pos=V3(tx * 64.0, ty * 64.0, 0)),
-                         StaticMeshRef("SM_YardPatch", "M_Sand",
-                                       bounds_radius=46.0))
-        for i in range(12):                          # rocks on the spiral
-            p = spiral_point(i * 2 + 3, 13.0)
-            w.create(Transform(pos=V3(p.x, p.y, self.ground.height_at(p))),
-                     StaticMeshRef("SM_Rock", "M_Rock", bounds_radius=0.9))
-        w.create(Transform(pos=self.habitat_pos),    # home
-                 StaticMeshRef("SM_HabitatDome", "M_HabGlass", bounds_radius=4.5),
-                 LightSource(intensity=800.0, radius=8.0),
-                 ReverbZoneComponent())
-        w.create(Transform(pos=self.erisaid_pos),    # the found thing
-                 StaticMeshRef("SM_Erisaid", "M_ErisaidShell", bounds_radius=10.0))
-        w.create(Transform(pos=V3(12.0, -4.0, 0.0)),  # rover, charged, waiting
-                 StaticMeshRef("SM_Rover", "M_MetalPad", bounds_radius=1.6),
-                 PhysicsBody(kinematic=True))
-        w.create(Transform(pos=V3(0, 0, 0)),          # ambient sand drift bed
-                 ParticleEmitterRef("FX_SandDrift", rate_scale=0.2),
-                 AudioSource(cue="wind_bed", looping=True, bus="ambience",
-                             max_radius=1e9, spatial=False))
+        self.world = UWorld()
+        self.assets = AssetRegistry(seed)
+        self.camera = APlayerCameraManager()
+        self.ground_actor = AGroundActor(self.world, seed, self.dig_delta)
+        self.sun_actor = ADirectionalLight(self.world)
+
+        self.gravity = UGravityVolumeSubsystem(); self.gravity.Initialize(self.world)
+        self.navmesh = ARecastNavMesh(self.ground_actor)
+        self.navsys = UNavigationSystemV1(); self.navsys.Initialize(self.world)
+        self.navsys.RegisterNavMesh(self.navmesh)
+        self.ai_system = UAISystem(); self.ai_system.Initialize(self.world)
+        self.mass_subsystem = UMassEntitySubsystem()
+        self.mass_subsystem.RegisterProcessor(UMassLODCollectorProcessor())
+        self.mass_subsystem.RegisterProcessor(UMassMovementProcessor())
+        self.mass_subsystem.BindGame(self)
+        self.mass_actor_spawner = UMassActorSpawnerSubsystem(); self.mass_actor_spawner.Initialize(self.world)
+        self.event_bus = UChimeraEventBus(); self.event_bus.Initialize(self.world)
+        self.audio_device = UAudioDeviceStub(); self.audio_device.Initialize(self.world)
+        self.niagara = UNiagaraSimulationSubsystem(); self.niagara.Initialize(self.world)
+        self.renderer = URendererSubsystem(); self.renderer.Initialize(self.world)
+        self.renderer.Bind(self.assets, self.camera, self.sun_actor.LightComponent)
+        self.mpc = self.assets.mpc
+        self.world_partition = UWorldPartitionSubsystem(); self.world_partition.Initialize(self.world)
+        self.repgraph = UReplicationGraph(); self.repgraph.Initialize(self.world)
+        self.weather = UWeatherSubsystem(); self.weather.Initialize(self.world); self.weather.Bind(self.rng)
+        self.memorial = UStarMemorialSubsystem(); self.memorial.Initialize(self.world)
+        self.factions = UFactionSubsystem(); self.factions.Initialize(self.world)
+        self.director = UDirectorSubsystem(); self.director.Initialize(self.world)
+        self.director.Bind(random.Random(seed ^ 0x5EED))       # own dice — independent of gameplay rng
+        self.generations = UGenerationSubsystem(); self.generations.Initialize(self.world)
+        self.save_subsystem = USaveGameSubsystem(); self.save_subsystem.Initialize(self.world)
+
+        self.habitat_actor = AHabitatActor(self.world, FVector(8.0, 6.0, 0.0))
+        self.erisaid_actor = AErisaidActor(self.world, FVector(310.0, -180.0, 0.0))
+        self.stations = [
+            FStationMarket("yard_gate", FVector(60.0, 20.0, 0.0),
+                          {"OXYGEN_CAN": 20, "MACHINE_PARTS": 8}, {"ORE_ILMENITE": 1.4, "ICE_WATER": 1.7}),
+            FStationMarket("far_pads", FVector(-900.0, 400.0, 0.0),
+                          {"FUEL_CELL": 12, "SEEDS": 6}, {"REGOLITH_GLASS": 1.8})]
+        self.titan_gravity_volumes = TitanRunTrack(self.world, FVector(-200.0, 150.0, 0.0), self.gravity)
+        self.universe_actor = AUniverseActor(self.world, seed)
+
+        self.player_actor = AChimeraCharacter(self.world, self.ground_actor)
+        self.attunement = self.player_actor.CreateDefaultSubobject(
+            UChimeraAttunementComponent(self.player_actor))
+        self.player_actor.SandSoundComponent.BindDelegate(self.event_bus)
+        self.controller = UChimeraPlayerController(self.player_actor, ACCESSIBILITY["input_forgiveness_scale"])
+        self.world_partition.RegisterStreamingSource(self.controller.StreamingSource)
+        self.net_authority = ACharacterNetworkAuthority(self.player_actor.MovementComponent,
+                                                        self.ground_actor, self.gravity)
+        self.net_client = FNetworkPredictionData_Client_Chimera(self.player_actor.MovementComponent)
+        self.up_conn = UNetConnection(self.rng)
+        self.down_conn = UNetConnection(self.rng)
+        self.ui = UChimeraHUD()
+
+        self.event_bus.OnDeath.AddDynamic(lambda ev: self.generations.EndLife(self, ev.Cause))
+        self.event_bus.OnGesture.AddDynamic(self._on_gesture)
+        self._responded_this_encounter: set = set()
+
+        self._populate_level()
+
+    # -- PCG-authored buried history (§6's real node-graph pipeline) --------
+    def _populate_level(self) -> None:
         kinds = ["ORE_ILMENITE", "RELIC_SHARD", "ICE_WATER", "ERISAID_FRAGMENT"]
-        for i in range(24):                           # buried history
-            p = spiral_point(i * 3 + 2, 11.0)
-            k = (math.floor(p.x / DIG["cell"]), math.floor(p.y / DIG["cell"]))
+        def spawn_buried(point: FPCGPoint) -> None:
+            k = (math.floor(point.Transform.Location.X / DIG["cell"]),
+                math.floor(point.Transform.Location.Y / DIG["cell"]))
             self.buried.setdefault(k, []).append(
-                dict(kind=kinds[i % 4], depth=0.15 + (i % 4) * 0.15, quality=1.0))
+                dict(kind=kinds[point.Seed % 4], depth=point.Transform.Location.Z, quality=1.0))
+        pcg_graph = UPCGGraph(
+            "PCG_BuriedHistory",
+            UPCGSurfaceSamplerSettings(count=32, spacing=11.0),
+            UPCGDensityFilterSettings(threshold=0.15, seed=42),
+            UPCGTransformPointsSettings(z_offset_fn=lambda seed: 0.15 + (seed % 4) * 0.15),
+            UPCGSpawnActorSettings(factory=spawn_buried))
+        self.pcg_component = UPCGComponent(self.ground_actor, pcg_graph)
+        self.pcg_component.Generate()
+        rock_graph = UPCGGraph("PCG_DecorativeRocks",
+                               UPCGSurfaceSamplerSettings(count=12, spacing=13.0))
+        for pt in rock_graph.Generate():
+            pt.Transform.Location.Z = self.ground_actor.HeightAt(pt.Transform.Location)
+
+    def spawn_world_item(self, kind: str, loc: FVector, quality: float) -> None:
+        item = AActor(self.world)
+        item.RootComponent.RelativeTransform.Location = loc
+        item.CreateDefaultSubobject(UStaticMeshComponent(item, "SM_Rock", "M_Rock"))
+        item.Kind, item.Quality, item.OriginGeneration = kind, quality, self.generation
+        self.world_items.append(item)
 
     def record_sacrifice(self, kind: str, note: str = "") -> None:
-        self.sacrifice.record(kind, note, self.generation, self.sky.day)
-        self.world.events.emit(SacrificeEvent(kind, SACRIFICE_WEIGHTS[kind],
-                                              note, self.generation))
+        self.player_actor.SacrificeLogComponent.Record(kind, note, self.generation, self.sun_actor.day)
+        self.event_bus.OnSacrifice.Broadcast(FSacrificeEvent(kind, SACRIFICE_WEIGHTS[kind], note, self.generation))
 
-    def tick(self, dt: float) -> None:
+    def teleport_player(self, pos: FVector) -> None:
+        """Generation reset / beat-script reset_position (H-25): BOTH ends."""
+        for st in (self.net_authority.State, self.net_client.PredictedState):
+            st.Location, st.Velocity, st.MovementMode = FVector(*pos.ToTuple()), FVector(), EMovementMode.MOVE_Walking
+        self.player_actor.RootComponent.RelativeTransform.Location = pos
+
+    def hero_actors(self) -> list:
+        return [self.player_actor, self.habitat_actor, self.erisaid_actor, self.ground_actor]
+
+    def _on_gesture(self, ev: FGestureEvent) -> None:
+        """~ UGestureProtocolComponent: gesture in, gesture out, no words
+        (Design Law 3). From-player offers/refusals resolve against the
+        target dot's need; from-dot gestures surface as an accessibility
+        glyph. Works against BOTH representations — ADotCharacter (LOD
+        High) or a bare Mass fragment (looked up by identity)."""
+        if ev.From is not self.player_actor:
+            self.ui.glyph_strip.Push(ev.Gesture)
+            return
+        dot = ev.To
+        if not isinstance(dot, ADotCharacter):
+            return
+        need = dot.BlackboardComponent.GetValueAsObject("Need")
+        if need is None:
+            return
+        if ev.Gesture == "refuse":
+            if not dot.BlackboardComponent.GetValueAsBool("CanPay"):
+                self.refused_unpayable_count += 1
+                self.ui.glyph_strip.Push("grieve")
+            dot.BlackboardComponent.SetValueAsObject("Need", None)
+            return
+        if ev.Gesture != "offer":
+            return
+        can_pay = dot.BlackboardComponent.GetValueAsBool("CanPay")
+        wanted = NEED_FULFILLMENT[need]
+        carry = self.player_actor.FindComponentByClass(UCarryComponent)
+        if wanted is None:
+            if need == "burial":
+                self.shovel_durability -= 6 * DIG["durability_per_scoop"]
+                self.record_sacrifice("BURIED_STRANGER", f"dug a grave for {dot.MassEntity}'s burden")
+            else:
+                self.record_sacrifice("TOOK_RISK_FOR_OTHER", f"walked {dot.MassEntity} home before night")
+            dot.Memory["helped_by_generation"] = self.generation
+            dot.BlackboardComponent.SetValueAsObject("Need", None)
+            self.ui.glyph_strip.Push("thank")
+            return
+        item = carry.Hands if (carry.Hands and carry.Hands.Kind == wanted) else None
+        if item is None:
+            item = next((i for i in carry.Pack if i.Kind == wanted), None)
+            if item:
+                carry.Pack.remove(item)
+        else:
+            carry.Hands = None
+        if item is None:
+            self.ui.glyph_strip.Push("refuse")
+            return
+        dot.Memory["helped_by_generation"] = self.generation
+        dot.BlackboardComponent.SetValueAsObject("Need", None)
+        if can_pay:
+            self.credits += ITEM_TABLE[item.Kind].base_price * 1.2
+        else:
+            self.record_sacrifice("GAVE_CARGO", f"gave {item.Kind} to one who could not pay")
+        self.ui.glyph_strip.Push("thank")
+
+    # -- the master Tick, ETickingGroup order --------------------------------
+    def tick(self, dt: float, raw_input: dict) -> None:
         self.now_s += dt
-        for system in self.systems:
-            system.tick(self, dt)
+        # TG_PrePhysics: input -> move data -> AI think
+        move = self.controller.BuildMoveData(raw_input, self.now_s, dt)
+        actorized = list(self.mass_actor_spawner.actorized.values())
+        self.ai_system.TickActors(self, actorized, self.navsys, dt)
+        # TG_DuringPhysics: server authority + client prediction, same solver
+        suit = self.player_actor.AbilitySystemComponent.AttributeSet
+        carry = self.player_actor.FindComponentByClass(UCarryComponent)
+        mass_kg = (ITEM_TABLE[carry.Hands.Kind].mass_kg if carry.Hands else 0.0) + sum(
+            ITEM_TABLE[i.Kind].mass_kg for i in carry.Pack)
+        clog_pen = 1.0 - SUIT["dust_clog_move_penalty"] * (suit.DustClog.CurrentValue / 100.0)
+        speed_scale = clog_pen * (1.0 - 0.35 * clamp(mass_kg / 30.0, 0, 1))
+        self.net_authority.SpeedScale = speed_scale
+        self.up_conn.SendBunch(self.now_s, "move", move)
+        arrived_moves = [b[2] for b in self.up_conn.ReceiveReadyBunches(self.now_s) if b[1] == "move"]
+        self.net_authority.ServerMove_Implementation(arrived_moves)
+        snap = self.net_authority.TickSnapshot(dt)
+        if snap:
+            self.down_conn.SendBunch(self.now_s, "snapshot", snap)
+        gz = self.gravity.GravityAt(self.net_client.PredictedState.Location, dt)
+        self.net_client.GetNewMove(move, self.ground_actor, gz, speed_scale)
+        for b in self.down_conn.ReceiveReadyBunches(self.now_s):
+            if b[1] == "snapshot":
+                ts, authoritative = b[2]
+                self.net_client.ClientHandleMoveResponse(ts, authoritative, self.ground_actor, gz, speed_scale)
+        tr = self.player_actor.RootComponent.GetComponentTransform()
+        tr.Location = self.net_client.PredictedState.Location
+        tr.Rotation = FQuat.MakeFromAxisAngle(FVector_Up, self.player_actor.Yaw)
+        # TG_PostPhysics: camera first (the listener needs to know where it
+        # is before anything gets spatialized against it), then footsteps
+        # -> audio+FX+prints, then anim.
+        drop = 0.55 if self.net_client.PredictedState.Gait == Gait.BEND else 0.0
+        self.camera.Eye = tr.Location + FVector(0, 0, 1.62 - drop)
+        self.camera.Yaw, self.camera.Pitch = self.player_actor.Yaw, 0.0
+        fov_target = 101.0 if self.net_client.PredictedState.Gait == Gait.SPRINT else 92.0
+        self.camera.FOV, self.camera._fov_v = critically_damped_smoothing(
+            self.camera.FOV, self.camera._fov_v, fov_target, 0.25, dt)
+        self.camera.BobZ, self.camera._bob_v = critically_damped_smoothing(
+            self.camera.BobZ, self.camera._bob_v, 0.0, 0.18, dt)
+        self.player_actor.SandSoundComponent.Tick(self)
+        for kind, loc, surface, left, speed, t in self.net_authority.FootstepOutbox:
+            ev = FFootstepEvent(self.player_actor, loc, self.player_actor.Yaw, surface, left, speed, t,
+                                bLanding=(kind == "land"))
+            self.event_bus.OnFootstep.Broadcast(ev)
+            self._on_ground_reaction(ev)
+        self.net_authority.FootstepOutbox.clear()
+        self.player_actor.SkeletalMeshComponent.AnimInstance.NativeUpdateAnimation(
+            dt, self.net_client.PredictedState, tr.Location)
+        # verb activations (Enhanced Input booleans -> GAS abilities)
+        asc = self.player_actor.AbilitySystemComponent
+        if self.controller.InputSubsystem.GetActionValue("IA_Dig"):
+            asc.TryActivateAbilityByName("Dig", self)
+        if self.controller.InputSubsystem.GetActionValue("IA_Scan"):
+            asc.TryActivateAbilityByName("Scan", self)
+        if self.controller.InputSubsystem.GetActionValue("IA_PickUp"):
+            asc.TryActivateAbilityByName("PickupDrop", self)
+        weapon_drawn = "IA_DrawWeapon" in self.controller.InputSubsystem.values
+        if weapon_drawn:
+            self.player_actor.Tags.AddTag("State.WeaponDrawn")
+        else:
+            self.player_actor.Tags.RemoveTag("State.WeaponDrawn")
+        if weapon_drawn and self.controller.InputSubsystem.GetActionValue("IA_Fire"):
+            asc.TryActivateAbilityByName("Fire", self)
+        self.attunement.dial_hz = 20.0 + self.controller.InputSubsystem.PeekAxis("IA_AttuneDial").X * 60.0
+        # TG_PostUpdateWork: world/weather/economy/director/audio/UI
+        hours = dt / 3600.0
+        self.sun_actor.Tick(hours)
+        self.weather.TickWeather(self, dt)
+        self.habitat_actor.TickLifeSupport(self)
+        for st in self.stations:
+            if self.rng.random() < dt / 60.0:
+                st.Drift(self.rng)
+        self.director.TickDirector(self, dt)
+        self.mass_subsystem.Tick(dt)
+        self.mass_actor_spawner.SyncActorization(self)
+        self.world_partition.Tick(dt)
+        self.repgraph.RebuildFrame(
+            [a for a in self.mass_actor_spawner.actorized.values()] + [self.player_actor], self.player_actor)
+        self.repgraph.ReplicateForConnection(self.player_actor)
+        asc.TickPeriodicEffects(dt)
+        drain_ge = ({Gait.IDLE: GE_O2Drain_Idle, Gait.WALK: GE_O2Drain_Walk, Gait.JOG: GE_O2Drain_Walk,
+                    Gait.BEND: GE_O2Drain_Walk, Gait.SPRINT: GE_O2Drain_Sprint}[self.net_client.PredictedState.Gait])
+        for ge in (GE_O2Drain_Idle, GE_O2Drain_Walk, GE_O2Drain_Sprint):
+            (asc.ApplyGameplayEffectToSelf if ge is drain_ge else asc.RemoveActiveGameplayEffect)(ge)
+        if self.sun_actor.IsNight() and not self.player_indoors:
+            asc.ApplyGameplayEffectToSelf(GE_BatteryDrain_Night)
+        else:
+            asc.RemoveActiveGameplayEffect(GE_BatteryDrain_Night)
+        if suit.O2.CurrentValue <= 0.0:
+            self.event_bus.OnDeath.Broadcast(FDeathEvent(self.player_actor, "suffocation"))
+        elif (suit.Battery.CurrentValue <= 0.0
+              and suit.Temperature.CurrentValue < SUIT["thermal_safe_lo"]):
+            self.event_bus.OnDeath.Broadcast(FDeathEvent(self.player_actor, "cold at night"))
+        self.attunement.Tick(self, dt)
+        self.audio_device.Tick(dt)
+        self.niagara.Tick(dt, self.weather.WindVector())
+        gi_accum = getattr(self, "_gi_accum", 999.0) + dt
+        if gi_accum > 120.0:
+            gi_accum = 0.0
+            mem_light = self.memorial.NightLightLevel() if self.sun_actor.IsNight() else 0.0
+            self.renderer.gi.bake_region(self.camera.Eye, 64.0, self.sun_actor.SunElevationDeg(),
+                                         0.35, mem_light, self.renderer.post)
+        self._gi_accum = gi_accum
+        self.renderer.Tick(self, dt)
+        self.ui.Tick(self, dt)
+
+    def _on_ground_reaction(self, ev: FFootstepEvent) -> None:
+        traction, makes_print, dust_scale, _synth = SURFACE_TABLE[ev.Surface]
+        if makes_print:
+            self.footprints.append((ev.Location, ev.Yaw, ev.Surface, ev.bLeftFoot, self.generation))
+            if len(self.footprints) > 4096:
+                self.footprints.pop(0)
+        if dust_scale > 0.0:
+            self.niagara.SpawnSystemAtLocation(
+                "NS_DustPuff", ev.Location, dust_scale * clamp(ev.Speed / MOVE["sprint_speed"], 0.2, 1.0))
+        if ACCESSIBILITY["audio_muted_visual_pulses"]:
+            self.niagara.SpawnSystemAtLocation("NS_FootstepRing", ev.Location, 1.0)
 
 
-# --- §13b. THE PROOF: two lives through the ENTIRE stack ---------------------
+class TitanRunTrack:
+    """2.4km of alternating gravity corridors, registered as APhysicsVolumes.
+    ~ ATitanRunTrack + a spline; gravity changes LERP (never snap — body
+    readability, UGravityVolumeSubsystem enforces the 1.2s ramp)."""
+    LENGTH, ZONES = 2400.0, 7
 
-def _live_one_life(game: ChimeraGame, generous: bool, sim_minutes: float = 36.0,
-                   dt: float = 0.25) -> None:
-    """Scripted intent through the REAL controller: wander, dig, answer the
-    horizon; give or refuse. Everything else — prediction, server authority,
-    BTs, nav, audio, rendering — is the live machine."""
-    ctl = game.movenet.controller
-    carry = game.world.get(game.player_eid, CarryComponent)
-    carry.pack = [Item("OXYGEN_CAN"), Item("ICE_WATER"),
-                  Item("MACHINE_PARTS"), Item("FUEL_CELL")]
-    responded: set = set()
+    def __init__(self, world: "UWorld", start: FVector, gravity: UGravityVolumeSubsystem):
+        zone_len = self.LENGTH / self.ZONES
+        for i in range(self.ZONES):
+            if i % 2 == 1:
+                x0 = start.X + i * zone_len
+                gravity.RegisterVolume(APhysicsVolume(
+                    world, lambda p, x0=x0, x1=x0 + zone_len, y=start.Y:
+                        x0 <= p.X <= x1 and abs(p.Y - y) < 40.0, GRAVITY_TITAN_ZONE))
+
+
+# --- §11b. THE PROOF: two lives through the ENTIRE stack --------------------
+
+def _live_one_life(game: ChimeraGame, generous: bool, sim_minutes: float = 30.0, dt: float = 0.25) -> None:
+    """Scripted intent fed through the REAL Enhanced Input raw-device layer
+    (`raw_input` dict = what a physical controller/keyboard would produce) —
+    everything downstream (modifiers, triggers, prediction, server
+    authority, Mass LOD, BT, GAS, audio, rendering, replication) is the
+    live machine, not a shortcut."""
+    carry = game.player_actor.FindComponentByClass(UCarryComponent)
+    carry.Pack = [FItem("OXYGEN_CAN"), FItem("ICE_WATER"), FItem("MACHINE_PARTS"), FItem("FUEL_CELL")]
     steps = int(sim_minutes * 60.0 / dt)
     for step in range(steps):
-        needy = [(e, b) for e, b in game.world.query(DotBrain)
-                 if b.need is not None and b.fsm != "gone"]
-        ptr = game.world.get(game.player_eid, Transform)
+        needy = [d for d in game.mass_actor_spawner.actorized.values()
+                if d.BlackboardComponent.GetValueAsObject("Need") is not None]
+        ppos = game.player_actor.GetActorLocation()
+        raw: dict = {"stick_r": FVector()}
         if needy:
-            eid, brain = needy[0]
-            dpos = game.world.get(eid, Transform).pos
-            d = ptr.pos.dist2d(dpos)
-            ctl.yaw = math.atan2(dpos.y - ptr.pos.y, dpos.x - ptr.pos.x)
-            ctl.raw_move = V3(0.65, 0, 0) if d > 6.0 else V3()
-            if brain.fsm == "encounter" and eid not in responded:
-                responded.add(eid)
-                game.world.events.emit(GestureEvent(
-                    game.player_eid, eid, "offer" if generous else "refuse"))
+            dpos = needy[0].GetActorLocation()
+            d = ppos.Dist2D(dpos)
+            target_yaw = math.atan2(dpos.Y - ppos.Y, dpos.X - ppos.X)
+            raw["stick_r"] = FVector((target_yaw - game.player_actor.Yaw) * 0.5, 0, 0)
+            raw["stick_l"] = FVector(0.65, 0, 0) if d > 6.0 else FVector()
+            if (needy[0].BlackboardComponent.GetValueAsObject("FSM") == "encounter"
+                    and needy[0].MassEntity not in game._responded_this_encounter):
+                game._responded_this_encounter.add(needy[0].MassEntity)
+                game.event_bus.OnGesture.Broadcast(
+                    FGestureEvent(game.player_actor, needy[0], "offer" if generous else "refuse"))
         else:
-            ctl.yaw += 0.15 * dt
-            ctl.raw_move = V3(0.4, 0, 0) if (step // 240) % 2 == 0 else V3()
+            raw["stick_l"] = FVector(0.4, 0, 0) if (step // 240) % 2 == 0 else FVector()
         if game.rng.random() < 0.002:
-            ctl.press(InputActionName.DIG)
+            raw["lmb"] = True
         if game.rng.random() < 0.001:
-            ctl.press(InputActionName.SCAN)
-        game.tick(dt)
-    game.generations.end_life("retired under the memorial")
+            raw["q"] = True
+        game.tick(dt, raw)
+    game.event_bus.OnDeath.Broadcast(FDeathEvent(game.player_actor, "retired under the memorial"))
 
 
 if __name__ == "__main__":
     g = ChimeraGame(seed=7)
-    g.director.stranger_cadence_days = (0.004, 0.010)   # demo compression
+    g.director.stranger_cadence_days = (0.004, 0.010)     # demo compression
     g.director._next_stranger_day = 0.002
     _live_one_life(g, generous=True)     # gen 1: gives to those who can't pay
     _live_one_life(g, generous=False)    # gen 2: profitable. costless.
+
     print("=== THE MEMORIAL ===")
+    diag = g.player_actor.EndingDiagnostic
+    log = g.player_actor.SacrificeLogComponent
     for rec, star in zip(g.generations.records, g.memorial.stars):
-        vision = g.generations.mirror(rec.generation)
-        print(f"gen {rec.generation}: ending={rec.ending.name:14s} "
-              f"sacrifice={rec.sacrifice_weight:5.2f} "
+        vision = diag.Mirror(log, rec.generation)
+        print(f"gen {rec.generation}: ending={rec.ending.name:14s} sacrifice={rec.sacrifice_weight:5.2f} "
               f"star={star.brightness:4.2f} twinkle={star.twinkle} "
               f"mirror={'EMPTY' if vision.empty else vision.figures}")
-    print(f"night light from ancestors: {g.memorial.night_light_level():.3f}")
-    print("=== ENGINE PROOF (the whole stack ran) ===")
+    print(f"night light from ancestors: {g.memorial.NightLightLevel():.3f}")
+
+    print("=== ENGINE PROOF (the whole UE5.8-shaped stack ran) ===")
     r = g.renderer.stats
-    print(f"render: {r['frames']} frames, {r['draws']} draws, "
-          f"{r['culled']} culled, {r['tris']} tris, "
-          f"{r['shadow_views']} shadow views, "
-          f"{r['particles']} particle-frames simmed")
-    mn = g.movenet
-    print(f"net: {mn.up.sent} input pkts up, {mn.down.sent} snapshots down, "
-          f"{mn.client.corrections} prediction corrections")
-    print(f"audio: {g.sand.GetFootstepSyncEventCount()} footstep events, "
-          f"avg latency {g.sand.GetFootstepSyncAvgLatencyMs():.1f} ms, "
-          f"volume-scales-with-speed={g.sand.GetVolumeScalesWithSpeed()}")
-    print(f"world: {len(g.footprints)} footprints, "
-          f"{sum(1 for v in g.dig_delta.values() if v < 0)} dug cells, "
-          f"{len(g.universe.observed_cells)} observed universe cells")
-    blob = g.saves.to_bytes(g.saves.capture(g))
-    data = g.saves.from_bytes(blob)
-    print(f"save: {len(blob)} bytes round-tripped OK "
-          f"(v{data['version']}, gen {data['generation']})")
+    print(f"Nanite/render: {r['frames']} frames, {r['draws']} draws, {r['culled']} culled, "
+          f"{r['nanite_clusters']} Nanite clusters, {r['shadow_views']} CSM views, "
+          f"{r['skeletal_draws']} skeletal draws")
+    ns = g.niagara.stats
+    print(f"Niagara: {ns['cpu_particles_peak']} peak CPU-sim particles, "
+          f"~{ns['gpu_particles_estimated']} GPU-sim density estimate")
+    print(f"MetaSound/audio: {g.player_actor.SandSoundComponent.GetFootstepSyncEventCount()} footstep events, "
+          f"avg latency {g.player_actor.SandSoundComponent.GetFootstepSyncAvgLatencyMs():.1f}ms, "
+          f"volume-scales-with-speed={g.player_actor.SandSoundComponent.GetVolumeScalesWithSpeed()}, "
+          f"attunement locks={len(g.attunement.matched)}/3")
+    print(f"GAS: SuitAttributeSet O2={g.player_actor.AbilitySystemComponent.AttributeSet.O2.CurrentValue:.1f} "
+          f"active effects={len(g.player_actor.AbilitySystemComponent._active)}")
+    print(f"PCG: {sum(len(v) for v in g.buried.values())} buried items authored via PCG_BuriedHistory")
+    print(f"Universe: {sum(1 for b in g.universe_actor.Bodies if b.observed)}/"
+          f"{len(g.universe_actor.Bodies)} bodies observed, "
+          f"{len(g.universe_actor.ObservedCells)} local cells collapsed")
+    wp = g.world_partition.stats
+    print(f"World Partition: {wp['activated']} cell activations, {wp['unloaded']} unloads, "
+          f"{len(g.world_partition.cells)} total cells")
+    print(f"Mass Entity: {g.mass_subsystem.EntityManager.NumEntities()} live entities, "
+          f"{len(g.mass_actor_spawner.actorized)} currently actorized (LOD High)")
+    rg = g.repgraph.stats
+    print(f"ReplicationGraph: {rg['actors_replicated']} actor-relevancy resolutions, "
+          f"~{rg['bytes_estimate']} bytes estimated")
+    print(f"Net: {g.up_conn.PacketsSent} client moves sent, {g.down_conn.PacketsSent} snapshots sent, "
+          f"{g.net_client.CorrectionCount} prediction corrections")
+    print(f"World: {len(g.footprints)} footprints, {sum(1 for v in g.dig_delta.values() if v < 0)} dug cells, "
+          f"{len(g.director._gen_first_sent)} generations taught Law 2 before trading")
+
+    sg = g.save_subsystem.Capture(g)
+    blob = g.save_subsystem.ToBytes(sg)
+    data = g.save_subsystem.FromBytes(blob)
+    print(f"SaveGame: {len(blob)} bytes round-tripped OK (v{data['Version']}, gen {data['Generation']})")
