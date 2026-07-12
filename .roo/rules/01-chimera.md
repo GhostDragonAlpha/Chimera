@@ -11,10 +11,11 @@ Workdir for ALL python commands: `E:/PythonChimera/Chimera`.
   `record_phase`, `record_grade`, `record_build`, `record_surprise`, `record_simtest`,
   `record_rollout`) or the CLI `python -m core.graphify_record <kind> ...`.
   Mis-keyed dicts return a `rejected_*` string and record NOTHING.
-- `observe` and `playtest` are the HUMAN's surfaces. Agents may run `observe` only to
-  ATTRIBUTE a recorded human playtest (`--derived-from <playtest_id>` + `--quote`/`--tacit`).
-  Automation processes must run with `CHIMERA_AGENT_SIM=1` set — the interface then
-  technically rejects direct observations from them.
+- `observe`/`playtest` are EVIDENCE surfaces (full-automation amendment — the automated
+  system is the measure). An observation must ATTRIBUTE recorded evidence
+  (`--derived-from <simtest_id>` + `--quote`/`--tacit`) — a SimPlaytest from the sleepwalker
+  or a telemetry sweep. Automation runs with `CHIMERA_AGENT_SIM=1`; the interface rejects
+  evidence-less observations. A human may still supply a temperature, but it is optional.
 - Capture surprises AS THEY HAPPEN: `python -m core.graphify_record surprise
   --context "..." --reality "..." --source human|agent|engine`. They are dream fodder.
 
@@ -68,5 +69,6 @@ Workdir for ALL python commands: `E:/PythonChimera/Chimera`.
   `chimeradefaultlevel`: 3 material pads, astronaut (AutoPossess Player0), display suit,
   props. WorldSettings.DefaultGameMode = `/Script/Chimera.DemoOnFootGameMode`
   (Demo/DemoPlayerController provides WASD+mouse+space and a runtime chase camera).
-  HUMAN SESSION A (playtest, beats 1-8) is the standing priority when the human is present.
+  The sleepwalker plays SESSION A (beats 1-8) automatically as SimPlaytest evidence — the
+  standing observation path. A human may also play it, but the automated sweep is the measure.
 - Spiral Growth: complete Loop N before N+1; live state = preflight board, never assumptions.

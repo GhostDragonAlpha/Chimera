@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Tool")
 	float DigDepth;
 
+	UFUNCTION(BlueprintCallable, Category = "Tool")
+	bool Dig();
+
 protected:
 	virtual void BeginPlay() override;
 };

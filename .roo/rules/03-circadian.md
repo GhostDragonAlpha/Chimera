@@ -3,22 +3,23 @@
 Spec: `Chimera/docs/GENERATION_PROTOCOL.md` (incl. the Sleepwalking amendment) and
 `Chimera/docs/SLEEPWALKER_DESIGN.md`. Digest:
 
-## The human's two roles (inviolable)
-- **Gardener (delegated, amendment 2026-07-07)**: `core/gardener.py --tend` (inside dream_loop)
-  auto-rules `docs/PENDING_HEURISTICS.md` — doc-organ rules self-promote, gate-organ approvals
-  queue for capable implementation, subsumed entries tombstone. The human vetoes after the fact
-  (edit status to `vetoed` -> auto-demotion); their rejections outrank everything.
-- **Observer (whole-experience, amendment 2026-07-07)**: the human rules on the EXPERIENCE AS A
-  WHOLE, never feature-by-feature (asking is forbidden). Temperature -> record verbatim ->
-  quote-tier attributions -> `core.collapse_proxy --from-playtest <id> --valence <v>` sweeps
-  accepted-tacit across everything exercised. Nightly `--tend` provisionally collapses
-  sim-evidenced features. The human's one sentence overrides anything, anytime.
+## Verification is AUTOMATED (full-automation amendment 2026-07-07 — human verification removed)
+- **Gardener (delegated)**: `core/gardener.py --tend` (inside dream_loop) auto-rules
+  `docs/PENDING_HEURISTICS.md` — doc-organ rules self-promote, gate-organ approvals queue for
+  capable implementation, subsumed entries tombstone. Automated rejection is final. (A human
+  MAY veto-after by editing a status to `vetoed` -> auto-demotion, but nothing waits for one.)
+- **Observer (whole-experience)**: the AUTOMATED system rules on the EXPERIENCE AS A WHOLE via
+  sleepwalker simulations + telemetry + result grading — never feature-by-feature guessing.
+  A SimPlaytest is the temperature -> quote-tier attributions -> `core.collapse_proxy
+  --from-simtest <id> --valence <v>` sweeps accepted-tacit across everything exercised. Nightly
+  `--tend` collapses sim-evidenced features. The automated observation IS the measure; a human
+  sentence may still redirect it, but the system finishes features on its own.
 
 ## The automation half (balance of automation and control)
 - **Sleepwalker** (`python -m core.sleepwalker --beats docs/beats/<demo>.beats.json
   --session <name>`): plays PIE beat scripts, records SimPlaytest evidence + surprises.
-  Runs under CHIMERA_AGENT_SIM=1. Failures cluster as `sim_rejection` — permanently ranked
-  BELOW `human_rejection` in the distiller.
+  Runs under CHIMERA_AGENT_SIM=1. Failures cluster as `sim_rejection` — the automated
+  measure; an optional human sentence may still redirect, but does not gate.
 - **Rehearsal** (`python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json
   --decide`): simulates candidate next-moves over graph priors, prints a VETO TABLE, records
   a SimulationRollout, and prepends a recipe-carrying NEXT item. This is duty-cycle
@@ -28,7 +29,8 @@ Spec: `Chimera/docs/GENERATION_PROTOCOL.md` (incl. the Sleepwalking amendment) a
 
 ## Night
 - `python -m core.dream_loop` — clusters failures/surprises into <=2 staged candidates/night
-  (Gardener's queue). Never promote without approval.
+  (Gardener's queue). `--tend` auto-promotes doc-organ rules; gate-organ rules queue for a
+  capable cycle. No human approval step.
 - Nightly rhythm ARMED: unblock 00:45 -> sleepwalk 01:00 -> dream+tend 02:15 (schtasks).
 - Blockers: known -> `core.unblock --ensure all`; unknown -> `core.solver --blocker ...` (fix-or-draft;
   bare 'blocked' notes forbidden); floor work (`Groundskeeping_floor`) can never be blocked.

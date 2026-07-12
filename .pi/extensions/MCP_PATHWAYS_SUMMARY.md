@@ -1,7 +1,7 @@
 # MCP Pathways Summary — Vector-Graphed Tools for Chimera Development
 
 ## Configuration
-- **MCP Server**: `http://localhost:30010` (UE5 ModelContextProtocol plugin)
+- **MCP Server**: `http://localhost:3000/mcp` (UE5 ModelContextProtocol plugin — NOTE: port is 3000, not 30010)
 - **Always Use MCP**: `true` in `.pi/settings.json`
 - **Fallback to Direct**: `false` — all development goes through MCP
 

@@ -48,15 +48,16 @@ From preflight note: [4.5] open pain IDs, pending heuristic count, observation q
   `python -m core.graphify_record heuristic --signature "<sig>" --rule "<draft_rule>" --organ <organ> --evidence <first evidence id>` and set entry status→`promoted`. Vetoed: status→`vetoed`, touch nothing else.
 - **A2. Human vetoed a rehearsal decision** (one sentence against a veto-table line) →
   `python -m core.graphify_record surprise --context "rehearsal chose <X>" --reality "<their exact sentence>" --source human`, then rerun `python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide` and execute its new item.
-- **B. Human gave a playtest temperature (few sentences about the build)** →
-  1) `python -m core.graphify_record playtest --notes "<their EXACT words>"` → save the returned id.
-  2) For each queue feature the temperature DIRECTLY mentions: `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --derived-from <playtest_id> --quote "<their exact phrase>" --loop <N>`
-  3) Features clearly exercised but unmentioned (beat coverage or a witness chronicle in `Saved/SessionChronicles/` proves exercise — the honest-tacit rule): same command with `--verdict accepted --tacit` instead of --quote. Features the playtest never touched: leave alone.
-  4) Whole-experience sweep (the human NEVER rules feature-by-feature):
-     `python -m core.collapse_proxy --from-playtest <playtest_id> --valence <accepted|rejected>`
+- **B. Automated observation sweep** (the measure — run when the observation queue has
+  evidenced features; a human temperature, if supplied, is optional and overrides) →
+  1) Produce evidence: `python -m core.sleepwalker --beats docs/beats/<demo>.beats.json --session sim_<date>` → a SimPlaytest (save its id). (If a human DID supply a temperature: `python -m core.graphify_record playtest --notes "<verbatim>"` and use that id instead.)
+  2) For each queue feature the evidence DIRECTLY names: `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<evidence>" --derived-from <simtest_id> --quote "<the phrase>" --loop <N>`
+  3) Features clearly exercised but unmentioned (beat coverage or a witness chronicle in `Saved/SessionChronicles/` proves exercise — the honest-tacit rule): same command with `--verdict accepted --tacit` instead of --quote. Features never touched: leave alone.
+  4) Whole-experience sweep (observation is holistic, never feature-by-feature guessing):
+     `python -m core.collapse_proxy --from-simtest <simtest_id> --valence <accepted|rejected>`
      — acceptance sweeps accepted-tacit across everything exercised; rejection indicts only
-     what their words name (step 2). Nightly `--tend` provisionally collapses sim-evidenced
-     features; the human's sentence overrides anytime.
+     what the evidence names (step 2). The automated observation IS the measure; nightly
+     `--tend` collapses sim-evidenced features; a human sentence may still redirect.
   5) End report with the full table: feature | tier | quote.
 - **C. Otherwise: execute the FIRST executable item in the NEXT list** (you already
   read it in STEP 1). The handoff invariant guarantees each NEXT item carries its own

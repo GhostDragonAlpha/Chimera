@@ -11,6 +11,39 @@ Confidence: 0.9
 
 ---
 
+# Session 2026-07-12f — Full-automation alignment: embedded human-verification REMOVED
+
+**Human directive:** fold in the agents' work; remove all embedded (human) verifications;
+align ALL project documentation to the full-automation amendment; clean up.
+
+- **Folded in parallel-agent C++ work** (complete, legitimate fixes for rejected features):
+  * ATool_Shovel.h/.cpp — real `Dig()` (line-trace + dust + sand sound + decal + durability):
+    the H-21 fix (verb needs behavior, not metadata). Loop-built manual file — hand-edit legal.
+  * ChimeraMovementComponent.cpp — wires footstep sync telemetry into SandSoundComponent:
+    the H-31/H-32 fix (the audio_visual_sync feature I ran to PhD). Manual file.
+  * Chimera.Build.cs — adds Materials include path. NOT build-verified this session (a UBT
+    build is the natural confirmation; folded in per directive).
+- **Removed embedded human-verification requirements** (aligned to the amendment already in
+  CLAUDE.md: "human verification requirements are removed; automated evaluation is the measure").
+  Principle applied: human = DIRECTION + OPTIONAL one-sentence override; AUTOMATED observation
+  (sleepwalker/telemetry/result grading) = the measure; nothing WAITS for a human.
+  * Code: postflight.py checklist ("staged for HUMAN observation" → automated collapse);
+    graphify_record.py observe/playtest help (human → automated evidence).
+  * Docs: SUCCESSOR_RUNBOOK.md (prime directives 2/3/7, tasks 1-3, queues), .roo/rules/
+    01-chimera.md + 03-circadian.md ("human's two roles" → automated), CYCLE_PROMPT.md
+    (branch B → automated observation sweep), CLAUDE.md (H-14 wording, gardener + PENDING
+    table entries). Remaining docs/*.md sweep delegated to a subagent (GENERATION_PROTOCOL,
+    RESULT_GRADING_RUBRIC, SLEEPWALKER_DESIGN, THE_COMPLETE_CYCLE(+MASTER), DEMO_ARCHITECTURE,
+    DREAM_REPORT, MCP_PATHWAYS, LIGHTING_TEST_DESIGN, PENDING_HEURISTICS:168).
+  * PRESERVED: STORY_BIBLE's observation THEME (game fiction, not dev-verification);
+    historical synthesis docs; the human's optional direction/override.
+- **Doc alignment (prior gap):** CLAUDE.md Key Paths now catalogs all new modules;
+    SUCCESSOR_RUNBOOK has the board-claim entry flow.
+- Verified: preflight All gates pass, 55/55 tests, edited code parses + CLI reads "AUTOMATED".
+  doc_audit re-run after the subagent's docs edits (below).
+
+---
+
 # Session 2026-07-12e — Faculty (self-authoring exams) + Fractal Spiral + ARCH DECISION PENDING
 
 - **core/faculty.py** — the curriculum writes its OWN exams from the studio's scars.

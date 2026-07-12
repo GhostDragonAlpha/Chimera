@@ -27,7 +27,7 @@
 - **[H-3, auto-promoted 2026-07-07]** An LM response containing its own reasoning dump ("Here's a thinking process") is a RETRY with a larger token budget, never a verdict — schema-validate before consuming.
 - **[H-7, auto-promoted 2026-07-07]** Record the MCP response's error field, never raw CLI stdout — a DynamicToolManager boot banner inside an "error" means the wrong stream was captured.
 - **[H-13, auto-promoted 2026-07-07]** Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps; run telemetry foregrounded and test every declared criterion before grading System_Economy.
-- **[H-14, auto-promoted 2026-07-07]** Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
+- **[H-14, auto-promoted 2026-07-07]** Verified-by-injection is not playable — never stage a feature for observation until real player input drives it end-to-end, read back in PIE.
 - **[H-17, auto-promoted 2026-07-07]** Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
 - **[H-19, auto-promoted 2026-07-08]** Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and re-verified since.
 - **[H-21, auto-promoted 2026-07-11]** A verb needs behavior, not metadata: ATool_Shovel had DigRadius but no Dig() — beats must press the verb key and assert a world-state change.
@@ -76,7 +76,7 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `core/graph_compactor.py` | Archive-never-delete graph hygiene |
 | `core/sleepwalker.py` + `core/witness.py` | AI playtester (beat scripts in PIE) + shared session chronicler |
 | `core/rehearsal.py` | Data-level rollout decider (veto-table NEXT items; dead-end demotion, freshness cooldowns) |
-| `core/gardener.py` | Delegated Gardener — auto-tends the heuristic queue (human veto-after) |
+| `core/gardener.py` | Delegated Gardener — auto-tends the heuristic queue (automated; optional human veto-after) |
 | `core/collapse_proxy.py` | Whole-experience observation: holistic sweeps + provisional collapse |
 | `core/unblock.py` | Self-heals known blockers (editor/LM/PIE/git/disk) |
 | `core/solver.py` | Figures out fixes for UNKNOWN blockers (fix-or-draft; bare 'blocked' forbidden) |
@@ -97,7 +97,7 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `tests/dsl_grammar/` | DSL specification files |
 | `docs/chimera_dna_graph.json` | DNA graph storage |
 | `docs/GENERATION_PROTOCOL.md` | The circadian rhythm spec (Dawn/Day/Observation/Dusk/Night) |
-| `docs/PENDING_HEURISTICS.md` | Gardener's queue (human approves every constitution change) |
+| `docs/PENDING_HEURISTICS.md` | Gardener's queue (auto-tended; promotion delegated to automation, optional human veto-after) |
 | `docs/DREAM_REPORT.md` | Morning briefing (regenerated nightly) |
 | `docs/MCP_PATHWAYS.md` | Proven MCP pathways + TRAPS |
 | `Plugins/McpAutomationBridge/` | UE-side MCP plugin |

@@ -2,6 +2,7 @@
 
 #include "ChimeraMovementComponent.h"
 #include "Materials/DustAccumulationParticleComponent.h"
+#include "Sound/SandSoundComponent.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/AudioComponent.h"
@@ -130,6 +131,13 @@ void UChimeraMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			SyncEvent.AudioVolume = FMath::Clamp(SpeedMagnitude / MaxSpeed, 0.0f, 1.0f);
 
 			GFootstepSyncTelemetry.Add(SyncEvent);
+
+
+			// Also record to SandSoundComponent telemetry if attached
+			if (USandSoundComponent* SoundComp = Cast<USandSoundComponent>(GetOwner()->GetComponentByClass(USandSoundComponent::StaticClass())))
+			{
+				SoundComp->RecordFootstepSyncEvent(SyncLatencyMs, SyncEvent.AudioVolume);
+			}
 
 			// UE_LOG for monitoring (CHIMERA_AGENT_SIM will capture)
 			UE_LOG(LogTemp, Log, TEXT("Footstep Sync: Latency=%.2f ms, Surface=%d, Volume=%.2f, Speed=%.0f cm/s"),
