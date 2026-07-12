@@ -51040,6 +51040,73 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_0dcadb2fd041"
+    },
+    {
+      "id": "phase_8236016acfcc415b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:53:34.701892",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_72032b6c949c"
+    },
+    {
+      "id": "discovery_b005b2c85fb70e72",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-12T17:54:02.363364",
+      "feature": "Malcolm_Envelope",
+      "campus_sources": [],
+      "web_sources": [
+        "https://dev.epicgames.com/documentation/en-us/unreal-engine/guidelines-for-optimizing-rendering-for-real-time-in-unreal-engine",
+        "https://unrealartoptimization.github.io/book/process/measuring-performance/",
+        "https://medium.com/@mumbamweni3/best-vram-for-unreal-engine-5-in-2026-stop-freezing-during-real-time-rendering-f4d2539299e2",
+        "https://vagon.io/blog/picking-the-best-gpu-for-unreal-engine",
+        "https://www.codeitbro.com/blog/unreal-engine-5-system-requirements"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 5,
+      "parameters": {},
+      "acceptance_criteria": [
+        "frame budget expressed in ms not fps; 60fps => 16.67ms shared CPU+GPU",
+        "VRAM wall: 12GB mid-range fit target (8GB breaks under Nanite+Lumen, 16GB safe dev)",
+        "every wall carries provenance kind: researched|measured|design|existing|provisional"
+      ],
+      "research_confidence": "high",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Malcolm_Envelope",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Malcolm_Envelope': 5 sources consulted, 3 criteria, confidence=high",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_f2003fce2266"
+    },
+    {
+      "id": "surprise_17fda10a5eba4cf3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T17:54:02.588218",
+      "context": "Malcolm container's FIRST gauge reading, minutes after birth",
+      "expectation": "first reading would be all-OK or catch a real leak",
+      "reality": "reported heuristics_per_night=11 vs max 2 \u2014 but the 11 were rejection-lineage bookkeeping nodes, not distiller candidates; the sensor counted a superset of what the wall means. Fixed by narrowing the census, not moving the fence.",
+      "lesson_hint": "every envelope sensor must measure what the wall MEANS \u2014 the Jurassic census error (counting what you expect to find) is the default failure mode of containment sensors",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'first reading would be all-OK or catch a real leak' but 'reported heuristics_per_night=11 vs max 2 \u2014 but the 11 were rejection-lineage bo'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_f2003fce2266"
     }
   ],
   "edges": [

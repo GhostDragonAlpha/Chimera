@@ -177,6 +177,15 @@ def main():
     except Exception as ex:
         print(f"[book] write FAILED: {ex}")
 
+    # THE CONTAINER BREATHES (core.malcolm): edge-of-chaos homeostat — reads
+    # the emergence gauge vs its band, PROPOSES wall adjustments (never
+    # self-applies; pending_adjustments in docs/envelope.json).
+    try:
+        from core import malcolm
+        print(malcolm.tune())
+    except Exception as ex:
+        print(f"[malcolm] tune FAILED: {ex}")
+
     # Delegated Gardener (amendment 2026-07-07): auto-rule the pending queue.
     # Human keeps veto-after: edit any status to `vetoed` and the next tend demotes it.
     tend_out = ""

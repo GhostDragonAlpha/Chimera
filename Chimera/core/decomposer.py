@@ -165,6 +165,19 @@ def decompose(target: str, kind: str, evidence: list, dry_run: bool = False,
                        f"available: {sorted(templates)} "
                        f"(grow docs/decomposition_templates.json, never this engine)")
     tmpl = templates[kind]
+    # ADMISSION CONTROL (core.malcolm): growth asks the container first.
+    # A breach-projected decomposition is refused with the wall named — at a
+    # ceiling the occupancy rule applies (evict lowest-graded, then re-run).
+    if not dry_run:
+        try:
+            from core.malcolm import admit
+            ok, reason = admit("open_board_tasks", len(tmpl["parts"]))
+            if not ok:
+                raise RuntimeError(f"decomposition refused by the container: {reason}")
+            if "headroom" in reason or "trust" in reason:
+                print(f"[malcolm] {reason}")
+        except ImportError:
+            pass
     dc_id = _dc_id(target, kind)
     parts_manifest = []
     slug_to_task: dict = {}

@@ -353,6 +353,23 @@ def gate_git_clean() -> bool:
         return True
 
 
+def gate_envelope() -> bool:
+    """THE CONTAINER (core.malcolm): BLOCKER on any MEASURED breach of a
+    hardware/systemic wall. Floors and unmeasured axes never block — the
+    emergence side is advised by preflight's gauge, not coerced by a gate,
+    and absence of a sensor is not evidence in either direction."""
+    try:
+        from core.malcolm import check_hard
+        breaches = check_hard()
+    except Exception as e:
+        print(f"  [GATE] envelope unavailable ({e}) — passing open")
+        return True
+    for b in breaches:
+        print(f"  [GATE] CONTAINER BREACH: {b['axis']} = {b['value']} "
+              f"outside {b['band']} ({b['evidence']})")
+    return not breaches
+
+
 # ============================================================================
 # Convenience: pre-built gate chains
 # ============================================================================
@@ -362,6 +379,7 @@ PRE_FLIGHT_GATES = GateChain("Pre-Flight", [
     gate_gpa_not_critically_falling,
     gate_node_count_bounded,
     gate_no_stale_trees,
+    gate_envelope,
 ])
 
 BUILD_GATES = GateChain("Build", [

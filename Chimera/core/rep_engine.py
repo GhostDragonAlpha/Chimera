@@ -218,6 +218,27 @@ def _probe_graph_status(spec: dict, cache: _FileCache):
         return (None, f"graph unavailable; skip ({e})")
 
 
+def _probe_envelope_axis(spec: dict, cache: _FileCache):
+    """The container's fence line, checked at rep frequency (core.malcolm).
+    Skips honestly when the axis has no sensor yet; fails on BREACH or
+    BELOW-FLOOR (a floor failure is a sterility warning, and it counts)."""
+    try:
+        from core.malcolm import load_envelope, measure_axis, axis_state
+        env = load_envelope()
+        axis = env["axes"].get(spec["axis"])
+        if axis is None:
+            return (None, f"no wall named {spec['axis']}; skip")
+        value, evidence = measure_axis(spec["axis"])
+        state = axis_state(axis, value)
+        if state == "UNMEASURED":
+            return (None, f"{spec['axis']} unmeasured; skip ({evidence})")
+        ok = state in ("OK", "WARN")
+        return (ok, f"{spec['axis']}={value} {state} "
+                    f"[{axis.get('min')},{axis.get('max')}] ({evidence[:80]})")
+    except Exception as e:                          # noqa: BLE001
+        return (None, f"malcolm unavailable; skip ({e})")
+
+
 PROBES = {
     "glob_nonempty": _probe_glob_nonempty,
     "file_contains": _probe_file_contains,
@@ -227,6 +248,7 @@ PROBES = {
     "file_md5_not": _probe_file_md5_not,
     "beats_registered": _probe_beats_registered,
     "graph_status": _probe_graph_status,
+    "envelope_axis": _probe_envelope_axis,
 }
 
 
@@ -484,8 +506,35 @@ def gen_dsl_fidelity(cache: _FileCache, cap: int = 160) -> list:
     return atoms
 
 
+def gen_envelope(cache: _FileCache) -> list:
+    """F: the container's walls as atoms (core.malcolm) — every envelope axis
+    with a headless sensor becomes a fence-line check run at rep frequency;
+    PIE-only axes are exported honestly as pie atoms."""
+    atoms = []
+    try:
+        from core.malcolm import load_envelope
+        env = load_envelope()
+    except Exception:
+        return atoms
+    headless_axes = {"open_board_tasks", "atoms_per_battery", "decomposition_depth",
+                     "generated_loc", "generated_files", "graph_nodes",
+                     "heuristics_per_night", "engine_surprise_rate_per_week"}
+    for name, axis in env.get("axes", {}).items():
+        kind = "headless" if name in headless_axes else "pie"
+        probe = ({"type": "envelope_axis", "axis": name} if kind == "headless"
+                 else {"type": "pie", "axis": name,
+                       "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"})
+        atoms.append(make_atom(
+            "Malcolm_Envelope", 2, probe["type"],
+            {k: v for k, v in probe.items() if k != "type"},
+            f"container wall {name} holds: band [{axis.get('min')},{axis.get('max')}] "
+            f"{axis.get('unit', '')} ({axis['source']['kind']})",
+            "malcolm:envelope", kind=kind))
+    return atoms
+
+
 GENERATORS = [gen_assets, gen_code_reflection, gen_h_rules, gen_eliminations,
-              gen_dsl_fidelity]
+              gen_dsl_fidelity, gen_envelope]
 
 
 def build(feature: str = None, cache: _FileCache = None) -> dict:

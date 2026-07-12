@@ -1,3 +1,42 @@
+# Session 2026-07-12i — THE CONTAINER (core/malcolm.py): chaos bounded, emergence reserved
+
+**Human vision:** "a container that contains the game... shape determined by metric
+scores, UE limits, hardware limits... I fear chaos will reign (Dr Ian Malcolm)" —
+BALANCED against "emergence from complexity."
+
+- **core/malcolm.py (20/20 tests) + docs/envelope.json**: 15 walls in BANDS [min,max]
+  across hardware/systemic/experience families, every wall with PROVENANCE
+  (researched: Epic frame-budget docs + UE5 VRAM guidance; measured: fit 1.5x live
+  corpus; design: dog-threshold 400/battery, decomposition_depth<=3, coupling k<=4;
+  existing: 5M graph gate, distiller <=2/night). Hardware walls carry an EMERGENCE
+  RESERVE (15-20% headroom for unscripted spikes). Floors are emergence health
+  (below min = sterile) — they advise, never block.
+- **Teeth**: gate_envelope in PRE_FLIGHT_GATES (BLOCKER on measured hard breaches);
+  15 envelope rep atoms (8 headless green x2, 7 honestly PIE-deferred); admission
+  control in decomposer (growth asks the container; at ceiling -> occupancy rule:
+  evict lowest-graded). Preflight [3.96] draws the gauge every morning.
+- **The BREATH** (dream_loop nightly): tune() reads the emergence gauge — engine-
+  sourced SurpriseMoments/week (currently 7, band [2,20] = healthy edge) — proposes
+  loosen when sterile+headroom, tighten on breach; NEVER self-applies
+  (pending_adjustments in envelope.json, Gardener-style).
+- **First breath caught its own census error**: reported heuristics_per_night=11 vs
+  max 2 — the 11 were rejection-lineage records, not distiller candidates; sensor
+  narrowed to what the wall MEANS (surprise_17fda10a5eba4cf3: the Jurassic census
+  lesson, mechanized). Proposal ruled resolved-sensor-error; walls untouched.
+- Research recorded: discovery_b005b2c85fb70e72 (Epic optimization guidelines,
+  unrealartoptimization, VRAM guidance sources).
+- Suites: malcolm 20/20, rep 17/17, decomposer 11/11, book 11/11, board 10/10,
+  tunnel 11/11 (80/80).
+
+## NEXT
+1. Build the 7 missing sensors (frame_time/vram/system_memory/audio_voices/
+   active_dots/interacting_systems/coupling_k): telemetry_probe should write
+   docs/world/telemetry_last.json after each foregrounded soak — then the
+   hardware walls go from admission-only to fully gated.
+2. Board conveyor continues: tb-0013 Sprint_Input/state is the frontier.
+
+---
+
 # Session 2026-07-12h — FULL DELEGATION: verification phase (UBT GREEN first try)
 
 **Human handed all cycle decisions to the agent ("beyond my comprehension — make

@@ -305,6 +305,32 @@ def main():
     except Exception as e:
         print(f"\n[3.95] History Book: unavailable ({e})")
 
+    # 3.96. The Container (core.malcolm) — the edge-of-chaos gauge: every
+    # wall's pressure, drawn each morning. Breaches gate; floors advise.
+    try:
+        from core.malcolm import status as _malcolm_status
+        rows = _malcolm_status()
+        interesting = [r for r in rows if r["state"] != "UNMEASURED"]
+        unmeasured = sum(1 for r in rows if r["state"] == "UNMEASURED")
+        print(f"\n[3.96] The Container ({len(rows)} walls, {unmeasured} awaiting sensors):")
+        for r in interesting[:9]:
+            val = "—" if r["value"] is None else (
+                f"{r['value']:.1f}" if isinstance(r["value"], float) else str(r["value"]))
+            print(f"    {r['state']:>11}  {r['axis']:<32} {val:>9} {r['band']:>14} {r['pct']:>7}")
+        pend = []
+        try:
+            from core.malcolm import load_envelope
+            pend = [p for p in load_envelope().get("pending_adjustments", [])
+                    if p.get("status") == "pending"]
+        except Exception:
+            pass
+        if pend:
+            print(f"    {len(pend)} pending wall adjustment(s) awaiting a ruling "
+                  f"(docs/envelope.json)")
+        print("    gauge: python -m core.malcolm status   breath: python -m core.malcolm tune")
+    except Exception as e:
+        print(f"\n[3.96] The Container: unavailable ({e})")
+
     # 4. Pending technical_research
     pending = [n for n in nodes
                if n.get("feature_type") == "technical_research"
