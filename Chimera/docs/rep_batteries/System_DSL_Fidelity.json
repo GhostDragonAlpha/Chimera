@@ -2364,5 +2364,29 @@
   },
   "desc": "DSL token 'consumption_regions' (economy_data.chimera) surfaces in Source (snake or CamelCase)",
   "provenance": "dsl2:economy_data.chimera"
+ },
+ {
+  "id": "atom_80e981b2a84c",
+  "feature": "System_DSL_Fidelity",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "probe token-noise as the dominant cause of DSL battery reds"
+  },
+  "desc": "regression (PIE): probe token-noise as the dominant cause of DSL battery reds",
+  "provenance": "elimination:elim_5db874e721a6c962"
+ },
+ {
+  "id": "atom_fbfbbf3d4952",
+  "feature": "System_DSL_Fidelity",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "probe token-noise as dominant cause of battery reds"
+  },
+  "desc": "regression (PIE): probe token-noise as dominant cause of battery reds",
+  "provenance": "elimination:elim_fc1e3b5e9ce65fbe"
  }
 ]

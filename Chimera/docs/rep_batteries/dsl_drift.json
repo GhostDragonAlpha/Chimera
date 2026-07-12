@@ -1,16 +1,15 @@
 {
  "note": "DSL spec->code fidelity ledger (probe v2: snake|CamelCase across Source/). A 'drift' token is a promise the spec makes that no code keeps.",
- "triage": "2026-07-12: 156 v1 atoms triaged -> 13 camel-noise (probe fault, fixed), 1 config-class (excluded), remainder true drift. Probe v2 spans all .chimera files.",
- "coverage": "33/169 tokens implemented (19%)",
+ "triage": "2026-07-12: v1 145 reds -> 13 camel-noise + 1 config-class + 131 true drift. Same day: generate_dsl_spec_binding_files() kept deep_space_trader's 52 (TradeRoute/Environment/Station/ShipAttribute spec components + SpecBindingsActor carrier).",
+ "coverage": "86/169 tokens implemented (50%)",
  "drift_by_spec": {
-  "deep_space_trader.chimera": 52,
   "quantum_travel.chimera": 16,
   "planet_generation.chimera": 16,
   "flight_components.chimera": 15,
   "economy_data.chimera": 10,
   "celestial_bodies.chimera": 9,
   "starcitizen_scale.chimera": 8,
-  "ship_classes.chimera": 7,
+  "ship_classes.chimera": 6,
   "tdd_test_suite.chimera": 2,
   "valid_gameplay_combat.chimera": 1
  },
@@ -58,266 +57,6 @@
   {
    "token": "surface_temperature_min",
    "spec_file": "celestial_bodies.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "ability_system_component",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "accumulation_enabled",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "attribute_set",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "base_type",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "buy_price_per_kg",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "buy_price_per_ration",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "buy_price_per_unit",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "camera_perspective",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "capacity_crew",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "cargo_weight_stat",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "color_palette",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "commodities_allowed",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "consumption_rate_per_km",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "damage_formulas",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "danger_level",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "default_abilities",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "destination",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "destination_station",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "elements",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "enemy_factions",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "facilities",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "fuel_cost_liters",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "fuel_cost_per_jump_liters",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "fuel_stat",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "gravity_g",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "ground_texture_types",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "hit_reactions",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "interdiction_chance",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "max_location",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "max_speed_kmh",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "min_location",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "orbits_planet",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "origin_station",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "penalty_failed",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "quantity_kg",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "quantity_rations",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "quantity_units",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "required_commodity",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "requires_quantum_drive",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "resource_nodes",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "sections",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "sell_price_per_kg",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "sell_price_per_ration",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "sell_price_per_unit",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "skybox_type",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "status_effects",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "travel_time_seconds",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "turn_rate_deg_per_sec",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "vegetation_density",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "wind_base_direction",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "wind_base_speed",
-   "spec_file": "deep_space_trader.chimera",
-   "verdict": "drift"
-  },
-  {
-   "token": "wind_system_enabled",
-   "spec_file": "deep_space_trader.chimera",
    "verdict": "drift"
   },
   {
@@ -611,11 +350,6 @@
    "verdict": "drift"
   },
   {
-   "token": "crew_capacity",
-   "spec_file": "ship_classes.chimera",
-   "verdict": "drift"
-  },
-  {
    "token": "has_quantum_drive",
    "spec_file": "ship_classes.chimera",
    "verdict": "drift"
@@ -696,7 +430,22 @@
    "verdict": "drift"
   },
   {
+   "token": "ability_system_component",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "accumulation_enabled",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "attribute_selectors",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "attribute_set",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
   },
@@ -711,6 +460,31 @@
    "verdict": "implemented"
   },
   {
+   "token": "base_type",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "buy_price_per_kg",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "buy_price_per_ration",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "buy_price_per_unit",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "camera_perspective",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "cancel_execution",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
@@ -721,12 +495,77 @@
    "verdict": "implemented"
   },
   {
+   "token": "capacity_crew",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "cargo_capacity_kg",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
   },
   {
+   "token": "cargo_weight_stat",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "color_palette",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "commodities_allowed",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "consumption_rate_per_km",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "damage_formulas",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "danger_level",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "default_abilities",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "description",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "destination",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "destination_station",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "elements",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "enemy_factions",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "facilities",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
   },
@@ -741,6 +580,21 @@
    "verdict": "implemented"
   },
   {
+   "token": "fuel_cost_liters",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "fuel_cost_per_jump_liters",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "fuel_stat",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "game_mode",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
@@ -751,7 +605,22 @@
    "verdict": "implemented"
   },
   {
+   "token": "gravity_g",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "gravity_scale",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "ground_texture_types",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "hit_reactions",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
   },
@@ -771,7 +640,22 @@
    "verdict": "implemented"
   },
   {
+   "token": "interdiction_chance",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "location",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "max_location",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "max_speed_kmh",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
   },
@@ -781,7 +665,57 @@
    "verdict": "implemented"
   },
   {
+   "token": "min_location",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "orbits_planet",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "origin_station",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "penalty_failed",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "position",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "quantity_kg",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "quantity_rations",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "quantity_units",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "required_commodity",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "requires_quantum_drive",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "resource_nodes",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
   },
@@ -796,6 +730,26 @@
    "verdict": "implemented"
   },
   {
+   "token": "sections",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "sell_price_per_kg",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "sell_price_per_ration",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "sell_price_per_unit",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "shield_capacity",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
@@ -806,7 +760,42 @@
    "verdict": "implemented"
   },
   {
+   "token": "skybox_type",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "status_effects",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "thrust_acceleration",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "travel_time_seconds",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "turn_rate_deg_per_sec",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "vegetation_density",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wind_base_direction",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "wind_base_speed",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
   },
@@ -821,6 +810,11 @@
    "verdict": "implemented"
   },
   {
+   "token": "wind_system_enabled",
+   "spec_file": "deep_space_trader.chimera",
+   "verdict": "implemented"
+  },
+  {
    "token": "wind_variance",
    "spec_file": "deep_space_trader.chimera",
    "verdict": "implemented"
@@ -828,6 +822,11 @@
   {
    "token": "category",
    "spec_file": "economy_data.chimera",
+   "verdict": "implemented"
+  },
+  {
+   "token": "crew_capacity",
+   "spec_file": "ship_classes.chimera",
    "verdict": "implemented"
   },
   {

@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**985 entries** across 7 chapters.
+**934 entries** across 7 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -213,7 +213,7 @@
 
 ## II. Closed Doors (eliminations — proven negatives)
 
-*5 entries; showing 5.*
+*6 entries; showing 6.*
 
 ### audio_visual_sync/telemetry_accessors: NOT MCP action handlers / command dispatch as root cause `2026-07-12T16:21`
 <sub>`elim_65f84a195c149377`</sub>
@@ -259,6 +259,15 @@
 > eliminates: hypothesis: DSL battery reds are mostly regex artifacts
 > SURVIVES (the narrowed search space): fact: generator coverage of declared spec is ~19% — 136 unkept promises, ledgered in docs/rep_batteries/dsl_drift.json
 > evidence: rep ledger System_DSL_Fidelity 962 reps + triage 2026-07-12
+
+### System_DSL_Fidelity: NOT probe token-noise as dominant cause of battery reds `2026-07-12T16:52`
+<sub>`elim_fc1e3b5e9ce65fbe`</sub>
+
+> NOT: probe token-noise as dominant cause of battery reds
+> observed: 
+> eliminates: 
+> SURVIVES (the narrowed search space): 
+> evidence: triage 2026-07-12 + rep ledger 962 reps
 
 ## III. Surprises (expectation vs reality)
 
@@ -905,7 +914,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*214 entries; showing 40.*
+*215 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1162,165 +1171,164 @@
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry      6 reps  100%  streak  6  battery   1 (0 pie)  tier 0/2
+> audio_visual_sync/report_telemetry     12 reps  100%  streak  8  battery   1 (0 pie)  tier 0/2
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access     36 reps   56%  streak  2  battery   8 (2 pie)  tier 0/1
+> audio_visual_sync/telemetry_access     72 reps  100%  streak  8  battery   9 (3 pie)  tier 0/1
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                              4 reps  100%  streak  4  battery   1 (0 pie)  tier 0/0
+> Demo_Level                             10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Ground_Sand_Sound — ledger standing
 <sub>`repstat:Ground_Sand_Sound`</sub>
 
-> Ground_Sand_Sound                     124 reps   97%  streak  4  battery  31 (0 pie)  tier 0/1
+> Ground_Sand_Sound                     316 reps   99%  streak  8  battery  32 (0 pie)  READY
 
 ### Ground_Sand_Surface — ledger standing
 <sub>`repstat:Ground_Sand_Surface`</sub>
 
-> Ground_Sand_Surface                     4 reps  100%  streak  4  battery   1 (0 pie)  tier 0/0
+> Ground_Sand_Surface                    10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### MCP_Pathways — ledger standing
 <sub>`repstat:MCP_Pathways`</sub>
 
-> MCP_Pathways                            4 reps  100%  streak  4  battery   1 (0 pie)  tier 0/0
+> MCP_Pathways                           10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### Sleepwalker_Beats — ledger standing
 <sub>`repstat:Sleepwalker_Beats`</sub>
 
-> Sleepwalker_Beats                       8 reps  100%  streak  4  battery   9 (7 pie)  tier 0/2
+> Sleepwalker_Beats                      20 reps  100%  streak  8  battery   9 (7 pie)  tier 0/2
 
 ### subsystem/AI — ledger standing
 <sub>`repstat:subsystem/AI`</sub>
 
-> subsystem/AI                           96 reps   79%  streak  0  battery  24 (0 pie)  tier 0/1
+> subsystem/AI                          240 reps   79%  streak  0  battery  24 (0 pie)  tier 0/1
 
 ### subsystem/Combat — ledger standing
 <sub>`repstat:subsystem/Combat`</sub>
 
-> subsystem/Combat                       84 reps   95%  streak  4  battery  21 (0 pie)  tier 0/1
+> subsystem/Combat                      258 reps   95%  streak  2  battery  33 (0 pie)  tier 0/1
 
 ### subsystem/Demo — ledger standing
 <sub>`repstat:subsystem/Demo`</sub>
 
-> subsystem/Demo                          4 reps  100%  streak  4  battery   1 (0 pie)  tier 0/1
+> subsystem/Demo                         10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
 
 ### subsystem/Economy — ledger standing
 <sub>`repstat:subsystem/Economy`</sub>
 
-> subsystem/Economy                      60 reps   93%  streak  0  battery  15 (0 pie)  tier 0/1
+> subsystem/Economy                     150 reps   93%  streak  0  battery  15 (0 pie)  tier 0/1
 
 ### subsystem/Environment — ledger standing
 <sub>`repstat:subsystem/Environment`</sub>
 
-> subsystem/Environment                  92 reps  100%  streak  4  battery  23 (0 pie)  tier 0/1
+> subsystem/Environment                 286 reps   99%  streak  8  battery  37 (0 pie)  READY
 
 ### subsystem/Factions — ledger standing
 <sub>`repstat:subsystem/Factions`</sub>
 
-> subsystem/Factions                      4 reps  100%  streak  4  battery   1 (0 pie)  tier 0/0
+> subsystem/Factions                     10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### subsystem/Flight — ledger standing
 <sub>`repstat:subsystem/Flight`</sub>
 
-> subsystem/Flight                       24 reps  100%  streak  4  battery   6 (0 pie)  tier 0/1
+> subsystem/Flight                       60 reps  100%  streak  8  battery   6 (0 pie)  tier 0/1
 
 ### subsystem/GameMode — ledger standing
 <sub>`repstat:subsystem/GameMode`</sub>
 
-> subsystem/GameMode                      8 reps   50%  streak  0  battery   2 (0 pie)  tier 0/1
+> subsystem/GameMode                     20 reps   50%  streak  0  battery   2 (0 pie)  tier 0/1
 
 ### subsystem/Inventory — ledger standing
 <sub>`repstat:subsystem/Inventory`</sub>
 
-> subsystem/Inventory                    28 reps  100%  streak  4  battery   7 (0 pie)  tier 0/1
+> subsystem/Inventory                    70 reps  100%  streak  8  battery   7 (0 pie)  tier 0/1
 
 ### subsystem/Materials — ledger standing
 <sub>`repstat:subsystem/Materials`</sub>
 
-> subsystem/Materials                   116 reps   90%  streak  0  battery  29 (0 pie)  tier 0/1
+> subsystem/Materials                   290 reps   90%  streak  0  battery  29 (0 pie)  tier 0/1
 
 ### subsystem/Missions — ledger standing
 <sub>`repstat:subsystem/Missions`</sub>
 
-> subsystem/Missions                      4 reps  100%  streak  4  battery   1 (0 pie)  tier 0/0
+> subsystem/Missions                     10 reps  100%  streak  8  battery   1 (0 pie)  tier 0/0
 
 ### subsystem/PCG — ledger standing
 <sub>`repstat:subsystem/PCG`</sub>
 
-> subsystem/PCG                          12 reps   67%  streak  0  battery   3 (0 pie)  tier 0/1
+> subsystem/PCG                          30 reps   67%  streak  0  battery   3 (0 pie)  tier 0/1
 
 ### subsystem/root — ledger standing
 <sub>`repstat:subsystem/root`</sub>
 
-> subsystem/root                        156 reps   85%  streak  0  battery  39 (0 pie)  tier 0/1
+> subsystem/root                        398 reps   85%  streak  0  battery  43 (0 pie)  tier 0/1
 
 ### subsystem/Shelter — ledger standing
 <sub>`repstat:subsystem/Shelter`</sub>
 
-> subsystem/Shelter                      12 reps   67%  streak  0  battery   3 (0 pie)  tier 0/1
+> subsystem/Shelter                      30 reps   67%  streak  0  battery   3 (0 pie)  tier 0/1
 
 ### subsystem/Ships — ledger standing
 <sub>`repstat:subsystem/Ships`</sub>
 
-> subsystem/Ships                        16 reps   75%  streak  0  battery   4 (0 pie)  tier 0/1
+> subsystem/Ships                        40 reps   75%  streak  0  battery   4 (0 pie)  tier 0/1
 
 ### subsystem/Stations — ledger standing
 <sub>`repstat:subsystem/Stations`</sub>
 
-> subsystem/Stations                     52 reps  100%  streak  4  battery  13 (0 pie)  tier 0/1
+> subsystem/Stations                    158 reps   99%  streak  8  battery  20 (0 pie)  tier 0/1
 
 ### subsystem/Travel — ledger standing
 <sub>`repstat:subsystem/Travel`</sub>
 
-> subsystem/Travel                       12 reps   67%  streak  0  battery   3 (0 pie)  tier 0/1
+> subsystem/Travel                      168 reps   87%  streak  2  battery  26 (0 pie)  tier 0/1
 
 ### subsystem/VFX — ledger standing
 <sub>`repstat:subsystem/VFX`</sub>
 
-> subsystem/VFX                          24 reps   83%  streak  0  battery   6 (0 pie)  tier 0/1
+> subsystem/VFX                          60 reps   83%  streak  0  battery   6 (0 pie)  tier 0/1
 
 ### System_DSL_Fidelity — ledger standing
 <sub>`repstat:System_DSL_Fidelity`</sub>
 
-> System_DSL_Fidelity                   962 reps   11%  streak  0  battery 169 (0 pie)  tier 0/0
+> System_DSL_Fidelity                  1976 reps   38%  streak  0  battery 171 (2 pie)  tier 0/1
 
 ### System_SaveGame — ledger standing
 <sub>`repstat:System_SaveGame`</sub>
 
-> System_SaveGame                       124 reps   58%  streak  0  battery  31 (0 pie)  tier 0/1
+> System_SaveGame                       310 reps   58%  streak  0  battery  31 (0 pie)  tier 0/1
 
 ### Verb_PickUp — ledger standing
 <sub>`repstat:Verb_PickUp`</sub>
 
-> Verb_PickUp                            92 reps  100%  streak  4  battery  23 (0 pie)  tier 0/1
+> Verb_PickUp                           230 reps  100%  streak  8  battery  23 (0 pie)  READY
 
 ### Verb_Shovel — ledger standing
 <sub>`repstat:Verb_Shovel`</sub>
 
-> Verb_Shovel                            48 reps   92%  streak  0  battery  12 (0 pie)  tier 0/1
+> Verb_Shovel                           120 reps   92%  streak  0  battery  12 (0 pie)  tier 0/1
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
-*137 entries; showing 40.*
+*84 entries; showing 40.*
 
-### Spec coverage: 33/169 tokens implemented (19%)
+### Spec coverage: 86/169 tokens implemented (50%)
 <sub>`drift:coverage`</sub>
 
 > DSL spec->code fidelity ledger (probe v2: snake|CamelCase across Source/). A 'drift' token is a promise the spec makes that no code keeps.
-> triage: 2026-07-12: 156 v1 atoms triaged -> 13 camel-noise (probe fault, fixed), 1 config-class (excluded), remainder true drift. Probe v2 spans all .chimera files.
-> deep_space_trader.chimera: 52 unkept
+> triage: 2026-07-12: v1 145 reds -> 13 camel-noise + 1 config-class + 131 true drift. Same day: generate_dsl_spec_binding_files() kept deep_space_trader's 52 (TradeRoute/Environment/Station/ShipAttribute spec components + SpecBindingsActor carrier).
 > quantum_travel.chimera: 16 unkept
 > planet_generation.chimera: 16 unkept
 > flight_components.chimera: 15 unkept
 > economy_data.chimera: 10 unkept
 > celestial_bodies.chimera: 9 unkept
 > starcitizen_scale.chimera: 8 unkept
-> ship_classes.chimera: 7 unkept
+> ship_classes.chimera: 6 unkept
 > tdd_test_suite.chimera: 2 unkept
 > valid_gameplay_combat.chimera: 1 unkept
 
@@ -1369,155 +1377,155 @@
 
 > declared in celestial_bodies.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: ability_system_component
-<sub>`drift:ability_system_component`</sub>
+### unkept promise: base_value_credits
+<sub>`drift:base_value_credits`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: accumulation_enabled
-<sub>`drift:accumulation_enabled`</sub>
+### unkept promise: consumption_regions
+<sub>`drift:consumption_regions`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: attribute_set
-<sub>`drift:attribute_set`</sub>
+### unkept promise: destination_systems
+<sub>`drift:destination_systems`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: base_type
-<sub>`drift:base_type`</sub>
+### unkept promise: market_volatility
+<sub>`drift:market_volatility`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: buy_price_per_kg
-<sub>`drift:buy_price_per_kg`</sub>
+### unkept promise: origin_system
+<sub>`drift:origin_system`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: buy_price_per_ration
-<sub>`drift:buy_price_per_ration`</sub>
+### unkept promise: pirate_activity_level
+<sub>`drift:pirate_activity_level`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: buy_price_per_unit
-<sub>`drift:buy_price_per_unit`</sub>
+### unkept promise: production_locations
+<sub>`drift:production_locations`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: camera_perspective
-<sub>`drift:camera_perspective`</sub>
+### unkept promise: route_safety_rating
+<sub>`drift:route_safety_rating`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: capacity_crew
-<sub>`drift:capacity_crew`</sub>
+### unkept promise: trade_restrictions
+<sub>`drift:trade_restrictions`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: cargo_weight_stat
-<sub>`drift:cargo_weight_stat`</sub>
+### unkept promise: typical_cargo_types
+<sub>`drift:typical_cargo_types`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in economy_data.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: color_palette
-<sub>`drift:color_palette`</sub>
+### unkept promise: cool_down_seconds
+<sub>`drift:cool_down_seconds`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: commodities_allowed
-<sub>`drift:commodities_allowed`</sub>
+### unkept promise: detection_range_km
+<sub>`drift:detection_range_km`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: consumption_rate_per_km
-<sub>`drift:consumption_rate_per_km`</sub>
+### unkept promise: energy_drain_per_hit
+<sub>`drift:energy_drain_per_hit`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: damage_formulas
-<sub>`drift:damage_formulas`</sub>
+### unkept promise: energy_requirement_megajoules
+<sub>`drift:energy_requirement_megajoules`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: danger_level
-<sub>`drift:danger_level`</sub>
+### unkept promise: fuel_consumption_kg_per_sec
+<sub>`drift:fuel_consumption_kg_per_sec`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: default_abilities
-<sub>`drift:default_abilities`</sub>
+### unkept promise: fuel_type
+<sub>`drift:fuel_type`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: destination
-<sub>`drift:destination`</sub>
+### unkept promise: jamming_resistance_level
+<sub>`drift:jamming_resistance_level`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: destination_station
-<sub>`drift:destination_station`</sub>
+### unkept promise: max_range_light_years
+<sub>`drift:max_range_light_years`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: elements
-<sub>`drift:elements`</sub>
+### unkept promise: max_temperature_kelvin
+<sub>`drift:max_temperature_kelvin`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: enemy_factions
-<sub>`drift:enemy_factions`</sub>
+### unkept promise: regeneration_rate_per_sec
+<sub>`drift:regeneration_rate_per_sec`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: facilities
-<sub>`drift:facilities`</sub>
+### unkept promise: requires_quantum_anchor
+<sub>`drift:requires_quantum_anchor`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: fuel_cost_liters
-<sub>`drift:fuel_cost_liters`</sub>
+### unkept promise: scan_modes
+<sub>`drift:scan_modes`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: fuel_cost_per_jump_liters
-<sub>`drift:fuel_cost_per_jump_liters`</sub>
+### unkept promise: shield_strength_points
+<sub>`drift:shield_strength_points`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: fuel_stat
-<sub>`drift:fuel_stat`</sub>
+### unkept promise: shield_type
+<sub>`drift:shield_type`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: gravity_g
-<sub>`drift:gravity_g`</sub>
+### unkept promise: thrust_force_newtons
+<sub>`drift:thrust_force_newtons`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in flight_components.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: ground_texture_types
-<sub>`drift:ground_texture_types`</sub>
+### unkept promise: base_biomes
+<sub>`drift:base_biomes`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in planet_generation.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: hit_reactions
-<sub>`drift:hit_reactions`</sub>
+### unkept promise: cloud_layers
+<sub>`drift:cloud_layers`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in planet_generation.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: interdiction_chance
-<sub>`drift:interdiction_chance`</sub>
+### unkept promise: cluster_density_per_cubic_km
+<sub>`drift:cluster_density_per_cubic_km`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in planet_generation.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: max_location
-<sub>`drift:max_location`</sub>
+### unkept promise: color_gradients
+<sub>`drift:color_gradients`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in planet_generation.chimera, no trace in Source/ (snake or CamelCase)
 
-### unkept promise: max_speed_kmh
-<sub>`drift:max_speed_kmh`</sub>
+### unkept promise: composition_types
+<sub>`drift:composition_types`</sub>
 
-> declared in deep_space_trader.chimera, no trace in Source/ (snake or CamelCase)
+> declared in planet_generation.chimera, no trace in Source/ (snake or CamelCase)
 
 ## Index of Features
 
@@ -1544,7 +1552,7 @@
 - **Player_Character_Suit_Visor** — 1 entry: `professor_grade_1bf1d076b6c54468`
 - **Sleepwalker_Beats** — 1 entry: `repstat:Sleepwalker_Beats`
 - **Sleepwalker_System** — 1 entry: `professor_grade_c672ff663bf3651b`
-- **System_DSL_Fidelity** — 138 entries: `elim_5db874e721a6c962`, `repstat:System_DSL_Fidelity`, `drift:atmosphere_density`, `drift:atmospheric_composition`, `drift:has_moons`, `drift:is_artificial` ...
+- **System_DSL_Fidelity** — 86 entries: `elim_5db874e721a6c962`, `elim_fc1e3b5e9ce65fbe`, `repstat:System_DSL_Fidelity`, `drift:atmosphere_density`, `drift:atmospheric_composition`, `drift:has_moons` ...
 - **System_Economy** — 7 entries: `professor_grade_7886af92f495ccd1`, `professor_grade_987966987f9c8be5`, `professor_grade_cbdfff41c119fe65`, `professor_grade_364a07e3116f20a6`, `professor_grade_bf25d5d3a1fc673f`, `professor_grade_c5197b91a28559eb` ...
 - **System_Factions** — 5 entries: `professor_grade_eed210f4ab52757d`, `professor_grade_490fe77b72f70388`, `professor_grade_b2bb156bf98b0f0a`, `professor_grade_2cef42bbe0482227`, `professor_grade_311a8a7ca7b93bff`
 - **System_Missions** — 6 entries: `professor_grade_2a09ab2aa52757cf`, `professor_grade_f0b8a52f650f4cf9`, `professor_grade_a43257c7bf4c0783`, `professor_grade_df839bc8e137db81`, `professor_grade_8b0cf44f4627423c`, `professor_grade_cdfa82d2982b429b`

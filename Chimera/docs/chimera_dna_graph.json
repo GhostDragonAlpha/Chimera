@@ -50548,6 +50548,22 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_85d812320248"
+    },
+    {
+      "id": "phase_6558a247edaa8511",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:01:37.830667",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_2af17aafa151"
     }
   ],
   "edges": [

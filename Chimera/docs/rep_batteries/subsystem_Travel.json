@@ -14,6 +14,216 @@
   "provenance": "reflection:UCLASS:TravelVehicleComponent.h"
  },
  {
+  "id": "atom_aec52e46cbc4",
+  "feature": "subsystem/Travel",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UTradeRouteSpecComponent\\b|UTradeRouteSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UTradeRouteSpecComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_01606ad450c0",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBuyPricePerUnit\\b"
+  },
+  "desc": "UPROPERTY BuyPricePerUnit (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_05d55aab9231",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFuelCostLiters\\b"
+  },
+  "desc": "UPROPERTY FuelCostLiters (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_07c9d4ca5311",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPenaltyFailed\\b"
+  },
+  "desc": "UPROPERTY PenaltyFailed (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_15dc26a8ccd4",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSellPricePerUnit\\b"
+  },
+  "desc": "UPROPERTY SellPricePerUnit (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_1e2e626aecf9",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbRequiresQuantumDrive\\b"
+  },
+  "desc": "UPROPERTY bRequiresQuantumDrive (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_20a938a533d5",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bQuantityRations\\b"
+  },
+  "desc": "UPROPERTY QuantityRations (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_223e532cd286",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bEnemyFactions\\b"
+  },
+  "desc": "UPROPERTY EnemyFactions (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_414683cf777d",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSellPricePerRation\\b"
+  },
+  "desc": "UPROPERTY SellPricePerRation (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_5877344e54ce",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSellPricePerKg\\b"
+  },
+  "desc": "UPROPERTY SellPricePerKg (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_5e5b4defee0b",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTravelTimeSeconds\\b"
+  },
+  "desc": "UPROPERTY TravelTimeSeconds (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_619d8585b3d3",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCommoditiesAllowed\\b"
+  },
+  "desc": "UPROPERTY CommoditiesAllowed (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_64b96a24f74e",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRequiredCommodity\\b"
+  },
+  "desc": "UPROPERTY RequiredCommodity (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_76e781927bb2",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBuyPricePerKg\\b"
+  },
+  "desc": "UPROPERTY BuyPricePerKg (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_903f80657aa4",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDestinationStation\\b"
+  },
+  "desc": "UPROPERTY DestinationStation (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
   "id": "atom_9724762c96ca",
   "feature": "subsystem/Travel",
   "tier": 1,
@@ -28,6 +238,104 @@
   "provenance": "reflection:UPROPERTY:TravelVehicleComponent.h"
  },
  {
+  "id": "atom_9bd6db81089c",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bQuantityKg\\b"
+  },
+  "desc": "UPROPERTY QuantityKg (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_9f3982f7ee14",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBuyPricePerRation\\b"
+  },
+  "desc": "UPROPERTY BuyPricePerRation (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_a3ca1ab0c1d7",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFuelCostPerJumpLiters\\b"
+  },
+  "desc": "UPROPERTY FuelCostPerJumpLiters (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_b2003e698432",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bInterdictionChance\\b"
+  },
+  "desc": "UPROPERTY InterdictionChance (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_b2c4b28e64d7",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bQuantityUnits\\b"
+  },
+  "desc": "UPROPERTY QuantityUnits (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_b32535ba9688",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDangerLevel\\b"
+  },
+  "desc": "UPROPERTY DangerLevel (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_c135e406ae9a",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOriginStation\\b"
+  },
+  "desc": "UPROPERTY OriginStation (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
+ },
+ {
   "id": "atom_d6b70097433c",
   "feature": "subsystem/Travel",
   "tier": 1,
@@ -40,5 +348,19 @@
   },
   "desc": "UPROPERTY FlightSpeed (TravelVehicleComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:TravelVehicleComponent.h"
+ },
+ {
+  "id": "atom_e9569cd29d3a",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDestination\\b"
+  },
+  "desc": "UPROPERTY Destination (TradeRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TradeRouteSpecComponent.h"
  }
 ]

@@ -42,6 +42,18 @@
   "provenance": "tb-0001"
  },
  {
+  "id": "atom_825e22fef6a1",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "beat schema or MCP dispatch as root cause"
+  },
+  "desc": "regression (PIE): beat schema or MCP dispatch as root cause",
+  "provenance": "elimination:elim_043bb7affad30ff4"
+ },
+ {
   "id": "atom_85b51ecc418f",
   "feature": "audio_visual_sync/telemetry_accessors",
   "tier": 1,

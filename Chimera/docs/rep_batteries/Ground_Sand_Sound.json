@@ -198,6 +198,20 @@
   "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
  },
  {
+  "id": "atom_126efa3217d3",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSpeedBucketThresholdCmS\\b"
+  },
+  "desc": "UPROPERTY SpeedBucketThresholdCmS (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
   "id": "atom_2b14f05fd5a0",
   "feature": "Ground_Sand_Sound",
   "tier": 1,

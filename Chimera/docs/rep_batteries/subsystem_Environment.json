@@ -1,5 +1,19 @@
 [
  {
+  "id": "atom_35eb2a2574f2",
+  "feature": "subsystem/Environment",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UEnvironmentSpecComponent\\b|UEnvironmentSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UEnvironmentSpecComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:EnvironmentSpecComponent.h"
+ },
+ {
   "id": "atom_70d660efb7f7",
   "feature": "subsystem/Environment",
   "tier": 0,
@@ -28,6 +42,20 @@
   "provenance": "reflection:UCLASS:WindSystemComponent.h"
  },
  {
+  "id": "atom_0654d247ffa0",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxLocation\\b"
+  },
+  "desc": "UPROPERTY MaxLocation (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
   "id": "atom_0f975cf76c5d",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -40,6 +68,20 @@
   },
   "desc": "UPROPERTY WindCycleTime (WindSystemComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_12472c9b91b5",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbWindSystemEnabled\\b"
+  },
+  "desc": "UPROPERTY bWindSystemEnabled (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
   "id": "atom_1e04031dd0e8",
@@ -56,6 +98,20 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_2404dd74d760",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSkyboxType\\b"
+  },
+  "desc": "UPROPERTY SkyboxType (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
   "id": "atom_27476a10ea98",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -70,6 +126,34 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_27af9e5f6317",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMinLocation\\b"
+  },
+  "desc": "UPROPERTY MinLocation (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
+  "id": "atom_27f81025cab9",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bElements\\b"
+  },
+  "desc": "UPROPERTY Elements (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
   "id": "atom_29c307ab056c",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -82,6 +166,20 @@
   },
   "desc": "UPROPERTY CurrentWindSpeed (WindSystemComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_2ac07c47a736",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGroundTextureTypes\\b"
+  },
+  "desc": "UPROPERTY GroundTextureTypes (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
   "id": "atom_31d5f89c50ac",
@@ -154,6 +252,20 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_5c9d405fa1fc",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGravityG\\b"
+  },
+  "desc": "UPROPERTY GravityG (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
   "id": "atom_5e06deb61822",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -180,6 +292,20 @@
   },
   "desc": "UPROPERTY FootprintLength (FootprintComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_69839b19a42d",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindBaseDirection\\b"
+  },
+  "desc": "UPROPERTY WindBaseDirection (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
   "id": "atom_7780e60ce990",
@@ -266,6 +392,20 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_bea901cfd873",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bColorPalette\\b"
+  },
+  "desc": "UPROPERTY ColorPalette (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
   "id": "atom_c04bb9d23364",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -294,6 +434,34 @@
   "provenance": "reflection:UPROPERTY:FootprintComponent.h"
  },
  {
+  "id": "atom_d84e5ae2ce72",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindBaseSpeed\\b"
+  },
+  "desc": "UPROPERTY WindBaseSpeed (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
+  "id": "atom_e4c9ad3c009b",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bVegetationDensity\\b"
+  },
+  "desc": "UPROPERTY VegetationDensity (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
   "id": "atom_eaedb26602f6",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -308,6 +476,20 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_ee0369ad5bbd",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCameraPerspective\\b"
+  },
+  "desc": "UPROPERTY CameraPerspective (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
   "id": "atom_ee3e8e39a684",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -320,5 +502,19 @@
   },
   "desc": "UPROPERTY StrideLength (FootprintComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_f1c6c360a80f",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbAccumulationEnabled\\b"
+  },
+  "desc": "UPROPERTY bAccumulationEnabled (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  }
 ]

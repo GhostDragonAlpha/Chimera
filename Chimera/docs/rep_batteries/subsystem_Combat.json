@@ -14,6 +14,20 @@
   "provenance": "reflection:UCLASS:ShieldComponent.h"
  },
  {
+  "id": "atom_5d8f1e3e0d20",
+  "feature": "subsystem/Combat",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UShipAttributeSpecComponent\\b|UShipAttributeSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UShipAttributeSpecComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:ShipAttributeSpecComponent.h"
+ },
+ {
   "id": "atom_85f89f86ba51",
   "feature": "subsystem/Combat",
   "tier": 0,
@@ -84,6 +98,20 @@
   "provenance": "reflection:UPROPERTY:WeaponComponent.h"
  },
  {
+  "id": "atom_1334ede3f03a",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAttributeSet\\b"
+  },
+  "desc": "UPROPERTY AttributeSet (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
+ },
+ {
   "id": "atom_20e93dfc7146",
   "feature": "subsystem/Combat",
   "tier": 1,
@@ -110,6 +138,20 @@
   },
   "desc": "UPROPERTY MissileType (WeaponComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_2c248ead9335",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAbilitySystemComponent\\b"
+  },
+  "desc": "UPROPERTY AbilitySystemComponent (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
  },
  {
   "id": "atom_30fbd80776ad",
@@ -182,6 +224,20 @@
   "provenance": "reflection:UPROPERTY:WeaponComponent.h"
  },
  {
+  "id": "atom_62f79446c9b3",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFuelStat\\b"
+  },
+  "desc": "UPROPERTY FuelStat (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
+ },
+ {
   "id": "atom_6fa8ff1f8182",
   "feature": "subsystem/Combat",
   "tier": 1,
@@ -194,6 +250,20 @@
   },
   "desc": "UPROPERTY TrackingStrength (WeaponComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_7f6efe54ad2e",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bHitReactions\\b"
+  },
+  "desc": "UPROPERTY HitReactions (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
  },
  {
   "id": "atom_7fcd87d08e61",
@@ -238,6 +308,48 @@
   "provenance": "reflection:UPROPERTY:DamageComponent.h"
  },
  {
+  "id": "atom_90a3a93cb12b",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCargoWeightStat\\b"
+  },
+  "desc": "UPROPERTY CargoWeightStat (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
+ },
+ {
+  "id": "atom_99daf4ffdab6",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDefaultAbilities\\b"
+  },
+  "desc": "UPROPERTY DefaultAbilities (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
+ },
+ {
+  "id": "atom_aa6fc703b5bb",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxSpeedKmh\\b"
+  },
+  "desc": "UPROPERTY MaxSpeedKmh (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
+ },
+ {
   "id": "atom_b5330330fbc8",
   "feature": "subsystem/Combat",
   "tier": 1,
@@ -250,6 +362,20 @@
   },
   "desc": "UPROPERTY Damage (Projectile.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:Projectile.h"
+ },
+ {
+  "id": "atom_bc79ebac5104",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDamageFormulas\\b"
+  },
+  "desc": "UPROPERTY DamageFormulas (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
  },
  {
   "id": "atom_c871d0e9300f",
@@ -278,6 +404,48 @@
   },
   "desc": "UPROPERTY WeaponSlots (WeaponComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_d38b0fa18f0e",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTurnRateDegPerSec\\b"
+  },
+  "desc": "UPROPERTY TurnRateDegPerSec (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
+ },
+ {
+  "id": "atom_dbde18a32a6e",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStatusEffects\\b"
+  },
+  "desc": "UPROPERTY StatusEffects (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
+ },
+ {
+  "id": "atom_e8cd3d194aff",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bConsumptionRatePerKm\\b"
+  },
+  "desc": "UPROPERTY ConsumptionRatePerKm (ShipAttributeSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipAttributeSpecComponent.h"
  },
  {
   "id": "atom_fd20f28d0b7b",
