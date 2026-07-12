@@ -55,9 +55,17 @@ process." Inversion/elimination defines the container walls; repetition fills th
    7 chapters (constitution, closed doors, surprises, verdicts, wills, rep milestones,
    drift ledger), FTS5-searchable (`python -m core.history_book search --query X`),
    docs/HISTORY_BOOK.md rewritten nightly by dream_loop; preflight [3.95].
-2c. FOLLOW-UP for a capable session: feed the 136-token drift backlog into
-   core/game_code_generator.py system by system (biggest first: deep_space_trader
-   spec keys) — every kept promise flips a red atom green and raises the 19%.
+2c. ~~deep_space_trader's 52 drift tokens~~ **DONE same session (commit c20a4ea)**:
+   generate_dsl_spec_binding_files() emits TradeRoute/Environment/Station/
+   ShipAttribute spec components + SpecBindingsActor carrier, values re-extracted
+   from the .chimera per generation. Coverage 19%->50%; deep_space_trader ZERO
+   remaining drift. NOTE: the rep engine's own H-34 atom caught the new components
+   unspawned — the carrier exists because the system graded its author.
+2d. REMAINING drift backlog (83 tokens, ranked; same recipe per spec file):
+   quantum_travel 16, planet_generation 16, flight_components 15, economy_data 10,
+   celestial_bodies 9, starcitizen_scale 8, ship_classes 6, tdd_test_suite 2,
+   valid_gameplay_combat 1. Pains: regex extraction takes FIRST occurrence
+   (multi-route arrays need the real parser); 10 new files never UBT-built.
 3. Seed not_scope on tb-0001/tb-0002 (they file-conflict by design — each is the
    other's hard negative).
 
