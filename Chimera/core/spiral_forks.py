@@ -230,8 +230,8 @@ def _lm_generate(feature: str, seed_name: str, directive: str) -> dict:
         data=json.dumps(payload).encode(),
         headers={"Content-Type": "application/json"},
     )
-    from core.lm_gateway import lm_urlopen
-    with lm_urlopen(req, timeout=600, agent="spiral_forks") as r:
+    from core.lm_gateway import lm_urlopen, LM_TIMEOUT
+    with lm_urlopen(req, timeout=LM_TIMEOUT, agent="spiral_forks") as r:
         msg = json.load(r)["choices"][0]["message"]
     for text in (msg.get("content") or "", msg.get("reasoning_content") or ""):
         m = re.search(r"\{.*\}", text, re.DOTALL)

@@ -166,7 +166,10 @@ HARNESS_CONFIG: Dict[str, Any] = {
     # mechanical grade on EVERY run (2026-07-12). Every other LM site uses
     # 300-600s; 120s gives the review a fair chance while still bounding a
     # hung model (Stage 7 degrades gracefully either way). Env-overridable.
-    "lm_studio_timeout": int(os.environ.get("CHIMERA_LM_TIMEOUT", "120")),
+    # qwen-agentworld reasons at length before answering; 120s cut off the
+    # professor review mid-thought. 600s matches every other LM site (one env
+    # var, core.lm_gateway.LM_TIMEOUT).
+    "lm_studio_timeout": int(os.environ.get("CHIMERA_LM_TIMEOUT", "600")),
     "lm_studio_retries": 3,
     "mcp_timeout": 60,
     "screenshot_mode": "editor_viewport",

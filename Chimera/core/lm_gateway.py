@@ -42,11 +42,22 @@ LOCK_PATH = QUEUE_DIR / ".lock"
 # against LM Studio's /v1/models 2026-07-12.
 LM_MODEL = os.environ.get("CHIMERA_LM_MODEL", "qwen-agentworld-35b-a3b-nvfp4")
 
+# The shared per-call generation budget. qwen-agentworld is a REASONING model —
+# it emits a long thinking trace before answering, so every call site needs
+# generous time or it dies mid-thought (600s = 10 min ceiling; most finish far
+# sooner). One env var, read everywhere.
+LM_TIMEOUT = int(os.environ.get("CHIMERA_LM_TIMEOUT", "600"))
+
 MAX_CONCURRENT = max(1, int(os.environ.get("CHIMERA_LM_CONCURRENCY", "1")))
-STALE_TTL = 25.0            # a ticket unheartbeated this long = dead holder
+STALE_TTL = 25.0            # a ticket unheartbeated this long = dead holder (the
+                           # heartbeat thread keeps a LIVE holder fresh through
+                           # even a 10-min call, so this only catches crashes)
 HEARTBEAT_S = 8.0
 POLL_S = 0.4
-MAX_WAIT_S = float(os.environ.get("CHIMERA_LM_MAX_WAIT", "300"))
+# A queued caller must be willing to wait LONGER than one full call, or it
+# fail-opens into the very contention the queue exists to prevent. Auto-scales
+# above LM_TIMEOUT.
+MAX_WAIT_S = float(os.environ.get("CHIMERA_LM_MAX_WAIT", str(LM_TIMEOUT + 300)))
 
 # --- cross-platform advisory lock (same idiom as editor_scheduler) ----------
 if os.name == "nt":

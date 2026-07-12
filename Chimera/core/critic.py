@@ -294,8 +294,8 @@ def _lm_generate_judgment(feature: str, evidence: dict, max_retries: int = 2) ->
             LM_STUDIO_URL, data=json.dumps(payload).encode(),
             headers={"Content-Type": "application/json"})
         try:
-            from core.lm_gateway import lm_urlopen
-            with lm_urlopen(req, timeout=600, agent="critic") as r:
+            from core.lm_gateway import lm_urlopen, LM_TIMEOUT
+            with lm_urlopen(req, timeout=LM_TIMEOUT, agent="critic") as r:
                 msg = json.load(r)["choices"][0]["message"]
         except Exception as e:
             last_err = f"LM Studio request failed: {e}"

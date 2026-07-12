@@ -75,8 +75,8 @@ def _lm_plan(blocker: str, context: str, from_command: str, max_tokens: int = 20
     }
     req = urllib.request.Request(LM_URL, data=json.dumps(payload).encode(),
                                  headers={"Content-Type": "application/json"})
-    from core.lm_gateway import lm_urlopen
-    with lm_urlopen(req, timeout=300, agent="solver") as r:
+    from core.lm_gateway import lm_urlopen, LM_TIMEOUT
+    with lm_urlopen(req, timeout=LM_TIMEOUT, agent="solver") as r:
         msg = json.load(r)["choices"][0]["message"]
     for text in (msg.get("content") or "", msg.get("reasoning_content") or ""):
         m = re.search(r"\{.*\}", text, re.DOTALL)
