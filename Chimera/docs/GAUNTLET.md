@@ -62,3 +62,52 @@ python -m core.gauntlet roster                 # every agent's roles + score pro
 Feed agents in; read the roster; route accordingly. Extending the gauntlet = adding a
 station dict (brief + mechanical verifier) to `STATIONS` — keep verifiers zero-LM and
 cross-examined against live state, per the result-grader ethos.
+
+---
+
+# THE CURRICULUM — features go to school (K -> PhD)
+
+> Second commission, same day: *"this gauntlet is gonna be like the entire education
+> system from elementary school all the way up through PhD, but hyper-focused to game
+> development... you should have hundreds of checkpoints... we have to think about how
+> you conceptualize a feature from every angle of humanity... it'll also be like
+> training an AI — if an AI was one feature, think of it like that."*
+
+The gauntlet above qualifies PORTERS (agents). The Curriculum schools CARGO (features).
+Implementation: `core/curriculum.py` (engine) + `docs/curriculum/curriculum.json`
+(the authored curriculum — grow the JSON, never the engine). Tests:
+`python core/test_curriculum.py`.
+
+**The AI-training reading is literal:** a feature enrolls like a model entering
+training; grade bands are curriculum-learning stages; every passed checkpoint is a
+saved, evaluated state in its transcript (`docs/gauntlet/features/<slug>/`); the PhD
+dissertation — with a falsifiable claim — is the final eval before deployment to
+automated observation.
+
+**Founding curriculum (54 checkpoints, 7 bands):**
+
+| Band | Question | Porter role | Sample checkpoints |
+|---|---|---|---|
+| kindergarten | Is it fun? | — | the toy test, the player's face, the second use |
+| elementary | What is it? | — | noun+verb (H-21), player-visible truth (H-14), 3 prior games |
+| middle | How does it feel? | — | first-10-seconds latency, readability vs regolith-grey, the diegetic no |
+| high | How does it work? | — | governing curve with real numbers, 3 tuning knobs, cost/pay exchange |
+| bachelor | How is it built? | initiate | generator-vs-manual decomposition, read-backs (H-22), foregrounded budgets, **online research w/ cached evidence** |
+| master | How does it fit? | journeyman | vision bible, wordless narrative, **4-lens accessibility, culture/ethics, emotion, the body**, benchmark canon, coherence exam across its own transcript |
+| phd | Prove it deserves to exist | journeyman | research exam (URL + cache), sleepwalker testimony (H-19), telemetry vs budget, dissertation with PROCEED/REFINE/PARK verdict + falsifiable claim, the Will |
+
+- Checkpoints within a band pass in ANY order, by DIFFERENT agents — the transcript
+  records who carried what (the shines-where profile across agent types).
+- ONLINE RESEARCH IS A CHECKPOINT (ba.research.online, phd.evidence.research): a live
+  URL must be cited AND its cached copy must exist on disk — retrieval leaves evidence.
+- Toward "hundreds": board task `Curriculum Faculty` holds the authoring backlog
+  (uncovered disciplines listed in its recipe); dream-loop-distilled H-rules should be
+  promoted into checkpoints — the curriculum grows from the studio's own scars.
+
+```powershell
+python -m core.curriculum enroll --feature X          # matriculate
+python -m core.curriculum status --feature X          # grade + remaining checkpoints
+python -m core.curriculum brief  --feature X [--checkpoint id]
+python -m core.curriculum submit --feature X --checkpoint id --agent <you>
+python -m core.curriculum roster                      # the whole school
+```

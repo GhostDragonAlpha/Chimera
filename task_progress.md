@@ -1,3 +1,33 @@
+# Session 2026-07-12d — THE CURRICULUM: features go to school, K -> PhD
+
+**Human's full vision landed:** the gauntlet is the ENTIRE EDUCATION SYSTEM, hyper-focused
+on game development — and the FEATURE is the student (like training an AI: the transcript
+is the training log, passed checkpoints are saved evaluated states, the PhD defense is the
+final eval before deployment to observation). Agents are porters; features are cargo.
+
+- **Engine** `core/curriculum.py`: enrollment, band progression (checkpoints pass in ANY
+  order within a band, by DIFFERENT agents — transcript credits each carrier), generic
+  mechanical verifiers (artifact/url_cache/disk_paths/h_rule/graph_status/graph_cite/
+  sim_evidence/board_done/prior_artifact), porter-role gates per band (bachelor needs
+  initiate, master+ needs journeyman), graduation recorded to the graph.
+- **Founding curriculum** `docs/curriculum/curriculum.json`: 7 bands, 54 checkpoints —
+  kindergarten (the toy test) -> elementary (noun+verb, H-21/H-14) -> middle (senses,
+  input forgiveness, diegetic failure) -> high (governing math, knobs, physics units,
+  cost/pay) -> bachelor (Contract decomposition, read-backs, foregrounded budgets,
+  **ONLINE RESEARCH with cached evidence — url_cache verifier**) -> master (vision bible,
+  wordless narrative, 4-lens accessibility, culture/ethics, emotion, the body, benchmark
+  canon, coherence exam over its own transcript) -> phd (research exam, sleepwalker
+  testimony H-19, telemetry vs budget, dissertation with PROCEED/REFINE/PARK + falsifiable
+  claim, the Will). GROW THE JSON, NEVER THE ENGINE.
+- **First student enrolled:** audio_visual_sync/telemetry_accessors (kindergarten).
+- **Faculty backlog:** board task tb-0011 'Curriculum Faculty: grow toward hundreds'
+  (capable_only) lists uncovered disciplines; promote dream-distilled H-rules into
+  checkpoints — the curriculum grows from the studio's own scars.
+- Preflight [3.7] now shows the school roster. 5/5 curriculum tests (31/31 across all
+  four coordination suites). Spec: docs/GAUNTLET.md (Curriculum section).
+
+---
+
 # Session 2026-07-12c — THE GAUNTLET (core/gauntlet.py): capability is now EARNED
 
 **Human's vision, implemented:** feed in agents of any type; each runs a seven-station

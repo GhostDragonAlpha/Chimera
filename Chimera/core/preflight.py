@@ -233,6 +233,23 @@ def main():
             except Exception:
                 pass
             try:
+                from core.curriculum import load_curriculum, band_progress, \
+                    _load_transcript, GAUNTLET_DIR as _GD
+                bands = load_curriculum()
+                enrolled = sorted((_GD / "features").glob("*/transcript.json"))
+                if enrolled:
+                    print(f"    school: {len(enrolled)} feature(s) enrolled "
+                          f"(K->PhD, {sum(len(c['checkpoints']) for b in bands for c in b['courses'])} checkpoints):")
+                    for tp in enrolled[:4]:
+                        import json as _json
+                        tr = _json.loads(tp.read_text(encoding="utf-8"))
+                        band, remaining = band_progress(tr, bands)
+                        grade = "PhD" if band is None else \
+                            f"{band['band']} ({len(remaining)} left)"
+                        print(f"      {tr['feature']}: {grade}")
+            except Exception:
+                pass
+            try:
                 from core.agent_tunnel import active_sessions
                 for sess in active_sessions()[:4]:
                     print(f"    tunnel: {sess['agent']} in {sess['task_id']} "

@@ -151,12 +151,18 @@ def test_full_pass_earns_journeyman_and_specialties():
 
 def test_capable_claims_require_the_credential():
     _reset()
-    tb.add_task(title="capable job", recipe="r", capable_only=True)
+    t = tb.add_task(title="capable job", recipe="r", capable_only=True)
     try:
         tb.claim_task("unqualified-1", capable=True)
         assert False, "capable claim without credential must refuse"
     except ValueError as e:
         assert "gauntlet" in str(e)
+    # the loophole preflight-checker-2 found live: explicit --id must not bypass
+    try:
+        tb.claim_task("unqualified-1", task_id=t["id"])
+        assert False, "explicit-id claim of a capable_only task must also refuse"
+    except ValueError as e:
+        assert "journeyman" in str(e)
     gl._grant("unqualified-1", ["journeyman"], note="human fiat test")
     got = tb.claim_task("unqualified-1", capable=True)
     assert got and got["title"] == "capable job"

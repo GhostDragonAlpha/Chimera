@@ -340,6 +340,12 @@ def claim_task(state, agent_id: str, task_id: str = None, capable: bool = False)
             raise KeyError(f"no such task {task_id}")
         if t["status"] != OPEN:
             raise ValueError(f"{task_id} is {t['status']}, not open")
+        if t.get("capable_only") and not _capable_authorized(agent_id):
+            # Explicit-id claims must not bypass the gauntlet (loophole found
+            # live by preflight-checker-2 within minutes of the gate shipping).
+            raise ValueError(
+                f"{task_id} is capable_only and {agent_id} holds no journeyman "
+                f"credential — python -m core.gauntlet enter --agent {agent_id}")
         if not _deps_done(t, by_id):
             raise ValueError(f"{task_id} has unmet dependencies: {t.get('depends_on')}")
         for c in active:
