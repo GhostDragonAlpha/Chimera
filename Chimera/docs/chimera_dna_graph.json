@@ -52006,6 +52006,45 @@
       "links": [],
       "recorded_by": "test_rep_engine.py",
       "run_id": "run_f019630b20a3"
+    },
+    {
+      "id": "phase_e557ed23300c0237",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T19:13:42.829822",
+      "phase": "The tuning pass: last wires and baselines",
+      "result": "6 frictions fixed (footprint baseline, sleepwalker evidence surfacing, testkit universal sandbox, snapshot auto-commit, sleepwalk->sensor wire, rep-gate per-atom scaling); 81/81 suites; FIRST REP-GATE GRADUATION: Ground_Sand_Sound ELIGIBLE (380 reps/32 atoms, 8-run streak); master synced",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/The tuning pass: last wires and baselines",
+      "error_category": "none",
+      "fix_description": "Phase 'The tuning pass: last wires and baselines' complete: 6 frictions fixed (footprint baseline, sleepwalker evidence surfacing, testkit universal sandbox, snapshot auto-commit, sleepwalk->sensor wire, rep-gate per-atom scaling); 81/81 suites; FIRST REP-GATE",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "postflight's snapshot auto-commit pushes to the CURRENT branch \u2014 an agent postflighting on a feature branch will push that branch, which may surprise workflows expecting local-only recording"
+      ],
+      "inheritance": "The instrument is tuned: warnings mean now, evidence prints where agents look, tests cannot leak, sensors feed the container from play itself, and the graduation math measures trials per constraint. Remaining wires: pie-manifest auto-beats, not_scope exit refusal, block --boundary.",
+      "pain_verdicts": {
+        "phase_207c976e3926f1f5:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_eb4ea9e181ce"
+    },
+    {
+      "id": "phase_e0b9f3f2f67ec49c",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T19:14:24.550458",
+      "phase": "verify: snapshot auto-commit path frame",
+      "result": "path frame corrected: git -C Chimera prints docs/-relative paths; auto-commit now matches",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/verify: snapshot auto-commit path frame",
+      "error_category": "none",
+      "fix_description": "Phase 'verify: snapshot auto-commit path frame' complete: path frame corrected: git -C Chimera prints docs/-relative paths; auto-commit now matches",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_5fd996f7e6f2"
     }
   ],
   "edges": [

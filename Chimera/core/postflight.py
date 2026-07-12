@@ -111,17 +111,20 @@ def main():
         # refreshes the durability copy). When the snapshot is the ONLY dirt,
         # commit it here — the recording step finishes its own paperwork
         # instead of leaving a trailing chore for every session.
-        snapshot_rel = "Chimera/docs/chimera_dna_graph.json"
+        # NB: `git -C Chimera/` prints paths relative to Chimera/, so the
+        # snapshot appears as docs/... here (first-run bug: compared against
+        # the repo-root Chimera/docs/... form and never matched).
+        chim = str(Path(__file__).parent.parent)
+        snapshot_rel = "docs/chimera_dna_graph.json"
         if git_lines and all(l[3:].strip().strip('"') == snapshot_rel for l in git_lines):
             try:
-                repo = str(Path(__file__).parent.parent.parent)
-                subprocess.run(["git", "-C", repo, "add", snapshot_rel],
+                subprocess.run(["git", "-C", chim, "add", snapshot_rel],
                                check=True, timeout=15, capture_output=True)
-                subprocess.run(["git", "-C", repo, "commit", "-q", "-m",
+                subprocess.run(["git", "-C", chim, "commit", "-q", "-m",
                                 "chore(dna): snapshot via postflight\n\n"
                                 "Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"],
                                check=True, timeout=30, capture_output=True)
-                subprocess.run(["git", "-C", repo, "push", "-q"],
+                subprocess.run(["git", "-C", chim, "push", "-q"],
                                timeout=120, capture_output=True)
                 print("[Git] DNA snapshot auto-committed + pushed (only dirt was the snapshot)")
                 git_lines = []
