@@ -28,6 +28,28 @@ git add -A ; git commit -m "<summary>" ; git push origin master
 ```
 Update `task_progress.md` (prepend a session block + NEXT list) before committing.
 
+## PARALLEL ENTRY (2026-07-12 — if other agents may be running, claim from the board)
+
+The task list is now the single entry. Instead of freely picking work, claim a
+parallel-safe lane so you never collide with another agent (exact commands):
+
+```powershell
+python -m core.task_board claim --agent <your-id>              # opens your work packet
+# ... do the recipe it prints, staying inside the file scopes it shows ...
+python -m core.task_board done --agent <your-id> --id tb-N --result "<verbatim evidence>"
+# or:  block --agent <id> --id tb-N --reason "<cause>"   (bare 'blocked' is forbidden)
+```
+
+Two storage facts changed under you, both TRANSPARENT (your recipes are unchanged):
+- The DNA graph is now **SQLite** (`core.world_store`), not JSON. `record_*` / `graphify_record`
+  work exactly as before. Fast search: `python -m core.dna_sqlite_backend search --query <term>`.
+- The **2000-node gate is RETIRED**. NEVER run `archive_old_mutations.py` — the graph
+  scales now; growth is fine.
+
+`capable_only` board tasks require a `journeyman` credential earned via
+`python -m core.gauntlet enter --agent <id>` (7 verified stations). If that is beyond
+you, take a non-capable task instead — do NOT improvise around the gate.
+
 ## YOUR TASKS (in order — stop at the first one that applies)
 
 1. **If the human gave heuristic verdicts** (docs/PENDING_HEURISTICS.md): for each

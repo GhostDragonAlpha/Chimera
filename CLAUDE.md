@@ -81,6 +81,16 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `core/unblock.py` | Self-heals known blockers (editor/LM/PIE/git/disk) |
 | `core/solver.py` | Figures out fixes for UNKNOWN blockers (fix-or-draft; bare 'blocked' forbidden) |
 | `core/doc_audit.py` | Mechanical docs-vs-code drift check (nightly via floor) |
+| `core/task_board.py` | Parallel task board — resource-conflict-aware claims (THE single entry) |
+| `core/agent_tunnel.py` | Enter→work→exit lifecycle behind the board claim; exit demands evidence |
+| `core/editor_scheduler.py` | File-locked exclusive editor access for concurrent agents |
+| `core/gauntlet.py` | Agent qualification crucible (7 stations → earns `journeyman` for capable lanes) |
+| `core/curriculum.py` + `docs/curriculum/curriculum.json` | K→PhD education a FEATURE graduates through (54 checkpoints) |
+| `core/faculty.py` | The curriculum writes its own exams from the studio's scars (propose→gate→promote) |
+| `core/fractal_spiral.py` | The whole structure as a golden-angle DNA spiral rooted at the player |
+| `core/world_store.py` | SQLite world-model substrate (millions of nodes, FTS + R-tree; sub-ms search) |
+| `core/dna_sqlite_backend.py` | DNA graph on world_store behind the load/save seam (retires JSON+graphify) |
+| `docs/GAUNTLET.md` | Spec for the gauntlet (agents) + curriculum (features) |
 | `docs/DREAM_ROSTER.md` | The full studio cast as organs — hiring plan (Tier-1: Scholar/Muse/Visionkeeper) |
 | `docs/beats/` | Beat scripts (machine playtest scripts per demo) |
 | `core/dna/` | Graphify DNA knowledge graph interface |
