@@ -120,6 +120,16 @@ class Sleepwalker:
     def _call(self, tool: str, args: dict) -> dict:
         r = self.c.call(tool, args)
         sc = r.get("result", {}).get("structuredContent", {})
+        if not sc:
+            # Some responses (e.g. manage_tools' engine-forwarded actions) carry
+            # their payload as a JSON string in content[0].text instead of
+            # structuredContent — parse that instead of treating it as a failure.
+            content = r.get("result", {}).get("content") or []
+            if content and content[0].get("type") == "text":
+                try:
+                    sc = json.loads(content[0]["text"])
+                except (ValueError, KeyError):
+                    sc = {}
         if not sc.get("success"):
             raise RuntimeError(
                 f"{tool}.{args.get('action')}: {sc.get('message', 'failed')[:120]}"
@@ -718,9 +728,34 @@ def main():
     parser.add_argument("--session", required=True)
     parser.add_argument("--no-record", action="store_true")
     parser.add_argument("--keep-pie", action="store_true")
+    parser.add_argument("--agent-id", default=None,
+                        help="Editor-scheduler agent id (for parallel runs)")
     args = parser.parse_args()
+
+    # [SCHEDULER] Claim exclusive editor access in OPEN mode so PIE / screenshots
+    # work and parallel agents (pipelines, other sleepwalkers) don't collide on
+    # the editor. Falls back gracefully if the scheduler module is unavailable.
+    agent_id = None
+    try:
+        from core.editor_scheduler import request_editor, release_editor
+        from uuid import uuid4
+        agent_id = args.agent_id or f"sleepwalker-{uuid4().hex[:8]}"
+        if not request_editor("open", agent_id, timeout=120):
+            print("  [SCHEDULER] Could not acquire editor lock (timeout); proceeding unlocked.")
+            agent_id = None
+    except Exception as e:
+        print(f"  [SCHEDULER] editor lock unavailable ({e}); proceeding without it.")
+        agent_id = None
+
     sw = Sleepwalker(args.beats, args.session, record=not args.no_record)
-    result = sw.run(keep_pie=args.keep_pie)
+    try:
+        result = sw.run(keep_pie=args.keep_pie)
+    finally:
+        if agent_id:
+            try:
+                release_editor(agent_id)
+            except Exception:
+                pass
     print(json.dumps({k: v for k, v in result.items() if k != "outcomes"}, indent=1))
     for o in result["outcomes"]:
         print(
