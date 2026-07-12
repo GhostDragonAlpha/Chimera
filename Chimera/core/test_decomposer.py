@@ -21,21 +21,13 @@ def check(name, cond):
 def main():
     tmp = Path(tempfile.mkdtemp(prefix="decomposer_test_"))
 
-    # sandbox: templates file, board state, rep batteries, graph writes
+    # THE UNIVERSAL SANDBOX (core.testkit): every store redirected in one
+    # call — the surprise_e3944cb57b2994f0 leak class is now impossible.
+    from core.testkit import sandbox
+    graph = sandbox(tmp)
     from core import decomposer as dc
     from core import task_board as tb
     from core import rep_engine as re_mod
-    dc.TEMPLATES_PATH = tmp / "templates.json"
-    tb.STATE_PATH = tmp / "board.json"
-    tb.LOCK_PATH = tmp / "board.lock"
-    tb.BOARD_MD = tmp / "TASK_BOARD.md"
-    re_mod.BATTERY_DIR = tmp / "batteries"
-    re_mod.PIE_MANIFEST = re_mod.BATTERY_DIR / "pie_manifest.json"
-    # Stub EVERY graph side-effect: sandboxing one store is not sandboxing
-    # (surprise_e3944cb57b2994f0 — the un-stubbed record_decomposition wrote
-    # junk nodes to the LIVE graph; the Book's search caught it).
-    import core.graphify_interface as gi
-    gi.record_decomposition = lambda *a, **k: "dc_test_stubbed"
 
     # 1: founding templates self-install
     templates = dc.load_templates()
@@ -60,8 +52,10 @@ def main():
     check("unknown kind refuses with growth instruction", refused)
 
     # 4: live decompose seeds tasks with dependency edges + not_scope
-    # (graph record stubbed above — never write test data to the live graph)
+    # (graph writes land in the testkit's in-memory dict, never the live store)
     manifest = dc.decompose("Sprint_Input", "input_rig", ["simtest_x"])
+    check("decomposition recorded in SANDBOX graph, real helper exercised",
+          any(n.get("type") == "Decomposition" for n in graph["nodes"]))
     state = json.loads(tb.STATE_PATH.read_text(encoding="utf-8"))
     tasks = {t["feature"]: t for t in state["tasks"]}
     check("4 board tasks seeded, one per part", len(state["tasks"]) == 4)

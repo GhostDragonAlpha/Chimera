@@ -673,16 +673,52 @@ class Sleepwalker:
         return self._finish()
 
     def _finish(self) -> dict:
+        # THE CONTAINER's sensor wire (tuning pass 2026-07-12): every walk
+        # refreshes docs/world/telemetry_last.json so malcolm's hardware walls
+        # (frame_time_ms, system_memory_gb) stay measured, not admission-only.
+        try:
+            import re as _re
+            perf = self._call_or_default("inspect",
+                                         {"action": "get_performance_stats"})
+            m = _re.search(r'fps"?\s*[:=]\s*"?([0-9.]+)', json.dumps(perf))
+            snapshot = {}
+            if m:
+                snapshot["fps"] = float(m.group(1))
+            from core.telemetry_probe import _editor_memory_gb
+            mem = _editor_memory_gb()
+            if mem is not None:
+                snapshot["system_memory_gb"] = mem
+            if snapshot:
+                from datetime import datetime as _dt, timezone as _tz
+                snapshot["ts"] = _dt.now(_tz.utc).isoformat()[:19]
+                p = Path(__file__).resolve().parents[1] / "docs" / "world" / "telemetry_last.json"
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(json.dumps(snapshot, indent=1), encoding="utf-8")
+        except Exception:
+            pass                                    # sensors never wedge a walk
+
         chronicle = self.w.finalize()
         total = len(self.outcomes)
         reached = sum(1 for o in self.outcomes if o["outcome"] == "reached")
         fails = [o for o in self.outcomes if o["outcome"] != "reached"]
+        def _failing_note(o):
+            """The FAILING expect's evidence (walk_volume=X sprint_volume=Y),
+            not whatever expect happened to run last — three PIE cycles were
+            burned 2026-07-12 theorizing about numbers this string already
+            held (simtest_9aac4a49214915ad)."""
+            failing = next((e for e in o.get("evidence", [])
+                            if e.get("ok") is False), None)
+            if failing is not None:
+                return (f"expect {json.dumps(failing.get('expect'))[:60]} "
+                        f"-> {str(failing.get('note'))[:110]}")
+            return json.dumps(o["evidence"][-1])[:110] if o.get("evidence") else "?"
+
         temperature = (
             f"[SIM] {reached}/{total} beats reached in '{self.spec.get('demo')}'."
             + (
                 f" Failures: "
                 + "; ".join(
-                    f"{o['beat']} ({o['outcome']}: {json.dumps(o['evidence'][-1])[:90]})"
+                    f"{o['beat']} ({o['outcome']}: {_failing_note(o)})"
                     for o in fails
                 )
                 if fails
@@ -765,6 +801,13 @@ def main():
         print(
             f"  {o['outcome']:>7}  {o['beat']}  features={','.join(o['features']) or '-'}"
         )
+        if o["outcome"] != "reached":
+            # surface EVERY failing expect's evidence right here — the numbers
+            # an agent needs live in these notes, not in the graph three hops away
+            for e in o.get("evidence", []):
+                if e.get("ok") is False:
+                    print(f"           x {json.dumps(e.get('expect'))[:70]}"
+                          f"  ->  {str(e.get('note'))[:120]}")
 
 
 if __name__ == "__main__":

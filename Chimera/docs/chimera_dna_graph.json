@@ -51990,6 +51990,22 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_023251d4a055"
+    },
+    {
+      "id": "phase_d84a15f07a5fdb9b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T19:12:56.495426",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_f019630b20a3"
     }
   ],
   "edges": [

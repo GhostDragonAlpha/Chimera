@@ -225,11 +225,25 @@ def _offenders_from_porcelain(porcelain: str, scopes: list) -> list:
     return offenders[:8]
 
 
-def _footprint_warnings(task: dict) -> list:
-    """Warn (never block) when the working tree holds changes outside the task's
-    declared footprint. Parallel agents dirty their own lanes, so out-of-scope
-    paths may be someone else's live work — the warning is a containment signal,
-    not an accusation."""
+def _dirty_files() -> list:
+    """Repo-relative paths currently dirty (git porcelain)."""
+    try:
+        porcelain = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT.parent,
+                                   capture_output=True, text=True, timeout=10).stdout
+        return sorted({line[3:].strip().strip('"') for line in porcelain.splitlines()
+                       if line.strip()})
+    except Exception:
+        return []
+
+
+def _footprint_warnings(task: dict, baseline: set = None) -> list:
+    """Warn (never block) when THIS TUNNEL changed files outside the task's
+    declared footprint. `baseline` is the dirty-set snapshotted at claim time
+    (tuning pass 2026-07-12): pre-existing dirt — earlier tasks, parallel
+    agents' lanes, uncommitted session work — is subtracted, so the warning
+    fires only on changes made INSIDE the tunnel. Alarm fatigue is how
+    containment dies; a warning that cries about yesterday trains agents to
+    ignore it today."""
     scopes = (task.get("resources") or {}).get("files") or []
     if not scopes:
         return []
@@ -238,7 +252,10 @@ def _footprint_warnings(task: dict) -> list:
                                    capture_output=True, text=True, timeout=10).stdout
     except Exception:
         return []
-    return _offenders_from_porcelain(porcelain, scopes)
+    offenders = _offenders_from_porcelain(porcelain, scopes)
+    if baseline:
+        offenders = [o for o in offenders if o not in baseline]
+    return offenders
 
 
 def enter(agent_id: str, task_id: str = None, capable: bool = False,
@@ -285,7 +302,8 @@ def enter(agent_id: str, task_id: str = None, capable: bool = False,
     _write_session({"agent": agent_id, "task_id": task["id"], "task_title": task["title"],
                     "editor_mode": mode, "editor_held": editor_held,
                     "entered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                    "exited_at": None, "outcome": None})
+                    "exited_at": None, "outcome": None,
+                    "baseline_dirty": _dirty_files()})
     return packet
 
 
@@ -309,7 +327,8 @@ def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
     warnings = []
     if outcome == "done":
         task = complete_task(agent_id, tid, result=result)      # demands evidence
-        warnings = _footprint_warnings(task)
+        warnings = _footprint_warnings(task,
+                                       baseline=set(sess.get("baseline_dirty") or []))
     elif outcome == "blocked":
         task = block_task(agent_id, tid, reason=reason)         # demands a cause
     elif outcome == "release":
