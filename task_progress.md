@@ -1,3 +1,27 @@
+# Session 2026-07-12c — THE GAUNTLET (core/gauntlet.py): capability is now EARNED
+
+**Human's vision, implemented:** feed in agents of any type; each runs a seven-station
+crucible where every station demands a VERIFIED OUTCOME (mechanical checks against live
+state, zero LM), leaves an ARTIFACT CHECKPOINT (docs/gauntlet/<agent>/), persists across
+turns (enter resumes, never restarts), and bounces name WHAT failed, never how to pass.
+Station briefs lay out where the path runs — the agent makes the connections itself.
+
+- **Stations:** ORIENTATION -> THE SCRIBE -> THE SCHOLAR'S DESK -> THE CARTOGRAPHER ->
+  THE GATEKEEPER'S DRILL -> THE TUNNEL RUN (live sandbox task through the single entry)
+  -> THE EXIT GATE (defended choice among rehearsal's LIVE candidates, citing your own
+  research.md + an H-rule + a graph prior). Spec: docs/GAUNTLET.md.
+- **Roles:** stations 1-3 earn `initiate`; all seven earn `journeyman` + specialty tags
+  (researcher/cartographer/tunnel-runner at >=85). **task_board now REFUSES capable_only
+  claims without the journeyman credential** — `--capable` is earned, not self-declared.
+  Human fiat: `python -m core.gauntlet grant --agent X --role journeyman --note "..."`.
+- **Feed agents in:** `python -m core.gauntlet enter --agent <id>`; profile roster:
+  `python -m core.gauntlet roster`. Completion recorded to the graph (PhaseComplete).
+- 5/5 gauntlet + 11/11 tunnel + 10/10 board tests. Preflight [3.7] shows journeyman count.
+- NOTE for next agents: the six roster-hire tasks (tb-0005..tb-0010) are capable_only —
+  the first agent through the gauntlet unlocks them.
+
+---
+
 # Session 2026-07-12b — Agent Tunnel: the task list is the single entry
 
 **Human directive (verbatim intent):** entry was never the problem — agents already find

@@ -209,6 +209,19 @@ def _deps_done(task: dict, by_id: dict) -> bool:
     return all(by_id.get(d, {}).get("status") == DONE for d in task.get("depends_on", []))
 
 
+def _capable_authorized(agent_id: str) -> bool:
+    """capable_only lanes require the gauntlet's 'journeyman' role — earned, not
+    self-declared. Credentials are read directly (no gauntlet import; it imports
+    us). The human can always hand-grant: python -m core.gauntlet grant."""
+    creds_path = Path(os.environ.get("CHIMERA_GAUNTLET_DIR",
+                                     ROOT / "docs" / "gauntlet")) / "credentials.json"
+    try:
+        creds = json.loads(creds_path.read_text(encoding="utf-8"))
+    except Exception:
+        return False
+    return "journeyman" in (creds.get(agent_id, {}).get("roles") or [])
+
+
 def _reap_stale(state) -> list:
     """Reopen claims whose owner heartbeat exceeded the TTL. Returns reaped ids."""
     reaped = []
@@ -315,6 +328,10 @@ def claim_task(state, agent_id: str, task_id: str = None, capable: bool = False)
     """Claim a specific task, or the best parallel-safe one. Returns the task
     dict or None. A refused specific claim raises with the conflict reason so
     the caller learns WHY instead of silently getting nothing."""
+    if capable and not _capable_authorized(agent_id):
+        raise ValueError(
+            f"{agent_id} has no gauntlet credential for capable work — the only way "
+            f"in is through: python -m core.gauntlet enter --agent {agent_id}")
     by_id = {t["id"]: t for t in state["tasks"]}
     active = [t for t in state["tasks"] if t["status"] == CLAIMED]
     if task_id:

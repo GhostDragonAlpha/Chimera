@@ -23,6 +23,7 @@ Chimera/core/task_board_state.json
 Chimera/core/task_board_state.json.bak
 Chimera/core/task_board_state.json.tmp
 Chimera/core/tunnel_sessions/
+Chimera/core/gauntlet.lock
 
 # Test output files
 tdd_pipeline_output*.txt

@@ -224,6 +224,15 @@ def main():
             print(f"    ENTER HERE: python -m core.task_board claim --agent <your-id>  "
                   f"(opens tunnel: editor + work packet; exit only with evidence)")
             try:
+                from core.gauntlet import load_credentials
+                creds = load_credentials()
+                journeymen = [a for a, e in creds.items()
+                              if "journeyman" in (e.get("roles") or [])]
+                print(f"    gauntlet: {len(journeymen)} journeyman agent(s) qualified for "
+                      f"capable lanes; qualify: python -m core.gauntlet enter --agent <id>")
+            except Exception:
+                pass
+            try:
                 from core.agent_tunnel import active_sessions
                 for sess in active_sessions()[:4]:
                     print(f"    tunnel: {sess['agent']} in {sess['task_id']} "

@@ -49836,6 +49836,87 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_106092aee681"
+    },
+    {
+      "id": "technical_discovery_4371395e9c8dc654",
+      "type": "TechnicalDiscovery",
+      "timestamp": "2026-07-12T03:00:44.643469",
+      "school": "unknown_school",
+      "topic": "unknown_topic",
+      "discovery": "",
+      "resolved_pathway": "unknown_pathway",
+      "previous_attempts": 0,
+      "discovered_by": "unknown_agent_session_id",
+      "error_signature": "success_no_error",
+      "template_file": "technical_discovery/unknown_school/unknown_topic",
+      "error_category": "none",
+      "fix_description": "Technical discovery recorded: school 'unknown_school', topic 'unknown_topic', resolved pathway 'unknown_pathway'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_ae3f41a5aee0"
+    },
+    {
+      "id": "phase_c887ffc3fe6b2d77",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T03:00:51.861451",
+      "phase": "Agent tunnel: task list as single entry + containment walls (exit-with-evidence, footprint warnings, postflight shout, tend self-cleaning); 6 DREAM_ROSTER hires seeded",
+      "result": "11/11 agent_tunnel tests + 10/10 task_board tests passed. Board: 10 tasks, frontier 4-wide; live external usage observed (preflight-checker-1 claimed tb-0001+tb-0004 via raw board API during the build). Pushed 4054b02.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Agent tunnel: task list as single entry + containment walls (exit-with-evidence, footprint warnings, postflight shout, tend self-cleaning); 6 DREAM_ROSTER hires seeded",
+      "error_category": "none",
+      "fix_description": "Phase 'Agent tunnel: task list as single entry + containment walls (exit-with-evidence, footprint warnings, postflight shout, tend self-cleaning); 6 DREAM_ROSTER hires seeded' complete: 11/11 agent_tunnel tests + 10/10 task_board tests passed. Board: 10 tasks, frontier 4-wide; live external usage observed (preflight-checker-1 claimed tb-0001+tb-0004 via raw board API during the build",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Agents that enter via raw claims (like preflight-checker-1 did) bypass every tunnel wall - if raw claiming stays more convenient than the tunnel path, containment quietly erodes; watch whether abandoned raw claims accumulate against the 2h reaper"
+      ],
+      "inheritance": "The task list is the SINGLE entry (human directive): task_board claim opens the tunnel session, reserves the declared editor mode, and prints the work packet; exits demand evidence and postflight shouts about open tunnels. Containment beats entry: tend() closes evaporated agents' sessions and frees their editor automatically at every enter. Graph nodes can carry string 'parameters' - type-guard every (n.get('parameters') or {}).get() consumer.",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_4ee019fb7ca6"
+    },
+    {
+      "id": "phase_e72c3f50aa620612",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T03:12:50.718231",
+      "phase": "preflight-initial",
+      "result": "Graph health shows 2005 nodes, 1921 edges, GPA 1.92 flat, Loop 1 The Ground [2/6] open features, pending technical_research: procedural dust-accumulation mask material (noise functions, vertex normals). Environment: LM Studio UP, DNA API down, Unreal Editor not running.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/preflight-initial",
+      "error_category": "none",
+      "fix_description": "Phase 'preflight-initial' complete: Graph health shows 2005 nodes, 1921 edges, GPA 1.92 flat, Loop 1 The Ground [2/6] open features, pending technical_research: procedural dust-accumulation mask material (noise functions, vertex normals",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "phase_da55128aec6d109a:P1 [5d] [still-open] distiller token-coverage will false-suppress genuinely new lessons once PENDING_HEURISTICS.md:20 is addressed"
+      ],
+      "inheritance": "Loop 1 (The Ground) has 2 items open - Ground_Sand_Surface (observed_provisional), Ground_Sand_Footprints (sim_verified), Ground_Rock_Surface (observed_provisional), Ground_Metal_Surface (observed_provisional). Open phantom pains remain (phase_da55128aec6d109a:P1, phase_62a9bf8fa8e97b42:P1, phase_a3193c8fa52533c6:P1, phase_4cf94206335d7778:P1, phase_4d2da4e032a4aa07:P1, phase_1b01fac303f3c24e:P1). Sleepwalker last sim_verb_shovel_evidence shows 5/9 beats, verb_shovel_rock_surface_location failed. Last pipeline run: parse/build/visual all pass (2026-07-12).",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_92eca2aa2381"
+    },
+    {
+      "id": "phase_ac6c49bc1bc1a2dc",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T03:14:03.950033",
+      "phase": "Gauntlet completed: trial-1",
+      "result": "roles=['initiate', 'journeyman', 'researcher', 'cartographer', 'tunnel-runner'] scores={'orientation': 100, 'scribe': 100, 'scholar': 100, 'cartographer': 100, 'gatekeeper': 100, 'tunnel_run': 100, 'exit_gate': 100} attempts=7",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Gauntlet completed: trial-1",
+      "error_category": "none",
+      "fix_description": "Phase 'Gauntlet completed: trial-1' complete: roles=['initiate', 'journeyman', 'researcher', 'cartographer', 'tunnel-runner'] scores={'orientation': 100, 'scribe': 100, 'scholar': 100, 'cartographer': 100, 'gatekeeper': 100, 'tunnel_run': 100, 'e",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_gauntlet.py",
+      "run_id": "run_65726d36f394"
     }
   ],
   "edges": [
