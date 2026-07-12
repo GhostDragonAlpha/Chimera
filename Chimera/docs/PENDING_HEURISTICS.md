@@ -382,3 +382,12 @@ Wait, looking at the
 - sample: blocked: [{"error": "inspect.runtime_report: failed"}]
 - possible_conflict_with: heuristic_fe52b1dc74838df6 (Investigate audio_visual_sync sim_rejection; verify test har); heuristic_f3583c561cfd251c (Investigate audio_visual_sync sim_rejection; verify test har); H-31; H-32  (Gardener: reconcile)
 - draft_rule: Investigate audio_visual_sync report_telemetry; verify test harness and beat reg
+
+<!-- distilled 2026-07-12T07:15:01Z -->
+## H-34: human_rejection: audio_visual_sync/telemetry_accessors
+- status: promoted (auto 2026-07-12)
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-12T00:01:01
+- proposed_organ: claude_md
+- evidence: observation_b7a437ed43c79e13
+- sample: SandSoundComponent either not attached to BP_Astronaut_Character or not populating footstep counters at runtime; verify component attachment and initialization 
+- draft_rule: Verify required components and assets are spawned and registered.

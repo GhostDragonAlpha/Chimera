@@ -50235,6 +50235,28 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_8de8f739392a"
+    },
+    {
+      "id": "heuristic_cf9f4e68af81e5ed",
+      "type": "Heuristic",
+      "timestamp": "2026-07-12T07:15:01.386022",
+      "signature": "human_rejection: audio_visual_sync/telemetry_accessors",
+      "rule": "Verify required components and assets are spawned and registered.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "observation_b7a437ed43c79e13"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/human_rejection: audio_visual_sync/telemetry_accessors",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Verify required components and assets are spawned and registered.",
+      "compilation_result": "pass",
+      "links": [
+        "observation_b7a437ed43c79e13"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_c52f7e979164"
     }
   ],
   "edges": [
