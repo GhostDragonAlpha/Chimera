@@ -50923,6 +50923,82 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_d5d5b910ec6a"
+    },
+    {
+      "id": "dc_b1af6b6e2f33",
+      "type": "Decomposition",
+      "timestamp": "2026-07-12T17:35:44.561576",
+      "target": "Sprint_Input",
+      "kind": "input_rig",
+      "evidence": [
+        "simtest_536c81002961d807",
+        "elim_b58535a07e3675b0"
+      ],
+      "parts": [
+        {
+          "slug": "state",
+          "task_id": "tb-0013",
+          "feature": "Sprint_Input/state"
+        },
+        {
+          "slug": "binding",
+          "task_id": "tb-0014",
+          "feature": "Sprint_Input/binding"
+        },
+        {
+          "slug": "harness_parity",
+          "task_id": "tb-0015",
+          "feature": "Sprint_Input/harness_parity"
+        },
+        {
+          "slug": "readback",
+          "task_id": "tb-0016",
+          "feature": "Sprint_Input/readback"
+        }
+      ],
+      "error_signature": "decomposition_Sprint_Input",
+      "template_file": "decomposition/input_rig",
+      "error_category": "decomposition",
+      "fix_description": "Decomposed Sprint_Input (input_rig) into 4 processed parts",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "decomposer.py",
+      "run_id": "run_11d29e3b40f6"
+    },
+    {
+      "id": "phase_92d44ed97642eebc",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:37:05.077048",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_2cb8f7088f07"
+    },
+    {
+      "id": "surprise_e3944cb57b2994f0",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T17:37:32.759009",
+      "context": "test_decomposer live-decompose cases ran against the sandboxed board",
+      "expectation": "graph record would fail in the sandbox (wrong \u2014 nothing redirected it)",
+      "reality": "record_decomposition inside decompose() wrote THREE junk nodes to the REAL DNA graph \u2014 the test sandboxed task_board + rep_engine paths but not graphify writes; the History Book's FTS search surfaced the leak within seconds",
+      "lesson_hint": "any test that exercises a function with graph side-effects must stub graphify_interface.record_* explicitly; sandboxing one store is not sandboxing",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'graph record would fail in the sandbox (wrong \u2014 nothing redirected it)' but 'record_decomposition inside decompose() wrote THREE junk nodes to the REAL DNA g'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_5edde3725668"
     }
   ],
   "edges": [

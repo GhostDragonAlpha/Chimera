@@ -47,6 +47,7 @@ CHAPTERS = {
     "wills": "V. Wills & Pains (generational inheritance)",
     "rep-milestones": "VI. Rep Milestones (resolution through repetition)",
     "drift": "VII. The Drift Ledger (spec promises vs kept)",
+    "breakdowns": "VIII. The Breakdown Ledger (compound targets -> processed parts)",
 }
 
 # per-chapter render cap for the MD volume; the FTS INDEX always holds all
@@ -116,6 +117,15 @@ def entries_from_graph(nodes: list) -> list:
             out.append(Entry(n["id"], "verdicts",
                              f"{feat}: grade {grade}", str(reasoning)[:400],
                              feature=str(feat), when=ts))
+        elif ntype == "Decomposition":
+            parts = n.get("parts") or []
+            body = (f"kind: {n.get('kind', '')}\n"
+                    f"evidence: {'; '.join(n.get('evidence') or [])}\n"
+                    + "\n".join(f"part {p.get('slug')}: {p.get('task_id')} "
+                                f"({p.get('feature')})" for p in parts))
+            out.append(Entry(n["id"], "breakdowns",
+                             f"{n.get('target', '?')} -> {len(parts)} parts",
+                             body, feature=n.get("target", ""), when=ts))
         elif ntype == "PhaseComplete":
             params = n.get("parameters") or {}
             inheritance = n.get("inheritance", params.get("inheritance", ""))

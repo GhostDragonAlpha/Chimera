@@ -212,6 +212,9 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "elimination":
         return _mutate_elimination(details or {})
 
+    elif mutate_type == "decomposition":
+        return _mutate_decomposition(details or {})
+
     elif mutate_type == "observation":
         return _mutate_observation(details or {})
 
@@ -1424,6 +1427,49 @@ def _mutate_phase_complete(details: dict) -> str:
     save_dna_graph({"nodes": nodes, "edges": edges})
 
     return mutation_node["id"]
+
+
+def _mutate_decomposition(details: dict) -> str:
+    """Records a Decomposition: the PROCESS by which a compound, evidence-
+    indicted target was broken into independently-processable parts (each a
+    board task + rep atoms). 'The parts get processed, not a system' — this
+    node is the audit trail for the breakdown decision itself."""
+    target = str(details.get("target") or "").strip()
+    kind = str(details.get("kind") or "").strip()
+    if not target or not kind:
+        return "rejected_decomposition: 'target' and 'kind' are required; nothing recorded"
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    node = {
+        "id": details.get("dc_id") or
+              f"dc_{hashlib.sha256(f'dc_{target}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:12]}",
+        "type": "Decomposition",
+        "timestamp": datetime.utcnow().isoformat(),
+        "target": target,
+        "kind": kind,
+        "evidence": list(details.get("evidence") or []),
+        "parts": list(details.get("parts") or []),
+        "error_signature": f"decomposition_{target}",
+        "template_file": f"decomposition/{kind}",
+        "error_category": "decomposition",
+        "fix_description": f"Decomposed {target} ({kind}) into "
+                           f"{len(details.get('parts') or [])} processed parts",
+        "compilation_result": "n/a",
+        "links": [],
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def record_decomposition(target: str, kind: str, evidence: list, parts: list,
+                         dc_id: str = None) -> str:
+    """Record the breakdown of a compound target into board-processed parts.
+    parts: [{slug, task_id, feature}] as seeded by core.decomposer."""
+    return graphify_mutate("decomposition", details={
+        "target": target, "kind": kind, "evidence": evidence or [],
+        "parts": parts or [], "dc_id": dc_id})
 
 
 def _mutate_elimination(details: dict) -> str:

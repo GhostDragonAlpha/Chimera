@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**854 entries** across 7 chapters.
+**864 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -213,7 +213,7 @@
 
 ## II. Closed Doors (eliminations — proven negatives)
 
-*6 entries; showing 6.*
+*7 entries; showing 7.*
 
 ### audio_visual_sync/telemetry_accessors: NOT MCP action handlers / command dispatch as root cause `2026-07-12T16:21`
 <sub>`elim_65f84a195c149377`</sub>
@@ -269,9 +269,18 @@
 > SURVIVES (the narrowed search space): 
 > evidence: triage 2026-07-12 + rep ledger 962 reps
 
+### Verb_Step: NOT audio volume-scaling as the walk_fast_on_sand failure cause `2026-07-12T17:25`
+<sub>`elim_b58535a07e3675b0`</sub>
+
+> NOT: audio volume-scaling as the walk_fast_on_sand failure cause
+> observed: beat RAN (no Shift block) but GetVolumeScalesWithSpeed()==false: all samples landed in the slow bucket
+> eliminates: hypothesis: SandSoundComponent telemetry/accessors broken (they returned live, honest data)
+> SURVIVES (the narrowed search space): sprint input (Shift modifier) never raises pawn speed >= 300 cm/s bucket threshold — the input rig, not the audio
+> evidence: simtest_536c81002961d807 post_h34_ubt_green 2026-07-12
+
 ## III. Surprises (expectation vs reality)
 
-*256 entries; showing 40.*
+*258 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -914,7 +923,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*217 entries; showing 40.*
+*221 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1166,7 +1175,7 @@
 
 ## VI. Rep Milestones (resolution through repetition)
 
-*30 entries; showing 30.*
+*32 entries; showing 32.*
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
@@ -1202,6 +1211,26 @@
 <sub>`repstat:Sleepwalker_Beats`</sub>
 
 > Sleepwalker_Beats                      24 reps  100%  streak  8  battery   9 (7 pie)  tier 0/2
+
+### Sprint_Input/binding — ledger standing
+<sub>`repstat:Sprint_Input/binding`</sub>
+
+> Sprint_Input/binding                    1 reps    0%  streak  0  battery   1 (0 pie)  tier 0/1
+
+### Sprint_Input/harness_parity — ledger standing
+<sub>`repstat:Sprint_Input/harness_parity`</sub>
+
+> Sprint_Input/harness_parity             1 reps  100%  streak  1  battery   1 (0 pie)  tier 0/0
+
+### Sprint_Input/readback — ledger standing
+<sub>`repstat:Sprint_Input/readback`</sub>
+
+> Sprint_Input/readback                   0 reps    0%  streak  0  battery   1 (1 pie)  tier 0/2
+
+### Sprint_Input/state — ledger standing
+<sub>`repstat:Sprint_Input/state`</sub>
+
+> Sprint_Input/state                      1 reps    0%  streak  0  battery   1 (0 pie)  tier 0/1
 
 ### subsystem/AI — ledger standing
 <sub>`repstat:subsystem/AI`</sub>
@@ -1308,16 +1337,6 @@
 
 > System_SaveGame                       390 reps   60%  streak  0  battery  40 (0 pie)  tier 0/1
 
-### Verb_PickUp — ledger standing
-<sub>`repstat:Verb_PickUp`</sub>
-
-> Verb_PickUp                           276 reps  100%  streak  8  battery  23 (0 pie)  READY
-
-### Verb_Shovel — ledger standing
-<sub>`repstat:Verb_Shovel`</sub>
-
-> Verb_Shovel                           144 reps   92%  streak  0  battery  12 (0 pie)  tier 0/1
-
 ## VII. The Drift Ledger (spec promises vs kept)
 
 *1 entries; showing 1.*
@@ -1327,6 +1346,20 @@
 
 > DSL spec->code fidelity ledger (probe v2: snake|CamelCase across Source/).
 > triage: 2026-07-12 full arc: 19% (145 reds, mostly assumed noise -> proven 84% true drift) -> 50% (deep_space_trader kept via spec-binding components) -> 100% (satellite sweep: 8 more domain components + carrier).
+
+## VIII. The Breakdown Ledger (compound targets -> processed parts)
+
+*1 entries; showing 1.*
+
+### Sprint_Input -> 4 parts `2026-07-12T17:35`
+<sub>`dc_b1af6b6e2f33`</sub>
+
+> kind: input_rig
+> evidence: simtest_536c81002961d807; elim_b58535a07e3675b0
+> part state: tb-0013 (Sprint_Input/state)
+> part binding: tb-0014 (Sprint_Input/binding)
+> part harness_parity: tb-0015 (Sprint_Input/harness_parity)
+> part readback: tb-0016 (Sprint_Input/readback)
 
 ## Index of Features
 
@@ -1353,6 +1386,11 @@
 - **Player_Character_Suit_Visor** — 1 entry: `professor_grade_1bf1d076b6c54468`
 - **Sleepwalker_Beats** — 1 entry: `repstat:Sleepwalker_Beats`
 - **Sleepwalker_System** — 1 entry: `professor_grade_c672ff663bf3651b`
+- **Sprint_Input** — 1 entry: `dc_b1af6b6e2f33`
+- **Sprint_Input/binding** — 1 entry: `repstat:Sprint_Input/binding`
+- **Sprint_Input/harness_parity** — 1 entry: `repstat:Sprint_Input/harness_parity`
+- **Sprint_Input/readback** — 1 entry: `repstat:Sprint_Input/readback`
+- **Sprint_Input/state** — 1 entry: `repstat:Sprint_Input/state`
 - **System_DSL_Fidelity** — 3 entries: `elim_5db874e721a6c962`, `elim_fc1e3b5e9ce65fbe`, `repstat:System_DSL_Fidelity`
 - **System_Economy** — 7 entries: `professor_grade_7886af92f495ccd1`, `professor_grade_987966987f9c8be5`, `professor_grade_cbdfff41c119fe65`, `professor_grade_364a07e3116f20a6`, `professor_grade_bf25d5d3a1fc673f`, `professor_grade_c5197b91a28559eb` ...
 - **System_Factions** — 5 entries: `professor_grade_eed210f4ab52757d`, `professor_grade_490fe77b72f70388`, `professor_grade_b2bb156bf98b0f0a`, `professor_grade_2cef42bbe0482227`, `professor_grade_311a8a7ca7b93bff`
@@ -1363,9 +1401,8 @@
 - **Tool_Shovel_Model** — 1 entry: `professor_grade_ef64717b4d520850`
 - **Travel_Walking** — 1 entry: `professor_grade_f4fa95fd0c69ab19`
 - **Verb_Look** — 1 entry: `prof_grade_6a97b22d6c0770cf`
-- **Verb_PickUp** — 1 entry: `repstat:Verb_PickUp`
-- **Verb_Shovel** — 2 entries: `prof_grade_dc971d60df30178e`, `repstat:Verb_Shovel`
-- **Verb_Step** — 2 entries: `prof_grade_b95495e2f021ba8d`, `prof_grade_03b0a0ba4be20838`
+- **Verb_Shovel** — 1 entry: `prof_grade_dc971d60df30178e`
+- **Verb_Step** — 3 entries: `prof_grade_b95495e2f021ba8d`, `prof_grade_03b0a0ba4be20838`, `elim_b58535a07e3675b0`
 - **Visual_Verification** — 41 entries: `professor_grade_d543406104bab7ca`, `professor_grade_4b3ac1a8094ad245`, `professor_grade_5c4febabf91f23f0`, `professor_grade_caf6e3de66d62355`, `professor_grade_146029f24a743a1c`, `professor_grade_7a0262bc83441f63` ...
 - **Workflow_Test** — 1 entry: `professor_grade_609983d30ed38756`
 - **audio_visual_sync/report_telemetry** — 2 entries: `elim_b39ca7951a8cd8f8`, `repstat:audio_visual_sync/report_telemetry`

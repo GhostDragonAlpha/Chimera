@@ -1,0 +1,16 @@
+[
+ {
+  "id": "atom_41d452589a1a",
+  "feature": "Sprint_Input/harness_parity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Plugins",
+   "glob": "*.cpp",
+   "regex": "LeftShift"
+  },
+  "desc": "part 'harness_parity' of Sprint_Input: harness parity: sleepwalker and bridge agree on the key token",
+  "provenance": "decomposition:dc_b1af6b6e2f33"
+ }
+]
