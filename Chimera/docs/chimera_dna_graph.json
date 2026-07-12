@@ -52581,6 +52581,45 @@
       "links": [],
       "recorded_by": "-",
       "run_id": "run_555503622bbd"
+    },
+    {
+      "id": "surprise_9f4ee84e13399c32",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T22:28:36.490372",
+      "context": "Grinding scattered rep reds after the SaveGame precision fix",
+      "expectation": "the reds would be another single false-positive class fixable in one generator edit",
+      "reality": "23 remaining reds split into 15 'UPROPERTY not used in cpp' (mix: genuinely dead vs editor/BP-driven data like VoiceStartSound) + 8 'H-34 unspawned' (mix: real bug vs BlueprintSpawnableComponent spawned in a .uasset the atom can't see). Neither is a clean sweep \u2014 each needs per-field judgment.",
+      "lesson_hint": "the used-in-cpp atom is inherently noisy in a data-heavy, BP-driven codebase; it needs a stronger signal than 'appears in any .cpp' \u2014 e.g. 'referenced in a .cpp OTHER than its own header' AND not BP-exposed. Until then, its reds are advisory, not gospel.",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the reds would be another single false-positive class fixable in one generator e' but '23 remaining reds split into 15 'UPROPERTY not used in cpp' (mix: genuinely dead'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_0baf335cedfb"
+    },
+    {
+      "id": "phase_78ab9686b09bd61c",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T22:28:37.192557",
+      "phase": "Autonomous generation: circadian run + SaveGame green + sacrifice log attached",
+      "result": "dream_loop ran all organs (2 tier promotions, 3 pains ripened, herald/book refreshed); System_SaveGame 13 red -> 0 (precision: SaveGame UPROPERTYs exempted from used-in-cpp; real bug: USacrificeLogComponent H-34 attached, UBT green); LM timeout fixed (30->120s, verified 38.4s completion). 23 scattered reds remain, categorized.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Autonomous generation: circadian run + SaveGame green + sacrifice log attached",
+      "error_category": "none",
+      "fix_description": "Phase 'Autonomous generation: circadian run + SaveGame green + sacrifice log attached' complete: dream_loop ran all organs (2 tier promotions, 3 pains ripened, herald/book refreshed); System_SaveGame 13 red -> 0 (precision: SaveGame UPROPERTYs exempted from used-in-cpp; real bug: USacrificeLogCom",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The used-in-cpp reflection atom flags editor/BP-driven UPROPERTYs (sounds, meshes, tunables) as 'dead metadata' \u2014 false positives; it needs 'referenced in a .cpp beyond its own header AND not solely BP-consumed' before its reds can be treated as real"
+      ],
+      "inheritance": "The meaning system (sacrifice log) is now wired. Remaining reds need per-field judgment: 15 UPROPERTY-not-in-cpp (dead vs BP-data) + 8 H-34 (real vs BP-spawned). Do NOT sweep them blindly \u2014 the used-in-cpp atom is noisy in a data/BP-heavy codebase.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_af9da6973a4c"
     }
   ],
   "edges": [
