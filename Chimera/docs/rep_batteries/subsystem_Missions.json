@@ -1,0 +1,16 @@
+[
+ {
+  "id": "atom_a37da2b51086",
+  "feature": "subsystem/Missions",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UMissionComponent\\b|UMissionComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UMissionComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:MissionComponent.h"
+ }
+]

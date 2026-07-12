@@ -1,0 +1,212 @@
+[
+ {
+  "id": "atom_01343d92302d",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBasePrice\\b"
+  },
+  "desc": "UPROPERTY BasePrice (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_0d85ea4db985",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBuyPriceMultiplier\\b"
+  },
+  "desc": "UPROPERTY BuyPriceMultiplier (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_40d7f765fdf5",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStationName\\b"
+  },
+  "desc": "UPROPERTY StationName (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_41b56f52e53f",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDemandMultiplier\\b"
+  },
+  "desc": "UPROPERTY DemandMultiplier (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_4573067758e1",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCommodityList\\b"
+  },
+  "desc": "UPROPERTY CommodityList (EconomyManager.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyManager.h"
+ },
+ {
+  "id": "atom_5ccf1db7bd32",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnCommodityPriceChanged\\b"
+  },
+  "desc": "UPROPERTY OnCommodityPriceChanged (EconomyManager.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyManager.h"
+ },
+ {
+  "id": "atom_5f9551e71f88",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentDemand\\b"
+  },
+  "desc": "UPROPERTY CurrentDemand (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_86edf19722d2",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAvailableCommodities\\b"
+  },
+  "desc": "UPROPERTY AvailableCommodities (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_90677b6dbb19",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCommodityName\\b"
+  },
+  "desc": "UPROPERTY CommodityName (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_9916066f750a",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDescription\\b"
+  },
+  "desc": "UPROPERTY Description (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_a016f39605b0",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLocation\\b"
+  },
+  "desc": "UPROPERTY Location (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_b4cdd9fc3115",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStationTradingList\\b"
+  },
+  "desc": "UPROPERTY StationTradingList (EconomyManager.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyManager.h"
+ },
+ {
+  "id": "atom_c1f2664b479c",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSupplyMultiplier\\b"
+  },
+  "desc": "UPROPERTY SupplyMultiplier (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_d0fb639cd86d",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSellPriceMultiplier\\b"
+  },
+  "desc": "UPROPERTY SellPriceMultiplier (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_d65d3f2bdab3",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentSupply\\b"
+  },
+  "desc": "UPROPERTY CurrentSupply (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ }
+]

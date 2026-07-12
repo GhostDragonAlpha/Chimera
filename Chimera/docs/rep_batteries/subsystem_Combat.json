@@ -1,0 +1,296 @@
+[
+ {
+  "id": "atom_2bb74773d995",
+  "feature": "subsystem/Combat",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UShieldComponent\\b|UShieldComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UShieldComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:ShieldComponent.h"
+ },
+ {
+  "id": "atom_85f89f86ba51",
+  "feature": "subsystem/Combat",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UCombatTargetComponent\\b|UCombatTargetComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UCombatTargetComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:CombatTargetComponent.h"
+ },
+ {
+  "id": "atom_8adf9ae79d24",
+  "feature": "subsystem/Combat",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USystemDamageComponent\\b|USystemDamageComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USystemDamageComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:SystemDamageComponent.h"
+ },
+ {
+  "id": "atom_8bc82d0be95e",
+  "feature": "subsystem/Combat",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UDamageComponent\\b|UDamageComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UDamageComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:DamageComponent.h"
+ },
+ {
+  "id": "atom_c3765b1163f5",
+  "feature": "subsystem/Combat",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UWeaponComponent\\b|UWeaponComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UWeaponComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:WeaponComponent.h"
+ },
+ {
+  "id": "atom_1245fccea0aa",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMissileRacks\\b"
+  },
+  "desc": "UPROPERTY MissileRacks (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_20e93dfc7146",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDamagePerShot\\b"
+  },
+  "desc": "UPROPERTY DamagePerShot (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_22d9e1e9bd82",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMissileType\\b"
+  },
+  "desc": "UPROPERTY MissileType (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_30fbd80776ad",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxHullHealth\\b"
+  },
+  "desc": "UPROPERTY MaxHullHealth (DamageComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DamageComponent.h"
+ },
+ {
+  "id": "atom_312feaf0e420",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bProjectileSpeed\\b"
+  },
+  "desc": "UPROPERTY ProjectileSpeed (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_416c30b789ba",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentHullHealth\\b"
+  },
+  "desc": "UPROPERTY CurrentHullHealth (DamageComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DamageComponent.h"
+ },
+ {
+  "id": "atom_43348ac989bf",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSpeed\\b"
+  },
+  "desc": "UPROPERTY Speed (Projectile.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:Projectile.h"
+ },
+ {
+  "id": "atom_4cceaa3c4076",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentTarget\\b"
+  },
+  "desc": "UPROPERTY CurrentTarget (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_6fa8ff1f8182",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTrackingStrength\\b"
+  },
+  "desc": "UPROPERTY TrackingStrength (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_7fcd87d08e61",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFireRate\\b"
+  },
+  "desc": "UPROPERTY FireRate (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_84355ae337dc",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRackName\\b"
+  },
+  "desc": "UPROPERTY RackName (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_90a350ad5794",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbIsDestroyed\\b"
+  },
+  "desc": "UPROPERTY bIsDestroyed (DamageComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DamageComponent.h"
+ },
+ {
+  "id": "atom_b5330330fbc8",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDamage\\b"
+  },
+  "desc": "UPROPERTY Damage (Projectile.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:Projectile.h"
+ },
+ {
+  "id": "atom_c871d0e9300f",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bName\\b"
+  },
+  "desc": "UPROPERTY Name (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_c98f5853d74d",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWeaponSlots\\b"
+  },
+  "desc": "UPROPERTY WeaponSlots (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ },
+ {
+  "id": "atom_fd20f28d0b7b",
+  "feature": "subsystem/Combat",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRange\\b"
+  },
+  "desc": "UPROPERTY Range (WeaponComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeaponComponent.h"
+ }
+]

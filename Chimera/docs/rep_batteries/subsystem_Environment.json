@@ -1,0 +1,324 @@
+[
+ {
+  "id": "atom_70d660efb7f7",
+  "feature": "subsystem/Environment",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UFootprintComponent\\b|UFootprintComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UFootprintComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:FootprintComponent.h"
+ },
+ {
+  "id": "atom_f0a946252814",
+  "feature": "subsystem/Environment",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UWindSystemComponent\\b|UWindSystemComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UWindSystemComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_0f975cf76c5d",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindCycleTime\\b"
+  },
+  "desc": "UPROPERTY WindCycleTime (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_1e04031dd0e8",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbWindEnabled\\b"
+  },
+  "desc": "UPROPERTY bWindEnabled (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_27476a10ea98",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bUpdateCount\\b"
+  },
+  "desc": "UPROPERTY UpdateCount (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_29c307ab056c",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentWindSpeed\\b"
+  },
+  "desc": "UPROPERTY CurrentWindSpeed (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_31d5f89c50ac",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootprintMesh\\b"
+  },
+  "desc": "UPROPERTY FootprintMesh (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_37eb36503003",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootprintsSpawned\\b"
+  },
+  "desc": "UPROPERTY FootprintsSpawned (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_3a63ec9ff3cd",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBaseWindSpeed\\b"
+  },
+  "desc": "UPROPERTY BaseWindSpeed (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_5142997fd08f",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootprintMaterial\\b"
+  },
+  "desc": "UPROPERTY FootprintMaterial (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_54fce271fa56",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBaseWindDirection\\b"
+  },
+  "desc": "UPROPERTY BaseWindDirection (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_5e06deb61822",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMinSpeed\\b"
+  },
+  "desc": "UPROPERTY MinSpeed (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_60713f9bb9e4",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootprintLength\\b"
+  },
+  "desc": "UPROPERTY FootprintLength (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_7780e60ce990",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentWindVelocity\\b"
+  },
+  "desc": "UPROPERTY CurrentWindVelocity (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_7c474af50016",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootprintLifeSpan\\b"
+  },
+  "desc": "UPROPERTY FootprintLifeSpan (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_8026fa0d83b5",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootLateralOffset\\b"
+  },
+  "desc": "UPROPERTY FootLateralOffset (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_912fe13d08f6",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bVariationPhase\\b"
+  },
+  "desc": "UPROPERTY VariationPhase (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_a26f2e5f0e17",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindVariance\\b"
+  },
+  "desc": "UPROPERTY WindVariance (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_b83dd20b286f",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTotalWindDriftDistance\\b"
+  },
+  "desc": "UPROPERTY TotalWindDriftDistance (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_c04bb9d23364",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxInstantaneousWindSpeed\\b"
+  },
+  "desc": "UPROPERTY MaxInstantaneousWindSpeed (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_d78921e92c51",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCachedMovement\\b"
+  },
+  "desc": "UPROPERTY CachedMovement (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_eaedb26602f6",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentWindDirection\\b"
+  },
+  "desc": "UPROPERTY CurrentWindDirection (WindSystemComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_ee3e8e39a684",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStrideLength\\b"
+  },
+  "desc": "UPROPERTY StrideLength (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ }
+]

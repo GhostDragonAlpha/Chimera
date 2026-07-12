@@ -274,6 +274,25 @@ def main():
     except Exception as e:
         print(f"\n[3.8] Fractal spiral: unavailable ({e})")
 
+    # 3.9. Rep ledger — resolution through repetition (the dog-sit threshold).
+    # A feature earns collapse eligibility by ACCUMULATED constraint reps
+    # (>=200 with a >=95% 8-run streak), not by one good night.
+    try:
+        from core.rep_engine import status_lines, all_battery_features
+        feats = all_battery_features()
+        if feats:
+            print(f"\n[3.9] Rep ledger ({len(feats)} batteries; "
+                  f"resolution = reps x constraints):")
+            for line in status_lines(limit=8):
+                print(f"    {line}")
+            print("    run a pass: python -m core.rep_engine tend   "
+                  "gate check: python -m core.rep_engine gate --feature <X>")
+        else:
+            print("\n[3.9] Rep ledger: no batteries yet -> "
+                  "python -m core.rep_engine build")
+    except Exception as e:
+        print(f"\n[3.9] Rep ledger: unavailable ({e})")
+
     # 4. Pending technical_research
     pending = [n for n in nodes
                if n.get("feature_type") == "technical_research"

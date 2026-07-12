@@ -1,0 +1,86 @@
+[
+ {
+  "id": "atom_a4b9296a3ecf",
+  "feature": "subsystem/Flight",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UFlightComponent\\b|UFlightComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UFlightComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:FlightComponent.h"
+ },
+ {
+  "id": "atom_0f7e81e890e5",
+  "feature": "subsystem/Flight",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bInertiaDamping\\b"
+  },
+  "desc": "UPROPERTY InertiaDamping (FlightComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FlightComponent.h"
+ },
+ {
+  "id": "atom_6b877bc78f18",
+  "feature": "subsystem/Flight",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxSpeed\\b"
+  },
+  "desc": "UPROPERTY MaxSpeed (FlightComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FlightComponent.h"
+ },
+ {
+  "id": "atom_85a54b67f8ad",
+  "feature": "subsystem/Flight",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTurnRate\\b"
+  },
+  "desc": "UPROPERTY TurnRate (FlightComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FlightComponent.h"
+ },
+ {
+  "id": "atom_eab2fa277c6f",
+  "feature": "subsystem/Flight",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFuelCapacityLiters\\b"
+  },
+  "desc": "UPROPERTY FuelCapacityLiters (FlightComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FlightComponent.h"
+ },
+ {
+  "id": "atom_ff15581e7d79",
+  "feature": "subsystem/Flight",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bThrustAcceleration\\b"
+  },
+  "desc": "UPROPERTY ThrustAcceleration (FlightComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FlightComponent.h"
+ }
+]

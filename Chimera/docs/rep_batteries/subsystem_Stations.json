@@ -1,0 +1,184 @@
+[
+ {
+  "id": "atom_56f67a39f09f",
+  "feature": "subsystem/Stations",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UDockingComponent\\b|UDockingComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UDockingComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:DockingComponent.h"
+ },
+ {
+  "id": "atom_0a20bc3c0174",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bInteriorLights\\b"
+  },
+  "desc": "UPROPERTY InteriorLights (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_2d69b0d1561c",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRoughness\\b"
+  },
+  "desc": "UPROPERTY Roughness (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_2ec8bab88cb3",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bHullSegments\\b"
+  },
+  "desc": "UPROPERTY HullSegments (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_472f5e060d73",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLightColor\\b"
+  },
+  "desc": "UPROPERTY LightColor (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_8b71ae2e2009",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLightIntensity\\b"
+  },
+  "desc": "UPROPERTY LightIntensity (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_8d5675792edf",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMetallic\\b"
+  },
+  "desc": "UPROPERTY Metallic (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_93bfd518494b",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bModuleRadius\\b"
+  },
+  "desc": "UPROPERTY ModuleRadius (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_aea89a104b7d",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStationName\\b"
+  },
+  "desc": "UPROPERTY StationName (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_b549e366b696",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bModuleCount\\b"
+  },
+  "desc": "UPROPERTY ModuleCount (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_b88e04e26c9d",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRootSegment\\b"
+  },
+  "desc": "UPROPERTY RootSegment (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_be0769fb7785",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bModuleLength\\b"
+  },
+  "desc": "UPROPERTY ModuleLength (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ },
+ {
+  "id": "atom_f7742d535ed9",
+  "feature": "subsystem/Stations",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bHullColor\\b"
+  },
+  "desc": "UPROPERTY HullColor (StationActor.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationActor.h"
+ }
+]

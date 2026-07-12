@@ -1,0 +1,44 @@
+[
+ {
+  "id": "atom_0b07d3df6553",
+  "feature": "subsystem/Travel",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UTravelVehicleComponent\\b|UTravelVehicleComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UTravelVehicleComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:TravelVehicleComponent.h"
+ },
+ {
+  "id": "atom_9724762c96ca",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGroundSpeed\\b"
+  },
+  "desc": "UPROPERTY GroundSpeed (TravelVehicleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TravelVehicleComponent.h"
+ },
+ {
+  "id": "atom_d6b70097433c",
+  "feature": "subsystem/Travel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFlightSpeed\\b"
+  },
+  "desc": "UPROPERTY FlightSpeed (TravelVehicleComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TravelVehicleComponent.h"
+ }
+]

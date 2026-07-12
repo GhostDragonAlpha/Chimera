@@ -1,0 +1,338 @@
+[
+ {
+  "id": "atom_9d107abc4a43",
+  "feature": "subsystem/AI",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USocialTradeComponent\\b|USocialTradeComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USocialTradeComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:SocialTradeComponent.h"
+ },
+ {
+  "id": "atom_c85483d59c2a",
+  "feature": "subsystem/AI",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UNPCTradeComponent\\b|UNPCTradeComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UNPCTradeComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:NPCTradeComponent.h"
+ },
+ {
+  "id": "atom_01ad10a67bee",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLastResponse\\b"
+  },
+  "desc": "UPROPERTY LastResponse (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_0c24bfa7629c",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbIsTradingActive\\b"
+  },
+  "desc": "UPROPERTY bIsTradingActive (NPCTradeComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:NPCTradeComponent.h"
+ },
+ {
+  "id": "atom_15ebe94ab07f",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSaveSystem\\b"
+  },
+  "desc": "UPROPERTY SaveSystem (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_1680eac5e12a",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStatusDisplay\\b"
+  },
+  "desc": "UPROPERTY StatusDisplay (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_20ce6ca6766a",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bNlpParserInstance\\b"
+  },
+  "desc": "UPROPERTY NlpParserInstance (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_34a7d5759a96",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFactionName\\b"
+  },
+  "desc": "UPROPERTY FactionName (PirateAIController.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:PirateAIController.h"
+ },
+ {
+  "id": "atom_3b5be011ce64",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFactionSystem\\b"
+  },
+  "desc": "UPROPERTY FactionSystem (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_51596ca8c7a5",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTradeMarkup\\b"
+  },
+  "desc": "UPROPERTY TradeMarkup (SocialTradeComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SocialTradeComponent.h"
+ },
+ {
+  "id": "atom_5abda322dbf5",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTradeDiscount\\b"
+  },
+  "desc": "UPROPERTY TradeDiscount (SocialTradeComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SocialTradeComponent.h"
+ },
+ {
+  "id": "atom_5b89ea638d8a",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSightConfig\\b"
+  },
+  "desc": "UPROPERTY SightConfig (NPCBasicAIController.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:NPCBasicAIController.h"
+ },
+ {
+  "id": "atom_5d2c4c06f034",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentState\\b"
+  },
+  "desc": "UPROPERTY CurrentState (PirateAIController.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:PirateAIController.h"
+ },
+ {
+  "id": "atom_85606116035b",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDebugVisualizationTimer\\b"
+  },
+  "desc": "UPROPERTY DebugVisualizationTimer (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_8ecf4e2fc8a7",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bVoiceStartSound\\b"
+  },
+  "desc": "UPROPERTY VoiceStartSound (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_8f049b7df488",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTradeSystem\\b"
+  },
+  "desc": "UPROPERTY TradeSystem (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_90d0adf20f37",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbIsProcessing\\b"
+  },
+  "desc": "UPROPERTY bIsProcessing (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_91ccf08b91ab",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bEconomySystem\\b"
+  },
+  "desc": "UPROPERTY EconomySystem (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_94a04b08c205",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMissionSystem\\b"
+  },
+  "desc": "UPROPERTY MissionSystem (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_a9c674c81f59",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bVoiceEndSound\\b"
+  },
+  "desc": "UPROPERTY VoiceEndSound (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_ba6513eeac71",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTradeRange\\b"
+  },
+  "desc": "UPROPERTY TradeRange (NPCTradeComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:NPCTradeComponent.h"
+ },
+ {
+  "id": "atom_bd4e740086dd",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bVoiceMesh\\b"
+  },
+  "desc": "UPROPERTY VoiceMesh (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_c8b805f224e0",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSttEngine\\b"
+  },
+  "desc": "UPROPERTY SttEngine (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_eeb7eaa4c55d",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDefaultBehaviorTree\\b"
+  },
+  "desc": "UPROPERTY DefaultBehaviorTree (NPCBasicAIController.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:NPCBasicAIController.h"
+ }
+]

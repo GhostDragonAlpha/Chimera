@@ -1,0 +1,2186 @@
+[
+ {
+  "id": "atom_0152e8bd26c5",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "atmospheric_composition"
+  },
+  "desc": "DSL token 'atmospheric_composition' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_019a806644f2",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "energy_drain_per_hit"
+  },
+  "desc": "DSL token 'energy_drain_per_hit' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_020930f6bc13",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "spawn_resource_nodes"
+  },
+  "desc": "DSL token 'spawn_resource_nodes' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_034701b161e3",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "duck_music_on_damage"
+  },
+  "desc": "DSL token 'duck_music_on_damage' (starcitizen_scale.chimera) surfaces in generated code",
+  "provenance": "dsl:starcitizen_scale.chimera"
+ },
+ {
+  "id": "atom_047b15abc426",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "shield_strength_points"
+  },
+  "desc": "DSL token 'shield_strength_points' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_06298df04d12",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "activation"
+  },
+  "desc": "DSL token 'activation' (valid_gameplay_combat.chimera) surfaces in generated code",
+  "provenance": "dsl:valid_gameplay_combat.chimera"
+ },
+ {
+  "id": "atom_07618d4ca41c",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "fuel_stat"
+  },
+  "desc": "DSL token 'fuel_stat' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_0ac4c79dfc15",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "location_coordinates"
+  },
+  "desc": "DSL token 'location_coordinates' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_0bc3fabd83c7",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "travel_time_seconds"
+  },
+  "desc": "DSL token 'travel_time_seconds' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_0c8ad7289dc6",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "weapon_slots"
+  },
+  "desc": "DSL token 'weapon_slots' (ship_classes.chimera) surfaces in generated code",
+  "provenance": "dsl:ship_classes.chimera"
+ },
+ {
+  "id": "atom_0d516cd90048",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "moon_count"
+  },
+  "desc": "DSL token 'moon_count' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_0e2b0951360d",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "requires_favorable_nimbus_conditions"
+  },
+  "desc": "DSL token 'requires_favorable_nimbus_conditions' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_0e70d7c9d180",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cancel_execution"
+  },
+  "desc": "DSL token 'cancel_execution' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_0eb51164c7d0",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "attribute_set"
+  },
+  "desc": "DSL token 'attribute_set' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_17a9be54a661",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "detection_range_km"
+  },
+  "desc": "DSL token 'detection_range_km' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_185115ac490a",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "destination_systems"
+  },
+  "desc": "DSL token 'destination_systems' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_19f67309b2a5",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "recharge_rate_per_second"
+  },
+  "desc": "DSL token 'recharge_rate_per_second' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_1fd5371b9a43",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "commodities_allowed"
+  },
+  "desc": "DSL token 'commodities_allowed' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_20db78c0ffa7",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "destination_station"
+  },
+  "desc": "DSL token 'destination_station' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_22e062a5d957",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cancel_execution_on_empty"
+  },
+  "desc": "DSL token 'cancel_execution_on_empty' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_294130346fa6",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "target_platforms"
+  },
+  "desc": "DSL token 'target_platforms' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_2a4f4805591a",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "nimbus_condition_threshold"
+  },
+  "desc": "DSL token 'nimbus_condition_threshold' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_2a54a6662299",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "radius_km"
+  },
+  "desc": "DSL token 'radius_km' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_2c33a420944e",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "module_dependencies"
+  },
+  "desc": "DSL token 'module_dependencies' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_2cddfea62e1c",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "category"
+  },
+  "desc": "DSL token 'category' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_2de593a8d0aa",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "origin_anchor"
+  },
+  "desc": "DSL token 'origin_anchor' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_329f0ff63f2d",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "quantity_kg"
+  },
+  "desc": "DSL token 'quantity_kg' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_33e4ab9fb2f5",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "terrain_detail_levels"
+  },
+  "desc": "DSL token 'terrain_detail_levels' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_35c3460bf2fb",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "enemy_factions"
+  },
+  "desc": "DSL token 'enemy_factions' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_397483a3300a",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "typical_cargo_types"
+  },
+  "desc": "DSL token 'typical_cargo_types' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_39d34b836eab",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "metadata_domains"
+  },
+  "desc": "DSL token 'metadata_domains' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_3a3aafe30c73",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "ability_system_component"
+  },
+  "desc": "DSL token 'ability_system_component' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_3a5a7d9fe8b5",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "iterations"
+  },
+  "desc": "DSL token 'iterations' (tdd_test_suite.chimera) surfaces in generated code",
+  "provenance": "dsl:tdd_test_suite.chimera"
+ },
+ {
+  "id": "atom_3bfdd75e1ce7",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "color_palette"
+  },
+  "desc": "DSL token 'color_palette' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_3d9dea479f75",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "terrain_roughness"
+  },
+  "desc": "DSL token 'terrain_roughness' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_3dd8cb2551e5",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "affected_radius_light_years"
+  },
+  "desc": "DSL token 'affected_radius_light_years' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_3fe0ff48f497",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "phenomenon"
+  },
+  "desc": "DSL token 'phenomenon' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_429106be1514",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "min_location"
+  },
+  "desc": "DSL token 'min_location' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_435c700bfd56",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "fuel_cost_liters"
+  },
+  "desc": "DSL token 'fuel_cost_liters' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_448dc8f7a706",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "crafting_radius"
+  },
+  "desc": "DSL token 'crafting_radius' (starcitizen_scale.chimera) surfaces in generated code",
+  "provenance": "dsl:starcitizen_scale.chimera"
+ },
+ {
+  "id": "atom_450a754052d7",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "game_mode"
+  },
+  "desc": "DSL token 'game_mode' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_45418ca48c24",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "camera_perspective"
+  },
+  "desc": "DSL token 'camera_perspective' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_4841049ec23f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "energy_cost_megajoules"
+  },
+  "desc": "DSL token 'energy_cost_megajoules' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_496a69c30a9f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "location"
+  },
+  "desc": "DSL token 'location' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_4a4ad1214113",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "duration_variation_minutes"
+  },
+  "desc": "DSL token 'duration_variation_minutes' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_4ae2d96735be",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "behavior_tree"
+  },
+  "desc": "DSL token 'behavior_tree' (starcitizen_scale.chimera) surfaces in generated code",
+  "provenance": "dsl:starcitizen_scale.chimera"
+ },
+ {
+  "id": "atom_4bf2c0184dfc",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "max_location"
+  },
+  "desc": "DSL token 'max_location' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_4cefc5f2be7a",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "quantity_units"
+  },
+  "desc": "DSL token 'quantity_units' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_4d2efcd0865f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "base_type"
+  },
+  "desc": "DSL token 'base_type' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_4dc700cc0d7f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "status_effects"
+  },
+  "desc": "DSL token 'status_effects' (tdd_test_suite.chimera) surfaces in generated code",
+  "provenance": "dsl:tdd_test_suite.chimera"
+ },
+ {
+  "id": "atom_4dfb14e59e5a",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "base_value_credits"
+  },
+  "desc": "DSL token 'base_value_credits' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_5025f0499dc0",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "intensity"
+  },
+  "desc": "DSL token 'intensity' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_5674636bf53a",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "origin_station"
+  },
+  "desc": "DSL token 'origin_station' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_5aeb7aa72c6e",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cargo_capacity_kg"
+  },
+  "desc": "DSL token 'cargo_capacity_kg' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_5b0101ffdcc9",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "has_moons"
+  },
+  "desc": "DSL token 'has_moons' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_5cd804a12994",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "weather_systems"
+  },
+  "desc": "DSL token 'weather_systems' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_5d1b25baab4e",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "buy_price_per_ration"
+  },
+  "desc": "DSL token 'buy_price_per_ration' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_5fc20ba80c72",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "quantity"
+  },
+  "desc": "DSL token 'quantity' (tdd_test_suite.chimera) surfaces in generated code",
+  "provenance": "dsl:tdd_test_suite.chimera"
+ },
+ {
+  "id": "atom_6110efb51d67",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "trade_restrictions"
+  },
+  "desc": "DSL token 'trade_restrictions' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_62ea6ea9ad07",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "pirate_activity_level"
+  },
+  "desc": "DSL token 'pirate_activity_level' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_63a9c827fcca",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "ability_tags"
+  },
+  "desc": "DSL token 'ability_tags' (starcitizen_scale.chimera) surfaces in generated code",
+  "provenance": "dsl:starcitizen_scale.chimera"
+ },
+ {
+  "id": "atom_67913b55234b",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "required_commodity"
+  },
+  "desc": "DSL token 'required_commodity' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_6fb2ea7eac08",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "hull_health"
+  },
+  "desc": "DSL token 'hull_health' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_7033c1c92a36",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "max_speed_kmh"
+  },
+  "desc": "DSL token 'max_speed_kmh' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_71b3aadd8466",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "market_volatility"
+  },
+  "desc": "DSL token 'market_volatility' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_72a2509a85df",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "hit_reactions"
+  },
+  "desc": "DSL token 'hit_reactions' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_737cfb98b09f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cool_down_seconds"
+  },
+  "desc": "DSL token 'cool_down_seconds' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_7413b019b89a",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "route_safety_rating"
+  },
+  "desc": "DSL token 'route_safety_rating' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_74a41579f837",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "quantity_rations"
+  },
+  "desc": "DSL token 'quantity_rations' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_757f26fc3238",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "damage_formulas"
+  },
+  "desc": "DSL token 'damage_formulas' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_75f5ec8a7200",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "thrust_acceleration"
+  },
+  "desc": "DSL token 'thrust_acceleration' (space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:space_trader.chimera"
+ },
+ {
+  "id": "atom_7665cdca7921",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "consumption_regions"
+  },
+  "desc": "DSL token 'consumption_regions' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_7665ea17a78f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "turbulence_factor"
+  },
+  "desc": "DSL token 'turbulence_factor' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_76dc34042205",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "sell_price_per_kg"
+  },
+  "desc": "DSL token 'sell_price_per_kg' (space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:space_trader.chimera"
+ },
+ {
+  "id": "atom_77f17a780c9d",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "gravity_scale"
+  },
+  "desc": "DSL token 'gravity_scale' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_785ccb4c3855",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cluster_density_per_cubic_km"
+  },
+  "desc": "DSL token 'cluster_density_per_cubic_km' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_79add0db1594",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "atmosphere_density"
+  },
+  "desc": "DSL token 'atmosphere_density' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_7d19dba4089e",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "turn_rate_deg_per_sec"
+  },
+  "desc": "DSL token 'turn_rate_deg_per_sec' (space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:space_trader.chimera"
+ },
+ {
+  "id": "atom_7d81d044d0b7",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "fuel_type"
+  },
+  "desc": "DSL token 'fuel_type' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_7f35208f1bc5",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "thrust_force_newtons"
+  },
+  "desc": "DSL token 'thrust_force_newtons' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_816a28830d6d",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "ability_activated"
+  },
+  "desc": "DSL token 'ability_activated' (tdd_test_suite.chimera) surfaces in generated code",
+  "provenance": "dsl:tdd_test_suite.chimera"
+ },
+ {
+  "id": "atom_83d9ddd05562",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "has_ring_system"
+  },
+  "desc": "DSL token 'has_ring_system' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_84e8c2ebbd6f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "penalty_failed"
+  },
+  "desc": "DSL token 'penalty_failed' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_8977d948a1c3",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "graph_type"
+  },
+  "desc": "DSL token 'graph_type' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_897cd3a7058b",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "hunger_stat"
+  },
+  "desc": "DSL token 'hunger_stat' (starcitizen_scale.chimera) surfaces in generated code",
+  "provenance": "dsl:starcitizen_scale.chimera"
+ },
+ {
+  "id": "atom_8a8d429b5e2a",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "production_locations"
+  },
+  "desc": "DSL token 'production_locations' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_8b75b87c3779",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "engine_version"
+  },
+  "desc": "DSL token 'engine_version' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_9075f2399809",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "position"
+  },
+  "desc": "DSL token 'position' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_93cb42c16dda",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "max_speed_km_per_sec"
+  },
+  "desc": "DSL token 'max_speed_km_per_sec' (ship_classes.chimera) surfaces in generated code",
+  "provenance": "dsl:ship_classes.chimera"
+ },
+ {
+  "id": "atom_9491b725a1da",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "station_class"
+  },
+  "desc": "DSL token 'station_class' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_96f99e1793f3",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "origin_system"
+  },
+  "desc": "DSL token 'origin_system' (economy_data.chimera) surfaces in generated code",
+  "provenance": "dsl:economy_data.chimera"
+ },
+ {
+  "id": "atom_98818705ede0",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "danger_level"
+  },
+  "desc": "DSL token 'danger_level' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_9ae64c9113cc",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "shield_type"
+  },
+  "desc": "DSL token 'shield_type' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_9bd4425b6ae7",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "orbits_planet"
+  },
+  "desc": "DSL token 'orbits_planet' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_9c131df13a77",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "consumption_rate_per_km"
+  },
+  "desc": "DSL token 'consumption_rate_per_km' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_9d4344aae087",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "capacity_crew"
+  },
+  "desc": "DSL token 'capacity_crew' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_9f632a88b955",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "default_abilities"
+  },
+  "desc": "DSL token 'default_abilities' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_a254b96b31b1",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "tree_height_range_meters"
+  },
+  "desc": "DSL token 'tree_height_range_meters' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_a582ab77edb5",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "fuel_cost_per_jump_liters"
+  },
+  "desc": "DSL token 'fuel_cost_per_jump_liters' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_abe2cd52942f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "wildlife_spawns"
+  },
+  "desc": "DSL token 'wildlife_spawns' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_ad3f457cbfa2",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "facilities"
+  },
+  "desc": "DSL token 'facilities' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_af034f9933fc",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "generator_type"
+  },
+  "desc": "DSL token 'generator_type' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_af67b8fea65c",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "fuel_capacity_liters"
+  },
+  "desc": "DSL token 'fuel_capacity_liters' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_b1f91f9cda47",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "supports_ship_classes"
+  },
+  "desc": "DSL token 'supports_ship_classes' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_b392deea2e95",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "b_is_used_multiple_times"
+  },
+  "desc": "DSL token 'b_is_used_multiple_times' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_b485ee4734f3",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "jamming_resistance_level"
+  },
+  "desc": "DSL token 'jamming_resistance_level' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_b4f0f77b0ac0",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "max_range_light_years"
+  },
+  "desc": "DSL token 'max_range_light_years' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_b5c6289a6d20",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "fuel_consumption_kg_per_sec"
+  },
+  "desc": "DSL token 'fuel_consumption_kg_per_sec' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_b679a7b34493",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "buy_price_per_kg"
+  },
+  "desc": "DSL token 'buy_price_per_kg' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_b91b5e3d8567",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "has_weapon_systems"
+  },
+  "desc": "DSL token 'has_weapon_systems' (ship_classes.chimera) surfaces in generated code",
+  "provenance": "dsl:ship_classes.chimera"
+ },
+ {
+  "id": "atom_b9f5314395ad",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "temperature_stat"
+  },
+  "desc": "DSL token 'temperature_stat' (tdd_test_suite.chimera) surfaces in generated code",
+  "provenance": "dsl:tdd_test_suite.chimera"
+ },
+ {
+  "id": "atom_ba09880adfde",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "color_gradients"
+  },
+  "desc": "DSL token 'color_gradients' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_bc40de846b83",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "regeneration_rate_per_sec"
+  },
+  "desc": "DSL token 'regeneration_rate_per_sec' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_c0b68afcb5b2",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "safety_reduction_percentage"
+  },
+  "desc": "DSL token 'safety_reduction_percentage' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_c4c020649a49",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "base_biomes"
+  },
+  "desc": "DSL token 'base_biomes' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_c7fd5e196353",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "scan_modes"
+  },
+  "desc": "DSL token 'scan_modes' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_c7fec966778e",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "ground_texture_types"
+  },
+  "desc": "DSL token 'ground_texture_types' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_c84fd4088f8b",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "energy_requirement_megajoules"
+  },
+  "desc": "DSL token 'energy_requirement_megajoules' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_ca299b7a7f1c",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "destination_anchor"
+  },
+  "desc": "DSL token 'destination_anchor' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_cbcc99b7d965",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "surface_temperature_max"
+  },
+  "desc": "DSL token 'surface_temperature_max' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_cc34b6eff991",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cooldown"
+  },
+  "desc": "DSL token 'cooldown' (valid_gameplay_combat.chimera) surfaces in generated code",
+  "provenance": "dsl:valid_gameplay_combat.chimera"
+ },
+ {
+  "id": "atom_cc68c3e96dd9",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "gravity_g"
+  },
+  "desc": "DSL token 'gravity_g' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_d08456ef65f6",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "elements"
+  },
+  "desc": "DSL token 'elements' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_d20c7bab7f10",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "buy_price_per_unit"
+  },
+  "desc": "DSL token 'buy_price_per_unit' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_d2e400671e6b",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "is_artificial"
+  },
+  "desc": "DSL token 'is_artificial' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_d401c11e7eee",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "attribute_selectors"
+  },
+  "desc": "DSL token 'attribute_selectors' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_d8bc2698d16e",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "maneuverability_rating"
+  },
+  "desc": "DSL token 'maneuverability_rating' (ship_classes.chimera) surfaces in generated code",
+  "provenance": "dsl:ship_classes.chimera"
+ },
+ {
+  "id": "atom_d8c02f59879b",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "distance_light_years"
+  },
+  "desc": "DSL token 'distance_light_years' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_d8f54cc90619",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cloud_layers"
+  },
+  "desc": "DSL token 'cloud_layers' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_daff83326654",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "inertia_damping"
+  },
+  "desc": "DSL token 'inertia_damping' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_db32bd6262a1",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "max_concurrent_jumps"
+  },
+  "desc": "DSL token 'max_concurrent_jumps' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_dc0699ab0848",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "dialogue_tree"
+  },
+  "desc": "DSL token 'dialogue_tree' (starcitizen_scale.chimera) surfaces in generated code",
+  "provenance": "dsl:starcitizen_scale.chimera"
+ },
+ {
+  "id": "atom_dea057cbb30d",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "shield_class"
+  },
+  "desc": "DSL token 'shield_class' (ship_classes.chimera) surfaces in generated code",
+  "provenance": "dsl:ship_classes.chimera"
+ },
+ {
+  "id": "atom_df2c7639ccff",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "factions"
+  },
+  "desc": "DSL token 'factions' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_df651222afb3",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "size_variation_meters"
+  },
+  "desc": "DSL token 'size_variation_meters' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_df778f5bc8a2",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "accumulation_enabled"
+  },
+  "desc": "DSL token 'accumulation_enabled' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_e15e2a898b1b",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "requires_quantum_drive"
+  },
+  "desc": "DSL token 'requires_quantum_drive' (space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:space_trader.chimera"
+ },
+ {
+  "id": "atom_e70b7f91a567",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "anchor_strength"
+  },
+  "desc": "DSL token 'anchor_strength' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_e8b2405ed6f7",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cargo_volume_cubic_meters"
+  },
+  "desc": "DSL token 'cargo_volume_cubic_meters' (ship_classes.chimera) surfaces in generated code",
+  "provenance": "dsl:ship_classes.chimera"
+ },
+ {
+  "id": "atom_ea1bd8eb78a2",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "b_pinless_data"
+  },
+  "desc": "DSL token 'b_pinless_data' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_ea254c1a8ad5",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "max_temperature_kelvin"
+  },
+  "desc": "DSL token 'max_temperature_kelvin' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_eb3b15101178",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "resource_nodes"
+  },
+  "desc": "DSL token 'resource_nodes' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_eed7fad72e98",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "description"
+  },
+  "desc": "DSL token 'description' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_ef66997f495b",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "vegetation_density"
+  },
+  "desc": "DSL token 'vegetation_density' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_ef883ceec12c",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "thirst_stat"
+  },
+  "desc": "DSL token 'thirst_stat' (tdd_test_suite.chimera) surfaces in generated code",
+  "provenance": "dsl:tdd_test_suite.chimera"
+ },
+ {
+  "id": "atom_ef9b31e81afb",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "has_quantum_drive"
+  },
+  "desc": "DSL token 'has_quantum_drive' (ship_classes.chimera) surfaces in generated code",
+  "provenance": "dsl:ship_classes.chimera"
+ },
+ {
+  "id": "atom_f061a48f6df3",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "destination"
+  },
+  "desc": "DSL token 'destination' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_f3b720485b9f",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "cargo_weight_stat"
+  },
+  "desc": "DSL token 'cargo_weight_stat' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_f3c56694e890",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "requires_quantum_anchor"
+  },
+  "desc": "DSL token 'requires_quantum_anchor' (flight_components.chimera) surfaces in generated code",
+  "provenance": "dsl:flight_components.chimera"
+ },
+ {
+  "id": "atom_f7f3322eaee4",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "network_model"
+  },
+  "desc": "DSL token 'network_model' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_f86c2e7f82b0",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "crew_capacity"
+  },
+  "desc": "DSL token 'crew_capacity' (ship_classes.chimera) surfaces in generated code",
+  "provenance": "dsl:ship_classes.chimera"
+ },
+ {
+  "id": "atom_fa3b7200d612",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "supports_dynamic_weather"
+  },
+  "desc": "DSL token 'supports_dynamic_weather' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ },
+ {
+  "id": "atom_fbf0bf04a8f0",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "surface_temperature_min"
+  },
+  "desc": "DSL token 'surface_temperature_min' (celestial_bodies.chimera) surfaces in generated code",
+  "provenance": "dsl:celestial_bodies.chimera"
+ },
+ {
+  "id": "atom_fd57dcf20306",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "affects_jump_safety"
+  },
+  "desc": "DSL token 'affects_jump_safety' (quantum_travel.chimera) surfaces in generated code",
+  "provenance": "dsl:quantum_travel.chimera"
+ },
+ {
+  "id": "atom_fd6715116b57",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "interdiction_chance"
+  },
+  "desc": "DSL token 'interdiction_chance' (deep_space_trader.chimera) surfaces in generated code",
+  "provenance": "dsl:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_ff0f2e46cfc8",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "composition_types"
+  },
+  "desc": "DSL token 'composition_types' (planet_generation.chimera) surfaces in generated code",
+  "provenance": "dsl:planet_generation.chimera"
+ }
+]

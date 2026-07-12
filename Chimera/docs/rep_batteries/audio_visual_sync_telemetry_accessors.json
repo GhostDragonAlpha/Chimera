@@ -1,0 +1,110 @@
+[
+ {
+  "id": "atom_62129fe86752",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USandSoundComponent|SandSoundComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "SandSoundComponent attached at construction/BeginPlay (H-34 root case)",
+  "provenance": "H-34"
+ },
+ {
+  "id": "atom_5cea28c3e970",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "\\bGetFootstepSyncMaxLatencyMs\\b"
+  },
+  "desc": "telemetry accessor GetFootstepSyncMaxLatencyMs exists (tb-0001 MCP contract)",
+  "provenance": "tb-0001"
+ },
+ {
+  "id": "atom_6682621dc292",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "\\bGetVolumeScalesWithSpeed\\b"
+  },
+  "desc": "telemetry accessor GetVolumeScalesWithSpeed exists (tb-0001 MCP contract)",
+  "provenance": "tb-0001"
+ },
+ {
+  "id": "atom_85b51ecc418f",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "\\bGetFootstepSyncAvgLatencyMs\\b"
+  },
+  "desc": "telemetry accessor GetFootstepSyncAvgLatencyMs exists (tb-0001 MCP contract)",
+  "provenance": "tb-0001"
+ },
+ {
+  "id": "atom_b85de3f95523",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "\\bGetFootstepSyncEventCount\\b"
+  },
+  "desc": "telemetry accessor GetFootstepSyncEventCount exists (tb-0001 MCP contract)",
+  "provenance": "tb-0001"
+ },
+ {
+  "id": "atom_e177b8f4639f",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "beat expect schema as root cause"
+  },
+  "desc": "regression (PIE): beat expect schema as root cause",
+  "provenance": "elimination:elim_71b935361cee2319"
+ },
+ {
+  "id": "atom_e6bb20b4c56f",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.*",
+   "regex": "\\bClearFootstepSyncTelemetry\\b"
+  },
+  "desc": "telemetry accessor ClearFootstepSyncTelemetry exists (tb-0001 MCP contract)",
+  "provenance": "tb-0001"
+ },
+ {
+  "id": "atom_f8b931c24756",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "MCP action handlers / command dispatch as root cause"
+  },
+  "desc": "regression (PIE): MCP action handlers / command dispatch as root cause",
+  "provenance": "elimination:elim_65f84a195c149377"
+ }
+]

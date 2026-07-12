@@ -50257,6 +50257,118 @@
       ],
       "recorded_by": "dream_loop.py",
       "run_id": "run_c52f7e979164"
+    },
+    {
+      "id": "phase_dea979617900fe8d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:14:38.288437",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_c8e19d8c49b2"
+    },
+    {
+      "id": "phase_ef329fd418ae94e0",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:19:55.323356",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_0c232376ccd5"
+    },
+    {
+      "id": "elim_65f84a195c149377",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:21:19.825658",
+      "feature": "audio_visual_sync/telemetry_accessors",
+      "boundary": "MCP action handlers / command dispatch as root cause",
+      "observed": "handlers verified working; telemetry still returned defaults",
+      "eliminates": [
+        "hypothesis: McpAutomationBridge HandleAction broken"
+      ],
+      "survives": [
+        "hypothesis: SandSoundComponent never attached at runtime"
+      ],
+      "evidence_ref": "H-31 lineage, sim_av_sync_test 2026-07-11",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_audio_visual_sync/telemetry_accessors",
+      "template_file": "elimination/audio_visual_sync/telemetry_accessors",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for audio_visual_sync/telemetry_accessors: MCP action handlers / command dispatch as root cause",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_6650e6dfa326"
+    },
+    {
+      "id": "elim_71b935361cee2319",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:21:20.396161",
+      "feature": "audio_visual_sync/telemetry_accessors",
+      "boundary": "beat expect schema as root cause",
+      "observed": "all expects schema-valid after H-30 validation; failures persisted",
+      "eliminates": [
+        "hypothesis: beat scripts malformed"
+      ],
+      "survives": [
+        "hypothesis: backend component not populating at BeginPlay"
+      ],
+      "evidence_ref": "H-32 lineage, sim_av_sync_test 2026-07-11",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_audio_visual_sync/telemetry_accessors",
+      "template_file": "elimination/audio_visual_sync/telemetry_accessors",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for audio_visual_sync/telemetry_accessors: beat expect schema as root cause",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_d892a2ff90af"
+    },
+    {
+      "id": "elim_b39ca7951a8cd8f8",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:21:36.753063",
+      "feature": "audio_visual_sync/report_telemetry",
+      "boundary": "hardcoded fallback sentinels masking absent backend data",
+      "observed": "count=0, latency=999 defaults where live data should be",
+      "eliminates": [
+        "hypothesis: telemetry pipeline healthy"
+      ],
+      "survives": [
+        "hypothesis: component attachment (CONFIRMED by rep atom, red on first pass)"
+      ],
+      "evidence_ref": "H-31/H-34, rep_engine first pass 2026-07-12",
+      "probe": {
+        "type": "tree_lacks",
+        "root": "Source/Chimera/ProceduralGenerated/Sound",
+        "glob": "*.cpp",
+        "regex": "=\\s*999(\\.0f?)?\\b"
+      },
+      "tier": 2,
+      "error_signature": "elimination_audio_visual_sync/report_telemetry",
+      "template_file": "elimination/audio_visual_sync/report_telemetry",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for audio_visual_sync/report_telemetry: hardcoded fallback sentinels masking absent backend data",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_49916e1d97cc"
     }
   ],
   "edges": [

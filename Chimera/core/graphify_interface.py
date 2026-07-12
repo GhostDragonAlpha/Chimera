@@ -209,6 +209,9 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "surprise":
         return _mutate_surprise(details or {})
 
+    elif mutate_type == "elimination":
+        return _mutate_elimination(details or {})
+
     elif mutate_type == "observation":
         return _mutate_observation(details or {})
 
@@ -1421,6 +1424,62 @@ def _mutate_phase_complete(details: dict) -> str:
     save_dna_graph({"nodes": nodes, "edges": edges})
 
     return mutation_node["id"]
+
+
+def _mutate_elimination(details: dict) -> str:
+    """Records an Elimination (InversionRecord): a boundary PROVEN wrong plus
+    the hypotheses that survive — the shrunken search space handed to the
+    next agent. Negative twin of the phantom pain (pain = suspected negative;
+    elimination = proven negative, subject only to H-19-style freshness).
+    If `probe` carries a rep_engine probe spec ({type, ...}), the elimination
+    becomes a PERMANENT regression atom in that feature's battery — a
+    rejection is a chisel that strikes every night forever."""
+    feature = str(details.get("feature") or "").strip()
+    boundary = str(details.get("boundary") or "").strip()
+    if not feature or not boundary:
+        return "rejected_elimination: 'feature' and 'boundary' are required; nothing recorded"
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    node = {
+        "id": f"elim_{hashlib.sha256(f'elim_{feature}_{boundary}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "Elimination",
+        "timestamp": datetime.utcnow().isoformat(),
+        "feature": feature,
+        "boundary": boundary,
+        "observed": str(details.get("observed") or ""),
+        "eliminates": list(details.get("eliminates") or []),
+        "survives": list(details.get("survives") or []),
+        "evidence_ref": str(details.get("evidence_ref") or ""),
+        "probe": details.get("probe") or {},
+        "tier": int(details.get("tier") or 1),
+        "error_signature": f"elimination_{feature}",
+        "template_file": f"elimination/{feature}",
+        "error_category": "elimination",
+        "fix_description": f"Eliminated for {feature}: {boundary[:100]}",
+        "compilation_result": "n/a",
+        "links": [],
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
+def record_elimination(feature: str, boundary: str, observed: str = "",
+                       eliminates: list = None, survives: list = None,
+                       evidence_ref: str = "", probe: dict = None,
+                       tier: int = 1) -> str:
+    """Record a proven negative: what a failure ELIMINATED and what survives.
+
+    `survives` is the load-bearing half — the narrowed search space the next
+    agent inherits (the H-31..H-34 saga re-derived it four nights running).
+    Pass `probe={'type': 'tree_lacks', 'root': ..., 'glob': ..., 'regex': ...}`
+    (any core.rep_engine probe) to mint a permanent regression atom."""
+    return graphify_mutate("elimination", details={
+        "feature": feature, "boundary": boundary, "observed": observed,
+        "eliminates": eliminates or [], "survives": survives or [],
+        "evidence_ref": evidence_ref, "probe": probe or {}, "tier": tier})
 
 
 def _mutate_surprise(details: dict) -> str:

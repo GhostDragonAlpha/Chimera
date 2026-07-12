@@ -1,0 +1,410 @@
+[
+ {
+  "id": "atom_1cceb323c9f5",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-SandR2.uasset"
+  },
+  "desc": "Fantozzi-SandR2.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_1e831900c84c",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-StoneR2.uasset"
+  },
+  "desc": "Fantozzi-StoneR2.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_258cbf4330ae",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USandSoundComponent\\b|USandSoundComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USandSoundComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_5b33ea4123b1",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-SandL2.uasset"
+  },
+  "desc": "Fantozzi-SandL2.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_8d8d59def019",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-SandL1.uasset"
+  },
+  "desc": "Fantozzi-SandL1.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_8e600b73f5b8",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-SandR1.uasset"
+  },
+  "desc": "Fantozzi-SandR1.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_8f16f8692ba6",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-StoneR3.uasset"
+  },
+  "desc": "Fantozzi-StoneR3.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_941f605310ba",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-StoneL3.uasset"
+  },
+  "desc": "Fantozzi-StoneL3.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_9a01c08d9a94",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-SandR3.uasset"
+  },
+  "desc": "Fantozzi-SandR3.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_9e4fe07f2599",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-StoneL2.uasset"
+  },
+  "desc": "Fantozzi-StoneL2.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_b1d548a79440",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-SandL3.uasset"
+  },
+  "desc": "Fantozzi-SandL3.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_c6119ad9635d",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-StoneL1.uasset"
+  },
+  "desc": "Fantozzi-StoneL1.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_d8a128c56965",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/SOURCES.md"
+  },
+  "desc": "audio license ledger present",
+  "provenance": "asset-standards:license"
+ },
+ {
+  "id": "atom_ff25c05e27f1",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "Content/Audio/Footsteps/Fantozzi-StoneR1.uasset"
+  },
+  "desc": "Fantozzi-StoneR1.wav imported as uasset",
+  "provenance": "asset-standards:pairing"
+ },
+ {
+  "id": "atom_054b018b25ba",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxFootstepSyncLatencyMs\\b"
+  },
+  "desc": "UPROPERTY MaxFootstepSyncLatencyMs (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_0dbd6ba9bc79",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindSpeedForMaxVolume\\b"
+  },
+  "desc": "UPROPERTY WindSpeedForMaxVolume (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_2b14f05fd5a0",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTotalFootstepSyncLatencyMs\\b"
+  },
+  "desc": "UPROPERTY TotalFootstepSyncLatencyMs (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_3856f22802be",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLastFootstepVolume\\b"
+  },
+  "desc": "UPROPERTY LastFootstepVolume (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_394a4d9ee78c",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindLoopSound\\b"
+  },
+  "desc": "UPROPERTY WindLoopSound (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_415c80dec8ff",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindMinVolume\\b"
+  },
+  "desc": "UPROPERTY WindMinVolume (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_54705fa02864",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindLowPassMin\\b"
+  },
+  "desc": "UPROPERTY WindLowPassMin (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_65a15c781471",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bImpactSound\\b"
+  },
+  "desc": "UPROPERTY ImpactSound (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_6817bbc04495",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPitchMultiplier\\b"
+  },
+  "desc": "UPROPERTY PitchMultiplier (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_73b04d23e079",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLowPassFrequency\\b"
+  },
+  "desc": "UPROPERTY LowPassFrequency (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_852759947679",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAudioComponent\\b"
+  },
+  "desc": "UPROPERTY AudioComponent (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_855b0dd72870",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAverageFootstepSyncLatencyMs\\b"
+  },
+  "desc": "UPROPERTY AverageFootstepSyncLatencyMs (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_921d498fefe7",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bVolumeMultiplier\\b"
+  },
+  "desc": "UPROPERTY VolumeMultiplier (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_9300678d699c",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindAudioComponent\\b"
+  },
+  "desc": "UPROPERTY WindAudioComponent (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_c0209a268543",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindMaxVolume\\b"
+  },
+  "desc": "UPROPERTY WindMaxVolume (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_c657ad1d6daf",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindLowPassMax\\b"
+  },
+  "desc": "UPROPERTY WindLowPassMax (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
+  "id": "atom_d03980406751",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootstepSyncEventCount\\b"
+  },
+  "desc": "UPROPERTY FootstepSyncEventCount (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ }
+]

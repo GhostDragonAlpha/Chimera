@@ -1,0 +1,58 @@
+[
+ {
+  "id": "atom_5b781c1b3503",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShipCategory\\b"
+  },
+  "desc": "UPROPERTY ShipCategory (AShip_Trader_Vessel_Alpha.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:AShip_Trader_Vessel_Alpha.h"
+ },
+ {
+  "id": "atom_71637a7877db",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShieldRegenRate\\b"
+  },
+  "desc": "UPROPERTY ShieldRegenRate (AShip_Trader_Vessel_Alpha.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:AShip_Trader_Vessel_Alpha.h"
+ },
+ {
+  "id": "atom_cb8ca4d33767",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bHullHealth\\b"
+  },
+  "desc": "UPROPERTY HullHealth (AShip_Trader_Vessel_Alpha.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:AShip_Trader_Vessel_Alpha.h"
+ },
+ {
+  "id": "atom_eeab96ed1404",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShieldCapacity\\b"
+  },
+  "desc": "UPROPERTY ShieldCapacity (AShip_Trader_Vessel_Alpha.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:AShip_Trader_Vessel_Alpha.h"
+ }
+]

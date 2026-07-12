@@ -19,7 +19,7 @@ try:
     from core.graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
         record_heuristic, record_surprise, record_observation, record_playtest,
-        record_simtest, record_rollout, record_research,
+        record_simtest, record_rollout, record_research, record_elimination,
         parse_pain_verdicts,
     )
 except ImportError:
@@ -27,7 +27,7 @@ except ImportError:
     from graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
         record_heuristic, record_surprise, record_observation, record_playtest,
-        record_simtest, record_rollout, record_research,
+        record_simtest, record_rollout, record_research, record_elimination,
         parse_pain_verdicts,
     )
 
@@ -118,6 +118,20 @@ def main():
     p.add_argument("--source", default="agent", choices=["agent", "human", "engine"],
                    help="who produced the surprise (human = a correction from the user)")
 
+    p = sub.add_parser("elimination", help="Inversion record: a boundary PROVEN wrong + what survives "
+                                           "(--probe-json mints a permanent rep_engine regression atom)")
+    p.add_argument("--feature", required=True)
+    p.add_argument("--boundary", required=True, help="the hypothesis/scope that is now ELIMINATED")
+    p.add_argument("--observed", default="", help="the evidence observed")
+    p.add_argument("--eliminates", action="append", default=[], help="hypothesis killed (repeatable)")
+    p.add_argument("--survives", action="append", default=[],
+                   help="hypothesis still standing — the narrowed search space (repeatable)")
+    p.add_argument("--evidence-ref", default="", dest="evidence_ref",
+                   help="simtest/build/surprise id (H-19 freshness anchor)")
+    p.add_argument("--probe-json", default="", dest="probe_json",
+                   help='rep_engine probe spec, e.g. {"type":"tree_lacks","root":"...","glob":"*.cpp","regex":"..."}')
+    p.add_argument("--tier", type=int, default=1)
+
     p = sub.add_parser("simtest", help="Sleepwalker beat-run record (agent-sim evidence, never a verdict)")
     p.add_argument("--session", required=True)
     p.add_argument("--demo", required=True)
@@ -166,6 +180,13 @@ def main():
     elif args.kind == "surprise":
         node_id = record_surprise(args.context, args.reality, args.expectation,
                                   args.lesson_hint, args.source)
+    elif args.kind == "elimination":
+        import json as _json
+        probe = _json.loads(args.probe_json) if args.probe_json else None
+        node_id = record_elimination(args.feature, args.boundary, args.observed,
+                                     eliminates=args.eliminates, survives=args.survives,
+                                     evidence_ref=args.evidence_ref, probe=probe,
+                                     tier=args.tier)
     elif args.kind == "observe":
         node_id = record_observation(args.feature, args.verdict, args.notes,
                                      derived_from=args.derived_from, quote=args.quote,

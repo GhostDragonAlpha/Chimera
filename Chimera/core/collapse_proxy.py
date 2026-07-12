@@ -80,6 +80,22 @@ def _clean_exercises(nodes):
     return per_feature
 
 
+def _rep_gate_check(feature: str):
+    """Resolution-by-repetition gate (core.rep_engine): a feature earns
+    acceptance through ACCUMULATED constraint reps (>=200 with a clean
+    8-run streak), never through one good night. Advisory by default;
+    CHIMERA_ENFORCE_REP_GATE=1 makes it hard. Rejections are NEVER gated —
+    you can always fail; you can't graduate without your reps."""
+    import os
+    enforce = os.environ.get("CHIMERA_ENFORCE_REP_GATE") == "1"
+    try:
+        from core.rep_engine import rep_gate
+        ok, reason = rep_gate(feature)
+    except Exception as e:                      # engine unavailable -> never block
+        return (False, True, f"rep engine unavailable ({e})")
+    return (enforce, ok, reason)
+
+
 def tend(min_sessions: int = 2, dry_run: bool = False):
     try:
         from core.graphify_interface import record_observation, record_feature
@@ -89,9 +105,16 @@ def tend(min_sessions: int = 2, dry_run: bool = False):
     queue, nodes = _queue_and_nodes()
     exercised = _clean_exercises(nodes)
     collapsed, waiting = [], []
+    rep_advisories = []
     for q in queue:
         f = q["feature"]
         evidence = exercised.get(f, [])
+        enforce, rep_ok, rep_reason = _rep_gate_check(f)
+        if len(evidence) >= min_sessions and enforce and not rep_ok:
+            waiting.append(f"{f} (REP-GATED: {rep_reason})")
+            continue
+        if len(evidence) >= min_sessions and not rep_ok:
+            rep_advisories.append(f"{f}: {rep_reason}")
         if len(evidence) >= min_sessions:
             if not dry_run:
                 record_observation(f, "accepted", observer="agent-sim-provisional",
@@ -109,6 +132,8 @@ def tend(min_sessions: int = 2, dry_run: bool = False):
         print(f"  collapsed~  {c}")
     for w in waiting[:12]:
         print(f"  waiting     {w}")
+    for adv in rep_advisories[:8]:
+        print(f"  rep-gate(advisory)  {adv}   [set CHIMERA_ENFORCE_REP_GATE=1 to enforce]")
     return {"collapsed": collapsed, "waiting": waiting}
 
 
@@ -190,9 +215,17 @@ def sweep(simtest_id: str, valence: str, dry_run: bool = False):
         print("Automated collapse complete. Machine signals are final in the distiller.")
         return {"rejected": rejected, "skipped": skipped}
     swept, skipped = [], []
+    rep_gated = []
     for q in queue:
         f = q["feature"]
         if exercised.get(f):
+            enforce, rep_ok, rep_reason = _rep_gate_check(f)
+            if enforce and not rep_ok:
+                rep_gated.append(f"{f}: {rep_reason}")
+                skipped.append(f)
+                continue
+            if not rep_ok:
+                rep_gated.append(f"(advisory) {f}: {rep_reason}")
             if not dry_run:
                 record_observation(f, "accepted", observer="automated-via-attribution",
                                    derived_from=simtest_id, tacit=True,
@@ -205,6 +238,8 @@ def sweep(simtest_id: str, valence: str, dry_run: bool = False):
     mode = "DRY-RUN " if dry_run else ""
     print(f"[collapse_proxy] {mode}automated sweep ({simtest_id}): {len(swept)} accepted-tacit, "
           f"{len(skipped)} never exercised (stay queued for sim evidence)")
+    for g in rep_gated[:8]:
+        print(f"  rep-gate    {g}")
     for f in swept:
         print(f"  swept       {f}")
     for f in skipped[:12]:

@@ -1,0 +1,44 @@
+[
+ {
+  "id": "atom_191d963cf59b",
+  "feature": "subsystem/PCG",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UUniverseGenerationComponent\\b|UUniverseGenerationComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UUniverseGenerationComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:UniverseGenerationComponent.h"
+ },
+ {
+  "id": "atom_9f5196ae2a5f",
+  "feature": "subsystem/PCG",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAsteroidCount\\b"
+  },
+  "desc": "UPROPERTY AsteroidCount (UniverseGenerationComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:UniverseGenerationComponent.h"
+ },
+ {
+  "id": "atom_be488b37314c",
+  "feature": "subsystem/PCG",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPlanetDensity\\b"
+  },
+  "desc": "UPROPERTY PlanetDensity (UniverseGenerationComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:UniverseGenerationComponent.h"
+ }
+]

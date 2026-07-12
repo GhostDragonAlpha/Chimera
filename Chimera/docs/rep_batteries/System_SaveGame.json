@@ -1,0 +1,436 @@
+[
+ {
+  "id": "atom_b65ebc73c4dd",
+  "feature": "System_SaveGame",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USacrificeLogComponent\\b|USacrificeLogComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USacrificeLogComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:SacrificeLogComponent.h"
+ },
+ {
+  "id": "atom_c657a361cb70",
+  "feature": "System_SaveGame",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USaveGameComponent\\b|USaveGameComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USaveGameComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:SaveGameComponent.h"
+ },
+ {
+  "id": "atom_0038d6b644dd",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxShield\\b"
+  },
+  "desc": "UPROPERTY MaxShield (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_02460f746650",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLocation\\b"
+  },
+  "desc": "UPROPERTY Location (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_0b21e12c959c",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bQuantity\\b"
+  },
+  "desc": "UPROPERTY Quantity (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_2aea6293a9e9",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbInheritanceScreenShown\\b"
+  },
+  "desc": "UPROPERTY bInheritanceScreenShown (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_2d927acd477e",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTotalSacrificesCount\\b"
+  },
+  "desc": "UPROPERTY TotalSacrificesCount (SacrificeLogComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SacrificeLogComponent.h"
+ },
+ {
+  "id": "atom_56ef4e4404ba",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bEvidenceNotes\\b"
+  },
+  "desc": "UPROPERTY EvidenceNotes (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_5d436777bc8e",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCompletedMissions\\b"
+  },
+  "desc": "UPROPERTY CompletedMissions (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_6670ae477296",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bInventoryItems\\b"
+  },
+  "desc": "UPROPERTY InventoryItems (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_774033b6474c",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPlayerState\\b"
+  },
+  "desc": "UPROPERTY PlayerState (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_78f60a22de35",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbHasSacrifices\\b"
+  },
+  "desc": "UPROPERTY bHasSacrifices (CostlessLifeEndingDiagnostic.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CostlessLifeEndingDiagnostic.h"
+ },
+ {
+  "id": "atom_79cc7c0e0a26",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bProtectedAtCostEntries\\b"
+  },
+  "desc": "UPROPERTY ProtectedAtCostEntries (SacrificeLogComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SacrificeLogComponent.h"
+ },
+ {
+  "id": "atom_80fee47d9a5e",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLastSavedTime\\b"
+  },
+  "desc": "UPROPERTY LastSavedTime (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_8acbd4a9e607",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStatus\\b"
+  },
+  "desc": "UPROPERTY Status (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_8ba7a01914c6",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxHealth\\b"
+  },
+  "desc": "UPROPERTY MaxHealth (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_8be70ffadef2",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bItemName\\b"
+  },
+  "desc": "UPROPERTY ItemName (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_8fd2b48b3b17",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShield\\b"
+  },
+  "desc": "UPROPERTY Shield (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_9789a83854d3",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPredictionText\\b"
+  },
+  "desc": "UPROPERTY PredictionText (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_a25de4ea87f5",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSentence2\\b"
+  },
+  "desc": "UPROPERTY Sentence2 (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_b3d46e4a3d5d",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPredecessorWill\\b"
+  },
+  "desc": "UPROPERTY PredecessorWill (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_bde5eba65422",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentShipName\\b"
+  },
+  "desc": "UPROPERTY CurrentShipName (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_c514e8a230aa",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRotation\\b"
+  },
+  "desc": "UPROPERTY Rotation (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_ccba94de51a5",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOwnedShips\\b"
+  },
+  "desc": "UPROPERTY OwnedShips (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_cd48c14121b6",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bForewarnings\\b"
+  },
+  "desc": "UPROPERTY Forewarnings (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_f493aa66d4bf",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSentence1\\b"
+  },
+  "desc": "UPROPERTY Sentence1 (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_f4d6c6bfecef",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bActiveMissions\\b"
+  },
+  "desc": "UPROPERTY ActiveMissions (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_f64675073a8d",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bHealth\\b"
+  },
+  "desc": "UPROPERTY Health (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_fcf2c867929a",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSentence3\\b"
+  },
+  "desc": "UPROPERTY Sentence3 (InheritanceData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:InheritanceData.h"
+ },
+ {
+  "id": "atom_fdee13c47d85",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSaveVersion\\b"
+  },
+  "desc": "UPROPERTY SaveVersion (ChimeraSaveGame.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraSaveGame.h"
+ },
+ {
+  "id": "atom_ffb96f7d426e",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbEndingSequenceTriggered\\b"
+  },
+  "desc": "UPROPERTY bEndingSequenceTriggered (CostlessLifeEndingDiagnostic.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CostlessLifeEndingDiagnostic.h"
+ }
+]

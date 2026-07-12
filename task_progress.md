@@ -1,3 +1,52 @@
+# Session 2026-07-12g — REP ENGINE: resolution through repetition (human vision landed)
+
+**Human directive (verbatim intent):** the system needs RESOLUTION, not more mechanism —
+"statistically it takes ~400 turns to get a dog to sit"; AAA fidelity (3D objects,
+materials, reflections) "will emerge naturally but only if we have enough frequency and
+fidelity in the constraints, and that can only be achieved through repetition of the
+process." Inversion/elimination defines the container walls; repetition fills the container.
+
+- **core/rep_engine.py (NEW ORGAN)** — the constraint atom: one machine-checkable
+  predicate, milliseconds, editor-free by default. Batteries auto-GENERATED (never
+  hand-written) from 5 sources: asset standards, UPROPERTY/UCLASS reflection (declared
+  => used, H-21; every component spawned/registered, H-34 generalized), encodable
+  H-rules (H-2/H-17/H-21/H-31/H-34 + tb-0001 accessor contract), Elimination nodes
+  (rejection => permanent regression atom), DSL token fidelity. Ledger =
+  docs/world/reps.db (gitignored); batteries = docs/rep_batteries/ (committed).
+  Shaping: tiers 0-4 (exists->behaves->measures->perceptual->comparative), promotion
+  only on 8-run >=95% streak (the trainer's 8-of-10 rule). 17/17 tests.
+- **Rep gate**: collapse eligibility = >=200 reps + clean streak. Advisory in
+  collapse_proxy tend/sweep-accept (rejections NEVER gated); CHIMERA_ENFORCE_REP_GATE=1
+  hardens. Preflight section [3.9] shows the ledger per feature.
+- **Elimination records (inversion made typed)**: graphify "elimination" mutation +
+  record_elimination() + `graphify_record elimination` CLI + postflight --eliminated.
+  survives[] = the narrowed search space the next agent inherits. Task packets now print
+  NOT-THIS (task not_scope + the feature's Elimination nodes). Backfilled the
+  H-31/H-32/H-34 saga as 3 Elimination nodes (elim_65f84a, elim_71b935, elim_b39ca7).
+- **dream_loop** runs rep_engine.tend() nightly; Dream Report gains "## Rep ledger".
+- **FIRST LIVE PASS FINDINGS (the engine paid for itself in one command):**
+  * SandSoundComponent attach atom RED — no CreateDefaultSubobject/NewObject/
+    RegisterComponent anywhere in ProceduralGenerated. tb-0001's root cause, confirmed
+    mechanically in milliseconds (took 4 dream-loop nights via H-31..H-34).
+  * 3 of 5 tb-0001 accessors ABSENT (GetFootstepSyncAvgLatencyMs/MaxLatencyMs/
+    GetVolumeScalesWithSpeed) — the MCP contract is only partially implemented.
+  * System_DSL_Fidelity at 7% pass — massive spec->code drift (atmospheric_composition,
+    duck_music_on_damage, shield_strength_points... declared, never generated).
+- Throughput: ~466 verdicts per tend pass (29 batteries, 475 atoms) vs ~1 elimination/
+  day before — the two-orders-of-magnitude jump the directive asked for.
+- Suites green: rep_engine 17/17, task_board 10/10, agent_tunnel 11/11.
+
+## NEXT
+1. Fix the RED atoms rep_engine surfaced: attach SandSoundComponent (generator template,
+   not hand-edit) + implement the 3 missing accessors — then watch the battery go green
+   and the streak build toward the first rep-gated collapse.
+2. Triage System_DSL_Fidelity reds: real drift vs token noise; prune noise atoms
+   deliberately (battery edits are manual by design).
+3. Seed not_scope on tb-0001/tb-0002 (they file-conflict by design — each is the
+   other's hard negative).
+
+---
+
 # Solver draft 2026-07-12 03:47Z — blocker: graph node count 2024 > max 2000
 
 Diagnosis: The pipeline is blocked by the gate_node_count_bounded check because the UE5.8 graph has 2018 nodes, exceeding the maximum allowed limit of 2000 nodes. The error context explicitly instructs to archive old Mutation nodes to reduce the graph node count below the threshold and unblock the workflow.

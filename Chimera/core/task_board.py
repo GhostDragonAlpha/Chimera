@@ -689,6 +689,32 @@ def main(argv=None):
                 print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
                 sys.exit(2)
             _print_packet(packet)
+            # NOT-THIS: the task's inversion boundary — eliminated scope +
+            # the feature's recorded eliminations. Hard negatives with
+            # provenance; do not re-explore without new evidence.
+            try:
+                task = packet.get("task") or {}
+                not_scope = task.get("not_scope") or {}
+                elim_lines = []
+                for sub, why in (not_scope.get("rationale") or {}).items():
+                    elim_lines.append(f"x {sub}  — {why}")
+                for sub in not_scope.get("subsystems") or []:
+                    if sub not in (not_scope.get("rationale") or {}):
+                        elim_lines.append(f"x {sub}")
+                feat = task.get("feature")
+                if feat:
+                    from core.graphify_interface import load_dna_graph
+                    for n in load_dna_graph().get("nodes", []):
+                        if n.get("type") == "Elimination" and n.get("feature") == feat:
+                            elim_lines.append(
+                                f"x {n.get('boundary', '')[:70]}  "
+                                f"— eliminated ({n.get('evidence_ref') or n.get('id')})")
+                if elim_lines:
+                    print("\nNOT THIS (eliminated / out of lane — needs NEW evidence to reopen):")
+                    for line in elim_lines[:10]:
+                        print(f"  {line}")
+            except Exception:
+                pass
     elif args.cmd in ("done", "block", "release"):
         # Exiting through the board closes the tunnel session too (releases the
         # editor, checks the footprint, prints the postflight command).
