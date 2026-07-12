@@ -11,6 +11,30 @@ Confidence: 0.9
 
 ---
 
+# Session 2026-07-12e — Faculty (self-authoring exams) + Fractal Spiral + ARCH DECISION PENDING
+
+- **core/faculty.py** — the curriculum writes its OWN exams from the studio's scars.
+  `propose` reads promoted H-rules (+ optional surprises) and stages checkpoints no exam
+  covers into docs/curriculum/pending_checkpoints.json; `promote` is the GATE into the live
+  curriculum (Gardener-style; proposes but never self-executes). Ran for real: 18/18 H-rules
+  had ZERO exams -> 18 proposals staged. 7/7 tests.
+- **core/fractal_spiral.py** — the whole structure as a self-similar DNA spiral rooted at
+  the player (trunk). Golden-angle (137.5°) phyllotaxis, recursive at every scale
+  (player->loops->features->exam-bands->checkpoints); double-helix reading = impl strand +
+  verification strand, checkpoints as base-pair rungs. Reads the live graph; emits
+  docs/spiral/ (gitignored); `neighborhood` is the linking query; `--sign` records ONE
+  signature node. Preflight [3.8]. 7/7 tests. 45/45 across all six coordination suites.
+
+- **!! OPEN ARCHITECTURE DECISION (raised by human 2026-07-12):** the project's real goal is
+  a WORLD MODEL video game (UE5 as paintbrush). The DNA graph is a flat JSON file
+  (docs/chimera_dna_graph.json, 2.7MB, json.load/dump WHOLE-file every op) — the 2000-node
+  gate is a band-aid for that, NOT a graph-tech limit. graphify = NetworkX analysis layer
+  (optional neo4j/falkordb adapters, unused). Two graphs, opposite needs: keep the dev DNA
+  graph small (JSON fine); the WORLD MODEL needs a real substrate (candidate: KùzuDB embedded
+  + UE5 World Partition streaming). Decision not yet made — do NOT migrate until chosen.
+
+---
+
 # Session 2026-07-12d — THE CURRICULUM: features go to school, K -> PhD
 
 **Human's full vision landed:** the gauntlet is the ENTIRE EDUCATION SYSTEM, hyper-focused

@@ -259,6 +259,21 @@ def main():
     except Exception as e:
         print(f"\n[3.7] Task board: unavailable ({e})")
 
+    # 3.8. The fractal spiral — the whole structure as a DNA spiral around the
+    # player (trunk). Self-similar golden-angle layout; the pattern is the linker.
+    try:
+        from core.fractal_spiral import build as _spiral
+        sp = _spiral()
+        depths = sp["counts_by_depth"]
+        print(f"\n[3.8] Fractal spiral: {len(sp['nodes'])} nodes around the player "
+              f"(trunk); golden angle {sp['golden_angle_deg']}°")
+        print(f"    self-similar depth profile {depths}  "
+              f"(player -> loops -> features -> exams -> checkpoints)")
+        print(f"    render: python -m core.fractal_spiral build --svg   "
+              f"link a node: python -m core.fractal_spiral neighborhood --node <id>")
+    except Exception as e:
+        print(f"\n[3.8] Fractal spiral: unavailable ({e})")
+
     # 4. Pending technical_research
     pending = [n for n in nodes
                if n.get("feature_type") == "technical_research"

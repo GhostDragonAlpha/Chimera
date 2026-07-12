@@ -25,6 +25,9 @@ Chimera/core/task_board_state.json.tmp
 Chimera/core/tunnel_sessions/
 Chimera/core/gauntlet.lock
 
+# Fractal spiral — derived layout overlay, regenerated from the graph on demand
+Chimera/docs/spiral/
+
 # Test output files
 tdd_pipeline_output*.txt
 demo_output.txt
