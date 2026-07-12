@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-12T22:19:48+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-12T22:22:19+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -18,6 +18,9 @@ so claimed tasks are safe to run in parallel.
 | tb-0019 | open | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** |  |
 | tb-0020 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** |  |
 | tb-0021 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 distiller token-cove | docs/research/** |  |
+| tb-0022 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 - Distiller token-co | docs/research/** |  |
+| tb-0023 | open | 0.6 | Pain verdict: The verb TARGETS (BP_Verb_* actors) may be as  | docs/research/** |  |
+| tb-0024 | open | 0.6 | Pain verdict: Phase 2 dependencies may still block Phase 3 w | docs/research/** |  |
 | tb-0001 | blocked | 1.2 | audio_visual_sync/telemetry_accessors | Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | Releasing to allow other agent to continue |
 | tb-0002 | blocked | 1.2 | audio_visual_sync/report_telemetry | Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | Releasing to enable parallel work on ground features and cre |
 | tb-0004 | blocked | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | No parallel-safe open task for research writer |

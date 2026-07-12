@@ -2,7 +2,7 @@
 
 **Good news:** 4 feature(s) have now earned full trust through repeated testing — Ground_Sand_Sound, subsystem/Environment, subsystem/Stations and more.
 **Watch:** 12 feature(s) failed some checks recently (Sprint_Input/binding, Sprint_Input/state, subsystem/AI); they are on the work board with evidence attached.
-**The queue:** 10 task(s) open for agents; 111 old worries await a confirm-or-refute verdict.
+**The queue:** 13 task(s) open for agents; 111 old worries await a confirm-or-refute verdict.
 **The container:** holding steady at the edge; no changes proposed.
 **Needs you today:** nothing — rest.
 

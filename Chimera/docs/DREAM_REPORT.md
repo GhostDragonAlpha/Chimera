@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-12T22:19:43Z
+consolidated: 2026-07-12T22:22:07Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
@@ -16,11 +16,13 @@ No pending heuristics — the constitution covers everything the night found.
 Empty — every system-verified feature has been human-observed.
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`promoted:1; untouched:34 | provisional-collapse: 0 collapsed, 0 awaiting evidence`
+`untouched:35 | provisional-collapse: 0 collapsed, 0 awaiting evidence`
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
 [rep] 35 batteries, 678 atoms, 653 reps this pass (36 failing), 24 PIE atoms exported
+[rep] PROMOTED: audio_visual_sync/telemetry_accessors: tier 0 -> 1 (behaves)
+[rep] PROMOTED: subsystem/Inventory: tier 0 -> 1 (behaves)
 [rep] failing: System_SaveGame (13 atoms red)
 [rep] failing: subsystem_root (6 atoms red)
 [rep] failing: subsystem_AI (5 atoms red)
@@ -28,7 +30,7 @@ Empty — every system-verified feature has been human-observed.
 
 ## Tonight's distillation
 ```
-clusters >= 3: 43  |  suppressed (covered/pending): 42  |  staged: 1
+clusters >= 3: 43  |  suppressed (covered/pending): 43  |  staged: 0
   covered   [  5x] human_rejection: Verb_Shovel  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Look  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Bend  <- PENDING_HEURISTICS.md
@@ -71,15 +73,13 @@ clusters >= 3: 43  |  suppressed (covered/pending): 42  |  staged: 1
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
   covered   [  3x] pathway: animation_physics.add_anim_notify -> failed  <- MCP_PATHWAYS.md
-  CANDIDATE [  3x] elimination_audio_visual_sync/telemetry_accessors
-
-staged 1 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
-next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate-organ rules queue for a capable cycle); optional human veto-after.
+  covered   [  3x] elimination_audio_visual_sync/telemetry_accessors  <- PENDING_HEURISTICS.md
+nothing new to stage — the constitution already covers today's lessons
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 2095  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 2097  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 
