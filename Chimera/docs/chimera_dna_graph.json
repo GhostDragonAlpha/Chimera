@@ -51107,6 +51107,47 @@
       "links": [],
       "recorded_by": "-",
       "run_id": "run_f2003fce2266"
+    },
+    {
+      "id": "phase_207c976e3926f1f5",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:55:03.349117",
+      "phase": "The Container: edge-of-chaos regulator live",
+      "result": "malcolm.py 20/20; 15 walls banded w/ provenance; gate_envelope in PRE_FLIGHT_GATES; 15 envelope atoms (8 headless green x2, 7 pie); decomposer admission control; nightly tune breath; emergence gauge 7/wk inside [2,20]; first breath caught + fixed its own census error; 80/80 suites",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/The Container: edge-of-chaos regulator live",
+      "error_category": "none",
+      "fix_description": "Phase 'The Container: edge-of-chaos regulator live' complete: malcolm.py 20/20; 15 walls banded w/ provenance; gate_envelope in PRE_FLIGHT_GATES; 15 envelope atoms (8 headless green x2, 7 pie); decomposer admission control; nightly tune breath; emergence gauge 7",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The emergence gauge counts engine surprises, which require agents/sleepwalker RUNNING to be minted \u2014 a quiet week reads as sterile and tune will propose loosening walls that aren't the cause"
+      ],
+      "inheritance": "The container holds the system at the edge: ceilings for chaos, floors for sterility, a reserve for surprise, and a breath that proposes but never rules. Build the 7 missing sensors next (telemetry_last.json) \u2014 until then hardware walls gate admission only.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_3b5b2206c5aa"
+    },
+    {
+      "id": "elim_58026efcf3adc442",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T17:55:03.558507",
+      "feature": "Malcolm_Envelope",
+      "boundary": "heuristics_per_night breach as a real leak",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "census error, rejection-lineage records excluded, surprise_17fda10a5eba4cf3",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_Malcolm_Envelope",
+      "template_file": "elimination/Malcolm_Envelope",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Malcolm_Envelope: heuristics_per_night breach as a real leak",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_3b5b2206c5aa"
     }
   ],
   "edges": [
