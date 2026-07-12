@@ -50658,6 +50658,271 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_4629339ccb3c"
+    },
+    {
+      "id": "mutation_65b7c784b1ca",
+      "type": "Mutation",
+      "timestamp": "2026-07-12T17:23:29.379095",
+      "error_signature": "success_no_error",
+      "template_file": "generate_dsl_spec_binding_files+generate_satellite_spec_binding_files",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "[1/8] Compile Module.Chimera.cpp -> [3/8] Link UnrealEditor-Chimera.dll -> [8/8] WriteMetadata ChimeraEditor.target. Result: Succeeded. Total execution time: 55.47s. Warnings only (pre-existing C5038 init-order x3, plugin C4996 deprecations). FIRST UBT judgment on the entire speed-run corpus: tb-0001 SandSound fix + ChimeraMovementComponent BeginPlay + 4 spec-binding components + SpecBindingsActor + 8 satellite spec components + SatelliteSpecBindingsActor (19 new file-pairs) \u2014 zero errors.",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_25f59d4bd82e"
+    },
+    {
+      "id": "simtest_536c81002961d807",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-12T17:24:44.567173",
+      "observer": "agent-sim",
+      "session": "post_h34_ubt_green",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=100uu (loc x=1600.1577367553846, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=5"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1200
+                }
+              },
+              "ok": true,
+              "note": "dist=1000uu (loc x=3000.046936734451, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": false,
+              "note": "walk_volume=1 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=10"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=4.023313522338867e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\post_h34_ubt_green.json",
+      "temperature": "[SIM] 4/5 beats reached in 'audio_visual_sync'. Failures: walk_fast_on_sand (failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'post_h34_ubt_green': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2f41557e73d1"
+    },
+    {
+      "id": "surprise_0aee78fcf6ac4c5f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-12T17:24:44.770989",
+      "context": "Sleepwalker expected beat 'walk_fast_on_sand' to be reachable (audio_visual_sync)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder than walk\"}, \"ok\": false, \"note\": \"walk_volume=1 sprint_volume=1\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume sho'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2f41557e73d1"
+    },
+    {
+      "id": "elim_b58535a07e3675b0",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T17:25:48.375798",
+      "feature": "Verb_Step",
+      "boundary": "audio volume-scaling as the walk_fast_on_sand failure cause",
+      "observed": "beat RAN (no Shift block) but GetVolumeScalesWithSpeed()==false: all samples landed in the slow bucket",
+      "eliminates": [
+        "hypothesis: SandSoundComponent telemetry/accessors broken (they returned live, honest data)"
+      ],
+      "survives": [
+        "sprint input (Shift modifier) never raises pawn speed >= 300 cm/s bucket threshold \u2014 the input rig, not the audio"
+      ],
+      "evidence_ref": "simtest_536c81002961d807 post_h34_ubt_green 2026-07-12",
+      "probe": {},
+      "tier": 2,
+      "error_signature": "elimination_Verb_Step",
+      "template_file": "elimination/Verb_Step",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Verb_Step: audio volume-scaling as the walk_fast_on_sand failure cause",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_382f9115cf64"
+    },
+    {
+      "id": "phase_ac024b0d825b07d7",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T17:26:15.815746",
+      "phase": "Cycle close under full delegation: verification phase",
+      "result": "UBT: Result Succeeded 55.47s ZERO errors first try on entire speed-run corpus (mutation_65b7c784b1ca). Sleepwalker post_h34_ubt_green: 4/5 beats reached (was 0/5 in H-31 era) \u2014 spawn_and_verify + walk_slow + dwell + report_telemetry ALL reached with live data; walk_fast failed HONESTLY on volume_scales_with_speed=false exposing sprint-input rig (elim_b58535a07e3675b0). simtest_536c81002961d807. Acceptance sweep: queue clean.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Cycle close under full delegation: verification phase",
+      "error_category": "none",
+      "fix_description": "Phase 'Cycle close under full delegation: verification phase' complete: UBT: Result Succeeded 55.47s ZERO errors first try on entire speed-run corpus (mutation_65b7c784b1ca). Sleepwalker post_h34_ubt_green: 4/5 beats reached (was 0/5 in H-31 era) \u2014 spawn_and_verify + walk",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "walk_fast will keep failing until the Shift/sprint input mapping raises pawn speed past 300 cm/s \u2014 fix EnhancedInput mapping or ChimeraMovementComponent sprint handling, then volume_scales_with_speed should flip true"
+      ],
+      "inheritance": "tb-0001 is closed at runtime: attach + accessors verified in live PIE. The one red is the sprint/Shift input rig \u2014 a NEW, narrower target with typed provenance. Blind speed-run authoring went 100% first-compile; end every burst with a build.",
+      "pain_verdicts": {
+        "phase_acaf769240f9ae7c:P2": "refuted",
+        "phase_791426be1f3c7462:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_d5d5b910ec6a"
     }
   ],
   "edges": [

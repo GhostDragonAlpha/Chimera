@@ -1,3 +1,20 @@
+# Session 2026-07-12h — FULL DELEGATION: verification phase (UBT GREEN first try)
+
+**Human handed all cycle decisions to the agent ("beyond my comprehension — make
+all future decisions"). Decision log:**
+1. **Speed-run authoring phase declared OVER; verification phase opened.** Rationale:
+   19 blind-authored file-pairs + tb-0001 fix had never met the compiler; the session
+   author is the cheapest debugger of its own fresh code; constitution resumes.
+2. **UBT build: Result: Succeeded, 55.47s, ZERO errors, first try** — the entire
+   speed-run corpus compiled clean (warnings all pre-existing). record_build
+   mutation_65b7c784b1ca. Landmark: blind authoring + rep-atom presence checks
+   produced 100% first-compile success.
+3. **Sleepwalker audio_visual_sync beats rerun launched** (session post_h34_ubt_green)
+   — the Will's original finish line: tb-0001 fix under live PIE. Results below/graph.
+4. Speed-run memory updated: the mode is a PHASE — end every burst with a build.
+
+---
+
 # Session 2026-07-12g — REP ENGINE: resolution through repetition (human vision landed)
 
 **Human directive (verbatim intent):** the system needs RESOLUTION, not more mechanism —
