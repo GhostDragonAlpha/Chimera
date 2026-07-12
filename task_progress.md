@@ -29,11 +29,21 @@ BALANCED against "emergence from complexity."
   tunnel 11/11 (80/80).
 
 ## NEXT
-1. Build the 7 missing sensors (frame_time/vram/system_memory/audio_voices/
-   active_dots/interacting_systems/coupling_k): telemetry_probe should write
-   docs/world/telemetry_last.json after each foregrounded soak — then the
-   hardware walls go from admission-only to fully gated.
-2. Board conveyor continues: tb-0013 Sprint_Input/state is the frontier.
+1. ~~Sensors~~ **PARTIAL (commit 4b74fca)**: telemetry_probe now writes
+   docs/world/telemetry_last.json (fps -> frame_time_ms + editor working-set ->
+   system_memory_gb). Remaining sensors: vram/audio_voices/active_dots/
+   interacting_systems/coupling_k (PIE-side stats).
+2. ~~tb-0013 frontier~~ **SPRINT CHAIN COMPLETE (commit 4b74fca)**: all 5 parts of
+   dc_b1af6b6e2f33 done through board claims, incl. TWO parts DISCOVERED mid-task
+   and seeded back through the process (tb-0017 volume normalizer saturation,
+   tb-0018 decel-tail capture). simtest_2d3122d6cefb0009: **5/5 beats, first
+   fully-green audio_visual_sync run ever** (walk 0.5 / sprint 1.0).
+3. NEW NEXT: run a fresh `python -m core.rehearsal --decide` (queue has fresh
+   evidence) OR work the pre-existing dead-metadata debt (2e list above). The
+   audio_visual_sync features now carry 5/5 evidence toward their rep gates;
+   nightly tends will build the streaks.
+4. Pain watch: phase_e4064f12:P1 (max-volume comparisons depend on Clear-at-spawn
+   ordering across beats).
 
 ---
 
