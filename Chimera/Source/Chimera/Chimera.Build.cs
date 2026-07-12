@@ -36,6 +36,7 @@ public class Chimera : ModuleRules
 			"Chimera/ProceduralGenerated/Tools",
 			"Chimera/ProceduralGenerated/Sound",
 			"Chimera/ProceduralGenerated/Interactions",
+			"Chimera/ProceduralGenerated/Materials",
 			"ThirdParty/whisper.cpp/whisper-src/include"
 		});
 

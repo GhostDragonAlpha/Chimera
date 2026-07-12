@@ -1,0 +1,44 @@
+- generic [ref=f10e2]:
+  - navigation [ref=f10e3]:
+    - link "About" [ref=f10e4] [cursor=pointer]:
+      - /url: https://about.google/?fg=1&utm_source=google-US&utm_medium=referral&utm_campaign=hp-header
+    - link "Store" [ref=f10e5] [cursor=pointer]:
+      - /url: https://store.google.com/US?utm_source=hp_header&utm_medium=google_ooo&utm_campaign=GS100042&hl=en-US
+    - generic [ref=f10e7]:
+      - generic [ref=f10e8]:
+        - link "Gmail" [ref=f10e10] [cursor=pointer]:
+          - /url: https://mail.google.com/mail/&ogbl
+        - link "Search for Images" [ref=f10e12] [cursor=pointer]:
+          - /url: https://www.google.com/imghp?hl=en&ogbl
+          - text: Images
+      - button "Google apps" [ref=f10e15] [cursor=pointer]
+      - link "Sign in" [ref=f10e20] [cursor=pointer]:
+        - /url: https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=https://www.google.com/&ec=futura_exp_og_so_72776762_e
+  - img "Google" [ref=f10e23]
+  - search [ref=f10e31]:
+    - generic [ref=f10e33]:
+      - generic [ref=f10e35]:
+        - combobox "Search" [active] [ref=f10e42]
+        - generic [ref=f10e44]:
+          - button "Search by voice" [ref=f10e45] [cursor=pointer]
+          - button "Search by image" [ref=f10e48] [cursor=pointer]
+      - generic [ref=f10e52]:
+        - button "Google Search" [ref=f10e53] [cursor=pointer]
+        - button "I'm Feeling Lucky" [ref=f10e54] [cursor=pointer]
+  - contentinfo [ref=f10e57]:
+    - generic [ref=f10e58]:
+      - generic [ref=f10e59]:
+        - link "Advertising" [ref=f10e60] [cursor=pointer]:
+          - /url: https://www.google.com/intl/en_us/ads/?subid=ww-ww-et-g-awa-a-g_hpafoot1_1!o2&utm_source=google.com&utm_medium=referral&utm_campaign=google_hpafooter&fg=1
+        - link "Business" [ref=f10e61] [cursor=pointer]:
+          - /url: https://www.google.com/services/?subid=ww-ww-et-g-awa-a-g_hpbfoot1_1!o2&utm_source=google.com&utm_medium=referral&utm_campaign=google_hpbfooter&fg=1
+        - link "How Search works" [ref=f10e62] [cursor=pointer]:
+          - /url: https://google.com/search/howsearchworks/?fg=1
+      - link "Build, create, and do more with AI tools from Google" [ref=f10e64] [cursor=pointer]:
+        - /url: https://ai.google/helpful-tools/?utm_source=googlehpfooter&utm_medium=housepromos&utm_campaign=bottom-footer
+      - generic [ref=f10e65]:
+        - link "Privacy" [ref=f10e66] [cursor=pointer]:
+          - /url: https://policies.google.com/privacy?hl=en&fg=1
+        - link "Terms" [ref=f10e67] [cursor=pointer]:
+          - /url: https://policies.google.com/terms?hl=en&fg=1
+        - button "Settings" [ref=f10e71] [cursor=pointer]

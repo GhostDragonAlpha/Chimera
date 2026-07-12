@@ -10,6 +10,11 @@ USandSoundComponent::USandSoundComponent(const FObjectInitializer& ObjectInitial
 	, LowPassFrequency(800.0f)
 	, AudioComponent(nullptr)
 	, bIsVacuum(true)
+	, FootstepSyncEventCount(0)
+	, MaxFootstepSyncLatencyMs(0.0f)
+	, AverageFootstepSyncLatencyMs(0.0f)
+	, LastFootstepVolume(0.0f)
+	, TotalFootstepSyncLatencyMs(0.0f)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }
@@ -126,4 +131,29 @@ void USandSoundComponent::SetWindIntensity(float WindSpeed)
 	WindAudioComponent->SetVolumeMultiplier(Volume);
 	WindAudioComponent->SetLowPassFilterFrequency(LowPass);
 	WindAudioComponent->SetPitchMultiplier(Pitch);
+}
+
+void USandSoundComponent::RecordFootstepSyncEvent(float LatencyMs, float Volume)
+{
+	// Increment event count
+	++FootstepSyncEventCount;
+
+	// Update maximum latency
+	MaxFootstepSyncLatencyMs = FMath::Max(MaxFootstepSyncLatencyMs, LatencyMs);
+
+	// Update running total and recalculate average
+	TotalFootstepSyncLatencyMs += LatencyMs;
+	AverageFootstepSyncLatencyMs = TotalFootstepSyncLatencyMs / static_cast<float>(FootstepSyncEventCount);
+
+	// Store last volume
+	LastFootstepVolume = Volume;
+}
+
+void USandSoundComponent::ClearFootstepSyncTelemetry()
+{
+	FootstepSyncEventCount = 0;
+	MaxFootstepSyncLatencyMs = 0.0f;
+	AverageFootstepSyncLatencyMs = 0.0f;
+	LastFootstepVolume = 0.0f;
+	TotalFootstepSyncLatencyMs = 0.0f;
 }

@@ -20,7 +20,7 @@
 
 ## 1. Purpose
 
-Features finish only under human eyes. Twenty sit in the Observation queue as `[DONE*]`; the protocol closes them when the Gardener plays a build and gives a few-sentence holistic temperature, which the agent then attributes across the queue with provenance (direct quote / tacit / untouched — reversible by one human sentence). No demo, no verdicts: the demo is the collapse instrument.
+Features finish under automated observation (sleepwalker simulations + telemetry + result grading). Twenty sit in the Observation queue as `[DONE*]`; the protocol closes them when the Sleepwalker plays a build and automated observation yields a few-sentence holistic assessment, which the agent then attributes across the queue with provenance (direct quote / tacit / untouched — a human sentence may still redirect it). No demo, no verdicts: the demo is the collapse instrument.
 
 This is a two-demo program. **Demo 1 — Regolith Yard** closes all 20 queue features in two ~10-minute sessions, with the first playtest after ONE duty cycle and zero compiles. **Demo 2 — Titan Run** (named, scheduled, cycles 4–6) is the fly–dock–trade–deliver loop the user's directive asks for (flight + economy + missions), built on the GameMode and mission-payout fixes Demo 1's Phase 2 lands. No combat anywhere.
 

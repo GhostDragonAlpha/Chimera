@@ -217,7 +217,7 @@ This document lists all proven MCP pathways for interacting with Unreal Engine 5
 - `get_performance_stats` reading exactly 3.0000 fps = throttle artifact, not game performance.
 
 ### 26. Sleepwalker beat runs + the save-proof ritual (2026-07-07)
-- `python -m core.sleepwalker --beats docs/beats/<demo>.beats.json --session <name>` — PIE play -> beats (simulate_input + read-backs) -> stop_pie; records SimPlaytest + chronicle. Runs under CHIMERA_AGENT_SIM=1 (cannot fake human observations).
+- `python -m core.sleepwalker --beats docs/beats/<demo>.beats.json --session <name>` — PIE play -> beats (simulate_input + read-backs) -> stop_pie; records SimPlaytest + chronicle. Runs under CHIMERA_AGENT_SIM=1 (cannot fake observations — its evidence is agent-sim SimPlaytest, never a human verdict).
 - **Save-proof ritual** (the level-loss killer): `control_editor save_all` (savedCount>=1) -> md5 of the .umap CHANGED vs baseline -> mtime now -> `get_scene_stats` recount matches. All four or it did not happen.
 
 ### 27. animation_physics add_anim_notify & get_anim_sequence_info (documented 2026-07-07, ACTUALLY IMPLEMENTED + live-verified 2026-07-07)

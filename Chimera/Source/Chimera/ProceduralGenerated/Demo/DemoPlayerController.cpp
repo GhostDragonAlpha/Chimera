@@ -8,10 +8,15 @@
 #include "../Interactions/PickupInteractionComponent.h"
 #include "../Interactions/PickupActor.h"
 #include "../Environment/FootprintComponent.h"
+#include "../ChimeraMovementComponent.h"
 
 ADemoPlayerController::ADemoPlayerController()
 {
 	PickupInteraction = CreateDefaultSubobject<UPickupInteractionComponent>(TEXT("PickupInteraction"));
+	if (PickupInteraction)
+	{
+		PickupInteraction->RegisterComponent();
+	}
 	bDemoPickupSpawned = false;
 	// Enable mouse look: show cursor for UI.
 	bShowMouseCursor = true;
@@ -40,6 +45,7 @@ void ADemoPlayerController::OnPossess(APawn* InPawn)
 	SpawnDemoPickupIfNeeded(InPawn);
 	ConfigureCrouchCapsule(InPawn);
 	EnsureFootprints(InPawn);
+	EnsureChimeraMovement(InPawn);
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Possessed %s"), *GetNameSafe(InPawn));
 }
 
@@ -173,6 +179,21 @@ void ADemoPlayerController::EnsureFootprints(APawn* InPawn)
 	{
 		Footprints->RegisterComponent();
 		UE_LOG(LogTemp, Display, TEXT("[GROUND_FOOTPRINTS] FootprintComponent attached to %s"), *GetNameSafe(InPawn));
+	}
+}
+
+void ADemoPlayerController::EnsureChimeraMovement(APawn* InPawn)
+{
+	if (!InPawn || InPawn->FindComponentByClass<UChimeraMovementComponent>())
+	{
+		return;
+	}
+
+	UChimeraMovementComponent* ChimeraMove = NewObject<UChimeraMovementComponent>(InPawn, TEXT("ChimeraMovementComponent"));
+	if (ChimeraMove)
+	{
+		ChimeraMove->RegisterComponent();
+		UE_LOG(LogTemp, Display, TEXT("[GROUND_SOUND] ChimeraMovementComponent attached to %s for telemetry"), *GetNameSafe(InPawn));
 	}
 }
 

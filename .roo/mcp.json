@@ -76,7 +76,8 @@
 				"write_file",
 				"search_files",
 				"read_multiple_files",
-				"list_directory"
+				"list_directory",
+				"directory_tree"
 			]
 		}
 	}

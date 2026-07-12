@@ -9,6 +9,8 @@
 #include "MCP/McpConsolidatedActionRouting.h"
 #include "HAL/PlatformTLS.h"
 #include "Interfaces/IPluginManager.h"
+#include "Components/AudioComponent.h"  // UAudioComponent (used by ChimeraMovementComponent.h)
+#include "ChimeraMovementComponent.h"  // Audio-visual sync telemetry accessors, HandleManageToolsAction
 
 // =============================================================================
 // FMcpRequestErrorDevice - Custom log device for per-request error capture
@@ -841,6 +843,69 @@ void UMcpAutomationBridgeSubsystem::RegisterHandler(
  * "clear_debug_shapes") so those actions dispatch directly to the intended
  * handler.
  */
+
+// Audio-visual sync telemetry only. The 8 admin manage_tools actions
+// (list_tools, enable_tools, list_categories, ...) are answered locally by
+// the JS bridge's own dynamicToolManager and never reach the engine over
+// either transport — this handler does not need to (and does not) implement
+// them. UChimeraMovementComponent's accessors are static, so this calls them
+// directly rather than reaching into FMcpDynamicToolManager (owned by the
+// separate FMcpNativeTransport/HTTP transport) for a handful of one-line reads.
+bool UMcpAutomationBridgeSubsystem::HandleManageToolsAction(
+    const FString &RequestId, const FString &Action,
+    const TSharedPtr<FJsonObject> &Payload,
+    TSharedPtr<FMcpBridgeWebSocket> RequestingSocket) {
+  if (!Action.Equals(TEXT("manage_tools"), ESearchCase::IgnoreCase)) {
+    return false;
+  }
+
+  if (!Payload.IsValid()) {
+    SendAutomationError(RequestingSocket, RequestId,
+                         TEXT("manage_tools payload missing"),
+                         TEXT("INVALID_PAYLOAD"));
+    return true;
+  }
+
+  FString SubAction;
+  Payload->TryGetStringField(TEXT("action"), SubAction);
+
+  TSharedPtr<FJsonObject> Result = MakeShared<FJsonObject>();
+  Result->SetBoolField(TEXT("success"), true);
+
+  if (SubAction == TEXT("ClearFootstepSyncTelemetry")) {
+    UChimeraMovementComponent::ClearFootstepSyncTelemetry();
+  } else if (SubAction == TEXT("GetFootstepSyncEventCount")) {
+    Result->SetNumberField(TEXT("count"),
+                            UChimeraMovementComponent::GetFootstepSyncEventCount());
+  } else if (SubAction == TEXT("GetAverageFootstepSyncLatencyMs")) {
+    Result->SetNumberField(
+        TEXT("avg_latency_ms"),
+        UChimeraMovementComponent::GetAverageFootstepSyncLatencyMs());
+  } else if (SubAction == TEXT("GetMaxFootstepSyncLatencyMs")) {
+    Result->SetNumberField(
+        TEXT("max_latency_ms"),
+        UChimeraMovementComponent::GetMaxFootstepSyncLatencyMs());
+  } else if (SubAction == TEXT("GetLastFootstepVolume")) {
+    Result->SetNumberField(TEXT("last_volume"),
+                            UChimeraMovementComponent::GetLastFootstepVolume());
+  } else if (SubAction == TEXT("GetMaxFootstepVolume")) {
+    Result->SetNumberField(TEXT("max_volume"),
+                            UChimeraMovementComponent::GetMaxFootstepVolume());
+  } else {
+    SendAutomationError(
+        RequestingSocket, RequestId,
+        FString::Printf(
+            TEXT("manage_tools action '%s' is not available over this transport"),
+            *SubAction),
+        TEXT("UNKNOWN_ACTION"));
+    return true;
+  }
+
+  SendAutomationResponse(RequestingSocket, RequestId, true, TEXT("OK"), Result,
+                         FString());
+  return true;
+}
+
 void UMcpAutomationBridgeSubsystem::InitializeHandlers() {
   // Core & Properties
   RegisterHandler(TEXT("execute_editor_function"),
@@ -1257,6 +1322,12 @@ void UMcpAutomationBridgeSubsystem::InitializeHandlers() {
                                           TSharedPtr<FMcpBridgeWebSocket> S) {
     return HandleInspectAction(R, A, P, S);
   });
+  RegisterHandler(TEXT("manage_tools"),
+                  [this](const FString &R, const FString &A,
+                         const TSharedPtr<FJsonObject> &P,
+                         TSharedPtr<FMcpBridgeWebSocket> S) {
+                    return HandleManageToolsAction(R, A, P, S);
+                  });
   RegisterHandler(TEXT("system_control"),
                   [this](const FString &R, const FString &A,
                          const TSharedPtr<FJsonObject> &P,

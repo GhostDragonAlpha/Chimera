@@ -21,7 +21,7 @@ Silent continuation past a failed gate is impossible.
 import json
 import sys
 from pathlib import Path
-from typing import Dict, Any, Tuple, List
+from typing import Dict, Any, Tuple, List, Optional
 
 # Import local components
 try:
@@ -120,7 +120,8 @@ class GameGenerationOrchestrator:
         self.playtest_runner = None
         self.test_reporter = TestReporter(str(self.output_dir))
 
-    def process_dsl_specification(self, dsl_content: str, project_name: str = "DeepSpaceTrader") -> Dict[str, Any]:
+    def process_dsl_specification(self, dsl_content: str, project_name: str = "DeepSpaceTrader",
+                                agent_id: Optional[str] = None) -> Dict[str, Any]:
         """Process a complete DSL specification through the mandatory 7-stage pipeline.
 
         MANDATORY GATES: Every stage is guarded. If a gate fails, the pipeline
@@ -137,11 +138,6 @@ class GameGenerationOrchestrator:
             raise
 
         # =====================================================================
-        # RESEARCH MANDATE COMPLIANCE CHECK (Phase 3 Pipeline Integration)
-        # =====================================================================
-        _research_compliance_check(project_name, parsed_dsl)
-
-        # =====================================================================
         # Stage 1: Parse & Validate DSL
         # =====================================================================
         print("=" * 80)
@@ -152,6 +148,12 @@ class GameGenerationOrchestrator:
 
         if not is_valid:
             return {"success": False, "error": f"DSL Validation Failed: {validation_error}"}
+
+        # =====================================================================
+        # RESEARCH MANDATE COMPLIANCE CHECK (Phase 3 Pipeline Integration)
+        # Placed after DSL parse so parsed_dsl is available for task-name build.
+        # =====================================================================
+        _research_compliance_check(project_name, parsed_dsl)
 
         # DNA: Pattern Validator
         if DNA_AVAILABLE:
@@ -274,11 +276,18 @@ class GameGenerationOrchestrator:
         # UE was closed during build to free the module DLL lock.
         print("\n[Stage 4.25] Restarting Unreal Editor for visual verification...")
         try:
-            import subprocess, time
-            ue_exe = r"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe"
-            uproj = str(self.output_dir / "Chimera.uproject")
-            subprocess.Popen([ue_exe, uproj], shell=False)
-            print("  [RESTART] UE Editor launch initiated. Will verify presence before visual stage.")
+            if agent_id:
+                # Hand the mode transition to the scheduler so the lock state
+                # stays consistent and parallel agents don't collide on the editor.
+                from core.editor_scheduler import request_editor
+                request_editor("open", agent_id)
+                print("  [RESTART] Editor opened via scheduler (mode=open).")
+            else:
+                import subprocess, time
+                ue_exe = r"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe"
+                uproj = str(self.output_dir / "Chimera.uproject")
+                subprocess.Popen([ue_exe, uproj], shell=False)
+                print("  [RESTART] UE Editor launch initiated. Will verify presence before visual stage.")
         except Exception as e:
             print(f"  [RESTART] Could not auto-start UE Editor: {e}")
             print("  [RESTART] Visual verification stage will attempt to launch UE on demand.")

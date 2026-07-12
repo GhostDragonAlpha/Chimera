@@ -10,9 +10,9 @@
 
 ## NEW AGENT? START HERE (in order)
 1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment, **and section [4.5]: the previous generation's Will, open phantom pains, and Dream Report candidates awaiting automated observation**.
-2. Read `E:\PythonChimera\task_progress.md` — session handoff log; the top **NEXT** section is your work list.
-3. Work under the Contract: typed recording only (`record_*` helpers), fix generator templates never generated C++, and answer the Frame Audit (`Chimera/docs/RESULT_GRADING_RUBRIC.md`) before declaring anything complete.
-4. Finish with `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"` and update `task_progress.md` for the next agent.
+2. Read `E:\PythonChimera\task_progress.md` — session handoff log — then **claim your lane from the TASK LIST (the single entry): `python -m core.task_board claim --agent <your-id>`**. The claim opens your tunnel session, reserves the editor mode your task declares, and prints your work packet (recipe, matching H-heuristics, study guide, open pains). It only grants work whose resource footprint is disjoint from every other active agent — stay inside your footprint. **`capable_only` lanes require an EARNED credential: run THE GAUNTLET (`python -m core.gauntlet enter --agent <your-id>`, docs/GAUNTLET.md) — seven verified stations, artifact checkpoints, resumable across turns; the only way out is through the exit gate.**
+3. Work under the Contract: typed recording only (`record_*` helpers), fix generator templates never generated C++, and answer the Frame Audit (`Chimera/docs/RESULT_GRADING_RUBRIC.md`) before declaring anything complete. Heartbeat long work: `python -m core.agent_tunnel heartbeat --agent <id>` (refreshes claim + editor in one call). **FEATURES GO TO SCHOOL: every feature you carry should be enrolled in the Curriculum (`python -m core.curriculum enroll --feature X`, docs/GAUNTLET.md) — K->PhD bands of checkpoints that interrogate it from every angle of game-dev humanity; submit checkpoints as you work (`brief`/`submit`); its PhD defense is the exit to observation.**
+4. **Exit the tunnel before you finish** — `python -m core.task_board done --agent <id> --id tb-N --result "<verbatim evidence>"` (or `block --reason` / `release --note`; bare 'blocked' is forbidden). Then `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"` (it shouts about any tunnel you left open) and update `task_progress.md` for the next agent.
 
 ## Generation Protocol (Circadian rhythm — see docs/GENERATION_PROTOCOL.md)
 - **Capture surprises live**: on any automation correction, dead-end, or expectation violation, run `python -m core.graphify_record surprise --context "..." --reality "..." --source agent|engine`. These feed the nightly distiller.
@@ -27,9 +27,20 @@
 - **[H-3, auto-promoted 2026-07-07]** An LM response containing its own reasoning dump ("Here's a thinking process") is a RETRY with a larger token budget, never a verdict — schema-validate before consuming.
 - **[H-7, auto-promoted 2026-07-07]** Record the MCP response's error field, never raw CLI stdout — a DynamicToolManager boot banner inside an "error" means the wrong stream was captured.
 - **[H-13, auto-promoted 2026-07-07]** Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps; run telemetry foregrounded and test every declared criterion before grading System_Economy.
-- **[H-14, auto-promoted 2026-07-07]** Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
+- **[H-14, auto-promoted 2026-07-07]** Verified-by-injection is not playable — never stage a feature for observation until real player input drives it end-to-end, read back in PIE.
 - **[H-17, auto-promoted 2026-07-07]** Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
 - **[H-19, auto-promoted 2026-07-08]** Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and re-verified since.
+- **[H-21, auto-promoted 2026-07-11]** A verb needs behavior, not metadata: ATool_Shovel had DigRadius but no Dig() — beats must press the verb key and assert a world-state change.
+- **[H-22, auto-promoted 2026-07-11]** Read back live-PIE pawn components before staging an interaction verb — PickUp's component was never attached, bound, or given a level actor to grab.
+- **[H-24, auto-promoted 2026-07-11]** A feature tagged only by movement beats is hostage to rig health — zero-displacement failures (GameMode PlayerControllerClass unset) indict the rig, not the surface.
+- **[H-25, auto-promoted 2026-07-11]** Position-expect beats must reset_position at beat start — W-drift accumulates across sequential beats and BugItGo is refused during PIE.
+- **[H-28, auto-promoted 2026-07-11]** Probe jumps by timed pawn_z read-back, not log_contains — and reset_position first: z=-26947 shows the pawn had already drifted off the world.
+- **[H-29, auto-promoted 2026-07-11]** Compound beats fail for shifting root causes (frozen input, then missing SandDrift_FX) — attribute rejection to the failing expect's subsystem, not every tagged feature.
+- **[H-30, auto-promoted 2026-07-11]** Expects are schema-bound like actions — unknown expects (screenshot_taken, unreadable controller properties) fail beats at runtime; validate the expect vocabulary at dispatch.
+- **[H-31, auto-promoted 2026-07-11]** Telemetry commands that fall back to hardcoded defaults indicate missing component integration at runtime (UComponent not attached, or not populating properties at BeginPlay) — verify component attachment in character blueprint and initialization order before blaming MCP action handlers.
+- **[H-32, auto-promoted 2026-07-11]** When telemetry queries return hardcoded defaults (count=0, latency=999), the beat's expectations fail not because of beat schema but because the backend component isn't populating data — verify SandSoundComponent attachment and footstep event tracking at runtime before debugging beat expectations.
+- **[H-33, auto-promoted 2026-07-11]** Investigate audio_visual_sync report_telemetry; verify test harness and beat reg
+- **[H-34, auto-promoted 2026-07-12]** Verify required components and assets are spawned and registered.
 
 ## Architecture Overview
 
@@ -66,18 +77,28 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `core/graph_compactor.py` | Archive-never-delete graph hygiene |
 | `core/sleepwalker.py` + `core/witness.py` | AI playtester (beat scripts in PIE) + shared session chronicler |
 | `core/rehearsal.py` | Data-level rollout decider (veto-table NEXT items; dead-end demotion, freshness cooldowns) |
-| `core/gardener.py` | Delegated Gardener — auto-tends the heuristic queue (human veto-after) |
+| `core/gardener.py` | Delegated Gardener — auto-tends the heuristic queue (automated; optional human veto-after) |
 | `core/collapse_proxy.py` | Whole-experience observation: holistic sweeps + provisional collapse |
 | `core/unblock.py` | Self-heals known blockers (editor/LM/PIE/git/disk) |
 | `core/solver.py` | Figures out fixes for UNKNOWN blockers (fix-or-draft; bare 'blocked' forbidden) |
 | `core/doc_audit.py` | Mechanical docs-vs-code drift check (nightly via floor) |
+| `core/task_board.py` | Parallel task board — resource-conflict-aware claims (THE single entry) |
+| `core/agent_tunnel.py` | Enter→work→exit lifecycle behind the board claim; exit demands evidence |
+| `core/editor_scheduler.py` | File-locked exclusive editor access for concurrent agents |
+| `core/gauntlet.py` | Agent qualification crucible (7 stations → earns `journeyman` for capable lanes) |
+| `core/curriculum.py` + `docs/curriculum/curriculum.json` | K→PhD education a FEATURE graduates through (54 checkpoints) |
+| `core/faculty.py` | The curriculum writes its own exams from the studio's scars (propose→gate→promote) |
+| `core/fractal_spiral.py` | The whole structure as a golden-angle DNA spiral rooted at the player |
+| `core/world_store.py` | SQLite world-model substrate (millions of nodes, FTS + R-tree; sub-ms search) |
+| `core/dna_sqlite_backend.py` | DNA graph on world_store behind the load/save seam (retires JSON+graphify) |
+| `docs/GAUNTLET.md` | Spec for the gauntlet (agents) + curriculum (features) |
 | `docs/DREAM_ROSTER.md` | The full studio cast as organs — hiring plan (Tier-1: Scholar/Muse/Visionkeeper) |
 | `docs/beats/` | Beat scripts (machine playtest scripts per demo) |
 | `core/dna/` | Graphify DNA knowledge graph interface |
 | `tests/dsl_grammar/` | DSL specification files |
 | `docs/chimera_dna_graph.json` | DNA graph storage |
 | `docs/GENERATION_PROTOCOL.md` | The circadian rhythm spec (Dawn/Day/Observation/Dusk/Night) |
-| `docs/PENDING_HEURISTICS.md` | Gardener's queue (human approves every constitution change) |
+| `docs/PENDING_HEURISTICS.md` | Gardener's queue (auto-tended; promotion delegated to automation, optional human veto-after) |
 | `docs/DREAM_REPORT.md` | Morning briefing (regenerated nightly) |
 | `docs/MCP_PATHWAYS.md` | Proven MCP pathways + TRAPS |
 | `Plugins/McpAutomationBridge/` | UE-side MCP plugin |
@@ -221,6 +242,20 @@ walkabout loss — it was never an unsaved-state problem.)
 ### DNA key pollution
 Run `python fix_dna_key_mismatch_pollution.py` to quarantine junk nodes.
 Use typed helpers (`record_*`) to prevent future pollution.
+
+### DNA graph storage (migrated 2026-07-12 — SQLite, not JSON)
+The DNA graph now lives in `core.world_store` (SQLite + FTS5) behind the same
+`graphify_interface.load_dna_graph`/`save_dna_graph` seam — `core/dna_sqlite_backend.py`.
+The 2000-node gate and the `archive_old_mutations.py` dance are **obsolete**: the
+substrate is indexed with no whole-file bottleneck (proven at 1M nodes, sub-ms search),
+so the graph grows freely (gate ceiling is now 5M, a runaway-loop backstop). Fast
+AI search: `python -m core.dna_sqlite_backend search --query <term>` (this replaces
+graphify's JSON+NetworkX search — the graphify MCP server can be removed from the Claude
+Code config). `docs/chimera_dna_graph.json` is kept as a committed durability snapshot
+(refreshed on every save); `docs/world/dna.db` is the machine-local working store
+(gitignored). Fall back with `CHIMERA_DNA_BACKEND=json` if ever needed. The world MODEL
+(millions of entities) uses `core.world_store` directly — `around(player, r)` streams the
+local neighborhood; UE5 World Partition is the spatial layer.
 
 ## Session Memory
 

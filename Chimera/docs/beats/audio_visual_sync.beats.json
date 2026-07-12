@@ -48,6 +48,30 @@
         },
         {
           "wait": 0.5
+        },
+        {
+          "command": "GetFootstepSyncEventCount",
+          "store_as": "sync_events_recorded"
+        },
+        {
+          "command": "GetMaxFootstepSyncLatencyMs",
+          "store_as": "sync_latency_ms_max"
+        },
+        {
+          "command": "GetLastFootstepVolume",
+          "store_as": "walk_volume"
+        },
+        {
+          "command": "GetFootstepSyncEventCount",
+          "store_as": "sync_events_recorded"
+        },
+        {
+          "command": "GetMaxFootstepSyncLatencyMs",
+          "store_as": "sync_latency_ms_max"
+        },
+        {
+          "command": "GetLastFootstepVolume",
+          "store_as": "walk_volume"
         }
       ],
       "expects": [
@@ -85,6 +109,22 @@
         },
         {
           "wait": 0.5
+        },
+        {
+          "command": "GetLastFootstepVolume",
+          "store_as": "sprint_volume"
+        },
+        {
+          "command": "GetFootstepSyncEventCount",
+          "store_as": "sync_events_recorded"
+        },
+        {
+          "command": "GetMaxFootstepSyncLatencyMs",
+          "store_as": "sync_latency_ms_max"
+        },
+        {
+          "command": "GetLastFootstepVolume",
+          "store_as": "sprint_volume"
         }
       ],
       "expects": [

@@ -7,10 +7,10 @@
 ## PRIME DIRECTIVES (absolute — violating these destroys paid-for work)
 
 1. **Never edit** anything under `Source/Chimera/ProceduralGenerated/` or `Chimera.Build.cs`. Fix generator templates in `core/game_code_generator.py` or do not fix at all.
-2. **Never record an Observation** (`graphify_record observe`). Only the human does that. Ever.
-3. **Never promote a heuristic** unless the human said "approved" for that specific H-number.
+2. **Observation is AUTOMATED** (full-automation amendment 2026-07-07 — human verification requirements are removed). Features finish under automated evidence: `graphify_record observe --derived-from <simtest_id>` attributes sleepwalker/telemetry/result-grading evidence. Never fabricate an observation without exercise evidence in the graph.
+3. **Heuristic promotion is automated** (delegated Gardener): doc-organ heuristics with a draft rule + evidence self-promote via `dream_loop --tend`; gate-organ approvals queue for a capable cycle. No human approval step.
 4. **Never write graph mutations by hand.** Only `python -m core.graphify_record ...` or the `record_*` helpers.
-5. **Never trust `success: true`.** Read the value back. If you cannot read it back, treat it as NOT done and say so.
+5. **Never trust `success: true`.** Read the value back. If you cannot read it back, treat it as NOT done and say so. (This is AUTOMATED verification — the read-back IS the measure — not a human check.)
 6. If a recipe fails **twice**, record the failure (`graphify_record pathway ... --result failed`), write it in task_progress.md, and move to the next task. Do not invent alternatives.
 
 ## SESSION RECIPE (run in this order, always)
@@ -28,39 +28,53 @@ git add -A ; git commit -m "<summary>" ; git push origin master
 ```
 Update `task_progress.md` (prepend a session block + NEXT list) before committing.
 
+## PARALLEL ENTRY (2026-07-12 — if other agents may be running, claim from the board)
+
+The task list is now the single entry. Instead of freely picking work, claim a
+parallel-safe lane so you never collide with another agent (exact commands):
+
+```powershell
+python -m core.task_board claim --agent <your-id>              # opens your work packet
+# ... do the recipe it prints, staying inside the file scopes it shows ...
+python -m core.task_board done --agent <your-id> --id tb-N --result "<verbatim evidence>"
+# or:  block --agent <id> --id tb-N --reason "<cause>"   (bare 'blocked' is forbidden)
+```
+
+Two storage facts changed under you, both TRANSPARENT (your recipes are unchanged):
+- The DNA graph is now **SQLite** (`core.world_store`), not JSON. `record_*` / `graphify_record`
+  work exactly as before. Fast search: `python -m core.dna_sqlite_backend search --query <term>`.
+- The **2000-node gate is RETIRED**. NEVER run `archive_old_mutations.py` — the graph
+  scales now; growth is fine.
+
+`capable_only` board tasks require a `journeyman` credential earned via
+`python -m core.gauntlet enter --agent <id>` (7 verified stations). If that is beyond
+you, take a non-capable task instead — do NOT improvise around the gate.
+
 ## YOUR TASKS (in order — stop at the first one that applies)
 
-1. **If the human gave heuristic verdicts** (docs/PENDING_HEURISTICS.md): for each
-   `approved` entry, add the rule to the organ named in the entry (gate → new function
-   in core/gates.py copying an existing gate's shape; claude_md → one bullet in
-   CLAUDE.md's Generation Protocol section; mcp_pathways → a TRAP line in
-   docs/MCP_PATHWAYS.md), then run
-   `python -m core.graphify_record heuristic --signature "<sig>" --rule "<rule>" --organ <organ> --evidence <node_id>`
-   and change the entry's status to `promoted`. Vetoed entries: change status to
-   `vetoed`, touch nothing else.
-2. **If the human gave a PLAYTEST TEMPERATURE** (a few sentences about the WHOLE
-   experience — this is how the Observer actually works; do not expect per-feature
-   verdicts):
-   a. Record it VERBATIM first:
-      `python -m core.graphify_record playtest --notes "<their exact words>" --build <commit>`
-      → note the returned playtest node id.
-   b. **Attribution** (this is YOUR job — "the AI has to guess on intentions, but
-      now it has the information"). For each feature in the observation queue,
-      decide ONE tier and act:
-      - **Directly implicated** — the temperature praises/indicts it. Run
-        `... observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --derived-from <playtest_id> --quote "<their exact phrase>" --loop <N>`
-      - **Exercised but unmentioned** — it was on screen / in play and drew no
-        complaint. Silence passed the glance:
-        `... observe --feature <X> --verdict accepted --derived-from <playtest_id> --tacit --loop <N>`
-      - **Not exercised** — the playtest couldn't have touched it (e.g. SaveLoad
-        if they never saved). LEAVE IT QUEUED. Do not attribute.
-   c. End your session summary with the full attribution table (feature → tier →
-      quote) so the human can overrule any line with one sentence. If they do,
-      record their sentence as a `surprise --source human` and flip the feature.
-   If you are a weaker model: do tier 1 (direct mentions) ONLY; leave tacit calls
+1. **Promote heuristics (automated — no human approval step).** `python -m core.dream_loop`
+   runs the delegated Gardener (`--tend`): doc-organ heuristics with a draft rule + evidence
+   self-promote; gate-organ approvals queue for a capable cycle (add the gate function in
+   core/gates.py + its test). Subsumed entries tombstone; automated rejection is final.
+2. **Run the automated observation sweep** — this is how features finish; the measure is
+   the automated system (sleepwalker/telemetry/result grading), NOT a human:
+   a. Produce holistic evidence: sleepwalker beats over the build
+      (`python -m core.sleepwalker --beats docs/beats/<demo>.beats.json --session <name>`),
+      recorded as a SimPlaytest. That simtest IS the temperature.
+   b. **Attribute** across the observation queue (`python -m core.collapse_proxy
+      --from-simtest <simtest_id> --valence accepted` sweeps accepted-tacit; a rejection
+      indicts only what the simulation evidence names). Per feature, decide ONE tier:
+      - **Directly implicated** — the sim evidence names it:
+        `... observe --feature <X> --verdict <accepted|rejected> --notes "<evidence>" --derived-from <simtest_id> --quote "<the sim's phrase>" --loop <N>`
+      - **Exercised but unmentioned** — on screen / in play, no failure. Silence passed:
+        `... observe --feature <X> --verdict accepted --derived-from <simtest_id> --tacit --loop <N>`
+      - **Not exercised** — the sim couldn't have touched it. LEAVE IT QUEUED.
+   If you are a weaker model: do tier 1 (direct sim mentions) ONLY; leave tacit calls
    to a capable session.
-3. **If the human gave an explicit per-feature verdict** (rare): run exactly
-   `python -m core.graphify_record observe --feature <X> --verdict <accepted|rejected> --notes "<their words>" --loop <N>`.
+3. **A human MAY steer DIRECTION or override any line** (optional — never WAIT for it): a
+   one-sentence steer is recorded `graphify_record surprise --source human` and flips the
+   feature; a supplied temperature is `graphify_record playtest --notes "<verbatim>"`. The
+   automated observation is complete on its own; human input only redirects, never gates.
 4. **The first executable item in task_progress.md's NEXT list.** The handoff
    invariant means each item carries its recipe inline (or names the feature whose
    graph node holds the study guide). Execute it EXACTLY; add nothing. Skip items
@@ -125,11 +139,13 @@ write wishes.
   break the permission classifier, WebSearch, and subagents when bypass is off.
   Removing them is the HUMAN's call (P3, confirmed twice).
 
-## THE STANDING QUEUES (human-only; your job is to surface, never to answer)
+## THE STANDING QUEUES (automated — you answer them with evidence)
 
 Preflight [4.5] lists them every dawn: pending heuristics (docs/PENDING_HEURISTICS.md)
-and the Observation queue. If the human is present, ask for verdicts. If not, work
-task 3/4 and leave the queues untouched.
+and the Observation queue. Both are worked by AUTOMATION now (full-automation amendment):
+`dream_loop --tend` rules the heuristic queue; the observation queue is answered by
+attributing sleepwalker/telemetry evidence (task 2). A human may redirect with one
+sentence, but nothing waits for one — never leave a queue untouched for lack of a human.
 
 ## THE SHAPE OF A GOOD SESSION
 
@@ -140,9 +156,10 @@ successor inherits your lessons — write your Will like you mean it.
 
 ## ADDENDUM 2026-07-07 — the Sleepwalker era (recipes for the new organs)
 
-**New PRIME DIRECTIVE 7**: if you are an automation process (not relaying a live human),
-run with `CHIMERA_AGENT_SIM=1` set. It makes faking a human observation technically
-impossible. `core/sleepwalker.py` sets it for itself.
+**New PRIME DIRECTIVE 7**: automation runs with `CHIMERA_AGENT_SIM=1` set. The sentinel
+enforces that every observation is EVIDENCE-BACKED (`--derived-from <simtest_id>`) — the
+automated sleepwalker/telemetry evidence IS the measure. `core/sleepwalker.py` sets it for
+itself. An observation without exercise evidence in the graph is forbidden.
 
 **When your NEXT list is empty (branch C2 — do this BEFORE the pipeline fallback):**
 ```powershell
@@ -157,7 +174,8 @@ pipeline fallback instead.
 python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session sim_<date>
 ```
 5/5 beats = healthy demo. Failures auto-record surprises the dream loop clusters
-(kind sim_rejection — always ranked below the human's voice).
+(kind sim_rejection). The sim evidence IS the observation; a human sentence may still
+redirect it, but the automated signal stands on its own.
 
 **New traps (paid for on 2026-07-06):**
 - `Config/DefaultInput.ini` has NO trailing newline and ends with a `[GameInputPlatformSettings...]`
@@ -165,8 +183,9 @@ python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session
   `[/Script/Engine.InputSettings]`.
 - The editor overwrites `EditorPerProjectUserSettings.ini` on graceful shutdown. To make a
   settings edit stick: write the ini, FORCE-kill (`taskkill //F //IM UnrealEditor.exe`), relaunch.
-- `graphify_record observe` without `--derived-from` is an HONOR-SYSTEM surface (it cannot know
-  who is typing). Directive 2 is what protects it. Automation must never touch it.
+- `graphify_record observe` REQUIRES `--derived-from <simtest_id>` — an observation must cite
+  the automated evidence it rests on. Evidence-less observation is forbidden (Directive 7):
+  the simtest/telemetry node is what makes the verdict real.
 - BP spawning: use `/Game/X/BP_Y.BP_Y` (asset form). The `_C` class form fails via the bridge.
 
 **Delegated Gardener (2026-07-07)**: you no longer wait for human heuristic approval.

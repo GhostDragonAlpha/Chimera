@@ -145,11 +145,12 @@ public class McpAutomationBridge : ModuleRules
             "Landscape"  // Required for FGrassVariety and other landscape classes
         });
 
+        // Allow the bridge to call the game module's audio-visual sync telemetry accessors (ChimeraMovementComponent)
+        PrivateDependencyModuleNames.Add("Chimera");
+        PrivateIncludePaths.Add(System.IO.Path.Combine(ModuleDirectory, "../../../../Source/Chimera/ProceduralGenerated"));
+
         if (Target.bBuildEditor)
         {
-            // Allow the bridge to call the game module's audio-visual sync telemetry accessors
-            PrivateDependencyModuleNames.Add("Chimera");
-            PrivateIncludePaths.Add(System.IO.Path.Combine(ModuleDirectory, "../../../../Source/Chimera/ProceduralGenerated"));
             // Editor-only Public Dependencies (required for all editor builds)
             PublicDependencyModuleNames.AddRange(new string[]
             {

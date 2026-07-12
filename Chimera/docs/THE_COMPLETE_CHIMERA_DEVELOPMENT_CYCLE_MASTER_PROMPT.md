@@ -372,7 +372,7 @@ The system improves itself with every loop. You are both using and building thes
 - If after 10 iterations LM Studio still says it doesn't match:
   1. Return to research. Find new references.
   2. Return to education. Is there a principle missing?
-  3. Ask the human. Show them reference and best attempt. Ask what they see.
+  3. Optionally, ask a human for direction — show reference and best attempt, and hear what they see.
   4. Never iterate randomly. Every change driven by specific observation or principle.
 
 **Record in Graphify:** All extracted principles as "education/iteration_school" nodes.

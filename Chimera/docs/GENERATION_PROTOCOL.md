@@ -13,7 +13,7 @@
 | **Dawn** (wake) | `python -m core.preflight` | The receptor: board, GPA, gates — plus **[4.5] Inheritance**: the previous generation's Will, open phantom pains to confirm/refute, and the Dream Report count awaiting the Gardener. |
 | **Day** (experience) | normal cycles | Work the spiral under the Contract. Record EVERYTHING live (typed helpers) — provenance is sacred. Additionally capture **surprises as they happen**: `python -m core.graphify_record surprise --context ... --reality ... --source human` for human corrections, dead-ends, expectation violations. These are dream fodder no failure node captures. |
 | **Fork** (per feature, optional but preferred) | `python -m core.spiral_forks --feature X --use-lm` | 3 research briefs — conservative / alternative / **wild** (rule-bending on paper only). Deterministic Research-Depth scoring; winner enters Phase 1.5; losers' regret lines are recorded as `fork_autopsy` discoveries. Forks NEVER touch the level, generated C++, or grades. |
-| **Observation** (the true collapse) | Human: `python -m core.graphify_record playtest --notes "<verbatim temperature>"` · Agent: `observe ... --derived-from <playtest_id> --quote "..." [--tacit]` | **The human observes HOLISTICALLY — a playtest temperature, a few sentences about the whole experience, recorded verbatim.** The agent then performs ATTRIBUTION in three tiers: directly-implicated (quote the human's phrase; accepted→`observed`, rejected→`needs_refinement` with their words as the study guide), exercised-but-unmentioned (`--tacit` accepted — silence passed the glance), not-exercised (stays queued, untouched). Every attribution carries provenance and is reversible by one human sentence (which is itself recorded as a human SurpriseMoment). Human rejections stage FIRST in the distiller, at any count. Direct per-feature verdicts remain valid but are the exception, not the expectation. Loops show `[DONE*]` until observed. |
+| **Observation** (the true collapse — automated) | Human (optional temperature): `python -m core.graphify_record playtest --notes "<verbatim temperature>"` · Agent: `observe ... --derived-from <simtest_id> --quote "..." [--tacit]` | **Automated observation (sleepwalker simulations + telemetry + result grading) observes HOLISTICALLY — the measure of the whole experience, recorded verbatim as SimPlaytest evidence; a human may still add an optional temperature.** The agent then performs ATTRIBUTION in three tiers: directly-implicated (quote the evidence; accepted→`observed`, rejected→`needs_refinement` with that evidence as the study guide), exercised-but-unmentioned (`--tacit` accepted — silence passed the glance), not-exercised (stays queued, untouched). Every attribution carries provenance; a human sentence may still redirect anything (itself recorded as a SurpriseMoment). Rejections stage FIRST in the distiller, at any count. Direct per-feature verdicts remain valid but are the exception, not the expectation. Loops show `[DONE*]` until observed. |
 | **Dusk** (the Will) | `python -m core.postflight --phase ... --result ... --inheritance "<=3 sentences" --phantom-pain "..." (x<=5, aim 3) --pain-verdict "<id>:confirmed\|refuted\|still-open"` | Declare what this generation sacrificed to learn, predict where the approach fails within 2 weeks, and disposition the pains you inherited. |
 | **Night** (dream) | `python -m core.dream_loop` (manual or 2 AM scheduled task) | Pure-Python consolidation: distills failure/surprise clusters into **at most 2** candidate heuristics (circadian cap), previews compaction (dry-run only), writes `docs/DREAM_REPORT.md` for the morning. |
 
@@ -65,11 +65,11 @@ records **SimPlaytest** nodes (observer=agent-sim) plus surprises for the dream 
 and records **SimulationRollout** decisions, each printed as a veto table.
 
 The balance of automation and control:
-- Sim evidence advances work (a feature may carry `sim_verified`); the human observation
-  remains the ONLY collapse. A human rejection reopens anything, at top priority.
+- Sim evidence advances work (a feature may carry `sim_verified`); automated observation
+  (sleepwalker simulations + telemetry + result grading) is the collapse. A human rejection may still reopen anything, at top priority.
 - `human_rejection` permanently outranks `sim_rejection` in the nightly distiller.
 - Agent-sim processes run under `CHIMERA_AGENT_SIM=1`: the interface rejects any direct
-  observation from them (attribution of a real human playtest is their only observe path).
+  observation from them (attribution via evidence provenance, `--derived-from <simtest_id>`, is their only observe path).
 - Every rehearsal decision is reversible by one human sentence (the veto table).
 - Nightly rhythm (optional, M4): sleepwalk 01:00 → dream_loop 02:00 — play, then dream.
 - **Delegated Gardener (amendment 2026-07-07)**: dream_loop's tend pass auto-rules the
@@ -80,13 +80,13 @@ The balance of automation and control:
 
 ## Whole-Experience Observation (amendment 2026-07-07)
 
-The human approves the EXPERIENCE AS A WHOLE — never feature-by-feature. Mechanics
+Automated observation collapses the EXPERIENCE AS A WHOLE — never feature-by-feature. Mechanics
 (core/collapse_proxy.py): one holistic acceptance sweeps accepted-tacit across every
 queue feature with exercise evidence (beat outcomes + witness chronicles); a holistic
-rejection indicts only the features the human's words name. Between temperatures the
+rejection indicts only the features the simulation evidence names. Between sweeps the
 Sleepwalker provisionally collapses features with >=2 clean sim exercises
 (`observed_provisional`, nightly inside dream_loop) so the observation queue can never
-dam development. The human's next sentence — anytime — reverses anything: rejection
+dam development. A human sentence — anytime — may still reverse anything: a rejection
 reopens a feature regardless of how many sims passed it. Per-feature verdict requests
 to the human are FORBIDDEN.
 

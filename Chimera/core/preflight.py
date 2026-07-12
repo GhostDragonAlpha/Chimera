@@ -208,6 +208,72 @@ def main():
     if current_loop is not None:
         print(f"    -> NEXT: Loop {current_loop} ({LOOP_NAMES.get(current_loop)})")
 
+    # 3.7. Parallel task board — what concurrent agents can claim RIGHT NOW
+    try:
+        from core.task_board import board_summary
+        s = board_summary()
+        if s["total"]:
+            counts = "  ".join(f"{k}:{v}" for k, v in sorted(s["counts"].items()))
+            print(f"\n[3.7] Task board: {s['total']} task(s)  {counts}")
+            print(f"    Parallel frontier: {len(s['frontier'])} task(s) can proceed simultaneously")
+            for t in s["frontier"][:3]:
+                cap = " `capable`" if t.get("capable_only") else ""
+                print(f"      - {t['id']} p={t.get('priority', 1):.2g} {t['title'][:70]}{cap}")
+            for tid, title, agent in s["claims"][:4]:
+                print(f"    claimed: {tid} {title[:56]} <- {agent}")
+            print(f"    ENTER HERE: python -m core.task_board claim --agent <your-id>  "
+                  f"(opens tunnel: editor + work packet; exit only with evidence)")
+            try:
+                from core.gauntlet import load_credentials
+                creds = load_credentials()
+                journeymen = [a for a, e in creds.items()
+                              if "journeyman" in (e.get("roles") or [])]
+                print(f"    gauntlet: {len(journeymen)} journeyman agent(s) qualified for "
+                      f"capable lanes; qualify: python -m core.gauntlet enter --agent <id>")
+            except Exception:
+                pass
+            try:
+                from core.curriculum import load_curriculum, band_progress, \
+                    _load_transcript, GAUNTLET_DIR as _GD
+                bands = load_curriculum()
+                enrolled = sorted((_GD / "features").glob("*/transcript.json"))
+                if enrolled:
+                    print(f"    school: {len(enrolled)} feature(s) enrolled "
+                          f"(K->PhD, {sum(len(c['checkpoints']) for b in bands for c in b['courses'])} checkpoints):")
+                    for tp in enrolled[:4]:
+                        import json as _json
+                        tr = _json.loads(tp.read_text(encoding="utf-8"))
+                        band, remaining = band_progress(tr, bands)
+                        grade = "PhD" if band is None else \
+                            f"{band['band']} ({len(remaining)} left)"
+                        print(f"      {tr['feature']}: {grade}")
+            except Exception:
+                pass
+            try:
+                from core.agent_tunnel import active_sessions
+                for sess in active_sessions()[:4]:
+                    print(f"    tunnel: {sess['agent']} in {sess['task_id']} "
+                          f"since {sess['entered_at'][11:16]}Z")
+            except Exception:
+                pass
+    except Exception as e:
+        print(f"\n[3.7] Task board: unavailable ({e})")
+
+    # 3.8. The fractal spiral — the whole structure as a DNA spiral around the
+    # player (trunk). Self-similar golden-angle layout; the pattern is the linker.
+    try:
+        from core.fractal_spiral import build as _spiral
+        sp = _spiral()
+        depths = sp["counts_by_depth"]
+        print(f"\n[3.8] Fractal spiral: {len(sp['nodes'])} nodes around the player "
+              f"(trunk); golden angle {sp['golden_angle_deg']}°")
+        print(f"    self-similar depth profile {depths}  "
+              f"(player -> loops -> features -> exams -> checkpoints)")
+        print(f"    render: python -m core.fractal_spiral build --svg   "
+              f"link a node: python -m core.fractal_spiral neighborhood --node <id>")
+    except Exception as e:
+        print(f"\n[3.8] Fractal spiral: unavailable ({e})")
+
     # 4. Pending technical_research
     pending = [n for n in nodes
                if n.get("feature_type") == "technical_research"

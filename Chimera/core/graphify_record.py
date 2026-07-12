@@ -94,19 +94,19 @@ def main():
     p.add_argument("--organ", required=True, choices=["gate", "claude_md", "mcp_pathways"])
     p.add_argument("--evidence", action="append", help="graph node id of teaching failure (repeatable)")
 
-    p = sub.add_parser("observe", help="Observation verdict — direct human, or agent attribution of a playtest")
+    p = sub.add_parser("observe", help="Observation verdict — AUTOMATED (sleepwalker/telemetry attribution of a simtest); the measure")
     p.add_argument("--feature", required=True)
     p.add_argument("--verdict", required=True, choices=["accepted", "rejected"])
-    p.add_argument("--notes", default="", help="REQUIRED for rejections — the human's reason")
+    p.add_argument("--notes", default="", help="REQUIRED for rejections — the automated evidence / reason")
     p.add_argument("--loop", type=int, help="loop number (for the follow-up status flip)")
     p.add_argument("--derived-from", default="", dest="derived_from",
-                   help="playtest node id when this is an agent attribution of a holistic temperature")
-    p.add_argument("--quote", default="", help="the human's exact phrase implicating this feature (required for non-tacit attribution)")
+                   help="simtest/playtest node id this attribution derives from")
+    p.add_argument("--quote", default="", help="the observation's exact phrase implicating this feature (required for non-tacit attribution)")
     p.add_argument("--tacit", action="store_true",
-                   help="feature was exercised in the playtest but unmentioned — silence passed the glance")
+                   help="feature was exercised in the sim but unmentioned — silence passed the glance")
 
-    p = sub.add_parser("playtest", help="The human's holistic temperature — verbatim, few tokens, whole build")
-    p.add_argument("--notes", required=True, help="the human's words, VERBATIM")
+    p = sub.add_parser("playtest", help="Holistic temperature — verbatim, few tokens, whole build (automated sleepwalker/telemetry sweep; a human may still supply one)")
+    p.add_argument("--notes", required=True, help="the observation, VERBATIM")
     p.add_argument("--build", default="", help="commit/build reference")
 
     p = sub.add_parser("surprise", help="SurpriseMoment (Circadian dream fodder) — capture live")

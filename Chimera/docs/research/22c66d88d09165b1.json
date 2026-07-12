@@ -1,0 +1,201 @@
+{
+  "question": "How does UE 5.8 apply the crouched capsule half-height?",
+  "claims": [
+    {
+      "text": "SetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "UE_DEPRECATED_FORGAME(5.0, \"Public access to this property is deprecated, and it will become private in a future release. Please use SetCrouchedHalfHeight and GetCrouchedHalfHeight instead.\")",
+          "line": 385,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "SetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "UPROPERTY(Category=\"Character Movement (General Settings)\", EditAnywhere, BlueprintReadWrite, BlueprintSetter=SetCrouchedHalfHeight, BlueprintGetter=GetCrouchedHalfHeight, meta=(ClampMin=\"0\", UIMin=\"0\", ForceUnits=cm))",
+          "line": 386,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "SetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "ENGINE_API void SetCrouchedHalfHeight(const float NewValue);",
+          "line": 1836,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "SetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+          "quote": "SetCrouchedHalfHeight(40.0f);",
+          "line": 751,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "SetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+          "quote": "void UCharacterMovementComponent::SetCrouchedHalfHeight(const float NewValue)",
+          "line": 3247,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "GetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "UE_DEPRECATED_FORGAME(5.0, \"Public access to this property is deprecated, and it will become private in a future release. Please use SetCrouchedHalfHeight and GetCrouchedHalfHeight instead.\")",
+          "line": 385,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "GetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "UPROPERTY(Category=\"Character Movement (General Settings)\", EditAnywhere, BlueprintReadWrite, BlueprintSetter=SetCrouchedHalfHeight, BlueprintGetter=GetCrouchedHalfHeight, meta=(ClampMin=\"0\", UIMin=\"0\", ForceUnits=cm))",
+          "line": 386,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "GetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "ENGINE_API float GetCrouchedHalfHeight() const;",
+          "line": 1840,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "GetCrouchedHalfHeight appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+          "quote": "float UCharacterMovementComponent::GetCrouchedHalfHeight() const",
+          "line": 3257,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "bWantsToCrouch appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "uint8 bWantsToCrouch:1;",
+          "line": 1015,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "bWantsToCrouch appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "* In general you should set bWantsToCrouch instead to have the crouch persist during movement, or just use the crouch functions on the owning Character.",
+          "line": 1820,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "bWantsToCrouch appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+          "quote": "uint8 bWantsToCrouch:1;",
+          "line": 2995,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "bWantsToCrouch appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+          "quote": "!bWantsToCrouch &&",
+          "line": 1188,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "bWantsToCrouch appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+          "quote": "// Check for a change in crouch state. Players toggle crouch by changing bWantsToCrouch.",
+          "line": 3505,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    },
+    {
+      "text": "bWantsToCrouch appears in engine source",
+      "citations": [
+        {
+          "kind": "engine",
+          "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+          "quote": "if (bIsCrouching && (!bWantsToCrouch || !CanCrouchInCurrentState()))",
+          "line": 3507,
+          "sha256": null,
+          "fetched_at": null
+        }
+      ]
+    }
+  ],
+  "created_at": "2026-07-10T14:33:47Z"
+}

@@ -291,10 +291,11 @@ def main():
     if not pending_text:
         pending_text = ("# PENDING HEURISTICS — the Gardener's queue\n\n"
                         "Candidates distilled from repeated failures/surprises in the DNA graph.\n"
-                        "The human approves or vetoes each: edit `status:` to `approved` or `vetoed`.\n"
-                        "On approval the agent promotes to the named organ and records it via\n"
-                        "`python -m core.graphify_record heuristic ...`, then sets status `promoted`.\n"
-                        "NOTHING here is active until promoted.\n\n")
+                        "The delegated Gardener (automation) rules each via `dream_loop --tend`:\n"
+                        "doc-organ rules with a draft + evidence self-promote; gate-organ rules\n"
+                        "queue for a capable cycle to implement, then record via\n"
+                        "`python -m core.graphify_record heuristic ...`. A human may veto after the\n"
+                        "fact (edit `status:` to `vetoed`). NOTHING here is active until promoted.\n\n")
 
     num = next_h_number(pending_text)
     additions = []
@@ -309,8 +310,8 @@ def main():
     pending_text += f"\n<!-- distilled {stamp}Z -->\n" + "\n".join(additions)
     PENDING_PATH.write_text(pending_text, encoding="utf-8")
     print(f"\nstaged {len(staged)} candidate(s) -> {PENDING_PATH}")
-    print("next: agent drafts each draft_rule from evidence; human approves/vetoes; "
-          "approved rules promote via graphify_record heuristic.")
+    print("next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; "
+          "gate-organ rules queue for a capable cycle); optional human veto-after.")
     return 0
 
 

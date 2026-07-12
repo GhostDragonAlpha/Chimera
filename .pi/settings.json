@@ -84,6 +84,8 @@
       ]
     }
   },
+  "defaultProvider": "lmstudio",
+  "defaultModel": "qwen-agentworld-35b-a3b-nvfp4",
   "environment": {
     "nodePath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64",
     "npmPath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64/npm.cmd",

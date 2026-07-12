@@ -14,6 +14,20 @@ Chimera/Plugins/**/Intermediate/
 *.sarif
 $null
 
+# Multi-agent coordination state (machine-local; advisory locks + volatile
+# heartbeats — committing them would churn every claim/heartbeat)
+Chimera/core/editor_scheduler.lock
+Chimera/core/editor_scheduler_state.json
+Chimera/core/task_board.lock
+Chimera/core/task_board_state.json
+Chimera/core/task_board_state.json.bak
+Chimera/core/task_board_state.json.tmp
+Chimera/core/tunnel_sessions/
+Chimera/core/gauntlet.lock
+
+# Fractal spiral — derived layout overlay, regenerated from the graph on demand
+Chimera/docs/spiral/
+
 # Test output files
 tdd_pipeline_output*.txt
 demo_output.txt
@@ -111,3 +125,6 @@ Chimera/Content/Qwen2Audio/
 # Voice/STT test capture artifacts (regenerated per test run)
 Chimera/test_audio.wav
 Chimera/test_audio.wav.txt
+
+# Gitignore the world-model data store (SQLite DB + WAL) — it is data, regenerated
+Chimera/docs/world/

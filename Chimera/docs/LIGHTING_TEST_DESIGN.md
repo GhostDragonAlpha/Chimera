@@ -319,11 +319,11 @@ Before declaring testing complete, answer:
    - Run repeat automation; measure improvement trajectory
    - Target B-grade with 80%+ spec fidelity
 
-3. **Human Observation** (Sleepwalker II):
+3. **Automated Observation** (Sleepwalker II):
    - Playtest with real character under PIE
    - Verify visual quality matches grade (frame audit validation)
-   - Record surprise/deviation if metrics ≠ human perception
-   - Human observation verdict (accepted/rejected) → final feature state
+   - Record surprise/deviation if metrics ≠ observed reality
+   - Automated observation verdict (accepted/rejected) → final feature state
 
 ---
 
