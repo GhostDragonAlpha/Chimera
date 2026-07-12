@@ -50507,6 +50507,47 @@
       "links": [],
       "recorded_by": "test_rep_engine.py",
       "run_id": "run_ae0e47dfbbfb"
+    },
+    {
+      "id": "phase_92144425dd70d3d0",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-12T16:52:52.259810",
+      "phase": "DSL triage + THE HISTORY BOOK",
+      "result": "19% spec coverage measured (33/169 tokens, probe v2 camel-aware Source-wide); 131 true-drift tokens ledgered; history_book.py live: 985 entries/7 chapters FTS-searchable, nightly rewrite wired; suites 17/17+11/11",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/DSL triage + THE HISTORY BOOK",
+      "error_category": "none",
+      "fix_description": "Phase 'DSL triage + THE HISTORY BOOK' complete: 19% spec coverage measured (33/169 tokens, probe v2 camel-aware Source-wide); 131 true-drift tokens ledgered; history_book.py live: 985 entries/7 chapters FTS-searchable, nightly rewrite wired; suites",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "HISTORY_BOOK.md will merge-conflict constantly if two agents regenerate it concurrently \u2014 nightly-only rewrite may need a lock or generation stamp"
+      ],
+      "inheritance": "The Book is the studio's memory made queryable \u2014 search it BEFORE re-deriving anything. The drift ledger is the generator's backlog: every kept promise flips a red atom green.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_85d812320248"
+    },
+    {
+      "id": "elim_fc1e3b5e9ce65fbe",
+      "type": "Elimination",
+      "timestamp": "2026-07-12T16:52:52.462794",
+      "feature": "System_DSL_Fidelity",
+      "boundary": "probe token-noise as dominant cause of battery reds",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "triage 2026-07-12 + rep ledger 962 reps",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_System_DSL_Fidelity",
+      "template_file": "elimination/System_DSL_Fidelity",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for System_DSL_Fidelity: probe token-noise as dominant cause of battery reds",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_85d812320248"
     }
   ],
   "edges": [
