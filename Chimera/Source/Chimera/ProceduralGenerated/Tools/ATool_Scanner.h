@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Tool")
 	float ScanTime;
 
+	UFUNCTION(BlueprintCallable, Category = "Tool")
+	bool Scan();
+
 protected:
 	virtual void BeginPlay() override;
 };

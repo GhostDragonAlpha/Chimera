@@ -35,21 +35,35 @@ void UErisaidResonanceVFXComponent::TickComponent(float DeltaTime, ELevelTick Ti
 void UErisaidResonanceVFXComponent::ActivateResonanceVisuals()
 {
 	bVisualsActive = true;
-	
-	if (ResonanceNiagaraComp && ResonanceVisualEffect)
+
+	if (ResonanceNiagaraComp)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ResonanceVisualEffect, GetOwner()->GetActorLocation());
+		ResonanceNiagaraComp->Activate(true);
+		UE_LOG(LogTemp, Display, TEXT("[ErisaidResonanceVFXComponent] Activated resonance visuals"));
 	}
 
-	if (bEnableInterferenceShimmer && ShimmerNiagaraComp && InterferenceShimmerEffect)
+	if (bEnableInterferenceShimmer && ShimmerNiagaraComp)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), InterferenceShimmerEffect, GetOwner()->GetActorLocation());
+		ShimmerNiagaraComp->Activate(true);
+		UE_LOG(LogTemp, Display, TEXT("[ErisaidResonanceVFXComponent] Activated interference shimmer"));
 	}
 }
 
 void UErisaidResonanceVFXComponent::DeactivateResonanceVisuals()
 {
 	bVisualsActive = false;
+
+	if (ResonanceNiagaraComp)
+	{
+		ResonanceNiagaraComp->Deactivate();
+		UE_LOG(LogTemp, Display, TEXT("[ErisaidResonanceVFXComponent] Deactivated resonance visuals"));
+	}
+
+	if (ShimmerNiagaraComp)
+	{
+		ShimmerNiagaraComp->Deactivate();
+		UE_LOG(LogTemp, Display, TEXT("[ErisaidResonanceVFXComponent] Deactivated shimmer visuals"));
+	}
 }
 
 void UErisaidResonanceVFXComponent::SetResonanceIntensity(float NewIntensity)
@@ -68,6 +82,32 @@ void UErisaidResonanceVFXComponent::SetupNiagaraComponents()
 	{
 		return;
 	}
+
+	// Create the resonance visual effect Niagara component
+	ResonanceNiagaraComp = NewObject<UNiagaraComponent>(GetOwner(), FName(TEXT("ResonanceNiagaraComp")));
+	if (ResonanceNiagaraComp)
+	{
+		ResonanceNiagaraComp->RegisterComponent();
+		ResonanceNiagaraComp->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		if (ResonanceVisualEffect)
+		{
+			ResonanceNiagaraComp->SetAsset(ResonanceVisualEffect);
+		}
+		UE_LOG(LogTemp, Display, TEXT("[ErisaidResonanceVFXComponent] Resonance Niagara component initialized"));
+	}
+
+	// Create the interference shimmer effect Niagara component
+	ShimmerNiagaraComp = NewObject<UNiagaraComponent>(GetOwner(), FName(TEXT("ShimmerNiagaraComp")));
+	if (ShimmerNiagaraComp)
+	{
+		ShimmerNiagaraComp->RegisterComponent();
+		ShimmerNiagaraComp->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		if (InterferenceShimmerEffect)
+		{
+			ShimmerNiagaraComp->SetAsset(InterferenceShimmerEffect);
+		}
+		UE_LOG(LogTemp, Display, TEXT("[ErisaidResonanceVFXComponent] Shimmer Niagara component initialized"));
+	}
 }
 
 void UErisaidResonanceVFXComponent::UpdateVisualIntensity(float Intensity)
@@ -77,11 +117,20 @@ void UErisaidResonanceVFXComponent::UpdateVisualIntensity(float Intensity)
 		return;
 	}
 
-	if (bEnableStandingWaveEdges)
+	// Update resonance effect intensity
+	if (ResonanceNiagaraComp && Intensity >= MinVisibilityThreshold)
 	{
+		ResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT("Intensity")), Intensity);
+
+		if (bEnableStandingWaveEdges)
+		{
+			ResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT("WaveAmplitude")), Intensity * 2.0f);
+		}
 	}
 
-	if (bEnableInterferenceShimmer)
+	// Update shimmer effect intensity
+	if (ShimmerNiagaraComp && bEnableInterferenceShimmer && Intensity >= MinVisibilityThreshold)
 	{
+		ShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT("ShimmerIntensity")), Intensity * 0.5f);
 	}
 }

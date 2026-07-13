@@ -15,6 +15,16 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/** Overlap detection for player entry/exit */
+	UFUNCTION()
+	void OnShelterBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnShelterEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -28,14 +38,23 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Shelter|Habitat")
 	void SetupHabitatLighting();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shelter|Habitat")
-	int32 MaxOccupants;
+	UFUNCTION(BlueprintCallable, Category = "Shelter|Habitat")
+	void SetupShelterTrigger();
 
+	/** Radius of the shelter's life support zone (units) */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shelter|Habitat")
-	float LifeSupportCapacity;
+	float ShelterRadius;
+
+	/** If true, the shelter's environmental effects (dust scrubbing, O2 regen) are active */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shelter|Habitat")
+	bool bShelterActive;
 
 private:
 	bool bGeometryInitialized;
 	bool bMaterialsApplied;
 	bool bLightingSetup;
+
+	/** Collision primitive for overlap detection */
+	UPROPERTY()
+	class USphereComponent* ShelterTrigger;
 };

@@ -2,6 +2,7 @@
 #include "ToolScannerComponent.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
+#include "EngineUtils.h" // TActorIterator
 
 UToolScannerComponent::UToolScannerComponent()
 {
@@ -24,7 +25,34 @@ void UToolScannerComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	if (LastScanTime >= ScanInterval)
 	{
 		LastScanTime = 0.0f;
-		// Auto-scan logic would be implemented here based on game requirements
+
+		// Perform auto-scan: query actors in range and log findings
+		if (AActor* Owner = GetOwner())
+		{
+			const FVector ScanLocation = Owner->GetActorLocation();
+			int32 DetectionCount = 0;
+
+			if (UWorld* World = GetWorld())
+			{
+				for (TActorIterator<AActor> ActorItr(World); ActorItr; ++ActorItr)
+				{
+					AActor* TestActor = *ActorItr;
+					if (!TestActor || TestActor == Owner)
+					{
+						continue;
+					}
+
+					float Distance = FVector::Dist(ScanLocation, TestActor->GetActorLocation());
+					if (Distance <= ScanRange)
+					{
+						DetectionCount++;
+					}
+				}
+
+				UE_LOG(LogTemp, Log, TEXT("ToolScannerComponent::AutoScan -> detected %d actors within range %.1f uu (interval %.1f s)"),
+					DetectionCount, ScanRange, ScanInterval);
+			}
+		}
 	}
 }
 

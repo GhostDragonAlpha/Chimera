@@ -51,37 +51,155 @@ TArray<FTradeItem> UInventoryTradeComponent::GetNPCTradeItems() const
 /** Execute trade exchange between player and NPC */
 bool UInventoryTradeComponent::ExecuteTradeExchange(const TArray<FTradeItem>& PlayerOffers, const TArray<FTradeItem>& NPCOffers)
 {
-	// In a full implementation, this would:
-	// 1. Validate that the player has the items they're offering
-	// 2. Validate that the NPC has the items it's offering
-	// 3. Remove offered items from respective inventories
-	// 4. Add received items to respective inventories
-	
-	UE_LOG(LogTemp, Log, TEXT("Executing trade exchange: Player offers %d items, NPC offers %d items"), 
-	       PlayerOffers.Num(), NPCOffers.Num());
-
-	// For demonstration, we'll simulate a successful trade
-	if (PlayerOffers.Num() > 0 && NPCOffers.Num() > 0)
+	// Validation: ensure both parties have items to offer
+	if (PlayerOffers.Num() == 0 || NPCOffers.Num() == 0)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Trade exchange completed successfully"));
-		
-		// In a real implementation, we would update the actual inventories here
-		// For now, we'll just log the trade details
-		for (const FTradeItem& Item : PlayerOffers)
-		{
-			UE_LOG(LogTemp, Log, TEXT("Player offered: %s (Qty: %d)"), *Item.ItemName, Item.Quantity);
-		}
-		
-		for (const FTradeItem& Item : NPCOffers)
-		{
-			UE_LOG(LogTemp, Log, TEXT("NPC offered: %s (Qty: %d)"), *Item.ItemName, Item.Quantity);
-		}
-		
-		return true;
+		UE_LOG(LogTemp, Warning, TEXT("ExecuteTradeExchange rejected: empty offers (Player=%d, NPC=%d)"),
+		       PlayerOffers.Num(), NPCOffers.Num());
+		return false;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Trade exchange failed: No items to trade"));
-	return false;
+	// Step 1: Validate player has all offered items
+	for (const FTradeItem& PlayerItem : PlayerOffers)
+	{
+		if (PlayerItem.ItemName.IsEmpty() || PlayerItem.Quantity <= 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ExecuteTradeExchange rejected: invalid player offer (%s, Qty=%d)"),
+			       *PlayerItem.ItemName, PlayerItem.Quantity);
+			return false;
+		}
+
+		int32 PlayerHas = 0;
+		for (const FTradeItem& Held : PlayerTradeItems)
+		{
+			if (Held.ItemName == PlayerItem.ItemName)
+			{
+				PlayerHas = Held.Quantity;
+				break;
+			}
+		}
+
+		if (PlayerHas < PlayerItem.Quantity)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ExecuteTradeExchange rejected: player has only %d %s, offered %d"),
+			       PlayerHas, *PlayerItem.ItemName, PlayerItem.Quantity);
+			return false;
+		}
+	}
+
+	// Step 2: Validate NPC has all offered items
+	for (const FTradeItem& NPCItem : NPCOffers)
+	{
+		if (NPCItem.ItemName.IsEmpty() || NPCItem.Quantity <= 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ExecuteTradeExchange rejected: invalid NPC offer (%s, Qty=%d)"),
+			       *NPCItem.ItemName, NPCItem.Quantity);
+			return false;
+		}
+
+		int32 NPCHas = 0;
+		for (const FTradeItem& Held : NPCTradeItems)
+		{
+			if (Held.ItemName == NPCItem.ItemName)
+			{
+				NPCHas = Held.Quantity;
+				break;
+			}
+		}
+
+		if (NPCHas < NPCItem.Quantity)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ExecuteTradeExchange rejected: NPC has only %d %s, offered %d"),
+			       NPCHas, *NPCItem.ItemName, NPCItem.Quantity);
+			return false;
+		}
+	}
+
+	// Step 3: Remove offered items from inventories (player trades away)
+	for (const FTradeItem& PlayerItem : PlayerOffers)
+	{
+		for (FTradeItem& Held : PlayerTradeItems)
+		{
+			if (Held.ItemName == PlayerItem.ItemName)
+			{
+				Held.Quantity -= PlayerItem.Quantity;
+				if (Held.Quantity == 0)
+				{
+					PlayerTradeItems.RemoveAll([&](const FTradeItem& Item) { return Item.ItemName == PlayerItem.ItemName; });
+				}
+				break;
+			}
+		}
+	}
+
+	// Remove offered items from NPC inventory
+	for (const FTradeItem& NPCItem : NPCOffers)
+	{
+		for (FTradeItem& Held : NPCTradeItems)
+		{
+			if (Held.ItemName == NPCItem.ItemName)
+			{
+				Held.Quantity -= NPCItem.Quantity;
+				if (Held.Quantity == 0)
+				{
+					NPCTradeItems.RemoveAll([&](const FTradeItem& Item) { return Item.ItemName == NPCItem.ItemName; });
+				}
+				break;
+			}
+		}
+	}
+
+	// Step 4: Add received items to inventories (player receives NPC items, NPC receives player items)
+	for (const FTradeItem& ReceivedFromNPC : NPCOffers)
+	{
+		bool bFound = false;
+		for (FTradeItem& Held : PlayerTradeItems)
+		{
+			if (Held.ItemName == ReceivedFromNPC.ItemName)
+			{
+				Held.Quantity += ReceivedFromNPC.Quantity;
+				bFound = true;
+				break;
+			}
+		}
+		if (!bFound)
+		{
+			PlayerTradeItems.Add(FTradeItem(ReceivedFromNPC.ItemName, ReceivedFromNPC.Quantity));
+		}
+	}
+
+	// Add player-offered items to NPC inventory
+	for (const FTradeItem& ReceivedByNPC : PlayerOffers)
+	{
+		bool bFound = false;
+		for (FTradeItem& Held : NPCTradeItems)
+		{
+			if (Held.ItemName == ReceivedByNPC.ItemName)
+			{
+				Held.Quantity += ReceivedByNPC.Quantity;
+				bFound = true;
+				break;
+			}
+		}
+		if (!bFound)
+		{
+			NPCTradeItems.Add(FTradeItem(ReceivedByNPC.ItemName, ReceivedByNPC.Quantity));
+		}
+	}
+
+	// Log successful trade
+	UE_LOG(LogTemp, Log, TEXT("ExecuteTradeExchange completed: Player traded %d item types for %d item types"),
+	       PlayerOffers.Num(), NPCOffers.Num());
+	for (const FTradeItem& Item : PlayerOffers)
+	{
+		UE_LOG(LogTemp, Log, TEXT("  Player offered: %s x%d"), *Item.ItemName, Item.Quantity);
+	}
+	for (const FTradeItem& Item : NPCOffers)
+	{
+		UE_LOG(LogTemp, Log, TEXT("  Player received: %s x%d"), *Item.ItemName, Item.Quantity);
+	}
+
+	return true;
 }
 
 float UInventoryTradeComponent::GetCredits() const

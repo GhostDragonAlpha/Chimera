@@ -11,21 +11,22 @@ class CHIMERA_API UNPCTradeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
+public:
 	UNPCTradeComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	/** Trigger trade interaction with player */
 	UFUNCTION(BlueprintCallable, Category="NPC|Trade")
 	void StartTradeInteraction();
+
+	/** End trade interaction */
+	UFUNCTION(BlueprintCallable, Category="NPC|Trade")
+	void EndTradeInteraction();
 
 	/** Check if player is within trade range */
 	UFUNCTION(BlueprintCallable, Category="NPC|Trade")
@@ -35,15 +36,23 @@ public:
 	UFUNCTION(BlueprintCallable, Category="NPC|Trade")
 	AActor* GetOwnerActor() const;
 
+	/** Get distance to player */
+	UFUNCTION(BlueprintCallable, Category="NPC|Trade")
+	float GetDistanceToPlayer() const;
+
 private:
-	/** Range within which player can initiate trade */
+	/** Range within which player can initiate trade (default 500 units) */
 	UPROPERTY(EditAnywhere, Category="NPC|Trade")
-	float TradeRange = 200.0f;
+	float TradeRange = 500.0f;
 
 	/** Flag indicating if trade interaction is currently active */
 	UPROPERTY(VisibleAnywhere, Category="NPC|Trade")
 	bool bIsTradingActive = false;
 
 	/** Reference to the player actor for trade interactions */
+	UPROPERTY(VisibleAnywhere, Category="NPC|Trade")
 	AActor* PlayerActor = nullptr;
+
+	/** Helper to find and cache the player actor */
+	void FindPlayerActor();
 };

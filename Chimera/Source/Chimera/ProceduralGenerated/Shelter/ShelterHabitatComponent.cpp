@@ -2,15 +2,20 @@
 #include "ShelterHabitatComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
+#include "Components/SphereComponent.h"
+#include "../Suit/SuitLifeSupportComponent.h"
 
 UShelterHabitatComponent::UShelterHabitatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	MaxOccupants = 10;
-	LifeSupportCapacity = 500.0f;
+	ShelterRadius = 300.0f;
+	bShelterActive = false;
 	bGeometryInitialized = false;
 	bMaterialsApplied = false;
 	bLightingSetup = false;
+	ShelterTrigger = nullptr;
 }
 
 void UShelterHabitatComponent::BeginPlay()
@@ -19,6 +24,30 @@ void UShelterHabitatComponent::BeginPlay()
 	InitializeHabitatGeometry();
 	ApplyHabitatMaterials();
 	SetupHabitatLighting();
+	SetupShelterTrigger();
+	bShelterActive = true;
+}
+
+void UShelterHabitatComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	// Clear the bInShelter flag on any pawns that were inside when the shelter is destroyed
+	if (ShelterTrigger)
+	{
+		TArray<AActor*> OverlappingActors;
+		ShelterTrigger->GetOverlappingActors(OverlappingActors, APawn::StaticClass());
+
+		for (AActor* Actor : OverlappingActors)
+		{
+			if (APawn* Pawn = Cast<APawn>(Actor))
+			{
+				if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
+				{
+					Suit->bInShelter = false;
+				}
+			}
+		}
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 void UShelterHabitatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -51,5 +80,80 @@ void UShelterHabitatComponent::SetupHabitatLighting()
 	{
 		bLightingSetup = true;
 		UE_LOG(LogTemp, Display, TEXT("ShelterHabitat: Lighting setup complete"));
+	}
+}
+
+void UShelterHabitatComponent::SetupShelterTrigger()
+{
+	// Create a sphere collision component to detect when pawns enter/exit the shelter
+	if (!ShelterTrigger)
+	{
+		AActor* Owner = GetOwner();
+		if (!Owner)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ShelterHabitatComponent: No owner set, cannot create trigger"));
+			return;
+		}
+
+		ShelterTrigger = NewObject<USphereComponent>(Owner);
+		if (ShelterTrigger)
+		{
+			// Set up as trigger-only (query collisions, no physics)
+			ShelterTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			ShelterTrigger->SetCollisionObjectType(ECC_WorldStatic);
+			ShelterTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+			ShelterTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+			ShelterTrigger->SetSphereRadius(ShelterRadius);
+			ShelterTrigger->SetGenerateOverlapEvents(true);
+
+			// Bind overlap events
+			ShelterTrigger->OnComponentBeginOverlap.AddDynamic(this, &UShelterHabitatComponent::OnShelterBeginOverlap);
+			ShelterTrigger->OnComponentEndOverlap.AddDynamic(this, &UShelterHabitatComponent::OnShelterEndOverlap);
+
+			// Register and attach to owner
+			ShelterTrigger->RegisterComponent();
+			ShelterTrigger->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+			UE_LOG(LogTemp, Display, TEXT("ShelterHabitat: Trigger created with radius %.1f"), ShelterRadius);
+		}
+	}
+}
+
+void UShelterHabitatComponent::OnShelterBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bShelterActive || !OtherActor)
+	{
+		return;
+	}
+
+	// Cast to Pawn and find suit component
+	if (APawn* Pawn = Cast<APawn>(OtherActor))
+	{
+		if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
+		{
+			Suit->bInShelter = true;
+			UE_LOG(LogTemp, Display, TEXT("ShelterHabitat: %s entered shelter"), *GetNameSafe(Pawn));
+		}
+	}
+}
+
+void UShelterHabitatComponent::OnShelterEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (!OtherActor)
+	{
+		return;
+	}
+
+	// Cast to Pawn and find suit component
+	if (APawn* Pawn = Cast<APawn>(OtherActor))
+	{
+		if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
+		{
+			Suit->bInShelter = false;
+			UE_LOG(LogTemp, Display, TEXT("ShelterHabitat: %s left shelter"), *GetNameSafe(Pawn));
+		}
 	}
 }

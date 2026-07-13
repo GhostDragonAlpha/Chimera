@@ -53400,6 +53400,86 @@
       "links": [],
       "recorded_by": "rep_engine.py",
       "run_id": "run_7ac3c6302eee"
+    },
+    {
+      "id": "phase_8f932ebcc586c4d5",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T07:15:06.615008",
+      "phase": "rep_promotion:System_SaveGame",
+      "result": "tier 0 -> 1 (behaves) after 676 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:System_SaveGame",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:System_SaveGame' complete: tier 0 -> 1 (behaves) after 676 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_6bdd436860b4"
+    },
+    {
+      "id": "heuristic_7c8e7fc912c4527d",
+      "type": "Heuristic",
+      "timestamp": "2026-07-13T07:15:07.457651",
+      "signature": "sim_rejection: audio_visual_sync/walk_fast_on_sand",
+      "rule": "Implement missing input bindings and verify actor registration.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "simtest_dbe50ff88351edb2",
+        "simtest_f2dc4faedd6ac1c6",
+        "simtest_f2425d6b7d751016",
+        "simtest_750dc02ab4f67c81",
+        "simtest_b8f7b2ffb83d2b12",
+        "simtest_536c81002961d807",
+        "simtest_b1e7984ff89a9bdc",
+        "simtest_1e4fe7b372af6644"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/sim_rejection: audio_visual_sync/walk_fast_on_sand",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Implement missing input bindings and verify actor registration.",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_dbe50ff88351edb2",
+        "simtest_f2dc4faedd6ac1c6",
+        "simtest_f2425d6b7d751016",
+        "simtest_750dc02ab4f67c81",
+        "simtest_b8f7b2ffb83d2b12",
+        "simtest_536c81002961d807",
+        "simtest_b1e7984ff89a9bdc",
+        "simtest_1e4fe7b372af6644"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_6bdd436860b4"
+    },
+    {
+      "id": "heuristic_040256f8f18a3de0",
+      "type": "Heuristic",
+      "timestamp": "2026-07-13T07:15:07.695199",
+      "signature": "sim_rejection: regolith_yard/walk_metal_to_rock",
+      "rule": "Verify beat spawn location distances and pawn navigation constraints.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "simtest_d6e2cb58b97175ad",
+        "simtest_613400f2fcc63327",
+        "simtest_9cd9a1ac25867a73",
+        "simtest_b9c246f4cef92293"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/sim_rejection: regolith_yard/walk_metal_to_rock",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Verify beat spawn location distances and pawn navigation constraints.",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_d6e2cb58b97175ad",
+        "simtest_613400f2fcc63327",
+        "simtest_9cd9a1ac25867a73",
+        "simtest_b9c246f4cef92293"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_6bdd436860b4"
     }
   ],
   "edges": [

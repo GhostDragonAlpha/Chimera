@@ -61,6 +61,7 @@ void UHUDWidget::AddMission(FString MissionName, FString ObjectiveText)
         return;
     }
     Entry->SetText(FText::FromString(Line));
+    Entry->SetColorAndOpacity(FSlateColor(FLinearColor::White));
     MissionList->AddChild(Entry);
     MissionEntries.Add(MissionName, Entry);
 }
@@ -131,5 +132,6 @@ void UHUDWidget::AddMessageToStack(FString Text)
         return;
     }
     Message->SetText(FText::FromString(Text));
+    Message->SetColorAndOpacity(FSlateColor(FLinearColor::White));
     MessageStack->AddChild(Message);
 }

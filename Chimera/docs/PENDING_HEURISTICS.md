@@ -402,3 +402,26 @@ Wait, looking at the
 - sample: Eliminated for audio_visual_sync/telemetry_accessors: beat expect schema as root cause
 - sample: Eliminated for audio_visual_sync/telemetry_accessors: beat schema or MCP dispatch as root cause
 - draft_rule: Investigate elimination_audio_visual_sync telemetry_accessors; verify test harne
+
+<!-- distilled 2026-07-13T07:15:01Z -->
+## H-36: sim_rejection: audio_visual_sync/walk_fast_on_sand
+- status: promoted (auto 2026-07-13)
+- kind: sim_rejection  |  count: 9  |  last_seen: 2026-07-12T18:33:35
+- proposed_organ: claude_md
+- evidence: simtest_dbe50ff88351edb2, simtest_f2dc4faedd6ac1c6, simtest_f2425d6b7d751016, simtest_750dc02ab4f67c81, simtest_b8f7b2ffb83d2b12, simtest_536c81002961d807, simtest_b1e7984ff89a9bdc, simtest_1e4fe7b372af6644
+- sample: failed: [{"expect": {"volume_scales_with_speed": true, "note": "Sprint volume should be 2-3x louder than walk"}, "ok": false, "n
+- sample: blocked: [{"error": "control_editor.simulate_input: Invalid key: Shift"}]
+- sample: blocked: [{"error": "control_editor.simulate_input: failed"}]
+- possible_conflict_with: heuristic_fe52b1dc74838df6 (Investigate audio_visual_sync sim_rejection; verify test har); heuristic_f3583c561cfd251c (Investigate audio_visual_sync sim_rejection; verify test har); heuristic_d79d01761718bc42 (Investigate audio_visual_sync report_telemetry; verify test ); H-31  (Gardener: reconcile)
+- draft_rule: Implement missing input bindings and verify actor registration.
+
+## H-37: sim_rejection: regolith_yard/walk_metal_to_rock
+- status: promoted (auto 2026-07-13)
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-08T04:13:49
+- proposed_organ: claude_md
+- evidence: simtest_d6e2cb58b97175ad, simtest_613400f2fcc63327, simtest_9cd9a1ac25867a73, simtest_b9c246f4cef92293
+- sample: failed: [{"expect": {"pawn_within": {"x": 2000, "y": 0, "r": 900}}, "ok": false, "note": "dist=2000uu (loc x=0, y=0)"}]
+- sample: failed: [{"expect": {"pawn_within": {"x": 2000, "y": 0, "r": 900}}, "ok": false, "note": "dist=3550uu (loc x=5527.516165861163, 
+- sample: failed: [{"expect": {"pawn_within": {"x": 2000, "y": 0, "r": 900}}, "ok": false, "note": "dist=3549uu (loc x=5526.689419635806, 
+- possible_conflict_with: heuristic_52e2728aa88ab00a (Probe jumps by timed pawn_z read-back, not log_contains — an); heuristic_66e973934c7b5322 (Compound beats fail for shifting root causes (frozen input, ); H-28; H-29  (Gardener: reconcile)
+- draft_rule: Verify beat spawn location distances and pawn navigation constraints.

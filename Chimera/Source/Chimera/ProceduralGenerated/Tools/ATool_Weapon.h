@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float Range;
 
+	UFUNCTION(BlueprintCallable, Category = "Tool")
+	bool Fire();
+
 protected:
 	virtual void BeginPlay() override;
 };

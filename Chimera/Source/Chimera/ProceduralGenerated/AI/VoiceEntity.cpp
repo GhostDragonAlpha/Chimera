@@ -50,33 +50,48 @@ void AVoiceEntity::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] Voice Entity initialized. Type voice commands or use console: ke <this_actor> VoiceCommand \"spawn a rock here\""));
+	UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] Voice Entity initialized at %s"), *GetActorLocation().ToString());
+	UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] Available commands: 'spawn a rock', 'buy titanium', 'save game', 'status', etc."));
 
-	// ─── Initialize subsystem references (find components in world) ──
-	EconomySystem = nullptr;
-	TradeSystem = nullptr;
-	SaveSystem = nullptr;
-	MissionSystem = nullptr;
-
-	UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] Subsystem initialization deferred - components must be attached to actors"));
-
-	// ─── Initialize STT Engine (Phase 2) ──────────────────────────
-	if (SttEngine)
+	// ─── Initialize subsystem references (find in world) ──────────────
+	// The subsystems are typically attached to other actors (e.g., stations, game mode)
+	// Search for them in the world and cache references
+	if (GetWorld())
 	{
-		FString ModelPath = TEXT("E:/PythonChimera/Chimera/Content/AIModels/ggml-base.en.bin");
-		UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] Initializing STT Engine with model: %s"), *ModelPath);
-		
-		// Initialize whisper.cpp backend (will be implemented in SttEngine)
-		SttEngine->InitEngine(TEXT("whisper"));
-		
-		UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] STT Engine initialized successfully"));
+		// Note: These would be found dynamically at runtime
+		// For now, log that they need to be manually assigned or found via cast
+		UE_LOG(LogTemp, Warning, TEXT("[VoiceEntity] Subsystems not yet initialized - they must be assigned via Blueprint or dynamically found"));
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] Subsystems: Economy=%s Trade=%s Save=%s Mission=%s"),
-		EconomySystem ? TEXT("OK") : TEXT("NULL"),
-		TradeSystem ? TEXT("OK") : TEXT("NULL"),
-		SaveSystem ? TEXT("OK") : TEXT("NULL"),
-		MissionSystem ? TEXT("OK") : TEXT("NULL"));
+	// ─── Initialize NLP Parser if present ─────────────────────────────
+	if (NlpParserInstance)
+	{
+		UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] NLP Parser initialized"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[VoiceEntity] NLP Parser not initialized - voice command parsing will be limited"));
+	}
+
+	// ─── Initialize STT Engine (Phase 2) ──────────────────────────────
+	if (SttEngine)
+	{
+		// Note: Model path should be relative to the project content directory
+		// or configurable via Blueprint/config files
+		UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] STT Engine component present - awaiting model initialization"));
+		// SttEngine initialization will happen when model is available
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[VoiceEntity] STT Engine not initialized - audio input will not work"));
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] Subsystems: Economy=%s Trade=%s Faction=%s Save=%s Mission=%s"),
+		EconomySystem ? TEXT("FOUND") : TEXT("NULL"),
+		TradeSystem ? TEXT("FOUND") : TEXT("NULL"),
+		FactionSystem ? TEXT("FOUND") : TEXT("NULL"),
+		SaveSystem ? TEXT("FOUND") : TEXT("NULL"),
+		MissionSystem ? TEXT("FOUND") : TEXT("NULL"));
 }
 
 void AVoiceEntity::Tick(float DeltaTime)

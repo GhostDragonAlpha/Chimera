@@ -1,28 +1,27 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-12T22:39:34Z
+consolidated: 2026-07-13T07:15:01Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
 
 ## Open phantom pains
-- phase_da55128aec6d109a:P1 [6d] Distiller token-coverage will false-suppress genuinely new lessons once PENDING_HEURISTICS.md grows large - watch for repeat failures that never re-stage
 - phase_62a9bf8fa8e97b42:P1 [6d] phase_da55128aec6d109a:P1
 - phase_a3193c8fa52533c6:P1 [6d] phase_da55128aec6d109a:P1 distiller token-coverage suppression
-- phase_4cf94206335d7778:P1 [5d] phase_da55128aec6d109a:P1 - Distiller token-coverage will false-suppress genuinely new lessons once PENDING_
-- phase_4d2da4e032a4aa07:P1 [5d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
-- phase_1b01fac303f3c24e:P1 [5d] The verb TARGETS (BP_Verb_* actors) may be as hollow as the walking was - built via bridge, never human-triggered; expect pick-up/drop/shovel interactions to no-op in Session A retry; if so route Verb_PickUp/Drop/Shovel rejections and pull BP-interaction wiring into the capable Phase 2 build
+- phase_4cf94206335d7778:P1 [6d] phase_da55128aec6d109a:P1 - Distiller token-coverage will false-suppress genuinely new lessons once PENDING_
+- phase_4d2da4e032a4aa07:P1 [6d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
+- phase_1b01fac303f3c24e:P1 [6d] The verb TARGETS (BP_Verb_* actors) may be as hollow as the walking was - built via bridge, never human-triggered; expect pick-up/drop/shovel interactions to no-op in Session A retry; if so route Verb_PickUp/Drop/Shovel rejections and pull BP-interaction wiring into the capable Phase 2 build
+- phase_3414a5cc1ff49e30:P1 [6d] Phase 2 dependencies may still block Phase 3 wiring
 
 ## Observation queue — the true collapse awaits your eyes
 Empty — every system-verified feature has been human-observed.
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`untouched:35 | provisional-collapse: 0 collapsed, 0 awaiting evidence`
+`promoted:2; untouched:35 | provisional-collapse: 0 collapsed, 0 awaiting evidence`
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 35 batteries, 654 atoms, 628 reps this pass (23 failing), 25 PIE atoms exported
-[rep] PROMOTED: subsystem/Combat: tier 0 -> 1 (behaves)
-[rep] PROMOTED: subsystem/Travel: tier 0 -> 1 (behaves)
+[rep] 35 batteries, 689 atoms, 667 reps this pass (26 failing), 25 PIE atoms exported
+[rep] PROMOTED: System_SaveGame: tier 0 -> 1 (behaves)
 [rep] failing: subsystem_root (6 atoms red)
 [rep] failing: subsystem_AI (5 atoms red)
 [rep] failing: subsystem_Materials (3 atoms red)
@@ -30,7 +29,7 @@ Empty — every system-verified feature has been human-observed.
 
 ## Tonight's distillation
 ```
-clusters >= 3: 43  |  suppressed (covered/pending): 43  |  staged: 0
+clusters >= 3: 43  |  suppressed (covered/pending): 39  |  staged: 2  |  deferred by cap: 2
   covered   [  5x] human_rejection: Verb_Shovel  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Look  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Bend  <- PENDING_HEURISTICS.md
@@ -51,18 +50,15 @@ clusters >= 3: 43  |  suppressed (covered/pending): 43  |  staged: 0
   covered   [ 22x] sim_rejection: verb_interactions/verb_shovel_sand_surface_location  <- PENDING_HEURISTICS.md
   covered   [ 19x] sim_rejection: verb_interactions/verb_shovel_metal_surface_location  <- PENDING_HEURISTICS.md
   covered   [ 13x] sim_rejection: regolith_yard/jump_probe  <- PENDING_HEURISTICS.md
-  covered   [  9x] sim_rejection: audio_visual_sync/walk_fast_on_sand  <- PENDING_HEURISTICS.md
-  covered   [  6x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
+  covered   [  7x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
   covered   [  5x] sim_rejection: audio_visual_sync/spawn_and_verify_audio_system  <- PENDING_HEURISTICS.md
   covered   [  5x] sim_rejection: audio_visual_sync/walk_slow_on_sand  <- PENDING_HEURISTICS.md
   covered   [  5x] sim_rejection: audio_visual_sync/report_telemetry  <- PENDING_HEURISTICS.md
-  covered   [  4x] sim_rejection: regolith_yard/walk_metal_to_rock  <- PENDING_HEURISTICS.md
   covered   [  4x] sim_rejection: verb_interactions/verb_look_location  <- PENDING_HEURISTICS.md
-  covered   [151x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
+  covered   [152x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
   covered   [ 57x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 36x] pathway: sleepwalker.beat_run -> partial  <- PENDING_HEURISTICS.md
-  covered   [ 29x] surprise: correction feature finalized frame  <- MCP_PATHWAYS.md
   covered   [ 26x] verification_not_verified  <- PENDING_HEURISTICS.md
   covered   [ 24x] surprise: audio_visual_sync beat discovered expected  <- PENDING_HEURISTICS.md
   covered   [ 19x] compilation_fail  <- PENDING_HEURISTICS.md
@@ -72,14 +68,19 @@ clusters >= 3: 43  |  suppressed (covered/pending): 43  |  staged: 0
   covered   [  4x] grade_CF: Player_Character_Model  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
-  covered   [  3x] pathway: animation_physics.add_anim_notify -> failed  <- MCP_PATHWAYS.md
   covered   [  3x] elimination_audio_visual_sync/telemetry_accessors  <- PENDING_HEURISTICS.md
-nothing new to stage — the constitution already covers today's lessons
+  CANDIDATE [  9x] sim_rejection: audio_visual_sync/walk_fast_on_sand
+  CANDIDATE [  4x] sim_rejection: regolith_yard/walk_metal_to_rock
+  deferred  [ 29x] surprise: correction feature finalized frame (cap; next night)
+  deferred  [  3x] pathway: animation_physics.add_anim_notify -> failed (cap; next night)
+
+staged 2 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
+next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate-organ rules queue for a capable cycle); optional human veto-after.
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 2105  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 2141  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 

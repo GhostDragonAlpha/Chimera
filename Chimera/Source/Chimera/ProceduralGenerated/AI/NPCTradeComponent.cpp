@@ -2,60 +2,103 @@
 
 #include "NPCTradeComponent.h"
 
-// Sets default values
 UNPCTradeComponent::UNPCTradeComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	PrimaryComponentTick.TickInterval = 0.5f;  // Check player range twice per second
 }
 
-
-// Called when the game starts
 void UNPCTradeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	// Find the player actor in the world
+	FindPlayerActor();
+
+	if (PlayerActor)
+	{
+		UE_LOG(LogTemp, Log, TEXT("[NPCTrade] Player found for trade component on %s"), *GetOwner()->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[NPCTrade] Player not found at component initialization for %s"), *GetOwner()->GetName());
+	}
 }
 
-
-// Called every frame
 void UNPCTradeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Periodically refresh player reference in case actor changed
+	if (!PlayerActor)
+	{
+		FindPlayerActor();
+	}
+
+	// Update trade state based on proximity
+	if (PlayerActor && IsPlayerWithinRange())
+	{
+		if (!bIsTradingActive)
+		{
+			UE_LOG(LogTemp, Log, TEXT("[NPCTrade] Player within trade range of %s (distance: %.1f)"),
+				*GetOwner()->GetName(), GetDistanceToPlayer());
+		}
+	}
 }
 
-/** Trigger trade interaction with player */
+void UNPCTradeComponent::FindPlayerActor()
+{
+	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	if (PC)
+	{
+		PlayerActor = PC->GetPawn();
+	}
+	else
+	{
+		PlayerActor = nullptr;
+	}
+}
+
 void UNPCTradeComponent::StartTradeInteraction()
 {
 	if (!bIsTradingActive && IsPlayerWithinRange())
 	{
 		bIsTradingActive = true;
-		
-		// In a full implementation, this would open the trade UI
-		UE_LOG(LogTemp, Log, TEXT("NPC Trade Interaction Started with player: %s"), 
-		       PlayerActor ? *PlayerActor->GetName() : TEXT("Unknown"));
+		UE_LOG(LogTemp, Log, TEXT("[NPCTrade] Trade interaction started on %s with player: %s"),
+		       *GetOwner()->GetName(), *GetNameSafe(PlayerActor));
+	}
+	else if (!IsPlayerWithinRange())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[NPCTrade] Cannot start trade: player out of range (distance: %.1f)"), GetDistanceToPlayer());
 	}
 }
 
-/** Check if player is within trade range */
+void UNPCTradeComponent::EndTradeInteraction()
+{
+	if (bIsTradingActive)
+	{
+		bIsTradingActive = false;
+		UE_LOG(LogTemp, Log, TEXT("[NPCTrade] Trade interaction ended on %s"), *GetOwner()->GetName());
+	}
+}
+
 bool UNPCTradeComponent::IsPlayerWithinRange() const
 {
 	AActor* Owner = GetOwner();
-	if (!Owner) return false;
+	if (!Owner || !PlayerActor) return false;
 
-	// In a full implementation, this would check for the player actor and calculate distance
-	// For now, we'll assume the player is within range if we have a reference to them
-	return PlayerActor != nullptr;
+	float Distance = FVector::Dist(Owner->GetActorLocation(), PlayerActor->GetActorLocation());
+	return Distance <= TradeRange;
 }
 
-/** Get the NPC actor this component is attached to */
+float UNPCTradeComponent::GetDistanceToPlayer() const
+{
+	AActor* Owner = GetOwner();
+	if (!Owner || !PlayerActor) return -1.0f;
+
+	return FVector::Dist(Owner->GetActorLocation(), PlayerActor->GetActorLocation());
+}
+
 AActor* UNPCTradeComponent::GetOwnerActor() const
 {
 	return GetOwner();
