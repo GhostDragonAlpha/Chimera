@@ -115,8 +115,12 @@ def _probe_capabilities(con):
 # ---------------------------------------------------------------------------
 # Writes — bulk-first (a world is loaded in millions, not one row at a time).
 # ---------------------------------------------------------------------------
-def add_nodes(con, rows):
-    """rows: iterable of (id, kind, label, x, y, z, data_dict)."""
+def add_nodes(con, rows, commit=True):
+    """rows: iterable of (id, kind, label, x, y, z, data_dict).
+
+    commit=False lets a caller fold this into a larger transaction (e.g. the
+    atomic replace-all in dna_sqlite_backend.save_graph) so a mid-write failure
+    rolls the whole thing back instead of leaving a half-written graph."""
     caps = getattr(con, "_caps", {"fts5": False, "rtree": False})
     prepared = [(i, k, lb, x, y, z, json.dumps(d, default=str) if d else None)
                 for (i, k, lb, x, y, z, d) in rows]
@@ -138,14 +142,16 @@ def add_nodes(con, rows):
                             "VALUES(?,?,?,?,?)",
                             [(rowmap[p[0]][0], p[3], p[3], p[4], p[4])
                              for p in prepared if p[0] in rowmap and p[3] is not None])
-    con.commit()
+    if commit:
+        con.commit()
 
 
-def add_edges(con, rows):
+def add_edges(con, rows, commit=True):
     con.executemany("INSERT INTO edge(src,dst,rel,data) VALUES(?,?,?,?)",
                     [(s, d, r, json.dumps(dt, default=str) if dt else None)
                      for (s, d, r, dt) in rows])
-    con.commit()
+    if commit:
+        con.commit()
 
 
 # ---------------------------------------------------------------------------

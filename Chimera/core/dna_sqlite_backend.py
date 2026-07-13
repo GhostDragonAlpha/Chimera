@@ -74,25 +74,36 @@ def load_graph(db_path=DNA_DB_PATH):
 def save_graph(graph, db_path=DNA_DB_PATH, write_snapshot=True):
     """Replace-all write (matches the JSON whole-file overwrite semantics the
     pipeline expects), lossless, plus an optional committed JSON snapshot."""
-    con = ws.connect(db_path)
-    con.execute("DELETE FROM node")
-    con.execute("DELETE FROM edge")
-    if getattr(con, "_caps", {}).get("fts5"):
-        con.execute("DELETE FROM node_fts")
-    if getattr(con, "_caps", {}).get("rtree"):
-        con.execute("DELETE FROM node_rtree")
-    con.commit()
-
+    # Prepare rows before touching the DB (a prep error must not open a tx).
     nrows = [(_node_id(n), str(n.get("type", "?")), _searchable_text(n)[:200],
               0.0, 0.0, 0.0, n) for n in graph.get("nodes", [])]
-    ws.add_nodes(con, nrows)
     # EVERY edge preserved (full dict in data), even ones without src/dst keys.
     erows = [(str(e.get("source") or e.get("from") or e.get("src") or ""),
               str(e.get("target") or e.get("to") or e.get("dst") or ""),
               str(e.get("type") or e.get("rel") or "link"), e)
              for e in graph.get("edges", [])]
-    ws.add_edges(con, erows)
-    con.close()
+
+    # ATOMIC replace-all: keep the DELETEs and the re-inserts in ONE transaction
+    # (add_* called commit=False, a single commit at the end) with rollback on any
+    # failure — so a mid-write error can never leave the graph empty or half-written;
+    # it restores the prior state. (Previously the DELETEs were committed BEFORE the
+    # re-inserts, so a failure in add_nodes/add_edges wiped the whole graph.)
+    con = ws.connect(db_path)
+    try:
+        con.execute("DELETE FROM node")
+        con.execute("DELETE FROM edge")
+        if getattr(con, "_caps", {}).get("fts5"):
+            con.execute("DELETE FROM node_fts")
+        if getattr(con, "_caps", {}).get("rtree"):
+            con.execute("DELETE FROM node_rtree")
+        ws.add_nodes(con, nrows, commit=False)
+        ws.add_edges(con, erows, commit=False)
+        con.commit()
+    except BaseException:
+        con.rollback()
+        raise
+    finally:
+        con.close()
 
     if write_snapshot:
         JSON_SNAPSHOT.parent.mkdir(parents=True, exist_ok=True)
@@ -109,7 +120,14 @@ def ensure_seeded(db_path=DNA_DB_PATH, json_path=JSON_SNAPSHOT):
     n = con.execute("SELECT COUNT(*) FROM node").fetchone()[0]
     con.close()
     if n == 0 and Path(json_path).exists():
-        graph = json.loads(Path(json_path).read_text(encoding="utf-8"))
+        try:
+            graph = json.loads(Path(json_path).read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as ex:
+            # A corrupt/unreadable snapshot must not crash the caller (e.g. preflight
+            # on a fresh clone). Skip seeding with a clear note; the DB starts empty
+            # and fills as the pipeline records.
+            print(f"[dna] snapshot unreadable ({ex}); skipping seed — DB starts empty")
+            return 0
         if graph.get("nodes"):
             save_graph(graph, db_path=db_path, write_snapshot=False)
             return len(graph["nodes"])

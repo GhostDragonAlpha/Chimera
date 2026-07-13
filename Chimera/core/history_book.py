@@ -104,7 +104,7 @@ def entries_from_graph(nodes: list) -> list:
             out.append(Entry(n["id"], "surprises",
                              str(n.get('context', n['id']))[:80], body, when=ts))
         elif ntype == "Observation":
-            feat = n.get("feature", (n.get("parameters") or {}).get("feature", ""))
+            feat = n.get("feature_name", n.get("feature", (n.get("parameters") or {}).get("feature", "")))
             verdict = n.get("verdict", (n.get("parameters") or {}).get("verdict", ""))
             notes = n.get("notes", (n.get("parameters") or {}).get("notes", ""))
             out.append(Entry(n["id"], "verdicts",
