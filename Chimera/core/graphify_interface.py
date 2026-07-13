@@ -906,6 +906,33 @@ def _mutate_feature_complete(details: dict) -> str:
     if feature_name == "unknown_feature":
         return "rejected_unknown_feature: details must include 'feature' or 'feature_name'; nothing recorded"
 
+    # Integrity surfacing (non-breaking WARNING): "verified"/"accepted" is meant to
+    # reflect AUTOMATED observation evidence — collapse_proxy records an Observation
+    # with a derived_from simtest and then sets the FEATURE status to
+    # "observed"/"observed_provisional" (never "verified"/"accepted"). So a direct
+    # verified/accepted FeatureUpdate with NO backing attributed Observation is a
+    # suspicious hand-stamp; surface it. This never fires on the legitimate automated
+    # collapse (which uses "observed"). Mirrors the hard-reject already guarding the
+    # observation side (_mutate_observation, CHIMERA_AGENT_SIM). Records anyway for now.
+    if status in ("verified", "accepted"):
+        has_evidence = any(
+            n.get("type") == "Observation"
+            and n.get("feature_name") == feature_name
+            and n.get("derived_from")
+            for n in nodes
+        )
+        if not has_evidence:
+            _agent_sim = os.environ.get("CHIMERA_AGENT_SIM") == "1"
+            print(
+                f"  [INTEGRITY WARNING] feature '{feature_name}' recorded as '{status}' with "
+                f"NO backing automated Observation (an Observation node with derived_from a "
+                f"simtest/playtest). 'verified' should come from collapse_proxy / "
+                f"`graphify_record observe --derived-from <simtest_id>`. Recorded anyway"
+                + ("; under CHIMERA_AGENT_SIM=1 this is a candidate for hard-reject."
+                   if _agent_sim else "."),
+                file=sys.stderr,
+            )
+
     mutation_node = {
         "id": f"feature_{hashlib.sha256(f'feature_{feature_name}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
         "type": "FeatureUpdate",
