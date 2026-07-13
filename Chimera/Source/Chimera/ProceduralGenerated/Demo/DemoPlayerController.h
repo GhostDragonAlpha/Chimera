@@ -46,6 +46,7 @@ private:
 	void ConfigureCrouchCapsule(APawn* InPawn);
 	void EnsureFootprints(APawn* InPawn);
 	void EnsureChimeraMovement(APawn* InPawn);
+	void EnsureSuitLifeSupport(APawn* InPawn);
 
 	bool bDemoPickupSpawned;
 };

@@ -9,6 +9,7 @@
 #include "../Interactions/PickupActor.h"
 #include "../Environment/FootprintComponent.h"
 #include "../ChimeraMovementComponent.h"
+#include "../Suit/SuitLifeSupportComponent.h"
 
 ADemoPlayerController::ADemoPlayerController()
 {
@@ -46,7 +47,28 @@ void ADemoPlayerController::OnPossess(APawn* InPawn)
 	ConfigureCrouchCapsule(InPawn);
 	EnsureFootprints(InPawn);
 	EnsureChimeraMovement(InPawn);
+	EnsureSuitLifeSupport(InPawn);
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Possessed %s"), *GetNameSafe(InPawn));
+}
+
+void ADemoPlayerController::EnsureSuitLifeSupport(APawn* InPawn)
+{
+	// The EVA suit's survival sim (O2/battery/dust). Attach it to the possessed
+	// pawn so O2 drains by exertion the moment the player exists (H-34). The wrist
+	// gauge / HUD reads this; shelters set its bInShelter flag.
+	if (!InPawn || InPawn->FindComponentByClass<USuitLifeSupportComponent>())
+	{
+		return;
+	}
+	USuitLifeSupportComponent* Suit =
+		NewObject<USuitLifeSupportComponent>(InPawn, TEXT("SuitLifeSupportComponent"));
+	if (Suit)
+	{
+		Suit->RegisterComponent();
+		UE_LOG(LogTemp, Display,
+			TEXT("[SUIT] runtime-attached USuitLifeSupportComponent to %s (H-34)"),
+			*GetNameSafe(InPawn));
+	}
 }
 
 void ADemoPlayerController::MoveForward(float Value)
