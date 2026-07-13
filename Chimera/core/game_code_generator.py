@@ -1069,7 +1069,7 @@ def create_level():
     
     # Add station actors at specified locations
     for station in {escaped_station_placements_str}:
-        station_name = _cpp_ident(station.get('station_name', 'UnknownStation') if isinstance(station, dict) else station.get('name', 'UnknownStation'), fallback="UnknownStation")
+        station_name = station.get('station_name', 'UnknownStation') if isinstance(station, dict) else station.get('name', 'UnknownStation')
         location = station.get('location', [0, 0, 0]) if isinstance(station, dict) else station.get('location', [0, 0, 0])
         print(f"Placing station {{station_name}} at {{location}}")
         
