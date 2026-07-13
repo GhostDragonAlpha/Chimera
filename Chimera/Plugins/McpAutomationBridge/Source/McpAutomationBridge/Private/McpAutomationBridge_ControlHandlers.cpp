@@ -303,17 +303,56 @@ TSharedPtr<SWindow> GetFullEditorSlateWindowForMcp() {
   return nullptr;
 }
 
-bool CaptureSlateWindowPngForMcp(const TSharedRef<SWindow> &Window,
+// Returns the actual level-viewport SWidget (not a whole SWindow) so a
+// screenshot can be cropped to just the viewport region. Prefers the real
+// SViewport (renders the 3D scene and, during PIE, hosts the composited UMG
+// game layer) over IAssetViewport::AsWidget()'s SLevelViewport wrapper, which
+// also includes the small in-panel toolbar strip (view mode / camera speed /
+// "..." menu) above the 3D view.
+TSharedPtr<SWidget> GetActiveLevelViewportWidgetForMcp() {
+#if MCP_HAS_LEVEL_EDITOR_MODULE
+  if (FModuleManager::Get().IsModuleLoaded(TEXT("LevelEditor"))) {
+    if (FLevelEditorModule* LevelEditorModule =
+            FModuleManager::GetModulePtr<FLevelEditorModule>(TEXT("LevelEditor"))) {
+      TSharedPtr<IAssetViewport> ActiveViewport = LevelEditorModule->GetFirstActiveViewport();
+      if (ActiveViewport.IsValid()) {
+        if (TSharedPtr<SViewport> InnerViewport = ActiveViewport->GetViewportWidget().Pin()) {
+          return InnerViewport;
+        }
+        return ActiveViewport->AsWidget();
+      }
+    }
+  }
+#endif
+  return nullptr;
+}
+
+bool CaptureSlateWindowPngForMcp(const TSharedRef<SWidget> &Widget,
                                  TArray<uint8> &OutPngData,
                                  FIntVector &OutSize,
                                  FString &OutError) {
-  TSharedRef<SWidget> WindowWidget = Window;
-  TArray<FColor> Bitmap;
+  // Force a fresh paint of the widget's OWNING window before capturing.
+  // FSlateApplication::FindWidgetWindow checks Advanced_IsWindow() on the
+  // widget ITSELF before ever consulting a parent (SlateApplication.cpp
+  // ~3304), so this resolves correctly whether Widget IS the top-level window
+  // (full_editor_window's call site, unchanged behavior) or a normal child
+  // widget like a level viewport's SViewport (the new UMG-inclusive
+  // editor_viewport/game_viewport path).
+  TSharedPtr<SWindow> OwningWindow = FSlateApplication::Get().FindWidgetWindow(Widget);
+  if (OwningWindow.IsValid()) {
+    FSlateApplication::Get().ForceRedrawWindow(OwningWindow.ToSharedRef());
+  }
 
-  FSlateApplication::Get().ForceRedrawWindow(Window);
-  if (!FSlateApplication::Get().TakeScreenshot(WindowWidget, Bitmap, OutSize) ||
+  // TakeScreenshot does a REAL Slate paint of the whole owning window (so any
+  // UMG composited via SGameLayerManager into Widget's content is genuinely
+  // drawn), then crops to Widget's own on-screen rectangle (TakeScreenshotCommon
+  // derives ScreenshotRect from the widget's arranged geometry) -- this is what
+  // makes the capture "scene + UMG, cropped to just the widget" instead of the
+  // whole window.
+  TArray<FColor> Bitmap;
+  if (!FSlateApplication::Get().TakeScreenshot(Widget, Bitmap, OutSize) ||
       Bitmap.Num() == 0 || OutSize.X <= 0 || OutSize.Y <= 0) {
-    OutError = TEXT("Failed to capture Slate window pixels");
+    OutError = TEXT("Failed to capture Slate widget pixels");
     return false;
   }
 
@@ -3938,10 +3977,8 @@ bool UMcpAutomationBridgeSubsystem::HandleControlEditorScreenshot(
     return true;
   }
 
-  FViewport* Viewport = nullptr;
-  if (GEditor->PlayWorld != nullptr && GEditor->GetPIEViewport() != nullptr) {
-    Viewport = GEditor->GetPIEViewport();
-  }
+  const bool bIsPIEActive = (GEditor->PlayWorld != nullptr && GEditor->GetPIEViewport() != nullptr);
+  FViewport* Viewport = bIsPIEActive ? GEditor->GetPIEViewport() : nullptr;
   if (!Viewport) {
     Viewport = GEditor->GetActiveViewport();
   }
@@ -3956,6 +3993,82 @@ bool UMcpAutomationBridgeSubsystem::HandleControlEditorScreenshot(
     SendStandardErrorResponse(this, Socket, RequestId, TEXT("VIEWPORT_NOT_READY"),
                               TEXT("Viewport has zero size"), nullptr);
     return true;
+  }
+
+  // PIE ONLY: try a genuine Slate-widget capture first so a composited UMG HUD
+  // (e.g. WID_O2HUD via AddToViewport) is actually in the captured pixels --
+  // the ReadPixels path below reads the raw 3D scene render target BEFORE
+  // Slate paints the UMG overlay on top of it (docs/MCP_PATHWAYS.md #32).
+  // Cropped to just the viewport widget, not the whole editor window like
+  // full_editor_window (docs/MCP_PATHWAYS.md #28/#32 addenda). Falls through
+  // to the scene-only ReadPixels path below on ANY failure (no PIE, no
+  // LevelEditor module, capture failure, empty pixels) -- never a regression
+  // for the plain-editor-mode case, which this branch does not touch at all.
+  if (bIsPIEActive) {
+    if (TSharedPtr<SWidget> ViewportWidget = GetActiveLevelViewportWidgetForMcp()) {
+      TArray<uint8> SlatePngData;
+      FIntVector SlateImageSize(0, 0, 0);
+      FString SlateError;
+      if (CaptureSlateWindowPngForMcp(ViewportWidget.ToSharedRef(), SlatePngData,
+                                      SlateImageSize, SlateError) &&
+          SlatePngData.Num() > 0) {
+        const bool bSaved = FFileHelper::SaveArrayToFile(SlatePngData, *FullPath);
+
+        bool bReturnBase64 = false;
+        Payload->TryGetBoolField(TEXT("returnBase64"), bReturnBase64);
+
+        TSharedPtr<FJsonObject> Resp = McpHandlerUtils::CreateResultObject();
+        Resp->SetBoolField(TEXT("success"), true);
+        Resp->SetStringField(TEXT("filename"), Filename);
+        Resp->SetStringField(TEXT("mode"), Mode);
+        Resp->SetBoolField(TEXT("saved"), bSaved);
+        Resp->SetNumberField(TEXT("width"), SlateImageSize.X);
+        Resp->SetNumberField(TEXT("height"), SlateImageSize.Y);
+        Resp->SetNumberField(TEXT("sizeBytes"), SlatePngData.Num());
+        Resp->SetNumberField(TEXT("fileSizeBytes"), SlatePngData.Num());
+        Resp->SetStringField(TEXT("mimeType"), TEXT("image/png"));
+        Resp->SetBoolField(TEXT("includesUmgOverlay"), true);
+        Resp->SetStringField(TEXT("captureMethod"), TEXT("slate_widget"));
+        if (bSaved) {
+          Resp->SetStringField(TEXT("path"), FullPath);
+          Resp->SetStringField(TEXT("screenshotPath"), FullPath);
+        }
+        AddScreenshotMetadataForMcp(Resp, Payload);
+
+        if (!bSaved && !bReturnBase64) {
+          const FString SaveError = FString::Printf(TEXT("Failed to save screenshot to %s"), *FullPath);
+          Resp->SetBoolField(TEXT("success"), false);
+          Resp->SetStringField(TEXT("error"), SaveError);
+          Resp->SetStringField(TEXT("message"), SaveError);
+          SendAutomationResponse(Socket, RequestId, false, SaveError, Resp,
+                                 TEXT("SAVE_FAILED"));
+          return true;
+        }
+        if (bReturnBase64 && SlatePngData.Num() > MaxScreenshotPngBytesForBase64ForMcp) {
+          const FString SizeError = MakeScreenshotTooLargeMessageForMcp(SlatePngData.Num());
+          Resp->SetBoolField(TEXT("success"), false);
+          Resp->SetStringField(TEXT("error"), SizeError);
+          Resp->SetStringField(TEXT("message"), SizeError);
+          SendAutomationResponse(Socket, RequestId, false, SizeError, Resp,
+                                 TEXT("IMAGE_TOO_LARGE"));
+          return true;
+        }
+        if (bReturnBase64) {
+          Resp->SetStringField(TEXT("imageBase64"), FBase64::Encode(SlatePngData));
+        }
+        Resp->SetStringField(TEXT("message"),
+            bReturnBase64
+                ? TEXT("PIE viewport screenshot (scene + composited UMG) captured and returned as image/png base64.")
+                : TEXT("PIE viewport screenshot (scene + composited UMG) captured."));
+
+        SendAutomationResponse(Socket, RequestId, true,
+                               TEXT("Screenshot captured"), Resp, FString());
+        return true;
+      }
+      // Slate-widget capture failed or produced no pixels -- fall through to
+      // the scene-only ReadPixels path below.
+    }
+    // No LevelEditor viewport widget available -- fall through below.
   }
 
   Viewport->Draw();

@@ -55581,6 +55581,128 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_fecdb373e27d"
+    },
+    {
+      "id": "simtest_b71821fb32a67813",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T23:39:43.403738",
+      "observer": "agent-sim",
+      "session": "hud_repro_BEFORE_fix",
+      "demo": "mcp_screenshot_hud_repro",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "spawn_confirmed",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "capture_all_three_modes",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\hud_repro_BEFORE_fix.json",
+      "temperature": "[SIM] 2/2 beats reached in 'mcp_screenshot_hud_repro'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'hud_repro_BEFORE_fix': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8fdd621fd055"
+    },
+    {
+      "id": "simtest_fbbff7e78205ff9d",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T23:50:50.033457",
+      "observer": "agent-sim",
+      "session": "hud_repro_AFTER_fix",
+      "demo": "mcp_screenshot_hud_repro",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "spawn_confirmed",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "capture_all_three_modes",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\hud_repro_AFTER_fix.json",
+      "temperature": "[SIM] 2/2 beats reached in 'mcp_screenshot_hud_repro'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'hud_repro_AFTER_fix': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a482eee50975"
     }
   ],
   "edges": [

@@ -81,6 +81,18 @@
 #include "Modules/ModuleManager.h"
 #include "RenderingThread.h"
 #include "UnrealClient.h"
+#include "Widgets/SWindow.h"
+
+// Level viewport widget lookup (for the UMG-inclusive game_viewport screenshot
+// capture below) -- optional module, same defensive pattern as
+// McpAutomationBridge_ControlHandlers.cpp's MCP_HAS_LEVEL_EDITOR_MODULE.
+#if __has_include("LevelEditor.h")
+#include "LevelEditor.h"
+#define MCP_UI_HAS_LEVEL_EDITOR_MODULE 1
+#else
+#define MCP_UI_HAS_LEVEL_EDITOR_MODULE 0
+#endif
+#include "IAssetViewport.h"  // For IAssetViewport::AsWidget()/GetViewportWidget()
 
 // Widget Factory (version-dependent header location)
 #if __has_include("Factories/WidgetBlueprintFactory.h")
@@ -149,6 +161,97 @@ FString MakeScreenshotTooLargeMessageForUiMcp(int32 SizeBytes) {
   return FString::Printf(
       TEXT("Screenshot PNG is too large to return as base64 (%d bytes, max %d bytes). Retry with returnBase64=false or a smaller viewport/window."),
       SizeBytes, MaxScreenshotPngBytesForBase64ForMcp);
+}
+
+// ---------------------------------------------------------------------------
+// UMG-inclusive Slate-widget screenshot capture (docs/MCP_PATHWAYS.md #32):
+// the game_viewport ReadPixels path below reads the raw 3D scene render
+// target BEFORE Slate composites a UMG HUD (e.g. WID_O2HUD via
+// AddToViewport) on top of it. TakeScreenshot instead forces a real Slate
+// paint of the widget's owning window (UMG included) then crops to the
+// widget's own on-screen rectangle. Local duplicate of
+// McpAutomationBridge_ControlHandlers.cpp's CaptureSlateWindowPngForMcp /
+// GetActiveLevelViewportWidgetForMcp -- this file's anonymous namespace
+// already duplicates its own filename/metadata helpers above rather than
+// sharing a header, so this follows the same convention.
+// ---------------------------------------------------------------------------
+TSharedPtr<SWidget> GetActiveLevelViewportWidgetForUiMcp() {
+#if MCP_UI_HAS_LEVEL_EDITOR_MODULE
+  if (FModuleManager::Get().IsModuleLoaded(TEXT("LevelEditor"))) {
+    if (FLevelEditorModule *LevelEditorModule =
+            FModuleManager::GetModulePtr<FLevelEditorModule>(TEXT("LevelEditor"))) {
+      TSharedPtr<IAssetViewport> ActiveViewport = LevelEditorModule->GetFirstActiveViewport();
+      if (ActiveViewport.IsValid()) {
+        // Prefer the actual SViewport (renders the level and, during PIE, hosts
+        // the composited UMG game layer) over AsWidget()'s SLevelViewport
+        // wrapper, which also includes the small in-panel toolbar strip.
+        if (TSharedPtr<SViewport> InnerViewport = ActiveViewport->GetViewportWidget().Pin()) {
+          return InnerViewport;
+        }
+        return ActiveViewport->AsWidget();
+      }
+    }
+  }
+#endif
+  return nullptr;
+}
+
+bool CaptureSlateWidgetPngForUiMcp(const TSharedRef<SWidget> &Widget,
+                                   TArray<uint8> &OutPngData,
+                                   FIntVector &OutSize,
+                                   FString &OutError) {
+  if (!FSlateApplication::IsInitialized()) {
+    OutError = TEXT("Slate application not initialized");
+    return false;
+  }
+
+  // FindWidgetWindow checks Advanced_IsWindow() on Widget itself before ever
+  // consulting a parent, so this resolves correctly even though Widget here
+  // is always a plain child widget (the level viewport), never a window.
+  TSharedPtr<SWindow> OwningWindow = FSlateApplication::Get().FindWidgetWindow(Widget);
+  if (OwningWindow.IsValid()) {
+    FSlateApplication::Get().ForceRedrawWindow(OwningWindow.ToSharedRef());
+  }
+
+  TArray<FColor> Bitmap;
+  if (!FSlateApplication::Get().TakeScreenshot(Widget, Bitmap, OutSize) ||
+      Bitmap.Num() == 0 || OutSize.X <= 0 || OutSize.Y <= 0) {
+    OutError = TEXT("Failed to capture Slate widget pixels");
+    return false;
+  }
+
+  for (FColor &Pixel : Bitmap) {
+    Pixel.A = 255;
+  }
+
+  IImageWrapperModule &ImageWrapperModule =
+      FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
+  TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
+  if (!ImageWrapper.IsValid()) {
+    OutError = TEXT("Failed to create PNG image wrapper");
+    return false;
+  }
+
+  TArray<uint8> RawData;
+  RawData.SetNumUninitialized(Bitmap.Num() * 4);
+  for (int32 PixelIndex = 0; PixelIndex < Bitmap.Num(); ++PixelIndex) {
+    const FColor &Pixel = Bitmap[PixelIndex];
+    RawData[PixelIndex * 4 + 0] = Pixel.R;
+    RawData[PixelIndex * 4 + 1] = Pixel.G;
+    RawData[PixelIndex * 4 + 2] = Pixel.B;
+    RawData[PixelIndex * 4 + 3] = Pixel.A;
+  }
+
+  if (!ImageWrapper->SetRaw(RawData.GetData(), RawData.Num(), OutSize.X, OutSize.Y, ERGBFormat::RGBA, 8)) {
+    OutError = TEXT("Failed to prepare Slate widget screenshot pixels for PNG encoding");
+    return false;
+  }
+  OutPngData = ImageWrapper->GetCompressed(100);
+  if (OutPngData.Num() == 0) {
+    OutError = TEXT("Failed to encode Slate widget screenshot as PNG");
+    return false;
+  }
+  return true;
 }
 }
 #endif
@@ -526,13 +629,36 @@ bool UMcpAutomationBridgeSubsystem::HandleUiAction(
           bForcedViewportDraw = true;
         }
 
-        // Capture viewport pixels
+        // PIE ONLY: try a genuine Slate-widget capture first so a composited
+        // UMG HUD (e.g. WID_O2HUD via AddToViewport) is actually in the
+        // captured pixels -- Viewport->ReadPixels below reads the raw 3D scene
+        // render target BEFORE Slate paints the UMG overlay on top of it
+        // (docs/MCP_PATHWAYS.md #32). Falls through to the scene-only
+        // ReadPixels path on any failure (not PIE, no LevelEditor module,
+        // capture failure, empty pixels) -- never a regression.
+        bool bSlateCaptureSucceeded = false;
+        TArray<uint8> SlatePngData;
+        FIntVector SlateImageSize(0, 0, 0);
+        if (bUsingPieViewport) {
+          if (TSharedPtr<SWidget> ViewportWidget = GetActiveLevelViewportWidgetForUiMcp()) {
+            FString SlateError;
+            bSlateCaptureSucceeded =
+                CaptureSlateWidgetPngForUiMcp(ViewportWidget.ToSharedRef(), SlatePngData,
+                                              SlateImageSize, SlateError) &&
+                SlatePngData.Num() > 0;
+          }
+        }
+
+        // Capture viewport pixels -- skip the raw scene-only ReadPixels below
+        // if the Slate-widget attempt above already captured scene+UMG pixels.
         TArray<FColor> Bitmap;
-        FIntVector Size(Viewport->GetSizeXY().X, Viewport->GetSizeXY().Y, 0);
+        FIntVector Size = bSlateCaptureSucceeded
+            ? SlateImageSize
+            : FIntVector(Viewport->GetSizeXY().X, Viewport->GetSizeXY().Y, 0);
 
-        bool bReadSuccess = Viewport->ReadPixels(Bitmap);
+        bool bReadSuccess = bSlateCaptureSucceeded || Viewport->ReadPixels(Bitmap);
 
-        if (!bReadSuccess || Bitmap.Num() == 0) {
+        if (!bReadSuccess || (!bSlateCaptureSucceeded && Bitmap.Num() == 0)) {
           Message = TEXT("Failed to read viewport pixels");
           ErrorCode = TEXT("CAPTURE_FAILED");
           Resp->SetStringField(TEXT("error"), Message);
@@ -542,25 +668,31 @@ bool UMcpAutomationBridgeSubsystem::HandleUiAction(
           const int32 Height = Size.Y;
 
           TArray<uint8> PngData;
-          IImageWrapperModule &ImageWrapperModule =
-              FModuleManager::LoadModuleChecked<IImageWrapperModule>(
-                  FName("ImageWrapper"));
-          TSharedPtr<IImageWrapper> ImageWrapper =
-              ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
+          if (bSlateCaptureSucceeded) {
+            // Already PNG-encoded (scene + composited UMG) by the Slate-widget
+            // capture above -- nothing left to do but use it.
+            PngData = MoveTemp(SlatePngData);
+          } else {
+            IImageWrapperModule &ImageWrapperModule =
+                FModuleManager::LoadModuleChecked<IImageWrapperModule>(
+                    FName("ImageWrapper"));
+            TSharedPtr<IImageWrapper> ImageWrapper =
+                ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
 
-          if (ImageWrapper.IsValid()) {
-            TArray<uint8> RawData;
-            RawData.SetNumUninitialized(Width * Height * 4);
-            for (int32 i = 0; i < Bitmap.Num(); ++i) {
-              RawData[i * 4 + 0] = Bitmap[i].R;
-              RawData[i * 4 + 1] = Bitmap[i].G;
-              RawData[i * 4 + 2] = Bitmap[i].B;
-              RawData[i * 4 + 3] = 255;
-            }
+            if (ImageWrapper.IsValid()) {
+              TArray<uint8> RawData;
+              RawData.SetNumUninitialized(Width * Height * 4);
+              for (int32 i = 0; i < Bitmap.Num(); ++i) {
+                RawData[i * 4 + 0] = Bitmap[i].R;
+                RawData[i * 4 + 1] = Bitmap[i].G;
+                RawData[i * 4 + 2] = Bitmap[i].B;
+                RawData[i * 4 + 3] = 255;
+              }
 
-            if (ImageWrapper->SetRaw(RawData.GetData(), RawData.Num(), Width,
-                                     Height, ERGBFormat::RGBA, 8)) {
-              PngData = ImageWrapper->GetCompressed(100);
+              if (ImageWrapper->SetRaw(RawData.GetData(), RawData.Num(), Width,
+                                       Height, ERGBFormat::RGBA, 8)) {
+                PngData = ImageWrapper->GetCompressed(100);
+              }
             }
           }
 
@@ -588,6 +720,9 @@ bool UMcpAutomationBridgeSubsystem::HandleUiAction(
           Resp->SetStringField(TEXT("mode"), TEXT("game_viewport"));
           Resp->SetBoolField(TEXT("usingPieViewport"), bUsingPieViewport);
           Resp->SetBoolField(TEXT("forcedViewportDraw"), bForcedViewportDraw);
+          Resp->SetBoolField(TEXT("includesUmgOverlay"), bSlateCaptureSucceeded);
+          Resp->SetStringField(TEXT("captureMethod"),
+                               bSlateCaptureSucceeded ? TEXT("slate_widget") : TEXT("read_pixels"));
           if (UWorld *ViewportWorld = ViewportClient->GetWorld()) {
             Resp->SetStringField(TEXT("viewportWorld"), ViewportWorld->GetName());
             Resp->SetNumberField(TEXT("viewportWorldType"), static_cast<int32>(ViewportWorld->WorldType));
