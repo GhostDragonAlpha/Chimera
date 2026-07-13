@@ -42,6 +42,20 @@
   "provenance": "reflection:UCLASS:FootprintComponent.h"
  },
  {
+  "id": "atom_8caffafa2cb4",
+  "feature": "subsystem/Environment",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UWeatherComponent\\b|UWeatherComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UWeatherComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:WeatherComponent.h"
+ },
+ {
   "id": "atom_f0a946252814",
   "feature": "subsystem/Environment",
   "tier": 0,
@@ -54,6 +68,20 @@
   },
   "desc": "component UWindSystemComponent is spawned/registered somewhere (H-34)",
   "provenance": "reflection:UCLASS:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_04817658050e",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbImpermanentPrints\\b"
+  },
+  "desc": "UPROPERTY bImpermanentPrints (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
  },
  {
   "id": "atom_05eb97e310b2",
@@ -112,6 +140,34 @@
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
+  "id": "atom_14ff50dee9ea",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGustWindSpeed\\b"
+  },
+  "desc": "UPROPERTY GustWindSpeed (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_1cf3db71958b",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLastStormFootprintsErased\\b"
+  },
+  "desc": "UPROPERTY LastStormFootprintsErased (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_1e04031dd0e8",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -124,6 +180,20 @@
   },
   "desc": "UPROPERTY bWindEnabled (WindSystemComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_2157b3a1b5c4",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGustPeriodMaxSeconds\\b"
+  },
+  "desc": "UPROPERTY GustPeriodMaxSeconds (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
  },
  {
   "id": "atom_2404dd74d760",
@@ -182,6 +252,20 @@
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
+  "id": "atom_29a7a337ce22",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTimeOfDayHours\\b"
+  },
+  "desc": "UPROPERTY TimeOfDayHours (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_29c307ab056c",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -208,6 +292,20 @@
   },
   "desc": "UPROPERTY GroundTextureTypes (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
+  "id": "atom_3136b173e7ec",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStormsPassed\\b"
+  },
+  "desc": "UPROPERTY StormsPassed (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
  },
  {
   "id": "atom_31d5f89c50ac",
@@ -252,6 +350,20 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_40f27aff13a9",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbStormActive\\b"
+  },
+  "desc": "UPROPERTY bStormActive (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_4ea13efd8440",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -266,6 +378,20 @@
   "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
  },
  {
+  "id": "atom_4f3134450f4b",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDayNumber\\b"
+  },
+  "desc": "UPROPERTY DayNumber (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_5142997fd08f",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -278,6 +404,20 @@
   },
   "desc": "UPROPERTY FootprintMaterial (FootprintComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
+  "id": "atom_52363f7d8a9f",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStormPeriodMinDays\\b"
+  },
+  "desc": "UPROPERTY StormPeriodMinDays (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
  },
  {
   "id": "atom_54fce271fa56",
@@ -364,6 +504,20 @@
   "provenance": "reflection:UPROPERTY:FootprintComponent.h"
  },
  {
+  "id": "atom_6785f56e85db",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStormWindSpeed\\b"
+  },
+  "desc": "UPROPERTY StormWindSpeed (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_69839b19a42d",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -378,6 +532,34 @@
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
+  "id": "atom_6bdc40f5afbf",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bHoursPerRealSecond\\b"
+  },
+  "desc": "UPROPERTY HoursPerRealSecond (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_6ea30ba1c17a",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTotalFootprintsErased\\b"
+  },
+  "desc": "UPROPERTY TotalFootprintsErased (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_7780e60ce990",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -390,6 +572,20 @@
   },
   "desc": "UPROPERTY CurrentWindVelocity (WindSystemComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
+ },
+ {
+  "id": "atom_789e0cf2a039",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootprintsErased\\b"
+  },
+  "desc": "UPROPERTY FootprintsErased (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
  },
  {
   "id": "atom_7c474af50016",
@@ -432,6 +628,20 @@
   },
   "desc": "UPROPERTY bIsArtificial (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
+ },
+ {
+  "id": "atom_88ceb52f8c52",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindSpeed\\b"
+  },
+  "desc": "UPROPERTY WindSpeed (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
  },
  {
   "id": "atom_912fe13d08f6",
@@ -490,6 +700,20 @@
   "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
  },
  {
+  "id": "atom_b3172bd14717",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStormPeriodMaxDays\\b"
+  },
+  "desc": "UPROPERTY StormPeriodMaxDays (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_b83dd20b286f",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -518,6 +742,20 @@
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
+  "id": "atom_c000a95ef4ce",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLiveFootprints\\b"
+  },
+  "desc": "UPROPERTY LiveFootprints (FootprintComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FootprintComponent.h"
+ },
+ {
   "id": "atom_c04bb9d23364",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -532,6 +770,48 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_c11382496814",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGustPeriodMinSeconds\\b"
+  },
+  "desc": "UPROPERTY GustPeriodMinSeconds (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_c532337c844e",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStormIntensity\\b"
+  },
+  "desc": "UPROPERTY StormIntensity (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_c8a294f6a975",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCalmWindSpeed\\b"
+  },
+  "desc": "UPROPERTY CalmWindSpeed (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_ca7963e7d9aa",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -544,6 +824,48 @@
   },
   "desc": "UPROPERTY StationClass (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
+ },
+ {
+  "id": "atom_cc3ca689ae25",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbPlayerIndoors\\b"
+  },
+  "desc": "UPROPERTY bPlayerIndoors (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_d1faa2f8aa73",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWeatherSeed\\b"
+  },
+  "desc": "UPROPERTY WeatherSeed (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_d2d8f16084fb",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDayLengthHours\\b"
+  },
+  "desc": "UPROPERTY DayLengthHours (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
  },
  {
   "id": "atom_d78921e92c51",
@@ -574,6 +896,34 @@
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
+  "id": "atom_d9b8098af606",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWindDirectionRadians\\b"
+  },
+  "desc": "UPROPERTY WindDirectionRadians (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_dc634c6fb840",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStormDurationMaxMinutes\\b"
+  },
+  "desc": "UPROPERTY StormDurationMaxMinutes (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_e4c9ad3c009b",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -586,6 +936,20 @@
   },
   "desc": "UPROPERTY VegetationDensity (EnvironmentSpecComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
+ },
+ {
+  "id": "atom_e8b912449bd3",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnStormStateChanged\\b"
+  },
+  "desc": "UPROPERTY OnStormStateChanged (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
  },
  {
   "id": "atom_eaedb26602f6",
@@ -644,6 +1008,48 @@
   "provenance": "reflection:UPROPERTY:EnvironmentSpecComponent.h"
  },
  {
+  "id": "atom_f38c6efa3304",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBreezeWindSpeed\\b"
+  },
+  "desc": "UPROPERTY BreezeWindSpeed (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_f7e866e9e5d5",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustAgeHours\\b"
+  },
+  "desc": "UPROPERTY DustAgeHours (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_facd715e4388",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStormDurationMinMinutes\\b"
+  },
+  "desc": "UPROPERTY StormDurationMinMinutes (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_fed0b8d3cac9",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -656,5 +1062,19 @@
   },
   "desc": "UPROPERTY AtmosphericComposition (CelestialBodySpecComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:CelestialBodySpecComponent.h"
+ },
+ {
+  "id": "atom_ff9c8702ddf6",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCachedWind\\b"
+  },
+  "desc": "UPROPERTY CachedWind (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
  }
 ]

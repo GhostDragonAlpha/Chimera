@@ -1,5 +1,19 @@
 [
  {
+  "id": "atom_12318c792221",
+  "feature": "subsystem/Stations",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UQuantumTravelComponent\\b|UQuantumTravelComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UQuantumTravelComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:QuantumTravelComponent.h"
+ },
+ {
   "id": "atom_56f67a39f09f",
   "feature": "subsystem/Stations",
   "tier": 0,
