@@ -5,6 +5,7 @@
 #include "Sound/SandSoundComponent.h"
 #include "Save/SacrificeLogComponent.h"
 #include "Save/StarMemorialComponent.h"
+#include "Environment/WeatherComponent.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/AudioComponent.h"
@@ -133,6 +134,22 @@ void UChimeraMovementComponent::BeginPlay()
 			Memorial->RegisterComponent();
 			UE_LOG(LogTemp, Log,
 				TEXT("ChimeraMovementComponent: runtime-attached UStarMemorialComponent to %s (H-34)"),
+				*Owner->GetName());
+		}
+	}
+	// Weather is the meteorology authority (seed UWeatherSubsystem): it runs the
+	// wind bands + the ~weekly storm that erases sand footprints, and drives the
+	// sibling UWindSystemComponent. Attach it on the pawn so the storm's clock
+	// and its world-wide footprint sweep are always live (H-34).
+	if (!Owner->FindComponentByClass<UWeatherComponent>())
+	{
+		UWeatherComponent* Weather =
+			NewObject<UWeatherComponent>(Owner, TEXT("WeatherComponent"));
+		if (Weather)
+		{
+			Weather->RegisterComponent();
+			UE_LOG(LogTemp, Log,
+				TEXT("ChimeraMovementComponent: runtime-attached UWeatherComponent to %s (H-34)"),
 				*Owner->GetName());
 		}
 	}

@@ -52754,6 +52754,31 @@
       "links": [],
       "recorded_by": "-",
       "run_id": "run_56b6563d76e8"
+    },
+    {
+      "id": "feature_0d8b6277c5bb3bf4",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-13T02:00:28.880486",
+      "feature_name": "subsystem/Weather",
+      "loop": 100,
+      "status": "implemented",
+      "parameters": {
+        "class": "UWeatherComponent",
+        "helm_gap": "UWeatherSubsystem 0%->50%, vision 35%->38%",
+        "behavior": "wind bands + gust cadence + ~weekly storm; storm erases impermanent footprints (Design Law 4); drives sibling UWindSystemComponent; dust-age scalar",
+        "build": "UBT ChimeraEditor Succeeded 16s, 0 warnings from new files",
+        "test": "RunWeatherSystemTests (5 checks: init/determinism/night-bands/storm-cycle/wind-response)",
+        "attach": "H-34 runtime-attach in ChimeraMovementComponent::BeginPlay",
+        "pending_observation": "PIE beat: ForceStorm with sand prints laid -> assert FootprintsErased>0 (world-wide erasure)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_100/subsystem/Weather",
+      "error_category": "none",
+      "fix_description": "Feature 'subsystem/Weather' (Loop 100) recorded as 'implemented'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_62879dee4f58"
     }
   ],
   "edges": [

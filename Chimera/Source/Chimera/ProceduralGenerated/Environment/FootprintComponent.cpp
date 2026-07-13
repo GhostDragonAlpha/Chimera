@@ -12,6 +12,10 @@
 #include "CollisionQueryParams.h"
 #include "UObject/ConstructorHelpers.h"
 
+// Registry of every live footprint component, so the storm can sweep prints
+// world-wide without holding a handle to each pawn's trail (see EraseAllImpermanent).
+TArray<TWeakObjectPtr<UFootprintComponent>> UFootprintComponent::LiveComponents;
+
 UFootprintComponent::UFootprintComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
@@ -22,6 +26,8 @@ UFootprintComponent::UFootprintComponent()
     FootprintLifeSpan = 45.0f;
     MinSpeed = 20.0f;
     FootprintsSpawned = 0;
+    FootprintsErased = 0;
+    bImpermanentPrints = true;  // sand is the default surface
 
     DistanceSinceLastPrint = 0.0f;
     bLeftFoot = false;
@@ -44,6 +50,21 @@ UFootprintComponent::UFootprintComponent()
     {
         FootprintMaterial = RegolithMat.Object;
     }
+}
+
+void UFootprintComponent::BeginPlay()
+{
+    Super::BeginPlay();
+    LiveComponents.Add(this);  // enroll in the storm's world-wide erase sweep
+}
+
+void UFootprintComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    LiveComponents.RemoveAll([this](const TWeakObjectPtr<UFootprintComponent>& C)
+    {
+        return !C.IsValid() || C.Get() == this;
+    });
+    Super::EndPlay(EndPlayReason);
 }
 
 void UFootprintComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -186,5 +207,44 @@ void UFootprintComponent::LayFootprint(const FVector& OwnerLocation, const FVect
         Print->SetLifeSpan(FootprintLifeSpan);
     }
 
+    LiveFootprints.Add(Print);  // remember it so a storm can erase it
     ++FootprintsSpawned;
+}
+
+int32 UFootprintComponent::EraseImpermanent()
+{
+    if (!bImpermanentPrints)
+    {
+        return 0;  // durable surface (metal / dug pit): storms don't clear it
+    }
+
+    int32 Erased = 0;
+    for (const TWeakObjectPtr<AStaticMeshActor>& Print : LiveFootprints)
+    {
+        if (AStaticMeshActor* P = Print.Get())  // skip prints already gone via LifeSpan
+        {
+            P->Destroy();
+            ++Erased;
+        }
+    }
+    LiveFootprints.Reset();
+    FootprintsErased += Erased;
+    return Erased;
+}
+
+int32 UFootprintComponent::EraseAllImpermanent(const UWorld* World)
+{
+    int32 Total = 0;
+    // Iterate a copy of the pointers: EraseImpermanent doesn't mutate the
+    // registry, but EndPlay-during-destroy could — a copy keeps this safe.
+    TArray<TWeakObjectPtr<UFootprintComponent>> Snapshot = LiveComponents;
+    for (const TWeakObjectPtr<UFootprintComponent>& Comp : Snapshot)
+    {
+        UFootprintComponent* C = Comp.Get();
+        if (C && C->GetWorld() == World)
+        {
+            Total += C->EraseImpermanent();
+        }
+    }
+    return Total;
 }

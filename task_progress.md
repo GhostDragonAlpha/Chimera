@@ -1,3 +1,41 @@
+# Helm-steered build 2026-07-12 — subsystem/Weather (loop 100)
+
+Helm heading was GRADUATE overall, but "steer to the next gap" -> top Build gap
+was **UWeatherSubsystem** (0%, gap 1.00). Realized it as **UWeatherComponent**
+(Environment/), the meteorology authority the seed models:
+- Wind BANDS (calm@night / breeze@day / gusts every 8-30s) driven into the
+  existing sibling **UWindSystemComponent** via SetWindConfiguration — one
+  authority decides wind, the other applies its physics (no duplication; the
+  wind component is load-bearing for the dust material + its acceptance suite).
+- The ~weekly **STORM** (every 5-9 game-days, 18-45 game-min): howling wind,
+  StormIntensity ramp, and on passing it **erases every impermanent (sand)
+  footprint in the world** — Design Law 4's memento mori. Metal/pit prints
+  survive (bImpermanentPrints=false).
+- DustAgeHours scalar (rises calm, decays 5x mid-storm) — MPC stand-in read by
+  dust materials (no runtime MPC bridge exists yet; the scalars ARE the seam).
+
+Real behavior, not injection (H-21): added a genuine erase path to
+**FootprintComponent** — live-print tracking + `EraseImpermanent()` + a static
+world-wide `EraseAllImpermanent(World)` registry (BeginPlay/EndPlay maintained).
+H-34 attached on the pawn in ChimeraMovementComponent::BeginPlay.
+
+Evidence: UBT ChimeraEditor **Succeeded** (16s, 0 warnings from new files, built
+TWICE across the refactor). cpp_lint clean. Unit test **RunWeatherSystemTests**
+(5 checks: init / seeded-determinism / night-bands / storm state-machine via
+ForceStorm+AdvanceWeather / wind-band response) compiled into the module.
+Helm gap closed: UWeatherSubsystem 0%->50%, vision realized 35%->38%.
+DNA: feature_0d8b6277c5bb3bf4 (subsystem/Weather, status=implemented, loop 100).
+
+NEXT for this feature (the observation lane, -> `verified`): a PIE beat that
+lays sand prints, calls ForceStorm (or AdvanceWeather to the storm), and asserts
+FootprintComponent FootprintsErased > 0 + UWeatherComponent StormsPassed==1 read
+back live (H-14: real input drives it; H-17: register a `force_storm`/
+`advance_weather` Sleepwalker action before the beat dispatches).
+
+NOTE: left Chimera/Config/DefaultEngine.ini UNTOUCHED (concurrent agent's).
+
+---
+
 # Rehearsal decision 2026-07-12 22:10Z — next move: audio_visual_sync/report_telemetry
 
 Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: failure_mentions:2). Human may veto with one sentence.
