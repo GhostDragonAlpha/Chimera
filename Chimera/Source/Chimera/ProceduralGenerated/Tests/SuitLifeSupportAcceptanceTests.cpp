@@ -44,13 +44,14 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSuitLifeSupport_O2DrainByExertion,
 	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 bool FSuitLifeSupport_O2DrainByExertion::RunTest(const FString& Parameters)
 {
-	// Walk one game-minute (60 s) -> O2 drops by exactly the walk rate (1.0).
+	// Walk one game-minute (60 s) -> O2 drops by exactly the walk rate (15.0, P1
+	// retune 2026-07-13: a full tank now empties from continuous walking in ~6m40s).
 	USuitLifeSupportComponent* Walker = NewObject<USuitLifeSupportComponent>();
 	Walker->ResetLifeSupport();
 	Walker->bOverrideExertion = true;
 	Walker->SetExertion(ESuitExertion::Walk);
 	Walker->AdvanceLifeSupport(60.0f);
-	TestEqual(TEXT("walk 60s spends ~1.0 O2"), Walker->O2, 99.0f, 0.05f);
+	TestEqual(TEXT("walk 60s spends ~15.0 O2"), Walker->O2, 85.0f, 0.05f);
 	TestTrue(TEXT("O2 actually decreased"), Walker->O2 < 100.0f);
 
 	// Sprinting outspends idling over the same minute.
@@ -83,7 +84,7 @@ bool FSuitLifeSupport_DeathAtZero::RunTest(const FString& Parameters)
 	Suit->ResetLifeSupport();
 	Suit->SetO2(1.0f);                 // one breath left
 	Suit->bOverrideExertion = true;
-	Suit->SetExertion(ESuitExertion::Sprint); // 3.0/min -> overruns in a minute
+	Suit->SetExertion(ESuitExertion::Sprint); // 40.0/min (P1 retune) -> overruns in a minute
 	TestFalse(TEXT("alive before"), Suit->IsDead());
 
 	Suit->AdvanceLifeSupport(60.0f);

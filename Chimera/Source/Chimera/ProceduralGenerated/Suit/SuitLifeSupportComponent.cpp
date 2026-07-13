@@ -7,19 +7,37 @@ USuitLifeSupportComponent::USuitLifeSupportComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
 
-    // Seed GE_* rates (per game-minute; applied /60 each real second).
-    O2DrainIdlePerMin      = 0.6f;
-    O2DrainWalkPerMin      = 1.0f;
-    O2DrainSprintPerMin    = 3.0f;
-    O2RegenGardenPerMin    = 0.8f;
-    BatteryDrainNightPerMin = 1.8f;
-    BatteryRegenBankPerMin  = 2.0f;
+    // P1 retune (design directive Section 3, 2026-07-13): the original seed GE_*
+    // rates (Idle 0.6 / Walk 1.0 / Sprint 3.0 per game-minute) made a full 100-O2
+    // tank last 33-167 minutes — nowhere near the "will I make it back?" 5-minute
+    // beat the design calls for. Retuned so a walking player empties the tank in
+    // ~6m40s (hits the low-O2 alarm at 25% around the 5:00 mark, giving a ~1m40s
+    // scramble-back window) and sprinting empties it in 2.5 min. Garden/bank regen
+    // raised to match: a near-empty tank refills from the habitat in a few minutes,
+    // not the better part of an hour. Battery-at-night bumped too (was ~3 battery
+    // lost per ~108s night — never a threat); still secondary to O2's clock.
+    O2DrainIdlePerMin      = 6.0f;
+    O2DrainWalkPerMin      = 15.0f;
+    O2DrainSprintPerMin    = 40.0f;
+    O2RegenGardenPerMin    = 30.0f;
+    BatteryDrainNightPerMin = 20.0f;
+    BatteryRegenBankPerMin  = 30.0f;
     DustClogStormPerMin    = 4.0f;
     DustClogScrubPerMin    = 1.0f;
 
     // Exertion classification from owner speed (uu/s).
     WalkSpeedThreshold   = 10.0f;
-    SprintSpeedThreshold = 400.0f;
+    // P1 fix (2026-07-13): 400 was calibrated for an assumed 200uu/s base walk
+    // speed (WalkSpeed*2, per ChimeraMovementComponent's OWN "stale WalkSpeed*2=400"
+    // comment) — but that component's BeginPlay confirms the BP's real MaxWalkSpeed
+    // is 600uu/s (design directive's own measured ~626uu/s W-hold agrees), and real
+    // sprint (LeftShift held, SprintMultiplier x2) reaches ~1200uu/s. At the old 400,
+    // ordinary WASD movement ALREADY exceeded the threshold, so the suit always
+    // classified plain walking as Sprint -- the Walk drain rate was unreachable
+    // through real input, silently collapsing the intended two-tier threat curve.
+    // 900 sits between the real walk (600) and real sprint (1200) speeds so both
+    // bands are actually reachable by a player.
+    SprintSpeedThreshold = 900.0f;
     LowO2Threshold       = 25.0f;
 
     // Attribute start values — seed USuitAttributeSet defaults.

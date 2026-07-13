@@ -10,7 +10,12 @@
 #include "../Environment/FootprintComponent.h"
 #include "../ChimeraMovementComponent.h"
 #include "../Suit/SuitLifeSupportComponent.h"
+#include "../Shelter/ShelterHabitatComponent.h"
 #include "../UI/WID_O2HUD.h"
+#include "Engine/StaticMeshActor.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
+#include "UObject/ConstructorHelpers.h"
 
 ADemoPlayerController::ADemoPlayerController()
 {
@@ -20,6 +25,18 @@ ADemoPlayerController::ADemoPlayerController()
 		PickupInteraction->RegisterComponent();
 	}
 	bDemoPickupSpawned = false;
+	bDemoHabitatSpawned = false;
+
+	// Placeholder habitat hull (P1: the O2/battery refill destination). Cached here
+	// because ConstructorHelpers::FObjectFinder only works inside a constructor; the
+	// actual actor is spawned later, at possess time, by SpawnDemoHabitatIfNeeded —
+	// same idiom FootprintComponent uses for its footprint plane mesh.
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> HabitatMeshFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if (HabitatMeshFinder.Succeeded())
+	{
+		HabitatHullMesh = HabitatMeshFinder.Object;
+	}
+
 	// Enable mouse look: show cursor for UI.
 	bShowMouseCursor = true;
 }
@@ -45,6 +62,7 @@ void ADemoPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	EnsureThirdPersonCamera(InPawn);
 	SpawnDemoPickupIfNeeded(InPawn);
+	SpawnDemoHabitatIfNeeded(InPawn);
 	ConfigureCrouchCapsule(InPawn);
 	EnsureFootprints(InPawn);
 	EnsureChimeraMovement(InPawn);
@@ -304,5 +322,69 @@ void ADemoPlayerController::SpawnDemoPickupIfNeeded(APawn* InPawn)
 		DemoPickup->ItemName = FText::FromString(TEXT("Multitool"));
 		bDemoPickupSpawned = true;
 		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Demo pickup '%s' spawned at %s"), *DemoPickup->ItemName.ToString(), *PickupSpawnLocation.ToString());
+	}
+}
+
+void ADemoPlayerController::SpawnDemoHabitatIfNeeded(APawn* InPawn)
+{
+	if (bDemoHabitatSpawned || !InPawn)
+	{
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	// Placed opposite the demo pickup (which sits +300uu forward of spawn) so the two
+	// demo props never overlap. Deterministic relative to wherever the pawn actually
+	// spawned this session (same drift-proof rationale as SpawnDemoPickupIfNeeded) —
+	// this IS the P1 "race back to refill" destination.
+	const FVector HabitatSpawnLocation = InPawn->GetActorLocation() - InPawn->GetActorForwardVector() * 500.0f;
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Name = FName(TEXT("Demo_HabitatActor"));
+
+	AStaticMeshActor* Habitat = World->SpawnActor<AStaticMeshActor>(
+		AStaticMeshActor::StaticClass(), HabitatSpawnLocation, InPawn->GetActorRotation(), SpawnParams);
+	if (!Habitat)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[HABITAT] Demo_HabitatActor spawn FAILED"));
+		return;
+	}
+
+	// Visible placeholder hull so the habitat reads as a structure to walk back to,
+	// not an invisible trigger volume (a screenshot/witness needs something to see).
+	if (UStaticMeshComponent* MeshComp = Habitat->GetStaticMeshComponent())
+	{
+		MeshComp->SetMobility(EComponentMobility::Movable);
+		if (HabitatHullMesh)
+		{
+			MeshComp->SetStaticMesh(HabitatHullMesh);
+			MeshComp->SetWorldScale3D(FVector(4.0f, 4.0f, 2.5f)); // ~400x400x250uu hull
+		}
+		MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
+
+	// ShelterHabitatComponent's own BeginPlay fires here (runtime-attached to an actor
+	// that has already begun play — the same proven H-34 pattern EnsureSuitLifeSupport
+	// uses on the pawn itself). BeginPlay builds its sphere trigger and binds the
+	// overlaps that set bInShelter / bAtOxygenGarden / bAtBatteryBank on any
+	// overlapping pawn's suit.
+	UShelterHabitatComponent* Shelter = NewObject<UShelterHabitatComponent>(Habitat, TEXT("ShelterHabitatComponent"));
+	if (Shelter)
+	{
+		Shelter->RegisterComponent();
+		bDemoHabitatSpawned = true;
+		UE_LOG(LogTemp, Display,
+			TEXT("[HABITAT] Demo_HabitatActor spawned at %s (ShelterHabitatComponent radius %.0f) - O2/battery refill point live"),
+			*HabitatSpawnLocation.ToString(), Shelter->ShelterRadius);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[HABITAT] Failed to create ShelterHabitatComponent"));
 	}
 }

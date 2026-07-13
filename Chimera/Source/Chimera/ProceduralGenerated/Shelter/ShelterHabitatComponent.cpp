@@ -42,7 +42,12 @@ void UShelterHabitatComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			{
 				if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
 				{
+					// P1: the habitat is the O2/battery refuge too — clear those flags
+					// alongside bInShelter so a destroyed shelter can't leave a pawn
+					// stuck mid-refill.
 					Suit->bInShelter = false;
+					Suit->bAtOxygenGarden = false;
+					Suit->bAtBatteryBank = false;
 				}
 			}
 		}
@@ -133,8 +138,15 @@ void UShelterHabitatComponent::OnShelterBeginOverlap(UPrimitiveComponent* Overla
 	{
 		if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
 		{
+			// P1 (design directive Section 3): the habitat IS the oxygen source +
+			// battery bank the suit's environment flags describe (this class's own
+			// bShelterActive comment already promised "O2 regen" -- this wires it for
+			// real). Closes the survival loop: drain out in the field -> race back ->
+			// refill here.
 			Suit->bInShelter = true;
-			UE_LOG(LogTemp, Display, TEXT("ShelterHabitat: %s entered shelter"), *GetNameSafe(Pawn));
+			Suit->bAtOxygenGarden = true;
+			Suit->bAtBatteryBank = true;
+			UE_LOG(LogTemp, Display, TEXT("ShelterHabitat: %s entered shelter (O2/battery refill active)"), *GetNameSafe(Pawn));
 		}
 	}
 }
@@ -153,7 +165,9 @@ void UShelterHabitatComponent::OnShelterEndOverlap(UPrimitiveComponent* Overlapp
 		if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
 		{
 			Suit->bInShelter = false;
-			UE_LOG(LogTemp, Display, TEXT("ShelterHabitat: %s left shelter"), *GetNameSafe(Pawn));
+			Suit->bAtOxygenGarden = false;
+			Suit->bAtBatteryBank = false;
+			UE_LOG(LogTemp, Display, TEXT("ShelterHabitat: %s left shelter (O2/battery refill ended)"), *GetNameSafe(Pawn));
 		}
 	}
 }

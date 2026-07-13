@@ -29,12 +29,14 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSuitO2Depleted);
  * UWeatherSubsystem). It owns the survival stats the whole game leans on:
  *
  *   - O2 (0..MaxO2): the core clock of an EVA game. Drains every second by the
- *     wearer's EXERTION band — the seed's GE_O2Drain rates: Idle -0.6, Walk -1.0,
- *     Sprint -3.0 per game-minute (per-second internally, /60, for smooth needle
- *     motion). At 0 the suit fails: OnSuitO2Depleted fires once. An oxygen garden
- *     regenerates it (+0.8/min).
- *   - Battery (0..100): drains at night (-1.8/min) — you run on stored sun. A
- *     battery bank recharges it (+2.0/min).
+ *     wearer's EXERTION band — P1-retuned rates (design directive Section 3,
+ *     2026-07-13): Idle -6.0, Walk -15.0, Sprint -40.0 per game-minute (per-second
+ *     internally, /60, for smooth needle motion) — a walking player empties a full
+ *     tank in ~6m40s, a real "will I make it back?" jeopardy window, not the
+ *     33-167 minutes the original seed rates gave. At 0 the suit fails:
+ *     OnSuitO2Depleted fires once. An oxygen garden regenerates it (+30.0/min).
+ *   - Battery (0..100): drains at night (-20.0/min) — you run on stored sun. A
+ *     battery bank recharges it (+30.0/min).
  *   - DustClog (0..100): rises only while exposed to a storm outdoors (+4.0/min,
  *     the weather's ShouldClogSuit gate), scrubbed indoors (-1.0/min). High clog
  *     is the storms' bite — the reason to get inside.
@@ -63,24 +65,25 @@ public:
     virtual void BeginPlay() override;
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-    // === Drain / regen rates (per game-MINUTE; applied /60 per second) — seed GE_* ===
+    // === Drain / regen rates (per game-MINUTE; applied /60 per second) — P1-retuned
+    // (design directive Section 3, 2026-07-13) off the original seed GE_* values ===
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Rates")
-    float O2DrainIdlePerMin;     // 0.6
+    float O2DrainIdlePerMin;     // 6.0 (was 0.6)
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Rates")
-    float O2DrainWalkPerMin;     // 1.0
+    float O2DrainWalkPerMin;     // 15.0 (was 1.0) -> empties a full tank in ~6m40s
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Rates")
-    float O2DrainSprintPerMin;   // 3.0
+    float O2DrainSprintPerMin;   // 40.0 (was 3.0) -> empties a full tank in 2.5min
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Rates")
-    float O2RegenGardenPerMin;   // 0.8
+    float O2RegenGardenPerMin;   // 30.0 (was 0.8)
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Rates")
-    float BatteryDrainNightPerMin;  // 1.8
+    float BatteryDrainNightPerMin;  // 20.0 (was 1.8)
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Rates")
-    float BatteryRegenBankPerMin;   // 2.0
+    float BatteryRegenBankPerMin;   // 30.0 (was 2.0)
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Rates")
     float DustClogStormPerMin;   // 4.0
@@ -93,7 +96,8 @@ public:
     float WalkSpeedThreshold;    // > this = at least Walk (10)
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Exertion")
-    float SprintSpeedThreshold;  // > this = Sprint (400)
+    float SprintSpeedThreshold;  // > this = Sprint (900, P1 recalibration — was 400,
+                                 // stale vs the pawn's real 600uu/s walk / 1200uu/s sprint)
 
     /** O2 at or below this (percent of MaxO2) raises the low-O2 alarm — seed 25. */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Exertion")
