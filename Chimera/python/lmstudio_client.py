@@ -894,21 +894,21 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
                     logger.info("Successfully received response from LM Studio API")
                     return result
         except urllib.error.HTTPError as e:
-        error_msg = f"LM Studio HTTP error: {e.code} - {e.reason}. Check LM Studio logs for details."
-        logger.error(error_msg)
-        if e.fp:
-            logger.error(f"Response body: {e.fp.read().decode()}")
-        raise LmStudioApiError(error_msg, e.code)
+            error_msg = f"LM Studio HTTP error: {e.code} - {e.reason}. Check LM Studio logs for details."
+            logger.error(error_msg)
+            if e.fp:
+                logger.error(f"Response body: {e.fp.read().decode()}")
+            raise LmStudioApiError(error_msg, e.code)
 
-    except urllib.error.URLError as e:
-        error_msg = f"Failed to connect to LM Studio (URL Error): {e.reason}. Ensure LM Studio is running and accessible at {LM_STUDIO_BASE_URL}."
-        logger.error(error_msg)
-        raise NetworkError(error_msg)
+        except urllib.error.URLError as e:
+            error_msg = f"Failed to connect to LM Studio (URL Error): {e.reason}. Ensure LM Studio is running and accessible at {LM_STUDIO_BASE_URL}."
+            logger.error(error_msg)
+            raise NetworkError(error_msg)
 
-    except Exception as e:
-        error_msg = f"Failed to send analysis request to LM Studio: {e}. Check that LM Studio is running and the model '{model_id}' is loaded."
-        logger.error(error_msg)
-        raise ResourceError(error_msg)
+        except Exception as e:
+            error_msg = f"Failed to send analysis request to LM Studio: {e}. Check that LM Studio is running and the model '{model_id}' is loaded."
+            logger.error(error_msg)
+            raise ResourceError(error_msg)
 
 
 def _validate_chat_completion_response(result: dict) -> bool:

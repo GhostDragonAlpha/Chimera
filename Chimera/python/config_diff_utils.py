@@ -121,6 +121,6 @@ def print_highlighted_changes(diffs: dict) -> None:
         if isinstance(value, dict) and "old" in value and "new" in value:
             print(f"{key}:")
             print(f"  Old: {repr(value['old'])}")
-            print(f"  New: {repr(value['new'])})
+            print(f"  New: {repr(value['new'])}")
         else:
             print(f"{key}: {repr(value)}")

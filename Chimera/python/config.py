@@ -39,7 +39,10 @@ if not logger.handlers:
     file_handler = RotatingFileHandler(
         log_file,
         maxBytes=10 * 1024 * 1024,  # 10 MB
-        backupCount=5
+        backupCount=5,
+        delay=True,  # defer opening chimera.log until the first emit — importing a
+                     # module that pulls in this config must not crash just because
+                     # the shared log is momentarily locked by another process.
     )
     file_handler.setLevel(getattr(logging, _LOG_LEVEL, logging.INFO))
     file_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
