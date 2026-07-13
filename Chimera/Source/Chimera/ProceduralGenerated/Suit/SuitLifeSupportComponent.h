@@ -152,6 +152,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Environment")
     bool bOverrideExertion;
 
+    /** Draw a minimal on-screen O2/battery/dust readout each tick via GEngine debug
+     *  text — an MVP gauge with no Blueprint dependency until WID_O2HUD is wired. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Debug")
+    bool bShowOnScreenReadout;
+
     // === Telemetry (hard-fact verification) ===
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Suit|Telemetry")
     float SecondsSurvived;

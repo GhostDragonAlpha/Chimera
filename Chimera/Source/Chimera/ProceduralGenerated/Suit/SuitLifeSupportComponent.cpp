@@ -1,6 +1,7 @@
 // Copyright 2026 Chimera Project. All Rights Reserved.
 #include "SuitLifeSupportComponent.h"
 #include "GameFramework/Actor.h"
+#include "Engine/Engine.h"   // GEngine on-screen readout
 
 USuitLifeSupportComponent::USuitLifeSupportComponent()
 {
@@ -38,6 +39,7 @@ USuitLifeSupportComponent::USuitLifeSupportComponent()
     bAtBatteryBank    = false;
     bInShelter        = false;
     bOverrideExertion = false;
+    bShowOnScreenReadout = true;
 
     SecondsSurvived = 0.0f;
     TimesDepleted   = 0;
@@ -53,6 +55,22 @@ void USuitLifeSupportComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     TickLifeSupport(DeltaTime);
+
+    // MVP on-screen readout — renders with no Blueprint/WBP dependency, so the
+    // survival loop is VISIBLE in PIE immediately (the UMG WID_O2HUD gauge is the
+    // polished follow-up once wired through a PIE session). Keyed messages update
+    // in place; duration 0 = refreshed every frame.
+    if (bShowOnScreenReadout && GEngine)
+    {
+        const FColor O2Color = bDead ? FColor::Red : (bLowO2 ? FColor::Orange : FColor::Cyan);
+        const TCHAR* O2Tag = bDead ? TEXT("  [SUIT FAILURE]") : (bLowO2 ? TEXT("  [LOW O2]") : TEXT(""));
+        GEngine->AddOnScreenDebugMessage(9001, 0.0f, O2Color,
+            FString::Printf(TEXT("O2   %5.1f%%%s"), GetO2Fraction() * 100.0f, O2Tag));
+        GEngine->AddOnScreenDebugMessage(9002, 0.0f, FColor::Yellow,
+            FString::Printf(TEXT("BAT  %5.1f%%"), GetBatteryFraction() * 100.0f));
+        GEngine->AddOnScreenDebugMessage(9003, 0.0f, FColor::White,
+            FString::Printf(TEXT("DUST %5.1f%%"), GetDustClogFraction() * 100.0f));
+    }
 }
 
 ESuitExertion USuitLifeSupportComponent::ResolveExertion() const
