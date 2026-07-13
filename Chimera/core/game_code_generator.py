@@ -21,6 +21,30 @@ except ImportError:
         def validate_template_before_generation(*args, **kwargs): return True
         def flag_known_bad_pattern(*args, **kwargs): return {"is_know_bad": False}
 
+
+def _cpp_ident(value, fallback: str = "") -> str:
+    """Sanitize a DSL value into a valid C++ identifier / UE asset name / FName:
+    keep [A-Za-z0-9_], replace everything else with '_', and never start with a
+    digit. A NO-OP for already-valid names (the spec's underscore-style names like
+    'Trader_Vessel_Alpha'), so it hardens against a hostile spec (a ship named
+    'Trader-Vessel' or 'A B') WITHOUT changing current generated output. Because
+    the result contains no '"' or '\\', it is also safe inside a string literal."""
+    s = re.sub(r'[^A-Za-z0-9_]', '_', str(value))
+    if not s:
+        return fallback
+    if s[0].isdigit():
+        s = "_" + s
+    return s
+
+
+def _cpp_str(value) -> str:
+    """Escape a DSL value for embedding inside a C++ string literal (TEXT("...")):
+    backslash and double-quote only. A NO-OP for values without those characters
+    (the spec has none), so it prevents a stray quote in a DSL value from breaking
+    the emitted C++ string without altering current output."""
+    return str(value).replace("\\", "\\\\").replace('"', '\\"')
+
+
 class CppSyntaxValidator:
     """Validates generated C++ code for syntax errors before compilation."""
     
@@ -261,7 +285,7 @@ class GameCodeGenerator:
                             ships.append(value)
             
             for ship in ships:
-                ship_name = ship.get("name", "") or ship.get("$name", "") or ship.get("ship_class", "")
+                ship_name = _cpp_ident(ship.get("name", "") or ship.get("$name", "") or ship.get("ship_class", ""), fallback="Ship")
                 if not ship_name:
                     continue
                     
@@ -787,7 +811,7 @@ class GameCodeGenerator:
         # Add ship class include if ships exist
         if has_ships and len(ships_data) > 0:
             first_ship = ships_data[0]
-            ship_name = first_ship.get("name", "") or first_ship.get("$name", "") or first_ship.get("ship_class", "")
+            ship_name = _cpp_ident(first_ship.get("name", "") or first_ship.get("$name", "") or first_ship.get("ship_class", ""), fallback="Ship")
             if ship_name:
                 if ship_name.startswith("AShip_"):
                     ship_class_name = ship_name
@@ -805,7 +829,7 @@ class GameCodeGenerator:
         ship_class_name_for_fallback = None
         if has_ships and len(ships_data) > 0:
             first_ship = ships_data[0]
-            ship_name = first_ship.get("name", "") or first_ship.get("$name", "") or first_ship.get("ship_class", "")
+            ship_name = _cpp_ident(first_ship.get("name", "") or first_ship.get("$name", "") or first_ship.get("ship_class", ""), fallback="Ship")
             if ship_name:
                 if ship_name.startswith("AShip_"):
                     ship_class_name = ship_name
@@ -877,7 +901,7 @@ class GameCodeGenerator:
                 
                 # Determine appropriate location and extent based on graph type
                 # Use the generated PCG asset path format: /Game/ProceduralGenerated/PCG/[AssetName].[AssetName]
-                asset_name = f"UPCG_Graph_{graph_name}"
+                asset_name = f"UPCG_Graph_{_cpp_ident(graph_name)}"
                 asset_path_str = f"/Game/ProceduralGenerated/PCG/{asset_name}.{asset_name}"
                 
                 if "Environment_Clutter_Graph" in graph_name:
@@ -917,7 +941,7 @@ class GameCodeGenerator:
         if has_stations and station_placements:
             spawn_station_code += "\t// === Spawn Station Actors ===\n"
             for idx, station in enumerate(station_placements):
-                station_name = station.get('station_name', '') or station.get('name', '') or 'UnknownStation'
+                station_name = _cpp_ident(station.get('station_name', '') or station.get('name', '') or 'UnknownStation', fallback="UnknownStation")
                 loc = station.get('location', [0, 0, 100]) if isinstance(station, dict) else station.get('location', [0, 0, 100])
                 st_loc_x, st_loc_y, st_loc_z = float(loc[0]), float(loc[1]), float(loc[2]) if len(loc) >= 3 else 100.0
 
@@ -1045,7 +1069,7 @@ def create_level():
     
     # Add station actors at specified locations
     for station in {escaped_station_placements_str}:
-        station_name = station.get('station_name', 'UnknownStation') if isinstance(station, dict) else station.get('name', 'UnknownStation')
+        station_name = _cpp_ident(station.get('station_name', 'UnknownStation') if isinstance(station, dict) else station.get('name', 'UnknownStation'), fallback="UnknownStation")
         location = station.get('location', [0, 0, 0]) if isinstance(station, dict) else station.get('location', [0, 0, 0])
         print(f"Placing station {{station_name}} at {{location}}")
         
@@ -1407,22 +1431,22 @@ if __name__ == "__main__":
             dest = m.get("destination_station", "")
             commodity = m.get("required_commodity", "")
             mission_lines += "\t{\n\t\tFMissionData M;\n"
-            mission_lines += f'\t\tM.MissionID = FName(TEXT("{m.get("name")}"));\n'
-            mission_lines += f'\t\tM.Type = TEXT("{m.get("type", "")}");\n'
+            mission_lines += f'\t\tM.MissionID = FName(TEXT("{_cpp_str(m.get("name"))}"));\n'
+            mission_lines += f'\t\tM.Type = TEXT("{_cpp_str(m.get("type", ""))}");\n'
             mission_lines += f'\t\tM.RewardCredits = {float(m.get("reward_credits", 0)):.1f}f;\n'
-            mission_lines += f'\t\tM.FactionID = FName(TEXT("{m.get("faction", "")}"));\n'
+            mission_lines += f'\t\tM.FactionID = FName(TEXT("{_cpp_str(m.get("faction", ""))}"));\n'
             mission_lines += "\t\tM.StandingChange = 10.0f;\n"
             mission_lines += '\t\tM.Status = TEXT("Available");\n'
             if commodity:
                 mission_lines += "\t\t{\n\t\t\tFMissionObjective Deliver;\n"
                 mission_lines += '\t\t\tDeliver.Type = TEXT("Deliver");\n'
-                mission_lines += f'\t\t\tDeliver.Commodity = FName(TEXT("{commodity}"));\n'
+                mission_lines += f'\t\t\tDeliver.Commodity = FName(TEXT("{_cpp_str(commodity)}"));\n'
                 mission_lines += f'\t\t\tDeliver.Quantity = {int(qty)};\n'
-                mission_lines += f'\t\t\tDeliver.Station = FName(TEXT("{dest}"));\n'
+                mission_lines += f'\t\t\tDeliver.Station = FName(TEXT("{_cpp_str(dest)}"));\n'
                 mission_lines += "\t\t\tM.Objectives.Add(Deliver);\n\t\t}\n"
             mission_lines += "\t\t{\n\t\t\tFMissionObjective Dock;\n"
             mission_lines += '\t\t\tDock.Type = TEXT("Dock");\n'
-            mission_lines += f'\t\t\tDock.Station = FName(TEXT("{dest}"));\n'
+            mission_lines += f'\t\t\tDock.Station = FName(TEXT("{_cpp_str(dest)}"));\n'
             mission_lines += "\t\t\tM.Objectives.Add(Dock);\n\t\t}\n"
             mission_lines += "\t\tAvailableMissions.Add(M);\n\t}\n"
 
