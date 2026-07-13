@@ -52898,6 +52898,25 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_6b3b11eeec33"
+    },
+    {
+      "id": "surprise_099c80518a03d39b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T03:19:21.299376",
+      "context": "Haiku fleet agent produced a confident CONFIRMED verdict (sleepwalker PIE guard insufficient) in only 5 tool calls, without checking the isPIE data contract or the upstream ensure_editor guard",
+      "expectation": "",
+      "reality": "Deeper check: absent isPIE == not-in-PIE (research_auth.py .get(isPIE,False) convention) and editor reachability is guarded upstream by try/except+ensure_editor; the guard is a correct PIE-collision check. The proposed 'bail if isPIE missing' fix would REGRESS the nightly rhythm. False positive.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Deeper check: absent isPIE == not-in-PIE (research_auth.py .get(isPIE,False) con'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_a2ae4c588c31"
     }
   ],
   "edges": [

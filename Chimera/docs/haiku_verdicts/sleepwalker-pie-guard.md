@@ -7,6 +7,20 @@
 
 ---
 
+## ⚠️ ORCHESTRATOR CORRECTION (2026-07-12) — supersedes the CONFIRMED verdict below → **REFUTED**
+
+The verdict below is a **FALSE POSITIVE**. It was written from a wrong premise (that "proceed when `isPIE` is absent/falsy" is a defect) without checking the `isPIE` contract or the upstream guard. On investigation:
+
+1. **The contract: absent `isPIE` == `False` == "no live PIE" everywhere.** `core/research_auth.py:152,311` read it as `result_data.get("isPIE", False)`. So the guard at line 628 (`if rt.get("isPIE"):`) is a **PIE-COLLISION guard by design** — skip only when a live PIE definitely exists; otherwise proceed. Treating missing `isPIE` as "safe to start" is correct, not a bug.
+2. **Editor readiness IS guarded — upstream.** Lines 602–626 wrap `_runtime()` in try/except: if the editor is unreachable, `_runtime()` throws → `ensure_editor()` self-heals or the run skips ("editor unreachable"). The isPIE check is not responsible for reachability.
+3. **The proposed fix would REGRESS sleepwalker.** "Bail unless `isPIE` is explicitly `False`" would make the playtester skip **every normal idle run** where the report omits `isPIE` — breaking the nightly rhythm the pain claims to protect.
+
+**Net: the guard is correct; no code change made.** The one genuine sliver (a *reachable* editor whose `runtime_report` returns malformed non-error data) is marginal and not what the verdict described.
+
+**Calibration lesson:** this verdict used the fewest tool calls of the fleet (5) and never inspected the `isPIE` contract or the upstream try/except. Low-investigation "CONFIRMED"s are the least trustworthy — always verify a confirmed finding against the actual data contract before acting.
+
+---
+
 ## Verdict: CONFIRMED
 
 **The guard exists but is INSUFFICIENT for proper runtime_report validation.**
@@ -114,6 +128,6 @@ Beats then fail at execution time (lines 656+), wasting PIE sessions and produci
 ---
 
 ## DISPOSITION
-`phase_33cc2d55125bc551:P1:confirmed`
+`phase_33cc2d55125bc551:P1:refuted` (orchestrator-corrected; see banner at top)
 
-Guard exists but insufficient: validates only isPIE!=true, not editor readiness or runtime_report completeness.
+The guard is a correct PIE-COLLISION check given the contract that absent `isPIE` == not-in-PIE; editor reachability is guarded upstream (try/except + ensure_editor). The originally-proposed hardening would regress the nightly rhythm. No code change made.
