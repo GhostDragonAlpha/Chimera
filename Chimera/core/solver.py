@@ -25,6 +25,7 @@ import argparse
 import json
 import re
 import subprocess
+import sys
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -109,7 +110,11 @@ def _execute_step(step: dict) -> (bool, str):
         cmd = str(step.get("command", ""))
         if not ALLOWED_MODULE.match(cmd):
             return False, f"outside allowlist: {cmd[:60]}"
-        r = subprocess.run(cmd.split(), capture_output=True, text=True,
+        argv = cmd.split()
+        if argv and argv[0] == "python":
+            argv[0] = sys.executable  # spawn THIS interpreter, not a bare "python"
+            # (the latter can hit the Windows Store python.exe alias / wrong version)
+        r = subprocess.run(argv, capture_output=True, text=True,
                            cwd=str(ROOT), timeout=900)
         tail = ((r.stdout or "") + (r.stderr or "")).strip()[-160:]
         return r.returncode == 0, tail

@@ -7,6 +7,7 @@ Commands: stop, pause, resume, status, next-cycle.
 import time
 import json
 import subprocess
+import sys
 import threading
 from pathlib import Path
 from datetime import datetime, timezone
@@ -71,7 +72,7 @@ def _check_command_file():
 def _preflight_ok():
     try:
         r = subprocess.run(
-            ["python", "-m", "core.preflight"],
+            [sys.executable, "-m", "core.preflight"],
             cwd=str(ROOT),
             capture_output=True,
             text=True,
@@ -89,7 +90,7 @@ def _spawn_duty_cycle(cycle_num):
     _log(f"cycle_{cycle_num:03d} status=started")
     try:
         r = subprocess.run(
-            ["python", "run_deep_space_trader_pipeline.py"],
+            [sys.executable, "run_deep_space_trader_pipeline.py"],
             cwd=str(ROOT),
             capture_output=True,
             text=True,
