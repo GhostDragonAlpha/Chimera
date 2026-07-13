@@ -112,15 +112,22 @@ def gate_gpa_not_critically_falling() -> bool:
     if overall:
         latest = sorted(overall, key=lambda n: n.get("timestamp", ""), reverse=True)[0]
         gpa = latest.get("gpa")
-        if gpa is not None and gpa < 1.0:
-            raise GateViolation(
-                "gate_gpa_not_critically_falling",
-                f"Cumulative GPA is {gpa:.1f} (below 1.0 threshold). "
-                f"Systemic issues must be resolved.",
-                "blocker",
-                "Review recent build failures and visual verification results."
-            )
-        return True  # cumulative GPA >= 1.0 — fine
+        if gpa is not None:
+            if gpa < 1.0:
+                raise GateViolation(
+                    "gate_gpa_not_critically_falling",
+                    f"Cumulative GPA is {gpa:.1f} (below 1.0 threshold). "
+                    f"Systemic issues must be resolved.",
+                    "blocker",
+                    "Review recent build failures and visual verification results."
+                )
+            return True  # cumulative GPA >= 1.0 — fine
+        # A cumulative ProfessorGPA node that exists but has no readable 'gpa' is
+        # malformed — don't silently pass on it (that would trust corrupt data);
+        # fall through to the grade-history computation below, which fails closed
+        # only on a genuinely low measured average.
+        print("  [GATE] cumulative ProfessorGPA node has no 'gpa' field — "
+              "falling back to recent grade history")
 
     # Fallback: deduplicate grades by (feature, grade, timestamp truncated to minute)
     grade_map = {"A": 4.0, "B": 3.0, "C": 2.0, "D": 1.0, "F": 0.0}
