@@ -1,0 +1,40 @@
+{
+  "id": "regression_observation_b4e171a33eea4038",
+  "name": "Regression Guard: unknown",
+  "description": "Regression beat for unknown (observation observation_b4e171a33eea4038). Guards against failure: human_rejection",
+  "origin_observation": "observation_b4e171a33eea4038",
+  "created_at": "2026-07-12T00:00:40.763461",
+  "actions": [
+    {
+      "action": "setup",
+      "description": "Initialize unknown test harness"
+    },
+    {
+      "action": "exercise",
+      "description": "Execute unknown in the condition that caused rejection",
+      "context": ""
+    }
+  ],
+  "expects": [
+    {
+      "expect": "not_crash",
+      "description": "The feature must not crash during exercise"
+    },
+    {
+      "expect": "state_change",
+      "description": "The feature must exhibit a measurable state change",
+      "context": "Failure was: human_rejection"
+    }
+  ],
+  "tags": [
+    "unknown",
+    "regression",
+    "orig:human_rejection"
+  ],
+  "metadata": {
+    "curator_version": 1,
+    "feature_name": "unknown",
+    "rejection_notes": "verb needs behavior, not metadata: ATool_Shovel had DigRadius but no Dig() \u2014 beats must press the verb key and assert a world-state change.",
+    "derived_from_observation": "observation_b4e171a33eea4038"
+  }
+}

@@ -52801,6 +52801,103 @@
       "inheritance": "Realization is behavior reachable by real input, not a class that merely compiles \u2014 the weather gap closed only because the storm actually destroys sand footprints (real FootprintComponent erase registry) and drives the existing UWindSystemComponent. When the seed names a UWorldSubsystem but every live system is a UActorComponent, honor the pattern the project runs; the helm's token scorer deliberately doesn't constrain class shape. Compose load-bearing neighbors, never fork them.",
       "recorded_by": "postflight.py",
       "run_id": "run_dd26798a3f56"
+    },
+    {
+      "id": "surprise_210068c605b578b3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T02:49:51.798458",
+      "context": "gauntlet:haiku-1 entering station 2 to demonstrate typed recording",
+      "expectation": "",
+      "reality": "successfully recording via core.graphify_record typed helper",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'successfully recording via core.graphify_record typed helper'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_03a671a3676d"
+    },
+    {
+      "id": "surprise_0d7be1b5ea249f15",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T02:50:42.705523",
+      "context": "gauntlet:haiku-2 entering station 1, expecting to find phantom pain IDs in preflight output",
+      "expectation": "",
+      "reality": "phantom pain IDs are timestamped and prefixed (phase_HASH:P1 format), matching the inheritance section exactly",
+      "lesson_hint": "studio state artifacts follow deterministic naming conventions",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'phantom pain IDs are timestamped and prefixed (phase_HASH:P1 format), matching t'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ddec2b3cb64a"
+    },
+    {
+      "id": "phase_783f3c1c85c67fcf",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T02:57:03.379722",
+      "phase": "Gauntlet completed: haiku-1",
+      "result": "roles=['initiate', 'journeyman', 'researcher', 'cartographer', 'tunnel-runner'] scores={'orientation': 100, 'scribe': 100, 'scholar': 100, 'cartographer': 100, 'gatekeeper': 100, 'tunnel_run': 100, 'exit_gate': 100} attempts=12",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Gauntlet completed: haiku-1",
+      "error_category": "none",
+      "fix_description": "Phase 'Gauntlet completed: haiku-1' complete: roles=['initiate', 'journeyman', 'researcher', 'cartographer', 'tunnel-runner'] scores={'orientation': 100, 'scribe': 100, 'scholar': 100, 'cartographer': 100, 'gatekeeper': 100, 'tunnel_run': 100, 'e",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "gauntlet.py",
+      "run_id": "run_b045c6725e92"
+    },
+    {
+      "id": "phase_2278830fab7197aa",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T02:58:19.016556",
+      "phase": "Hire_Regression_Curator + Gauntlet + Phantom Pain Verdict",
+      "result": "tb-0006 Regression Curator DONE: core/regression.py built with mine/propose/prune CLI. Found 31 rejection observations; generated & saved 3 regression beats to docs/beats/. Gauntlet 7/7 complete (journeyman credential earned). Phantom pain weather-wind-authority verdict: refuted (no authority conflict, Wind reads back Weather's configured BaseWindSpeed consistently). All evidence recorded verbatim; no fabrication.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Hire_Regression_Curator + Gauntlet + Phantom Pain Verdict",
+      "error_category": "none",
+      "fix_description": "Phase 'Hire_Regression_Curator + Gauntlet + Phantom Pain Verdict' complete: tb-0006 Regression Curator DONE: core/regression.py built with mine/propose/prune CLI. Found 31 rejection observations; generated & saved 3 regression beats to docs/beats/. Gauntlet 7/7 complete (jour",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "regression_beat_schema compatibility with Sleepwalker dispatch needs validation in next capable run (beats may need action/expect vocabulary adjustment)"
+      ],
+      "inheritance": "Regression Curator extracts failure patterns into permanent beats (H-33, H-35); Audio_Visual_Sync feature ready for regression guarding. Gauntlet demonstrates graph-literacy, typed recording, failure autopsy discipline. Phantom pain investigation proves code-reading accuracy over speculation.",
+      "pain_verdicts": {
+        "phase_1b01fac303f3c24e:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_3e247b7c74d1"
+    },
+    {
+      "id": "phase_e8a6a37c6013ee81",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T03:10:42.494918",
+      "phase": "Fix heuristic_distiller.coverage_check (Haiku-fleet pain verdict, loop 100)",
+      "result": "Two bugs found+fixed+verified. (1) SATURATION: coverage_check summed token presence across the WHOLE growing document (line 143 t in text); test shows a 5-unrelated-systems lesson had max_overlap_in_one_line=2 but OLD whole_doc_hits=7 >= threshold 7 -> OLD code SUPPRESSED a genuinely-new lesson (silent false positive). Fixed to per-line whole-token set overlap. (2) PATH: COVERAGE_SOURCES had CHIMERA_ROOT/CLAUDE.md which does NOT exist (real CLAUDE.md is repo-root, CHIMERA_ROOT.parent); if-not-exists:continue silently skipped the ENTIRE promoted-heuristic constitution. Fixed; all 4 sources now EXIST. Verify PASS: true-positive dedup preserved (H-2 still covered by PENDING), novel+scattered lessons now stage; distiller --dry-run healthy. Found by Haiku fleet agent (haiku-3), independently verified by orchestrator.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Fix heuristic_distiller.coverage_check (Haiku-fleet pain verdict, loop 100)",
+      "error_category": "none",
+      "fix_description": "Phase 'Fix heuristic_distiller.coverage_check (Haiku-fleet pain verdict, loop 100)' complete: Two bugs found+fixed+verified. (1) SATURATION: coverage_check summed token presence across the WHOLE growing document (line 143 t in text); test shows a 5-unrelated-systems lesson had max_overlap_in_o",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "A whole-document token-coverage test SATURATES as the corpus grows and silently suppresses new lessons \u2014 judge coverage per-entry, not per-document. And verify config PATHS resolve: COVERAGE_SOURCES pointed at a mislocated CLAUDE.md for an unknown duration because if-not-exists:continue swallowed the miss. A parallel Haiku fleet surfaced this via evidence-based pain investigation.",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_6b3b11eeec33"
     }
   ],
   "edges": [

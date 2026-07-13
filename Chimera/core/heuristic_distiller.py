@@ -29,12 +29,23 @@ except ImportError:
 
 CHIMERA_ROOT = Path(__file__).parent.parent
 PENDING_PATH = CHIMERA_ROOT / "docs" / "PENDING_HEURISTICS.md"
+# CLAUDE.md is the promoted-heuristic constitution and lives at the REPOSITORY
+# root (one level above the Chimera project dir), not inside CHIMERA_ROOT. The
+# old `CHIMERA_ROOT / "CLAUDE.md"` pointed at a file that does not exist, so
+# coverage_check's `if not src.exists(): continue` silently skipped the ENTIRE
+# constitution — every promoted H-rule provided zero coverage, so already-known
+# lessons could re-stage as "new". Resolve the real location (fallback kept in
+# case the layout ever changes).
+_CLAUDE_MD = next(
+    (p for p in (CHIMERA_ROOT.parent / "CLAUDE.md", CHIMERA_ROOT / "CLAUDE.md") if p.exists()),
+    CHIMERA_ROOT.parent / "CLAUDE.md",
+)
 # Constitution organs searched for existing coverage of a lesson:
 COVERAGE_SOURCES = [
     CHIMERA_ROOT / "docs" / "PENDING_HEURISTICS.md",
     CHIMERA_ROOT / "docs" / "MCP_PATHWAYS.md",
     CHIMERA_ROOT / "core" / "gates.py",
-    CHIMERA_ROOT / "CLAUDE.md",
+    _CLAUDE_MD,
 ]
 
 SUCCESS_SIGNATURES = {"success_no_error", "", "none", "n/a"}
@@ -128,20 +139,37 @@ def collect_clusters(nodes: list, min_cluster: int) -> list:
 
 def coverage_check(signature: str) -> str:
     """Returns the covering source name if the lesson already lives in the
-    constitution, else ''. Match: signature (or its distinctive tokens) appears
-    in a coverage source."""
+    constitution, else ''.
+
+    A lesson counts as covered only when its distinctive tokens CO-OCCUR within a
+    SINGLE existing entry (one line ~ one heuristic in these bulleted docs) of a
+    coverage source — NOT merely scattered anywhere across the whole document.
+
+    Why per-entry: the old test summed token presence over the ENTIRE source
+    text, so as the corpus grew (PENDING_HEURISTICS.md is both a coverage source
+    AND this distiller's own append target) the token union grew monotonically
+    and eventually any 3-4 common game-dev words were "present", false-suppressing
+    genuinely-new lessons. Judging within one entry makes coverage independent of
+    corpus size. Matching uses the same _tokens() word set as the signature, so
+    'log' no longer substring-matches 'backlog'. It errs toward NOT-covered (a
+    hard-wrapped duplicate may slip through to staging) — the safe direction:
+    over-staging is reviewed, over-suppression is silent loss."""
     sig_tokens = _tokens(signature)
     needle = signature.split(":")[-1].strip().lower()
     for src in COVERAGE_SOURCES:
         if not src.exists():
             continue
         text = src.read_text(encoding="utf-8", errors="replace").lower()
+        # A long exact phrase is specific enough to trust on its own.
         if needle and len(needle) > 8 and needle in text:
             return src.name
-        # token coverage: >=3 distinctive tokens present in one source
-        if sig_tokens and len(sig_tokens) >= 3:
-            hits = sum(1 for t in sig_tokens if t in text)
-            if hits >= max(3, int(len(sig_tokens) * 0.8)):
+        if not sig_tokens or len(sig_tokens) < 3:
+            continue
+        threshold = max(3, int(len(sig_tokens) * 0.8))
+        # Per-entry whole-word overlap; adding unrelated entries can never raise
+        # a candidate's apparent coverage (the saturation fix).
+        for line in text.splitlines():
+            if len(sig_tokens & _tokens(line)) >= threshold:
                 return src.name
     return ""
 
