@@ -52936,6 +52936,403 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_d40dc53fe79c"
+    },
+    {
+      "id": "phase_8f772e4c004fc5b5",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T03:32:46.048994",
+      "phase": "Gauntlet completed: trial-1",
+      "result": "roles=['initiate', 'journeyman', 'researcher', 'cartographer', 'tunnel-runner'] scores={'orientation': 100, 'scribe': 100, 'scholar': 100, 'cartographer': 100, 'gatekeeper': 100, 'tunnel_run': 100, 'exit_gate': 100} attempts=7",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Gauntlet completed: trial-1",
+      "error_category": "none",
+      "fix_description": "Phase 'Gauntlet completed: trial-1' complete: roles=['initiate', 'journeyman', 'researcher', 'cartographer', 'tunnel-runner'] scores={'orientation': 100, 'scribe': 100, 'scholar': 100, 'cartographer': 100, 'gatekeeper': 100, 'tunnel_run': 100, 'e",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_gauntlet.py",
+      "run_id": "run_0bc86e189ec5"
+    },
+    {
+      "id": "phase_1e6b040e182b7604",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T03:32:48.828252",
+      "phase": "Curriculum graduation: Dust_Kickup completes kindergarten",
+      "result": "2 checkpoints passed; advances to bachelor",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Curriculum graduation: Dust_Kickup completes kindergarten",
+      "error_category": "none",
+      "fix_description": "Phase 'Curriculum graduation: Dust_Kickup completes kindergarten' complete: 2 checkpoints passed; advances to bachelor",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_curriculum.py",
+      "run_id": "run_4c08dab28081"
+    },
+    {
+      "id": "phase_c637f3dfa24dc995",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T03:32:49.104156",
+      "phase": "Curriculum graduation: Dust_Kickup completes kindergarten",
+      "result": "2 checkpoints passed; advances to bachelor",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Curriculum graduation: Dust_Kickup completes kindergarten",
+      "error_category": "none",
+      "fix_description": "Phase 'Curriculum graduation: Dust_Kickup completes kindergarten' complete: 2 checkpoints passed; advances to bachelor",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_curriculum.py",
+      "run_id": "run_4c08dab28081"
+    },
+    {
+      "id": "phase_8e97e13dc1f6fe63",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T03:32:49.363636",
+      "phase": "Curriculum graduation: Dust_Kickup completes bachelor",
+      "result": "3 checkpoints passed; PhD CONFERRED \u2014 ready for deployment to observation",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Curriculum graduation: Dust_Kickup completes bachelor",
+      "error_category": "none",
+      "fix_description": "Phase 'Curriculum graduation: Dust_Kickup completes bachelor' complete: 3 checkpoints passed; PhD CONFERRED \u2014 ready for deployment to observation",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_curriculum.py",
+      "run_id": "run_4c08dab28081"
+    },
+    {
+      "id": "phase_b4ceeb0f5aa2274d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T03:32:51.969431",
+      "phase": "Faculty promoted checkpoint fac.h-92",
+      "result": "from h_rule H-92 into band master",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Faculty promoted checkpoint fac.h-92",
+      "error_category": "none",
+      "fix_description": "Phase 'Faculty promoted checkpoint fac.h-92' complete: from h_rule H-92 into band master",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_faculty.py",
+      "run_id": "run_2d23dde1447a"
+    },
+    {
+      "id": "phase_fd119d4fddfafc95",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T03:32:52.231646",
+      "phase": "Faculty promoted checkpoint fac.h-93",
+      "result": "from h_rule H-93 into band bachelor",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Faculty promoted checkpoint fac.h-93",
+      "error_category": "none",
+      "fix_description": "Phase 'Faculty promoted checkpoint fac.h-93' complete: from h_rule H-93 into band bachelor",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_faculty.py",
+      "run_id": "run_2d23dde1447a"
+    },
+    {
+      "id": "phase_17556836107405fd",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-13T03:33:04.710704",
+      "phase": "rep_promotion:TestFeat",
+      "result": "tier 0 -> 1 (behaves) after 302 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:TestFeat",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:TestFeat' complete: tier 0 -> 1 (behaves) after 302 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "test_rep_engine.py",
+      "run_id": "run_1ec7658ff906"
+    },
+    {
+      "id": "mutation_1c862a711731",
+      "type": "Mutation",
+      "timestamp": "2026-07-13T05:23:26.471543",
+      "error_signature": "success_no_error",
+      "template_file": "dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_direction_tests_flight_model_ship_systems_economy_systems_level_procedural_generation_quantum_travel_missions_contracts",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "DSL parsed with 16 blocks: game, technical, narrative, gameplay, world",
+      "fix_diff": "Parsed DSL blocks: ['game', 'technical', 'narrative', 'gameplay', 'world', 'ui', 'audio', 'art_direction', 'tests', 'flight_model', 'ship_systems', 'economy_systems', 'level', 'procedural_generation', 'quantum_travel', 'missions_contracts']",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_703f77a569bb"
+    },
+    {
+      "id": "mutation_6a99a01105e1",
+      "type": "Mutation",
+      "timestamp": "2026-07-13T05:23:44.202894",
+      "error_signature": "success_no_error",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": " 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nProject 'ChimeraEditor' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nE:\\PythonChimera\\Chimera\\Chimera.uproject does not list plugin 'GameplayAbilities' as a dependency, but module 'Chimera' depends on 'GameplayAbilities'.\n@progress push 5%\n@progress 'Generating code...' 0%\n@progress 'Generating code...' 33%\nUHT compiled-in object format Default\nPlugin 'McpAutomationBridge' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nProject 'ChimeraEditor' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nE:\\PythonChimera\\Chimera\\Chimera.uproject does not list plugin 'GameplayAbilities' as a dependency, but module 'Chimera' depends on 'GameplayAbilities'.\n@progress 'Generating code...' 67%\n@progress 'Generating code...' 100%\n@progress pop\n@progress push 5%\n@progress 'Generating code...' 0%\n@progress 'Generating code...' 67%\n@progress 'Generating code...' 100%\n@progress pop\nBuilding ChimeraEditor...\n===== Toolchain Information =====\nUsing ISPC compiler (C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\ThirdParty\\Intel\\ISPC\\bin\\Windows\\ispc.exe)\n  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) \nUsing Visual Studio 14.44.35228 toolchain (C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207) and Windows 10.0.22621.0 SDK (C:\\Program Files (x86)\\Windows Kits\\10).\n[Adaptive Build] Excluded from Chimera unity file: QuantumTravelComponent.cpp\n=================================\nUsing Unreal Build Accelerator local executor to run 6 action(s)\n  CPU 24 physical cores, 32 logical cores\n  Memory 127.78 GB physical, 78.6 GB/135.78 GB committed\n  UBA Storage capacity 40 GB\n@progress 'Compiling C++ source code...' 0%\n@progress 'Compiling C++ source code...' 17%\n** For ChimeraEditor-Win64-Development **\n@progress 'Compiling C++ source code...' 33%\n[1/6] Compile [x64] QuantumTravelComponent.cpp\n[2/6] Compile [x64] Module.Chimera.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\n\t: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)\n\t                                           ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\n\t, bIsVacuum(true)\n\t  ^\n@progress 'Compiling C++ source code...' 50%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\n[3/6] Link [x64] UnrealEditor-Chimera.lib\n@progress 'Compiling C++ source code...' 67%\n[4/6] Link [x64] UnrealEditor-Chimera.dll\n@progress 'Compiling C++ source code...' 83%\n[5/6] WriteMetadata ChimeraEditor.target [NoUba]\n@progress 'Compiling C++ source code...' 100%\n[6/6] WriteMetadata ChimeraEditor.target [NoUba]\n\nTotal time in Unreal Build Accelerator local executor: 10.31 seconds\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\n\nResult: Succeeded\nTotal execution time: 16.70 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 7.4kb",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_703f77a569bb"
+    },
+    {
+      "id": "mutation_56cec568aef5",
+      "type": "Mutation",
+      "timestamp": "2026-07-13T05:23:44.639685",
+      "error_signature": "success_no_error",
+      "template_file": "code_generation_unknown",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Generated 0 files across 0 categories",
+      "fix_diff": "Generated files: []",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_703f77a569bb"
+    },
+    {
+      "id": "mutation_037c7197121e",
+      "type": "Mutation",
+      "timestamp": "2026-07-13T05:30:13.540957",
+      "error_signature": "success_no_error",
+      "template_file": "dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_direction_tests_flight_model_ship_systems_economy_systems_level_procedural_generation_quantum_travel_missions_contracts",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "DSL parsed with 16 blocks: game, technical, narrative, gameplay, world",
+      "fix_diff": "Parsed DSL blocks: ['game', 'technical', 'narrative', 'gameplay', 'world', 'ui', 'audio', 'art_direction', 'tests', 'flight_model', 'ship_systems', 'economy_systems', 'level', 'procedural_generation', 'quantum_travel', 'missions_contracts']",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_28527d1fe8d3"
+    },
+    {
+      "id": "mutation_48cd7b3bfead",
+      "type": "Mutation",
+      "timestamp": "2026-07-13T05:30:30.590050",
+      "error_signature": "success_no_error",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": " 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nProject 'ChimeraEditor' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nE:\\PythonChimera\\Chimera\\Chimera.uproject does not list plugin 'GameplayAbilities' as a dependency, but module 'Chimera' depends on 'GameplayAbilities'.\n@progress push 5%\n@progress 'Generating code...' 0%\n@progress 'Generating code...' 33%\nUHT compiled-in object format Default\nPlugin 'McpAutomationBridge' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nProject 'ChimeraEditor' depends on plugin 'StructUtils' which was deprecated in 5.5 and will soon be removed. Please update your dependencies.\nE:\\PythonChimera\\Chimera\\Chimera.uproject does not list plugin 'GameplayAbilities' as a dependency, but module 'Chimera' depends on 'GameplayAbilities'.\n@progress 'Generating code...' 67%\n@progress 'Generating code...' 100%\n@progress pop\n@progress push 5%\n@progress 'Generating code...' 0%\n@progress 'Generating code...' 67%\n@progress 'Generating code...' 100%\n@progress pop\nBuilding ChimeraEditor...\n===== Toolchain Information =====\nUsing ISPC compiler (C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\ThirdParty\\Intel\\ISPC\\bin\\Windows\\ispc.exe)\n  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) \nUsing Visual Studio 14.44.35228 toolchain (C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207) and Windows 10.0.22621.0 SDK (C:\\Program Files (x86)\\Windows Kits\\10).\n[Adaptive Build] Excluded from Chimera unity file: QuantumTravelComponent.cpp\n=================================\nUsing Unreal Build Accelerator local executor to run 6 action(s)\n  CPU 24 physical cores, 32 logical cores\n  Memory 127.78 GB physical, 78.7 GB/135.78 GB committed\n  UBA Storage capacity 40 GB\n@progress 'Compiling C++ source code...' 0%\n@progress 'Compiling C++ source code...' 17%\n** For ChimeraEditor-Win64-Development **\n@progress 'Compiling C++ source code...' 33%\n[1/6] Compile [x64] QuantumTravelComponent.cpp\n[2/6] Compile [x64] Module.Chimera.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\n\t: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)\n\t                                           ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\n\t, bIsVacuum(true)\n\t  ^\n@progress 'Compiling C++ source code...' 50%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\n[3/6] Link [x64] UnrealEditor-Chimera.lib\n@progress 'Compiling C++ source code...' 67%\n[4/6] Link [x64] UnrealEditor-Chimera.dll\n@progress 'Compiling C++ source code...' 83%\n[5/6] WriteMetadata ChimeraEditor.target [NoUba]\n@progress 'Compiling C++ source code...' 100%\n[6/6] WriteMetadata ChimeraEditor.target [NoUba]\n\nTotal time in Unreal Build Accelerator local executor: 10.05 seconds\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\n\nResult: Succeeded\nTotal execution time: 16.27 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 7.3kb",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_28527d1fe8d3"
+    },
+    {
+      "id": "mutation_78383f3e84ea",
+      "type": "Mutation",
+      "timestamp": "2026-07-13T05:30:31.002663",
+      "error_signature": "success_no_error",
+      "template_file": "code_generation_unknown",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Generated 0 files across 0 categories",
+      "fix_diff": "Generated files: []",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_28527d1fe8d3"
+    },
+    {
+      "id": "mutation_197118e66dc8",
+      "type": "Mutation",
+      "timestamp": "2026-07-13T05:33:31.046336",
+      "error_signature": "success_no_error",
+      "template_file": "visual_verification/screenshot_analysis",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Visual verification pass: AI analysis completed",
+      "fix_diff": "Verification result: pass, Description: Stage 7 pass. Grade: A",
+      "screenshot_path": null,
+      "feature": "Visual_Verification",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_28527d1fe8d3"
+    },
+    {
+      "id": "simtest_e77645cb9c97f935",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T06:00:28.647520",
+      "observer": "agent-sim",
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=6uu (loc x=2005.7522272536785, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=1uu (loc x=4000.563041996673, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": true,
+              "note": "z=164"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 4/5 beats reached in 'regolith_yard'. Failures: walk_rock_to_sand_basin (failed: expect {\"actor_exists\": \"SandDrift_FX\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b78dbf9291fc"
+    },
+    {
+      "id": "surprise_0046201574b0b072",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T06:00:28.917384",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"prese'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b78dbf9291fc"
     }
   ],
   "edges": [

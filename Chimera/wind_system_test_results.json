@@ -1,0 +1,11 @@
+{
+  "wind_system_status": "partial",
+  "particle_wind_response": 0.0,
+  "drift_observable": false,
+  "dsl_parity": 0,
+  "issues": [
+    "Expecting value: line 1 column 1 (char 0)",
+    "Expecting value: line 1 column 1 (char 0)",
+    "DSL parity only 0%"
+  ]
+}
