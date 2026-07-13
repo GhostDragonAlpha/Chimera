@@ -59,7 +59,7 @@ class RegressionCurator:
             if verdict in ("rejected", "chaos", "crash"):
                 rejections.append({
                     "id": node.get("id"),
-                    "feature": node.get("feature", "unknown"),
+                    "feature": node.get("feature_name", node.get("feature", "unknown")),
                     "verdict": verdict,
                     "status": node.get("status", "unknown"),
                     "timestamp": node.get("timestamp", ""),
