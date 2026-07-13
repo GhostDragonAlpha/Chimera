@@ -451,3 +451,135 @@ If your task is NOT listed here:
   `ADemoPlayerController`, or an alternate teleport primitive) before relying on absolute-coordinate resets.
   `docs/beats/verb_interactions.beats.json` currently uses approach (a) implicitly (and imperfectly — see
   its own `_provenance` field for the exact drift numbers) rather than (b).
+
+### 32. TRAP — UMG/Slate HUD verification MUST use `mode=full_editor_window`, never `editor_viewport`/`game_viewport` (2026-07-13, P0 O2 witness workflow)
+- **Root cause (read directly from source, both capture paths)**: `editor_viewport` and the empty-mode
+  default both route to `HandleControlEditorScreenshot` (`McpAutomationBridge_ControlHandlers.cpp` ~3941),
+  which calls `Viewport->ReadPixels(Bitmap, ReadFlags)` on the active viewport's render target.
+  `game_viewport` routes to a second, separate `ReadPixels` call in `McpAutomationBridge_UiHandlers.cpp`
+  (~line 533). **Both are raw 3D-scene render-target readbacks that run BEFORE the Slate/UMG compositor
+  draws the UI layer on top** — a `UUserWidget` added via `AddToViewport()` (e.g. `WID_O2HUD`, the diegetic
+  O2/battery/dust wrist gauge) is genuinely on screen but simply is not IN the buffer either mode reads.
+  This is why a HUD can false-negative as "not rendering" when the underlying widget tree, bindings, and
+  `AddToViewport()` call are all completely correct — the capture method itself is blind to Slate, not the
+  widget.
+- **The one mode that works**: `mode=full_editor_window` calls `CaptureSlateWindowPngForMcp` on
+  `GetFullEditorSlateWindowForMcp()` (~line 3870) — a genuine Slate **window** capture (the whole editor
+  frame, compositor included), which DOES show UMG. Confirmed empirically this session for `WID_O2HUD`.
+  Trade-off: it captures the full editor chrome (menus/panels), not just the game view, and is a heavier,
+  synchronous capture — acceptable for a HUD-verification screenshot, not a substitute for routine
+  world/actor screenshots.
+- **Not cheaply fixable at the other two modes** — don't rabbit-hole trying: making `ReadPixels` include
+  Slate would mean either compositing UMG onto the 3D render target before the readback (a real rendering
+  pipeline change) or switching those paths to a Slate-level capture too (which is exactly what
+  `full_editor_window` already is, just scoped to the whole window instead of one viewport). The convention
+  below IS the fix.
+- **Rule**: any beat/verification that needs to SEE a UMG HUD (not just confirm it exists/attaches) must
+  request `mode="full_editor_window"` explicitly. `core/sleepwalker.py`'s `screenshot` action now accepts an
+  optional `"mode"` key on the action (`{"screenshot": "name", "mode": "full_editor_window"}`); it still
+  defaults to `"editor_viewport"` for backward compatibility with beat files that only want a world shot.
+- **Freshly reconfirmed with live values, not just presence** (`docs/beats/o2_survival_witness.beats.json`,
+  2026-07-13): three `full_editor_window` captures across one continuous session show the SAME gauge cluster
+  tracking real, changing numbers — `O2: 95%` (healthy), `O2: 10%` + a visible yellow `WARNING: Low O2` line
+  (alarm), `O2: 71%` with the warning gone (recovered) — each matching that beat's `component_property_above/
+  below` read-back within a percent or two. This is stronger evidence than "the HUD renders": the SAME
+  screenshot mode was proven to reflect LIVE component state across three different states in one run.
+
+### 33. Bounded, self-cleaning witness runs — `core/witness_runner.py` (2026-07-13, P0 O2 witness workflow)
+- **The failure this fixes**: a prior witness session hung for ~7-8 real minutes (an O2-depletion beat
+  waiting out the drain rate live, real-time) and left `UnrealEditor.exe` running — orphaned, because
+  nothing outside the hung process ever got to run `Sleepwalker.run()`'s own `finally: stop_pie()`.
+  `core.sleepwalker` has no OUTER wall-clock cap of its own (only a 30s-per-MCP-call socket timeout inside
+  `MCPStdioClient._read`); a beat script whose actions sum to several minutes of real `wait`/`hold_s` (or one
+  hung call retried across several beats) has no ceiling, and whatever external process is driving it (an
+  agent's own tool-call timeout, a closed terminal) can kill it before its cleanup code ever runs.
+- **The fix**: `python -m core.witness_runner --beats <path> --session <name> [--budget-s 240]
+  [--close-editor-on-exit]` wraps `core.sleepwalker` instead of calling it directly for any witness run
+  expected to run unattended or for longer than a minute or two:
+  1. Runs the beat script as a **child process** under a real `subprocess` timeout — the sleepwalker no
+     longer has to be trusted to self-terminate.
+  2. On timeout, kills the child's **whole process tree** (`taskkill /T /F /PID <pid>`, not a bare
+     `.kill()`) — a plain single-process kill can strand grandchildren, e.g. the `node.exe` MCP bridge CLI
+     each `MCPStdioClient()` construction spawns.
+  3. **ALWAYS**, in a `finally` (timeout, crash, or clean exit alike), opens a **fresh** `MCPStdioClient` and
+     issues `stop_pie` — proven safe to rely on regardless of the child's fate, since `MCPStdioClient` spawns
+     its own short-lived bridge-CLI process per construction and reaches the SAME running editor over its
+     socket; it does not depend on the dead child's pipes or in-process state.
+  4. `--close-editor-on-exit` additionally force-kills `UnrealEditor.exe`/`-Cmd.exe`/
+     `CrashReportClientEditor.exe` (the same list `core.editor_scheduler._kill_ue_processes()` uses) and
+     releases this agent's scheduler claim. **Off by default** — the studio's normal mode is ONE shared
+     long-lived editor across concurrent agents (`core/editor_scheduler.py`); only pass this flag for a
+     witness session that is explicitly the last thing an agent does before ending its shift.
+  5. **Un-throttles before every launch it triggers** — see the NEW trap below (#34); a background-launched
+     editor stalling at 3fps looks EXACTLY like a hang from the outside, and was in fact the root cause this
+     session re-discovered while trying to re-run the SuitLifeSupport acceptance tests headlessly.
+
+### 34. TRAP — a background-launched (unfocused) editor can silently stall `Automation RunTests` forever, not just run it slowly (2026-07-13, re-running SuitLifeSupport acceptance tests)
+- **Symptom**: `core.unblock.ensure_editor()` (or any headless/background editor launch) followed by
+  `Automation RunTests ChimeraTests.Acceptance.<X>` via `console_command` never produces a single test
+  result, no matter how long you wait — indistinguishable from a hang unless you read the log.
+- **Root cause, confirmed live in `Chimera.log`**: `LogEngineAutomationLatentCommand: FWaitForInteractiveFrameRate:
+  Starting wait for framerate of >= 10 FPS`, then repeating `Current FPS=3` every 30s, `Will timeout in
+  570[s]`. UE's OWN automation framework refuses to start the queued tests until the engine reaches 10fps —
+  and an editor launched without OS window focus throttles to ~3fps (`bThrottleCPUWhenNotForeground`,
+  pathway #25's trap, generalized here: it doesn't just fake low telemetry readings, it can block an entire
+  automation run for its full timeout, which for `FWaitForInteractiveFrameRate` is 600 real seconds).
+- **The fix**: set `bThrottleCPUWhenNotForeground=False` in
+  `Saved/Config/WindowsEditor/EditorPerProjectUserSettings.ini`
+  (`[/Script/UnrealEd.EditorPerformanceSettings]`) BEFORE the editor launches — `core/witness_runner.py`'s
+  `_ensure_unthrottled()` does this automatically now. Only takes effect on the editor's NEXT launch (an
+  already-running instance must be restarted to pick it up). Foregrounding the window
+  (`SetForegroundWindow`) is a belt-and-suspenders addition, not a substitute — a human stealing focus can
+  defeat it mid-session (pathway #25's own caveat), the ini fix does not depend on focus at all.
+- **Practical impact for THIS session**: this is very likely why the design directive's own reported ~7-8
+  minute witness stall happened, and why standalone `UnrealEditor-Cmd.exe -ExecCmds="Automation RunTests..."`
+  invocations in this environment either exit near-instantly via a `-TestExit` race (the phrase the exit
+  watcher looks for can match before any test has actually run) or spin for the framework's own multi-hundred
+  -second internal timeout with `-TestExit` omitted — neither is a fast, reliable headless test path here.
+  The reliable path found this session: launch/confirm the editor via `core.unblock.ensure_editor()` (with
+  the ini fix already in place), then issue `Automation RunTests <suite>` via
+  `control_editor console_command` through the MCP bridge, and poll `Chimera.log` for
+  `LogAutomationController`/`LogAutomationTest` result lines with your OWN bounded timeout — the same
+  discipline pathway #33 documents for witness beat runs applies here too.
+- **Compress game-time, don't wait it out**: `core/sleepwalker.py` gained an `advance_suit_seconds` beat
+  action instead of `wait`-ing out the real ~5-6 minute O2 drain/regen curves.
+  - **First attempt (FAILED, corrected same session)**: called `USuitLifeSupportComponent::AdvanceLifeSupport(N)`
+    via `execute_python`, finding the component with
+    `unreal.EditorLevelLibrary.get_all_level_actors()`. Confirmed live this session that this silently does
+    nothing during PIE: `EditorLevelLibrary` resolves the EDITOR world, not the active PLAY world, so it never
+    finds a component that was runtime-attached (`NewObject`+`RegisterComponent`) to the PIE pawn at
+    `OnPossess` — the beat's O2 read-back afterward showed only the ordinary real-time drain from the
+    beats around it, not the intended multi-hundred-second jump (`simtest_3d6d12a284a70d04`,
+    `o2_drains_to_alarm` failure evidence).
+  - **Working fix**: no `control_actor` primitive can call a component `UFUNCTION` with a real argument
+    either (`call_function`/`HandleControlActorCallFunction` only finds functions on the ACTOR, not its
+    components, and zeroes every parameter buffer regardless of what you pass — verified by reading the
+    handler source, not assumed), so instead of calling the component's function at all,
+    `advance_suit_seconds` now computes the SAME per-game-minute delta the component's own `TickLifeSupport`
+    would (`property += rate_per_min * seconds/60`, clamped to an optional `min_floor`/`max_ceiling`) and
+    writes the result through `control_actor set_component_property` — proven to correctly resolve the live
+    PIE actor all session (every `reset_position`/`get_component_property` call in the same beat run worked).
+    A short settle wait afterward lets the component's own next real `TickComponent` (still ticking normally
+    in PIE) run `UpdateO2Edges()` off the new baseline, so `bLowO2`/`bDead` flip through the REAL edge-detection
+    logic, not a second manual property write. `min_floor` (e.g. 10.0 for a drain call) matters: a plain
+    `current + delta` clamped only to the component's own 0..100 range can overshoot to exactly 0 and trip
+    `bDead` depending on incidental real-time drain from the surrounding beats — a floor above 0 makes the
+    landing value insensitive to that noise while staying in the intended alarm band.
+  - Verified afterward through the already-proven `get_component_property` read-back (new generic
+    `component_property_below`/`component_property_above` expects) either way — the fast-forward mechanism's
+    own correctness is never trusted on faith. See `docs/beats/o2_survival_witness.beats.json` for the full
+    pattern (walk/sprint/bend legs are real PIE input; only the O2-depletion and refill legs are
+    time-compressed, and are labeled as such in that file's `_provenance` and per-beat `_note`s).
+- **TRAP found while building this (not yet fixed — flagged for a follow-up, not blocking)**: `core.sleepwalker`'s
+  pre-existing `_TELEMETRY_SCRIPTS` execute_python fallback (Tier 2 of the `"command"` action) searches for a
+  component whose type name contains `'SandSound'` and calls e.g. `.FootstepSyncEventCount` as a bare
+  property access — but `GetFootstepSyncEventCount()` and its siblings are `static` `UFUNCTION`s on
+  `UChimeraMovementComponent` (reading a module-global `TArray`), not properties on `USandSoundComponent` at
+  all (confirmed by reading `ChimeraMovementComponent.h`/`.cpp` directly). This fallback would silently fail
+  (wrong class searched, then a property-vs-function-call mismatch) every time it's actually invoked. It is
+  currently latent/harmless because **Tier 1 already works**: `manage_tools` routes these exact action names
+  to a correct, dedicated native handler (`HandleManageToolsAction`,
+  `McpAutomationBridgeSubsystem.cpp` ~847, calling `UChimeraMovementComponent::Get*()` directly) — confirmed
+  by reading that handler too. `docs/beats/o2_survival_witness.beats.json`'s `footstep_telemetry_summary`
+  beat relies on Tier 1, not the fallback. Worth fixing the fallback anyway so a real Tier-1 regression
+  degrades to a working Tier 2 instead of a differently-broken one.

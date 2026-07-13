@@ -54199,6 +54199,1388 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_b81266a49df7"
+    },
+    {
+      "id": "simtest_3d6d12a284a70d04",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T22:54:21.965047",
+      "observer": "agent-sim",
+      "session": "o2_survival_witness_p0",
+      "demo": "o2_survival_witness",
+      "beats_total": 10,
+      "beats_reached": 8,
+      "outcomes": [
+        {
+          "beat": "spawn_confirmed",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 840,
+                  "y": 0,
+                  "r": 400
+                }
+              },
+              "ok": true,
+              "note": "dist=399uu (loc x=441.292055920602, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_area",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 3400,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=469uu (loc x=2931.2786673390797, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 5400,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=469uu (loc x=4931.274947279004, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sprint_leg",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_velocity_magnitude": 850
+              },
+              "ok": false,
+              "note": "velocity_mag=0.00 (threshold=850.0)"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "O2",
+                  "value": 99
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.O2=96.58 threshold=99.0 (component_property_below)"
+            }
+          ]
+        },
+        {
+          "beat": "bend_to_read_gauge",
+          "outcome": "reached",
+          "features": [
+            "Verb_Bend",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.0
+                }
+              },
+              "ok": true,
+              "note": "CapsuleHalfHeight 90->40->90 drop=50 restore=50 min_drop=20"
+            }
+          ]
+        },
+        {
+          "beat": "o2_drains_to_alarm",
+          "outcome": "failed",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "O2",
+                  "value": 25
+                }
+              },
+              "ok": false,
+              "note": "SuitLifeSupportComponent.O2=93.61 threshold=25.0 (component_property_below)"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bLowO2",
+                  "value": 0.5
+                }
+              },
+              "ok": false,
+              "note": "SuitLifeSupportComponent.bLowO2=0.00 threshold=0.5 (component_property_above)"
+            }
+          ]
+        },
+        {
+          "beat": "return_to_habitat",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Geometry",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bInShelter",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bInShelter=1.00 threshold=0.5 (component_property_above)"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bAtOxygenGarden",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bAtOxygenGarden=1.00 threshold=0.5 (component_property_above)"
+            }
+          ]
+        },
+        {
+          "beat": "o2_refills_at_habitat",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Geometry",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "O2",
+                  "value": 40
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.O2=94.20 threshold=40.0 (component_property_above)"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "bLowO2",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bLowO2=0.00 threshold=0.5 (component_property_below)"
+            }
+          ]
+        },
+        {
+          "beat": "footstep_telemetry_summary",
+          "outcome": "reached",
+          "features": [
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "total_events_gt": 0
+              },
+              "ok": true,
+              "note": "total_events=25"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\o2_survival_witness_p0.json",
+      "temperature": "[SIM] 8/10 beats reached in 'o2_survival_witness'. Failures: sprint_leg (failed: expect {\"pawn_velocity_magnitude\": 850} -> velocity_mag=0.00 (threshold=850.0)); o2_drains_to_alarm (failed: expect {\"component_property_below\": {\"property\": \"O2\", \"value\": 25} -> SuitLifeSupportComponent.O2=93.61 threshold=25.0 (component_property_below))",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'o2_survival_witness_p0': 8/10 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5e410a6122ea"
+    },
+    {
+      "id": "surprise_078315ad25bf1245",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T22:54:22.264600",
+      "context": "Sleepwalker expected beat 'sprint_leg' to be reachable (o2_survival_witness)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"component_property_below\": {\"property\": \"O2\", \"value\": 99}}, \"ok\": true, \"note\": \"SuitLifeSupportComponent.O2=96.58 threshold=99.0 (component_prope",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"component_property_below\": {\"property\": \"O2\", \"value\": 99}}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5e410a6122ea"
+    },
+    {
+      "id": "surprise_72e939a418afb96e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T22:54:22.585563",
+      "context": "Sleepwalker expected beat 'o2_drains_to_alarm' to be reachable (o2_survival_witness)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"component_property_above\": {\"property\": \"bLowO2\", \"value\": 0.5}}, \"ok\": false, \"note\": \"SuitLifeSupportComponent.bLowO2=0.00 threshold=0.5 (compone",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"component_property_above\": {\"property\": \"bLowO2\", \"value\": '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5e410a6122ea"
+    },
+    {
+      "id": "simtest_d9b48a6826f3762b",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T23:00:59.414991",
+      "observer": "agent-sim",
+      "session": "o2_survival_witness_p0_v2",
+      "demo": "o2_survival_witness",
+      "beats_total": 10,
+      "beats_reached": 10,
+      "outcomes": [
+        {
+          "beat": "spawn_confirmed",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 840,
+                  "y": 0,
+                  "r": 400
+                }
+              },
+              "ok": true,
+              "note": "dist=322uu (loc x=517.6207887031564, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_area",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 3400,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=288uu (loc x=3112.018636174579, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 5400,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=239uu (loc x=5639.18776416917, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sprint_leg",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 8750,
+                  "y": 0,
+                  "r": 750
+                }
+              },
+              "ok": true,
+              "note": "dist=487uu (loc x=9237.157736621477, y=0)"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "O2",
+                  "value": 99
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.O2=93.40 threshold=99.0 (component_property_below)"
+            }
+          ]
+        },
+        {
+          "beat": "bend_to_read_gauge",
+          "outcome": "reached",
+          "features": [
+            "Verb_Bend",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.0
+                }
+              },
+              "ok": true,
+              "note": "CapsuleHalfHeight 90->40->90 drop=50 restore=50 min_drop=20"
+            }
+          ]
+        },
+        {
+          "beat": "o2_drains_to_alarm",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "O2",
+                  "value": 25
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.O2=9.11 threshold=25.0 (component_property_below)"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bLowO2",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bLowO2=1.00 threshold=0.5 (component_property_above)"
+            }
+          ]
+        },
+        {
+          "beat": "return_to_habitat",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Geometry",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bInShelter",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bInShelter=1.00 threshold=0.5 (component_property_above)"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bAtOxygenGarden",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bAtOxygenGarden=1.00 threshold=0.5 (component_property_above)"
+            }
+          ]
+        },
+        {
+          "beat": "o2_refills_at_habitat",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Geometry",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "O2",
+                  "value": 40
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.O2=70.31 threshold=40.0 (component_property_above)"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "bLowO2",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bLowO2=0.00 threshold=0.5 (component_property_below)"
+            }
+          ]
+        },
+        {
+          "beat": "footstep_telemetry_summary",
+          "outcome": "reached",
+          "features": [
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "total_events_gt": 0
+              },
+              "ok": true,
+              "note": "total_events=41"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00020116567611694336"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\o2_survival_witness_p0_v2.json",
+      "temperature": "[SIM] 10/10 beats reached in 'o2_survival_witness'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'o2_survival_witness_p0_v2': 10/10 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_d84188c6dab0"
+    },
+    {
+      "id": "simtest_b61b91a262d0ca95",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T23:04:55.729902",
+      "observer": "agent-sim",
+      "session": "o2_survival_witness_p0_v3",
+      "demo": "o2_survival_witness",
+      "beats_total": 10,
+      "beats_reached": 10,
+      "outcomes": [
+        {
+          "beat": "spawn_confirmed",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 840,
+                  "y": 0,
+                  "r": 400
+                }
+              },
+              "ok": true,
+              "note": "dist=322uu (loc x=518.3476125245235, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_area",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 3400,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=288uu (loc x=3112.2840213105633, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 5400,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=39uu (loc x=5439.391742480732, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sprint_leg",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2900,
+                  "y": 0,
+                  "r": 700
+                }
+              },
+              "ok": true,
+              "note": "dist=444uu (loc x=3344.195020896556, y=0)"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "O2",
+                  "value": 99
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.O2=94.77 threshold=99.0 (component_property_below)"
+            }
+          ]
+        },
+        {
+          "beat": "bend_to_read_gauge",
+          "outcome": "reached",
+          "features": [
+            "Verb_Bend",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.0
+                }
+              },
+              "ok": true,
+              "note": "CapsuleHalfHeight 90->40->90 drop=50 restore=50 min_drop=20"
+            }
+          ]
+        },
+        {
+          "beat": "o2_drains_to_alarm",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "O2",
+                  "value": 25
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.O2=9.87 threshold=25.0 (component_property_below)"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bLowO2",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bLowO2=1.00 threshold=0.5 (component_property_above)"
+            }
+          ]
+        },
+        {
+          "beat": "return_to_habitat",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Geometry",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bInShelter",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bInShelter=1.00 threshold=0.5 (component_property_above)"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "bAtOxygenGarden",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bAtOxygenGarden=1.00 threshold=0.5 (component_property_above)"
+            }
+          ]
+        },
+        {
+          "beat": "o2_refills_at_habitat",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Geometry",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "component_property_above": {
+                  "property": "O2",
+                  "value": 40
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.O2=71.63 threshold=40.0 (component_property_above)"
+            },
+            {
+              "expect": {
+                "component_property_below": {
+                  "property": "bLowO2",
+                  "value": 0.5
+                }
+              },
+              "ok": true,
+              "note": "SuitLifeSupportComponent.bLowO2=0.00 threshold=0.5 (component_property_below)"
+            }
+          ]
+        },
+        {
+          "beat": "footstep_telemetry_summary",
+          "outcome": "reached",
+          "features": [
+            "audio_visual_sync"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "total_events_gt": 0
+              },
+              "ok": true,
+              "note": "total_events=20"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\o2_survival_witness_p0_v3.json",
+      "temperature": "[SIM] 10/10 beats reached in 'o2_survival_witness'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'o2_survival_witness_p0_v3': 10/10 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3c8d20922c87"
+    },
+    {
+      "id": "simtest_2284ddfda59292e4",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T23:09:37.484696",
+      "observer": "agent-sim",
+      "session": "verb_interactions_fix_verify",
+      "demo": "verb_interactions",
+      "beats_total": 9,
+      "beats_reached": 9,
+      "outcomes": [
+        {
+          "beat": "verb_look_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Look",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_bend_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.2
+                }
+              },
+              "ok": true,
+              "note": "CapsuleHalfHeight 90->40->90 drop=50 restore=50 min_drop=20"
+            }
+          ]
+        },
+        {
+          "beat": "verb_pickup_weapon_tool_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp",
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_drop_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_metal_surface_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Metal_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 350,
+                  "y": 0,
+                  "r": 400
+                }
+              },
+              "ok": true,
+              "note": "dist=282uu (loc x=68.0978153460489, y=0.20797280798973963)"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_rock_surface_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4240,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=528uu (loc x=3712.010762310615, y=5.228533158326216)"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_sand_surface_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 5950,
+                  "y": 0,
+                  "r": 950
+                }
+              },
+              "ok": true,
+              "note": "dist=289uu (loc x=6239.418541117109, y=6.8392526235048825)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "visor_inspection_pedestal",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model_Visor_Apply",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2225,
+                  "y": 600,
+                  "r": 750
+                }
+              },
+              "ok": true,
+              "note": "dist=217uu (loc x=2372.773275718219, y=758.7319323992408)"
+            }
+          ]
+        },
+        {
+          "beat": "weapon_tool_examine",
+          "outcome": "reached",
+          "features": [
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1700,
+                  "y": -400,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=188uu (loc x=1512.0128496663979, y=-396.6038787927247)"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\verb_interactions_fix_verify.json",
+      "temperature": "[SIM] 9/9 beats reached in 'verb_interactions'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'verb_interactions_fix_verify': 9/9 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_fecdb373e27d"
     }
   ],
   "edges": [

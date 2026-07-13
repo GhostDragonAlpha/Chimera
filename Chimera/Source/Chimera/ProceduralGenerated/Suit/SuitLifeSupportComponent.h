@@ -157,7 +157,11 @@ public:
     bool bOverrideExertion;
 
     /** Draw a minimal on-screen O2/battery/dust readout each tick via GEngine debug
-     *  text — an MVP gauge with no Blueprint dependency until WID_O2HUD is wired. */
+     *  text — an MVP gauge with no Blueprint dependency, from before WID_O2HUD was
+     *  wired. WID_O2HUD (the real diegetic wrist gauge) is now created and shown by
+     *  DemoPlayerController::EnsureO2HUD, so this defaults OFF to avoid a doubled-up
+     *  readout (console text stacked on top of the HUD widget); flip true for a
+     *  quick debug session with no HUD. */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Suit|Debug")
     bool bShowOnScreenReadout;
 

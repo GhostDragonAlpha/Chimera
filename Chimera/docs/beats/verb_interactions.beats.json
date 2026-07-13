@@ -2,7 +2,7 @@
   "demo": "verb_interactions",
   "loop": 2,
   "settle_s": 6,
-  "_provenance": "Interaction beats for six verbs + visor + weapon inspection. Position-based beats now use reset_position (control_actor set_transform on pawn) between each beat to prevent accumulated drift from W-key movement. BugItGo move_to is editor-only and fails during PIE.",
+  "_provenance": "Interaction beats for six verbs + visor + weapon inspection. Position-based beats now use reset_position (control_actor set_transform on pawn) between each beat to prevent accumulated drift from W-key movement. BugItGo move_to is editor-only and fails during PIE. FIX 2026-07-13 (p0_verbs_witness simtest_c33996eaf3951b1c, 5/9 beats reached): every pawn_within expect was centered on the reset_position coordinate itself, so it failed as soon as the beat's own W-hold moved the pawn away from that point -- e.g. rock (reset x=2000, hold_s=3.2) landed at x~4001 (measured ~626uu/s per the design directive), dist=2001 > r=900. Recentered every pawn_within on the INTENDED DESTINATION (reset + hold_s * ~700uu/s, the measured walk-speed band 500-950uu/s observed across this project's sim runs) with a radius sized to the speed band's spread, so a normal walk passes while a pawn that doesn't move (or moves wildly off-path) still fails. Also renamed the sand beat's actor_exists check from SandDrift_FX (never existed) to Actor_NS_SandDust (the real spawned actor name -- see create_sand_dust_niagara.py's f'Actor_{system_name}' and ground_sand_particles_results.json's actor listing).",
   "beats": [
     {
       "name": "verb_look_location",
@@ -77,7 +77,7 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 0, "y": 0, "r": 600}}
+        {"pawn_within": {"x": 350, "y": 0, "r": 400}}
       ]
     },
     {
@@ -91,7 +91,7 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 2000, "y": 0, "r": 900}}
+        {"pawn_within": {"x": 4240, "y": 0, "r": 600}}
       ]
     },
     {
@@ -105,8 +105,8 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 4000, "y": 0, "r": 1100}},
-        {"actor_exists": "SandDrift_FX"}
+        {"pawn_within": {"x": 5950, "y": 0, "r": 950}},
+        {"actor_exists": "Actor_NS_SandDust"}
       ]
     },
     {
@@ -121,7 +121,7 @@
       "expects": [
         {"is_pie": true},
         {"actor_exists": "Display_Suit"},
-        {"pawn_within": {"x": 600, "y": 600, "r": 300}}
+        {"pawn_within": {"x": 2225, "y": 600, "r": 750}}
       ]
     },
     {
@@ -135,7 +135,7 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 400, "y": -400, "r": 300}}
+        {"pawn_within": {"x": 1700, "y": -400, "r": 600}}
       ]
     }
   ]

@@ -57,7 +57,11 @@ USuitLifeSupportComponent::USuitLifeSupportComponent()
     bAtBatteryBank    = false;
     bInShelter        = false;
     bOverrideExertion = false;
-    bShowOnScreenReadout = true;
+    // P0 witness-workflow fix (2026-07-13): WID_O2HUD now renders the real
+    // diegetic wrist gauge (see DemoPlayerController::EnsureO2HUD), so the
+    // GEngine on-screen debug text would double up with it on screen. Default
+    // OFF; flip true only for a quick headless/no-HUD debug session.
+    bShowOnScreenReadout = false;
 
     SecondsSurvived = 0.0f;
     TimesDepleted   = 0;

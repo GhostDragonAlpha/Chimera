@@ -192,6 +192,16 @@ class Sleepwalker:
         val = (res.get("data") or {}).get("value")
         if val is None:
             val = res.get("value")
+        if isinstance(val, str):
+            # A bool UPROPERTY (e.g. bLowO2, bInShelter) may come back serialized as
+            # the string "true"/"false" rather than a JSON bool depending on the
+            # bridge's reflection path -- coerce before the numeric parse below so
+            # component_property_above/below stays reliable for bool properties too.
+            low = val.strip().lower()
+            if low == "true":
+                return 1.0
+            if low == "false":
+                return 0.0
         try:
             return float(val)
         except (TypeError, ValueError):
@@ -301,15 +311,23 @@ class Sleepwalker:
         elif "wait" in a:
             time.sleep(float(a["wait"]))
         elif "screenshot" in a:
+            # TRAP (docs/MCP_PATHWAYS.md #32): editor_viewport/game_viewport read the
+            # render target via FViewport::ReadPixels, which runs BEFORE Slate/UMG
+            # compositing -- a UMG HUD (WID_O2HUD) never appears in those modes even
+            # though it's genuinely on screen. Only full_editor_window (a true Slate
+            # window capture) shows it. Default stays editor_viewport for backward
+            # compatibility with existing beat files that only want a world screenshot;
+            # pass {"screenshot": "name", "mode": "full_editor_window"} to verify UI.
+            mode = a.get("mode", "editor_viewport")
             self._call(
                 "control_editor",
                 {
                     "action": "screenshot",
-                    "mode": "editor_viewport",
+                    "mode": mode,
                     "filename": a["screenshot"],
                 },
             )
-            self.w.mark("screenshot", {"filename": a["screenshot"]})
+            self.w.mark("screenshot", {"filename": a["screenshot"], "mode": mode})
         elif "interact" in a or "pickup" in a:
             self.w.mark("action", {"interact": True, "hold_s": a.get("hold_s", 0.2)})
             # Simulate 'E' key for interact/pickup
@@ -355,12 +373,21 @@ class Sleepwalker:
             # Position reset for pawn during PIE (BugItGo doesn't work in PIE).
             # Uses control_actor set_transform on the possessed pawn directly.
             loc = a["reset_position"]
-            x = float(loc.get("x", 0))
-            y = float(loc.get("y", 0))
-            z = float(loc.get("z", 0))
+            anchor = {"x": 0.0, "y": 0.0, "z": 130.0}
+            anchor_name = loc.get("anchor")
+            if anchor_name == "habitat" and getattr(self, "habitat_estimate", None):
+                anchor = self.habitat_estimate
+            elif anchor_name == "spawn" and getattr(self, "spawn_location", None):
+                anchor = self.spawn_location
+            # With an anchor, x/y/z are OFFSETS from it; without one (the original,
+            # backward-compatible behaviour every existing beat file relies on),
+            # x/y/z are absolute world coordinates (anchor defaults to origin).
+            x = anchor["x"] + float(loc.get("x", 0))
+            y = anchor["y"] + float(loc.get("y", 0))
+            z = anchor["z"] + float(loc.get("z", 0)) if "z" in loc else anchor["z"]
             self.w.mark(
                 "action",
-                {"reset_position": {"x": x, "y": y, "z": z}},
+                {"reset_position": {"x": x, "y": y, "z": z, "anchor": anchor_name}},
             )
             # Find the possessed pawn name from runtime_report first
             rt = self._runtime()
@@ -377,6 +404,63 @@ class Sleepwalker:
                     "location": {"x": x, "y": y, "z": z},
                 },
             )
+        elif "advance_suit_seconds" in a:
+            # Compress game-time instead of waiting real time (design directive
+            # Part A #2): simulates N seconds of the suit's OWN drain/regen math
+            # (USuitLifeSupportComponent's per-game-minute rates) in one instant
+            # write, rather than a beat waiting out the real ~5-6 minute curve.
+            #
+            # REVISED 2026-07-13 (empirical failure this session, simtest evidence):
+            # the original implementation called AdvanceLifeSupport(N) via
+            # execute_python, searching for the component with
+            # unreal.EditorLevelLibrary.get_all_level_actors() -- that call resolves
+            # the EDITOR world, not the active PIE world, so during a live PIE session
+            # it can never find the runtime-attached (NewObject'd at OnPossess)
+            # SuitLifeSupportComponent at all. Confirmed live: O2 barely moved
+            # (93.61, consistent with ordinary real-time beat drain, not a 950s
+            # fast-forward). `control_actor` actions, by contrast, ARE proven to
+            # resolve the live PIE world in this exact session (reset_position/
+            # get_component_property both worked correctly throughout this same run)
+            # -- so this now computes the resulting O2 value itself (same formula
+            # the component's TickLifeSupport uses: O2 -= rate_per_min * seconds/60,
+            # clamped 0..100) and writes it via the PROVEN set_component_property
+            # pathway, reading the current value first via the equally-proven
+            # get_component_property (_read_component_float). A short settle wait
+            # afterward lets the component's OWN next real Tick (still running
+            # normally in PIE) call UpdateO2Edges() off the new baseline, so
+            # bLowO2/bDead flip via the REAL edge-detection logic, not an assertion.
+            seconds = float(a["advance_suit_seconds"])
+            rate_per_min = float(a.get("rate_per_min", -6.0))  # default: idle drain
+            prop = str(a.get("property", "O2"))
+            comp = str(a.get("component", "SuitLifeSupportComponent"))
+            # min_floor defaults to 0 (matches the component's own clamp), but a
+            # drain beat wanting "low-O2 alarm, not death" should pass a small
+            # positive floor (e.g. 5.0) -- with a large-enough `seconds` the
+            # computed delta then exceeds any realistic starting value's range,
+            # so the result reliably lands AT the floor regardless of exactly
+            # what the real preceding beats left O2 at, without ever hitting the
+            # bDead edge this compression isn't meant to demonstrate.
+            min_floor = float(a.get("min_floor", 0.0))
+            max_ceiling = float(a.get("max_ceiling", 100.0))
+            self.w.mark("action", {"advance_suit_seconds": seconds, "rate_per_min": rate_per_min, "property": prop})
+            rt = self._runtime()
+            pawn_name = (rt.get("pawn") or {}).get("name", "")
+            current = self._read_component_float(pawn_name, comp, prop) if pawn_name else None
+            if current is None:
+                self.w.mark("action_warning", {"advance_suit_seconds": "current value unreadable, skipping write"})
+            else:
+                new_val = max(min_floor, min(max_ceiling, current + rate_per_min * (seconds / 60.0)))
+                self._call(
+                    "control_actor",
+                    {
+                        "action": "set_component_property",
+                        "actorName": pawn_name,
+                        "componentName": comp,
+                        "properties": {prop: new_val},
+                    },
+                )
+                self.w.mark("action_result", {"advance_suit_seconds": seconds, "before": current, "after": new_val})
+                time.sleep(0.3)  # let the component's real Tick process edges off the new value
         elif "command" in a:
             cmd = a["command"]
             self.w.mark("action", {"command": cmd})
@@ -569,6 +653,25 @@ class Sleepwalker:
                 return count >= min_count, f"actor_count={count} (min={min_count})"
             except Exception:
                 return False, "Failed to read actor count from runtime_report"
+        if "component_property_below" in e or "component_property_above" in e:
+            # Generic, reusable hard-fact check: read a numeric/bool property off a
+            # named component (default: the suit) via the SAME proven get_component_property
+            # pathway pawn_property_toggles already uses for the crouch check -- no
+            # execute_python return-value parsing involved, so this is unaffected by
+            # any uncertainty in that pathway's output plumbing.
+            key = "component_property_below" if "component_property_below" in e else "component_property_above"
+            spec = e[key]
+            pawn = (rt.get("pawn") or {}).get("name", "")
+            comp = str(spec.get("component", "SuitLifeSupportComponent"))
+            prop = str(spec["property"])
+            if not pawn:
+                return False, f"{key}: no possessed pawn"
+            val = self._read_component_float(pawn, comp, prop)
+            if val is None:
+                return False, f"{key}: {comp}.{prop} unreadable"
+            threshold = float(spec["value"])
+            ok = (val < threshold) if key == "component_property_below" else (val > threshold)
+            return ok, f"{comp}.{prop}={val:.2f} threshold={threshold} ({key})"
         if "screenshot_taken" in e:
             ok = True
             return ok, f"screenshot_taken=True (proven action executed)"
@@ -647,6 +750,24 @@ class Sleepwalker:
         self._call("control_editor", {"action": "play"})
         try:
             time.sleep(settle)
+            # Capture the pawn's true spawn location before any beat moves it, so
+            # beats can reference world-relative anchors (e.g. "habitat") without
+            # hardcoding a PlayerStart position that varies by level/session.
+            # Mirrors ADemoPlayerController::SpawnDemoHabitatIfNeeded's own formula
+            # (habitat = spawn - Forward*500) -- forward is a fixed +X all session
+            # since control rotation never turns without mouse-look input.
+            self.spawn_location = None
+            self.habitat_estimate = None
+            try:
+                rt0 = self._runtime()
+                loc0 = ((rt0.get("pawn") or {}).get("transform") or {}).get("location") or {}
+                if loc0:
+                    sx, sy, sz = float(loc0.get("x", 0)), float(loc0.get("y", 0)), float(loc0.get("z", 130))
+                    self.spawn_location = {"x": sx, "y": sy, "z": sz}
+                    self.habitat_estimate = {"x": sx - 500.0, "y": sy, "z": sz}
+                    self.w.mark("spawn_captured", {"spawn": self.spawn_location, "habitat_estimate": self.habitat_estimate})
+            except Exception:
+                pass
             for beat in self.spec.get("beats", []):
                 name = beat.get("name", "?")
                 self.w.mark("beat_start", {"beat": name})
