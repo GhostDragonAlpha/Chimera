@@ -272,39 +272,56 @@ def enter(agent_id: str, task_id: str = None, capable: bool = False,
     if task is None:
         return None
 
-    mode = (task.get("resources") or {}).get("editor", "none")
+    # Once claim_task succeeds we hold the task claim (and, below, maybe the editor
+    # lock). ANY failure before we return a valid session would ORPHAN those until
+    # TTL reclamation (~2h task / ~5min editor) and needlessly block the fleet's
+    # frontier — so the whole acquire-and-record section is wrapped: on any exception
+    # release what we grabbed, then re-raise. (Replaces the old inline release in the
+    # editor-timeout branch; the unified handler covers request_editor raising and
+    # _write_session/packet-assembly failing too.)
     editor_held = False
-    if mode in ("open", "closed"):
-        if not request_editor(mode, agent_id, timeout=editor_timeout):
-            # A claim we cannot work blocks everyone else's frontier — put it back.
+    try:
+        mode = (task.get("resources") or {}).get("editor", "none")
+        if mode in ("open", "closed"):
+            if not request_editor(mode, agent_id, timeout=editor_timeout):
+                raise TimeoutError(
+                    f"editor '{mode}' not granted within {editor_timeout}s — claim on "
+                    f"{task['id']} released; retry when the editor frees up")
+            editor_held = True
+
+        packet = {
+            "agent": agent_id,
+            "task": {k: task.get(k) for k in ("id", "title", "recipe", "feature", "loop",
+                                              "priority", "resources", "capable_only",
+                                              "not_scope")},
+            "editor_held": editor_held,
+            "editor_mode": mode,
+            "exit_contract": EXIT_CONTRACT,
+        }
+        if assemble:
+            toks = _tokens(task.get("title"), task.get("feature"), task.get("recipe"))
+            packet["heuristics"] = _relevant_heuristics(toks)
+            packet["mcp_traps"] = _relevant_traps(toks)
+            packet.update(_graph_context(task.get("feature"), toks))
+
+        _write_session({"agent": agent_id, "task_id": task["id"], "task_title": task["title"],
+                        "editor_mode": mode, "editor_held": editor_held,
+                        "entered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                        "exited_at": None, "outcome": None,
+                        "baseline_dirty": _dirty_files()})
+        return packet
+    except BaseException:
+        if editor_held:
+            try:
+                release_editor(agent_id)
+            except Exception:
+                pass
+        try:
             release_task(agent_id, task["id"],
-                         note=f"tunnel: editor '{mode}' not granted in {editor_timeout}s")
-            raise TimeoutError(
-                f"editor '{mode}' not granted within {editor_timeout}s — claim on "
-                f"{task['id']} released; retry when the editor frees up")
-        editor_held = True
-
-    packet = {
-        "agent": agent_id,
-        "task": {k: task.get(k) for k in ("id", "title", "recipe", "feature", "loop",
-                                          "priority", "resources", "capable_only",
-                                          "not_scope")},
-        "editor_held": editor_held,
-        "editor_mode": mode,
-        "exit_contract": EXIT_CONTRACT,
-    }
-    if assemble:
-        toks = _tokens(task.get("title"), task.get("feature"), task.get("recipe"))
-        packet["heuristics"] = _relevant_heuristics(toks)
-        packet["mcp_traps"] = _relevant_traps(toks)
-        packet.update(_graph_context(task.get("feature"), toks))
-
-    _write_session({"agent": agent_id, "task_id": task["id"], "task_title": task["title"],
-                    "editor_mode": mode, "editor_held": editor_held,
-                    "entered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                    "exited_at": None, "outcome": None,
-                    "baseline_dirty": _dirty_files()})
-    return packet
+                         note="tunnel: enter() aborted after claim — auto-released")
+        except Exception:
+            pass
+        raise
 
 
 def tunnel_heartbeat(agent_id: str) -> dict:
