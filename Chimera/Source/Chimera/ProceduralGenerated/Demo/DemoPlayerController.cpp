@@ -10,6 +10,7 @@
 #include "../Environment/FootprintComponent.h"
 #include "../ChimeraMovementComponent.h"
 #include "../Suit/SuitLifeSupportComponent.h"
+#include "../UI/WID_O2HUD.h"
 
 ADemoPlayerController::ADemoPlayerController()
 {
@@ -48,7 +49,40 @@ void ADemoPlayerController::OnPossess(APawn* InPawn)
 	EnsureFootprints(InPawn);
 	EnsureChimeraMovement(InPawn);
 	EnsureSuitLifeSupport(InPawn);
+	EnsureO2HUD(InPawn);
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Possessed %s"), *GetNameSafe(InPawn));
+}
+
+void ADemoPlayerController::EnsureO2HUD(APawn* InPawn)
+{
+	// P0 fix (2026-07-13): the diegetic wrist gauge was diagnosed as a GOTCHA —
+	// WID_O2HUD's UPROPERTY(meta=(BindWidget)) members bound to nothing because this
+	// project cannot author the paired UMG Blueprint (WBP) asset, so a bare
+	// CreateWidget<UWID_O2HUD>() rendered an empty widget. WID_O2HUD now builds its
+	// own widget tree in C++ (NativeOnInitialized -> BuildWidgetTree), so creating and
+	// showing it here is now sufficient to put real, live gauges on screen.
+	if (!InPawn)
+	{
+		return;
+	}
+
+	if (!O2HUDWidget)
+	{
+		O2HUDWidget = CreateWidget<UWID_O2HUD>(this, UWID_O2HUD::StaticClass());
+		if (O2HUDWidget)
+		{
+			UE_LOG(LogTemp, Display, TEXT("[O2HUD] Diegetic O2/battery/dust HUD created for %s"), *GetNameSafe(InPawn));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("[O2HUD] CreateWidget<UWID_O2HUD> failed for %s"), *GetNameSafe(InPawn));
+		}
+	}
+
+	if (O2HUDWidget && !O2HUDWidget->IsInViewport())
+	{
+		O2HUDWidget->ShowO2HUD();
+	}
 }
 
 void ADemoPlayerController::EnsureSuitLifeSupport(APawn* InPawn)

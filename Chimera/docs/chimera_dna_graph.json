@@ -53480,6 +53480,725 @@
       ],
       "recorded_by": "dream_loop.py",
       "run_id": "run_6bdd436860b4"
+    },
+    {
+      "id": "simtest_367e61e37ef0ebde",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T20:51:26.900316",
+      "observer": "agent-sim",
+      "session": "p0_regolith_witness",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=1uu (loc x=2000.6843959460393, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=3999.8893318543423, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": true,
+              "note": "z=164"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\p0_regolith_witness.json",
+      "temperature": "[SIM] 4/5 beats reached in 'regolith_yard'. Failures: walk_rock_to_sand_basin (failed: expect {\"actor_exists\": \"SandDrift_FX\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'p0_regolith_witness': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b4d9e01861e9"
+    },
+    {
+      "id": "surprise_6c339e9070f4a085",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T20:51:27.145537",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"prese'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b4d9e01861e9"
+    },
+    {
+      "id": "simtest_0b62c7408cd37a78",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T20:52:10.587550",
+      "observer": "agent-sim",
+      "session": "p0_audio_witness",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 5,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=101uu (loc x=1600.5988707313672, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=5"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 3200
+                }
+              },
+              "ok": true,
+              "note": "dist=2800uu (loc x=2799.7348939487174, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": true,
+              "note": "walk_volume=0.5 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=10"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=5.9977173805236816e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\p0_audio_witness.json",
+      "temperature": "[SIM] 5/5 beats reached in 'audio_visual_sync'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'p0_audio_witness': 5/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_6a2d5163b5a7"
+    },
+    {
+      "id": "simtest_c33996eaf3951b1c",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-13T20:57:59.602671",
+      "observer": "agent-sim",
+      "session": "p0_verbs_witness",
+      "demo": "verb_interactions",
+      "beats_total": 9,
+      "beats_reached": 5,
+      "outcomes": [
+        {
+          "beat": "verb_look_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Look",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_bend_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.2
+                }
+              },
+              "ok": true,
+              "note": "CapsuleHalfHeight 90->40->90 drop=50 restore=50 min_drop=20"
+            }
+          ]
+        },
+        {
+          "beat": "verb_pickup_weapon_tool_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp",
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_drop_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_metal_surface_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Metal_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=400uu (loc x=400.41090782779713, y=1.2228671423230817)"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_rock_surface_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": false,
+              "note": "dist=2001uu (loc x=4000.862107929769, y=6.11069399028183)"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_sand_surface_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": false,
+              "note": "dist=2527uu (loc x=6526.942875839383, y=7.717360723650284)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        },
+        {
+          "beat": "visor_inspection_pedestal",
+          "outcome": "failed",
+          "features": [
+            "Player_Character_Model_Visor_Apply",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 600,
+                  "y": 600,
+                  "r": 300
+                }
+              },
+              "ok": false,
+              "note": "dist=1680uu (loc x=2279.128812148391, y=645.2531106782103)"
+            }
+          ]
+        },
+        {
+          "beat": "weapon_tool_examine",
+          "outcome": "failed",
+          "features": [
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 400,
+                  "y": -400,
+                  "r": 300
+                }
+              },
+              "ok": false,
+              "note": "dist=1400uu (loc x=1799.8830828397965, y=-395.7247143081449)"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\p0_verbs_witness.json",
+      "temperature": "[SIM] 5/9 beats reached in 'verb_interactions'. Failures: verb_shovel_rock_surface_location (failed: expect {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}} -> dist=2001uu (loc x=4000.862107929769, y=6.11069399028183)); verb_shovel_sand_surface_location (failed: expect {\"pawn_within\": {\"x\": 4000, \"y\": 0, \"r\": 1100}} -> dist=2527uu (loc x=6526.942875839383, y=7.717360723650284)); visor_inspection_ped",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'p0_verbs_witness': 5/9 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b81266a49df7"
+    },
+    {
+      "id": "surprise_1a813ba5b78f82af",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T20:57:59.822920",
+      "context": "Sleepwalker expected beat 'verb_shovel_rock_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, \"note\": \"dist=2001uu (loc x=4000.862107929769, y=6.11069399028183)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b81266a49df7"
+    },
+    {
+      "id": "surprise_38f8a26f8a583586",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T20:58:00.073020",
+      "context": "Sleepwalker expected beat 'verb_shovel_sand_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"prese'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b81266a49df7"
+    },
+    {
+      "id": "surprise_23e75c4bffb3c96b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T20:58:00.296718",
+      "context": "Sleepwalker expected beat 'visor_inspection_pedestal' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 600, \"y\": 600, \"r\": 300}}, \"ok\": false, \"note\": \"dist=1680uu (loc x=2279.128812148391, y=645.2531106782103)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 600, \"y\": 600, \"r\": 300}}, \"ok\": false,'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b81266a49df7"
+    },
+    {
+      "id": "surprise_ecf6ed8df7fc9dca",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T20:58:00.513599",
+      "context": "Sleepwalker expected beat 'weapon_tool_examine' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 400, \"y\": -400, \"r\": 300}}, \"ok\": false, \"note\": \"dist=1400uu (loc x=1799.8830828397965, y=-395.7247143081449)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 400, \"y\": -400, \"r\": 300}}, \"ok\": false'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b81266a49df7"
     }
   ],
   "edges": [

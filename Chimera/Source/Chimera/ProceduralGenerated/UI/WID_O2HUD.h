@@ -15,6 +15,12 @@ class USuitLifeSupportComponent;
  * Shows visual gauges and percentage text. Alerts on low O2.
  *
  * Self-contained: finds the component at runtime, no Blueprint wiring needed.
+ * BUILDS ITS OWN WIDGET TREE IN C++ (P0 fix, 2026-07-13): this project cannot author
+ * UMG Blueprint (WBP) assets, so the original meta=(BindWidget) properties bound to
+ * nothing and CreateWidget<UWID_O2HUD>() rendered an empty widget (diagnosed GOTCHA —
+ * design directive Section 1). NativeOnInitialized() now constructs a real widget tree
+ * (CanvasPanel -> Border -> VerticalBox of gauge rows) via WidgetTree->ConstructWidget,
+ * so the gauges render with zero Blueprint dependency.
  * Durable loop-built code under UI/ — safe to hand-edit and extend.
  */
 UCLASS()
@@ -23,6 +29,10 @@ class CHIMERA_API UWID_O2HUD : public UUserWidget
 	GENERATED_BODY()
 
 protected:
+	/** Guaranteed to run before this widget's first Slate representation is taken
+	 *  (Initialize() already ensures WidgetTree is non-null for native-only UUserWidget
+	 *  classes) — the correct, order-safe hook for programmatic UMG construction. */
+	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -41,28 +51,38 @@ protected:
 	UPROPERTY()
 	class USuitLifeSupportComponent* SuitComponent;
 
-	// === Progress bars (visual gauges) ===
-	UPROPERTY(meta = (BindWidget))
+	// === Progress bars (visual gauges) — built in C++ by BuildWidgetTree(), not
+	// Blueprint-bound (no meta=BindWidget: there is no WBP asset to bind to). ===
+	UPROPERTY()
 	class UProgressBar* O2ProgressBar;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY()
 	class UProgressBar* BatteryProgressBar;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY()
 	class UProgressBar* DustClogProgressBar;
 
 	// === Text displays (percentage + status) ===
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY()
 	class UTextBlock* O2PercentText;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY()
 	class UTextBlock* BatteryPercentText;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY()
 	class UTextBlock* DustClogPercentText;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY()
 	class UTextBlock* AlertText;
+
+	/** Construct the whole widget tree in C++ (root Canvas -> Border -> VerticalBox of
+	 *  gauge rows) and assign the member pointers above. Called once from
+	 *  NativeOnInitialized(), before this widget is ever painted. */
+	void BuildWidgetTree();
+
+	/** Helper: build one gauge row (label + progress bar + percent text) inside Parent. */
+	class UProgressBar* BuildGaugeRow(class UVerticalBox* Parent, const FString& RowLabel,
+		const FLinearColor& BarColor, class UTextBlock*& OutPercentText);
 
 	/** Attempt to find the suit component on the player pawn. Called once at construct. */
 	void FindSuitComponent();

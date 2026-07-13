@@ -48,5 +48,15 @@ private:
 	void EnsureChimeraMovement(APawn* InPawn);
 	void EnsureSuitLifeSupport(APawn* InPawn);
 
+	/** Create (once) and show the diegetic O2/battery/dust wrist HUD (P0 fix,
+	 *  2026-07-13): WID_O2HUD now builds its own widget tree in C++, so a bare
+	 *  CreateWidget here is sufficient — no WBP Blueprint asset required. */
+	void EnsureO2HUD(APawn* InPawn);
+
 	bool bDemoPickupSpawned;
+
+	/** Cached HUD instance — created once per controller lifetime, shown on every
+	 *  possess (guards against duplicate viewport adds via IsInViewport()). */
+	UPROPERTY()
+	class UWID_O2HUD* O2HUDWidget;
 };
