@@ -6,6 +6,7 @@
 #include "Save/SacrificeLogComponent.h"
 #include "Save/StarMemorialComponent.h"
 #include "Environment/WeatherComponent.h"
+#include "Environment/WindSystemComponent.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/AudioComponent.h"
@@ -137,6 +138,23 @@ void UChimeraMovementComponent::BeginPlay()
 				*Owner->GetName());
 		}
 	}
+	// The wind's physics applier — WeatherComponent decides the wind, this
+	// component applies it. Attach it FIRST so Weather::PushWindToSibling finds
+	// it instead of a null pointer (wave-1 recon: it was never attached, so wind
+	// never applied to anything) (H-34).
+	if (!Owner->FindComponentByClass<UWindSystemComponent>())
+	{
+		UWindSystemComponent* Wind =
+			NewObject<UWindSystemComponent>(Owner, TEXT("WindSystemComponent"));
+		if (Wind)
+		{
+			Wind->RegisterComponent();
+			UE_LOG(LogTemp, Log,
+				TEXT("ChimeraMovementComponent: runtime-attached UWindSystemComponent to %s (H-34)"),
+				*Owner->GetName());
+		}
+	}
+
 	// Weather is the meteorology authority (seed UWeatherSubsystem): it runs the
 	// wind bands + the ~weekly storm that erases sand footprints, and drives the
 	// sibling UWindSystemComponent. Attach it on the pawn so the storm's clock
@@ -435,8 +453,11 @@ void UChimeraMovementComponent::PlayFootstepSound(ESurfaceMaterialType SurfaceMa
 
 	if (FootstepAudioComponent)
 	{
-		// Calculate volume based on movement speed (0.2 to 1.0 scale)
-		const float MaxSpeed = WalkSpeed * 2.0f; // Sprint = 2x walk speed
+		// Calculate volume based on movement speed (0.2 to 1.0 scale). Real sprint
+		// ceiling: the BP overrides MaxWalkSpeed (600) far above WalkSpeed (200), so
+		// the stale WalkSpeed*2=400 saturated walk & sprint into one volume (matches
+		// the telemetry path's fix above; found independently by 2 audit agents).
+		const float MaxSpeed = (BaseMaxWalkSpeed > 0.0f) ? BaseMaxWalkSpeed * SprintMultiplier : WalkSpeed * 2.0f;
 		const float SpeedFraction = FMath::Clamp(SpeedMagnitude / MaxSpeed, 0.0f, 1.0f);
 		const float VolumeMultiplier = 0.2f + (SpeedFraction * 0.8f); // Range: 0.2 to 1.0
 
@@ -480,7 +501,8 @@ void UChimeraMovementComponent::PlayServoSound(float SpeedMagnitude, const FVect
 	// Calculate volume based on movement speed
 	// Walk (0 speed) = ServoSoundMinVolume (0.1)
 	// Sprint (2.0x walk speed) = ServoSoundMaxVolume (0.6)
-	const float MaxSpeed = WalkSpeed * 2.0f; // Sprint = 2x walk speed
+	// Real sprint ceiling (BP MaxWalkSpeed 600), not the stale WalkSpeed*2=400.
+	const float MaxSpeed = (BaseMaxWalkSpeed > 0.0f) ? BaseMaxWalkSpeed * SprintMultiplier : WalkSpeed * 2.0f;
 	const float SpeedFraction = FMath::Clamp(SpeedMagnitude / MaxSpeed, 0.0f, 1.0f);
 
 	// Volume layering:
