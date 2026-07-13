@@ -198,8 +198,16 @@ def measure_axis(name: str, graph_nodes: list = None, board_state: dict = None) 
     tel = _telemetry()
     if name == "frame_time_ms":
         fps = tel.get("fps")
-        return ((1000.0 / fps, f"telemetry fps={fps} (foregrounded)") if fps
-                else (None, "unmeasured — run telemetry_probe FOREGROUNDED, write docs/world/telemetry_last.json"))
+        if not fps:
+            return (None, "unmeasured — run telemetry_probe --foreground, writes docs/world/telemetry_last.json")
+        if not tel.get("foregrounded"):
+            # fps sampled with the editor UNFOCUSED: Windows/GPU throttles background
+            # windows to ~3fps, freezing Niagara+anim too. That is a measurement
+            # artifact, not a frame time — UNMEASURED, never a breach. (A genuinely
+            # foregrounded 3fps WOULD still breach, so a real perf problem is not masked.)
+            return (None, f"unmeasured — fps={float(fps):.1f} captured unfocused (background GPU "
+                          f"throttle); run telemetry_probe --foreground for an authoritative frame time")
+        return (1000.0 / float(fps), f"telemetry fps={float(fps):.1f} (foregrounded)")
     if name in ("vram_gb", "system_memory_gb", "audio_voices", "active_dots",
                 "interacting_systems_per_slice", "coupling_degree_k"):
         val = tel.get(name)

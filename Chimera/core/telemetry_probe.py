@@ -264,29 +264,37 @@ def probe_frame_time_stability(client: "MCPStdioClient", soak_seconds: int):
         return None, f"engine unreachable ({type(e).__name__})"
 
 
-def _foreground_appactivate():
+def _foreground_appactivate() -> bool:
     """Ensure editor is foregrounded for honest fps measurement.
 
     H-13: Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps;
     run telemetry foregrounded and test every declared criterion before grading System_Economy.
 
-    Background throttle freezes fps AND all Niagara/anim simulation — need foreground execution."""
+    Background throttle freezes fps AND all Niagara/anim simulation — need foreground execution.
+
+    Returns True ONLY if AppActivate reported it found + raised the editor window. That
+    boolean is the honest signal malcolm needs: an fps sampled while the window was NOT
+    focused is a GPU-throttle artifact (~3fps), never an authoritative frame time."""
     try:
         import subprocess
 
-        # AppActivate one-liner to bring UE Editor to foreground for honest telemetry
-        subprocess.run(
+        # AppActivate returns $true iff it located + activated the window. Echo it so we
+        # record an HONEST foreground flag instead of blindly assuming the raise worked.
+        proc = subprocess.run(
             [
                 "powershell",
                 "-Command",
-                "$wshell=New-Object -ComObject wscript.shell; $wshell.AppActivate('Unreal Editor'); Start-Sleep 1",
+                "$w=New-Object -ComObject wscript.shell; $ok=$w.AppActivate('Unreal Editor'); "
+                "Start-Sleep 1; Write-Output $ok",
             ],
             shell=True,
             check=False,
             capture_output=True,
+            text=True,
         )
+        return "true" in (proc.stdout or "").strip().lower()
     except Exception:
-        pass
+        return False
 
 
 def main():
@@ -312,9 +320,10 @@ def main():
     )
     args = parser.parse_args()
 
-    # H-13: Ensure foreground execution for honest telemetry if requested
-    if args.foreground:
-        _foreground_appactivate()
+    # H-13: Ensure foreground execution for honest telemetry if requested. Record
+    # whether the raise actually succeeded so malcolm can distinguish an authoritative
+    # frame time from a background-throttled (~3fps) artifact.
+    fg_ok = _foreground_appactivate() if args.foreground else False
 
     telemetry, notes = {}, {}
 
@@ -359,7 +368,7 @@ def main():
     )
     print(json.dumps({"telemetry": telemetry, "notes": notes}, indent=2))
 
-    _write_malcolm_snapshot(telemetry)
+    _write_malcolm_snapshot(telemetry, foregrounded=fg_ok)
 
 
 def _editor_memory_gb() -> float:
@@ -383,14 +392,18 @@ def _editor_memory_gb() -> float:
         return None
 
 
-def _write_malcolm_snapshot(telemetry: dict) -> None:
+def _write_malcolm_snapshot(telemetry: dict, foregrounded: bool = False) -> None:
     """Feed THE CONTAINER (core.malcolm): every foregrounded soak refreshes
     docs/world/telemetry_last.json with the axes malcolm can read — the
     sensors that turn hardware walls from admission-only into gated. Only
-    honestly-measured keys are written; absent keys stay UNMEASURED."""
+    honestly-measured keys are written; absent keys stay UNMEASURED.
+
+    `foregrounded` travels WITH the fps: malcolm treats an unfocused frame time as
+    UNMEASURED (not a breach), so a background sample never trips a false CONTAIN."""
     snapshot = {}
     if telemetry.get("fps"):
         snapshot["fps"] = telemetry["fps"]           # malcolm derives frame_time_ms
+        snapshot["foregrounded"] = bool(foregrounded)  # honest: was the editor focused when sampled?
     mem = _editor_memory_gb()
     if mem is not None:
         snapshot["system_memory_gb"] = mem

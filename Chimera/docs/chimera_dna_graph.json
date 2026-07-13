@@ -53333,6 +53333,25 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_b78dbf9291fc"
+    },
+    {
+      "id": "surprise_cc469e404716c8c5",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T06:43:49.052790",
+      "context": "malcolm frame_time_ms wall showed BREACH at 333ms (~3fps, 2008% over the 16.6ms band), pinning the helm to a permanent CONTAIN heading",
+      "expectation": "",
+      "reality": "the fps was sampled by an automated (unfocused) pipeline run \u2014 Windows/GPU throttles any background window to ~3fps and freezes Niagara+anim; the sensor never recorded focus state and malcolm hard-coded the label '(foregrounded)', so a throttle artifact read as a real perf breach",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but 'the fps was sampled by an automated (unfocused) pipeline run \u2014 Windows/GPU throt'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_5a7bcd03c4cc"
     }
   ],
   "edges": [

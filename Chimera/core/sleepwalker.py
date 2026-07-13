@@ -703,6 +703,10 @@ class Sleepwalker:
             snapshot = {}
             if m:
                 snapshot["fps"] = float(m.group(1))
+                # Automated walk: the editor is driven via MCP, not focus-guaranteed,
+                # so this fps is trend-only. Mark it unfocused → malcolm treats the
+                # frame-time wall as UNMEASURED, never a false CONTAIN breach (H-13).
+                snapshot["foregrounded"] = False
             from core.telemetry_probe import _editor_memory_gb
             mem = _editor_memory_gb()
             if mem is not None:
