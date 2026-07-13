@@ -52917,6 +52917,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_a2ae4c588c31"
+    },
+    {
+      "id": "surprise_22cc8605628f5dfd",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-13T03:31:04.164351",
+      "context": "Two Haiku audit agents (haiku-6, haiku-12) flagged sleepwalker.py magic-number defaults (isPIE handling; 999ms latency; +/-1e9 pawn position and z) as CRITICAL masking bugs",
+      "expectation": "",
+      "reality": "All verified correct fail-loud sentinels: +/-1e9 z defaults are direction-matched per check (pawn_z_above uses -1e9 so z>thr fails; pawn_z_below uses +1e9 so z<thr fails) \u2014 missing data ALWAYS fails the expect; 999/0 fail realistic thresholds and the failure is explicitly recorded. A magic default LOOKS like masking in a grep but the comparison direction makes it fail-loud.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'All verified correct fail-loud sentinels: +/-1e9 z defaults are direction-matche'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_d40dc53fe79c"
     }
   ],
   "edges": [

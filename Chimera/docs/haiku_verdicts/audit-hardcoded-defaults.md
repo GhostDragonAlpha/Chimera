@@ -6,6 +6,18 @@
 
 ---
 
+## ⚠️ ORCHESTRATOR CORRECTION (2026-07-12) — the sleepwalker "CRITICAL" items are mostly FALSE POSITIVES
+
+Verified each against how the value is CONSUMED (masking depends on the comparison direction, not the magic number itself):
+
+- **`±1e9` pawn position / z defaults (lines 468–502): NOT bugs — deliberate fail-loud sentinels.** `pawn_within` computes distance from the default → `d≈1e9 > r` → **fails**. `pawn_z_above` defaults z to `-1e9` (`z > thr` → fails); `pawn_z_below` defaults z to `+1e9` (`z < thr` → fails). The opposite defaults are *direction-matched per check* so missing data ALWAYS fails — correct design, not masking.
+- **`999` latency / `0` counts (442–444): fail-loud + the failure is explicitly recorded** (`record_pathway(..., error="...failed; falling back to defaults")` at line ~432). 999ms fails any real latency threshold; 0 events fails any `>0` expect.
+- **`0.5` walk/sprint volume (445–446): the ONLY genuine concern** — a plausible mid-range value that could pass a permissive volume expect. Minor hardening at most, not "CRITICAL". Not changed (it lets a beat continue and the failure is already recorded).
+
+**No sleepwalker code changed.** This is the 3rd sleepwalker-adjacent overstatement (cf. haiku-6). **Calibration rule for future audits: a magic-number default is only "masking" if a downstream comparison PASSES on it — trace the consumer before flagging.** The `ralph_loop_harness` / GPA items below are also unverified and should get the same consumer-trace before any fix. (MCPPathways `if not exists` was separately checked: the path resolves correctly and it logs a warning — not the distiller class.)
+
+---
+
 ## Executive Summary
 
 Found **7 real masking bugs** spanning telemetry collection, MCP response handling, and GPA calculations. The most critical: sleepwalker.py silently returns hardcoded metric defaults (999ms latency, 0 events, 0.5 audio volume) when MCP telemetry calls fail, making beat tests pass/fail on **fake data**. This masks backend component initialization failures (uninitialized sensors, missing event tracking, audio subsystem issues).
