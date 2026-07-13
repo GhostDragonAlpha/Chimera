@@ -413,6 +413,29 @@ class DSLGameParser:
                 if color_match:
                     result["art_direction"]["color_palette"] = color_match.group(1)
 
+        # Parse quantum_travel block — routes between locations. The generator gates
+        # QuantumTravelComponent generation on the PRESENCE of this key
+        # (game_code_generator: `if "quantum_travel" in dsl_data`), so a spec that
+        # declares quantum_travel but is never parsed here silently loses the whole
+        # component. Populate it (with the parsed routes) whenever the block exists.
+        qt_body = extract_block_content(dsl_content, 'quantum_travel')
+        if qt_body:
+            routes = []
+            for route_name, route_body in re.findall(
+                    r'route\s+"([^"]+)"\s*\{([^}]*)\}', qt_body, re.DOTALL):
+                route = {"name": route_name}
+                for field, pat in (("origin", r'origin\s*=\s*"([^"]+)"'),
+                                   ("destination", r'destination\s*=\s*"([^"]+)"'),
+                                   ("travel_time_seconds", r'travel_time_seconds\s*=\s*(\d+)'),
+                                   ("fuel_cost_liters", r'fuel_cost_liters\s*=\s*(\d+)'),
+                                   ("interdiction_chance", r'interdiction_chance\s*=\s*([\d.]+)'),
+                                   ("danger_level", r'danger_level\s*=\s*"([^"]+)"')):
+                    fm = re.search(pat, route_body)
+                    if fm:
+                        route[field] = fm.group(1)
+                routes.append(route)
+            result["quantum_travel"] = {"routes": routes}
+
         # Parse tests block
         tests_body = extract_block_content(dsl_content, 'tests')
         if tests_body:
