@@ -205,6 +205,12 @@ void UWeatherComponent::PushWindToSibling()
         if (AActor* Owner = GetOwner())
         {
             CachedWind = Owner->FindComponentByClass<UWindSystemComponent>();
+            if (!CachedWind && bStormActive)
+            {
+                UE_LOG(LogTemp, Warning,
+                    TEXT("[WEATHER] Storm active but UWindSystemComponent not found on %s — wind not applied"),
+                    *Owner->GetName());
+            }
         }
     }
     if (CachedWind)

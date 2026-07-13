@@ -27,8 +27,12 @@ void ADemoTerminal::BeginPlay()
 
 	if (EconomySystem)
 	{
-		// EconomyManager is initialized via GenerateEconomyInitializers from generator
-		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] ECONOMY_INITIALIZED"));
+		// Initialize the Economy from DSL baked data
+		UEconomyInitializer::BuildEconomy(EconomySystem);
+		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] ECONOMY_INITIALIZED: %d commodities loaded"), EconomySystem->CommodityList.Num());
+
+		// Bind to price change events
+		EconomySystem->OnCommodityPriceChanged.AddDynamic(this, &ADemoTerminal::OnPriceChanged);
 	}
 
 	if (TradeSystem)
@@ -81,14 +85,15 @@ float ADemoTerminal::GetCommodityPrice(FName CommodityName) const
 {
 	if (EconomySystem)
 	{
-		// EconomyManager's GetCommodityPrice is not directly callable via this signature;
-		// fallback to querying the internal commodity data if available. For demo terminal,
-		// we emit a placeholder price for Titanium at 100.0f as per DSL baseline.
-		if (CommodityName == TEXT("Titanium")) return 100.0f;
-		if (CommodityName == TEXT("IronOre")) return 25.0f;
-		if (CommodityName == TEXT("FoodRations")) return 10.0f;
+		// Query live price from EconomyManager, which calculates based on current supply/demand
+		float Price = EconomySystem->GetCommodityPrice(CommodityName.ToString());
+		if (Price > 0.0f)
+		{
+			return Price;
+		}
 	}
-	return 50.0f; // default fallback
+	// Fallback only if Economy didn't return a price (commodity not found)
+	return 100.0f;
 }
 
 void ADemoTerminal::DemoStatus()
@@ -194,4 +199,13 @@ void ADemoTerminal::DemoMission()
 	MissionSystem->UpdateObjective(TEXT("Dock"), TEXT("Orbital_Hub_7"));
 
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] DEMO_MISSION: Accepted Delivery_Titanium_Batch_1, objectives set"));
+}
+
+void ADemoTerminal::OnPriceChanged(FString CommodityName, float NewPrice)
+{
+	// Log significant price changes for debugging
+	if (CommodityName == TEXT("Titanium"))
+	{
+		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] PRICE_CHANGED: %s = %.2f"), *CommodityName, NewPrice);
+	}
 }

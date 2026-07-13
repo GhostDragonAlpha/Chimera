@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
 #include "../Economy/EconomyManager.h"
+#include "../Economy/EconomyInitializer.h"
 #include "../Inventory/InventoryTradeComponent.h"
 #include "../Factions/FactionComponent.h"
 #include "../Save/SaveGameComponent.h"
@@ -66,4 +67,7 @@ public:
 
 private:
 	float GetCommodityPrice(FName CommodityName) const;
+
+	UFUNCTION()
+	void OnPriceChanged(FString CommodityName, float NewPrice);
 };
