@@ -44,10 +44,11 @@ QUEUE_DIR = Path(__file__).resolve().parents[1] / "docs" / "world" / "lm_queue"
 COUNTER = QUEUE_DIR / ".counter"
 LOCK_PATH = QUEUE_DIR / ".lock"
 
-# The FALLBACK model id — used only when the endpoint is holding nothing at all.
-# It is not a mandate: the studio ADOPTS whatever model LM Studio already has
-# resident (see resolve_model). Changing the model for the whole operation is
-# therefore "load a different model in LM Studio" — no config, no code, no env.
+# LEGACY. Not a mandate, and NOT a fallback either: the studio ADOPTS whatever
+# model LM Studio has resident (resolve_model), and refuses to run when it has
+# none rather than choosing one. Kept only because call sites still import it to
+# stamp a body that lm_urlopen immediately overwrites. Nothing here selects a
+# model; changing the model everywhere = load a different one in LM Studio.
 LM_MODEL = os.environ.get("CHIMERA_LM_MODEL", "qwen-agentworld-35b-a3b-nvfp4")
 
 # The shared per-call generation budget. qwen-agentworld is a REASONING model —
@@ -62,11 +63,6 @@ MAX_CONCURRENT = max(1, int(os.environ.get("CHIMERA_LM_CONCURRENCY", "1")))
 # to; /api/v0 is LM Studio's native REST surface, the only one that reports which
 # models are RESIDENT (state=loaded) rather than merely on disk.
 LM_BASE = os.environ.get("CHIMERA_LM_BASE", "http://localhost:1234").rstrip("/")
-
-# Idle seconds after which a model WE caused to load unloads itself. Only ever
-# binds at JIT-load time, so it cannot shorten the life of a model you loaded
-# yourself (verified 2026-07-14) — it just stops a cold-start from squatting.
-LM_TTL = int(os.environ.get("CHIMERA_LM_TTL", "3600"))
 
 # If you swap the resident model while a call is in flight, that call can catch
 # LM Studio mid-handover and 400 with "Engine protocol startup was aborted".
@@ -225,12 +221,17 @@ class _BufferedResponse:
 #
 # Adopting the resident model dissolves it. Nobody evicts anybody, the model
 # stays warm, and switching models for the ENTIRE operation is just "load a
-# different one in LM Studio" — no config, no env, no code. LM_MODEL survives
-# only as the cold-start fallback for an empty endpoint.
+# different one in LM Studio" — no config, no env, no code.
+#
+# And there is NO fallback. If the endpoint is empty we raise NoModelLoaded
+# rather than JIT-loading a default of our own choosing — a "fallback" is just a
+# pinned model wearing a hat, and it means Chimera silently pulling a multi-GB
+# model the operator never asked for. The operator decides what runs.
 #
 # Model TYPE is deliberately NOT consulted: LM Studio labels several of these
 # builds `llm` when they are in fact vision-capable (vision was added to them
 # after the fact), so the label would lie. The operator owns that choice.
+# (Python/lmstudio_client.py used to reroute on that same bad flag — removed.)
 
 ADOPT_RESIDENT = os.environ.get("CHIMERA_LM_ADOPT", "1").lower() not in (
     "0", "false", "no")
@@ -257,14 +258,25 @@ def loaded_models() -> list:
             if m.get("state") == "loaded" and m.get("id")]
 
 
-def resolve_model() -> str:
-    """The model every request should target: whatever LM Studio has resident.
+class NoModelLoaded(RuntimeError):
+    """LM Studio is up but holding nothing. We do not pick one for you."""
 
-    Falls back to LM_MODEL only when the endpoint is empty — then LM Studio
-    JIT-loads it and that becomes the resident one. If several are somehow
-    resident, take the first; we never evict to break the tie."""
+
+def resolve_model() -> str:
+    """The model every request targets: whatever LM Studio has resident.
+
+    If NOTHING is resident we RAISE — we do not load a model. Naming a default
+    here would mean Chimera silently JIT-loading a multi-GB model of its own
+    choosing, which is the very behaviour this design exists to remove (it just
+    wears a different hat: "fallback" instead of "pinned"). The operator decides
+    what runs; the studio only ever adopts. If several are resident, take the
+    first — we never evict to break the tie."""
     resident = loaded_models()
-    return resident[0] if resident else LM_MODEL
+    if not resident:
+        raise NoModelLoaded(
+            "No model is loaded in LM Studio. Load one (vision-capable) and the "
+            "studio will adopt it. Chimera never loads or picks a model for you.")
+    return resident[0]
 
 
 def evict_others(model: str | None) -> list:
@@ -300,11 +312,12 @@ def evict_others(model: str | None) -> list:
 
 
 def _retarget(req) -> str | None:
-    """Point the outgoing body at the resident model, and stamp an idle TTL.
+    """Point the outgoing body at the resident model.
 
-    The seven call sites still build their bodies with a hardcoded model id.
-    This is the one place that rewrites it, so all of them become model-agnostic
-    without a single edit — and a model swap needs no code change anywhere.
+    The call sites still build their bodies with a hardcoded model id. This is
+    the one place that rewrites it, so all of them become model-agnostic without
+    a single edit — and a model swap needs no code change anywhere. Raises
+    NoModelLoaded if LM Studio is holding nothing: we never load one.
     Tolerates a body-less/opaque req (the unit tests pass a bare object())."""
     body = getattr(req, "data", None)
     if not body:
@@ -317,15 +330,11 @@ def _retarget(req) -> str | None:
         return None
 
     asked = payload.get("model")
-    model = resolve_model() if ADOPT_RESIDENT else asked
-    dirty = False
-    if model and model != asked:
+    if not ADOPT_RESIDENT:
+        return asked
+    model = resolve_model()                           # raises if nothing is loaded
+    if model != asked:
         payload["model"] = model
-        dirty = True
-    if LM_TTL > 0 and "ttl" not in payload:
-        payload["ttl"] = LM_TTL                       # binds only on a cold load
-        dirty = True
-    if dirty:
         try:
             req.data = json.dumps(payload).encode()   # setter drops stale Content-length
         except (AttributeError, TypeError):
@@ -398,23 +407,23 @@ def _main() -> int:
     args = ap.parse_args()
 
     resident = loaded_models()
-    will_use = resolve_model()
     print(f"endpoint   : {LM_BASE}")
     print(f"queue      : depth {queue_depth()} (concurrency={MAX_CONCURRENT})")
     print(f"resident   : {', '.join(resident) if resident else '(none)'}")
     if not ADOPT_RESIDENT:
-        print(f"adopt      : OFF - callers keep their own model id")
+        print("adopt      : OFF - callers keep their own model id")
     elif resident:
-        print(f"WILL USE   : {will_use}  (adopted from what you have loaded)")
+        print(f"WILL USE   : {resident[0]}  (adopted from what you have loaded)")
     else:
-        print(f"WILL USE   : {will_use}  (nothing loaded - cold-start fallback, "
-              f"LM Studio will JIT-load it)")
+        print("WILL USE   : nothing - NO MODEL IS LOADED.")
+        print("             Load one in LM Studio and the studio adopts it.")
+        print("             Chimera will not load or pick a model for you.")
 
     if args.command == "status":
         if len(resident) > 1:
             print(f"\nNote: {len(resident)} models resident. Requests use the first. "
                   f"`evict` frees the rest.")
-        return 0
+        return 0 if resident or not ADOPT_RESIDENT else 1
 
     evicted = evict_others(None if args.all else args.model)
     if not evicted:

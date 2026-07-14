@@ -5,7 +5,8 @@ never the SHIFT. Gates stay hard — nothing here fakes a pass — but every KNO
 blocker with a known recipe gets executed, not recorded as an excuse:
 
   editor down   -> launch UnrealEditor.exe, poll the MCP bridge until it answers
-  LM not loaded -> `lms load <model>`, poll until the model reports loaded
+  LM server down-> `lms server start` (starting the SERVER is a heal; choosing a
+                   MODEL is not — if no model is loaded we report it and stop)
   PIE busy      -> wait + retry (a live session is respected, never stolen)
 
 Every remediation attempt is recorded as a pathway (success AND failure).
@@ -25,7 +26,6 @@ import time
 import urllib.request
 from pathlib import Path
 
-QWEN = "qwen3.6-35b-a3b-mtp@iq2_m"
 EDITOR_EXE = r"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe"
 UPROJECT = r"E:\PythonChimera\Chimera\Chimera.uproject"
 LMS_URL = "http://localhost:1234"
@@ -90,14 +90,26 @@ def _loaded_models():
         return [], False
 
 
-def ensure_lm(model: str = QWEN, timeout_s: int = 420, check_only: bool = False):
+def ensure_lm(model: str = None, timeout_s: int = 420, check_only: bool = False):
+    """Ensure the LM is USABLE — which means a model is resident, not that WE put
+    one there.
+
+    Starting a dead server is a heal. Picking a model is NOT (amended 2026-07-14):
+    this used to `lms load qwen3.6-35b-a3b-mtp@iq2_m --yes` — a hardcoded id that
+    has not existed since 2026-07-12 — dragging a multi-GB model of its own
+    choosing onto a shared GPU. The operator chooses what runs; the studio adopts
+    whatever is resident (core.lm_gateway.resolve_model). No model loaded is an
+    honest blocker with a one-line fix, not something to paper over.
+
+    `model` is accepted and ignored; kept so existing callers don't break.
+    """
     loaded, server_up = _loaded_models()
     if loaded:
         return True, f"LM loaded: {loaded[0]}"
     if not server_up:
         if check_only:
             return False, "LM Studio server unreachable"
-        try:  # self-heal: start the server headlessly
+        try:  # self-heal: start the SERVER headlessly (not a model choice)
             subprocess.run(["lms", "server", "start"], capture_output=True, text=True,
                            timeout=60, shell=True)
             time.sleep(5)
@@ -109,23 +121,10 @@ def ensure_lm(model: str = QWEN, timeout_s: int = 420, check_only: bool = False)
         if not server_up:
             _record("ensure_lm", "failed", "lms server start did not bring the API up")
             return False, "LM Studio server down and `lms server start` failed — needs the app once"
-    if check_only:
-        return False, "LM server up, NO model loaded"
-    try:
-        r = subprocess.run(["lms", "load", model, "--yes"], capture_output=True,
-                           text=True, timeout=timeout_s, shell=True)
-        note = (r.stdout or r.stderr).strip()[-120:]
-    except FileNotFoundError:
-        _record("ensure_lm", "failed", "lms CLI not on PATH")
-        return False, "lms CLI not found — load the model in the LM Studio UI"
-    except subprocess.TimeoutExpired:
-        note = f"lms load still running after {timeout_s}s"
-    loaded, _ = _loaded_models()
-    if loaded:
-        _record("ensure_lm", "success", f"loaded {loaded[0]}")
-        return True, f"LM LOADED: {loaded[0]}"
-    _record("ensure_lm", "failed", note)
-    return False, f"lms load did not result in a loaded model ({note})"
+
+    _record("ensure_lm", "blocked", "server up, no model resident — operator must load one")
+    return False, ("LM Studio is up but NO MODEL IS LOADED. Load one (vision-capable) "
+                   "in LM Studio and the studio will adopt it — it will not pick for you.")
 
 
 def ensure_no_pie(retries: int = 3, wait_s: int = 120, check_only: bool = False):

@@ -10,13 +10,17 @@ from pathlib import Path
 # directly), so it has to adopt the resident model itself: resolve_model() is
 # what keeps vision on whatever model the operator actually loaded.
 try:
-    from core.lm_gateway import LM_MODEL as LM_STUDIO_MODEL, LM_TIMEOUT, resolve_model
+    from core.lm_gateway import (LM_MODEL as LM_STUDIO_MODEL, LM_TIMEOUT,
+                                 resolve_model, loaded_models)
 except Exception:
     LM_STUDIO_MODEL = "qwen-agentworld-35b-a3b-nvfp4"
     LM_TIMEOUT = 600
 
     def resolve_model() -> str:
         return LM_STUDIO_MODEL
+
+    def loaded_models() -> list:
+        return []
 
 LM_STUDIO_BASE_URL = "http://192.168.3.169:1234"
 
@@ -48,14 +52,18 @@ def _check_lm_model() -> tuple[bool, str]:
         )
         if resp.status != 200:
             return False, "LM Studio not reachable"
-        models = json.loads(resp.read().decode()).get("data", [])
     except Exception as e:
         return False, f"Cannot reach LM Studio at {LM_STUDIO_BASE_URL}: {e}"
 
-    if not models:
-        return False, "LM Studio is up but no model is loaded — load one"
+    # Authoritative check: RESIDENT (state=loaded), the same source resolve_model
+    # uses — /v1/models can list models that are merely on disk, and passing this
+    # gate on those would only defer the failure to the first real call.
+    resident = loaded_models()
+    if not resident:
+        return False, ("LM Studio is up but NO MODEL IS LOADED — load one "
+                       "(vision-capable); the studio adopts it and never picks for you")
 
-    return True, f"LM Studio up; the studio will use the loaded model '{resolve_model()}'"
+    return True, f"LM Studio up; the studio will use the loaded model '{resident[0]}'"
 
 
 def _foreground_window_title():
