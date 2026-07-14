@@ -51,18 +51,43 @@ from pathlib import Path
 MAX_DEPTH = 12          # derivation iterations. A `for` bound. It cannot run a 13th.
 MAX_SYMBOLS = 50_000    # phenotype complexity ceiling. Hard truncation.
 MAX_BONES = 20_000      # belt-and-braces on the interpreter.
+MAX_MIRRORS = 256       # bilateral expansions. Each pass removes one '(' — bounded.
+
+# A bone may not be fatter than this fraction of its own length. Without it, '#'
+# is a free-mass exploit: mass goes as r^2, so an optimiser inflates ONE bone into
+# a boulder, hoists it up a pole, and calls it a body. (Observed 2026-07-14: the
+# very first evolutionary run produced exactly that lollipop in three seconds.)
+# Real bones have aspect ratios. So do these.
+MAX_ASPECT = 0.35
 
 # Phyllotaxis. The golden angle — exactly how a plant arranges leaves so that none
 # shades another (core/fractal_spiral.py already places the studio's own features on
 # this law). Applied as a roll on every branch, successive limbs never stack up.
+#
+# It is a PLANT law. A bilaterian must switch it OFF (branch_twist = 0): spiralling
+# your limbs around the body axis is the one thing an animal must not do.
 GOLDEN_ANGLE = 137.50776405003785
+
+# Mirror across the sagittal plane: YAW and ROLL flip, PITCH does not. Down is down
+# for both sides of an animal; left/right is what reverses.
+_MIRROR = str.maketrans("+-<>", "-+><")
 
 
 # --- genome ------------------------------------------------------------------
 
 @dataclass(frozen=True)
 class Genome:
-    """A RECIPE. ~600 bytes of JSON that unfolds into a body."""
+    """A RECIPE. ~600 bytes of JSON that unfolds into a body.
+
+    A TREE IS A RECURSION; A CREATURE IS A CASCADE. The default rules below say
+    `A -> ...A` — A calls A — and self-similarity IS the definition of a plant:
+    every branch is a smaller tree. It cannot make anything else.
+
+    An animal is a finite staged program — C -> S1 -> S2 -> S3 -> tail — where each
+    symbol fires ONCE and hands off to a DIFFERENT one. That is what Hox genes do:
+    positional identity. Segment 3 knows it is segment 3, which is why a fly's
+    thorax grows wings and its abdomen does not, from one genome. See Genome.quadruped().
+    """
     axiom: str = "A"
     # symbol -> production, or a list of (production, weight) for stochastic rules.
     # Stochastic rules are what make `seed` mean something: one genome, a family of
@@ -73,11 +98,56 @@ class Genome:
     })
     depth: int = 6
     angle: float = 28.0          # yaw/pitch, degrees
-    twist: float = GOLDEN_ANGLE  # roll applied on every branch
+    twist: float = GOLDEN_ANGLE  # roll applied by an explicit < or >
     length: float = 1.0
-    decay: float = 0.82          # length multiplier per branch level
+    decay: float = 0.82          # length multiplier applied by ~
     radius: float = 0.10
-    radius_decay: float = 0.72   # radius multiplier per branch level
+    radius_decay: float = 0.72   # radius multiplier applied by ! (and / by #)
+
+    # --- body-plan parameters. Defaults reproduce the plant EXACTLY. ---------
+    pitch0: float = 0.0          # initial pitch. 0 = grow up (a tree).
+                                 # ~90 = a horizontal body axis (an animal).
+    branch_twist: float = GOLDEN_ANGLE   # auto-roll on '['. 0 = bilateral, not spiral.
+    branch_len: float = 0.82     # auto length mult on '['. 1.0 = limbs keep their length.
+    branch_rad: float = 0.72     # auto radius mult on '['. 1.0 = limbs keep their girth.
+    seg_taper: float = 0.0       # per-segment radius mult. 0 = derive from
+                                 # radius_decay**0.5 — a plant BRANCH tapers to its
+                                 # tip, and that assumption was baked into the
+                                 # interpreter. 1.0 = no taper: a SPINE keeps its
+                                 # girth. Girth becomes explicit (! thins, # thickens),
+                                 # which is what lets a body have a fat torso and
+                                 # thin legs instead of one monotonic cone.
+
+    @staticmethod
+    def quadruped() -> "Genome":
+        """A CASCADE, not a recursion. Nothing here calls itself, so the program
+        terminates on its own — MAX_DEPTH is a backstop, not the mechanism."""
+        return Genome(
+            axiom="C",
+            rules={
+                "C":  "T S",              # tail stub, then the spine
+                "S":  "F F (G) F F (H) F N",   # spine: fore limbs, aft limbs, neck
+                "G":  "++&&&!F K",        # fore limb: yaw OUT, pitch DOWN, thin
+                "H":  "++&&&!F K",        # aft limb (same organ, different position)
+                "K":  "&F P",             # knee
+                "P":  "^^F",              # foot
+                "N":  "^F # F",           # neck up, then a thicker head
+                "T":  "!!F",              # tail
+            },
+            # The cascade is C->S->G->K->P: five levels. Give it room. Note what
+            # a cascade buys you — once every symbol is terminal, FURTHER PASSES
+            # CHANGE NOTHING. A fractal plant grows more detail forever; a body
+            # finishes. Depth stops being a dial and becomes a backstop.
+            depth=7,
+            angle=26.0,
+            length=0.9,
+            radius=0.16,
+            radius_decay=0.62,
+            pitch0=90.0,        # lie the body down
+            branch_twist=0.0,   # NO phyllotaxis — a bilaterian must not spiral
+            branch_len=1.0,     # limbs keep their length
+            branch_rad=1.0,     # limbs keep their girth (thinning is explicit, via !)
+        )
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=2)
@@ -149,11 +219,35 @@ def _rewrite(s: str, rules: dict, rng: random.Random) -> str:
     return "".join(out)
 
 
+def _expand_mirrors(s: str) -> str:
+    """(X)  ->  [X][X-mirrored].  BILATERAL SYMMETRY, in one operator.
+
+    Done as a pure string rewrite BEFORE interpretation, so the turtle never has to
+    know that animals have two sides. Yaw and roll flip; pitch does not — down is
+    down on both flanks, it is left/right that reverses.
+
+    TOTAL: a `for` bounded by MAX_MIRRORS, and every pass strictly removes one '(',
+    so it cannot iterate more times than the string has parentheses. Truncated at
+    MAX_SYMBOLS, exactly like the derivation."""
+    for _ in range(MAX_MIRRORS):
+        j = s.rfind("(")                     # innermost pair first
+        if j < 0:
+            return s
+        k = s.find(")", j)
+        if k < 0:
+            return s.replace("(", "")        # unbalanced genome: drop it, don't crash
+        inner = s[j + 1:k]
+        s = f"{s[:j]}[{inner}][{inner.translate(_MIRROR)}]{s[k + 1:]}"
+        if len(s) >= MAX_SYMBOLS:
+            return s[:MAX_SYMBOLS]
+    return s.replace("(", "").replace(")", "")
+
+
 def grow(g: Genome, seed: int) -> list:
     """genome -> skeleton. TOTAL: provably terminates for every possible input.
 
-    No `while`. No recursion. The only loops are `for` over a bounded range and
-    `for` over a string that is capped at MAX_SYMBOLS."""
+    No `while`. No recursion. Every loop is a `for` over a bounded range or over a
+    string that is capped at MAX_SYMBOLS."""
     rng = random.Random(seed)
 
     s = g.axiom
@@ -163,7 +257,7 @@ def grow(g: Genome, seed: int) -> list:
             s = s[:MAX_SYMBOLS]
             break
 
-    return _interpret(s, g, rng)
+    return _interpret(_expand_mirrors(s), g, rng)
 
 
 def _interpret(s: str, g: Genome, rng: random.Random) -> list:
@@ -174,9 +268,20 @@ def _interpret(s: str, g: Genome, rng: random.Random) -> list:
     never has to know what a triangle is."""
     ang = math.radians(g.angle)
     twist = math.radians(g.twist)
+    btwist = math.radians(g.branch_twist)
+    # 0 = the old plant behaviour (a branch tapers to its tip). >0 = explicit.
+    taper = g.seg_taper if g.seg_taper > 0 else (g.radius_decay ** 0.5)
 
     pos = (0.0, 0.0, 0.0)
     H, L, U = (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0)   # heading/left/up
+
+    # pitch0 lays the body down. 0 -> grow UP (a trunk). ~90 -> a HORIZONTAL body
+    # axis with 'up' still up, which is the whole difference between a plant and an
+    # animal: limbs can now hang DOWN off a spine instead of reaching for the sun.
+    if g.pitch0:
+        p0 = math.radians(g.pitch0)
+        H, U = _norm(_rot(H, L, p0)), _norm(_rot(U, L, p0))
+
     ln, rad, depth, parent = g.length, g.radius, 0, -1
 
     stack, bones = [], []
@@ -187,8 +292,10 @@ def _interpret(s: str, g: Genome, rng: random.Random) -> list:
 
         if ch == "F":
             nxt = _add(pos, _mul(H, ln))
-            r1 = rad * g.radius_decay ** 0.5
-            bones.append(Bone(parent, pos, nxt, rad, r1, depth))
+            cap = ln * MAX_ASPECT          # no boulders on sticks
+            r0 = min(rad, cap)
+            r1 = min(rad * taper, cap)
+            bones.append(Bone(parent, pos, nxt, r0, r1, depth))
             parent = len(bones) - 1
             pos, rad = nxt, r1
 
@@ -207,16 +314,23 @@ def _interpret(s: str, g: Genome, rng: random.Random) -> list:
 
         elif ch == "!":
             rad *= g.radius_decay
+        elif ch == "#":                                   # thicken — a torso, a skull
+            rad /= g.radius_decay if g.radius_decay else 1.0
         elif ch == "~":
             ln *= g.decay
+        elif ch == "|":                                   # about-face
+            H, L = _norm(_rot(H, U, math.pi)), _norm(_rot(L, U, math.pi))
 
         elif ch == "[":
             stack.append((pos, H, L, U, ln, rad, depth, parent))
-            # PHYLLOTAXIS: every branch is rolled by the golden angle, so successive
-            # limbs spiral instead of stacking. The same law core/fractal_spiral.py
-            # uses to place the studio's own features.
-            L, U = _norm(_rot(L, H, twist)), _norm(_rot(U, H, twist))
-            ln, rad, depth = ln * g.decay, rad * g.radius_decay, depth + 1
+            # PHYLLOTAXIS on branch, IF the genome wants it. A plant rolls every
+            # branch by the golden angle so successive limbs spiral and none shades
+            # another (the same law core/fractal_spiral.py uses on the studio's own
+            # features). A bilaterian sets branch_twist=0: spiralling your legs
+            # around your spine is the one thing an animal must not do.
+            if btwist:
+                L, U = _norm(_rot(L, H, btwist)), _norm(_rot(U, H, btwist))
+            ln, rad, depth = ln * g.branch_len, rad * g.branch_rad, depth + 1
 
         elif ch == "]":
             if stack:
@@ -227,7 +341,44 @@ def _interpret(s: str, g: Genome, rng: random.Random) -> list:
 
 # --- RULE 1 boundary check: mutation is local and bounded --------------------
 
-_SYMBOLS = "F+-&^<>!~"
+_SYMBOLS = "F+-&^<>!~#"
+
+
+def _mutate_string(s: str, rng: random.Random) -> str:
+    """Mutate ONE production. Includes TOPOLOGY operators, not just symbol jitter:
+    a mutation that can add or delete a whole MIRRORED LIMB PAIR reaches the body
+    plan, where jittering a float never will."""
+    op = rng.random()
+
+    # --- topology: gain a bilateral pair. Wrap a balanced run in ( ). ---------
+    if op < 0.16 and "(" not in s and len(s) < 34:
+        starts = [i for i, c in enumerate(s) if c == "F"]
+        if starts:
+            i = rng.choice(starts)
+            j = min(len(s), i + rng.randint(1, 4))
+            seg = s[i:j]
+            if seg.count("[") == seg.count("]"):
+                return f"{s[:i]}({seg}){s[j:]}"
+
+    # --- topology: lose a bilateral pair. ------------------------------------
+    if op < 0.26 and "(" in s:
+        i = s.index("(")
+        k = s.find(")", i)
+        if k > 0:
+            return s[:i] + s[i + 1:k] + s[k + 1:]
+
+    body = list(s)
+    if op < 0.55 and body:                        # substitute a symbol
+        j = rng.randrange(len(body))
+        if body[j] in _SYMBOLS:
+            body[j] = rng.choice(_SYMBOLS)
+    elif op < 0.82 and len(body) < 40:            # insert a symbol
+        body.insert(rng.randrange(len(body) + 1), rng.choice(_SYMBOLS))
+    elif len(body) > 4:                           # delete a symbol
+        j = rng.randrange(len(body))
+        if body[j] not in "[]()":                 # never break the balance
+            body.pop(j)
+    return "".join(body)
 
 
 def mutate(g: Genome, rng: random.Random, rate: float = 0.35) -> Genome:
@@ -243,32 +394,31 @@ def mutate(g: Genome, rng: random.Random, rate: float = 0.35) -> Genome:
     d["radius"] = jitter(d["radius"], rate, 0.02, 0.4)
     d["radius_decay"] = jitter(d["radius_decay"], rate * 0.4, 0.5, 0.95)
     d["length"] = jitter(d["length"], rate, 0.3, 2.5)
+    d["branch_len"] = jitter(d["branch_len"], rate * 0.3, 0.6, 1.0)
+    d["branch_rad"] = jitter(d["branch_rad"], rate * 0.3, 0.5, 1.0)
+    # seg_taper was a DEAD GENE: it starts at 0 and this only jittered it when it
+    # was already > 0, so evolution could never switch it on. A locus the optimiser
+    # cannot reach is a locus that does not exist.
+    if d["seg_taper"] > 0:
+        d["seg_taper"] = jitter(d["seg_taper"], rate * 0.3, 0.55, 1.0)
+    elif rng.random() < 0.12:
+        d["seg_taper"] = rng.uniform(0.7, 1.0)      # switch the gene ON
     if rng.random() < 0.25:
         d["twist"] = jitter(d["twist"], rate, 20.0, 200.0)
+    if rng.random() < 0.20:                       # posture: lie down / stand up
+        d["pitch0"] = max(0.0, min(110.0, d["pitch0"] + rng.uniform(-12.0, 12.0)))
     if rng.random() < 0.30:
-        d["depth"] = max(2, min(MAX_DEPTH, d["depth"] + rng.choice([-1, 1])))
+        d["depth"] = max(1, min(MAX_DEPTH, d["depth"] + rng.choice([-1, 1])))
 
-    # structural mutation: nudge one production string
-    if rng.random() < 0.55 and d["rules"]:
+    if rng.random() < 0.65 and d["rules"]:        # structural / topological
         k = rng.choice(sorted(d["rules"]))
         alts = d["rules"][k]
         if isinstance(alts, str):
-            alts = [[alts, 1.0]]
-        i = rng.randrange(len(alts))
-        s = list(alts[i][0])
-        op = rng.random()
-        if op < 0.4 and s:                        # substitute
-            j = rng.randrange(len(s))
-            if s[j] in _SYMBOLS:
-                s[j] = rng.choice(_SYMBOLS)
-        elif op < 0.75 and len(s) < 40:           # insert
-            s.insert(rng.randrange(len(s) + 1), rng.choice(_SYMBOLS))
-        elif len(s) > 4:                          # delete
-            j = rng.randrange(len(s))
-            if s[j] not in "[]":
-                s.pop(j)
-        alts[i] = ["".join(s), alts[i][1]]
-        d["rules"][k] = alts
+            d["rules"][k] = _mutate_string(alts, rng)
+        else:
+            i = rng.randrange(len(alts))
+            alts[i] = [_mutate_string(alts[i][0], rng), alts[i][1]]
+            d["rules"][k] = alts
 
     return Genome(**d)
 
@@ -433,6 +583,8 @@ def _main() -> int:
 
     s = sub.add_parser("seed", help="write a starter genome")
     s.add_argument("--out", default="docs/terrarium/seed0.json")
+    s.add_argument("--plan", choices=["plant", "quadruped"], default="plant",
+                   help="plant = a RECURSION (A->...A). quadruped = a CASCADE.")
 
     gr = sub.add_parser("grow", help="genome -> skeleton -> mesh -> .obj + .svg")
     gr.add_argument("--genome", default="docs/terrarium/seed0.json")
@@ -452,8 +604,9 @@ def _main() -> int:
     if a.cmd == "seed":
         p = Path(a.out)
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(Genome().to_json(), encoding="utf-8")
-        print(f"genome -> {p}  ({p.stat().st_size} bytes)")
+        g0 = Genome.quadruped() if a.plan == "quadruped" else Genome()
+        p.write_text(g0.to_json(), encoding="utf-8")
+        print(f"{a.plan} genome -> {p}  ({p.stat().st_size} bytes)")
         return 0
 
     g = Genome.from_json(Path(a.genome).read_text(encoding="utf-8"))
