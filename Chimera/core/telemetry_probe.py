@@ -342,8 +342,18 @@ def main():
             fps, note = probe_fps(client)
             notes["fps"] = note
             if fps is not None:
-                telemetry["fps"] = fps
-                telemetry["target_fps"] = 60
+                if fg_ok:
+                    telemetry["fps"] = fps
+                    telemetry["target_fps"] = 60
+                else:
+                    # H-13: an unfocused editor throttles to ~3fps — a GPU artifact,
+                    # never an authoritative measurement. DROP it so nothing can grade
+                    # on it; keep it visibly non-authoritative in the output.
+                    telemetry["fps_nonauthoritative"] = fps
+                    notes["fps"] = (note or "") + \
+                        " | DROPPED: editor not foregrounded (~3fps throttle) — rerun with --foreground"
+                    print("!! telemetry: fps NON-AUTHORITATIVE (editor unfocused, ~3fps "
+                          "throttle) — not recorded as a measurement. Rerun with --foreground.")
 
             grew, note = probe_growth(client, args.soak)
             notes["unbounded_growth"] = note

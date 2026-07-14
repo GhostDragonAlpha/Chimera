@@ -54,6 +54,11 @@ def main():
     parser.add_argument("--generator-waiver", default="", dest="generator_waiver",
                         help="Generator Guard: reasoned waiver when a generator-owned C++ edit is "
                              "intentional (e.g. migrating a loop-built file to generator ownership)")
+    parser.add_argument("--witnessed", default="",
+                        help="Witness Gate: what you observed in PIE + the simtest/telemetry id "
+                             "(satisfies the gate when marking a feature verified/observed)")
+    parser.add_argument("--witness-waiver", default="", dest="witness_waiver",
+                        help="Witness Gate: reasoned waiver when a witness genuinely doesn't apply")
     args = parser.parse_args()
 
     # Research Gate — the mandated research must be EXPLICIT, not silently skipped
@@ -160,6 +165,70 @@ def main():
         raise
     except Exception as _gg_e:
         print(f"[Generator Guard] unavailable ({_gg_e}) — passing open")
+
+    # Witness Gate — a feature can't be recorded verified/observed on a compile
+    # alone (H-14: a compile is not proof). Requires witness evidence this session
+    # (SimPlaytest/telemetry/observation), --witnessed, or a reasoned
+    # --witness-waiver. Only fires on a verify/observe transition.
+    if args.feature and args.status in {"verified", "observed", "observed_provisional"}:
+        try:
+            from core.witness_gate import check as _wg_check, enforced as _wg_enforced, GUIDANCE as _wg_guide
+            _wg_nodes = load_dna_graph().get("nodes", [])
+            _wg_status, _wg_detail = _wg_check(
+                _wg_nodes, status=args.status,
+                witnessed=getattr(args, "witnessed", "") or "",
+                waiver=getattr(args, "witness_waiver", "") or "")
+            if _wg_status == "missing" and _wg_enforced():
+                print(f"\n!! WITNESS GATE - refused: marking {args.feature} '{args.status}' with no witness.")
+                print(_wg_guide)
+                try:
+                    from core.graphify_interface import record_surprise as _wg_rs
+                    _wg_rs(context=f"postflight refused by witness gate: {args.feature} -> {args.status}",
+                           reality="no SimPlaytest/telemetry/observation evidence this session",
+                           expectation="H-14: a compile is not proof; witness the feature before verifying",
+                           source="agent")
+                except Exception:
+                    pass
+                try:
+                    from core.capcom import post_safe as _wg_ps
+                    _wg_ps("witness", f"postflight BLOCKED: {args.feature} marked {args.status} with no witness",
+                           level="warn", source="witness-gate")
+                except Exception:
+                    pass
+                raise SystemExit(1)
+            print(f"[Witness Gate] {_wg_status}: {_wg_detail[:110]}")
+            if _wg_status == "waived":
+                try:
+                    from core.capcom import post_safe as _wg_ps
+                    _wg_ps("witness", f"witness WAIVED: {args.feature} {args.status} - {_wg_detail[:48]}",
+                           level="note", source="witness-gate")
+                except Exception:
+                    pass
+        except SystemExit:
+            raise
+        except Exception as _wg_e:
+            print(f"[Witness Gate] unavailable ({_wg_e}) — passing open")
+
+    # Verbatim check (advisory) — the Contract says "report exact UBT output
+    # verbatim, never summarize." If a build/compile phase's --result looks like a
+    # SUMMARY (short, no compiler/UBT markers), warn. Not blocked — too fuzzy to
+    # gate hard, but the smell is recorded.
+    try:
+        _vb_blob = (args.phase + " " + args.result).lower()
+        if any(k in _vb_blob for k in ("build", "ubt", "compil")):
+            _markers = ("error", "warning", "succeeded", "===", "build.bat", "cl ",
+                        ".cpp", "ubt", "link", "\n")
+            if len(args.result) < 120 and not any(m in args.result.lower() for m in _markers):
+                print("[Verbatim] WARN: build/compile phase but --result looks summarized "
+                      "(short, no UBT/compiler markers). The Contract requires exact output verbatim.")
+                try:
+                    from core.capcom import post_safe as _vb_ps
+                    _vb_ps("verbatim", f"possibly-summarized build result: {args.phase[:56]}",
+                           level="note", source="verbatim-check")
+                except Exception:
+                    pass
+    except Exception:
+        pass
 
     node_id = record_phase(args.phase, args.result, args.notes,
                            phantom_pains=args.phantom_pain or [],
