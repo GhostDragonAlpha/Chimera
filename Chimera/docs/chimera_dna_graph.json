@@ -55703,6 +55703,205 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_a482eee50975"
+    },
+    {
+      "id": "simtest_28ed8631e663fa1f",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-14T00:07:58.476487",
+      "observer": "agent-sim",
+      "session": "bugfix_verify",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": false,
+              "note": "dist=1212uu (loc x=287.8188716690004, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": false,
+              "note": "sync_events_recorded=1"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 3200
+                }
+              },
+              "ok": true,
+              "note": "dist=2609uu (loc x=2609.324153296089, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": true,
+              "note": "walk_volume=0.49778178334236145 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=7"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=7.18448864063248e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\bugfix_verify.json",
+      "temperature": "[SIM] 4/5 beats reached in 'audio_visual_sync'. Failures: walk_slow_on_sand (failed: expect {\"pawn_within\": {\"x\": 1500, \"y\": 0, \"r\": 800}} -> dist=1212uu (loc x=287.8188716690004, y=0))",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'bugfix_verify': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3ae8db1d813d"
+    },
+    {
+      "id": "surprise_73c7c9ed769692b1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-14T00:07:58.714687",
+      "context": "Sleepwalker expected beat 'walk_slow_on_sand' to be reachable (audio_visual_sync)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"sync_events_recorded\": 3, \"note\": \"Expect ~3 footsteps during 2.5s walk (400ms interval)\"}, \"ok\": false, \"note\": \"sync_events_recorded=1\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"sync_events_recorded\": 3, \"note\": \"Expect ~3 footsteps duri'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3ae8db1d813d"
     }
   ],
   "edges": [
