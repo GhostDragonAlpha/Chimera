@@ -56503,6 +56503,114 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_2f768375dbad"
+    },
+    {
+      "id": "rollout_e14f2214d64535eb",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-14T13:21:49.989750",
+      "chosen": "audio_visual_sync/report_telemetry",
+      "candidates": [
+        {
+          "name": "audio_visual_sync/report_telemetry",
+          "score": 1.1,
+          "p_success": 0.5,
+          "cost": 1.0,
+          "why": "needs_refinement (status=needs_refinement)"
+        },
+        {
+          "name": "Costless Life Bad Ending Trigger",
+          "score": 0.91,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #5 \u2014 Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence."
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.876,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Will & Forewarning Inheritance UI",
+          "score": 0.793,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #4 \u2014 Strengthens the Circadian Protocol's Dawn phase; makes inheritance diegetic and actionable."
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.66,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "The Erisaid Audio Attunement Minigame",
+          "score": 0.624,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #3 \u2014 Directly implements the Erisaid cosmology; elevates sound design to primary gameplay layer."
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.536,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed"
+        },
+        {
+          "name": "Titan Run Gravity Shift Mechanics",
+          "score": 0.516,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #2 \u2014 Aligns with cosmology's resonant doctrine; adds mechanical depth to traversal."
+        },
+        {
+          "name": "Regolith Dust Accumulation Visual Feedback",
+          "score": 0.442,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #1 \u2014 Fits art bible's regolith-grey palette; enhances the provisional/unwitnessed aesthetic."
+        }
+      ],
+      "rationale": "value 2.0 x p 0.5 / cost 1.0 + explore 0.1; evidence ['failure_mentions:2']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: audio_visual_sync/report_telemetry",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_755fa9ac3bd2"
+    },
+    {
+      "id": "phase_5382600bd6584651",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-14T14:03:17.276449",
+      "phase": "tb-0022 pain verdict: distiller token-coverage refuted",
+      "result": "Pain verdict task tb-0022 for phase_da55128aec6d109a:P1 - Distiller token-coverage: this pain was already REFUTED in cycle tb-0019 (distiller token-coverage false-suppression -> REFUTED phase_da55128aec6d109a:P1). Disposition: refuted.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0022 pain verdict: distiller token-coverage refuted",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0022 pain verdict: distiller token-coverage refuted' complete: Pain verdict task tb-0022 for phase_da55128aec6d109a:P1 - Distiller token-coverage: this pain was already REFUTED in cycle tb-0019 (distiller token-coverage false-suppression -> REFUTED phase_da55128a",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "Pain verdict task tb-0022 for distiller token-coverage was already REFUTED in cycle tb-0019. Stale pain-verdict tasks should be skipped by claim_task as per the Will's root-fix for pain-duplication.",
+      "pain_verdicts": {
+        "phase_da55128aec6d109a:P1": "refuted"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_655123c68177"
     }
   ],
   "edges": [

@@ -1,3 +1,43 @@
+# Rehearsal decision 2026-07-14 13:21Z — next move: audio_visual_sync/report_telemetry
+
+Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: failure_mentions:2). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **audio_visual_sync/report_telemetry** — needs_refinement (status=needs_refinement). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','audio_visual_sync/report_telemetry')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Session 2026-07-14 — Postflight completion + pipeline state
+
+**Postflight Results:**
+- PhaseComplete recorded: phase_d1ecf7befe8b6ee7
+- GPA: 1.92 trend: flat grades: 213
+- Git DNA snapshot auto-committed + pushed (only dirt was the snapshot)
+- Working tree is clean
+- Inheritance: 113 phantom pain(s) still open (confirm/refute with --pain-verdict)
+
+**Last Pipeline Run:**
+- parse: pass @ 2026-07-13T05:30:13 � DSL parsed with 16 blocks: game, technical, narrative, gameplay, world
+- build: pass @ 2026-07-13T05:30:30 � build_completed
+- visual: pass @ 2026-07-13T05:33:31 � Visual verification pass: AI analysis completed
+
+**Spiral Loop Board NEXT:** Loop 1 (The Ground) with open items:
+- Ground_Sand_Surface(observed_provisional)
+- Ground_Sand_Footprints(sim_verified)
+- Ground_Rock_Surface(observed_provisional)
+- Ground_Metal_Surface(observed_provisional)
+
+**Task Board Parallel Frontier:**
+- tb-0005 p=1.5 Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable`
+- tb-0011 p=1.3 Curriculum Faculty: grow toward hundreds of checkpoints `capable`
+- tb-0007 p=1.2 Hire_Chaos_Tester (DREAM_ROSTER #5) `capable`
+
+**Pending technical_research tasks:** 1
+- procedural dust-accumulation mask material creation using noise functions, vertex normal-b
+
+---
+
 # Session 2026-07-13 — CAPCOM operator channel + auto-push hook
 
 **Shipped (on master, commit `b179e6f`):**
