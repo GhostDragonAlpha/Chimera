@@ -140,6 +140,43 @@ def _ensure_unthrottled() -> str:
         return f"failed ({ex}) -- editor may throttle to ~3fps unfocused"
 
 
+def _foreground_editor_when_up(max_wait_s: float = 90.0) -> None:
+    """Background watcher: the moment an UnrealEditor process appears, give its
+    window OS focus (Alt-tap unlocks SetForegroundWindow's focus-steal block,
+    then activate by PID). The human's diagnosis (2026-07-14): Windows gives
+    rendering priority to the FOCUSED window, and an unfocused editor doesn't
+    just render slow -- the LOAD itself stalls (observed: 6-7 min of nothing,
+    bridge never up), even with bThrottleCPUWhenNotForeground=False, which only
+    helps after the config is read. Every programmatic launch is unfocused by
+    definition, so witness runs were structurally subject to that stall. This
+    closes it: launch, then focus, then the load proceeds at full speed."""
+    import threading
+
+    def _watch():
+        deadline = time.monotonic() + max_wait_s
+        ps = (
+            "$ed = Get-Process UnrealEditor -ErrorAction SilentlyContinue | Select-Object -First 1; "
+            "if (-not $ed) { exit 1 }; "
+            "Add-Type -AssemblyName System.Windows.Forms; "
+            "[System.Windows.Forms.SendKeys]::SendWait('%'); "
+            "$ws = New-Object -ComObject wscript.shell; "
+            "if ($ws.AppActivate($ed.Id)) { Write-Output 'focused'; exit 0 } else { exit 2 }"
+        )
+        while time.monotonic() < deadline:
+            try:
+                r = subprocess.run(["powershell", "-NoProfile", "-Command", ps],
+                                   capture_output=True, text=True, timeout=20)
+                if "focused" in (r.stdout or ""):
+                    print("[witness_runner] editor window FOCUSED -- load/render unblocked "
+                          "(Windows renders the focused window at full priority)")
+                    return
+            except Exception:
+                pass
+            time.sleep(5)
+
+    threading.Thread(target=_watch, daemon=True).start()
+
+
 def _close_editor_fully() -> str:
     """Force-close the editor + release any editor_scheduler claim this
     process/agent might hold. Reuses the scheduler's own kill-list so there is
@@ -172,6 +209,9 @@ def run_witness(beats: str, session: str, budget_s: float = 240.0,
         cmd, cwd=str(ROOT), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
         text=True, creationflags=creationflags,
     )
+    # Focus the editor window as soon as it exists -- an unfocused editor's LOAD
+    # stalls under Windows' focused-window render priority (see helper docstring).
+    _foreground_editor_when_up()
 
     exit_code = 0
     outcome = "completed"

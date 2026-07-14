@@ -16,22 +16,22 @@ struct FWeaponSlotData {
 	FString Size; // S1, S2, S3
 
 	UPROPERTY(EditAnywhere, Category = "Weapon", meta = (ClampMin = "1"))
-	int32 Count;
+	int32 Count = 1;
 
 	UPROPERTY(EditAnywhere, Category = "Weapon", meta = (DisplayName = "Type"))
 	FString Type; // fixed, gimbal, remote_turret
 
 	UPROPERTY(EditAnywhere, Category = "Combat Stats")
-	float FireRate;
+	float FireRate = 2.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Combat Stats")
-	float DamagePerShot;
+	float DamagePerShot = 50.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Combat Stats")
-	float ProjectileSpeed;
+	float ProjectileSpeed = 100000.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Combat Stats")
-	float Range;
+	float Range = 300000.0f;
 };
 
 USTRUCT(BlueprintType)
@@ -42,16 +42,16 @@ struct FMissileRackData {
 	FName RackName;
 
 	UPROPERTY(EditAnywhere, Category = "Missiles", meta = (ClampMin = "1"))
-	int32 Count;
+	int32 Count = 1;
 
 	UPROPERTY(EditAnywhere, Category = "Missiles")
 	FString MissileType;
 
 	UPROPERTY(EditAnywhere, Category = "Combat Stats")
-	float Damage;
+	float Damage = 100.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Combat Stats")
-	float TrackingStrength;
+	float TrackingStrength = 0.5f;
 };
 
 UCLASS(meta = (BlueprintType, Category = "Combat"))

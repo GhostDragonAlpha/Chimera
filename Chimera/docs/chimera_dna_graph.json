@@ -56445,6 +56445,25 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_0fd9f82f635c"
+    },
+    {
+      "id": "surprise_f1f1cb50421fe060",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-14T06:40:56.740763",
+      "context": "Editor relaunched programmatically for the visual pathway; expected it to load and bring the MCP bridge up on :3000 within minutes",
+      "expectation": "",
+      "reality": "The human's diagnosis: Windows gives render priority to the FOCUSED window and an UNFOCUSED editor's LOAD stalls entirely (6-7min, bridge never up) -- bThrottleCPUWhenNotForeground=False does not cover the load phase. Programmatic launches are unfocused by definition, so every witness/automation editor launch was structurally exposed. Fix: Alt-tap + AppActivate-by-PID immediately after launch (proven: foreground PID flipped to the editor); witness_runner now runs a focus watcher on every launch",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but 'The human's diagnosis: Windows gives render priority to the FOCUSED window and a'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f0686bd82cd0"
     }
   ],
   "edges": [

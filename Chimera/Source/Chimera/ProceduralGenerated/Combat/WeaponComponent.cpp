@@ -26,7 +26,9 @@ void UWeaponComponent::FireMissile(FName RackName, AActor* Target) {
 	for (FMissileRackData& Rack : MissileRacks) {
 		if (Rack.RackName == RackName && Rack.Count > 0) {
 			Rack.Count--;
-			// Spawn homing projectile with TrackingStrength
+			// Spawn homing projectile of this rack's MissileType with its TrackingStrength
+			UE_LOG(LogTemp, Log, TEXT("FireMissile: %s fired %s (dmg=%.0f track=%.2f, %d left)"),
+				*RackName.ToString(), *Rack.MissileType, Rack.Damage, Rack.TrackingStrength, Rack.Count);
 			break;
 		}
 	}
