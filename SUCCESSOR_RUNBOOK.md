@@ -115,8 +115,44 @@ write wishes.
   `{systemPath, actorName, location}` — engine template paths work directly.
 - **PIE motion without input:** set on CharMoveComp: BrakingDecelerationWalking=0,
   GroundFriction=0, BrakingFrictionFactor=0, then Velocity={x,y,z}. Read Velocity back.
+- **Evolve a brain on the GPU (creature locomotion):** ALWAYS in a membrane, ALWAYS
+  unbuffered to a log.
+  `cd E:\PythonChimera\Chimera`
+  `python -c "import sys;sys.path.insert(0,'.');import core.membrane as mb;print(mb.seal('run1'))"`
+  `cd E:\chimera_membranes\run1\Chimera`
+  `$env:PYTHONUNBUFFERED=1; python -u -m core.trainer --domain core.trainables.brain_gpu --objective docs/objectives/brain_gpu.json --pop 1024 --gens 300 *> train.log`
+  (~60 min on the 4090.) Then bring the winner home: copy
+  `docs/objectives/brain_gpu.trained.json` back to `E:\PythonChimera\Chimera\...`,
+  `python -m core.membrane burn run1`, commit the trained json.
+- **Witness a gait (a number is NOT proof — H-14):**
+  `python -m core.gait_mj --trained docs/objectives/brain_gpu.trained.json --png out.png`
+  Read the PERIODICITY (≥0.5 = a real cycle) and the ROBUSTNESS block (distance must
+  barely move under the perturbations). Then Read the PNG.
+- **Iterate the OBJECTIVE, never the artifact:** the trainer prints `PINNED` walls at
+  the end. Those are the next edit to `docs/objectives/<f>.json`. Never hand-edit a
+  `.trained.json`.
 
 ## TRAPS — NEVER DO (each cost a real session real hours)
+
+- **ONE ROLLOUT IS A COIN TOSS.** Never trust a single-rollout fitness in a contact-rich
+  (chaotic) sim: a 1-micron start change once swung a result 5.5 body lengths, and an
+  80,000-eval "champion" scored WORSE THAN UNTRAINED when measured honestly. Always score
+  N randomized restarts and keep the WORST (`brain_gpu.py` does 16). This is a
+  correctness rule, not a nicety — it is the whole reason the GPU is used.
+- **Python piped through `Select-String` (or any pipe) BLOCK-BUFFERS** — you see NOTHING
+  until the process exits, so a 35-min run looks dead. Use `python -u ... *> file.log`
+  and `tail`/Monitor the file. Never diagnose a "hung" training run before checking this.
+- **`njmax`/`nconmax` in `mujoco_warp.put_data` are PER WORLD, not total.** Passing
+  `nworld * 192` asks for 750× too much and OOMs 24 GiB. Measure the real max
+  (this creature: 48 constraint rows, 9 contacts) and add headroom (192/64).
+- **Do NOT force `MUJOCO_GL=egl` on Windows** — egl is a Linux backend and breaks the
+  working default renderer. Leave it unset; `mujoco.Renderer` works out of the box here.
+- **A number you INHERITED is not a number you CHOSE.** `TORQUE=22` carried from the CPG
+  walker was 35 N·m/kg (10× a human hip) and flung the creature 3.4 km up. Sanity-check
+  every physics constant against a real-world referent before trusting a run.
+- **pybullet physics is CPU-ONLY, forever.** Do not try to GPU-accelerate it (OpenCL was
+  promised in 2006, never shipped). The GPU path is `mujoco-warp`. Bodies are NOT
+  GPU-batchable (it batches N copies of ONE model) — morphology on CPU, brains on GPU.
 
 - Niagara **authoring is broken**: create_niagara_system / add_emitter_to_system /
   add_*_module / set_niagara_parameter all return success and do NOTHING.

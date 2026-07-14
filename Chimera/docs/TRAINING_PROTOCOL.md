@@ -3,6 +3,9 @@
 > **The LLM writes the CONSTRAINTS. The optimiser turns the crank. Neither is trusted.**
 >
 > Established 2026-07-14. Proven on two utterly different features with one tool.
+>
+> This is the *method*. For what the assembled machine can now BUILD — the possibilities, the
+> limits, and the path from here — see **`docs/THE_EVOLUTION_ENGINE.md`**.
 
 ---
 

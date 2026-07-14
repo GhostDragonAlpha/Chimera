@@ -66,8 +66,34 @@ Three degenerate optima, in order — each statically excellent and biologically
 
 **THE NEXT OBJECTIVE MUST BE LOCOMOTION** — distance travelled under Chaos physics. It cannot
 be faked, because outriggers do not walk. That is what Karl Sims used in 1994 and what should
-have been used here. Cost: ~100 ms/eval instead of 1.5 ms → ~200/sec → still **10⁶ a night**.
-Feasible. A different build. **That is Stage 3, and it is the real Stage 1.**
+have been used here.
+
+### UPDATE 2026-07-14 — locomotion was built, and it revealed a FOURTH exploit deeper than the three above
+
+Locomotion happened. And it taught a lesson the three static exploits could not: **the frame
+was not the only thing broken — so was the MEASUREMENT.**
+
+The first locomotion winner travelled 13.52 body lengths and was not a gait at all. It had
+**periodicity 0.25** (no repeating cycle), a **one-micron** nudge to its start cost it 5.5 body
+lengths, and under honest physics it scored **2.41 — worse than an untrained brain.** That is
+Lyapunov divergence: no attractor, no limit cycle, no gait. Every genome had been scored by ONE
+rollout from ONE start, which in a chaotic system is a **coin toss**, so the GA spent 80,000
+evaluations selecting lucky dice. (The root cause ran deeper still: an inherited torque of 35
+N·m/kg — ten times a human hip — flung the body 3.4 km up, and pybullet's solver *contained* the
+violence instead of NaN-ing, so it lived permanently airborne with no contact to form a cycle.)
+
+**THE FOURTH EXPLOIT — THE LOTTERY TICKET — is a hole in the EVALUATION, and no objective could
+have closed it.** The fix: score every genome from many randomized restarts and keep the
+**worst** (`robustness` = worst/mean); add `periodicity` as a first-class objective term, because
+a gait is a limit cycle and nothing had ever rewarded rhythm. Honest evaluation costs 16× the
+compute, which the CPU cannot afford and a GPU does not notice — so this is where the creature
+moved onto `mujoco-warp` (§5, §6 below, both now superseded by the GPU path).
+
+**RESULT:** the first *honest* winner is a robust rhythmic **crawl** — periodicity 0.78,
+robustness 0.76, distance 3.24, all repeatable from any start. It did not stand up (torso 0.037);
+that is an under-weighted objective term, not a wall, and the revision is written. See
+`docs/THE_EVOLUTION_ENGINE.md` for what this unlocks and `docs/TRAINING_PROTOCOL.md` §3.5 for the
+honest-evaluation discipline in full. **Stage 3 is done; Stage 5–6 are now the real next steps.**
 
 ---
 
@@ -251,15 +277,25 @@ compact, generative. That is the target.
 
 **Evolution is a bake. Development is a runtime.** Two budgets, never one.
 
-- Headless, no render, on the CPU: 24 workers on the i9-13900K's 24 cores.
-- Bounded per night: `P <= 64`, `G <= 200` → ~10⁴ evaluations ≈ **minutes**, not hours.
 - Output: **genomes in `terrarium.db`. Nothing else.** No heuristics. No graph writes. No
-  board tasks.
-- The GPU is idle at Night anyway — the LLM owns it, the game does not.
+  board tasks. The finding crosses the membrane as a *file a human reads*, never as an automatic
+  graph write (Rule 1).
+- **Morphology** (bodies) is evolved on the **CPU** — `mujoco-warp` batches N copies of *one*
+  model, so a population of *different bodies* has no single model to batch. Bounded per bake:
+  `P <= 64`, `G <= 200` → ~10⁴ evaluations ≈ **minutes**.
+- **Control** (brains, for a fixed body) is evolved on the **GPU** — and this is not a speed
+  choice, it is a correctness one. Honest evaluation (worst-of-16 randomized restarts, §51's
+  fourth exploit) is unaffordable on the CPU and nearly free on `mujoco-warp`: **2,358 evals/sec
+  at 16,384 worlds, on 1.5 of 24 GiB.** `core/trainables/brain_gpu.py`.
+- **The GPU is NOT idle at Night — it is the evaluation engine.** This changes the co-tenancy
+  story in §6: the LLM and the trainer now genuinely contend for the card, so a control bake and
+  an LLM night cannot run at the same instant. Time-share them (`lm_gateway evict` frees VRAM),
+  or run the control bake when the LLM is quiet.
 
 The classic ALife failure mode — creatures discovering and exploiting your physics bugs — is
-here a **feature**: it is a free fuzzer for Chaos. But the finding crosses the membrane as a
-*file a human reads*, never as an automatic graph write (Rule 1).
+here a **feature**: it is a free fuzzer for Chaos, and it has already paid out four times (the
+lollipop, satisficer, outriggers, and lottery ticket were all real specification holes surfaced
+at 35 kHz).
 
 ---
 
@@ -310,9 +346,10 @@ stands alone, is worth having on its own, and has an explicit **kill criterion**
 | **1** | Mutate. Grow 24. Look at the contact sheet. | ✅ **PASSED.** A *family* — not clones, not noise, plus a real structural deformity. | mutations give noise or clones, not a *family* |
 | **1.5** | **The trainer** — get the LLM out of the inner loop. | ✅ **DONE.** `core/evolve.py` + the generic `core/trainer.py`. 35,634 evals/sec. | — |
 | **2** | Morphology → UE5 mesh via Geometry Script. | ⬜ not started | it's ugly, unshippable |
-| **3** | **LOCOMOTION.** Chaos physics. Fitness = **distance travelled.** | ⬜ **THIS IS THE REAL NEXT STEP.** Static geometry cannot specify "creature" — three exploits proved it. | it can't learn to move at all |
-| 4 | Offline evolution at scale. Night. Headless. Bounded. | ⬜ (the trainer already does this; just point it at physics) | evolution converges to mush |
-| 5 | Make it a game. | ⬜ | — |
+| **3** | **LOCOMOTION.** Chaos physics. Fitness = **distance travelled**, HONESTLY (worst-of-16 restarts). | ✅ **DONE 2026-07-14.** A robust rhythmic crawl: periodicity 0.78, robustness 0.76. It also proved static geometry cannot specify "creature" (3 exploits) *and* that one rollout cannot measure one (the 4th). | it can't learn to move at all |
+| **3.5** | **Honest evaluation on the GPU.** `mujoco-warp`, whole population × restarts in one kernel. | ✅ **DONE 2026-07-14.** 2,358 evals/sec at 16,384 worlds. The anti-lottery. `core/trainables/brain_gpu.py`. | it can't tell skill from luck |
+| **4** | Crawl → upright walk → run; then a bestiary. | ⬜ **THE REAL NEXT STEP.** Raise the torso-height weight, fix the energy ref (both named by the winner's pins). One GPU run to upright. | evolution converges to mush |
+| 5 | Make it a game — a world of creatures nobody designed. | ⬜ (see `docs/THE_EVOLUTION_ENGINE.md`) | — |
 
 ### Stage 1 is the whole thesis
 
