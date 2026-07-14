@@ -121,7 +121,101 @@ exactly where your spec is load-bearing, and exactly where the next exploit hide
    how it *stands* — it is defined by what it **does**. The objective must be **LOCOMOTION**
    (distance travelled under physics), which cannot be faked, because outriggers do not walk.
 
+### The fourth exploit, and it was not in the objective at all
+
+4. **THE LOTTERY TICKET.** The winner of the locomotion objective travelled **13.52 body
+   lengths** and satisfied every constraint. It was not a gait. It was not even a *bad* gait.
+   `core/gait.py` gave it **periodicity 0.25** — there is no repeating cycle anywhere in its
+   footfall. And `converge.py` gave the killing blow: nudge its starting height by **one
+   micron** (1e-6 m, a hundredth of a human hair) and it loses **5.5 body lengths**. Make the
+   solver progressively more exact and the answer never settles — 13.5 / 5.4 / 4.0 / 10.5 /
+   14.2. That is **Lyapunov divergence**. No attractor → no limit cycle → **no gait**.
+
+   > **The first three exploits were holes in the OBJECTIVE. This one was a hole in the
+   > EVALUATION, and no objective — however perfect — could have closed it.**
+
+   Every genome was scored by **one rollout from one exact initial pose**. In a chaotic system
+   that is not a measurement, it is a **coin toss** — so "fitness" was decided by which side of
+   a bifurcation the creature happened to fall on, and the GA spent 80,000 evaluations
+   selecting **lucky dice**. Proof: re-scored under honest physics, that champion manages
+   **2.41 body lengths — worse than an UNTRAINED brain (2.81).** It had learned nothing that
+   was about the world. It had learned the seed.
+
 **Record every exploit**: `python -m core.graphify_record surprise --context "..." --reality "..."`
+
+---
+
+## 3.5 EVALUATE HONESTLY — one rollout is a coin toss, not a measurement
+
+**This is the hardest lesson the studio has learned, and it invalidated every number the
+creature work had produced.**
+
+### The rule
+
+> **Score every genome from N randomized initial conditions and keep the WORST.**
+
+A lucky roll cannot survive sixteen of them. Report both, and let the objective choose:
+
+| measure | meaning |
+|---|---|
+| `distance` | **mean** over N restarts — the headline, and no longer a single lucky roll |
+| `distance_worst` | **min** over N restarts |
+| `robustness` | `worst / mean`. **THE ANTI-LOTTERY.** A real limit cycle converges onto the same gait from every start → **~1.0**. A chaotic fraud → **~0**. |
+
+Perturb generously — we *proved* 1e-6 m is already decisive, so anything a real gait can
+absorb is fair game (`brain_gpu.py`: base height ±2 cm, every joint ±0.03 rad, body tilt
+±0.02 rad). **Restart 0 is left unperturbed**, so the old single-shot number stays readable
+and comparable.
+
+### And add the term that makes a gait a gait
+
+Nothing in any objective had ever rewarded **rhythm**. So nothing ever stopped the optimiser
+from producing a convulsion that happened to travel — and nothing ever *would* have.
+
+> **A GAIT IS A LIMIT CYCLE.** `periodicity` (autocorrelation of the footfall signal; 1.0 = a
+> metronome, 0.0 = a seizure) belongs in every locomotion objective, weighted **equal to
+> distance**. It is the one thing that separates locomotion from *falling with style*.
+
+### The cost, and therefore the GPU
+
+Honest evaluation is **N× more expensive per genome**. At N=16 that is unaffordable on a CPU
+(≈32 h/run, 8 P-cores pinned at thermal limit) and **free on a GPU**, because population and
+restarts are *the same axis* — `1024 genomes × 16 restarts = 16,384 worlds`, one kernel:
+
+| backend | throughput | cost |
+|---|---|---|
+| pybullet, 30 processes | **70 evals/sec** | 8 P-cores pinned, thermally throttled |
+| `mujoco-warp`, 16,384 worlds | **2,358 evals/sec** | 6.95 s, **1.5 of 24 GiB**, GPU at 39 °C |
+
+> **The correct evaluation is what the CPU cannot afford and the GPU does not notice. The
+> 33.7× is a side effect; the reason to move was CORRECTNESS.**
+
+### Before you blame the optimiser, AUDIT THE PHYSICS YOU INHERITED
+
+The chaos had a cause, and it was not the solver. `TORQUE = 22 N·m` had been carried forward
+from the CPG walker and never questioned. On a **0.622 kg** creature that is **35 N·m/kg**.
+*A human hip manages about 3.* Its 37-gram limbs were driven by torques that could throw a
+housebrick. Measured, with the seed brain:
+
+| torque | N·m/kg | armature | z max | joint velocity |
+|---|---|---|---|---|
+| 22.0 | 35.4 | 0.000 | **3,433 m** | **4,972 rad/s** |
+| 22.0 | 35.4 | 0.010 | 0.66 m | 10.0 |
+| **2.0** | **3.2** | **0.001** | **0.057 m** | **4.3** |
+
+**The creature was being flung 3.4 kilometres into the air.** pybullet's constraint-based
+servo *contained* that violence instead of NaN-ing — so instead of an honest explosion we got
+a body permanently in the **ballistic regime**, and **a body always in flight has no contact
+to build a limit cycle out of.** It could not have walked. MuJoCo did not introduce this
+failure; **it refused to hide it.**
+
+Two lessons, and they generalise past creatures:
+
+1. **A number you inherited is not a number you chose.** Sanity-check inherited constants
+   against a real-world referent (a human hip; a market's actual margins; a real spawn rate).
+2. **An engine that NaNs is telling you the truth. An engine that quietly clamps is not.**
+   Silent containment converts a physics bug into a *fitness landscape*, and the optimiser
+   will happily go and live in it.
 
 ---
 
