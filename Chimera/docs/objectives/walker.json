@@ -1,0 +1,53 @@
+{
+  "name": "walker",
+  "author": "LLM, from a scenario. It asks for MOVEMENT. It does not ask for legs, and it does not ask for a gait.",
+  "scenario": "A body that MOVES itself across the ground under real gravity, contact and friction. Go somewhere and keep going. This is the objective that cannot be faked: static stability could always be gamed with outriggers, but OUTRIGGERS DO NOT WALK. A lollipop cannot chase anything. Nothing here says how to move — walk, hop, slither, roll, gallop. If the universe has a better idea than mine, I want to be told.",
+
+  "constraints": [
+    {
+      "measure": "exploded",
+      "kind": "at_most", "max": 0.0,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE GATE. NaN, a body flung to infinity, a degenerate rig. A physics glitch is not a gait, and if we do not gate it the optimiser WILL find it — that is the one thing it is reliably good at."
+    },
+    {
+      "measure": "airborne_frac",
+      "kind": "at_most", "max": 0.40,
+      "weight": 2.0,
+      "hard": true,
+      "why": "THE SECOND GATE, and it is pre-emptive: the classic exploit here is BALLISTIC LAUNCH — coil up, fire yourself down the field, and bank the distance. That is not locomotion, it is artillery. The body must stay in contact with the ground for most of the run."
+    },
+    {
+      "measure": "degenerate",
+      "kind": "at_most", "max": 0.0,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE THIRD GATE, and it is a REPAIR (2026-07-14). The first run produced a BRISTLEBOT: 8 microscopic bones (two of length exactly 0.00), buzzing at the maximum 5 Hz and ratcheting along on friction asymmetry. It worked because of TWO bugs of mine. (1) The mass floor was 50 g, so a bone of r=1mm, L=1cm — true mass 25 MICROGRAMS — was handed the density of neutron-star matter; every bone was pinned at that floor, so they all weighed the same regardless of size, and the physics was a lie. (2) `distance` is measured in BODY LENGTHS, so SHRINKING YOURSELF inflates the score for free. It did not learn to walk. It learned to be small and dense. This gate now rejects any body with zero-length stubs, hair-thin limbs, or a total size outside 0.8–6.0 m — so body-length normalisation, which IS the right metric in locomotion research, is only ever applied between COMPARABLE bodies."
+    },
+    {
+      "measure": "distance",
+      "kind": "maximize", "ref": 6.0,
+      "weight": 4.0,
+      "why": "THE POINT. Net displacement in BODY LENGTHS, so it cannot win by simply being enormous. `maximize`, not a band — a spec made only of walls gets you exactly the walls, and I have already been burned by a satisficer once today. Falling over is worth about one body length, and only once, so this term excludes toppling all by itself."
+    },
+    {
+      "measure": "straightness",
+      "kind": "at_least", "min": 0.5,
+      "weight": 1.5,
+      "why": "net displacement over path length. A creature that spins in place travels a long way and arrives nowhere."
+    },
+    {
+      "measure": "energy",
+      "kind": "minimize", "ref": 400.0,
+      "weight": 1.0,
+      "why": "metabolic cost. Thrashing every joint at full torque is a real way to move and a bad way to be alive."
+    },
+    {
+      "measure": "bones",
+      "kind": "band", "min": 10.0, "max": 34.0,
+      "weight": 1.0,
+      "why": "an animal, not a stick and not a hairball."
+    }
+  ]
+}

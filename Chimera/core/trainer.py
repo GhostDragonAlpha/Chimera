@@ -199,7 +199,17 @@ def _eval(job: tuple) -> tuple:
 
 def train(domain: str, obj: Objective, pop: int, gens: int, seed: int,
           workers: int, log=print) -> dict:
+    """Two evaluation backends, chosen by what the domain offers.
+
+    CPU:  `measure(g)` one genome at a time, fanned out over a process Pool. Right for
+          anything whose sim is small, branchy and sequential — which is most physics.
+    GPU:  `measure_batch(genomes)` — the WHOLE POPULATION in one call. A GPU is a
+          throughput machine: the parallelism it wants is not INSIDE one creature (20
+          links is nothing) but ACROSS thousands of them, batched into a single kernel.
+          A domain that exposes measure_batch gets it, and the Pool is not used at all.
+    """
     mod = importlib.import_module(domain)
+    batched = hasattr(mod, "measure_batch")
     rng = random.Random(seed)
     spec = {"name": obj.name, "scenario": obj.scenario, "constraints": obj.constraints}
 
@@ -209,10 +219,20 @@ def train(domain: str, obj: Objective, pop: int, gens: int, seed: int,
     best, best_score, best_m, best_d, evals = g0, -1.0, {}, [], 0
     t0 = time.time()
 
-    with mp.Pool(workers, initializer=_init, initargs=(domain,)) as poolp:
+    poolp = None if batched else mp.Pool(workers, initializer=_init,
+                                         initargs=(domain,))
+    if batched:
+        log(f"  backend: GPU BATCH ({mod.__name__}.measure_batch) — "
+            f"{pop} creatures per kernel\n")
+    try:
         for gen in range(gens):
-            res = poolp.map(_eval, [(g, spec) for g in population],
-                            chunksize=max(1, pop // (workers * 4)))
+            if batched:
+                ms = mod.measure_batch(population)          # the whole population, one kernel
+                res = [(sc, m, det) for m, (sc, det)
+                       in zip(ms, (obj.score(m) for m in ms))]
+            else:
+                res = poolp.map(_eval, [(g, spec) for g in population],
+                                chunksize=max(1, pop // (workers * 4)))
             evals += len(population)
 
             ranked = sorted(range(pop), key=lambda i: res[i][0], reverse=True)
@@ -232,6 +252,10 @@ def train(domain: str, obj: Objective, pop: int, gens: int, seed: int,
                 win = population[a] if res[a][0] >= res[b][0] else population[b]
                 nxt.append(mod.mutate(win, rng))
             population = nxt
+    finally:
+        if poolp is not None:
+            poolp.close()
+            poolp.join()
 
     dt = time.time() - t0
     return {"genome": best, "score": best_score, "measures": best_m,
