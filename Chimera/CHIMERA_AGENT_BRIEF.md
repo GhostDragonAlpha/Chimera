@@ -141,10 +141,10 @@ graphify_mutate("professor_grade", details={
 
 **Step 4: Apply** — Build using MCP or Pipeline. Before any MCP call, query for existing pathways. Record every attempt. If the pathway exists, follow it exactly — do not experiment. If no pathway exists, test the simplest approach first. Try 5+ parameter combinations before reporting blocked. Record every attempt as a pathway_attempt mutation, including failures.
 
-**Step 5: Verify** — Visual verification via pyautogui screenshot + LM Studio comparison.
+**Step 5: Verify** — Visual verification via MCP viewport screenshot + LM Studio comparison.
 1. Position the camera to capture the built feature
-2. Take pyautogui screenshot (NEVER use MCP screenshot)
-3. Verify file size > 100,000 bytes
+2. Capture via MCP `control_editor screenshot mode=editor_viewport` — per **H-2 (amended 2026-07-13)** this renders the viewport regardless of window focus AND now composites UMG/Slate HUDs during PIE, cropped to just the viewport. (The old pyautogui desktop-capture advice is DEPRECATED: it needs window focus, grabs editor chrome, and an unfocused editor throttles to ~3fps.)
+3. Verify the capture is non-empty
 4. POST to LM Studio at `http://localhost:1234/v1/chat/completions`
 5. Include the canonical reference image AND the screenshot
 6. Ask: "Does this match the canonical reference? Output VERIFIED or NEEDS_REFINEMENT with specific observations."
@@ -590,12 +590,7 @@ Future automation: the Orchestrator will write the prompt file and trigger a new
 ## Critical Technical Reminders
 
 ### Screenshots for Verification
-**NEVER use MCP `control_editor.screenshot`.** It captures UI chrome, editor warnings, toolbars, and overlays — not the clean viewport. MCP screenshots are 1048x462 with editor chrome. pyautogui captures the full editor window at native resolution. Use pyautogui only:
-```
-powershell "$wshell=New-Object -ComObject wscript.shell; $wshell.AppActivate('Unreal Editor'); Start-Sleep 2"
-python -c "import pyautogui; pyautogui.screenshot('E:/PythonChimera/Chimera/Screenshots/feature_name_v1.png')"
-```
-Verify file size > 100,000 bytes before sending to LM Studio. If the file is smaller, the screenshot failed (editor not in focus, black viewport, etc.).
+**Use MCP `control_editor screenshot mode=editor_viewport`** (reconciled 2026-07-13 with CLAUDE.md **H-2**). The old "never MCP, use pyautogui" advice was INVERTED by the 2026-07-13 Slate-widget capture fix (`McpAutomationBridge_ControlHandlers.cpp` / `_UiHandlers.cpp`): MCP `editor_viewport` now renders the viewport REGARDLESS of window focus and composites UMG/Slate HUDs during PIE, cropped to just the viewport — no editor chrome. `full_editor_window` is only for whole-editor-chrome captures. **Never** verify from a desktop/pyautogui screenshot: it needs window focus, captures chrome, and an unfocused editor throttles to ~3fps (freezing Niagara/anim). See `docs/MCP_PATHWAYS.md` #32.
 
 ### LM Studio Verification
 POST to `http://localhost:1234/v1/chat/completions`

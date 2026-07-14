@@ -152,6 +152,20 @@ def main():
     except Exception:
         pass
 
+    # Generator-owned guard — fast, LM-FREE heads-up: dirty files that look
+    # generator-owned get CLOBBERED on the next pipeline run. Postflight does the
+    # authoritative LM judgment; this just surfaces the risk at session start.
+    try:
+        from core.generator_guard import deterministic_flags
+        _gf = deterministic_flags()
+        if _gf:
+            print(f"\n[generator-guard] {len(_gf)} dirty file(s) look GENERATOR-OWNED — "
+                  f"hand-edits get clobbered; fix core/game_code_generator.py, not the C++:")
+            for _p in _gf[:6]:
+                print(f"    x {_p}")
+    except Exception:
+        pass
+
     # 0. Circadian — the studio reads its OWN clock (no OS scheduler). This is
     # the qualification: system time determines the phase, and whether a night
     # is due. A 24/7 agent should honor the directive each cycle.

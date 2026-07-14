@@ -51,6 +51,9 @@ def main():
     parser.add_argument("--research-waiver", default="", dest="research_waiver",
                         help="Research Gate: a reasoned waiver when this change genuinely needed "
                              "no external research (recorded + auditable; a silent skip is refused)")
+    parser.add_argument("--generator-waiver", default="", dest="generator_waiver",
+                        help="Generator Guard: reasoned waiver when a generator-owned C++ edit is "
+                             "intentional (e.g. migrating a loop-built file to generator ownership)")
     args = parser.parse_args()
 
     # Research Gate — the mandated research must be EXPLICIT, not silently skipped
@@ -110,6 +113,53 @@ def main():
         raise
     except Exception as _rg_e:
         print(f"[Research Gate] unavailable ({_rg_e}) — passing open")
+
+    # Generator Guard — refuse to record a session that hand-edited generator-owned
+    # C++ (it'll be silently clobbered on the next pipeline run) unless explicitly
+    # waived. LM-judged (may take a minute on the local model — only fires when
+    # generated files are dirty and the generator itself wasn't changed).
+    try:
+        from core.generator_guard import (check as _gg_check, enforced as _gg_enforced,
+                                           format_violations as _gg_fmt)
+        _gg_viol = _gg_check()
+        if _gg_viol:
+            print(f"\n!! GENERATOR GUARD - {len(_gg_viol)} hand-edit(s) to generator-owned "
+                  f"C++ (clobbered on the next pipeline run):")
+            print(_gg_fmt(_gg_viol))
+            _gg_waiver = (getattr(args, "generator_waiver", "") or "").strip()
+            if _gg_enforced() and not _gg_waiver:
+                print("Fix the generator template in core/game_code_generator.py, not the C++. "
+                      "If intentional (e.g. migrating a file to generator ownership), pass "
+                      "--generator-waiver \"<reason>\".")
+                try:
+                    from core.graphify_interface import record_surprise as _gg_rs
+                    _gg_rs(context=f"postflight refused by generator guard: {args.phase[:70]}",
+                           reality=f"{len(_gg_viol)} hand-edit(s) to generator-owned C++: "
+                                   + ", ".join(v['path'].split('/')[-1] for v in _gg_viol[:6]),
+                           expectation="fix the generator template, never the generated C++",
+                           source="agent")
+                except Exception:
+                    pass
+                try:
+                    from core.capcom import post_safe as _gg_ps
+                    _gg_ps("generator-guard", f"postflight BLOCKED: {len(_gg_viol)} hand-edit(s) "
+                           f"to generator-owned C++ ({args.phase[:44]})",
+                           level="warn", source="generator-guard")
+                except Exception:
+                    pass
+                raise SystemExit(1)
+            if _gg_waiver:
+                print(f"[Generator Guard] WAIVED: {_gg_waiver[:100]}")
+                try:
+                    from core.capcom import post_safe as _gg_ps
+                    _gg_ps("generator-guard", f"generator hand-edit WAIVED: {_gg_waiver[:60]}",
+                           level="note", source="generator-guard")
+                except Exception:
+                    pass
+    except SystemExit:
+        raise
+    except Exception as _gg_e:
+        print(f"[Generator Guard] unavailable ({_gg_e}) — passing open")
 
     node_id = record_phase(args.phase, args.result, args.notes,
                            phantom_pains=args.phantom_pain or [],
