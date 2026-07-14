@@ -21,6 +21,7 @@ cd E:\PythonChimera\Chimera
 python -m core.preflight       # live state: health, GPA, loop board, last run, + [4.5] prior Will & open pains
 python -m core.helm            # recommended FOCUS: Contain / Fix / Graduate / Build / Verify / Polish / Consolidate
 python -m core.helm targets    # the ranked gap between the seed and the live project
+python -m core.capcom brief    # OPERATOR CHANNEL (agent-agnostic): unread signals from subsystems + your OPERATOR_INBOX notes. Leave the operator a note: python -m core.capcom tell "..."
 ```
 Then read the **top** of `E:\PythonChimera\task_progress.md` — the last agent's handoff and NEXT items. (Read the top few blocks, not the whole file.)
 

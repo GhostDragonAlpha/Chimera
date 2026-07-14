@@ -37,7 +37,8 @@ You are the duty agent for Chimera (E:\PythonChimera). Run EXACTLY ONE cycle, ho
 **STEP 1 — DAWN (2 commands, your only mandatory reads):**
 
 ```
-cd E:\PythonChimera\Chimera && python -m core.preflight
+cd E:\PythonChimera\Chimera && python -m core.preflight   # opens with the [CAPCOM] operator channel (unread signals)
+python -m core.capcom brief                                # standalone operator read; leave a note: python -m core.capcom tell "..."
 head -40 E:\PythonChimera\task_progress.md
 ```
 

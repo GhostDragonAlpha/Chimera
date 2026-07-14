@@ -1,3 +1,31 @@
+# Session 2026-07-13 — CAPCOM operator channel + auto-push hook
+
+**Shipped (on master, commit `b179e6f`):**
+- **CAPCOM — the operator channel** (`core/capcom.py`). Agent-agnostic PUSH feed so
+  system + human state reaches whoever operates, WITHOUT relying on Claude Code (built
+  to the human's directive: "communicate more to the operator… a system that isn't
+  reliant upon Claude code").
+  - Read it: `python -m core.capcom brief` (unread signals + live git/editor/phase/heading/board).
+  - Leave the operator a note: `python -m core.capcom tell "..."` OR edit `docs/OPERATOR_INBOX.md`.
+  - Subsystems post: `from core.capcom import post_safe`.
+  - Wired: preflight LEADS with the unread-signals block; postflight posts a completion
+    signal; task_board posts on claim/done/block. Signals in `docs/world/capcom.db`
+    (gitignored, FTS-searchable, append-only, watermark read-state).
+  - Docs taught it: CLAUDE.md, AGENTS.md, README.md, AGENT_ONBOARDING.md,
+    SUCCESSOR_RUNBOOK.md, CYCLE_PROMPT.md, .roo/rules/01-chimera.md.
+- **Auto-push Stop hook** (`.claude/settings.local.json`, gitignored): `git add -A` +
+  commit (`--no-verify`) + push at every turn end so nothing lingers unpushed. Claude-Code-only.
+
+**NEXT (recipes):**
+1. (optional) Re-home auto-push agent-agnostic: add `.git/hooks/post-commit` running
+   `git push origin HEAD` (non-fatal, background) so ANY harness auto-pushes, not just Claude Code.
+2. (optional) CAPCOM watcher daemon: `python -m core.capcom watch` polling git/editor/build
+   every ~15s to auto-post changes between turns (the tier the human deferred this session).
+3. Back to the game: design directive P2 (`Chimera/docs/DESIGN_DIRECTIVE.md`) — UGestureWheel +
+   a needy stranger (the meaning layer). Combat stays deferred (design-ranked nowhere).
+
+---
+
 # Helm-steered build 2026-07-12 — subsystem/Weather (loop 100)
 
 Helm heading was GRADUATE overall, but "steer to the next gap" -> top Build gap

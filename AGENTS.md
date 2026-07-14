@@ -1,7 +1,7 @@
 # Chimera — Build System Reference
 
 ## NEW AGENT? START HERE (in order)
-1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment, and **[4.5] Inheritance** (previous generation's Will, open phantom pains, Dream Report count, Observation queue).
+1. `cd E:\PythonChimera\Chimera` then `python -m core.preflight` — live state: graph health, GPA, loop board, pending research, last run, environment, and **[4.5] Inheritance** (previous generation's Will, open phantom pains, Dream Report count, Observation queue). Preflight now OPENS with the **CAPCOM operator channel** (agent-agnostic; `core/capcom.py`) — unread signals pushed by subsystems and the human. `python -m core.capcom brief` is the standalone read for any agent/harness; leave the operator a note via `python -m core.capcom tell "..."` or by editing `Chimera/docs/OPERATOR_INBOX.md`.
 2. Read `E:\PythonChimera\task_progress.md` — session handoff log; the top **NEXT** section is your work list.
 3. Work under the Contract (below): typed recording only (`record_*` helpers), fix generator templates never generated C++, and answer the Frame Audit (`Chimera/docs/RESULT_GRADING_RUBRIC.md`) before declaring anything complete.
 4. Finish with `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"` and update `task_progress.md` for the next agent.
@@ -199,6 +199,7 @@ Record metrics to DNA: sources_consulted, websites_visited, parameters_cross_ref
 | `core/graphify_interface.py` | Query/mutate functions + typed helpers (`record_*`) |
 | `core/preflight.py` | `python -m core.preflight` — one-command Pre-Flight report |
 | `core/postflight.py` | `python -m core.postflight` — one-command Post-Flight recorder |
+| `core/capcom.py` | **CAPCOM operator channel** (agent-agnostic push feed): `python -m core.capcom brief` / `tell "..."` / `post_safe(...)`; signals in `docs/world/capcom.db`. Human inbox: `docs/OPERATOR_INBOX.md`. Led into preflight; posted by postflight + task_board. |
 | `core/graphify_record.py` | `python -m core.graphify_record` — typed mutation CLI |
 | `core/dna/pattern_validator.py` | Blocks known-bad patterns before generation |
 | `core/dna/auto_fixer.py` | Auto-fix brace errors |

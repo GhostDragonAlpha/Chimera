@@ -11,7 +11,7 @@ constitution the human curates. The workflow below is the project.
 
 ## START HERE (every session, any agent)
 
-1. `cd E:\PythonChimera\Chimera` → `python -m core.preflight` — live state: graph health, GPA, spiral loop board, pending research, environment, and **[4.5] Inheritance**: the previous generation's Will, open phantom pains, Dream Report count, Observation queue.
+1. `cd E:\PythonChimera\Chimera` → `python -m core.preflight` — live state: graph health, GPA, spiral loop board, pending research, environment, and **[4.5] Inheritance**: the previous generation's Will, open phantom pains, Dream Report count, Observation queue. Preflight OPENS with the **CAPCOM operator channel** — unread signals pushed by subsystems and the human; `python -m core.capcom brief` is the standalone read for **any agent** (not Claude-Code-specific), and `python -m core.capcom tell "..."` (or editing `Chimera/docs/OPERATOR_INBOX.md`) is how you leave the operator a note.
 2. Read `E:\PythonChimera\task_progress.md` — session handoff; the top **NEXT** section is your work list.
 3. Execute THE WORKFLOW below. Nothing else is the process.
 4. Finish: `python -m core.postflight --phase "..." --result "<UBT verbatim>" --inheritance "<=3 sentences" --phantom-pain "..." --pain-verdict "<id>:confirmed|refuted|still-open"`, update `task_progress.md`, commit + push. Optionally run the night: `python -m core.dream_loop`.

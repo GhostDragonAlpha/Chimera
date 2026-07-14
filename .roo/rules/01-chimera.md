@@ -22,7 +22,10 @@ Workdir for ALL python commands: `E:/PythonChimera/Chimera`.
 ## The Contract (mandatory bookends)
 
 - Start: `python -m core.preflight` — read §[4.5] (Will, phantom pains, Observation queue,
-  pending heuristics) and §[4.6] (last sleepwalk / rehearsal decision).
+  pending heuristics) and §[4.6] (last sleepwalk / rehearsal decision). Preflight opens with
+  the **CAPCOM operator channel** — this Roo harness is exactly why CAPCOM is agent-agnostic
+  (project-native Python, not a Claude Code hook): run `python -m core.capcom brief` and leave
+  the operator a note with `python -m core.capcom tell "..."` or by editing `Chimera/docs/OPERATOR_INBOX.md`.
 - End: `python -m core.postflight --phase "..." --result "<UBT verbatim>"
   --inheritance "<=3 sentences" --phantom-pain "<one specific prediction>"
   --pain-verdict "<phase_id>:P<n>:confirmed|refuted|still-open"`, then

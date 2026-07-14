@@ -17,7 +17,8 @@
 
 ```powershell
 cd E:\PythonChimera\Chimera
-python -m core.preflight          # DAWN. Read [4.5] carefully: Will, pains, queues.
+python -m core.preflight          # DAWN. Read [4.5] carefully: Will, pains, queues. Opens with the [CAPCOM] operator channel.
+python -m core.capcom brief       # Operator channel: unread signals + your OPERATOR_INBOX notes. Leave a note back: python -m core.capcom tell "..."
 # ... do ONE work item from "YOUR TASKS" below ...
 python -m core.postflight --phase "<what you did>" --result "<verbatim outputs>" `
   --inheritance "<=3 sentences for the next session>" `
