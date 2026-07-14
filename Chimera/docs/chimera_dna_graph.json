@@ -59113,6 +59113,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_2f57610b598a"
+    },
+    {
+      "id": "surprise_5974ce0aaf201407",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-14T23:45:29.518765",
+      "context": "Evolved walker scored 13.52 body lengths under pybullet single-rollout evaluation; treated as a strong gait and staged for observation",
+      "expectation": "",
+      "reality": "It was chaos, not a gait: gait.py periodicity 0.25 (no cycle), a 1-micron start-height nudge cost 5.5 body lengths, and it scored 2.41 (worse than untrained) under honest 16-restart evaluation. One rollout from one start is a coin toss, not a measurement. Root cause: TORQUE 35 N.m/kg (10x a human hip) flung the body 3.4 km up; pybullet's constraint solver contained the violence instead of NaN-ing, so it lived permanently in the ballistic regime with no contact to form a limit cycle. Fixed by moving to mujoco-warp on GPU (33.7x), scoring worst-of-16 randomized restarts, and correcting the actuators; first honest winner reached periodicity 0.78, robustness 0.76 (a robust rhythmic crawl).",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'It was chaos, not a gait: gait.py periodicity 0.25 (no cycle), a 1-micron start-'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_3578d983f622"
     }
   ],
   "edges": [

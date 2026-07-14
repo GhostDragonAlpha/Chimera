@@ -1019,3 +1019,25 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 3. After verification, run `python -m core.rehearsal --decide` for the next Loop candidate
    (queue is currently empty).
 
+---
+
+# Session 2026-07-14 — GPU creature training: the evolved gait was CHAOS; honest evaluation on mujoco-warp
+
+**Scope:** infrastructure + the creature (evolved locomotion). Driven directly by the user ("make this system better in a way that uses the GPU"), after they noted the CPU P-cores were thermally maxed.
+
+**THE FINDING (this invalidated every prior creature number).** The celebrated pybullet walker (13.52 body lengths) was never a gait. `core/gait.py` measured **periodicity 0.25** (no repeating cycle); `converge.py` showed a **1-micron** start-height nudge cost it 5.5 body lengths and that making the solver exact never settled the answer. That is Lyapunov divergence — no attractor, no limit cycle, no gait. Every genome had been scored by ONE rollout from ONE exact pose, so the GA spent 80,000 evaluations selecting **lucky dice**. Proof: under honest physics that champion scores **2.41 — worse than an untrained brain (2.81)**. Root cause deeper than the solver: `TORQUE=22 N·m` = **35 N·m/kg** (a human hip is 3) flung the body **3.4 km** up; pybullet's constraint servo *contained* the violence instead of NaN-ing, so it lived permanently airborne with no contact to build a cycle from.
+
+**THE FIX (all committed to master, pushed):**
+- `core/mjcf.py` — bone tree → MJCF (nesting IS the kinematic tree). Self-collision OFF (pybullet parity), `integrator="implicitfast"` (Euler NaN'd it), `armature=0.001` + 2.0 N·m actuators (3.2 N·m/kg). `visual=True` adds render dressing without touching dynamics.
+- `core/trainables/brain_gpu.py` — whole population × 16 randomized restarts in ONE `mujoco-warp` kernel, brain = 3 Warp kernels, ZERO CPU↔GPU syncs in the rollout. Scores worst-of-16 (`robustness` = worst/mean). **Measured 2,358 evals/sec at 16,384 worlds vs pybullet's 70; the P-cores go idle.** pybullet physics is CPU-only forever (OpenCL promised since 2006, never shipped — verified from the manual + forum; TDS is a separate unmaintained C++ lib, slower than mujoco-warp here).
+- `core/gait.py` (pybullet) + `core/gait_mj.py` (MuJoCo, the trained physics) — Hildebrand footfall diagram + **periodicity** + robustness check + render. A foot is DISCOVERED, not declared.
+- `core/trainer.py` — spec-bind guard (refuse to start if the objective names an unmeasured fact).
+
+**RESULT — the first honest winner (`docs/objectives/brain_gpu.trained.json`, commit 0aca6ce):** a **robust rhythmic crawl**. periodicity **0.11→0.78** (a real cycle at last), robustness **0.76** (chaos gone: 1µm nudge holds 3.43→2.90, where the old brain swung 1.20→2.18), distance 3.24 honest & repeatable. BUT torso_z 0.037 — it did NOT stand up; it evolved a low undulating crawl.
+
+## NEXT (the train→pin→repair loop; the pins ARE the to-do list)
+1. **Iterate `docs/objectives/brain_gpu.json`, NOT the artifact.** The winner's pins: `robustness` rides its 0.75 floor (repeatability↔distance tension); `energy=888` vs guessed `ref=10` (mis-scaled ~90×, dragging the score, shaping nothing — set ref≈900); `torso_z` satisfied only 0.23 (under-weighted — RAISE its weight and/or ref to make it stand up off the floor).
+2. Retrain in a membrane: `python -m core.trainer --domain core.trainables.brain_gpu --objective docs/objectives/brain_gpu.json --pop 1024 --gens 300` (~60 min on the 4090). Use `python -u ... *> log` — piping through `Select-String` block-buffers and hides all progress.
+3. Witness the winner: `python -m core.gait_mj --trained docs/objectives/brain_gpu.trained.json --png out.png`. A number is not a witness (H-14).
+4. Bodies are NOT GPU-trainable (mujoco-warp batches N copies of ONE model) — evolve morphology on CPU MuJoCo, brains on GPU. See memories [[one-rollout-is-a-coin-toss]], [[gpu-is-mujoco-warp-not-pybullet]].
+
