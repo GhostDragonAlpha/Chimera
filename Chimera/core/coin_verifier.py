@@ -40,7 +40,8 @@ from pathlib import Path
 try:
     from core.lm_gateway import LM_MODEL as LM_STUDIO_MODEL
 except Exception:
-    LM_STUDIO_MODEL = "qwen-agentworld-35b-a3b-nvfp4"
+    LM_STUDIO_MODEL = ""   # blank ON PURPOSE — see lm_gateway.LM_MODEL. Naming a
+                           # model here would pin one the operator never chose.
 
 LM_STUDIO_URL = "http://localhost:1234/v1/chat/completions"
 ENFORCE_DEFAULT = True

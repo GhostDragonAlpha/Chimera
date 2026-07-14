@@ -296,9 +296,19 @@ KLO_EXTENSION_DIR = r"C:\Users\allen\.vscode\extensions\kilocode.kilo-code-7.3.5
 
 # LM Studio (local/remote)
 LM_STUDIO_BASE_URL = "http://192.168.3.169:1234"
-LM_STUDIO_MODELS_ENDPOINT = f"{LM_STUDIO_BASE_URL}/api/v1/models"
+# /api/v0 is LM Studio's real native surface. This said /api/v1 — which 404s — so
+# every capability probe silently failed after three retries with backoff.
+LM_STUDIO_MODELS_ENDPOINT = f"{LM_STUDIO_BASE_URL}/api/v0/models"
 LM_STUDIO_CHAT_COMPLETIONS_ENDPOINT = f"{LM_STUDIO_BASE_URL}/v1/chat/completions"
-LM_STUDIO_MODEL = "dhruvallabs/qwen-agentworld-35b-a3b"
+
+# BLANK ON PURPOSE (2026-07-14). Nothing in this studio names a model: the model
+# is whatever LM Studio has RESIDENT, resolved at call time (lmstudio_client.
+# _resident_model / core.lm_gateway.resolve_model). This used to pin
+# "dhruvallabs/qwen-agentworld-35b-a3b" — an id that is not even in LM Studio's
+# model list any more — so every caller that omitted model_id asked for a model
+# that does not exist. A blank id fails loudly; a pinned one fails silently by
+# dragging a model onto a GPU the operator is sharing.
+LM_STUDIO_MODEL = ""
 
 
 # ============================================================================

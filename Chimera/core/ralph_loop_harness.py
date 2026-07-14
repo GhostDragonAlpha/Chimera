@@ -145,10 +145,10 @@ VERIFY_SCHEMA = {
 
 HARNESS_CONFIG: Dict[str, Any] = {
     "lm_studio_url": "http://192.168.3.169:1234/v1/chat/completions",
-    # 'dhruvallabs/qwen-agentworld-35b-a3b' was not in LM Studio's loaded set;
-    # the reported id is 'qwen-agentworld-35b-a3b-nvfp4'. Env-overridable, one
-    # source (matches core.lm_gateway.LM_MODEL).
-    "lm_studio_model": os.environ.get("CHIMERA_LM_MODEL", "qwen-agentworld-35b-a3b-nvfp4"),
+    # Blank ON PURPOSE: lm_urlopen rewrites every body to whatever model LM Studio
+    # has resident (core.lm_gateway.resolve_model). Naming an id here would pin a
+    # model the operator never chose. See lm_gateway.LM_MODEL.
+    "lm_studio_model": os.environ.get("CHIMERA_LM_MODEL", ""),
     "mcp_cli_path": "E:\\ChiR24-Unreal_mcp-test\\dist\\cli.js",
     "mcp_port": 8091,
     "playwright_url": "http://localhost:8342/mcp",

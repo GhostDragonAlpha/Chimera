@@ -39,7 +39,9 @@ import requests
 # ---------------------------------------------------------------------------
 MCP_URL = "http://localhost:3000/mcp"
 LM_STUDIO_URL = "http://localhost:1234/v1/chat/completions"
-LM_MODEL = "qwen3.6-35b-a3b-mtp@iq2_m"
+# blank on purpose — the model is whatever LM Studio has resident, never a pinned
+# id (this used to name qwen3.6-35b-a3b-mtp@iq2_m, gone since 2026-07-12)
+LM_MODEL = ""
 SCREENSHOT_DIR = r"E:\PythonChimera\Chimera\Saved\Screenshots"
 
 CHIMERA_DIR = Path(r"E:\PythonChimera\Chimera")

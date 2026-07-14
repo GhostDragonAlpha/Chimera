@@ -13,11 +13,12 @@ try:
     from core.lm_gateway import (LM_MODEL as LM_STUDIO_MODEL, LM_TIMEOUT,
                                  resolve_model, loaded_models)
 except Exception:
-    LM_STUDIO_MODEL = "qwen-agentworld-35b-a3b-nvfp4"
+    LM_STUDIO_MODEL = ""   # blank ON PURPOSE — see lm_gateway.LM_MODEL
     LM_TIMEOUT = 600
 
     def resolve_model() -> str:
-        return LM_STUDIO_MODEL
+        return LM_STUDIO_MODEL      # blank -> LM Studio errors loudly, which beats
+                                    # silently pinning a model nobody chose
 
     def loaded_models() -> list:
         return []

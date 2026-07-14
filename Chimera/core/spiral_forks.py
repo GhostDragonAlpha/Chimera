@@ -43,7 +43,8 @@ except ImportError:
     HARNESS_CONFIG = {
         "fork_budget": 3,
         "lm_studio_url": "http://localhost:1234/v1/chat/completions",
-        "lm_studio_model": "qwen3.6-35b-a3b-mtp@iq2_m",
+        # blank on purpose — lm_urlopen retargets every body at the resident model
+        "lm_studio_model": "",
     }
 
 try:
@@ -210,7 +211,8 @@ def _lm_generate(feature: str, seed_name: str, directive: str) -> dict:
     # H-3 lesson applied: /no_think suppresses qwen's reasoning phase, the budget
     # is generous, and BOTH content and reasoning_content are schema-checked.
     payload = {
-        "model": HARNESS_CONFIG.get("lm_studio_model", "qwen-agentworld-35b-a3b-nvfp4"),
+        # blank is correct — lm_urlopen retargets this at the resident model
+        "model": HARNESS_CONFIG.get("lm_studio_model", ""),
         "messages": [
             {
                 "role": "user",

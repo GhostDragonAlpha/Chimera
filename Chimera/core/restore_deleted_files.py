@@ -18,6 +18,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from core.code_generation_orchestrator import CodeGenerationOrchestrator
+from core.lm_gateway import resolve_model   # use whatever model is loaded, never a pinned id
 
 
 def restore_cpp_file():
@@ -30,7 +31,7 @@ def restore_cpp_file():
     
     result = orchestrator.generate_cpp_code(
         prompt=prompt,
-        model_id='qwen-agentworld-35b-a3b-nvfp4',
+        model_id=resolve_model(),
         temperature=0.1,
         max_tokens=2048,
         timeout=180
@@ -67,7 +68,7 @@ def restore_typescript_files():
         
         result = orchestrator.generate_typescript_code(
             prompt=prompt,
-            model_id='qwen-agentworld-35b-a3b-nvfp4',
+            model_id=resolve_model(),
             temperature=0.1,
             max_tokens=2048,
             timeout=180

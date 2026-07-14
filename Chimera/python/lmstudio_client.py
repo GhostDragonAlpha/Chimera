@@ -96,7 +96,7 @@ class ChatConversationManager:
 
     def __init__(self, max_tokens: int = 8192, model_id: str | None = None):
         self.max_tokens = max_tokens
-        self.model_id = model_id or LM_STUDIO_MODEL
+        self.model_id = model_id or _resident_model()
         self.messages: list[dict] = []
         self.system_prompt: str | None = None
 
@@ -598,6 +598,28 @@ class LmStudioConnectionPool:
 _LM_STUDIO_CONN_POOL = LmStudioConnectionPool(LM_STUDIO_BASE_URL)
 
 
+def _resident_model() -> str:
+    """The model LM Studio currently has LOADED. We never name one ourselves.
+
+    Mirrors core.lm_gateway.resolve_model, but kept self-contained (a plain GET,
+    no cross-package import) because this module is also used standalone. Returns
+    "" if nothing is loaded — a blank id makes LM Studio fail loudly, which is the
+    honest outcome. Substituting a pinned model instead would quietly drag it onto
+    a GPU the operator is sharing with other clients.
+    """
+    import urllib.request
+    try:
+        with urllib.request.urlopen(
+                f"{LM_STUDIO_BASE_URL}/api/v0/models", timeout=8) as r:
+            data = json.loads(r.read().decode())
+        for m in data.get("data", []):
+            if m.get("state") == "loaded" and m.get("id"):
+                return m["id"]
+    except Exception:
+        pass
+    return ""
+
+
 def get_image_mime_type(image_path: str) -> str:
     """Determine the MIME type of an image file.
 
@@ -698,7 +720,7 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
     if not isinstance(timeout, int) or timeout <= 0:
         raise ValidationError(f"timeout must be an integer > 0, got {timeout}")
     if model_id is None:
-        model_id = LM_STUDIO_MODEL
+        model_id = _resident_model()
 
     # Check LM Studio API health before making requests
     if not check_lm_studio_health(timeout=5):
@@ -1104,8 +1126,8 @@ def auto_select_model() -> str | None:
             elif is_loaded:
                 return m.get('key', '')
 
-    # Fallback to default
-    return LM_STUDIO_MODEL
+    # No pinned default: fall back to whatever is actually loaded
+    return _resident_model()
 
 
 def send_to_lmstudio_concurrent(requests_list, max_workers=5, overall_timeout=None):
@@ -1183,7 +1205,7 @@ async def send_to_lmstudio_async(prompt: str, image_path: str | None = None, mod
     if not isinstance(timeout, int) or timeout <= 0:
         raise ValidationError(f"timeout must be an integer > 0, got {timeout}")
     if model_id is None:
-        model_id = LM_STUDIO_MODEL
+        model_id = _resident_model()
 
     # Check LM Studio API health before making requests
     if not check_lm_studio_health(timeout=5):
@@ -1277,7 +1299,7 @@ def send_to_lmstudio_with_history(
             messages_copy = list(messages)
 
         return {
-            "model": model_id or LM_STUDIO_MODEL,
+            "model": model_id or _resident_model(),
             "messages": messages_copy,
             "temperature": temperature,
             "max_tokens": max_tokens,
@@ -1342,7 +1364,7 @@ def send_to_lmstudio_with_history(
         logger.error(error_msg)
         raise NetworkError(error_msg)
     except Exception as e:
-        error_msg = f"Failed to send analysis request to LM Studio: {e}. Check that LM Studio is running and the model '{model_id or LM_STUDIO_MODEL}' is loaded."
+        error_msg = f"Failed to send analysis request to LM Studio: {e}. Check that LM Studio is running and the model '{model_id or _resident_model()}' is loaded."
         logger.error(error_msg)
         raise ResourceError(error_msg)
 
@@ -1516,7 +1538,7 @@ async def send_to_lmstudio_with_history_async(
             messages_copy = list(messages)
 
         return {
-            "model": model_id or LM_STUDIO_MODEL,
+            "model": model_id or _resident_model(),
             "messages": messages_copy,
             "temperature": temperature,
             "max_tokens": max_tokens,
@@ -1653,7 +1675,7 @@ async def send_to_lmstudio_async(prompt: str, image_path: str | None = None, mod
     if not isinstance(timeout, int) or timeout <= 0:
         raise ValidationError(f"timeout must be an integer > 0, got {timeout}")
     if model_id is None:
-        model_id = LM_STUDIO_MODEL
+        model_id = _resident_model()
 
     # Check LM Studio API health before making requests
     if not check_lm_studio_health(timeout=5):

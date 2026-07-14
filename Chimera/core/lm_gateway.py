@@ -44,12 +44,16 @@ QUEUE_DIR = Path(__file__).resolve().parents[1] / "docs" / "world" / "lm_queue"
 COUNTER = QUEUE_DIR / ".counter"
 LOCK_PATH = QUEUE_DIR / ".lock"
 
-# LEGACY. Not a mandate, and NOT a fallback either: the studio ADOPTS whatever
-# model LM Studio has resident (resolve_model), and refuses to run when it has
-# none rather than choosing one. Kept only because call sites still import it to
-# stamp a body that lm_urlopen immediately overwrites. Nothing here selects a
-# model; changing the model everywhere = load a different one in LM Studio.
-LM_MODEL = os.environ.get("CHIMERA_LM_MODEL", "qwen-agentworld-35b-a3b-nvfp4")
+# LEGACY, and deliberately EMPTY. Nothing in this studio names a model. The model
+# is whatever LM Studio has resident (resolve_model), and lm_urlopen rewrites every
+# outgoing body to it — call sites still import this to stamp a body, so the NAME
+# has to survive, but its VALUE must stay blank.
+#
+# A real id here is a pinned model in disguise: the moment anything bypasses the
+# gateway it would silently drag THAT model onto a GPU shared with other clients.
+# Blank fails loudly instead, which is the honest outcome. Set CHIMERA_LM_MODEL
+# only to force an id for a one-off debug run.
+LM_MODEL = os.environ.get("CHIMERA_LM_MODEL", "")
 
 # The shared per-call generation budget. qwen-agentworld is a REASONING model —
 # it emits a long thinking trace before answering, so every call site needs
@@ -400,8 +404,8 @@ def _main() -> int:
     ap.add_argument("command", choices=["status", "evict"], nargs="?", default="status",
                     help="status: which model requests will use. "
                          "evict: manually free VRAM (never happens on its own).")
-    ap.add_argument("--model", default=LM_MODEL,
-                    help=f"evict: the model to KEEP resident (default: {LM_MODEL})")
+    ap.add_argument("--model", default=None,
+                    help="evict: the model to KEEP resident (default: the resident one)")
     ap.add_argument("--all", action="store_true",
                     help="evict: unload everything, emptying the endpoint")
     args = ap.parse_args()
@@ -425,7 +429,8 @@ def _main() -> int:
                   f"`evict` frees the rest.")
         return 0 if resident or not ADOPT_RESIDENT else 1
 
-    evicted = evict_others(None if args.all else args.model)
+    keep = None if args.all else (args.model or (resident[0] if resident else None))
+    evicted = evict_others(keep)
     if not evicted:
         print("\nnothing to evict - endpoint already clean")
     return 0
