@@ -255,6 +255,54 @@ def main():
         except Exception as _vg_e:
             print(f"[Visual Gate] unavailable ({_vg_e}) — passing open")
 
+        # THE COIN (top layer, the human's design 2026-07-14) — the existence
+        # gates above check evidence EXISTS; the coin checks the two faces MATCH:
+        # HEADS = the claim being recorded, TAILS = this session's evidence. The
+        # LM judges both directions (evidence proves claim / claim honest to
+        # evidence). NOT the same coin -> refused. LM unavailable -> pass open
+        # (cannot-judge is not judged-false). CHIMERA_COIN_GATE=warn softens.
+        try:
+            from core.coin_verifier import (judge as _coin_judge, enforced as _coin_enforced,
+                                            assemble_claim as _coin_claim,
+                                            assemble_evidence as _coin_evidence,
+                                            format_judgment as _coin_fmt)
+            _coin_nodes = load_dna_graph().get("nodes", [])
+            _cj = _coin_judge(
+                _coin_claim(args.feature, args.status, args.result, args.notes),
+                _coin_evidence(_coin_nodes, feature=args.feature),
+                kind="feature_verify")
+            if _cj is None:
+                print("[Coin] LM unavailable/unparseable — passing open (existence gates still held)")
+            else:
+                print("[Coin] " + ("SAME COIN" if _cj.get("same_coin") else "NOT THE SAME COIN"))
+                print(_coin_fmt(_cj))
+                try:
+                    from core.capcom import post_safe as _coin_ps
+                    _coin_ps("coin", f"{args.feature} {args.status}: "
+                             f"{'same coin' if _cj.get('same_coin') else 'NOT SAME COIN'} "
+                             f"({_cj.get('verdict')})",
+                             level=("info" if _cj.get("same_coin") else "warn"),
+                             source="coin-verifier", data=_cj)
+                except Exception:
+                    pass
+                if not _cj.get("same_coin") and _coin_enforced():
+                    print("!! COIN GATE - refused: the claim and the evidence are not "
+                          "faces of the same coin. Fix the mismatch (or CHIMERA_COIN_GATE=warn).")
+                    try:
+                        from core.graphify_interface import record_surprise as _coin_rs
+                        _coin_rs(context=f"postflight refused by THE COIN: {args.feature} -> {args.status}",
+                                 reality="; ".join(str(m) for m in (_cj.get("mismatches") or [])[:3])
+                                         or "claim/evidence mismatch",
+                                 expectation="claim and evidence must be faces of the same coin",
+                                 source="agent")
+                    except Exception:
+                        pass
+                    raise SystemExit(1)
+        except SystemExit:
+            raise
+        except Exception as _coin_e:
+            print(f"[Coin] unavailable ({_coin_e}) — passing open")
+
     # Verbatim check (advisory) — the Contract says "report exact UBT output
     # verbatim, never summarize." If a build/compile phase's --result looks like a
     # SUMMARY (short, no compiler/UBT markers), warn. Not blocked — too fuzzy to
