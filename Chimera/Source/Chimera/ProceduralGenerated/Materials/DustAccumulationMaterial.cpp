@@ -4,6 +4,11 @@
 UDustAccumulationMaterial::UDustAccumulationMaterial()
 	: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)
 {
+	// Dust tuning knobs (previously declared but unwired): neutral strength, no
+	// angle bias, and a dusty-tan tint by default — all assignable in BP.
+	AccumulationStrength = 1.0f;
+	SurfaceAngleBias = 0.0f;
+	DustColor = FLinearColor(0.55f, 0.45f, 0.35f, 1.0f);
 }
 
 float UDustAccumulationMaterial::GetDustIntensity(FVector VertexNormal, float Time)
@@ -15,8 +20,9 @@ float UDustAccumulationMaterial::GetDustIntensity(FVector VertexNormal, float Ti
 	float NoiseValue = FMath::Sin(VertexNormal.X * 3.0f + Time) * FMath::Cos(VertexNormal.Y * 5.0f + Time);
 	NoiseValue = (NoiseValue + 1.0f) * 0.5f; // Normalize to [0, 1]
 
-	// Combine normal factor and noise for final intensity
-	float Intensity = (NormalFactor * AccumulationRate) + (NoiseValue * 0.3f);
+	// Combine normal factor and noise for final intensity, scaled by the
+	// configured accumulation strength (previously dead config).
+	float Intensity = ((NormalFactor * AccumulationRate) + (NoiseValue * 0.3f)) * AccumulationStrength;
 	Intensity = FMath::Clamp(Intensity, 0.0f, 1.0f);
 
 	return Intensity;
@@ -37,7 +43,9 @@ float UDustAccumulationMaterial::CalculateNormalFactor(const FVector& VertexNorm
 	// - 1 for perfectly downward-facing (Normal=(0,0,-1)) -> full dust accumulation
 	// - ~0.5 for horizontal surfaces (Normal=(1,0,0) or similar with Z=0) -> moderate dust
 
-	float DownFacingFactor = FMath::Max(0.0f, 1.0f - UpFacingFactor);
+	// SurfaceAngleBias shifts how readily an angled surface collects dust
+	// (previously dead config): positive bias = more dust on shallower angles.
+	float DownFacingFactor = FMath::Clamp(FMath::Max(0.0f, 1.0f - UpFacingFactor) + SurfaceAngleBias, 0.0f, 1.0f);
 
 	// Apply threshold to create sharp transition for horizontal vs vertical surfaces
 	if (UpFacingFactor > Threshold)
@@ -121,8 +129,8 @@ float UDustAccumulationMaterial::GetCombinedDustIntensity(FVector VertexNormal, 
 		InNoiseScale // Blend between them based on InNoiseScale parameter
 	);
 
-	// Apply accumulation rate and clamp
-	CombinedIntensity = CombinedIntensity * AccumulationRate;
+	// Apply accumulation rate + configured strength, then clamp.
+	CombinedIntensity = CombinedIntensity * AccumulationRate * AccumulationStrength;
 	return FMath::Clamp(CombinedIntensity, 0.0f, 1.0f);
 }
 
@@ -131,4 +139,12 @@ void UDustAccumulationMaterial::ApplyNoiseMask(float InNoiseScale, float InNoise
 	// Apply and validate procedural noise parameters
 	NoiseScale = FMath::Clamp(InNoiseScale, 0.0f, 10.0f);
 	NoiseFrequency = FMath::Clamp(InNoiseFrequency, 0.1f, 20.0f);
+}
+
+FLinearColor UDustAccumulationMaterial::GetDustColorAt(FVector VertexNormal, float Time)
+{
+	// The dust tint (previously dead config) scaled by the accumulation at this
+	// point — what a material param-setter or renderer samples.
+	const float Intensity = GetCombinedDustIntensity(VertexNormal, Time, NoiseScale, false);
+	return DustColor * Intensity;
 }

@@ -48,7 +48,11 @@ public:
 
 	/** Apply procedural noise mask to dust accumulation */
 	UFUNCTION(BlueprintCallable, Category = "Materials|Dust")
-	void ApplyNoiseMask(float NoiseScale, float AccumulationStrength);
+	void ApplyNoiseMask(float NoiseScale, float NoiseFrequency);
+
+	/** The dust tint at a point, scaled by local accumulation (uses DustColor). */
+	UFUNCTION(BlueprintCallable, Category = "Materials|Dust")
+	FLinearColor GetDustColorAt(FVector VertexNormal, float Time);
 
 	// Parameters for dust-accumulation material
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials|Dust")
