@@ -1,0 +1,57 @@
+{
+  "name": "creature",
+  "author": "LLM, from a scenario. Note what it does NOT say: it never mentions legs.",
+  "scenario": "A body that stands up under its own weight and stays standing when the ground shifts. It should hold itself clear of the ground rather than sprawl, survive a real tilt without toppling, and not be an implausible pile of matter. Nothing here asks for four legs — asking for legs would only rediscover my own assumption. Legs, if they appear, are the ANSWER.",
+
+  "constraints": [
+    {
+      "measure": "stands",
+      "kind": "at_least", "min": 1.0,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE GATE. The centre of gravity must project inside the support polygon. Otherwise it is not a creature, it is a thing lying down."
+    },
+    {
+      "measure": "tip_deg",
+      "kind": "at_least", "min": 22.0,
+      "weight": 3.0,
+      "why": "the tilt it can survive before toppling. This is the term that killed the LOLLIPOP: a boulder on a pole tips at 7.8 degrees, a quadruped at 26.6. It makes holding mass high COST you the robustness you need to keep it there — and the only way to buy both is to spread weight onto separated supports."
+    },
+    {
+      "measure": "height",
+      "kind": "at_least", "min": 0.22,
+      "weight": 2.0,
+      "why": "the body must be carried clear of the ground. Without this a pancake wins: perfectly stable, and useless."
+    },
+    {
+      "measure": "tip_deg",
+      "kind": "maximize", "ref": 45.0,
+      "weight": 2.5,
+      "why": "REPAIR (2026-07-14), and the machine found the bug, not me. With only bounds, every constraint saturates at sat=1.0, the score pins at 1.0000, and there is NO GRADIENT LEFT TO CLIMB — the optimiser stops dead at 'barely legal'. The first run rode tip_deg=22.04 against its min of 22 and height=0.2212 against its min of 0.22, and produced a minimally-compliant blob on stilts. A spec made only of walls gets you exactly the walls. This term keeps paying past the wall."
+    },
+    {
+      "measure": "height",
+      "kind": "maximize", "ref": 0.5,
+      "weight": 2.0,
+      "why": "the other half of the same repair: keep rewarding a body carried higher, not merely high enough."
+    },
+    {
+      "measure": "symmetry",
+      "kind": "at_least", "min": 0.65,
+      "weight": 1.0,
+      "why": "a soft PRIOR, not a law. Real development is symmetric because it is cheap, not because symmetry is fit."
+    },
+    {
+      "measure": "volume",
+      "kind": "at_most", "max": 0.010,
+      "weight": 1.5,
+      "why": "metabolic cost, charged by VOLUME not by bone count. Charging per bone was the other half of the lollipop: mass goes as r-squared, so one enormous bone was free."
+    },
+    {
+      "measure": "bones",
+      "kind": "band", "min": 12.0, "max": 44.0,
+      "weight": 1.0,
+      "why": "an animal, not a stick figure and not a hairball."
+    }
+  ]
+}
