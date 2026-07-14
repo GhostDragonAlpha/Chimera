@@ -668,7 +668,7 @@ def _request_with_retry(request_func, max_retries=3, backoff_base=2):
 # Core API Functions
 # ---------------------------------------------------------------------------
 
-def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str | None = None, temperature: float = 0.3, max_tokens: int = 1024, timeout: int = 120) -> dict | None:
+def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str | None = None, temperature: float = 0.3, max_tokens: int = 4096, timeout: int = 120) -> dict | None:
     """Send a prompt (optionally with an image) to LM Studio for analysis.
 
     Args:
@@ -878,15 +878,19 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
                 has_reasoning_dump = result.get('has_reasoning_dump', False)
                 if has_reasoning_dump and reasoning_dump_retries < max_reasoning_dump_retries:
                     reasoning_dump_retries += 1
-                    current_max_tokens = min(current_max_tokens * 2, 4096)  # Double tokens, cap at 4096
+                    # Cap must clear the reasoning model's thinking trace (2-4k tokens
+                    # BEFORE the answer at ~20 tok/s) — the old 4096 cap looped forever.
+                    _cap = int(os.environ.get("CHIMERA_LM_MAX_TOKENS", "16384"))
+                    current_max_tokens = min(current_max_tokens * 2, _cap)
                     logger.warning(f"LM response contains reasoning dump. Retry {reasoning_dump_retries}/{max_reasoning_dump_retries} with max_tokens={current_max_tokens}")
 
-                    # Update the request to use larger token budget
-                    def send_chat_request_retry():
-                        # Re-build the chat request with updated max_tokens
-                        return _build_chat_completion_payload(prompt, image_b64, has_image, model_id, temperature, current_max_tokens)
+                    # BUGFIX (2026-07-14): the old code defined an unused retry closure —
+                    # the loop re-ran send_chat_request with the ORIGINAL payload, so the
+                    # escalated budget was never actually sent. Mutate the live payload
+                    # the closure reads, so the retry really carries the larger budget.
+                    payload["max_tokens"] = current_max_tokens
 
-                    continue  # Retry with new payload function
+                    continue  # Retry with the escalated budget
                 elif result is not None and 'error' in result:
                     logger.error(f"LM Studio returned error: {result.get('error')}")
                     return result

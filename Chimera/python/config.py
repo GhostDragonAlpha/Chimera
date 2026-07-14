@@ -35,7 +35,11 @@ if not logger.handlers:
     # Rotating file handler - 10 MB max size, keep 5 backup files
     log_dir = Path(CHIMERA_SAVED_LOGS_DIR if 'CHIMERA_SAVED_LOGS_DIR' in globals() else Path.cwd() / "Saved" / "Logs")
     log_dir.mkdir(parents=True, exist_ok=True)
-    log_file = log_dir / "chimera.log"
+    # NOT "chimera.log": Windows paths are case-insensitive, so that IS the
+    # editor's own Saved/Logs/Chimera.log — which a RUNNING editor holds locked,
+    # making every Python log emit spam PermissionError (observed 2026-07-14
+    # during the visual chain). Python tooling logs to its own file.
+    log_file = log_dir / "chimera_python.log"
     file_handler = RotatingFileHandler(
         log_file,
         maxBytes=10 * 1024 * 1024,  # 10 MB
