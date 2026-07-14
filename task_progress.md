@@ -1,3 +1,53 @@
+# Solver draft 2026-07-14 15:31Z — blocker: PIE session did not start
+
+Diagnosis: The PIE session likely failed to start because the editor is stuck or unresponsive; core.unblock can reset its state.
+Confidence: 0.0
+
+## NEXT (solver-drafted fix plan; the blocker is NOT the note — this plan is)
+1. **Fix: PIE session did not start** `capable sessions only` — execute the remaining steps:
+   1. [python_module] python -m core.unblock --target=editor — Attempt to unblock the editor process before deeper inspection.
+   Skip-condition: blocker no longer reproduces → record pathway success.
+
+---
+
+# Solver draft 2026-07-14 15:28Z — blocker: LM Studio endpoint has no model loaded
+
+Diagnosis: LM unavailable — template remediation for: LM Studio endpoint has no model loaded
+Confidence: 0.3
+
+## NEXT (solver-drafted fix plan; the blocker is NOT the note — this plan is)
+1. **Fix: LM Studio endpoint has no model loaded** `capable sessions only` — execute the remaining steps:
+   1. [python_module] python -m core.unblock --ensure all — heal the known environment blockers first
+   2. [capable_handoff]  — If still blocked: diagnose 'LM Studio endpoint has no model loaded' — attach the verbatim error, check docs/MCP_PATHWAYS.md traps, record the fix as a pathway.
+   Skip-condition: blocker no longer reproduces → record pathway success.
+
+---
+
+# Solver draft 2026-07-14 15:22Z — blocker: LM Studio endpoint has no model loaded
+
+Diagnosis: LM unavailable — template remediation for: LM Studio endpoint has no model loaded
+Confidence: 0.3
+
+## NEXT (solver-drafted fix plan; the blocker is NOT the note — this plan is)
+1. **Fix: LM Studio endpoint has no model loaded** `capable sessions only` — execute the remaining steps:
+   1. [python_module] python -m core.unblock --ensure all — heal the known environment blockers first
+   2. [capable_handoff]  — If still blocked: diagnose 'LM Studio endpoint has no model loaded' — attach the verbatim error, check docs/MCP_PATHWAYS.md traps, record the fix as a pathway.
+   Skip-condition: blocker no longer reproduces → record pathway success.
+
+---
+
+# Solver draft 2026-07-14 15:18Z — blocker: LM Studio endpoint has no model loaded
+
+Diagnosis: LM Studio endpoint reports no model loaded because its startup configuration lacks a model path or the server process hasn't been initialized with any model file.
+Confidence: 0.85
+
+## NEXT (solver-drafted fix plan; the blocker is NOT the note — this plan is)
+1. **Fix: LM Studio endpoint has no model loaded** `capable sessions only` — execute the remaining steps:
+   1. [mcp_call] control_editor/inspect — Read LM Studio config to see if a model path is set; also check server health.
+   Skip-condition: blocker no longer reproduces → record pathway success.
+
+---
+
 # Rehearsal decision 2026-07-14 14:47Z — next move: Costless Life Bad Ending Trigger
 
 Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
