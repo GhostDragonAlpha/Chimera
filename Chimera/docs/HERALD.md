@@ -1,11 +1,11 @@
 # The Herald — 2026-07-14
 
-**Good news:** 11 feature(s) have now earned full trust through repeated testing — Ground_Sand_Sound, subsystem/Combat, subsystem/Economy and more.
-**Watch:** 7 feature(s) failed some checks recently (Game_Feel, subsystem/AI, subsystem/GameMode); they are on the work board with evidence attached.
-**The queue:** 21 task(s) open for agents; 115 old worries await a confirm-or-refute verdict.
+**Good news:** 18 feature(s) have now earned full trust through repeated testing — audio_visual_sync/report_telemetry, Demo_Level, Ground_Sand_Sound and more.
+**Watch:** 5 feature(s) failed some checks recently (Game_Feel, subsystem/AI, subsystem/GameMode); they are on the work board with evidence attached.
+**The queue:** 21 task(s) open for agents; 113 old worries await a confirm-or-refute verdict.
 **The container:** holding steady at the edge; no changes proposed.
 **Needs you today:** nothing — rest.
 
-*Last will:* A whole-document token-coverage test SATURATES as the corpus grows and silently suppresses new lessons — judge coverage per-entry, not per-document. And verify config PATHS resolve: COVERAGE_SOURCES p
+*Last will:* Pain-duplication root-fixed (record_phase dedup, ff1d5fd). Remaining: claim_task should skip pain-verdict tasks whose pain already has a verdict; a bounded backlog of stale tasks drains as claimed. Ne
 
 *(Generated nightly. The machinery underneath: docs/HISTORY_BOOK.md is searchable; preflight has the dials.)*
