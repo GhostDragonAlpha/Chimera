@@ -101,11 +101,21 @@ def _satisfy(c: dict, x: float) -> float:
         v = float(c["value"])
         return soft(abs(x - v), float(c.get("tol", abs(v) * 0.1 or 1.0)))
     if k == "maximize":
-        ref = float(c.get("ref", 1.0)) or 1.0
-        return max(0.0, min(1.0, x / ref)) if ref > 0 else 0.0
+        # NEVER SATURATE. This used to be min(1.0, x/ref) — which CLAMPS, so the moment
+        # x reached `ref` the gradient died and the optimiser stopped. That is the exact
+        # SATISFICER trap I documented in TRAINING_PROTOCOL.md §3 and then rebuilt one
+        # layer down: a `maximize` that saturates is a BAND WEARING A MAXIMIZE'S CLOTHES.
+        # (Observed 2026-07-14: the brain hit 1.0000 at generation 100 and the remaining
+        # 400 generations — 80,000 evaluations — changed nothing.)
+        #
+        # x/(x+ref) climbs forever: 0.5 at ref, 0.67 at 2*ref, 0.91 at 10*ref, and never
+        # quite reaches 1. There is always somewhere left to go.
+        ref = abs(float(c.get("ref", 1.0))) or 1.0
+        x = max(0.0, x)
+        return x / (x + ref)
     if k == "minimize":
-        ref = float(c.get("ref", 1.0)) or 1.0
-        return 1.0 / (1.0 + max(0.0, x) / abs(ref))
+        ref = abs(float(c.get("ref", 1.0))) or 1.0
+        return ref / (ref + max(0.0, x))       # mirror image; also never saturates
     raise ValueError(f"unknown constraint kind: {k}")
 
 
