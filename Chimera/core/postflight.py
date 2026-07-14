@@ -45,7 +45,71 @@ def main():
                              "'<feature> : <boundary now PROVEN wrong> : <evidence ref>' "
                              "(repeatable; becomes an Elimination node + narrows the "
                              "next agent's search space)")
+    parser.add_argument("--researched", default="",
+                        help="Research Gate: what you looked up + sources/URLs this session "
+                             "(satisfies the gate — covers technical/infra research, not just assets)")
+    parser.add_argument("--research-waiver", default="", dest="research_waiver",
+                        help="Research Gate: a reasoned waiver when this change genuinely needed "
+                             "no external research (recorded + auditable; a silent skip is refused)")
     args = parser.parse_args()
+
+    # Research Gate — the mandated research must be EXPLICIT, not silently skipped
+    # (2026-07-13). Evidence recorded this session OR --researched sails through;
+    # otherwise a reasoned --research-waiver proceeds; a bare skip is refused (like
+    # bare 'blocked'). Agent-agnostic: any harness running postflight inherits it.
+    try:
+        from core.research_gate import check as _rg_check, enforced as _rg_enforced, GUIDANCE as _rg_guide
+        _rg_nodes = load_dna_graph().get("nodes", [])
+        _rg_status, _rg_detail = _rg_check(
+            _rg_nodes, researched=getattr(args, "researched", "") or "",
+            waiver=getattr(args, "research_waiver", "") or "")
+        if _rg_status == "missing" and _rg_enforced():
+            print("\n!! RESEARCH GATE - refused: this postflight records work but no research is evident.")
+            print(_rg_guide)
+            try:
+                from core.graphify_interface import record_surprise as _rg_rs
+                _rg_rs(context=f"postflight refused by research gate: {args.phase[:80]}",
+                       reality="no research recorded this session; postflight blocked",
+                       expectation="Research Depth Protocol requires research (incl. technical/infra) before shipping",
+                       source="agent")
+            except Exception:
+                pass
+            try:
+                from core.capcom import post_safe as _rg_ps
+                _rg_ps("research", f"postflight BLOCKED (no research): {args.phase[:64]}",
+                       level="warn", source="research-gate")
+            except Exception:
+                pass
+            raise SystemExit(1)
+        if _rg_status == "missing":
+            print(f"\n[Research Gate] WARN (not enforced): {_rg_detail}")
+        else:
+            print(f"\n[Research Gate] {_rg_status}: {_rg_detail[:110]}")
+            if _rg_status == "waived":
+                try:
+                    from core.graphify_interface import record_surprise as _rg_rs
+                    _rg_rs(context=f"research waived: {args.phase[:70]}",
+                           reality=_rg_detail[:200],
+                           expectation="research per Research Depth Protocol",
+                           source="agent")
+                except Exception:
+                    pass
+                try:
+                    from core.capcom import post_safe as _rg_ps
+                    _rg_ps("research", f"research WAIVED: {args.phase[:52]} - {_rg_detail[:52]}",
+                           level="note", source="research-gate")
+                except Exception:
+                    pass
+            elif _rg_status == "provided":
+                try:
+                    from core.graphify_interface import record_research as _rg_rr
+                    _rg_rr(args.feature or args.phase[:60], web_sources=[_rg_detail[:300]])
+                except Exception:
+                    pass
+    except SystemExit:
+        raise
+    except Exception as _rg_e:
+        print(f"[Research Gate] unavailable ({_rg_e}) — passing open")
 
     node_id = record_phase(args.phase, args.result, args.notes,
                            phantom_pains=args.phantom_pain or [],

@@ -138,6 +138,20 @@ def main():
     except Exception as e:
         print(f"\n[CAPCOM] operator channel unavailable ({e})")
 
+    # Research pulse — surface whether the mandated research is actually happening.
+    # The Research Gate at postflight asks for sources or a reasoned waiver; this
+    # makes the absence visible at session START, not only caught at the end.
+    try:
+        from core.research_gate import recent_research
+        _rr = recent_research(nodes, hours=12)
+        if _rr:
+            print(f"\n[research] {len(_rr)} research node(s) recorded in the last 12h")
+        else:
+            print("\n[research] none in 12h — the Research Depth Protocol covers technical/infra "
+                  "decisions too; postflight will require --researched sources or a --research-waiver")
+    except Exception:
+        pass
+
     # 0. Circadian — the studio reads its OWN clock (no OS scheduler). This is
     # the qualification: system time determines the phase, and whether a night
     # is due. A 24/7 agent should honor the directive each cycle.

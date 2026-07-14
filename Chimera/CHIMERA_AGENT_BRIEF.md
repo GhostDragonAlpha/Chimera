@@ -216,6 +216,16 @@ Return only the grade letter and one sentence explaining why.
 
 Research is NOT complete until ALL gates are passed. You have complete freedom in how you search, but you MUST exhaust these checkpoints before proceeding to Professor Review. Each gate is a quality guarantee. Skipping gates produces shallow research, which produces failed verifications, which wastes iterations. Deep research compounds — every source you record enriches the campus for every future agent.
 
+**Scope (amended 2026-07-13): this protocol is NOT asset-only.** It covers
+TECHNICAL / INFRASTRUCTURE decisions too — the SQLite/DB semantics you build on,
+a UE API's real behaviour, a git internal, a concurrency model. Gate 1 already
+lists **Technical Documentation** as a valid source type. *"It's just plumbing, I
+already know it"* is the exact rationalization that skips research and ships
+false-confidence bugs (a real one: skipping a 2-minute SQLite-concurrency lookup
+nearly shipped a silent signal-drop). `core/research_gate.py` now enforces this at
+postflight: a session with no recorded research must cite sources (`--researched`)
+or record a reasoned waiver (`--research-waiver`) — a silent skip is refused.
+
 ### Gate 1: Source Diversity (Minimum 3 Source Types)
 
 You must consult at least THREE different source types. Not three pages of the same type. Different categories of evidence. Different ways of knowing about the subject.
