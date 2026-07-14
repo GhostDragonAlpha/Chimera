@@ -462,6 +462,20 @@
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {
+  "id": "atom_a8a6bd9a7422",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootprintDecalMaterial\\b"
+  },
+  "desc": "UPROPERTY FootprintDecalMaterial (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
   "id": "atom_a9b38a631bf9",
   "feature": "subsystem/root",
   "tier": 1,
@@ -473,6 +487,20 @@
    "regex": "\\bSandFootstepSound\\b"
   },
   "desc": "UPROPERTY SandFootstepSound (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
+  "id": "atom_ab35971f60e5",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFootprintSpawnTimer\\b"
+  },
+  "desc": "UPROPERTY FootprintSpawnTimer (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {
