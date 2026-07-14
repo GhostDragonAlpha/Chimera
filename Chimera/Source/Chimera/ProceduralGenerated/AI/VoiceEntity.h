@@ -14,6 +14,9 @@
 #include "../../AI/SttEngine.h"
 #include "VoiceEntity.generated.h"
 
+class USocialTradeComponent;
+class UNPCTradeComponent;
+
 /**
  * AChimeraVoiceEntity — The in-game AI entity that processes voice commands.
  * 
@@ -81,6 +84,14 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Voice|STT")
 	USttEngine* SttEngine;  // Speech-to-text engine for microphone input
+
+	// ─── NPC trade behaviours (H-34: attached so the entity can trade with the player) ─
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Voice|Trade")
+	USocialTradeComponent* SocialTradeComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Voice|Trade")
+	UNPCTradeComponent* NPCTradeComp;
 
 	// ─── Voice command processing (Phase 1: console-based) ─────────
 

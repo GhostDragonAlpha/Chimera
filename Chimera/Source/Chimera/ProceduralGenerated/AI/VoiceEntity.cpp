@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "SocialTradeComponent.h"
+#include "NPCTradeComponent.h"
 
 AVoiceEntity::AVoiceEntity()
 {
@@ -30,6 +32,15 @@ AVoiceEntity::AVoiceEntity()
 
 	// ─── STT Engine (Phase 2) ─────────────────────────────────────
 	SttEngine = CreateDefaultSubobject<USttEngine>(TEXT("SttEngine"));
+
+	// ─── NPC trade behaviours — the interactive entity can socially/NPC-trade
+	//     with the player (H-34: components attached, not dead classes) ─
+	SocialTradeComp = CreateDefaultSubobject<USocialTradeComponent>(TEXT("SocialTradeComp"));
+	NPCTradeComp = CreateDefaultSubobject<UNPCTradeComponent>(TEXT("NPCTradeComp"));
+
+	// Audio cues (Phase 3) — BP-assigned; played on listen-start / process-complete.
+	VoiceStartSound = nullptr;
+	VoiceEndSound = nullptr;
 
 	// ─── Subsystem references (will be set by Blueprint or generator) ─
 	EconomySystem = nullptr;
@@ -119,6 +130,12 @@ void AVoiceEntity::VoiceCommand(const FString& CommandText)
 	bIsProcessing = true;
 	UE_LOG(LogTemp, Log, TEXT("[VoiceEntity] Received voice command: %s"), *CommandText);
 
+	// Audio cue: listening/processing has started (Phase 3 feedback).
+	if (VoiceStartSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceStartSound, GetActorLocation());
+	}
+
 	// ─── Parse the utterance using NLP parser ─────────────────────
 	FVoiceAction Action;
 	if (NlpParserInstance)
@@ -143,6 +160,11 @@ void AVoiceEntity::VoiceCommand(const FString& CommandText)
 		UE_LOG(LogTemp, Warning, TEXT("[VoiceEntity] Action failed: %s"), *Result.ResponseText);
 	}
 
+	// Audio cue: processing complete (Phase 3 feedback).
+	if (VoiceEndSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceEndSound, GetActorLocation());
+	}
 	bIsProcessing = false;
 }
 
