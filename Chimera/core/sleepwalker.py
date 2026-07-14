@@ -87,47 +87,12 @@ STORE_AS_KEY_ALIASES = {
     "sprint_volume": "max_volume",
 }
 
-# ── execute_python telemetry fallback ──────────────────────────────────────
-# Single-line UE Python scripts (MUST be semicolon-separated; multi-line
-# crashes the execute_python handler at line ~22). Each getter ends with the
-# property value as the last expression so execute_python returns it.
-_TELEMETRY_SCRIPTS = {
-    "ClearFootstepSyncTelemetry": (
-        "import unreal; "
-        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
-        "for c in unreal.get_all_actor_components(a) "
-        "if 'SandSound' in str(type(c).__name__)]; "
-        "_cs[0].ClearFootstepSyncTelemetry() if _cs else None"
-    ),
-    "GetFootstepSyncEventCount": (
-        "import unreal; "
-        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
-        "for c in unreal.get_all_actor_components(a) "
-        "if 'SandSound' in str(type(c).__name__)]; "
-        "_cs[0].FootstepSyncEventCount if _cs else -1"
-    ),
-    "GetMaxFootstepSyncLatencyMs": (
-        "import unreal; "
-        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
-        "for c in unreal.get_all_actor_components(a) "
-        "if 'SandSound' in str(type(c).__name__)]; "
-        "_cs[0].MaxFootstepSyncLatencyMs if _cs else 999.0"
-    ),
-    "GetAverageFootstepSyncLatencyMs": (
-        "import unreal; "
-        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
-        "for c in unreal.get_all_actor_components(a) "
-        "if 'SandSound' in str(type(c).__name__)]; "
-        "_cs[0].AverageFootstepSyncLatencyMs if _cs else 999.0"
-    ),
-    "GetLastFootstepVolume": (
-        "import unreal; "
-        "_cs=[c for a in unreal.EditorLevelLibrary.get_all_level_actors() "
-        "for c in unreal.get_all_actor_components(a) "
-        "if 'SandSound' in str(type(c).__name__)]; "
-        "_cs[0].LastFootstepVolume if _cs else 0.0"
-    ),
-}
+# (removed 2026-07-13) The _TELEMETRY_SCRIPTS execute_python fallback was deleted:
+# it searched for a 'SandSound' component and read bare properties, but the real
+# telemetry getters are STATIC UFUNCTIONs on UChimeraMovementComponent (a module-
+# global TArray), and the search used the EDITOR world not PIE (MCP_PATHWAYS #33).
+# Tier 1 (manage_tools native) handles these correctly; per "no fallback ladders"
+# a Tier-1 failure now surfaces honestly instead of via this wrong-and-silent tier.
 
 
 class Sleepwalker:
@@ -207,63 +172,9 @@ class Sleepwalker:
         except (TypeError, ValueError):
             return None
 
-    # ── execute_python telemetry helpers ────────────────────────────────────
-    def _build_telemetry_python(self, cmd: str, action: dict) -> str | None:
-        """Return the single-line UE Python script for *cmd*, or None if
-        *cmd* is not a known telemetry command.
-
-        The returned string contains NO literal newlines — the MCP server's
-        execute_python handler crashes at line ~22 on multi-line code.
-        """
-        script = _TELEMETRY_SCRIPTS.get(cmd)
-        if script is not None:
-            # Verify the script is truly single-line (no \n)
-            if "\n" in script:
-                from warnings import warn
-
-                warn(f"_build_telemetry_python({cmd}): script contains newline!")
-        return script
-
-    @staticmethod
-    def _extract_scalar(result) -> float | int | None:
-        """Extract a numeric scalar from an execute_python MCP response.
-
-        Handles several common wrapping patterns the bridge may use:
-          - Raw value (42, 3.14)
-          - ``{"value": 42}`` or ``{"data": 42}`` or ``{"return_value": 42}``
-          - ``{"result": 42}``
-          - Nested ``{"data": {"value": 42}}``
-        Returns ``None`` when no numeric value can be extracted.
-        """
-        if result is None:
-            return None
-        if isinstance(result, (int, float)):
-            return result
-        if isinstance(result, str):
-            try:
-                return float(result)
-            except (ValueError, TypeError):
-                return None
-        if isinstance(result, dict):
-            # Direct key paths
-            for key in ("value", "data", "return_value", "result"):
-                val = result.get(key)
-                if isinstance(val, (int, float)):
-                    return val
-                if isinstance(val, str):
-                    try:
-                        return float(val)
-                    except (ValueError, TypeError):
-                        pass
-            # Nested dict: result.data.value / result.result.value
-            for outer_key in ("data", "result"):
-                outer = result.get(outer_key)
-                if isinstance(outer, dict):
-                    for inner_key in ("value", "data", "result"):
-                        val = outer.get(inner_key)
-                        if isinstance(val, (int, float)):
-                            return val
-        return None
+    # (removed 2026-07-13) _build_telemetry_python / _extract_scalar were the
+    # helpers for the deleted Tier-2 execute_python telemetry fallback — orphaned
+    # once the fallback ladder was removed (see the _TELEMETRY_SCRIPTS breadcrumb).
 
     def _key(self, key: str, hold_s: float, modifier: str | None = None):
         if modifier:
@@ -473,61 +384,21 @@ class Sleepwalker:
             result = self._call_or_default("manage_tools", call_args)
             command_succeeded = bool(result)
 
-            # ── Tier 2: execute_python fallback for telemetry commands ──
-            if not command_succeeded and cmd in _TELEMETRY_SCRIPTS:
-                py_script = self._build_telemetry_python(cmd, a)
-                if py_script:
-                    self.w.mark(
-                        "action_warning",
-                        {
-                            "command": cmd,
-                            "note": "manage_tools failed; trying execute_python",
-                        },
-                    )
-                    py_result = self._call_or_default(
-                        "system_control",
-                        {"action": "execute_python", "code": py_script},
-                    )
-                    if py_result:
-                        scalar = self._extract_scalar(py_result)
-                        if scalar is not None:
-                            # Getters returned a real value — store it.
-                            store_as = a.get("store_as")
-                            if store_as:
-                                if not hasattr(self, "telemetry_results"):
-                                    self.telemetry_results = {}
-                                self.telemetry_results[store_as] = scalar
-                            result = py_result
-                            command_succeeded = True
-                        elif cmd in (
-                            "ClearFootstepSyncTelemetry",
-                        ):
-                            # Void command: marked as succeeded even with no
-                            # return value — the call completed.
-                            result = {"telemetry_cleared": True}
-                            command_succeeded = True
-
-            # ── Tier 3: graceful degradation ──
+            # NO FALLBACK LADDER (CLAUDE.md law). Tier 1 (manage_tools native) is
+            # the ONLY telemetry path. The old Tier-2 (execute_python against the
+            # wrong class + the editor world, not PIE — see MCP_PATHWAYS #33) and
+            # Tier-3 (hardcoded 999/0.5/0 defaults) were removed: they papered over
+            # real failures with fake data — the very source of the count=0 /
+            # latency=999 telemetry noise. A telemetry command that can't read real
+            # data now FAILS the beat honestly instead of faking a green result.
             if not command_succeeded:
                 self.w.mark(
-                    "action_warning",
+                    "action_error",
                     {
                         "command": cmd,
-                        "error": (
-                            "manage_tools + execute_python failed; "
-                            "falling back to defaults"
-                        ),
+                        "error": "manage_tools telemetry command failed — no fallback, real data unavailable",
                     },
                 )
-                if not hasattr(self, "telemetry_results"):
-                    self.telemetry_results = {}
-                self.telemetry_results.setdefault("total_events", 0)
-                self.telemetry_results.setdefault("sync_events_recorded", 0)
-                self.telemetry_results.setdefault("avg_latency_ms", 999)
-                self.telemetry_results.setdefault("max_latency_ms", 999)
-                self.telemetry_results.setdefault("sync_latency_ms_max", 999)
-                self.telemetry_results.setdefault("walk_volume", 0.5)
-                self.telemetry_results.setdefault("sprint_volume", 0.5)
             else:
                 store_as = a.get("store_as")
                 if store_as and isinstance(result, dict):

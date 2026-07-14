@@ -19,11 +19,12 @@
 
 ADemoPlayerController::ADemoPlayerController()
 {
+	// CreateDefaultSubobject already owns the component's registration lifecycle
+	// (it registers through the normal actor-spawn path once the actor has a valid
+	// World). Do NOT call RegisterComponent() here: at CDO/class-default construction
+	// there is no owning World, which trips a "MyOwnerWorld" ensure on every editor
+	// boot / Live-Coding reload — harmless but log-noise that erodes trust.
 	PickupInteraction = CreateDefaultSubobject<UPickupInteractionComponent>(TEXT("PickupInteraction"));
-	if (PickupInteraction)
-	{
-		PickupInteraction->RegisterComponent();
-	}
 	bDemoPickupSpawned = false;
 	bDemoHabitatSpawned = false;
 
