@@ -280,7 +280,7 @@ def _lm_generate_judgment(feature: str, evidence: dict, max_retries: int = 2) ->
     schema-invalid response retries with a larger max_tokens budget rather than being
     accepted as-is."""
     evidence_block = _evidence_block(evidence)
-    token_budget = 3000
+    token_budget = int(os.environ.get("CHIMERA_LM_MAX_TOKENS", "32768"))  # 262k-ctx: don't starve the reasoning trace
     last_err = "no attempt made"
     for attempt in range(max_retries + 1):
         prompt = _build_prompt(feature, evidence_block)

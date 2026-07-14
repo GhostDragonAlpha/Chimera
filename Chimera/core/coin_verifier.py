@@ -154,7 +154,7 @@ def judge(claim, evidence, kind="DEFAULT", max_retries=1):
     unavailable/unparseable after retries (caller decides pass-open vs block)."""
     system = PROMPTS.get(kind, PROMPTS["DEFAULT"])
     user = f"HEADS (the CLAIM):\n{claim}\n\nTAILS (the EVIDENCE):\n{evidence}"
-    budget = 2500
+    budget = int(os.environ.get("CHIMERA_LM_MAX_TOKENS", "32768"))  # 262k-ctx models: one generous attempt beats a retry ladder
     for _ in range(max_retries + 1):
         payload = {"model": LM_STUDIO_MODEL,
                    "messages": [{"role": "system", "content": system},
@@ -180,7 +180,7 @@ def judge(claim, evidence, kind="DEFAULT", max_retries=1):
                 c.setdefault("mismatches", [])
                 c.setdefault("confidence", 0.5)
                 return c
-        budget += 2500          # H-3: a reasoning dump is a retry, never a verdict
+        budget *= 2             # H-3: a reasoning dump is a retry, never a verdict
     return None
 
 

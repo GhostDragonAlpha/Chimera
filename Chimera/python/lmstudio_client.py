@@ -668,7 +668,7 @@ def _request_with_retry(request_func, max_retries=3, backoff_base=2):
 # Core API Functions
 # ---------------------------------------------------------------------------
 
-def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str | None = None, temperature: float = 0.3, max_tokens: int = 4096, timeout: int = 120) -> dict | None:
+def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str | None = None, temperature: float = 0.3, max_tokens: int = 32768, timeout: int = 600) -> dict | None:
     """Send a prompt (optionally with an image) to LM Studio for analysis.
 
     Args:
@@ -903,7 +903,7 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
                     reasoning_dump_retries += 1
                     # Cap must clear the reasoning model's thinking trace (2-4k tokens
                     # BEFORE the answer at ~20 tok/s) — the old 4096 cap looped forever.
-                    _cap = int(os.environ.get("CHIMERA_LM_MAX_TOKENS", "16384"))
+                    _cap = int(os.environ.get("CHIMERA_LM_MAX_TOKENS", "131072"))  # 262144-ctx models; never the bottleneck
                     current_max_tokens = min(current_max_tokens * 2, _cap)
                     logger.warning(f"LM response contains reasoning dump. Retry {reasoning_dump_retries}/{max_reasoning_dump_retries} with max_tokens={current_max_tokens}")
 
