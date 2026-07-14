@@ -132,6 +132,22 @@ def _add_creature(nt, wp, builder, bones):
     zmin = min(min(b.p0[2], b.p1[2]) for b in bones)
     lift = -zmin + 0.05
 
+    # NO SELF-COLLISION. Newton's default collision_group is 1 (positive), so every link
+    # of a creature collides with every other link of that creature — and adjacent bones
+    # OVERLAP AT THE JOINT BY CONSTRUCTION. That is an infinite penetration force on
+    # frame one: the whole population NaN'd during SETTLE, before a controller ever ran.
+    # A NEGATIVE group does not collide with itself (Bullet convention, which Newton
+    # inherits) but still collides with the positive-group ground plane. pybullet gives
+    # you this for free on a multibody; Newton does not.
+    # MASS COMES FROM THE SHAPE'S DENSITY, NOT FROM mass=. Passing mass= explicitly gave
+    # every link a mass and a ZERO INERTIA TENSOR — and Featherstone INVERTS the
+    # articulated inertia, so that is a division by zero. The whole population NaN'd
+    # during SETTLE, with no controller running at all. Let the capsule compute both its
+    # mass and its inertia from its own geometry, which is the only way they can agree.
+    # `armature` is the other Featherstone staple: light links on stiff joints are
+    # numerically fragile without it.
+    cfg = nt.ModelBuilder.ShapeConfig(density=DENSITY, collision_group=-1)
+
     ids, dirs, lens = [], [], []
     for b in bones:
         v = (b.p1[0] - b.p0[0], b.p1[1] - b.p0[1], b.p1[2] - b.p0[2])
@@ -144,10 +160,9 @@ def _add_creature(nt, wp, builder, bones):
         mid = ((b.p0[0] + b.p1[0]) * 0.5, (b.p0[1] + b.p1[1]) * 0.5,
                (b.p0[2] + b.p1[2]) * 0.5 + lift)
         link = builder.add_link(                       # <-- NOT add_body
-            xform=wp.transform(mid, wp.quat_identity()),
-            mass=max(MASS_FLOOR, math.pi * r * r * L * DENSITY))
+            xform=wp.transform(mid, wp.quat_identity()), armature=0.02)
         builder.add_shape_capsule(
-            body=link, radius=r, half_height=L * 0.5,
+            body=link, radius=r, half_height=L * 0.5, cfg=cfg,
             xform=wp.transform((0.0, 0.0, 0.0), wp.quat(*_quat_from_z_to(d))))
         ids.append(link)
 

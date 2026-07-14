@@ -1,0 +1,40 @@
+{
+  "name": "brain",
+  "author": "LLM, from a scenario. The BODY is fixed. Only the nervous system is being asked to exist.",
+  "scenario": "A fixed body — the one we already evolved to move — and a NERVOUS SYSTEM that must learn to drive it. The brain reads its own joints, its own joint velocities, and which way is up, every single step. Unlike the CPG it replaces, it can FEEL ITSELF FALLING, so it can catch itself. Go somewhere, keep going, stay on your feet, and do not thrash. Nothing here says walk, trot, or bound. If the universe has a better gait than mine, I want to be told.",
+
+  "constraints": [
+    {
+      "measure": "exploded",
+      "kind": "at_most", "max": 0.0,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE GATE. NaN or a body flung to infinity. A physics glitch is not a gait, and an optimiser WILL find one if you leave the door open."
+    },
+    {
+      "measure": "airborne_frac",
+      "kind": "at_most", "max": 0.40,
+      "weight": 2.0,
+      "hard": true,
+      "why": "pre-emptive, and it has already earned itself once: the classic exploit is BALLISTIC LAUNCH — coil, fire yourself down the field, bank the distance. That is artillery, not locomotion."
+    },
+    {
+      "measure": "distance",
+      "kind": "maximize", "ref": 12.0,
+      "weight": 4.0,
+      "why": "THE POINT. Net displacement in body lengths. `maximize`, not a band — a spec made only of walls gets you exactly the walls, and the satisficer already burned me once today. The CPG on this same body managed 6.8; a brain that can feel itself falling should beat an open loop that cannot."
+    },
+    {
+      "measure": "straightness",
+      "kind": "at_least", "min": 0.6,
+      "weight": 2.0,
+      "why": "net displacement over path length. A creature that spins travels a long way and arrives nowhere."
+    },
+    {
+      "measure": "torso_z",
+      "kind": "at_least", "min": 0.12,
+      "weight": 1.5,
+      "why": "carry the body, do not drag it. This is the one term that leans toward WALKING rather than slithering — and it is a preference, honestly declared, not physics. If it costs us a better slither, that is my fault and the pin will say so."
+    }
+  ]
+}
