@@ -59,6 +59,11 @@ def main():
                              "(satisfies the gate when marking a feature verified/observed)")
     parser.add_argument("--witness-waiver", default="", dest="witness_waiver",
                         help="Witness Gate: reasoned waiver when a witness genuinely doesn't apply")
+    parser.add_argument("--visual-analysis", default="",
+                        help="Visual Gate: the LM screenshot analysis (what the model saw + "
+                             "VERIFIED/NEEDS_REFINEMENT + shot path) when marking a feature verified")
+    parser.add_argument("--visual-waiver", default="", dest="visual_waiver",
+                        help="Visual Gate: reasoned waiver (non-visual feature, or editor/bridge down)")
     args = parser.parse_args()
 
     # Research Gate — the mandated research must be EXPLICIT, not silently skipped
@@ -208,6 +213,47 @@ def main():
             raise
         except Exception as _wg_e:
             print(f"[Witness Gate] unavailable ({_wg_e}) — passing open")
+
+        # Visual Gate — the local model must have LOOKED at a verified feature: a
+        # feature can't be marked verified/observed without a recorded LM screenshot
+        # analysis this session, --visual-analysis, or a reasoned --visual-waiver.
+        try:
+            from core.visual_gate import check as _vg_check, enforced as _vg_enforced, GUIDANCE as _vg_guide
+            _vg_nodes = load_dna_graph().get("nodes", [])
+            _vg_status, _vg_detail = _vg_check(
+                _vg_nodes, status=args.status,
+                analysis=getattr(args, "visual_analysis", "") or "",
+                waiver=getattr(args, "visual_waiver", "") or "")
+            if _vg_status == "missing" and _vg_enforced():
+                print(f"\n!! VISUAL GATE - refused: marking {args.feature} '{args.status}' with no LM screenshot analysis.")
+                print(_vg_guide)
+                try:
+                    from core.graphify_interface import record_surprise as _vg_rs
+                    _vg_rs(context=f"postflight refused by visual gate: {args.feature} -> {args.status}",
+                           reality="no LM screenshot analysis on record this session",
+                           expectation="the local model must LOOK at a verified feature (viewport screenshot analysis)",
+                           source="agent")
+                except Exception:
+                    pass
+                try:
+                    from core.capcom import post_safe as _vg_ps
+                    _vg_ps("visual", f"postflight BLOCKED: {args.feature} marked {args.status} with no LM screenshot analysis",
+                           level="warn", source="visual-gate")
+                except Exception:
+                    pass
+                raise SystemExit(1)
+            print(f"[Visual Gate] {_vg_status}: {_vg_detail[:110]}")
+            if _vg_status == "waived":
+                try:
+                    from core.capcom import post_safe as _vg_ps
+                    _vg_ps("visual", f"visual analysis WAIVED: {args.feature} {args.status} - {_vg_detail[:44]}",
+                           level="note", source="visual-gate")
+                except Exception:
+                    pass
+        except SystemExit:
+            raise
+        except Exception as _vg_e:
+            print(f"[Visual Gate] unavailable ({_vg_e}) — passing open")
 
     # Verbatim check (advisory) — the Contract says "report exact UBT output
     # verbatim, never summarize." If a build/compile phase's --result looks like a
