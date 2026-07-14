@@ -207,20 +207,39 @@ def burn(mem: Path) -> None:
         shutil.rmtree(mem, ignore_errors=True)
 
 
-def apply_back(mem: Path) -> list:
-    """Bring the membrane's TRACKED changes into the live tree, as a patch.
+def apply_back(mem: Path) -> tuple:
+    """Bring the membrane's changed FILES into the live tree. Returns
+    (refused_stores, copied_paths).
 
-    Deliberately refuses the world stores: silently clobbering a live DNA graph
-    with a membrane's copy is exactly the substrate contamination this module
-    exists to prevent. Copy those by hand if you truly mean it."""
+    COPIES rather than patches. `git apply` was the obvious choice and it was
+    wrong: piping a patch through text round-trips it through CRLF translation
+    and re-encoding, so a docstring with an em-dash in it comes back as
+    "trailing whitespace" errors and the apply dies. A membrane is a WORKBENCH,
+    not just a probe — the work has to come out intact, and a byte-for-byte copy
+    of the files git says changed is both simpler and exact. It also handles new
+    files and deletions, which `git diff HEAD` alone silently drops.
+
+    Deliberately refuses the world stores: clobbering a live DNA graph with a
+    membrane's copy is exactly the substrate contamination this module exists to
+    prevent. Copy those by hand if you truly mean it."""
     stores = [d for k, d in changes(mem) if k == "store"]
-    patch = _git(["diff", "HEAD"], mem)
-    if patch:
-        p = subprocess.run(["git", "apply", "-"], cwd=str(REPO), input=patch,
-                           capture_output=True, text=True, encoding="utf-8")
-        if p.returncode != 0:
-            raise RuntimeError(f"apply failed: {(p.stderr or '').strip()[:300]}")
-    return stores
+    _git(["add", "-A", "--", ".", f":!{MANIFEST}"], mem)
+    names = _git(["diff", "--name-only", "HEAD", "--", ".", f":!{MANIFEST}"],
+                 mem).splitlines()
+
+    copied = []
+    for rel in (n.strip() for n in names):
+        if not rel:
+            continue
+        src, dst = mem / rel, REPO / rel
+        if src.is_file():
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+            copied.append(rel)
+        elif dst.exists():
+            dst.unlink()                       # deleted inside the membrane
+            copied.append(f"{rel} (deleted)")
+    return stores, copied
 
 
 def run(cmd: list, name: str = None, then: str = "keep") -> int:
@@ -325,8 +344,10 @@ def _main() -> int:
         return 0
 
     if args.cmd == "apply":
-        refused = apply_back(mem)
-        print(f"applied {args.name}'s tracked changes to the live tree")
+        refused, copied = apply_back(mem)
+        print(f"applied {args.name} -> live tree ({len(copied)} file(s))")
+        for c in copied:
+            print(f"  + {c}")
         for s in refused:
             print(f"  REFUSED (copy by hand if you mean it): {s}")
         return 0
