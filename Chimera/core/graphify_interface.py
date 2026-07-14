@@ -1421,6 +1421,21 @@ def _mutate_phase_complete(details: dict) -> str:
         return "rejected_phantom_pains: must be a list of non-empty strings; nothing recorded"
     if len(phantom_pains) > 5:
         return "rejected_phantom_pains: declare at most 5 (aim for 3 sharp ones); nothing recorded"
+    # Dedup guard (2026-07-13): a phantom_pain must be a NEW predicted failure, not a
+    # re-declaration of an existing pain. Carrying a pain forward is done with
+    # --pain-verdict "<id>:still-open"; passing a pain's id (or a copy of its text
+    # starting with that id) as a fresh --phantom-pain mints a DUPLICATE open pain
+    # and inflates the verdict queue (observed 2026-07-13: phase_da55128aec6d109a:P1
+    # re-recorded as 3+ sibling pains, each issued as its own board task). Reject a
+    # bare pain-id reference.
+    import re as _re_pp
+    _bare_refs = [p for p in phantom_pains
+                  if _re_pp.match(r"^phase_[0-9a-f]{6,}:P\d+", p.strip())]
+    if _bare_refs:
+        return ("rejected_phantom_pains: '{}' looks like an existing pain id, not a new "
+                "prediction. Carry a pain forward with --pain-verdict '<id>:still-open'; "
+                "don't re-declare it as a phantom pain (that duplicates it). Nothing "
+                "recorded.").format(_bare_refs[0][:48])
     VALID_VERDICTS = {"confirmed", "refuted", "still-open"}
     if not isinstance(pain_verdicts, dict) or not all(
             isinstance(k, str) and v in VALID_VERDICTS for k, v in pain_verdicts.items()):
