@@ -54,8 +54,10 @@ def replay(weights, dz=0.0, render=0):
 
     bones, size = _bones()
     zmin = min(min(b.p0[2], b.p1[2]) for b in bones)
+    # visual dressing (lights, floor grid, skybox) only when we are going to render.
+    # It never touches the dynamics, so the rendered creature IS the trained creature.
     mjm = mujoco.MjModel.from_xml_string(
-        mjcf.from_bones(bones, lift=-zmin + 0.05 + dz, dt=DT))
+        mjcf.from_bones(bones, lift=-zmin + 0.05 + dz, dt=DT, visual=bool(render)))
     mjcf.check(mjm, len(bones))
     mjd = mujoco.MjData(mjm)
     mujoco.mj_forward(mjm, mjd)

@@ -94,8 +94,15 @@ ARMATURE = 0.001         # kg.m^2 rotor inertia. Without it, a 37 g bone on a st
 JOINT_DAMPING = 0.05
 
 
-def from_bones(bones, lift: float, dt: float) -> str:
-    """Bone tree -> MJCF XML. Total, deterministic, and it loses no bones."""
+def from_bones(bones, lift: float, dt: float, visual: bool = False) -> str:
+    """Bone tree -> MJCF XML. Total, deterministic, and it loses no bones.
+
+    visual=False (the DEFAULT, and what training uses) emits the bare physics model.
+    visual=True adds lights, a floor material and a skybox for RENDERING ONLY — MuJoCo
+    ignores all of it in the dynamics, so a rendered creature is byte-for-byte the same
+    creature that was trained. Kept behind a flag so the training model stays minimal and
+    a stray visual asset can never quietly change the physics.
+    """
     n = len(bones)
 
     # RE-PARENT ORPHANS TO THE ROOT, exactly as the pybullet build does with
@@ -158,13 +165,37 @@ def from_bones(bones, lift: float, dt: float) -> str:
         f'    <position joint="j{i}" kp="{KP}" forcerange="-{TORQUE} {TORQUE}"/>\n'
         for i in range(1, n))
 
+    # RENDER DRESSING — visual=True only. None of this touches the dynamics: MuJoCo does
+    # not integrate lights or textures, so the rendered creature is the trained creature.
+    assets = floor_geom = ""
+    if visual:
+        assets = (
+            '  <asset>\n'
+            '    <texture type="skybox" builtin="gradient" rgb1="0.5 0.7 0.9" '
+            'rgb2="0.1 0.15 0.25" width="256" height="256"/>\n'
+            '    <texture name="grid" type="2d" builtin="checker" '
+            'rgb1="0.2 0.24 0.28" rgb2="0.28 0.32 0.36" width="512" height="512"/>\n'
+            '    <material name="gridm" texture="grid" texrepeat="24 24" '
+            'reflectance="0.1"/>\n'
+            '    <material name="bone" rgba="0.85 0.78 0.62 1"/>\n'
+            '  </asset>\n')
+        lights = ('    <light pos="0 0 6" dir="0 0 -1" directional="true" '
+                  'diffuse="0.6 0.6 0.6"/>\n'
+                  '    <light pos="3 -3 5" dir="-0.5 0.5 -1" diffuse="0.5 0.5 0.5"/>\n')
+        floor_geom = (
+            '    <geom name="floor" type="plane" size="200 200 0.1" '
+            'friction="1.0 0.01 0.001" contype="2" conaffinity="1" material="gridm"/>\n'
+            + lights)
+    else:
+        floor_geom = (
+            '    <geom name="floor" type="plane" size="200 200 0.1" '
+            'friction="1.0 0.01 0.001" contype="2" conaffinity="1"/>\n')
+
     return f"""<mujoco model="creature">
   <option timestep="{dt:.8f}" gravity="0 0 -9.81" integrator="implicitfast"
           cone="pyramidal"/>
-  <worldbody>
-    <geom name="floor" type="plane" size="200 200 0.1" friction="1.0 0.01 0.001"
-          contype="2" conaffinity="1"/>
-{emit(0, 2)}  </worldbody>
+{assets}  <worldbody>
+{floor_geom}{emit(0, 2)}  </worldbody>
   <actuator>
 {acts}  </actuator>
 </mujoco>
