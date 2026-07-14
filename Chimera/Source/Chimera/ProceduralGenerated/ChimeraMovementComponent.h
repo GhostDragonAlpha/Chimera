@@ -9,6 +9,8 @@
 class UPhysicalMaterial;
 class USoundBase;
 class ADecalActor;
+class UMaterialInterface;
+class UDecalComponent;
 class UDustAccumulationParticleComponent; // Forward declare from ProceduralGenerated/Materials/
 
 UENUM(BlueprintType)
@@ -121,6 +123,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Decals")
 	float FootprintSizeZ;
+
+	// Level-assigned decal material for footprints (soft — assign in BP to make
+	// prints visible; the size/enable/interval config is honored regardless).
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Decals")
+	TSoftObjectPtr<UMaterialInterface> FootprintDecalMaterial;
+
+	// Runtime throttle accumulator for footprint spawning (vs FootprintSpawnInterval).
+	UPROPERTY(Transient)
+	float FootprintSpawnTimer = 0.0f;
 
 	// === Surface Detection ===
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|SurfaceDetection")

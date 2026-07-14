@@ -21,6 +21,9 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "Kismet/GameplayStatics.h"      // SpawnDecalAtLocation
+#include "Components/DecalComponent.h"    // UDecalComponent::SetFadeOut
+#include "Materials/MaterialInterface.h"  // UMaterialInterface (footprint decal)
 
 #define LOG_MOVE() UE_LOG(LogTemp, Log, TEXT("[UChimeraMovementComponent] %s"), *GetFullName())
 
@@ -275,6 +278,16 @@ void UChimeraMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			// Play contextual footstep sound with speed-based volume scaling
 			const float SpeedMagnitude = CurrentVelocity.Size();
 			PlayFootstepSound(SurfaceMaterial, FootstepLocation, SpeedMagnitude);
+
+				// Footprint prints — the memento-mori sand marks the weather system
+				// later erases (Design Law 4). Gated by bEnableFootprints, throttled by
+				// FootprintSpawnInterval, sized by FootprintSize* (previously dead config).
+				FootprintSpawnTimer += FootstepInterval;
+				if (bEnableFootprints && FootprintSpawnTimer >= FootprintSpawnInterval)
+				{
+					FootprintSpawnTimer = 0.0f;
+					SpawnFootprintDecal(FootstepLocation, GetOwner()->GetActorRotation(), SurfaceMaterial);
+				}
 
 			// PHASE 4: Play servo sound (suit actuator feedback) with speed-based layering
 			if (bEnableServoSounds)
@@ -532,10 +545,32 @@ void UChimeraMovementComponent::PlayServoSound(float SpeedMagnitude, const FVect
 // ------------------------------------------------------------------
 void UChimeraMovementComponent::SpawnFootprintDecal(const FVector& Location, const FRotator& Rotation, ESurfaceMaterialType SurfaceMaterial)
 {
-	// Placeholder for footprint decal spawning (can be extended)
-	// This would spawn a decal actor at the given location with surface-specific material
-	UE_LOG(LogTemp, Verbose, TEXT("SpawnFootprintDecal: Location=%.0f,%.0f,%.0f Surface=%d"),
-		Location.X, Location.Y, Location.Z, (int32)SurfaceMaterial);
+	// Honor the configured footprint switch — no print when disabled.
+	if (!bEnableFootprints)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	// The print is sized by the configured footprint dimensions (half-extents).
+	const FVector DecalSize(FootprintSizeX * 0.5f, FootprintSizeY * 0.5f, FootprintSizeZ * 0.5f);
+	// A level-assigned decal material (soft; may be unset early). A missing material
+	// still honors the config + logs; assigning one in BP makes the prints visible.
+	UMaterialInterface* DecalMat = FootprintDecalMaterial.LoadSynchronous();
+	if (DecalMat)
+	{
+		if (UDecalComponent* Decal = UGameplayStatics::SpawnDecalAtLocation(
+				World, DecalMat, DecalSize, Location, Rotation, 0.0f))
+		{
+			Decal->SetFadeOut(30.0f, 5.0f);  // the print fades — memory made temporary
+		}
+	}
+	UE_LOG(LogTemp, Verbose, TEXT("Footprint: loc=%.0f,%.0f,%.0f size=%.0fx%.0f surf=%d en=%d"),
+		Location.X, Location.Y, Location.Z, FootprintSizeX, FootprintSizeY,
+		(int32)SurfaceMaterial, bEnableFootprints ? 1 : 0);
 }
 
 // ------------------------------------------------------------------
