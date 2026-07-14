@@ -266,6 +266,20 @@
   "provenance": "reflection:UPROPERTY:VoiceEntity.h"
  },
  {
+  "id": "atom_a031993baad4",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPlayerActor\\b"
+  },
+  "desc": "UPROPERTY PlayerActor (NPCTradeComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:NPCTradeComponent.h"
+ },
+ {
   "id": "atom_a9c674c81f59",
   "feature": "subsystem/AI",
   "tier": 1,

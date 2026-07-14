@@ -1,35 +1,34 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-13T07:15:01Z
+consolidated: 2026-07-14T04:00:39Z
 
 ## Awaiting your approval
 No pending heuristics — the constitution covers everything the night found.
 
 ## Open phantom pains
-- phase_62a9bf8fa8e97b42:P1 [6d] phase_da55128aec6d109a:P1
-- phase_a3193c8fa52533c6:P1 [6d] phase_da55128aec6d109a:P1 distiller token-coverage suppression
-- phase_4cf94206335d7778:P1 [6d] phase_da55128aec6d109a:P1 - Distiller token-coverage will false-suppress genuinely new lessons once PENDING_
-- phase_4d2da4e032a4aa07:P1 [6d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
-- phase_1b01fac303f3c24e:P1 [6d] The verb TARGETS (BP_Verb_* actors) may be as hollow as the walking was - built via bridge, never human-triggered; expect pick-up/drop/shovel interactions to no-op in Session A retry; if so route Verb_PickUp/Drop/Shovel rejections and pull BP-interaction wiring into the capable Phase 2 build
-- phase_3414a5cc1ff49e30:P1 [6d] Phase 2 dependencies may still block Phase 3 wiring
+- phase_62a9bf8fa8e97b42:P1 [7d] phase_da55128aec6d109a:P1
+- phase_a3193c8fa52533c6:P1 [7d] phase_da55128aec6d109a:P1 distiller token-coverage suppression
+- phase_4cf94206335d7778:P1 [7d] phase_da55128aec6d109a:P1 - Distiller token-coverage will false-suppress genuinely new lessons once PENDING_
+- phase_4d2da4e032a4aa07:P1 [7d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
+- phase_1b01fac303f3c24e:P1 [7d] The verb TARGETS (BP_Verb_* actors) may be as hollow as the walking was - built via bridge, never human-triggered; expect pick-up/drop/shovel interactions to no-op in Session A retry; if so route Verb_PickUp/Drop/Shovel rejections and pull BP-interaction wiring into the capable Phase 2 build
+- phase_3414a5cc1ff49e30:P1 [7d] Phase 2 dependencies may still block Phase 3 wiring
 
 ## Observation queue — the true collapse awaits your eyes
 Empty — every system-verified feature has been human-observed.
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`promoted:2; untouched:35 | provisional-collapse: 0 collapsed, 0 awaiting evidence`
+`promoted:2; untouched:37 | provisional-collapse: 0 collapsed, 0 awaiting evidence`
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 35 batteries, 689 atoms, 667 reps this pass (26 failing), 25 PIE atoms exported
-[rep] PROMOTED: System_SaveGame: tier 0 -> 1 (behaves)
-[rep] failing: subsystem_root (6 atoms red)
-[rep] failing: subsystem_AI (5 atoms red)
+[rep] 38 batteries, 735 atoms, 713 reps this pass (25 failing), 25 PIE atoms exported
+[rep] failing: subsystem_root (5 atoms red)
+[rep] failing: subsystem_AI (4 atoms red)
 [rep] failing: subsystem_Materials (3 atoms red)
 ```
 
 ## Tonight's distillation
 ```
-clusters >= 3: 43  |  suppressed (covered/pending): 39  |  staged: 2  |  deferred by cap: 2
+clusters >= 3: 43  |  suppressed (covered/pending): 41  |  staged: 2
   covered   [  5x] human_rejection: Verb_Shovel  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Look  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Bend  <- PENDING_HEURISTICS.md
@@ -44,23 +43,25 @@ clusters >= 3: 43  |  suppressed (covered/pending): 39  |  staged: 2  |  deferre
   covered   [  1x] human_rejection: Ground_Sand_Footprints  <- MCP_PATHWAYS.md
   covered   [  1x] human_rejection: audio_visual_sync/telemetry_accessors  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: audio_visual_sync/report_telemetry  <- PENDING_HEURISTICS.md
-  covered   [ 23x] sim_rejection: verb_interactions/visor_inspection_pedestal  <- PENDING_HEURISTICS.md
-  covered   [ 23x] sim_rejection: verb_interactions/weapon_tool_examine  <- PENDING_HEURISTICS.md
-  covered   [ 22x] sim_rejection: verb_interactions/verb_shovel_rock_surface_location  <- PENDING_HEURISTICS.md
-  covered   [ 22x] sim_rejection: verb_interactions/verb_shovel_sand_surface_location  <- PENDING_HEURISTICS.md
+  covered   [ 24x] sim_rejection: verb_interactions/visor_inspection_pedestal  <- PENDING_HEURISTICS.md
+  covered   [ 24x] sim_rejection: verb_interactions/weapon_tool_examine  <- PENDING_HEURISTICS.md
+  covered   [ 23x] sim_rejection: verb_interactions/verb_shovel_rock_surface_location  <- PENDING_HEURISTICS.md
+  covered   [ 23x] sim_rejection: verb_interactions/verb_shovel_sand_surface_location  <- PENDING_HEURISTICS.md
   covered   [ 19x] sim_rejection: verb_interactions/verb_shovel_metal_surface_location  <- PENDING_HEURISTICS.md
   covered   [ 13x] sim_rejection: regolith_yard/jump_probe  <- PENDING_HEURISTICS.md
-  covered   [  7x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
+  covered   [  9x] sim_rejection: audio_visual_sync/walk_fast_on_sand  <- PENDING_HEURISTICS.md
+  covered   [  8x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
+  covered   [  6x] sim_rejection: audio_visual_sync/walk_slow_on_sand  <- PENDING_HEURISTICS.md
   covered   [  5x] sim_rejection: audio_visual_sync/spawn_and_verify_audio_system  <- PENDING_HEURISTICS.md
-  covered   [  5x] sim_rejection: audio_visual_sync/walk_slow_on_sand  <- PENDING_HEURISTICS.md
   covered   [  5x] sim_rejection: audio_visual_sync/report_telemetry  <- PENDING_HEURISTICS.md
+  covered   [  4x] sim_rejection: regolith_yard/walk_metal_to_rock  <- PENDING_HEURISTICS.md
   covered   [  4x] sim_rejection: verb_interactions/verb_look_location  <- PENDING_HEURISTICS.md
-  covered   [152x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
+  covered   [159x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
   covered   [ 57x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 36x] pathway: sleepwalker.beat_run -> partial  <- PENDING_HEURISTICS.md
   covered   [ 26x] verification_not_verified  <- PENDING_HEURISTICS.md
-  covered   [ 24x] surprise: audio_visual_sync beat discovered expected  <- PENDING_HEURISTICS.md
+  covered   [ 25x] surprise: audio_visual_sync beat discovered expected  <- PENDING_HEURISTICS.md
   covered   [ 19x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 18x] pathway: build_orchestrator.ue_shutdown -> success_intended_kill  <- PENDING_HEURISTICS.md
   covered   [ 17x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
@@ -69,10 +70,8 @@ clusters >= 3: 43  |  suppressed (covered/pending): 39  |  staged: 2  |  deferre
   covered   [  3x] grade_CF: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  3x] grade_CF: System_Economy  <- PENDING_HEURISTICS.md
   covered   [  3x] elimination_audio_visual_sync/telemetry_accessors  <- PENDING_HEURISTICS.md
-  CANDIDATE [  9x] sim_rejection: audio_visual_sync/walk_fast_on_sand
-  CANDIDATE [  4x] sim_rejection: regolith_yard/walk_metal_to_rock
-  deferred  [ 29x] surprise: correction feature finalized frame (cap; next night)
-  deferred  [  3x] pathway: animation_physics.add_anim_notify -> failed (cap; next night)
+  CANDIDATE [ 29x] surprise: correction feature finalized frame
+  CANDIDATE [  3x] pathway: animation_physics.add_anim_notify -> failed
 
 staged 2 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
 next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate-organ rules queue for a capable cycle); optional human veto-after.
@@ -80,7 +79,7 @@ next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 2141  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 2165  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 

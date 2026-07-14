@@ -617,3 +617,4 @@ If your task is NOT listed here:
   by reading that handler too. `docs/beats/o2_survival_witness.beats.json`'s `footstep_telemetry_summary`
   beat relies on Tier 1, not the fallback. Worth fixing the fallback anyway so a real Tier-1 regression
   degrades to a working Tier 2 instead of a differently-broken one.
+- **[H-39] pathway: animation_physics.add_anim_notify -> failed** — Investigate add_anim_notify animation_physics; verify test harness and beat regi

@@ -28,6 +28,48 @@
   "provenance": "reflection:UPROPERTY:ShelterHabitatComponent.h"
  },
  {
+  "id": "atom_6e1cb5adccdd",
+  "feature": "subsystem/Shelter",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShelterRadius\\b"
+  },
+  "desc": "UPROPERTY ShelterRadius (ShelterHabitatComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShelterHabitatComponent.h"
+ },
+ {
+  "id": "atom_8346b4cfccf5",
+  "feature": "subsystem/Shelter",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbShelterActive\\b"
+  },
+  "desc": "UPROPERTY bShelterActive (ShelterHabitatComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShelterHabitatComponent.h"
+ },
+ {
+  "id": "atom_c2d8651a51ec",
+  "feature": "subsystem/Shelter",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShelterTrigger\\b"
+  },
+  "desc": "UPROPERTY ShelterTrigger (ShelterHabitatComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShelterHabitatComponent.h"
+ },
+ {
   "id": "atom_cc3b3055d106",
   "feature": "subsystem/Shelter",
   "tier": 1,

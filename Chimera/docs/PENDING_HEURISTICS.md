@@ -425,3 +425,22 @@ Wait, looking at the
 - sample: failed: [{"expect": {"pawn_within": {"x": 2000, "y": 0, "r": 900}}, "ok": false, "note": "dist=3549uu (loc x=5526.689419635806, 
 - possible_conflict_with: heuristic_52e2728aa88ab00a (Probe jumps by timed pawn_z read-back, not log_contains — an); heuristic_66e973934c7b5322 (Compound beats fail for shifting root causes (frozen input, ); H-28; H-29  (Gardener: reconcile)
 - draft_rule: Verify beat spawn location distances and pawn navigation constraints.
+
+<!-- distilled 2026-07-14T04:00:39Z -->
+## H-38: surprise: correction feature finalized frame
+- status: promoted (auto 2026-07-14)
+- kind: surprise  |  count: 29  |  last_seen: 2026-07-12T00:00:40
+- proposed_organ: claude_md
+- evidence: surprise_8f2156a52fee6dee, surprise_8f38358cf130c841, surprise_4af0a68589b9d1dd, surprise_4cd71430620dd2fe, surprise_7ae3863c51fbb9fe, surprise_ddf35ced39c5314c, surprise_e1e3e5bbbf25c0dc, surprise_9442148eacc4d1da
+- sample: expected 'system verification (rubric grade) matches human judgment' but 'I have no ability to move my character'
+- sample: expected 'system verification (rubric grade) matches human judgment' but 'automated rejection sweep: simulation evidence indicts this '
+- sample: expected 'system verification (rubric grade) matches human judgment' but 'Independently re-verified beyond the suspect beat evidence. '
+- draft_rule: Investigate correction feature; verify test harness and beat registration.
+
+## H-39: pathway: animation_physics.add_anim_notify -> failed
+- status: promoted (auto 2026-07-14)
+- kind: pathway  |  count: 3  |  last_seen: 2026-07-07T05:50:08
+- proposed_organ: mcp_pathways
+- evidence: pathway_attempt_e7fbb6ba12043a86, pathway_attempt_27bd6312e8b9fe29, pathway_attempt_b3ba3afc4acb9122
+- sample: Pathway attempt recorded: tool 'animation_physics', action 'add_anim_notify', result 'failed'
+- draft_rule: Investigate add_anim_notify animation_physics; verify test harness and beat regi

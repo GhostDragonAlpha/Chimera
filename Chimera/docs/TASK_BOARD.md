@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-13T07:15:07+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-14T04:07:15+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -14,7 +14,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0008 | open | 1.1 | Hire_Lighting_Artist (DREAM_ROSTER #8) `capable` | core/lumen_rig.py; editor:open |  |
 | tb-0009 | open | 1 | Hire_Trailer_Director (DREAM_ROSTER #12) `capable` | core/trailer.py, Saved/Trailers/**; editor:open; excl:pie |  |
 | tb-0010 | open | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md |  |
-| tb-0019 | open | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** |  |
 | tb-0020 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** |  |
 | tb-0021 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 distiller token-cove | docs/research/** |  |
 | tb-0022 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 - Distiller token-co | docs/research/** |  |
@@ -26,6 +25,9 @@ so claimed tasks are safe to run in parallel.
 | tb-0029 | open | 0.6 | Pain verdict: The bridge's NOT_IMPLEMENTED on add_anim_notif | docs/research/** |  |
 | tb-0030 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1, phase_762486f41e1ae | docs/research/** |  |
 | tb-0031 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1, phase_762486f41e1ae | docs/research/** |  |
+| tb-0032 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1, phase_762486f41e1ae | docs/research/** |  |
+| tb-0033 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1, phase_762486f41e1ae | docs/research/** |  |
+| tb-0034 | open | 0.6 | Pain verdict: The 20-deep observation queue will rot unobser | docs/research/** |  |
 | tb-0001 | blocked | 1.2 | audio_visual_sync/telemetry_accessors | Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | Releasing to allow other agent to continue |
 | tb-0002 | blocked | 1.2 | audio_visual_sync/report_telemetry | Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | Releasing to enable parallel work on ground features and cre |
 | tb-0004 | blocked | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | No parallel-safe open task for research writer |
@@ -38,5 +40,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0014 | done | 1.2 | Sprint_Input: input binding: the physical key drives the sta ⇐ tb-0013 | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/GameMode/** | Sprint_Input/binding atom GREEN x2 (LeftShift polled via Pla |
 | tb-0015 | done | 1.2 | Sprint_Input: harness parity: sleepwalker and bridge agree o | core/sleepwalker.py, Plugins/McpAutomationBridge/Source/** | harness_parity atom GREEN x2 from birth: Plugins tree alread |
 | tb-0016 | done | 1.1 | Sprint_Input: live read-back: a beat proves the verb changed ⇐ tb-0014,tb-0015 | docs/beats/audio_visual_sync.beats.json; editor:open | READBACK PROVEN: simtest_2d3122d6cefb0009 5/5 — real LeftShi |
+| tb-0019 | done | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** | REFUTED phase_da55128aec6d109a:P1. Empirical vs live 160347- |
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |
 | tb-0028 | done | 0.01 | Gauntlet sandbox: haiku-1 | docs/gauntlet/haiku-1/** | docs/gauntlet/haiku-1/tunnel_note.md (one paragraph explaini |

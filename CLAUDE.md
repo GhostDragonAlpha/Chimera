@@ -47,6 +47,7 @@
 - **[H-35, auto-promoted 2026-07-12]** Investigate elimination_audio_visual_sync telemetry_accessors; verify test harne
 - **[H-36, auto-promoted 2026-07-13]** Implement missing input bindings and verify actor registration.
 - **[H-37, auto-promoted 2026-07-13]** Verify beat spawn location distances and pawn navigation constraints.
+- **[H-38, auto-promoted 2026-07-14]** Investigate correction feature; verify test harness and beat registration.
 
 ## Architecture Overview
 
