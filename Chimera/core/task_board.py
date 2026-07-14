@@ -709,6 +709,14 @@ def main(argv=None):
                 print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
                 sys.exit(2)
             _print_packet(packet)
+            try:  # CAPCOM: announce the claim onto the operator channel
+                from core.capcom import post_safe
+                _ct = packet.get("task") or {}
+                post_safe("board",
+                          f"{args.agent} claimed {_ct.get('id', args.id or '?')}: "
+                          f"{_ct.get('title', '')[:70]}", level="info", source="task_board")
+            except Exception:
+                pass
             # NOT-THIS: the task's inversion boundary — eliminated scope +
             # the feature's recorded eliminations. Hard negatives with
             # provenance; do not re-explore without new evidence.
@@ -765,6 +773,15 @@ def main(argv=None):
         except (KeyError, ValueError) as e:
             print(f"REFUSED: {e}")
             sys.exit(1)
+        try:  # CAPCOM: announce the exit (reached only on success — refusals exit above)
+            from core.capcom import post_safe
+            _verb = {"done": "completed", "block": "BLOCKED", "release": "released"}[args.cmd]
+            _detail = (getattr(args, "result", "") or getattr(args, "reason", "")
+                       or getattr(args, "note", ""))
+            post_safe("board", f"{args.agent} {_verb} {args.id}: {_detail[:80]}",
+                      level=("warn" if args.cmd == "block" else "info"), source="task_board")
+        except Exception:
+            pass
     elif args.cmd == "reopen":
         _print_task(reopen_task(args.agent, args.id, note=args.note))
     elif args.cmd == "heartbeat":

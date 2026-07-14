@@ -132,3 +132,7 @@ Chimera/test_audio.wav.txt
 
 # Gitignore the world-model data store (SQLite DB + WAL) — it is data, regenerated
 Chimera/docs/world/
+
+# CAPCOM operator inbox — machine-local operator scratch, auto-created by
+# `python -m core.capcom brief`. Notes are ephemeral/local, not repo content.
+Chimera/docs/OPERATOR_INBOX.md

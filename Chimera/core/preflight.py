@@ -126,6 +126,18 @@ def main():
     print("CHIMERA PRE-FLIGHT")
     print("=" * 64)
 
+    # CAPCOM — the operator channel (agent-agnostic push feed, core/capcom.py).
+    # Surfaced FIRST so the freshest pushed state — unpushed work, build/verdict
+    # signals, the human's OPERATOR_INBOX notes — leads the brief instead of
+    # waiting for the agent to pull it. Ingests the inbox as a side effect.
+    try:
+        from core.capcom import signals_block
+        _capcom = signals_block(limit=8)
+        if _capcom:
+            print("\n" + _capcom)
+    except Exception as e:
+        print(f"\n[CAPCOM] operator channel unavailable ({e})")
+
     # 0. Circadian — the studio reads its OWN clock (no OS scheduler). This is
     # the qualification: system time determines the phase, and whether a night
     # is due. A 24/7 agent should honor the directive each cycle.

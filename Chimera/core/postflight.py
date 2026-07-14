@@ -82,6 +82,21 @@ def main():
     if gpa.get("trend") == "falling":
         print("!! GPA is FALLING — the Contract requires reporting this with corrective action.")
 
+    # CAPCOM — push a completion signal onto the operator channel so the NEXT
+    # agent's brief shows what this phase did (and flags a falling GPA) without
+    # having to dig. Agent-agnostic; post_safe never raises.
+    try:
+        from core.capcom import post_safe
+        post_safe("phase", f"{args.phase[:80]} -> {args.result[:120]}",
+                  level=("warn" if gpa.get("trend") == "falling" else "info"),
+                  source="postflight",
+                  data={"phase": args.phase, "result": args.result,
+                        "gpa": gpa.get("gpa"), "trend": gpa.get("trend"),
+                        "feature": args.feature, "loop": args.loop,
+                        "status": args.status, "node_id": node_id})
+    except Exception:
+        pass
+
     # Tunnel containment — a session that postflights while still inside the
     # tunnel is the #1 leak (claim + editor left dangling for the reaper).
     try:
