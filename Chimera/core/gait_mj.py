@@ -25,7 +25,6 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import os
 from pathlib import Path
 
 import numpy as np
@@ -212,7 +211,9 @@ def main() -> int:
     ap.add_argument("--frames", type=int, default=6)
     a = ap.parse_args()
 
-    os.environ.setdefault("MUJOCO_GL", "egl")
+    # Do NOT force a GL backend. MuJoCo's default renderer works headless on this
+    # Windows box (tested); forcing egl (a Linux backend) would BREAK it. Only set a
+    # backend if the user has already chosen one for their platform.
     w = json.loads(Path(a.trained).read_text(encoding="utf-8"))["genome"]["w"]
 
     tr = replay(w, render=a.frames if a.png else 0)
