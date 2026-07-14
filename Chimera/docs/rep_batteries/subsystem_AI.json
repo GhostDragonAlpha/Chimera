@@ -84,6 +84,20 @@
   "provenance": "reflection:UPROPERTY:VoiceEntity.h"
  },
  {
+  "id": "atom_1c5705a043d8",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bNPCTradeComp\\b"
+  },
+  "desc": "UPROPERTY NPCTradeComp (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
   "id": "atom_20ce6ca6766a",
   "feature": "subsystem/AI",
   "tier": 1,
@@ -319,6 +333,20 @@
    "regex": "\\bVoiceMesh\\b"
   },
   "desc": "UPROPERTY VoiceMesh (VoiceEntity.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:VoiceEntity.h"
+ },
+ {
+  "id": "atom_c66a52ce9ae1",
+  "feature": "subsystem/AI",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSocialTradeComp\\b"
+  },
+  "desc": "UPROPERTY SocialTradeComp (VoiceEntity.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:VoiceEntity.h"
  },
  {
