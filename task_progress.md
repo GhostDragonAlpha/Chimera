@@ -1,3 +1,43 @@
+# Rehearsal decision 2026-07-14 14:47Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-14 14:27Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-14 14:23Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-14 14:21Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Rehearsal decision 2026-07-14 13:21Z — next move: audio_visual_sync/report_telemetry
 
 Chosen by core.rehearsal (score 1.1, p_success 0.5, evidence: failure_mentions:2). Human may veto with one sentence.
