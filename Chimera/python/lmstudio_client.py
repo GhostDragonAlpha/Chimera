@@ -749,6 +749,29 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
             model_supports_vision = m.get('capabilities', {}).get('vision', False)
             break
 
+    # VISION ROUTING (2026-07-14): if an image was supplied but the selected model
+    # is text-only, do NOT silently strip the image and ask a blind model to
+    # describe a screenshot (the old behavior -- a banned silent fallback; the
+    # reasoning model then thinks in circles about pixels it cannot see). Route
+    # to a vision-capable model instead: CHIMERA_VISION_MODEL if set, else the
+    # first loaded model whose capabilities.vision is true. Only if none exists
+    # do we degrade -- loudly.
+    if image_path and not model_supports_vision:
+        _vm = os.environ.get("CHIMERA_VISION_MODEL", "").strip()
+        if not _vm:
+            for m in models:
+                if m.get('capabilities', {}).get('vision', False):
+                    _vm = m.get('key') or m.get('id') or ''
+                    break
+        if _vm and _vm != model_id:
+            logger.warning(f"Model '{model_id}' is text-only but an image was supplied -- "
+                           f"routing this call to vision-capable model '{_vm}'")
+            model_id = _vm
+            model_supports_vision = True
+        else:
+            logger.error(f"IMAGE SUPPLIED but no vision-capable model is loaded in LM Studio "
+                         f"-- the analysis will be TEXT-ONLY and cannot see the screenshot")
+
     # Build message content for the chat completions API payload
     has_image = False
     image_b64 = None
