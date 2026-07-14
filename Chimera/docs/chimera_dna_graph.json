@@ -56464,6 +56464,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_f0686bd82cd0"
+    },
+    {
+      "id": "surprise_ca323c09623b4779",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-14T07:13:55.987834",
+      "context": "Vision routing test: unsloth/qwen3.6 advertises capabilities.vision=true in LM Studio, so the router picked it for a screenshot analysis",
+      "expectation": "",
+      "reality": "Its own reasoning admitted 'I can't actually see images' and it CONFABULATED a plausible VERIFIED (foliage, textured dirt - not in the pixels). gemma-4-12b demonstrably sees (caught the dark ground + rocks both passes) but gives loose inconsistent readings at 12B. Lesson: capabilities.vision is advertised, not proven - pin CHIMERA_VISION_MODEL to a proven seer, and treat any single-model visual verdict as tertiary evidence for the coin to judge, never sole truth",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Its own reasoning admitted 'I can't actually see images' and it CONFABULATED a p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_dbc5db2dbe4e"
     }
   ],
   "edges": [
