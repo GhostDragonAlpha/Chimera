@@ -457,6 +457,189 @@
               "verify": [{"type": "artifact", "min_chars": 250}, {"type": "prior_artifact", "n": 3}]
             }
           ]
+        },
+        {
+          "discipline": "level-design",
+          "title": "Level Design Depth",
+          "checkpoints": [
+            {
+              "id": "ma.level-design.landmarks",
+              "prompt": "Design <feature>'s level placement: what landmark makes it findable, the sightline that teaches it before the player touches it, and how its spatial rhythm guides the player without text. Name one place where bad geometry would hide it forever.",
+              "artifact": "ma_level_design_landmarks.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["landmark|sightline|geometry|hide"]}],
+              "calibration_note": "Level design depth: spatial teaching without text"
+            },
+            {
+              "id": "ma.level-design.pacing",
+              "prompt": "Map <feature>'s pacing across a play session: where it appears first, where it reappears with complexity, and where the player masters it. Name the spatial distance or time between each appearance.",
+              "artifact": "ma_level_design_pacing.md",
+              "verify": [{"type": "artifact", "min_chars": 180, "require_numeric": 1, "must_match": ["pacing|distance|time|appear"]}],
+              "calibration_note": "Level design depth: spatial and temporal pacing"
+            }
+          ]
+        },
+        {
+          "discipline": "ai-npc",
+          "title": "AI/NPC Behavior",
+          "checkpoints": [
+            {
+              "id": "ma.ai-npc.persona",
+              "prompt": "Give <feature>'s NPC or AI a persona: what it wants, what it fears, and how that shows in its first 3 seconds of interaction with the player. If it has no personality, say why and what that costs.",
+              "artifact": "ma_ai_npc_persona.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["want|fear|persona|personality"]}],
+              "calibration_note": "AI/NPC behavior: personality over mechanics"
+            },
+            {
+              "id": "ma.ai-npc.exploit",
+              "prompt": "Bullet TWO ways a hostile player will break <feature>'s AI or NPC behavior (pathing abuse, state machine exploit, timing exploit). For each: the fix that preserves the fantasy without hardening into punishment.",
+              "artifact": "ma_ai_npc_exploit.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["exploit|break|pathing|state machine"]}, {"type": "h_rule"}],
+              "calibration_note": "AI/NPC behavior: exploit culture and fixes"
+            }
+          ]
+        },
+        {
+          "discipline": "multiplayer-social",
+          "title": "Multiplayer/Social",
+          "checkpoints": [
+            {
+              "id": "ma.multiplayer.social-dynamic",
+              "prompt": "If <feature> were played with others, what social dynamic would it create: cooperation, competition, show-off, sabotage? Name the one interaction that would break trust between players and how to prevent it.",
+              "artifact": "ma_multiplayer_social_dynamic.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["cooperation|competition|show-off|sabotage|trust"]}],
+              "calibration_note": "Multiplayer/social: social dynamics and trust"
+            }
+          ]
+        },
+        {
+          "discipline": "localization",
+          "title": "Localization Readiness",
+          "checkpoints": [
+            {
+              "id": "ma.localization.text-bloat",
+              "prompt": "Audit <feature>'s UI and narrative text for localization readiness: what strings expand in German/Russian, what icons carry meaning without text, and what cultural assumptions are baked into its metaphors. Name one metaphor that fails globally.",
+              "artifact": "ma_localization_text_bloat.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["expand|icons|cultural|metaphor|global"]}],
+              "calibration_note": "Localization readiness: text bloat and cultural assumptions"
+            }
+          ]
+        },
+        {
+          "discipline": "monetization-ethics",
+          "title": "Monetization Ethics",
+          "checkpoints": [
+            {
+              "id": "ma.monetization.ethics-line",
+              "prompt": "Run <feature> through the monetization ethics pass: what could feel like fake urgency, dark patterns, or hidden odds; where it touches player trust; the line it must never cross even if metrics reward crossing it. Name the metric you would refuse to optimize.",
+              "artifact": "ma_monetization_ethics_line.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["ethic|trust|dark pattern|fake urgency|hidden odds"]}],
+              "calibration_note": "Monetization ethics: player trust and dark patterns"
+            }
+          ]
+        },
+        {
+          "discipline": "speedrun-exploit",
+          "title": "Speedrun/Exploit Culture",
+          "checkpoints": [
+            {
+              "id": "ma.speedrun.exploit-vector",
+              "prompt": "Bullet THREE ways a speedrunner or exploit hunter would break <feature> (clip, state skip, timing exploit). For each: is it a feature or a bug? If it's a bug, what's the fix that doesn't kill the fun?",
+              "artifact": "ma_speedrun_exploit_vector.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["speedrun|exploit|clip|state skip|timing"]}],
+              "calibration_note": "Speedrun/exploit culture: intentional vs accidental exploits"
+            }
+          ]
+        },
+        {
+          "discipline": "modding",
+          "title": "Modding Surface",
+          "checkpoints": [
+            {
+              "id": "ma.modding.surface",
+              "prompt": "Design <feature>'s modding surface: what data is exposed to creators, what hooks they can attach to, and what one thing you will NEVER expose because it would break the core fantasy. Name the hook that invites the best mods.",
+              "artifact": "ma_modding_surface.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["mod|data exposed|hooks|fantasy"]}],
+              "calibration_note": "Modding surface: creator exposure and core fantasy protection"
+            }
+          ]
+        },
+        {
+          "discipline": "streaming-spectator",
+          "title": "Streaming/Spectator Readability",
+          "checkpoints": [
+            {
+              "id": "ma.streaming.readability",
+              "prompt": "Can <feature> be understood by a spectator or stream viewer who has never played it? Name the visual or audio cue that tells a third-party 'this is what's happening' without text or commentary. If not, design that cue.",
+              "artifact": "ma_streaming_readability.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["spectator|stream|viewer|visual|audio cue"]}],
+              "calibration_note": "Streaming/spectator readability: third-party understanding"
+            }
+          ]
+        },
+        {
+          "discipline": "tutorialization",
+          "title": "Tutorialization Science",
+          "checkpoints": [
+            {
+              "id": "ma.tutorialization.science",
+              "prompt": "Design <feature>'s tutorial entry: how the player learns it without a tooltip or text box. Name the spatial setup, the NPC or world event that demonstrates it, and the first safe attempt the player makes. If it requires text, say why and what text is minimal.",
+              "artifact": "ma_tutorialization_science.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["tutorial|without text|tooltip|spatial|demonstrate"]}],
+              "calibration_note": "Tutorialization science: learning without text"
+            }
+          ]
+        },
+        {
+          "discipline": "difficulty",
+          "title": "Difficulty Curves",
+          "checkpoints": [
+            {
+              "id": "ma.difficulty.curve",
+              "prompt": "Map <feature>'s difficulty curve across mastery: hour one (confusion) versus hour ten (fluency). Where does frustration set in, and what adjustment (hint, forgiveness, scaling) answers it? Name the emotion you are DESIGNING FOR at each stage.",
+              "artifact": "ma_difficulty_curve.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["difficulty|curve|frustration|fluency|emotion"]}],
+              "calibration_note": "Difficulty curves: frustration to fluency transition"
+            }
+          ]
+        },
+        {
+          "discipline": "savegame-ux",
+          "title": "Save-Game UX",
+          "checkpoints": [
+            {
+              "id": "ma.savegame.ux",
+              "prompt": "Design <feature>'s save-game UX: what state enters the save, what is derived-at-runtime and must NEVER be saved, and how the player knows their progress is safe. Name one edge case where a save could corrupt or lie.",
+              "artifact": "ma_savegame_ux.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["save|state|derived-at-runtime|corrupt|lie"]}],
+              "calibration_note": "Save-game UX: state integrity and player trust"
+            }
+          ]
+        },
+        {
+          "discipline": "accessibility-wcag",
+          "title": "Photosensitivity Standards (WCAG)",
+          "checkpoints": [
+            {
+              "id": "ma.accessibility.wcag-flash",
+              "prompt": "Assess <feature> for photosensitivity risks per WCAG 2.1: flash frequency, contrast ratios, sudden FOV changes. Name the worst-case flash scenario and the mitigation that preserves the impact without triggering seizures.",
+              "artifact": "ma_accessibility_wcag_flash.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["photosensitivity|WCAG|flash|contrast|FOV|seizure"]}],
+              "calibration_note": "Photosensitivity standards (WCAG): flash frequency and contrast"
+            }
+          ]
+        },
+        {
+          "discipline": "controls-parity",
+          "title": "Controller vs KBM Parity",
+          "checkpoints": [
+            {
+              "id": "ma.controls.parity",
+              "prompt": "Audit <feature>'s input for controller vs KBM parity: what works beautifully on a gamepad, what feels punitive on keyboard/mouse, and the one mapping adjustment that would equalize them without diluting either's strength. Name the axis or button that breaks parity.",
+              "artifact": "ma_controls_parity.md",
+              "verify": [{"type": "artifact", "min_chars": 200, "must_match": ["controller|gamepad|KBM|keyboard|mouse|parity|axis|button"]}],
+              "calibration_note": "Controller vs KBM parity: input equality without dilution"
+            }
+          ]
         }
       ]
     },

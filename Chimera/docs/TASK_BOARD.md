@@ -1,15 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-14T18:29:50+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-14T18:59:11+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0011 | claimed | 1.3 | Curriculum Faculty: grow toward hundreds of checkpoints `capable` | docs/curriculum/** | pi-agent-1 |
-| tb-0007 | open | 1.2 | Hire_Chaos_Tester (DREAM_ROSTER #5) `capable` | core/chaos.py; editor:open; excl:pie |  |
+| tb-0007 | claimed | 1.2 | Hire_Chaos_Tester (DREAM_ROSTER #5) `capable` | core/chaos.py; editor:open; excl:pie | pi-agent-1 |
 | tb-0008 | open | 1.1 | Hire_Lighting_Artist (DREAM_ROSTER #8) `capable` | core/lumen_rig.py; editor:open |  |
 | tb-0009 | open | 1 | Hire_Trailer_Director (DREAM_ROSTER #12) `capable` | core/trailer.py, Saved/Trailers/**; editor:open; excl:pie |  |
 | tb-0010 | open | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md |  |
@@ -30,6 +29,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0006 | done | 1.4 | Hire_Regression_Curator (DREAM_ROSTER #6) `capable` | core/regression.py, docs/beats/** | Regression Curator (core/regression.py) built and verified:
  |
+| tb-0011 | done | 1.3 | Curriculum Faculty: grow toward hundreds of checkpoints `capable` | docs/curriculum/** | Author new curriculum checkpoints in docs/curriculum/curricu |
 | tb-0013 | done | 1.2 | Sprint_Input: movement state: verb flag changes the simulati | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | Sprint_Input/state atom GREEN x2: SetSprinting(bool) scales  |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |
