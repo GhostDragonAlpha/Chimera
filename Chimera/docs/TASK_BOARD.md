@@ -1,21 +1,18 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-14T17:16:45+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-14T18:29:50+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0011 | open | 1.3 | Curriculum Faculty: grow toward hundreds of checkpoints `capable` | docs/curriculum/** |  |
+| tb-0011 | claimed | 1.3 | Curriculum Faculty: grow toward hundreds of checkpoints `capable` | docs/curriculum/** | pi-agent-1 |
 | tb-0007 | open | 1.2 | Hire_Chaos_Tester (DREAM_ROSTER #5) `capable` | core/chaos.py; editor:open; excl:pie |  |
 | tb-0008 | open | 1.1 | Hire_Lighting_Artist (DREAM_ROSTER #8) `capable` | core/lumen_rig.py; editor:open |  |
 | tb-0009 | open | 1 | Hire_Trailer_Director (DREAM_ROSTER #12) `capable` | core/trailer.py, Saved/Trailers/**; editor:open; excl:pie |  |
 | tb-0010 | open | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md |  |
-| tb-0024 | open | 0.6 | Pain verdict: Phase 2 dependencies may still block Phase 3 w | docs/research/** |  |
-| tb-0025 | open | 0.6 | Pain verdict: sleepwalker may still attempt PIE if runtime_r | docs/research/** |  |
-| tb-0026 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** |  |
 | tb-0027 | open | 0.6 | Pain verdict: The pipeline's visual stage used pyautogui des | docs/research/** |  |
 | tb-0029 | open | 0.6 | Pain verdict: The bridge's NOT_IMPLEMENTED on add_anim_notif | docs/research/** |  |
 | tb-0030 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1, phase_762486f41e1ae | docs/research/** |  |
@@ -44,6 +41,9 @@ so claimed tasks are safe to run in parallel.
 | tb-0021 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 distiller token-cove | docs/research/** | STALE/ALREADY-DISPOSITIONED: phase_a3193c8fa52533c6:P1 was r |
 | tb-0022 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 - Distiller token-co | docs/research/** | Pain verdict task tb-0022 for phase_da55128aec6d109a:P1 - Di |
 | tb-0023 | done | 0.6 | Pain verdict: The verb TARGETS (BP_Verb_* actors) may be as  | docs/research/** | tb-0023 Pain verdict: The verb TARGETS (BP_Verb_* actors) ma |
+| tb-0024 | done | 0.6 | Pain verdict: Phase 2 dependencies may still block Phase 3 w | docs/research/** | Spiral loop board shows Loop 2 Basic Verbs [DONE], Loop 3 Th |
+| tb-0025 | done | 0.6 | Pain verdict: sleepwalker may still attempt PIE if runtime_r | docs/research/** | sleepwalker.py run() method checks rt = self._runtime() firs |
+| tb-0026 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** | phase_a06bc8140bd62718:P1 references phase_da55128aec6d109a: |
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |
 | tb-0028 | done | 0.01 | Gauntlet sandbox: haiku-1 | docs/gauntlet/haiku-1/** | docs/gauntlet/haiku-1/tunnel_note.md (one paragraph explaini |
 | tb-0038 | done | 0.01 | Gauntlet sandbox: pi-agent-1 | docs/gauntlet/pi-agent-1/** | docs/gauntlet/pi-agent-1/tunnel_note.md |
