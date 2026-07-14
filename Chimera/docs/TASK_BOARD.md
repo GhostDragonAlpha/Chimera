@@ -1,20 +1,18 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-14T14:00:52+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-14T17:16:45+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 6 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0005 | open | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open |  |
 | tb-0011 | open | 1.3 | Curriculum Faculty: grow toward hundreds of checkpoints `capable` | docs/curriculum/** |  |
 | tb-0007 | open | 1.2 | Hire_Chaos_Tester (DREAM_ROSTER #5) `capable` | core/chaos.py; editor:open; excl:pie |  |
 | tb-0008 | open | 1.1 | Hire_Lighting_Artist (DREAM_ROSTER #8) `capable` | core/lumen_rig.py; editor:open |  |
 | tb-0009 | open | 1 | Hire_Trailer_Director (DREAM_ROSTER #12) `capable` | core/trailer.py, Saved/Trailers/**; editor:open; excl:pie |  |
 | tb-0010 | open | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md |  |
-| tb-0023 | open | 0.6 | Pain verdict: The verb TARGETS (BP_Verb_* actors) may be as  | docs/research/** |  |
 | tb-0024 | open | 0.6 | Pain verdict: Phase 2 dependencies may still block Phase 3 w | docs/research/** |  |
 | tb-0025 | open | 0.6 | Pain verdict: sleepwalker may still attempt PIE if runtime_r | docs/research/** |  |
 | tb-0026 | open | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** |  |
@@ -32,6 +30,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0002 | blocked | 1.2 | audio_visual_sync/report_telemetry | Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | Releasing to enable parallel work on ground features and cre |
 | tb-0004 | blocked | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | No parallel-safe open task for research writer |
 | tb-0003 | blocked | 0.4 | Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie | Releasing to enable parallel work on conversational loops an |
+| tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0006 | done | 1.4 | Hire_Regression_Curator (DREAM_ROSTER #6) `capable` | core/regression.py, docs/beats/** | Regression Curator (core/regression.py) built and verified:
  |
 | tb-0013 | done | 1.2 | Sprint_Input: movement state: verb flag changes the simulati | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | Sprint_Input/state atom GREEN x2: SetSprinting(bool) scales  |
@@ -44,5 +43,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0020 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** | REFUTED phase_62a9bf8fa8e97b42:P1 - DUPLICATE of phase_da551 |
 | tb-0021 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 distiller token-cove | docs/research/** | STALE/ALREADY-DISPOSITIONED: phase_a3193c8fa52533c6:P1 was r |
 | tb-0022 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 - Distiller token-co | docs/research/** | Pain verdict task tb-0022 for phase_da55128aec6d109a:P1 - Di |
+| tb-0023 | done | 0.6 | Pain verdict: The verb TARGETS (BP_Verb_* actors) may be as  | docs/research/** | tb-0023 Pain verdict: The verb TARGETS (BP_Verb_* actors) ma |
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |
 | tb-0028 | done | 0.01 | Gauntlet sandbox: haiku-1 | docs/gauntlet/haiku-1/** | docs/gauntlet/haiku-1/tunnel_note.md (one paragraph explaini |
+| tb-0038 | done | 0.01 | Gauntlet sandbox: pi-agent-1 | docs/gauntlet/pi-agent-1/** | docs/gauntlet/pi-agent-1/tunnel_note.md |

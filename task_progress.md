@@ -1,3 +1,23 @@
+# Rehearsal decision 2026-07-14 16:56Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Task Board Claim 2026-07-14 — pi-agent-1 gauntlet complete, journeyman credential obtained
+
+The agent `pi-agent-1` completed the gauntlet and obtained the journeyman credential. Capable_only lanes on the task board are now accessible.
+
+## NEXT (claimed from parallel frontier)
+1. **tb-0005 Hire_Audio_Sourcer (DREAM_ROSTER #7)** p=1.5 — Build core/audio_sourcer.py: search CC0 sources (kenney.nl, sonniss GDC, freesound CC0 filter), verify license, download to Content/Audio, import via MCP manage_asset, record provenance per asset in docs/ASSET_LICENSES.md (non-negotiable ledger) + record_pathway. First ticket: Ground_Sand_Sound footstep pack - kills the standing BLOCKED-ON-ASSETS and retires the 'human must import' line per the full-automation amendment.
+   Status: core/audio_sourcer.py created, docs/ASSET_LICENSES.md created, pathway_attempt_5a36286e32040564 recorded.
+
+---
+
 # Rehearsal decision 2026-07-14 14:47Z — next move: Costless Life Bad Ending Trigger
 
 Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.

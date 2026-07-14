@@ -210,7 +210,9 @@ def collect_facts() -> dict:
 
     try:
         from core.rehearsal import enumerate_candidates, score_candidates
-        cands = enumerate_candidates(nodes)
+        candidates_file_path = ROOT / "docs/rehearsal_candidates.json"
+        candidates_file = str(candidates_file_path) if candidates_file_path.exists() else None
+        cands = enumerate_candidates(nodes, candidates_file)
         if cands:
             facts["candidates"] = [r["name"] for r in score_candidates(nodes, cands)[:10]]
     except Exception:
