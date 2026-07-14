@@ -138,3 +138,6 @@ Chimera/docs/world/
 Chimera/docs/OPERATOR_INBOX.md
 
 Chimera/scratch/
+
+# MuJoCo writes this next to the process; it is engine spew, not source.
+MUJOCO_LOG.TXT

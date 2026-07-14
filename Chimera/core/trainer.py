@@ -224,6 +224,21 @@ def train(domain: str, obj: Objective, pop: int, gens: int, seed: int,
     spec = {"name": obj.name, "scenario": obj.scenario, "constraints": obj.constraints}
 
     g0 = mod.seed()
+
+    # THE SPEC MUST BIND. Objective.score() SKIPS any measure the domain does not report,
+    # so ONE typo (`enrgy`) silently DELETES a constraint and the run looks perfectly
+    # healthy while optimising a spec with a hole in it. That is the dead gene, one level
+    # up. Probe the domain ONCE and refuse to start if the objective names a fact that
+    # nobody measures. One evaluation, to protect a hundred thousand.
+    probe = (mod.measure_batch([g0])[0] if batched else mod.measure(g0)) or {}
+    unbound = sorted({c["measure"] for c in obj.constraints} - set(probe))
+    if unbound:
+        raise ValueError(
+            f"objective {obj.name!r} names {len(unbound)} measure(s) that {domain} does "
+            f"not report: {', '.join(unbound)}.\n  The domain reports: "
+            f"{', '.join(sorted(probe))}.\n  A constraint that binds to nothing is not a "
+            f"constraint.")
+
     population = [g0] + [mod.mutate(g0, rng) for _ in range(pop - 1)]
     n_elite = max(1, pop // 10)
     best, best_score, best_m, best_d, evals = g0, -1.0, {}, [], 0
