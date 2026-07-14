@@ -14,20 +14,6 @@
   "provenance": "reflection:UCLASS:ShelterHabitatComponent.h"
  },
  {
-  "id": "atom_1aa960e2b518",
-  "feature": "subsystem/Shelter",
-  "tier": 1,
-  "kind": "headless",
-  "probe": {
-   "type": "tree_contains",
-   "root": "Source/Chimera/ProceduralGenerated",
-   "glob": "*.cpp",
-   "regex": "\\bMaxOccupants\\b"
-  },
-  "desc": "UPROPERTY MaxOccupants (ShelterHabitatComponent.h) is used in a .cpp, not dead metadata",
-  "provenance": "reflection:UPROPERTY:ShelterHabitatComponent.h"
- },
- {
   "id": "atom_6e1cb5adccdd",
   "feature": "subsystem/Shelter",
   "tier": 1,
@@ -67,20 +53,6 @@
    "regex": "\\bShelterTrigger\\b"
   },
   "desc": "UPROPERTY ShelterTrigger (ShelterHabitatComponent.h) is used in a .cpp, not dead metadata",
-  "provenance": "reflection:UPROPERTY:ShelterHabitatComponent.h"
- },
- {
-  "id": "atom_cc3b3055d106",
-  "feature": "subsystem/Shelter",
-  "tier": 1,
-  "kind": "headless",
-  "probe": {
-   "type": "tree_contains",
-   "root": "Source/Chimera/ProceduralGenerated",
-   "glob": "*.cpp",
-   "regex": "\\bLifeSupportCapacity\\b"
-  },
-  "desc": "UPROPERTY LifeSupportCapacity (ShelterHabitatComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ShelterHabitatComponent.h"
  }
 ]

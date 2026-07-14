@@ -56193,6 +56193,22 @@
       "inheritance": "Pain-duplication root-fixed (record_phase dedup, ff1d5fd). Remaining: claim_task should skip pain-verdict tasks whose pain already has a verdict; a bounded backlog of stale tasks drains as claimed. Next cycle: add that reconciliation.",
       "recorded_by": "postflight.py",
       "run_id": "run_5a2258f941be"
+    },
+    {
+      "id": "phase_646d4519863ac281",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-14T04:37:56.721742",
+      "phase": "rep_promotion:Malcolm_Envelope",
+      "result": "tier 0 -> 1 (behaves) after 101 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:Malcolm_Envelope",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:Malcolm_Envelope' complete: tier 0 -> 1 (behaves) after 101 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_bd55023df2a7"
     }
   ],
   "edges": [
