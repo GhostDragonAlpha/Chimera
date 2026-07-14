@@ -230,6 +230,29 @@ def main():
     except Exception:
         pass
 
+    # Reverted-attempt honesty (advisory) — ".roo: a reverted attempt is a FAILURE,
+    # not a fix; describing restored-broken-state as 'fixed' is the deadliest lie in
+    # this constitution." Cheap, low-false-positive signal: the SAME report claims
+    # both a revert/rollback AND success.
+    try:
+        _ra = (args.phase + " " + args.result + " " + args.notes).lower()
+        _revert = any(w in _ra for w in ("revert", "rolled back", "roll back",
+                                         "restored", "backed out", "checkout --"))
+        _success = any(w in _ra for w in ("fixed", "working now", "now works",
+                                          "resolved", "now verified", "passes now", "fix in place"))
+        if _revert and _success:
+            print("[Honesty] WARN: this report mentions BOTH a revert/rollback AND a success "
+                  "claim. A reverted attempt is a FAILURE, not a fix — say 'attempt failed and "
+                  "was reverted', never describe restored-broken-state as fixed.")
+            try:
+                from core.capcom import post_safe as _ra_ps
+                _ra_ps("honesty", f"revert+success claim in one report: {args.phase[:52]}",
+                       level="warn", source="honesty-check")
+            except Exception:
+                pass
+    except Exception:
+        pass
+
     node_id = record_phase(args.phase, args.result, args.notes,
                            phantom_pains=args.phantom_pain or [],
                            inheritance=args.inheritance,
