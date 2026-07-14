@@ -709,68 +709,22 @@ def send_to_lmstudio(prompt: str, image_path: str | None = None, model_id: str |
     # Enforce rate limiting for LM Studio API calls
     LM_STUDIO_RATE_LIMITER.acquire()
 
-    # Check available models for vision support via LM Studio /v1/models API endpoint.
     logger.info(f"Sending request to LM Studio with model '{model_id}'")
 
-    def fetch_models():
-        conn = _LM_STUDIO_CONN_POOL.get_connection(timeout=10)
-        try:
-            parsed = urllib.parse.urlparse(LM_STUDIO_MODELS_ENDPOINT)
-            path = parsed.path
-            if parsed.query:
-                path += '?' + parsed.query
-            conn.request('GET', path, headers={'Accept': 'application/json'})
-            resp = conn.getresponse()
-            with _stream_http_response(resp) as data:
-                models_data = json.loads(data)
-                del data  # Explicit cleanup for large JSON payload string
-                # Extract the 'models' array from the JSON response containing model metadata
-                models_list = models_data.get('models', [])
-                del models_data
-                gc.collect()
-                return models_list
-        finally:
-            _LM_STUDIO_CONN_POOL.return_connection(conn)
-
-    try:
-        models = _request_with_retry(fetch_models, max_retries=3, backoff_base=2)
-    except Exception as e:
-        logger.warning(f"Could not fetch LM Studio models (LM Studio may not be running or is unreachable at {LM_STUDIO_MODELS_ENDPOINT}): {e}")
-        models = []
-
-    # Check if model supports vision by iterating through available models.
-    # Match against model 'key', 'display_name', or 'id' fields in the LM Studio API response.
-    model_supports_vision = False
-    for m in models:
-        key = m.get('key', '')
-        # Check if current model matches the requested model_id by key, display_name, or id
-        if key == model_id or model_id in [m.get('display_name', ''), m.get('id', '')]:
-            # Extract vision capability from the model's 'capabilities' object
-            model_supports_vision = m.get('capabilities', {}).get('vision', False)
-            break
-
-    # VISION ROUTING (2026-07-14): if an image was supplied but the selected model
-    # is text-only, do NOT silently strip the image and ask a blind model to
-    # describe a screenshot (the old behavior -- a banned silent fallback; the
-    # reasoning model then thinks in circles about pixels it cannot see). Route
-    # to a vision-capable model instead: CHIMERA_VISION_MODEL if set, else the
-    # first loaded model whose capabilities.vision is true. Only if none exists
-    # do we degrade -- loudly.
-    if image_path and not model_supports_vision:
-        _vm = os.environ.get("CHIMERA_VISION_MODEL", "").strip()
-        if not _vm:
-            for m in models:
-                if m.get('capabilities', {}).get('vision', False):
-                    _vm = m.get('key') or m.get('id') or ''
-                    break
-        if _vm and _vm != model_id:
-            logger.warning(f"Model '{model_id}' is text-only but an image was supplied -- "
-                           f"routing this call to vision-capable model '{_vm}'")
-            model_id = _vm
-            model_supports_vision = True
-        else:
-            logger.error(f"IMAGE SUPPLIED but no vision-capable model is loaded in LM Studio "
-                         f"-- the analysis will be TEXT-ONLY and cannot see the screenshot")
+    # NO CAPABILITY PROBE, NO REROUTING (both removed 2026-07-14).
+    #
+    # `model_id` is whatever the operator has loaded (core.lm_gateway.resolve_model),
+    # and it is used as given. LM Studio's `capabilities.vision` flag is WRONG for
+    # these builds — vision was added to several of them after the fact, so genuinely
+    # sighted models still self-report as text-only. The code that used to live here
+    # trusted that flag and, whenever an image was attached, silently swapped in a
+    # DIFFERENT model (forcing a fresh multi-GB load): picking models behind the
+    # operator's back, on metadata known to be false. It also probed a models endpoint
+    # that 404s, eating three retries with backoff on every single call.
+    #
+    # Loading a model that can actually see is the operator's job. If they load one
+    # that genuinely cannot, its own answer will say so — which is honest, and cheap.
+    model_supports_vision = True
 
     # Build message content for the chat completions API payload
     has_image = False
