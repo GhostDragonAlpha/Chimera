@@ -58,6 +58,7 @@ import hashlib
 import itertools
 import json
 import os
+import sqlite3
 import subprocess
 import sys
 import time
@@ -100,7 +101,10 @@ _INBOX_HEADER = """\
 def _con():
     con = world_store.connect(CAPCOM_DB)
     try:
-        con.execute("PRAGMA busy_timeout=4000")
+        # >=5s per SQLite guidance: WAL doesn't fix writer/writer contention, so a
+        # second concurrent writer waits this long before SQLITE_BUSY (researched
+        # 2026-07-13). Not a guarantee on its own — post() also retries.
+        con.execute("PRAGMA busy_timeout=5000")
         con.execute("CREATE TABLE IF NOT EXISTS capcom_meta(k TEXT PRIMARY KEY, v TEXT)")
         con.execute("CREATE TABLE IF NOT EXISTS capcom_inbox_seen(h TEXT PRIMARY KEY)")
         con.commit()
@@ -168,21 +172,47 @@ def _emit(con, channel, msg, level="info", data=None, source="system", commit=Tr
     return sig_id
 
 
+# Concurrency (researched 2026-07-13 — SQLite docs + tenthousandmeters/berthub):
+# WAL fixes reader/writer blocking but NOT writer/writer contention; two agents
+# writing at once serialize and the loser gets SQLITE_BUSY. busy_timeout handles
+# most of it but is NOT a guarantee — a write-after-read can deadlock and return
+# SQLITE_BUSY *immediately*, ignoring the timeout. Since CAPCOM exists to never
+# DROP a multi-agent signal, the write path retries with backoff on a locked db.
+_POST_RETRIES = 5
+
+
 def post(channel, msg, level="info", data=None, source="system"):
-    """Append a signal to the operator channel. Returns its id."""
-    con = _con()
-    try:
-        return _emit(con, channel, msg, level=level, data=data, source=source)
-    finally:
-        con.close()
+    """Append a signal to the operator channel. Returns its id. Retries on
+    writer/writer contention (SQLITE_BUSY) rather than dropping the signal."""
+    delay, last = 0.05, None
+    for _ in range(_POST_RETRIES):
+        con = _con()
+        try:
+            return _emit(con, channel, msg, level=level, data=data, source=source)
+        except sqlite3.OperationalError as e:
+            last = e
+            if "lock" not in str(e).lower() and "busy" not in str(e).lower():
+                raise
+            time.sleep(delay)
+            delay = min(delay * 2, 0.8)
+        finally:
+            con.close()
+    raise last if last else RuntimeError("capcom post failed")
 
 
 def post_safe(channel, msg, level="info", data=None, source="system"):
-    """Fire-and-forget for integration points — never raises, so a CAPCOM
-    hiccup can't break the subsystem that is reporting to it."""
+    """Fire-and-forget for integration points — never raises, so a CAPCOM hiccup
+    can't break the subsystem reporting to it. On the rare drop (write path
+    exhausted its retries under heavy contention) it WARNS to stderr instead of
+    losing the signal silently — a silent drop is the one thing this channel must
+    not do."""
     try:
         return post(channel, msg, level=level, data=data, source=source)
-    except Exception:
+    except Exception as e:
+        try:
+            sys.stderr.write(f"[capcom] dropped signal on ({channel}): {e}\n")
+        except Exception:
+            pass
         return None
 
 
