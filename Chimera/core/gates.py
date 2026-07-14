@@ -201,11 +201,12 @@ def gate_node_count_bounded() -> bool:
 
 
 def gate_lm_available() -> bool:
-    """Check that LM Studio is reachable with the mandatory model loaded.
+    """Check that LM Studio is reachable with SOME model loaded.
 
-    The mandatory model (qwen3.6-35b-a3b-mtp@iq2_m) is text-only — this gate
-    verifies LM Studio is online and responsive, not that vision is available.
-    Visual verification uses text-based game state analysis instead of pixel analysis.
+    No specific model is required: the studio adopts whichever one is resident
+    (core.lm_gateway.resolve_model), so changing models is just "load a
+    different one in LM Studio". Picking a vision-capable model is the
+    operator's call — LM Studio's llm/vlm labels are unreliable here.
     """
     try:
         from visual_verifier import _check_lm_model
@@ -215,8 +216,8 @@ def gate_lm_available() -> bool:
                 "gate_lm_available",
                 f"LM Studio not ready: {msg}",
                 "blocker",
-                "Ensure LM Studio is running with qwen-agentworld-35b-a3b-nvfp4 loaded "
-                "(or set CHIMERA_LM_MODEL to whatever is loaded)."
+                "Start LM Studio and load any (vision-capable) model — "
+                "the studio will adopt whatever is loaded."
             )
         return True
     except GateViolation:

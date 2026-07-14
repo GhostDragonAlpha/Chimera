@@ -5,12 +5,19 @@ import urllib.request
 import urllib.parse
 from pathlib import Path
 
-# LM Studio configuration — align with Python/config.py
+# LM Studio configuration — align with Python/config.py.
+# This path does NOT go through lm_gateway.lm_urlopen (it calls lmstudio_client
+# directly), so it has to adopt the resident model itself: resolve_model() is
+# what keeps vision on whatever model the operator actually loaded.
 try:
-    from core.lm_gateway import LM_MODEL as LM_STUDIO_MODEL, LM_TIMEOUT   # single source of truth
+    from core.lm_gateway import LM_MODEL as LM_STUDIO_MODEL, LM_TIMEOUT, resolve_model
 except Exception:
     LM_STUDIO_MODEL = "qwen-agentworld-35b-a3b-nvfp4"
     LM_TIMEOUT = 600
+
+    def resolve_model() -> str:
+        return LM_STUDIO_MODEL
+
 LM_STUDIO_BASE_URL = "http://192.168.3.169:1234"
 
 # Graphify interface imports
@@ -26,11 +33,13 @@ except ImportError:
         def record_visual_verification(*args, **kwargs): return "mutation_dummy"
 
 def _check_lm_model() -> tuple[bool, str]:
-    """Check that LM Studio is reachable with the mandatory model loaded.
+    """LM Studio must be up with SOME model loaded — WHICH one is the operator's
+    call, and the studio adopts it (lm_gateway.resolve_model).
 
-    Since the mandatory model (qwen3.6) is text-only, this does NOT require
-    vision capability. It verifies LM Studio is up, the model is loaded, and
-    the API is responsive for text-based game state verification.
+    Deliberately does not demand a specific id: swapping the model for the whole
+    operation is meant to be "load a different one in LM Studio", nothing more.
+    Vision-capability is the operator's responsibility — LM Studio's llm/vlm
+    labels are unreliable for these builds (vision was added after the fact).
     """
     try:
         resp = urllib.request.urlopen(
@@ -44,17 +53,9 @@ def _check_lm_model() -> tuple[bool, str]:
         return False, f"Cannot reach LM Studio at {LM_STUDIO_BASE_URL}: {e}"
 
     if not models:
-        return False, "LM Studio has no models loaded"
+        return False, "LM Studio is up but no model is loaded — load one"
 
-    # Check that the mandatory model is among loaded models
-    model_ids = [m.get("id", "") for m in models]
-    mandatory_loaded = any(LM_STUDIO_MODEL in mid for mid in model_ids)
-
-    if mandatory_loaded:
-        return True, f"Mandatory model '{LM_STUDIO_MODEL}' loaded. Using text-based game state verification."
-    else:
-        loaded = ', '.join(model_ids[:5])
-        return True, f"'{LM_STUDIO_MODEL}' not found but LM Studio is responsive. Loaded: {loaded}. Will use fallback model for text analysis."
+    return True, f"LM Studio up; the studio will use the loaded model '{resolve_model()}'"
 
 
 def _foreground_window_title():
@@ -168,7 +169,7 @@ def analyze_screenshot(screenshot_path, prompt=None):
             result = send_to_lmstudio(
                 prompt=prompt,
                 image_path=screenshot_path,
-                model_id=LM_STUDIO_MODEL,
+                model_id=resolve_model(),      # whatever the operator has loaded
                 temperature=0.3,
                 max_tokens=current_max_tokens,
                 timeout=LM_TIMEOUT   # reasoning model needs room to think (was 120s)
