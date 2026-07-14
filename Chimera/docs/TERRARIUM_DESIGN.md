@@ -1,9 +1,73 @@
 # The Terrarium — a growing organism, sealed in glass
 
-> **STATUS: DESIGN ONLY. No code exists. Nothing runs. This document is inert.**
+> **STATUS (2026-07-14): STAGES 0 AND 1 ARE BUILT, TESTED, AND PASSED.**
+> `core/terrarium.py` · `core/evolve.py` · `core/trainables/creature.py` · 16/16 tests.
+> Built entirely inside a membrane; the studio saw nothing until the tests were green.
 >
 > A terrarium is alive, growing, and watchable — and it **cannot get out**.
 > That is the whole design, in one word.
+
+---
+
+## WHAT ACTUALLY HAPPENED (read this before the design)
+
+**Stage 0 — PASSED.** 447 bytes of genome → **238 bones in 1.2 ms** → 3,808 triangles in
+1.8 ms → an `.obj` you can open. The totality proof is not a claim, it is a **bomb**: a genome
+built to explode (`A → F[+A]F[-A]A`, strictly expanding, no terminal, asking for 999
+iterations — 4⁹⁹⁹ symbols in an unbounded L-system) **terminates anyway**. Not because a guard
+caught it; because there is no path where it doesn't.
+
+**Stage 1 — PASSED.** 24 individuals from one genome: **not clones, not noise, a FAMILY** —
+shared body plan, real variation in density, branch angle, crown shape, and one genuine
+**deformity** where a mutation reached *structure*, not merely parameters. **The indirect
+encoding works.**
+
+**But it grew TREES.** The fix was not a tweak — it was a category error:
+
+> ### A TREE IS A RECURSION. A CREATURE IS A CASCADE.
+>
+> `A → F[+B]F[-B]A` — **A calls A.** Self-similarity **is** the definition of a plant: every
+> branch is a smaller tree. It cannot make anything else.
+>
+> An animal is a **finite staged program** — `C → S → G → K → P` — where each symbol fires
+> **once** and hands off to a **different** one. That is what Hox genes do: **positional
+> identity**. Segment 3 *knows* it is segment 3, which is why a fly's thorax grows wings and
+> its abdomen does not, from one genome.
+>
+> Consequence: a cascade **terminates on its own**, so `MAX_DEPTH` stops being the mechanism
+> that bounds growth and becomes a mere backstop.
+
+Added: `( )` = **bilateral mirror** — `(X) → [X][X-flipped]`, a pure string rewrite *before*
+interpretation, so the turtle never has to know animals have two sides. Yaw and roll flip;
+pitch does not (down is down on both flanks). Bilateral symmetry in one operator.
+
+**Then the human said: *"this needs to be trained like an ai model not with llm thinking (too
+slow)."* They were right.** `grow()` is 1.2 ms; on 24 cores that is **35,634 evals/sec,
+measured**. An LLM hand-editing a grammar manages ~20/hour. Six orders of magnitude.
+
+**My hand-designed quadruped scored 0.00000. It TOPPLES.** The creature I built by *reasoning*
+cannot stand up, and the optimiser proved it in three seconds.
+
+### THE CREATURE IS NOT DONE, AND I KNOW EXACTLY WHY
+
+Three degenerate optima, in order — each statically excellent and biologically absurd:
+
+1. **THE LOLLIPOP** — a boulder on a pole over a tripod. Mass goes as *r²* and parsimony was
+   charged **per bone**, so one enormous bone was free.
+2. **THE BLOB ON STILTS** — minimally compliant. The objective was made only of *bounds*, so
+   the optimiser stopped dead at "barely legal" (see the SATISFICER trap in
+   `docs/TRAINING_PROTOCOL.md` §3).
+3. **THE MAST WITH OUTRIGGERS** — legs sprawled *flat on the ground*, giving a huge support
+   polygon and almost no mass, while a heavy rod held the centre of gravity high.
+
+> **Three exploits in a row is not a message about your parameters. It is a message about your
+> FRAME.** Static stability can **always** be gamed by outriggers, because a creature is not
+> defined by how it **stands** — it is defined by what it **does**.
+
+**THE NEXT OBJECTIVE MUST BE LOCOMOTION** — distance travelled under Chaos physics. It cannot
+be faked, because outriggers do not walk. That is what Karl Sims used in 1994 and what should
+have been used here. Cost: ~100 ms/eval instead of 1.5 ms → ~200/sec → still **10⁶ a night**.
+Feasible. A different build. **That is Stage 3, and it is the real Stage 1.**
 
 ---
 
@@ -240,14 +304,15 @@ the only 4090 spec that matters is its **1008 GB/s**, not its 82 TFLOPS.
 The idea only *feels* risky because it sounds like one leap. It is not. Every stage below
 stands alone, is worth having on its own, and has an explicit **kill criterion**.
 
-| # | what | time | touches | worst case | KILL IF |
-|---|---|---|---|---|---|
-| **0** | `grow(genome, seed) -> .obj`. One pure Python file. Writes an OBJ to a scratch dir. | **½ day** | **nothing** | a wasted afternoon | it never makes a shape you'd look at twice |
-| **1** | Mutate the genome. Grow 100. Render a contact sheet of 100 thumbnails. | **1 day** | **nothing** | a wasted day | **mutations give noise or clones — not a *family*** |
-| 2 | Morphology → UE5 static mesh via Geometry Script. | 2–3 days | one level | a weird mesh | it's ugly, unshippable |
-| 3 | Skeleton → Chaos articulated body. It falls over. Fine. | ~1 week | one level | it flops around | bodies are unusable |
-| 4 | Offline evolution. Night. Headless. Bounded. | ~1 week | a new .db | wasted CPU-nights | evolution converges to mush |
-| 5 | Make it a game. | — | — | — | — |
+| # | what | status | KILL IF |
+|---|---|---|---|
+| **0** | `grow(genome, seed) -> .obj`. One pure Python file. | ✅ **DONE.** 447 B → 238 bones (1.2 ms) → 3,808 tris. 16/16 tests. | it never makes a shape you'd look at twice |
+| **1** | Mutate. Grow 24. Look at the contact sheet. | ✅ **PASSED.** A *family* — not clones, not noise, plus a real structural deformity. | mutations give noise or clones, not a *family* |
+| **1.5** | **The trainer** — get the LLM out of the inner loop. | ✅ **DONE.** `core/evolve.py` + the generic `core/trainer.py`. 35,634 evals/sec. | — |
+| **2** | Morphology → UE5 mesh via Geometry Script. | ⬜ not started | it's ugly, unshippable |
+| **3** | **LOCOMOTION.** Chaos physics. Fitness = **distance travelled.** | ⬜ **THIS IS THE REAL NEXT STEP.** Static geometry cannot specify "creature" — three exploits proved it. | it can't learn to move at all |
+| 4 | Offline evolution at scale. Night. Headless. Bounded. | ⬜ (the trainer already does this; just point it at physics) | evolution converges to mush |
+| 5 | Make it a game. | ⬜ | — |
 
 ### Stage 1 is the whole thesis
 

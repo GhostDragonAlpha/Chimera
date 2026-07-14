@@ -1,3 +1,119 @@
+# SESSION 2026-07-14 — the LLM left the inner loop
+
+Three subsystems landed. Read `docs/TRAINING_PROTOCOL.md` before touching any of them.
+
+## 1. THE MEMBRANE — `core/membrane.py` (5547513)
+
+Run ANY command in a sealed copy of the studio, then **PROVE** it touched nothing outside.
+
+    python -m core.membrane run --burn -- python -m core.solver --blocker "X"
+
+A boundary is what makes a cause **attributable** (in biology the vesicle is what lets a
+replicator keep what it makes; in engineering the same boundary is what lets you attribute an
+outcome to a change rather than to the world). It seals a git worktree of your CURRENT tree
+**plus a copy of `docs/world/`** — which is gitignored, so a worktree ALONE would leave the DNA
+graph, rep ledger, history and CAPCOM stores **shared with live**. That is the difference
+between a membrane and a costume. It **measures** its containment (fingerprints HEAD, refs,
+dirty set, and a hash of every world store, before and after) rather than asserting it — and on
+its FIRST live run it caught `pi` writing to the live DNA graph and refused to report clean.
+
+**WHY IT EXISTS:** `core.solver --no-execute` was run as an infrastructure probe with an
+INVENTED blocker. `--no-execute` stops solver *executing* its plan, not *WRITING* it. Four
+fabricated blockers reached `task_progress.md`, the auto-flush pushed them, and `pi` read the
+top one and began working a blocker that never existed. Ten minutes. **The LM call sites are
+NOT read-only. Probe them in a membrane.**
+
+## 2. THE TERRARIUM — `core/terrarium.py` (49de705, 6a902f4)
+
+A genome (bounded parametric L-system) → skeleton → mesh. 447 bytes → 238 bones in 1.2 ms →
+3,808 triangles. **TOTAL** (a `for` with a symbol cap; a genome built to explode terminates
+anyway), **DETERMINISTIC** (byte-identical), and it **imports nothing from the studio**
+(ast-asserted, so `import graphify_record` fails the build).
+
+**A TREE IS A RECURSION; A CREATURE IS A CASCADE.** `A -> ...A` is self-similar and can only
+ever be a plant. An animal is a finite staged program where each symbol fires ONCE and hands
+off to a DIFFERENT one — Hox genes, positional identity. `( )` = bilateral mirror.
+
+## 3. THE TRAINER — `core/trainer.py` + `core/trainables/` + `docs/objectives/` (bc37304)
+
+**THE LLM WRITES THE CONSTRAINTS. IT NEVER TURNS THE CRANK.**
+
+    SCENARIO -> [LLM] writes docs/objectives/<f>.json -> [TRAINER] ~30,000 evals/sec, no LLM
+             -> WINNER + PINNED WALLS -> [LLM] repairs the objective -> repeat
+
+Proven generic on two utterly different features with ONE tool: a market simulation (400k
+evals, 15.1 s) and a 3D skeleton (240k evals, 7.7 s). **You can train DATA. You cannot train
+CODE** (a C++ system is ~6 min/eval — seven orders of magnitude). **THE DSL IS THE GENOME.**
+
+---
+
+# NEXT: two forks, both concrete
+
+## FORK A — give the economy finding to the pipeline  ***(recommended: it is a real bug)***
+
+`core/trainables/economy.py` ran a greedy arbitrageur through the **shipping DSL numbers**:
+
+    credits_per_hour   635,400    top_route_share  1.0   ONE route earns EVERYTHING
+    routes_used              1    commodities_used   1   3 of 4 commodities are dead weight
+    stations_visited         2    rate_decay         0   pays the same at hour 60 as hour 1
+    final_credits   38,130,000    from a 10,000 start, in 60 hours
+
+The printer: **Titanium — buy 45 at Titan_Surface, sell 72 at Orbital_Hub_7**, 50,000 kg of
+cargo = **1.35 M credits a run, riskless, forever.** That is **H-13** ("economy features
+repeatedly grade C/F") with a mechanism instead of a vibe.
+
+Then it was TRAINED over **400,000 price configurations — and it REFUSED to fix it with
+prices.** Titanium is still 45 -> 72 in the winner. What it changed:
+
+    elasticity  0.000 -> 0.058     <-- A FIELD THAT DOES NOT EXIST IN THE DSL
+
+With static prices `rate_decay` is **zero by construction**; no number writable in that DSL
+removes the printer. **The optimiser proved a STRUCTURAL flaw by exhausting the alternatives.**
+
+**DO:** add price elasticity to `economy_systems` in
+`tests/dsl_grammar/deep_space_trader.chimera`; teach `core/game_code_generator.py` to emit it
+into `EconomyManager`; regenerate; re-train. Remaining pins (`top_route_share` riding 0.55,
+`stations_visited` riding its min) say the economy's natural attractor is STILL "one route, two
+stations" — the constraints are the only thing holding it multi-route. Natural variety needs
+another structural change: station specialisation, demand cycles, or stock limits.
+
+## FORK B — the creature needs LOCOMOTION, not geometry
+
+**The creature objective is WRONG and the creature is NOT done.** Three degenerate optima, in
+order — a **lollipop** (boulder on a pole), a **blob on stilts** (minimally compliant), and a
+**mast with flat outriggers** (legs sprawled on the ground giving a huge base and no mass while
+a heavy rod holds the CoG high). Each was statically excellent and biologically absurd.
+
+**Three exploits in a row is not a message about your parameters. It is a message about your
+FRAME.** Static stability can ALWAYS be gamed by outriggers, because a creature is not defined
+by how it STANDS — it is defined by what it DOES.
+
+**DO:** build `core/trainables/walker.py` — skeleton -> Chaos articulated body -> fitness =
+**distance travelled**. It cannot be faked, because outriggers do not walk. ~100 ms/eval ->
+~200/sec -> still 10^6 a night. (Karl Sims, 1994. It should have been used from the start.)
+
+---
+
+# TRAPS HIT ON DAY ONE — do not repeat them
+
+- **THE SATISFICER.** Score is a weighted geometric mean of satisfactions, each capped at 1.0.
+  Once every constraint reads sat=1.00 the score pins at 1.0000 and **there is NO GRADIENT LEFT
+  TO CLIMB.** `best 1.0000` for 700 generations was read as *converged*. It was not converged —
+  it was **finished, because it had been given nothing left to want.** **A spec made only of
+  walls gets you exactly the walls.** Every objective needs at least one `maximize` term.
+- **DEAD GENES.** `seg_taper` started at 0 and mutation only jittered it *if already > 0* — so
+  evolution could never switch it on. **A locus the optimiser cannot reach is a locus that does
+  not exist.**
+- **A LAZY SIMULATOR.** The first economy sim let the player *starve* when nothing paid from
+  where they stood, so it never reached the printer (which starts at the other station). A real
+  player **deadheads**. Model a competent player or you are measuring your own incompetence.
+- **TASTE-AS-PHYSICS.** The creature objective never mentions legs. Asking for legs would only
+  rediscover my own assumption. **Legs are not specified. Legs are the ANSWER.**
+- **A SEARCH TOOL RETURNING EMPTY IS NOT EVIDENCE OF ABSENCE.** The Grep tool reported "No
+  matches found" for a string that appears eight times in that directory. Cross-check.
+
+---
+
 # Rehearsal decision 2026-07-14 16:56Z — next move: Costless Life Bad Ending Trigger
 
 Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
@@ -902,3 +1018,4 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
    Then relaunch editor and re-run the beat to confirm telemetry passes.
 3. After verification, run `python -m core.rehearsal --decide` for the next Loop candidate
    (queue is currently empty).
+
