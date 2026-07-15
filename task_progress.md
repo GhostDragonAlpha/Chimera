@@ -1,3 +1,27 @@
+# Session 2026-07-15 (Opus) — Haiku stress-test → board deadlock fixed (b743e79)
+
+Sent a Haiku agent through the real onboarding to see how a weak model fares. It
+stalled at step 2: `task_board claim` returned bare NONE. Its diagnosis was WRONG
+(blamed file locks) but the failure was REAL. Verified root cause: every headless
+code-fix task declared `exclusive:['pie']`, so one legit PIE lane (tb-0057) froze
+all 34 others → parallel frontier 0.
+
+FIXED (core/task_board.py): footprints now model the 3 real shared resources —
+`pie` only for PIE-driving lanes, `generator` token for generator-owned fixes,
+subtree globs otherwise. `rescope_nondone_tasks()` migrated the live board (35
+tasks) + self-heals on every claim. Frontier 0→4, verified a fresh agent claims
+via both raw and full-tunnel paths. Also: `_print_no_claim` explains the blocker
++ reap ETA (was a dead-end); gauntlet pain-id/task-id check labels now carry a
+copy-pasteable example (core/gauntlet.py). Surprise recorded, CAPCOM posted.
+
+For the NEXT agent: `claim` now self-heals footprints, so if you ever see NONE it
+will TELL you which held lane blocks you and when it reaps. NOTE a possible
+lingering issue observed in this log — rehearsal kept re-picking "Costless Life
+Bad Ending Trigger"; if the ALREADY-DONE demotion (shipped earlier today) is
+working, `rehearsal --decide` should stop choosing it. Worth confirming.
+
+---
+
 # Rehearsal decision 2026-07-15 13:28Z — next move: Costless Life Bad Ending Trigger
 
 Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
