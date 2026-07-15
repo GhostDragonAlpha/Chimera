@@ -294,6 +294,20 @@
   "provenance": "dsl2:deep_space_trader.chimera"
  },
  {
+  "id": "atom_1cdc6326f472",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source",
+   "glob": "*.*",
+   "regex": "(Game_Feel|GameFeel)"
+  },
+  "desc": "DSL token 'Game_Feel' (deep_space_trader.chimera) surfaces in Source (snake or CamelCase)",
+  "provenance": "dsl2:deep_space_trader.chimera"
+ },
+ {
   "id": "atom_1f04d6183f11",
   "feature": "System_DSL_Fidelity",
   "tier": 0,

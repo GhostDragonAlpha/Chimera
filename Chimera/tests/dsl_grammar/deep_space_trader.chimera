@@ -6,6 +6,7 @@ game "DeepSpaceTrader" {
 game_settings {
     camera_perspective = "third_person";
     game_mode = "single_player";
+    Game_Feel = "responsive_scifi";  # Target: <150ms input feedback, <3s dead air
 }
 
 narrative {

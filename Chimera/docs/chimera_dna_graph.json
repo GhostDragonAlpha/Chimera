@@ -62979,6 +62979,181 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_dce913b93a77"
+    },
+    {
+      "id": "phase_5a8a039a1cb1e692",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T18:04:27.517670",
+      "phase": "rep_promotion:subsystem/Demo",
+      "result": "tier 0 -> 1 (behaves) after 100 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Demo",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Demo' complete: tier 0 -> 1 (behaves) after 100 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_3058fd14c94e"
+    },
+    {
+      "id": "phase_7065cfd13bcc789b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T18:09:44.491717",
+      "phase": "rep_promotion:Malcolm_Envelope",
+      "result": "tier 1 -> 2 (measures) after 313 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:Malcolm_Envelope",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:Malcolm_Envelope' complete: tier 1 -> 2 (measures) after 313 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_965296c95c5a"
+    },
+    {
+      "id": "rollout_a0bdf01c6c7662c6",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-15T18:58:11.802729",
+      "chosen": "Ground_Sand_Sound_unblock",
+      "candidates": [
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.876,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.536,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.272,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        },
+        {
+          "name": "Costless Life Bad Ending Trigger",
+          "score": 0.018,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Will & Forewarning Inheritance UI",
+          "score": 0.016,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=encoded) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.016,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.013,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "The Erisaid Audio Attunement Minigame",
+          "score": 0.012,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Titan Run Gravity Shift Mechanics",
+          "score": 0.01,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Regolith Dust Accumulation Visual Feedback",
+          "score": 0.009,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        }
+      ],
+      "rationale": "value 0.8 x p 0.6 / cost 1.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Ground_Sand_Sound_unblock",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_e811c4ee6fb9"
+    },
+    {
+      "id": "phase_a5ed1d24072d8f90",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T20:02:48.551127",
+      "phase": "rep_promotion:Sleepwalker_Beats",
+      "result": "tier 0 -> 1 (behaves) after 100 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:Sleepwalker_Beats",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:Sleepwalker_Beats' complete: tier 0 -> 1 (behaves) after 100 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_826f44679d0d"
+    },
+    {
+      "id": "phase_642297348ff9a185",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T20:08:03.912637",
+      "phase": "rep_promotion:subsystem/GameMode",
+      "result": "tier 0 -> 1 (behaves) after 101 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/GameMode",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/GameMode' complete: tier 0 -> 1 (behaves) after 101 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_21bedba5ac22"
+    },
+    {
+      "id": "phase_1016e269ec2fdf63",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T20:12:05.828968",
+      "phase": "Fix 1 red rep atom(s): subsystem/Travel",
+      "result": "tb-0065: Fixed 1 red rep atom for subsystem/Travel. atom_28f7ccf5590e (UTravelVehicleComponent not created/registered) was RED \u2014 HONEST dead-metadata: class declared but never instantiated on any actor. Fix: added TravelVehicleComponent to ship generator template in core/game_code_generator.py \u2014 (1) #include, (2) UPROPERTY+member, (3) CreateDefaultSubobject in constructor. Re-measured: atom_28f7ccf5590e now passed=1, evidence=found in core\\game_code_generator.py. subsystem/Travel: 0 failing atoms.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Fix 1 red rep atom(s): subsystem/Travel",
+      "error_category": "none",
+      "fix_description": "Phase 'Fix 1 red rep atom(s): subsystem/Travel' complete: tb-0065: Fixed 1 red rep atom for subsystem/Travel. atom_28f7ccf5590e (UTravelVehicleComponent not created/registered) was RED \u2014 HONEST dead-metadata: class declared but never instantiated on any acto",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The TravelVehicleComponent has behavior stubs but no real gameplay logic yet \u2014 ground vs flight speed switching, vehicle entry/exit, passenger mounting"
+      ],
+      "inheritance": "UTravelVehicleComponent is now wired into the ship generator template \u2014 next pipeline run will regenerate AShip_Trader_Vessel_Alpha with the component attached. The component itself (Travel/TravelVehicleComponent.cpp) already compiles and has InitializeBasicMovement/InitializeFlightCapabilities stubs ready for behavior.",
+      "pain_verdicts": {
+        "phase_1b01fac303f3c24e:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_dc20b07bf3f4"
     }
   ],
   "edges": [

@@ -591,6 +591,7 @@ class GameCodeGenerator:
         header_content += f'#include "MissionComponent.h"\n'
         header_content += f'#include "FactionComponent.h"\n'
         header_content += f'#include "SaveGameComponent.h"\n'
+        header_content += f'#include "TravelVehicleComponent.h"\n'
         header_content += f'#include "Camera/CameraComponent.h"\n'
         header_content += f'#include "Components/StaticMeshComponent.h"\n'
         header_content += f'#include "Components/SceneComponent.h"\n'
@@ -642,6 +643,8 @@ class GameCodeGenerator:
         header_content += "\tUFactionComponent* FactionComponent;\n\n"
         header_content += "\tUPROPERTY(VisibleAnywhere, Category = \"Combat Components\", meta = (AllowPrivateAccess = \"true\"))\n"
         header_content += "\tUSaveGameComponent* SaveGameComponent;\n\n"
+        header_content += "\tUPROPERTY(VisibleAnywhere, Category = \"Travel Components\", meta = (AllowPrivateAccess = \"true\"))\n"
+        header_content += "\tUTravelVehicleComponent* TravelVehicleComponent;\n\n"
         header_content += "public:\n"
         header_content += f"\tvirtual void BeginPlay() override;\n"
         header_content += "};\n"
@@ -679,6 +682,7 @@ class GameCodeGenerator:
         source_content += f"\tMissionComponent = CreateDefaultSubobject<UMissionComponent>(TEXT(\"MissionComponent\"));\n"
         source_content += f"\tFactionComponent = CreateDefaultSubobject<UFactionComponent>(TEXT(\"FactionComponent\"));\n"
         source_content += f"\tSaveGameComponent = CreateDefaultSubobject<USaveGameComponent>(TEXT(\"SaveGameComponent\"));\n"
+        source_content += f"\tTravelVehicleComponent = CreateDefaultSubobject<UTravelVehicleComponent>(TEXT(\"TravelVehicleComponent\"));\n"
         source_content += "}\n\n"
         
         source_content += f"void {class_name}::BeginPlay()\n"

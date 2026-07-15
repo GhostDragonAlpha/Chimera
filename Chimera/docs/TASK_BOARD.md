@@ -1,18 +1,16 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-15T17:51:00+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-15T20:12:58+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0057 | open | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie |  |
-| tb-0065 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Travel | core/game_code_generator.py; excl:generator |  |
-| tb-0066 | open | 1.2 | Fix 1 red rep atom(s): subsystem/VFX | core/game_code_generator.py; excl:generator |  |
+| tb-0057 | claimed | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | sub-03 |
+| tb-0079 | claimed | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/** | sub-05 |
 | tb-0090 | open | 1.2 | Fix 1 red rep atom(s): UGestureWheel | core/game_code_generator.py; excl:generator |  |
-| tb-0079 | open | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0080 | open | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0072 | open | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie |  |
@@ -22,6 +20,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0076 | open | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie |  |
 | tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
+| tb-0066 | blocked | 1.2 | Fix 1 red rep atom(s): subsystem/VFX | core/game_code_generator.py; excl:generator | Reassigning to tb-0079 (UGestureWheel) per orchestrator dire |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0006 | done | 1.4 | Hire_Regression_Curator (DREAM_ROSTER #6) `capable` | core/regression.py, docs/beats/** | Regression Curator (core/regression.py) built and verified:
  |
@@ -37,6 +36,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0062 | done | 1.2 | Fix 1 red rep atom(s): subsystem/PCG | core/game_code_generator.py; excl:generator | Fixed subsystem/PCG red rep atom: added UUniverseGenerationC |
 | tb-0063 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Ships | core/game_code_generator.py; excl:generator | resolved: subsystem/Ships green (11 atoms) in run_1784134339 |
 | tb-0064 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Stations | core/game_code_generator.py; excl:generator | Fixed generator core/game_code_generator.py (generate_ship_c |
+| tb-0065 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Travel | core/game_code_generator.py; excl:generator | tb-0065: Fixed 1 red rep atom for subsystem/Travel. atom_28f |
 | tb-0089 | done | 1.2 | Fix 1 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** | resolved: Malcolm_Envelope green (8 atoms) in run_1784134339 |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |

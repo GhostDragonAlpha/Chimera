@@ -60,6 +60,18 @@
   "provenance": "reflection:UCLASS:QuantumTravelSpecComponent.h"
  },
  {
+  "id": "atom_6c693281a607",
+  "feature": "subsystem/Travel",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/subsystem__Travel/transcript.json"
+  },
+  "desc": "'subsystem/Travel' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
+ },
+ {
   "id": "atom_01606ad450c0",
   "feature": "subsystem/Travel",
   "tier": 1,

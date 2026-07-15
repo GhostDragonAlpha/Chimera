@@ -2463,6 +2463,944 @@
       "line": 34,
       "quote": "SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;",
       "at": "2026-07-15T07:47:41.178Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\DebugCameraManager.h",
+      "line": 44,
+      "quote": "void HandleGameInstanceWorldChanged(class UGameInstance* GameInstance, class UWorld* OldWorld, class UWorld* NewWorld);",
+      "at": "2026-07-15T19:01:10.924Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Actor.cpp",
+      "line": 728,
+      "quote": "UGameInstance* AActor::GetGameInstance() const",
+      "at": "2026-07-15T19:01:10.924Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 57,
+      "quote": "class UGameInstance;",
+      "at": "2026-07-15T19:01:10.924Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\GameplayViewportClient.h",
+      "line": 7,
+      "quote": "/** Defines behavior of viewport clients that draw the contents of a UGameInstance world. */",
+      "at": "2026-07-15T19:01:10.924Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemBlueprintLibrary.h",
+      "line": 27,
+      "quote": "static ENGINE_API UGameInstanceSubsystem* GetGameInstanceSubsystem(UObject* ContextObject, TSubclassOf<UGameInstanceSubsystem> Class);",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\Subsystem.h",
+      "line": 17,
+      "quote": "*\t\tGameInstance -> inherit UGameInstanceSubsystem",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\Subsystem.h",
+      "line": 22,
+      "quote": "*\t\tclass UMySystem : public UGameInstanceSubsystem",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\GameInstanceSubsystem.h",
+      "line": 12,
+      "quote": "* UGameInstanceSubsystem",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\GameInstanceSubsystem.h",
+      "line": 16,
+      "quote": "class UGameInstanceSubsystem : public USubsystem",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Subsystems\\GameInstanceSubsystem.cpp",
+      "line": 8,
+      "quote": "UGameInstance* UGameInstanceSubsystem::GetGameInstance() const",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Subsystems\\SubsystemBlueprintLibrary.cpp",
+      "line": 21,
+      "quote": "/*static*/ UGameInstanceSubsystem* USubsystemBlueprintLibrary::GetGameInstanceSubsystem(UObject* ContextObject, TSubclassOf<UGameInstanceSubsystem> Class)",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\GameInstance.h",
+      "line": 474,
+      "quote": "static_assert(TIsDerivedFrom<TSubsystemClass, UGameInstanceSubsystem>::IsDerived, \"TSubsystemClass must be derived from UGameInstanceSubsystem\");",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\GameInstance.h",
+      "line": 475,
+      "quote": "return SubsystemCollection.ForEachSubsystem([Operation=MoveTemp(Operation)](UGameInstanceSubsystem* Subsystem){",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\GameInstance.h",
+      "line": 663,
+      "quote": "FObjectSubsystemCollection<UGameInstanceSubsystem> SubsystemCollection;",
+      "at": "2026-07-15T19:01:51.474Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameInstance.cpp",
+      "line": 82,
+      "quote": "This->SubsystemCollection.AddReferencedObjects(This, Collector);",
+      "at": "2026-07-15T19:02:06.810Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\LocalPlayer.cpp",
+      "line": 1863,
+      "quote": "This->SubsystemCollection.AddReferencedObjects(This, Collector);",
+      "at": "2026-07-15T19:02:06.810Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\UnrealEngine.cpp",
+      "line": 4127,
+      "quote": "This->EngineSubsystemCollection.AddReferencedObjects(This, Collector);",
+      "at": "2026-07-15T19:02:06.810Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\World.cpp",
+      "line": 1047,
+      "quote": "This->SubsystemCollection.AddReferencedObjects(InThis, Collector);",
+      "at": "2026-07-15T19:02:06.810Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\InputDeviceSubsystem.h",
+      "line": 136,
+      "quote": "ENGINE_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Animation\\AnimInstanceProxy.h",
+      "line": 1198,
+      "quote": "uint8 bInitializeSubsystems : 1;",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 938,
+      "quote": "ENGINE_API void InitializeSubsystemCollection();",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 1982,
+      "quote": "void ForEachSubsystem(TFunctionRef<void(TSubsystemClass*)> Operation) const",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 1984,
+      "quote": "((FSubsystemCollection<UAudioEngineSubsystem>&)SubsystemCollection).ForEachSubsystem(",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Physics\\NetworkPhysicsComponent.h",
+      "line": 1640,
+      "quote": "ENGINE_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\WorldPartitionSubsystem.h",
+      "line": 71,
+      "quote": "ENGINE_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ReplaySubsystem.h",
+      "line": 29,
+      "quote": "ENGINE_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 1537,
+      "quote": "UE_API void InitializeSubsystems();",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 1540,
+      "quote": "UE_API void PostInitializeSubsystems();",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 4358,
+      "quote": "void ForEachSubsystem(TFunctionRef<void(TSubsystemClass*)> Operation) const",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 4361,
+      "quote": "return SubsystemCollection.ForEachSubsystem([Operation=MoveTemp(Operation)](UWorldSubsystem* Subsystem){",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\WorldSubsystem.h",
+      "line": 96,
+      "quote": "ENGINE_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemCollection.h",
+      "line": 35,
+      "quote": "ENGINE_API USubsystem* InitializeDependency(TSubclassOf<USubsystem> SubsystemClass);",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemCollection.h",
+      "line": 44,
+      "quote": "return Cast<TSubsystemClass>(InitializeDependency(TSubsystemClass::StaticClass()));",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemCollection.h",
+      "line": 104,
+      "quote": "ENGINE_API void ForEachSubsystem(TFunctionRef<void(USubsystem*)> Operation) const;",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemCollection.h",
+      "line": 107,
+      "quote": "ENGINE_API void ForEachSubsystemOfClass(UClass* SubsystemClass, TFunctionRef<void(USubsystem*)> Operation) const;",
+      "at": "2026-07-15T19:02:11.989Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 1943,
+      "quote": "UAudioEngineSubsystem* GetSubsystemBase(TSubclassOf<UAudioEngineSubsystem> SubsystemClass) const",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 1952,
+      "quote": "return SubsystemCollection.GetSubsystem<TSubsystemClass>(TSubsystemClass::StaticClass());",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 1964,
+      "quote": "return InHandle->GetSubsystem<TSubsystemClass>();",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemCollection.h",
+      "line": 179,
+      "quote": "TSubsystemClass* GetSubsystem(const TSubclassOf<TSubsystemClass>& SubsystemClass) const",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemCollection.h",
+      "line": 189,
+      "quote": "TArray<TSubsystemClass*> GetSubsystemArrayCopy(const TSubclassOf<TSubsystemClass>& SubsystemClass) const",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemCollection.h",
+      "line": 232,
+      "quote": "TSubsystemClass* GetSubsystem(const TSubclassOf<TSubsystemClass>& SubsystemClass) const",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Subsystems\\SubsystemCollection.h",
+      "line": 242,
+      "quote": "TArray<TSubsystemClass*> GetSubsystemArrayCopy(const TSubclassOf<TSubsystemClass>& SubsystemClass) const",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\Engine.h",
+      "line": 3852,
+      "quote": "return EngineSubsystemCollection.GetSubsystem<TSubsystemClass>(TSubsystemClass::StaticClass());",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\GameInstance.h",
+      "line": 442,
+      "quote": "return SubsystemCollection.GetSubsystem<TSubsystemClass>(TSubsystemClass::StaticClass());",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\GameInstance.h",
+      "line": 454,
+      "quote": "return GameInstance->GetSubsystem<TSubsystemClass>();",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\LocalPlayer.h",
+      "line": 346,
+      "quote": "ULocalPlayerSubsystem* GetSubsystemBase(TSubclassOf<ULocalPlayerSubsystem> SubsystemClass) const",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\LocalPlayer.h",
+      "line": 357,
+      "quote": "return SubsystemCollection.GetSubsystem<TSubsystemClass>(TSubsystemClass::StaticClass());",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\LocalPlayer.h",
+      "line": 369,
+      "quote": "return LocalPlayer->GetSubsystem<TSubsystemClass>();",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\LocalPlayer.h",
+      "line": 384,
+      "quote": "return LocalPlayer ? LocalPlayer->GetSubsystem<TSubsystemClass>() : nullptr;",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 4289,
+      "quote": "UWorldSubsystem* GetSubsystemBase(TSubclassOf<UWorldSubsystem> SubsystemClass) const",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 4300,
+      "quote": "return SubsystemCollection.GetSubsystem<TSubsystemClass>(TSubsystemClass::StaticClass());",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 4309,
+      "quote": "return GetSubsystem<TSubsystemClass>();",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 4321,
+      "quote": "return World->GetSubsystem<TSubsystemClass>();",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\World.h",
+      "line": 4332,
+      "quote": "return GetSubsystem<TSubsystemClass>() != nullptr;",
+      "at": "2026-07-15T19:02:23.208Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Tests\\AutomationCommon.cpp",
+      "line": 173,
+      "quote": "ReportFailure(TEXT(\"BeginPlayInTestWorld failed to create GameMode\"));",
+      "at": "2026-07-15T19:02:33.794Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\IO\\IoStatus.h",
+      "line": 136,
+      "quote": "const T&\t\t\tValueOrDie() const;",
+      "at": "2026-07-15T19:02:45.592Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\IO\\IoStatus.h",
+      "line": 137,
+      "quote": "T&\t\t\t\t\tValueOrDie();",
+      "at": "2026-07-15T19:02:45.592Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\IO\\IoStatus.h",
+      "line": 138,
+      "quote": "T\t\t\t\t\tConsumeValueOrDie();",
+      "at": "2026-07-15T19:02:45.592Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\IO\\IoStatus.h",
+      "line": 189,
+      "quote": "const T& TIoStatusOr<T>::ValueOrDie() const",
+      "at": "2026-07-15T19:02:45.592Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\IO\\IoStatus.h",
+      "line": 200,
+      "quote": "inline T& TIoStatusOr<T>::ValueOrDie()",
+      "at": "2026-07-15T19:02:45.592Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\IO\\IoStatus.h",
+      "line": 211,
+      "quote": "T TIoStatusOr<T>::ConsumeValueOrDie()",
+      "at": "2026-07-15T19:02:45.592Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\IO\\IoDispatcherBackend.h",
+      "line": 235,
+      "quote": "OutAvailable = ChunkSize.IsOk() ? ChunkSize.ValueOrDie() : 0;",
+      "at": "2026-07-15T19:02:45.592Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\IO\\IoDispatcher.h",
+      "line": 191,
+      "quote": "CORE_API const FIoBuffer&\t\t\t\tGetResultOrDie() const;",
+      "at": "2026-07-15T19:02:45.592Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 15,
+      "quote": "class AGameModeBase;",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Net\\DataChannel.h",
+      "line": 224,
+      "quote": "//\t* Spawns ANoPawnPlayerController instead of using the class in AGameMode::PlayerControllerClass.",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\PreviewScene.h",
+      "line": 52,
+      "quote": "TSubclassOf<class AGameModeBase> DefaultGameMode;",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\PreviewScene.h",
+      "line": 69,
+      "quote": "ConstructionValues& SetDefaultGameMode(TSubclassOf<class AGameModeBase> GameMode) { DefaultGameMode = GameMode; return *this; }",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\Tests\\NetTestHelpers.h",
+      "line": 236,
+      "quote": "/** Creates a server world using the default map (Entry) and default GameMode class (GameMode) */",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Controller.cpp",
+      "line": 676,
+      "quote": "TSubclassOf<APlayerState> PlayerStateClassToSpawn = GameMode->PlayerStateClass;",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameSession.cpp",
+      "line": 178,
+      "quote": "UE_LOGF(LogGameSession, Error, \"Player State class is invalid for game mode: %ls!\", *GameMode->GetName());",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameState.cpp",
+      "line": 31,
+      "quote": "UE_LOGF(LogGameState, Error, \"Mixing AGameState with AGameModeBase is not compatible. Change AGameModeBase subclass (%ls) to derive from AGameMode, or make both derive from Base\", *GameModeClass->GetName());",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameModeBase.cpp",
+      "line": 146,
+      "quote": "TSubclassOf<AGameSession> AGameModeBase::GetGameSessionClass() const",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameModeBase.cpp",
+      "line": 595,
+      "quote": "TSubclassOf<APlayerController> AGameModeBase::GetPlayerControllerClassToSpawnForSeamlessTravel(APlayerController* PreviousPC)",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameInstance.cpp",
+      "line": 1531,
+      "quote": "TSubclassOf<AGameModeBase> GameClass = Settings->DefaultGameMode;",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameInstance.cpp",
+      "line": 1545,
+      "quote": "TSubclassOf<AGameModeBase> GameModeParamClass = LoadClass<AGameModeBase>(nullptr, *GameClassName);",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameInstance.cpp",
+      "line": 1576,
+      "quote": "TSubclassOf<AGameModeBase> GameModeParamClass = LoadClass<AGameModeBase>(nullptr, *GameClassName);",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameInstance.cpp",
+      "line": 1621,
+      "quote": "TSubclassOf<AGameModeBase> UGameInstance::OverrideGameModeClass(TSubclassOf<AGameModeBase> GameModeClass, const FString& MapName, const FString& Options, const FString& Portal) const",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\PlayerController.cpp",
+      "line": 4975,
+      "quote": "void APlayerController::ReceivedGameModeClass(TSubclassOf<AGameModeBase> GameModeClass)",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ReplayHelper.cpp",
+      "line": 334,
+      "quote": "TSubclassOf<AGameModeBase> DefaultGameModeClass = GameState != nullptr ? GameState->GameModeClass : nullptr;",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Kismet\\GameplayStatics.h",
+      "line": 364,
+      "quote": "static ENGINE_API class AGameModeBase* GetGameMode(const UObject* WorldContextObject);",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameModeBase.h",
+      "line": 40,
+      "quote": "* The class of this GameMode actor is determined by (in order) either the URL ?game=xxx,",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameModeBase.h",
+      "line": 47,
+      "quote": "class AGameModeBase : public AInfo",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameModeBase.h",
+      "line": 607,
+      "quote": "class FGameModeEvents",
+      "at": "2026-07-15T19:02:57.482Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Actor.cpp",
+      "line": 3416,
+      "quote": "float AActor::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\CheatManager.cpp",
+      "line": 314,
+      "quote": "TargetActor->TakeDamage(DamageAmount, DamageEvent, MyPC, MyPC->GetPawn());",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 779,
+      "quote": "Victim->TakeDamage(BaseDamage, DmgEvent, InstigatedByController, DamageCauser);",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 796,
+      "quote": "return DamagedActor->TakeDamage(BaseDamage, PointDamageEvent, EventInstigator, DamageCauser);",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 810,
+      "quote": "return DamagedActor->TakeDamage(BaseDamage, DamageEvent, EventInstigator, DamageCauser);",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\PainCausingVolume.cpp",
+      "line": 83,
+      "quote": "Other->TakeDamage(DamagePerSec*PainInterval, FDamageEvent(DmgTypeClass), DamageInstigator, this);",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 567,
+      "quote": "bool APawn::ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 577,
+      "quote": "float APawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 579,
+      "quote": "if (!ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser))",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 585,
+      "quote": "const float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\DamageEvents.h",
+      "line": 13,
+      "quote": "/** Event used by AActor::TakeDamage and related functions */",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Actor.h",
+      "line": 527,
+      "quote": "* @see TakeDamage(), ReceiveDamage()",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Actor.h",
+      "line": 3660,
+      "quote": "ENGINE_API virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Pawn.h",
+      "line": 310,
+      "quote": "ENGINE_API virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Pawn.h",
+      "line": 344,
+      "quote": "* Return true if we are in a state to take damage (checked at the start of TakeDamage.",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Pawn.h",
+      "line": 345,
+      "quote": "* Subclasses may check this as well if they override TakeDamage and don't want to potentially trigger TakeDamage actions by checking if it returns zero in the super class.",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Pawn.h",
+      "line": 347,
+      "quote": "ENGINE_API virtual bool ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const;",
+      "at": "2026-07-15T19:03:04.880Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameMode.h",
+      "line": 30,
+      "quote": "* GameMode is a subclass of GameModeBase that behaves like a multiplayer match-based game.",
+      "at": "2026-07-15T19:03:27.651Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameMode.h",
+      "line": 35,
+      "quote": "class AGameMode : public AGameModeBase",
+      "at": "2026-07-15T19:03:27.651Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameStateBase.h",
+      "line": 22,
+      "quote": "class AGameModeBase;",
+      "at": "2026-07-15T19:03:27.651Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameStateBase.h",
+      "line": 28,
+      "quote": "* GameStateBase is a class that manages the game's global state, and is spawned by GameModeBase.",
+      "at": "2026-07-15T19:03:27.651Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\GameStateBase.h",
+      "line": 43,
+      "quote": "TSubclassOf<AGameModeBase>  GameModeClass;",
+      "at": "2026-07-15T19:03:27.651Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\PlayerController.h",
+      "line": 2124,
+      "quote": "ENGINE_API virtual void ReceivedGameModeClass(TSubclassOf<class AGameModeBase> GameModeClass);",
+      "at": "2026-07-15T19:03:27.651Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\WorldSettings.h",
+      "line": 634,
+      "quote": "TSubclassOf<class AGameModeBase> DefaultGameMode;",
+      "at": "2026-07-15T19:03:27.651Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Controller.cpp",
+      "line": 545,
+      "quote": "// due to APawn::Controller being replicated first. See additional notes in APawn::OnRep_Controller.",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\CharacterMovementComponentAsync.cpp",
+      "line": 4429,
+      "quote": "logOrEnsureNanError(TEXT(\"APawn::FaceRotation about to apply NaN-containing rotation to actor! New:(%s), Current:(%s)\"), *NewControlRotation.ToString(), *CurrentRotation.ToString());",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\CheatManager.cpp",
+      "line": 368,
+      "quote": "for (TActorIterator<APawn> It(GetWorld(), APawn::StaticClass()); It; ++It)",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\CheatManager.cpp",
+      "line": 390,
+      "quote": "aClass = APawn::StaticClass();",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 3629,
+      "quote": "if (Hit.HitObjectHandle.DoesRepresentClass(APawn::StaticClass()))",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 6845,
+      "quote": "if ( bHit && !HitInfo.HitObjectHandle.DoesRepresentClass(APawn::StaticClass()) )",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 7800,
+      "quote": "if (Impact.HitObjectHandle.DoesRepresentClass(APawn::StaticClass()))",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\NetDriver.cpp",
+      "line": 9132,
+      "quote": "else if (Actor->IsA(APawn::StaticClass()))",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 40,
+      "quote": "FOnPawnBeginPlay APawn::OnPawnBeginPlay;",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 47,
+      "quote": "APawn::APawn(const FObjectInitializer& ObjectInitializer)",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 55,
+      "quote": "if (HasAnyFlags(RF_ClassDefaultObject) && GetClass() == APawn::StaticClass())",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 81,
+      "quote": "AIControllerClass = ((APawn*)APawn::StaticClass()->GetDefaultObject())->AIControllerClass;",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 107,
+      "quote": "void APawn::PreInitializeComponents()",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 134,
+      "quote": "void APawn::PostInitializeComponents()",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 166,
+      "quote": "void APawn::PostLoad()",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 174,
+      "quote": "void APawn::PostRegisterAllComponents()",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 181,
+      "quote": "void APawn::BeginPlay()",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 188,
+      "quote": "UPawnMovementComponent* APawn::GetMovementComponent() const",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 193,
+      "quote": "void APawn::UpdateNavAgent()",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 209,
+      "quote": "void APawn::SetCanAffectNavigationGeneration(bool bNewValue, bool bForceUpdate)",
+      "at": "2026-07-15T19:03:35.210Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Subsystems\\SubsystemBlueprintLibrary.cpp",
+      "line": 27,
+      "quote": "return GameInstance->GetSubsystemBase(Class);",
+      "at": "2026-07-15T19:09:21.479Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Subsystems\\SubsystemBlueprintLibrary.cpp",
+      "line": 71,
+      "quote": "return LocalPlayer->GetSubsystemBase(Class);",
+      "at": "2026-07-15T19:09:21.479Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Subsystems\\SubsystemBlueprintLibrary.cpp",
+      "line": 81,
+      "quote": "return World->GetSubsystemBase(Class);",
+      "at": "2026-07-15T19:09:21.479Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Subsystems\\SubsystemBlueprintLibrary.cpp",
+      "line": 93,
+      "quote": "return AudioDeviceHandle->GetSubsystemBase(Class);",
+      "at": "2026-07-15T19:09:21.479Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Subsystems\\SubsystemBlueprintLibrary.cpp",
+      "line": 105,
+      "quote": "return LocalPlayer->GetSubsystemBase(Class);",
+      "at": "2026-07-15T19:09:21.479Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Animation\\AnimNodeFunctionRef.cpp",
+      "line": 107,
+      "quote": "FAnimSubsystemInstance_NodeRelevancy& RelevancySubsystem = CastChecked<UAnimInstance>(InContext.GetAnimInstanceObject())->GetSubsystem<FAnimSubsystemInstance_NodeRelevancy>();",
+      "at": "2026-07-15T19:11:55.921Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Animation\\AnimNodeFunctionRef.cpp",
+      "line": 124,
+      "quote": "FAnimSubsystemInstance_NodeRelevancy& RelevancySubsystem = CastChecked<UAnimInstance>(InContext.GetAnimInstanceObject())->GetSubsystem<FAnimSubsystemInstance_NodeRelevancy>();",
+      "at": "2026-07-15T19:11:55.921Z"
     }
   ]
 }
