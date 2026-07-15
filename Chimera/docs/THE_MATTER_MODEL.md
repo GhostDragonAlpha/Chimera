@@ -1,17 +1,18 @@
 # The Matter Model — a world built from living bricks
 
-> **STATUS: grown anatomy now RENDERS IN UE5 (rungs 0–2 BUILT); movement onward is design.**
-> Born from a design conversation on 2026-07-14. `core/matter.py` shows differential adhesion
-> self-assembling a bone/muscle/skin limb (2D `--mode cross2d`, 3D `--mode limb3d` with a typed
-> tendon), each against a failing control. That 3D run found, honestly, that adhesion alone
-> cannot hold an axis, so **`core/limb.py` fuses the evolution engine's L-system skeleton with
-> the adhesion** — a frozen bone axis wrapped in self-organized flesh, the first CONTINUOUS
-> limb. Then **`core/bake.py` + `core/bake_to_ue5.py` bake it to a Nanite mesh and spawn it in
-> the LIVE editor**: grown flesh rendering and shadowing as native UE5 geometry (§10). Rung 3
-> onward (a Chaos Flesh rig so it MOVES; coalesce/fracture; a world) is still design. Numbers
-> marked "UE5 fact" or "reuse" are claims; the measured/witnessed results are rungs 0–2. That
-> line between built and planned is kept sharp on purpose, so no successor mistakes one for the
-> other.
+> **STATUS: grown anatomy RENDERS IN UE5 and MOVES BY ITS BRAIN (rungs 0–2 + headless spine);
+> the in-editor animation onward is design.** Born from a design conversation on 2026-07-14.
+> `core/matter.py` shows differential adhesion self-assembling a bone/muscle/skin limb (2D
+> `--mode cross2d`, 3D `--mode limb3d` with a typed tendon), each against a failing control. That
+> 3D run found, honestly, that adhesion alone cannot hold an axis, so **`core/limb.py` fuses the
+> evolution engine's L-system skeleton with the adhesion** — a frozen bone axis wrapped in
+> self-organized flesh. Then **`core/bake.py` + `core/bake_to_ue5.py` bake it to a Nanite mesh in
+> the LIVE editor** (grown flesh, rendered and shadowed). A system audit then closed the biggest
+> gap: **`core/rig.py` makes the skeleton the shared spine** — the REAL evolved body is fleshed,
+> skinned to its bones, and posed by the TRAINED BRAIN's own gait (headless), so the creature
+> that learned to walk is the creature you see move (§10, rung 3). Remaining: the UE5
+> skeletal-mesh + animation export, coalesce/fracture, a world. The measured/witnessed results
+> are rungs 0–2 plus the headless spine; that line between built and planned is kept sharp.
 >
 > This is the substrate *beneath* `THE_EVOLUTION_ENGINE.md`. The evolution engine grows a
 > phenotype from a genome; this is the phenotype's *material* — what everything is made OF.
@@ -260,7 +261,7 @@ already lives there.
 | 1.5 | **Shape, attachment, 3D.** Elongate into a limb; add a typed tendon connector; lift the lattice to 3D. | ✅ **DONE 2026-07-14** (`python -m core.matter --mode limb3d`). The same rule on a 3D lattice grew concentric TUBES (bone core r=5.1, muscle 8.5, skin shell 11.4) in a limb 65 long × 8.6 across; the uniform control did not sort. The **typed tendon** (strong to muscle+bone, hostile to skin/medium) held its junction — 81% bonded to bone+muscle, **0.00 exposure** to skin/air — where the control let it drift (0.46 / 0.32). Layering AND a rule-placed interface, unattended. **FINDING (from the render, not the metrics): a thin, highly-cohesive bone core is Rayleigh-Plateau unstable and PINCHES into segments along the length. Adhesion cannot hold an axis.** That is real physics, and it names the next rung. | typed interfaces need hand-authoring per pair — they did not |
 | 1.75 | **The skeleton is the scaffold.** Lay the bone along the L-system axis (the evolution engine's genome), then let adhesion wrap muscle/skin around it. | ✅ **DONE 2026-07-14** (`python -m core.limb`, the integration module fusing `core.terrarium` + `core.matter`). A bent 3-segment skeleton (terrarium `Bone` objects) was voxelized into a **frozen** bone axis, then differential adhesion wrapped it: bone stayed **ONE continuous connected blob** following the bend (where rung 1.5's free bone pinched into 2+), muscle formed the inner sheath (**100% of the bone's tissue-neighbours are muscle**), skin the outer shell — radial order bone 18.3 < muscle 21.2 < skin 25.6, unattended. **The two halves of the whole system are one pipeline now: skeleton = AXIS, adhesion = RADIAL TISSUE.** | the axis and the tissue could not co-generate without hand-tuning — they did |
 | 2 | **Bake to UE5 (Nanite).** Voxel anatomy → per-tissue meshes → import + enable Nanite in the live editor. It renders and shadows. | ✅ **DONE 2026-07-14** (`core/bake.py` + `core/bake_to_ue5.py`). Marching cubes on each tissue's smoothed occupancy → three watertight, materialed, nested meshes (skin/muscle/bone, 66k tris) → a UE5-importable GLB. Then, driving the LIVE editor over the MCP bridge: import (glTF splits per-tissue), `nanite_rebuild_mesh` on each, spawn, screenshot. **It rendered and shadowed — grown flesh (muscle under translucent skin) as native Nanite geometry, witnessed in-editor.** The Chaos Flesh *deformation* rig is rung 3, not this. | the baked asset is uglier or slower than a hand-made one — it is neither |
-| 3 | **It moves.** A coarse Chaos Flesh rig the dense Nanite skin follows; the muscle contracts the bone. | ⬜ | motion needs per-cell simulation to look right (budget blows up) |
+| 3 | **It moves — THE SPINE.** The skeleton IS the rig: skin the flesh to the terrarium bones; the trained BRAIN poses it. | ◐ **HEADLESS DONE 2026-07-14** (`python -m core.rig --mode walk`). From the system audit: the real evolved 17-bone body, fleshed by adhesion, auto-skinned (k=4 inverse-distance), and posed frame-by-frame by the trained brain's actual gait joint angles (FK + linear blend skinning). The flesh deforms coherently with the gait — it mapped without hand-tuning because `mjcf.py` and `rig.skeleton_frames` build the joint axes identically. **This closed the audit's two biggest gaps: the fleshed body is now the REAL evolved one (GAP #2), and the BRAIN drives the flesh (GAP #1) — the two halves are one spine.** Remaining: export as a UE5 skeletal mesh + animation clip (the in-editor half). | the brain's pose can't map onto the mesh skeleton without hand-tuning — it did |
 | 4 | **Coalesce / fracture.** Quiet bulk → one static item; a cut → live cells locally. | ⬜ | the merge/split thrashes or the seam cracks and cannot be stitched |
 | 5 | **Grow the library.** Fat, chitin, bark, stone, water — additively. | ⬜ | each new brick needs bespoke engine work instead of just a struct |
 | 6 | **A world.** The same substrate builds environment, not just creatures. | ⬜ | storage, not render, makes world-scale cell detail impossible |
