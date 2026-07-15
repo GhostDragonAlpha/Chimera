@@ -62960,6 +62960,25 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_21bc56c8e4f7"
+    },
+    {
+      "id": "surprise_87f2e9ee039caa59",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T17:25:15.514186",
+      "context": "Sonnet correctly fixed a generator-owned rep atom (spawn UQuantumTravelComponent in the generator), but the atom stayed RED and the task could never close",
+      "expectation": "",
+      "reality": "ARTIFACT-VS-GENERATOR FRAME ERROR: the H-34 component-spawn atom scanned only the DERIVED generated .cpp, so a correct fix to the SOURCE-OF-TRUTH generator never greened it without a full codegen; the wellspring re-seeded it forever. Fixed: the atom now also searches core/game_code_generator.py. Sonnet's genuine fix greens instantly; loop-built components still required in the .cpp.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'ARTIFACT-VS-GENERATOR FRAME ERROR: the H-34 component-spawn atom scanned only th'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_dce913b93a77"
     }
   ],
   "edges": [

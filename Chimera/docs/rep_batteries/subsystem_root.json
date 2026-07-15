@@ -14,6 +14,46 @@
   "provenance": "reflection:UCLASS:ChimeraMovementComponent.h"
  },
  {
+  "id": "atom_3bd787a65564",
+  "feature": "subsystem/root",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UWeightShiftApplierComponent\\b|UWeightShiftApplierComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UWeightShiftApplierComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:WeightShiftApplierComponent.h"
+ },
+ {
+  "id": "atom_3c5721e044a2",
+  "feature": "subsystem/root",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UChimeraMovementComponent\\b|UChimeraMovementComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UChimeraMovementComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:ChimeraMovementComponent.h"
+ },
+ {
   "id": "atom_bab77d17dbf7",
   "feature": "subsystem/root",
   "tier": 0,

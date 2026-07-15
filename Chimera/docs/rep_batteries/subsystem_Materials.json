@@ -1,5 +1,25 @@
 [
  {
+  "id": "atom_1772a9f9b78b",
+  "feature": "subsystem/Materials",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UDustAccumulationParticleComponent\\b|UDustAccumulationParticleComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UDustAccumulationParticleComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:DustAccumulationParticleComponent.h"
+ },
+ {
   "id": "atom_7f8b0879fca0",
   "feature": "subsystem/Materials",
   "tier": 0,

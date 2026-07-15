@@ -28,6 +28,26 @@
   "provenance": "reflection:UCLASS:SurvivalMetaSpecComponent.h"
  },
  {
+  "id": "atom_7ce9a7cdc3c3",
+  "feature": "System_SaveGame",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USurvivalMetaSpecComponent\\b|USurvivalMetaSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USurvivalMetaSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:SurvivalMetaSpecComponent.h"
+ },
+ {
   "id": "atom_b65ebc73c4dd",
   "feature": "System_SaveGame",
   "tier": 0,
@@ -42,6 +62,26 @@
   "provenance": "reflection:UCLASS:SacrificeLogComponent.h"
  },
  {
+  "id": "atom_c5642462349c",
+  "feature": "System_SaveGame",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USacrificeLogComponent\\b|USacrificeLogComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USacrificeLogComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:SacrificeLogComponent.h"
+ },
+ {
   "id": "atom_c657a361cb70",
   "feature": "System_SaveGame",
   "tier": 0,
@@ -53,6 +93,46 @@
    "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USaveGameComponent\\b|USaveGameComponent[^;\\n]*RegisterComponent"
   },
   "desc": "component USaveGameComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:SaveGameComponent.h"
+ },
+ {
+  "id": "atom_f062ad678de8",
+  "feature": "System_SaveGame",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UStarMemorialComponent\\b|UStarMemorialComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UStarMemorialComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:StarMemorialComponent.h"
+ },
+ {
+  "id": "atom_f3161d28e12d",
+  "feature": "System_SaveGame",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USaveGameComponent\\b|USaveGameComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USaveGameComponent is spawned/registered in the shipped code OR its generator (H-34)",
   "provenance": "reflection:UCLASS:SaveGameComponent.h"
  },
  {

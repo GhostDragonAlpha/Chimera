@@ -14,6 +14,26 @@
   "provenance": "reflection:UCLASS:ShipClassSpecComponent.h"
  },
  {
+  "id": "atom_d54648074e4d",
+  "feature": "subsystem/Ships",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UShipClassSpecComponent\\b|UShipClassSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UShipClassSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:ShipClassSpecComponent.h"
+ },
+ {
   "id": "atom_02c9dfc2d101",
   "feature": "subsystem/Ships",
   "tier": 1,

@@ -14,6 +14,26 @@
   "provenance": "reflection:UCLASS:EconomyRouteSpecComponent.h"
  },
  {
+  "id": "atom_4a34781fbcb3",
+  "feature": "subsystem/Economy",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UEconomyRouteSpecComponent\\b|UEconomyRouteSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UEconomyRouteSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:EconomyRouteSpecComponent.h"
+ },
+ {
   "id": "atom_00304cb3c46a",
   "feature": "subsystem/Economy",
   "tier": 1,

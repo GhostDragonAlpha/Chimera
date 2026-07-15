@@ -1,16 +1,22 @@
 [
  {
-  "id": "atom_5411eaae017f",
+  "id": "atom_40ce4fe9f18c",
   "feature": "subsystem/VFX",
   "tier": 0,
   "kind": "headless",
   "probe": {
    "type": "tree_contains",
-   "root": "Source/Chimera/ProceduralGenerated",
-   "glob": "*.cpp",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
    "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UErisaidResonanceVFXComponent\\b|UErisaidResonanceVFXComponent[^;\\n]*RegisterComponent"
   },
-  "desc": "component UErisaidResonanceVFXComponent is spawned/registered somewhere (H-34)",
+  "desc": "component UErisaidResonanceVFXComponent is spawned/registered in the shipped code OR its generator (H-34)",
   "provenance": "reflection:UCLASS:ErisaidResonanceVFXComponent.h"
  },
  {

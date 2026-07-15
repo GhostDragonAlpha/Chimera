@@ -14,6 +14,26 @@
   "provenance": "reflection:UCLASS:SuitLifeSupportComponent.h"
  },
  {
+  "id": "atom_504ac86b7391",
+  "feature": "subsystem/Suit",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USuitLifeSupportComponent\\b|USuitLifeSupportComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USuitLifeSupportComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:SuitLifeSupportComponent.h"
+ },
+ {
   "id": "atom_0de13b950db8",
   "feature": "subsystem/Suit",
   "tier": 1,

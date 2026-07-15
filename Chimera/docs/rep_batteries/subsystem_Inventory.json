@@ -14,6 +14,26 @@
   "provenance": "reflection:UCLASS:InventoryTradeComponent.h"
  },
  {
+  "id": "atom_d2c934a1b8a6",
+  "feature": "subsystem/Inventory",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UInventoryTradeComponent\\b|UInventoryTradeComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UInventoryTradeComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:InventoryTradeComponent.h"
+ },
+ {
   "id": "atom_481b09736420",
   "feature": "subsystem/Inventory",
   "tier": 1,

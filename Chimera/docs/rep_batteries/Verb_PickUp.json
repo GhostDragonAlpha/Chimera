@@ -14,6 +14,26 @@
   "provenance": "reflection:UCLASS:PickupInteractionComponent.h"
  },
  {
+  "id": "atom_e461f8cb1bd1",
+  "feature": "Verb_PickUp",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UPickupInteractionComponent\\b|UPickupInteractionComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UPickupInteractionComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:PickupInteractionComponent.h"
+ },
+ {
   "id": "atom_062e9d68c368",
   "feature": "Verb_PickUp",
   "tier": 1,

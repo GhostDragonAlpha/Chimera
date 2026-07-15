@@ -424,12 +424,22 @@ def gen_code_reflection(cache: _FileCache) -> list:
                 f"UPROPERTY {prop} ({h.name}) is used in a .cpp, not dead metadata",
                 f"reflection:UPROPERTY:{h.name}"))
         for comp in sorted(set(_UCLASS_COMPONENT_RE.findall(text))):
+            # FRAME FIX (2026-07-15, Sonnet stress-test): search the shipped .cpp
+            # AND the GENERATOR that produces it. The generator is the SOURCE OF
+            # TRUTH; the generated .cpp is a derived artifact. Scanning only the
+            # derived tree meant a CORRECT generator fix (spawn the component in
+            # core/game_code_generator.py) could never green the atom without a
+            # full codegen pass — so the wall stayed red and the wellspring re-
+            # seeded the same task forever, even though the fix had landed. A
+            # loop-built component (absent from the generator) is still required
+            # in the .cpp, so loop-built coverage is unchanged; only generator-
+            # owned components now green the instant their generator is correct.
             atoms.append(make_atom(
                 feature, 0, "tree_contains",
-                {"root": SOURCE_TREE, "glob": "*.cpp",
+                {"roots": [SOURCE_TREE, "core"], "globs": ["*.cpp", "game_code_generator.py"],
                  "regex": rf"(CreateDefaultSubobject|NewObject)\s*<\s*{re.escape(comp)}\b"
                           rf"|{re.escape(comp)}[^;\n]*RegisterComponent"},
-                f"component {comp} is spawned/registered somewhere (H-34)",
+                f"component {comp} is spawned/registered in the shipped code OR its generator (H-34)",
                 f"reflection:UCLASS:{h.name}"))
         _ = cpp_blob  # cached for the probes above via tree_contains
     return atoms

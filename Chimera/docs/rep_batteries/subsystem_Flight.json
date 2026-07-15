@@ -14,6 +14,26 @@
   "provenance": "reflection:UCLASS:FlightSystemsSpecComponent.h"
  },
  {
+  "id": "atom_9fe131c8e0f2",
+  "feature": "subsystem/Flight",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UFlightComponent\\b|UFlightComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UFlightComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:FlightComponent.h"
+ },
+ {
   "id": "atom_a4b9296a3ecf",
   "feature": "subsystem/Flight",
   "tier": 0,
@@ -26,6 +46,26 @@
   },
   "desc": "component UFlightComponent is spawned/registered somewhere (H-34)",
   "provenance": "reflection:UCLASS:FlightComponent.h"
+ },
+ {
+  "id": "atom_c222f89a336f",
+  "feature": "subsystem/Flight",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UFlightSystemsSpecComponent\\b|UFlightSystemsSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UFlightSystemsSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:FlightSystemsSpecComponent.h"
  },
  {
   "id": "atom_0e72469e8721",

@@ -1,45 +1,63 @@
 [
  {
-  "id": "atom_0b07d3df6553",
+  "id": "atom_205459036772",
   "feature": "subsystem/Travel",
   "tier": 0,
   "kind": "headless",
   "probe": {
    "type": "tree_contains",
-   "root": "Source/Chimera/ProceduralGenerated",
-   "glob": "*.cpp",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UTradeRouteSpecComponent\\b|UTradeRouteSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UTradeRouteSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:TradeRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_28f7ccf5590e",
+  "feature": "subsystem/Travel",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
    "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UTravelVehicleComponent\\b|UTravelVehicleComponent[^;\\n]*RegisterComponent"
   },
-  "desc": "component UTravelVehicleComponent is spawned/registered somewhere (H-34)",
+  "desc": "component UTravelVehicleComponent is spawned/registered in the shipped code OR its generator (H-34)",
   "provenance": "reflection:UCLASS:TravelVehicleComponent.h"
  },
  {
-  "id": "atom_66d72a46d5ae",
+  "id": "atom_4ffb3f9427c9",
   "feature": "subsystem/Travel",
   "tier": 0,
   "kind": "headless",
   "probe": {
    "type": "tree_contains",
-   "root": "Source/Chimera/ProceduralGenerated",
-   "glob": "*.cpp",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
    "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UQuantumTravelSpecComponent\\b|UQuantumTravelSpecComponent[^;\\n]*RegisterComponent"
   },
-  "desc": "component UQuantumTravelSpecComponent is spawned/registered somewhere (H-34)",
+  "desc": "component UQuantumTravelSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
   "provenance": "reflection:UCLASS:QuantumTravelSpecComponent.h"
- },
- {
-  "id": "atom_aec52e46cbc4",
-  "feature": "subsystem/Travel",
-  "tier": 0,
-  "kind": "headless",
-  "probe": {
-   "type": "tree_contains",
-   "root": "Source/Chimera/ProceduralGenerated",
-   "glob": "*.cpp",
-   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UTradeRouteSpecComponent\\b|UTradeRouteSpecComponent[^;\\n]*RegisterComponent"
-  },
-  "desc": "component UTradeRouteSpecComponent is spawned/registered somewhere (H-34)",
-  "provenance": "reflection:UCLASS:TradeRouteSpecComponent.h"
  },
  {
   "id": "atom_01606ad450c0",

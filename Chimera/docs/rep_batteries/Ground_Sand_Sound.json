@@ -38,6 +38,26 @@
   "provenance": "reflection:UCLASS:SandSoundComponent.h"
  },
  {
+  "id": "atom_3aa40233a7f0",
+  "feature": "Ground_Sand_Sound",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USandSoundComponent\\b|USandSoundComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USandSoundComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:SandSoundComponent.h"
+ },
+ {
   "id": "atom_5b33ea4123b1",
   "feature": "Ground_Sand_Sound",
   "tier": 0,

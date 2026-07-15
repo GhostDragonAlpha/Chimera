@@ -1,30 +1,42 @@
 [
  {
-  "id": "atom_191d963cf59b",
+  "id": "atom_85b11ea5782c",
   "feature": "subsystem/PCG",
   "tier": 0,
   "kind": "headless",
   "probe": {
    "type": "tree_contains",
-   "root": "Source/Chimera/ProceduralGenerated",
-   "glob": "*.cpp",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
    "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UUniverseGenerationComponent\\b|UUniverseGenerationComponent[^;\\n]*RegisterComponent"
   },
-  "desc": "component UUniverseGenerationComponent is spawned/registered somewhere (H-34)",
+  "desc": "component UUniverseGenerationComponent is spawned/registered in the shipped code OR its generator (H-34)",
   "provenance": "reflection:UCLASS:UniverseGenerationComponent.h"
  },
  {
-  "id": "atom_f01ff12d0f13",
+  "id": "atom_995418e17a5f",
   "feature": "subsystem/PCG",
   "tier": 0,
   "kind": "headless",
   "probe": {
    "type": "tree_contains",
-   "root": "Source/Chimera/ProceduralGenerated",
-   "glob": "*.cpp",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
    "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UPlanetGenerationSpecComponent\\b|UPlanetGenerationSpecComponent[^;\\n]*RegisterComponent"
   },
-  "desc": "component UPlanetGenerationSpecComponent is spawned/registered somewhere (H-34)",
+  "desc": "component UPlanetGenerationSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
   "provenance": "reflection:UCLASS:PlanetGenerationSpecComponent.h"
  },
  {
