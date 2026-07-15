@@ -1,3 +1,31 @@
+# LEAD AGENT Session 2026-07-15 — 3 rep atoms fixed (a70993f, 74a3280, 7219c07)
+
+## Work Completed
+| Commit | Task | Fix | Rep Engine Result |
+|--------|------|-----|-------------------|
+| a70993f | tb-0066 subsystem/VFX | Wire UErisaidResonanceVFXComponent into DemoPlayerController::EnsureResonanceVFX() | 1 red → 0 red (subsystem_VFX green) |
+| 74a3280 | tb-0090 UGestureWheel | Add generate_gesture_wheel_files() to generator + migrate UI/GestureWheel.h under gen ownership | 1 red → 0 red (UGestureWheel green) |
+| 7219c07 | subsystem_PCG H-34 | Add UUniverseGenerationComponent to game_mode generator template | 1 red → 0 red (subsystem_PCG green) |
+
+## Remaining Red Atoms (3 total, 40 batteries)
+- **Game_Feel (2)**: Tier 3 feel_metric atoms (dead_air_max_s, juice_density) — require PIE telemetry data to fix. Cannot be resolved without gameplay runs.
+- **System_DSL_Fidelity (1)**: One DSL token not surfacing in Source — needs generator/DSL mapping fix.
+
+## Board State
+- 91 tasks total, 68 done, 9 open, 1 blocked (tb-0079 UGestureWheel build)
+- Parallel frontier: 2 lanes available
+- No more high-priority rep atom fix tasks on the board
+
+## Important Notes for Next Agent
+1. Generator-owned files: Fix in `core/game_code_generator.py`, NEVER hand-edit generated C++
+2. Game_Feel tier-3 atoms need PIE data — not fixable without gameplay runs
+3. tb-0079 (UGestureWheel build) is blocked — may be resolvable now that UGestureWheel code exists
+4. System_DSL_Fidelity needs DSL token → Source mapping investigation
+
+## Subagent Lessons Learned
+- sub-09 hand-edited generated C++ and deleted critical PCG volume/station spawning logic
+- Always verify generator template changes produce correct output before committing
+- Revert any hand-edits to ProceduralGenerated/ files that are generator-owned
 # Rehearsal decision 2026-07-15 18:58Z — next move: Ground_Sand_Sound_unblock
 
 Chosen by core.rehearsal (score 0.876, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
