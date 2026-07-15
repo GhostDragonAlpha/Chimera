@@ -1,3 +1,23 @@
+# Session 2026-07-15 (Haiku retest-1) — Malcolm_Envelope rep atoms: 1 of 2 cleared
+
+Claimed tb-0058: "Fix 2 red rep atom(s): Malcolm_Envelope". Queried docs/world/reps.db
+and identified 2 reds:
+1. atom_c08b6fc63d01 (heuristics_per_night=9, max 2) — CLEARED after rep_engine tend
+2. atom_51d827d32bfd (open_board_tasks=33, max 24) — remains RED but is HONEST
+   measurement of system state (board genuinely at 33 open tasks vs container wall of 24)
+
+Ran `python -m core.rep_engine tend`: measured 742 atoms across 40 batteries, 719 reps,
+8 failing. Malcolm_Envelope reds went 2→1. heuristics_per_night resolved naturally.
+
+Classification: Both reds are HONEST measurements (not dead-metadata/stale/unspawned
+components). open_board_tasks breach is structural (board at capacity); fix requires
+either task closure or wall adjustment via `malcolm tune` proposal.
+
+Exited tunnel, postflight recorded. NEXT: either close tasks to bring board under 24,
+or propose wall increase via malcolm tune.
+
+---
+
 # Session 2026-07-15 (Opus) — Haiku stress-test → board deadlock fixed (b743e79)
 
 Sent a Haiku agent through the real onboarding to see how a weak model fares. It
