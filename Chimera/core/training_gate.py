@@ -94,6 +94,4 @@ def check(feature, status=None, waiver="", ):
         misses.append("NOT ENROLLED in the curriculum")
     if never_trained:
         misses.append("zero reps recorded (training never began)")
-    elif not enrolled:
-        pass
     return "missing", "; ".join(misses) or reason

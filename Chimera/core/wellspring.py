@@ -93,7 +93,9 @@ def _observation_rows(nodes):
                     f"(H-14/H-21), run: python -m core.witness_runner --beats docs/beats/<demo>.beats.json "
                     f"--session obs_{str(feat)[:24]} ; then attribute + collapse: python -m core.collapse_proxy "
                     f"--from-simtest <simtest_id> --valence accepted|rejected (provenance per evidence; "
-                    f"a rejection indicts only what the evidence names)."),
+                    f"a rejection indicts only what the evidence names). NOTE: collapse now passes the "
+                    f"TRAINING GATE — check python -m core.rep_engine gate --feature {feat} first; if the "
+                    f"feature isn't enrolled/trained, enroll it and earn reps before the witness run."),
             })
     except Exception:
         pass

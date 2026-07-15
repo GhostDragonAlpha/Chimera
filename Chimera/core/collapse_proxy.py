@@ -116,6 +116,17 @@ def tend(min_sessions: int = 2, dry_run: bool = False):
         if len(evidence) >= min_sessions and not rep_ok:
             rep_advisories.append(f"{f}: {rep_reason}")
         if len(evidence) >= min_sessions:
+            # Training Gate (2026-07-14): collapse is the door the gate exists
+            # for — un-schooled/under-trained features stay queued and KEEP
+            # TRAINING instead of collapsing. CHIMERA_TRAINING_GATE=warn softens.
+            try:
+                from core.training_gate import check as _tg_check, enforced as _tg_enforced
+                _tgs, _tgd = _tg_check(f, status="observed_provisional")
+            except Exception:
+                _tgs, _tgd = "n/a", ""
+            if _tgs == "missing" and _tg_enforced():
+                waiting.append(f"{f} (TRAINING GATE: {_tgd[:80]})")
+                continue
             if not dry_run:
                 record_observation(f, "accepted", observer="agent-sim-provisional",
                                    derived_from=evidence[-1], tacit=True,
@@ -226,6 +237,17 @@ def sweep(simtest_id: str, valence: str, dry_run: bool = False):
                 continue
             if not rep_ok:
                 rep_gated.append(f"(advisory) {f}: {rep_reason}")
+            # Training Gate (2026-07-14): the full-automation sweep may not
+            # collapse an un-schooled/under-trained feature — it stays queued
+            # and keeps training. CHIMERA_TRAINING_GATE=warn softens.
+            try:
+                from core.training_gate import check as _tg_check, enforced as _tg_enforced
+                _tgs, _tgd = _tg_check(f, status="observed")
+            except Exception:
+                _tgs, _tgd = "n/a", ""
+            if _tgs == "missing" and _tg_enforced():
+                skipped.append(f"{f} (TRAINING GATE: {_tgd[:80]})")
+                continue
             if not dry_run:
                 record_observation(f, "accepted", observer="automated-via-attribution",
                                    derived_from=simtest_id, tacit=True,

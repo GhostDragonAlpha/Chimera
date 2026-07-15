@@ -316,6 +316,19 @@ def enroll(feature, agent="manual"):
               "graduations": []}
         _feature_dir(feature).mkdir(parents=True, exist_ok=True)
         _save_transcript(tr)
+        # Enrollment MINTS trainability (training gate, 2026-07-14): materialize
+        # the tier-0 starter battery immediately (rep_engine.gen_curriculum owns
+        # it from here — every tend refreshes it), so 'forced training' means
+        # training can actually BEGIN, not a forced waiver.
+        try:
+            from core.rep_engine import build as _rep_build
+            _n = _rep_build(feature).get(feature)
+            if _n:
+                print(f"[curriculum] starter rep battery minted for '{feature}' "
+                      f"({_n} atoms) — earn reps: python -m core.rep_engine tend")
+        except Exception as _e:
+            print(f"[curriculum] starter battery mint failed ({_e}) — "
+                  f"run: python -m core.rep_engine build")
     return tr
 
 

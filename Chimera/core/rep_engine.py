@@ -138,10 +138,17 @@ def _probe_file_contains(spec: dict, cache: _FileCache):
 
 def _probe_tree_contains(spec: dict, cache: _FileCache):
     rx = re.compile(spec["regex"])
-    for p in cache.paths(spec.get("root", SOURCE_TREE), spec.get("glob", "*.*")):
-        if rx.search(cache.text(p)):
-            return (True, f"found in {p.relative_to(cache.root)}")
-    return (False, f"ABSENT in tree {spec.get('root', SOURCE_TREE)}: /{spec['regex']}/")
+    # Multi-root support (2026-07-14, curriculum identity atoms): a feature's
+    # identity may live in code, the DSL spec, or a beat script — one atom may
+    # search several trees ({"roots": [...], "globs": [...]}), OR-semantics.
+    roots = spec.get("roots") or [spec.get("root", SOURCE_TREE)]
+    globs = spec.get("globs") or [spec.get("glob", "*.*")]
+    for root in roots:
+        for g in globs:
+            for p in cache.paths(root, g):
+                if rx.search(cache.text(p)):
+                    return (True, f"found in {p.relative_to(cache.root)}")
+    return (False, f"ABSENT in {','.join(roots)}: /{spec['regex']}/")
 
 
 def _probe_tree_lacks(spec: dict, cache: _FileCache):
@@ -584,8 +591,45 @@ def gen_feel(cache: _FileCache) -> list:
             for name, band in FEEL_BANDS.items()]
 
 
+def gen_curriculum(cache: _FileCache) -> list:
+    """G: enrollment MINTS trainability (training gate, 2026-07-14). The gate
+    forces every feature through training — but most ledger features had NO
+    battery under their name, which would have turned 'forced training' into
+    forced WAIVERS. So every curriculum transcript now generates a tier-0
+    starter battery: (1) the school record exists on disk; (2) the feature's
+    identifier actually surfaces in Source/ (snake or CamelCase, the
+    gen_dsl_fidelity convention) — red until the feature is really built, which
+    IS the ladder working. More atoms accrue from the other generators and the
+    faculty as the feature grows; the rep threshold scales with battery size."""
+    atoms = []
+    feats_dir = ROOT / "docs" / "gauntlet" / "features"
+    if not feats_dir.exists():
+        return atoms
+    for tp in sorted(feats_dir.glob("*/transcript.json")):
+        try:
+            feature = json.loads(tp.read_text(encoding="utf-8")).get("feature") or tp.parent.name
+        except Exception:
+            feature = tp.parent.name
+        slug = tp.parent.name
+        atoms.append(make_atom(
+            feature, 0, "glob_nonempty",
+            {"pattern": f"docs/gauntlet/features/{slug}/transcript.json"},
+            f"'{feature}' is enrolled in the curriculum (school record on disk)",
+            "curriculum:enrolled"))
+        token = re.sub(r"[^A-Za-z0-9_]", "_", str(feature))
+        camel = "".join(w.capitalize() for w in token.split("_"))
+        atoms.append(make_atom(
+            feature, 0, "tree_contains",
+            {"roots": ["Source", "tests/dsl_grammar", "docs/beats"], "globs": ["*.*"],
+             "regex": rf"({re.escape(str(feature))}|{re.escape(token)}|{re.escape(camel)})"},
+            f"'{feature}' surfaces in Source, the DSL spec, or a beat script — "
+            f"its identity exists somewhere in the game",
+            "curriculum:identity"))
+    return atoms
+
+
 GENERATORS = [gen_assets, gen_code_reflection, gen_h_rules, gen_eliminations,
-              gen_dsl_fidelity, gen_envelope, gen_feel]
+              gen_dsl_fidelity, gen_envelope, gen_feel, gen_curriculum]
 
 
 def build(feature: str = None, cache: _FileCache = None) -> dict:
