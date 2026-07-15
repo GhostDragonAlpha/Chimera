@@ -28,6 +28,20 @@
   "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
  },
  {
+  "id": "atom_3f085e3620f2",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGesture\\b"
+  },
+  "desc": "UPROPERTY Gesture (GestureWheel.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GestureWheel.h"
+ },
+ {
   "id": "atom_3f3c0370cd08",
   "feature": "UI_Suit_HUD",
   "tier": 1,
@@ -96,6 +110,20 @@
   },
   "desc": "UPROPERTY DustClogPercentText (WID_O2HUD.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_f08977b637d0",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFrom\\b"
+  },
+  "desc": "UPROPERTY From (GestureWheel.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GestureWheel.h"
  },
  {
   "id": "atom_fceaf9ac799e",
