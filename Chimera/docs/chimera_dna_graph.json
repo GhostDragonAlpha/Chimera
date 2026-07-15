@@ -62665,6 +62665,49 @@
       "links": [],
       "recorded_by": "rep_engine.py",
       "run_id": "run_d291a7fd6d4c"
+    },
+    {
+      "id": "discovery_5ecfec80869bc1b7",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-15T15:45:41.645397",
+      "feature": "UGestureWheel",
+      "campus_sources": [],
+      "web_sources": [
+        "self-test"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/UGestureWheel",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'UGestureWheel': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_d94604d8b5ef"
+    },
+    {
+      "id": "surprise_efe36c68d6aaca41",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T15:45:42.040713",
+      "context": "postflight refused by training gate: UGestureWheel -> verified",
+      "expectation": "every feature goes through the curriculum + rep training before verification",
+      "reality": "NOT ENROLLED in the curriculum; zero reps recorded (training never began)",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'every feature goes through the curriculum + rep training before verification' but 'NOT ENROLLED in the curriculum; zero reps recorded (training never began)'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_d94604d8b5ef"
     }
   ],
   "edges": [
