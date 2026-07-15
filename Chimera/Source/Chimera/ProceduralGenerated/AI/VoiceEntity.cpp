@@ -133,7 +133,7 @@ void AVoiceEntity::VoiceCommand(const FString& CommandText)
 	// Audio cue: listening/processing has started (Phase 3 feedback).
 	if (VoiceStartSound)
 	{
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceStartSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), (USoundBase*)VoiceStartSound, GetActorLocation());
 	}
 
 	// ─── Parse the utterance using NLP parser ─────────────────────
@@ -163,7 +163,7 @@ void AVoiceEntity::VoiceCommand(const FString& CommandText)
 	// Audio cue: processing complete (Phase 3 feedback).
 	if (VoiceEndSound)
 	{
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceEndSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), (USoundBase*)VoiceEndSound, GetActorLocation());
 	}
 	bIsProcessing = false;
 }

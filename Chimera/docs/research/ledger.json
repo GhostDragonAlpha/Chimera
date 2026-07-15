@@ -2351,6 +2351,118 @@
       "line": 971,
       "quote": "ArcVert.Y = SphereInfo.Radius * FMath::Sin(Angle);",
       "at": "2026-07-11T22:05:37.945Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ReplaySubsystem.h",
+      "line": 23,
+      "quote": "class UReplaySubsystem : public UGameInstanceSubsystem",
+      "at": "2026-07-15T03:40:22.446Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ReplaySubsystem.h",
+      "line": 28,
+      "quote": "/* UGameInstanceSubsystem */",
+      "at": "2026-07-15T03:40:22.446Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\GameInstance.h",
+      "line": 431,
+      "quote": "UGameInstanceSubsystem* GetSubsystemBase(TSubclassOf<UGameInstanceSubsystem> SubsystemClass) const",
+      "at": "2026-07-15T03:40:22.446Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\GameInstance.h",
+      "line": 433,
+      "quote": "return SubsystemCollection.GetSubsystem<UGameInstanceSubsystem>(SubsystemClass);",
+      "at": "2026-07-15T03:40:22.446Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ActorPartition\\ActorPartitionSubsystem.h",
+      "line": 174,
+      "quote": "ENGINE_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;",
+      "at": "2026-07-15T03:40:22.587Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActorPartition\\ActorPartitionSubsystem.cpp",
+      "line": 338,
+      "quote": "void UActorPartitionSubsystem::Initialize(FSubsystemCollectionBase& Collection)",
+      "at": "2026-07-15T03:40:22.587Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\HLOD\\HLODEngineSubsystem.h",
+      "line": 18,
+      "quote": "ENGINE_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;",
+      "at": "2026-07-15T03:40:22.587Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\LevelInstance\\LevelInstanceSubsystem.h",
+      "line": 68,
+      "quote": "ENGINE_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;",
+      "at": "2026-07-15T03:40:22.587Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystem.cpp",
+      "line": 4706,
+      "quote": "FActorSpawnParameters SpawnInfo;",
+      "at": "2026-07-15T07:47:41.046Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\LightWeightInstanceManager.h",
+      "line": 21,
+      "quote": "struct FActorSpawnParameters;",
+      "at": "2026-07-15T07:47:41.046Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\LightWeightInstanceManager.h",
+      "line": 113,
+      "quote": "ENGINE_API virtual void SetSpawnParameters(FActorSpawnParameters& SpawnParams);",
+      "at": "2026-07-15T07:47:41.046Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ActorPartition\\ActorPartitionSubsystem.cpp",
+      "line": 150,
+      "quote": "FActorSpawnParameters SpawnParams;",
+      "at": "2026-07-15T07:47:41.046Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Brush.cpp",
+      "line": 81,
+      "quote": "SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;",
+      "at": "2026-07-15T07:47:41.178Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\HLOD\\HLODProxyDesc.cpp",
+      "line": 297,
+      "quote": "ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;",
+      "at": "2026-07-15T07:47:41.178Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\DemoNetDriver.cpp",
+      "line": 3426,
+      "quote": "SpawnInfo.SpawnCollisionHandlingOverride\t= ESpawnActorCollisionHandlingMethod::AlwaysSpawn;",
+      "at": "2026-07-15T07:47:41.178Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\DefaultPawn.cpp",
+      "line": 34,
+      "quote": "SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;",
+      "at": "2026-07-15T07:47:41.178Z"
     }
   ]
 }

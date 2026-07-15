@@ -1,0 +1,16 @@
+[
+ {
+  "id": "atom_5a0f4fa6c5d9",
+  "feature": "subsystem/Subsystems",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCostlessLifeDiagnosticActor\\b"
+  },
+  "desc": "UPROPERTY CostlessLifeDiagnosticActor (GenerationSubsystem.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GenerationSubsystem.h"
+ }
+]

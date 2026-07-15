@@ -59875,6 +59875,2780 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_9ff5ba48ecdb"
+    },
+    {
+      "id": "mutation_745081f17210",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:45:56.305465",
+      "error_signature": "success_no_error",
+      "template_file": "dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_direction_tests_flight_model_ship_systems_economy_systems_level_procedural_generation_quantum_travel_missions_contracts",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "DSL parsed with 16 blocks: game, technical, narrative, gameplay, world",
+      "fix_diff": "Parsed DSL blocks: ['game', 'technical', 'narrative', 'gameplay', 'world', 'ui', 'audio', 'art_direction', 'tests', 'flight_model', 'ship_systems', 'economy_systems', 'level', 'procedural_generation', 'quantum_travel', 'missions_contracts']",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_af76560d824e"
+    },
+    {
+      "id": "mutation_0a1dd325dada",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:46:52.420954",
+      "error_signature": "compilation_fail",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated",
+      "template_line": 0,
+      "error_category": "compilation_error",
+      "fix_description": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Subsystems\\GenerationSubsystem.cpp(3,1): fatal error C1083: Cannot open include file: 'Save/SacrificeLogComponent.h': No such file or directory",
+      "fix_diff": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Subsystems\\GenerationSubsystem.cpp(3,1): fatal error C1083: Cannot open include file: 'Save/SacrificeLogComponent.h': No such file or directory\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\DataLayer\\DataLayer.h(17): warning C4996: The contents of this header have been fully deprecated. See DeprecatedDataLayer.h for details on particular cases. Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpAutomationBridgeSubsystem.cpp(584,8): warning C4996: 'GIsSavingPackage': Use the IsSavingPackage() function instead. - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nResult: Failed (OtherCompilationError)",
+      "ubt_output_excerpt": "ceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"Intensity\")), Intensity);\n\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"WaveAmplitude\")), Intensity * 2.0f);\n\t\t\t                      ^\n@progress 'Compiling C++ source code...' 33%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"ShimmerIntensity\")), Intensity * 0.5f);\n\t\t                    ^\n@progress 'Compiling C++ source code...' 42%\n[4/12] Compile [x64] Module.Chimera.1.cpp\n@progress 'Compiling C++ source code...' 50%\n[5/12] Compile [x64] Module.McpAutomationBridge.18.cpp\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n        ForEachObjectWithPackage(Package, [&AssetToSave](UObject* Object) -> bool\n        ^\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\DataLayer\\DataLayer.h(17): warning C4996: The contents of this header have been fully deprecated. See DeprecatedDataLayer.h for details on particular cases. Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n[6/12] Compile [x64] Module.McpAutomationBridge.1.cpp\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n        ForEachObjectWithPackage(Package, [&AssetToSave](UObject* Object) -> bool\n        ^\n@progress 'Compiling C++ source code...' 58%\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpAutomationBridgeSubsystem.cpp(584,8): warning C4996: 'GIsSavingPackage': Use the IsSavingPackage() function instead. - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n  if (!GIsSavingPackage && !IsGarbageCollecting() && !IsAsyncLoading()) {\n       ^\n[7/12] Link [x64] UnrealEditor-McpAutomationBridge.lib\nTotal time in Unreal Build Accelerator local executor: 42.69 seconds\n\nResult: Failed (OtherCompilationError)\nTotal execution time: 55.11 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 16.2kb",
+      "failing_files": [],
+      "compilation_result": "fail",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_af76560d824e"
+    },
+    {
+      "id": "professor_grade_16c023f1f7d6b6c5",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-15T03:46:52.672642",
+      "feature": "Build_Pipeline",
+      "grade": "F",
+      "score": 0.0,
+      "reasoning": "UBT compilation fail: E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Subsystems\\GenerationSubsystem.cpp(3,1): fatal error C1083: Cannot open include file: 'Save/SacrificeLogComponent.h': No such file or directory",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/Build_Pipeline",
+      "error_category": "none",
+      "fix_description": "Professor grade recorded: Build_Pipeline = F (0.0) \u2014 UBT compilation fail: E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Subsystems\\GenerationSubsystem.cpp(3,1): fatal error C1083: Cannot open include file: 'Save/SacrificeLogComponent.h': No such file or directory",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_af76560d824e"
+    },
+    {
+      "id": "professor_gpa_bdd54017257651e3",
+      "type": "ProfessorGPA",
+      "timestamp": "2026-07-15T03:46:52.672919",
+      "scope": "project_overall",
+      "gpa": 1.91,
+      "grades_count": 214,
+      "trend": "flat",
+      "previous_gpa": 1.92,
+      "date": "2026-07-15",
+      "error_signature": "success_no_error",
+      "template_file": "gpa/project_overall",
+      "error_category": "none",
+      "fix_description": "GPA for project_overall: 1.91 (flat), based on 214 grades",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_af76560d824e"
+    },
+    {
+      "id": "mutation_2859ec3d1be9",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:46:52.937190",
+      "error_signature": "compilation_fail",
+      "template_file": "game_generation_orchestrator",
+      "template_line": 0,
+      "error_category": "compilation_error",
+      "fix_description": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Subsystems\\GenerationSubsystem.cpp(3,1): fatal error C1083: Cannot open include file: 'Save/SacrificeLogComponent.h': No such file or directory",
+      "fix_diff": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Subsystems\\GenerationSubsystem.cpp(3,1): fatal error C1083: Cannot open include file: 'Save/SacrificeLogComponent.h': No such file or directory\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\DataLayer\\DataLayer.h(17): warning C4996: The contents of this header have been fully deprecated. See DeprecatedDataLayer.h for details on particular cases. Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpAutomationBridgeSubsystem.cpp(584,8): warning C4996: 'GIsSavingPackage': Use the IsSavingPackage() function instead. - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nResult: Failed (OtherCompilationError)",
+      "ubt_output_excerpt": "ceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"Intensity\")), Intensity);\n\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"WaveAmplitude\")), Intensity * 2.0f);\n\t\t\t                      ^\n@progress 'Compiling C++ source code...' 33%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"ShimmerIntensity\")), Intensity * 0.5f);\n\t\t                    ^\n@progress 'Compiling C++ source code...' 42%\n[4/12] Compile [x64] Module.Chimera.1.cpp\n@progress 'Compiling C++ source code...' 50%\n[5/12] Compile [x64] Module.McpAutomationBridge.18.cpp\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n        ForEachObjectWithPackage(Package, [&AssetToSave](UObject* Object) -> bool\n        ^\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\WorldPartition\\DataLayer\\DataLayer.h(17): warning C4996: The contents of this header have been fully deprecated. See DeprecatedDataLayer.h for details on particular cases. Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n[6/12] Compile [x64] Module.McpAutomationBridge.1.cpp\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpSafeOperations.h(152,9): warning C4996: 'ForEachObjectWithPackage': ForEachObjectWithPackage with a boolean bIncludeNestedObjects has been deprecated - please use the EGetObjectsFlags enum instead - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n        ForEachObjectWithPackage(Package, [&AssetToSave](UObject* Object) -> bool\n        ^\n@progress 'Compiling C++ source code...' 58%\nE:\\PythonChimera\\Chimera\\Plugins\\McpAutomationBridge\\Source\\McpAutomationBridge\\Private\\McpAutomationBridgeSubsystem.cpp(584,8): warning C4996: 'GIsSavingPackage': Use the IsSavingPackage() function instead. - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n  if (!GIsSavingPackage && !IsGarbageCollecting() && !IsAsyncLoading()) {\n       ^\n[7/12] Link [x64] UnrealEditor-McpAutomationBridge.lib\nTotal time in Unreal Build Accelerator local executor: 42.69 seconds\n\nResult: Failed (OtherCompilationError)\nTotal execution time: 55.11 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 16.2kb",
+      "failing_files": [],
+      "compilation_result": "fail",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_af76560d824e"
+    },
+    {
+      "id": "professor_grade_2a48a19f8f34312e",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-15T03:46:53.157616",
+      "feature": "Build_Pipeline",
+      "grade": "F",
+      "score": 0.0,
+      "reasoning": "UBT compilation fail: E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Subsystems\\GenerationSubsystem.cpp(3,1): fatal error C1083: Cannot open include file: 'Save/SacrificeLogComponent.h': No such file or directory",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/Build_Pipeline",
+      "error_category": "none",
+      "fix_description": "Professor grade recorded: Build_Pipeline = F (0.0) \u2014 UBT compilation fail: E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Subsystems\\GenerationSubsystem.cpp(3,1): fatal error C1083: Cannot open include file: 'Save/SacrificeLogComponent.h': No such file or directory",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_af76560d824e"
+    },
+    {
+      "id": "professor_gpa_4383a47ef671592d",
+      "type": "ProfessorGPA",
+      "timestamp": "2026-07-15T03:46:53.157873",
+      "scope": "project_overall",
+      "gpa": 1.9,
+      "grades_count": 215,
+      "trend": "flat",
+      "previous_gpa": 1.91,
+      "date": "2026-07-15",
+      "error_signature": "success_no_error",
+      "template_file": "gpa/project_overall",
+      "error_category": "none",
+      "fix_description": "GPA for project_overall: 1.9 (flat), based on 215 grades",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_af76560d824e"
+    },
+    {
+      "id": "mutation_39709c19804b",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:47:07.601101",
+      "error_signature": "success_no_error",
+      "template_file": "dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_direction_tests_flight_model_ship_systems_economy_systems_level_procedural_generation_quantum_travel_missions_contracts",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "DSL parsed with 16 blocks: game, technical, narrative, gameplay, world",
+      "fix_diff": "Parsed DSL blocks: ['game', 'technical', 'narrative', 'gameplay', 'world', 'ui', 'audio', 'art_direction', 'tests', 'flight_model', 'ship_systems', 'economy_systems', 'level', 'procedural_generation', 'quantum_travel', 'missions_contracts']",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_7d0a90833add"
+    },
+    {
+      "id": "mutation_deff10ad5b40",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:47:20.245034",
+      "error_signature": "compilation_fail",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated",
+      "template_line": 0,
+      "error_category": "compilation_error",
+      "fix_description": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types",
+      "fix_diff": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nResult: Failed (OtherCompilationError)",
+      "ubt_output_excerpt": "\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,21): note: 'void UGameplayStatics::PlaySoundAtLocation(const UObject *,USoundBase *,FVector,float,float,float,USoundAttenuation *,USoundConcurrency *,const UInitialActiveSoundParams *)': cannot convert argument 2 from 'USoundCue *' to 'USoundBase *'\n\t\tUGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceEndSound, GetActorLocation());\n\t\t                  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,53): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or parenthesized function-style cast\n\t\tUGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceEndSound, GetActorLocation());\n\t\t                                                  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,21): note: while trying to match the argument list '(UWorld *, USoundCue *, FVector)'\n\t\tUGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceEndSound, GetActorLocation());\n\t\t                  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\n\t: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)\n\t                                           ^\n@progress 'Compiling C++ source code...' 33%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\n\t, bIsVacuum(true)\n\t  ^\n[3/9] Compile [x64] Module.Chimera.3.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"Intensity\")), Intensity);\n\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"WaveAmplitude\")), Intensity * 2.0f);\n\t\t\t                      ^\n@progress 'Compiling C++ source code...' 44%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"ShimmerIntensity\")), Intensity * 0.5f);\n\t\t                    ^\n[4/9] Compile [x64] Module.Chimera.1.cpp\nTotal time in Unreal Build Accelerator local executor: 6.30 seconds\n\nResult: Failed (OtherCompilationError)\nTotal execution time: 11.69 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 11.4kb",
+      "failing_files": [],
+      "compilation_result": "fail",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_7d0a90833add"
+    },
+    {
+      "id": "professor_grade_06b5a1fd32eab8e1",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-15T03:47:20.489933",
+      "feature": "Build_Pipeline",
+      "grade": "F",
+      "score": 0.0,
+      "reasoning": "UBT compilation fail: E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/Build_Pipeline",
+      "error_category": "none",
+      "fix_description": "Professor grade recorded: Build_Pipeline = F (0.0) \u2014 UBT compilation fail: E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_7d0a90833add"
+    },
+    {
+      "id": "professor_gpa_8809511e06c2baaa",
+      "type": "ProfessorGPA",
+      "timestamp": "2026-07-15T03:47:20.490255",
+      "scope": "project_overall",
+      "gpa": 1.89,
+      "grades_count": 216,
+      "trend": "flat",
+      "previous_gpa": 1.9,
+      "date": "2026-07-15",
+      "error_signature": "success_no_error",
+      "template_file": "gpa/project_overall",
+      "error_category": "none",
+      "fix_description": "GPA for project_overall: 1.89 (flat), based on 216 grades",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_7d0a90833add"
+    },
+    {
+      "id": "mutation_f2bd3769a180",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:47:20.729874",
+      "error_signature": "compilation_fail",
+      "template_file": "game_generation_orchestrator",
+      "template_line": 0,
+      "error_category": "compilation_error",
+      "fix_description": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types",
+      "fix_diff": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nResult: Failed (OtherCompilationError)",
+      "ubt_output_excerpt": "\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,21): note: 'void UGameplayStatics::PlaySoundAtLocation(const UObject *,USoundBase *,FVector,float,float,float,USoundAttenuation *,USoundConcurrency *,const UInitialActiveSoundParams *)': cannot convert argument 2 from 'USoundCue *' to 'USoundBase *'\n\t\tUGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceEndSound, GetActorLocation());\n\t\t                  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,53): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or parenthesized function-style cast\n\t\tUGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceEndSound, GetActorLocation());\n\t\t                                                  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(166,21): note: while trying to match the argument list '(UWorld *, USoundCue *, FVector)'\n\t\tUGameplayStatics::PlaySoundAtLocation(GetWorld(), VoiceEndSound, GetActorLocation());\n\t\t                  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\n\t: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)\n\t                                           ^\n@progress 'Compiling C++ source code...' 33%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\n\t, bIsVacuum(true)\n\t  ^\n[3/9] Compile [x64] Module.Chimera.3.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"Intensity\")), Intensity);\n\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"WaveAmplitude\")), Intensity * 2.0f);\n\t\t\t                      ^\n@progress 'Compiling C++ source code...' 44%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"ShimmerIntensity\")), Intensity * 0.5f);\n\t\t                    ^\n[4/9] Compile [x64] Module.Chimera.1.cpp\nTotal time in Unreal Build Accelerator local executor: 6.30 seconds\n\nResult: Failed (OtherCompilationError)\nTotal execution time: 11.69 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 11.4kb",
+      "failing_files": [],
+      "compilation_result": "fail",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_7d0a90833add"
+    },
+    {
+      "id": "professor_grade_6291ab6128ba15d1",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-15T03:47:20.953738",
+      "feature": "Build_Pipeline",
+      "grade": "F",
+      "score": 0.0,
+      "reasoning": "UBT compilation fail: E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/Build_Pipeline",
+      "error_category": "none",
+      "fix_description": "Professor grade recorded: Build_Pipeline = F (0.0) \u2014 UBT compilation fail: E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\AI\\VoiceEntity.cpp(136,21): error C2665: 'UGameplayStatics::PlaySoundAtLocation': no overloaded function could convert all the argument types",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_7d0a90833add"
+    },
+    {
+      "id": "professor_gpa_5420d65bee5a1e03",
+      "type": "ProfessorGPA",
+      "timestamp": "2026-07-15T03:47:20.954125",
+      "scope": "project_overall",
+      "gpa": 1.88,
+      "grades_count": 217,
+      "trend": "flat",
+      "previous_gpa": 1.89,
+      "date": "2026-07-15",
+      "error_signature": "success_no_error",
+      "template_file": "gpa/project_overall",
+      "error_category": "none",
+      "fix_description": "GPA for project_overall: 1.88 (flat), based on 217 grades",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_7d0a90833add"
+    },
+    {
+      "id": "mutation_6392be597546",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:47:50.107990",
+      "error_signature": "success_no_error",
+      "template_file": "dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_direction_tests_flight_model_ship_systems_economy_systems_level_procedural_generation_quantum_travel_missions_contracts",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "DSL parsed with 16 blocks: game, technical, narrative, gameplay, world",
+      "fix_diff": "Parsed DSL blocks: ['game', 'technical', 'narrative', 'gameplay', 'world', 'ui', 'audio', 'art_direction', 'tests', 'flight_model', 'ship_systems', 'economy_systems', 'level', 'procedural_generation', 'quantum_travel', 'missions_contracts']",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_a14d592d8533"
+    },
+    {
+      "id": "mutation_d365f990da86",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:48:03.796103",
+      "error_signature": "compilation_fail",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated",
+      "template_line": 0,
+      "error_category": "compilation_error",
+      "fix_description": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,16): error C2027: use of undefined type 'USoundCue'",
+      "fix_diff": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,16): error C2027: use of undefined type 'USoundCue'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,33): error C2338: static_assert failed: 'Attempting to cast between incomplete types'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(123,23): error C2139: 'USoundCue': an undefined class is not allowed as an argument to compiler intrinsic type trait '__is_base_of'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(123,18): error C2338: static_assert failed: 'Attempting to use Cast<> on a type that is not a UObject or an Interface'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(148,29): error C2139: 'USoundCue': an undefined class is not allowed as an argument to compiler intrinsic type trait '__is_base_of'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(155,6): warning C4996: 'Cast::FStaticWarningMsg_155::condition': Attempting to use Cast<> on types that are not related\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\nResult: Failed (OtherCompilationError)",
+      "ubt_output_excerpt": "ogram Files\\Epic Games\\UE_5.8\\Engine\\Source\\Editor\\UnrealEd\\Classes\\Editor\\EditorEngine.h(427,13): note: see declaration of 'USoundCue'\n\tTObjectPtr<class USoundCue> PreviewSoundCue;\n\t           ^\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(148,29): note: the template instantiation context (the oldest one first) is\n\t\t\t\telse if constexpr (std::is_base_of_v<To, From>)\n\t\t\t\t                        ^\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(148,29): note: see reference to variable template 'const bool is_base_of_v<USoundBase,USoundCue>' being compiled\n@progress 'Compiling C++ source code...' 22%\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(155,6): warning C4996: 'Cast::FStaticWarningMsg_155::condition': Attempting to use Cast<> on types that are not related\n\t\t\t\t\tUE_STATIC_ASSERT_WARN((std::is_base_of_v<From, To>), \"Attempting to use Cast<> on types that are not related\");\n\t\t\t\t\t^\n[2/9] Compile [x64] Module.Chimera.3.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"Intensity\")), Intensity);\n\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"WaveAmplitude\")), Intensity * 2.0f);\n\t\t\t                      ^\n@progress 'Compiling C++ source code...' 33%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"ShimmerIntensity\")), Intensity * 0.5f);\n\t\t                    ^\n@progress 'Compiling C++ source code...' 44%\n[3/9] Compile [x64] Module.Chimera.1.cpp\n[4/9] Compile [x64] Module.Chimera.2.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\n\t: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)\n\t                                           ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\n\t, bIsVacuum(true)\n\t  ^\nTotal time in Unreal Build Accelerator local executor: 7.50 seconds\n\nResult: Failed (OtherCompilationError)\nTotal execution time: 12.94 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 11.1kb",
+      "failing_files": [],
+      "compilation_result": "fail",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_a14d592d8533"
+    },
+    {
+      "id": "professor_grade_541c88a359a2c29c",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-15T03:48:04.041717",
+      "feature": "Build_Pipeline",
+      "grade": "F",
+      "score": 0.0,
+      "reasoning": "UBT compilation fail: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,16): error C2027: use of undefined type 'USoundCue'",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/Build_Pipeline",
+      "error_category": "none",
+      "fix_description": "Professor grade recorded: Build_Pipeline = F (0.0) \u2014 UBT compilation fail: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,16): error C2027: use of undefined type 'USoundCue'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_a14d592d8533"
+    },
+    {
+      "id": "professor_gpa_9c2b0cbcbaaedb61",
+      "type": "ProfessorGPA",
+      "timestamp": "2026-07-15T03:48:04.041976",
+      "scope": "project_overall",
+      "gpa": 1.87,
+      "grades_count": 218,
+      "trend": "flat",
+      "previous_gpa": 1.88,
+      "date": "2026-07-15",
+      "error_signature": "success_no_error",
+      "template_file": "gpa/project_overall",
+      "error_category": "none",
+      "fix_description": "GPA for project_overall: 1.87 (flat), based on 218 grades",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_a14d592d8533"
+    },
+    {
+      "id": "mutation_1de839db2839",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:48:04.285085",
+      "error_signature": "compilation_fail",
+      "template_file": "game_generation_orchestrator",
+      "template_line": 0,
+      "error_category": "compilation_error",
+      "fix_description": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,16): error C2027: use of undefined type 'USoundCue'",
+      "fix_diff": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,16): error C2027: use of undefined type 'USoundCue'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,33): error C2338: static_assert failed: 'Attempting to cast between incomplete types'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(123,23): error C2139: 'USoundCue': an undefined class is not allowed as an argument to compiler intrinsic type trait '__is_base_of'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(123,18): error C2338: static_assert failed: 'Attempting to use Cast<> on a type that is not a UObject or an Interface'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(148,29): error C2139: 'USoundCue': an undefined class is not allowed as an argument to compiler intrinsic type trait '__is_base_of'\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(155,6): warning C4996: 'Cast::FStaticWarningMsg_155::condition': Attempting to use Cast<> on types that are not related\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\nResult: Failed (OtherCompilationError)",
+      "ubt_output_excerpt": "ogram Files\\Epic Games\\UE_5.8\\Engine\\Source\\Editor\\UnrealEd\\Classes\\Editor\\EditorEngine.h(427,13): note: see declaration of 'USoundCue'\n\tTObjectPtr<class USoundCue> PreviewSoundCue;\n\t           ^\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(148,29): note: the template instantiation context (the oldest one first) is\n\t\t\t\telse if constexpr (std::is_base_of_v<To, From>)\n\t\t\t\t                        ^\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(148,29): note: see reference to variable template 'const bool is_base_of_v<USoundBase,USoundCue>' being compiled\n@progress 'Compiling C++ source code...' 22%\nC:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(155,6): warning C4996: 'Cast::FStaticWarningMsg_155::condition': Attempting to use Cast<> on types that are not related\n\t\t\t\t\tUE_STATIC_ASSERT_WARN((std::is_base_of_v<From, To>), \"Attempting to use Cast<> on types that are not related\");\n\t\t\t\t\t^\n[2/9] Compile [x64] Module.Chimera.3.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"Intensity\")), Intensity);\n\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"WaveAmplitude\")), Intensity * 2.0f);\n\t\t\t                      ^\n@progress 'Compiling C++ source code...' 33%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"ShimmerIntensity\")), Intensity * 0.5f);\n\t\t                    ^\n@progress 'Compiling C++ source code...' 44%\n[3/9] Compile [x64] Module.Chimera.1.cpp\n[4/9] Compile [x64] Module.Chimera.2.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\n\t: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)\n\t                                           ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\n\t, bIsVacuum(true)\n\t  ^\nTotal time in Unreal Build Accelerator local executor: 7.50 seconds\n\nResult: Failed (OtherCompilationError)\nTotal execution time: 12.94 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 11.1kb",
+      "failing_files": [],
+      "compilation_result": "fail",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_a14d592d8533"
+    },
+    {
+      "id": "professor_grade_1ae3fad18d1acf61",
+      "type": "ProfessorGrade",
+      "timestamp": "2026-07-15T03:48:04.516132",
+      "feature": "Build_Pipeline",
+      "grade": "F",
+      "score": 0.0,
+      "reasoning": "UBT compilation fail: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,16): error C2027: use of undefined type 'USoundCue'",
+      "error_signature": "success_no_error",
+      "template_file": "professor_grade/Build_Pipeline",
+      "error_category": "none",
+      "fix_description": "Professor grade recorded: Build_Pipeline = F (0.0) \u2014 UBT compilation fail: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\CoreUObject\\Public\\Templates\\Casts.h(91,16): error C2027: use of undefined type 'USoundCue'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_a14d592d8533"
+    },
+    {
+      "id": "professor_gpa_bddbbea6ff6a3ac3",
+      "type": "ProfessorGPA",
+      "timestamp": "2026-07-15T03:48:04.516416",
+      "scope": "project_overall",
+      "gpa": 1.86,
+      "grades_count": 219,
+      "trend": "flat",
+      "previous_gpa": 1.87,
+      "date": "2026-07-15",
+      "error_signature": "success_no_error",
+      "template_file": "gpa/project_overall",
+      "error_category": "none",
+      "fix_description": "GPA for project_overall: 1.86 (flat), based on 219 grades",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_a14d592d8533"
+    },
+    {
+      "id": "mutation_c56c8b0cf569",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:48:14.334461",
+      "error_signature": "success_no_error",
+      "template_file": "dsl_parse_game_technical_narrative_gameplay_world_ui_audio_art_direction_tests_flight_model_ship_systems_economy_systems_level_procedural_generation_quantum_travel_missions_contracts",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "DSL parsed with 16 blocks: game, technical, narrative, gameplay, world",
+      "fix_diff": "Parsed DSL blocks: ['game', 'technical', 'narrative', 'gameplay', 'world', 'ui', 'audio', 'art_direction', 'tests', 'flight_model', 'ship_systems', 'economy_systems', 'level', 'procedural_generation', 'quantum_travel', 'missions_contracts']",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_8c9516645107"
+    },
+    {
+      "id": "mutation_ccd5e6348e68",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:48:30.744415",
+      "error_signature": "success_no_error",
+      "template_file": "E:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "===========\nUsing Unreal Build Accelerator local executor to run 9 action(s)\n  CPU 24 physical cores, 32 logical cores\n  Memory 127.78 GB physical, 56.69 GB/135.78 GB committed\n  UBA Storage capacity 40 GB\n@progress 'Compiling C++ source code...' 0%\n@progress 'Compiling C++ source code...' 11%\n** For ChimeraEditor-Win64-Development **\n@progress 'Compiling C++ source code...' 22%\n[1/9] Compile [x64] VoiceEntity.cpp\n[2/9] Compile [x64] Module.Chimera.3.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"Intensity\")), Intensity);\n\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"WaveAmplitude\")), Intensity * 2.0f);\n\t\t\t                      ^\n@progress 'Compiling C++ source code...' 33%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"ShimmerIntensity\")), Intensity * 0.5f);\n\t\t                    ^\n@progress 'Compiling C++ source code...' 44%\n[3/9] Compile [x64] Module.Chimera.1.cpp\n[4/9] Compile [x64] Module.Chimera.2.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\n\t: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)\n\t                                           ^\n@progress 'Compiling C++ source code...' 56%\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,4): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\n\t, bIsVacuum(true)\n\t  ^\n[5/9] Link [x64] UnrealEditor-Chimera.lib\n@progress 'Compiling C++ source code...' 67%\n[6/9] Link [x64] UnrealEditor-Chimera.dll\n@progress 'Compiling C++ source code...' 78%\n[7/9] Link [x64] UnrealEditor-McpAutomationBridge.dll\n@progress 'Compiling C++ source code...' 89%\n[8/9] WriteMetadata ChimeraEditor.target [NoUba]\n@progress 'Compiling C++ source code...' 100%\n[9/9] WriteMetadata ChimeraEditor.target [NoUba]\n\nTotal time in Unreal Build Accelerator local executor: 10.24 seconds\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\n\nResult: Succeeded\nTotal execution time: 15.64 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 8.1kb",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_8c9516645107"
+    },
+    {
+      "id": "mutation_4e233bf92b8c",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:48:31.041104",
+      "error_signature": "success_no_error",
+      "template_file": "code_generation_unknown",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Generated 0 files across 0 categories",
+      "fix_diff": "Generated files: []",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_8c9516645107"
+    },
+    {
+      "id": "mutation_ea26fc911c23",
+      "type": "Mutation",
+      "timestamp": "2026-07-15T03:51:30.891711",
+      "error_signature": "success_no_error",
+      "template_file": "visual_verification/screenshot_analysis",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "Visual verification pass: AI analysis completed",
+      "fix_diff": "Verification result: pass, Description: Stage 7 pass. Grade: A",
+      "screenshot_path": null,
+      "feature": "Visual_Verification",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "run_deep_space_trader_pipeline.py",
+      "run_id": "run_8c9516645107"
+    },
+    {
+      "id": "surprise_ff25347b7a993099",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T03:51:37.334572",
+      "context": "research waived: Pipeline run with GenerationSubsystem and VoiceEntity fixes",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "VoiceEntity USoundCue to USoundBase cast fix followed UE5 C++ casting patterns for sound base classes; GenerationSubsystem include path fixes followed existing generator template patterns.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'VoiceEntity USoundCue to USoundBase cast fix followed UE5 C++ casting patterns f'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f3dff8dbe06d"
+    },
+    {
+      "id": "surprise_932e235b57f7963b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T03:53:23.345459",
+      "context": "research waived: Pipeline run with GenerationSubsystem and VoiceEntity fixes",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "VoiceEntity USoundCue to USoundBase cast fix followed UE5 C++ casting patterns for sound base classes; GenerationSubsystem include path fixes followed existing generator template patterns.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'VoiceEntity USoundCue to USoundBase cast fix followed UE5 C++ casting patterns f'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_2eba31321199"
+    },
+    {
+      "id": "phase_af9b46755efcd9da",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T03:54:36.979897",
+      "phase": "Pipeline run with GenerationSubsystem and VoiceEntity fixes",
+      "result": "Pipeline completed successfully (EXIT=0). Build passed after fixing GenerationSubsystem.cpp include paths and VoiceEntity.cpp USoundCue to USoundBase cast. Professor grade: A.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Pipeline run with GenerationSubsystem and VoiceEntity fixes",
+      "error_category": "none",
+      "fix_description": "Phase 'Pipeline run with GenerationSubsystem and VoiceEntity fixes' complete: Pipeline completed successfully (EXIT=0). Build passed after fixing GenerationSubsystem.cpp include paths and VoiceEntity.cpp USoundCue to USoundBase cast. Professor grade: A.",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f4d049ae4852"
+    },
+    {
+      "id": "surprise_8b867b81b45fa731",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T04:25:06.369298",
+      "context": "research waived: Pipeline run with GenerationSubsystem and VoiceEntity fixes",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "GenerationSubsystem implementation followed existing generator templates and project patterns for save/game components; VoiceEntity USoundCue to USoundBase cast fix followed UE5 C++ casting patterns f",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'GenerationSubsystem implementation followed existing generator templates and pro'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_2f7965f2db01"
+    },
+    {
+      "id": "simtest_2ae2be769c5791d2",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-15T04:32:16.669540",
+      "observer": "agent-sim",
+      "session": "audio_visual_sync_verify_final",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 5,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=100uu (loc x=1600.094236231807, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=6"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 3200
+                }
+              },
+              "ok": true,
+              "note": "dist=2611uu (loc x=2610.6642713677543, y=0)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": true,
+              "note": "walk_volume=0.5 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=12"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=5.029141902923584e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\audio_visual_sync_verify_final.json",
+      "temperature": "[SIM] 5/5 beats reached in 'audio_visual_sync'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'audio_visual_sync_verify_final': 5/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_15d1d888dd03"
+    },
+    {
+      "id": "phase_776bb0b4c6d8da04",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T04:32:35.476849",
+      "phase": "rep_promotion:subsystem/Suit",
+      "result": "tier 0 -> 1 (behaves) after 248 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Suit",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Suit' complete: tier 0 -> 1 (behaves) after 248 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_2540bd7237c9"
+    },
+    {
+      "id": "surprise_10cf4f55b476303b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T04:32:49.369835",
+      "context": "rep atom atom_51d827d32bfd (Malcolm_Envelope) flipped green->red",
+      "expectation": "the atom's constraint would keep holding",
+      "reality": "bloodhound bisect names the commit: e39d2b5 feat(rig): THE SPINE \u00e2\u20ac\u201d the brain that learned to walk now moves the grown flesh",
+      "lesson_hint": "guilty commit identified mechanically; fix or revert with provenance",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected 'the atom's constraint would keep holding' but 'bloodhound bisect names the commit: e39d2b5 feat(rig): THE SPINE \u00e2\u20ac\u201d the brain t'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_2540bd7237c9"
+    },
+    {
+      "id": "heuristic_c4ab980eb2ceee7d",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T04:32:49.853561",
+      "signature": "surprise: actors bp_verb_ hollow may",
+      "rule": "Investigate actors bp_verb_; verify test harness and beat registration.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "surprise_f9cf5c9392753082",
+        "surprise_f6e315251e2d0141",
+        "surprise_72d5eb06de75526f",
+        "surprise_43076b35ddcff068"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: actors bp_verb_ hollow may",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Investigate actors bp_verb_; verify test harness and beat registration.",
+      "compilation_result": "pass",
+      "links": [
+        "surprise_f9cf5c9392753082",
+        "surprise_f6e315251e2d0141",
+        "surprise_72d5eb06de75526f",
+        "surprise_43076b35ddcff068"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_2540bd7237c9"
+    },
+    {
+      "id": "heuristic_96e67135d9845f6a",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T04:32:50.094720",
+      "signature": "surprise: bad costless creation ending",
+      "rule": "Investigate bad costless; verify test harness and beat registration.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "surprise_d2a5983cf9bb4a7d",
+        "surprise_0b43b9494057da46",
+        "surprise_20cde4e1a1895920",
+        "surprise_810c554ed2310b0f"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: bad costless creation ending",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Investigate bad costless; verify test harness and beat registration.",
+      "compilation_result": "pass",
+      "links": [
+        "surprise_d2a5983cf9bb4a7d",
+        "surprise_0b43b9494057da46",
+        "surprise_20cde4e1a1895920",
+        "surprise_810c554ed2310b0f"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_2540bd7237c9"
+    },
+    {
+      "id": "surprise_dd0cea52cb68a2ba",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T04:40:11.853300",
+      "context": "research waived: Dream loop ripened 3 pains into micro-tasks tb-0039, tb-0040, tb-0041;",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Dream loop and ripener micro-task generation followed existing distiller and bloodhound patterns; pain verdicts for token-coverage suppression and observation queue rot are still-open as evidence coll",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Dream loop and ripener micro-task generation followed existing distiller and blo'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_d3f42bbfbc10"
+    },
+    {
+      "id": "simtest_43dbbe0aea15437c",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-15T06:00:29.915938",
+      "observer": "agent-sim",
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 3,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=378uu (loc x=1622.1993921091196, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=426uu (loc x=3574.381274579469, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "SandDrift_FX"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": false,
+              "note": "z=102"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 3/5 beats reached in 'regolith_yard'. Failures: walk_rock_to_sand_basin (failed: expect {\"actor_exists\": \"SandDrift_FX\"} -> present=False); jump_probe (failed: expect {\"pawn_z_above\": 130} -> z=102)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 3/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5cd310aeca2e"
+    },
+    {
+      "id": "surprise_74ad35b2b40d459c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T06:00:30.291433",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SandDrift_FX\"}, \"ok\": false, \"note\": \"prese'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5cd310aeca2e"
+    },
+    {
+      "id": "surprise_b9af4c86efd02a7e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T06:00:30.684110",
+      "context": "Sleepwalker expected beat 'jump_probe' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=102\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=102\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5cd310aeca2e"
+    },
+    {
+      "id": "phase_56d059ce943c4158",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T07:15:07.084644",
+      "phase": "rep_promotion:subsystem/root",
+      "result": "tier 0 -> 1 (behaves) after 1470 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/root",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/root' complete: tier 0 -> 1 (behaves) after 1470 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_6773ff904fe2"
+    },
+    {
+      "id": "heuristic_009462cbb6e7e534",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T07:15:08.061987",
+      "signature": "surprise: blocker draft dream endpoint",
+      "rule": "Investigate blocker draft; verify test harness and beat registration.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "surprise_c2ba39e5fbaa9fbe",
+        "surprise_52995c367eff645c",
+        "surprise_d03593c26a8651ef"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: blocker draft dream endpoint",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Investigate blocker draft; verify test harness and beat registration.",
+      "compilation_result": "pass",
+      "links": [
+        "surprise_c2ba39e5fbaa9fbe",
+        "surprise_52995c367eff645c",
+        "surprise_d03593c26a8651ef"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_6773ff904fe2"
+    },
+    {
+      "id": "heuristic_a214b34dbe7997af",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T07:15:08.335755",
+      "signature": "surprise: chaos chaos_organ core created",
+      "rule": "Investigate chaos chaos_organ; verify test harness and beat registration.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "surprise_2883a942c2459d92",
+        "surprise_420156d675dfd220",
+        "surprise_30b89fa3d45aa1f7"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: chaos chaos_organ core created",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Investigate chaos chaos_organ; verify test harness and beat registration.",
+      "compilation_result": "pass",
+      "links": [
+        "surprise_2883a942c2459d92",
+        "surprise_420156d675dfd220",
+        "surprise_30b89fa3d45aa1f7"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_6773ff904fe2"
+    },
+    {
+      "id": "surprise_c165351aa8a70e73",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T07:49:11.811710",
+      "context": "postflight refused by research gate: Costless Life Bad Ending Trigger - Added postflight diagnostic that calculates t",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_e8ea5c0e8dc0"
+    },
+    {
+      "id": "surprise_d790a0971b0eb1d4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T07:49:15.855925",
+      "context": "research waived: Costless Life Bad Ending Trigger - Added postflight diagnostic that ca",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Code fix based on understanding existing code structure - ACostlessLifeEndingDiagnostic actor was declared but never spawned in GenerationSubsystem::Initialize. No external research needed for this C+",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Code fix based on understanding existing code structure - ACostlessLifeEndingDia'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_726a468e3642"
+    },
+    {
+      "id": "feature_c2f7c2c81861d9b3",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-15T07:50:49.441897",
+      "feature_name": "Costless_Life_Bad_Ending_Trigger",
+      "loop": 6,
+      "status": "encoded",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_6/Costless_Life_Bad_Ending_Trigger",
+      "error_category": "none",
+      "fix_description": "Feature 'Costless_Life_Bad_Ending_Trigger' (Loop 6) recorded as 'encoded'",
+      "compilation_result": "pass",
+      "links": [],
+      "backfilled": true,
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_88a5bfb1a56c"
+    },
+    {
+      "id": "phase_472782e27471a047",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T08:46:09.163983",
+      "phase": "rep_promotion:subsystem/Materials",
+      "result": "tier 0 -> 1 (behaves) after 841 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Materials",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Materials' complete: tier 0 -> 1 (behaves) after 841 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_57d921349999"
+    },
+    {
+      "id": "heuristic_29d3294b7875942a",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T08:46:10.043809",
+      "signature": "surprise: fixes generationsubsystem pipeline research",
+      "rule": "Investigate fixes generationsubsystem; verify test harness and beat registration",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "surprise_ff25347b7a993099",
+        "surprise_932e235b57f7963b",
+        "surprise_8b867b81b45fa731"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: fixes generationsubsystem pipeline research",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Investigate fixes generationsubsystem; verify test harness and beat registration",
+      "compilation_result": "pass",
+      "links": [
+        "surprise_ff25347b7a993099",
+        "surprise_932e235b57f7963b",
+        "surprise_8b867b81b45fa731"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_57d921349999"
+    },
+    {
+      "id": "heuristic_35e1db24e702b181",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T09:13:17.416487",
+      "signature": "surprise: actors bp_verb_ hollow may",
+      "rule": "covered by PENDING_HEURISTICS.md consolidation",
+      "organ": "claude_md",
+      "evidence_ids": [],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: actors bp_verb_ hollow may",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: covered by PENDING_HEURISTICS.md consolidation",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_4f4a358bd1f0"
+    },
+    {
+      "id": "heuristic_bc5d10fcf229ea76",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T09:13:19.053724",
+      "signature": "surprise: bad costless creation ending",
+      "rule": "covered by PENDING_HEURISTICS.md consolidation",
+      "organ": "claude_md",
+      "evidence_ids": [],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: bad costless creation ending",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: covered by PENDING_HEURISTICS.md consolidation",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_0ad4624a382c"
+    },
+    {
+      "id": "heuristic_40f1f2708359fd19",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T09:13:20.594116",
+      "signature": "surprise: blocker draft dream endpoint",
+      "rule": "covered by PENDING_HEURISTICS.md consolidation",
+      "organ": "claude_md",
+      "evidence_ids": [],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: blocker draft dream endpoint",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: covered by PENDING_HEURISTICS.md consolidation",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f35d74502826"
+    },
+    {
+      "id": "phase_e4e4c1e964248be6",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T09:15:18.284095",
+      "phase": "rep_promotion:subsystem/Shelter",
+      "result": "tier 0 -> 1 (behaves) after 107 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Shelter",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Shelter' complete: tier 0 -> 1 (behaves) after 107 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_f4c2caa483f0"
+    },
+    {
+      "id": "rollout_5bec2574fa8d7722",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-15T09:43:55.476223",
+      "chosen": "Costless Life Bad Ending Trigger",
+      "candidates": [
+        {
+          "name": "Costless Life Bad Ending Trigger",
+          "score": 0.91,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #5 \u2014 Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence."
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.876,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Will & Forewarning Inheritance UI",
+          "score": 0.793,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #4 \u2014 Strengthens the Circadian Protocol's Dawn phase; makes inheritance diegetic and actionable."
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.66,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "The Erisaid Audio Attunement Minigame",
+          "score": 0.624,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #3 \u2014 Directly implements the Erisaid cosmology; elevates sound design to primary gameplay layer."
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.536,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed"
+        },
+        {
+          "name": "Titan Run Gravity Shift Mechanics",
+          "score": 0.516,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #2 \u2014 Aligns with cosmology's resonant doctrine; adds mechanical depth to traversal."
+        },
+        {
+          "name": "Regolith Dust Accumulation Visual Feedback",
+          "score": 0.442,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #1 \u2014 Fits art bible's regolith-grey palette; enhances the provisional/unwitnessed aesthetic."
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.272,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.6 / cost 2.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Costless Life Bad Ending Trigger",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_31416fe1e2c3"
+    },
+    {
+      "id": "surprise_f653681e24982fb9",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:03:15.116770",
+      "context": "postflight refused by research gate: sleepwalker DSL/sleepwalker bridge mapping fixes",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_b68f790c38b5"
+    },
+    {
+      "id": "surprise_cadbd73e8c930326",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:03:40.714867",
+      "context": "research waived: sleepwalker DSL/sleepwalker bridge mapping fixes",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "DSL beat fixes based on existing verb_interactions.beats.json provenance and sleepwalker design documentation; no external research needed for reset_position/pawn_within recentering logic.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'DSL beat fixes based on existing verb_interactions.beats.json provenance and sle'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_0b7594d4035a"
+    },
+    {
+      "id": "surprise_f2caceb3e708111d",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:04:32.458284",
+      "context": "research waived: sleepwalker DSL/sleepwalker bridge mapping fixes",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "DSL beat fixes based on existing verb_interactions.beats.json provenance and sleepwalker design documentation; no external research needed for reset_position/pawn_within recentering logic.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'DSL beat fixes based on existing verb_interactions.beats.json provenance and sle'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_2ef8c54dedc8"
+    },
+    {
+      "id": "surprise_4619a4612c524abc",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:14:31.729964",
+      "context": "research waived: sleepwalker DSL/sleepwalker bridge mapping fixes",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "DSL beat fixes based on existing verb_interactions.beats.json provenance and sleepwalker design documentation; no external research needed for reset_position/pawn_within recentering logic.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'DSL beat fixes based on existing verb_interactions.beats.json provenance and sle'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_ce75cdeae346"
+    },
+    {
+      "id": "surprise_2762ec5e33f38f09",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:16:20.271259",
+      "context": "research waived: Pain verdict: sleepwalker DSL/sleepwalker bridge mapping fixes",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "DSL beat fixes verified against existing verb_interactions.beats.json provenance and sleepwalker design documentation; no external research needed for reset_position/pawn_within recentering logic.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'DSL beat fixes verified against existing verb_interactions.beats.json provenance'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f75705e4e8e7"
+    },
+    {
+      "id": "phase_544b6968df6122c9",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T10:16:26.914175",
+      "phase": "Pain verdict: sleepwalker DSL/sleepwalker bridge mapping fixes",
+      "result": "DSL beats already contain the reset_position and recentered pawn_within fixes; actor_exists corrected to Actor_NS_SandDust per provenance note in verb_interactions.beats.json.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Pain verdict: sleepwalker DSL/sleepwalker bridge mapping fixes",
+      "error_category": "none",
+      "fix_description": "Phase 'Pain verdict: sleepwalker DSL/sleepwalker bridge mapping fixes' complete: DSL beats already contain the reset_position and recentered pawn_within fixes; actor_exists corrected to Actor_NS_SandDust per provenance note in verb_interactions.beats.json.",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "Sleepwalker DSL bridge mapping fixes verified: reset_position and recentered pawn_within expectations, actor_exists fixed to Actor_NS_SandDust.",
+      "pain_verdicts": {
+        "phase_4d2da4e032a4aa07:P1:still-open,phase_1b01fac303f3c24e:P1:still-open,phase_3414a5cc1ff49e30:P1:still-open,phase_33cc2d55125bc551:P1:still-open,phase_a06bc8140bd62718:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_f75705e4e8e7"
+    },
+    {
+      "id": "surprise_3a032f1edce3c174",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:28:30.486198",
+      "context": "research waived: Pain verdict: phase_da55128aec6d109a:P1 [distiller token-coverage supp",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Distiller token-coverage suppression and observation queue status verified against DREAM_REPORT.md and collapse_proxy output; no external research needed for consolidation metrics.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Distiller token-coverage suppression and observation queue status verified again'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_bb6cbf4fdcda"
+    },
+    {
+      "id": "phase_2f7439775e33750a",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T10:28:34.255257",
+      "phase": "Pain verdict: phase_da55128aec6d109a:P1 [distiller token-coverage suppression], phase_762486f41e1aeafb:P1 [observation queue will rot unobserved]",
+      "result": "Distiller token-coverage suppression: 48 clusters consolidated, all suppressed as covered/pending, 0 staged. Observation queue holds 22 system-finalized features awaiting automated simulation evidence.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Pain verdict: phase_da55128aec6d109a:P1 [distiller token-coverage suppression], phase_762486f41e1aeafb:P1 [observation queue will rot unobserved]",
+      "error_category": "none",
+      "fix_description": "Phase 'Pain verdict: phase_da55128aec6d109a:P1 [distiller token-coverage suppression], phase_762486f41e1aeafb:P1 [observation queue will rot unobserved]' complete: Distiller token-coverage suppression: 48 clusters consolidated, all suppressed as covered/pending, 0 staged. Observation queue holds 22 system-finalized features awaiting automated simulation evidence",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "Distiller consolidation complete: 48 clusters suppressed as covered/pending, 0 candidates staged. Observation queue of 22 features awaits automated simulation evidence through sleepwalker/telemetry verification.",
+      "pain_verdicts": {
+        "phase_4d2da4e032a4aa07:P1:still-open,phase_1b01fac303f3c24e:P1:still-open,phase_3414a5cc1ff49e30:P1:still-open,phase_33cc2d55125bc551:P1:still-open,phase_a06bc8140bd62718:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_bb6cbf4fdcda"
+    },
+    {
+      "id": "surprise_fc04345a106eabb1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:43:57.233512",
+      "context": "research waived: Pain verdict: Observation queue holds 14 system-finalized features",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Observation queue status verified against collapse_proxy --tend output and DREAM_REPORT.md; 22 features awaiting automated simulation evidence. No external research needed for observation queue metric",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Observation queue status verified against collapse_proxy --tend output and DREAM'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_a565cf1ad0d1"
+    },
+    {
+      "id": "surprise_fc449b386cb288d0",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:45:59.022448",
+      "context": "research waived: Pain verdict: Observation queue still holds 14 system-finalized featur",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Observation queue status verified against collapse_proxy --tend output and DREAM_REPORT.md; 22 features awaiting automated simulation evidence. No external research needed for observation queue metric",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Observation queue status verified against collapse_proxy --tend output and DREAM'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_86b6d50bd9c4"
+    },
+    {
+      "id": "surprise_3c323388981a2aec",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:48:22.258351",
+      "context": "research waived: Pain verdict: Niagara system status unknown - if NS_SandDust not loade",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Niagara system status verified against create_sand_dust_niagara.py and verb_interactions.beats.json provenance note; Actor_NS_SandDust confirmed as the real spawned actor name. No external research ne",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Niagara system status verified against create_sand_dust_niagara.py and verb_inte'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_1ceaee0e0d94"
+    },
+    {
+      "id": "surprise_a42a2d2a8a6297b8",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:50:36.926750",
+      "context": "research waived: Pain verdict: Niagara system may not exist (creating from scratch fall",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Niagara system status verified against create_sand_dust_niagara.py and verb_interactions.beats.json provenance note; Actor_NS_SandDust confirmed as the real spawned actor name. No external research ne",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Niagara system status verified against create_sand_dust_niagara.py and verb_inte'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_9b61bb2ef8e4"
+    },
+    {
+      "id": "surprise_ad2346a1ebf5a993",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:52:34.614180",
+      "context": "research waived: Pain verdict: Audit workflow consolidation step had script filtering e",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Audit workflow consolidation script filtering error verified against journal.jsonl and audit data; core audit data successfully produced by all 18 agents. No external research needed for audit workflo",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Audit workflow consolidation script filtering error verified against journal.jso'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_adfd2ad94b0e"
+    },
+    {
+      "id": "surprise_9684069875a66d33",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:53:44.246412",
+      "context": "research waived: Pain verdict: Tier-1 organs (scholar/muse/visionkeeper) are hired with",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Tier-1 organs status verified against task board and graph records; scholar/muse/visionkeeper organs hired with real graph-recorded output but not wired into automatic loop. No external research neede",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Tier-1 organs status verified against task board and graph records; scholar/muse'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_4b5719971a15"
+    },
+    {
+      "id": "surprise_3e29011be41a2cc4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T10:55:35.399716",
+      "context": "research waived: Pain verdict: The IsAnimationAuthoringAction dual-routing trap (McpCon",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "IsAnimationAuthoringAction dual-routing trap verified against McpConsolidatedActionRouting.h and animation_physics tool documentation; action names listed in both AnimationPhysicsCore() and AnimationA",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'IsAnimationAuthoringAction dual-routing trap verified against McpConsolidatedAct'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_005dabe21b60"
+    },
+    {
+      "id": "rollout_9beb06584be6dacd",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-15T10:58:19.232551",
+      "chosen": "Costless Life Bad Ending Trigger",
+      "candidates": [
+        {
+          "name": "Costless Life Bad Ending Trigger",
+          "score": 0.91,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #5 \u2014 Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence."
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.876,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Will & Forewarning Inheritance UI",
+          "score": 0.793,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #4 \u2014 Strengthens the Circadian Protocol's Dawn phase; makes inheritance diegetic and actionable."
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.66,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "The Erisaid Audio Attunement Minigame",
+          "score": 0.624,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #3 \u2014 Directly implements the Erisaid cosmology; elevates sound design to primary gameplay layer."
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.536,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed"
+        },
+        {
+          "name": "Titan Run Gravity Shift Mechanics",
+          "score": 0.516,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #2 \u2014 Aligns with cosmology's resonant doctrine; adds mechanical depth to traversal."
+        },
+        {
+          "name": "Regolith Dust Accumulation Visual Feedback",
+          "score": 0.442,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #1 \u2014 Fits art bible's regolith-grey palette; enhances the provisional/unwitnessed aesthetic."
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.272,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.6 / cost 2.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Costless Life Bad Ending Trigger",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_941c6734d90c"
+    },
+    {
+      "id": "simtest_b382b887bce3295c",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-15T11:24:46.577763",
+      "observer": "agent-sim",
+      "session": "regolith_yard_fix",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=282uu (loc x=1718.282998557601, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=287uu (loc x=3712.7579982037837, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": false,
+              "note": "z=102"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\regolith_yard_fix.json",
+      "temperature": "[SIM] 4/5 beats reached in 'regolith_yard'. Failures: jump_probe (failed: expect {\"pawn_z_above\": 130} -> z=102)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'regolith_yard_fix': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b78f813add9f"
+    },
+    {
+      "id": "surprise_6a5a944b16bc347e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T11:24:46.818995",
+      "context": "Sleepwalker expected beat 'jump_probe' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=102\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=102\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b78f813add9f"
+    },
+    {
+      "id": "surprise_03e078ae3bd4addc",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T11:25:50.208562",
+      "context": "research waived: Sleepwalker regolith_yard_fix: 4/5 beats reached",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Sleepwalker regolith_yard_fix verified: 4/5 beats reached, walk_rock_to_sand_basin passes with Actor_NS_SandDust actor_exists check. No external research needed for sleepwalker beat verification.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Sleepwalker regolith_yard_fix verified: 4/5 beats reached, walk_rock_to_sand_bas'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_730bc4ce8f80"
+    },
+    {
+      "id": "rollout_21818c59499dc21b",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-15T12:11:44.305352",
+      "chosen": "Costless Life Bad Ending Trigger",
+      "candidates": [
+        {
+          "name": "Costless Life Bad Ending Trigger",
+          "score": 0.91,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #5 \u2014 Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence."
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.876,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Will & Forewarning Inheritance UI",
+          "score": 0.793,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #4 \u2014 Strengthens the Circadian Protocol's Dawn phase; makes inheritance diegetic and actionable."
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.66,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "The Erisaid Audio Attunement Minigame",
+          "score": 0.624,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #3 \u2014 Directly implements the Erisaid cosmology; elevates sound design to primary gameplay layer."
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.536,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed"
+        },
+        {
+          "name": "Titan Run Gravity Shift Mechanics",
+          "score": 0.516,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #2 \u2014 Aligns with cosmology's resonant doctrine; adds mechanical depth to traversal."
+        },
+        {
+          "name": "Regolith Dust Accumulation Visual Feedback",
+          "score": 0.442,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #1 \u2014 Fits art bible's regolith-grey palette; enhances the provisional/unwitnessed aesthetic."
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.272,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.6 / cost 2.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Costless Life Bad Ending Trigger",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_0859559cf002"
+    },
+    {
+      "id": "simtest_116d1d904a18a46d",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-15T12:12:46.380923",
+      "observer": "agent-sim",
+      "session": "verb_interactions_verify",
+      "demo": "verb_interactions",
+      "beats_total": 9,
+      "beats_reached": 9,
+      "outcomes": [
+        {
+          "beat": "verb_look_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Look",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_bend_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.2
+                }
+              },
+              "ok": true,
+              "note": "CapsuleHalfHeight 90->40->90 drop=50 restore=50 min_drop=20"
+            }
+          ]
+        },
+        {
+          "beat": "verb_pickup_weapon_tool_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp",
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_drop_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_metal_surface_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Metal_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 350,
+                  "y": 0,
+                  "r": 400
+                }
+              },
+              "ok": true,
+              "note": "dist=282uu (loc x=68.19203758245125, y=0.2082605655775578)"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_rock_surface_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4240,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=528uu (loc x=3712.0106013788245, y=5.228532666835614)"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_sand_surface_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 5950,
+                  "y": 0,
+                  "r": 950
+                }
+              },
+              "ok": true,
+              "note": "dist=289uu (loc x=6238.808383853354, y=6.837389184585227)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "visor_inspection_pedestal",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model_Visor_Apply",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2225,
+                  "y": 600,
+                  "r": 750
+                }
+              },
+              "ok": true,
+              "note": "dist=296uu (loc x=2191.0691240072615, y=894.3459106574409)"
+            }
+          ]
+        },
+        {
+          "beat": "weapon_tool_examine",
+          "outcome": "reached",
+          "features": [
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1700,
+                  "y": -400,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=188uu (loc x=1512.017137164622, y=-396.60386569857474)"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\verb_interactions_verify.json",
+      "temperature": "[SIM] 9/9 beats reached in 'verb_interactions'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'verb_interactions_verify': 9/9 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e3aa639c2fcc"
+    },
+    {
+      "id": "phase_e48bd955d06d1008",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T12:18:08.062964",
+      "phase": "rep_promotion:subsystem/AI",
+      "result": "tier 0 -> 1 (behaves) after 772 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/AI",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/AI' complete: tier 0 -> 1 (behaves) after 772 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_9f184f82b664"
+    },
+    {
+      "id": "heuristic_e9065f07a42c00cd",
+      "type": "Heuristic",
+      "timestamp": "2026-07-15T12:18:09.007860",
+      "signature": "surprise: bridge dsl fixes mapping",
+      "rule": "Investigate bridge dsl; verify test harness and beat registration.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "surprise_cadbd73e8c930326",
+        "surprise_f2caceb3e708111d",
+        "surprise_4619a4612c524abc",
+        "surprise_2762ec5e33f38f09"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: bridge dsl fixes mapping",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Investigate bridge dsl; verify test harness and beat registration.",
+      "compilation_result": "pass",
+      "links": [
+        "surprise_cadbd73e8c930326",
+        "surprise_f2caceb3e708111d",
+        "surprise_4619a4612c524abc",
+        "surprise_2762ec5e33f38f09"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_9f184f82b664"
+    },
+    {
+      "id": "surprise_615b19eb5f5fb035",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T12:19:21.540550",
+      "context": "postflight refused by research gate: tb-0051 pain verdict: A future research/redesign cycle on the newly-needs_refine",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_83720fbcadcd"
+    },
+    {
+      "id": "surprise_44c0cf511e994e89",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T12:19:25.204072",
+      "context": "research waived: tb-0051 pain verdict: A future research/redesign cycle on the newly-ne",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Pain verdict confirmed based on live sleepwalker verification (verb_interactions.beats.json achieved 9/9 beats with 'Clean walk.', simtest_116d1d904a18a46d). No external research needed - the evidence",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Pain verdict confirmed based on live sleepwalker verification (verb_interactions'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_df404aa13041"
+    },
+    {
+      "id": "rollout_fe607b6cc1a53523",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-15T12:21:51.574330",
+      "chosen": "Costless Life Bad Ending Trigger",
+      "candidates": [
+        {
+          "name": "Costless Life Bad Ending Trigger",
+          "score": 0.91,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #5 \u2014 Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence."
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.876,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Will & Forewarning Inheritance UI",
+          "score": 0.793,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #4 \u2014 Strengthens the Circadian Protocol's Dawn phase; makes inheritance diegetic and actionable."
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.66,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "The Erisaid Audio Attunement Minigame",
+          "score": 0.624,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #3 \u2014 Directly implements the Erisaid cosmology; elevates sound design to primary gameplay layer."
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.536,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed"
+        },
+        {
+          "name": "Titan Run Gravity Shift Mechanics",
+          "score": 0.516,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #2 \u2014 Aligns with cosmology's resonant doctrine; adds mechanical depth to traversal."
+        },
+        {
+          "name": "Regolith Dust Accumulation Visual Feedback",
+          "score": 0.442,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #1 \u2014 Fits art bible's regolith-grey palette; enhances the provisional/unwitnessed aesthetic."
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.272,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.6 / cost 2.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Costless Life Bad Ending Trigger",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_d1c6f49a68e8"
+    },
+    {
+      "id": "phase_75f5440cf9a2a577",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T12:46:06.494164",
+      "phase": "rep_promotion:UI_Suit_HUD",
+      "result": "tier 0 -> 1 (behaves) after 104 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:UI_Suit_HUD",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:UI_Suit_HUD' complete: tier 0 -> 1 (behaves) after 104 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_86e1ca4bf384"
+    },
+    {
+      "id": "surprise_428e3736fd883512",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T13:17:48.933853",
+      "context": "postflight refused by research gate: tb-0054 investigation: gardener.py status-matching mis-classifies vetoed-auto en",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_54a11b2f3815"
+    },
+    {
+      "id": "surprise_35db7e1367450643",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T13:17:51.983715",
+      "context": "research waived: tb-0054 investigation: gardener.py status-matching mis-classifies veto",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Investigation of gardener.py source code and dry-run execution confirmed the code's condition  correctly prevents mis-classification; no external research needed.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Investigation of gardener.py source code and dry-run execution confirmed the cod'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_558f13d782bd"
+    },
+    {
+      "id": "phase_256db39ecb9f3d8a",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T13:19:05.534021",
+      "phase": "tb-0054 investigation: gardener.py status-matching mis-classifies vetoed-auto entries",
+      "result": "[gardener] DRY-RUN\\n  untouched (45): H-1 (promoted (auto 2026-07-07)), ... H-9 (vetoed-auto (tombstone 2026-07-07 \u2014 per agent_note)), ...",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0054 investigation: gardener.py status-matching mis-classifies vetoed-auto entries",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0054 investigation: gardener.py status-matching mis-classifies vetoed-auto entries' complete: [gardener] DRY-RUN\\n  untouched (45): H-1 (promoted (auto 2026-07-07)), ... H-9 (vetoed-auto (tombstone 2026-07-07 \u2014 per agent_note)), ...",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "..."
+      ],
+      "inheritance": "tb-0054 pain verdict refuted: gardener.py's condition  correctly prevents mis-classification of 'vetoed-auto (tombstone ...)' entries as 'human bare vetoed, attempt-demote' cases.",
+      "pain_verdicts": {
+        "phase_efc97bb41d4a112b:P3": "refuted"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_558f13d782bd"
+    },
+    {
+      "id": "surprise_a50bfa01729a01a1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T13:19:11.701464",
+      "context": "research waived: Pain verdict: core/gardener.py's tend() status-matching mis-classifies",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Investigation of gardener.py source code and dry-run execution confirmed the code's condition correctly prevents mis-classification; no external research needed.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Investigation of gardener.py source code and dry-run execution confirmed the cod'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_9336fadcae73"
+    },
+    {
+      "id": "phase_9e00a9f4f819aec0",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T13:20:26.541950",
+      "phase": "Pain verdict: core/gardener.py's tend() status-matching mis-classifies vetoed-auto entries",
+      "result": "gardener.py dry-run confirmed: H-9 (vetoed-auto (tombstone 2026-07-07 \u2014 per agent_note)) is in the 'untouched' list, not 'demoted_human'. The condition  correctly prevents mis-classification of 'vetoed-auto (tombstone ...)' entries as 'human bare vetoed, attempt-demote' cases.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Pain verdict: core/gardener.py's tend() status-matching mis-classifies vetoed-auto entries",
+      "error_category": "none",
+      "fix_description": "Phase 'Pain verdict: core/gardener.py's tend() status-matching mis-classifies vetoed-auto entries' complete: gardener.py dry-run confirmed: H-9 (vetoed-auto (tombstone 2026-07-07 \u2014 per agent_note)) is in the 'untouched' list, not 'demoted_human'. The condition  correctly prevents mis-classification of 'vetoe",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "..."
+      ],
+      "inheritance": "tb-0054 pain verdict refuted: gardener.py's condition correctly prevents mis-classification.",
+      "pain_verdicts": {
+        "phase_efc97bb41d4a112b:P3": "refuted"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_9336fadcae73"
+    },
+    {
+      "id": "surprise_b8aa282dd9009621",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T13:24:04.941757",
+      "context": "research waived: Pain verdict: A future session may assume 'the Bridge Engineer backlog",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Investigation of DREAM_ROSTER.md and MCP_PATHWAYS.md confirmed the Bridge Engineer backlog fix for add_anim_notify/get_anim_sequence_info does NOT cover Niagara authoring; SUCCESSOR_RUNBOOK's Niagara",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Investigation of DREAM_ROSTER.md and MCP_PATHWAYS.md confirmed the Bridge Engine'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_ebb4dd6b0a96"
+    },
+    {
+      "id": "phase_561fe8916899ef0d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T13:25:25.182976",
+      "phase": "Pain verdict: A future session may assume 'the Bridge Engineer backlog got fixed' now covers Niagara authoring too, because add_anim_notify/get_anim_sequence_info did",
+      "result": "Pain verdict confirmed: Bridge Engineer backlog fix for add_anim_notify/get_anim_sequence_info does NOT cover Niagara authoring. DREAM_ROSTER.md confirms Niagara authoring (backlog's 3rd named item) was DIAGNOSED but NOT FIXED 2026-07-08; SUCCESSOR_RUNBOOK's TRAP text ('create_niagara_system / add_emitter_to_system / add_*_module / set_niagara_parameter all return success and do NOTHING. get_niagara_info reports emitterCount=0 even for working systems. validate_niagara_system says isValid for broken ones.') is untouched and still fully applies verbatim. No code was changed for Niagara authoring this session \u2014 diagnosis only, not a landed fix.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Pain verdict: A future session may assume 'the Bridge Engineer backlog got fixed' now covers Niagara authoring too, because add_anim_notify/get_anim_sequence_info did",
+      "error_category": "none",
+      "fix_description": "Phase 'Pain verdict: A future session may assume 'the Bridge Engineer backlog got fixed' now covers Niagara authoring too, because add_anim_notify/get_anim_sequence_info did' complete: Pain verdict confirmed: Bridge Engineer backlog fix for add_anim_notify/get_anim_sequence_info does NOT cover Niagara authoring. DREAM_ROSTER.md confirms Niagara authoring (backlog's 3rd named item) w",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "..."
+      ],
+      "inheritance": "tb-0055 pain verdict confirmed: Bridge Engineer backlog fix did NOT cover Niagara authoring; SUCCESSOR_RUNBOOK's Niagara TRAP remains untouched and fully applies.",
+      "pain_verdicts": {
+        "phase_c67559a04eceaec4:P2": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_ebb4dd6b0a96"
+    },
+    {
+      "id": "surprise_2d5f83bd7bea4c78",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T13:26:38.982024",
+      "context": "research waived: Pain verdict: WeightShiftAnimationTests.cpp compiles clean but FWeight",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Investigation via grep confirmed FWeightShiftAnimationTests::RunAllTests()/RunWeightShiftTests() has zero callers anywhere in Source/. No external research needed.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Investigation via grep confirmed FWeightShiftAnimationTests::RunAllTests()/RunWe'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_28d8e9a308ad"
+    },
+    {
+      "id": "phase_24f06fbad005f577",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T13:28:02.137967",
+      "phase": "Pain verdict: WeightShiftAnimationTests.cpp compiles clean but FWeightShiftAnimationTests::RunAllTests()/RunWeightShiftTests() has zero callers anywhere in Source/",
+      "result": "Pain verdict confirmed: WeightShiftAnimationTests.cpp compiles clean but FWeightShiftAnimationTests::RunAllTests()/RunWeightShiftTests() has zero callers anywhere in Source/ (grep-confirmed). A green build does not mean these 4 unit tests have ever actually executed once; they need a caller wired before trusting this as real test coverage.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Pain verdict: WeightShiftAnimationTests.cpp compiles clean but FWeightShiftAnimationTests::RunAllTests()/RunWeightShiftTests() has zero callers anywhere in Source/",
+      "error_category": "none",
+      "fix_description": "Phase 'Pain verdict: WeightShiftAnimationTests.cpp compiles clean but FWeightShiftAnimationTests::RunAllTests()/RunWeightShiftTests() has zero callers anywhere in Source/' complete: Pain verdict confirmed: WeightShiftAnimationTests.cpp compiles clean but FWeightShiftAnimationTests::RunAllTests()/RunWeightShiftTests() has zero callers anywhere in Source/ (grep-confirmed). A green ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "..."
+      ],
+      "inheritance": "tb-0056 pain verdict confirmed: WeightShiftAnimationTests.cpp compiles clean but RunAllTests()/RunWeightShiftTests() has zero callers in Source/; green build does not mean unit tests have ever executed.",
+      "pain_verdicts": {
+        "phase_2f2d78e48da8f355:P1": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_28d8e9a308ad"
+    },
+    {
+      "id": "rollout_62f5fda429059cf9",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-15T13:28:22.346332",
+      "chosen": "Costless Life Bad Ending Trigger",
+      "candidates": [
+        {
+          "name": "Costless Life Bad Ending Trigger",
+          "score": 0.91,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #5 \u2014 Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence."
+        },
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.876,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Will & Forewarning Inheritance UI",
+          "score": 0.793,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #4 \u2014 Strengthens the Circadian Protocol's Dawn phase; makes inheritance diegetic and actionable."
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.79,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "DEMO_ARCHITECTURE.md \u00a75 Phase 2 \u2014 kiosk running real economy/mission/save systems; unblocks Session B (20/20 queue)"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.66,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "THE FLOOR \u2014 always executable (python+files only, no editor, no LM, no network); wins only when everything else is blocked"
+        },
+        {
+          "name": "The Erisaid Audio Attunement Minigame",
+          "score": 0.624,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #3 \u2014 Directly implements the Erisaid cosmology; elevates sound design to primary gameplay layer."
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.536,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed"
+        },
+        {
+          "name": "Titan Run Gravity Shift Mechanics",
+          "score": 0.516,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #2 \u2014 Aligns with cosmology's resonant doctrine; adds mechanical depth to traversal."
+        },
+        {
+          "name": "Regolith Dust Accumulation Visual Feedback",
+          "score": 0.442,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "Muse proposal #1 \u2014 Fits art bible's regolith-grey palette; enhances the provisional/unwitnessed aesthetic."
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.272,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        }
+      ],
+      "rationale": "value 1.5 x p 0.6 / cost 2.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Costless Life Bad Ending Trigger",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_3506a6161969"
+    },
+    {
+      "id": "surprise_f993047d4f590666",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T13:51:29.973570",
+      "context": "research waived: resolved pending wall adjustments for heuristics_per_night in docs/env",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Investigation of docs/envelope.json confirmed 5 pending wall adjustments for heuristics_per_night; ruled to hold current limit (max: 2) and investigate before any loosening. No external research neede",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Investigation of docs/envelope.json confirmed 5 pending wall adjustments for heu'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_33dcbb12e518"
+    },
+    {
+      "id": "phase_6ff255e5bec50295",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T13:52:53.952639",
+      "phase": "resolved pending wall adjustments for heuristics_per_night in docs/envelope.json",
+      "result": "Ruled 5 pending wall adjustments for heuristics_per_night: status changed to 'ruled: hold current limit (max: 2); investigate before any loosening'. Ruling: hold current limit max:2 on heuristics_per_night; breach at 9 indicates distiller-candidate count exceeds distiller max-candidates; no loosening permitted until investigation completes.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/resolved pending wall adjustments for heuristics_per_night in docs/envelope.json",
+      "error_category": "none",
+      "fix_description": "Phase 'resolved pending wall adjustments for heuristics_per_night in docs/envelope.json' complete: Ruled 5 pending wall adjustments for heuristics_per_night: status changed to 'ruled: hold current limit (max: 2); investigate before any loosening'. Ruling: hold current limit max:2 on heuristics_per_",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "..."
+      ],
+      "inheritance": "Container status BREACH on heuristics_per_night addressed by ruling to hold current limit (max: 2) and investigate before any loosening. All 5 pending wall adjustments resolved.",
+      "pain_verdicts": {
+        "phase_...:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_33dcbb12e518"
+    },
+    {
+      "id": "surprise_3c53d01669b1e485",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T15:29:36.629674",
+      "context": "Duty agent's rehearsal --decide consistently selected 'Costless Life Bad Ending Trigger' (Muse proposal #5) as the NEXT move across a whole session",
+      "expectation": "",
+      "reality": "That feature is ALREADY implemented and verified (CostlessLifeEndingDiagnostic.cpp) -- rehearsal's candidate pool does not filter candidates whose feature ledger status is implemented/verified/observed, so it re-proposes finished work and contributed to the false 'nothing left to do' idle state",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'That feature is ALREADY implemented and verified (CostlessLifeEndingDiagnostic.c'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f01bb5015c18"
     }
   ],
   "edges": [

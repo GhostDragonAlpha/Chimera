@@ -5,11 +5,11 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**964 entries** across 8 chapters.
+**1107 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
-*51 entries; showing 40.*
+*66 entries; showing 40.*
 
 ### H-1
 <sub>`claude:H-1`</sub>
@@ -126,6 +126,36 @@
 
 > Investigate correction feature; verify test harness and beat registration.
 
+### H-40
+<sub>`claude:H-40`</sub>
+
+> Investigate actors bp_verb_; verify test harness and beat registration.
+
+### H-41
+<sub>`claude:H-41`</sub>
+
+> Investigate bad costless; verify test harness and beat registration.
+
+### H-42
+<sub>`claude:H-42`</sub>
+
+> Investigate blocker draft; verify test harness and beat registration.
+
+### H-43
+<sub>`claude:H-43`</sub>
+
+> Investigate chaos chaos_organ; verify test harness and beat registration.
+
+### H-44
+<sub>`claude:H-44`</sub>
+
+> Investigate fixes generationsubsystem; verify test harness and beat registration
+
+### H-45
+<sub>`claude:H-45`</sub>
+
+> Investigate bridge dsl; verify test harness and beat registration.
+
 ### compilation_fail `2026-07-07T01:45`
 <sub>`heuristic_837905aa7e86de78`</sub>
 
@@ -180,36 +210,6 @@
 <sub>`heuristic_2dfd6804008ee83d`</sub>
 
 > Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
-
-### human_rejection: Verb_Look `2026-07-08T15:10`
-<sub>`heuristic_e3592474b39c1aca`</sub>
-
-> Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and re-verified since.
-
-### human_rejection: Verb_Shovel `2026-07-11T22:27`
-<sub>`heuristic_6ae2cc2dd417726f`</sub>
-
-> A verb needs behavior, not metadata: ATool_Shovel had DigRadius but no Dig() — beats must press the verb key and assert a world-state change.
-
-### human_rejection: Verb_PickUp `2026-07-11T22:27`
-<sub>`heuristic_da4a5a1dc07333b2`</sub>
-
-> Read back live-PIE pawn components before staging an interaction verb — PickUp's component was never attached, bound, or given a level actor to grab.
-
-### human_rejection: Ground_Rock_Surface `2026-07-11T22:27`
-<sub>`heuristic_929c0e5dd8c3c1f7`</sub>
-
-> A feature tagged only by movement beats is hostage to rig health — zero-displacement failures (GameMode PlayerControllerClass unset) indict the rig, not the surface.
-
-### sim_rejection: verb_interactions/verb_shovel_rock_surface_location `2026-07-11T22:27`
-<sub>`heuristic_c7175a86c82c29e9`</sub>
-
-> Position-expect beats must reset_position at beat start — W-drift accumulates across sequential beats and BugItGo is refused during PIE.
-
-### sim_rejection: regolith_yard/jump_probe `2026-07-11T22:27`
-<sub>`heuristic_52e2728aa88ab00a`</sub>
-
-> Probe jumps by timed pawn_z read-back, not log_contains — and reset_position first: z=-26947 shows the pawn had already drifted off the world.
 
 ## II. Closed Doors (eliminations — proven negatives)
 
@@ -316,7 +316,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*287 entries; showing 40.*
+*358 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -640,7 +640,7 @@
 
 ## IV. Verdicts & Grades
 
-*304 entries; showing 40.*
+*324 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -959,7 +959,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*263 entries; showing 40.*
+*294 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1211,7 +1211,7 @@
 
 ## VI. Rep Milestones (resolution through repetition)
 
-*46 entries; showing 40.*
+*52 entries; showing 40.*
 
 ### Ground_Sand_Sound promoted to tier 1
 <sub>`promo:Ground_Sand_Sound:1`</sub>
@@ -1283,55 +1283,85 @@
 
 > shaping promotion (streak rule): streak 8 @ 100%
 
+### subsystem/Suit promoted to tier 1
+<sub>`promo:subsystem/Suit:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### subsystem/root promoted to tier 1
+<sub>`promo:subsystem/root:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### subsystem/Materials promoted to tier 1
+<sub>`promo:subsystem/Materials:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### subsystem/Shelter promoted to tier 1
+<sub>`promo:subsystem/Shelter:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### subsystem/AI promoted to tier 1
+<sub>`promo:subsystem/AI:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### UI_Suit_HUD promoted to tier 1
+<sub>`promo:UI_Suit_HUD:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry     28 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry     35 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access    168 reps  100%  streak  8  battery   9 (3 pie)  tier 1/1
+> audio_visual_sync/telemetry_access    210 reps  100%  streak  8  battery   9 (3 pie)  READY
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                             26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Demo_Level                             33 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Game_Feel — ledger standing
 <sub>`repstat:Game_Feel`</sub>
 
-> Game_Feel                              27 reps   33%  streak  0  battery   3 (0 pie)  tier 0/3
+> Game_Feel                              48 reps   33%  streak  0  battery   3 (0 pie)  tier 0/3
 
 ### Ground_Sand_Sound — ledger standing
 <sub>`repstat:Ground_Sand_Sound`</sub>
 
-> Ground_Sand_Sound                     828 reps  100%  streak  8  battery  32 (0 pie)  READY
+> Ground_Sand_Sound                    1052 reps  100%  streak  8  battery  32 (0 pie)  READY
 
 ### Ground_Sand_Surface — ledger standing
 <sub>`repstat:Ground_Sand_Surface`</sub>
 
-> Ground_Sand_Surface                    26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Ground_Sand_Surface                    33 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Malcolm_Envelope — ledger standing
 <sub>`repstat:Malcolm_Envelope`</sub>
 
-> Malcolm_Envelope                      137 reps  100%  streak  8  battery  18 (8 pie)  tier 1/2
+> Malcolm_Envelope                      200 reps   86%  streak  0  battery  18 (8 pie)  tier 1/2
 
 ### MCP_Pathways — ledger standing
 <sub>`repstat:MCP_Pathways`</sub>
 
-> MCP_Pathways                           26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> MCP_Pathways                           33 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Sleepwalker_Beats — ledger standing
 <sub>`repstat:Sleepwalker_Beats`</sub>
 
-> Sleepwalker_Beats                      54 reps  100%  streak  8  battery   9 (7 pie)  tier 0/2
+> Sleepwalker_Beats                      68 reps  100%  streak  8  battery   9 (7 pie)  tier 0/2
 
 ### Sprint_Input/binding — ledger standing
 <sub>`repstat:Sprint_Input/binding`</sub>
 
-> Sprint_Input/binding                   17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
+> Sprint_Input/binding                   24 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
 
 ### Sprint_Input/capture_peak — ledger standing
 <sub>`repstat:Sprint_Input/capture_peak`</sub>
@@ -1341,7 +1371,7 @@
 ### Sprint_Input/harness_parity — ledger standing
 <sub>`repstat:Sprint_Input/harness_parity`</sub>
 
-> Sprint_Input/harness_parity            17 reps  100%  streak  8  battery   2 (1 pie)  tier 0/1
+> Sprint_Input/harness_parity            24 reps  100%  streak  8  battery   2 (1 pie)  tier 0/1
 
 ### Sprint_Input/readback — ledger standing
 <sub>`repstat:Sprint_Input/readback`</sub>
@@ -1351,67 +1381,37 @@
 ### Sprint_Input/state — ledger standing
 <sub>`repstat:Sprint_Input/state`</sub>
 
-> Sprint_Input/state                     17 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
+> Sprint_Input/state                     24 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
 
 ### Sprint_Input/volume_norm — ledger standing
 <sub>`repstat:Sprint_Input/volume_norm`</sub>
 
-> Sprint_Input/volume_norm               16 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
+> Sprint_Input/volume_norm               23 reps  100%  streak  8  battery   1 (0 pie)  tier 0/1
 
 ### subsystem/AI — ledger standing
 <sub>`repstat:subsystem/AI`</sub>
 
-> subsystem/AI                          637 reps   89%  streak  3  battery  27 (0 pie)  tier 0/1
+> subsystem/AI                          826 reps  100%  streak  8  battery  27 (0 pie)  READY
 
 ### subsystem/Combat — ledger standing
 <sub>`repstat:subsystem/Combat`</sub>
 
-> subsystem/Combat                      786 reps   98%  streak  8  battery  33 (0 pie)  READY
+> subsystem/Combat                     1017 reps  100%  streak  8  battery  33 (0 pie)  READY
 
 ### subsystem/Demo — ledger standing
 <sub>`repstat:subsystem/Demo`</sub>
 
-> subsystem/Demo                         40 reps  100%  streak  8  battery   3 (0 pie)  tier 0/1
+> subsystem/Demo                         61 reps  100%  streak  8  battery   3 (0 pie)  tier 0/1
 
 ### subsystem/Economy — ledger standing
 <sub>`repstat:subsystem/Economy`</sub>
 
-> subsystem/Economy                     566 reps   96%  streak  8  battery  26 (0 pie)  READY
+> subsystem/Economy                     748 reps   96%  streak  8  battery  26 (0 pie)  READY
 
 ### subsystem/Environment — ledger standing
 <sub>`repstat:subsystem/Environment`</sub>
 
-> subsystem/Environment                1308 reps  100%  streak  8  battery  77 (0 pie)  READY
-
-### subsystem/Factions — ledger standing
-<sub>`repstat:subsystem/Factions`</sub>
-
-> subsystem/Factions                     26 reps  100%  streak  8  battery   1 (0 pie)  READY
-
-### subsystem/Flight — ledger standing
-<sub>`repstat:subsystem/Flight`</sub>
-
-> subsystem/Flight                      412 reps  100%  streak  8  battery  22 (0 pie)  READY
-
-### subsystem/GameMode — ledger standing
-<sub>`repstat:subsystem/GameMode`</sub>
-
-> subsystem/GameMode                     52 reps   50%  streak  0  battery   2 (0 pie)  tier 0/1
-
-### subsystem/Inventory — ledger standing
-<sub>`repstat:subsystem/Inventory`</sub>
-
-> subsystem/Inventory                   182 reps  100%  streak  8  battery   7 (0 pie)  READY
-
-### subsystem/Materials — ledger standing
-<sub>`repstat:subsystem/Materials`</sub>
-
-> subsystem/Materials                   754 reps   96%  streak  5  battery  29 (0 pie)  tier 0/1
-
-### subsystem/Missions — ledger standing
-<sub>`repstat:subsystem/Missions`</sub>
-
-> subsystem/Missions                     26 reps  100%  streak  8  battery   1 (0 pie)  READY
+> subsystem/Environment                1847 reps  100%  streak  8  battery  77 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1441,12 +1441,12 @@
 
 - **AAA Quality** — 1 entry: `observation_766c8e839f115065`
 - **AAA_Quality** — 1 entry: `observation_e4d6503c704ed448`
-- **Build_Pipeline** — 57 entries: `professor_grade_1a92c9ff41eb66f4`, `professor_grade_8f4a03f041187ce9`, `professor_grade_0f7ad1992f6d1372`, `professor_grade_3b51652770d01ac1`, `professor_grade_828db6a52893ed78`, `professor_grade_9892b433ad232f61` ...
+- **Build_Pipeline** — 63 entries: `professor_grade_1a92c9ff41eb66f4`, `professor_grade_8f4a03f041187ce9`, `professor_grade_0f7ad1992f6d1372`, `professor_grade_3b51652770d01ac1`, `professor_grade_828db6a52893ed78`, `professor_grade_9892b433ad232f61` ...
 - **CLI_Test** — 1 entry: `professor_grade_2e8f98354014d117`
 - **Competitive_Feature_Design_Patterns_Research** — 2 entries: `observation_4e4ccc9b30b5f883`, `observation_e5af82bfa4350985`
 - **Competitive_Feature_Design_Patterns_Research_Summary** — 1 entry: `observation_0efae6fbbe195f0b`
 - **Costless Life Bad Ending Trigger** — 1 entry: `observation_3872db7a8dbcb6d4`
-- **Costless_Life_Bad_Ending_Trigger** — 2 entries: `observation_58b488734ad7e735`, `observation_5885fbddda77f1ce`
+- **Costless_Life_Bad_Ending_Trigger** — 4 entries: `observation_58b488734ad7e735`, `observation_5885fbddda77f1ce`, `observation_c3a652ef1a497917`, `observation_1716e4e117c19313`
 - **DeepSpaceTrader** — 34 entries: `prof_grade_2ac718a056316db9`, `prof_grade_b1867a4a6f54cffb`, `prof_grade_07ae65f2016e5e81`, `prof_grade_8a6acac25d85a1e3`, `prof_grade_303b6c831904ca75`, `prof_grade_917ce58a7c1c99b2` ...
 - **DeepSpaceTrader Pipeline** — 1 entry: `observation_af50928ba15028ec`
 - **DeepSpaceTrader_Pipeline** — 1 entry: `observation_92944298190692d6`
@@ -1456,12 +1456,12 @@
 - **Demo_RegolithYard_L1** — 2 entries: `professor_grade_e7dc8ca35cdb75cd`, `observation_4dcd58a93e4d30f0`
 - **Demo_RegolithYard_Systems** — 1 entry: `professor_grade_9e2f64b5d75f177d`
 - **Game_Feel** — 1 entry: `repstat:Game_Feel`
-- **Ground_Metal_Surface** — 7 entries: `prof_grade_73b132f72683a4d3`, `prof_grade_6f1def660833e414`, `prof_grade_69ce58e03c7f5ac8`, `observation_b64690eb06c29e34`, `observation_620b633919bd58de`, `observation_72620c81985763fc` ...
-- **Ground_Rock_Surface** — 5 entries: `prof_grade_bec71f9e63043118`, `observation_8650722006d93846`, `observation_cf32cafa76fd3b40`, `observation_4041b18f4f89b640`, `observation_49ecad284084ddab`
-- **Ground_Sand_Footprints** — 2 entries: `professor_grade_f5f95d125880d69b`, `observation_e0159ce465c0a841`
+- **Ground_Metal_Surface** — 8 entries: `prof_grade_73b132f72683a4d3`, `prof_grade_6f1def660833e414`, `prof_grade_69ce58e03c7f5ac8`, `observation_b64690eb06c29e34`, `observation_620b633919bd58de`, `observation_72620c81985763fc` ...
+- **Ground_Rock_Surface** — 6 entries: `prof_grade_bec71f9e63043118`, `observation_8650722006d93846`, `observation_cf32cafa76fd3b40`, `observation_4041b18f4f89b640`, `observation_49ecad284084ddab`, `observation_1bc2480d62a36f98`
+- **Ground_Sand_Footprints** — 3 entries: `professor_grade_f5f95d125880d69b`, `observation_e0159ce465c0a841`, `observation_c6cff95d6bca1e16`
 - **Ground_Sand_Particles** — 7 entries: `professor_grade_f6341a2dcf895b0f`, `observation_01ac5afa8acdcc0b`, `observation_c1eb6cfb82d8fc19`, `observation_01f675d910535fdb`, `prof_grade_880c3b754225d00c`, `observation_dcdf9808285fe705` ...
 - **Ground_Sand_Sound** — 3 entries: `professor_grade_07fdf2b5e86aa60f`, `promo:Ground_Sand_Sound:1`, `repstat:Ground_Sand_Sound`
-- **Ground_Sand_Surface** — 7 entries: `prof_grade_aeb4f8f54f636fdb`, `prof_grade_ab1739bd8cefcb3a`, `observation_9f0cdcfdc1c92f93`, `observation_17f31e2349d85e8a`, `observation_0cbedc2aa655ee37`, `observation_5b9bb3c07dfe4a33` ...
+- **Ground_Sand_Surface** — 8 entries: `prof_grade_aeb4f8f54f636fdb`, `prof_grade_ab1739bd8cefcb3a`, `observation_9f0cdcfdc1c92f93`, `observation_17f31e2349d85e8a`, `observation_0cbedc2aa655ee37`, `observation_5b9bb3c07dfe4a33` ...
 - **Groundskeeping_floor** — 1 entry: `observation_c29b810e69f7c7db`
 - **Loop_4_Tools_Expanded** — 1 entry: `professor_grade_9da1c1319e880576`
 - **MCP_Pathways** — 1 entry: `repstat:MCP_Pathways`
@@ -1474,6 +1474,7 @@
 - **Player_Character_Suit** — 3 entries: `prof_grade_f38f94e79e174041`, `observation_d801087b243f5dbe`, `observation_f5ead6a385323c1e`
 - **Player_Character_Suit_Visor** — 1 entry: `professor_grade_1bf1d076b6c54468`
 - **Regolith_Dust_Accumulation_Visual_Feedback** — 1 entry: `observation_44947b0e1ef55883`
+- **Shelter_Habitat_Geometry** — 1 entry: `observation_1a64d91760b71c72`
 - **Sleepwalker_Beats** — 1 entry: `repstat:Sleepwalker_Beats`
 - **Sleepwalker_System** — 2 entries: `professor_grade_c672ff663bf3651b`, `observation_79bd753c166a2901`
 - **Sprint_Input** — 1 entry: `dc_b1af6b6e2f33`
@@ -1494,23 +1495,24 @@
 - **The_Erisaid_Audio_Attunement_Minigame** — 1 entry: `observation_0fb21208605b76f0`
 - **Titan_Run_Gravity_Shift_Mechanics** — 1 entry: `observation_93afffe7c4d6dcf2`
 - **Tool_Shovel_Model** — 1 entry: `professor_grade_ef64717b4d520850`
-- **Tool_Weapon_Model** — 1 entry: `observation_af7f40abe37d1f59`
+- **Tool_Weapon_Model** — 2 entries: `observation_af7f40abe37d1f59`, `observation_c941ed7c5d84c89d`
 - **Travel_Walking** — 1 entry: `professor_grade_f4fa95fd0c69ab19`
-- **Verb_Bend** — 7 entries: `observation_44efdff7a36a3d5c`, `observation_f425fa8d8104e1ab`, `observation_895434ae9b085bf4`, `observation_4547f04de239b0c6`, `observation_4c8c2edcd5f7c90a`, `observation_7a2b4ea2a2acfeaa` ...
-- **Verb_Drop** — 6 entries: `observation_22aff4c35c846157`, `observation_837c826fac9186ed`, `observation_2d845fd5545f3279`, `observation_6bea305cf7f95767`, `observation_5820fdfd7a98a822`, `observation_de5cd62f1961749e`
-- **Verb_Look** — 5 entries: `prof_grade_6a97b22d6c0770cf`, `observation_4f5df1d23ee81c4b`, `observation_29973953faf496a2`, `observation_bdbc5d02c1f55134`, `observation_f2a158b150113299`
-- **Verb_PickUp** — 9 entries: `observation_e9e42a55deceea63`, `observation_bbd3824598c5d283`, `observation_894b90c0c982fb7e`, `observation_ed0254872e5fb7b9`, `observation_b55ec24356ac6d0e`, `observation_9d3a133b4e663033` ...
+- **UI_Suit_HUD** — 1 entry: `promo:UI_Suit_HUD:1`
+- **Verb_Bend** — 8 entries: `observation_44efdff7a36a3d5c`, `observation_f425fa8d8104e1ab`, `observation_895434ae9b085bf4`, `observation_4547f04de239b0c6`, `observation_4c8c2edcd5f7c90a`, `observation_7a2b4ea2a2acfeaa` ...
+- **Verb_Drop** — 7 entries: `observation_22aff4c35c846157`, `observation_837c826fac9186ed`, `observation_2d845fd5545f3279`, `observation_6bea305cf7f95767`, `observation_5820fdfd7a98a822`, `observation_de5cd62f1961749e` ...
+- **Verb_Look** — 6 entries: `prof_grade_6a97b22d6c0770cf`, `observation_4f5df1d23ee81c4b`, `observation_29973953faf496a2`, `observation_bdbc5d02c1f55134`, `observation_f2a158b150113299`, `observation_15a1c92436f8c2da`
+- **Verb_PickUp** — 10 entries: `observation_e9e42a55deceea63`, `observation_bbd3824598c5d283`, `observation_894b90c0c982fb7e`, `observation_ed0254872e5fb7b9`, `observation_b55ec24356ac6d0e`, `observation_9d3a133b4e663033` ...
 - **Verb_Shovel** — 6 entries: `prof_grade_dc971d60df30178e`, `observation_45b8b52d04bb680f`, `observation_bb1ac7c1c90f2343`, `observation_c1af4475a658d6b3`, `observation_d30ab5686b763ed3`, `observation_b4e171a33eea4038`
-- **Verb_Step** — 9 entries: `prof_grade_b95495e2f021ba8d`, `prof_grade_03b0a0ba4be20838`, `observation_f629252c5bdbcd07`, `observation_f165beba3aac9059`, `observation_07b6bd92e7707c41`, `observation_055f108c6b057f3f` ...
+- **Verb_Step** — 10 entries: `prof_grade_b95495e2f021ba8d`, `prof_grade_03b0a0ba4be20838`, `observation_f629252c5bdbcd07`, `observation_f165beba3aac9059`, `observation_07b6bd92e7707c41`, `observation_055f108c6b057f3f` ...
 - **Visual_Verification** — 41 entries: `professor_grade_d543406104bab7ca`, `professor_grade_4b3ac1a8094ad245`, `professor_grade_5c4febabf91f23f0`, `professor_grade_caf6e3de66d62355`, `professor_grade_146029f24a743a1c`, `professor_grade_7a0262bc83441f63` ...
 - **Will_Forewarning_Inheritance_UI** — 1 entry: `observation_8ce91d7d1a60ddfc`
 - **Workflow_Test** — 1 entry: `professor_grade_609983d30ed38756`
-- **audio_visual_sync/report_telemetry** — 3 entries: `observation_153fd8cfaaf2cae1`, `elim_b39ca7951a8cd8f8`, `repstat:audio_visual_sync/report_telemetry`
+- **audio_visual_sync/report_telemetry** — 4 entries: `observation_153fd8cfaaf2cae1`, `elim_b39ca7951a8cd8f8`, `observation_727df84d60f7d526`, `repstat:audio_visual_sync/report_telemetry`
 - **audio_visual_sync/telemetry_access** — 1 entry: `repstat:audio_visual_sync/telemetry_access`
 - **audio_visual_sync/telemetry_accessors** — 5 entries: `observation_b7a437ed43c79e13`, `elim_65f84a195c149377`, `elim_71b935361cee2319`, `elim_043bb7affad30ff4`, `promo:audio_visual_sync/telemetry_accessors:1`
 - **audio_visual_sync_report_telemetry_fix** — 1 entry: `observation_700fa185592de247`
 - **audio_visual_sync_telemetry_fix** — 1 entry: `observation_5df7cfceb2a42bff`
-- **subsystem/AI** — 1 entry: `repstat:subsystem/AI`
+- **subsystem/AI** — 2 entries: `promo:subsystem/AI:1`, `repstat:subsystem/AI`
 - **subsystem/Combat** — 2 entries: `promo:subsystem/Combat:1`, `repstat:subsystem/Combat`
 - **subsystem/Demo** — 1 entry: `repstat:subsystem/Demo`
 - **subsystem/Economy** — 2 entries: `promo:subsystem/Economy:1`, `repstat:subsystem/Economy`
@@ -1519,12 +1521,13 @@
 - **subsystem/Flight** — 2 entries: `promo:subsystem/Flight:1`, `repstat:subsystem/Flight`
 - **subsystem/GameMode** — 1 entry: `repstat:subsystem/GameMode`
 - **subsystem/Inventory** — 2 entries: `promo:subsystem/Inventory:1`, `repstat:subsystem/Inventory`
-- **subsystem/Materials** — 1 entry: `repstat:subsystem/Materials`
+- **subsystem/Materials** — 2 entries: `promo:subsystem/Materials:1`, `repstat:subsystem/Materials`
 - **subsystem/Missions** — 1 entry: `repstat:subsystem/Missions`
 - **subsystem/Movement** — 1 entry: `repstat:subsystem/Movement`
 - **subsystem/PCG** — 2 entries: `promo:subsystem/PCG:1`, `repstat:subsystem/PCG`
-- **subsystem/Shelter** — 1 entry: `repstat:subsystem/Shelter`
+- **subsystem/Shelter** — 2 entries: `promo:subsystem/Shelter:1`, `repstat:subsystem/Shelter`
 - **subsystem/Ships** — 1 entry: `repstat:subsystem/Ships`
 - **subsystem/Stations** — 2 entries: `promo:subsystem/Stations:1`, `repstat:subsystem/Stations`
+- **subsystem/Suit** — 1 entry: `promo:subsystem/Suit:1`
 - **subsystem/Travel** — 1 entry: `promo:subsystem/Travel:1`
-- **subsystem/root** — 1 entry: `repstat:subsystem/root`
+- **subsystem/root** — 2 entries: `promo:subsystem/root:1`, `repstat:subsystem/root`

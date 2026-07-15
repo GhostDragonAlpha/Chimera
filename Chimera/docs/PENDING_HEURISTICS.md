@@ -444,3 +444,62 @@ Wait, looking at the
 - evidence: pathway_attempt_e7fbb6ba12043a86, pathway_attempt_27bd6312e8b9fe29, pathway_attempt_b3ba3afc4acb9122
 - sample: Pathway attempt recorded: tool 'animation_physics', action 'add_anim_notify', result 'failed'
 - draft_rule: Investigate add_anim_notify animation_physics; verify test harness and beat regi
+
+<!-- distilled 2026-07-15T04:32:28Z -->
+## H-40: surprise: actors bp_verb_ hollow may
+- status: promoted (auto 2026-07-15)
+- kind: surprise  |  count: 4  |  last_seen: 2026-07-14T16:20:26
+- proposed_organ: claude_md
+- evidence: surprise_f9cf5c9392753082, surprise_f6e315251e2d0141, surprise_72d5eb06de75526f, surprise_43076b35ddcff068
+- sample: expected 'research per Research Depth Protocol' but 'Pain verdict confirmed via existing Verb_Shovel rejection ev'
+- draft_rule: Investigate actors bp_verb_; verify test harness and beat registration.
+
+## H-41: surprise: bad costless creation ending
+- status: promoted (auto 2026-07-15)
+- kind: surprise  |  count: 4  |  last_seen: 2026-07-15T03:42:51
+- proposed_organ: claude_md
+- evidence: surprise_d2a5983cf9bb4a7d, surprise_0b43b9494057da46, surprise_20cde4e1a1895920, surprise_810c554ed2310b0f
+- sample: expected 'research per Research Depth Protocol' but 'GenerationSubsystem implementation followed existing generat'
+- sample: expected 'fix the generator template, never the generated C++' but '1 hand-edit(s) to generator-owned C++:'
+- sample: expected 'Research Depth Protocol requires research (incl. technical/i' but 'no research recorded this session; postflight blocked'
+- draft_rule: Investigate bad costless; verify test harness and beat registration.
+
+<!-- distilled 2026-07-15T07:15:01Z -->
+## H-42: surprise: blocker draft dream endpoint
+- status: promoted (auto 2026-07-15)
+- kind: surprise  |  count: 3  |  last_seen: 2026-07-14T15:28:19
+- proposed_organ: claude_md
+- evidence: surprise_c2ba39e5fbaa9fbe, surprise_52995c367eff645c, surprise_d03593c26a8651ef
+- sample: expected '' but 'Solver drafted a fix plan (confidence 0.85); steps executed:'
+- sample: expected '' but 'Solver drafted a fix plan (confidence 0.3); steps executed: '
+- draft_rule: Investigate blocker draft; verify test harness and beat registration.
+
+## H-43: surprise: chaos chaos_organ core created
+- status: promoted (auto 2026-07-15)
+- kind: surprise  |  count: 3  |  last_seen: 2026-07-15T03:00:32
+- proposed_organ: claude_md
+- evidence: surprise_2883a942c2459d92, surprise_420156d675dfd220, surprise_30b89fa3d45aa1f7
+- sample: expected 'Research Depth Protocol requires research (incl. technical/i' but 'no research recorded this session; postflight blocked'
+- sample: expected 'research per Research Depth Protocol' but 'Creating chaos_organ (core/chaos.py) and noting CostlessLife'
+- draft_rule: Investigate chaos chaos_organ; verify test harness and beat registration.
+
+<!-- distilled 2026-07-15T08:46:03Z -->
+## H-44: surprise: fixes generationsubsystem pipeline research
+- status: promoted (auto 2026-07-15)
+- kind: surprise  |  count: 3  |  last_seen: 2026-07-15T04:25:06
+- proposed_organ: claude_md
+- evidence: surprise_ff25347b7a993099, surprise_932e235b57f7963b, surprise_8b867b81b45fa731
+- sample: expected 'research per Research Depth Protocol' but 'VoiceEntity USoundCue to USoundBase cast fix followed UE5 C+'
+- sample: expected 'research per Research Depth Protocol' but 'GenerationSubsystem implementation followed existing generat'
+- draft_rule: Investigate fixes generationsubsystem; verify test harness and beat registration
+
+<!-- distilled 2026-07-15T12:18:02Z -->
+## H-45: surprise: bridge dsl fixes mapping
+- status: promoted (auto 2026-07-15)
+- kind: surprise  |  count: 4  |  last_seen: 2026-07-15T10:16:20
+- proposed_organ: claude_md
+- evidence: surprise_cadbd73e8c930326, surprise_f2caceb3e708111d, surprise_4619a4612c524abc, surprise_2762ec5e33f38f09
+- sample: expected 'research per Research Depth Protocol' but 'DSL beat fixes based on existing verb_interactions.beats.jso'
+- sample: expected 'research per Research Depth Protocol' but 'DSL beat fixes verified against existing verb_interactions.b'
+- possible_conflict_with: heuristic_29d3294b7875942a (Investigate fixes generationsubsystem; verify test harness a); H-44  (Gardener: reconcile)
+- draft_rule: Investigate bridge dsl; verify test harness and beat registration.

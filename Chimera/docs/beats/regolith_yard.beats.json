@@ -39,7 +39,7 @@
    ],
    "expects": [
     {"pawn_within": {"x": 4000, "y": 0, "r": 1100}},
-    {"actor_exists": "SandDrift_FX"}
+    {"actor_exists": "Actor_NS_SandDust"}
    ]
   },
   {

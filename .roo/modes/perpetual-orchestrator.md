@@ -6,6 +6,11 @@ Spawn duty-cycle subagents indefinitely, chaining workflow cycles without termin
 ## Execution
 
 1. **Pre-check**: `python -m core.preflight` → abort if GPA < 1.0 (gate_gpa_not_critically_falling).
+1.5 **Horizon check (terminal/idle state)**: `python -m core.horizon` → exit code 10 = IDLE
+   (board complete, nothing ripens, observation queue empty). On IDLE: run
+   `python -m core.horizon --summarize` (writes docs/SESSION_SUMMARY.md), log
+   `IDLE-COMPLETE`, and exit cleanly — same graceful path as the stop-file. Never
+   spawn duty cycles against an idle horizon.
 2. **Spawn duty subagent**: `Agent { subagent_type: "mode-code", prompt: CYCLE_PROMPT_FULL }`
    - Inject the current NEXT item from task_progress.md, or rehearsal's choice if NEXT empty
    - Set timeout 90min (a full duty cycle is ~45min; 90min leaves margin)

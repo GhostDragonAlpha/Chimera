@@ -169,6 +169,51 @@
    "evidence": "Heuristic nodes, last 24h",
    "status": "resolved-sensor-error",
    "ruling": "the 11 counted nodes were rejection-lineage records (unbounded by design), not distiller candidates; sensor narrowed in measure_axis \u2014 wall unchanged, breach cleared"
+  },
+  {
+   "ts": "2026-07-15T08:46:09",
+   "direction": "tighten",
+   "axis": "heuristics_per_night",
+   "proposal": "hold or reduce max on heuristics_per_night (currently BREACHED at 4); investigate before any loosening anywhere",
+   "evidence": "distiller-candidate Heuristic nodes, last 24h (rejection-lineage records excluded)",
+   "status": "ruled: hold current limit (max: 2); investigate before any loosening",
+   "ruling": "hold current limit max:2 on heuristics_per_night; breach at 9 indicates distiller-candidate count exceeds distiller max-candidates; no loosening permitted until investigation completes"
+  },
+  {
+   "ts": "2026-07-15T09:15:18",
+   "direction": "tighten",
+   "axis": "heuristics_per_night",
+   "proposal": "hold or reduce max on heuristics_per_night (currently BREACHED at 8); investigate before any loosening anywhere",
+   "evidence": "distiller-candidate Heuristic nodes, last 24h (rejection-lineage records excluded)",
+   "status": "ruled: hold current limit (max: 2); investigate before any loosening",
+   "ruling": "hold current limit max:2 on heuristics_per_night; breach at 9 indicates distiller-candidate count exceeds distiller max-candidates; no loosening permitted until investigation completes"
+  },
+  {
+   "ts": "2026-07-15T12:18:08",
+   "direction": "tighten",
+   "axis": "heuristics_per_night",
+   "proposal": "hold or reduce max on heuristics_per_night (currently BREACHED at 8); investigate before any loosening anywhere",
+   "evidence": "distiller-candidate Heuristic nodes, last 24h (rejection-lineage records excluded)",
+   "status": "ruled: hold current limit (max: 2); investigate before any loosening",
+   "ruling": "hold current limit max:2 on heuristics_per_night; breach at 9 indicates distiller-candidate count exceeds distiller max-candidates; no loosening permitted until investigation completes"
+  },
+  {
+   "ts": "2026-07-15T12:50:22",
+   "direction": "tighten",
+   "axis": "heuristics_per_night",
+   "proposal": "hold or reduce max on heuristics_per_night (currently BREACHED at 9); investigate before any loosening anywhere",
+   "evidence": "distiller-candidate Heuristic nodes, last 24h (rejection-lineage records excluded)",
+   "status": "ruled: hold current limit (max: 2); investigate before any loosening",
+   "ruling": "hold current limit max:2 on heuristics_per_night; breach at 9 indicates distiller-candidate count exceeds distiller max-candidates; no loosening permitted until investigation completes"
+  },
+  {
+   "ts": "2026-07-15T12:50:36",
+   "direction": "tighten",
+   "axis": "heuristics_per_night",
+   "proposal": "hold or reduce max on heuristics_per_night (currently BREACHED at 9); investigate before any loosening anywhere",
+   "evidence": "distiller-candidate Heuristic nodes, last 24h (rejection-lineage records excluded)",
+   "status": "ruled: hold current limit (max: 2); investigate before any loosening",
+   "ruling": "hold current limit max:2 on heuristics_per_night; breach at 9 indicates distiller-candidate count exceeds distiller max-candidates; no loosening permitted until investigation completes"
   }
  ]
 }

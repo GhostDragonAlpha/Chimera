@@ -357,6 +357,20 @@ def main():
     for i, pain in enumerate(args.phantom_pain or [], start=1):
         print(f"  phantom pain declared -> {node_id}:P{i}  {pain[:80]}")
 
+    # Confirmed pains become WORK (2026-07-15): a confirmed verdict is a proven
+    # real problem — spawn a board follow-up fix task so the confirmation is a
+    # beginning, not the end of the line (tb-0056: zero-callers confirmed,
+    # nothing spawned "wire a caller"). Guarded — spawning never blocks the record.
+    try:
+        _pv = parse_pain_verdicts(args.pain_verdict)
+        _confirmed = [k for k, v in _pv.items() if v == "confirmed"]
+        if _confirmed:
+            from core.ripener import spawn_followups
+            for _tid in spawn_followups(pain_ids=_confirmed):
+                print(f"  confirmed pain -> follow-up fix task {_tid}")
+    except Exception as _fu_e:
+        print(f"  (confirmed-pain follow-up spawn skipped: {_fu_e})")
+
     for spec in args.eliminated or []:
         parts = [s.strip() for s in spec.split(":", 2)]
         if len(parts) < 2:

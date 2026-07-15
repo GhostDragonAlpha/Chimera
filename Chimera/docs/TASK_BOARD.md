@@ -1,13 +1,45 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-15T03:28:46+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-15T15:29:07+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 0 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
+| tb-0057 | open | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0058 | open | 1.2 | Fix 2 red rep atom(s): Malcolm_Envelope | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0059 | open | 1.2 | Fix 1 red rep atom(s): Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie |  |
+| tb-0060 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Economy | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0061 | open | 1.2 | Fix 1 red rep atom(s): subsystem/GameMode | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0062 | open | 1.2 | Fix 1 red rep atom(s): subsystem/PCG | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0063 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Ships | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0064 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Stations | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0065 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Travel | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0066 | open | 1.2 | Fix 1 red rep atom(s): subsystem/VFX | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0079 | open | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0080 | open | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0067 | open | 0.9 | Witness & collapse: Sky_Earth_Model | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
+| tb-0068 | open | 0.9 | Witness & collapse: Sky_Earth_Material | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
+| tb-0069 | open | 0.9 | Witness & collapse: Sky_Moon_Model | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
+| tb-0070 | open | 0.9 | Witness & collapse: Sky_Moon_Material | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
+| tb-0071 | open | 0.9 | Witness & collapse: Sky_Sun_Lighting | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
+| tb-0072 | open | 0.9 | Witness & collapse: Sky_Starfield | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
+| tb-0073 | open | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
+| tb-0074 | open | 0.9 | Witness & collapse: Tool_Scanner_Model | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0075 | open | 0.9 | Witness & collapse: Tool_Scanner_Material | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0076 | open | 0.9 | Witness & collapse: Social_Trade | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0082 | open | 0.8 | Build toward the seed: FFootstepEvent | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0083 | open | 0.8 | Build toward the seed: FGestureEvent | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0084 | open | 0.75 | Build toward the seed: UWeatherSubsystem | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0085 | open | 0.75 | Build toward the seed: AErisaidActor | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0086 | open | 0.75 | Build toward the seed: AHabitatActor | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0087 | open | 0.75 | Build toward the seed: FStar | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0088 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0006 | done | 1.4 | Hire_Regression_Curator (DREAM_ROSTER #6) `capable` | core/regression.py, docs/beats/** | Regression Curator (core/regression.py) built and verified:
  |
@@ -43,6 +75,24 @@ so claimed tasks are safe to run in parallel.
 | tb-0035 | done | 0.6 | Pain verdict: The 20-deep observation queue will rot unobser | docs/research/** | Pain verdict: The 20-deep observation queue will rot unobser |
 | tb-0036 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov | docs/research/** | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov |
 | tb-0037 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov | docs/research/** | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov |
+| tb-0039 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov | docs/research/** | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov |
+| tb-0040 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov | docs/research/** | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov |
+| tb-0041 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov | docs/research/** | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov |
+| tb-0042 | done | 0.6 | Pain verdict: sleepwalker DSL/sleepwalker bridge mapping fix | docs/research/** | DSL beats already contain the reset_position and recentered  |
+| tb-0043 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 [distiller token-cov | docs/research/** | Distiller token-coverage suppression: 48 clusters consolidat |
+| tb-0044 | done | 0.6 | Pain verdict: Observation queue holds 14 system-finalized fe | docs/research/** | Observation queue holds 22 system-finalized features awaitin |
+| tb-0045 | done | 0.6 | Pain verdict: Observation queue still holds 14 system-finali | docs/research/** | Observation queue still holds 22 system-finalized features a |
+| tb-0046 | done | 0.6 | Pain verdict: Niagara system status unknown - if NS_SandDust | docs/research/** | Niagara system status verified: NS_SandDust exists as Actor_ |
+| tb-0047 | done | 0.6 | Pain verdict: Niagara system may not exist (creating from sc | docs/research/** | Niagara system verified: NS_SandDust exists as Actor_NS_Sand |
+| tb-0048 | done | 0.6 | Pain verdict: Audit workflow consolidation step had script f | docs/research/** | Audit workflow consolidation step script filtering error (nu |
+| tb-0049 | done | 0.6 | Pain verdict: Tier-1 organs (scholar/muse/visionkeeper) are  | docs/research/** | Tier-1 organs (scholar/muse/visionkeeper) are hired with rea |
+| tb-0050 | done | 0.6 | Pain verdict: The IsAnimationAuthoringAction dual-routing tr | docs/research/** | The IsAnimationAuthoringAction dual-routing trap (McpConsoli |
+| tb-0051 | done | 0.6 | Pain verdict: A future research/redesign cycle on the newly- | docs/research/** | verb_interactions sleepwalker achieved 9/9 beats with a 'Cle |
+| tb-0052 | done | 0.6 | Pain verdict: H-12's changes (graphify_interface.py, build_o | docs/research/** | H-12's changes (graphify_interface.py extract_ubt_failure_li |
+| tb-0053 | done | 0.6 | Pain verdict: No live UBT rebuild has ever exercised this ex | docs/research/** | H-12's changes verified via monkeypatched unit tests per AGE |
+| tb-0054 | done | 0.6 | Pain verdict: core/gardener.py's tend() status-matching mis- | docs/research/** | gardener.py dry-run confirmed: H-9 (vetoed-auto (tombstone 2 |
+| tb-0055 | done | 0.6 | Pain verdict: A future session may assume 'the Bridge Engine | docs/research/** | Pain verdict confirmed: Bridge Engineer backlog fix for add_ |
+| tb-0056 | done | 0.6 | Pain verdict: WeightShiftAnimationTests.cpp compiles clean b | docs/research/** | Pain verdict confirmed: WeightShiftAnimationTests.cpp compil |
 | tb-0003 | done | 0.4 | Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie | Verb_Shovel: Implemented ATool_Shovel::Dig() (was rejected e |
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |
 | tb-0028 | done | 0.01 | Gauntlet sandbox: haiku-1 | docs/gauntlet/haiku-1/** | docs/gauntlet/haiku-1/tunnel_note.md (one paragraph explaini |

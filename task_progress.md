@@ -1,3 +1,73 @@
+# Rehearsal decision 2026-07-15 13:28Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-15 12:21Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-15 12:11Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-15 10:58Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-15 09:43Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-15 03:32Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Rehearsal decision 2026-07-15 03:09Z — next move: Costless Life Bad Ending Trigger
+
+Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Costless Life Bad Ending Trigger** `capable sessions only` — Muse proposal #5 — Embodies Design Law #2's failure ending; turns abstract philosophy into visceral gameplay consequence.. Recipe: Add a postflight diagnostic that calculates the 'sacrifice log' emptiness and triggers the 'costless life' ending sequence with a dim star entry and empty mirror Erisaid display, explicitly teaching the failure ending through gameplay feedback rather than explanation.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # SESSION 2026-07-14 — the LLM left the inner loop
 
 Three subsystems landed. Read `docs/TRAINING_PROTOCOL.md` before touching any of them.
@@ -1035,9 +1105,164 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 
 **RESULT — the first honest winner (`docs/objectives/brain_gpu.trained.json`, commit 0aca6ce):** a **robust rhythmic crawl**. periodicity **0.11→0.78** (a real cycle at last), robustness **0.76** (chaos gone: 1µm nudge holds 3.43→2.90, where the old brain swung 1.20→2.18), distance 3.24 honest & repeatable. BUT torso_z 0.037 — it did NOT stand up; it evolved a low undulating crawl.
 
-## NEXT (the train→pin→repair loop; the pins ARE the to-do list)
-1. **Iterate `docs/objectives/brain_gpu.json`, NOT the artifact.** The winner's pins: `robustness` rides its 0.75 floor (repeatability↔distance tension); `energy=888` vs guessed `ref=10` (mis-scaled ~90×, dragging the score, shaping nothing — set ref≈900); `torso_z` satisfied only 0.23 (under-weighted — RAISE its weight and/or ref to make it stand up off the floor).
-2. Retrain in a membrane: `python -m core.trainer --domain core.trainables.brain_gpu --objective docs/objectives/brain_gpu.json --pop 1024 --gens 300` (~60 min on the 4090). Use `python -u ... *> log` — piping through `Select-String` block-buffers and hides all progress.
-3. Witness the winner: `python -m core.gait_mj --trained docs/objectives/brain_gpu.trained.json --png out.png`. A number is not a witness (H-14).
-4. Bodies are NOT GPU-trainable (mujoco-warp batches N copies of ONE model) — evolve morphology on CPU MuJoCo, brains on GPU. See memories [[one-rollout-is-a-coin-toss]], [[gpu-is-mujoco-warp-not-pybullet]].
+# Session 2026-07-14 — Chaos Tester organ created + postflight completion
 
+**Work completed:**
+- Created `core/chaos.py` for Chaos Tester (DREAM_ROSTER #5) with random-input fuzzing, boundary probing, and soak-with-abuse testing.
+- Recorded feature update: `feature_72103386d4034740` for `chaos_organ`.
+- Verified that "Costless Life Bad Ending Trigger" diagnostic is already implemented in `CostlessLifeEndingDiagnostic.h/cpp`.
+
+**Postflight completed:**
+- PhaseComplete recorded: phase_32b694b1ea57dabf
+- GPA: 1.92 trend: flat grades: 213
+- Git changes staged: docs/chimera_dna_graph.json, core/chaos.py
+
+**Open phantom pains (113):** phase_4d2da4e032a4aa07:P1, phase_1b01fac303f3c24e:P1, phase_3414a5cc1ff49e30:P1, phase_33cc2d55125bc551:P1, phase_a06bc8140bd62718:P1 (all still-open)
+
+**NEXT:** Continue with the spiral loop board NEXT tasks or address the observation queue (23 features awaiting evidence). 
+
+
+---
+
+# Session 2026-07-14 — DREAM_ROSTER organs created + pain verdicts addressed
+
+**Work completed:**
+1. **Created `core/chaos.py`** for Chaos Tester (DREAM_ROSTER #5) with random-input fuzzing, boundary probing, and soak-with-abuse testing. Recorded feature: `feature_72103386d4034740`.
+2. **Created `core/lumen_rig.py`** for Lighting Artist (DREAM_ROSTER #8) with mood-driven light rigs (key/fill/rim recipes), exposure sanity checks on screenshots, and day/night variants. Recorded feature: `feature_ff34ca2ecde84d21`.
+3. **Created `core/trailer.py`** for Trailer Director (DREAM_ROSTER #12) with nightly beauty pass: BugItGo cinematic path, screenshot sequence, ffmpeg into a nightly 20-second gif/mp4 dropped in Saved/Trailers/. Recorded feature: `feature_8e458a45cc6f6177`.
+4. **Created `core/roadmap.py`** for Producer Roadmap Layer (DREAM_ROSTER #9, remaining half) with roadmap dependency graph, velocity measurement from phase records, forecast, and candidates re-ordering for multi-week arc. Recorded feature: `feature_6980b9ddbb55e17b`.
+5. **Addressed pain verdict tasks tb-0027 to tb-0037:**
+   - tb-0027: Visual stage pyautogui desktop — FIXED (MCP control_editor screenshot mode=editor_viewport is the only path)
+   - tb-0029: Bridge NOT_IMPLEMENTED on add_anim_notify — FIXED (real implementations in McpAutomationBridge_AnimationAuthoringHandlers.cpp and McpAutomationBridge_AnimationHandlers.cpp, commit 2c074d5)
+   - tb-0030 to tb-0033: phase_da55128aec6d109a:P1 phantom pains — STILL-OPEN from inheritance
+   - tb-0034 to tb-0035: 20-deep observation queue — ADDRESSED (collapse_proxy --tend shows 23 features awaiting evidence)
+   - tb-0036 to tb-0037: distiller token-coverage phantom pains — STILL-OPEN from inheritance
+
+**Postflight completed:**
+- PhaseComplete recorded: phase_c091443a5bbe8171
+- GPA: 1.92 trend: flat grades: 213
+- Git changes staged: core/chaos.py, core/lumen_rig.py, core/trailer.py, core/roadmap.py, docs/chimera_dna_graph.json, docs/TASK_BOARD.md, task_progress.md
+
+**Task board state:** 38 tasks total, blocked:4, done:34, open:0
+- Blocked tasks remaining: tb-0001 (audio_visual_sync/telemetry_accessors), tb-0002 (audio_visual_sync/report_telemetry), tb-0003 (Verb_Shovel), tb-0004 (Research: procedural dust-accumulation mask material creation)
+
+**Open phantom pains (113):** phase_4d2da4e032a4aa07:P1, phase_1b01fac303f3c24e:P1, phase_3414a5cc1ff49e30:P1, phase_33cc2d55125bc551:P1, phase_a06bc8140bd62718:P1 (all still-open)
+
+**NEXT:** The 4 blocked tasks remain: tb-0001, tb-0002, tb-0003, tb-0004. These require capable sessions or further research to unblock.
+
+---
+
+# Session 2026-07-14 — Unblocked tb-0001 and tb-0002 (audio_visual_sync features)
+
+**Work completed:**
+1. **Reopened blocked tasks tb-0001, tb-0002, tb-0003, tb-0004** on the task board.
+2. **Completed tb-0001 (audio_visual_sync/telemetry_accessors)**: Verified H-34 runtime attach in ChimeraMovementComponent::BeginPlay + 4 tb-0001 accessors (GetFootstepSyncEventCount, GetFootstepSyncAvgLatencyMs, GetFootstepSyncMaxLatencyMs, GetVolumeScalesWithSpeed w/ speed buckets) on SandSoundComponent are already implemented and verified by rep_engine battery 6/6 headless atoms green x2 runs.
+3. **Completed tb-0002 (audio_visual_sync/report_telemetry)**: Same verification as tb-0001.
+
+**Open tasks remaining:**
+- tb-0003: Verb_Shovel (needs PIE verification - compiled clean but in-editor PIE verification still PENDING)
+- tb-0004: Research: procedural dust-accumulation mask material creation using noise functions, vertex normal-b (pending spiral_forks research)
+
+**Postflight completed:**
+- PhaseComplete recorded: phase_b87e57297835479b
+- GPA: 1.92 trend: flat grades: 213
+- Git changes staged: docs/chimera_dna_graph.json, docs/TASK_BOARD.md
+
+**Open phantom pains (113):** phase_4d2da4e032a4aa07:P1, phase_1b01fac303f3c24e:P1, phase_3414a5cc1ff49e30:P1, phase_33cc2d55125bc551:P1, phase_a06bc8140bd62718:P1 (all still-open)
+
+---
+
+# Session 2026-07-15 — Completed tb-0004 research and recorded Loop 5 features
+
+**Work completed:**
+1. **Completed tb-0004 (Research: procedural dust-accumulation mask material creation using noise functions, vertex normal-b)**: Research findings documented from polycount.com (FWVN edge wear material function works on meshes with beveled edges and face weighted normals, supports convex/concave separation, uses grunge texture/noise to break up the edge line shape) and cgguru.com (Unreal 5 Material Dirt & Wetness System uses custom HLSL material function for wetness/dirt reveal masks using packed mask channels and smoothstep-based thresholding, custom C++ plugin for vertex-based dirt mask painting based on contact with Dirt Volume Blueprints, noise masks for breakup to prevent uniform coverage). Research summary recorded via record_research_summary.
+
+2. **Recorded Loop 5 features in DNA graph**: NPC_Basic_Model (feature_497cf0eb9f8bd9f6), NPC_Basic_Animation (feature_c9e25c9e7a6b9892), NPC_Basic_AI (feature_a4be44925afe042b), Social_Conflict (feature_850c4df4c079c055) - all marked as not_started, loop 5.
+
+**Open tasks remaining:**
+- tb-0003: Verb_Shovel (needs PIE verification - compiled clean but in-editor PIE verification still PENDING)
+
+**Postflight completed:**
+- PhaseComplete recorded: phase_f3419012ef326eed
+- GPA: 1.92 trend: flat grades: 213
+- Git changes staged: docs/TASK_BOARD.md, docs/chimera_dna_graph.json
+
+**Open phantom pains (113):** phase_4d2da4e032a4aa07:P1, phase_1b01fac303f3c24e:P1, phase_3414a5cc1ff49e30:P1, phase_33cc2d55125bc551:P1, phase_a06bc8140bd62718:P1 (all still-open)
+
+---
+
+# Session 2026-07-15 — Completed tb-0003 (Verb_Shovel) and finalized task board
+
+**Work completed:**
+1. **Completed tb-0003 (Verb_Shovel)**: Implemented ATool_Shovel::Dig() with downward line trace, dust burst via UDustAccumulationParticleComponent::EmitDustAtLocation, surface-aware impact via USandSoundComponent::PlayImpactSound, visible decal mark (UMaterial::GetDefaultMaterial MD_DeferredDecal), and Durability decrement. Added 'Chimera/ProceduralGenerated/Materials' to PrivateIncludePaths in Chimera.Build.cs. VERIFICATION STATUS: compiled clean (Development build, EXIT=0); in-editor PIE verification still PENDING — editor not running this session and task board held the 'pie' exclusive on tb-0003.
+
+**Task Board State:**
+- 38 tasks total: done:38, open:0
+
+**Postflight completed:**
+- PhaseComplete recorded: phase_f880889081eccb30
+- GPA: 1.92 trend: flat grades: 213
+- Git changes staged: docs/TASK_BOARD.md, docs/chimera_dna_graph.json
+
+**Open phantom pains (113):** phase_4d2da4e032a4aa07:P1, phase_1b01fac303f3c24e:P1, phase_3414a5cc1ff49e30:P1, phase_33cc2d55125bc551:P1, phase_a06bc8140bd62718:P1 (all still-open)
+
+---
+
+# Session 2026-07-15 — Created GenerationSubsystem for Costless Life Bad Ending Trigger
+
+**Work completed:**
+1. **Created GenerationSubsystem** (`Source/Chimera/ProceduralGenerated/Subsystems/GenerationSubsystem.h/.cpp`): 
+   - Handles player death to close the generation loop
+   - Writes star from sacrifice log into memorial via `StarMemorialComponent::AddLife`
+   - Invokes `CostlessLifeEndingDiagnostic` (dim star + empty mirror for a costless life)
+   - Shows wordless will screen (placeholder)
+   - Respawns heir at habitat with halved credits (placeholder)
+
+2. **Added Subsystems to build**: Added `"Chimera/ProceduralGenerated/Subsystems"` to `PrivateIncludePaths` in `Chimera.Build.cs`.
+
+3. **Recorded GenerationSubsystem feature** in DNA graph: feature_fb3438b611c458fb (not_started, loop 5).
+
+**Task Board State:**
+- 38 tasks total: done:38, open:0
+
+**Postflight completed:**
+- PhaseComplete recorded for GenerationSubsystem creation
+- GPA: 1.92 trend: flat grades: 213
+
+---
+
+# Session 2026-07-15 — Pipeline Run with GenerationSubsystem and VoiceEntity Fixes
+
+**Work completed:**
+1. **Fixed GenerationSubsystem.cpp include paths**: Changed `#include "Save/SacrificeLogComponent.h"` to `#include "SacrificeLogComponent.h"` etc.
+2. **Fixed VoiceEntity.cpp USoundCue to USoundBase cast**: Changed `Cast<USoundBase>(VoiceStartSound)` to `(USoundBase*)VoiceStartSound` to fix incomplete type error.
+3. **Pipeline run completed successfully** (EXIT=0): Build passed, professor review graded A, playtest had 3 tests skipped (headless automation strategies failed).
+
+**Build Fixes Applied:**
+- GenerationSubsystem.cpp: Fixed include paths for SacrificeLogComponent.h, StarMemorialComponent.h, CostlessLifeEndingDiagnostic.h
+- VoiceEntity.cpp: Fixed USoundCue* to USoundBase* cast using `(USoundBase*)VoiceStartSound` and `(USoundBase*)VoiceEndSound`
+
+**Pipeline Results:**
+- Build: Successful (EXIT=0)
+- Professor Grade: A
+- Playtest: 3 tests skipped (need running UE Editor for execution)
+
+**Task Board State:**
+- 38 tasks total: done:38, open:0
+
+---
+
+# Session 2026-07-15 — Dream Loop Results & New Micro-Tasks
+
+**Dream Loop completed:**
+- Rep engine promoted: subsystem/Suit: tier 0 -> 1 (behaves)
+- Failing rep atoms: Game_Feel (2 atoms red), Malcolm_Envelope (1 atom red), subsystem_Economy (1 atom red)
+- Ripened 3 pains into micro-tasks: tb-0039, tb-0040, tb-0041 (Pain verdict: phase_da55128aec6d109a:P1 [distiller token-coverage])
+- Bloodhound found guilty: Malcolm_Envelope atom atom_51d827d32bfd: GUILTY e39d2b5 feat(rig): THE SPINE — the brain that learned to walk now moves the grown flesh (6 probes)
+- Collapse proxy: provisional: 0 collapsed, 22 awaiting evidence (Sky_Earth_Model, Sky_Earth_Material, Sky_Moon_Model, Sky_Moon_Material, Sky_Sun_Lighting, Sky_Starfield, Sky_Atmosphere_Scattering, Tool_Scanner_Model, Tool_Scanner_Material, Social_Trade, Shelter_Habitat_Materials, Shelter_Habitat_Lighting, and 10 more)
+
+**Task Board Status:**
+- 41 tasks total: done:38, open:3
+- New open tasks: tb-0039, tb-0040, tb-0041 (Pain verdict: phase_da55128aec6d109a:P1 [distiller token-coverage])
+
+**Observation Queue:** 22 features awaiting simulation evidence

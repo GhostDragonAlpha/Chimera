@@ -85,6 +85,22 @@ def _preflight_ok():
         return False
 
 
+def _horizon_idle():
+    """(idle, last_line). The explicit terminal state: exit code 10 from
+    core.horizon means NO autonomous work remains (board complete, nothing
+    ripens, observation queue empty). Never raises; on error report not-idle
+    so a broken sensor can't halt a working conveyor."""
+    try:
+        r = subprocess.run(
+            [sys.executable, "-m", "core.horizon"],
+            cwd=str(ROOT), capture_output=True, text=True, timeout=180)
+        last = r.stdout.strip().splitlines()[-1] if r.stdout.strip() else ""
+        return r.returncode == 10, last
+    except Exception as ex:
+        _log(f"horizon check failed: {ex}")
+        return False, ""
+
+
 def _spawn_duty_cycle(cycle_num):
     """Spawn a duty-cycle (fallback: run pipeline health check). Returns grade or None."""
     _log(f"cycle_{cycle_num:03d} status=started")
@@ -182,6 +198,22 @@ def run_perpetual():
             if state["paused"]:
                 time.sleep(10)
                 continue
+
+        # Terminal/idle state (2026-07-15): board complete + nothing ripens +
+        # observation queue empty -> write the session summary and halt CLEANLY
+        # instead of re-spawning duty cycles against an empty horizon.
+        idle, line = _horizon_idle()
+        if idle:
+            try:
+                subprocess.run([sys.executable, "-m", "core.horizon", "--summarize"],
+                               cwd=str(ROOT), capture_output=True, timeout=180)
+            except Exception as ex:
+                _log(f"session summary write failed: {ex}")
+            _log(f"IDLE-COMPLETE: no autonomous work on the horizon — "
+                 f"halting cleanly. {line[:140]}")
+            with state_lock:
+                state["running"] = False
+            break
 
         # Preflight gate
         if not _preflight_ok():

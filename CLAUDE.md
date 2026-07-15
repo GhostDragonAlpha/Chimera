@@ -52,6 +52,12 @@
 - **[H-36, auto-promoted 2026-07-13]** Implement missing input bindings and verify actor registration.
 - **[H-37, auto-promoted 2026-07-13]** Verify beat spawn location distances and pawn navigation constraints.
 - **[H-38, auto-promoted 2026-07-14]** Investigate correction feature; verify test harness and beat registration.
+- **[H-40, auto-promoted 2026-07-15]** Investigate actors bp_verb_; verify test harness and beat registration.
+- **[H-41, auto-promoted 2026-07-15]** Investigate bad costless; verify test harness and beat registration.
+- **[H-42, auto-promoted 2026-07-15]** Investigate blocker draft; verify test harness and beat registration.
+- **[H-43, auto-promoted 2026-07-15]** Investigate chaos chaos_organ; verify test harness and beat registration.
+- **[H-44, auto-promoted 2026-07-15]** Investigate fixes generationsubsystem; verify test harness and beat registration
+- **[H-45, auto-promoted 2026-07-15]** Investigate bridge dsl; verify test harness and beat registration.
 
 ## Architecture Overview
 
