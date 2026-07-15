@@ -1,9 +1,12 @@
 # The Matter Model — a world built from living bricks
 
-> **STATUS: DESIGN, not built.** Born from a design conversation on 2026-07-14. This is the
-> architecture we talked our way to; nothing in it exists yet. Every rung on the ladder (§10) is
-> ⬜, and the numbers here are UE5 facts and reuse claims, never measured results — that honesty
-> is the point, so no successor mistakes a plan for a capability.
+> **STATUS: mostly DESIGN; rungs 0–1 BUILT.** Born from a design conversation on 2026-07-14.
+> The generation half is proven — `core/matter.py` shows differential adhesion self-assembling
+> a bone/muscle/skin limb cross-section from a scrambled start, with a failing control (§10).
+> Everything from the UE5 bake onward (rung 2+) is still design. Numbers marked "UE5 fact" or
+> "reuse" are claims, not measurements; the only measured results here are in rungs 0–1. That
+> line between built and planned is kept sharp on purpose, so no successor mistakes one for the
+> other.
 >
 > This is the substrate *beneath* `THE_EVOLUTION_ENGINE.md`. The evolution engine grows a
 > phenotype from a genome; this is the phenotype's *material* — what everything is made OF.
@@ -247,8 +250,9 @@ already lives there.
 
 | # | rung | status | KILL IF |
 |---|---|---|---|
-| 0 | **The brick struct.** One typed primitive; three instances (muscle/bone/skin). | ⬜ | you cannot name the game-relevant fields without inventing chemistry |
-| 1 | **Adhesion assembles a limb.** Differential adhesion + typed interfaces → muscle-on-bone-under-skin, unattended. | ⬜ | it needs hand-placement to look right — then it is not "fitting together like reality" |
+| 0 | **The brick struct.** One typed primitive; three instances (muscle/bone/skin). | ✅ **DONE** (`core/matter.py`). Modelled only the field the proof reads — the adhesion profile; the rest of the struct lands as the pipeline needs it. | you cannot name the game-relevant fields without inventing chemistry |
+| 1 | **Adhesion assembles a limb.** Differential adhesion → muscle-on-bone-under-skin, unattended. | ✅ **DONE 2026-07-14** (`python -m core.matter`). From a *scrambled* pepper of bricks, a Cellular Potts / differential-adhesion model sorted bone to the core (radius 10.5, 0% medium exposure), skin to the shell (27.2, 39%), muscle between — radial spread +12–15 across 4 seeds. The **uniform-adhesion control did NOT sort** (spread ≈ 0), so the sort is the adhesion, not the machine. **Scope: this is a 2D cross-section proving radial LAYERING — the load-bearing half of "fits together like reality." Elongated limb shape, muscle→bone attachment via tendon (typed interfaces), and the 3D lattice are still ahead (rung 1.5).** | it needs hand-placement to look right — then it is not "fitting together like reality" |
+| 1.5 | **Shape, attachment, 3D.** Elongate the cross-section into a limb; add typed tendon/membrane connectors; lift the lattice to 3D. | ⬜ | typed interfaces need hand-authoring per pair instead of a rule |
 | 2 | **Bake to UE5.** Dense Nanite mesh + coarse Chaos Flesh rig. It renders and shadows. | ⬜ | the baked asset is uglier or slower than a hand-made one |
 | 3 | **It moves.** The muscle contracts the bone; the dense skin follows the rig. | ⬜ | motion needs per-cell simulation to look right (budget blows up) |
 | 4 | **Coalesce / fracture.** Quiet bulk → one static item; a cut → live cells locally. | ⬜ | the merge/split thrashes or the seam cracks and cannot be stitched |
