@@ -62708,6 +62708,25 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_d94604d8b5ef"
+    },
+    {
+      "id": "surprise_d7b59734ad470f3a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T16:29:19.935600",
+      "context": "Sent a Haiku test agent through onboarding; its claim returned bare NONE and it gave up at step 2",
+      "expectation": "",
+      "reality": "Every headless code-fix task declared exclusive:['pie'] via _DEFAULT_SCOPE; one legit PIE lane (tb-0057) froze all 34 others -> parallel frontier 0. A rep-atom fix never opens PIE, so pie was a phantom claim. Fixed: pie only for PIE-driving lanes, generator token for generator-owned fixes, subtree globs otherwise; frontier 0->4.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Every headless code-fix task declared exclusive:['pie'] via _DEFAULT_SCOPE; one '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_0c48d1f3c313"
     }
   ],
   "edges": [
