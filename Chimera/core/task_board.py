@@ -648,13 +648,71 @@ def _print_no_claim(capable: bool = False):
     print("  You cannot force-release another agent's lane; a dead claim frees itself at TTL.")
 
 
+# The board's own ceiling: never let OPEN tasks exceed Malcolm's systemic wall
+# (open_board_tasks.max) — above it "nothing converges" (envelope.json). Tasks
+# are DISPOSABLE: the wellspring seeds only up to headroom, and trim abandons the
+# lowest-priority excess so the wall stays green. Read the wall LIVE so a nightly
+# BREATH re-tune moves the ceiling with it.
+_BOARD_MARGIN = 4  # sit this far under the wall so normal churn never breaches
+
+
+def board_ceiling() -> int:
+    try:
+        from core.malcolm import load_envelope
+        mx = load_envelope().get("axes", {}).get("open_board_tasks", {}).get("max")
+        if isinstance(mx, (int, float)):
+            return max(4, int(mx) - _BOARD_MARGIN)
+    except Exception:
+        pass
+    return 20
+
+
+@_locked
+def trim_board_to_ceiling(state, target: int = None, reason: str = None) -> list:
+    """Abandon the lowest-priority OPEN tasks until the open count is within the
+    board ceiling (Malcolm's open_board_tasks wall, minus margin). Tasks are
+    DISPOSABLE — a culled task becomes ABANDONED (re-seedable later when a slot
+    frees, never a false 'done'), so the systemic wall stays green. Highest-
+    priority work is always kept. Returns the abandoned task ids."""
+    if target is None:
+        target = board_ceiling()
+    reason = reason or (f"culled to hold the board within Malcolm's open_board_tasks "
+                        f"wall (<= {target}); disposable, re-seeds when a slot frees")
+    opens = [t for t in state["tasks"] if t["status"] == OPEN]
+    if len(opens) <= target:
+        return []
+    opens.sort(key=lambda t: (t.get("priority", 1.0), str(t.get("created_at", ""))))
+    cut = opens[: len(opens) - target]
+    abandoned = []
+    for t in cut:
+        t["status"] = ABANDONED
+        t.setdefault("notes", []).append(
+            {"ts": _now_iso(), "agent": "board", "text": reason})
+        abandoned.append(t["id"])
+    if abandoned:
+        _render_md(state)
+    return abandoned
+
+
 @_locked
 def _apply_seed(state, rows, research, created_by) -> list:
     """Dedup + insert atomically under the lock so concurrent seeders can't
-    double-add. Graph loading stays OUTSIDE the lock (it is slow)."""
-    live = {(t.get("feature") or t["title"]) for t in state["tasks"] if t["status"] != DONE}
+    double-add. Graph loading stays OUTSIDE the lock (it is slow).
+
+    The board has a CEILING (Malcolm's open_board_tasks wall): seed only up to
+    headroom, HIGHEST-VALUE FIRST, so the systemic wall stays green (2026-07-15:
+    the wellspring had pushed the board to 33 open vs a wall of 24, a hard
+    breach). Tasks are disposable — a capped board keeps the best work; ABANDONED
+    tasks are re-seedable (culled != done), so nothing is lost, it just waits."""
+    live = {(t.get("feature") or t["title"]) for t in state["tasks"]
+            if t["status"] not in (DONE, ABANDONED)}
+    ceiling = board_ceiling()
+    n_open = sum(1 for t in state["tasks"] if t["status"] == OPEN)
+    headroom = max(0, ceiling - n_open)
     added = []
-    for r in rows:
+    for r in sorted(rows or [], key=lambda x: -x.get("score", 1.0)):
+        if len(added) >= headroom:
+            break
         name = r["name"]
         if name in live or r.get("score", 1.0) < 0.1:  # skip dead-end-demoted rows
             continue
@@ -666,6 +724,8 @@ def _apply_seed(state, rows, research, created_by) -> list:
             created_by=created_by))
         live.add(name)
     for text in research or []:
+        if len(added) >= headroom:
+            break
         title = f"Research: {text[:70]}"
         if title in live:
             continue
@@ -803,6 +863,10 @@ def main(argv=None):
     sub.add_parser("state", help="Raw JSON state")
     ps = sub.add_parser("seed", help="Bootstrap from rehearsal candidates + pending research")
     ps.add_argument("--agent", default="seed")
+    pt = sub.add_parser("trim", help="Abandon lowest-priority OPEN tasks to hold the "
+                                     "board within Malcolm's open_board_tasks wall")
+    pt.add_argument("--target", type=int, default=None,
+                    help="max open tasks to keep (default: the envelope ceiling)")
 
     args = p.parse_args(argv)
     if args.cmd == "add":
@@ -827,6 +891,14 @@ def main(argv=None):
             if _n_rs:
                 print(f"[rescope] refreshed footprint on {_n_rs} task(s) to the "
                       f"current resource model")
+        except Exception:
+            pass
+        try:  # hold the board within Malcolm's systemic wall (tasks are disposable)
+            _culled = trim_board_to_ceiling()
+            if _culled:
+                print(f"[trim] board over Malcolm's open_board_tasks wall -> abandoned "
+                      f"{len(_culled)} lowest-priority task(s) to stay green "
+                      f"({', '.join(_culled[:6])}{' ...' if len(_culled) > 6 else ''})")
         except Exception:
             pass
         if args.raw:
@@ -989,6 +1061,16 @@ def main(argv=None):
         print(f"seeded {len(added)} task(s)")
         for t in added:
             print(f"  {t['id']}  p={t['priority']:.2g}  {t['title'][:70]}")
+
+    elif args.cmd == "trim":
+        culled = trim_board_to_ceiling(target=args.target)
+        tgt = args.target if args.target is not None else board_ceiling()
+        n_open = sum(1 for t in get_state()["tasks"] if t["status"] == OPEN)
+        if culled:
+            print(f"abandoned {len(culled)} lowest-priority task(s) to hold the board "
+                  f"<= {tgt} (disposable; re-seed when a slot frees): {', '.join(culled)}")
+        else:
+            print(f"board already within ceiling ({n_open} open <= {tgt}); nothing to trim")
 
 
 if __name__ == "__main__":

@@ -62727,6 +62727,23 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_0c48d1f3c313"
+    },
+    {
+      "id": "phase_26a7ffb60e77df8f",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T16:37:52.553091",
+      "phase": "Fix 2 red rep atom(s): Malcolm_Envelope",
+      "result": "Malcolm_Envelope rep investigation: atom_c08b6fc63d01 (heuristics_per_night) CLEARED after rep_engine tend. atom_51d827d32bfd (open_board_tasks=33) remains RED but is HONEST measurement of system state at capacity.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Fix 2 red rep atom(s): Malcolm_Envelope",
+      "error_category": "none",
+      "fix_description": "Phase 'Fix 2 red rep atom(s): Malcolm_Envelope' complete: Malcolm_Envelope rep investigation: atom_c08b6fc63d01 (heuristics_per_night) CLEARED after rep_engine tend. atom_51d827d32bfd (open_board_tasks=33) remains RED but is HONEST measurement of system stat",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "One of two reds cleared; remaining is structural board capacity breach.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_69ec9a821a09"
     }
   ],
   "edges": [

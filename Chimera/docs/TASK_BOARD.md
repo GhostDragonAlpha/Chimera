@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-15T16:27:36+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-15T16:46:28+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -9,7 +9,6 @@ so claimed tasks are safe to run in parallel.
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0057 | claimed | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | chimera-auto-1 |
-| tb-0058 | open | 1.2 | Fix 2 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** |  |
 | tb-0059 | open | 1.2 | Fix 1 red rep atom(s): Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/** |  |
 | tb-0060 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Economy | core/game_code_generator.py; excl:generator |  |
 | tb-0061 | open | 1.2 | Fix 1 red rep atom(s): subsystem/GameMode | core/game_code_generator.py; excl:generator |  |
@@ -23,11 +22,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0079 | open | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0080 | open | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0067 | open | 0.9 | Witness & collapse: Sky_Earth_Model | editor:open; excl:pie |  |
-| tb-0068 | open | 0.9 | Witness & collapse: Sky_Earth_Material | editor:open; excl:pie |  |
-| tb-0069 | open | 0.9 | Witness & collapse: Sky_Moon_Model | editor:open; excl:pie |  |
-| tb-0070 | open | 0.9 | Witness & collapse: Sky_Moon_Material | editor:open; excl:pie |  |
-| tb-0071 | open | 0.9 | Witness & collapse: Sky_Sun_Lighting | editor:open; excl:pie |  |
 | tb-0072 | open | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie |  |
 | tb-0073 | open | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | editor:open; excl:pie |  |
 | tb-0074 | open | 0.9 | Witness & collapse: Tool_Scanner_Model | editor:open; excl:pie |  |
@@ -35,14 +29,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0076 | open | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie |  |
 | tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
-| tb-0082 | open | 0.8 | Build toward the seed: FFootstepEvent | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0083 | open | 0.8 | Build toward the seed: FGestureEvent | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0084 | open | 0.75 | Build toward the seed: UWeatherSubsystem | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0085 | open | 0.75 | Build toward the seed: AErisaidActor | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0086 | open | 0.75 | Build toward the seed: AHabitatActor | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0087 | open | 0.75 | Build toward the seed: FStar | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0088 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0091 | open | 0.75 | Build toward the seed: USacrificeLogComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0006 | done | 1.4 | Hire_Regression_Curator (DREAM_ROSTER #6) `capable` | core/regression.py, docs/beats/** | Regression Curator (core/regression.py) built and verified:
  |
@@ -51,6 +37,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0002 | done | 1.2 | audio_visual_sync/report_telemetry | Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | audio_visual_sync/report_telemetry: H-34 runtime attach in C |
 | tb-0007 | done | 1.2 | Hire_Chaos_Tester (DREAM_ROSTER #5) `capable` | core/chaos.py; editor:open; excl:pie | Created core/chaos.py for Chaos Tester (DREAM_ROSTER #5) wit |
 | tb-0013 | done | 1.2 | Sprint_Input: movement state: verb flag changes the simulati | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | Sprint_Input/state atom GREEN x2: SetSprinting(bool) scales  |
+| tb-0058 | done | 1.2 | Fix 2 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** | Investigation complete. Malcolm_Envelope had 2 red rep atoms |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |
 | tb-0014 | done | 1.2 | Sprint_Input: input binding: the physical key drives the sta ⇐ tb-0013 | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/GameMode/** | Sprint_Input/binding atom GREEN x2 (LeftShift polled via Pla |
@@ -100,3 +87,16 @@ so claimed tasks are safe to run in parallel.
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |
 | tb-0028 | done | 0.01 | Gauntlet sandbox: haiku-1 | docs/gauntlet/haiku-1/** | docs/gauntlet/haiku-1/tunnel_note.md (one paragraph explaini |
 | tb-0038 | done | 0.01 | Gauntlet sandbox: pi-agent-1 | docs/gauntlet/pi-agent-1/** | docs/gauntlet/pi-agent-1/tunnel_note.md |
+| tb-0067 | abandoned | 0.9 | Witness & collapse: Sky_Earth_Model | editor:open; excl:pie |  |
+| tb-0068 | abandoned | 0.9 | Witness & collapse: Sky_Earth_Material | editor:open; excl:pie |  |
+| tb-0069 | abandoned | 0.9 | Witness & collapse: Sky_Moon_Model | editor:open; excl:pie |  |
+| tb-0070 | abandoned | 0.9 | Witness & collapse: Sky_Moon_Material | editor:open; excl:pie |  |
+| tb-0071 | abandoned | 0.9 | Witness & collapse: Sky_Sun_Lighting | editor:open; excl:pie |  |
+| tb-0082 | abandoned | 0.8 | Build toward the seed: FFootstepEvent | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0083 | abandoned | 0.8 | Build toward the seed: FGestureEvent | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0084 | abandoned | 0.75 | Build toward the seed: UWeatherSubsystem | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0085 | abandoned | 0.75 | Build toward the seed: AErisaidActor | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0086 | abandoned | 0.75 | Build toward the seed: AHabitatActor | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0087 | abandoned | 0.75 | Build toward the seed: FStar | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0088 | abandoned | 0.75 | Build toward the seed: UStarMemorialSubsystem | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0091 | abandoned | 0.75 | Build toward the seed: USacrificeLogComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
