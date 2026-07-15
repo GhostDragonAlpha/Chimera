@@ -689,6 +689,18 @@ def main(argv=None):
             except (KeyError, ValueError) as e:
                 print(f"REFUSED: {e}")
                 sys.exit(1)
+            if t is None and not args.id:
+                # THE WELLSPRING: an empty frontier is a signal, not an end state —
+                # refill from helm gap / observation queue / red atoms, retry once.
+                try:
+                    from core.wellspring import replenish
+                    _added = replenish()
+                except Exception:
+                    _added = []
+                if _added:
+                    print(f"[wellspring] board was dry -> seeded {len(_added)} task(s) "
+                          f"from the steering organs; retrying claim")
+                    t = claim_task(args.agent, task_id=None, capable=args.capable)
             if t is None:
                 print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
                 sys.exit(2)
@@ -705,6 +717,24 @@ def main(argv=None):
             except (KeyError, ValueError, TimeoutError) as e:
                 print(f"REFUSED: {e}")
                 sys.exit(1)
+            if packet is None and not args.id:
+                # THE WELLSPRING: an empty frontier is a signal, not an end state.
+                # The board cannot mean "nothing to do" while the seed is <100%
+                # realized — refill from the steering organs and retry once.
+                try:
+                    from core.wellspring import replenish
+                    _added = replenish()
+                except Exception:
+                    _added = []
+                if _added:
+                    print(f"[wellspring] board was dry -> seeded {len(_added)} task(s) "
+                          f"from helm gap / observation queue / red atoms; retrying claim")
+                    try:
+                        packet = enter(args.agent, task_id=None, capable=args.capable,
+                                       editor_timeout=args.editor_timeout)
+                    except (KeyError, ValueError, TimeoutError) as e:
+                        print(f"REFUSED: {e}")
+                        sys.exit(1)
             if packet is None:
                 print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
                 sys.exit(2)

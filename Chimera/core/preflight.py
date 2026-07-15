@@ -274,6 +274,10 @@ def main():
             counts = "  ".join(f"{k}:{v}" for k, v in sorted(s["counts"].items()))
             print(f"\n[3.7] Task board: {s['total']} task(s)  {counts}")
             print(f"    Parallel frontier: {len(s['frontier'])} task(s) can proceed simultaneously")
+            if not s["frontier"]:
+                print("    frontier EMPTY -> `claim` auto-replenishes from the WELLSPRING "
+                      "(helm vision gap / observation queue / red rep atoms); an empty "
+                      "board is NOT 'nothing to do' while the seed is <100% realized")
             for t in s["frontier"][:3]:
                 cap = " `capable`" if t.get("capable_only") else ""
                 print(f"      - {t['id']} p={t.get('priority', 1):.2g} {t['title'][:70]}{cap}")
@@ -316,6 +320,17 @@ def main():
                 pass
     except Exception as e:
         print(f"\n[3.7] Task board: unavailable ({e})")
+
+    # 3.75. The Horizon — the explicit terminal/idle check (2026-07-15). One
+    # authoritative answer to "is there ANY autonomous work left?": board open+
+    # claimed, pains about to ripen, the observation queue, gate approvals,
+    # confirmed verdicts needing follow-up. IDLE means END THE SHIFT CLEANLY —
+    # an open:0 board is a season's end, never a reason to loop duty cycles.
+    try:
+        from core.horizon import pending_work, format_block
+        print("\n" + format_block(pending_work(nodes=nodes)))
+    except Exception as e:
+        print(f"\n[3.75] Horizon: unavailable ({e})")
 
     # 3.8. The fractal spiral — the whole structure as a DNA spiral around the
     # player (trunk). Self-similar golden-angle layout; the pattern is the linker.
