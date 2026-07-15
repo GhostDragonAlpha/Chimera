@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-15T16:57:30+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-15T17:14:20+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -9,8 +9,6 @@ so claimed tasks are safe to run in parallel.
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0057 | claimed | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | chimera-auto-1 |
-| tb-0062 | open | 1.2 | Fix 1 red rep atom(s): subsystem/PCG | core/game_code_generator.py; excl:generator |  |
-| tb-0064 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Stations | core/game_code_generator.py; excl:generator |  |
 | tb-0065 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Travel | core/game_code_generator.py; excl:generator |  |
 | tb-0066 | open | 1.2 | Fix 1 red rep atom(s): subsystem/VFX | core/game_code_generator.py; excl:generator |  |
 | tb-0090 | open | 1.2 | Fix 1 red rep atom(s): UGestureWheel | core/game_code_generator.py; excl:generator |  |
@@ -36,7 +34,9 @@ so claimed tasks are safe to run in parallel.
 | tb-0059 | done | 1.2 | Fix 1 red rep atom(s): Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/** | resolved: Verb_Shovel green (13 atoms) in run_17841343390649 |
 | tb-0060 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Economy | core/game_code_generator.py; excl:generator | resolved: subsystem/Economy green (26 atoms) in run_17841343 |
 | tb-0061 | done | 1.2 | Fix 1 red rep atom(s): subsystem/GameMode | core/game_code_generator.py; excl:generator | resolved: subsystem/GameMode green (2 atoms) in run_17841343 |
+| tb-0062 | done | 1.2 | Fix 1 red rep atom(s): subsystem/PCG | core/game_code_generator.py; excl:generator | Fixed subsystem/PCG red rep atom: added UUniverseGenerationC |
 | tb-0063 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Ships | core/game_code_generator.py; excl:generator | resolved: subsystem/Ships green (11 atoms) in run_1784134339 |
+| tb-0064 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Stations | core/game_code_generator.py; excl:generator | Fixed generator core/game_code_generator.py (generate_ship_c |
 | tb-0089 | done | 1.2 | Fix 1 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** | resolved: Malcolm_Envelope green (8 atoms) in run_1784134339 |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |

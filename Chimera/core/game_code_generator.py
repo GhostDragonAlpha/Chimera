@@ -587,6 +587,7 @@ class GameCodeGenerator:
         header_content += f'#include "SystemDamageComponent.h"\n'
         header_content += f'#include "CombatTargetComponent.h"\n'
         header_content += f'#include "DockingComponent.h"\n'
+        header_content += f'#include "QuantumTravelComponent.h"\n'
         header_content += f'#include "MissionComponent.h"\n'
         header_content += f'#include "FactionComponent.h"\n'
         header_content += f'#include "SaveGameComponent.h"\n'
@@ -633,6 +634,8 @@ class GameCodeGenerator:
         header_content += "\tUCombatTargetComponent* CombatTargetComponent;\n\n"
         header_content += "\tUPROPERTY(VisibleAnywhere, Category = \"Components\", meta = (AllowPrivateAccess = \"true\"))\n"
         header_content += "\tUDockingComponent* DockingComponent;\n\n"
+        header_content += "\tUPROPERTY(VisibleAnywhere, Category = \"Components\", meta = (AllowPrivateAccess = \"true\"))\n"
+        header_content += "\tUQuantumTravelComponent* QuantumTravelComponent;\n\n"
         header_content += "\tUPROPERTY(VisibleAnywhere, Category = \"Combat Components\", meta = (AllowPrivateAccess = \"true\"))\n"
         header_content += "\tUMissionComponent* MissionComponent;\n\n"
         header_content += "\tUPROPERTY(VisibleAnywhere, Category = \"Combat Components\", meta = (AllowPrivateAccess = \"true\"))\n"
@@ -672,6 +675,7 @@ class GameCodeGenerator:
         source_content += f"\tSystemDamageComponent = CreateDefaultSubobject<USystemDamageComponent>(TEXT(\"SystemDamageComponent\"));\n"
         source_content += f"\tCombatTargetComponent = CreateDefaultSubobject<UCombatTargetComponent>(TEXT(\"CombatTargetComponent\"));\n"
         source_content += f"\tDockingComponent = CreateDefaultSubobject<UDockingComponent>(TEXT(\"DockingComponent\"));\n"
+        source_content += f"\tQuantumTravelComponent = CreateDefaultSubobject<UQuantumTravelComponent>(TEXT(\"QuantumTravelComponent\"));\n"
         source_content += f"\tMissionComponent = CreateDefaultSubobject<UMissionComponent>(TEXT(\"MissionComponent\"));\n"
         source_content += f"\tFactionComponent = CreateDefaultSubobject<UFactionComponent>(TEXT(\"FactionComponent\"));\n"
         source_content += f"\tSaveGameComponent = CreateDefaultSubobject<USaveGameComponent>(TEXT(\"SaveGameComponent\"));\n"
