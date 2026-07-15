@@ -289,17 +289,26 @@ def init_limb_3d(length=60, radius=13, cap=5, fractions=(0.20, 0.50, 0.30), seed
 
 
 def assemble_3d(grid, shape, targets, J, connectivity=18, sweeps=90, temp=12.0,
-                lam=0.9, seed=0):
+                lam=0.9, seed=0, frozen_type=None):
     """The 2D Metropolis rule, verbatim, on a flat 3D lattice. One copy attempt: pick an
-    interior site, propose a random neighbour's type, accept by the Boltzmann rule."""
+    interior site, propose a random neighbour's type, accept by the Boltzmann rule.
+
+    frozen_type (optional): a brick type that is a SCAFFOLD — its cells are never chosen
+    to change and are never created, so they stay exactly as placed. This is how the
+    L-system skeleton pins the bone axis (see core/limb.py): adhesion sorts the flesh
+    around a bone it can neither move nor grow, which is precisely what a thin cohesive
+    rod cannot do for itself (rung 1.5's Rayleigh-Plateau segmentation)."""
     strides = (shape[1] * shape[2], shape[2], 1)
     off = _nd_offsets(strides, connectivity)
     L = grid.ravel().astype(np.int16).tolist()          # a Python list is faster to poke
     Jl = J.tolist()
     area = {t: int((grid == t).sum()) for t in targets}
+    frz = frozen_type if frozen_type is not None else -999
 
     idx = np.arange(len(L)).reshape(shape)
     interior = idx[1:-1, 1:-1, 1:-1].ravel()
+    if frozen_type is not None:                         # never pick a scaffold cell to change
+        interior = interior[grid.ravel()[interior] != frozen_type]
     rng = np.random.RandomState(seed + 101)
     attempts = sweeps * len(interior)
     sites = interior[rng.randint(0, len(interior), size=attempts)]
@@ -310,7 +319,7 @@ def assemble_3d(grid, shape, targets, J, connectivity=18, sweeps=90, temp=12.0,
         s = int(sites[i])
         old = L[s]
         new = L[s + off[ks[i]]]
-        if new == old:
+        if new == old or new == frz:                    # scaffold neither moves nor grows
             continue
         Jn, Jo = Jl[new], Jl[old]
         dH = 0.0
