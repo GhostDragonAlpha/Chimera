@@ -1,12 +1,14 @@
 # The Matter Model — a world built from living bricks
 
-> **STATUS: mostly DESIGN; rungs 0–1 BUILT.** Born from a design conversation on 2026-07-14.
+> **STATUS: mostly DESIGN; rungs 0–1.5 BUILT.** Born from a design conversation on 2026-07-14.
 > The generation half is proven — `core/matter.py` shows differential adhesion self-assembling
-> a bone/muscle/skin limb cross-section from a scrambled start, with a failing control (§10).
-> Everything from the UE5 bake onward (rung 2+) is still design. Numbers marked "UE5 fact" or
-> "reuse" are claims, not measurements; the only measured results here are in rungs 0–1. That
-> line between built and planned is kept sharp on purpose, so no successor mistakes one for the
-> other.
+> a bone/muscle/skin limb: a 2D cross-section (`--mode cross2d`) and a 3D limb with a typed
+> tendon connector (`--mode limb3d`), each from a scrambled start against a failing control
+> (§10). That 3D run also found, honestly, that adhesion alone cannot hold an axis (the bone
+> core segments) — which is why rung 1.75 integrates the L-system skeleton. Everything from the
+> UE5 bake onward (rung 2+) is still design. Numbers marked "UE5 fact" or "reuse" are claims,
+> not measurements; the only measured results here are in rungs 0–1.5. That line between built
+> and planned is kept sharp on purpose, so no successor mistakes one for the other.
 >
 > This is the substrate *beneath* `THE_EVOLUTION_ENGINE.md`. The evolution engine grows a
 > phenotype from a genome; this is the phenotype's *material* — what everything is made OF.
@@ -252,7 +254,8 @@ already lives there.
 |---|---|---|---|
 | 0 | **The brick struct.** One typed primitive; three instances (muscle/bone/skin). | ✅ **DONE** (`core/matter.py`). Modelled only the field the proof reads — the adhesion profile; the rest of the struct lands as the pipeline needs it. | you cannot name the game-relevant fields without inventing chemistry |
 | 1 | **Adhesion assembles a limb.** Differential adhesion → muscle-on-bone-under-skin, unattended. | ✅ **DONE 2026-07-14** (`python -m core.matter`). From a *scrambled* pepper of bricks, a Cellular Potts / differential-adhesion model sorted bone to the core (radius 10.5, 0% medium exposure), skin to the shell (27.2, 39%), muscle between — radial spread +12–15 across 4 seeds. The **uniform-adhesion control did NOT sort** (spread ≈ 0), so the sort is the adhesion, not the machine. **Scope: this is a 2D cross-section proving radial LAYERING — the load-bearing half of "fits together like reality." Elongated limb shape, muscle→bone attachment via tendon (typed interfaces), and the 3D lattice are still ahead (rung 1.5).** | it needs hand-placement to look right — then it is not "fitting together like reality" |
-| 1.5 | **Shape, attachment, 3D.** Elongate the cross-section into a limb; add typed tendon/membrane connectors; lift the lattice to 3D. | ⬜ | typed interfaces need hand-authoring per pair instead of a rule |
+| 1.5 | **Shape, attachment, 3D.** Elongate into a limb; add a typed tendon connector; lift the lattice to 3D. | ✅ **DONE 2026-07-14** (`python -m core.matter --mode limb3d`). The same rule on a 3D lattice grew concentric TUBES (bone core r=5.1, muscle 8.5, skin shell 11.4) in a limb 65 long × 8.6 across; the uniform control did not sort. The **typed tendon** (strong to muscle+bone, hostile to skin/medium) held its junction — 81% bonded to bone+muscle, **0.00 exposure** to skin/air — where the control let it drift (0.46 / 0.32). Layering AND a rule-placed interface, unattended. **FINDING (from the render, not the metrics): a thin, highly-cohesive bone core is Rayleigh-Plateau unstable and PINCHES into segments along the length. Adhesion cannot hold an axis.** That is real physics, and it names the next rung. | typed interfaces need hand-authoring per pair — they did not |
+| 1.75 | **The skeleton is the scaffold.** Lay the bone along the L-system axis (the evolution engine's genome), then let adhesion wrap muscle/skin around it. | ⬜ **THE REAL NEXT STEP** — the integration point. Rung 1.5 proved neither system works alone: adhesion alone segments (Rayleigh-Plateau); a skeleton alone has no tissue. The skeleton provides the AXIS, adhesion the RADIAL organization. | the axis and the tissue cannot be made to co-generate without hand-tuning |
 | 2 | **Bake to UE5.** Dense Nanite mesh + coarse Chaos Flesh rig. It renders and shadows. | ⬜ | the baked asset is uglier or slower than a hand-made one |
 | 3 | **It moves.** The muscle contracts the bone; the dense skin follows the rig. | ⬜ | motion needs per-cell simulation to look right (budget blows up) |
 | 4 | **Coalesce / fracture.** Quiet bulk → one static item; a cut → live cells locally. | ⬜ | the merge/split thrashes or the seam cracks and cannot be stitched |
