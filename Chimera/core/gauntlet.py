@@ -245,11 +245,19 @@ def _v_orientation(agent, facts):
                    loop is not None and re.search(rf"\bLoop {loop}\b", text) is not None))
     checks.append(("names one of that loop's OPEN features",
                    any(f in text for f in facts.get("open_features", []))))
+    # Self-teaching labels (Haiku test, 2026-07-15): a failed check must SHOW a
+    # real, copy-pasteable example, not just name the requirement — the test
+    # agent guessed a truncated pain id ('1b01fac') because the FULL form
+    # ('phase_1b01fac303f3c24e:P1') was never surfaced at the point of failure.
     live = facts.get("live_task_ids") or facts.get("open_task_ids", [])
-    checks.append(("cites a live board task id (tb-NNNN)",
+    eg_task = f" (e.g. {live[0]})" if live else " (run: python -m core.task_board list)"
+    checks.append((f"cites a live board task id (tb-NNNN){eg_task}",
                    any(tid in text for tid in live)))
-    checks.append(("cites one open phantom pain id",
-                   any(pid in text for pid in facts.get("open_pain_ids", []))))
+    pids = facts.get("open_pain_ids", [])
+    eg_pain = (f" — copy the FULL id, e.g. {pids[0]}" if pids
+               else " (see preflight section [3.75] 'Open phantom pains')")
+    checks.append((f"cites one open phantom pain id{eg_pain}",
+                   any(pid in text for pid in pids)))
     return checks
 
 

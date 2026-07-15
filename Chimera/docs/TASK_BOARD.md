@@ -1,45 +1,48 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-15T15:31:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-15T16:27:36+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 0 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0057 | claimed | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie | chimera-auto-1 |
-| tb-0058 | open | 1.2 | Fix 2 red rep atom(s): Malcolm_Envelope | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0059 | open | 1.2 | Fix 1 red rep atom(s): Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie |  |
-| tb-0060 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Economy | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0061 | open | 1.2 | Fix 1 red rep atom(s): subsystem/GameMode | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0062 | open | 1.2 | Fix 1 red rep atom(s): subsystem/PCG | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0063 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Ships | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0064 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Stations | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0065 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Travel | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0066 | open | 1.2 | Fix 1 red rep atom(s): subsystem/VFX | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0079 | open | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0080 | open | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0067 | open | 0.9 | Witness & collapse: Sky_Earth_Model | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
-| tb-0068 | open | 0.9 | Witness & collapse: Sky_Earth_Material | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
-| tb-0069 | open | 0.9 | Witness & collapse: Sky_Moon_Model | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
-| tb-0070 | open | 0.9 | Witness & collapse: Sky_Moon_Material | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
-| tb-0071 | open | 0.9 | Witness & collapse: Sky_Sun_Lighting | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
-| tb-0072 | open | 0.9 | Witness & collapse: Sky_Starfield | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
-| tb-0073 | open | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | Source/Chimera/ProceduralGenerated/Sky/**; editor:open |  |
-| tb-0074 | open | 0.9 | Witness & collapse: Tool_Scanner_Model | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0075 | open | 0.9 | Witness & collapse: Tool_Scanner_Material | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0076 | open | 0.9 | Witness & collapse: Social_Trade | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0082 | open | 0.8 | Build toward the seed: FFootstepEvent | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0083 | open | 0.8 | Build toward the seed: FGestureEvent | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0084 | open | 0.75 | Build toward the seed: UWeatherSubsystem | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0085 | open | 0.75 | Build toward the seed: AErisaidActor | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0086 | open | 0.75 | Build toward the seed: AHabitatActor | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0087 | open | 0.75 | Build toward the seed: FStar | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
-| tb-0088 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0057 | claimed | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | chimera-auto-1 |
+| tb-0058 | open | 1.2 | Fix 2 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** |  |
+| tb-0059 | open | 1.2 | Fix 1 red rep atom(s): Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/** |  |
+| tb-0060 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Economy | core/game_code_generator.py; excl:generator |  |
+| tb-0061 | open | 1.2 | Fix 1 red rep atom(s): subsystem/GameMode | core/game_code_generator.py; excl:generator |  |
+| tb-0062 | open | 1.2 | Fix 1 red rep atom(s): subsystem/PCG | core/game_code_generator.py; excl:generator |  |
+| tb-0063 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Ships | core/game_code_generator.py; excl:generator |  |
+| tb-0064 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Stations | core/game_code_generator.py; excl:generator |  |
+| tb-0065 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Travel | core/game_code_generator.py; excl:generator |  |
+| tb-0066 | open | 1.2 | Fix 1 red rep atom(s): subsystem/VFX | core/game_code_generator.py; excl:generator |  |
+| tb-0089 | open | 1.2 | Fix 1 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** |  |
+| tb-0090 | open | 1.2 | Fix 1 red rep atom(s): UGestureWheel | core/game_code_generator.py; excl:generator |  |
+| tb-0079 | open | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0080 | open | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0067 | open | 0.9 | Witness & collapse: Sky_Earth_Model | editor:open; excl:pie |  |
+| tb-0068 | open | 0.9 | Witness & collapse: Sky_Earth_Material | editor:open; excl:pie |  |
+| tb-0069 | open | 0.9 | Witness & collapse: Sky_Moon_Model | editor:open; excl:pie |  |
+| tb-0070 | open | 0.9 | Witness & collapse: Sky_Moon_Material | editor:open; excl:pie |  |
+| tb-0071 | open | 0.9 | Witness & collapse: Sky_Sun_Lighting | editor:open; excl:pie |  |
+| tb-0072 | open | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie |  |
+| tb-0073 | open | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | editor:open; excl:pie |  |
+| tb-0074 | open | 0.9 | Witness & collapse: Tool_Scanner_Model | editor:open; excl:pie |  |
+| tb-0075 | open | 0.9 | Witness & collapse: Tool_Scanner_Material | editor:open; excl:pie |  |
+| tb-0076 | open | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie |  |
+| tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
+| tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
+| tb-0082 | open | 0.8 | Build toward the seed: FFootstepEvent | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0083 | open | 0.8 | Build toward the seed: FGestureEvent | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0084 | open | 0.75 | Build toward the seed: UWeatherSubsystem | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0085 | open | 0.75 | Build toward the seed: AErisaidActor | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0086 | open | 0.75 | Build toward the seed: AHabitatActor | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0087 | open | 0.75 | Build toward the seed: FStar | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0088 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0091 | open | 0.75 | Build toward the seed: USacrificeLogComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0006 | done | 1.4 | Hire_Regression_Curator (DREAM_ROSTER #6) `capable` | core/regression.py, docs/beats/** | Regression Curator (core/regression.py) built and verified:
  |

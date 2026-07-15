@@ -523,31 +523,129 @@ def board_summary() -> dict:
 # Resource footprints for known feature families. Unknown features get the
 # conservative whole-tree scope (correct but serial) — agents should narrow
 # the scope when they know better.
-_FEATURE_SCOPES = {
-    "audio": {"files": ["Source/Chimera/ProceduralGenerated/Sound/**"],
-              "editor": "open", "exclusive": ["pie"]},
-    "sound": {"files": ["Source/Chimera/ProceduralGenerated/Sound/**"],
-              "editor": "open", "exclusive": ["pie"]},
-    "ground": {"files": ["Source/Chimera/ProceduralGenerated/Materials/**"],
-               "editor": "open", "exclusive": ["pie"]},
-    "dust": {"files": ["Source/Chimera/ProceduralGenerated/Materials/**"],
-             "editor": "open", "exclusive": []},
-    "verb": {"files": ["Source/Chimera/ProceduralGenerated/Interactions/**",
-                       "Source/Chimera/ProceduralGenerated/Tools/**"],
-             "editor": "open", "exclusive": ["pie"]},
-    "sky": {"files": ["Source/Chimera/ProceduralGenerated/Sky/**"],
-            "editor": "open", "exclusive": []},
+# Footprints model what a task ACTUALLY uses. Verified live 2026-07-15 after a
+# Haiku test agent found the board deadlocked: every code-fix task declared
+# exclusive:["pie"], so ONE held task (a legitimate PIE telemetry lane) froze all
+# 34 others and a fresh agent's `claim` returned bare NONE. A headless rep-atom
+# fix + `rep_engine tend` never opens PIE — claiming pie for it is a phantom
+# resource. The three REAL shared resources, modelled honestly:
+#   * "pie"       — the ONE Play-In-Editor session. Only PIE-driving tasks
+#                   (witness/observation runs, foregrounded telemetry soaks) take it.
+#   * "generator" — core/game_code_generator.py, edited by EVERY generator-owned
+#                   fix. Two such fixes can't run in parallel (one file), so they
+#                   share this token; loop-built fixes don't.
+#   * file globs  — same-subtree edits serialize; different subtrees run parallel.
+_PIE, _GEN = "pie", "generator"
+_PG = "Source/Chimera/ProceduralGenerated"
+
+# Loop-built families: hand-editable subtrees, headless, NO generator token.
+_LOOPBUILT_SCOPES = {
+    "sky":         [f"{_PG}/Sky/**"],
+    "sound":       [f"{_PG}/Sound/**"],
+    "audio":       [f"{_PG}/Sound/**"],
+    "ui":          [f"{_PG}/UI/**"],
+    "npc":         [f"{_PG}/AI/**"],
+    "scanner":     [f"{_PG}/Tools/**"],
+    "tool":        [f"{_PG}/Tools/**"],
+    "verb":        [f"{_PG}/Interactions/**", f"{_PG}/Tools/**"],
+    "shovel":      [f"{_PG}/Interactions/**", f"{_PG}/Tools/**"],
+    "interaction": [f"{_PG}/Interactions/**"],
+    "movement":    [f"{_PG}/ChimeraMovementComponent.*"],
+    "ground":      [f"{_PG}/Materials/**"],
+    "dust":        [f"{_PG}/Materials/**"],
+    "material":    [f"{_PG}/Materials/**"],
 }
-_DEFAULT_SCOPE = {"files": ["Source/Chimera/ProceduralGenerated/**"],
-                  "editor": "open", "exclusive": ["pie"]}
+# Generator-owned families (regenerated from core/game_code_generator.py): they
+# SHARE the generator token — can't be edited in parallel without clobbering.
+_GENERATOR_FAMILIES = ("economy", "commodity", "gamemode", "game_mode", "ship",
+                       "station", "weapon", "projectile", "shield", "damage",
+                       "combat", "mission", "docking", "quantum", "travel",
+                       "faction", "save", "flight", "pcg", "pirate", "subsystem")
+# Tasks that genuinely drive the ONE editor / a PIE soak.
+_PIE_FAMILIES = ("witness", "collapse", "observe", "observation",
+                 "game_feel", "feel", "telemetry", "playtest", "beat")
 
 
 def _scope_for(name: str) -> dict:
     low = name.lower()
-    for key, scope in _FEATURE_SCOPES.items():
+    # 1) PIE-driving work — the one editor session (game_feel edits movement/
+    #    sound; a pure witness run edits nothing).
+    if any(k in low for k in _PIE_FAMILIES):
+        files = ([f"{_PG}/ChimeraMovementComponent.*", f"{_PG}/Sound/**"]
+                 if ("feel" in low or "telemetry" in low) else [])
+        return {"files": files, "editor": "open", "exclusive": [_PIE]}
+    # 2) Envelope / Malcolm live in docs, not the C++ tree.
+    if "envelope" in low or "malcolm" in low:
+        return {"files": ["docs/envelope.json", "docs/world/**"],
+                "editor": "none", "exclusive": []}
+    # 3) Loop-built subtrees — headless, parallel across different subtrees.
+    for key, files in _LOOPBUILT_SCOPES.items():
         if key in low:
-            return dict(scope)
-    return dict(_DEFAULT_SCOPE)
+            return {"files": list(files), "editor": "none", "exclusive": []}
+    # 4) Generator-owned + 5) unknown (assume generator-owned — safest: serialize
+    #    on the generator rather than risk two agents clobbering it). Headless;
+    #    leaves every loop-built + PIE lane free to run in parallel alongside.
+    return {"files": ["core/game_code_generator.py"],
+            "editor": "none", "exclusive": [_GEN]}
+
+
+@_locked
+def rescope_nondone_tasks(state) -> int:
+    """Re-derive every non-done task's footprint from the current scope model.
+    One-shot migration + self-heal: run after the scope rules change so a live
+    board (e.g. tasks seeded when everything wrongly claimed pie) stops
+    deadlocking. Returns the count actually changed."""
+    changed = 0
+    for t in state["tasks"]:
+        if t["status"] == DONE:
+            continue
+        want = _scope_for(t.get("feature") or t.get("title") or "")
+        if _resources(t) != {"files": want["files"], "editor": want["editor"],
+                             "exclusive": want["exclusive"]}:
+            t["resources"] = dict(want)
+            changed += 1
+    if changed:
+        _render_md(state)
+    return changed
+
+
+def _print_no_claim(capable: bool = False):
+    """A dead-end is a navigable state, not a full stop (Haiku test, 2026-07-15):
+    explain WHY nothing was claimable and what to do next."""
+    state = get_state()
+    active = [t for t in state["tasks"] if t["status"] == CLAIMED]
+    opens = [t for t in state["tasks"] if t["status"] == OPEN]
+    print("NONE — no parallel-safe task right now. Why, and what to do:")
+    if not opens:
+        print("  * board has zero open tasks. Refill: python -m core.wellspring --seed")
+        return
+    cap_locked = [t for t in opens if t.get("capable_only")]
+    if cap_locked and not capable:
+        print(f"  * {len(cap_locked)} open task(s) are capable_only — earn the credential: "
+              f"python -m core.gauntlet enter --agent <your-id>")
+    by_id = {t["id"]: t for t in state["tasks"]}
+    now = time.time()
+    shown = 0
+    for t in sorted(opens, key=lambda x: -x.get("priority", 1.0)):
+        if shown >= 3:
+            break
+        if t.get("capable_only") and not capable:
+            continue
+        if not _deps_done(t, by_id):
+            print(f"  * {t['id']} '{t['title'][:44]}' waits on deps {t.get('depends_on')}")
+            shown += 1
+            continue
+        blockers = [(c, tasks_conflict(t, c)) for c in active]
+        blockers = [(c, r) for c, r in blockers if r]
+        if blockers:
+            c, r = blockers[0]
+            eta = max(0.0, (CLAIM_TTL - (now - c.get("heartbeat", 0))) / 60)
+            print(f"  * {t['id']} '{t['title'][:44]}' blocked by {c['id']} "
+                  f"(held by {c.get('claimed_by')}): {r}")
+            print(f"    -> that claim auto-reaps in ~{eta:.0f} min if its owner goes silent; "
+                  f"or claim a disjoint lane. `python -m core.task_board list` shows all.")
+            shown += 1
+    print("  You cannot force-release another agent's lane; a dead claim frees itself at TTL.")
 
 
 @_locked
@@ -724,6 +822,13 @@ def main(argv=None):
                       f"(pain already dispositioned)")
         except Exception:
             pass
+        try:  # self-heal footprints so a stale scope model can't deadlock the board
+            _n_rs = rescope_nondone_tasks()
+            if _n_rs:
+                print(f"[rescope] refreshed footprint on {_n_rs} task(s) to the "
+                      f"current resource model")
+        except Exception:
+            pass
         if args.raw:
             try:
                 t = claim_task(args.agent, task_id=args.id, capable=args.capable)
@@ -743,7 +848,7 @@ def main(argv=None):
                           f"from the steering organs; retrying claim")
                     t = claim_task(args.agent, task_id=None, capable=args.capable)
             if t is None:
-                print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
+                _print_no_claim(args.capable)
                 sys.exit(2)
             _print_task(t)
         else:
@@ -777,7 +882,7 @@ def main(argv=None):
                         print(f"REFUSED: {e}")
                         sys.exit(1)
             if packet is None:
-                print("NONE (no parallel-safe open task; `list` shows what's claimed/blocked)")
+                _print_no_claim(args.capable)
                 sys.exit(2)
             _print_packet(packet)
             try:  # CAPCOM: announce the claim onto the operator channel
