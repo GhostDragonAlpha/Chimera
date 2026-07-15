@@ -57,6 +57,7 @@ private:
 	void EnsureFootprints(APawn* InPawn);
 	void EnsureChimeraMovement(APawn* InPawn);
 	void EnsureSuitLifeSupport(APawn* InPawn);
+	void EnsureResonanceVFX(APawn* InPawn);
 
 	/** Create (once) and show the diegetic O2/battery/dust wrist HUD (P0 fix,
 	 *  2026-07-13): WID_O2HUD now builds its own widget tree in C++, so a bare

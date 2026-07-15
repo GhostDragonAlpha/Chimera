@@ -12,6 +12,7 @@
 #include "../Suit/SuitLifeSupportComponent.h"
 #include "../Shelter/ShelterHabitatComponent.h"
 #include "../UI/WID_O2HUD.h"
+#include "ProceduralGenerated/VFX/ErisaidResonanceVFXComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -68,6 +69,7 @@ void ADemoPlayerController::OnPossess(APawn* InPawn)
 	EnsureFootprints(InPawn);
 	EnsureChimeraMovement(InPawn);
 	EnsureSuitLifeSupport(InPawn);
+	EnsureResonanceVFX(InPawn);
 	EnsureO2HUD(InPawn);
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Possessed %s"), *GetNameSafe(InPawn));
 }
@@ -120,6 +122,25 @@ void ADemoPlayerController::EnsureSuitLifeSupport(APawn* InPawn)
 		Suit->RegisterComponent();
 		UE_LOG(LogTemp, Display,
 			TEXT("[SUIT] runtime-attached USuitLifeSupportComponent to %s (H-34)"),
+			*GetNameSafe(InPawn));
+	}
+}
+
+void ADemoPlayerController::EnsureResonanceVFX(APawn* InPawn)
+{
+	// Erisaid Resonance VFX — the visual feedback layer for the player's suit.
+	// Attach it to the possessed pawn so resonance visuals are live from first possess (H-34).
+	if (!InPawn || InPawn->FindComponentByClass<UErisaidResonanceVFXComponent>())
+	{
+		return;
+	}
+	UErisaidResonanceVFXComponent* VFX =
+		NewObject<UErisaidResonanceVFXComponent>(InPawn, TEXT("ErisaidResonanceVFXComponent"));
+	if (VFX)
+	{
+		VFX->RegisterComponent();
+		UE_LOG(LogTemp, Display,
+			TEXT("[VFX] runtime-attached UErisaidResonanceVFXComponent to %s (H-34)"),
 			*GetNameSafe(InPawn));
 	}
 }
