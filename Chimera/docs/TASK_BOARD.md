@@ -1,14 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-15T21:42:23+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-15T21:49:34+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0057 | claimed | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | fix-game-feel |
 | tb-0080 | open | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0072 | open | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie |  |
@@ -27,6 +26,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0002 | done | 1.2 | audio_visual_sync/report_telemetry | Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | audio_visual_sync/report_telemetry: H-34 runtime attach in C |
 | tb-0007 | done | 1.2 | Hire_Chaos_Tester (DREAM_ROSTER #5) `capable` | core/chaos.py; editor:open; excl:pie | Created core/chaos.py for Chaos Tester (DREAM_ROSTER #5) wit |
 | tb-0013 | done | 1.2 | Sprint_Input: movement state: verb flag changes the simulati | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | Sprint_Input/state atom GREEN x2: SetSprinting(bool) scales  |
+| tb-0057 | done | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | rep_engine tend: subsystem_PCG no longer in failing list (wa |
 | tb-0058 | done | 1.2 | Fix 2 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** | Investigation complete. Malcolm_Envelope had 2 red rep atoms |
 | tb-0059 | done | 1.2 | Fix 1 red rep atom(s): Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/** | resolved: Verb_Shovel green (13 atoms) in run_17841343390649 |
 | tb-0060 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Economy | core/game_code_generator.py; excl:generator | resolved: subsystem/Economy green (26 atoms) in run_17841343 |

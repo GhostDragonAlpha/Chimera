@@ -996,6 +996,7 @@ class GameCodeGenerator:
         # Add PCGVolumeManager include if procedural generation is present
         if has_pcg:
             header_content += f'#include "PCGVolumeManager.h"\n'
+            header_content += f'#include "PCG/UniverseGenerationComponent.h"\n'
         
         # Add ship and component includes if ships are present
         if has_ships:
@@ -1028,6 +1029,8 @@ class GameCodeGenerator:
         if has_pcg:
             header_content += "\tUPROPERTY()\n"
             header_content += "\tAPCGVolumeManager* PcgVolumeManager;\n"
+            header_content += "\tUPROPERTY()\n"
+            header_content += "\tUUniverseGenerationComponent* UniverseGen;\n"
         
         # Add player ship and station members if ships or stations are present
         if has_ships or has_stations:
@@ -1058,6 +1061,7 @@ class GameCodeGenerator:
         # Add PCGVolumeManager include if procedural generation is present
         if has_pcg:
             source_content += f'#include "PCGVolumeManager.h"\n'
+            source_content += f'#include "PCG/UniverseGenerationComponent.h"\n'
         
         # Add ship and component includes if ships are present
         if has_ships:
@@ -1134,6 +1138,12 @@ class GameCodeGenerator:
         # ship-pawn fallback above without needing per-pawn-type branching.
         source_content += "\n\tPlayerControllerClass = ADemoPlayerController::StaticClass();\n"
         source_content += "\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: PlayerControllerClass set to ADemoPlayerController\"));\n"
+
+        # Spawn UniverseGenerationComponent for PCG (H-34: component must be instantiated)
+        if has_pcg:
+            source_content += "\n\t// Initialize Universe Generation Component\n"
+            source_content += "\tUniverseGen = CreateDefaultSubobject<UUniverseGenerationComponent>(TEXT(\"UniverseGen\"));\n"
+            source_content += "\tif (UniverseGen) { UE_LOG(LogTemp, Log, TEXT(\"GAMEMODE CONSTRUCTOR: UniverseGen created via CreateDefaultSubobject\")); }\n"
 
         source_content += "}\n\n"
 
