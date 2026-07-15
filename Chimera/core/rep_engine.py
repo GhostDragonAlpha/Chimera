@@ -616,6 +616,14 @@ def gen_curriculum(cache: _FileCache) -> list:
             {"pattern": f"docs/gauntlet/features/{slug}/transcript.json"},
             f"'{feature}' is enrolled in the curriculum (school record on disk)",
             "curriculum:enrolled"))
+        # Identity atoms only for GAME-ARTIFACT names (seed classes, ledger
+        # features). Slashed names ("audio_visual_sync/telemetry_accessors")
+        # are meta/workflow features whose name legitimately traces to no game
+        # content — minting identity for them creates a PERMANENT false red
+        # that poisons the battery's streak (it degraded the one PhD-track
+        # feature on first contact, 2026-07-14). Their enrolled-atom stands.
+        if "/" in str(feature):
+            continue
         token = re.sub(r"[^A-Za-z0-9_]", "_", str(feature))
         camel = "".join(w.capitalize() for w in token.split("_"))
         atoms.append(make_atom(
