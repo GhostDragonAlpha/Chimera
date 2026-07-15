@@ -31,7 +31,7 @@
       "graphify": {
         "type": "stdio",
         "command": "C:\\Users\\allen\\.local\\bin\\graphify-mcp.exe",
-        "args": ["E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json"]
+        "args": ["E:/PythonChimera/Chimera/docs/chimera_dna_graph.json"]
       },
       "chiR24-unreal-mcp": {
         "type": "stdio",
