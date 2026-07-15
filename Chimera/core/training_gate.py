@@ -95,3 +95,100 @@ def check(feature, status=None, waiver="", ):
     if never_trained:
         misses.append("zero reps recorded (training never began)")
     return "missing", "; ".join(misses) or reason
+
+
+# ---------------------------------------------------------------------------
+# Training at TASK CLOSURE (2026-07-15) — the unit of training is the PIECE the
+# agent is working on: the claimed TASK, at ANY granularity (a period to a whole
+# system). The old feature-verify gate sat on a path task-closure never took, so
+# real work escaped training (all 4 stress-test agents closed tasks untrained).
+# DOMAIN-APPROPRIATE policy (the human's choice): every task IS trained, by the
+# mechanism that logically fits its KIND. Only a GAME task must show curriculum+
+# reps; the others each have a stated reason they train differently.
+GAME_MARKERS = ("source/chimera", "tests/dsl_grammar", "content/", ".chimera",
+                "game_code_generator")
+_KIND_TRAINING = {
+    "infra": "proof-of-work: passing tests + the exit's verbatim evidence "
+             "(no game artifact exists to mint rep atoms from)",
+    "research": "the research gate (sources/waiver) — the deliverable is knowledge",
+    "witness": "it RUNS the training-evaluation (collapse), it is not a new trainable",
+}
+
+
+def _task_subject(task) -> str:
+    """The game feature a task is ABOUT, with the recipe verb stripped."""
+    import re
+    s = str((task or {}).get("feature") or (task or {}).get("title") or "").strip()
+    for pat in (r"^Fix\s+\d+\s+red\s+rep\s+atom\(s\):\s*", r"^Build toward the seed:\s*",
+                r"^Witness & collapse:\s*", r"^Research:\s*"):
+        s = re.sub(pat, "", s, flags=re.IGNORECASE)
+    return s.strip()
+
+
+def classify_task(task) -> str:
+    """game | infra | research | witness — the domain that decides HOW it trains."""
+    import re
+    title = str((task or {}).get("title") or "").lower()
+    if title.startswith("research:") or re.match(r"^\s*research\b", title):
+        return "research"
+    if "witness" in title or "collapse" in title or title.startswith("observe"):
+        return "witness"
+    files = " ".join((task or {}).get("resources", {}).get("files", []) or []).lower()
+    if any(m in files for m in GAME_MARKERS):
+        return "game"
+    if files and ("core/" in files or "docs/" in files):
+        return "infra"
+    return "game"  # default: an unclassified named piece is treated as game work
+
+
+def check_task(task, waiver: str = ""):
+    """(status, detail). status: n/a | evidence | waived | missing. Only a GAME
+    task requires curriculum+reps; the rest are trained by their domain mechanism."""
+    kind = classify_task(task)
+    if kind != "game":
+        return "n/a", f"{kind} task — trained by {_KIND_TRAINING[kind]}"
+    subject = _task_subject(task)
+    if not subject:
+        return "n/a", "no identifiable game subject"
+    try:
+        from core.curriculum import _transcript_path
+        enrolled = _transcript_path(subject).exists()
+    except Exception:
+        enrolled = False
+    reps_begun, reason = False, "rep engine unavailable"
+    try:
+        from core.rep_engine import rep_gate
+        _elig, reason = rep_gate(subject)
+        reps_begun = not str(reason).startswith("no reps recorded")
+    except Exception:
+        pass
+    if enrolled and reps_begun:
+        return "evidence", f"'{subject}' enrolled + reps begun"
+    if (waiver or "").strip():
+        return "waived", waiver.strip()
+    misses = []
+    if not enrolled:
+        misses.append("NOT ENROLLED in the curriculum")
+    if not reps_begun:
+        misses.append("no reps begun on its battery")
+    return "missing", f"'{subject}': " + "; ".join(misses)
+
+
+def task_guidance(task) -> str:
+    s = _task_subject(task) or "<subject>"
+    return ("This PIECE must go to school before it closes — train the one thing you "
+            "worked, one at a time:\n"
+            f'  python -m core.curriculum enroll --feature "{s}"\n'
+            "  python -m core.rep_engine tend      (earn reps on its battery)\n"
+            'or record an honest exception:  --training-waiver "<why>"')
+
+
+def enforce_task_or_raise(task, waiver: str = ""):
+    """Raise ValueError (surfaced as REFUSED) when a GAME task closes untrained and
+    the gate is enforced. n/a / evidence / waived pass through. Returns (status,
+    detail) so the caller can log the domain-appropriate mechanism."""
+    status, detail = check_task(task, waiver=waiver)
+    if status == "missing" and enforced():
+        raise ValueError(f"TRAINING GATE (task closure) — {detail}. The piece you "
+                         f"worked must be trained before it can close.\n{task_guidance(task)}")
+    return status, detail

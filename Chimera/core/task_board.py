@@ -895,6 +895,10 @@ def main(argv=None):
         px.add_argument("--agent", required=True)
         px.add_argument("--id", required=True)
         px.add_argument(f"--{extra}", required=True)
+        if name == "done":
+            px.add_argument("--training-waiver", default="", dest="training_waiver",
+                            help="honest exception to training-at-closure (the piece "
+                                 "genuinely can't be curriculum/rep-trained)")
 
     pr = sub.add_parser("release", help="Put a claimed task back to open")
     pr.add_argument("--agent", required=True)
@@ -1065,12 +1069,20 @@ def main(argv=None):
                 out = exit_tunnel(args.agent, outcome,
                                   result=getattr(args, "result", ""),
                                   reason=getattr(args, "reason", ""),
-                                  note=getattr(args, "note", ""))
+                                  note=getattr(args, "note", ""),
+                                  training_waiver=getattr(args, "training_waiver", ""))
                 print(f"{args.cmd.upper()}: {args.id} (tunnel exited)")
                 for w in out.get("footprint_warnings", []):
                     print(f"  !! outside your footprint: {w}")
                 print(f"record it: {out['postflight']}")
             elif args.cmd == "done":
+                # TRAINING AT CLOSURE (raw/no-tunnel path): the piece must be
+                # trained (domain-appropriate) before it closes. Raises -> REFUSED.
+                _rawt = next((t for t in get_state()["tasks"] if t["id"] == args.id), None)
+                if _rawt is not None:
+                    from core.training_gate import enforce_task_or_raise as _etr
+                    _s, _d = _etr(_rawt, waiver=getattr(args, "training_waiver", ""))
+                    print(f"[Training Gate] {_s}: {_d[:120]}")
                 _print_task(complete_task(args.agent, args.id, args.result))
             elif args.cmd == "block":
                 _print_task(block_task(args.agent, args.id, args.reason))

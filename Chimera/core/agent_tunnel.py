@@ -334,7 +334,7 @@ def tunnel_heartbeat(agent_id: str) -> dict:
 
 
 def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
-                note: str = "") -> dict:
+                note: str = "", training_waiver: str = "") -> dict:
     """Finish the session: settle the board task, release the editor, return
     what happened (including the prefilled postflight command)."""
     sess = _read_session(agent_id)
@@ -343,6 +343,17 @@ def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
     tid = sess["task_id"]
     warnings = []
     if outcome == "done":
+        # TRAINING AT CLOSURE: the piece you worked must be trained (domain-
+        # appropriate) before it can close. Raises -> surfaced as REFUSED.
+        try:
+            from core.training_gate import enforce_task_or_raise
+        except ImportError:
+            enforce_task_or_raise = None
+        if enforce_task_or_raise is not None:
+            _tsk = next((t for t in board_state()["tasks"] if t["id"] == tid), None)
+            if _tsk is not None:
+                _tg_status, _tg_detail = enforce_task_or_raise(_tsk, waiver=training_waiver)
+                print(f"[Training Gate] {_tg_status}: {_tg_detail[:120]}")
         task = complete_task(agent_id, tid, result=result)      # demands evidence
         warnings = _footprint_warnings(task,
                                        baseline=set(sess.get("baseline_dirty") or []))
@@ -438,6 +449,9 @@ def main(argv=None):
     px.add_argument("--result", default="")
     px.add_argument("--reason", default="")
     px.add_argument("--note", default="")
+    px.add_argument("--training-waiver", default="", dest="training_waiver",
+                    help="honest exception to training-at-closure (the piece genuinely "
+                         "can't be curriculum/rep-trained); recorded")
 
     sub.add_parser("status", help="Active tunnel sessions")
     sub.add_parser("tend", help="Close sessions whose claim vanished; free their editor")
@@ -463,7 +477,8 @@ def main(argv=None):
     elif args.cmd == "exit":
         try:
             out = exit_tunnel(args.agent, args.outcome, result=args.result,
-                              reason=args.reason, note=args.note)
+                              reason=args.reason, note=args.note,
+                              training_waiver=getattr(args, "training_waiver", ""))
         except (KeyError, ValueError) as e:
             print(f"REFUSED: {e}")
             sys.exit(1)
