@@ -119,6 +119,8 @@ def _helm_rows():
                 "score": round(0.5 + gap / 2.0, 2),
                 "recipe": (
                     f"{name} is {realized:.0%} realized (gap {gap:.2f}) — {str(t.get('doc',''))[:120]}. "
+                    f"ENROLL FIRST: python -m core.curriculum enroll --feature {name} (the training "
+                    f"gate refuses un-enrolled verification — every piece goes through school). "
                     f"Research first (python -m core.spiral_forks --feature {name} --use-lm; Research "
                     f"Depth Protocol applies). Implement at the RIGHT layer: game content -> the DSL "
                     f"spec; code shape -> core/game_code_generator.py; loop-built subsystems -> hand-edit. "

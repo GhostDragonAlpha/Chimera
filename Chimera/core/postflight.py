@@ -64,6 +64,9 @@ def main():
                              "VERIFIED/NEEDS_REFINEMENT + shot path) when marking a feature verified")
     parser.add_argument("--visual-waiver", default="", dest="visual_waiver",
                         help="Visual Gate: reasoned waiver (non-visual feature, or editor/bridge down)")
+    parser.add_argument("--training-waiver", default="", dest="training_waiver",
+                        help="Training Gate: reasoned waiver when curriculum/rep training genuinely "
+                             "doesn't apply (every feature is otherwise forced through school)")
     args = parser.parse_args()
 
     # Research Gate — the mandated research must be EXPLICIT, not silently skipped
@@ -254,6 +257,46 @@ def main():
             raise
         except Exception as _vg_e:
             print(f"[Visual Gate] unavailable ({_vg_e}) — passing open")
+
+        # Training Gate — every feature is FORCED through training, one piece at
+        # a time (the human's goal, 2026-07-14): verified requires curriculum
+        # enrollment + reps begun; observed requires the full rep gate. A silent
+        # skip is refused; --training-waiver records the honest exception.
+        try:
+            from core.training_gate import check as _tg_check, enforced as _tg_enforced, guidance as _tg_guide
+            _tg_status, _tg_detail = _tg_check(
+                args.feature, status=args.status,
+                waiver=getattr(args, "training_waiver", "") or "")
+            if _tg_status == "missing" and _tg_enforced():
+                print(f"\n!! TRAINING GATE - refused: {args.feature} -> '{args.status}' without training: {_tg_detail}")
+                print(_tg_guide(args.feature))
+                try:
+                    from core.graphify_interface import record_surprise as _tg_rs
+                    _tg_rs(context=f"postflight refused by training gate: {args.feature} -> {args.status}",
+                           reality=_tg_detail[:200],
+                           expectation="every feature goes through the curriculum + rep training before verification",
+                           source="agent")
+                except Exception:
+                    pass
+                try:
+                    from core.capcom import post_safe as _tg_ps
+                    _tg_ps("training", f"postflight BLOCKED: {args.feature} {args.status} untrained - {_tg_detail[:60]}",
+                           level="warn", source="training-gate")
+                except Exception:
+                    pass
+                raise SystemExit(1)
+            print(f"[Training Gate] {_tg_status}: {_tg_detail[:110]}")
+            if _tg_status == "waived":
+                try:
+                    from core.capcom import post_safe as _tg_ps
+                    _tg_ps("training", f"training WAIVED: {args.feature} {args.status} - {_tg_detail[:52]}",
+                           level="note", source="training-gate")
+                except Exception:
+                    pass
+        except SystemExit:
+            raise
+        except Exception as _tg_e:
+            print(f"[Training Gate] unavailable ({_tg_e}) — passing open")
 
         # THE COIN (top layer, the human's design 2026-07-14) — the existence
         # gates above check evidence EXISTS; the coin checks the two faces MATCH:
