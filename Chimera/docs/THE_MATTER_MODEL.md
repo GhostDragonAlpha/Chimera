@@ -274,3 +274,107 @@ already lives there.
   genome? The first limb (§9) is where we find out.
 - **Where behavior lives.** Which bricks get a `behavior` (muscle contracts, water flows) and
   which are inert? "Pull only what the game reads" is the rule; the list is the work.
+
+---
+
+## 12. The expansion — from a limb to a player, and a world
+
+The reason to build the pipeline is not the limb. It is what the limb makes cheap.
+
+> **THE LEVERAGE: once the machine works, a new thing in the world is a new RECIPE, not new
+> engine code.** The assembler never changes. You add content the way you add a save file.
+
+That is the multiplier that turns "a limb" into "everything," and it is worth being concrete
+about, because it is the whole payoff. Everything below is forward-looking — rung 3 and beyond —
+but every step lands on a rung that already exists or is one integration away.
+
+### The worked example: our first player character
+
+In the human's own words: *"get the biology of a human, program that into our system, and bam,
+we've got our first player character."* Here is exactly what that means in this machine — and it
+is not hand-waving, because each step is a rung.
+
+A human is a **recipe** with three parts:
+
+1. **A skeleton** — the human skeletal frame as an L-system / genome. This is rung 1.75's axis,
+   the scaffold adhesion cannot provide itself (rung 1.5 proved that: a thin bone rod segments
+   without one).
+2. **A tissue map** — which bricks go where: the major muscle groups over the bones, fat
+   distribution, the skin shell, and the handful of organs the *game actually reads*. This is
+   "pull the variables that matter" applied to a person — you encode the deltoid because it moves
+   the arm and shows through the skin; you do not encode the islets of Langerhans, because no
+   game system reads them.
+3. **Parameters** — height, build, age: the knobs that turn one recipe into many people.
+
+And the reference data for this **already exists** — anatomical atlases, the Visible Human
+Project, standard muscle and bone datasets. You are not inventing a human; you are *encoding the
+game-relevant subset of a known one.*
+
+Feed that recipe to the machine: the skeleton lays the axis, differential adhesion wraps the
+muscle/fat/skin around it (rungs 1–1.75), the coalesce/fracture rule keeps it cheap (rung 4), and
+the bake turns it into a normal UE5 character (rung 2) — a dense Nanite mesh on a Chaos Flesh rig
+on a skeletal frame — driven by the same evolved controller that already walks the creatures.
+
+The payoff is not "a character mesh." A hand-modelled mesh gives you a *shape*. **A grown anatomy
+gives you a shape that can be WOUNDED** (the skin fractures and the muscle shows — the same rule
+as everything else the machine grows), **VARIED** (one recipe, one parameter, a different build —
+anatomically coherent, not a stretched mesh), and **MOVED** by muscle that is actually there.
+That is the difference the whole substrate buys, and none of it is a per-character feature — it
+falls out of how the thing was grown.
+
+### Clothing, armour, equipment — not a special system
+
+*"We'll have to make sure they have clothes on."* Good — and clothing is the cleanest proof that
+the substrate generalises. A garment is just **more bricks**: fabric bricks with a "drapes over
+the skin shell" typed interface (§3); armour as rigid bricks; both worn as a layer on top of the
+skin. They tear and dent through the *same* coalesce/fracture rule as flesh. There is no "clothing
+system" to write — there is a fabric brick and an interface, and the machine already knows what to
+do with those.
+
+### One recipe, a population
+
+Because the recipe is parametric — like the genome it is — one human recipe is a whole population.
+Turn the "build" knob and the fat bricks redistribute *correctly*; turn "age" and the tissue
+properties shift. This is procedural character generation, but grounded in anatomy, so the
+variation is coherent rather than a mesh stretched at the seams.
+
+### The library grows; the engine does not
+
+Human, then wolf, then oak, then granite. Each is a recipe; the assembler that grows them never
+changes. This is the LEGO set that equals everything, filled one recipe at a time — and every
+recipe you add is content the whole rest of the machine (wounds, variation, evolution, the bake)
+*immediately* knows how to handle.
+
+### The compounding opportunities
+
+Each is unlocked by the substrate, and each is grounded in a piece that already exists:
+
+- **Physiology the game reads.** Stamina from muscle mass, injury from tissue damage, growth and
+  aging by re-running the recipe over time. The numbers are already in the bricks.
+- **Inheritance.** Mix two recipes and the offspring's anatomy is the blend — which is exactly the
+  genome crossover the [evolution engine](THE_EVOLUTION_ENGINE.md) already does. Breeding becomes
+  real, not cosmetic.
+- **Evolve the anatomy, not just the skeleton.** The Matter Model × the Evolution Engine: the
+  trainer can select *fleshed* variants — a stronger build, a leaner one — against an objective,
+  not merely morphology.
+- **Universal wounds, surgery, disease.** Because everything is layered bricks, a cut reveals
+  structure the same way in a human, a creature, or a tree; a disease can spread through a tissue;
+  a wound can heal by re-growth. One mechanism, every object in the world.
+- **Modding as data.** A recipe is data, not code — designers, or players, can add creatures,
+  plants, and gear to the world without touching the engine.
+
+### The honest gates (opportunities, with their costs)
+
+- **Each recipe is real work.** Encoding a human's game-relevant anatomy is a project, not a
+  weekend. The *pipeline* is reusable; the *recipe* is earned.
+- **The bake must exist first (rung 2).** None of this ships until grown anatomy becomes native
+  UE5 assets, cheaply.
+- **Grown is not automatically beautiful.** Art direction still matters; the machine gives you a
+  correct anatomy, not a directed one.
+- **"Pull what matters" is a discipline, applied per recipe.** The urge to model the whole human
+  is the lollipop trap in a new costume — encode what the game reads, and nothing more.
+
+> A limb was never the goal. The goal is the day a designer writes a recipe, feeds it to the
+> machine, and a new living thing walks into the world already able to be wounded, varied, bred,
+> and evolved — because the machine that grew the limb already knows how to do all of that to
+> anything it grows.
