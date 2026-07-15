@@ -352,7 +352,8 @@ def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
         if enforce_task_or_raise is not None:
             _tsk = next((t for t in board_state()["tasks"] if t["id"] == tid), None)
             if _tsk is not None:
-                _tg_status, _tg_detail = enforce_task_or_raise(_tsk, waiver=training_waiver)
+                _tg_status, _tg_detail = enforce_task_or_raise(
+                    _tsk, waiver=training_waiver, agent=agent_id)
                 print(f"[Training Gate] {_tg_status}: {_tg_detail[:120]}")
         task = complete_task(agent_id, tid, result=result)      # demands evidence
         warnings = _footprint_warnings(task,

@@ -1081,7 +1081,8 @@ def main(argv=None):
                 _rawt = next((t for t in get_state()["tasks"] if t["id"] == args.id), None)
                 if _rawt is not None:
                     from core.training_gate import enforce_task_or_raise as _etr
-                    _s, _d = _etr(_rawt, waiver=getattr(args, "training_waiver", ""))
+                    _s, _d = _etr(_rawt, waiver=getattr(args, "training_waiver", ""),
+                                  agent=args.agent)
                     print(f"[Training Gate] {_s}: {_d[:120]}")
                 _print_task(complete_task(args.agent, args.id, args.result))
             elif args.cmd == "block":

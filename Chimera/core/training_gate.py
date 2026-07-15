@@ -183,11 +183,29 @@ def task_guidance(task) -> str:
             'or record an honest exception:  --training-waiver "<why>"')
 
 
-def enforce_task_or_raise(task, waiver: str = ""):
+def enforce_task_or_raise(task, waiver: str = "", agent: str = ""):
     """Raise ValueError (surfaced as REFUSED) when a GAME task closes untrained and
     the gate is enforced. n/a / evidence / waived pass through. Returns (status,
-    detail) so the caller can log the domain-appropriate mechanism."""
+    detail) so the caller can log the domain-appropriate mechanism.
+
+    Also PUSHES the notable outcome onto CAPCOM (the human's design, 2026-07-15):
+    the LEAD agent runs CAPCOM and dispatches FOCUSED subagents, one per task, so
+    each focused piece's training status must flow back UP to the operator channel
+    the lead reads. A blocked/waived closure the lead didn't do itself is exactly
+    the kind of signal CAPCOM exists to surface."""
     status, detail = check_task(task, waiver=waiver)
+    tid = str((task or {}).get("id", "?"))
+    who = agent or "subagent"
+    try:
+        from core.capcom import post_safe
+        if status == "missing" and enforced():
+            post_safe("training", f"BLOCKED closure: {who} on {tid} untrained — {detail[:64]}",
+                      level="warn", source="training-gate")
+        elif status == "waived":
+            post_safe("training", f"WAIVED: {who} closed {tid} untrained — {detail[:58]}",
+                      level="note", source="training-gate")
+    except Exception:
+        pass
     if status == "missing" and enforced():
         raise ValueError(f"TRAINING GATE (task closure) — {detail}. The piece you "
                          f"worked must be trained before it can close.\n{task_guidance(task)}")
