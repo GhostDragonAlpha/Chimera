@@ -248,6 +248,24 @@ def measure_axis(name: str, graph_nodes: list = None, board_state: dict = None) 
         if name == "graph_nodes":
             return (len(graph_nodes), "live DNA graph")
         if name == "heuristics_per_night":
+            # SENSOR FIX (2026-07-14): every Heuristic NODE is a gardener
+            # PROMOTION (staged candidates live only in PENDING_HEURISTICS.md);
+            # counting nodes measured backlog-draining promotions, not what the
+            # wall MEANS (distiller staging <=2/night) — a night that promoted 7
+            # old entries read as a 450% false BREACH. Measure the wall's real
+            # subject: the staged-candidate count from the latest dream report.
+            try:
+                _dr = CHIMERA_ROOT / "docs" / "DREAM_REPORT.md" if "CHIMERA_ROOT" in globals() \
+                    else Path(__file__).resolve().parents[1] / "docs" / "DREAM_REPORT.md"
+                import re as _re_h
+                _m = _re_h.search(r"staged\s+(\d+)\s+candidate",
+                                  _dr.read_text(encoding="utf-8", errors="replace"),
+                                  _re_h.IGNORECASE)
+                if _m:
+                    return (int(_m.group(1)), "distiller candidates staged (latest Dream Report)")
+            except Exception:
+                pass
+            return (None, "no staged-candidate line in DREAM_REPORT.md; unmeasured (honest skip)")
             day_ago = (now - timedelta(days=1)).isoformat()
             # The wall governs DISTILLER CANDIDATES (<=2/night). Rejection-
             # lineage records (human_rejection:/sim_rejection: signatures) are

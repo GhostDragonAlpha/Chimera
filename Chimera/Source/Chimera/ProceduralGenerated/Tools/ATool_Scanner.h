@@ -19,6 +19,11 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Tool", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LensMeshComponent;
 
+	// The scan behaviour lives in its component (H-34: a component class with no
+	// spawner is dead code — this actor is its rightful owner).
+	UPROPERTY(VisibleAnywhere, Category = "Tool")
+	class UToolScannerComponent* ScannerComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Tool")
 	FName ToolCategory;
 

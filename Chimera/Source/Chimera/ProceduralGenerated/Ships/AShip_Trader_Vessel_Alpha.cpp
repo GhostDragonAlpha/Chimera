@@ -6,6 +6,7 @@ AShip_Trader_Vessel_Alpha::AShip_Trader_Vessel_Alpha(const FObjectInitializer& O
 	PrimaryActorTick.bCanEverTick = true;
 
 	ShipRoot = CreateDefaultSubobject<USceneComponent>(TEXT("ShipRoot"));
+	ShipCategory = TEXT("Freighter");  // seed default; DSL ship class overrides
 	RootComponent = ShipRoot;
 
 	ShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));

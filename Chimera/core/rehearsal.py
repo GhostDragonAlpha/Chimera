@@ -169,10 +169,26 @@ def apply_freshness(rows, nodes):
 
 def apply_no_dead_ends(rows, nodes):
     """NO-DEAD-ENDS LAW: a candidate whose recipe depends on a recorded dead end is
-    demoted to near-zero and REPLACED by its unblocker (the repair IS the work)."""
+    demoted to near-zero and REPLACED by its unblocker (the repair IS the work).
+
+    ALREADY-DONE LAW (2026-07-14): a candidate whose feature's latest ledger status
+    says finished (implemented/verified/observed/encoded) is demoted the same way —
+    observed live: rehearsal re-proposed 'Costless Life Bad Ending Trigger' for a
+    whole session though CostlessLifeEndingDiagnostic.cpp was implemented+verified,
+    feeding the false 'nothing left to do' idle state."""
+    _DONE = {"implemented", "verified", "observed", "observed_provisional", "encoded"}
+    _ledger = {str(k).lower().replace(" ", "_"): v[1] if isinstance(v, tuple) else v
+               for k, v in _latest_feature_statuses(nodes).items()}
     blocked_actions = _known_blockers(nodes)
     out, spawned = [], []
     for r in rows:
+        _key = str(r.get("name", "")).lower().replace(" ", "_")
+        _st = _ledger.get(_key)
+        if _st in _DONE:
+            out.append({**r, "score": round(r.get("score", 1.0) * 0.02, 3),
+                        "why": f"ALREADY-DONE DEMOTED (ledger status={_st}) — "
+                               f"pick unfinished work instead"})
+            continue
         blob = (r.get("recipe", "") + " " + r.get("why", "")).lower()
         hits = [a for a in blocked_actions if a in blob]
         explicit = r.get("blocked_by")

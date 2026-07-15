@@ -1,14 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-15T15:29:07+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-15T15:31:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 0 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0057 | open | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
+| tb-0057 | claimed | 1.2 | Fix 2 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie | chimera-auto-1 |
 | tb-0058 | open | 1.2 | Fix 2 red rep atom(s): Malcolm_Envelope | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |
 | tb-0059 | open | 1.2 | Fix 1 red rep atom(s): Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie |  |
 | tb-0060 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Economy | Source/Chimera/ProceduralGenerated/**; editor:open; excl:pie |  |

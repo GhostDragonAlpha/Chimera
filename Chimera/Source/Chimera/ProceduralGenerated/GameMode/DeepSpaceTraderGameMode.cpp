@@ -45,6 +45,13 @@ void ADeepSpaceTraderGameMode::BeginPlay()
 	UE_LOG(LogTemp, Log, TEXT("GAMEMODE BEGINPLAY FIRED"));
 	UE_LOG(LogTemp, Log, TEXT("GAMEMODE BEGINPLAY: World=%s, Level=%s"), *GetWorld()->GetName(), *GetWorld()->GetCurrentLevel()->GetName());
 
+	// Bind the live player pawn (the seed's PlayerShip handle)
+	if (APlayerController* FirstPC = GetWorld()->GetFirstPlayerController())
+	{
+		PlayerShip = FirstPC->GetPawn();
+		UE_LOG(LogTemp, Log, TEXT("GAMEMODE: PlayerShip bound to %s"), *GetNameSafe(PlayerShip));
+	}
+
 	// Initialize PCG Volume Manager
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;

@@ -656,6 +656,7 @@ class GameCodeGenerator:
         source_content += "{\n"
         source_content += "\tPrimaryActorTick.bCanEverTick = true;\n\n"
         source_content += "\tShipRoot = CreateDefaultSubobject<USceneComponent>(TEXT(\"ShipRoot\"));\n"
+        source_content += "\tShipCategory = TEXT(\"Freighter\");  // seed default; DSL ship class overrides\n"
         source_content += "\tRootComponent = ShipRoot;\n\n"
         source_content += "\tShipMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT(\"ShipMesh\"));\n"
         source_content += "\tShipMesh->SetupAttachment(RootComponent);\n\n"
@@ -879,6 +880,16 @@ class GameCodeGenerator:
         source_content += "\tSuper::BeginPlay();\n"
         source_content += "\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE BEGINPLAY FIRED\"));\n"
         source_content += "\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE BEGINPLAY: World=%s, Level=%s\"), *GetWorld()->GetName(), *GetWorld()->GetCurrentLevel()->GetName());\n\n"
+
+        # Bind the seed's PlayerShip handle to the live player pawn (previously a
+        # dead UPROPERTY — declared, never written; subsystem/GameMode red atom).
+        if has_ships or has_stations:
+            source_content += "\t// Bind the live player pawn (the seed's PlayerShip handle)\n"
+            source_content += "\tif (APlayerController* FirstPC = GetWorld()->GetFirstPlayerController())\n"
+            source_content += "\t{\n"
+            source_content += "\t\tPlayerShip = FirstPC->GetPawn();\n"
+            source_content += "\t\tUE_LOG(LogTemp, Log, TEXT(\"GAMEMODE: PlayerShip bound to %s\"), *GetNameSafe(PlayerShip));\n"
+            source_content += "\t}\n\n"
 
         # Add PCG Volume Manager initialization if procedural generation is present
         if has_pcg:
@@ -1825,6 +1836,9 @@ UStationTradingData::UStationTradingData()
 {
 	BuyPriceMultiplier = 0.9f; // Buy at 10% discount
 	SellPriceMultiplier = 1.1f; // Sell at 10% markup
+	// Default tradable stock (previously a dead UPROPERTY — declared, never
+	// populated; subsystem/Economy red atom). DSL station data overrides.
+	AvailableCommodities = { TEXT("Ore"), TEXT("Water"), TEXT("Fuel") };
 }
 
 float UStationTradingData::GetBuyPriceForCommodity(FString CommodityName, float BasePrice) const

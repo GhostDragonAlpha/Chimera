@@ -84,6 +84,20 @@
   "provenance": "reflection:UPROPERTY:ATool_Scanner.h"
  },
  {
+  "id": "atom_643b1f3a4e9e",
+  "feature": "Verb_Shovel",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bScannerComponent\\b"
+  },
+  "desc": "UPROPERTY ScannerComponent (ATool_Scanner.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ATool_Scanner.h"
+ },
+ {
   "id": "atom_9a0db17b59c4",
   "feature": "Verb_Shovel",
   "tier": 1,

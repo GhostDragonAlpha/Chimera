@@ -227,9 +227,10 @@ public:
 	}
 
 	/**
-	 * Run all weight shift animation tests
+	 * Run all weight shift animation tests. Returns true iff every test passed
+	 * (so the automation-framework caller below can report a real verdict).
 	 */
-	static void RunAllTests()
+	static bool RunAllTests()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("=== Weight Shift Animation Test Suite ==="));
 
@@ -283,6 +284,7 @@ public:
 		{
 			UE_LOG(LogTemp, Error, TEXT("=== Some Weight Shift Tests FAILED ==="));
 		}
+		return bAllPassed;
 	}
 };
 
@@ -291,3 +293,18 @@ void RunWeightShiftTests()
 {
 	FWeightShiftAnimationTests::RunAllTests();
 }
+
+// THE CALLER (tb-0056 CONFIRMED these 4 tests compiled for weeks but had zero
+// callers — never executed once; a green build is not test coverage). Registered
+// with UE's automation framework so they run headlessly with every suite:
+//   Automation RunTests Chimera.Animation.WeightShift
+#if WITH_DEV_AUTOMATION_TESTS
+#include "Misc/AutomationTest.h"
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FWeightShiftAnimationAutomationTest,
+	"Chimera.Animation.WeightShift",
+	EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+bool FWeightShiftAnimationAutomationTest::RunTest(const FString& Parameters)
+{
+	return FWeightShiftAnimationTests::RunAllTests();
+}
+#endif

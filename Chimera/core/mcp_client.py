@@ -1,14 +1,21 @@
-"""Native MCP HTTP transport client for Chimera.
+"""MCP HTTP transport client for Chimera — CHECK YOUR TRANSPORT FIRST.
 
-Connects to the Unreal Engine 5.8 MCP Automation Bridge plugin's built-in
-Streamable HTTP endpoint (port 3000) — no Node.js bridge required.
+!! REALITY CHECK (2026-07-14, measured live): the McpAutomationBridge plugin in
+this project serves **WebSocket on 127.0.0.1:8090/8091** (editor log:
+"FMcpBridgeWebSocket::RunServer ... port=8090"). There is NO HTTP endpoint on
+:3000 in this build — this client's :3000 default refused connections for 30+
+minutes of debugging. THE PROVEN CLIENT is `core.telemetry_probe.MCPStdioClient`
+(spawns the chiR24 node CLI, which speaks the bridge's WebSocket):
 
-Usage:
-    from core.mcp_client import MCPClient
-    c = MCPClient()
-    c.initialize()
-    rt = c.inspect("runtime_report")
-    c.control_editor(action="screenshot", mode="editor_viewport", filename="test.png")
+    from core.telemetry_probe import MCPStdioClient
+    c = MCPStdioClient()
+    c.call("control_editor", {"action": "screenshot",
+                              "mode": "editor_viewport", "filename": "x.png"})
+    c.close()
+
+This HTTP client is kept ONLY for a build whose plugin exposes Streamable HTTP.
+If initialize() gets 'actively refused', you are on the WebSocket build — use
+MCPStdioClient (docs/MCP_PATHWAYS.md).
 """
 
 import json

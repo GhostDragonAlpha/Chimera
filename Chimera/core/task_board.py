@@ -468,6 +468,40 @@ def get_state() -> dict:
         _release_lock_fd(fd)
 
 
+def reconcile_stale_pain_tasks() -> int:
+    """Auto-close OPEN pain-verdict tasks whose pain already has a recorded
+    verdict (pain phase_11103b6bf873a5df:P1, CONFIRMED live: after tb-0019
+    refuted a pain, the board kept serving tb-0020/tb-0021 for its duplicates —
+    already-answered questions). still-open verdicts stay claimable. Returns
+    the number closed."""
+    import re as _re
+    state = get_state()
+    candidates = [t for t in state["tasks"] if t["status"] == OPEN
+                  and _re.search(r"phase_[0-9a-f]{6,}:P\d+",
+                                 str(t.get("recipe", "")) + " " + str(t.get("title", "")))]
+    if not candidates:
+        return 0
+    try:
+        from core.graphify_interface import load_dna_graph, collect_inheritance
+        open_ids = {p["id"] for p in
+                    collect_inheritance(load_dna_graph().get("nodes", []))["open_pains"]}
+    except Exception:
+        return 0
+    closed = 0
+    for t in candidates:
+        m = _re.search(r"phase_[0-9a-f]{6,}:P\d+",
+                       str(t.get("recipe", "")) + " " + str(t.get("title", "")))
+        if m and m.group(0) not in open_ids:
+            try:
+                complete_task("pain-reconciler", t["id"],
+                              f"auto-closed: pain {m.group(0)} already dispositioned "
+                              f"(verdict recorded in the DNA graph)")
+                closed += 1
+            except Exception:
+                pass
+    return closed
+
+
 def board_summary() -> dict:
     """Cheap snapshot for preflight: counts + the current parallel frontier."""
     state = get_state()
@@ -683,6 +717,13 @@ def main(argv=None):
                      capable_only=args.capable_only, created_by=args.agent)
         _print_task(t)
     elif args.cmd == "claim":
+        try:  # stale pain-verdict tasks are answered questions — close, don't serve
+            _n_rec = reconcile_stale_pain_tasks()
+            if _n_rec:
+                print(f"[reconcile] auto-closed {_n_rec} stale pain-verdict task(s) "
+                      f"(pain already dispositioned)")
+        except Exception:
+            pass
         if args.raw:
             try:
                 t = claim_task(args.agent, task_id=args.id, capable=args.capable)
