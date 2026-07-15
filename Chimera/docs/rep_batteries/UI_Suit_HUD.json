@@ -1,5 +1,19 @@
 [
  {
+  "id": "atom_308984a7ecdc",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnGestureCommitted\\b"
+  },
+  "desc": "UPROPERTY OnGestureCommitted (GestureWheel.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GestureWheel.h"
+ },
+ {
   "id": "atom_3353bede1ff1",
   "feature": "UI_Suit_HUD",
   "tier": 1,
@@ -54,6 +68,20 @@
   },
   "desc": "UPROPERTY BatteryPercentText (WID_O2HUD.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_42a3bd3a5c2d",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnWheelVisibilityChanged\\b"
+  },
+  "desc": "UPROPERTY OnWheelVisibilityChanged (GestureWheel.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GestureWheel.h"
  },
  {
   "id": "atom_4fe6afad2a4f",

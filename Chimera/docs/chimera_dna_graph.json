@@ -63174,6 +63174,22 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_f51b64868bb5"
+    },
+    {
+      "id": "phase_1d74fee54e060dd3",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T21:41:55.507728",
+      "phase": "rep_promotion:subsystem/VFX",
+      "result": "tier 0 -> 1 (behaves) after 458 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/VFX",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/VFX' complete: tier 0 -> 1 (behaves) after 458 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_55962d456631"
     }
   ],
   "edges": [
