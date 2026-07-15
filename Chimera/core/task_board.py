@@ -502,6 +502,58 @@ def reconcile_stale_pain_tasks() -> int:
     return closed
 
 
+@_locked
+def reconcile_stale_rep_tasks(state) -> int:
+    """Auto-close 'Fix N red rep atom(s): X' tasks whose feature X has ZERO red
+    atoms in the latest rep run — the goal (no reds) is already met, so the task
+    is a GHOST (seeded from an older run, since fixed). Live Haiku test 2026-07-15
+    CONFIRMED: a fresh agent claimed Verb_Shovel + subsystem/Economy fix-lanes
+    whose atoms were all green, found nothing to do, and stalled. Closes OPEN and
+    BLOCKED ghosts (the test agent mis-blocked two). Returns the count closed."""
+    import re as _re
+    import sqlite3 as _sq
+    cand = [t for t in state["tasks"]
+            if t["status"] in (OPEN, BLOCKED)
+            and _re.match(r"Fix \d+ red rep atom", str(t.get("title", "")))]
+    if not cand:
+        return 0
+    try:
+        con = _sq.connect(str(ROOT / "docs" / "world" / "reps.db"))
+        row = con.execute("SELECT run_id FROM reps ORDER BY ts DESC LIMIT 1").fetchone()
+        if not row:
+            con.close()
+            return 0
+        run = row[0]
+    except Exception:
+        return 0
+    closed = 0
+    for t in cand:
+        m = _re.match(r"Fix \d+ red rep atom\(s\):\s*(.+)$", str(t.get("title", "")).strip())
+        if not m:
+            continue
+        feat = m.group(1).strip()
+        try:
+            tot = con.execute("SELECT COUNT(*) FROM reps WHERE feature=? AND run_id=?",
+                              (feat, run)).fetchone()[0]
+            red = con.execute("SELECT COUNT(*) FROM reps WHERE feature=? AND passed=0 "
+                              "AND run_id=?", (feat, run)).fetchone()[0]
+        except Exception:
+            continue
+        if tot > 0 and red == 0:  # feature measured this run and fully green
+            t["status"] = DONE
+            t["claimed_by"] = None
+            t.setdefault("notes", []).append(
+                {"ts": _now_iso(), "agent": "rep-reconciler",
+                 "text": f"auto-closed: '{feat}' has 0 red atoms in the latest rep "
+                         f"run ({tot} all green) — fix already landed; ghost task"})
+            t["result"] = f"resolved: {feat} green ({tot} atoms) in {run}"
+            closed += 1
+    con.close()
+    if closed:
+        _render_md(state)
+    return closed
+
+
 def board_summary() -> dict:
     """Cheap snapshot for preflight: counts + the current parallel frontier."""
     state = get_state()
@@ -884,6 +936,13 @@ def main(argv=None):
             if _n_rec:
                 print(f"[reconcile] auto-closed {_n_rec} stale pain-verdict task(s) "
                       f"(pain already dispositioned)")
+        except Exception:
+            pass
+        try:  # GHOST rep-fix tasks: feature already green — don't hand out no-op work
+            _n_ghost = reconcile_stale_rep_tasks()
+            if _n_ghost:
+                print(f"[reconcile] auto-closed {_n_ghost} ghost rep-fix task(s) "
+                      f"(feature has 0 red atoms in the latest run)")
         except Exception:
             pass
         try:  # self-heal footprints so a stale scope model can't deadlock the board

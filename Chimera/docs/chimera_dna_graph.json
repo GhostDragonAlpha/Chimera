@@ -62744,6 +62744,42 @@
       "inheritance": "One of two reds cleared; remaining is structural board capacity breach.",
       "recorded_by": "postflight.py",
       "run_id": "run_69ec9a821a09"
+    },
+    {
+      "id": "phase_7eed0d519f01798b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-15T16:53:25.031237",
+      "phase": "onboarding",
+      "result": "Claimed and investigated tb-0059 (Verb_Shovel) and tb-0060 (subsystem/Economy); both showed 0 red atoms in reps.db despite task board claiming 1 red each. All 13 Verb_Shovel atoms GREEN; all 26 subsystem/Economy atoms GREEN. Blocked both tasks.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/onboarding",
+      "error_category": "none",
+      "fix_description": "Phase 'onboarding' complete: Claimed and investigated tb-0059 (Verb_Shovel) and tb-0060 (subsystem/Economy); both showed 0 red atoms in reps.db despite task board claiming 1 red each. All 13 Verb_Shovel atoms GREEN; all 26 subsys",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "Rep database shows no work remaining for these features; prior sessions may have already resolved the issues the tasks were created for.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_93df4b2fc5ac"
+    },
+    {
+      "id": "surprise_3c3bc8857f72dd2d",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T16:57:31.204824",
+      "context": "Second live Haiku test: agent got past the deadlock, claimed tb-0059/tb-0060, but they were GHOST tasks (features already green)",
+      "expectation": "",
+      "reality": "Board served 'Fix N red rep atom(s): X' tasks for features with 0 red atoms in the latest run (fixed earlier this session). Added reconcile_stale_rep_tasks(): auto-closes rep-fix tasks whose feature is green, wired into claim. Closed 5 ghosts; fresh claim now hands genuinely-red work.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Board served 'Fix N red rep atom(s): X' tasks for features with 0 red atoms in t'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c3d3cb102a85"
     }
   ],
   "edges": [
