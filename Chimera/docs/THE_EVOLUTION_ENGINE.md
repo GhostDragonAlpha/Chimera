@@ -3,10 +3,11 @@
 > Written 2026-07-14, the day the pieces became a whole.
 >
 > Read `TRAINING_PROTOCOL.md` for the *method* and `TERRARIUM_DESIGN.md` for the *organism*.
-> This document is about the *possibilities* — what the assembled machine can now do, what it
-> cannot, and where it goes next. Every capability below is grounded in a measured result, and
-> every limit is stated as plainly as every possibility. Nothing here is a promise; it is an
-> inventory.
+> For what the phenotype is *made of* — the universal brick library that builds a whole world —
+> see `THE_MATTER_MODEL.md` (a design, not yet built). This document is about the
+> *possibilities* — what the assembled machine can now do, what it cannot, and where it goes
+> next. Every capability below is grounded in a measured result, and every limit is stated as
+> plainly as every possibility. Nothing here is a promise; it is an inventory.
 
 ---
 
