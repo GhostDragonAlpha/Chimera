@@ -67,16 +67,22 @@ _PLACEHOLDER = re.compile(r"<|the sentence|the modifier|the assumption|specific 
                           r"thinking process|1-2 sentences|analyze the request", re.I)
 
 
+def _ok(h):
+    """A substantial line of real answer — not a template echo, a numbered
+    reasoning-step header ('5. **Draft...'), or a bare header (ends in ':')."""
+    h = h.strip()
+    return (len(h) >= 12 and not _PLACEHOLDER.search(h)
+            and not re.match(r"^\d+[.)]\s", h) and not h.rstrip("* ").endswith(":"))
+
+
 def _last_after(marker, raw, minlen=12):
     """Reasoning models echo the prompt's marker (and its <placeholder>) early in
-    their thinking, then draft the real answer later — so take the LAST substantial
-    match that ISN'T a template echo."""
-    hits = [h.strip() for h in re.findall(marker + r"\s*(.+)", raw)
-            if len(h.strip()) >= minlen and not _PLACEHOLDER.search(h)]
+    their thinking, then draft the real answer later — so take the LAST substantial,
+    non-echo, non-step-header match."""
+    hits = [h.strip() for h in re.findall(marker + r"\s*(.+)", raw) if _ok(h)]
     if hits:
         return hits[-1]
-    lines = [l.strip() for l in raw.splitlines()
-             if len(l.strip()) >= minlen and not _PLACEHOLDER.search(l)]
+    lines = [l.strip() for l in raw.splitlines() if _ok(l)]
     return lines[-1] if lines else raw.strip()[:200]
 
 
