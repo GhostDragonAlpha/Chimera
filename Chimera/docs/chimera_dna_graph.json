@@ -65878,6 +65878,47 @@
       "links": [],
       "recorded_by": "-",
       "run_id": "run_0eb2b75b6b24"
+    },
+    {
+      "id": "discovery_36dbaa162d7f4913",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-16T22:19:34.396963",
+      "feature": "SMOKE: end-to-end flow after ~25 changes",
+      "campus_sources": [],
+      "web_sources": [
+        "today's audit: 5 auditors, 149 modules, ~40 defects"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/SMOKE: end-to-end flow after ~25 changes",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'SMOKE: end-to-end flow after ~25 changes': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_c29916dbf0a0"
+    },
+    {
+      "id": "phase_2670ce7a4b7473e5",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T22:19:34.725033",
+      "phase": "SMOKE: end-to-end flow after ~25 changes",
+      "result": "tracing the flow, not the components",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/SMOKE: end-to-end flow after ~25 changes",
+      "error_category": "none",
+      "fix_description": "Phase 'SMOKE: end-to-end flow after ~25 changes' complete: tracing the flow, not the components",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "component verification misses integration; run the flow",
+      "recorded_by": "postflight.py",
+      "run_id": "run_c29916dbf0a0"
     }
   ],
   "edges": [
