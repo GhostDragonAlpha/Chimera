@@ -3,7 +3,9 @@
 AUTOMATED EVALUATION DRAINS THE EXPERIENCE AS A WHOLE, never feature-by-feature. This module
 makes the per-feature queue drain from holistic automated signals only:
 
-MODE A  --from-simtest <id> --valence accepted|rejected
+MODE A  --from-simtest <id>          (valence DERIVED from the simtest, 2026-07-16:
+        beats failed -> rejected, beats clean -> accepted. --valence is optional and
+        a contradicting one is REFUSED — the evidence decides, not the caller.)
     Sweep-attribute ONE automated temperature across the whole queue, grounded in
     evidence of exercise (SimPlaytest beat outcomes + witness chronicles):
       valence accepted -> every queue feature EXERCISED in/for that build is
@@ -211,6 +213,31 @@ def _indicted_by_playtest(nodes, playtest_id):
     return indicted
 
 
+def derive_valence(simtest_id: str):
+    """The SIMTEST decides. Returns 'rejected' | 'accepted' | None. No agent, no LLM.
+
+    This is the whole point of the human's trinity (2026-07-16): the Son is DETERMINISTIC
+    CODE, and deterministic code cannot commit docetism — it ran or it did not. The
+    valence was a `--valence accepted|rejected` flag, i.e. an LLM asked to RELAY a fact
+    the evidence had already settled, and a relay can lie. There is no judgement here:
+
+        any beat listing the feature FAILED  -> rejected   (indicted by this simtest)
+        every beat listing it REACHED        -> accepted    (cleanly exercised by it)
+        neither                              -> None        (this run says nothing)
+
+    Rejection wins ties on purpose: a run that indicts anything is not a clean run, and
+    the permissive reading is the one that has been wrong every single time this codebase
+    has been audited.
+    """
+    from core.graphify_interface import load_dna_graph
+    nodes = load_dna_graph().get("nodes", [])
+    if _indicted_by_simtest(nodes, simtest_id):
+        return "rejected"
+    if _clean_exercises(nodes, simtest_id=simtest_id):
+        return "accepted"
+    return None
+
+
 def sweep(simtest_id: str, valence: str, dry_run: bool = False):
     from core.graphify_interface import record_observation, record_feature
     queue, nodes = _queue_and_nodes()
@@ -366,9 +393,30 @@ def main():
     if args.from_simtest and args.from_playtest:
         parser.error("use only one of --from-simtest or --from-playtest at a time")
     if args.from_simtest:
-        if not args.valence:
-            parser.error("--from-simtest requires --valence")
-        sweep(args.from_simtest, args.valence, dry_run=args.dry_run)
+        # DERIVED, NOT DECLARED (2026-07-16). This required --valence: it asked an AGENT
+        # to RELAY a fact the simtest had already settled. Beats failed -> rejected;
+        # beats clean -> accepted. There is no judgement in this step, and asking for one
+        # put an LLM in the Son's seat for no reason — a relay can lie ("--valence
+        # accepted" on a run whose beats failed), and that is docetism with a CLI flag.
+        # Measured across the last 6 real simtests: every single valence was derivable,
+        # zero ambiguous, including the true failure (simtest_df1a03ae03c7e517 -> 1
+        # indicted, 0 clean -> rejected).
+        #
+        # The human's trinity: the Son is DETERMINISTIC CODE, and deterministic code
+        # cannot commit docetism — it ran or it did not. Every gate in the postflight
+        # stack exists to catch an LLM Son lying about its own work; this deletes one
+        # such opportunity instead of adding a gate to police it.
+        v = args.valence or derive_valence(args.from_simtest)
+        if args.valence and args.valence != derive_valence(args.from_simtest):
+            print(f"!! --valence {args.valence} CONTRADICTS the evidence "
+                  f"({derive_valence(args.from_simtest)}). The simtest decides, not you. "
+                  f"Refusing.")
+            return 1
+        if v is None:
+            print(f"[collapse_proxy] {args.from_simtest} exercised nothing cleanly and "
+                  f"indicted nothing — there is no valence to derive. Nothing swept.")
+            return 0
+        sweep(args.from_simtest, v, dry_run=args.dry_run)
     elif args.from_playtest:
         if not args.valence:
             parser.error("--from-playtest requires --valence")
