@@ -15,3 +15,35 @@
 - **assumption:** Players will assume every high-fidelity crowd actor is an individually targetable, interactable entity that can be harmed or affected by game mechanics just like a standard NPC.
 - **violation:** Crowd actors have 'Mechanic Immunity' to all direct player-applied status effects (stun, bleed, burn, knockback) and targetable UI indicators; they can only be affected or moved by global environmental state changes, such as placing a fire trap on the ground which forces the entire visible crowd cluster to pathfind away from the heat source."
 - **why it works:** <1-2 sentences>
+
+## Run (fast judge) — 4 kept
+
+### UWeatherSubsystem  (9/10)
+- **assumption:** *   Or simpler: Players will assume they are supposed to *avoid being outside or leaving trails right
+- **violation:** In snowy or muddy conditions, footprints left by the player crystallize into 'tempo nodes' that restore stamina when re-traversed later, meaning leaving a trail is now a required traversal strategy to maintain movement speed across long distances.
+- **why it works:** <1-2 sentences>
+
+### TitanRunTrack  (8/10)
+- **assumption:** Players will assume they must treat the alternating gravity corridors as a platforming challenge where they need to time their jumps and reorient their movement to match the new gravity direction to stay on the path.
+- **violation:** Gravity shifts are no longer triggered by spatial zones but by player velocity; if the player's movement speed drops below a threshold or they release the move input
+- **why it works:** This forces players to shift from a stop-and-go spatial platforming model to a continuous momentum-management flow state, where maintaining speed becomes the core survival mechanic. It creates emergent depth because players must master input timing to avoid accidental stalls that trigger unwanted gr
+
+### UFactionSubsystem  (7/10)
+- **assumption:** *   Even simpler/more direct mental model: "I need to grind reputation or choose sides to get better stuff from these groups." -> Translated to a formal assumption sentence: Players will assume they are supposed to perform actions that increase or decrease their standing with spe
+- **violation:** System/Context:** UFactionSubsystem. Player's assumption: "I need to grind reputation or choose sides to get better stuff from these groups." -> Formalized: Players will assume they are supposed to perform actions that increase or decrease their standing with specific factions to get rewards/better stuff
+- **why it works:** Thinking Process:
+
+1.  **Analyze the Request:**
+    *   Role: FAST WORKER (concrete, quick, thinks together with DEEP mind, disagree when needed, build on useful ideas, keep turns tight).
+    *   Task: Judge a proposed game rule-modifier based on "PRODUCTIVE cognitive friction".
+    *   GOOD = force
+
+### FSacrificeEvent  (7/10)
+- **assumption:** Players will assume they are supposed to intentionally destroy
+- **violation:** System/Context:** `FSacrificeEvent` - Player's assumption: Players will assume they are supposed to intentionally destroy [something/a creature/an artifact/etc. to trigger or satisfy a sacrifice event]
+- **why it works:** Thinking Process:
+
+1.  **Analyze the Request:**
+    *   Role: FAST WORKER (concrete, quick, hands-on, think together with DEEP mind but keep it tight).
+    *   Task: Judge a proposed game rule-modifier (`FSacrificeEvent`).
+    *   Criteria for GOOD: Forces player to abandon old mental model and buil
