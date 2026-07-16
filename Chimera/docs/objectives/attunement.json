@@ -1,0 +1,47 @@
+{
+  "name": "attunement",
+  "author": "LLM, from a scenario. NOT hand-tuned numbers - a statement of what good means, in physics.",
+  "scenario": "THE AUDIO MINIGAME (UChimeraAttunementComponent, the seed's #1 gap at 0% realized). A chimera emits a call. The player emits a counter-wave. The two pressure fields ADD - that is the entire game, and superposition alone decides the outcome. The player's assumption is that attunement means MATCHING the sound, and the physics punishes that fourfold without anyone authoring a punishment; the answer is the inverse-phase wave that cancels it. A good design is one where LISTENING BEATS FLAILING by a wide margin, where the naive assumption genuinely costs you, where the exact inverse really does buy silence, and where getting there is neither handed to you nor hopeless. What a human decides is whether that is FUN. What this objective decides is whether it is worth their five minutes.",
+
+  "constraints": [
+    {
+      "measure": "skill_gap",
+      "kind": "maximize",
+      "ref": 3.0,
+      "weight": 3.0,
+      "why": "THE GAME, AND THE ONLY MAXIMIZE. Everything else here is a floor or a band, and a spec made only of floors is a SATISFICER - the optimiser finds the laziest design that clears every bar and then stops, because nothing asks it to keep going. This asks it to keep going forever: how much better is a listener than a flailer? That IS the skill in the minigame, measured, with no judge. Non-saturating by construction (x/(x+ref)) - at ref it scores 0.5 and there is always somewhere left to climb. Measured WORST-of-K encounters: a design is judged on the nights it generates, not its best one."
+    },
+    {
+      "measure": "solvable",
+      "kind": "at_most", "max": 0.02,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE GATE. The exact inverse must actually silence the call - residual under 2% of the call's own energy. This is not a difficulty knob, it is a correctness check: if the player's emitter cannot express the call (too few oscillators for too many partials), the game is UNWINNABLE BY ANYONE and no amount of skill helps. Hard because an unwinnable design must never reach a human; physics already knows, and spending a person to discover it is outsourcing arithmetic."
+    },
+    {
+      "measure": "punishes_naive",
+      "kind": "at_least", "min": 2.0,
+      "weight": 2.0,
+      "hard": true,
+      "why": "The player's assumed mental model - 'attunement means matching' - must COST something, or there is no expectation to violate and nothing to discover. Note what this asks: it cannot be satisfied by tuning any number, because superposition sets it. sin(x)+sin(x)=2sin(x) gives 4x when the emitter can reproduce the call, and less when it cannot. If the optimiser satisfies this it did so STRUCTURALLY, by making an emitter that can voice the call - which is the same structure `solvable` demands. The two constraints are the same physical truth seen from opposite sides."
+    },
+    {
+      "measure": "learnability",
+      "kind": "at_least", "min": 0.5,
+      "weight": 2.0,
+      "why": "Listening must PAY: a learner that only hears the residual should remove at least half the energy it started with. A flat curve is an unlearnable game, and that is visible without a person."
+    },
+    {
+      "measure": "headroom",
+      "kind": "band", "min": 0.05, "max": 0.80,
+      "weight": 1.5,
+      "why": "Where the best listener lands, against the raw call. Under 0.05 the answer was handed over (the assist did the work and there was no skill to find); over 0.80 the best listener barely dents it and the outcome is luck. A game lives between."
+    },
+    {
+      "measure": "n_partials",
+      "kind": "at_least", "min": 2.0,
+      "weight": 1.0,
+      "why": "One partial is a single tone: one knob, one answer, no structure to hear. A call worth attuning to has parts."
+    }
+  ]
+}
