@@ -62,11 +62,27 @@ def _queue_and_nodes():
     return collect_observation_queue(nodes), nodes
 
 
-def _clean_exercises(nodes):
-    """feature -> [simtest ids] where EVERY beat listing the feature was 'reached'."""
+def _clean_exercises(nodes, simtest_id=None):
+    """feature -> [simtest ids] where EVERY beat listing the feature was 'reached'.
+
+    `simtest_id` SCOPES this to one run (2026-07-16). Without it this aggregated EVERY
+    SimPlaytest ever recorded, and sweep()'s accept branch then wrote
+    `derived_from=<the new simtest>` onto evidence from a DIFFERENT run — often months
+    old. THE PROVENANCE IN THE DNA GRAPH WAS FABRICATED: the node said "derived from
+    simtest_X" about a feature simtest_X never exercised. (Measured on the live graph:
+    Player_Character_Lighting was clean-exercised by 46 distinct simtests, ANY one of
+    which let a brand-new simtest_id collapse it to `observed`.)
+
+    Note the asymmetry this fixes, which is the whole audit in one function: the REJECT
+    branch called `_indicted_by_simtest(nodes, simtest_id)` — correctly scoped, and its
+    docstring said so proudly. Only the PERMISSIVE twin was unscoped. Nobody designed
+    that; it is what happens when you only debug the path that blocks you.
+    """
     per_feature = {}
     for n in nodes:
         if n.get("type") != "SimPlaytest":
+            continue
+        if simtest_id and str(n.get("id")) != str(simtest_id):
             continue
         feats = {}
         for o in n.get("outcomes", []):
@@ -198,7 +214,9 @@ def _indicted_by_playtest(nodes, playtest_id):
 def sweep(simtest_id: str, valence: str, dry_run: bool = False):
     from core.graphify_interface import record_observation, record_feature
     queue, nodes = _queue_and_nodes()
-    exercised = _clean_exercises(nodes)
+    # SCOPED to this simtest — the accept branch writes derived_from=simtest_id, so the
+    # evidence must actually COME from simtest_id or the provenance is a forgery.
+    exercised = _clean_exercises(nodes, simtest_id=simtest_id)
     # provisional collapses count as already-swept; the queue holds the rest
     if valence == "rejected":
         indicted = _indicted_by_simtest(nodes, simtest_id)
