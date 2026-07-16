@@ -526,11 +526,31 @@ def main():
             print(f"    {label}: (none recorded)")
 
     # 6. Environment
-    lm = _http_ok("http://localhost:1234/v1/models")
+    # RESIDENCY, NOT REACHABILITY (2026-07-16). This was
+    # `_http_ok("http://localhost:1234/v1/models")` — HTTP 200 only. /v1/models lists the
+    # models ON DISK and carries no `state` field, so preflight said "UP" while NOTHING
+    # was loaded and every LM-dependent gate (Coin, Generator Guard, Critic, Council) was
+    # about to fail into "passing open". Proven live today: preflight printed UP,
+    # lm_gateway.loaded_models() returned [], resolve_model() raised NoModelLoaded, and
+    # gates.gate_lm_available() FAILED — all in the same interpreter, disagreeing with
+    # each other. An environment brief that reports a dead dependency as healthy is worse
+    # than no brief: it is the reason nobody goes looking.
+    #
+    # lm_gateway is the one source of truth (it is what every call site adopts a model
+    # from), so ask IT rather than inventing a third opinion.
+    try:
+        from core.lm_gateway import loaded_models as _lm_loaded
+        _lm_resident = _lm_loaded() or []
+    except Exception:
+        _lm_resident = []
+    lm = bool(_lm_resident)
     dna_api = _http_ok("http://localhost:8766/dna/health")
     ue = _ue_running()
     print("\n[6] Environment:")
-    print(f"    LM Studio (localhost:1234): {'UP' if lm else 'DOWN — Professor Review must be deferred'}")
+    print(f"    LM Studio (localhost:1234): "
+          + (f"UP — {_lm_resident[0]} resident" if lm else
+             "NO MODEL RESIDENT — every LM gate (Coin/Generator Guard/Critic/Council) "
+             "will pass open. Load one in LM Studio."))
     print(f"    DNA API   (localhost:8766): {'UP' if dna_api else 'down (optional)'}")
     print(f"    Unreal Editor process:      {'RUNNING' if ue else ('NOT RUNNING' if ue is not None else 'unknown')}")
 
