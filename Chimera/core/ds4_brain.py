@@ -71,6 +71,20 @@ def ask(prompt: str, system: str = None, max_tokens: int = 512,
     return data["choices"][0]["message"]["content"]
 
 
+def chat(messages: list, max_tokens: int = 512, temperature: float = 0.3,
+         timeout: float = 3600.0) -> str:
+    """Like ask() but takes a full OpenAI messages list — for multi-turn dialogue
+    (e.g. core.council). SLOW (~1.6 t/s); give reasoning room via max_tokens."""
+    body = {"messages": messages, "max_tokens": max_tokens,
+            "temperature": temperature, "stream": False}
+    req = urllib.request.Request(
+        ENDPOINT + "/chat/completions", data=json.dumps(body).encode(),
+        headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        data = json.loads(r.read().decode("utf-8", "replace"))
+    return data["choices"][0]["message"]["content"]
+
+
 def serve() -> str:
     """Start the CPU server in WSL if it isn't already up (detached, survives us)."""
     h = health(timeout=3)
