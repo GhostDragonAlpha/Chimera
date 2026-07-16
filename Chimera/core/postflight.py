@@ -405,67 +405,76 @@ def main():
         except Exception as _coin_e:            # BROKEN: it raised. That is not a pass.
             _gate_broken("Coin", _coin_e)
 
-        # SECOND-SYSTEM REVIEW (2026-07-15, the human's "another person in the room /
-        # airplane redundancy"): the DEEP brain (ds4 — a DIFFERENT model, grounded in
-        # the studio's MEMORY) gives an INDEPENDENT verdict on this finalization,
-        # catching hallucinations the Coin (one model checking itself) structurally
-        # cannot. Advisory by default; CHIMERA_COUNCIL_GATE=block hardens a REJECT into
-        # a refusal, =off disables. Deep brain down -> no second opinion, never blocks.
+        # THE COUNCIL — THE PARACLETE (rebuilt 2026-07-16 on the human's reading).
+        # It ASKS; the GRAPH answers; nobody here decides. The deep brain (ds4, a
+        # DIFFERENT model) names the evidence that would have to exist for this claim to
+        # hold — especially what a confident agent forgets to look for. Deterministic
+        # checks then answer what they can, with no LLM in the loop.
+        #
+        # A QUESTION CANNOT BE FABRICATED. That is why this block no longer needs the
+        # schema validation, the H-3 retry ladder, or the UNAVAILABLE-not-ENDORSE guard
+        # that the old verdict path required: there is no verdict to forge. What blocks
+        # here is THE GRAPH's answer — "you claim it was playtested; there is no
+        # SimPlaytest for it" is a FACT, not an opinion — and what survives unanswered is
+        # the human's, arriving EARNED, with every machine-checkable question already
+        # stripped out.
         try:
             from core import council as _council
             _cmode = _council.gate_mode()
             if _cmode != "off":
-                print("\n[Council] consulting the deep brain for an independent second opinion (slow)...")
+                print("\n[Council] the deep brain is asking what would have to be true (slow)...")
                 _cr = _council.review(args.feature, args.status, args.result, args.notes,
                                       nodes=load_dna_graph().get("nodes", []))
                 if not _cr.get("up"):
-                    print(f"[Council] deep brain unavailable — no second opinion "
-                          f"(start it: python -m core.ds4_brain serve)")
-                elif _cr.get("verdict") == "UNAVAILABLE":
-                    # The brain answered but gave no schema-valid verdict (H-3: a
-                    # reasoning dump is a retry, never a verdict). Say so as loudly as
-                    # a dead brain, because it is the SAME situation: there is no
-                    # second opinion. This used to silently become ENDORSE, which
-                    # reported redundancy that never happened — the one lie this gate
-                    # exists to prevent, told by the gate.
-                    print(f"\n[Council] !! NO SECOND OPINION — the deep brain returned no "
-                          f"schema-valid verdict.\n           {_cr['reasoning'][:220]}")
-                    try:
-                        from core.capcom import post_safe as _cp0
-                        _cp0("council", f"2nd-system review {args.feature} {args.status}: "
-                             f"NO VERDICT (reasoning dump/truncation) — this finalization "
-                             f"has NO independent check", level="warn", source="council")
-                    except Exception:
-                        pass
+                    print("[Council] deep brain unavailable — no questions asked "
+                          "(start it: python -m core.ds4_brain serve)")
                 else:
-                    _v = _cr["verdict"]
-                    print(f"[Council] DEEP VERDICT: {_v}\n{_cr['reasoning'][:700]}")
-                    try:
-                        from core.capcom import post_safe as _cp
-                        _cp("council", f"2nd-system review {args.feature} {args.status}: {_v} — "
-                            f"{_cr['reasoning'][:110].replace(chr(10), ' ')}",
-                            level=("warn" if _v == "REJECT" else "note"), source="council")
-                    except Exception:
-                        pass
-                    if _v in ("REJECT", "CONCERN"):
+                    _refuted = _cr.get("refuted") or []
+                    _open = _cr.get("open") or []
+                    print(f"[Council] {_cr.get('asked')}")
+                    for _a in (_cr.get("questions") or []):
+                        _mark = {True: "yes ", False: "NO  ", None: "open"}[_a["answered"]]
+                        print(f"   [{_mark}] {str(_a['q'])[:88]}")
+                    if _refuted:
+                        # THE GRAPH refuted these, not a model. These are facts.
+                        print(f"\n!! COUNCIL — the graph REFUTES {len(_refuted)} question(s) "
+                              f"this claim depends on:")
+                        for _a in _refuted:
+                            print(f"   x {str(_a['q'])[:96]}")
+                            print(f"     -> {_a['evidence']} ({_a['check']})")
+                        try:
+                            from core.capcom import post_safe as _cp
+                            _cp("council", f"{args.feature} {args.status}: the graph refutes "
+                                f"{len(_refuted)} question(s) — e.g. "
+                                f"{str(_refuted[0]['q'])[:80]}",
+                                level="warn", source="council")
+                        except Exception:
+                            pass
                         try:
                             from core.graphify_interface import record_surprise as _crs
-                            _crs(context=f"deep-brain second-system review of {args.feature} -> {args.status}: {_v}",
-                                 reality=_cr["reasoning"][:300],
-                                 expectation="an independent second model endorses the finalization",
+                            _crs(context=f"council questions refuted by the graph: "
+                                         f"{args.feature} -> {args.status}",
+                                 reality="; ".join(str(a["q"])[:90] for a in _refuted[:3]),
+                                 expectation="the evidence this claim depends on exists in the graph",
                                  source="agent")
                         except Exception:
                             pass
-                    if _v == "REJECT" and _cmode == "block" and not getattr(args, "council_waiver", ""):
-                        print("!! COUNCIL GATE - refused: the independent deep brain REJECTS this "
-                              "finalization. Address its concern, pass --council-waiver \"<why>\", "
-                              "or soften with CHIMERA_COUNCIL_GATE=warn.")
-                        raise SystemExit(1)
+                        if _cmode == "block" and not (getattr(args, "council_waiver", "") or ""):
+                            print("   Refusing: CHIMERA_COUNCIL_GATE=block and the graph says "
+                                  "this evidence is absent. Produce it, or pass "
+                                  "--council-waiver with a reason.")
+                            raise SystemExit(1)
+                    if _open:
+                        print(f"\n[Council] {len(_open)} question(s) no check can answer — "
+                              f"THESE ARE YOURS (everything machine-answerable is resolved):")
+                        for _a in _open:
+                            print(f"   ? {str(_a['q'])[:96]}")
         except SystemExit:
             raise
-        except Exception as _council_e:
-            print(f"[Council] unavailable ({_council_e}) — passing open")
-
+        except ImportError as _cg_e:            # ABSENT: not installed
+            print(f"[Council] not installed ({_cg_e}) — no second opinion")
+        except Exception as _cg_e:              # BROKEN: it raised. That is not a pass.
+            _gate_broken("Council", _cg_e)
     # Verbatim check (advisory) — the Contract says "report exact UBT output
     # verbatim, never summarize." If a build/compile phase's --result looks like a
     # SUMMARY (short, no compiler/UBT markers), warn. Not blocked — too fuzzy to

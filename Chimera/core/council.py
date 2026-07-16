@@ -19,6 +19,13 @@ and --deep-tokens modest. It's a REASONING model, so it needs some room to think
 """
 import argparse
 import json
+import re                    # module-level: _parse_questions needs it. The old code
+                            # imported it INSIDE review(), and moving the parser out
+                            # reproduced critic.py's exact bug — a NameError on a
+                            # missing import — hours after I fixed that one. Which is
+                            # also why postflight now exits 2 on a raising gate instead
+                            # of announcing "passing open": this is the class of defect
+                            # that swallow was hiding, and it just happened again.
 import sys
 import time
 import urllib.request
@@ -166,140 +173,200 @@ def gate_mode() -> str:
     return v if v in ("block", "warn", "off") else "warn"
 
 
-# Budget for the deep review. 700 was STARVATION: ds4 is a reasoning model that thinks
-# IN the output (CLAUDE.md: "give `ask` a large --max-tokens or it stops mid-think"), so
-# 700 bought a truncated thinking trace and never the answer block — and the old parser
-# then consumed that trace as ENDORSE. The cost is real and honest: ds4 runs ~1.6 t/s on
-# CPU, so a full 2048-token review is minutes, not seconds. That is the price of a second
-# opinion from a different mind; a fast fabricated one is worth nothing.
-_REVIEW_BUDGET = 2048
-_VERDICTS = ("ENDORSE", "CONCERN", "REJECT")
+# ---------------------------------------------------------------------------
+# THE PARACLETE — it convicts; it does not judge
+# ---------------------------------------------------------------------------
+# Rebuilt 2026-07-16 on the human's reading: "the council is the key and we are just not
+# thinking about it correctly... there was never a bad question."
+#
+# THE EVIDENCE THEY WERE RIGHT, from this repo's own day:
+#   * At the torque fork the council's SYNTHESIS was worthless — a truncated reasoning
+#     dump, recorded to the graph as a conclusion. It was still worth its 17 minutes for
+#     ONE LINE: "the plan only stamps torque — what about armature, gravity?" That is a
+#     QUESTION. It decided nothing; it turned the fork into a MEASUREMENT, and the
+#     measurement then refuted the agent's own commit from twenty minutes earlier.
+#   * The live REJECT review's substance was its `missing` list — "no simtest results",
+#     "no evidence unit tests pass". Questions. The verdict was a label stapled on top.
+# Both times the QUESTIONS were the product and the verdict was decoration.
+#
+# WHY THIS DELETES CODE INSTEAD OF ADDING IT. Everything the old review() needed —
+# schema validation, retry at 2x, UNAVAILABLE-not-ENDORSE, the H-3 guard, a blocking
+# gate — existed because A VERDICT CAN BE FABRICATED. A question cannot: there is nothing
+# to fabricate. An empty reply is simply NO QUESTIONS, which costs nothing. A bad
+# question wastes an afternoon; a bad verdict poisons the DNA graph and everything
+# downstream that trusts it. That asymmetry is total, and it is the whole argument.
+#
+# IT IS THE STUDIO'S OWN DOCTRINE, ONE LEVEL UP. The trainer: "the LLM writes the
+# CONSTRAINTS; it never turns the crank" — LLM at the top and the bottom, never the
+# middle. So: THE LLM WRITES THE QUESTIONS; THE GRAPH ANSWERS THEM, deterministically,
+# with no LLM in the loop. The council never decides anything, and now cannot.
+#
+# The trinity that named it: the Paraclete "will not speak on his own authority" (John
+# 16:13) — it convicts (16:8), testifies, guides into truth, and is never the source of
+# it. A council that decides is a fourth thing, and it is the one that can be wrong.
+# Historical councils worked this way too: Nicaea did not invent the doctrine, it named
+# the ERRORS — anathemas, negative space. This studio already has that shape in its
+# Elimination nodes ("the boundary now PROVEN wrong").
+_ASK_BUDGET = 2048
 
 
-def _validate_review(c) -> bool:
-    """Schema-validate before consuming (H-3). Note what this rejects for free: a model
-    that merely RESTATES its output format emits verdict="ENDORSE|CONCERN|REJECT", which
-    is not in _VERDICTS — the echo that used to score ENDORSE now fails the schema."""
-    return (isinstance(c, dict)
-            and str(c.get("verdict", "")).strip().upper() in _VERDICTS
-            and isinstance(c.get("reason"), str)
-            and len(c["reason"].strip()) >= 20)
+def _parse_questions(raw):
+    """Any question-shaped lines. NO SCHEMA, DELIBERATELY.
 
-
-def _parse_review(raw: str):
-    """The LAST schema-valid JSON object in the reply, or None.
-
-    LAST, not first: a reasoning model drafts the shape early ("I should answer
-    {verdict: ...}") and commits to it at the end. Taking the first match reads its
-    deliberation instead of its conclusion — the same bug that made every
-    expectation_violator candidate score 3.0 off an echoed answer template.
+    The old parser needed schema validation because a malformed verdict was DANGEROUS.
+    A malformed question is merely one the answerer cannot match, which it reports as
+    OPEN — the honest outcome. So this parses leniently on purpose: a JSON array if the
+    model emits one, else any interrogative line. A reasoning dump full of questions is
+    still full of questions. There is nothing here for H-3 to protect, because there is
+    no verdict to fabricate.
     """
     import json as _json
-    import re as _re
-    blobs = [m.group(0) for m in _re.finditer(r"\{.*?\}", raw, _re.DOTALL)]
-    g = _re.search(r"\{.*\}", raw, _re.DOTALL)          # outermost, in case of nesting
-    if g:
-        blobs.append(g.group(0))
-    for blob in reversed(blobs):
+    out = []
+    m = re.search(r"\[[^\[\]]*\]", raw, re.DOTALL)
+    if m:
         try:
-            c = _json.loads(blob)
+            arr = _json.loads(m.group(0))
+            out = [str(x).strip() for x in arr if isinstance(x, str) and len(str(x)) > 10]
         except Exception:
-            continue
-        if _validate_review(c):
-            return c
-    return None
+            out = []
+    if not out:
+        starts = ("is there", "does ", "do ", "was ", "were ", "where is", "what evidence",
+                  "has ", "have ", "can ", "which ", "why ", "who ")
+        for line in raw.splitlines():
+            t = line.strip().lstrip("-*0123456789.) \t").strip().strip('"').strip(",")
+            if len(t) > 15 and (t.endswith("?") or t.lower().startswith(starts)):
+                out.append(t)
+    seen, uniq = set(), []
+    for q in out:
+        k = q.lower()
+        if k not in seen:
+            seen.add(k)
+            uniq.append(q)
+    return uniq[:12]
+
+
+# --- THE ANSWERER: deterministic, no LLM. The graph speaks for itself. -------
+def _has(nodes, feature, pred):
+    from core.witness_gate import _about, _topic_tokens
+    toks = _topic_tokens(feature)
+    hits = [n for n in nodes if pred(n) and _about(n, toks)]
+    return (bool(hits), f"{len(hits)} node(s)" if hits else "none in the graph")
+
+
+def _check_simtest(nodes, f):
+    return _has(nodes, f, lambda n: n.get("type") == "SimPlaytest")
+
+
+def _check_visual(nodes, f):
+    return _has(nodes, f, lambda n: str(n.get("template_file", "")).startswith("visual_verification"))
+
+
+def _check_telemetry(nodes, f):
+    return _has(nodes, f, lambda n: n.get("type") == "Health" or n.get("fps") is not None)
+
+
+def _check_build(nodes, f):
+    return _has(nodes, f, lambda n: n.get("type") == "Build")
+
+
+def _check_grade(nodes, f):
+    return _has(nodes, f, lambda n: n.get("type") == "ProfessorGrade")
+
+
+def _check_reps(nodes, f):
+    try:
+        from core.rep_engine import rep_gate
+        r = rep_gate(f)
+        ok, reason = (r[0], r[1]) if isinstance(r, (tuple, list)) else (bool(r), "")
+        return bool(ok), str(reason)[:90]
+    except Exception as e:
+        return None, f"rep gate unreadable ({type(e).__name__})"
+
+
+# Word -> check. An UNMATCHED question is NOT a failure: it means the graph cannot answer
+# it, so it stays OPEN and reaches a human. That is its correct destination.
+_CHECKS = (
+    (("simtest", "playtest", "beat", "pie ", "sleepwalk", "exercised", "played"),
+     "simtest", _check_simtest),
+    (("screenshot", "visual", "looked", "viewport", "render", "on screen", "saw"),
+     "visual", _check_visual),
+    (("rep ", "reps", "repetition", "battery", "atom", "training", "curriculum", "enroll"),
+     "reps", _check_reps),
+    (("telemetry", "fps", "frame", "performance", "crash", "soak", "memory"),
+     "telemetry", _check_telemetry),
+    (("compile", "build", "ubt", "unit test", "tests pass"), "build", _check_build),
+    (("grade", "gpa", "rubric", "score"), "grade", _check_grade),
+)
+
+
+def answer(question, nodes, feature):
+    """Answer ONE question from the graph. Deterministic; no LLM, no judgement."""
+    ql = str(question).lower()
+    for words, label, fn in _CHECKS:
+        if any(w in ql for w in words):
+            ok, ev = fn(nodes, feature)
+            return {"q": question, "check": label, "answered": ok, "evidence": ev}
+    return {"q": question, "check": None, "answered": None, "evidence": "not machine-checkable"}
 
 
 def review(feature, status, result="", notes="", nodes=None, deep_tokens=None,
            max_retries=1):
-    """The DEEP brain's independent, memory-grounded second opinion on finalizing
-    `feature` as `status`. Returns {up, verdict: ENDORSE|CONCERN|REJECT|UNAVAILABLE,
-    reasoning, missing}. Never raises.
+    """THE COUNCIL ASKS. THE GRAPH ANSWERS. Nobody here decides.
 
-    UNAVAILABLE means the deep brain gave no schema-valid verdict — NOT approval. This
-    gate exists to catch what the Coin structurally cannot (one model checking itself),
-    so a gate that invents ENDORSE when it cannot read the answer is worse than no gate:
-    it reports redundancy that does not exist.
+    Returns {up, questions, refuted, open, asked}:
+        refuted -> questions the GRAPH answered NO. These are FACTS, not opinions: the
+                   claim needs evidence that demonstrably does not exist. A caller may
+                   block on these — and it is blocking on the graph, never on a model.
+        open    -> questions no check could answer. These are the human's, and they
+                   arrive EARNED: everything machine-answerable is already stripped out.
+    No verdict is returned, ever. There is nothing here to fabricate.
     """
-    import re
-    # 1) The claim + evidence — reuse the Coin's assembly so both gates see the same faces.
     try:
         from core.coin_verifier import assemble_claim, assemble_evidence
         from core.graphify_interface import load_dna_graph
-        if nodes is None:
+        from core import ds4_brain
+    except Exception as e:
+        return {"up": False, "questions": [], "refuted": [], "open": [], "asked": str(e)[:120]}
+
+    if nodes is None:
+        try:
             nodes = load_dna_graph().get("nodes", [])
-        claim = assemble_claim(feature, status, result, notes)
-        evidence = assemble_evidence(nodes, feature=feature)
-    except Exception:
-        claim = f"{feature} -> {status}. {result}".strip()
-        evidence = notes or "(evidence unavailable)"
-    # 2) MEMORY — rep status + what the studio has already learned about this feature.
-    mem = []
-    try:
-        from core.rep_engine import rep_gate
-        elig, reason = rep_gate(feature)
-        mem.append(f"rep gate: {'READY' if elig else 'NOT met'} — {reason}")
-    except Exception:
-        pass
-    try:
-        from core.history_book import search as _hsearch
-        hits = _hsearch(feature, limit=5) or []
-        if hits:
-            mem.append("history book (what the studio has learned):\n" +
-                       "\n".join(f"  - {str(h)[:180]}" for h in hits[:5]))
-    except Exception:
-        pass
-    memory = "\n".join(mem) or "(no prior memory retrieved)"
-    # 3) Ask the deep brain — as the independent second system.
+        except Exception:
+            nodes = []
+    claim = assemble_claim(feature, status, result, notes)
+    evidence = assemble_evidence(nodes, feature=feature)
+
     prompt = (
-        "You are the DEEP REVIEWER — a SECOND, INDEPENDENT system (a different model, "
-        "with the studio's memory). A fast agent is about to FINALIZE a feature. This "
-        "is a redundancy / reality-check: does the EVIDENCE actually support the "
-        "CLAIM, or is this a hallucination or an overreach?\n\n"
+        "You are the DEEP REVIEWER - a SECOND, INDEPENDENT mind (a different model). A "
+        "fast agent is about to FINALIZE a feature.\n\n"
+        "DO NOT judge it. DO NOT say whether you endorse or reject it. Your ONLY job is "
+        "to ask what would have to be TRUE for this claim to hold - especially evidence "
+        "a confident agent would forget to look for.\n\n"
         f"FEATURE: {feature}\nCLAIMED STATUS: {status}\n\n"
-        f"THE CLAIM:\n{claim}\n\nTHE EVIDENCE:\n{evidence}\n\n"
-        f"STUDIO MEMORY:\n{memory}\n\n"
-        "Respond with ONLY a JSON object, and nothing after it:\n"
-        '{"verdict": "ENDORSE" or "CONCERN" or "REJECT", '
-        '"reason": "<2-4 specific sentences naming any missing proof or hallucination>", '
-        '"missing": ["<specific evidence that should exist and does not>"]}')
-    # H-3, THE HARD WAY (2026-07-16). This used to substring-scan the reply and, failing
-    # that, "infer conservatively" -- to ENDORSE. Replayed verbatim: "" -> ENDORSE,
-    # "   " -> ENDORSE, "I need more information to assess this." -> ENDORSE. The
-    # airplane-redundancy check's failure mode was to APPROVE. Two more teeth in it:
-    # the old regex took the FIRST match while the PROMPT ITSELF contains the line
-    # "VERDICT: ENDORSE | CONCERN | REJECT", so a model merely restating its output
-    # format scored ENDORSE; and deep_tokens defaulted to 700, the same starvation that
-    # made every expectation_violator candidate score exactly 3.0 -- so the dump this
-    # gate then consumed was one IT had caused.
-    #
-    # H-3 is auto-promoted constitution: "An LM response containing its own reasoning
-    # dump is a RETRY with a larger token budget, never a verdict -- schema-validate
-    # before consuming." coin_verifier.judge() has honoured it since it was written.
-    # This function is the OTHER half of the same redundancy and did not.
-    #
-    # Now: schema-valid JSON or nothing. A restated format spec fails validation
-    # ("ENDORSE|CONCERN|REJECT" is not a verdict). Unparseable -> retry at 2x budget ->
-    # UNAVAILABLE, never a guess. UNAVAILABLE is honest and costs only the second
-    # opinion; ENDORSE was a fabricated approval wearing one.
-    budget = int(deep_tokens or _REVIEW_BUDGET)
+        f"THE CLAIM:\n{claim}\n\nTHE EVIDENCE OFFERED:\n{evidence}\n\n"
+        "List 3-8 SPECIFIC, CHECKABLE questions - each one a thing someone could go and "
+        "look up. Prefer questions about evidence that SHOULD exist and might not.\n"
+        'Respond with ONLY a JSON array of strings, like ["Is there a ...?", "Does ...?"]')
+
+    budget = int(deep_tokens or _ASK_BUDGET)
+    qs = []
     for _ in range(max_retries + 1):
         try:
             raw = ds4_brain.chat([{"role": "user", "content": prompt}],
-                                 max_tokens=budget, temperature=0.2)
+                                 max_tokens=budget, temperature=0.3)
         except Exception as e:
-            return {"up": False, "verdict": "UNAVAILABLE", "reasoning": str(e)[:160]}
-        c = _parse_review(raw or "")
-        if c:
-            return {"up": True, "verdict": str(c["verdict"]).upper(),
-                    "reasoning": str(c["reason"])[:1400],
-                    "missing": list(c.get("missing") or [])}
-        budget *= 2          # H-3: a dump is a retry, never a verdict
-    return {"up": True, "verdict": "UNAVAILABLE", "missing": [],
-            "reasoning": ("the deep brain returned no schema-valid verdict after "
-                          f"{max_retries + 1} attempts (reasoning dump or truncation). "
-                          "H-3: a dump is a RETRY, never a verdict — so this is "
-                          "UNAVAILABLE, not ENDORSE. There is no second opinion here.")}
+            return {"up": False, "questions": [], "refuted": [], "open": [],
+                    "asked": str(e)[:120]}
+        qs = _parse_questions(raw or "")
+        if qs:
+            break
+        budget *= 2      # no questions is not a verdict either — just ask again, bigger
+
+    answers = [answer(q, nodes, feature) for q in qs]
+    refuted = [a for a in answers if a["answered"] is False]
+    openq = [a for a in answers if a["answered"] is None]
+    return {"up": True, "questions": answers, "refuted": refuted, "open": openq,
+            "asked": f"{len(qs)} question(s) asked"}
 
 
 def main(argv=None):
