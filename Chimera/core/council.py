@@ -57,10 +57,19 @@ def _extract(data) -> str:
     return ""
 
 
-def _fast(user_content, max_tokens=1200, temperature=0.6, agent="council-fast"):
+def _fast(user_content, max_tokens=1200, temperature=0.6, agent="council-fast",
+          system=None):
+    """`system` overrides the council persona for callers that are NOT in a dialogue.
+
+    FAST_SYS tells the model it is one of two minds talking to a partner. That is
+    right for the council and WRONG for anything that just wants an answer in a fixed
+    format: the expectation_violator reused this path and got drafts, "Wait,"
+    asides, and its own persona handed back as a design candidate ("Role:** FAST
+    WORKER - concrete, quick..." scored 7/10 and claimed an archive cell). Borrowing
+    a call path silently borrows its persona."""
     body = {"model": resolve_model(), "temperature": temperature,
             "max_tokens": max_tokens, "stream": False,
-            "messages": [{"role": "system", "content": FAST_SYS},
+            "messages": [{"role": "system", "content": system or FAST_SYS},
                          {"role": "user", "content": user_content}]}
     req = urllib.request.Request(
         LM_BASE + "/v1/chat/completions", data=json.dumps(body).encode(),
