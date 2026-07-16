@@ -43,6 +43,18 @@ _START = (f"pkill -x ds4-server 2>/dev/null; sleep 1; cd ~/ds4 && "
           f"--kv-disk-dir /tmp/ds4-kv > ~/ds4-server.log 2>&1")
 
 
+def _content(data) -> str:
+    """Prefer a clean final `content`; fall back to `reasoning_content`/`reasoning`
+    — DeepSeek-V4 (like qwen-agentworld) keeps its real output in the reasoning
+    channel and can leave `content` empty under a tight token budget."""
+    msg = data["choices"][0]["message"]
+    for k in ("content", "reasoning_content", "reasoning"):
+        v = (msg.get(k) or "").strip()
+        if v:
+            return v
+    return ""
+
+
 def health(timeout: float = 6.0) -> dict:
     """(up?, model, latency). Never raises — a down brain is a normal state."""
     t0 = time.time()
@@ -68,7 +80,7 @@ def ask(prompt: str, system: str = None, max_tokens: int = 512,
         headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         data = json.loads(r.read().decode("utf-8", "replace"))
-    return data["choices"][0]["message"]["content"]
+    return _content(data)
 
 
 def chat(messages: list, max_tokens: int = 512, temperature: float = 0.3,
@@ -82,7 +94,7 @@ def chat(messages: list, max_tokens: int = 512, temperature: float = 0.3,
         headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         data = json.loads(r.read().decode("utf-8", "replace"))
-    return data["choices"][0]["message"]["content"]
+    return _content(data)
 
 
 def serve() -> str:

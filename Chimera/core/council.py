@@ -43,7 +43,21 @@ DEEP_SYS = (
     "few dense paragraphs.")
 
 
-def _fast(user_content, max_tokens=700, temperature=0.6, agent="council-fast"):
+def _extract(data) -> str:
+    """Reasoning models (qwen-agentworld, DeepSeek-V4) keep their real output in
+    `reasoning_content` and often leave `content` EMPTY under a tight budget (the
+    human's diagnosis, 2026-07-15: "where the model keeps its output is in the
+    reasoning — that's what makes it great"). Prefer a clean final `content`; fall
+    back to the reasoning, which IS the substance for these models."""
+    msg = data["choices"][0]["message"]
+    for k in ("content", "reasoning_content", "reasoning"):
+        v = (msg.get(k) or "").strip()
+        if v:
+            return v
+    return ""
+
+
+def _fast(user_content, max_tokens=1200, temperature=0.6, agent="council-fast"):
     body = {"model": resolve_model(), "temperature": temperature,
             "max_tokens": max_tokens, "stream": False,
             "messages": [{"role": "system", "content": FAST_SYS},
@@ -53,7 +67,7 @@ def _fast(user_content, max_tokens=700, temperature=0.6, agent="council-fast"):
         headers={"Content-Type": "application/json"})
     with lm_urlopen(req, agent=agent) as r:
         data = json.loads(r.read().decode("utf-8", "replace"))
-    return data["choices"][0]["message"]["content"].strip()
+    return _extract(data)
 
 
 def _deep(user_content, max_tokens=600, temperature=0.5):
@@ -70,7 +84,7 @@ def _render(topic, transcript):
     return "\n".join(lines)
 
 
-def dialogue(topic, rounds=2, fast_tokens=700, deep_tokens=600, echo=True):
+def dialogue(topic, rounds=2, fast_tokens=1200, deep_tokens=700, echo=True):
     """Run the council. Returns [(speaker, text), ...] ending in SYNTHESIS."""
     transcript = []
 
@@ -129,8 +143,8 @@ def main(argv=None):
     p = argparse.ArgumentParser(prog="council", description=__doc__.split("\n")[1])
     p.add_argument("topic", help="the problem/question the two brains discuss")
     p.add_argument("--rounds", type=int, default=2)
-    p.add_argument("--fast-tokens", type=int, default=700, dest="fast_tokens")
-    p.add_argument("--deep-tokens", type=int, default=600, dest="deep_tokens")
+    p.add_argument("--fast-tokens", type=int, default=1200, dest="fast_tokens")
+    p.add_argument("--deep-tokens", type=int, default=700, dest="deep_tokens")
     p.add_argument("--record", action="store_true",
                    help="post the synthesis to CAPCOM + record a Surprise node")
     a = p.parse_args(argv)
