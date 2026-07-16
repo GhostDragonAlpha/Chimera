@@ -91,13 +91,15 @@ That is the ONLY way its holes are found. A quiet gate is not a passed gate.
    claim; a green atom on broken code is FICTION, reverted. Verified-by-injection
    isn't playable (real input, read back in PIE).
 9. **RESEARCH — SELF-IMPOSED, EVERY session:** ALWAYS pass postflight `--researched
-   "<what you ACTUALLY looked up>"` or `--research-waiver "<reasoned>"`. **Do NOT wait
-   for the gate to demand it:** it counts any research node from the last 8h across the
-   WHOLE graph, so ANOTHER agent's session can satisfy yours and you will sail through
-   having researched NOTHING. Passing silently is not proof — it is the hole. (Notice
-   it? → `capcom tell "GATE DEFECT: ..."`.) Do real lookups: the codebase, the docs,
-   and ONLINE for anything you'd otherwise guess at. Covers TECHNICAL/INFRASTRUCTURE
-   decisions, not just game assets. Fork before researching a feature
+   "<what you ACTUALLY looked up>"` or `--research-waiver "<reasoned>"`. **The gate
+   now REFUSES a topic with no research** (fixed 2026-07-16 — it used to accept any
+   research node from the last 8h anywhere in the graph, so one agent sailed through
+   on the *Sky* session's node and reported a "waiver" it never made). It still passes
+   on a **same-topic node from a different run**, and says so — read the provenance it
+   prints (`a DIFFERENT run: run_xyz, 3.0h ago`). **If that research wasn't YOURS, it
+   is not proof you researched — cite your own.** Do real lookups: the codebase, the
+   docs, and ONLINE for anything you'd otherwise guess at. Covers TECHNICAL/
+   INFRASTRUCTURE decisions, not just game assets. Fork before researching a feature
    (`spiral_forks`). Capture surprises live (`graphify_record surprise`).
 10. **MEMBRANE:** probe infra in `membrane run --burn -- <cmd>` (proves no leak). LM
     call sites (solver/critic/coin_verifier) MUTATE live — not read-only.
@@ -118,7 +120,9 @@ That is the ONLY way its holes are found. A quiet gate is not a passed gate.
       deep) for discovery, `review` for the postflight redundancy gate (rule 4) — which
       only fires on `verified`/`observed`, so a rejection never exercises it.
       `core.expectation_violator` invents mechanics by breaking seed player-assumptions
-      (nightly in `dream_loop` → `docs/EXPECTATION_VIOLATIONS.md`).
+      and MAPS them (MAP-Elites archive over friction-kind × scope: the best per cell,
+      accumulating across runs; `--fill` aims at dark cells). Nightly in `dream_loop`
+      → `docs/EXPECTATION_VIOLATIONS.md` + `docs/world/expectation_map.json`.
 12. **GIT (LEAD ONLY — subagents don't commit):** master only, never feature
     branches; commit by-path; exclude `DefaultEngine.ini`; never skip hooks/signing.
     **STATE THE SHA — a session that ends with no SHA did not happen.** Check
@@ -184,9 +188,11 @@ get DS4 up, say so explicitly in CAPCOM + your summary; never let it pass unment
    must match, else fiction — DON'T keep it.
 6. **INTEGRATE + CLOSE:** keep genuine work; `git checkout --`/`revert` fiction.
    Commit verified work by-path to master, **state the SHA** (rule 12) — check
-   `git status` for artifacts left untracked. Never a feature branch. Run postflight
-   **ONCE** (a second run writes a duplicate PhaseComplete node) and ALWAYS pass it
-   `--researched "..."` / `--research-waiver "..."` yourself (rule 9).
+   `git status` for artifacts left untracked. Never a feature branch. Postflight YOUR
+   OWN work **ONCE** — re-running it re-reports the same result and duplicates the
+   node. (The subagent postflights its work and you postflight yours; two nodes under
+   one phase are FINE when they report DIFFERENT work.) ALWAYS pass it `--researched
+   "..."` / `--research-waiver "..."` yourself (rule 9).
 7. **TRAINING BLOCK:** if CAPCOM shows `(training) BLOCKED closure: sub-X … NOT
    ENROLLED`, enroll (`curriculum enroll --feature "<subject>"`) + reps, then retry.
 8. **RECONCILE:** release stale claims, reap dead tunnels, `task_board trim` if over
@@ -202,7 +208,8 @@ conclusion.
 **Cmds:** `capcom brief`/`tell` · `preflight` · `helm targets` · `task_board
 claim`/`trim` · `rep_engine tend` · `curriculum enroll --feature "X"` · `ds4_brain
 serve`/`status` · `council "<hard call>"` (bounce a decision off the deep brain) ·
-`expectation_violator run` (mine design candidates from the seed).
+`expectation_violator map` (the design-space archive: what's explored, what's dark) /
+`run --fill` (aim at empty cells).
 
 ## PART IV — SUBAGENT PROTOCOL
 
