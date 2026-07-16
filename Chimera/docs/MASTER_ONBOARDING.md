@@ -32,7 +32,10 @@
    `CHIMERA_*_GATE=warn`): Research (`--researched`/`--research-waiver`) → Generator
    Guard (no dirty generated C++) → Witness (sim/telemetry node; `--witnessed`) →
    Visual (LM screenshot analysis; `--visual-*`) → Training (enroll+reps / full rep
-   gate; `--training-waiver`) → Coin (LM judges claim↔evidence BOTH ways).
+   gate; `--training-waiver`) → Coin (LM judges claim↔evidence BOTH ways) → Council
+   (2nd-system: the DEEP brain + memory judges it INDEPENDENTLY — redundancy the
+   Coin's one-model pass can't give; advisory by default, `CHIMERA_COUNCIL_GATE=block`
+   hardens a REJECT, `--council-waiver`).
 5. **TRAINING = the piece you worked** (the task, any size), ENFORCED AT CLOSURE,
    domain-appropriate: game→curriculum enroll + reps; infra→proof-of-work;
    research→research gate; witness→it runs training; non-done→nothing.
@@ -60,9 +63,14 @@
    Capture surprises live (`graphify_record surprise`).
 10. **MEMBRANE:** probe infra in `membrane run --burn -- <cmd>` (proves no leak). LM
     call sites (solver/critic/coin_verifier) MUTATE live — not read-only.
-11. **LM STUDIO:** model ADOPTED, never pinned/loaded (`NoModelLoaded` if none, no
-    JIT fallback — shared GPU). Never gate on vision flags. Route via `lm_gateway`;
-    long timeouts (≥300s), batch behind a pre-filter.
+11. **TWO BRAINS:** FAST default = LM Studio/qwen via `lm_gateway` (model ADOPTED,
+    never pinned/loaded — `NoModelLoaded` if none, no JIT fallback, shared GPU; never
+    gate on vision flags; timeouts ≥300s, batch behind a pre-filter). DEEP (optional)
+    = ds4/DeepSeek-V4 on CPU (`core.ds4_brain`, `localhost:8000`, ~2 t/s, 0 VRAM,
+    non-vision; `ds4_brain serve`). `core.council` = the two across a table: `dialogue`
+    (fast bounces reasoning off deep) for discovery, `review` for the postflight
+    redundancy gate (rule 4). `core.expectation_violator` invents mechanics by breaking
+    seed player-assumptions (nightly in `dream_loop` → `docs/EXPECTATION_VIOLATIONS.md`).
 12. **GIT (LEAD ONLY — subagents don't commit):** master only, never feature
     branches; commit by-path; state the SHA; exclude `DefaultEngine.ini`; never skip
     hooks/signing.
@@ -94,9 +102,10 @@
 - **MCP:** use the chiR24 stdio bridge (`node E:/ChiR24-Unreal_mcp-test/dist/cli.js`)
   / `MCPStdioClient` → WebSocket 8090/8091 — NOT http :3000. Screenshot:
   `control_editor screenshot mode=editor_viewport`.
-- **Env:** `CHIMERA_*_GATE=warn` (soften) · `CHIMERA_ENFORCE_REP_GATE=1` (harden) ·
-  `CHIMERA_TASK_CLAIM_TTL` (7200) · `CHIMERA_LM_MAX_TOKENS`/`_CONCURRENCY` ·
-  `CHIMERA_DNA_BACKEND=json`.
+- **Env:** `CHIMERA_*_GATE=warn` (soften) · `CHIMERA_COUNCIL_GATE=block` (harden the
+  2nd-system review) · `CHIMERA_ENFORCE_REP_GATE=1` (harden) · `CHIMERA_TASK_CLAIM_TTL`
+  (7200) · `CHIMERA_LM_MAX_TOKENS`/`_CONCURRENCY` · `CHIMERA_DS4_URL`/`_THREADS` (deep
+  brain) · `CHIMERA_DNA_BACKEND=json`.
 
 ## PART III — LEAD PROTOCOL
 
@@ -124,7 +133,9 @@ dispatching focused subagents and VERIFYING their work — a self-report is a cl
 9. **REPEAT** with the next single subagent.
 
 **Cmds:** `capcom brief`/`tell` · `preflight` · `helm targets` · `task_board
-claim`/`trim` · `rep_engine tend` · `curriculum enroll --feature "X"`.
+claim`/`trim` · `rep_engine tend` · `curriculum enroll --feature "X"` · `ds4_brain
+serve`/`status` · `council "<hard call>"` (bounce a decision off the deep brain) ·
+`expectation_violator run` (mine design candidates from the seed).
 
 ## PART IV — SUBAGENT PROTOCOL
 
