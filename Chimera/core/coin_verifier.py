@@ -107,25 +107,58 @@ def _recent(nodes, hours=12):
 
 
 def assemble_evidence(nodes, feature=None, hours=12, cap=14):
-    """TAILS: this session's hard evidence, compacted to text lines."""
+    """TAILS: this session's hard evidence, compacted to text lines.
+
+    SCOPED to the feature (2026-07-15): the second-system review caught this
+    dumping UNRELATED simtests (Sky) into a Stations claim — simtest/visual lines
+    had no feature filter, so any recent evidence read as evidence FOR the
+    feature. Now a simtest/visual counts only if it is ATTRIBUTED to the feature
+    (an Observation node with derived_from=<this simtest> and feature==X) or its
+    text names the feature. Global telemetry is kept but LABELLED as global (fps
+    is not proof a specific feature works). No feature-scoped evidence -> say so."""
+    import re as _re
+    ftokens = [w for w in _re.split(r"[/_\s]+", (feature or "").lower()) if len(w) >= 4]
+    linked = set()  # simtest ids attributed to this feature via Observation nodes
+    if feature:
+        for n in nodes:
+            if n.get("type") == "Observation" and n.get("derived_from") and \
+               (n.get("feature") or n.get("feature_name")) == feature:
+                linked.add(str(n.get("derived_from")))
+
+    def _about(n, *fields):
+        if not feature:
+            return True
+        if str(n.get("id") or n.get("simtest_id") or "") in linked:
+            return True
+        blob = " ".join(str(n.get(f) or "") for f in fields).lower()
+        return any(tok in blob for tok in ftokens)
+
     lines = []
     for n in _recent(nodes, hours):
         t = n.get("type", "")
         tf = str(n.get("template_file", ""))
         if t == "SimPlaytest":
+            if not _about(n, "session", "demo", "notes"):
+                continue
             lines.append(f"[simtest] {n.get('session')} {n.get('beats_reached')}/"
                          f"{n.get('beats_total')} beats ({n.get('demo')})")
         elif tf.startswith("visual_verification"):
+            if not _about(n, "fix_description", "analysis", "feature", "template_file"):
+                continue
             lines.append(f"[visual] {str(n.get('fix_description') or n.get('analysis') or tf)[:160]}")
         elif t == "Health" or n.get("fps") is not None:
-            lines.append(f"[telemetry] fps={n.get('fps')} status={n.get('status')}")
+            lines.append(f"[telemetry]{' (global, not feature-specific)' if feature else ''} "
+                         f"fps={n.get('fps')} status={n.get('status')}")
         elif t == "ProfessorGrade" and (not feature or n.get("feature") == feature):
             lines.append(f"[grade] {n.get('feature')}: {n.get('grade')}")
         elif t == "FeatureUpdate" and feature and n.get("feature_name") == feature:
             lines.append(f"[ledger] {feature} -> {n.get('status')}")
         if len(lines) >= cap:
             break
-    return "\n".join(lines) or "(no evidence nodes recorded this session)"
+    if not lines:
+        return (f"(no session evidence found for feature '{feature}')" if feature
+                else "(no evidence nodes recorded this session)")
+    return "\n".join(lines)
 
 
 def assemble_claim(feature, status, result="", notes=""):
