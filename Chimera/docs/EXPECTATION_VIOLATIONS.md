@@ -8,3 +8,10 @@
 - **assumption:** Players will assume they need to tune or adjust audio parameters like pitch, volume, or tempo to match a target sound or rhythm in order to successfully "attune" to the chimera.
 - **violation:** Attunement requires generating an inverse-phase acoustic wave to cancel out the chimera's sound rather than matching it; actively tuning pitch, volume, or tempo to match the target will increase the 'dissonance' meter and prevent attunement."
 - **why it works:** <1-2 sentences>
+
+## Run (fast judge) — 1 kept
+
+### ADotCharacter  (8/10)
+- **assumption:** Players will assume every high-fidelity crowd actor is an individually targetable, interactable entity that can be harmed or affected by game mechanics just like a standard NPC.
+- **violation:** Crowd actors have 'Mechanic Immunity' to all direct player-applied status effects (stun, bleed, burn, knockback) and targetable UI indicators; they can only be affected or moved by global environmental state changes, such as placing a fire trap on the ground which forces the entire visible crowd cluster to pathfind away from the heat source."
+- **why it works:** <1-2 sentences>

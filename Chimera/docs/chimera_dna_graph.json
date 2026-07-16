@@ -64060,6 +64060,25 @@
       "links": [],
       "recorded_by": "expectation_violator.py",
       "run_id": "run_0e80530b2345"
+    },
+    {
+      "id": "surprise_7168fd028cfdc97f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T04:35:05.613877",
+      "context": "expectation-violation candidate for ADotCharacter (score 8)",
+      "expectation": "the player's assumed mental model for the system",
+      "reality": "VIOLATE 'Players will assume every high-fidelity crowd actor is an individually targetable, interactable entity that can be harmed or affected by game mechanics just like a standard NPC.' -> Crowd actors have 'Mechanic Immunity' to all direct player-applied status effects (stun, bleed, burn, knockback) and targetable UI indicators; they can only be affected or moved by global environmental state changes, such as placing a fire trap on the ground which forces the entire visible crowd cluster to pathfind away from the heat source.\"",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume every high-fidelity crowd actor is an individually '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "expectation_violator.py",
+      "run_id": "run_d3ec27fa4a42"
     }
   ],
   "edges": [
