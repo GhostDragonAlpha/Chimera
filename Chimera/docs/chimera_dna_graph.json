@@ -65727,6 +65727,25 @@
       "links": [],
       "recorded_by": "-",
       "run_id": "run_4128ef5e64b5"
+    },
+    {
+      "id": "surprise_2f749b3a29a47ded",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T19:41:10.693910",
+      "context": "council dialogue (fast qwen x deep ds4) on: A physics constant is duplicated in a game-dev studio's codebase and the two copies drifted 11x apart. core/trainables/b",
+      "expectation": "single-model reasoning; the two-brain exchange surfaced the above",
+      "reality": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   **Role:** FAST WORKER (hands-on, thinks quickly, concrete, disagrees when needed, builds on what's useful, keeps turns tight).\n    *   **Task:** Respond as the FAST mind: integrate what is useful from the DEEP mind's partial thoughts, push back on what is not, and ADVANCE the idea toward something concrete. Then, in 3-6 crisp bullets, name wh",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'single-model reasoning; the two-brain exchange surfaced the above' but 'Thinking Process:\n\n1.  **Analyze the Request:**\n    *   **Role:** FAST WORKER (h'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "council.py",
+      "run_id": "run_662dabb2be7b"
     }
   ],
   "edges": [
