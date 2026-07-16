@@ -67,6 +67,10 @@ def main():
     parser.add_argument("--training-waiver", default="", dest="training_waiver",
                         help="Training Gate: reasoned waiver when curriculum/rep training genuinely "
                              "doesn't apply (every feature is otherwise forced through school)")
+    parser.add_argument("--council-waiver", default="", dest="council_waiver",
+                        help="Council (second-system) gate: reasoned override when the deep brain "
+                             "REJECTS but you have a justified reason to finalize anyway "
+                             "(only relevant with CHIMERA_COUNCIL_GATE=block)")
     args = parser.parse_args()
 
     # Research Gate — the mandated research must be EXPLICIT, not silently skipped
@@ -345,6 +349,51 @@ def main():
             raise
         except Exception as _coin_e:
             print(f"[Coin] unavailable ({_coin_e}) — passing open")
+
+        # SECOND-SYSTEM REVIEW (2026-07-15, the human's "another person in the room /
+        # airplane redundancy"): the DEEP brain (ds4 — a DIFFERENT model, grounded in
+        # the studio's MEMORY) gives an INDEPENDENT verdict on this finalization,
+        # catching hallucinations the Coin (one model checking itself) structurally
+        # cannot. Advisory by default; CHIMERA_COUNCIL_GATE=block hardens a REJECT into
+        # a refusal, =off disables. Deep brain down -> no second opinion, never blocks.
+        try:
+            from core import council as _council
+            _cmode = _council.gate_mode()
+            if _cmode != "off":
+                print("\n[Council] consulting the deep brain for an independent second opinion (slow)...")
+                _cr = _council.review(args.feature, args.status, args.result, args.notes,
+                                      nodes=load_dna_graph().get("nodes", []))
+                if not _cr.get("up"):
+                    print(f"[Council] deep brain unavailable — no second opinion "
+                          f"(start it: python -m core.ds4_brain serve)")
+                else:
+                    _v = _cr["verdict"]
+                    print(f"[Council] DEEP VERDICT: {_v}\n{_cr['reasoning'][:700]}")
+                    try:
+                        from core.capcom import post_safe as _cp
+                        _cp("council", f"2nd-system review {args.feature} {args.status}: {_v} — "
+                            f"{_cr['reasoning'][:110].replace(chr(10), ' ')}",
+                            level=("warn" if _v == "REJECT" else "note"), source="council")
+                    except Exception:
+                        pass
+                    if _v in ("REJECT", "CONCERN"):
+                        try:
+                            from core.graphify_interface import record_surprise as _crs
+                            _crs(context=f"deep-brain second-system review of {args.feature} -> {args.status}: {_v}",
+                                 reality=_cr["reasoning"][:300],
+                                 expectation="an independent second model endorses the finalization",
+                                 source="agent")
+                        except Exception:
+                            pass
+                    if _v == "REJECT" and _cmode == "block" and not getattr(args, "council_waiver", ""):
+                        print("!! COUNCIL GATE - refused: the independent deep brain REJECTS this "
+                              "finalization. Address its concern, pass --council-waiver \"<why>\", "
+                              "or soften with CHIMERA_COUNCIL_GATE=warn.")
+                        raise SystemExit(1)
+        except SystemExit:
+            raise
+        except Exception as _council_e:
+            print(f"[Council] unavailable ({_council_e}) — passing open")
 
     # Verbatim check (advisory) — the Contract says "report exact UBT output
     # verbatim, never summarize." If a build/compile phase's --result looks like a

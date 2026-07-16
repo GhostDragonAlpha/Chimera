@@ -139,6 +139,84 @@ def _record(topic, transcript):
     return synth
 
 
+# ---------------------------------------------------------------------------
+# SECOND-SYSTEM REVIEW — the human's design (2026-07-15): "the fast has to consult
+# with the slow before any final decisions on a feature... another person in the
+# room... a reality check for hallucinating agents... an airplane flies with two
+# systems for propulsion." The DEEP brain (ds4, a DIFFERENT model) reviews a
+# feature finalization GROUNDED IN MEMORY. Different architecture => different
+# failure modes than the fast agent, so it catches hallucinations the Coin (one
+# model checking itself) structurally cannot. Fires once per feature finalization.
+# ---------------------------------------------------------------------------
+def gate_mode() -> str:
+    """block | warn | off. Default warn (advisory): the deep brain is slow/optional,
+    so it RECORDS a second opinion + shouts on REJECT, but only hard-blocks when the
+    operator opts in (CHIMERA_COUNCIL_GATE=block). =off disables."""
+    import os
+    v = os.environ.get("CHIMERA_COUNCIL_GATE", "warn").strip().lower()
+    return v if v in ("block", "warn", "off") else "warn"
+
+
+def review(feature, status, result="", notes="", nodes=None, deep_tokens=700):
+    """The DEEP brain's independent, memory-grounded second opinion on finalizing
+    `feature` as `status`. Returns {up, verdict: ENDORSE|CONCERN|REJECT|UNAVAILABLE,
+    reasoning}. Never raises."""
+    import re
+    # 1) The claim + evidence — reuse the Coin's assembly so both gates see the same faces.
+    try:
+        from core.coin_verifier import assemble_claim, assemble_evidence
+        from core.graphify_interface import load_dna_graph
+        if nodes is None:
+            nodes = load_dna_graph().get("nodes", [])
+        claim = assemble_claim(feature, status, result, notes)
+        evidence = assemble_evidence(nodes, feature=feature)
+    except Exception:
+        claim = f"{feature} -> {status}. {result}".strip()
+        evidence = notes or "(evidence unavailable)"
+    # 2) MEMORY — rep status + what the studio has already learned about this feature.
+    mem = []
+    try:
+        from core.rep_engine import rep_gate
+        elig, reason = rep_gate(feature)
+        mem.append(f"rep gate: {'READY' if elig else 'NOT met'} — {reason}")
+    except Exception:
+        pass
+    try:
+        from core.history_book import search as _hsearch
+        hits = _hsearch(feature, limit=5) or []
+        if hits:
+            mem.append("history book (what the studio has learned):\n" +
+                       "\n".join(f"  - {str(h)[:180]}" for h in hits[:5]))
+    except Exception:
+        pass
+    memory = "\n".join(mem) or "(no prior memory retrieved)"
+    # 3) Ask the deep brain — as the independent second system.
+    prompt = (
+        "You are the DEEP REVIEWER — a SECOND, INDEPENDENT system (a different model, "
+        "with the studio's memory). A fast agent is about to FINALIZE a feature. This "
+        "is a redundancy / reality-check: does the EVIDENCE actually support the "
+        "CLAIM, or is this a hallucination or an overreach?\n\n"
+        f"FEATURE: {feature}\nCLAIMED STATUS: {status}\n\n"
+        f"THE CLAIM:\n{claim}\n\nTHE EVIDENCE:\n{evidence}\n\n"
+        f"STUDIO MEMORY:\n{memory}\n\n"
+        "Answer starting with exactly one line:\n"
+        "VERDICT: ENDORSE | CONCERN | REJECT\n"
+        "then REASON: 2-4 specific sentences (name any missing proof or hallucination).")
+    try:
+        raw = ds4_brain.chat([{"role": "user", "content": prompt}],
+                             max_tokens=deep_tokens, temperature=0.2).strip()
+    except Exception as e:
+        return {"up": False, "verdict": "UNAVAILABLE", "reasoning": str(e)[:160]}
+    m = re.search(r"VERDICT:\s*\**\s*(ENDORSE|CONCERN|REJECT)", raw, re.IGNORECASE)
+    if m:
+        verdict = m.group(1).upper()
+    else:  # reasoning models bury the call in their thinking — infer conservatively
+        low = raw.lower()
+        verdict = ("REJECT" if "reject" in low else
+                   "CONCERN" if "concern" in low else "ENDORSE")
+    return {"up": True, "verdict": verdict, "reasoning": raw[:1400]}
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="council", description=__doc__.split("\n")[1])
     p.add_argument("topic", help="the problem/question the two brains discuss")
