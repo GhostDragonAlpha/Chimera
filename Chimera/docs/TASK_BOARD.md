@@ -1,10 +1,10 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-16T01:08:03+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-16T07:22:12+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
@@ -15,6 +15,12 @@ so claimed tasks are safe to run in parallel.
 | tb-0076 | open | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie |  |
 | tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
+| tb-0096 | open | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** |  |
+| tb-0097 | open | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** |  |
+| tb-0098 | open | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** |  |
+| tb-0093 | open | 0.6 | Pain verdict: ChimeraMovementComponent.h/.cpp, WeightShiftAn | docs/research/** |  |
+| tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
+| tb-0095 | open | 0.6 | Pain verdict: The observation_queue_processing dispatch prom | docs/research/** |  |
 | tb-0079 | blocked | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/** | Wrong task assigned; need to claim tb-0057 per instructions |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |

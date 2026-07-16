@@ -58,6 +58,8 @@
 - **[H-43, auto-promoted 2026-07-15]** Investigate chaos chaos_organ; verify test harness and beat registration.
 - **[H-44, auto-promoted 2026-07-15]** Investigate fixes generationsubsystem; verify test harness and beat registration
 - **[H-45, auto-promoted 2026-07-15]** Investigate bridge dsl; verify test harness and beat registration.
+- **[H-46, auto-promoted 2026-07-16]** Investigate human_rejection sky_starfield; verify test harness and beat registra
+- **[H-47, auto-promoted 2026-07-16]** Investigate human_rejection sky_atmosphere_scattering; verify test harness and b
 
 ## Architecture Overview
 

@@ -503,3 +503,20 @@ Wait, looking at the
 - sample: expected 'research per Research Depth Protocol' but 'DSL beat fixes verified against existing verb_interactions.b'
 - possible_conflict_with: heuristic_29d3294b7875942a (Investigate fixes generationsubsystem; verify test harness a); H-44  (Gardener: reconcile)
 - draft_rule: Investigate bridge dsl; verify test harness and beat registration.
+
+<!-- distilled 2026-07-16T07:15:02Z -->
+## H-46: human_rejection: Sky_Starfield
+- status: promoted (auto 2026-07-16)
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-16T00:12:31
+- proposed_organ: claude_md
+- evidence: observation_408512d7f36aff6e
+- sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_7c114b5f49f6462f
+- draft_rule: Investigate human_rejection sky_starfield; verify test harness and beat registra
+
+## H-47: human_rejection: Sky_Atmosphere_Scattering
+- status: promoted (auto 2026-07-16)
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-16T00:30:28
+- proposed_organ: claude_md
+- evidence: observation_6df7bf32c69dc5ff
+- sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_66602b2b8529179a
+- draft_rule: Investigate human_rejection sky_atmosphere_scattering; verify test harness and b
