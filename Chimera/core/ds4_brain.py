@@ -35,12 +35,18 @@ import urllib.request
 ENDPOINT = os.environ.get("CHIMERA_DS4_URL", "http://localhost:8000/v1").rstrip("/")
 WSL_DISTRO = os.environ.get("CHIMERA_DS4_WSL_DISTRO", "Ubuntu")
 _CTX = os.environ.get("CHIMERA_DS4_CTX", "32768")
+# Thread count: measured sweep on the i9-13900K (8 P + 16 E = 24 physical cores)
+# 2026-07-15 — gen 8t=1.64, 16t=2.04, 24t=2.08, 32t=2.02 t/s; prefill 24t=2.83
+# (2.4x the default). 24 (all physical cores) wins; 32 regresses (the 8 HT siblings
+# contend on the P-cores). Without --threads ds4 used only ~4-8 cores (82% idle).
+_THREADS = os.environ.get("CHIMERA_DS4_THREADS", "24")
 # NB: `pkill -x ds4-server` matches the binary's exact process NAME, not the full
 # command line — `pkill -f ds4-server` would also match THIS launcher bash (its
 # argv contains "ds4-server") and kill itself before the server starts.
 _START = (f"pkill -x ds4-server 2>/dev/null; sleep 1; cd ~/ds4 && "
-          f"./ds4-server --cpu --ctx {_CTX} --host 0.0.0.0 --port 8000 "
-          f"--kv-disk-dir /tmp/ds4-kv > ~/ds4-server.log 2>&1")
+          f"./ds4-server --cpu --threads {_THREADS} --ctx {_CTX} "
+          f"--host 0.0.0.0 --port 8000 --kv-disk-dir /tmp/ds4-kv "
+          f"> ~/ds4-server.log 2>&1")
 
 
 def _content(data) -> str:
