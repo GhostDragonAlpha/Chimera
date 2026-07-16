@@ -176,6 +176,35 @@ class Objective:
                 if abs(x - b) / scale <= tol:
                     out.append(f"{c['measure']} = {x:,.4g} is riding its {key} "
                                f"({b:,.4g})")
+
+            # REF HEALTH (2026-07-16). pinned() used to inspect ONLY max/min, so a
+            # maximize/minimize `ref` could never appear here — while `ref` is the ONLY
+            # thing that sets gradient strength. brain_gpu.json's own text says "ref is
+            # a guess — read pinned() and fix it", an instruction that was IMPOSSIBLE TO
+            # FOLLOW: the one diagnostic the doctrine points at was structurally blind to
+            # the one defect it was pointed at. "Iterate the objective, never the
+            # artifact" had no instrument for half the objective.
+            #
+            # Both refs in this repo were wrong, in OPPOSITE directions — which is proof
+            # neither was ever calibrated against a measurement:
+            #   brain_gpu energy  ref 10  vs measured 888  -> sat 0.011 (89x too small)
+            #   walker    energy  ref 400 vs measured 12   -> sat 0.971 (33x too big)
+            # sat near 0 is a near-constant multiplier that silently eats score while
+            # pretending to be a weight-1.0 nicety; sat near 1 is a dead term exerting no
+            # pressure at all. Neither is visible in the score, and neither was seen.
+            ref = c.get("ref")
+            if c["kind"] in ("maximize", "minimize") and ref is not None:
+                r = abs(float(ref)) or 1.0
+                v = max(0.0, x)
+                sat = v / (v + r) if c["kind"] == "maximize" else r / (r + v)
+                if sat >= 0.90:
+                    out.append(f"{c['measure']} ref={r:,.4g} is EXHAUSTED (sat {sat:.3f} "
+                               f"vs measured {x:,.4g}) — no hill left; this term stopped "
+                               f"pulling. Raise ref toward the measurement.")
+                elif sat <= 0.10:
+                    out.append(f"{c['measure']} ref={r:,.4g} is MIS-SCALED (sat {sat:.3f} "
+                               f"vs measured {x:,.4g}) — a near-constant penalty wearing "
+                               f"a weight's clothes. Scale ref to the measurement.")
         return out
 
 

@@ -64,9 +64,9 @@
     {
       "measure": "energy",
       "kind": "minimize",
-      "ref": 10.0,
+      "ref": 900.0,
       "weight": 1.0,
-      "why": "metabolic cost. Thrashing every joint at full torque is a real way to move and a bad way to be alive. A walk should be CHEAPER than a scramble, and this is the term that lets that be DISCOVERED rather than decreed. ref is a guess â€” read pinned() and fix it."
+      "why": "metabolic cost. Thrashing every joint at full torque is a real way to move and a bad way to be alive. A walk should be CHEAPER than a scramble, and th ... RECALIBRATED 2026-07-16 (ref 10.0 -> 900.0): measured 888.06; ref 10 gave sat 0.011 — an 89x-too-small ref is not a weight-1.0 nicety, it is a ~0.82x multiplier silently eating the winner's score. THE_EVOLUTION_ENGINE.md:98 already diagnosed it ('the energy scale that was guessed 90x wrong') and the objective's own why said 'ref is a guess - read pinned() and fix it' - an instruction pinned() could not serve until 2026-07-16. Set AT the measurement so sat~0.5: maximum gradient exactly where the optimiser lives."
     }
   ]
 }
