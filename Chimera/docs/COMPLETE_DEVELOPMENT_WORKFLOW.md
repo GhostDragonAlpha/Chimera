@@ -104,7 +104,8 @@ Via `write_study_guide()` function:
 
 ## PHASE 5: AAA QUALITY GATES
 
-**Objective**: Enforce quality standards using the 12-dimension AAA Result Grader (`core/result_grader_aaa_expanded.py`) - 400-point scale.
+**Objective**: Enforce quality standards using the Result Grader (`core/result_grader.py`) — 100-point rubric, zero LM dependency.
+(result_grader_aaa_expanded was DELETED 2026-07-16: it graded the agent's own adjectives against a benchmark it never read — docs/MASTER_DEVELOPMENT_DASHBOARD.md)
 
 **Tier Breakdown**:
 - **Tier 1**: Technical Correctness, Stability, Design Checklist, Spec Fidelity (100 pts foundation)

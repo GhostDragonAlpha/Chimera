@@ -263,7 +263,8 @@ TEST: Player_Character_Gesture_Playback
 
 ## Integration with Result Grader
 
-Once tests pass, evidence feeds result_grader_aaa_expanded:
+Once tests pass, evidence feeds `core/result_grader.py`:
+(result_grader_aaa_expanded was DELETED 2026-07-16: it graded the agent's own adjectives against a benchmark it never read — docs/MASTER_DEVELOPMENT_DASHBOARD.md)
 
 ```python
 evidence = {

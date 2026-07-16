@@ -148,8 +148,16 @@ posts the outcome to CAPCOM (`training` channel). Domain-appropriate:
 ### 4.4 Result grade (`core/result_grader.py`, zero LM dependency)
 Scores measured evidence (in-engine tests × declared-criteria coverage, telemetry,
 agent-judged checklist, spec fidelity). A ≥90 · B ≥75 · C ≥60 · F <60. C/F → back
-to research with the study guide. Build failure auto-grades F. Expanded rubric:
-`result_grader_aaa_expanded.py`.
+to research with the study guide. Build failure auto-grades F.
+
+There is no "expanded AAA rubric". `result_grader_aaa_expanded.py` was DELETED
+2026-07-16 and nothing replaces it: it accepted `benchmark_titles`, defaulted them to
+`[]`, copied them into its output and **never read them** — so its "85th percentile vs
+AAA titles" was computed against nothing — and 45 of its scoring branches were
+string-equality checks against the agent's own evidence file (write
+`"moment_to_moment_feel_quality": "AAA"` about your own work, score 12/12). Nothing
+imported it; its numbers reached the operator only through dashboards.
+**No reference, no verdict** — see `docs/MASTER_DEVELOPMENT_DASHBOARD.md`.
 
 ### 4.5 Exit-code contract
 `0` all gates passed · `1` gate violation (blocked) · `2` unexpected error.
@@ -409,7 +417,7 @@ asset_generator, asset_config, audio_sourcer, game_code_generator,
 incremental_generator, build_orchestrator, ubt_builder, build_validator,
 playtest_runner, generate_antlr_parser, interpreter, pathway_to_dsl.
 **Gates/verify:** gates, postflight, preflight, result_grader,
-result_grader_aaa_expanded, research_gate, generator_guard, witness_gate,
+research_gate, generator_guard, witness_gate,
 visual_gate, training_gate, coin_verifier, research_enforcement,
 research_auth, cpp_lint, validator, validation_reporter, build_validator.
 **Board/agents:** task_board, agent_tunnel, editor_scheduler, wellspring,

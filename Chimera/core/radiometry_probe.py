@@ -8,7 +8,10 @@ Analyzes viewport screenshots for:
 - Contact shadow detail inspection (crease visibility, occlusion)
 
 Used by PlayerCharacterLightingTests to provide objective color/radiometry evidence
-for the result_grader_aaa_expanded (spec_fidelity and visual_fidelity scoring).
+for core/result_grader.py (spec_fidelity scoring). NOTE: these are MEASURED
+radiometric facts -- they were previously routed to result_grader_aaa_expanded,
+which was deleted 2026-07-16 for grading the agent's own adjectives against a
+benchmark it never read (docs/MASTER_DEVELOPMENT_DASHBOARD.md).
 
 Usage (module):
     from core.radiometry_probe import measure_visor_radiometry, measure_ao_texture_density

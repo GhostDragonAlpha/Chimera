@@ -139,7 +139,7 @@ Workflow({scriptPath: "E:\PythonChimera\Chimera\.claude\workflows\phase_2_audio_
 
 **Data Flow**:
 - Phase 1 DNA graph records → Phase 2 reads latest feature grades
-- Phase 2 acceptance test evidence → result_grader_aaa_expanded grading
+- Phase 2 acceptance test evidence → `core/result_grader.py` grading  (result_grader_aaa_expanded was DELETED 2026-07-16: it graded the agent's own adjectives against a benchmark it never read — docs/MASTER_DEVELOPMENT_DASHBOARD.md)
 - Phase 2 study guides → fed to dream_loop for Phase 3 planning
 
 ---

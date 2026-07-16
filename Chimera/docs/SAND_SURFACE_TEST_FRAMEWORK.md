@@ -321,7 +321,7 @@ mcp_client.call("control_editor", {
 
 **Producer**: UE Automation Tests + sand_surface_telemetry.py probes
 
-**Consumer**: `core/result_grader.py` (result_grader_aaa_expanded)
+**Consumer**: `core/result_grader.py` (result_grader_aaa_expanded was DELETED 2026-07-16: it graded the agent's own adjectives against a benchmark it never read — docs/MASTER_DEVELOPMENT_DASHBOARD.md)
 
 ### Schema Structure
 
@@ -636,7 +636,9 @@ python -m pip install numpy pillow scipy soundfile matplotlib
 
 ## Part 9: Integration with Result Grader
 
-### Feeding Evidence to `result_grader_aaa_expanded`
+### Feeding Evidence to `core/result_grader.py`
+
+(result_grader_aaa_expanded was DELETED 2026-07-16: it graded the agent's own adjectives against a benchmark it never read — docs/MASTER_DEVELOPMENT_DASHBOARD.md)
 
 **Call Pattern**:
 ```python

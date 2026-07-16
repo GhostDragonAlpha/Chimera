@@ -3,7 +3,8 @@
 **Feature**: Player_Character_Lighting  
 **Test Framework**: UE5 Automation + AAA-Expanded Result Grader  
 **Criteria**: 5 lighting fidelity checks  
-**Evidence Integration**: JSON schema (lighting_evidence_schema.json) → result_grader_aaa_expanded  
+**Evidence Integration**: JSON schema (lighting_evidence_schema.json) → `core/result_grader.py`
+(result_grader_aaa_expanded was DELETED 2026-07-16: it graded the agent's own adjectives against a benchmark it never read — docs/MASTER_DEVELOPMENT_DASHBOARD.md)  
 
 ---
 

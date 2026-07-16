@@ -411,7 +411,9 @@ def probe_footstep_audio(
 def sand_surface_evidence_schema() -> Dict[str, Any]:
     """
     Return the evidence JSON schema for Ground_Sand_Surface feature.
-    Fed to result_grader_aaa_expanded for spec_fidelity scoring.
+    Fed to core/result_grader.py for spec_fidelity scoring. (Was routed to
+    result_grader_aaa_expanded, deleted 2026-07-16 -- it graded self-reported
+    strings; see docs/MASTER_DEVELOPMENT_DASHBOARD.md.)
     """
     return {
         "feature_name": "Ground_Sand_Surface",
@@ -523,7 +525,7 @@ def collect_sand_surface_evidence(
         log_path: Path to UE log (for crash detection)
 
     Returns:
-        Full evidence dict ready for result_grader_aaa_expanded
+        Full evidence dict ready for core/result_grader.py
     """
     evidence = sand_surface_evidence_schema()
 
