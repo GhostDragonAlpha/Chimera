@@ -194,7 +194,8 @@ def main():
             _wg_status, _wg_detail = _wg_check(
                 _wg_nodes, status=args.status,
                 witnessed=getattr(args, "witnessed", "") or "",
-                waiver=getattr(args, "witness_waiver", "") or "")
+                waiver=getattr(args, "witness_waiver", "") or "",
+                feature=(getattr(args, "feature", "") or ""))
             if _wg_status == "missing" and _wg_enforced():
                 print(f"\n!! WITNESS GATE - refused: marking {args.feature} '{args.status}' with no witness.")
                 print(_wg_guide)
@@ -240,7 +241,8 @@ def main():
             _vg_status, _vg_detail = _vg_check(
                 _vg_nodes, status=args.status,
                 analysis=getattr(args, "visual_analysis", "") or "",
-                waiver=getattr(args, "visual_waiver", "") or "")
+                waiver=getattr(args, "visual_waiver", "") or "",
+                feature=(getattr(args, "feature", "") or ""))
             if _vg_status == "missing" and _vg_enforced():
                 print(f"\n!! VISUAL GATE - refused: marking {args.feature} '{args.status}' with no LM screenshot analysis.")
                 print(_vg_guide)
