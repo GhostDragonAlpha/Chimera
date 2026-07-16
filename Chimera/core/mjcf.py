@@ -63,11 +63,25 @@ MIN_BONE_RAD = 0.004
 JOINT_RANGE = 2.4        # rad
 FRICTION = "1.2 0.01 0.001"
 
-# --- THE ACTUATORS, AND WHY THEY ARE NOT walker.py's ---------------------------
-# walker.py carries TORQUE = 22 N.m. On this 0.622 kg creature that is 35 N.m PER KG.
-# A human hip manages about 3. Its 37-gram limbs were being driven by torques that could
-# throw a housebrick, and it was never a decision — the number was inherited from the CPG
-# walker and never questioned.
+# --- THE ACTUATORS -------------------------------------------------------------
+# CORRECTED 2026-07-16. This section used to be headed "AND WHY THEY ARE NOT walker.py's"
+# and to open "walker.py carries TORQUE = 22 N.m." Both were false, and the falsehood was
+# load-bearing: walker.py has NO TORQUE constant — it evolves "torque" as a genome
+# parameter (seed 14.0 -> trained 4.79). The 22.0 lived in core/trainables/brain_cpu.py.
+#
+# So this comment sent the 2026-07-14 audit to an innocent file. mjcf was fixed to 2.0,
+# brain_cpu kept 22.0, and the two paths ran 11x apart for two days — until gait.py
+# (which replays via brain_cpu) analysed a MuJoCo-trained brain at 11x its training
+# torque and reported the studio's only real walker as "NOT A GAIT — thrashing that
+# happens to travel". A comment that lies about provenance does not just misinform; it
+# aims the repair.
+#
+# brain_cpu.py now IMPORTS TORQUE from here, so there is one number and it cannot drift.
+#
+# THE ORIGINAL LESSON STANDS: 22 N.m on this 0.622 kg creature is 35 N.m PER KG. A human
+# hip manages about 3. Its 37-gram limbs were being driven by torques that could throw a
+# housebrick, and it was never a decision — the number was inherited from the CPG walker
+# and never questioned.
 #
 # MEASURED (actuator_sweep, 2026-07-14), seed brain, 1,400 steps:
 #

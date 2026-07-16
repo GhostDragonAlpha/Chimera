@@ -74,7 +74,28 @@ from core.trainables.walker import (
 
 N_HID = 32
 TARGET_AMP = 1.1                 # radians; the brain's output is tanh, so bounded
-TORQUE = 22.0                    # N.m ceiling per joint — pybullet caps it for us
+
+# ONE SOURCE OF TRUTH (2026-07-16). This read `TORQUE = 22.0` — 35.4 N.m/kg on the
+# 0.622 kg body, ~11x a human hip — while core/mjcf.py carried the AUDITED value of 2.0
+# (3.2 N.m/kg). Two numbers for one physical fact, and they had already drifted 11x.
+#
+# mjcf.py's own measured table names 22.0-at-armature-0.000 "the inherited setting" and
+# records what it does: z max 3,433 m, joints at 4,972 rad/s — the creature flung 3.4 km
+# into the air, permanently ballistic, with no contact to build a limit cycle out of.
+# The pybullet path never sets armature either (defaults to 0), so THIS FILE WAS RUNNING
+# ROW 1 OF THAT CATASTROPHE TABLE while the file documenting it ran row 4.
+#
+# WHY THE 2026-07-14 AUDIT MISSED IT: mjcf.py:67 says "walker.py carries TORQUE = 22
+# N.m" under a header reading "WHY THEY ARE NOT walker.py's". walker.py has NO TORQUE
+# constant — it evolves `"torque"` as a genome parameter. The 22.0 was always HERE. A
+# comment that lied about provenance sent the fix to an innocent file and left the real
+# site untouched for two days, until gait.py replayed a MuJoCo brain at 11x its training
+# torque and convicted the studio's only real walker of being a seizure.
+#
+# Imported, not copied: a corrected duplicate drifts again the moment someone edits one
+# copy. core.mjcf is pure math (numpy + math), so this costs the pybullet path no MuJoCo
+# dependency — verified.
+from core.mjcf import TORQUE       # noqa: E402  — 2.0 N.m/joint, ~3.2 N.m/kg, a hip
 
 ROOT = Path(__file__).resolve().parents[2]
 BODY_FILE = ROOT / "docs" / "objectives" / "walker.trained.json"
