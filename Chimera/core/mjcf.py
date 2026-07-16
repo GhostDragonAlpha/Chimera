@@ -99,6 +99,18 @@ FRICTION = "1.2 0.01 0.001"
 # of. It could not have walked. MuJoCo did not introduce this failure; it refused to hide
 # it.
 #
+# READ THE UNITS ON THIS TABLE (added 2026-07-16). Every row above is MEASURED IN MUJOCO.
+# It does NOT describe the pybullet path, and an agent (me) transposed it there and
+# asserted brain_cpu "was running row 1". Measured, same settings, both engines:
+#
+#     torque 22.0, armature 0.000, MuJoCo   ->  z max 3433.733 m
+#     torque 22.0, armature 0.000, pybullet ->  z max     0.271 m     <- 12,000x apart
+#
+# The "CONTAINED" sentence above is the whole explanation and it was already here. These
+# are two different physics, not one physics with two settings — pybullet has no armature
+# at all (changeDynamics REJECTS the keyword; verified by invocation). A number lifted out
+# of the engine it was measured in is a rumour with a decimal point.
+#
 # ARMATURE is rotor inertia. Every real geared joint has it, and it is MuJoCo's standard
 # cure for stiff servos on light links. Its absence was an omission, not a simplification.
 TORQUE = 2.0             # N.m ceiling per joint -> 3.2 N.m/kg, about a human hip

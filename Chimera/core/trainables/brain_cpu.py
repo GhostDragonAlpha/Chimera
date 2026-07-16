@@ -79,11 +79,32 @@ TARGET_AMP = 1.1                 # radians; the brain's output is tanh, so bound
 # 0.622 kg body, ~11x a human hip — while core/mjcf.py carried the AUDITED value of 2.0
 # (3.2 N.m/kg). Two numbers for one physical fact, and they had already drifted 11x.
 #
-# mjcf.py's own measured table names 22.0-at-armature-0.000 "the inherited setting" and
-# records what it does: z max 3,433 m, joints at 4,972 rad/s — the creature flung 3.4 km
-# into the air, permanently ballistic, with no contact to build a limit cycle out of.
-# The pybullet path never sets armature either (defaults to 0), so THIS FILE WAS RUNNING
-# ROW 1 OF THAT CATASTROPHE TABLE while the file documenting it ran row 4.
+# WHY 22.0 WAS WRONG — and NOT for the reason I first wrote here. I claimed this file
+# "was running row 1 of mjcf.py's catastrophe table" (z max 3,433 m, flung 3.4 km). Then
+# I measured it, and the measurement refuted me:
+#
+#     torque 22.0, armature 0.000, MuJoCo   ->  z max 3433.733 m   (mjcf's table)
+#     torque 22.0, armature 0.000, pybullet ->  z max     0.271 m   (measured 2026-07-16)
+#
+# TWELVE THOUSAND TIMES APART at identical settings. The actuator_sweep table is a MuJoCo
+# table and says nothing about this path. mjcf.py even states it outright — "pybullet's
+# constraint-based servo merely CONTAINED that violence instead of NaN-ing" — and I read
+# past the sentence and asserted its opposite. A number lifted out of the engine it was
+# measured in is not evidence; it is a rumour with a decimal point.
+#
+# The REAL reason 22.0 is wrong is simpler and survives measurement: 22 N.m on a 0.622 kg
+# creature is 35.4 N.m/kg, ~11x a human hip. It is absurd on its face, it was never a
+# decision (inherited from the CPG walker, unquestioned), and physical implausibility is
+# reason enough. pybullet's servo hid the absurdity rather than making it honest.
+#
+# AND THE PATHS CANNOT BE UNIFIED, only this constant can. Verified BY INVOCATION, not by
+# docstring: pybullet's changeDynamics REJECTS `armature`/`rotorInertia` — armature is
+# MuJoCo rotor inertia on the joint and has no pybullet equivalent. mjcf's own table shows
+# armature is a STRONGER lever than torque (at 22 N.m it takes z max from 3433 m to 76 m,
+# a 45x cut, and 0.010 puts it on the ground). So this path runs torque 2.0 at armature
+# 0.000, a row that exists in NO measured table, and it can never be MuJoCo's physics.
+# That is why core/gait.py's engine guard is STRUCTURAL AND PERMANENT, not a stopgap:
+# scored-and-witnessed can never be the same thing across these two engines.
 #
 # WHY THE 2026-07-14 AUDIT MISSED IT: mjcf.py:67 says "walker.py carries TORQUE = 22
 # N.m" under a header reading "WHY THEY ARE NOT walker.py's". walker.py has NO TORQUE
