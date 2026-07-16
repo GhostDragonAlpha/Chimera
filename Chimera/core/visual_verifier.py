@@ -212,27 +212,46 @@ def analyze_screenshot(screenshot_path, prompt=None):
         return None
 
 def verify_world_visible(description):
-    """Check for keywords confirming visible game objects."""
-    if not description:
-        return False, "No description available"
-    
-    desc_lower = description.lower()
-    
-    # Keywords to check
-    keywords = ["ship", "station", "space", "vehicle", "world"]
-    found_keywords = [kw for kw in keywords if kw in desc_lower]
-    
-    # Check for "Oh Wow" threshold: ship and stations visible
-    has_ship = any(w in desc_lower for w in ["ship", "vessel", "craft"])
-    has_station = any(w in desc_lower for w in ["station", "hub", "market", "port"])
-    
-    if has_ship and has_station:
-        return True, f"Oh Wow threshold met: AI describes seeing ship and stations. Keywords found: {found_keywords}"
-    
-    if len(found_keywords) >= 3:
-        return True, f"World visible confirmed. Keywords found: {found_keywords}"
-    
-    return False, f"Incomplete description. Keywords found: {found_keywords}"
+    """REMOVED 2026-07-16. Kept as a refusal so no caller silently resurrects it.
+
+    It grepped the model's prose for the words "ship"/"station" and called their presence
+    proof. Substring matching for PRESENCE cannot express ABSENCE, so it read a flat
+    denial as a triumph. Executed, verbatim:
+
+        "I cannot see any ships or stations in this viewport. The screen is black."
+            -> True, "Oh Wow threshold met: AI describes seeing ship and stations"
+        "No ship is visible. No station is visible. The world failed to load."
+            -> True, same message
+
+    No keyword list fixes this; the shape is wrong. And it was worse than a bad parser,
+    because the default prompt ASKED what "should be visible" and what is "likely
+    rendered" while HANDING the model the words "ships, stations, space environment" --
+    which the model repeated and this function grepped back out. The prompt wrote the
+    answer and the grep read it. A closed loop that never looked at the viewport, in the
+    gate whose whole promise is "the local model must have LOOKED at it."
+
+    Its sibling `verify_against_checklist` in this same file had it right the whole time:
+    structured per-item YES/NO, and "Unanswered items count as NO -- a verifier that
+    skips a criterion has not verified it." The careful branch and the sloppy one lived
+    forty lines apart, and the sloppy one was the DEFAULT.
+
+    Use DEFAULT_CHECKLIST + verify_against_checklist. A checklist is the REFERENCE: no
+    reference, no verdict.
+    """
+    raise NotImplementedError(
+        "verify_world_visible was removed: it grepped for 'ship'/'station' and so read "
+        "'I cannot see any ships or stations, the screen is black' as a PASS. Use "
+        "verify_against_checklist(description, checklist or DEFAULT_CHECKLIST).")
+
+
+# The honest form of the old "Oh Wow threshold": say what must be on screen, then make
+# the model answer YES/NO to each. This is the REFERENCE the keyword grep never had --
+# and note it asks what IS visible, never what "should be" or is "likely rendered".
+DEFAULT_CHECKLIST = [
+    "The viewport shows rendered 3D geometry (NOT a black, blank, or solid-colour screen)",
+    "A ship, craft, or vehicle is actually visible in this image",
+    "A station, hub, or built structure is actually visible in this image",
+]
 
 def build_checklist_prompt(checklist):
     """Build a structured yes/no verification prompt from a feature's researched parameters.
@@ -298,7 +317,13 @@ def run_visual_verification(project_path, checklist=None, feature=None):
 
     # Step 2: Analyze with LM Studio
     print("\n[VISUAL_VERIFIER] Sending to LM Studio for vision analysis...")
-    prompt = build_checklist_prompt(checklist) if checklist else None
+    # There is no "no checklist" path anymore (2026-07-16). It used a prompt that asked
+    # what "should be visible" while supplying the keywords, then grepped them back out
+    # of the reply — a closed loop that never looked at the screen. A verification with
+    # no reference is not a weaker verification, it is a different thing wearing its
+    # name. DEFAULT_CHECKLIST is the reference when the caller does not bring one.
+    checklist = checklist or DEFAULT_CHECKLIST
+    prompt = build_checklist_prompt(checklist)
     description = analyze_screenshot(screenshot_path, prompt=prompt)
 
     if description:
@@ -307,12 +332,9 @@ def run_visual_verification(project_path, checklist=None, feature=None):
         print("[VISUAL_VERIFIER] No AI description returned from LM Studio.")
         return False, "No description"
 
-    # Step 3: Verify — strict checklist when provided, keyword heuristic otherwise
+    # Step 3: Verify — ALWAYS the strict checklist. Unanswered counts as NO.
     print("\n[VISUAL_VERIFIER] Verifying world visibility...")
-    if checklist:
-        is_verified, verification_msg = verify_against_checklist(description, checklist)
-    else:
-        is_verified, verification_msg = verify_world_visible(description)
+    is_verified, verification_msg = verify_against_checklist(description, checklist)
     
     if is_verified:
         print(f"[VISUAL_VERIFICATION] PASS: {verification_msg}")
