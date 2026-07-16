@@ -157,13 +157,26 @@ creature work had produced.**
 
 > **Score every genome from N randomized initial conditions and keep the WORST.**
 
-A lucky roll cannot survive sixteen of them. Report both, and let the objective choose:
+A lucky roll cannot survive sixteen of them. Report all three — but **bind the worst**:
 
 | measure | meaning |
 |---|---|
-| `distance` | **mean** over N restarts — the headline, and no longer a single lucky roll |
-| `distance_worst` | **min** over N restarts |
+| `distance` | **mean** over N restarts — reported for context and for `robustness`. **NOT the thing to bind.** |
+| `distance_worst` | **min** over N restarts — **this is what an objective must maximise.** |
 | `robustness` | `worst / mean`. **THE ANTI-LOTTERY.** A real limit cycle converges onto the same gait from every start → **~1.0**. A chaotic fraud → **~0**. |
+
+> **This table used to say `distance` was "the headline", and `brain_gpu.json` dutifully
+> bound the MEAN at weight 4.0 while `distance_worst` was computed and bound by nothing.**
+> So the rule in bold above — the studio's most-repeated sentence, also in `CLAUDE.md`
+> and `brain_gpu.py:19` — was **false in the one objective meant to implement it**, and
+> the doc contradicted itself six lines apart. Fixed 2026-07-16.
+>
+> The tell was a pin. The winner rode `robustness = 0.7647` against its `0.75` floor:
+> the GA was maximising the average and letting consistency fall to the wall, and by
+> this document's own §3 a pinned wall means *the wall was the only thing between it and
+> the exploit.* Maximising the mean and flooring the ratio lets a genome buy score with
+> rolls it cannot repeat, as long as it stays 75% consistent. Maximising the **worst**
+> removes that trade at its source — which is what "keep the WORST" always meant.
 
 Perturb generously — we *proved* 1e-6 m is already decisive, so anything a real gait can
 absorb is fair game (`brain_gpu.py`: base height ±2 cm, every joint ±0.03 rad, body tilt
