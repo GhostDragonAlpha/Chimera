@@ -63,15 +63,19 @@ def _deep(prompt, max_tokens=700):
                           max_tokens=max_tokens, temperature=0.4)
 
 
+_PLACEHOLDER = re.compile(r"<|the sentence|the modifier|the assumption|specific mechanic", re.I)
+
+
 def _last_after(marker, raw, minlen=12):
-    """Reasoning models echo the prompt's marker early in their thinking, then draft
-    the real answer later — so take the LAST substantial match, not the first."""
+    """Reasoning models echo the prompt's marker (and its <placeholder>) early in
+    their thinking, then draft the real answer later — so take the LAST substantial
+    match that ISN'T a template echo."""
     hits = [h.strip() for h in re.findall(marker + r"\s*(.+)", raw)
-            if len(h.strip()) >= minlen]
+            if len(h.strip()) >= minlen and not _PLACEHOLDER.search(h)]
     if hits:
         return hits[-1]
-    # fallback: last substantial line of the output
-    lines = [l.strip() for l in raw.splitlines() if len(l.strip()) >= minlen]
+    lines = [l.strip() for l in raw.splitlines()
+             if len(l.strip()) >= minlen and not _PLACEHOLDER.search(l)]
     return lines[-1] if lines else raw.strip()[:200]
 
 
@@ -117,8 +121,18 @@ def assess(name, assumption, violation, deep=False):
          "not mere disruption). Answer exactly:\nSCORE: <0-10>\nVERDICT: KEEP|DISCARD\n"
          "WHY: <1-2 sentences>")
     raw = (_deep(p, max_tokens=700) if deep else _fast(p, max_tokens=700))
-    scores = re.findall(r"SCORE:\s*(\d+(?:\.\d+)?)", raw)  # last = the settled score
-    score = float(scores[-1]) if scores else -1.0
+    # SCORE is the critical parse (a miss drops the candidate). Try, in order: an
+    # explicit "SCORE: N", any "N/10", then fall back to the KEEP/DISCARD verdict.
+    scores = (re.findall(r"SCORE:\s*(\d+(?:\.\d+)?)", raw)
+              or re.findall(r"(\d+(?:\.\d+)?)\s*/\s*10", raw))
+    if scores:
+        score = float(scores[-1])
+    elif re.search(r"\bKEEP\b", raw, re.I) and not re.search(r"\bDISCARD\b", raw, re.I):
+        score = 7.0
+    elif re.search(r"\bDISCARD\b", raw, re.I):
+        score = 3.0
+    else:
+        score = -1.0
     whys = re.findall(r"WHY:\s*(.+)", raw)
     return {"score": score, "reasoning": (whys[-1].strip()[:300] if whys else raw[:300])}
 
