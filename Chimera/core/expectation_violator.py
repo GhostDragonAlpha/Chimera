@@ -63,7 +63,8 @@ def _deep(prompt, max_tokens=700):
                           max_tokens=max_tokens, temperature=0.4)
 
 
-_PLACEHOLDER = re.compile(r"<|the sentence|the modifier|the assumption|specific mechanic", re.I)
+_PLACEHOLDER = re.compile(r"<|the sentence|the modifier|the assumption|specific mechanic|"
+                          r"thinking process|1-2 sentences|analyze the request", re.I)
 
 
 def _last_after(marker, raw, minlen=12):
@@ -133,8 +134,10 @@ def assess(name, assumption, violation, deep=False):
         score = 3.0
     else:
         score = -1.0
-    whys = re.findall(r"WHY:\s*(.+)", raw)
-    return {"score": score, "reasoning": (whys[-1].strip()[:300] if whys else raw[:300])}
+    # WHY: last substantial non-placeholder match (reject prompt echoes like
+    # "<1-2 sentences>" and reasoning headers like "Thinking Process:").
+    reasoning = _last_after("WHY:", raw, minlen=20)
+    return {"score": score, "reasoning": reasoning[:300]}
 
 
 def run(n_systems=4, per=3, deep=False, keep=KEEP_THRESHOLD, record=True, echo=True):
