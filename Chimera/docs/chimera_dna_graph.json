@@ -63469,6 +63469,232 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_b063a901ab7a"
+    },
+    {
+      "id": "simtest_34d362c8bddc20e0",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T00:26:45.092512",
+      "observer": "agent-sim",
+      "session": "sky_atmosphere_witness_1",
+      "demo": "sky_atmosphere_scattering",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "sky_atmosphere_lunar_present",
+          "outcome": "failed",
+          "features": [
+            "Sky_Atmosphere_Scattering"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SkyAtmosphere_Lunar"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sky_atmosphere_witness_1.json",
+      "temperature": "[SIM] 0/1 beats reached in 'sky_atmosphere_scattering'. Failures: sky_atmosphere_lunar_present (failed: expect {\"actor_exists\": \"SkyAtmosphere_Lunar\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sky_atmosphere_witness_1': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7e7975964348"
+    },
+    {
+      "id": "surprise_f8142df2d7f63d60",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T00:26:45.334768",
+      "context": "Sleepwalker expected beat 'sky_atmosphere_lunar_present' to be reachable (sky_atmosphere_scattering)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SkyAtmosphere_Lunar\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SkyAtmosphere_Lunar\"}, \"ok\": false, \"note\":'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7e7975964348"
+    },
+    {
+      "id": "simtest_66602b2b8529179a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T00:27:55.445835",
+      "observer": "agent-sim",
+      "session": "sky_atmosphere_witness_2",
+      "demo": "sky_atmosphere_scattering",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "sky_atmosphere_lunar_present",
+          "outcome": "failed",
+          "features": [
+            "Sky_Atmosphere_Scattering"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SkyAtmosphere_Lunar"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sky_atmosphere_witness_2.json",
+      "temperature": "[SIM] 0/1 beats reached in 'sky_atmosphere_scattering'. Failures: sky_atmosphere_lunar_present (failed: expect {\"actor_exists\": \"SkyAtmosphere_Lunar\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sky_atmosphere_witness_2': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_d3c1f0712942"
+    },
+    {
+      "id": "surprise_6f91e2e5da1427d3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T00:27:55.706582",
+      "context": "Sleepwalker expected beat 'sky_atmosphere_lunar_present' to be reachable (sky_atmosphere_scattering)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SkyAtmosphere_Lunar\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SkyAtmosphere_Lunar\"}, \"ok\": false, \"note\":'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_d3c1f0712942"
+    },
+    {
+      "id": "observation_6df7bf32c69dc5ff",
+      "type": "Observation",
+      "timestamp": "2026-07-16T00:30:28.754170",
+      "feature_name": "Sky_Atmosphere_Scattering",
+      "verdict": "rejected",
+      "notes": "automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_66602b2b8529179a",
+      "observer": "automated-via-attribution",
+      "derived_from": "simtest_66602b2b8529179a",
+      "quote": "sky_atmosphere_lunar_present (failed: present=False)",
+      "tacit": false,
+      "error_signature": "human_rejection",
+      "template_file": "observation/Sky_Atmosphere_Scattering",
+      "error_category": "human_rejection",
+      "fix_description": "Human observation of 'Sky_Atmosphere_Scattering': rejected \u2014 automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_66602b2b8529179a",
+      "compilation_result": "rejected",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_7833ce1ebeec"
+    },
+    {
+      "id": "surprise_adb30d23ae47469f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T00:30:28.999986",
+      "context": "Human observation of system-finalized feature 'Sky_Atmosphere_Scattering'",
+      "expectation": "system verification (rubric grade) matches human judgment",
+      "reality": "automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_66602b2b8529179a",
+      "lesson_hint": "frame-level correction: what the machine measured is not what the human sees",
+      "source": "human",
+      "consolidated": false,
+      "error_signature": "surprise_human",
+      "template_file": "surprise/human",
+      "error_category": "surprise",
+      "fix_description": "Surprise (human): expected 'system verification (rubric grade) matches human judgment' but 'automated rejection sweep: simulation evidence indicts this feature (1 failing o'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_7833ce1ebeec"
+    },
+    {
+      "id": "feature_2e06fadef8c0f43d",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T00:30:29.250272",
+      "feature_name": "Sky_Atmosphere_Scattering",
+      "loop": 3,
+      "status": "needs_refinement",
+      "parameters": {
+        "holistic_sweep": "simtest_66602b2b8529179a",
+        "indicted_by": [
+          "sky_atmosphere_lunar_present (failed: present=False)"
+        ]
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Atmosphere_Scattering",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Atmosphere_Scattering' (Loop 3) recorded as 'needs_refinement'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_7833ce1ebeec"
+    },
+    {
+      "id": "phase_0df515cd737b5c72",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T00:33:11.084947",
+      "phase": "Witness & collapse: Sky_Atmosphere_Scattering",
+      "result": "WITNESS & COLLAPSE tb-0073 Sky_Atmosphere_Scattering -> OUTCOME: honest REJECTION (hollow sky, feature not realized). Two independent live-PIE SimPlaytest sessions (sleepwalker) both failed is_pie + world_is:chimeradefaultlevel + actor_exists:SkyAtmosphere_Lunar with present=False. Session sky_atmosphere_witness_1 -> simtest_34d362c8bddc20e0, 0/1 beats reached, temperature \"[SIM] 0/1 beats reached ... failed: expect {actor_exists: SkyAtmosphere_Lunar} -> present=False\". Session sky_atmosphere_witness_2 -> simtest_66602b2b8529179a, 0/1 beats reached, same failure. Read-only pre-inspection: no Python/setup_sky_atmosphere.py exists in repo; Python/setup_starfield.py is orphaned (never invoked by startup.py) so the Sky loop runtime setup is not wired into the live level; tb-0072 runtime actor scan found only SkyAtmosphere_0 label=SkyAtmosphere, NOT SkyAtmosphere_Lunar. Collapse: python -m core.collapse_proxy --from-simtest simtest_66602b2b8529179a --valence rejected -> \"[collapse_proxy] automated rejection sweep (simtest_66602b2b8529179a): 1 rejected, 20 left queued (not indicted) / rejected Sky_Atmosphere_Scattering\". Observation node recorded (rejected, derived_from simtest_66602b2b8529179a); FeatureUpdate flipped to needs_refinement. Observation queue now 20 awaiting (was 21) - Sky_Atmosphere_Scattering removed. 0 junk/unknown nodes. In-beat viewport screenshot Saved/Screenshots/sky_atmosphere_view.png (591KB, 1048x461, real render) but LM-vision analysis NOT possible this session (capture tool fails post-PIE; model has no image input) - no green visual claim made; engine hard facts decisive.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness & collapse: Sky_Atmosphere_Scattering",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness & collapse: Sky_Atmosphere_Scattering' complete: WITNESS & COLLAPSE tb-0073 Sky_Atmosphere_Scattering -> OUTCOME: honest REJECTION (hollow sky, feature not realized). Two independent live-PIE SimPlaytest sessions (sleepwalker) both failed is_pie + w",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Sky loop runtime setup is orphaned: Python/setup_starfield.py is never invoked by Python/startup.py and no setup_sky_atmosphere.py exists, so Sky_Starfield + Sky_Atmosphere_Scattering actors are absent in the live level (engine-default SkyAtmosphere / SM_SkySphere only). Likely a cross-feature defect - other Sky-loop features may also be hollow. Fix: wire setup scripts into startup.py or the generator."
+      ],
+      "inheritance": "The Sky loop runtime setup is orphaned: there is no setup_sky_atmosphere.py and setup_starfield.py is never invoked by startup.py, so both Sky_Starfield (tb-0072) and Sky_Atmosphere_Scattering (tb-0073) are hollow. Next agent must wire these setup scripts into startup.py or the generator before re-attempting observation of any Sky-loop feature.",
+      "pain_verdicts": {
+        "phase_0f0bac451e5ce1dd:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_5e0fbd53a2af"
     }
   ],
   "edges": [
