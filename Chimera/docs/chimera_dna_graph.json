@@ -64373,6 +64373,947 @@
       ],
       "recorded_by": "dream_loop.py",
       "run_id": "run_ed087792839e"
+    },
+    {
+      "id": "simtest_03a1602fc4ff9d34",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:09:13.995933",
+      "observer": "agent-sim",
+      "session": "sub13_earth_model_1",
+      "demo": "sky_earth_model",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_earth_model_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Earth_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_Earth"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_earth_model_1.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_earth_model'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_earth_model_1': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_4fc9e6a2e411"
+    },
+    {
+      "id": "simtest_a26cf8804956ae03",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:09:41.330389",
+      "observer": "agent-sim",
+      "session": "sub13_earth_model_2",
+      "demo": "sky_earth_model",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_earth_model_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Earth_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_Earth"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_earth_model_2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_earth_model'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_earth_model_2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c79ea3f73206"
+    },
+    {
+      "id": "simtest_ca12067c656d53c1",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:09:54.323306",
+      "observer": "agent-sim",
+      "session": "sub13_earth_material_1",
+      "demo": "sky_earth_material",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_earth_material_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Earth_Material"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_Earth"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_earth_material_1.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_earth_material'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_earth_material_1': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_062efc606542"
+    },
+    {
+      "id": "simtest_d3dbdd51971c9402",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:10:07.358222",
+      "observer": "agent-sim",
+      "session": "sub13_earth_material_2",
+      "demo": "sky_earth_material",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_earth_material_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Earth_Material"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_Earth"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_earth_material_2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_earth_material'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_earth_material_2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_0063c91e3993"
+    },
+    {
+      "id": "simtest_498696a8ba474a16",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:10:20.363865",
+      "observer": "agent-sim",
+      "session": "sub13_moon_model_1",
+      "demo": "sky_moon_model",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_moon_model_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Moon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_Moon"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_moon_model_1.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_moon_model'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_moon_model_1': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7175691f9fda"
+    },
+    {
+      "id": "simtest_a720b6a9c7a300de",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:10:33.339841",
+      "observer": "agent-sim",
+      "session": "sub13_moon_model_2",
+      "demo": "sky_moon_model",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_moon_model_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Moon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_Moon"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_moon_model_2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_moon_model'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_moon_model_2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_1d2997257274"
+    },
+    {
+      "id": "simtest_71552f9ee9678f18",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:10:46.351435",
+      "observer": "agent-sim",
+      "session": "sub13_moon_material_1",
+      "demo": "sky_moon_material",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_moon_material_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Moon_Material"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_Moon"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_moon_material_1.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_moon_material'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_moon_material_1': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a1a4e371ea0a"
+    },
+    {
+      "id": "simtest_36133db1b691a810",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:10:59.329791",
+      "observer": "agent-sim",
+      "session": "sub13_moon_material_2",
+      "demo": "sky_moon_material",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_moon_material_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Moon_Material"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_Moon"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_moon_material_2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_moon_material'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_moon_material_2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_93569f01c417"
+    },
+    {
+      "id": "simtest_1199f5476e6eb04a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:11:12.345402",
+      "observer": "agent-sim",
+      "session": "sub13_sun_lighting_1",
+      "demo": "sky_sun_lighting",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_sun_lighting_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Sun_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "Sun"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_sun_lighting_1.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_sun_lighting'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_sun_lighting_1': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_283baf185d73"
+    },
+    {
+      "id": "simtest_5c622e73fd243095",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T14:11:25.368577",
+      "observer": "agent-sim",
+      "session": "sub13_sun_lighting_2",
+      "demo": "sky_sun_lighting",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_sun_lighting_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Sun_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "Sun"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub13_sun_lighting_2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_sun_lighting'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub13_sun_lighting_2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e6fb986d6648"
+    },
+    {
+      "id": "observation_516b96cf549ce230",
+      "type": "Observation",
+      "timestamp": "2026-07-16T14:12:28.023929",
+      "feature_name": "Sky_Earth_Model",
+      "verdict": "accepted",
+      "notes": "PIE beat simtest_03a1602fc4ff9d34 + a26cf8804956ae03: actor 'SM_Earth' present (MESH=/Game/Celestial/SM_Earth, MAT=/Game/Celestial/Materials/MAT_Earth/MAT_Earth, scale 3.0). Realized via Python/setup_sky_earth.py.",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_03a1602fc4ff9d34",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Sky_Earth_Model",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Sky_Earth_Model': accepted \u2014 PIE beat simtest_03a1602fc4ff9d34 + a26cf8804956ae03: actor 'SM_Earth' present (MESH=/Game/Celestial/SM_Earth, MAT=/Game/Celestial/Materials/MAT_Earth/MAT_Earth",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_43407a088d44"
+    },
+    {
+      "id": "feature_762df31f92ec03c7",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T14:12:28.303182",
+      "feature_name": "Sky_Earth_Model",
+      "loop": 3,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "human_notes": "PIE beat simtest_03a1602fc4ff9d34 + a26cf8804956ae03: actor 'SM_Earth' present (MESH=/Game/Celestial/SM_Earth, MAT=/Game/Celestial/Materials/MAT_Earth/MAT_Earth, scale 3.0). Realized via Python/setup_sky_earth.py.",
+        "attribution": "derived from simtest_03a1602fc4ff9d34 | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Earth_Model",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Earth_Model' (Loop 3) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_43407a088d44"
+    },
+    {
+      "id": "observation_d98165bc5d378bc0",
+      "type": "Observation",
+      "timestamp": "2026-07-16T14:12:28.631860",
+      "feature_name": "Sky_Earth_Material",
+      "verdict": "accepted",
+      "notes": "PIE beats simtest_ca12067c656d53c1 + d3dbdd51971c9402: actor 'SM_Earth' present carrying MAT_Earth (editor read-back MAT=/Game/Celestial/Materials/MAT_Earth/MAT_Earth at slot 0). Realized via setup_sky_earth.py.",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_ca12067c656d53c1",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Sky_Earth_Material",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Sky_Earth_Material': accepted \u2014 PIE beats simtest_ca12067c656d53c1 + d3dbdd51971c9402: actor 'SM_Earth' present carrying MAT_Earth (editor read-back MAT=/Game/Celestial/Materials/MAT_Earth/MAT",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_9779986e9cf0"
+    },
+    {
+      "id": "feature_75c3a0236d822b20",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T14:12:28.884519",
+      "feature_name": "Sky_Earth_Material",
+      "loop": 3,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "human_notes": "PIE beats simtest_ca12067c656d53c1 + d3dbdd51971c9402: actor 'SM_Earth' present carrying MAT_Earth (editor read-back MAT=/Game/Celestial/Materials/MAT_Earth/MAT_Earth at slot 0). Realized via setup_sky_earth.py.",
+        "attribution": "derived from simtest_ca12067c656d53c1 | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Earth_Material",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Earth_Material' (Loop 3) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_9779986e9cf0"
+    },
+    {
+      "id": "observation_38357b09bd9525ac",
+      "type": "Observation",
+      "timestamp": "2026-07-16T14:12:29.247882",
+      "feature_name": "Sky_Moon_Model",
+      "verdict": "accepted",
+      "notes": "PIE beats simtest_498696a8ba474a16 + a720b6a9c7a300de: actor 'SM_Moon' present (MESH=/Game/Celestial/SM_Moon, MAT=/Game/Celestial/Materials/MAT_Moon_Regolith, scale 0.8). Realized via setup_sky_moon.py.",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_498696a8ba474a16",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Sky_Moon_Model",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Sky_Moon_Model': accepted \u2014 PIE beats simtest_498696a8ba474a16 + a720b6a9c7a300de: actor 'SM_Moon' present (MESH=/Game/Celestial/SM_Moon, MAT=/Game/Celestial/Materials/MAT_Moon_Regolith, s",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f242051e3165"
+    },
+    {
+      "id": "feature_2bfc05148eabfef5",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T14:12:29.490796",
+      "feature_name": "Sky_Moon_Model",
+      "loop": 3,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "human_notes": "PIE beats simtest_498696a8ba474a16 + a720b6a9c7a300de: actor 'SM_Moon' present (MESH=/Game/Celestial/SM_Moon, MAT=/Game/Celestial/Materials/MAT_Moon_Regolith, scale 0.8). Realized via setup_sky_moon.py.",
+        "attribution": "derived from simtest_498696a8ba474a16 | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Moon_Model",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Moon_Model' (Loop 3) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f242051e3165"
+    },
+    {
+      "id": "observation_451fa0d313ca675c",
+      "type": "Observation",
+      "timestamp": "2026-07-16T14:12:29.825555",
+      "feature_name": "Sky_Moon_Material",
+      "verdict": "accepted",
+      "notes": "PIE beats simtest_71552f9ee9678f18 + 36133db1b691a810: actor 'SM_Moon' present carrying MAT_Moon_Regolith (editor read-back MAT=/Game/Celestial/Materials/MAT_Moon_Regolith). Realized via setup_sky_moon.py.",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_71552f9ee9678f18",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Sky_Moon_Material",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Sky_Moon_Material': accepted \u2014 PIE beats simtest_71552f9ee9678f18 + 36133db1b691a810: actor 'SM_Moon' present carrying MAT_Moon_Regolith (editor read-back MAT=/Game/Celestial/Materials/MAT_Mo",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_552a89a2a61f"
+    },
+    {
+      "id": "feature_dfff5080a938b0de",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T14:12:30.090016",
+      "feature_name": "Sky_Moon_Material",
+      "loop": 3,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "human_notes": "PIE beats simtest_71552f9ee9678f18 + 36133db1b691a810: actor 'SM_Moon' present carrying MAT_Moon_Regolith (editor read-back MAT=/Game/Celestial/Materials/MAT_Moon_Regolith). Realized via setup_sky_moon.py.",
+        "attribution": "derived from simtest_71552f9ee9678f18 | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Moon_Material",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Moon_Material' (Loop 3) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_552a89a2a61f"
+    },
+    {
+      "id": "observation_2906c8aa1adb1c23",
+      "type": "Observation",
+      "timestamp": "2026-07-16T14:12:30.432355",
+      "feature_name": "Sky_Sun_Lighting",
+      "verdict": "accepted",
+      "notes": "PIE beats simtest_1199f5476e6eb04a + 5c622e73fd243095: actor 'Sun' present (relabeled DirectionalLight, intensity 6.0, warm-white color 230,248,255). Realized via setup_sky_sun.py.",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_1199f5476e6eb04a",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Sky_Sun_Lighting",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Sky_Sun_Lighting': accepted \u2014 PIE beats simtest_1199f5476e6eb04a + 5c622e73fd243095: actor 'Sun' present (relabeled DirectionalLight, intensity 6.0, warm-white color 230,248,255). Realized v",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_5e12e1299b22"
+    },
+    {
+      "id": "feature_2c030b64183c2583",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T14:12:30.668027",
+      "feature_name": "Sky_Sun_Lighting",
+      "loop": 3,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "human_notes": "PIE beats simtest_1199f5476e6eb04a + 5c622e73fd243095: actor 'Sun' present (relabeled DirectionalLight, intensity 6.0, warm-white color 230,248,255). Realized via setup_sky_sun.py.",
+        "attribution": "derived from simtest_1199f5476e6eb04a | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Sun_Lighting",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Sun_Lighting' (Loop 3) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_5e12e1299b22"
+    },
+    {
+      "id": "discovery_25983f791b0fba18",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-16T14:13:56.041741",
+      "feature": "Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build",
+      "campus_sources": [],
+      "web_sources": [
+        "Realization path research (Technical/Infra, Research Gate satisfied): consulted (1) tb-0092 proven pattern - Sky_Starfield/Sky_Atmosphere_Scattering realized via Python setup scripts + PythonScriptPlugin auto-run, generator create_level_*.py is a no-op stub; (2) core/game_code_generator.py skybox ha"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_df5666b969c1"
+    },
+    {
+      "id": "phase_c67e3e4067245196",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T14:13:56.365515",
+      "phase": "Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build",
+      "result": "REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13. EDITOR-WORLD READ-BACK (system_control.execute_python after realize_sky_loop apply + level save): Sun -> INTENSITY=6.0 COLOR={b:255,g:248,r:230,a:0}; SM_StarSphere PRESENT; SkyAtmosphere_Lunar PRESENT; SM_Moon -> MAT=/Game/Celestial/Materials/MAT_Moon_Regolith.MAT_Moon_Regolith SCALE={0.8,0.8,0.8}; SM_Earth -> MAT=/Game/Celestial/Materials/MAT_Earth/MAT_Earth.MAT_Earth SCALE={3.0,3.0,3.0}. WITNESS BEATS (sleepwalker, 2 clean PIE sessions/feature, actor_exists gated): Sky_Earth_Model simtest_03a1602fc4ff9d34+simtest_a26cf8804956ae03 reached; Sky_Earth_Material simtest_ca12067c656d53c1+simtest_d3dbdd51971c9402 reached; Sky_Moon_Model simtest_498696a8ba474a16+simtest_a720b6a9c7a300de reached; Sky_Moon_Material simtest_71552f9ee9678f18+simtest_36133db1b691a810 reached; Sky_Sun_Lighting simtest_1199f5476e6eb04a+simtest_5c622e73fd243095 reached. COLLAPSE (graphify_record observe --verdict accepted --tacit): Sky_Earth_Model->observed(observation_516b96cf549ce230); Sky_Earth_Material->observed(observation_d98165bc5d378bc0); Sky_Moon_Model->observed(observation_38357b09bd9525ac); Sky_Moon_Material->observed(observation_451fa0d313ca675c); Sky_Sun_Lighting->observed(observation_2906c8aa1adb1c23).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build",
+      "error_category": "none",
+      "fix_description": "Phase 'Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build' complete: REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13. EDITOR-WORLD READ-BACK (system_control.execute_python after realize_sky_loop apply + level save): Sun -> INTENSITY=6.0 COLOR={b:255,g:248,",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Sky bodies realized ONLY via Python setup scripts saved into the editor world; a level revert/template re-stamp or editor reopen without PythonScriptPlugin auto-run silently drops SM_Earth/SM_Moon/Sun - next session must confirm they persist in PIE or re-apply via realize_sky_loop.py."
+      ],
+      "inheritance": "Loop 3 Sky is now fully realized (Earth/Moon/Sun join starfield+atmosphere) via the proven Python-setup realization path; the mechanism (idempotent sentinel-guarded setup scripts + PythonScriptPlugin auto-run + realize_sky_loop.py force-reload apply) is the reusable recipe for any future orphaned sky/celestial feature.",
+      "pain_verdicts": {
+        "phase_33cc2d55125bc551:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_df5666b969c1"
+    },
+    {
+      "id": "simtest_df1a03ae03c7e517",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T15:19:08.891319",
+      "observer": "agent-sim",
+      "session": "obs_Tool_Scanner_Model",
+      "demo": "tool_scanner_model",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "tool_scanner_model_present",
+          "outcome": "failed",
+          "features": [
+            "Tool_Scanner_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "ATool_Scanner"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Tool_Scanner_Model.json",
+      "temperature": "[SIM] 0/1 beats reached in 'tool_scanner_model'. Failures: tool_scanner_model_present (failed: expect {\"actor_exists\": \"ATool_Scanner\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_Tool_Scanner_Model': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_4e33a0f7bf70"
+    },
+    {
+      "id": "surprise_7d714d94c1fb3d96",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T15:19:09.143691",
+      "context": "Sleepwalker expected beat 'tool_scanner_model_present' to be reachable (tool_scanner_model)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"ATool_Scanner\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"ATool_Scanner\"}, \"ok\": false, \"note\": \"pres'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_4e33a0f7bf70"
+    },
+    {
+      "id": "observation_b1c08c983da0e237",
+      "type": "Observation",
+      "timestamp": "2026-07-16T15:21:04.623736",
+      "feature_name": "Tool_Scanner_Model",
+      "verdict": "rejected",
+      "notes": "automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_df1a03ae03c7e517",
+      "observer": "automated-via-attribution",
+      "derived_from": "simtest_df1a03ae03c7e517",
+      "quote": "tool_scanner_model_present (failed: present=False)",
+      "tacit": false,
+      "error_signature": "human_rejection",
+      "template_file": "observation/Tool_Scanner_Model",
+      "error_category": "human_rejection",
+      "fix_description": "Human observation of 'Tool_Scanner_Model': rejected \u2014 automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_df1a03ae03c7e517",
+      "compilation_result": "rejected",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_9ae5812ac6b9"
+    },
+    {
+      "id": "surprise_0b4983dced0575a1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T15:21:04.892909",
+      "context": "Human observation of system-finalized feature 'Tool_Scanner_Model'",
+      "expectation": "system verification (rubric grade) matches human judgment",
+      "reality": "automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_df1a03ae03c7e517",
+      "lesson_hint": "frame-level correction: what the machine measured is not what the human sees",
+      "source": "human",
+      "consolidated": false,
+      "error_signature": "surprise_human",
+      "template_file": "surprise/human",
+      "error_category": "surprise",
+      "fix_description": "Surprise (human): expected 'system verification (rubric grade) matches human judgment' but 'automated rejection sweep: simulation evidence indicts this feature (1 failing o'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_9ae5812ac6b9"
+    },
+    {
+      "id": "feature_fbc3ffbd18b45b0f",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T15:21:05.184633",
+      "feature_name": "Tool_Scanner_Model",
+      "loop": 4,
+      "status": "needs_refinement",
+      "parameters": {
+        "holistic_sweep": "simtest_df1a03ae03c7e517",
+        "indicted_by": [
+          "tool_scanner_model_present (failed: present=False)"
+        ]
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Tool_Scanner_Model",
+      "error_category": "none",
+      "fix_description": "Feature 'Tool_Scanner_Model' (Loop 4) recorded as 'needs_refinement'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_9ae5812ac6b9"
+    },
+    {
+      "id": "phase_8ebd8f48c9b1f5c5",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T15:22:23.563838",
+      "phase": "Witness & collapse: Tool_Scanner_Model",
+      "result": "simtest_df1a03ae03c7e517: [SIM] 0/1 beats reached in 'tool_scanner_model'. Failures: tool_scanner_model_present (failed: expect {\"actor_exists\": \"ATool_Scanner\"} -> present=False)",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness & collapse: Tool_Scanner_Model",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness & collapse: Tool_Scanner_Model' complete: simtest_df1a03ae03c7e517: [SIM] 0/1 beats reached in 'tool_scanner_model'. Failures: tool_scanner_model_present (failed: expect {\"actor_exists\": \"ATool_Scanner\"} -> present=False)",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "Tool_Scanner_Model beat exercise failed because ATool_Scanner actor was not present in PIE; the realization path for scanner model spawning needs investigation.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_04bba968fc7b"
+    },
+    {
+      "id": "phase_02ef319918d1f544",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T15:25:13.629581",
+      "phase": "Witness & collapse: Tool_Scanner_Model",
+      "result": "simtest_df1a03ae03c7e517: [SIM] 0/1 beats reached in 'tool_scanner_model'. Failures: tool_scanner_model_present (failed: expect {'actor_exists': 'ATool_Scanner'} -> present=False)",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness & collapse: Tool_Scanner_Model",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness & collapse: Tool_Scanner_Model' complete: simtest_df1a03ae03c7e517: [SIM] 0/1 beats reached in 'tool_scanner_model'. Failures: tool_scanner_model_present (failed: expect {'actor_exists': 'ATool_Scanner'} -> present=False)",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "Tool_Scanner_Model feature rejected - ATool_Scanner actor not present in PIE. Realization path needs investigation to ensure ATool_Scanner actor is properly spawned when the tool model is realized.",
+      "pain_verdicts": {
+        "phase_1b01fac303f3c24e:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_2c54cc0d9037"
     }
   ],
   "edges": [

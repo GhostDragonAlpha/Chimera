@@ -26,11 +26,17 @@ if _HERE not in sys.path:
 
 from setup_starfield import run as _run_starfield
 from setup_sky_atmosphere import run as _run_sky_atmosphere
+from setup_sky_earth import run as _run_sky_earth
+from setup_sky_moon import run as _run_sky_moon
+from setup_sky_sun import run as _run_sky_sun
 
 
 def run():
     _run_starfield()
     _run_sky_atmosphere()
+    _run_sky_earth()
+    _run_sky_moon()
+    _run_sky_sun()
 
 
 def startup():

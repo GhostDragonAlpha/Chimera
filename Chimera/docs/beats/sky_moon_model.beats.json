@@ -1,0 +1,22 @@
+{
+  "demo": "sky_moon_model",
+  "loop": 3,
+  "settle_s": 6,
+  "_provenance": "Witness & collapse task tb-0099 (sub-13), extending tb-0092 to the Moon. Sky_Moon_Model (loop 3) expects an actor carrying the SM_Moon mesh placed in the sky near Earth. Python/setup_sky_moon.py (realization path; generator create_level_*.py is a no-op stub) spawns/relabels a StaticMeshActor 'SM_Moon' carrying /Game/Celestial/SM_Moon with MAT_Moon_Regolith, scale 0.8 (Earth:Moon radius 5:1 -> correct size relationship), saved so PIE inherits it. The beat asserts actor_exists 'SM_Moon' -- if missing the Moon is hollow and the beat MUST FAIL rather than pass by silence. Two independent live-PIE SimPlaytest sessions exercise it. (Material application for Sky_Moon_Material verified by separate editor-world material read-back, reported verbatim.)",
+  "beats": [
+    {
+      "name": "sky_moon_model_present",
+      "features": ["Sky_Moon_Model"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 0, "z": 130}},
+        {"wait": 2.0},
+        {"screenshot": "sky_moon_view"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"world_is": "chimeradefaultlevel"},
+        {"actor_exists": "SM_Moon"}
+      ]
+    }
+  ]
+}

@@ -1348,3 +1348,45 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 - New open tasks: tb-0039, tb-0040, tb-0041 (Pain verdict: phase_da55128aec6d109a:P1 [distiller token-coverage])
 
 **Observation Queue:** 22 features awaiting simulation evidence
+
+---
+
+# Session 2026-07-15 (sub-13) — tb-0099 Loop 3 Sky (Earth/Moon/Sun) REALIZED + COLLAPSED
+
+**Task:** Realize Sky_Earth_Model, Sky_Earth_Material, Sky_Moon_Model, Sky_Moon_Material, Sky_Sun_Lighting in the live build (extending tb-0092's proven Python-setup realization path).
+
+**What each feature was realized as (WHY):**
+- **Sky_Earth_Model + Sky_Earth_Material** -> actor labeled `SM_Earth` carrying mesh `/Game/Celestial/SM_Earth` with material `/Game/Celestial/Materials/MAT_Earth/MAT_Earth` (MAT_Earth is a FOLDER asset, so the path is one level deeper than intuitive), scale 3.0, at (50000,0,30000). Canonical reference: `Python/create_earth_celestial_automation.py`.
+- **Sky_Moon_Model + Sky_Moon_Material** -> actor labeled `SM_Moon` carrying mesh `/Game/Celestial/SM_Moon` with material `/Game/Celestial/Materials/MAT_Moon_Regolith` (direct path), scale 0.8 (Earth:Moon radius 5:1 -> correct size relationship), at (68000,0,39000).
+- **Sky_Sun_Lighting** -> existing template `DirectionalLight` adopted, relabeled `Sun`, configured intensity 6.0 + warm-white light_color (230,248,255). (Sun was already intensity 6.0 white; the realization is the label + warm tint + persistence.)
+- Root cause (same as tb-0092): the generator's `create_level_*.py` is a no-op stub, so celestial bodies are realized via `Python/setup_sky_*.py` setup scripts + `PythonScriptPlugin` auto-run, applied to the live editor and saved.
+
+**Files changed (footprint: generator template + Python/**):**
+- NEW `Python/setup_sky_earth.py`, `Python/setup_sky_moon.py`, `Python/setup_sky_sun.py` (idempotent, sentinel/label-guarded; Earth uses a candidate-path resolver because MAT_Earth is nested).
+- `Python/setup_sky.py` -> imports + runs the 3 new setups in `run()`.
+- `Python/realize_sky_loop.py` -> `SETUP_CODE` force-reloads + runs all 5 setup modules (starfield/atmosphere/earth/moon/sun).
+- `Python/startup.py` already calls `run_sky_setup()` (guarded, editor-only) -> auto-realizes on launch.
+- `Content/Levels/chimeradefaultlevel.umap` -> SAVED with the 5 sky actors (PIE inherits them).
+- NEW beats: `docs/beats/sky_earth_model.beats.json`, `sky_earth_material.beats.json`, `sky_moon_model.beats.json`, `sky_moon_material.beats.json`, `sky_sun_lighting.beats.json` (actor_exists-gated, 2 PIE sessions each).
+
+**Verbatim PIE read-back (per feature, 2 clean sleepwalker sessions, actor_exists present=True):**
+- Sky_Earth_Model: `simtest_03a1602fc4ff9d34` + `simtest_a26cf8804956ae03` (reached)
+- Sky_Earth_Material: `simtest_ca12067c656d53c1` + `simtest_d3dbdd51971c9402` (reached)
+- Sky_Moon_Model: `simtest_498696a8ba474a16` + `simtest_a720b6a9c7a300de` (reached)
+- Sky_Moon_Material: `simtest_71552f9ee9678f18` + `simtest_36133db1b691a810` (reached)
+- Sky_Sun_Lighting: `simtest_1199f5476e6eb04a` + `simtest_5c622e73fd243095` (reached)
+
+**Editor-world property read-back (state PIE copies):** `Sun -> INTENSITY=6.0 COLOR={b:255,g:248,r:230,a:0}`; `SM_Earth -> MAT=/Game/Celestial/Materials/MAT_Earth/MAT_Earth SCALE=3.0`; `SM_Moon -> MAT=/Game/Celestial/Materials/MAT_Moon_Regolith SCALE=0.8`; `SM_StarSphere` + `SkyAtmosphere_Lunar` present.
+
+**Collapse (accepted, --tacit, real simtest ids):** all 5 -> `observed`:
+- Sky_Earth_Model -> observation_516b96cf549ce230
+- Sky_Earth_Material -> observation_d98165bc5d378bc0
+- Sky_Moon_Model -> observation_38357b09bd9525ac
+- Sky_Moon_Material -> observation_451fa0d313ca675c
+- Sky_Sun_Lighting -> observation_2906c8aa1adb1c23
+
+**Training:** `python -m core.curriculum enroll --feature Sky_Loop_Realization` (enrolled, kindergarten band) + `python -m core.rep_engine tend` (Sky_Loop_Realization battery minted, 1 atom; reps begun). Postflight passed training gate (enrolled + reps begun); `--training-waiver` NOT required.
+
+**Postflight:** `phase_c67e3e4067245196` (GPA 1.86 flat). Used `--researched` (realization-path research), `--witnessed` (simtest+observation ids), `--visual-waiver` (no viewport LM-analysis; tier-1 actor/property read-back is decisive, per tb-0092). Declared phantom pain: sky actors persist ONLY via saved editor world; a level revert/template re-stamp or editor reopen w/o PythonScriptPlugin auto-run silently drops them.
+
+**HONEST gaps (could NOT verify):** (1) The VISUAL appearance of the celestial bodies was NOT machine-judged (no viewport LM analysis; covered by `--visual-waiver`). (2) The Sun's lighting-property read-back in PIE could not be taken via `EditorLevelLibrary` (editor-only API; errors 'in a play mode'); the warm-white intensity config is verified in the saved editor world, which PIE copies. (3) No generated C++ was hand-edited; the realization is entirely via Python setup scripts (generator template needed no change). (4) `tb-0092`'s Sky_Starfield/Sky_Atmosphere_Scattering were RE-APPLIED and saved in this session too (the current editor world lacked them) and remain `observed`.

@@ -1,0 +1,22 @@
+{
+  "demo": "tool_scanner_model",
+  "loop": 4,
+  "settle_s": 6,
+  "_provenance": "Witness & collapse task tb-0074: Tool_Scanner_Model (loop 4). The scanner model feature expects an actor carrying the SM_ScannerBody/SM_ScannerLens meshes placed in the world or held by the player. Python/setup_tool_scanner.py (realization path, since the generator's create_level_*.py is a no-op stub) spawns/relabels a StaticMeshActor 'ATool_Scanner' carrying /Game/Tools/Geometry/SM_ScannerBody with MAT_ScannerBody, scale 1.0, saved into the level so PIE inherits it. The beat genuinely exercises the realization: it asserts the labeled actor ATool_Scanner was built to produce actually EXISTS in the live PIE world. actor_exists 'ATool_Scanner' is the honest gate -- if it is missing the scanner body is hollow (no scanner model) and the beat MUST FAIL rather than pass by silence.",
+  "beats": [
+    {
+      "name": "tool_scanner_model_present",
+      "features": ["Tool_Scanner_Model"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 2.0},
+        {"screenshot": "tool_scanner_view"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"world_is": "chimeradefaultlevel"},
+        {"actor_exists": "ATool_Scanner"}
+      ]
+    }
+  ]
+}

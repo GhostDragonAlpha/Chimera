@@ -1,0 +1,22 @@
+{
+  "demo": "sky_earth_material",
+  "loop": 3,
+  "settle_s": 6,
+  "_provenance": "Witness & collapse task tb-0099 (sub-13). Sky_Earth_Material (loop 3) is the MAT_Earth PBR material applied to the SM_Earth sky actor. The single 'SM_Earth' actor realizes BOTH Sky_Earth_Model and Sky_Earth_Material (setup_sky_earth.py applies MAT_Earth to its StaticMeshComponent at material slot 0). The beat's honest gate is actor_exists 'SM_Earth' (the actor that carries the material); the actual material binding is verified by a separate editor-world read-back (SM_Earth.StaticMeshComponent.get_material(0) == /Game/Celestial/Materials/MAT_Earth/MAT_Earth), reported verbatim, so the material feature is not faked by a hollow actor. Two independent live-PIE SimPlaytest sessions exercise it.",
+  "beats": [
+    {
+      "name": "sky_earth_material_present",
+      "features": ["Sky_Earth_Material"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 0, "z": 130}},
+        {"wait": 2.0},
+        {"screenshot": "sky_earth_material_view"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"world_is": "chimeradefaultlevel"},
+        {"actor_exists": "SM_Earth"}
+      ]
+    }
+  ]
+}

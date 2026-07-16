@@ -1,29 +1,26 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-16T07:22:12+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-16T15:21:47+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0080 | open | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0074 | open | 0.9 | Witness & collapse: Tool_Scanner_Model | editor:open; excl:pie |  |
 | tb-0075 | open | 0.9 | Witness & collapse: Tool_Scanner_Material | editor:open; excl:pie |  |
 | tb-0076 | open | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie |  |
 | tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
-| tb-0096 | open | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** |  |
-| tb-0097 | open | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** |  |
-| tb-0098 | open | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** |  |
-| tb-0093 | open | 0.6 | Pain verdict: ChimeraMovementComponent.h/.cpp, WeightShiftAn | docs/research/** |  |
-| tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
-| tb-0095 | open | 0.6 | Pain verdict: The observation_queue_processing dispatch prom | docs/research/** |  |
+| tb-0093 | open | 0.6 | Pain verdict: ChimeraMovementComponent.h/.cpp, WeightShiftAn | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* |  |
+| tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | core/game_code_generator.py; excl:generator |  |
+| tb-0095 | open | 0.6 | Pain verdict: The observation_queue_processing dispatch prom | editor:open; excl:pie |  |
 | tb-0079 | blocked | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/** | Wrong task assigned; need to claim tb-0057 per instructions |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
+| tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
 | tb-0006 | done | 1.4 | Hire_Regression_Curator (DREAM_ROSTER #6) `capable` | core/regression.py, docs/beats/** | Regression Curator (core/regression.py) built and verified:
  |
 | tb-0011 | done | 1.3 | Curriculum Faculty: grow toward hundreds of checkpoints `capable` | docs/curriculum/** | Author new curriculum checkpoints in docs/curriculum/curricu |
@@ -53,7 +50,11 @@ so claimed tasks are safe to run in parallel.
 | tb-0010 | done | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md | Created core/roadmap.py for Producer Roadmap Layer (DREAM_RO |
 | tb-0072 | done | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie | WITNESS & COLLAPSE tb-0072 Sky_Starfield -> OUTCOME: rejecti |
 | tb-0073 | done | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | editor:open; excl:pie | WITNESS & COLLAPSE tb-0073 Sky_Atmosphere_Scattering -> hone |
+| tb-0074 | done | 0.9 | Witness & collapse: Tool_Scanner_Model | editor:open; excl:pie | simtest_df1a03ae03c7e517: [SIM] 0/1 beats reached in 'tool_s |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
+| tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
+| tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
+| tb-0098 | done | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** | auto-closed: pain phase_c67559a04eceaec4:P2 already disposit |
 | tb-0019 | done | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** | REFUTED phase_da55128aec6d109a:P1. Empirical vs live 160347- |
 | tb-0020 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** | REFUTED phase_62a9bf8fa8e97b42:P1 - DUPLICATE of phase_da551 |
 | tb-0021 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 distiller token-cove | docs/research/** | STALE/ALREADY-DISPOSITIONED: phase_a3193c8fa52533c6:P1 was r |
