@@ -341,14 +341,85 @@ def render(tr: dict, weights, out: Path, n=6, w=320, h=240) -> Path:
     return out
 
 
+_PYBULLET_OBJECTIVES = {"brain", "walker"}
+
+
+def engine_of(blob: dict) -> str:
+    """Which physics ACTUALLY SCORED this artifact? -> 'pybullet' | 'mujoco' | 'unknown'
+
+    THE GUARD THIS FILE PROMISED AND NEVER HAD (added 2026-07-16 after it convicted the
+    studio's only real walker).
+
+    This module replays through pybullet at brain_cpu.TORQUE = 22.0 N.m. brain_gpu trains
+    through core.mjcf at mjcf.TORQUE = 2.0 -- 11x lower (35.4 vs 3.2 N.m/kg on the 0.622kg
+    body; a human hip is ~3). Both artifacts carry len(w)=1744, so NOTHING ERRORS. The
+    replay just flings the creature and prints a confident lie:
+
+        brain_gpu.trained.json, as MuJoCo scored it :  periodicity 0.78, duty 0.54,
+                                                        airborne 7%   -> a WALK
+        the same weights, replayed here             :  periodicity 0.14, duty 0.05,
+                                                        airborne 85%  -> "NOT A GAIT"
+
+    By this file's OWN classifier the MuJoCo numbers are a walk. The fraud-detector was
+    convicting the best thing the studio has made. core/gait_mj.py already knew --
+    "Judging a MuJoCo-trained brain with a pybullet replay would be judging a different
+    creature. WHAT IS SCORED AND WHAT IS WITNESSED MUST BE THE SAME THING" -- but knowing
+    was never enforced, and nothing stopped the wrong tool from running.
+
+    Detected STRUCTURALLY, not by filename: brain_gpu.measure() is the only domain that
+    computes `robustness`/`distance_worst` (N randomized restarts, keep the worst), so
+    their presence is a positive fingerprint of the MuJoCo path. A name check would rot
+    the first time an objective is renamed; a fingerprint of the measurement itself will
+    not.
+
+    Fails CLOSED on 'unknown': doctrine is "a gate fails -> exit non-zero -> halt; never
+    fake a default." An unprovable provenance is exactly when a confident number is most
+    dangerous.
+    """
+    m = blob.get("measures") or {}
+    if "robustness" in m or "distance_worst" in m:
+        return "mujoco"
+    obj = str(blob.get("objective", ""))
+    if obj.endswith("_gpu") or obj.endswith("_mj"):
+        return "mujoco"
+    if obj in _PYBULLET_OBJECTIVES:
+        return "pybullet"
+    return "unknown"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--trained", required=True, help="docs/objectives/brain.trained.json")
     ap.add_argument("--png", default=None, help="also render a frame strip here")
+    ap.add_argument("--force-wrong-engine", action="store_true",
+                    help="analyze anyway after the engine guard refuses. The number you "
+                         "get will be about a creature that does not exist.")
     a = ap.parse_args()
 
     blob = json.loads(Path(a.trained).read_text(encoding="utf-8"))
     weights = blob["genome"]["w"]
+
+    eng = engine_of(blob)
+    if eng != "pybullet" and not a.force_wrong_engine:
+        from core.trainables import brain_cpu as _B
+        try:
+            from core import mjcf as _M
+            mj_t = _M.TORQUE
+        except Exception:
+            mj_t = "?"
+        print(f"\n!! ENGINE GUARD - refusing to analyze {Path(a.trained).name}")
+        print(f"   provenance: {eng.upper()}"
+              + ("  (it records robustness/distance_worst -> N-restart MuJoCo path)"
+                 if eng == "mujoco" else "  (cannot prove what scored it)"))
+        print(f"   this file replays through PYBULLET at TORQUE={_B.TORQUE} N.m; "
+              f"the MuJoCo path trains at {mj_t} N.m.")
+        print("   Replaying it here would fling the creature and report a gait it never had.")
+        print("   WHAT IS SCORED AND WHAT IS WITNESSED MUST BE THE SAME THING.\n")
+        print(f"   Use the witness that matches the physics:")
+        print(f"     python -m core.gait_mj --trained {a.trained}"
+              + (f" --png {a.png}" if a.png else ""))
+        print("   (--force-wrong-engine overrides; the result is about a different creature.)\n")
+        return 2
 
     tr = replay(weights)
     g = analyze(tr)
