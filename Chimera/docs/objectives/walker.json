@@ -55,6 +55,14 @@
       "max": 34.0,
       "weight": 1.0,
       "why": "an animal, not a stick and not a hairball."
+    },
+    {
+      "measure": "robustness",
+      "kind": "at_least",
+      "min": 0.75,
+      "weight": 2.5,
+      "hard": true,
+      "why": "THE ANTI-LOTTERY (added 2026-07-16, the same day walker.measure() finally got restarts). worst/mean across N randomized starts: a real gait converges onto the same behaviour from every start (~1.0); a lucky roll does not (~0). MEASURED ON THE INCUMBENT: 0.6298 — the FIXED BODY that brain_cpu loads as 'grown once, reused for every brain, forever' loses 52% of its recorded 6.81 body lengths to a 2 cm nudge, and would FAIL brain_gpu's identical 0.75 floor. Every brain this studio has trained stands on a body selected by a coin toss. HARD, because a body that only works from one exact pose is not a body — it is that pose, and no brain standing on it can be measured honestly either. Note this cannot be satisfied by tuning any number: robustness is a ratio ACROSS rollouts, so the optimiser can only satisfy it STRUCTURALLY, by finding a body that actually stands up."
     }
   ]
 }

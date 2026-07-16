@@ -237,7 +237,7 @@ def _target(cpg, freq, depth, side, t):
 
 # --- measure: FACTS about a body that tried to move ---------------------------
 
-def measure(g: dict) -> dict:
+def _measure_once(g: dict, lift_jitter: float = 0.0) -> dict:
     import pybullet as p
     dead = {"exploded": 1.0, "distance": 0.0, "meters": 0.0, "speed": 0.0,
             "straightness": 0.0, "airborne_frac": 1.0, "energy": 999.0,
@@ -271,7 +271,7 @@ def measure(g: dict) -> dict:
     p.changeDynamics(gid, -1, lateralFriction=1.0, physicsClientId=c)
 
     try:
-        uid = _build(p, c, bones, lift=-zmin + 0.05)
+        uid = _build(p, c, bones, lift=-zmin + 0.05 + lift_jitter)   # jitter = the restart
     except Exception:
         return dead
 
@@ -341,3 +341,71 @@ def measure(g: dict) -> dict:
         "torso_z": (zsum / max(samples, 1)) / body_size,
         "bones": float(len(bones)),
     }
+
+
+# ---------------------------------------------------------------------------
+# HONEST EVALUATION — the doctrine, finally implemented here (2026-07-16)
+# ---------------------------------------------------------------------------
+# "One rollout is a coin toss, not a measurement... score every genome from N randomized
+# starts and keep the WORST." It is in CLAUDE.md, in TRAINING_PROTOCOL.md §3.5, and it is
+# the stated justification for the 16x eval cost and the entire GPU migration.
+#
+# N_RESTARTS existed in exactly ONE module in this repo: brain_gpu. walker.measure() was
+# a SINGLE rollout from ONE exact pose — the precise thing the doctrine calls a coin toss
+# — and its winner is not just any artifact: brain_cpu.py:80 loads walker.trained.json as
+# "The FIXED body. Grown once, reused for every brain, forever." EVERY BRAIN THIS STUDIO
+# HAS EVER TRAINED STANDS ON A BODY THAT WAS SELECTED BY A COIN TOSS.
+#
+# WHY IT MUST BE PAID HERE, ON THE CPU: morphology is NOT GPU-trainable — mujoco-warp
+# batches N copies of ONE model, so evolving BODIES cannot leave the CPU (CLAUDE.md:
+# "evolve bodies on CPU MuJoCo, brains on GPU"). The doctrine does not become optional
+# because the hardware is inconvenient; the cost is simply real.
+#
+# N=4, not 16, and that is a DECLARED COMPROMISE rather than a silent one. 4 restarts
+# catch gross luck at 4x the cost; 16 would be stricter and the CPU cannot afford it.
+# That gap IS the argument for the GPU, and morphology cannot go there — so this is the
+# honest ceiling, stated, not hidden.
+N_RESTARTS = 4
+LIFT_JITTER = 0.02          # +/-2 cm of start height, matching brain_gpu's perturbation
+
+
+def measure(g: dict) -> dict:
+    """WORST of N randomized starts. Reports `robustness` = worst/mean, the anti-lottery.
+
+    A body that walks from one exact pose and falls over 2 cm higher has not learned to
+    stand; it has learned that pose. Only the worst case survives contact with a player.
+    """
+    import random as _random
+    rng = _random.Random(EVAL_SEED)
+    runs = []
+    for i in range(N_RESTARTS):
+        jitter = 0.0 if i == 0 else rng.uniform(-LIFT_JITTER, LIFT_JITTER)
+        runs.append(_measure_once(g, lift_jitter=jitter))
+
+    # A single explosion or degenerate body condemns the genome — the worst case IS the
+    # measurement, so any restart that died is the one that counts.
+    if any(r.get("exploded", 0.0) >= 1.0 for r in runs):
+        return dict(runs[0], exploded=1.0)
+    if any(r.get("degenerate", 0.0) >= 1.0 for r in runs):
+        return dict(runs[0], degenerate=1.0)
+
+    def worst(k, hi_is_bad=False):
+        v = [float(r.get(k, 0.0)) for r in runs]
+        return max(v) if hi_is_bad else min(v)
+
+    d = [float(r.get("distance", 0.0)) for r in runs]
+    d_worst, d_mean = min(d), (sum(d) / len(d))
+    out = dict(runs[0])                      # body facts (bones, body_size) are invariant
+    out.update({
+        "distance": d_worst,                 # THE HEADLINE IS THE WORST, per the rule
+        "distance_worst": d_worst,
+        "distance_mean": d_mean,
+        "robustness": d_worst / max(d_mean, 1e-6),   # ~1.0 = a real gait; ~0 = a lottery
+        "meters": worst("meters"),
+        "speed": worst("speed"),
+        "straightness": worst("straightness"),
+        "torso_z": worst("torso_z"),
+        "airborne_frac": worst("airborne_frac", hi_is_bad=True),
+        "energy": worst("energy", hi_is_bad=True),
+    })
+    return out
