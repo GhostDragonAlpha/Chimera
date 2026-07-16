@@ -19,6 +19,7 @@ and --deep-tokens modest. It's a REASONING model, so it needs some room to think
 """
 import argparse
 import json
+import os
 import re                    # module-level: _parse_questions needs it. The old code
                             # imported it INSIDE review(), and moving the parser out
                             # reproduced critic.py's exact bug — a NameError on a
