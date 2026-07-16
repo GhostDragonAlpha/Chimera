@@ -65746,6 +65746,30 @@
       "links": [],
       "recorded_by": "council.py",
       "run_id": "run_662dabb2be7b"
+    },
+    {
+      "id": "discovery_c8330e518e0de4e2",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-16T20:35:31.775300",
+      "feature": "Probe_Feature",
+      "campus_sources": [],
+      "web_sources": [
+        "probe"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Probe_Feature",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Probe_Feature': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-",
+      "run_id": "run_a0888f1228e5"
     }
   ],
   "edges": [

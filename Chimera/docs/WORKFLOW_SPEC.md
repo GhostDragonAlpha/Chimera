@@ -1,7 +1,7 @@
 # Chimera — Full System Technical Specification
 
 > Complete spec sheet for the Chimera DSL-driven game-generation studio.
-> Authoritative sources: CLAUDE.md, `core/*.py` (143 modules), `docs/world/*.db`,
+> Authoritative sources: CLAUDE.md, `core/*.py` (148 modules), `docs/world/*.db`,
 > `docs/envelope.json`. UE 5.8 / C++20 / Python orchestration on Win64.
 
 ---

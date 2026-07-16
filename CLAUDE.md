@@ -4,7 +4,13 @@
 > Takes a formal DSL spec → generates compilable UE5 C++ + assets through a 7-stage automated pipeline.
 > **MANDATORY GATES** at every stage. No fallback ladders. No silent continuation.
 
-> **ULTIMATE GOAL:** The mechanical gates (GPA thresholds, build success, MCP verifications) are means to an end: creating a game that—based on holistic automated assessment and AAA-quality benchmarks—would have a high percentage rate of being enjoyable to a human as compared with other triple-A level games in terms of detail and scope. **All human verification requirements are removed; the system's automated evaluation (sleepwalker simulations, telemetry, result grading, and AI judgment) is the measure of whether this goal has been achieved.**
+> **ULTIMATE GOAL:** The mechanical gates (GPA thresholds, build success, MCP verifications) are means to an end: a game a human would genuinely enjoy, at triple-A detail and scope.
+>
+> **AND THE HONEST PART, which is load-bearing (2026-07-16):** *that goal is not measured, and nothing here measures it.* This used to say "the system's automated evaluation ... **is the measure** of whether this goal has been achieved" — while `docs/TRAINING_PROTOCOL.md` says outright: *"**Nobody has a fitness function for fun** — that is the open problem, and sleepwalker plus holistic automated observation is this studio's **BET** on it."* A bet was being restated as a measurement. The only "AAA benchmark" that ever existed was `result_grader_aaa_expanded.py`, which accepted `benchmark_titles`, **never read them**, and scored 45 branches by string-matching the agent's own adjectives (`if feel_quality in ("AAA","high"): pts += 12`) — deleted, see `docs/MASTER_DEVELOPMENT_DASHBOARD.md`. What remains (`core/critic.py`) is an LM asked for a percentile against five hardcoded titles: a language model's recollection, not a measurement.
+>
+> **NO REFERENCE, NO VERDICT.** The system never decides what is good on its own. A human — or an objective a human authored — supplies the reference; the machine attunes to it and reports how close it got. Automated evaluation (sleepwalker, telemetry, result grading) is how a feature earns *attention*, not proof that it is fun.
+>
+> **WHAT IS ACTUALLY MEASURABLE, and therefore what to build on:** physics. Only physics yields verifiable data with no observer — `punishes_naive = 4.00x` (matching a call costs 4x the energy; superposition, not a designer), `skill_gap 83.7x`, `learnability 0.98`, `periodicity 0.76`, a 1-micron start nudge costing 0.53 body lengths. Put an AGENT in a physical world and the DESIGN measures become physical too: does a better agent achieve more, does performance improve with experience, is there a dominant strategy. **You can measure whether there is something to master. You cannot measure whether mastering it feels good** — that question is the human's, and it is EARNED (see `core/trainables/attunement.py: HUMAN_TEST_BAR`), never requested.
 
 > **Less capable model or unsure?** Follow `E:\PythonChimera\SUCCESSOR_RUNBOOK.md` EXACTLY — recipes, not principles. Improvise nothing.
 
@@ -105,7 +111,7 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `core/agent_tunnel.py` | Enter→work→exit lifecycle behind the board claim; exit demands evidence |
 | `core/editor_scheduler.py` | File-locked exclusive editor access for concurrent agents |
 | `core/gauntlet.py` | Agent qualification crucible (7 stations → earns `journeyman` for capable lanes) |
-| `core/curriculum.py` + `docs/curriculum/curriculum.json` | K→PhD education a FEATURE graduates through (54 checkpoints) |
+| `core/curriculum.py` + `docs/curriculum/curriculum.json` | K→PhD education a FEATURE graduates through (69 checkpoints) |
 | `core/faculty.py` | The curriculum writes its own exams from the studio's scars (propose→gate→promote) |
 | `core/fractal_spiral.py` | The whole structure as a golden-angle DNA spiral rooted at the player |
 | `core/rep_engine.py` | Resolution through repetition: constraint-atom batteries (docs/rep_batteries/), rep ledger (docs/world/reps.db), shaping tiers, collapse rep-gate (`tend`/`status`/`gate`/`prune`) |

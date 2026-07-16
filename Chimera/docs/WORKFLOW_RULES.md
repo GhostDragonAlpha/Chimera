@@ -124,7 +124,7 @@ satisfied or given a reasoned waiver.
 - **Rep atoms credit the GENERATOR as the source of truth** (component-spawn/H-34
   atoms search the generated tree AND `core/game_code_generator.py`) — a correct
   generator fix greens the atom without a full codegen.
-- **Never hand-edit `docs/AGENTS.md`** without the user raising it (finalized).
+- **Never hand-edit `AGENTS.md`** (repo root — NOT `docs/AGENTS.md`, which does not exist and never did) without the user raising it (finalized). The wrong path is why its stale "human Gardener approves EVERY heuristic" line sat protected and unrepaired: a rule aimed at a file that isn't there guards nothing and hides everything.
 
 ## 7. Task Board & Resource Rules
 - **Claims are resource-conflict-aware:** a task is granted only if its footprint

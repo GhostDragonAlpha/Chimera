@@ -84,7 +84,7 @@ saved, evaluated state in its transcript (`docs/gauntlet/features/<slug>/`); the
 dissertation — with a falsifiable claim — is the final eval before deployment to
 automated observation.
 
-**Founding curriculum (54 checkpoints, 7 bands):**
+**Founding curriculum (69 checkpoints, 7 bands):**   <!-- counted from curriculum.json 2026-07-16; the doc said 54, 28% low -->
 
 | Band | Question | Porter role | Sample checkpoints |
 |---|---|---|---|

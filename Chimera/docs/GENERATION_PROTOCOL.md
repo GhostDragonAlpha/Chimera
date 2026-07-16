@@ -17,10 +17,13 @@
 | **Dusk** (the Will) | `python -m core.postflight --phase ... --result ... --inheritance "<=3 sentences" --phantom-pain "..." (x<=5, aim 3) --pain-verdict "<id>:confirmed\|refuted\|still-open"` | Declare what this generation sacrificed to learn, predict where the approach fails within 2 weeks, and disposition the pains you inherited. |
 | **Night** (dream) | `python -m core.dream_loop` (manual or 2 AM scheduled task) | Pure-Python consolidation: distills failure/surprise clusters into **at most 2** candidate heuristics (circadian cap), previews compaction (dry-run only), writes `docs/DREAM_REPORT.md` for the morning. |
 
-## The Gardener (the human — approves EVERY heuristic)
+## The Gardener (AUTOMATED — the human vetoes AFTER)
 
-1. Candidates wait in `docs/PENDING_HEURISTICS.md` with evidence, draft rule, proposed organ, and conflict flags. **Nothing is active while pending.**
-2. The human edits `status:` to `approved` or `vetoed` (vetoed entries STAY in the file as tombstones so the signature is never re-proposed).
+(automation amendment 2026-07-07; corrected here 2026-07-16). This header used to read "the human — approves EVERY heuristic" and was reversed by this doc's own line ~75 ("Delegated Gardener... Doc-organ rules self-promote"); CLAUDE.md carries 31 heuristics stamped "auto-promoted" as live counter-examples. An agent reading top-down concluded its heuristics were held pending review; they went live on the next `dream_loop`.
+
+1. Candidates wait in `docs/PENDING_HEURISTICS.md` with evidence, draft rule, proposed organ, and conflict flags.
+2. `core/gardener.py --tend` (inside every `dream_loop`) AUTO-RULES them: a doc-organ rule with a draft_rule + evidence self-promotes to `promoted (auto)` and appends its own bullet to CLAUDE.md; gate-organ entries become `approved (auto — implementation pending)`; subsumed entries tombstone.
+3. The human signal is **VETO-AFTER**: set `status:` to `vetoed` and the next tend demotes it. A veto is law, never argued, and stays a tombstone so the signature is never re-proposed.
 3. On approval the agent promotes to the named organ —
    - `gate` → a `gate_*` function in `core/gates.py` (GateViolation pattern),
    - `claude_md` → one bullet in CLAUDE.md conventions,
