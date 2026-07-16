@@ -65962,6 +65962,83 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_473d2a500ac3"
+    },
+    {
+      "id": "phase_f07d38dc5b0adfbe",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T22:53:06.855049",
+      "phase": "rep_promotion:Game_Feel",
+      "result": "tier 0 -> 1 (behaves) after 336 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:Game_Feel",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:Game_Feel' complete: tier 0 -> 1 (behaves) after 336 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_7bc11c4feb49"
+    },
+    {
+      "id": "surprise_8eede87cc8be55e9",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T22:53:39.717068",
+      "context": "postflight refused by research gate: Build toward the seed: ADotCharacter",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_bee4f30dc1c6"
+    },
+    {
+      "id": "surprise_9d422e5b68e80a81",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T22:54:03.785419",
+      "context": "research waived: Build toward the seed: ADotCharacter",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "ADotCharacter implementation was based on helm targets description 'HIGH-FIDELITY actor representation of a Mass crowd entity' and existing pawn/character generation patterns in game_code_generator.py",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'ADotCharacter implementation was based on helm targets description 'HIGH-FIDELIT'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_0f175d38c076"
+    },
+    {
+      "id": "phase_89abc05ecb7b2d45",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T22:54:04.135946",
+      "phase": "Build toward the seed: ADotCharacter",
+      "result": "Added generate_adot_character_files() to core/game_code_generator.py and created Source/Chimera/ProceduralGenerated/Characters/ADotCharacter.h and .cpp for the HIGH-FIDELITY actor representation of a Mass crowd entity. Feature ADotCharacter enrolled in curriculum, rep engine tend shows 0 red atoms for ADotCharacter.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Build toward the seed: ADotCharacter",
+      "error_category": "none",
+      "fix_description": "Phase 'Build toward the seed: ADotCharacter' complete: Added generate_adot_character_files() to core/game_code_generator.py and created Source/Chimera/ProceduralGenerated/Characters/ADotCharacter.h and .cpp for the HIGH-FIDELITY actor representation of a ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "<declare one>"
+      ],
+      "inheritance": "Added ADotCharacter generation to game_code_generator.py and created Character files. Feature is now enrolled in curriculum with green rep atoms.",
+      "pain_verdicts": {
+        "<id>:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_0f175d38c076"
     }
   ],
   "edges": [
