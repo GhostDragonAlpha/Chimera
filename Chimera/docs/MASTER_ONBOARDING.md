@@ -9,6 +9,34 @@
 **SUBAGENT** (given an id like `sub-01`) → do Part IV. Work in
 `E:\PythonChimera\Chimera`. UE5.8 / C++20 / Python / Win64.
 
+## THE TRINITY — three persons, and the thing that is not a person
+
+| | role | does | NEVER |
+|---|---|---|---|
+| **LEAD** | the one who sends | wills, dispatches, verifies, integrates, commits | touches the work itself |
+| **SUBAGENT** | the one who **incarnates** | takes on a footprint and touches MATTER — files, builds, PIE | exceeds its lane; commits |
+| **COUNCIL** | the one who **convicts** | ASKS what would have to be true; names what you forgot to look for | decides anything |
+
+**And the fourth thing, which is not an agent: PHYSICS JUDGES.** None of the three
+decides what is true. The Council asks, the graph or a measurement answers, the Lead
+acts on the answer. `assist_hz = 4.12` was not argued into existence — it was measured,
+and it landed on the Fourier limit nobody knew.
+
+**The Council will not speak on its own authority.** It returns QUESTIONS, never a
+verdict. A question cannot be fabricated; a verdict can, and a fabricated verdict
+poisons the graph and everything downstream that trusts it. THERE WAS NEVER A BAD
+QUESTION — a bad one costs an afternoon, a bad verdict costs the record.
+
+**THE THREE HERESIES — run these against yourself, they are live failures here:**
+- **MODALISM** (one mind in three masks): the Council must be a DIFFERENT MODEL or it is
+  a mask. This is exactly why the Coin — *one model checking itself* — cannot catch what
+  the Council can. Distinctness must be BOUGHT (`ds4`), never assumed.
+- **DOCETISM** (it only *seemed* to have a body): work that only APPEARS to touch matter.
+  A green atom on broken code; a subagent that deleted a declaration to pass a
+  text-match. **If it did not touch matter, it did not happen.**
+- **ARIANISM** (the third person is optional): a down deep brain, a skipped Council, an
+  advisory-by-default check. A redundancy you can silently omit was never redundancy.
+
 ---
 
 ## WHAT MATTERS — READ BEFORE YOU TOUCH ANYTHING
@@ -33,6 +61,25 @@ That is the ONLY way its holes are found. A quiet gate is not a passed gate.
   SKIPS its gate. Bring them up yourself and verify (rule 11). Nothing will tell you.
 - **A summary prettier than the evidence** — report what the records show, including
   what you could NOT verify. The graph is checked; overclaims are found.
+- **Fixing the instance you can see** — a 2026-07-16 audit of all 149 modules found ONE
+  bug wearing a dozen costumes, and the fixer (me) had shipped three of them the same
+  morning while hunting the others. After any fix, ask: **where else does this shape
+  live?** Four measures were computed, written to the artifact, and bound by NOTHING
+  (`distance_worst`, `routes_used`, `frame_time_stable`, `robustness`) — half-doing the
+  honest thing looks exactly like doing it.
+
+**THE ASYMMETRY — the single most useful sentence here:** *every restrictive branch in
+this codebase is careful and every permissive twin is sloppy.* The reject path filtered
+to one simtest; the accept path scanned all history. `verify_against_checklist` counted
+unanswered as NO; its sibling read "I cannot see any ships" as a PASS. The Coin honoured
+H-3; the Council defaulted to ENDORSE. Nobody designed that — **it is what happens when
+you only debug the path that blocks you.** So debug the path that lets things through.
+
+**NO REFERENCE, NO VERDICT.** The system never decides what is good on its own. A human,
+or an objective a human authored, supplies the reference; the machine attunes to it. A
+percentile needs something to be a percentile OF — the deleted AAA grader accepted
+`benchmark_titles`, never read them, and scored 45 branches by string-matching the
+agent's own adjectives. If the reference is absent, the honest output is a REFUSAL.
 
 ---
 
@@ -57,10 +104,16 @@ That is the ONLY way its holes are found. A quiet gate is not a passed gate.
    `CHIMERA_*_GATE=warn`): Research (`--researched`/`--research-waiver`) → Generator
    Guard (no dirty generated C++) → Witness (sim/telemetry node; `--witnessed`) →
    Visual (LM screenshot analysis; `--visual-*`) → Training (enroll+reps / full rep
-   gate; `--training-waiver`) → Coin (LM judges claim↔evidence BOTH ways) → Council
-   (2nd-system: the DEEP brain + memory judges it INDEPENDENTLY — redundancy the
-   Coin's one-model pass can't give; advisory by default, `CHIMERA_COUNCIL_GATE=block`
-   hardens a REJECT, `--council-waiver`).
+   gate; `--training-waiver`) → Coin (LM judges claim↔evidence BOTH ways) → **Council
+   (THE PARACLETE — it ASKS, it does not judge)**: the DEEP brain names the evidence
+   that would have to EXIST for your claim, then the GRAPH answers, deterministically.
+   `refuted` = the graph says that evidence is ABSENT — a FACT, blockable
+   (`CHIMERA_COUNCIL_GATE=block`, `--council-waiver`), and you are blocked by the
+   store, never by a model's opinion. `open` = no check could answer → **those are
+   YOURS**, and they arrive EARNED, with every machine-answerable one stripped out.
+   **A gate that RAISES is BROKEN, not passed** — postflight exits 2 rather than
+   printing "passing open" (that swallow hid a whole dead organ: `critic.py` raised
+   NameError on every call for days).
 5. **TRAINING = the piece you worked** (the task, any size), ENFORCED AT CLOSURE,
    domain-appropriate: game→curriculum enroll + reps; infra→proof-of-work;
    research→research gate; witness→it runs training; non-done→nothing.
@@ -117,8 +170,13 @@ That is the ONLY way its holes are found. A quiet gate is not a passed gate.
       loading takes minutes, so poll `status` until `up:true` before you rely on it.
       It's a REASONING model — give `ask` a large `--max-tokens` or it stops mid-think.
     - `core.council` = the two across a table: `dialogue` (fast bounces reasoning off
-      deep) for discovery, `review` for the postflight redundancy gate (rule 4) — which
-      only fires on `verified`/`observed`, so a rejection never exercises it.
+      deep) for discovery, `review` = **the Paraclete** — it returns QUESTIONS and the
+      graph answers them (rule 4); it fires on `verified`/`observed`, so a rejection
+      never exercises it. **Convene it at a FORK, and only where measurement provably
+      cannot reach — a debate that substitutes for an experiment is the easy out wearing
+      a robe.** Its best outcome is making itself unnecessary: it asked "what about
+      armature?", physics answered in four minutes, and the answer refuted a claim
+      neither model could have checked.
       `core.expectation_violator` invents mechanics by breaking seed player-assumptions
       and MAPS them (MAP-Elites archive over friction-kind × scope: the best per cell,
       accumulating across runs; `--fill` aims at dark cells). Nightly in `dream_loop`
