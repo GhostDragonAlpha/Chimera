@@ -47,3 +47,22 @@
     *   Role: FAST WORKER (concrete, quick, hands-on, think together with DEEP mind but keep it tight).
     *   Task: Judge a proposed game rule-modifier (`FSacrificeEvent`).
     *   Criteria for GOOD: Forces player to abandon old mental model and buil
+
+## Run (fast judge) - 1 cell(s) claimed
+
+```
+              depth0   depth1   depth2   depth3
+inversion        .        .        .        .  
+coupling         .        .        .        .  
+delay            .        .        .        .  
+scarcity         .        .        .        .  
+agency           .        .        .        .  
+identity        7/10      .        .        .  
+
+coverage 1/24 cells (4%)   QD-score 7.0
+```
+
+### ADotCharacter  (7/10)  `identity|depth0`
+- **assumption:** *   Draft 3 (focusing on "high-fidelity actor representation of a Mass crowd entity"): Players will assume that every high-fidelity dot in the crowd is an individually targetable, unique character they can interact with
+- **violation:** Role:** FAST WORKER - concrete, quick, hands-on, think together with DEEP mind, disagree when needed, build on useful ideas, keep turns tight (a few sharp paragraphs)
+- **why it works:** *   Identity: a thing assumed to be one kind is actually another. -> Yes! "Identity": a thing assumed to be one kind (individual character) is actually another (mass crowd entity representation).

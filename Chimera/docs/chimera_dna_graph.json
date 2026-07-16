@@ -65420,6 +65420,25 @@
       "inheritance": "UChimeraAttunementComponent generator function added and C++ files created. Feature enrolled in curriculum with 6/50 reps - needs more reps to reach gate threshold of 50.",
       "recorded_by": "postflight.py",
       "run_id": "run_0aa3f88330f9"
+    },
+    {
+      "id": "surprise_e713d5a44ce90209",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T17:23:31.376594",
+      "context": "expectation-violation candidate for ADotCharacter (score 7)",
+      "expectation": "the player's assumed mental model for the system",
+      "reality": "VIOLATE '*   Draft 3 (focusing on \"high-fidelity actor representation of a Mass crowd entity\"): Players will assume that every high-fidelity dot in the crowd is an individually targetable, unique character they can interact with' -> Role:** FAST WORKER - concrete, quick, hands-on, think together with DEEP mind, disagree when needed, build on useful ideas, keep turns tight (a few sharp paragraphs)",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the player's assumed mental model for the system' but 'VIOLATE '*   Draft 3 (focusing on \"high-fidelity actor representation of a Mass '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "expectation_violator.py",
+      "run_id": "run_3d7b54e05803"
     }
   ],
   "edges": [
