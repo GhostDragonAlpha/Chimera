@@ -166,10 +166,61 @@ def gate_mode() -> str:
     return v if v in ("block", "warn", "off") else "warn"
 
 
-def review(feature, status, result="", notes="", nodes=None, deep_tokens=700):
+# Budget for the deep review. 700 was STARVATION: ds4 is a reasoning model that thinks
+# IN the output (CLAUDE.md: "give `ask` a large --max-tokens or it stops mid-think"), so
+# 700 bought a truncated thinking trace and never the answer block — and the old parser
+# then consumed that trace as ENDORSE. The cost is real and honest: ds4 runs ~1.6 t/s on
+# CPU, so a full 2048-token review is minutes, not seconds. That is the price of a second
+# opinion from a different mind; a fast fabricated one is worth nothing.
+_REVIEW_BUDGET = 2048
+_VERDICTS = ("ENDORSE", "CONCERN", "REJECT")
+
+
+def _validate_review(c) -> bool:
+    """Schema-validate before consuming (H-3). Note what this rejects for free: a model
+    that merely RESTATES its output format emits verdict="ENDORSE|CONCERN|REJECT", which
+    is not in _VERDICTS — the echo that used to score ENDORSE now fails the schema."""
+    return (isinstance(c, dict)
+            and str(c.get("verdict", "")).strip().upper() in _VERDICTS
+            and isinstance(c.get("reason"), str)
+            and len(c["reason"].strip()) >= 20)
+
+
+def _parse_review(raw: str):
+    """The LAST schema-valid JSON object in the reply, or None.
+
+    LAST, not first: a reasoning model drafts the shape early ("I should answer
+    {verdict: ...}") and commits to it at the end. Taking the first match reads its
+    deliberation instead of its conclusion — the same bug that made every
+    expectation_violator candidate score 3.0 off an echoed answer template.
+    """
+    import json as _json
+    import re as _re
+    blobs = [m.group(0) for m in _re.finditer(r"\{.*?\}", raw, _re.DOTALL)]
+    g = _re.search(r"\{.*\}", raw, _re.DOTALL)          # outermost, in case of nesting
+    if g:
+        blobs.append(g.group(0))
+    for blob in reversed(blobs):
+        try:
+            c = _json.loads(blob)
+        except Exception:
+            continue
+        if _validate_review(c):
+            return c
+    return None
+
+
+def review(feature, status, result="", notes="", nodes=None, deep_tokens=None,
+           max_retries=1):
     """The DEEP brain's independent, memory-grounded second opinion on finalizing
     `feature` as `status`. Returns {up, verdict: ENDORSE|CONCERN|REJECT|UNAVAILABLE,
-    reasoning}. Never raises."""
+    reasoning, missing}. Never raises.
+
+    UNAVAILABLE means the deep brain gave no schema-valid verdict — NOT approval. This
+    gate exists to catch what the Coin structurally cannot (one model checking itself),
+    so a gate that invents ENDORSE when it cannot read the answer is worse than no gate:
+    it reports redundancy that does not exist.
+    """
     import re
     # 1) The claim + evidence — reuse the Coin's assembly so both gates see the same faces.
     try:
@@ -208,22 +259,47 @@ def review(feature, status, result="", notes="", nodes=None, deep_tokens=700):
         f"FEATURE: {feature}\nCLAIMED STATUS: {status}\n\n"
         f"THE CLAIM:\n{claim}\n\nTHE EVIDENCE:\n{evidence}\n\n"
         f"STUDIO MEMORY:\n{memory}\n\n"
-        "Answer starting with exactly one line:\n"
-        "VERDICT: ENDORSE | CONCERN | REJECT\n"
-        "then REASON: 2-4 specific sentences (name any missing proof or hallucination).")
-    try:
-        raw = ds4_brain.chat([{"role": "user", "content": prompt}],
-                             max_tokens=deep_tokens, temperature=0.2).strip()
-    except Exception as e:
-        return {"up": False, "verdict": "UNAVAILABLE", "reasoning": str(e)[:160]}
-    m = re.search(r"VERDICT:\s*\**\s*(ENDORSE|CONCERN|REJECT)", raw, re.IGNORECASE)
-    if m:
-        verdict = m.group(1).upper()
-    else:  # reasoning models bury the call in their thinking — infer conservatively
-        low = raw.lower()
-        verdict = ("REJECT" if "reject" in low else
-                   "CONCERN" if "concern" in low else "ENDORSE")
-    return {"up": True, "verdict": verdict, "reasoning": raw[:1400]}
+        "Respond with ONLY a JSON object, and nothing after it:\n"
+        '{"verdict": "ENDORSE" or "CONCERN" or "REJECT", '
+        '"reason": "<2-4 specific sentences naming any missing proof or hallucination>", '
+        '"missing": ["<specific evidence that should exist and does not>"]}')
+    # H-3, THE HARD WAY (2026-07-16). This used to substring-scan the reply and, failing
+    # that, "infer conservatively" -- to ENDORSE. Replayed verbatim: "" -> ENDORSE,
+    # "   " -> ENDORSE, "I need more information to assess this." -> ENDORSE. The
+    # airplane-redundancy check's failure mode was to APPROVE. Two more teeth in it:
+    # the old regex took the FIRST match while the PROMPT ITSELF contains the line
+    # "VERDICT: ENDORSE | CONCERN | REJECT", so a model merely restating its output
+    # format scored ENDORSE; and deep_tokens defaulted to 700, the same starvation that
+    # made every expectation_violator candidate score exactly 3.0 -- so the dump this
+    # gate then consumed was one IT had caused.
+    #
+    # H-3 is auto-promoted constitution: "An LM response containing its own reasoning
+    # dump is a RETRY with a larger token budget, never a verdict -- schema-validate
+    # before consuming." coin_verifier.judge() has honoured it since it was written.
+    # This function is the OTHER half of the same redundancy and did not.
+    #
+    # Now: schema-valid JSON or nothing. A restated format spec fails validation
+    # ("ENDORSE|CONCERN|REJECT" is not a verdict). Unparseable -> retry at 2x budget ->
+    # UNAVAILABLE, never a guess. UNAVAILABLE is honest and costs only the second
+    # opinion; ENDORSE was a fabricated approval wearing one.
+    budget = int(deep_tokens or _REVIEW_BUDGET)
+    for _ in range(max_retries + 1):
+        try:
+            raw = ds4_brain.chat([{"role": "user", "content": prompt}],
+                                 max_tokens=budget, temperature=0.2)
+        except Exception as e:
+            return {"up": False, "verdict": "UNAVAILABLE", "reasoning": str(e)[:160]}
+        c = _parse_review(raw or "")
+        if c:
+            return {"up": True, "verdict": str(c["verdict"]).upper(),
+                    "reasoning": str(c["reason"])[:1400],
+                    "missing": list(c.get("missing") or [])}
+        budget *= 2          # H-3: a dump is a retry, never a verdict
+    return {"up": True, "verdict": "UNAVAILABLE", "missing": [],
+            "reasoning": ("the deep brain returned no schema-valid verdict after "
+                          f"{max_retries + 1} attempts (reasoning dump or truncation). "
+                          "H-3: a dump is a RETRY, never a verdict — so this is "
+                          "UNAVAILABLE, not ENDORSE. There is no second opinion here.")}
 
 
 def main(argv=None):

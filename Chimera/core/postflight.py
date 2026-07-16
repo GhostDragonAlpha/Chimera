@@ -378,6 +378,22 @@ def main():
                 if not _cr.get("up"):
                     print(f"[Council] deep brain unavailable — no second opinion "
                           f"(start it: python -m core.ds4_brain serve)")
+                elif _cr.get("verdict") == "UNAVAILABLE":
+                    # The brain answered but gave no schema-valid verdict (H-3: a
+                    # reasoning dump is a retry, never a verdict). Say so as loudly as
+                    # a dead brain, because it is the SAME situation: there is no
+                    # second opinion. This used to silently become ENDORSE, which
+                    # reported redundancy that never happened — the one lie this gate
+                    # exists to prevent, told by the gate.
+                    print(f"\n[Council] !! NO SECOND OPINION — the deep brain returned no "
+                          f"schema-valid verdict.\n           {_cr['reasoning'][:220]}")
+                    try:
+                        from core.capcom import post_safe as _cp0
+                        _cp0("council", f"2nd-system review {args.feature} {args.status}: "
+                             f"NO VERDICT (reasoning dump/truncation) — this finalization "
+                             f"has NO independent check", level="warn", source="council")
+                    except Exception:
+                        pass
                 else:
                     _v = _cr["verdict"]
                     print(f"[Council] DEEP VERDICT: {_v}\n{_cr['reasoning'][:700]}")
