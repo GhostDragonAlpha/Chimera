@@ -23,6 +23,37 @@ except ImportError:
                                     collect_inheritance)
 
 
+def _gate_broken(name: str, exc: Exception):
+    """A gate that RAISED is not a gate that PASSED (2026-07-16).
+
+    Every gate here was wrapped in `except Exception: print("... — passing open")`. The
+    intent was to tolerate a missing module; the effect was that ANY error inside ANY
+    gate — NameError, TypeError, KeyError, a load_dna_graph() failure — silently turned
+    that gate into a no-op announced by one friendly line. This is not hypothetical:
+    core/critic.py used os.environ with NO `import os`, so every call raised NameError,
+    and the swallow meant nobody found out for as long as it has been there.
+
+    ABSENT and BROKEN are different facts and now get different treatment:
+      ImportError  -> the module genuinely is not here. Pass open, say so. Honest.
+      anything else-> the gate is BROKEN. It cannot have checked anything, so claiming
+                      it "passed" is a lie about work that never happened.
+
+    Exit 2, per the exit-code contract: 0 pass, 1 gate violation (blocked), 2 unexpected
+    error. A broken gate is not a violation — it is an error — and the doctrine is "a
+    gate fails -> exit non-zero -> halt; never fake a default."
+    """
+    print(f"\n!! {name} — BROKEN, not absent: {type(exc).__name__}: {exc}")
+    print(f"   A gate that raised has verified NOTHING. Refusing to record this as a")
+    print(f"   pass. Fix the gate, or set its CHIMERA_*_GATE=off to disable it EXPLICITLY.")
+    try:
+        from core.capcom import post_safe as _bp
+        _bp("gate", f"{name} BROKEN ({type(exc).__name__}: {str(exc)[:80]}) — postflight "
+                    f"refused rather than passing open", level="warn", source="postflight")
+    except Exception:
+        pass
+    raise SystemExit(2)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Record Post-Flight results to the DNA graph")
     parser.add_argument("--phase", required=True, help="Phase name, e.g. 'Loop 8 System_Economy apply'")
@@ -133,8 +164,10 @@ def main():
                     pass
     except SystemExit:
         raise
-    except Exception as _rg_e:
-        print(f"[Research Gate] unavailable ({_rg_e}) — passing open")
+    except ImportError as _rg_e:          # ABSENT: the module is not here
+        print(f"[Research Gate] not installed ({_rg_e}) — passing open")
+    except Exception as _rg_e:            # BROKEN: it raised. That is not a pass.
+        _gate_broken("Research Gate", _rg_e)
 
     # Generator Guard — refuse to record a session that hand-edited generator-owned
     # C++ (it'll be silently clobbered on the next pipeline run) unless explicitly
@@ -180,8 +213,10 @@ def main():
                     pass
     except SystemExit:
         raise
-    except Exception as _gg_e:
-        print(f"[Generator Guard] unavailable ({_gg_e}) — passing open")
+    except ImportError as _gg_e:          # ABSENT: the module is not here
+        print(f"[Generator Guard] not installed ({_gg_e}) — passing open")
+    except Exception as _gg_e:            # BROKEN: it raised. That is not a pass.
+        _gate_broken("Generator Guard", _gg_e)
 
     # Witness Gate — a feature can't be recorded verified/observed on a compile
     # alone (H-14: a compile is not proof). Requires witness evidence this session
@@ -229,8 +264,10 @@ def main():
                     pass
         except SystemExit:
             raise
-        except Exception as _wg_e:
-            print(f"[Witness Gate] unavailable ({_wg_e}) — passing open")
+        except ImportError as _wg_e:          # ABSENT: the module is not here
+            print(f"[Witness Gate] not installed ({_wg_e}) — passing open")
+        except Exception as _wg_e:            # BROKEN: it raised. That is not a pass.
+            _gate_broken("Witness Gate", _wg_e)
 
         # Visual Gate — the local model must have LOOKED at a verified feature: a
         # feature can't be marked verified/observed without a recorded LM screenshot
@@ -271,8 +308,10 @@ def main():
                     pass
         except SystemExit:
             raise
-        except Exception as _vg_e:
-            print(f"[Visual Gate] unavailable ({_vg_e}) — passing open")
+        except ImportError as _vg_e:          # ABSENT: the module is not here
+            print(f"[Visual Gate] not installed ({_vg_e}) — passing open")
+        except Exception as _vg_e:            # BROKEN: it raised. That is not a pass.
+            _gate_broken("Visual Gate", _vg_e)
 
         # Training Gate — every feature is FORCED through training, one piece at
         # a time (the human's goal, 2026-07-14): verified requires curriculum
@@ -311,8 +350,10 @@ def main():
                     pass
         except SystemExit:
             raise
-        except Exception as _tg_e:
-            print(f"[Training Gate] unavailable ({_tg_e}) — passing open")
+        except ImportError as _tg_e:          # ABSENT: the module is not here
+            print(f"[Training Gate] not installed ({_tg_e}) — passing open")
+        except Exception as _tg_e:            # BROKEN: it raised. That is not a pass.
+            _gate_broken("Training Gate", _tg_e)
 
         # THE COIN (top layer, the human's design 2026-07-14) — the existence
         # gates above check evidence EXISTS; the coin checks the two faces MATCH:
@@ -359,8 +400,10 @@ def main():
                     raise SystemExit(1)
         except SystemExit:
             raise
-        except Exception as _coin_e:
-            print(f"[Coin] unavailable ({_coin_e}) — passing open")
+        except ImportError as _coin_e:          # ABSENT: the module is not here
+            print(f"[Coin] not installed ({_coin_e}) — passing open")
+        except Exception as _coin_e:            # BROKEN: it raised. That is not a pass.
+            _gate_broken("Coin", _coin_e)
 
         # SECOND-SYSTEM REVIEW (2026-07-15, the human's "another person in the room /
         # airplane redundancy"): the DEEP brain (ds4 — a DIFFERENT model, grounded in
