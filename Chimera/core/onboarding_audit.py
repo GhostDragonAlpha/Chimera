@@ -221,16 +221,27 @@ def check_committed_with_sha(win_nodes, sigs, win):
 
 
 def check_postflight_once(win_nodes, sigs, win):
-    """Postflight ONCE per phase - a second run writes a duplicate PhaseComplete."""
+    """Postflight ONCE per unit of WORK - a re-run writes a duplicate PhaseComplete.
+
+    Key on (phase, result), NOT phase alone. A subagent closes with its own postflight
+    (IV.5) and the LEAD closes with one too (III.6), so ONE phase legitimately gets two
+    nodes when they report DIFFERENT work. Keying on the name alone failed that honest
+    session as a duplicate (2026-07-16). A real duplicate re-reports the SAME result -
+    the genuine case differed only in Python's quote style, hence the normalisation."""
     phases = [n for n in win_nodes if n.get("type") == "PhaseComplete"]
-    c = Counter(str(n.get("phase")) for n in phases)
+
+    def _key(n):
+        res = str(n.get("result") or "").replace("'", '"').strip().lower()
+        return (str(n.get("phase")), res[:60])
+
+    c = Counter(_key(n) for n in phases)
     dupes = {k: v for k, v in c.items() if v > 1}
-    ev = [f"{n} x  {p[:78]}" for p, n in c.most_common(6)]
+    ev = [f"{n} x  {p[:44]} | {r[:40]}" for (p, r), n in c.most_common(6)]
     if not phases:
         return NA, "no postflight in window", ev
     if dupes:
-        return FAIL, f"{len(dupes)} phase(s) postflighted more than once (duplicate nodes)", ev
-    return PASS, f"{len(phases)} phase(s), each postflighted exactly once", ev
+        return FAIL, f"{len(dupes)} unit(s) of work postflighted more than once (same result re-reported)", ev
+    return PASS, f"{len(phases)} postflight(s), each reporting distinct work", ev
 
 
 def check_instrument_used(win_nodes, sigs, win):
