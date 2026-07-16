@@ -14,7 +14,15 @@ Usage (CLI):
 
 Evidence schema (all keys optional — missing evidence scores zero, never assumed):
 {
-  "tests":     {"passed": 4, "failed": 0, "skipped": 0, "ran_in_editor": true},
+  "tests":     {"passed": 4, "failed": 0, "skipped": 0, "ran_in_editor": true,
+                "criteria_total": 4},
+                # criteria_total = how many acceptance criteria this feature DECLARES.
+                # REQUIRED for any correctness points: pass rate is multiplied by
+                # coverage (passed+failed)/criteria_total, so 1 test against 4 declared
+                # criteria earns 10/40, not 40/40. Omitting it scores correctness ZERO —
+                # it used to score FULL, which is how "missing evidence scores zero,
+                # never assumed" came to mean its opposite. It was also undocumented
+                # here, so the only agents it penalised were the honest ones.
   "telemetry": {"crash_free": true, "fps": 62.0, "target_fps": 60, "unbounded_growth": false},
   "checklist": {"feedback": true, "consistency": true, "meaningful_parameters": true,
                  "fail_safety": true, "balance_sanity": true},
@@ -51,12 +59,31 @@ def _score_correctness(tests: dict) -> tuple[float, str]:
     # criteria_total: how many acceptance criteria the feature DEFINES. Pass rate is
     # multiplied by coverage so 1/1 passing of 4 declared criteria earns 10/40, not
     # 40/40 — thin coverage can no longer masquerade as correctness.
-    criteria_total = max(int(tests.get("criteria_total", 0)), passed + failed)
+    #
+    # IT DID EXACTLY THAT UNTIL 2026-07-16. This read
+    #     criteria_total = max(int(tests.get("criteria_total", 0)), passed + failed)
+    # so OMITTING the key gave max(0, total) == total, coverage == 1.0, and FULL marks:
+    #     grade_feature("X", {"tests": {"passed": 1, "failed": 0, "ran_in_editor": True}})
+    #         -> correctness 40.0/40, note "coverage 1/1 declared criteria"
+    # for a feature that declared no criteria at all. The key was also absent from the
+    # documented schema above, so the anti-masquerade engaged only when an agent
+    # VOLUNTEERED a number against its own interest — while the docstring promised
+    # "missing evidence scores zero, never assumed." It assumed, and it assumed in the
+    # agent's favour. This is H-13's exact failure mode, defeated by its own default.
+    #
+    # Undeclared criteria are now UNKNOWN coverage, and unknown is not full. You cannot
+    # claim correctness without first saying what correct means: no reference, no verdict.
     total = passed + failed
-    if total == 0 or criteria_total == 0:
+    declared = int(tests.get("criteria_total", 0))
+    if total == 0:
         note = ("no tests executed"
                 + (f" ({skipped} skipped — headless)" if skipped else " — no acceptance tests exist"))
         return 0.0, note
+    if declared <= 0:
+        return 0.0, (f"{passed}/{total} tests passed but the feature DECLARED NO acceptance "
+                     f"criteria (tests.criteria_total) — coverage is unknown, and unknown "
+                     f"scores zero rather than full. Declare what correct means, then test it.")
+    criteria_total = max(declared, total)
     coverage = min(1.0, total / criteria_total)
     pts = (passed / total) * coverage * W_CORRECTNESS
     note = f"{passed}/{total} tests passed; coverage {total}/{criteria_total} declared criteria"
