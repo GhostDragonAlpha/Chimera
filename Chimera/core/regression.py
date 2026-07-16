@@ -20,6 +20,12 @@ Usage (module):
 
 import argparse
 import json
+import os                    # used by save_beat's lint probe. Added 2026-07-16 — and I
+                            # only caught it because I checked: this is the THIRD time in
+                            # one day I have written os.<x> into a module with no
+                            # `import os` (critic.py had it for days, council.py for an
+                            # hour). It is why postflight now exits 2 on a raising gate
+                            # instead of printing "passing open".
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -143,6 +149,41 @@ class RegressionCurator:
 
         beat_file = BEATS_DIR / filename
         beat_file.parent.mkdir(parents=True, exist_ok=True)
+
+        # LINT BEFORE WRITING (2026-07-16). This module's own comment says "the beat
+        # structure follows Sleepwalker schema". IT DOES NOT, AND NEVER DID. Sleepwalker
+        # dispatches on key PRESENCE (`elif "move_to" in a:`, `if "actor_exists" in e:`);
+        # this emits {"action": "setup"} and {"expect": "not_crash"} — a schema it
+        # invented. `not_crash` and `state_change` are in NO vocabulary. Every beat it has
+        # ever written would RAISE at dispatch, and three of them are sitting in
+        # docs/beats/ right now named "Regression Guard: unknown" (a .get(...,"unknown")
+        # fallback that fired and nobody saw).
+        #
+        # WHY THAT IS DANGEROUS RATHER THAN MERELY DEAD: the wellspring recipe tells every
+        # agent "Pick/extend a beat script under docs/beats/". A malformed beat picked up
+        # there fails, the feature is INDICTED, and collapse_proxy's derived valence
+        # (2026-07-16) REJECTS it — a working feature condemned by a fake test. A file
+        # that looks like a beat and is not is worse than no file.
+        #
+        # So: refuse. Deterministic code that cannot express the thing must SAY SO, not
+        # write a wish shaped like a fact ("no fallback ladders; never fake a default").
+        try:
+            from core.beat_lint import lint as _lint
+            import tempfile as _tf
+            with _tf.NamedTemporaryFile("w", suffix=".beats.json", delete=False,
+                                        encoding="utf-8") as _t:
+                json.dump(beat, _t)
+                _probe = _t.name
+            _bad = _lint(_probe)
+            os.unlink(_probe)
+            if _bad:
+                raise ValueError(
+                    f"REFUSING to write {filename}: the Sleepwalker does not speak this "
+                    f"beat's vocabulary, so running it would blame the FEATURE for the "
+                    f"TEST's bug. " + "; ".join(_bad[:3]) +
+                    "  (see core/beat_lint.py; H-17 and H-30 are constitution)")
+        except ImportError:
+            pass                    # linter absent -> cannot check; write as before
 
         with open(beat_file, "w", encoding="utf-8") as f:
             json.dump(beat, f, indent=2)
