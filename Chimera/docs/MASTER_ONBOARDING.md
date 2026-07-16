@@ -143,6 +143,19 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
    observation (the true collapse). **VERIFY, DON'T TRUST** — every self-report is a
    claim; a green atom on broken code is FICTION, reverted. Verified-by-injection
    isn't playable (real input, read back in PIE).
+8b. **BEAT SCRIPTS — the actual work right now (14 queued features, ALL needing one).**
+   **LINT BEFORE YOU DISPATCH: `python -m core.beat_lint --beats docs/beats/<x>.beats.json`.**
+   An unknown expect does NOT error — sleepwalker returns `False`, so the beat FAILS, the
+   feature is INDICTED, and the valence (below) then REJECTS it. **A typo in your test
+   condemns a working feature.** The linter reads the Sleepwalker's own dispatch (13
+   actions, 19 expects — `--vocab` prints them) and names the fix. It costs a minute;
+   skipping it costs a feature. H-17 + H-30 are constitution and the validator did not
+   exist until 2026-07-16.
+   **DO NOT PASS `--valence`.** `collapse_proxy --from-simtest <id>` DERIVES it: beats
+   failed → rejected, beats clean → accepted. A `--valence` contradicting the evidence is
+   REFUSED (exit 1). You are not asked to judge the run, only to RUN it — the simtest
+   already settled it, and a relay that can lie is not a relay. (`--from-playtest` DOES
+   still take one: that valence is the HUMAN's judgement and nothing can derive it.)
 9. **RESEARCH — SELF-IMPOSED, EVERY session:** ALWAYS pass postflight `--researched
    "<what you ACTUALLY looked up>"` or `--research-waiver "<reasoned>"`. **The gate
    now REFUSES a topic with no research** (fixed 2026-07-16 — it used to accept any
@@ -267,7 +280,9 @@ conclusion.
 claim`/`trim` · `rep_engine tend` · `curriculum enroll --feature "X"` · `ds4_brain
 serve`/`status` · `council "<hard call>"` (bounce a decision off the deep brain) ·
 `expectation_violator map` (the design-space archive: what's explored, what's dark) /
-`run --fill` (aim at empty cells).
+`run --fill` (aim at empty cells) · `beat_lint` (BEFORE any dispatch — a typo condemns a
+feature) · `wire_check` (what does the workflow COMPUTE that nothing CONSUMES? five
+bugs today were a missing wire between two correct components — candidates, not verdicts).
 
 ## PART IV — SUBAGENT PROTOCOL
 
