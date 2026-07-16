@@ -12,6 +12,22 @@ import time
 from config import LM_STUDIO_MODEL, CHIMERA_SAVED_SCREENSHOTS_DIR, logger
 from lmstudio_client import send_to_lmstudio, display_response
 
+# Loop 3 Sky realization (tb-0092): realize the Sky loop idempotently whenever the
+# editor is available. Guarded so standalone (no unreal) mode never tries to import
+# the editor-only setup modules.
+try:
+    import unreal  # only present inside the UE editor Python environment
+    _HAVE_UNREAL = True
+except ImportError:
+    _HAVE_UNREAL = False
+
+run_sky_setup = None
+if _HAVE_UNREAL:
+    try:
+        from setup_sky import run as run_sky_setup
+    except Exception:
+        run_sky_setup = None
+
 
 def run_startup_workflow():
     """Main startup workflow — called automatically by PythonScriptPlugin."""
@@ -26,6 +42,14 @@ def run_startup_workflow():
     logger.info("=" * 70)
     logger.info("CHIMERA STARTUP WORKFLOW — PythonScriptPlugin")
     logger.info("=" * 70)
+
+    # Realize the Loop 3 Sky set (idempotent; spawns + persists Sky actors into the
+    # level before PIE so a witness sees them). No-op in standalone mode.
+    if run_sky_setup is not None:
+        try:
+            run_sky_setup()
+        except Exception as exc:
+            logger.warning(f"Sky setup skipped: {exc}")
     
     # ========================================================================
     # PHASE 1: Verify flight components exist before play test

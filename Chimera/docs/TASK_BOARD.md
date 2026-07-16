@@ -1,14 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-16T00:34:17+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-16T01:08:03+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0080 | claimed | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | sub-01 |
+| tb-0080 | open | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** |  |
 | tb-0074 | open | 0.9 | Witness & collapse: Tool_Scanner_Model | editor:open; excl:pie |  |
 | tb-0075 | open | 0.9 | Witness & collapse: Tool_Scanner_Material | editor:open; excl:pie |  |
@@ -17,6 +17,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0079 | blocked | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/** | Wrong task assigned; need to claim tb-0057 per instructions |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
+| tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0006 | done | 1.4 | Hire_Regression_Curator (DREAM_ROSTER #6) `capable` | core/regression.py, docs/beats/** | Regression Curator (core/regression.py) built and verified:
  |
 | tb-0011 | done | 1.3 | Curriculum Faculty: grow toward hundreds of checkpoints `capable` | docs/curriculum/** | Author new curriculum checkpoints in docs/curriculum/curricu |

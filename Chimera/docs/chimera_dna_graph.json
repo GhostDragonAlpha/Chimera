@@ -63695,6 +63695,333 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_5e0fbd53a2af"
+    },
+    {
+      "id": "simtest_c64380bc4db00523",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T01:00:11.352793",
+      "observer": "agent-sim",
+      "session": "sky_starfield_witness_a",
+      "demo": "sky_starfield",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_starfield_star_sphere_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Starfield"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_StarSphere"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sky_starfield_witness_a.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_starfield'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sky_starfield_witness_a': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_ecd8dc9831de"
+    },
+    {
+      "id": "simtest_3378b431dcad74cb",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T01:00:29.704578",
+      "observer": "agent-sim",
+      "session": "sky_starfield_witness_b",
+      "demo": "sky_starfield",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_starfield_star_sphere_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Starfield"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_StarSphere"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sky_starfield_witness_b.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_starfield'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sky_starfield_witness_b': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_04421c5dfc76"
+    },
+    {
+      "id": "simtest_6128ed07cedc7515",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T01:00:47.711109",
+      "observer": "agent-sim",
+      "session": "sky_atmo_witness_a",
+      "demo": "sky_atmosphere_scattering",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_atmosphere_lunar_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Atmosphere_Scattering"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SkyAtmosphere_Lunar"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sky_atmo_witness_a.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_atmosphere_scattering'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sky_atmo_witness_a': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_fa669d5f7062"
+    },
+    {
+      "id": "simtest_a10a044eed361b1d",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-16T01:01:05.383172",
+      "observer": "agent-sim",
+      "session": "sky_atmo_witness_b",
+      "demo": "sky_atmosphere_scattering",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "sky_atmosphere_lunar_present",
+          "outcome": "reached",
+          "features": [
+            "Sky_Atmosphere_Scattering"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SkyAtmosphere_Lunar"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sky_atmo_witness_b.json",
+      "temperature": "[SIM] 1/1 beats reached in 'sky_atmosphere_scattering'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sky_atmo_witness_b': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e22b0da025ad"
+    },
+    {
+      "id": "observation_87f13262d22bd319",
+      "type": "Observation",
+      "timestamp": "2026-07-16T01:05:53.064152",
+      "feature_name": "Sky_Starfield",
+      "verdict": "accepted",
+      "notes": "",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_c64380bc4db00523",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Sky_Starfield",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Sky_Starfield': accepted",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c4ac94199300"
+    },
+    {
+      "id": "feature_6d57d86e97b1d9ff",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T01:05:53.305228",
+      "feature_name": "Sky_Starfield",
+      "loop": 3,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "attribution": "derived from simtest_c64380bc4db00523 | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Starfield",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Starfield' (Loop 3) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c4ac94199300"
+    },
+    {
+      "id": "observation_d9772e6bb1395ac4",
+      "type": "Observation",
+      "timestamp": "2026-07-16T01:05:53.691313",
+      "feature_name": "Sky_Atmosphere_Scattering",
+      "verdict": "accepted",
+      "notes": "",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_6128ed07cedc7515",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Sky_Atmosphere_Scattering",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Sky_Atmosphere_Scattering': accepted",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_1ac1ca769b44"
+    },
+    {
+      "id": "feature_683e3b452d58b7ae",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T01:05:53.971803",
+      "feature_name": "Sky_Atmosphere_Scattering",
+      "loop": 3,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "attribution": "derived from simtest_6128ed07cedc7515 | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Atmosphere_Scattering",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Atmosphere_Scattering' (Loop 3) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_1ac1ca769b44"
+    },
+    {
+      "id": "surprise_3a58e23be25e36c1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T01:09:25.931947",
+      "context": "research waived: Fix Loop 3 Sky realization: wire orphaned setup into live level",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Realization-layer decision made by reading in-repo generator (generate_level_creation_script), DSL, the orphaned setup_starfield.py, the live level state and the tb-0072/tb-0073 rejection evidence; ro",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Realization-layer decision made by reading in-repo generator (generate_level_cre'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_3a9230c2d922"
+    },
+    {
+      "id": "phase_1df804c8b1076ac8",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T01:09:26.261001",
+      "phase": "Fix Loop 3 Sky realization: wire orphaned setup into live level",
+      "result": "WITNESS live PIE, 2 clean reached sessions each: sky_starfield_witness_a beats_reached=1/1 simtest_c64380bc4db00523 reached sky_starfield_star_sphere_present features=Sky_Starfield; sky_starfield_witness_b simtest_3378b431dcad74cb reached; sky_atmo_witness_a simtest_6128ed07cedc7515 reached sky_atmosphere_lunar_present features=Sky_Atmosphere_Scattering; sky_atmo_witness_b simtest_a10a044eed361b1d reached. ACTOR READ-BACK runtime_report: SM_StarSphere present=True; SkyAtmosphere_Lunar present=True. COLLAPSE ACCEPTED: Sky_Starfield -> observed (observation_87f13262d22bd319); Sky_Atmosphere_Scattering -> observed (observation_d9772e6bb1395ac4). Realized via idempotent Python/setup_starfield.py + Python/setup_sky_atmosphere.py wired into Python/setup_sky.py + startup.py + PythonScriptPlugin auto-run (Config/DefaultEditor.ini). Was needs_refinement; now observed.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Fix Loop 3 Sky realization: wire orphaned setup into live level",
+      "error_category": "none",
+      "fix_description": "Phase 'Fix Loop 3 Sky realization: wire orphaned setup into live level' complete: WITNESS live PIE, 2 clean reached sessions each: sky_starfield_witness_a beats_reached=1/1 simtest_c64380bc4db00523 reached sky_starfield_star_sphere_present features=Sky_Starfield; sky_starfield_witn",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Sky_Starfield material wiring creates a fresh TextureSampleParameter2D each editor launch via PythonScriptPlugin auto-run, accumulating dangling nodes in MAT_Starfield over many launches; next session should confirm the material graph stays clean or convert to a one-time idempotent connection guarded by a sentinel."
+      ],
+      "inheritance": "The Loop 3 Sky set was paper-only because the realization scripts (setup_starfield.py) were orphaned and never wired; the lesson is that a feature is not real until a PIE witness reads its actor back, and generator-owned level builders must have a live, idempotent realization path, not just a docstring saying run me in the editor.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_3a9230c2d922"
     }
   ],
   "edges": [
