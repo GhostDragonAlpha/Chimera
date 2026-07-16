@@ -64022,6 +64022,25 @@
       "inheritance": "The Loop 3 Sky set was paper-only because the realization scripts (setup_starfield.py) were orphaned and never wired; the lesson is that a feature is not real until a PIE witness reads its actor back, and generator-owned level builders must have a live, idempotent realization path, not just a docstring saying run me in the editor.",
       "recorded_by": "postflight.py",
       "run_id": "run_3a9230c2d922"
+    },
+    {
+      "id": "surprise_bdac75fb12ad262d",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T03:40:16.679539",
+      "context": "council dialogue (fast qwen x deep ds4) on: How can the Chimera studio discover genuinely FUN, novel gameplay on its own - instead of only realizing the seed vision",
+      "expectation": "single-model reasoning; the two-brain exchange surfaced the above",
+      "reality": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   The user wants me to step out of the dialogue (FAST/DEEP personas) and provide a summary of what *new* emerged from the exchange.\n    *   Format: 3-6 crisp bullets.\n    *   Content: Name an idea, reframe, or plan that NEITHER of you stated at the start.\n    *   Ending: ONE concrete next action.\n\n2.  **Review the Dialogue & Evolution:**\n    *",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'single-model reasoning; the two-brain exchange surfaced the above' but 'Thinking Process:\n\n1.  **Analyze the Request:**\n    *   The user wants me to ste'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "council.py",
+      "run_id": "run_32164388d4bc"
     }
   ],
   "edges": [
