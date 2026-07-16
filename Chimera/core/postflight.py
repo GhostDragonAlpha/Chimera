@@ -82,7 +82,8 @@ def main():
         _rg_nodes = load_dna_graph().get("nodes", [])
         _rg_status, _rg_detail = _rg_check(
             _rg_nodes, researched=getattr(args, "researched", "") or "",
-            waiver=getattr(args, "research_waiver", "") or "")
+            waiver=getattr(args, "research_waiver", "") or "",
+            topic=(getattr(args, "phase", "") or getattr(args, "feature", "") or ""))
         if _rg_status == "missing" and _rg_enforced():
             print("\n!! RESEARCH GATE - refused: this postflight records work but no research is evident.")
             print(_rg_guide)
@@ -104,7 +105,11 @@ def main():
         if _rg_status == "missing":
             print(f"\n[Research Gate] WARN (not enforced): {_rg_detail}")
         else:
-            print(f"\n[Research Gate] {_rg_status}: {_rg_detail[:110]}")
+            # NOT truncated (was [:110], 2026-07-16). The clipped line was the weapon:
+            # an agent copied "...Sky (Earth/Moon/Sun" - cut off mid-parenthesis - into
+            # its report as a research waiver it never made. If the gate has something
+            # to say about provenance, the agent has to be able to READ all of it.
+            print(f"\n[Research Gate] {_rg_status}: {_rg_detail}")
             if _rg_status == "waived":
                 try:
                     from core.graphify_interface import record_surprise as _rg_rs
