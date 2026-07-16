@@ -65919,6 +65919,49 @@
       "inheritance": "component verification misses integration; run the flow",
       "recorded_by": "postflight.py",
       "run_id": "run_c29916dbf0a0"
+    },
+    {
+      "id": "discovery_d39d6117cfad6910",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-16T22:20:02.271296",
+      "feature": "Tool_Scanner_Material",
+      "campus_sources": [],
+      "web_sources": [
+        "audit"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Tool_Scanner_Material",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Tool_Scanner_Material': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_473d2a500ac3"
+    },
+    {
+      "id": "surprise_5225caa0c5774e64",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T22:20:02.669201",
+      "context": "postflight refused by visual gate: Tool_Scanner_Material -> verified",
+      "expectation": "the local model must LOOK at a verified feature (viewport screenshot analysis)",
+      "reality": "no LM screenshot analysis on record this session",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the local model must LOOK at a verified feature (viewport screenshot analysis)' but 'no LM screenshot analysis on record this session'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_473d2a500ac3"
     }
   ],
   "edges": [
