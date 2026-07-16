@@ -64041,6 +64041,25 @@
       "links": [],
       "recorded_by": "council.py",
       "run_id": "run_32164388d4bc"
+    },
+    {
+      "id": "surprise_a73c3795cbb7a66d",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T04:28:11.756259",
+      "context": "expectation-violation candidate for UChimeraAttunementComponent (score 8)",
+      "expectation": "the player's assumed mental model for the system",
+      "reality": "VIOLATE 'Players will assume they need to tune or adjust audio parameters like pitch, volume, or tempo to match a target sound or rhythm in order to successfully \"attune\" to the chimera.' -> Attunement requires generating an inverse-phase acoustic wave to cancel out the chimera's sound rather than matching it; actively tuning pitch, volume, or tempo to match the target will increase the 'dissonance' meter and prevent attunement.\"",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume they need to tune or adjust audio parameters like p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "expectation_violator.py",
+      "run_id": "run_0e80530b2345"
     }
   ],
   "edges": [
