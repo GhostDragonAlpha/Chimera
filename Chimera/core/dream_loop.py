@@ -146,6 +146,8 @@ def main():
     parser.add_argument("--min-cluster", type=int, default=3)
     parser.add_argument("--no-tend", action="store_true",
                         help="skip the delegated-Gardener tend pass (amendment 2026-07-07)")
+    parser.add_argument("--no-violate", action="store_true",
+                        help="skip the LM-gated expectation-violator discovery step (2026-07-15)")
     args = parser.parse_args()
 
     stamp = datetime.now(timezone.utc).isoformat()[:19] + "Z"
@@ -185,6 +187,24 @@ def main():
         print(malcolm.tune())
     except Exception as ex:
         print(f"[malcolm] tune FAILED: {ex}")
+
+    # CROSS-BRAIN DISCOVERY (2026-07-15) — the one LM-gated night step. The two-
+    # brain council found "novel fun = a player's mental model breaks and a better
+    # one forms", built as core.expectation_violator. Generate a fresh batch of
+    # expectation-violation DESIGN CANDIDATES *iff* the fast brain happens to be
+    # loaded — skips silently otherwise, so this loop stays "zero model dependency,
+    # safe unattended". Guarded like every organ: it may not wedge the night.
+    if not args.no_violate:
+        try:
+            from core import lm_gateway, expectation_violator
+            if lm_gateway.loaded_models():
+                kept = expectation_violator.run(n_systems=4, per=2, deep=False, echo=False)
+                print(f"[dream] expectation-violator: {len(kept)} candidate(s) kept "
+                      f"-> docs/EXPECTATION_VIOLATIONS.md")
+            else:
+                print("[dream] expectation-violator: skipped (no model loaded — loop stays model-free)")
+        except Exception as ex:
+            print(f"[dream] expectation-violator skipped: {ex}")
 
     # The improvement-wave organs (2026-07-12): pains ripen into work, fresh
     # red flips get their guilty commit named, and the human gets a morning
