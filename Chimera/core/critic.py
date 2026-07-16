@@ -39,6 +39,12 @@ Usage:
 """
 import argparse
 import json
+import os                    # used at :284 (CHIMERA_LM_MAX_TOKENS) — its absence made
+                            # EVERY judgment raise NameError, so this whole organ was
+                            # dead while preflight [4.7] kept printing a stale
+                            # CriticJudgment node as if it were live. main() swallowed
+                            # the NameError into "FAILED to produce a judgment: {e}".
+                            # One missing import, one silent organ, one confident brief.
 import re
 import sys
 import urllib.request

@@ -123,39 +123,50 @@ def recent_research(nodes, hours=8, topic=""):
     return out
 
 
-def check(nodes, researched="", waiver="", hours=8, topic="", run_id=""):
+def check(nodes, researched="", waiver="", hours=8, topic=""):
     """Return (status, detail). status is one of:
         provided  — --researched given (sources cited)
         evidence  — research node(s) recorded for THIS topic
         waived    — --research-waiver given (reasoned skip)
         missing   — nothing; the gate should refuse (if enforced)
 
-    `topic` (the phase/feature) scopes the evidence; `run_id` lets the detail say
-    HONESTLY whether the node is this run's own or inherited from another session.
-    Never claim "this session" for a node this session did not write - that exact
-    sentence is what fooled an agent into reporting a waiver it never made.
+    `topic` (the phase/feature) scopes the evidence: it must be ABOUT the claim, not
+    merely near it in time. Never claim "this session" for a node this session did not
+    write — that exact sentence is what fooled an agent into reporting a waiver it
+    never made, and this gate is where it happened.
+
+    There is no `run_id` parameter, deliberately: I added one and it was unreachable
+    (postflight is its own process, RUN_ID is per-process, nothing exports
+    CHIMERA_RUN_ID, and --researched returns "provided" before the node scan). A
+    parameter that cannot do what its docstring promises is the same defect as a
+    message that lies — so it is gone rather than kept as decoration.
     """
     if (researched or "").strip():
         return "provided", researched.strip()
     rec = recent_research(nodes, hours=hours, topic=topic)
     if rec:
-        own = [r for r in rec if run_id and r.get("run_id") == run_id]
-        src = own or rec
+        # `run_id` was DEAD CODE and is gone (2026-07-16, same day I added it). I wired a
+        # "recorded by THIS run" branch that could never fire: postflight is its own
+        # process, RUN_ID is per-process, nothing exports CHIMERA_RUN_ID -- and when
+        # --researched IS given this function returns "provided" above without ever
+        # reaching here. So the branch was unreachable by construction. A parameter that
+        # cannot do what its docstring claims is the defect this gate exists to stop; I
+        # shipped one into the gate itself, hours after fixing the same class of bug here.
+        #
+        # What is left is honest and does not pretend to identify a session: a research
+        # node ABOUT this topic, from some run, recently. That legitimately passes -- a
+        # subagent researches and the lead closes -- so the message says PASSED and why,
+        # rather than the old text which said "this is not proof you researched" and then
+        # passed anyway. A gate whose words fight its return value is the original sin.
         tags = []
-        for r in src[:4]:
+        for r in rec[:4]:
             name = str(r.get("feature") or r.get("topic") or r.get("template_file") or r.get("id"))[:40]
             age = _age_h(r)
-            who = "THIS run" if (run_id and r.get("run_id") == run_id) else \
-                  f"a DIFFERENT run: {r.get('run_id') or '?'}"
-            tags.append(f"{name} [{who}" + (f", {age:.1f}h ago]" if age is not None else "]"))
-        if own:
-            return "evidence", f"{len(own)} research node(s) recorded by THIS run: {'; '.join(tags)}"
-        # Say exactly what is known: a different RUN (postflight is its own process, so
-        # even a same-session spiral_forks node lands here). Whether that was your work
-        # is something this gate cannot know - so it must not imply either way.
-        return "evidence", (f"{len(rec)} research node(s) match this topic but were recorded by a "
-                            f"different run: {'; '.join(tags)}. If that research was not YOURS, "
-                            f"this is not proof you researched - cite your own with --researched.")
+            tags.append(f"{name} [run {r.get('run_id') or '?'}"
+                        + (f", {age:.1f}h ago]" if age is not None else "]"))
+        return "evidence", (f"ACCEPTED on {len(rec)} research node(s) recorded for THIS TOPIC: "
+                            f"{'; '.join(tags)}. This gate cannot tell whose research that was — "
+                            f"if it was not yours, cite your own with --researched.")
     if (waiver or "").strip():
         return "waived", waiver.strip()
     return "missing", ("no research recorded for this topic; no --researched / "

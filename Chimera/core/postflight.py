@@ -213,7 +213,12 @@ def main():
                 except Exception:
                     pass
                 raise SystemExit(1)
-            print(f"[Witness Gate] {_wg_status}: {_wg_detail[:110]}")
+            # NOT truncated (2026-07-16). I fixed the Research Gate's [:110] this
+            # morning after a clipped line became a weapon -- an agent copied
+            # "...Sky (Earth/Moon/Sun" (cut mid-parenthesis) into its report as a
+            # waiver it never made -- and left the other three call sites clipping.
+            # Fixing the instance you can see is not fixing the defect.
+            print(f"[Witness Gate] {_wg_status}: {_wg_detail}")
             if _wg_status == "waived":
                 try:
                     from core.capcom import post_safe as _wg_ps
@@ -254,7 +259,7 @@ def main():
                 except Exception:
                     pass
                 raise SystemExit(1)
-            print(f"[Visual Gate] {_vg_status}: {_vg_detail[:110]}")
+            print(f"[Visual Gate] {_vg_status}: {_vg_detail}")
             if _vg_status == "waived":
                 try:
                     from core.capcom import post_safe as _vg_ps
@@ -294,7 +299,7 @@ def main():
                 except Exception:
                     pass
                 raise SystemExit(1)
-            print(f"[Training Gate] {_tg_status}: {_tg_detail[:110]}")
+            print(f"[Training Gate] {_tg_status}: {_tg_detail}")
             if _tg_status == "waived":
                 try:
                     from core.capcom import post_safe as _tg_ps

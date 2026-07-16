@@ -332,18 +332,25 @@ def assess(name, assumption, violation, deep=False):
                     if "KEEP|DISCARD" not in l and "<0-10>" not in l
                     and "<0-2>" not in l and "<one word" not in l
                     and "<1-2 sentences>" not in l)
-    # SCORE is the critical parse (a miss drops the candidate). Try, in order: an
-    # explicit "SCORE: N", any "N/10", then fall back to the KEEP/DISCARD verdict.
+    # SCORE is the critical parse, and a miss MUST drop the candidate.
+    #
+    # It used to say that and do the opposite. The old ladder inferred a number from a
+    # WORD: a bare `\bKEEP\b` anywhere in the reply minted **7.0** -- above
+    # KEEP_THRESHOLD (6) -- so "I would KEEP thinking about this one, it is unclear"
+    # claimed a MAP-Elites cell and was written to the doc, a Surprise node and CAPCOM.
+    # Its twin minted 3.0 from `\bDISCARD\b`, which is how every candidate scored exactly
+    # 3.0 while the judge was really grading its own echoed answer template.
+    #
+    # I fixed the 3.0 direction this morning and left this one, which is the WORSE half:
+    # 3.0 DROPS fiction, 7.0 ADMITS it. That asymmetry -- the careless branch always
+    # being the permissive one -- is the single most common defect in this codebase.
+    #
+    # A word is not a measurement. If the judge did not emit a score, it did not judge
+    # (H-3: a reasoning dump is a RETRY with a larger budget, never a verdict), and the
+    # honest value of an absent measurement is "drop", never a plausible number.
     scores = (re.findall(r"SCORE:\s*(\d+(?:\.\d+)?)", raw)
               or re.findall(r"(\d+(?:\.\d+)?)\s*/\s*10", raw))
-    if scores:
-        score = float(scores[-1])
-    elif re.search(r"\bKEEP\b", raw, re.I) and not re.search(r"\bDISCARD\b", raw, re.I):
-        score = 7.0
-    elif re.search(r"\bDISCARD\b", raw, re.I):
-        score = 3.0
-    else:
-        score = -1.0
+    score = float(scores[-1]) if scores else -1.0
     # WHY: last substantial non-placeholder match (reject prompt echoes like
     # "<1-2 sentences>" and reasoning headers like "Thinking Process:").
     reasoning = _last_after("WHY:", raw, minlen=20)
