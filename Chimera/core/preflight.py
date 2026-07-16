@@ -152,6 +152,19 @@ def main():
     except Exception:
         pass
 
+    # ds4 deep brain — the OPTIONAL heavy CPU brain (DwarfStar / DeepSeek-V4-Flash).
+    # Surfaces only when ONLINE so the operator/lead knows the slow, deep,
+    # non-vision brain is available (LM Studio via lm_gateway stays the fast
+    # default). CPU-only: 0 VRAM, ~1.6 t/s, coexists with Unreal + LM Studio.
+    try:
+        from core.ds4_brain import health as _ds4_health
+        _dh = _ds4_health(timeout=2)
+        if _dh.get("up"):
+            print(f"\n[ds4] deep brain ONLINE — {_dh['model']} on CPU (~1.6 t/s, 0 VRAM) "
+                  f"for slow/deep/non-vision reasoning: python -m core.ds4_brain ask \"...\"")
+    except Exception:
+        pass
+
     # Generator-owned guard — fast, LM-FREE heads-up: dirty files that look
     # generator-owned get CLOBBERED on the next pipeline run. Postflight does the
     # authoritative LM judgment; this just surfaces the risk at session start.
