@@ -63190,6 +63190,285 @@
       "links": [],
       "recorded_by": "rep_engine.py",
       "run_id": "run_55962d456631"
+    },
+    {
+      "id": "feature_3cca650c45399914",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-15T23:51:51.012365",
+      "feature_name": "Sky_Starfield",
+      "loop": 3,
+      "status": "query",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Starfield",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Starfield' (Loop 3) recorded as 'query'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_130849d92ecb"
+    },
+    {
+      "id": "simtest_7c114b5f49f6462f",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-15T23:56:56.057401",
+      "observer": "agent-sim",
+      "session": "sky_starfield_witness_1",
+      "demo": "sky_starfield",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "sky_starfield_star_sphere_present",
+          "outcome": "failed",
+          "features": [
+            "Sky_Starfield"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_StarSphere"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sky_starfield_witness_1.json",
+      "temperature": "[SIM] 0/1 beats reached in 'sky_starfield'. Failures: sky_starfield_star_sphere_present (failed: expect {\"actor_exists\": \"SM_StarSphere\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sky_starfield_witness_1': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_78dcdc383769"
+    },
+    {
+      "id": "surprise_bf6235fd27501a2b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T23:56:56.553369",
+      "context": "Sleepwalker expected beat 'sky_starfield_star_sphere_present' to be reachable (sky_starfield)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SM_StarSphere\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SM_StarSphere\"}, \"ok\": false, \"note\": \"pres'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_78dcdc383769"
+    },
+    {
+      "id": "simtest_9aac778ba9506e7b",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-15T23:57:15.701016",
+      "observer": "agent-sim",
+      "session": "sky_starfield_witness_2",
+      "demo": "sky_starfield",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "sky_starfield_star_sphere_present",
+          "outcome": "failed",
+          "features": [
+            "Sky_Starfield"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "SM_StarSphere"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sky_starfield_witness_2.json",
+      "temperature": "[SIM] 0/1 beats reached in 'sky_starfield'. Failures: sky_starfield_star_sphere_present (failed: expect {\"actor_exists\": \"SM_StarSphere\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sky_starfield_witness_2': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_329dade24e89"
+    },
+    {
+      "id": "surprise_a882653c65a69cb0",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-15T23:57:16.246968",
+      "context": "Sleepwalker expected beat 'sky_starfield_star_sphere_present' to be reachable (sky_starfield)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"SM_StarSphere\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"SM_StarSphere\"}, \"ok\": false, \"note\": \"pres'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_329dade24e89"
+    },
+    {
+      "id": "feature_2cad9a46bcff3d90",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T00:11:45.075028",
+      "feature_name": "Sky_Starfield",
+      "loop": 3,
+      "status": "verified",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Starfield",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Starfield' (Loop 3) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_5134b85ee62c"
+    },
+    {
+      "id": "surprise_83eb83a1d0b6b994",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T00:11:55.257686",
+      "context": "tb-0072 witness of Sky_Starfield (loop 3) in live PIE. Expected realization: a star sphere actor (SM_StarSphere/GeneratedSphere) carrying MAT_Starfield (Perlin-noise star texture on EmissiveColor, Unlit). Feature had a 'verified' FeatureUpdate (2026-07-14) and sat in the 22-item OBSERVATION QUEUE awaiting automated collapse.",
+      "expectation": "",
+      "reality": "HOLLOW SKY CONFIRMED by 3 independent layers. (1) Engine hard fact: control_actor get_components on 'SM_SkySphere' shows it is a StaticMeshActor using the ENGINE-DEFAULT material '/Engine/EngineSky/M_SimpleSkyDome.M_SimpleSkyDome' (OverrideMaterials) on mesh '/Engine/EngineSky/SM_SkySphere', NOT MAT_Starfield; the expected star-sphere actor SM_StarSphere/GeneratedSphere does NOT exist in the level (runtime_report actor scan: only 'SM_SkySphere','SkyAtmosphere','SkyLight' among sky matches). (2) Two independent live-PIE SimPlaytest nodes (simtest_7c114b5f49f6462f, simtest_9aac778ba9506e7b) both report expect {actor_exists: SM_StarSphere} -> present=False. (3) LM vision on two editor_viewport captures (camera aimed up) returns 'NO STARFIELD (smooth gradient dome, no stars)'. Root cause: Python/setup_starfield.py (creates the star sphere + connects MAT_Starfield to EmissiveColor) is NEVER invoked \u2014 Python/startup.py does not call it and it is not part of the level/pipeline. Sky_Starfield is NOT actually realized in the live build; a green collapse would be FICTION.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'HOLLOW SKY CONFIRMED by 3 independent layers. (1) Engine hard fact: control_acto'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_35e18718caa4"
+    },
+    {
+      "id": "observation_408512d7f36aff6e",
+      "type": "Observation",
+      "timestamp": "2026-07-16T00:12:31.373256",
+      "feature_name": "Sky_Starfield",
+      "verdict": "rejected",
+      "notes": "automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_7c114b5f49f6462f",
+      "observer": "automated-via-attribution",
+      "derived_from": "simtest_7c114b5f49f6462f",
+      "quote": "sky_starfield_star_sphere_present (failed: present=False)",
+      "tacit": false,
+      "error_signature": "human_rejection",
+      "template_file": "observation/Sky_Starfield",
+      "error_category": "human_rejection",
+      "fix_description": "Human observation of 'Sky_Starfield': rejected \u2014 automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_7c114b5f49f6462f",
+      "compilation_result": "rejected",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_5bb6f99fc7ca"
+    },
+    {
+      "id": "surprise_7e430d4405b69bfe",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-16T00:12:31.610142",
+      "context": "Human observation of system-finalized feature 'Sky_Starfield'",
+      "expectation": "system verification (rubric grade) matches human judgment",
+      "reality": "automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_7c114b5f49f6462f",
+      "lesson_hint": "frame-level correction: what the machine measured is not what the human sees",
+      "source": "human",
+      "consolidated": false,
+      "error_signature": "surprise_human",
+      "template_file": "surprise/human",
+      "error_category": "surprise",
+      "fix_description": "Surprise (human): expected 'system verification (rubric grade) matches human judgment' but 'automated rejection sweep: simulation evidence indicts this feature (1 failing o'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_5bb6f99fc7ca"
+    },
+    {
+      "id": "feature_ccd59957d351da5d",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-16T00:12:31.855179",
+      "feature_name": "Sky_Starfield",
+      "loop": 3,
+      "status": "needs_refinement",
+      "parameters": {
+        "holistic_sweep": "simtest_7c114b5f49f6462f",
+        "indicted_by": [
+          "sky_starfield_star_sphere_present (failed: present=False)"
+        ]
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Sky_Starfield",
+      "error_category": "none",
+      "fix_description": "Feature 'Sky_Starfield' (Loop 3) recorded as 'needs_refinement'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_5bb6f99fc7ca"
+    },
+    {
+      "id": "phase_dc3c958009abcbef",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-16T00:14:35.533947",
+      "phase": "Witness & collapse: Sky_Starfield",
+      "result": "WITNESS & COLLAPSE tb-0072 Sky_Starfield -> OUTCOME: rejection (hollow sky), NOT accepted. Two independent live-PIE SimPlaytest nodes prove the expected star-sphere actor is absent: simtest_7c114b5f49f6462f (session sky_starfield_witness_1) \"0/1 beats reached in sky_starfield. Failures: sky_starfield_star_sphere_present (failed: expect {\"actor_exists\": \"SM_StarSphere\"} -> present=False)\"; simtest_9aac778ba9506e7b (session sky_starfield_witness_2) identical failure present=False. ENGINE HARD FACT (control_actor get_components + get_component_property OverrideMaterials on SM_SkySphere, editor world): SM_SkySphere is a StaticMeshActor using ENGINE-DEFAULT material /Engine/EngineSky/M_SimpleSkyDome.M_SimpleSkyDome on mesh /Engine/EngineSky/SM_SkySphere; expected star-sphere actor SM_StarSphere/GeneratedSphere ABSENT (runtime_report actor scan shows only SM_SkySphere, SkyAtmosphere, SkyLight among sky matches). LM VISION (editor_viewport, camera aimed up, sky_probe.png + sky_probe_up.png): \"NO STARFIELD (smooth gradient dome, no stars)\". COLLAPSE sweep: python -m core.collapse_proxy --from-simtest simtest_7c114b5f49f6462f --valence rejected -> \"[collapse_proxy] automated rejection sweep (simtest_7c114b5f49f6462f): 1 rejected, 21 left queued (not indicted) / rejected    Sky_Starfield\". RECORDED: observation_408512d7f36aff6e verdict=rejected derived_from=simtest_7c114b5f49f6462f quote=\"sky_starfield_star_sphere_present (failed: present=False)\"; feature_ccd59957d351da5d status=needs_refinement loop3 (indicted_by=[\"sky_starfield_star_sphere_present (failed: present=False)\"]); surprise_83eb83a1d0b6b994 (hollow sky). Observation queue 22->21 (Sky_Starfield removed). ROOT CAUSE: Python/setup_starfield.py (creates star sphere + connects MAT_Starfield to EmissiveColor) is NEVER invoked by Python/startup.py and is not part of the level/pipeline, so Sky_Starfield is not realized in the live build. Feature stays needs_refinement (first-priority dream fodder).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness & collapse: Sky_Starfield",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness & collapse: Sky_Starfield' complete: WITNESS & COLLAPSE tb-0072 Sky_Starfield -> OUTCOME: rejection (hollow sky), NOT accepted. Two independent live-PIE SimPlaytest nodes prove the expected star-sphere actor is absent: simtest_7c114b5f49",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Sky_Starfield (Loop3) holds a verified FeatureUpdate but its star-sphere actor SM_StarSphere is never spawned by the level or pipeline (setup_starfield.py is orphaned, startup.py never calls it); verdicts like this will keep revealing paper-verified-but-unrealized features unless setup/realization is wired into the build."
+      ],
+      "inheritance": "Sky_Starfield was marked verified on paper but its realization actor (SM_StarSphere) is never spawned in the live level, so its observation could only be an honest REJECTION, not a collapse. The lesson: a verified FeatureUpdate is not proof of in-build realization \u2014 the witness+rejection lane is the real collapse, and orphaned setup scripts (setup_starfield.py) are silent rot.",
+      "pain_verdicts": {
+        "phase_0f0bac451e5ce1dd:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_b063a901ab7a"
     }
   ],
   "edges": [

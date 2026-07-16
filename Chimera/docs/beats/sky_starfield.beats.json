@@ -1,0 +1,22 @@
+{
+  "demo": "sky_starfield",
+  "loop": 3,
+  "settle_s": 6,
+  "_provenance": "Witness & collapse task tb-0072 (sub-10). Sky_Starfield (loop 3) is in the OBSERVATION QUEUE awaiting automated collapse. Hard-fact probe of the editor world (control_actor get_components + get_component_property OverrideMaterials on SM_SkySphere) showed the ONLY sky actor is 'SM_SkySphere' (StaticMeshActor, /Engine/EngineSky/SM_SkySphere) using the ENGINE-DEFAULT 'M_SimpleSkyDome' material; the feature's expected star-sphere actor (SM_StarSphere / GeneratedSphere, carrying MAT_Starfield) is ABSENT, and Python/startup.py never invokes Python/setup_starfield.py. So the beat below genuinely exercises the realization: it looks at the sky and asserts the star-sphere actor Sky_Starfield was built to produce actually EXISTS in the live PIE world. actor_exists 'SM_StarSphere' is the honest gate -- if it is missing the starfield is hollow (engine default dome only) and the beat must FAIL rather than pass by silence.",
+  "beats": [
+    {
+      "name": "sky_starfield_star_sphere_present",
+      "features": ["Sky_Starfield"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 0, "z": 130}},
+        {"wait": 2.0},
+        {"screenshot": "sky_starfield_view"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"world_is": "chimeradefaultlevel"},
+        {"actor_exists": "SM_StarSphere"}
+      ]
+    }
+  ]
+}

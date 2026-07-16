@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-15T22:51:32+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-16T00:13:25+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -10,7 +10,6 @@ so claimed tasks are safe to run in parallel.
 |---|---|---|---|---|---|
 | tb-0080 | claimed | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | sub-01 |
 | tb-0081 | open | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0072 | open | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie |  |
 | tb-0073 | open | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | editor:open; excl:pie |  |
 | tb-0074 | open | 0.9 | Witness & collapse: Tool_Scanner_Model | editor:open; excl:pie |  |
 | tb-0075 | open | 0.9 | Witness & collapse: Tool_Scanner_Material | editor:open; excl:pie |  |
@@ -46,6 +45,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0008 | done | 1.1 | Hire_Lighting_Artist (DREAM_ROSTER #8) `capable` | core/lumen_rig.py; editor:open | Created core/lumen_rig.py for Lighting Artist (DREAM_ROSTER  |
 | tb-0009 | done | 1 | Hire_Trailer_Director (DREAM_ROSTER #12) `capable` | core/trailer.py, Saved/Trailers/**; editor:open; excl:pie | Created core/trailer.py for Trailer Director (DREAM_ROSTER # |
 | tb-0010 | done | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md | Created core/roadmap.py for Producer Roadmap Layer (DREAM_RO |
+| tb-0072 | done | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie | WITNESS & COLLAPSE tb-0072 Sky_Starfield -> OUTCOME: rejecti |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
 | tb-0019 | done | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** | REFUTED phase_da55128aec6d109a:P1. Empirical vs live 160347- |
 | tb-0020 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** | REFUTED phase_62a9bf8fa8e97b42:P1 - DUPLICATE of phase_da551 |
