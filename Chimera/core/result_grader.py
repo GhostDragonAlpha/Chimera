@@ -100,15 +100,37 @@ def _score_stability(t: dict) -> tuple[float, str]:
         notes.append("crash-free")
     else:
         notes.append("crash evidence or unknown (0/12)")
+    # fps is ONE INSTANTANEOUS SAMPLE — a coin toss, and this used to be the whole of
+    # what "stability" meant here. Meanwhile telemetry_probe.probe_frame_time_stability
+    # is the ONLY function in the instrument layer that takes MULTIPLE samples and
+    # reports variance and worst-case, and `frame_time_stable` appeared NOWHERE in this
+    # file: the honest measurement was computed, written to the evidence JSON, and
+    # DISCARDED, while the coin toss was graded. The budget (12+5+4+4) exactly filled
+    # W_STABILITY=25, so there was no slot left for it — the arithmetic itself was the
+    # reason the good measure could never count. A feature with MEASURED frame
+    # instability scored a PERFECT 25/25 stability grade.
+    #
+    # Now fps and stability SHARE the 5: an instantaneous reading is worth 2, and the
+    # multi-sample verdict is worth 3 — the variance measurement outranks the snapshot,
+    # because "one rollout is a coin toss" is this studio's own doctrine and an fps
+    # reading is one rollout.
     fps, target = t.get("fps"), t.get("target_fps", 60)
     if fps is not None:
         if float(fps) >= float(target):
-            pts += 5
-            notes.append(f"fps {fps} >= {target}")
+            pts += 2
+            notes.append(f"fps {fps} >= {target} (2/2, one sample)")
         else:
-            notes.append(f"fps {fps} < target {target} (0/5)")
+            notes.append(f"fps {fps} < target {target} (0/2)")
     else:
-        notes.append("fps unmeasured (0/5)")
+        notes.append("fps unmeasured (0/2)")
+    stable = t.get("frame_time_stable")
+    if stable is True:
+        pts += 3
+        notes.append("frame time stable over soak (3/3, multi-sample)")
+    elif stable is False:
+        notes.append("frame time UNSTABLE over soak — measured hitches (0/3)")
+    else:
+        notes.append("frame-time stability unmeasured (0/3)")
     if t.get("unbounded_growth") is False:
         pts += 4
         notes.append("actor growth bounded")

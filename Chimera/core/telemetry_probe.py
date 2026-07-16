@@ -204,9 +204,21 @@ def probe_memory(client: "MCPStdioClient", soak_seconds: int):
 
 
 def probe_frame_time_stability(client: "MCPStdioClient", soak_seconds: int):
-    """Probe frame time variance and hitches over soak period. Detects micro-stutters.
+    """Probe frame-time variance over the soak. Sampled at 0.5 Hz — see the limit below.
 
-    Collects frame time samples at ~10Hz intervals during soak.
+    THE RATE, HONESTLY (corrected 2026-07-16). This claimed "~10Hz" here and "~2Hz" three
+    lines into the body, and computes 0.5 Hz: `samples = soak_seconds // 2` with
+    `interval = soak_seconds / samples` is EXACTLY one sample every 2 seconds at every
+    soak value. Three figures for one rate, none of them the code's.
+
+    AND IT CANNOT DETECT MICRO-STUTTERS, which is what the old docstring promised. A
+    hitch lasts ~30 ms and each sample here is a separate MCP round-trip, not a read of
+    the engine's frame history — so at one sample per 2 s it is not merely 20x too slow,
+    it is structurally blind to the thing it named. What it CAN honestly measure is
+    coarse fps DRIFT across the soak (is the average sagging, is the spread widening),
+    which is real and worth having. Reading the engine's own frame-time buffer in ONE
+    call is the fix if per-hitch detection is ever needed; sampling faster over this
+    transport is not.
     Returns: (is_stable, note_string)
     - is_stable: False if variance exceeds threshold (>15ms stddev or >50% frame spike), True if stable, None if unmeasurable
     - note: human-readable variance summary with hitch count
