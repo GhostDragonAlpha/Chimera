@@ -1,14 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T18:45:04+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T19:15:05+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0134 | open | 1.2 | Fix 1 red rep atom(s): Beat_Scripts_Tautology_Fix | editor:open; excl:pie |  |
 | tb-0135 | open | 1.2 | Fix 1 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie |  |
 | tb-0137 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Audio | Source/Chimera/ProceduralGenerated/Sound/** |  |
 | tb-0131 | open | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie |  |
@@ -57,6 +56,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0089 | done | 1.2 | Fix 1 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** | resolved: Malcolm_Envelope green (8 atoms) in run_1784134339 |
 | tb-0090 | done | 1.2 | Fix 1 red rep atom(s): UGestureWheel | core/game_code_generator.py; excl:generator | rep_engine tend: 4 failing (was 5), UGestureWheel no longer  |
 | tb-0133 | done | 1.2 | Fix 2 red rep atom(s): System_DSL_Fidelity | core/game_code_generator.py; excl:generator | Fixed 2 red rep atoms for System_DSL_Fidelity by adding 'Gam |
+| tb-0134 | done | 1.2 | Fix 1 red rep atom(s): Beat_Scripts_Tautology_Fix | editor:open; excl:pie | prune removed identity atom atom_1c0c2815eabc for Beat_Scrip |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |
 | tb-0014 | done | 1.2 | Sprint_Input: input binding: the physical key drives the sta ⇐ tb-0013 | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/GameMode/** | Sprint_Input/binding atom GREEN x2 (LeftShift polled via Pla |

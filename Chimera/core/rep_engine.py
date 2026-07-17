@@ -637,7 +637,8 @@ def gen_curriculum(cache: _FileCache) -> list:
         # Skip meta/workflow feature names like System_DSL_Fidelity that don't
         # trace to game content — minting identity for them creates a PERMANENT
         # false red that poisons the battery's streak.
-        META_WORKFLOW_FEATURES = {"System_DSL_Fidelity", "Malcolm_Envelope", "Sleepwalker_Beats"}
+        META_WORKFLOW_FEATURES = {"System_DSL_Fidelity", "Malcolm_Envelope", "Sleepwalker_Beats",
+                                  "Beat_Scripts_Tautology_Fix"}
         if feature in META_WORKFLOW_FEATURES:
             continue
         token = re.sub(r"[^A-Za-z0-9_]", "_", str(feature))
