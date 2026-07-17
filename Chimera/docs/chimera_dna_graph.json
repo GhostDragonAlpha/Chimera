@@ -66973,6 +66973,46 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_b2f2007e86b7"
+    },
+    {
+      "id": "discovery_149f964a943b15e0",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T03:55:03.811452",
+      "feature": "LEAD integration + closure: sub-01 tb-0078 Witness & collaps",
+      "campus_sources": [],
+      "web_sources": [
+        "Shelter_Habitat_Lighting feature in DNA graph, ShelterHabitatComponent.cpp SetupHabitatLighting() method, shelter_habitat_material.beats.json for reference beat script pattern"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/LEAD integration + closure: sub-01 tb-0078 Witness & collaps",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'LEAD integration + closure: sub-01 tb-0078 Witness & collaps': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_7b70c58f1d78"
+    },
+    {
+      "id": "phase_10a76d563726ae2d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T03:55:04.194925",
+      "phase": "LEAD integration + closure: sub-01 tb-0078 Witness & collapse Shelter_Habitat_Lighting",
+      "result": "simtest_50995d727bf1954b: 1/1 beats reached in 'shelter_habitat_lighting'. Clean walk. collapse_proxy accepted Shelter_Habitat_Lighting.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/LEAD integration + closure: sub-01 tb-0078 Witness & collapse Shelter_Habitat_Lighting",
+      "error_category": "none",
+      "fix_description": "Phase 'LEAD integration + closure: sub-01 tb-0078 Witness & collapse Shelter_Habitat_Lighting' complete: simtest_50995d727bf1954b: 1/1 beats reached in 'shelter_habitat_lighting'. Clean walk. collapse_proxy accepted Shelter_Habitat_Lighting.",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_7b70c58f1d78"
     }
   ],
   "edges": [
