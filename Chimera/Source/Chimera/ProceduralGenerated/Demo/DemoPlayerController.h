@@ -44,6 +44,10 @@ private:
 	void Interact();
 	void DropItem();
 
+	/** TAB input binding callbacks for GestureWheel */
+	void OnTabPressed();
+	void OnTabReleased();
+
 	void EnsureThirdPersonCamera(APawn* InPawn);
 
 	/** Spawns one demo APickupActor near the possessed pawn, once per controller lifetime, so there is always something real to test Interact/Drop against. */

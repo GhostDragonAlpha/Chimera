@@ -3407,6 +3407,11 @@ bool FMissionCompletePayoutCredits::RunTest(const FString& Parameters)
         header_content += '\tvoid Interact();\n'
         header_content += '\tvoid DropItem();\n\n'
 
+        # TAB input binding callbacks for GestureWheel
+        header_content += '\t/** TAB input binding callbacks for GestureWheel */\n'
+        header_content += '\tvoid OnTabPressed();\n'
+        header_content += '\tvoid OnTabReleased();\n\n'
+
         header_content += '\tvoid EnsureThirdPersonCamera(APawn* InPawn);\n\n'
         header_content += '\t/** Spawns one demo APickupActor near the possessed pawn, once per controller lifetime, so there is always something real to test Interact/Drop against. */\n'
         header_content += '\tvoid SpawnDemoPickupIfNeeded(APawn* InPawn);\n\n'
