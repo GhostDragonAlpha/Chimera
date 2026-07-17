@@ -66039,6 +66039,258 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_0f175d38c076"
+    },
+    {
+      "id": "simtest_55695e524afd4f24",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T01:24:01.559536",
+      "observer": "agent-sim",
+      "session": "obs_Tool_Scanner_Material",
+      "demo": "tool_scanner_material",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "tool_scanner_material_present",
+          "outcome": "failed",
+          "features": [
+            "Tool_Scanner_Material"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "ATool_Scanner"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Tool_Scanner_Material.json",
+      "temperature": "[SIM] 0/1 beats reached in 'tool_scanner_material'. Failures: tool_scanner_material_present (failed: expect {\"actor_exists\": \"ATool_Scanner\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_Tool_Scanner_Material': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_582dd2649e2d"
+    },
+    {
+      "id": "surprise_6ea4c0a203dd5e96",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T01:24:01.913361",
+      "context": "Sleepwalker expected beat 'tool_scanner_material_present' to be reachable (tool_scanner_material)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"ATool_Scanner\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"ATool_Scanner\"}, \"ok\": false, \"note\": \"pres'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_582dd2649e2d"
+    },
+    {
+      "id": "simtest_18b953d157ae67af",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T01:27:51.836292",
+      "observer": "agent-sim",
+      "session": "obs_Tool_Scanner_Material",
+      "demo": "tool_scanner_material",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "tool_scanner_material_present",
+          "outcome": "failed",
+          "features": [
+            "Tool_Scanner_Material"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "ATool_Scanner"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Tool_Scanner_Material.json",
+      "temperature": "[SIM] 0/1 beats reached in 'tool_scanner_material'. Failures: tool_scanner_material_present (failed: expect {\"actor_exists\": \"ATool_Scanner\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_Tool_Scanner_Material': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_4210bf860db3"
+    },
+    {
+      "id": "surprise_4b6eef0b54b92cc5",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T01:27:52.173996",
+      "context": "Sleepwalker expected beat 'tool_scanner_material_present' to be reachable (tool_scanner_material)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"ATool_Scanner\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"ATool_Scanner\"}, \"ok\": false, \"note\": \"pres'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_4210bf860db3"
+    },
+    {
+      "id": "observation_92639a8143037cac",
+      "type": "Observation",
+      "timestamp": "2026-07-17T01:29:07.533531",
+      "feature_name": "Tool_Scanner_Material",
+      "verdict": "rejected",
+      "notes": "automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_55695e524afd4f24",
+      "observer": "automated-via-attribution",
+      "derived_from": "simtest_55695e524afd4f24",
+      "quote": "tool_scanner_material_present (failed: present=False)",
+      "tacit": false,
+      "error_signature": "human_rejection",
+      "template_file": "observation/Tool_Scanner_Material",
+      "error_category": "human_rejection",
+      "fix_description": "Human observation of 'Tool_Scanner_Material': rejected \u2014 automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_55695e524afd4f24",
+      "compilation_result": "rejected",
+      "links": [
+        "simtest_55695e524afd4f24"
+      ],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_4d9a7e29eed1"
+    },
+    {
+      "id": "surprise_0829ed37da5e766e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T01:29:07.805264",
+      "context": "Human observation of system-finalized feature 'Tool_Scanner_Material'",
+      "expectation": "system verification (rubric grade) matches human judgment",
+      "reality": "automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_55695e524afd4f24",
+      "lesson_hint": "frame-level correction: what the machine measured is not what the human sees",
+      "source": "human",
+      "consolidated": false,
+      "error_signature": "surprise_human",
+      "template_file": "surprise/human",
+      "error_category": "surprise",
+      "fix_description": "Surprise (human): expected 'system verification (rubric grade) matches human judgment' but 'automated rejection sweep: simulation evidence indicts this feature (1 failing o'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_4d9a7e29eed1"
+    },
+    {
+      "id": "feature_321f09097df645c8",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-17T01:29:08.073981",
+      "feature_name": "Tool_Scanner_Material",
+      "loop": 4,
+      "status": "needs_refinement",
+      "parameters": {
+        "holistic_sweep": "simtest_55695e524afd4f24",
+        "indicted_by": [
+          "tool_scanner_material_present (failed: present=False)"
+        ]
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Tool_Scanner_Material",
+      "error_category": "none",
+      "fix_description": "Feature 'Tool_Scanner_Material' (Loop 4) recorded as 'needs_refinement'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_4d9a7e29eed1"
+    },
+    {
+      "id": "phase_606dd9536f6e279b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T01:32:07.071426",
+      "phase": "Witness & collapse: Tool_Scanner_Material",
+      "result": "Tool_Scanner_Material witness & collapse: simtest_55695e524afd4f24 failed with actor_exists 'ATool_Scanner' -> present=False. collapse_proxy derived rejection for Tool_Scanner_Material based on simulation evidence.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness & collapse: Tool_Scanner_Material",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness & collapse: Tool_Scanner_Material' complete: Tool_Scanner_Material witness & collapse: simtest_55695e524afd4f24 failed with actor_exists 'ATool_Scanner' -> present=False. collapse_proxy derived rejection for Tool_Scanner_Material based on simula",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "<declare one>"
+      ],
+      "inheritance": "<=3 sentences",
+      "pain_verdicts": {
+        "<id>:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_712a42aab427"
+    },
+    {
+      "id": "discovery_c91320cc9659c1fb",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T01:32:43.297980",
+      "feature": "Witness & collapse: Tool_Scanner_Material",
+      "campus_sources": [],
+      "web_sources": [
+        "Research discovery for Tool_Scanner_Material: 1 sources consulted, confidence=medium (discovery_d39d6117cfad6910)"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Witness & collapse: Tool_Scanner_Material",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Witness & collapse: Tool_Scanner_Material': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f6fb868a3407"
     }
   ],
   "edges": [
@@ -77091,6 +77343,18 @@
       "type": "because",
       "derived": true,
       "derived_how": "feature_name match \u2014 record_feature() never cited evidence"
+    },
+    {
+      "src": "observation_92639a8143037cac",
+      "dst": "simtest_55695e524afd4f24",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-17T01:29:07.533758",
+      "asked_by": "collapse_proxy.py",
+      "source": "observation_92639a8143037cac",
+      "target": "simtest_55695e524afd4f24",
+      "type": "because"
     }
   ]
 }

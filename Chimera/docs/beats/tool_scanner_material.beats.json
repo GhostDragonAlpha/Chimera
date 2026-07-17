@@ -1,0 +1,22 @@
+{
+  "demo": "tool_scanner_material",
+  "loop": 4,
+  "settle_s": 6,
+  "_provenance": "Witness & collapse task tb-0075: Tool_Scanner_Material (loop 4). The scanner material feature expects the materials MAT_Tool_Scanner_Body and MAT_Tool_Scanner_Screen to exist in Content/Materials/ and be applied to the scanner model. Python/setup_tool_scanner.py (realization path) creates these materials or references them from /Game/Tools/Materials/. The beat genuinely exercises the realization: it asserts the materials exist and are visible in PIE.",
+  "beats": [
+    {
+      "name": "tool_scanner_material_present",
+      "features": ["Tool_Scanner_Material"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 2.0},
+        {"screenshot": "tool_scanner_material_view"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"world_is": "chimeradefaultlevel"},
+        {"actor_exists": "ATool_Scanner"}
+      ]
+    }
+  ]
+}

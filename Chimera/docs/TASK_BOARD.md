@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-16T22:53:20+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T01:31:56+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,7 +8,6 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0075 | open | 0.9 | Witness & collapse: Tool_Scanner_Material | editor:open; excl:pie |  |
 | tb-0076 | open | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie |  |
 | tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
@@ -51,6 +50,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0072 | done | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie | WITNESS & COLLAPSE tb-0072 Sky_Starfield -> OUTCOME: rejecti |
 | tb-0073 | done | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | editor:open; excl:pie | WITNESS & COLLAPSE tb-0073 Sky_Atmosphere_Scattering -> hone |
 | tb-0074 | done | 0.9 | Witness & collapse: Tool_Scanner_Model | editor:open; excl:pie | simtest_df1a03ae03c7e517: [SIM] 0/1 beats reached in 'tool_s |
+| tb-0075 | done | 0.9 | Witness & collapse: Tool_Scanner_Material | editor:open; excl:pie | Tool_Scanner_Material witness & collapse: simtest_55695e524a |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
 | tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
 | tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
