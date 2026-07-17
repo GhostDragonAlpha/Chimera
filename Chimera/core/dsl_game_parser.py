@@ -383,6 +383,38 @@ class DSLGameParser:
                     "using_common_ui": True
                 }
 
+        # Parse gesture_wheel_ui block — radial social verb menu. The generator gates
+        # GestureWheel generation and TAB input binding on the PRESENCE of this key.
+        gw_body = extract_block_content(dsl_content, 'gesture_wheel_ui')
+        if gw_body:
+            wheel_data = {}
+            name_match = re.search(r'gesture_wheel_ui\s+"([^"]+)"', gw_body)
+            if name_match:
+                wheel_data["name"] = name_match.group(1)
+            
+            type_match = re.search(r'type\s*=\s*"([^"]+)"', gw_body)
+            if type_match:
+                wheel_data["type"] = type_match.group(1)
+            
+            input_key_match = re.search(r'input_key\s*=\s*"([^"]+)"', gw_body)
+            if input_key_match:
+                wheel_data["input_key"] = input_key_match.group(1)
+            
+            hold_to_open_match = re.search(r'hold_to_open\s*=\s*(true|false)', gw_body)
+            if hold_to_open_match:
+                wheel_data["hold_to_open"] = hold_to_open_match.group(1) == "true"
+            
+            # Extract gestures array
+            gestures = []
+            gesture_matches = re.findall(r'\{"name":\s*"([^"]+)",\s*"index":\s*(\d+)\}', gw_body)
+            for g_name, g_idx in gesture_matches:
+                gestures.append({"name": g_name, "index": int(g_idx)})
+            if gestures:
+                wheel_data["gestures"] = gestures
+            
+            if wheel_data:
+                result["ui"]["gesture_wheel_ui"] = wheel_data
+
         # Parse audio block
         audio_body = extract_block_content(dsl_content, 'audio')
         if audio_body:

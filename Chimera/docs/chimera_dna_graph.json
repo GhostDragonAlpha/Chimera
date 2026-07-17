@@ -67945,6 +67945,453 @@
       "inheritance": "The tautology class is now gated: beat_lint flags rig-only-expect beats; 6 pre-existing offenders queued as tb-0123 (audit Social_Trade's 1/2 evidence FIRST). tb-0124 carries UGestureWheel's real completion with honest failing-until-wired beats. Master prompt now teaches both mirror build rules (green trend != green HEAD; historical red != current red) and the beat-must-observe-its-feature rule.",
       "recorded_by": "postflight.py",
       "run_id": "run_f7854c3e2f0c"
+    },
+    {
+      "id": "surprise_14f14118b700a6ec",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T07:28:14.006307",
+      "context": "expectation-violation candidate for AErisaidActor (score 7)",
+      "expectation": "the player's assumed mental model for the system",
+      "reality": "VIOLATE 'Players will assume the half-buried leviathan shell is a static environmental landmark intended solely for visual observation and world-building, not for direct gameplay interaction or manipulation.' -> The half-buried leviathan shell is now a harvestable resource node requiring players to equip a 'Resonance Chisel' tool to extract 'Leviathan Marrow', which functions as a mandatory crafting component for unlocking Tier-3 equipment.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume the half-buried leviathan shell is a static environ'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_e16b7b427192"
+    },
+    {
+      "id": "surprise_8b8219fa2d79c5c8",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T07:28:14.328421",
+      "context": "expectation-violation candidate for AErisaidActor (score 8)",
+      "expectation": "the player's assumed mental model for the system",
+      "reality": "VIOLATE 'Players will assume the half-buried leviathan shell is a static environmental landmark intended solely for visual observation and world-building, not for direct gameplay interaction or manipulation.' -> The leviathan shell is now a dynamic environmental trigger that responds to player audio devices; activating a 'Sonic Emitter' within 5 meters causes the shell to vibrate and physically shift its buried position by 10 feet, unearthing a hidden subterranean passage that alters the map layout.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume the half-buried leviathan shell is a static environ'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_e16b7b427192"
+    },
+    {
+      "id": "simtest_b30c4432bd2ecd93",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T10:21:10.436788",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_UGestureWheel",
+      "demo": "gesture_wheel",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "gesture_wheel_open_close",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] OpenWheel"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "gesture_wheel_commit_gesture",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] CommitGesture"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_UGestureWheel.json",
+      "temperature": "[SIM] 0/2 beats reached in 'gesture_wheel'. Failures: gesture_wheel_open_close (failed: expect {\"log_contains\": \"[GestureWheel] OpenWheel\"} -> log_hit=False); gesture_wheel_commit_gesture (failed: expect {\"log_contains\": \"[GestureWheel] CommitGesture\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_UGestureWheel': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2a1844b851e0"
+    },
+    {
+      "id": "surprise_0b88f190834e4d03",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T10:21:10.703465",
+      "context": "Sleepwalker expected beat 'gesture_wheel_open_close' to be reachable (gesture_wheel)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] OpenWheel\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] OpenWheel\"}, \"ok\": false, \"n'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2a1844b851e0"
+    },
+    {
+      "id": "surprise_18a55c15e611ea77",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T10:21:10.987157",
+      "context": "Sleepwalker expected beat 'gesture_wheel_commit_gesture' to be reachable (gesture_wheel)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] CommitGesture\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] CommitGesture\"}, \"ok\": false'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2a1844b851e0"
+    },
+    {
+      "id": "simtest_1b335e28c700cd59",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T10:23:11.421719",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_UGestureWheel",
+      "demo": "gesture_wheel",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "gesture_wheel_open_close",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] OpenWheel"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "gesture_wheel_commit_gesture",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] CommitGesture"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_UGestureWheel.json",
+      "temperature": "[SIM] 0/2 beats reached in 'gesture_wheel'. Failures: gesture_wheel_open_close (failed: expect {\"log_contains\": \"[GestureWheel] OpenWheel\"} -> log_hit=False); gesture_wheel_commit_gesture (failed: expect {\"log_contains\": \"[GestureWheel] CommitGesture\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_UGestureWheel': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7ba19f1ad374"
+    },
+    {
+      "id": "surprise_308d58eee2a91961",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T10:23:11.686813",
+      "context": "Sleepwalker expected beat 'gesture_wheel_open_close' to be reachable (gesture_wheel)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] OpenWheel\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] OpenWheel\"}, \"ok\": false, \"n'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7ba19f1ad374"
+    },
+    {
+      "id": "surprise_403654211e5bf898",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T10:23:11.971048",
+      "context": "Sleepwalker expected beat 'gesture_wheel_commit_gesture' to be reachable (gesture_wheel)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] CommitGesture\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] CommitGesture\"}, \"ok\": false'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7ba19f1ad374"
+    },
+    {
+      "id": "simtest_79c27b8c157dad4d",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T10:27:32.824997",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_UGestureWheel",
+      "demo": "gesture_wheel",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "gesture_wheel_open_close",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] OpenWheel"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "gesture_wheel_commit_gesture",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] CommitGesture"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_UGestureWheel.json",
+      "temperature": "[SIM] 0/2 beats reached in 'gesture_wheel'. Failures: gesture_wheel_open_close (failed: expect {\"log_contains\": \"[GestureWheel] OpenWheel\"} -> log_hit=False); gesture_wheel_commit_gesture (failed: expect {\"log_contains\": \"[GestureWheel] CommitGesture\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_UGestureWheel': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5f3930f1a924"
+    },
+    {
+      "id": "surprise_e989ea0b6fa4020c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T10:27:33.081944",
+      "context": "Sleepwalker expected beat 'gesture_wheel_open_close' to be reachable (gesture_wheel)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] OpenWheel\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] OpenWheel\"}, \"ok\": false, \"n'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5f3930f1a924"
+    },
+    {
+      "id": "surprise_f1d34c48426f1d38",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T10:27:33.372450",
+      "context": "Sleepwalker expected beat 'gesture_wheel_commit_gesture' to be reachable (gesture_wheel)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] CommitGesture\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] CommitGesture\"}, \"ok\": false'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5f3930f1a924"
+    },
+    {
+      "id": "discovery_629dfe9a36212b6d",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T10:29:39.695147",
+      "feature": "UGestureWheel completion",
+      "campus_sources": [],
+      "web_sources": [
+        "deep_space_trader.chimera gesture_wheel_ui block; dsl_game_parser.py UI parsing; game_code_generator.py generator templates"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/UGestureWheel completion",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'UGestureWheel completion': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f9ee5db82bac"
+    },
+    {
+      "id": "phase_0fa798eb15fccdf9",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T10:29:40.073723",
+      "phase": "UGestureWheel completion",
+      "result": "Added gesture_wheel_ui parsing to dsl_game_parser.py; added generate_demo_player_controller_with_gesture_wheel_bindings() to game_code_generator.py with TAB input bindings (key_down TAB -> OpenWheel, key_up TAB -> CommitGesture+CloseWheel); DemoPlayerController.h/cpp now generated with GestureWheelWidget and OnTabPressed/OnTabReleased methods.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/UGestureWheel completion",
+      "error_category": "none",
+      "fix_description": "Phase 'UGestureWheel completion' complete: Added gesture_wheel_ui parsing to dsl_game_parser.py; added generate_demo_player_controller_with_gesture_wheel_bindings() to game_code_generator.py with TAB input bindings (key_down TAB -> OpenWheel, ",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f9ee5db82bac"
     }
   ],
   "edges": [

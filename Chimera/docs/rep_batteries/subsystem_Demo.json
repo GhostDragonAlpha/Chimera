@@ -14,6 +14,20 @@
   "provenance": "reflection:UPROPERTY:DemoPlayerController.h"
  },
  {
+  "id": "atom_6b2b414b99e9",
+  "feature": "subsystem/Demo",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGestureWheelWidget\\b"
+  },
+  "desc": "UPROPERTY GestureWheelWidget (DemoPlayerController.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DemoPlayerController.h"
+ },
+ {
   "id": "atom_82138b901806",
   "feature": "subsystem/Demo",
   "tier": 1,

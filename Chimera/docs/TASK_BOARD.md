@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T06:18:10+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T10:29:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,11 +8,13 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0124 | open | 1 | UGestureWheel completion: TAB binding + DSL consumption + ho | Source/Chimera/ProceduralGenerated/UI/**, Source/Chimera/ProceduralGenerated/Demo/**…; editor:open; excl:generator |  |
 | tb-0123 | open | 0.8 | Fix 6 tautological beats in 4 files (false-accept evidence r | docs/beats/** |  |
 | tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie |  |
 | tb-0119 | open | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** |  |
 | tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
+| tb-0125 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
+| tb-0126 | open | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
+| tb-0127 | open | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
@@ -43,6 +45,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0008 | done | 1.1 | Hire_Lighting_Artist (DREAM_ROSTER #8) `capable` | core/lumen_rig.py; editor:open | Created core/lumen_rig.py for Lighting Artist (DREAM_ROSTER  |
 | tb-0009 | done | 1 | Hire_Trailer_Director (DREAM_ROSTER #12) `capable` | core/trailer.py, Saved/Trailers/**; editor:open; excl:pie | Created core/trailer.py for Trailer Director (DREAM_ROSTER # |
 | tb-0079 | done | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/**, core/game_code_generator.py; excl:generator | UGestureWheel DSL spec added to deep_space_trader.chimera wi |
+| tb-0124 | done | 1 | UGestureWheel completion: TAB binding + DSL consumption + ho | Source/Chimera/ProceduralGenerated/UI/**, Source/Chimera/ProceduralGenerated/Demo/**…; editor:open; excl:generator | Added gesture_wheel_ui parsing to dsl_game_parser.py; added  |
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
 | tb-0010 | done | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md | Created core/roadmap.py for Producer Roadmap Layer (DREAM_RO |

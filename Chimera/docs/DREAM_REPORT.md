@@ -1,5 +1,5 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-17T04:24:47Z
+consolidated: 2026-07-17T07:15:02Z
 
 ## Awaiting your approval
 3 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
@@ -30,15 +30,14 @@ consolidated: 2026-07-17T04:24:47Z
 Record verdicts: `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`promoted:1; needs_draft:3; untouched:47 | provisional-collapse: 0 collapsed, 13 awaiting evidence`
+`needs_draft:3; untouched:48 | provisional-collapse: 0 collapsed, 13 awaiting evidence`
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 51 batteries, 806 atoms, 781 reps this pass (3 failing), 25 PIE atoms exported
-[rep] PROMOTED: Sprint_Input/volume_norm: tier 0 -> 1 (behaves)
+[rep] 51 batteries, 809 atoms, 786 reps this pass (5 failing), 25 PIE atoms exported
+[rep] failing: System_DSL_Fidelity (2 atoms red)
+[rep] failing: Game_Feel (1 atoms red)
 [rep] failing: Sky_Loop_Realization (1 atoms red)
-[rep] failing: subsystem_Audio (1 atoms red)
-[rep] failing: System_DSL_Fidelity (1 atoms red)
 ```
 
 ## Tonight's distillation
@@ -71,18 +70,18 @@ clusters >= 3: 55  |  suppressed (covered/pending): 55  |  staged: 0
   covered   [ 10x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
   covered   [  9x] sim_rejection: audio_visual_sync/walk_fast_on_sand  <- PENDING_HEURISTICS.md
   covered   [  6x] sim_rejection: audio_visual_sync/walk_slow_on_sand  <- PENDING_HEURISTICS.md
+  covered   [  6x] sim_rejection: regolith_yard/walk_metal_to_rock  <- PENDING_HEURISTICS.md
   covered   [  5x] sim_rejection: audio_visual_sync/spawn_and_verify_audio_system  <- PENDING_HEURISTICS.md
   covered   [  5x] sim_rejection: audio_visual_sync/report_telemetry  <- PENDING_HEURISTICS.md
-  covered   [  5x] sim_rejection: regolith_yard/walk_metal_to_rock  <- PENDING_HEURISTICS.md
   covered   [  4x] sim_rejection: verb_interactions/verb_look_location  <- PENDING_HEURISTICS.md
-  covered   [172x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
-  covered   [ 63x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
+  covered   [173x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
+  covered   [ 65x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 36x] pathway: sleepwalker.beat_run -> partial  <- PENDING_HEURISTICS.md
   covered   [ 33x] surprise: correction feature finalized frame  <- PENDING_HEURISTICS.md
+  covered   [ 27x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 26x] verification_not_verified  <- PENDING_HEURISTICS.md
   covered   [ 25x] surprise: audio_visual_sync beat discovered expected  <- PENDING_HEURISTICS.md
-  covered   [ 25x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 18x] pathway: build_orchestrator.ue_shutdown -> success_intended_kill  <- PENDING_HEURISTICS.md
   covered   [ 17x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
   covered   [ 12x] grade_CF: Player_Character_Lighting  <- PENDING_HEURISTICS.md
@@ -104,7 +103,7 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 2589  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 2625  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 

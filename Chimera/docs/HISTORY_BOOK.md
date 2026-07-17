@@ -5,11 +5,11 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1234 entries** across 8 chapters.
+**1253 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
-*70 entries; showing 40.*
+*72 entries; showing 40.*
 
 ### H-1
 <sub>`claude:H-1`</sub>
@@ -166,6 +166,11 @@
 
 > Investigate human_rejection sky_atmosphere_scattering; verify test harness and b
 
+### H-51
+<sub>`claude:H-51`</sub>
+
+> Implement screenshot action and state-capture in sleepwalker beat registry.
+
 ### compilation_fail `2026-07-07T01:45`
 <sub>`heuristic_837905aa7e86de78`</sub>
 
@@ -205,11 +210,6 @@
 <sub>`heuristic_351b200ded96cdb0`</sub>
 
 > A C2039 missing-member error in ProceduralGenerated/ means template drift — emit the accessor in the same generator change that emits its test.
-
-### H-12 grade_CF Build_Pipeline `2026-07-07T05:20`
-<sub>`heuristic_7383762c5de528d3`</sub>
-
-> A build-failure grade must carry the failing file:line verbatim — 'no error text captured' makes the F untriageable and wastes the retry.
 
 ## II. Closed Doors (eliminations — proven negatives)
 
@@ -316,7 +316,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*398 entries; showing 40.*
+*407 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -640,7 +640,7 @@
 
 ## IV. Verdicts & Grades
 
-*347 entries; showing 40.*
+*349 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -959,7 +959,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*341 entries; showing 40.*
+*347 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1381,37 +1381,37 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                          22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> ADotCharacter                          28 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    112 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    115 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access    749 reps  100%  streak  8  battery  10 (3 pie)  READY
+> audio_visual_sync/telemetry_access    770 reps  100%  streak  8  battery  10 (3 pie)  READY
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                            110 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Demo_Level                            113 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Game_Feel — ledger standing
 <sub>`repstat:Game_Feel`</sub>
 
-> Game_Feel                             358 reps  100%  streak  8  battery   5 (0 pie)  READY
+> Game_Feel                             370 reps   95%  streak  0  battery   5 (0 pie)  tier 3/3
 
 ### Ground_Sand_Sound — ledger standing
 <sub>`repstat:Ground_Sand_Sound`</sub>
 
-> Ground_Sand_Sound                    3582 reps  100%  streak  8  battery  33 (0 pie)  READY
+> Ground_Sand_Sound                    3681 reps  100%  streak  8  battery  33 (0 pie)  READY
 
 ### Ground_Sand_Surface — ledger standing
 <sub>`repstat:Ground_Sand_Surface`</sub>
 
-> Ground_Sand_Surface                   110 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Ground_Sand_Surface                   113 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1442,7 +1442,7 @@
 - **AAA Quality** — 1 entry: `observation_766c8e839f115065`
 - **AAA_Quality** — 1 entry: `observation_e4d6503c704ed448`
 - **ADotCharacter** — 1 entry: `repstat:ADotCharacter`
-- **Build_Pipeline** — 63 entries: `professor_grade_1a92c9ff41eb66f4`, `professor_grade_8f4a03f041187ce9`, `professor_grade_0f7ad1992f6d1372`, `professor_grade_3b51652770d01ac1`, `professor_grade_828db6a52893ed78`, `professor_grade_9892b433ad232f61` ...
+- **Build_Pipeline** — 65 entries: `professor_grade_1a92c9ff41eb66f4`, `professor_grade_8f4a03f041187ce9`, `professor_grade_0f7ad1992f6d1372`, `professor_grade_3b51652770d01ac1`, `professor_grade_828db6a52893ed78`, `professor_grade_9892b433ad232f61` ...
 - **CLI_Test** — 1 entry: `professor_grade_2e8f98354014d117`
 - **Competitive_Feature_Design_Patterns_Research** — 2 entries: `observation_4e4ccc9b30b5f883`, `observation_e5af82bfa4350985`
 - **Competitive_Feature_Design_Patterns_Research_Summary** — 1 entry: `observation_0efae6fbbe195f0b`

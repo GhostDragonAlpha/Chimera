@@ -90,3 +90,27 @@ coverage 2/18 cells (11%)   QD-score 16.0
 - **assumption:** Players will assume they are supposed to examine or observe the half-buried leviathan shell as environmental storytelling or a map boundary, rather than attempt to enter, destroy, or manipulate it.
 - **violation:** The half-buried leviathan shell functions as a locked instanced zone requiring a 'Cranial Resonance Beacon' to be inserted into its jaw hinge to open; approaching it without the beacon triggers an 'Inertial Repulsion' state that forcibly pushes the player 10 meters backward.
 - **why it works:** The rule transforms an assumed inert environmental element into a locked puzzle requiring a specific item and interaction point, creating an 'aha' moment when players discover the jaw hinge mechanism. The repulsion penalty clearly signals the need for the beacon without being random or unfair, rewar
+
+## Run (fast judge) - 2 cell(s) claimed
+
+```
+              scope0   scope1   scope2
+inversion        .       8/10      .  
+coupling         .       8/10      .  
+delay            .        .        .  
+scarcity         .        .        .  
+agency           .        .        .  
+identity        8/10     7/10      .  
+
+coverage 4/18 cells (22%)   QD-score 31.0
+```
+
+### AErisaidActor  (7/10)  `identity|scope1`
+- **assumption:** Players will assume the half-buried leviathan shell is a static environmental landmark intended solely for visual observation and world-building, not for direct gameplay interaction or manipulation.
+- **violation:** The half-buried leviathan shell is now a harvestable resource node requiring players to equip a 'Resonance Chisel' tool to extract 'Leviathan Marrow', which functions as a mandatory crafting component for unlocking Tier-3 equipment.
+- **why it works:** The rule shifts an assumed static landmark into a harvestable resource node, introducing a specialized tool and crafting loop that rewards mastery of environmental interaction. This productive friction creates emergent depth by linking world-building elements to progression systems.
+
+### AErisaidActor  (8/10)  `coupling|scope1`
+- **assumption:** Players will assume the half-buried leviathan shell is a static environmental landmark intended solely for visual observation and world-building, not for direct gameplay interaction or manipulation.
+- **violation:** The leviathan shell is now a dynamic environmental trigger that responds to player audio devices; activating a 'Sonic Emitter' within 5 meters causes the shell to vibrate and physically shift its buried position by 10 feet, unearthing a hidden subterranean passage that alters the map layout.
+- **why it works:** This rule creates productive cognitive friction by linking audio devices to environmental physics, forcing players to build a new mental model where sound manipulates terrain. It rewards mastery through an 'aha' moment and emergent strategies for altering map layouts via sonic emitters.
