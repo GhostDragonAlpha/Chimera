@@ -1,14 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T02:37:25+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T02:58:23+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0077 | open | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
+| tb-0077 | claimed | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie | sub-06 |
 | tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0093 | open | 0.6 | Pain verdict: ChimeraMovementComponent.h/.cpp, WeightShiftAn | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* |  |
 | tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | core/game_code_generator.py; excl:generator |  |
