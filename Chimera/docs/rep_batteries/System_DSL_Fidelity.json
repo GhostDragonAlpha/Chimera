@@ -1874,26 +1874,6 @@
   "provenance": "dsl2:tdd_test_suite.chimera"
  },
  {
-  "id": "atom_b0fe1fcdb9cb",
-  "feature": "System_DSL_Fidelity",
-  "tier": 0,
-  "kind": "headless",
-  "probe": {
-   "type": "tree_contains",
-   "roots": [
-    "Source",
-    "tests/dsl_grammar",
-    "docs/beats"
-   ],
-   "globs": [
-    "*.*"
-   ],
-   "regex": "(System_DSL_Fidelity|System_DSL_Fidelity|SystemDslFidelity)"
-  },
-  "desc": "'System_DSL_Fidelity' surfaces in Source, the DSL spec, or a beat script \u2014 its identity exists somewhere in the game",
-  "provenance": "curriculum:identity"
- },
- {
   "id": "atom_b30d5c8820c3",
   "feature": "System_DSL_Fidelity",
   "tier": 0,

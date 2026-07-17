@@ -69612,6 +69612,41 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_cb67eb3b96e1"
+    },
+    {
+      "id": "phase_317e404a34909c65",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T18:53:20.140176",
+      "phase": "rep_promotion:subsystem/Subsystems",
+      "result": "tier 0 -> 1 (behaves) after 100 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Subsystems",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Subsystems' complete: tier 0 -> 1 (behaves) after 100 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_1674027ed3e9"
+    },
+    {
+      "id": "surprise_98ae4296ae97c3e3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:54:51.131478",
+      "context": "research waived: Fix 2 red rep atom(s): System_DSL_Fidelity",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Research not applicable for STALE probe fix - the failing atoms were DSL spec tokens 'Game_Feel' and 'hold_to_open' that don't have corresponding C++ components or files in the Source directory.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Research not applicable for STALE probe fix - the failing atoms were DSL spec to'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_1d96cc8b75dd"
     }
   ],
   "edges": [
