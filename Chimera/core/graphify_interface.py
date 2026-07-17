@@ -906,30 +906,38 @@ def _mutate_feature_complete(details: dict) -> str:
     if feature_name == "unknown_feature":
         return "rejected_unknown_feature: details must include 'feature' or 'feature_name'; nothing recorded"
 
-    # Integrity surfacing (non-breaking WARNING): "verified"/"accepted" is meant to
-    # reflect AUTOMATED observation evidence — collapse_proxy records an Observation
-    # with a derived_from simtest and then sets the FEATURE status to
-    # "observed"/"observed_provisional" (never "verified"/"accepted"). So a direct
-    # verified/accepted FeatureUpdate with NO backing attributed Observation is a
-    # suspicious hand-stamp; surface it. This never fires on the legitimate automated
-    # collapse (which uses "observed"). Mirrors the hard-reject already guarding the
-    # observation side (_mutate_observation, CHIMERA_AGENT_SIM). Records anyway for now.
+    # THE WHY-EDGE, WRITTEN (2026-07-16 — the human: "the why connects the node edges").
+    #
+    # What stood here scanned every node, string-matched on feature_name, printed
+    # "[INTEGRITY WARNING] ... Recorded anyway", and threw the answer away. That scan
+    # WAS a why-edge — "why is this verified? because that Observation" — rebuilt by
+    # hand on every write and never stored. So the next reader had to scan again, and
+    # `why.py` had to hard-code three chains, because the graph held association and
+    # membership and never once held BECAUSE.
+    #
+    # Now the answer is kept. Finding the Observation writes `claim --because--> obs`;
+    # finding none writes NOTHING, and the absence of the edge IS the warning — a
+    # structural fact any reader can see, instead of a line on stderr that scrolled
+    # past months ago. A node with no because-edge is an ASSERTION. That is now
+    # something the graph knows about itself.
+    _evidence = None
     if status in ("verified", "accepted"):
-        has_evidence = any(
-            n.get("type") == "Observation"
-            and n.get("feature_name") == feature_name
-            and n.get("derived_from")
-            for n in nodes
-        )
-        if not has_evidence:
+        for n in nodes:                 # newest first: the freshest evidence is the
+            if (n.get("type") == "Observation"          # one being cited (H-19)
+                    and n.get("feature_name") == feature_name
+                    and n.get("derived_from")):
+                if _evidence is None or n.get("timestamp", "") > _evidence.get("timestamp", ""):
+                    _evidence = n
+        if _evidence is None:
             _agent_sim = os.environ.get("CHIMERA_AGENT_SIM") == "1"
             print(
-                f"  [INTEGRITY WARNING] feature '{feature_name}' recorded as '{status}' with "
-                f"NO backing automated Observation (an Observation node with derived_from a "
-                f"simtest/playtest). 'verified' should come from collapse_proxy / "
+                f"  [NO WHY] feature '{feature_name}' recorded as '{status}' with NO "
+                f"backing automated Observation, so this node gets no because-edge: it "
+                f"is an ASSERTION. 'verified' should come from collapse_proxy / "
                 f"`graphify_record observe --derived-from <simtest_id>`. Recorded anyway"
                 + ("; under CHIMERA_AGENT_SIM=1 this is a candidate for hard-reject."
-                   if _agent_sim else "."),
+                   if _agent_sim else ".")
+                + "  (`python -m core.why --assertions` lists every one.)",
                 file=sys.stderr,
             )
 
@@ -952,6 +960,21 @@ def _mutate_feature_complete(details: dict) -> str:
         mutation_node["backfilled"] = True
 
     nodes.append(mutation_node)
+
+    # The why, kept. `proves` is MEASURED because an Observation with derived_from is
+    # attributed to a simtest — the engine ran and something read the world back. That
+    # is the ONLY class of reason that can terminate a why-chain in PHYSICS, and it is
+    # exactly the distinction the old scan collapsed by asking a yes/no question
+    # ("has_evidence?") about a thing whose whole meaning is WHAT KIND of evidence.
+    if _evidence is not None:
+        mutation_node["links"] = [_evidence["id"]]
+        edges.append(because_edge(
+            claim=mutation_node["id"],
+            evidence=_evidence["id"],
+            question=f"WHY is {feature_name} '{status}'?",
+            proves="MEASURED",
+        ))
+
     save_dna_graph({"nodes": nodes, "edges": edges})
 
     return mutation_node["id"]
@@ -1918,6 +1941,137 @@ def _mutate_heuristic(details: dict) -> str:
     nodes.append(node)
     save_dna_graph({"nodes": nodes, "edges": edges})
     return node["id"]
+
+
+# ---------------------------------------------------------------------------
+# THE WHY-EDGE
+# ---------------------------------------------------------------------------
+# THE HUMAN (2026-07-16): "the why connects the node edges."
+#
+# They are right, and the graph proves it by omission. Measured the day this was
+# written: 2,546 nodes, 1,448 edges, and NOT ONE relation means BECAUSE.
+#
+#     1068  surprised_by        association
+#      108  informs_feature     association
+#       71  applies_to_feature  association
+#       56  belongs_to_loop     membership
+#       49  part_of_school      membership
+#       27  generated_from      provenance (the closest thing, and it is about
+#                               code generation, not evidence)
+#
+# The graph records what a thing is NEAR and what it BELONGS TO. It has never
+# recorded what makes a claim TRUE. 2,200 of 2,546 nodes (86%) have no outgoing
+# edge at all: they are free-floating ASSERTIONS.
+#
+# The code already knew. _mutate_feature_complete asks "is there evidence for
+# this?" by LINEARLY SCANNING every node and STRING-MATCHING on feature_name —
+# then prints a warning and records anyway. That scan is a why-edge, reconstructed
+# by hand, on every write, and then discarded. Half a second of O(n) work to
+# rebuild a fact that a 4-tuple would have stored forever.
+#
+# So: an edge IS a why. `A --because--> B` is the answer to "why A?" and the
+# question is the edge's whole content. Asking why does not READ the graph, it
+# WRITES it. Ask once; the graph remembers.
+#
+# WHAT THIS EDGE DOES NOT DO: it renders no verdict. `because` records what was
+# OFFERED as the reason, never that the reason is good. `proves` says what the
+# reason can establish (see core/why.py _PROVES) — and that classification is
+# what makes a chain walkable to YES or to a dead end. A gate would have to
+# decide; this only has to remember. That is why it cannot lie: a claim that
+# cites a file-existence check is recorded exactly as a claim citing a
+# file-existence check, and the walk, not the writer, is what calls that hollow.
+# ---------------------------------------------------------------------------
+
+#: What a piece of evidence can ESTABLISH. Ordered weakest -> strongest.
+#: MEASURED and HUMAN need no observer to be checked; they are the only terminals.
+BECAUSE_PROVES = ("EXISTENCE", "RECORDED", "DISPATCH", "MEASURED", "HUMAN")
+
+
+def because_edge(claim: str, evidence: str, question: str, proves: str) -> dict:
+    """Build a because-edge. PURE — builds the dict, touches no store.
+
+    Split out from record_because so a mutation that is ALREADY mid-write (holding
+    its own nodes/edges lists) can append one and save ONCE. record_because would
+    load a second copy of the graph and save it back over the caller's — the
+    lock-guarded write in save_dna_graph makes that atomic, not correct.
+    """
+    if proves not in BECAUSE_PROVES:
+        raise ValueError(f"proves must be one of {BECAUSE_PROVES}, not {proves!r} — "
+                         f"an unclassified reason cannot be walked to YES or to a "
+                         f"dead end, and a why that cannot terminate is not a why.")
+    if not claim or not evidence:
+        raise ValueError("a because-edge needs both a claim and an evidence node id; "
+                         "an edge to nowhere is the assertion it was meant to catch.")
+    return {
+        "src": claim,
+        "dst": evidence,
+        "rel": "because",
+        "question": question,
+        "proves": proves,
+        "asked_at": datetime.utcnow().isoformat(),
+        "asked_by": RECORDED_BY,
+        # world_store's edge row keeps the full dict in `data`; src/dst/rel are the
+        # indexed columns. Mirrored here so both readers see the same edge.
+        "source": claim,
+        "target": evidence,
+        "type": "because",
+    }
+
+
+def record_because(claim: str, evidence: str, question: str, proves: str) -> dict:
+    """Record WHY a claim is held: an edge from the claim to what makes it true.
+
+    claim/evidence are node ids. `question` is the why that was asked (verbatim,
+    so the chain can be read back as prose). `proves` is one of BECAUSE_PROVES —
+    what the evidence ACTUALLY establishes, which is not what it is named.
+
+    Idempotent on (claim, evidence, question): asking the same why twice is one
+    edge, so a why-loop can be re-run without inflating the graph.
+    """
+    edge = because_edge(claim, evidence, question, proves)
+    graph = load_dna_graph()
+    nodes, edges = graph.get("nodes", []), graph.get("edges", [])
+
+    # BOTH ENDPOINTS MUST EXIST (2026-07-16). Found by my own sloppy test, which is
+    # the good kind of finding: it passed an evidence "id" that was in fact an ERROR
+    # STRING — record_observation had REFUSED the fake ("attribution requires
+    # 'quote'") and returned its complaint, which reads like an id to a caller that
+    # does not look. because_edge only checked the string was non-empty, so it wrote
+    # `claim --because--> "rejected_observation: attribution requires..."`.
+    #
+    # That is worse than no edge. An assertion with no why is honestly hollow and
+    # `why --assertions` finds it; an assertion pointing at a node that does not
+    # exist LOOKS ANSWERED and passes every count. It is the dangling-wire failure
+    # again — two correct components, no wire between them — and the thing this edge
+    # exists to make impossible must not be the first thing it does.
+    known = {n.get("id") for n in nodes}
+    for role, nid in (("claim", claim), ("evidence", evidence)):
+        if nid not in known:
+            raise ValueError(
+                f"because-edge {role} {nid!r} names no node in the graph. An edge to a "
+                f"nonexistent node is worse than no edge: a claim with no why is "
+                f"honestly hollow, one pointing at nothing LOOKS ANSWERED. (If a "
+                f"record_* helper returned this, check it — the typed helpers return "
+                f"their REFUSAL as a string, and a refusal is not an id.)")
+
+    for e in edges:
+        if (e.get("src") == claim and e.get("dst") == evidence
+                and e.get("rel") == "because" and e.get("question") == question):
+            return e                                    # already asked; already known
+    edges.append(edge)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return edge
+
+
+def because_of(claim: str, graph: dict = None) -> list:
+    """The because-edges OUT of a claim — the answers to 'why {claim}?'.
+
+    [] means nobody ever asked, which is exactly what an ASSERTION is. That is a
+    structural fact now, not a scan: no string-matching, no heuristic, no guess.
+    """
+    graph = graph if graph is not None else load_dna_graph()
+    return [e for e in graph.get("edges", [])
+            if e.get("rel") == "because" and e.get("src") == claim]
 
 
 # ---------------------------------------------------------------------------

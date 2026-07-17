@@ -140,12 +140,284 @@ def run(feature, claim=""):
     return 0
 
 
+# ---------------------------------------------------------------------------
+# THE WHY LOOP — and the invention: what YES is
+# ---------------------------------------------------------------------------
+# The human (2026-07-16): "if we just keep asking why, it's the universal
+# build-it-autonomously type question... and YES is not a thing yet, we have to invent
+# it."
+#
+# THEY ARE RIGHT THAT IT DOES NOT EXIST. Look at what this studio is made of: gates
+# REFUSE, the Paraclete ASKS, `why` says "this proves nothing", Elimination nodes record
+# PROVEN NEGATIVES, pinned() reports where you are TRAPPED, and the councils it was named
+# after produced ANATHEMAS — negative space. Every mechanism here can only say NO. You can
+# ask why forever and never arrive.
+#
+# SO WHAT STOPS THE LOOP? A why-chain terminates when the answer NEEDS NO OBSERVER.
+#
+#   "attunement has skill"  -> skill_gap 83.7  -> a listener beats a flailer, worst of N
+#                           -> E = mean(field^2), sin(x)+sin(x)=2sin(x)
+#                           -> arithmetic. NOTHING LEFT TO ASK.          => YES
+#
+#   "ADotCharacter is built" -> 2 atoms green  -> they probe file-exists
+#                            -> WHY does a file existing prove behaviour?
+#                            -> no answer exists.                        => DEAD END
+#
+# THERE ARE EXACTLY TWO LEGAL TERMINALS, and they are the trinity:
+#   PHYSICS  settles a FACT  — no observer needed. `punishes_naive = 4.00x` is true in an
+#            empty universe.
+#   THE HUMAN settles TASTE  — the reference. "Is it fun?" bottoms out in you and nowhere
+#            else (core/trainables/attunement.py: HUMAN_TEST_BAR).
+#
+# AN LLM IS NEVER A TERMINAL. An LLM's answer is ALWAYS ANOTHER CLAIM — recurse on it.
+# That is the whole reason council.review returns questions instead of ENDORSE, and the
+# reason the deleted AAA grader was fraud: it terminated the chain at a model's adjective.
+#
+# YES = the chain reached a terminal.   NO = it dead-ended.   Everything else = keep asking.
+_TERMINAL_PROBES = {"feel_metric", "envelope_axis"}      # measured from the running game
+
+
+#: What each `proves` class on a because-edge can settle. Mirrors _PROVES above — the
+#: edge stores the CLASS, so a walk never has to re-derive it from the probe type.
+_EDGE_TERMINAL = {"MEASURED": "PHYSICS", "HUMAN": "THE HUMAN"}
+
+
+def recorded_chain(feature, graph=None):
+    """Walk the REAL because-edges out of this feature's claims. A TRAVERSAL.
+
+    THE HUMAN (2026-07-16): "the why connects the node edges." This is that, and
+    everything below it in this file is the bootstrap that exists because these
+    edges mostly do not yet.
+
+    The difference is not style. chain() RE-DERIVES a why from the file tree on every
+    call, by rules I wrote — so its ceiling is my imagination, it cannot see a why
+    nobody hard-coded, and it forgets. An edge is the answer KEPT: asked once, true
+    for whoever reads next, and walkable by a machine that knows nothing about rep
+    atoms or beats. The studio has been paying the re-derivation cost forever —
+    _mutate_feature_complete scanned 2,546 nodes to rebuild one of these and then
+    printed a warning and dropped it.
+    """
+    from core.graphify_interface import load_dna_graph, because_of
+    graph = graph if graph is not None else load_dna_graph()
+    nodes = graph.get("nodes", [])
+    by_id = {n.get("id"): n for n in nodes}
+
+    claims = [n for n in nodes
+              if n.get("type") == "FeatureUpdate" and n.get("feature_name") == feature]
+    out = []
+    for c in claims:
+        for e in because_of(c["id"], graph):
+            dst = by_id.get(e["dst"], {})
+            proves = e.get("proves", "?")
+            out.append({
+                "chain": "recorded why", "step": e.get("question", "why?"),
+                "why": f"{dst.get('type', 'node')} {e['dst'][:16]} ({proves})",
+                "terminal": _EDGE_TERMINAL.get(proves),
+                "stop": ("the answer was RECORDED, not re-derived — this is the graph's "
+                         "own why" if proves in _EDGE_TERMINAL else
+                         f"the recorded reason only proves {proves} — keep asking"),
+            })
+    return out
+
+
+def chain(feature):
+    """Walk every evidence chain for `feature` and report WHERE EACH STOPS.
+
+    Deterministic. No LLM — an LLM here would be a non-terminal pretending to be one.
+
+    Reads RECORDED because-edges first (the graph's own answer), then falls back to
+    re-deriving from the file tree. The fallback is a BOOTSTRAP: 81 of 82
+    verified/accepted claims had no because-edge the day this was written, so with
+    only the traversal there would be nothing to walk. As the edges accumulate the
+    derivation matters less, and the day it matters not at all is the day the graph
+    can answer "why?" about itself without consulting me.
+    """
+    from core.graphify_interface import load_dna_graph
+    graph = load_dna_graph()
+    links = list(recorded_chain(feature, graph))
+    nodes = graph.get("nodes", [])
+
+    # chain 1: rep atoms -> probe types
+    a = audit(feature)
+    if a:
+        term = [r for r in a["atoms"] if r["type"] in _TERMINAL_PROBES]
+        links.append({
+            "chain": "rep atoms", "step": f"{a['total']} atom(s) green",
+            "why": ", ".join(sorted({r["type"] for r in a["atoms"]})),
+            "terminal": "PHYSICS" if term else None,
+            "stop": (f"{len(term)} probe(s) measured the running game" if term else
+                     "every probe reads the file tree — it measures YOUR HAND, not the world"),
+        })
+
+    # chain 2: a SimPlaytest that REACHED its beats -> the engine observed it
+    from core.witness_gate import _about, _topic_tokens
+    toks = _topic_tokens(feature)
+    sims = [n for n in nodes if n.get("type") == "SimPlaytest" and _about(n, toks)]
+    reached = [s for s in sims
+               if any(o.get("outcome") == "reached" and feature in (o.get("features") or [])
+                      for o in (s.get("outcomes") or []))]
+    if sims:
+        links.append({
+            "chain": "witness run", "step": f"{len(sims)} SimPlaytest(s)",
+            "why": f"{len(reached)} reached a beat naming {feature}",
+            "terminal": "PHYSICS" if reached else None,
+            "stop": ("the engine ran it and the beat was reached — the world answered"
+                     if reached else "no beat naming this feature was ever reached"),
+        })
+
+    # chain 3: a HUMAN playtest -> the taste terminal
+    plays = [n for n in nodes if n.get("type") == "PlaytestObservation" and _about(n, toks)]
+    if plays:
+        links.append({"chain": "human playtest", "step": f"{len(plays)} observation(s)",
+                      "why": "a person played it", "terminal": "THE HUMAN",
+                      "stop": "taste bottoms out here and nowhere else"})
+    return links
+
+
+def _deep_questions(feature, claim, status="verified"):
+    """THE BRAIN ASKS THE WHYS I DID NOT HARD-CODE.
+
+    chain() walks three chains — rep atoms, witness runs, human playtests — and those are
+    the only questions I thought of. MY IMAGINATION IS THE CEILING. The deep brain's whole
+    value at the torque fork was asking "what about armature?", a question nobody had
+    hard-coded, and physics then answered it in four minutes and refuted my own commit.
+
+    So the brain belongs IN the loop, and in exactly one seat: it ASKS. Its answers are
+    never terminals — an LLM's answer is always another claim, and terminating a chain at
+    a model's opinion is precisely what the deleted AAA grader did. council.review()
+    already returns questions and lets the GRAPH answer them; this is that, pointed at the
+    why-loop instead of at postflight.
+    """
+    try:
+        from core import council
+        r = council.review(feature, status, result=claim or f"{feature} is done")
+        if not r.get("up"):
+            return None, "deep brain down — the loop can only ask what I hard-coded"
+        return r, None
+    except Exception as e:
+        return None, f"deep brain unavailable ({type(e).__name__})"
+
+
+def loop(feature, claim="", deep=False):
+    print("=" * 76)
+    print(f"WHY LOOP  —  {feature}" + (f'   claim: "{claim}"' if claim else ""))
+    print("  Keep asking why. YES = the chain reached a terminal (PHYSICS or THE HUMAN).")
+    print("  An LLM is never a terminal — its answer is always another claim.")
+    if deep:
+        print("  --deep: the BRAIN asks the whys I did not hard-code; the GRAPH answers them.")
+    print("=" * 76)
+    links = chain(feature)
+    if not links:
+        print(f"\n  NO EVIDENCE OF ANY KIND for '{feature}'. The loop has nothing to walk.")
+        print("  => NOT YES (there is not even a chain to dead-end).")
+        print("=" * 76)
+        return 0
+    hit = []
+    for L in links:
+        mark = f"TERMINAL: {L['terminal']}" if L["terminal"] else "DEAD END"
+        print(f"\n  [{L['chain']}]  {L['step']}")
+        print(f"     WHY does that prove it? -> {L['why']}")
+        print(f"     WHY does THAT settle anything? -> {L['stop']}")
+        print(f"     => {mark}")
+        if L["terminal"]:
+            hit.append(L)
+    # THE BRAIN'S TURN: the whys I did not hard-code.
+    if deep:
+        print("\n" + "-" * 76)
+        print("  [the brain] asking what ELSE would have to be true (slow — ds4 ~1.6 t/s)...")
+        r, err = _deep_questions(feature, claim)
+        if err:
+            print(f"     {err}")
+        else:
+            for a in (r.get("questions") or []):
+                mark = {True: "yes ", False: "NO  ", None: "open"}[a["answered"]]
+                print(f"     [{mark}] {str(a['q'])[:78]}")
+                if a["answered"] is False:
+                    print(f"             -> the GRAPH says: {a['evidence']} ({a['check']})")
+            ref, opn = r.get("refuted") or [], r.get("open") or []
+            if ref:
+                print(f"\n     {len(ref)} question(s) the GRAPH REFUTES — facts, not opinions.")
+                print("     A chain cannot terminate through a refuted link.")
+            if opn:
+                print(f"     {len(opn)} question(s) no check can answer — THE HUMAN'S "
+                      f"terminal, and they arrive earned.")
+
+    print("\n" + "-" * 76)
+    if hit:
+        print(f"  YES — {len(hit)} chain(s) reached a terminal: "
+              f"{', '.join(sorted({L['terminal'] for L in hit}))}.")
+        print("  The remaining question is not WHY, it is WHETHER IT MEASURES WHAT THE")
+        print("  FEATURE IS FOR — and that one is the objective's, or the human's.")
+    else:
+        print("  NOT YES. Every chain dead-ends before reaching a terminal.")
+        print("  Nothing here needed the world to be a certain way. Go get a measurement:")
+        print(f"     python -m core.beat_lint --beats docs/beats/<x>.beats.json   (lint FIRST)")
+        print(f"     python -m core.witness_runner --beats docs/beats/<x>.beats.json "
+              f"--session obs_{feature[:20]}")
+    print("=" * 76)
+    return 0
+
+
+def assertions():
+    """Every claim in the graph that nobody ever asked WHY about.
+
+    A claim with no outgoing because-edge is not "unverified" — the studio has six
+    gates for that. It is something narrower and worse: NOTHING EVER ASKED. The
+    status was written and read, and the question of what made it true was never
+    put, so there is no answer to have been wrong.
+
+    This is a STRUCTURAL fact — a set difference over edges. No scan, no
+    string-matching on feature_name, no heuristic about what evidence "counts". The
+    graph is finally able to answer a question about itself.
+    """
+    from core.graphify_interface import load_dna_graph
+    g = load_dna_graph()
+    claims = [n for n in g.get("nodes", [])
+              if n.get("type") == "FeatureUpdate"
+              and n.get("status") in ("verified", "accepted", "observed",
+                                      "observed_provisional")]
+    answered = {e.get("src") for e in g.get("edges", []) if e.get("rel") == "because"}
+    hollow = [n for n in claims if n.get("id") not in answered]
+
+    print("=" * 76)
+    print("ASSERTIONS — claims nobody ever asked WHY about")
+    print("  A because-edge is the answer to 'why is this true?'. No edge = never asked.")
+    print("=" * 76)
+    by_feature = {}
+    for n in hollow:
+        by_feature.setdefault(n.get("feature_name", "?"), []).append(n)
+    for f in sorted(by_feature):
+        ns = by_feature[f]
+        st = sorted({x.get("status", "?") for x in ns})
+        print(f"  {f:<44} {len(ns):>2} claim(s)  [{', '.join(st)}]")
+    print("=" * 76)
+    print(f"  {len(claims)} finalized claim(s); {len(claims) - len(hollow)} carry a why; "
+          f"{len(hollow)} are ASSERTIONS.")
+    if hollow:
+        print("  These are not 'unverified' — the gates cover that. NOTHING EVER ASKED.")
+        print("  Ask:  python -m core.why --feature <name> --loop")
+    print("=" * 76)
+    return 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="why", description=__doc__.split("\n")[1])
-    p.add_argument("--feature", required=True)
+    p.add_argument("--feature", help="the feature to ask about")
     p.add_argument("--claim", default="", help="what you are about to assert")
+    p.add_argument("--loop", action="store_true",
+                   help="walk every evidence chain and report where each STOPS (YES = "
+                        "it reached PHYSICS or THE HUMAN)")
+    p.add_argument("--deep", action="store_true",
+                   help="let the BRAIN ask the whys that are not hard-coded (slow: ds4 "
+                        "~1.6 t/s). It asks; the graph answers; it is never a terminal.")
+    p.add_argument("--assertions", action="store_true",
+                   help="every finalized claim with NO because-edge — i.e. nobody ever asked")
     a = p.parse_args(argv)
-    return run(a.feature, a.claim)
+    if a.assertions:
+        return assertions()
+    if not a.feature:
+        p.error("--feature is required (or use --assertions)")
+    return loop(a.feature, a.claim, deep=a.deep) if a.loop else run(a.feature, a.claim)
 
 
 if __name__ == "__main__":
