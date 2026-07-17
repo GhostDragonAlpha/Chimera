@@ -67844,6 +67844,46 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_b510e2b836f8"
+    },
+    {
+      "id": "discovery_a4680d96ba8a6d5e",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T06:06:39.508032",
+      "feature": "LEAD integration + closure: sub-01 tb-0079 UGestureWheel DSL",
+      "campus_sources": [],
+      "web_sources": [
+        "UGestureWheel DSL spec structure in deep_space_trader.chimera; sleepwalker dispatch vocabulary (14 actions, 20 expects); beat_lint validation; gesture_wheel.beats.json action fix for select_slot"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/LEAD integration + closure: sub-01 tb-0079 UGestureWheel DSL",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'LEAD integration + closure: sub-01 tb-0079 UGestureWheel DSL': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_e4f92af18e75"
+    },
+    {
+      "id": "phase_bae8fb92148edbc9",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T06:06:39.865000",
+      "phase": "LEAD integration + closure: sub-01 tb-0079 UGestureWheel DSL spec and beat script",
+      "result": "UGestureWheel DSL spec added to deep_space_trader.chimera with gesture_wheel_ui specification; beat script docs/beats/gesture_wheel.beats.json created and fixed (removed invalid select_slot action); curriculum enrolled UGestureWheel (7 bands, 69 checkpoints); rep_engine tend: 51 batteries, 809 atoms, 786 reps this pass (6 failing). Git commit SHA: e3b62a9.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/LEAD integration + closure: sub-01 tb-0079 UGestureWheel DSL spec and beat script",
+      "error_category": "none",
+      "fix_description": "Phase 'LEAD integration + closure: sub-01 tb-0079 UGestureWheel DSL spec and beat script' complete: UGestureWheel DSL spec added to deep_space_trader.chimera with gesture_wheel_ui specification; beat script docs/beats/gesture_wheel.beats.json created and fixed (removed invalid select_slot action); c",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_e4f92af18e75"
     }
   ],
   "edges": [
