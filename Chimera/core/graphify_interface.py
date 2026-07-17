@@ -1,5 +1,14 @@
 import json
 import hashlib
+import glob                     # _mutate_observation's archive check. The FIFTH missing
+                                # stdlib import I have written today (critic:os days,
+                                # council:re shipped, regression:os, why:re). This one was
+                                # the most dangerous: it sits on the MISS path of an
+                                # evidence gate, so it would have raised ONLY when someone
+                                # cited a fabricated id — the gate crashing at exactly the
+                                # moment it matters. why.py's `re` failed at module level
+                                # and could not ship; this one waits. That asymmetry is
+                                # the argument for module-level constants over lazy locals.
 import os
 import re
 import sys
@@ -1806,6 +1815,45 @@ def _mutate_observation(details: dict) -> str:
     nodes = dna_graph.get("nodes", [])
     edges = dna_graph.get("edges", [])
 
+    # THE EVIDENCE MUST RESOLVE (2026-07-16). Everything above checks that
+    # derived_from is a NON-EMPTY STRING. Nothing checked that it names anything.
+    # Measured on the live graph: of 81 observations citing a derived_from, 67
+    # resolve and 14 DO NOT — and those 14 are verdict=accepted over System_Economy,
+    # System_SaveLoad, System_Factions, System_Missions, Player_Character_Animation,
+    # Demo_RegolithYard_L1 and Verb_PickUp, citing `session_continuous_workflow_202607…`
+    # and `pie_dropactor_20260708`: zero matches anywhere, and they do not even fit the
+    # minting scheme (every id here is sha256()[:16]). They were TYPED.
+    #
+    # This gate would have refused exactly those 14 and NONE of the 67. That is the
+    # whole blast radius: it rejects only fabrication.
+    #
+    # WHY IT LIVES AT THE WRITE. coin_verifier.py:124, collapse_proxy and this module's
+    # own scan each tested `and n.get("derived_from")` — truthiness, four times over,
+    # each slightly different. Fixing four readers leaves the fifth. Refusing the write
+    # means no reader ever has to defend itself, because the bad node cannot exist.
+    #
+    # The archive is checked before refusing: archive-never-delete means an id the
+    # compactor moved is STALE, NOT FALSE, and refusing it would be a lie about a lie.
+    # Only on the miss path — the common case costs nothing.
+    if derived_from and derived_from not in {n.get("id") for n in nodes}:
+        _arch = set()
+        for _f in glob.glob(str(DNA_GRAPH_PATH.parent / "**" / "*archive*.json"),
+                            recursive=True):
+            try:
+                _d = json.loads(Path(_f).read_text(encoding="utf-8", errors="ignore"))
+            except Exception:
+                continue
+            for _n in (_d.get("nodes", []) if isinstance(_d, dict) else _d):
+                if isinstance(_n, dict) and _n.get("id"):
+                    _arch.add(_n["id"])
+        if derived_from not in _arch:
+            return (f"rejected_observation: derived_from={derived_from!r} names no node in "
+                    f"the graph or any archive. Evidence that cannot be resolved is not "
+                    f"evidence — a non-empty string is not a citation. (Every real id is "
+                    f"<type>_<sha256[:16]>, minted by a record_* helper. If a helper "
+                    f"returned this, note that they return their REFUSAL as a string, and "
+                    f"a refusal is not an id.) Nothing recorded.")
+
     node = {
         "id": f"observation_{hashlib.sha256(f'observation_{feature}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
         "type": "Observation",
@@ -1826,6 +1874,21 @@ def _mutate_observation(details: dict) -> str:
         "links": []
     }
     nodes.append(node)
+
+    # Born wired. derived_from was ALWAYS an edge — "why is this observation held?
+    # because that simtest" — written as a string in a field, where nothing could
+    # traverse it. Now it is both: the field for every existing reader, the edge for
+    # the walk. proves is the CITED NODE'S class, not this node's: a SimPlaytest is
+    # the engine answering (MEASURED, a terminal), a PlaytestObservation is a person
+    # (HUMAN). Anything else keeps the chain going rather than ending it.
+    _cited = next((n for n in nodes if n.get("id") == derived_from), None)
+    if _cited is not None:
+        _proves = {"SimPlaytest": "MEASURED", "PlaytestObservation": "HUMAN"}.get(
+            _cited.get("type"), "RECORDED")
+        node["links"] = [derived_from]
+        edges.append(because_edge(node["id"], derived_from,
+                                  "WHY is this observation held?", _proves))
+
     save_dna_graph({"nodes": nodes, "edges": edges})
     return node["id"]
 
