@@ -46,6 +46,13 @@ ROOT = Path(__file__).resolve().parent.parent
 WS = ROOT.parent
 DOCS = [WS / "CLAUDE.md", WS / "CYCLE_PROMPT.md", WS / "SUCCESSOR_RUNBOOK.md",
         WS / "AGENTS.md", WS / "README.md",
+        # MASTER_ONBOARDING was NOT in this list until 2026-07-16 — the single most
+        # important doc in the repo, the prompt handed to every LEAD and subagent, and
+        # NOTHING had ever checked that the commands and flags it orders an agent to run
+        # actually exist. It is current only because the human re-tests it by hand every
+        # revision; the machine had never looked at it once. The doc most likely to be
+        # OBEYED was the doc least likely to be AUDITED.
+        ROOT / "docs" / "MASTER_ONBOARDING.md",
         ROOT / "docs" / "GENERATION_PROTOCOL.md", ROOT / "docs" / "SLEEPWALKER_DESIGN.md",
         ROOT / "docs" / "DEMO_ARCHITECTURE.md", ROOT / "docs" / "MCP_PATHWAYS.md",
         WS / ".roo" / "rules" / "01-chimera.md", WS / ".roo" / "rules" / "02-traps.md",

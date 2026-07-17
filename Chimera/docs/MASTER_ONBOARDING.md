@@ -101,33 +101,37 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
    · auto-fixer attempted · zero playtest failures · git clean · no Malcolm breach ·
    4 visual layers.
 4. **POSTFLIGHT STACK** (on feature verified/observed; each softenable
-   `CHIMERA_*_GATE=warn`): Research (`--researched`/`--research-waiver`; **a "Build
-   toward the seed" task CANNOT waive it — its premise is that the thing does NOT
-   exist (rule 7), so nothing here can be inherited; that is why the task exists.
-   "based on existing patterns" is not a reason research was unnecessary, it is a
-   description of not doing research**) → Generator
-   Guard (no dirty generated C++) → Witness (sim/telemetry node; `--witnessed`) →
-   **WHY (`--why-waiver`): the system asks the one word, and it is a TRAVERSAL, not an
-   opinion.** A why IS an EDGE (`A --because--> B`), so the chain WALKS: `claim
-   --because(RECORDED)--> Observation --because(MEASURED)--> SimPlaytest` **=> PHYSICS
-   => YES**. **Exactly two legal terminals** — PHYSICS (a fact; true in an empty
-   universe) and THE HUMAN (taste; the reference, and it is EARNED). **An LLM is NEVER
-   a terminal**: its answer is another claim, so the walk recurses past it. `proves`
-   comes from the CITED NODE'S TYPE, so there is no judgment in it and no LM to
-   fabricate one — it reports WHERE THE CHAIN STOPPED. **Strictly stronger than
-   Witness, and not redundant**: witness asks "does an evidence NODE exist?"
-   (System_Economy PASSES); why asks "does the CHAIN reach a terminal?"
-   (System_Economy REFUSED — its Observation cites a simtest that does not exist).
-   Inspect with `python -m core.why --feature X --loop`; `--assertions` lists every
-   claim nobody ever asked about. **A file existing is not proof — you wrote the file
-   (H-14, H-21).** → Visual (LM screenshot analysis; `--visual-*`) → Training (enroll+reps / full rep
-   gate; `--training-waiver`) → Coin (LM judges claim↔evidence BOTH ways) → **Council
-   (THE PARACLETE — it ASKS, it does not judge)**: the DEEP brain names the evidence
-   that would have to EXIST for your claim, then the GRAPH answers, deterministically.
-   `refuted` = the graph says that evidence is ABSENT — a FACT, blockable
-   (`CHIMERA_COUNCIL_GATE=block`, `--council-waiver`), and you are blocked by the
-   store, never by a model's opinion. `open` = no check could answer → **those are
-   YOURS**, and they arrive EARNED, with every machine-answerable one stripped out.
+   `CHIMERA_*_GATE=warn`). **A refusal here is the system WORKING. Fix the cause, do
+   not reach for the waiver** — every waiver is recorded and read:
+   **Research** → **Generator Guard** → **Witness** → **WHY** → **Visual** →
+   **Training** → **Coin** → **Council**.
+   - **Research** (`--researched "<sources>"` / `--research-waiver`) — covers
+     TECHNICAL/INFRA decisions, not just game assets. **A "Build toward the seed" task
+     CANNOT waive it** (`unwaivable`): its premise is the thing does NOT exist (rule 7),
+     so nothing here can be inherited — that is *why the task exists*. *"Based on
+     existing patterns"* is not a reason research was unnecessary; it is a description
+     of not doing research.
+   - **Generator Guard** — no dirty generator-owned C++ (fix the template).
+   - **Witness** (`--witnessed`) — a sim/telemetry/observation node exists.
+   - **WHY** (`--why-waiver`) — **the chain must reach a TERMINAL**:
+     `claim → Observation → SimPlaytest` **=> PHYSICS => YES**. Only two are legal —
+     **PHYSICS** (a fact; needs no observer) and **THE HUMAN** (taste; EARNED).
+     **An LLM is NEVER a terminal** — its answer is another claim, so the walk recurses
+     past it. It is a traversal of typed edges, not an opinion: it reports WHERE THE
+     CHAIN STOPPED. Stronger than Witness, which only asks whether a node EXISTS — this
+     asks whether it leads anywhere. **See it: `python -m core.why --feature X --loop`**
+     (`--assertions` = every claim nobody ever asked about). **A file existing is not
+     proof — you wrote the file** (H-14, H-21).
+   - **Visual** (`--visual-*`) — the LM must have LOOKED at it.
+   - **Training** (`--training-waiver`) — enroll + reps / full rep gate.
+   - **Coin** — an LM judges claim↔evidence BOTH ways.
+   - **Council — THE PARACLETE: it ASKS, it does not judge.** The DEEP brain names the
+     evidence that would have to EXIST for your claim; the GRAPH answers,
+     deterministically. `refuted` = the store says that evidence is ABSENT — a FACT,
+     blockable (`CHIMERA_COUNCIL_GATE=block`, `--council-waiver`); you are blocked by
+     the store, never by a model's opinion. `open` = no check could answer → **those are
+     YOURS**, EARNED, with every machine-answerable one stripped out.
+
    **A gate that RAISES is BROKEN, not passed** — postflight exits 2 rather than
    printing "passing open" (that swallow hid a whole dead organ: `critic.py` raised
    NameError on every call for days).
