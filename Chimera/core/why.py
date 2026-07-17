@@ -43,6 +43,13 @@ import glob
 import io
 import json
 import os
+import re                       # _MINTED. The FOURTH missing-stdlib-import I have
+                                # written today (critic.py: os, days; council.py: re,
+                                # shipped; regression.py: os, caught). This one could
+                                # not ship: `_MINTED = re.compile(...)` runs at MODULE
+                                # level, so the import fails LOUD and IMMEDIATELY. The
+                                # other three hid in branches nobody took. That is an
+                                # argument for module-level constants over lazy locals.
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -180,6 +187,370 @@ _TERMINAL_PROBES = {"feel_metric", "envelope_axis"}      # measured from the run
 #: What each `proves` class on a because-edge can settle. Mirrors _PROVES above — the
 #: edge stores the CLASS, so a walk never has to re-derive it from the probe type.
 _EDGE_TERMINAL = {"MEASURED": "PHYSICS", "HUMAN": "THE HUMAN"}
+
+# ---------------------------------------------------------------------------
+# PROMOTION — the whys the studio already wrote, in the wrong place
+# ---------------------------------------------------------------------------
+# Measured 2026-07-16: 335 node-to-node references are stored as FIELDS INSIDE
+# NODES — .derived_from (67), .evidence_ids (133), .links (133), .evidence (2) —
+# and zero as because-edges. The studio HAS been recording why. It wrote each one
+# as a string in a node, where nothing can traverse it.
+#
+# That costs two things. The reverse question is unanswerable: "this simtest was
+# bogus — WHAT DID IT CONVICT?" needs a scan of all 2,546 nodes, so when a typo'd
+# beat indicts a working feature (the exact scenario core/beat_lint.py exists for)
+# nothing can find the wreckage. And each reader re-implements the walk, which is
+# why coin_verifier, collapse_proxy, witness_gate and why.py each hand-roll a
+# `derived_from` traversal.
+#
+# AND THE FIELD CANNOT BE CHECKED. 50 of those references NAME NODES THAT DO NOT
+# EXIST — 14 of them `derived_from` on Observations with verdict=accepted, over
+# System_Economy, System_SaveLoad, System_Factions, System_Missions,
+# Player_Character_Animation, Demo_RegolithYard_L1, Verb_PickUp. Their targets are
+# `pie_dropactor_20260708` and `session_continuous_workflow_202607…`: zero exact
+# matches, zero fuzzy, zero sessions. Every real one is `simtest_<hex>` minted by a
+# record helper — these do not even match the naming scheme. They were TYPED.
+#
+# Nothing caught it because every consumer tests TRUTHINESS, not resolution
+# (coin_verifier.py:124: `and n.get("derived_from")`). `derived_from="x"` passes.
+# So does "because I said so". THAT is the difference between a field and an edge:
+# a graph knows its own node ids and can refuse an edge to nowhere; a string can
+# say anything, and a lie costs exactly as many keystrokes as the truth.
+#
+# So promote them. `proves` comes from the TARGET'S TYPE — what the cited thing IS
+# decides what it can settle, never the field's name and never the citer's opinion.
+# A dangling field gets NO EDGE, and that absence is the report: the claims that
+# cannot be promoted are exactly the claims resting on nothing.
+# ---------------------------------------------------------------------------
+
+#: Node type -> what CITING it can establish. Conservative on purpose: when a type
+#: could be argued either way it gets the weaker class, because the whole value of
+#: this classification is that it is not flattering.
+_CITED_PROVES = {
+    "SimPlaytest":         "MEASURED",   # the engine ran; beats reached or not
+    "PlaytestObservation": "HUMAN",      # a person played it — the taste terminal
+    "Elimination":         "MEASURED",   # a proven negative: a boundary that held
+    "pathway_attempt":     "MEASURED",   # an MCP call; the editor answered or did not
+    "Observation":         "RECORDED",   # a WRITTEN verdict. Its own derived_from
+                                         # continues the chain — that is the point of
+                                         # a graph: this link need not be the last.
+    "ProfessorGrade":      "RECORDED",   # an agent graded it. Recording is not measuring.
+    "SurpriseMoment":      "RECORDED",   # a written note
+    "VisualVerification":  "RECORDED",   # AN LM LOOKED AT A SCREENSHOT. The screenshot
+                                         # is a measurement; the LM's read of it is a
+                                         # CLAIM. "An LLM is never a terminal" is the
+                                         # doctrine of this file and it does not get an
+                                         # exception for being the gate we like. The
+                                         # chain continues past it or it does not end.
+}
+
+#: Fields that are edges in disguise -> the question each was silently answering.
+_WHY_FIELDS = {
+    "derived_from": "WHY is this observation held?",
+    "evidence_ids": "WHY is this heuristic held?",
+    "evidence":     "WHY was this decomposed?",
+    # .links is not here: measured identical to .evidence_ids on every Heuristic that
+    # has both (133/133). Promoting both would double every edge and inflate the very
+    # count this exists to make honest.
+}
+
+#: The hex tail of a minted id: `hashlib.sha256(...).hexdigest()[:16]`.
+#: NOT `[0-9a-f]{8,}` — my first cut was, and it is wrong because A DATE IS VALID HEX.
+#: `pie_dropactor_20260708` matched (20260708 is eight hex chars) and got filed as a
+#: minted id that was LOST, when it is a hand-typed string that never existed. The
+#: minimum is 12: every id in this graph is a sha256 slice, and no date reaches 12.
+_MINTED_TAIL = re.compile(r"^[0-9a-f]{12,}$")
+
+
+def _minted_prefixes(nodes):
+    """The id prefixes this graph ACTUALLY mints — derived, never hand-listed.
+
+    Same lesson as core/beat_lint.py's vocabulary: a hand-copied list is a second
+    source of truth that drifts. Here it also cannot be written down honestly — the
+    prefixes are whatever the record_* helpers happen to emit, and they have changed.
+    So read them off the real ids.
+    """
+    return {i.rsplit("_", 1)[0] for i in (str(n.get("id", "")) for n in nodes)
+            if "_" in i and _MINTED_TAIL.match(i.rsplit("_", 1)[-1])}
+
+
+def _is_minted(target, prefixes):
+    """A minted id = a prefix this graph mints + a sha256 tail. BOTH halves.
+
+    `simtest_audio_visual_sync_verify` is why both are needed: a REAL prefix with a
+    TYPED suffix. Checking the prefix alone calls it lost evidence; checking the tail
+    alone calls `pie_dropactor_20260708` minted. It is the same shape as every false
+    positive my instruments produced today — checking something adjacent to the truth
+    and calling it the truth.
+    """
+    if "_" not in target:
+        return False
+    head, tail = target.rsplit("_", 1)
+    return head in prefixes and bool(_MINTED_TAIL.match(tail))
+
+
+def _archived_ids():
+    """Every node id the archives hold. archive-never-delete means the ARCHIVE IS
+    PART OF THE TRUTH — a reference the compactor archived out of the live graph is
+    STALE, NOT FALSE, and reporting it as "does not exist" would be a lie about a lie.
+
+    I nearly shipped exactly that: the first cut of this report bucketed 12 archived
+    mutation ids together with hand-typed session names under one heading. That is the
+    same sloppy accusation I made against a subagent this morning — checking something
+    adjacent to the truth and calling it the truth.
+    """
+    ids = set()
+    for f in glob.glob(os.path.join(ROOT, "docs", "**", "*archive*.json"), recursive=True):
+        try:
+            d = json.loads(io.open(f, encoding="utf-8", errors="ignore").read())
+        except Exception:
+            continue
+        for n in (d.get("nodes", []) if isinstance(d, dict) else d):
+            if isinstance(n, dict) and n.get("id"):
+                ids.add(n["id"])
+    return ids
+
+
+def _classify_dangler(target, archived, prefixes):
+    """ARCHIVED (stale) | LOST (minted, gone) | NEVER MINTED (typed). Three stories,
+    and collapsing them would be a lie about a lie."""
+    if target in archived:
+        return "ARCHIVED"
+    return "LOST" if _is_minted(target, prefixes) else "NEVER MINTED"
+
+
+def backfill(apply=False):
+    """Wire each finalized CLAIM to the Observation that already carries its evidence.
+
+    THE FIFTH DANGLING WIRE, and the widest (measured 2026-07-16):
+
+        CLAIM  Sky_Earth_Model  status=verified   because_of -> NOTHING
+        OBS    Sky_Earth_Model  verdict=accepted  because_of -> MEASURED simtest_03a16…
+
+    The evidence is REAL and it REACHES PHYSICS. Nothing connects the claim to it.
+    The only thing relating those two nodes is a matching feature_name STRING — which
+    is why coin_verifier, collapse_proxy, witness_gate and _mutate_feature_complete
+    each hand-roll that match, slightly differently, and why 150 finalized claims read
+    as assertions while their evidence sits one string-compare away.
+
+    MARKED `derived: true`, AND THAT MATTERS. record_feature() never said "this rests
+    on that observation" — the caller never passed one. Inferring the link from a name
+    match is exactly the reasoning I have spent today criticising, so it must be
+    labelled as inference. The underlying evidence is identical either way; what is
+    weaker is the INTENT. A recorded edge means someone cited it. A derived edge means
+    I matched a string and guessed they meant to.
+
+    proves=RECORDED, never MEASURED: an Observation is a WRITTEN verdict. The claim
+    does not reach physics by citing it — the Observation's own edge does that, on the
+    next hop. The chain walks; this link is not allowed to pretend it is the end of it.
+    """
+    from core.graphify_interface import load_dna_graph, save_dna_graph, because_edge
+    g = load_dna_graph()
+    nodes, edges = g.get("nodes", []), g.get("edges", [])
+    have = {e.get("src") for e in edges if e.get("rel") == "because"}
+    by_id = {n.get("id"): n for n in nodes}
+
+    # An Observation is only usable as a why if its OWN why resolves. An Observation
+    # citing `session_continuous_workflow_202607…` (typed, never minted) is exactly the
+    # thing that must not be laundered into a claim's evidence by this backfill.
+    obs_by_feature = {}
+    for n in nodes:
+        if n.get("type") != "Observation":
+            continue
+        src = n.get("derived_from")
+        if not src or src not in by_id:
+            continue
+        obs_by_feature.setdefault(n.get("feature_name"), []).append(n)
+
+    new, unbacked = [], []
+    for n in nodes:
+        if n.get("type") != "FeatureUpdate":
+            continue
+        if n.get("status") not in ("verified", "accepted", "observed", "observed_provisional"):
+            continue
+        if n["id"] in have:
+            continue
+        cands = obs_by_feature.get(n.get("feature_name")) or []
+        if not cands:
+            unbacked.append(n)
+            continue
+        best = max(cands, key=lambda o: o.get("timestamp", ""))   # freshest (H-19)
+        e = because_edge(n["id"], best["id"],
+                         f"WHY is {n.get('feature_name')} '{n.get('status')}'?", "RECORDED")
+        e["derived"] = True
+        e["derived_how"] = "feature_name match — record_feature() never cited evidence"
+        new.append(e)
+
+    print("=" * 76)
+    print("BACKFILL — wire each CLAIM to the evidence that already exists beneath it")
+    print("=" * 76)
+    print(f"  {len(new):>4}  claim(s) can be wired to an Observation whose own why RESOLVES")
+    print(f"        (proves=RECORDED — the claim does not reach physics by citing a")
+    print(f"         written verdict; the Observation's next hop does. The chain walks.)")
+    print(f"  {len(unbacked):>4}  claim(s) have NO observation with a resolvable why — these stay")
+    print(f"        ASSERTIONS, and that is the honest answer, not a gap in this tool.")
+    for n in unbacked[:8]:
+        print(f"          {str(n.get('feature_name'))[:44]:<44} [{n.get('status')}]")
+    if len(unbacked) > 8:
+        print(f"          ... and {len(unbacked) - 8} more")
+    print()
+    print("  Every edge is marked derived=true: record_feature() never cited an")
+    print("  observation, so this link is INFERRED from a name match — the same")
+    print("  reasoning this file spends its length criticising. Labelled, not hidden.")
+    print()
+    if apply and new:
+        save_dna_graph({"nodes": nodes, "edges": edges + new})
+        print(f"  APPLIED: {len(new)} derived because-edge(s) written.")
+    elif new:
+        print("  DRY RUN. Re-run with --apply to write them.")
+    else:
+        print("  Nothing to backfill.")
+    print("=" * 76)
+    return 0
+
+
+def walk(node_id, graph=None, _seen=None, depth=0):
+    """Ask WHY, follow the edge, ASK AGAIN. Recurse until a terminal or a dead end.
+
+    THIS IS THE LOOP. The human's whole theory in one function: "if we just keep
+    asking why it's the universal build-it-autonomously type question." One word,
+    applied until the answer needs no observer.
+
+    It only works because `proves` sits on the EDGE. A claim citing an Observation
+    proves RECORDED — an agent wrote that verdict, so KEEP ASKING — and the
+    Observation's OWN edge is what reaches MEASURED. Two hops:
+
+        claim --because(RECORDED)--> observation --because(MEASURED)--> simtest
+                                                                        => PHYSICS
+
+    Neither hop alone is YES. The chain is. That is what a graph is FOR, and it is
+    what a field could never do: `derived_from` bottoms out in one string lookup, so
+    every consumer that read it saw one hop and stopped. The studio has been asking
+    why exactly once, for months, and calling the answer proof.
+
+    Cycle-safe (_seen): a why-chain that loops is a claim resting on itself, which is
+    the circularity this file was written to catch — "0 red atoms" resting on a probe
+    that checks the file the agent just wrote.
+
+    Returns [{depth, question, proves, node, type, terminal}] — the chain, in order.
+    """
+    from core.graphify_interface import load_dna_graph, because_of
+    graph = graph if graph is not None else load_dna_graph()
+    _seen = _seen if _seen is not None else set()
+    if node_id in _seen or depth > 12:      # 12: no honest chain is deeper; a runaway
+        return []                           # is a cycle the _seen guard already caught
+    _seen.add(node_id)
+
+    by_id = {n.get("id"): n for n in graph.get("nodes", [])}
+    out = []
+    for e in because_of(node_id, graph):
+        dst = by_id.get(e["dst"], {})
+        proves = e.get("proves", "?")
+        out.append({
+            "depth": depth,
+            "question": e.get("question", "why?"),
+            "proves": proves,
+            "node": e["dst"],
+            "type": dst.get("type", "?"),
+            "terminal": _EDGE_TERMINAL.get(proves),
+            "derived": bool(e.get("derived")),
+        })
+        if proves not in _EDGE_TERMINAL:    # not a terminal -> KEEP ASKING
+            out.extend(walk(e["dst"], graph, _seen, depth + 1))
+    return out
+
+
+def promote(apply=False):
+    """Turn why-shaped FIELDS into because-edges. Reports what will not promote.
+
+    The fields were always edges; they were written into nodes because no edge
+    existed to write. This does not invent a single why — every one already sits in
+    the graph as data. It moves them where they can be walked, counted, and
+    REVERSED, and it refuses the ones that point at nothing.
+
+    Idempotent. Read-only unless apply=True.
+    """
+    from core.graphify_interface import load_dna_graph, save_dna_graph, because_edge
+    g = load_dna_graph()
+    nodes, edges = g.get("nodes", []), g.get("edges", [])
+    by_id = {n.get("id"): n for n in nodes}
+    have = {(e.get("src"), e.get("dst")) for e in edges if e.get("rel") == "because"}
+    archived = _archived_ids()
+    prefixes = _minted_prefixes(nodes)
+
+    new, dangling, unclassified = [], {"ARCHIVED": [], "LOST": [], "NEVER MINTED": []}, []
+    for n in nodes:
+        for field, question in _WHY_FIELDS.items():
+            v = n.get(field)
+            for tgt in (v if isinstance(v, list) else [v]):
+                if not isinstance(tgt, str) or not tgt:
+                    continue
+                if tgt not in by_id:
+                    dangling[_classify_dangler(tgt, archived, prefixes)].append((n, field, tgt))
+                    continue
+                ttype = by_id[tgt].get("type", "?")
+                proves = _CITED_PROVES.get(ttype)
+                if proves is None:
+                    unclassified.append((n, field, tgt, ttype))
+                    continue
+                if (n["id"], tgt) in have:
+                    continue
+                have.add((n["id"], tgt))
+                new.append(because_edge(n["id"], tgt, question, proves))
+
+    print("=" * 76)
+    print("PROMOTE — the whys the studio already wrote, moved where they can be walked")
+    print("=" * 76)
+    kinds = {}
+    for e in new:
+        kinds[e["proves"]] = kinds.get(e["proves"], 0) + 1
+    for k in ("HUMAN", "MEASURED", "RECORDED", "DISPATCH", "EXISTENCE"):
+        if kinds.get(k):
+            term = _EDGE_TERMINAL.get(k)
+            print(f"  {kinds[k]:>4}  proves {k:<10} "
+                  + (f"-> terminates at {term}" if term else "-> NOT a terminal; keep asking"))
+    print(f"  {len(new):>4}  edge(s) to write")
+
+    _GLOSS = {
+        "ARCHIVED": ("the compactor moved these out of the live graph. archive-never-delete "
+                     "means\n     the evidence EXISTS — the reference is STALE, NOT FALSE. No "
+                     "edge yet: an edge\n     must point at a node this graph holds."),
+        "LOST": ("minted ids (<type>_<hex>) in neither the graph nor any archive. The "
+                 "evidence\n     is gone. The claim may once have rested on something; "
+                 "nothing can tell now."),
+        "NEVER MINTED": ("these do not match ANY minting scheme — every id in this graph is\n"
+                         "     sha256()[:16]. These were TYPED. This is the only class that "
+                         "is suspicious,\n     and it is the one an edge makes impossible: a "
+                         "graph knows its own ids."),
+    }
+    for kind in ("ARCHIVED", "LOST", "NEVER MINTED"):
+        items = dangling[kind]
+        if not items:
+            continue
+        print()
+        print(f"  {kind}: {len(items)} reference(s) — no edge.")
+        print(f"     {_GLOSS[kind]}")
+        for n, field, tgt in items[:8]:
+            who = str(n.get("feature_name", n.get("type", "?")))[:30]
+            print(f"       {who:<30} .{field:<13} -> {tgt[:32]:<32} "
+                  f"[{n.get('verdict', n.get('status', '?'))}]")
+        if len(items) > 8:
+            print(f"       ... and {len(items) - 8} more")
+    if unclassified:
+        seen = sorted({t for _, _, _, t in unclassified})
+        print(f"\n  {len(unclassified)} cite an unclassified node type ({', '.join(seen)}) — "
+              f"no edge until _CITED_PROVES says what citing one can settle.")
+
+    print()
+    if apply and new:
+        save_dna_graph({"nodes": nodes, "edges": edges + new})
+        print(f"  APPLIED: {len(new)} because-edge(s) written.")
+    elif new:
+        print("  DRY RUN. Re-run with --apply to write them.")
+    else:
+        print("  Nothing to promote — every resolvable why is already an edge.")
+    print("=" * 76)
+    return 0
 
 
 def recorded_chain(feature, graph=None):
@@ -412,7 +783,21 @@ def main(argv=None):
                         "~1.6 t/s). It asks; the graph answers; it is never a terminal.")
     p.add_argument("--assertions", action="store_true",
                    help="every finalized claim with NO because-edge — i.e. nobody ever asked")
+    p.add_argument("--promote", action="store_true",
+                   help="turn why-shaped FIELDS (.derived_from/.evidence_ids/.evidence) "
+                        "into because-edges; reports every reference naming a node that "
+                        "does not exist. Read-only without --apply.")
+    p.add_argument("--backfill", action="store_true",
+                   help="wire each finalized CLAIM to the Observation already carrying "
+                        "its evidence (marked derived=true — it is a name match, not a "
+                        "citation). Read-only without --apply.")
+    p.add_argument("--apply", action="store_true",
+                   help="with --promote/--backfill: actually write the edges")
     a = p.parse_args(argv)
+    if a.promote:
+        return promote(apply=a.apply)
+    if a.backfill:
+        return backfill(apply=a.apply)
     if a.assertions:
         return assertions()
     if not a.feature:
