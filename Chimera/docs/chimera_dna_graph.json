@@ -66291,6 +66291,46 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_f6fb868a3407"
+    },
+    {
+      "id": "discovery_f6e9c7a2f39c7866",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T01:35:50.389857",
+      "feature": "Witness & collapse: Tool_Scanner_Material",
+      "campus_sources": [],
+      "web_sources": [
+        "Tool_Scanner_Material witness test beat script creation, ATool_Scanner actor existence in generator create_level_*.py stubs, collapse_proxy automated rejection sweep for simtest_55695e524afd4f24"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Witness & collapse: Tool_Scanner_Material",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Witness & collapse: Tool_Scanner_Material': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_44b112eca044"
+    },
+    {
+      "id": "phase_a3ec3a5af8f2ae88",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T01:35:50.744040",
+      "phase": "Witness & collapse: Tool_Scanner_Material",
+      "result": "[collapse_proxy] automated rejection sweep (simtest_55695e524afd4f24): 1 rejected, 13 left queued (not indicted) - rejected Tool_Scanner_Material due to simtest failure: expect {\"actor_exists\": \"ATool_Scanner\"} -> present=False",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness & collapse: Tool_Scanner_Material",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness & collapse: Tool_Scanner_Material' complete: [collapse_proxy] automated rejection sweep (simtest_55695e524afd4f24): 1 rejected, 13 left queued (not indicted) - rejected Tool_Scanner_Material due to simtest failure: expect {\"actor_exists\": \"ATool",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_44b112eca044"
     }
   ],
   "edges": [
