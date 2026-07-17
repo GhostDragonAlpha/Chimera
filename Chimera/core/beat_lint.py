@@ -54,10 +54,36 @@ _STRUCTURAL = {"name", "beat", "features", "expects", "expect", "actions", "acti
 
 
 def vocabulary():
-    """(actions, expects) — READ OUT OF THE DISPATCH, never hand-listed."""
+    """(actions, expects) — READ OUT OF THE DISPATCH, never hand-listed.
+
+    NO `if|elif` ANCHOR (fixed 2026-07-16). The first cut was:
+
+        re.findall(r'(?:if|elif)\\s+"([a-z_0-9]+)"\\s+in\\s+e\\b', src)
+
+    which requires the keyword IMMEDIATELY before the quoted word — so it captured the
+    first alternative of an `or` chain and SILENTLY DROPPED THE REST:
+
+        if "component_property_below" in e or "component_property_above" in e:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^ seen          ^^^^^^^^^^^^^^^^^^^^^^^^^ INVISIBLE
+
+    The Sleepwalker dispatches BOTH (sleepwalker.py:527,544). This linter called
+    `component_property_above` unknown and told the agent to REFUSE TO DISPATCH
+    o2_survival_witness.beats.json — a correct, working beat. Rule 8b says lint before
+    dispatch, so my tool would have blocked real work with a confident error message.
+
+    That is this file's own doctrine biting it: "THE VOCABULARY IS DERIVED FROM THE
+    DISPATCH, NOT COPIED... a hand-copied list is a second source of truth that drifts."
+    I derived it, and the derivation UNDER-READ the source — a subtler second source of
+    truth than a copied list, and harder to see, because it looks like it is reading.
+
+    Matching every `"<word>" in e` is deliberately over-inclusive: a stray match only
+    ADDS a word the linter will tolerate, so the failure mode is under-reporting a bad
+    beat. The other direction CONDEMNS A GOOD ONE, and this file's whole thesis is that
+    that error costs a feature while the lint costs a minute.
+    """
     src = io.open(_SLEEPWALKER, encoding="utf-8").read()
-    acts = set(re.findall(r'(?:if|elif)\s+"([a-z_0-9]+)"\s+in\s+a\b', src))
-    exps = set(re.findall(r'(?:if|elif)\s+"([a-z_0-9]+)"\s+in\s+e\b', src))
+    acts = set(re.findall(r'"([a-z_0-9]+)"\s+in\s+a\b', src))
+    exps = set(re.findall(r'"([a-z_0-9]+)"\s+in\s+e\b', src))
     return acts, exps
 
 
