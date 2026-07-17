@@ -550,7 +550,7 @@ Wait, looking at the
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
 
 ## H-51: surprise: gate postflight refused shelter_habitat_materials
-- status: pending
+- status: promoted (auto 2026-07-17)
 - kind: surprise  |  count: 3  |  last_seen: 2026-07-17T03:08:57
 - proposed_organ: claude_md
 - evidence: surprise_51840d8c049bd7db, surprise_0fbe4b443a01a026, surprise_95e75709dbfd8690

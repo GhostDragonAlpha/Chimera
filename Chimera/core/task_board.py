@@ -313,6 +313,13 @@ def _new_task(state, title: str, recipe: str, files=None, editor: str = "none",
     }
     if not_scope:
         task["not_scope"] = not_scope    # inversion boundary, printed at claim
+    if files or exclusive or editor != "none":
+        # Footprint PROVENANCE (2026-07-16): the caller STATED these resources —
+        # rescope_nondone_tasks must not re-derive them from title keywords
+        # (caught live: tb-0104's declared core/training_gate.py was stomped to
+        # the generator fallback; tb-0095 was handed editor:open+pie because its
+        # pain text contains the word 'observation').
+        task["scoped"] = "declared"
     state["next_id"] += 1
     state["tasks"].append(task)
     return task
@@ -426,6 +433,41 @@ def release_task(state, agent_id: str, task_id: str, note: str = ""):
     if note:
         t["notes"].append({"ts": _now_iso(), "agent": agent_id, "text": note})
     t.update({"status": OPEN, "claimed_by": None, "claimed_at": 0, "heartbeat": 0})
+    _render_md(state)
+    return t
+
+
+@_locked
+def scope_task(state, agent_id: str, task_id: str, files=None, editor=None,
+               exclusive=None, note: str = ""):
+    """Narrow/correct a live task's footprint and DECLARE it (scoped=declared,
+    so rescope keeps hands off). The scope model's own comment always said
+    'agents should narrow the scope when they know better' — this is the verb.
+    Only provided fields change; omitted ones keep their current value."""
+    by_id = {t["id"]: t for t in state["tasks"]}
+    t = by_id.get(task_id)
+    if t is None:
+        raise KeyError(f"no such task {task_id}")
+    if t["status"] == DONE:
+        raise ValueError(f"{task_id} is done — its footprint is history, not live scope")
+    res = dict(t.get("resources") or {})
+    res.setdefault("files", [])
+    res.setdefault("editor", "none")
+    res.setdefault("exclusive", [])
+    if files is not None:
+        res["files"] = list(files)
+    if editor is not None:
+        if editor not in EDITOR_MODES:
+            raise ValueError(f"editor must be one of {EDITOR_MODES}, got {editor!r}")
+        res["editor"] = editor
+    if exclusive is not None:
+        res["exclusive"] = list(exclusive)
+    t["resources"] = res
+    t["scoped"] = "declared"
+    t["notes"].append({"ts": _now_iso(), "agent": agent_id,
+                       "text": (f"scoped (declared): files={res['files']} "
+                                f"editor={res['editor']} exclusive={res['exclusive']}"
+                                + (f" — {note}" if note else ""))})
     _render_md(state)
     return t
 
@@ -651,6 +693,8 @@ def rescope_nondone_tasks(state) -> int:
     for t in state["tasks"]:
         if t["status"] == DONE:
             continue
+        if t.get("scoped") == "declared":
+            continue    # provenance: a stated footprint outranks the keyword guess
         want = _scope_for(t.get("feature") or t.get("title") or "")
         if _resources(t) != {"files": want["files"], "editor": want["editor"],
                              "exclusive": want["exclusive"]}:
@@ -910,6 +954,18 @@ def main(argv=None):
     po.add_argument("--id", required=True)
     po.add_argument("--note", default="")
 
+    psc = sub.add_parser("scope", help="Narrow/correct a task's resource footprint and "
+                                       "DECLARE it — rescope keeps hands off declared "
+                                       "footprints")
+    psc.add_argument("--agent", required=True)
+    psc.add_argument("--id", required=True)
+    psc.add_argument("--files", default=None,
+                     help="comma-separated glob scopes ('' declares no files)")
+    psc.add_argument("--editor", default=None, choices=list(EDITOR_MODES))
+    psc.add_argument("--exclusive", default=None,
+                     help="comma-separated named locks ('' declares none)")
+    psc.add_argument("--note", default="")
+
     ph = sub.add_parser("heartbeat")
     ph.add_argument("--agent", required=True)
 
@@ -1104,6 +1160,15 @@ def main(argv=None):
             pass
     elif args.cmd == "reopen":
         _print_task(reopen_task(args.agent, args.id, note=args.note))
+    elif args.cmd == "scope":
+        _print_task(scope_task(
+            args.agent, args.id,
+            files=None if args.files is None
+                  else [f.strip() for f in args.files.split(",") if f.strip()],
+            editor=args.editor,
+            exclusive=None if args.exclusive is None
+                      else [e.strip() for e in args.exclusive.split(",") if e.strip()],
+            note=args.note))
     elif args.cmd == "heartbeat":
         print(f"refreshed {heartbeat(args.agent)} claim(s)")
     elif args.cmd == "list":

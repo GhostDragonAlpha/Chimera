@@ -66,3 +66,27 @@ coverage 1/24 cells (4%)   QD-score 7.0
 - **assumption:** *   Draft 3 (focusing on "high-fidelity actor representation of a Mass crowd entity"): Players will assume that every high-fidelity dot in the crowd is an individually targetable, unique character they can interact with
 - **violation:** Role:** FAST WORKER - concrete, quick, hands-on, think together with DEEP mind, disagree when needed, build on useful ideas, keep turns tight (a few sharp paragraphs)
 - **why it works:** *   Identity: a thing assumed to be one kind is actually another. -> Yes! "Identity": a thing assumed to be one kind (individual character) is actually another (mass crowd entity representation).
+
+## Run (fast judge) - 2 cell(s) claimed
+
+```
+              scope0   scope1   scope2
+inversion        .       8/10      .  
+coupling         .        .        .  
+delay            .        .        .  
+scarcity         .        .        .  
+agency           .        .        .  
+identity        8/10      .        .  
+
+coverage 2/18 cells (11%)   QD-score 16.0
+```
+
+### UWeatherSubsystem  (8/10)  `inversion|scope1`
+- **assumption:** Players will assume they are supposed to proactively maintain their suits and conceal or seal their footprints before the weekly storm hits to avoid equipment clogging and the erasure of their trail.
+- **violation:** Applying sealant or concealment materials to footprints prior to the storm causes the material to react with pre-storm moisture and harden into a conductive residue that channels the storm's static charge, creating a persistent glowing trail visible to all players rather than erasing the footprint.
+- **why it works:** VERDICT: KEEP
+
+### AErisaidActor  (8/10)  `identity|scope0`
+- **assumption:** Players will assume they are supposed to examine or observe the half-buried leviathan shell as environmental storytelling or a map boundary, rather than attempt to enter, destroy, or manipulate it.
+- **violation:** The half-buried leviathan shell functions as a locked instanced zone requiring a 'Cranial Resonance Beacon' to be inserted into its jaw hinge to open; approaching it without the beacon triggers an 'Inertial Repulsion' state that forcibly pushes the player 10 meters backward.
+- **why it works:** The rule transforms an assumed inert environmental element into a locked puzzle requiring a specific item and interaction point, creating an 'aha' moment when players discover the jaw hinge mechanism. The repulsion penalty clearly signals the need for the beacon without being random or unfair, rewar

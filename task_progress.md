@@ -1,3 +1,56 @@
+# Rehearsal decision 2026-07-17 04:53Z — next move: Tool_Scanner_Model
+
+Chosen by core.rehearsal (score 0.4, p_success 0.2, evidence: sim:0/1, failure_mentions:2). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Tool_Scanner_Model** — needs_refinement (status=needs_refinement). Recipe: fetch study guide: python -c "from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','Tool_Scanner_Model')[-1]; print(json.dumps(n.get('parameters',{}),default=str,indent=1)[:2000])"
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
+# Session 2026-07-16 (fable-1) — workflow unjam: 2 gate defects fixed live, 5 pain verdicts, tb-0079 unblocked
+
+Ask was "make my project workflow work well" — worked the conveyor and fixed what it jammed on.
+
+## Gate defects caught live and FIXED (both bit this session first-hand)
+1. **training_gate.classify_task had no Pain-verdict case** (tb-0104): verdict chores with legacy
+   Source/** footprints fell through GAME_MARKERS to game-class → closure demanded curriculum
+   enrollment of a chore title. Fixed: 'pain verdict' title / --pain-verdict recipe → research,
+   placed BEFORE the witness keyword check (verdict titles often NAME collapse/witness subjects).
+   Proof: 6-shape test ALL PASS; live tb-0093 closed n/a-research, no waiver.
+2. **task_board.rescope_nondone_tasks clobbered DECLARED footprints on every claim** (tb-0105):
+   tb-0104's declared core/training_gate.py was stomped to the generator fallback; tb-0095 (a docs
+   evidence chore) was handed editor:open+PIE because its pain text contains 'observation'.
+   Fixed with footprint PROVENANCE: _new_task stamps scoped=declared, rescope skips declared, and
+   a new `task_board scope` verb narrows+declares live footprints (the verb the scope-model comment
+   always promised). Repaired tb-0094/0095/0100/0101/0102/0079/0105; rescope now reports 0 changed.
+
+## Pain verdicts rendered (postflight phase_abff24b31ea8c308; ripener minted tb-0106..0108 from the confirms)
+- phase_2f2d78e48da8f355:P2 **refuted** — all named files tracked+committed (6904a09, 2c074d5); vanish-risk extinct.
+- phase_e0b68063201645ae:P1 **confirmed** — dispatch prompt IS frozen: .claude/workflows/chimera-task-cycling.js:15-24 hardcodes the queue snapshot.
+- phase_e0b68063201645ae:P2 **confirmed** — evidence asymmetry live: Player_Character_Animation FU has evidence dict; System_Economy/SaveLoad/Factions/Missions FUs have none.
+- phase_e0b68063201645ae:P3 **confirmed** — Demo_RegolithYard_L1 + Sleepwalker_System verified with param_keys=[]; Pipeline/AAA Quality observed on bare human_verdict.
+- phase_31a7a0b115ebf674:P1 **refuted** — MCP_PATHWAYS.md #21b records the niagara lying-instrument trap with the exact pathway ids; tunnel packets push it.
+
+## Board hygiene
+- **tb-0079 REOPENED** (p=1.0, UGestureWheel): its block reason was agent confusion ("wrong task
+  assigned" = a release, not a block). GestureWheel.h/.cpp EXIST (generator-owned since 74a3280);
+  remaining seed gap is the TAB-held radial menu driving social verbs in PIE (H-21).
+- **Rehearsal pointer refreshed**: old NEXT said Ground_Sand_Sound blocked-on-assets, but
+  Content/Audio/Footsteps/ has the full Fantozzi CC0 pack (surprise_e52257f916b22bca) and the
+  battery is 3582 reps READY. Fresh decide → Tool_Scanner_Model (matches loop board NEXT Loop 4).
+
+## For the next agent
+- Night ran 2026-07-17T04:24Z (rep tend 806 atoms/3 red: Sky_Loop_Realization, subsystem_Audio,
+  System_DSL_Fidelity; H-51 promoted; expectation-violator kept 2 candidates).
+- Malcolm WARN: generated_loc 18918/19100 (99% of wall) — next big generated feature may breach;
+  consolidate or propose a wall change via `malcolm tune`, don't silently blow through.
+- Declared phantom pain phase_abff24b31ea8c308:P1: _scope_for substring matching — 'bUIld' contains
+  'ui', so every "Build toward the seed:" title keyword-matches the UI family on underived lanes.
+- tb-0094 (movement-diff vs pawn-frozen regression) needs a PIE/sleepwalker session, not headless.
+
+---
+
 # LEAD AGENT Session 2026-07-15 — 3 rep atoms fixed (a70993f, 74a3280, 7219c07)
 
 ## Work Completed

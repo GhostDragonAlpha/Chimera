@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1225 entries** across 8 chapters.
+**1234 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -959,7 +959,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*336 entries; showing 40.*
+*341 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1211,7 +1211,7 @@
 
 ## VI. Rep Milestones (resolution through repetition)
 
-*61 entries; showing 40.*
+*65 entries; showing 40.*
 
 ### Ground_Sand_Sound promoted to tier 1
 <sub>`promo:Ground_Sand_Sound:1`</sub>
@@ -1358,60 +1358,60 @@
 
 > shaping promotion (streak rule): streak 8 @ 100%
 
+### Sprint_Input/binding promoted to tier 1
+<sub>`promo:Sprint_Input/binding:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### Sprint_Input/harness_parity promoted to tier 1
+<sub>`promo:Sprint_Input/harness_parity:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### Sprint_Input/state promoted to tier 1
+<sub>`promo:Sprint_Input/state:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
+### Sprint_Input/volume_norm promoted to tier 1
+<sub>`promo:Sprint_Input/volume_norm:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                          18 reps   94%  streak  7  battery   2 (0 pie)  tier 0/0
+> ADotCharacter                          22 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    110 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    112 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access    735 reps  100%  streak  8  battery  10 (3 pie)  READY
+> audio_visual_sync/telemetry_access    749 reps  100%  streak  8  battery  10 (3 pie)  READY
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                            108 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Demo_Level                            110 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Game_Feel — ledger standing
 <sub>`repstat:Game_Feel`</sub>
 
-> Game_Feel                             354 reps  100%  streak  8  battery   5 (0 pie)  READY
+> Game_Feel                             358 reps  100%  streak  8  battery   5 (0 pie)  READY
 
 ### Ground_Sand_Sound — ledger standing
 <sub>`repstat:Ground_Sand_Sound`</sub>
 
-> Ground_Sand_Sound                    3516 reps  100%  streak  8  battery  33 (0 pie)  READY
+> Ground_Sand_Sound                    3582 reps  100%  streak  8  battery  33 (0 pie)  READY
 
 ### Ground_Sand_Surface — ledger standing
 <sub>`repstat:Ground_Sand_Surface`</sub>
 
-> Ground_Sand_Surface                   108 reps  100%  streak  8  battery   1 (0 pie)  READY
-
-### Malcolm_Envelope — ledger standing
-<sub>`repstat:Malcolm_Envelope`</sub>
-
-> Malcolm_Envelope                      815 reps  100%  streak  8  battery  18 (8 pie)  READY
-
-### MCP_Pathways — ledger standing
-<sub>`repstat:MCP_Pathways`</sub>
-
-> MCP_Pathways                          108 reps  100%  streak  8  battery   1 (0 pie)  READY
-
-### Shelter_Habitat_Materials — ledger standing
-<sub>`repstat:Shelter_Habitat_Materials`</sub>
-
-> Shelter_Habitat_Materials               8 reps  100%  streak  4  battery   2 (0 pie)  tier 0/0
-
-### Sky_Atmosphere_Scattering — ledger standing
-<sub>`repstat:Sky_Atmosphere_Scattering`</sub>
-
-> Sky_Atmosphere_Scattering              34 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> Ground_Sand_Surface                   110 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1476,6 +1476,7 @@
 - **Player_Character_Suit_Visor** — 1 entry: `professor_grade_1bf1d076b6c54468`
 - **Regolith_Dust_Accumulation_Visual_Feedback** — 1 entry: `observation_44947b0e1ef55883`
 - **Shelter_Habitat_Geometry** — 1 entry: `observation_1a64d91760b71c72`
+- **Shelter_Habitat_Lighting** — 1 entry: `repstat:Shelter_Habitat_Lighting`
 - **Shelter_Habitat_Materials** — 1 entry: `repstat:Shelter_Habitat_Materials`
 - **Sky_Atmosphere_Scattering** — 3 entries: `observation_6df7bf32c69dc5ff`, `observation_d9772e6bb1395ac4`, `repstat:Sky_Atmosphere_Scattering`
 - **Sky_Earth_Material** — 1 entry: `observation_d98165bc5d378bc0`
@@ -1489,12 +1490,12 @@
 - **Sleepwalker_System** — 2 entries: `professor_grade_c672ff663bf3651b`, `observation_79bd753c166a2901`
 - **Social_Trade** — 1 entry: `repstat:Social_Trade`
 - **Sprint_Input** — 1 entry: `dc_b1af6b6e2f33`
-- **Sprint_Input/binding** — 1 entry: `repstat:Sprint_Input/binding`
+- **Sprint_Input/binding** — 2 entries: `promo:Sprint_Input/binding:1`, `repstat:Sprint_Input/binding`
 - **Sprint_Input/capture_peak** — 2 entries: `elim_1b283361406a25a0`, `repstat:Sprint_Input/capture_peak`
-- **Sprint_Input/harness_parity** — 2 entries: `elim_e1ceb1b092b179af`, `repstat:Sprint_Input/harness_parity`
+- **Sprint_Input/harness_parity** — 3 entries: `elim_e1ceb1b092b179af`, `promo:Sprint_Input/harness_parity:1`, `repstat:Sprint_Input/harness_parity`
 - **Sprint_Input/readback** — 1 entry: `repstat:Sprint_Input/readback`
-- **Sprint_Input/state** — 1 entry: `repstat:Sprint_Input/state`
-- **Sprint_Input/volume_norm** — 1 entry: `repstat:Sprint_Input/volume_norm`
+- **Sprint_Input/state** — 2 entries: `promo:Sprint_Input/state:1`, `repstat:Sprint_Input/state`
+- **Sprint_Input/volume_norm** — 2 entries: `promo:Sprint_Input/volume_norm:1`, `repstat:Sprint_Input/volume_norm`
 - **System_DSL_Fidelity** — 4 entries: `elim_5db874e721a6c962`, `elim_fc1e3b5e9ce65fbe`, `observation_178caf29b500bc22`, `promo:System_DSL_Fidelity:1`
 - **System_Economy** — 8 entries: `professor_grade_7886af92f495ccd1`, `professor_grade_987966987f9c8be5`, `professor_grade_cbdfff41c119fe65`, `professor_grade_364a07e3116f20a6`, `professor_grade_bf25d5d3a1fc673f`, `professor_grade_c5197b91a28559eb` ...
 - **System_Factions** — 6 entries: `professor_grade_eed210f4ab52757d`, `professor_grade_490fe77b72f70388`, `professor_grade_b2bb156bf98b0f0a`, `professor_grade_2cef42bbe0482227`, `professor_grade_311a8a7ca7b93bff`, `observation_dd211c641ad2d9ae`
@@ -1537,7 +1538,7 @@
 - **subsystem/Factions** — 1 entry: `repstat:subsystem/Factions`
 - **subsystem/Flight** — 2 entries: `promo:subsystem/Flight:1`, `repstat:subsystem/Flight`
 - **subsystem/GameMode** — 2 entries: `promo:subsystem/GameMode:1`, `repstat:subsystem/GameMode`
-- **subsystem/Inventory** — 2 entries: `promo:subsystem/Inventory:1`, `repstat:subsystem/Inventory`
+- **subsystem/Inventory** — 1 entry: `promo:subsystem/Inventory:1`
 - **subsystem/Materials** — 1 entry: `promo:subsystem/Materials:1`
 - **subsystem/PCG** — 1 entry: `promo:subsystem/PCG:1`
 - **subsystem/Shelter** — 1 entry: `promo:subsystem/Shelter:1`

@@ -132,6 +132,12 @@ def classify_task(task) -> str:
     title = str((task or {}).get("title") or "").lower()
     if title.startswith("research:") or re.match(r"^\s*research\b", title):
         return "research"
+    # A verdict task's deliverable is a DISPOSITION (knowledge -> research-trained).
+    # Must precede the witness check (verdict titles often NAME collapse/witness
+    # subjects) and the file markers (legacy ripener tasks footprint the SUBJECT,
+    # e.g. Source/** — caught live 2026-07-16: tb-0093 refused as untrained "game").
+    if title.startswith("pain verdict") or "--pain-verdict" in str((task or {}).get("recipe") or ""):
+        return "research"
     if "witness" in title or "collapse" in title or title.startswith("observe"):
         return "witness"
     files = " ".join((task or {}).get("resources", {}).get("files", []) or []).lower()

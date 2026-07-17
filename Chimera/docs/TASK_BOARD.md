@@ -1,17 +1,18 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T03:51:30+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T04:53:46+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0093 | open | 0.6 | Pain verdict: ChimeraMovementComponent.h/.cpp, WeightShiftAn | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* |  |
-| tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | core/game_code_generator.py; excl:generator |  |
-| tb-0095 | open | 0.6 | Pain verdict: The observation_queue_processing dispatch prom | editor:open; excl:pie |  |
-| tb-0079 | blocked | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/** | Wrong task assigned; need to claim tb-0057 per instructions |
+| tb-0079 | open | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/**, core/game_code_generator.py; excl:generator | Wrong task assigned; need to claim tb-0057 per instructions |
+| tb-0106 | open | 0.75 | Fix confirmed pain: The observation_queue_processing dispatc | Source/Chimera/** |  |
+| tb-0107 | open | 0.75 | Fix confirmed pain: Player_Character_Animation carries a rea | Source/Chimera/** |  |
+| tb-0108 | open | 0.75 | Fix confirmed pain: The 4 pipeline/meta queue entries (Demo_ | Source/Chimera/** |  |
+| tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
@@ -52,9 +53,12 @@ so claimed tasks are safe to run in parallel.
 | tb-0077 | done | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie | simtest_f2856885f26a021f: 1/1 beats reached in 'shelter_habi |
 | tb-0078 | done | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie | witness_runner completed successfully with simtest_50995d727 |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
+| tb-0104 | done | 0.8 | training_gate: classify Pain-verdict tasks as research (misr | core/game_code_generator.py; excl:generator | classify_task patched (core/training_gate.py): pain-verdict  |
+| tb-0105 | done | 0.8 | task_board: rescope clobbers explicitly-declared footprints  | core/task_board.py | core/task_board.py: (1) _new_task stamps scoped=declared whe |
 | tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
 | tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
 | tb-0098 | done | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** | auto-closed: pain phase_c67559a04eceaec4:P2 already disposit |
+| tb-0103 | done | 0.75 | Fix confirmed pain: WeightShiftAnimationTests.cpp compiles c | Source/Chimera/** | auto-closed: pain phase_2f2d78e48da8f355:P1 already disposit |
 | tb-0019 | done | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** | REFUTED phase_da55128aec6d109a:P1. Empirical vs live 160347- |
 | tb-0020 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** | REFUTED phase_62a9bf8fa8e97b42:P1 - DUPLICATE of phase_da551 |
 | tb-0021 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 distiller token-cove | docs/research/** | STALE/ALREADY-DISPOSITIONED: phase_a3193c8fa52533c6:P1 was r |
@@ -91,6 +95,11 @@ so claimed tasks are safe to run in parallel.
 | tb-0054 | done | 0.6 | Pain verdict: core/gardener.py's tend() status-matching mis- | docs/research/** | gardener.py dry-run confirmed: H-9 (vetoed-auto (tombstone 2 |
 | tb-0055 | done | 0.6 | Pain verdict: A future session may assume 'the Bridge Engine | docs/research/** | Pain verdict confirmed: Bridge Engineer backlog fix for add_ |
 | tb-0056 | done | 0.6 | Pain verdict: WeightShiftAnimationTests.cpp compiles clean b | docs/research/** | Pain verdict confirmed: WeightShiftAnimationTests.cpp compil |
+| tb-0093 | done | 0.6 | Pain verdict: ChimeraMovementComponent.h/.cpp, WeightShiftAn | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | REFUTED phase_2f2d78e48da8f355:P2 - git ls-files TRACKED all |
+| tb-0095 | done | 0.6 | Pain verdict: The observation_queue_processing dispatch prom | docs/research/** | CONFIRMED phase_e0b68063201645ae:P1 - the dispatch prompt IS |
+| tb-0100 | done | 0.6 | Pain verdict: Player_Character_Animation carries a real, ric | docs/research/** | CONFIRMED phase_e0b68063201645ae:P2 - asymmetry live in grap |
+| tb-0101 | done | 0.6 | Pain verdict: The 4 pipeline/meta queue entries (Demo_Regoli | docs/research/** | CONFIRMED phase_e0b68063201645ae:P3 - Demo_RegolithYard_L1 v |
+| tb-0102 | done | 0.6 | Pain verdict: Future sessions attempting Niagara authoring w | docs/research/** | REFUTED phase_31a7a0b115ebf674:P1 - the finding IS durably r |
 | tb-0003 | done | 0.4 | Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie | Verb_Shovel: Implemented ATool_Shovel::Dig() (was rejected e |
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |
 | tb-0028 | done | 0.01 | Gauntlet sandbox: haiku-1 | docs/gauntlet/haiku-1/** | docs/gauntlet/haiku-1/tunnel_note.md (one paragraph explaini |
