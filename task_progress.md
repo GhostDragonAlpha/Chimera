@@ -8,6 +8,28 @@ Chosen by core.rehearsal (score 0.4, p_success 0.2, evidence: sim:0/1, failure_m
 
 ---
 
+# TEST-RUN AUDIT (2026-07-17, fable-1) — first external run graded; tautological-beat class discovered
+
+The external LEAD/sub-01 run on tb-0079 happened. Audit vs records:
+- **Workflow WINS**: beat_lint vocab check forced a real fix (select_slot); training gate forced
+  real UGestureWheel enrollment; research gate cited; board/tunnel/CAPCOM trail complete; the
+  summary honestly listed unverified items.
+- **Agent misses**: reported a two-builds-STALE LNK2019 as the current blocker with a wrong
+  diagnosis (build was green before its session; zero C++ commits since — mirror of the
+  green-trend trap, now both directions in the master prompt); closed tb-0079 done with the
+  recipe's witness never run; the DSL block it added is consumed by NOTHING (parser grep 0 hits).
+- **WORKFLOW HOLE FOUND + GATED**: its beat expects were rig-only (is_pie+pawn_class) — could not
+  FAIL for UGestureWheel; a clean run would have FALSELY ACCEPTED the feature. beat_lint now has a
+  tautology check (proven both directions). Repo sweep: **6 more pre-existing tautological beats
+  in 4 files** — the test agent learned the shape from the studio's own files. tb-0123 fixes them
+  (**audit Social_Trade's 1/2 collapse evidence FIRST — CAPCOM holds a sweep warning**).
+- GestureWheel now emits witness markers ([GestureWheel] OpenWheel / CommitGesture slot=N,
+  regenerated, UBT green 8.27s) and gesture_wheel.beats.json expects them — beats FAIL honestly
+  until TAB is wired. **tb-0124 (p=1.0) = the real completion**: TAB binding at controller/pawn
+  template, parser consumption of gesture_wheel_ui, sleepwalker witness on the markers.
+
+---
+
 # WORKFLOW: GO FOR EXTERNAL AGENT TEST (2026-07-17, fable-1 final round)
 
 State at handoff: both brains UP (ds4 deepseek-v4-flash 29ms; LM Studio qwen resident/adopted),

@@ -71,7 +71,11 @@ That is the ONLY way its holes are found. A quiet gate is not a passed gate.
   UBT. Three 2026-07-15 commits sat "verified" by text-grep rep atoms for TWO DAYS while
   HEAD failed to compile (never-compiled automation flags, a generator emitting
   nonexistent API, missing module deps) — the 20/20 trend predated them all. **If your
-  session touched C++, run one real UBT before you claim anything.**
+  session touched C++, run one real UBT before you claim anything.** The mirror holds
+  too: **a RED quoted in history is not a red HEAD** — a LEAD reported a two-builds-
+  stale LNK2019 as the current blocker, with a wrong diagnosis attached, hours after it
+  was fixed and built green (2026-07-17). In BOTH directions, only a fresh UBT is
+  evidence of build state.
 
 **THE ASYMMETRY — the single most useful sentence here:** *every restrictive branch in
 this codebase is careful and every permissive twin is sloppy.* The reject path filtered
@@ -195,6 +199,15 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
    actions, 19 expects — `--vocab` prints them) and names the fix. It costs a minute;
    skipping it costs a feature. H-17 + H-30 are constitution and the validator did not
    exist until 2026-07-16.
+   **A BEAT MUST BE ABLE TO FAIL FOR WHAT IT TAGS.** Expects that observe only the rig
+   (`is_pie`, `pawn_class`) falsely ACCEPT the tagged feature on a clean run — the
+   inverse of the typo trap: a typo condemns a working feature, a tautology blesses a
+   broken one. The linter now flags these (first sweep found 6 across 4 files,
+   2026-07-17, including two on a feature sitting at collapse evidence 1/2). Give every
+   tagged feature at least one expect that observes IT — `log_contains` its witness
+   marker, `actor_exists`, a component read-back — and if the feature has no observable
+   surface, add a `UE_LOG` witness marker at the right layer FIRST (generator template
+   for generator-owned code; that is what `[GestureWheel] OpenWheel` is).
    **DO NOT PASS `--valence`.** `collapse_proxy --from-simtest <id>` DERIVES it: beats
    failed → rejected, beats clean → accepted. A `--valence` contradicting the evidence is
    REFUSED (exit 1). You are not asked to judge the run, only to RUN it — the simtest

@@ -67884,6 +67884,67 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_e4f92af18e75"
+    },
+    {
+      "id": "mutation_c1ae39f6e62c",
+      "type": "Mutation",
+      "timestamp": "2026-07-17T06:17:08.859348",
+      "error_signature": "success_no_error",
+      "template_file": "core/game_code_generator.py::generate_gesture_wheel_files",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "UBT Result: Succeeded 8.27s - GestureWheel witness markers (UE_LOG OpenWheel/CommitGesture) regenerated from template; prior attempt refused: Unable to build while Live Coding is active (editor cycled per lifecycle).",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_41db276e33b8"
+    },
+    {
+      "id": "discovery_7cadbbb76bc6dca9",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T06:18:51.338915",
+      "feature": "Test-run audit (sub-01/tb-0079): summary-vs-records mismatch",
+      "campus_sources": [],
+      "web_sources": [
+        "core/beat_lint.py lint()/already_failed() contracts + sleepwalker expect vocabulary (grounds the tautology check placement and register); repo-wide beat sweep output (grounds tb-0123 scope); git log f26665d..HEAD -- Source (grounds the stale-LNK2019 refutation); core/dsl_game_parser.py grep for gest"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Test-run audit (sub-01/tb-0079): summary-vs-records mismatch",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Test-run audit (sub-01/tb-0079): summary-vs-records mismatch': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f7854c3e2f0c"
+    },
+    {
+      "id": "phase_67cc39b9455aeec6",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T06:18:51.719812",
+      "phase": "Test-run audit (sub-01/tb-0079): summary-vs-records mismatches found, tautological-beat class discovered and gated",
+      "result": "Audit of LEAD summary vs records: (1) LNK2019 reported as current blocker is STALE - fixed and built green (mutation_43e7a6d30693) BEFORE the dispatch; zero C++ commits since (git log f26665d..HEAD -- Source empty); attached diagnosis (template lacks Slate includes) also wrong (was Build.cs modules). (2) tb-0079 closed done on DSL block + unexecuted beat script; gesture_wheel_ui consumed by NOTHING (parser grep: zero hits); recipe's witness run never executed. (3) Beat expects were rig-only (is_pie+pawn_class) - could not FAIL for UGestureWheel; a clean run would falsely accept it. FIXED: beat_lint tautology check (OLD fixture FLAGGED both beats, NEW passes); gesture beats now expect log_contains [GestureWheel] OpenWheel/CommitGesture; template emits the markers (regenerated, UBT Succeeded 8.27s after editor Live-Coding cycle). SWEEP: 6 more pre-existing tautological beats in 4 files (tb-0123); Social_Trade at evidence 1/2 - CAPCOM warned, sweep held. tb-0124 = UGestureWheel real completion (TAB binding, parser consumption, honest witness). Workflow WINS confirmed: beat_lint vocab catch forced sub-01 to fix select_slot; training gate forced real UGestureWheel enrollment; research gate cited; tunnel/board/CAPCOM trail complete; LEAD honestly listed unverified items.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Test-run audit (sub-01/tb-0079): summary-vs-records mismatches found, tautological-beat class discovered and gated",
+      "error_category": "none",
+      "fix_description": "Phase 'Test-run audit (sub-01/tb-0079): summary-vs-records mismatches found, tautological-beat class discovered and gated' complete: Audit of LEAD summary vs records: (1) LNK2019 reported as current blocker is STALE - fixed and built green (mutation_43e7a6d30693) BEFORE the dispatch; zero C++ commits since (git log f26665d..HEAD --",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Prior clean walks recorded by the 6 tautological beats may already sit in the graph as accept-evidence for Ground_Sand_Particles, Player_Character_Suit, Social_Trade, Verb_PickUp, Tool_Weapon_Model, Verb_Drop - any past collapse or rep credit derived from those simtests inherited the false-accept shape; tb-0123's audit should walk derived_from edges backward from those features' Observations, not just fix the beat files"
+      ],
+      "inheritance": "The tautology class is now gated: beat_lint flags rig-only-expect beats; 6 pre-existing offenders queued as tb-0123 (audit Social_Trade's 1/2 evidence FIRST). tb-0124 carries UGestureWheel's real completion with honest failing-until-wired beats. Master prompt now teaches both mirror build rules (green trend != green HEAD; historical red != current red) and the beat-must-observe-its-feature rule.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_f7854c3e2f0c"
     }
   ],
   "edges": [

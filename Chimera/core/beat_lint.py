@@ -138,6 +138,30 @@ def lint(path):
         hint = f"  (did you mean: {', '.join(near[:3])}?)" if near else ""
         bad.append(f"{kind} {{{shown}}} names nothing the Sleepwalker dispatches on — "
                    f"{why}{hint}")
+    # TAUTOLOGY: a beat that TAGS features but whose every expect observes only
+    # the RIG (is_pie, pawn_class) cannot FAIL for what it tags — a clean run
+    # FALSELY ACCEPTS the feature via the collapse sweep (H-14/H-21/H-24; caught
+    # live 2026-07-17: gesture_wheel.beats.json passed vocabulary lint while
+    # unable to observe UGestureWheel at all — TAB bound to nothing, expects
+    # still green). A typo condemns a working feature; a tautology blesses a
+    # broken one. Same lie, opposite sign — both are this linter's job.
+    _RIG_ONLY = {"is_pie", "pawn_class"}
+    for beat in (doc.get("beats") or []):
+        if not isinstance(beat, dict) or not beat.get("features"):
+            continue
+        expects = beat.get("expects") or []
+        keys = set()
+        for e in expects:
+            keys |= set(e) if isinstance(e, dict) else {str(e)}
+        keys -= _STRUCTURAL
+        if expects and keys and keys <= _RIG_ONLY:
+            bad.append(
+                f"beat '{beat.get('name', '?')}' tags {beat['features']} but every "
+                f"expect observes only the RIG ({', '.join(sorted(keys))}) — it cannot "
+                f"FAIL for the tagged feature(s), so a clean run FALSELY ACCEPTS them. "
+                f"Add an expect that observes the feature itself (log_contains its "
+                f"marker, actor_exists, a component read-back) or tag the rig, not "
+                f"the feature.")
     return bad
 
 

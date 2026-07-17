@@ -32,6 +32,8 @@ void UGestureWheel::OpenWheel()
 	if (bIsOpen) return;
 	bIsOpen = true;
 	if (WheelOverlay) WheelOverlay->SetVisibility(ESlateVisibility::Visible);
+	// Witness marker: sleepwalker log_contains expects key on this exact string.
+	UE_LOG(LogTemp, Log, TEXT("[GestureWheel] OpenWheel"));
 	OnWheelVisibilityChanged.Broadcast(true);
 }
 
@@ -58,6 +60,8 @@ void UGestureWheel::CommitGesture(AActor* Target)
 	Event.To = Target;
 	Event.Gesture = static_cast<EChimeraGesture>(SelectedSlotIndex);
 
+	// Witness marker: sleepwalker log_contains expects key on this exact string.
+	UE_LOG(LogTemp, Log, TEXT("[GestureWheel] CommitGesture slot=%d"), SelectedSlotIndex);
 	OnGestureCommitted.Broadcast(Event);
 	CloseWheel();
 }

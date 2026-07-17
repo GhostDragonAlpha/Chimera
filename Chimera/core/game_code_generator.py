@@ -626,6 +626,8 @@ class GameCodeGenerator:
         cpp_content += '\tif (bIsOpen) return;\n'
         cpp_content += '\tbIsOpen = true;\n'
         cpp_content += '\tif (WheelOverlay) WheelOverlay->SetVisibility(ESlateVisibility::Visible);\n'
+        cpp_content += '\t// Witness marker: sleepwalker log_contains expects key on this exact string.\n'
+        cpp_content += '\tUE_LOG(LogTemp, Log, TEXT("[GestureWheel] OpenWheel"));\n'
         cpp_content += '\tOnWheelVisibilityChanged.Broadcast(true);\n'
         cpp_content += '}\n\n'
 
@@ -653,6 +655,8 @@ class GameCodeGenerator:
         cpp_content += '\tEvent.From = GetOwningPlayer() ? GetOwningPlayer()->GetPawn() : nullptr;\n'
         cpp_content += '\tEvent.To = Target;\n'
         cpp_content += '\tEvent.Gesture = static_cast<EChimeraGesture>(SelectedSlotIndex);\n\n'
+        cpp_content += '\t// Witness marker: sleepwalker log_contains expects key on this exact string.\n'
+        cpp_content += '\tUE_LOG(LogTemp, Log, TEXT("[GestureWheel] CommitGesture slot=%d"), SelectedSlotIndex);\n'
         cpp_content += '\tOnGestureCommitted.Broadcast(Event);\n'
         cpp_content += '\tCloseWheel();\n'
         cpp_content += '}\n\n'
