@@ -1,22 +1,41 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T15:32:00+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T16:19:56+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0131 | claimed | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | fable-1 |
+| tb-0133 | open | 1.2 | Fix 2 red rep atom(s): System_DSL_Fidelity | core/game_code_generator.py; excl:generator |  |
+| tb-0134 | open | 1.2 | Fix 1 red rep atom(s): Beat_Scripts_Tautology_Fix | editor:open; excl:pie |  |
+| tb-0135 | open | 1.2 | Fix 1 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie |  |
+| tb-0137 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Audio | Source/Chimera/ProceduralGenerated/Sound/** |  |
+| tb-0138 | open | 0.9 | Witness: Social_Trade | editor:open; excl:pie |  |
+| tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
+| tb-0140 | open | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
+| tb-0141 | open | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie |  |
+| tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
+| tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
+| tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
+| tb-0145 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
+| tb-0146 | open | 0.9 | Witness: Universe_Asteroid_Field | editor:open; excl:pie |  |
+| tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
+| tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
+| tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0123 | open | 0.8 | Fix 6 tautological beats in 4 files (false-accept evidence r | docs/beats/** |  |
-| tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie |  |
-| tb-0119 | open | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** |  |
-| tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
-| tb-0125 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
-| tb-0126 | open | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
-| tb-0127 | open | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
+| tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
+| tb-0151 | open | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
+| tb-0136 | blocked | 1.2 | Fix 1 red rep atom(s): Sky_Loop_Realization | Source/Chimera/ProceduralGenerated/Sky/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
+| tb-0112 | blocked | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0119 | blocked | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** | Working on different task tb-0123 (Fix 6 tautological beats  |
+| tb-0094 | blocked | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0125 | blocked | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0126 | blocked | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0127 | blocked | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |

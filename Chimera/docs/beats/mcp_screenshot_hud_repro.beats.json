@@ -27,7 +27,11 @@
         {"screenshot": "hudrepro_full_editor_window", "mode": "full_editor_window"}
       ],
       "expects": [
-        {"is_pie": true}
+        {"is_pie": true},
+        {
+          "actor_exists": "Display_Suit",
+          "note": "Player_Character_Suit witness: suit display actor must exist"
+        }
       ]
     }
   ]

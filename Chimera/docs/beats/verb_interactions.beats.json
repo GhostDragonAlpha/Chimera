@@ -48,7 +48,11 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_class": "BP_Astronaut_Character_C"}
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {
+          "log_contains": "[DEMOBEAT] Interact action triggered - picked up",
+          "note": "Verb_PickUp witness: pickup action must log pickup event"
+        }
       ]
     },
     {
@@ -63,7 +67,11 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_class": "BP_Astronaut_Character_C"}
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {
+          "log_contains": "[DEMOBEAT] Drop action triggered",
+          "note": "Verb_Drop witness: drop action must log drop event"
+        }
       ]
     },
     {

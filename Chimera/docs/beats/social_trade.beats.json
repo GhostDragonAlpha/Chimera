@@ -13,7 +13,11 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_class": "BP_Astronaut_Character_C"}
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {
+          "log_contains": "[NPCTrade] Player within trade range",
+          "note": "Social_Trade witness: NPC trade component must report player in range"
+        }
       ]
     },
     {
@@ -27,7 +31,11 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_class": "BP_Astronaut_Character_C"}
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {
+          "log_contains": "[NPCTrade] Trade interaction started",
+          "note": "Social_Trade witness: NPC trade component must report trade interaction start"
+        }
       ]
     }
   ]

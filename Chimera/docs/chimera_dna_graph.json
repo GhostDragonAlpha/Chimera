@@ -68682,6 +68682,53 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_9faf3abeb620"
+    },
+    {
+      "id": "discovery_3e0f8926e0347c55",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T16:21:25.399935",
+      "feature": "Fix 6 tautological beats in 4 files (false-accept evidence r",
+      "campus_sources": [],
+      "web_sources": [
+        "beat_lint tautology check (2026-07-17) flags 6 pre-existing beats whose expects observe only the rig (is_pie/pawn_class)"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Fix 6 tautological beats in 4 files (false-accept evidence r",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Fix 6 tautological beats in 4 files (false-accept evidence r': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_19759dc86df2"
+    },
+    {
+      "id": "phase_521ebbfdc8b56bcb",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T16:21:26.029968",
+      "phase": "Fix 6 tautological beats in 4 files (false-accept evidence risk)",
+      "result": "Fixed 6 tautological beats in 4 files: audio_visual_sync.beats.json, mcp_screenshot_hud_repro.beats.json, social_trade.beats.json, verb_interactions.beats.json. Added feature-observing expects (actor_exists for Actor_NS_SandDust/Display_Suit; log_contains for [NPCTrade] and [DEMOBEAT] markers). Beat lint now passes all 4 files.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Fix 6 tautological beats in 4 files (false-accept evidence risk)",
+      "error_category": "none",
+      "fix_description": "Phase 'Fix 6 tautological beats in 4 files (false-accept evidence risk)' complete: Fixed 6 tautological beats in 4 files: audio_visual_sync.beats.json, mcp_screenshot_hud_repro.beats.json, social_trade.beats.json, verb_interactions.beats.json. Added feature-observing expects (actor_",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "<declare one>"
+      ],
+      "inheritance": "<=3 sentences",
+      "pain_verdicts": {
+        "<id>:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_19759dc86df2"
     }
   ],
   "edges": [

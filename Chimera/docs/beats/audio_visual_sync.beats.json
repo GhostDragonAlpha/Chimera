@@ -176,6 +176,10 @@
    "expects": [
     {
      "is_pie": true
+    },
+    {
+     "actor_exists": "Actor_NS_SandDust",
+     "note": "Ground_Sand_Particles witness: sand dust particle actor must exist"
     }
    ],
    "_note": "Final measurement snapshot"
