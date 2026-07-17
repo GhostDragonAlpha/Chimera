@@ -68642,6 +68642,46 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_3d77b9a2727a"
+    },
+    {
+      "id": "discovery_082fd0e3ee3b0e93",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T15:40:28.705180",
+      "feature": "Lead integration + closure: sub-03 tb-0128 build-currency ga",
+      "campus_sources": [],
+      "web_sources": [
+        "build-currency gate refusal logic, build_waiver parameter, TAB action mapping DemoGestureWheel"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Lead integration + closure: sub-03 tb-0128 build-currency ga",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Lead integration + closure: sub-03 tb-0128 build-currency ga': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_9faf3abeb620"
+    },
+    {
+      "id": "phase_2261c86176f58329",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T15:40:29.077633",
+      "phase": "Lead integration + closure: sub-03 tb-0128 build-currency gate + TAB wire fix",
+      "result": "Verified sub-03's build-currency gate work (core/closure_report.py, core/agent_tunnel.py, core/postflight.py with build_waiver support). Integrated genuine work including TAB wire fix (Config/DefaultInput.ini, DemoPlayerController.cpp, core/game_code_generator.py). Committed by-path to master: 3e35d1b.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Lead integration + closure: sub-03 tb-0128 build-currency gate + TAB wire fix",
+      "error_category": "none",
+      "fix_description": "Phase 'Lead integration + closure: sub-03 tb-0128 build-currency gate + TAB wire fix' complete: Verified sub-03's build-currency gate work (core/closure_report.py, core/agent_tunnel.py, core/postflight.py with build_waiver support). Integrated genuine work including TAB wire fix (Config/DefaultI",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_9faf3abeb620"
     }
   ],
   "edges": [
