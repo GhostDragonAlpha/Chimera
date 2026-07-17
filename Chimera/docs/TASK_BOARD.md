@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T19:29:11+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T20:42:07+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,7 +8,6 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0135 | open | 1.2 | Fix 1 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie |  |
 | tb-0136 | open | 1.2 | Fix 1 red rep atom(s): Sky_Loop_Realization | Source/Chimera/ProceduralGenerated/Sky/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0137 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Audio | Source/Chimera/ProceduralGenerated/Sound/** |  |
 | tb-0131 | open | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie |  |
@@ -28,10 +27,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0151 | open | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0119 | open | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** | Working on different task tb-0123 (Fix 6 tautological beats  |
-| tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
-| tb-0125 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
-| tb-0126 | open | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
-| tb-0127 | open | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
@@ -57,6 +52,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0090 | done | 1.2 | Fix 1 red rep atom(s): UGestureWheel | core/game_code_generator.py; excl:generator | rep_engine tend: 4 failing (was 5), UGestureWheel no longer  |
 | tb-0133 | done | 1.2 | Fix 2 red rep atom(s): System_DSL_Fidelity | core/game_code_generator.py; excl:generator | Fixed 2 red rep atoms for System_DSL_Fidelity by adding 'Gam |
 | tb-0134 | done | 1.2 | Fix 1 red rep atom(s): Beat_Scripts_Tautology_Fix | editor:open; excl:pie | prune removed identity atom atom_1c0c2815eabc for Beat_Scrip |
+| tb-0135 | done | 1.2 | Fix 1 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | Added UE_LOG witness marker comments to NPCTradeComponent.cp |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |
 | tb-0014 | done | 1.2 | Sprint_Input: input binding: the physical key drives the sta ⇐ tb-0013 | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/GameMode/** | Sprint_Input/binding atom GREEN x2 (LeftShift polled via Pla |
@@ -160,3 +156,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0087 | abandoned | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0088 | abandoned | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0091 | abandoned | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
+| tb-0094 | abandoned | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0125 | abandoned | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0126 | abandoned | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0127 | abandoned | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
