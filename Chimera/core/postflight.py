@@ -327,6 +327,21 @@ def main():
             # time, until the record is repaired. Explicit claim -> refused, as before.
             # The lie still cannot PROGRESS: record_observation, collapse_proxy and
             # task closure keep their hard gates at the write-moments.
+            # refused_waiver is a LIE, not a dead end — it ALWAYS hard-blocks, even on
+            # a derived feature and even under =warn, because a false attestation is
+            # worse than a missing one: an honest gap gets fixed, a lie gets trusted.
+            # The other states (dead_end/unasked) advise on a mere mention; a waiver is
+            # never a mere mention — the agent typed it to get past the gate.
+            if _yg_state == "refused_waiver":
+                print(f"\n!! WHY GATE - waiver REFUSED: {args.feature} '{args.status}' — {_yg_detail}")
+                try:
+                    from core.capcom import post_safe as _yg_ps
+                    _yg_ps("why", f"FALSE WAIVER REFUSED: {args.feature} '{args.status}' — the "
+                           f"waiver claimed the why-chain passes; the walk reached no terminal",
+                           level="warn", source="why-gate")
+                except Exception:
+                    pass
+                raise SystemExit(1)
             if _yg_state in ("dead_end", "unasked") and _derived_feature:
                 print(f"\n?? WHY GATE (advisory — feature was DERIVED, not claimed): "
                       f"{args.feature} '{args.status}' — {_yg_detail}")

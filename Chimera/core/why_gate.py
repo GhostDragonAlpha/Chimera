@@ -89,8 +89,6 @@ def check(feature, status=None, waiver="", graph=None):
         return "n/a", "CHIMERA_WHY_GATE=off"
     if status not in ("verified", "accepted", "observed", "observed_provisional"):
         return "n/a", f"status {status!r} is not a finalization"
-    if waiver:
-        return "waived", waiver
     if not feature:
         return "n/a", "no feature named"
 
@@ -98,6 +96,46 @@ def check(feature, status=None, waiver="", graph=None):
     from core.why import walk
 
     g = graph if graph is not None else load_dna_graph()
+
+    # A WAIVER THAT CLAIMS THE GATE WOULD PASS IS A TESTABLE LIE (2026-07-17, the
+    # human's security reframe, caught live). `if waiver: return "waived"` accepted ANY
+    # non-empty string — the truthiness hole, in the gate meant to be the strongest.
+    # A real agent used it: postflighting Shelter_Habitat_Materials it passed
+    #     --why-waiver "the why loop shows YES with PHYSICS terminal via witness run
+    #                   simtest_f2856885f26a021f"
+    # while the walk reached ZERO terminals. It waived the WHY gate by ASSERTING the
+    # WHY gate would pass — the deepest form of the week's one bug: a credential
+    # (the waiver) nobody authenticated, asserting the very thing the gate computes.
+    #
+    # A waiver is for when the check legitimately CANNOT apply ("nothing measures the
+    # economy yet; back-burnered by the human"). It is NOT for asserting the check's
+    # own result. So: if the waiver text makes a PASSING CLAIM — that the chain reaches
+    # a terminal, shows YES, is proven/measured/witnessed — the gate RUNS THE WALK and
+    # REFUSES the waiver when the walk disagrees. You may say "this cannot be
+    # measured"; you may not say "the measurement you are about to take would pass",
+    # because it can be taken.
+    if waiver:
+        _claims_pass = any(w in waiver.lower() for w in (
+            "shows yes", "reaches physics", "physics terminal", "reaches the human",
+            "terminal via", "chain reaches", "why loop shows", "already verified",
+            "proven", "witnessed", "measured", "walk shows", "gate passes",
+            "gate would pass", "reaches a terminal"))
+        if _claims_pass:
+            _claim_nodes = [n for n in g.get("nodes", [])
+                            if n.get("type") == "FeatureUpdate"
+                            and n.get("feature_name") == feature
+                            and n.get("status") in ("verified", "accepted", "observed",
+                                                    "observed_provisional")]
+            _reaches = any(
+                any(s.get("terminal") for s in walk(c["id"], g)) for c in _claim_nodes)
+            if not _reaches:
+                return "refused_waiver", (
+                    "the waiver CLAIMS the why-chain passes (\"" + waiver[:80] + "…\"), "
+                    "but the walk reaches NO terminal. A waiver is for when the check "
+                    "cannot apply, never for asserting its result — that is checkable, "
+                    "and it is false. Run the real evidence, or waive with an honest "
+                    "reason the chain genuinely cannot reach PHYSICS/THE HUMAN.")
+        return "waived", waiver
     claims = [n for n in g.get("nodes", [])
               if n.get("type") == "FeatureUpdate" and n.get("feature_name") == feature
               and n.get("status") in ("verified", "accepted", "observed",
