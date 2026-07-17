@@ -72,33 +72,102 @@ def _red_atom_rows():
     return rows
 
 
+def _has_engine_witness(nodes, feat):
+    """Is there an ENGINE-witnessed simtest for this feature already? (the credential,
+    2026-07-17). A collapse task is pointless without one — collapse_proxy reads
+    exercise from a real run, and a forged/absent witness proves only RECORDED."""
+    toks = [w for w in str(feat).lower().replace("_", " ").split() if len(w) >= 4]
+    for n in nodes:
+        if n.get("type") != "SimPlaytest":
+            continue
+        if n.get("witnessed_by_engine") is False:      # a forgery is not a witness
+            continue
+        blob = f"{n.get('session','')} {n.get('demo','')}".lower()
+        if any(t in blob for t in toks) and (n.get("beats_reached") or 0) > 0:
+            return True
+    return False
+
+
 def _observation_rows(nodes):
+    """SPLIT: Witness (completable in ONE session) vs Collapse (fires when EARNED).
+
+    THE BUG THIS FIXES (2026-07-17, four sessions of it): one "Witness & collapse: X"
+    task bundled a one-session job with a multi-night one. Collapse is rep-gated
+    (rep_engine.rep_gate — reps accumulate across NIGHTS by design), so a single
+    session could NEVER complete it: every agent wrote a beat, ran a clean witness,
+    hit the rep wall at collapse, and then — measured — reported "collapse accepted"
+    anyway. The task asked for something the session could not deliver, so the honest
+    close was impossible and the dishonest one was inevitable.
+
+    The split makes each task COMPLETABLE by whoever draws it:
+      WITNESS  — write/lint the beat, run the engine (earns the authentic simtest +
+                 reps). Completable now. Does NOT mention collapse; nobody is asked to
+                 report a collapse they cannot perform.
+      COLLAPSE — appears ONLY when the feature is rep-ready AND already
+                 engine-witnessed. Now collapse_proxy can actually accept it, so the
+                 task can actually close.
+    A feature with neither → WITNESS. Witnessed but not yet rep-ready → still WITNESS
+    (earn more reps). Rep-ready + witnessed → COLLAPSE.
+    """
     rows = []
     try:
         try:
             from core.graphify_interface import collect_observation_queue
+            from core.rep_engine import rep_gate
         except ImportError:
             sys.path.insert(0, str(HERE))
             from graphify_interface import collect_observation_queue
+            from rep_engine import rep_gate
         for q in collect_observation_queue(nodes)[:MAX_WITNESS]:
             feat, loop = q.get("feature"), q.get("loop")
             if not feat:
                 continue
-            rows.append({
-                "name": f"Witness & collapse: {feat}",
-                "score": 0.9,
-                "recipe": (
-                    f"{feat} (loop {loop}) is system-finalized, awaiting AUTOMATED observation. "
-                    f"Pick/extend a beat script under docs/beats/ that exercises it with REAL input "
-                    f"(H-14/H-21), run: python -m core.witness_runner --beats docs/beats/<demo>.beats.json "
-                    f"--session obs_{str(feat)[:24]} ; then attribute + collapse: python -m core.collapse_proxy "
-                    f"--from-simtest <simtest_id>   <-- NO --valence (2026-07-16). The SIMTEST decides: "
-                    f"beats failed -> rejected, beats clean -> accepted. It is DERIVED, and passing a "
-                    f"--valence that contradicts the evidence is REFUSED (exit 1). You are not being asked "
-                    f"to judge the run, only to RUN it; a relay that can lie is not a relay. NOTE: collapse now passes the "
-                    f"TRAINING GATE — check python -m core.rep_engine gate --feature {feat} first; if the "
-                    f"feature isn't enrolled/trained, enroll it and earn reps before the witness run."),
-            })
+            try:
+                rep_ready, rep_reason = rep_gate(feat)
+            except Exception:
+                rep_ready, rep_reason = False, "rep gate unreadable"
+            witnessed = _has_engine_witness(nodes, feat)
+
+            if rep_ready and witnessed:
+                # COLLAPSE — the one task that can now succeed, because both preconditions
+                # the collapse depends on are already met.
+                rows.append({
+                    "name": f"Collapse: {feat}",
+                    "score": 1.0,               # slightly above witness: finish what's ready
+                    "recipe": (
+                        f"{feat} (loop {loop}) is engine-witnessed AND rep-ready — collapse "
+                        f"can now ACCEPT it. Find its clean simtest (docs/world/dna.db search, "
+                        f"or `python -m core.dna_sqlite_backend search --query {str(feat)[:20]}`), "
+                        f"then: python -m core.collapse_proxy --from-simtest <simtest_id>  <-- NO "
+                        f"--valence (the SIMTEST decides: clean beats -> accepted; a contradicting "
+                        f"--valence is REFUSED, exit 1). Confirm it reached 'observed': "
+                        f"python -m core.why --feature {feat} --loop should now say YES via PHYSICS. "
+                        f"If collapse still says 'unexercised', the beat did not name {feat} in its "
+                        f"outcomes[].features — fix the beat, re-witness, then collapse."),
+                })
+            else:
+                # WITNESS — completable now: run the engine, earn the credential + reps.
+                # State the true blocker so the agent knows collapse is NOT this task.
+                blocker = ("not yet engine-witnessed" if not witnessed
+                           else f"witnessed, but {rep_reason}")
+                rows.append({
+                    "name": f"Witness: {feat}",
+                    "score": 0.9,
+                    "recipe": (
+                        f"{feat} (loop {loop}) is system-finalized, awaiting observation. "
+                        f"THIS TASK IS THE WITNESS ONLY — do NOT run collapse and do NOT report "
+                        f"one ({blocker}; collapse is rep-gated across nights and becomes its own "
+                        f"task when earned). Steps: (1) enroll + earn reps: python -m core.curriculum "
+                        f"enroll --feature \"{feat}\" ; python -m core.rep_engine tend. (2) Pick/extend "
+                        f"a beat under docs/beats/ that exercises {feat} with REAL input (H-14/H-21) "
+                        f"and NAMES it in outcomes[].features. LINT FIRST: python -m core.beat_lint "
+                        f"--beats docs/beats/<demo>.beats.json (a typo condemns the feature; it also "
+                        f"flags an expect that has ALWAYS failed — a WALL, fix the cause). (3) Run the "
+                        f"engine: python -m core.witness_runner --beats docs/beats/<demo>.beats.json "
+                        f"--session obs_{str(feat)[:24]}. A clean run mints an ENGINE-witnessed simtest "
+                        f"(witnessed_by_engine=True) — that is the credential collapse will later need. "
+                        f"Close honestly: witness ran / did not; NEVER claim a collapse."),
+                })
     except Exception:
         pass
     return rows

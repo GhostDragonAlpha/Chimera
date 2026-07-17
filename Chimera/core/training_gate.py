@@ -120,7 +120,8 @@ def _task_subject(task) -> str:
     import re
     s = str((task or {}).get("feature") or (task or {}).get("title") or "").strip()
     for pat in (r"^Fix\s+\d+\s+red\s+rep\s+atom\(s\):\s*", r"^Build toward the seed:\s*",
-                r"^Witness & collapse:\s*", r"^Research:\s*"):
+                r"^Witness & collapse:\s*", r"^Witness:\s*", r"^Collapse:\s*",
+                r"^Research:\s*"):
         s = re.sub(pat, "", s, flags=re.IGNORECASE)
     return s.strip()
 
