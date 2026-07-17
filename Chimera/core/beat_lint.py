@@ -198,7 +198,13 @@ def already_failed(path, graph=None):
     # An expect that has failed and NEVER ONCE passed is a wall — like
     # `actor_exists: ATool_Scanner`, which has never passed because nothing anywhere
     # puts that actor in the level.
-    failed, passed = {}, set()
+    # Count and latest are tracked SEPARATELY. The first cut fused them — it only
+    # touched the entry when the incoming node was NEWER, so an out-of-order older
+    # node was skipped entirely and the count undercounted. It happened to read
+    # "failed 3x" correctly only because the node list is roughly chronological;
+    # "roughly" is not an invariant, and a counter that depends on iteration order
+    # is the kind of adjacent-to-the-truth instrument this file exists to replace.
+    counts, latest, passed = {}, {}, set()
     for n in g.get("nodes", []):
         if n.get("type") != "SimPlaytest":
             continue
@@ -210,12 +216,12 @@ def already_failed(path, graph=None):
                 if ev.get("ok") is True:
                     passed.add(key)
                 elif ev.get("ok") is False:
-                    prev = failed.get(key)
+                    counts[key] = counts.get(key, 0) + 1
+                    prev = latest.get(key)
                     if not prev or (n.get("timestamp", "") > prev[1]):
-                        failed[key] = (n.get("session", "?"), n.get("timestamp", "")[:16],
-                                       str(ev.get("detail") or ev.get("note") or ""),
-                                       prev[3] + 1 if prev else 1)
-    settled = {k: v for k, v in failed.items() if k not in passed}
+                        latest[key] = (n.get("session", "?"), n.get("timestamp", "")[:16],
+                                       str(ev.get("detail") or ev.get("note") or ""))
+    settled = {k: (*latest[k], counts[k]) for k in latest if k not in passed}
     out = []
     for e in mine:
         hit = settled.get(json.dumps(e, sort_keys=True))

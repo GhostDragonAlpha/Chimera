@@ -291,11 +291,74 @@ def main():
                   f"(it GATES only; nothing is recorded from a derived name). "
                   f"Pass --feature explicitly to control this.")
 
+    # WHY GATE (2026-07-16) — runs for BOTH explicit and DERIVED features, and it is
+    # the ONLY gate that does. The others below police the ACT of marking ("you are
+    # claiming verified NOW — show fresh evidence NOW": witness/visual have 12h
+    # windows, training wants enrollment, the Coin judges the claim being made).
+    # A DERIVED feature has no marking act — the postflight merely NAMED a feature the
+    # ledger already finalized — so those questions are category errors against it:
+    # measured, Sky_Earth_Model (honestly observed days ago, chain reaches PHYSICS)
+    # would have been REFUSED by the witness gate's 12-hour window purely for being
+    # MENTIONED in a phase. My own matrix tests missed this because every one ran with
+    # CHIMERA_*_GATE=warn; under production defaults the refusal is live. An
+    # instrument wrong in that direction teaches everyone to route around it.
+    #
+    # The WHY question alone is TIMELESS — "the record says X is finalized; does its
+    # chain reach something that needed no observer?" — so it is the one question a
+    # mere mention can honestly be held to.
+    if args.feature and args.status in {"verified", "observed", "observed_provisional"}:
+        try:
+            from core.why_gate import (check as _yg_check, enforced as _yg_enforced,
+                                       GUIDANCE as _yg_guide)
+            _yg_state, _yg_detail = _yg_check(
+                feature=(getattr(args, "feature", "") or ""),
+                status=args.status,
+                waiver=getattr(args, "why_waiver", "") or "")
+            if _yg_state in ("dead_end", "unasked") and _yg_enforced():
+                print(f"\n!! WHY GATE - refused: {args.feature} '{args.status}' — {_yg_detail}")
+                print(_yg_guide)
+                try:
+                    from core.graphify_interface import record_surprise as _yg_rs
+                    _yg_rs(context=f"postflight refused by why gate: {args.feature} -> {args.status}",
+                           reality=_yg_detail,
+                           expectation="a finalized claim's why-chain reaches PHYSICS or THE HUMAN",
+                           source="agent")
+                except Exception:
+                    pass
+                try:
+                    from core.capcom import post_safe as _yg_ps
+                    _yg_ps("why", f"postflight BLOCKED: {args.feature} '{args.status}' — {_yg_detail}",
+                           level="warn", source="why-gate")
+                except Exception:
+                    pass
+                raise SystemExit(1)
+            print(f"[Why Gate] {_yg_state}: {_yg_detail}")
+            if _yg_state == "waived":
+                try:
+                    from core.capcom import post_safe as _yg_ps
+                    _yg_ps("why", f"why WAIVED: {args.feature} {args.status} - {_yg_detail}",
+                           level="note", source="why-gate")
+                except Exception:
+                    pass
+        except SystemExit:
+            raise
+        except ImportError as _yg_e:
+            print(f"[Why Gate] not installed ({_yg_e}) — passing open")
+        except Exception as _yg_e:
+            _gate_broken("Why Gate", _yg_e)
+
+    if _derived_feature and args.status in {"verified", "observed", "observed_provisional"}:
+        print("[postflight] act gates (Witness/Visual/Training/Coin/Council) SKIPPED for the "
+              "derived feature: they police the act of MARKING, and nothing was marked here — "
+              "the name was derived from the phase. The Why Gate above still held the record "
+              "to its question. (Pass --feature/--status/--loop explicitly to claim, which "
+              "runs the full stack.)")
+
     # Witness Gate — a feature can't be recorded verified/observed on a compile
     # alone (H-14: a compile is not proof). Requires witness evidence this session
     # (SimPlaytest/telemetry/observation), --witnessed, or a reasoned
     # --witness-waiver. Only fires on a verify/observe transition.
-    if args.feature and args.status in {"verified", "observed", "observed_provisional"}:
+    if args.feature and not _derived_feature and args.status in {"verified", "observed", "observed_provisional"}:
         try:
             from core.witness_gate import check as _wg_check, enforced as _wg_enforced, GUIDANCE as _wg_guide
             _wg_nodes = load_dna_graph().get("nodes", [])
@@ -342,60 +405,8 @@ def main():
         except Exception as _wg_e:            # BROKEN: it raised. That is not a pass.
             _gate_broken("Witness Gate", _wg_e)
 
-        # WHY GATE (2026-07-16) — the human: "get the system to guide the agent to ask
-        # these questions automatically, even if we just have to ask one question with
-        # one word: WHY." The loop was built and NOTHING RAN IT; an agent that
-        # remembers to interrogate its own work is not the agent a gate is for. That is
-        # how 150 claims finalized with zero recorded whys.
-        #
-        # Strictly stronger than the Witness Gate above, and not redundant with it:
-        #   witness  "does an evidence NODE exist?"      -> System_Economy PASSES
-        #   why      "does the CHAIN reach a terminal?"  -> System_Economy REFUSED
-        # System_Economy HAS an Observation; that Observation cites a simtest that does
-        # not exist. One checks for a node, the other follows it.
-        #
-        # It renders no verdict (why.py forbids it, rightly): it walks typed edges and
-        # reports where the chain stopped. `proves` comes from the CITED NODE'S TYPE, so
-        # there is no opinion anywhere in it and no LM to fabricate one.
-        try:
-            from core.why_gate import (check as _yg_check, enforced as _yg_enforced,
-                                       GUIDANCE as _yg_guide)
-            _yg_state, _yg_detail = _yg_check(
-                feature=(getattr(args, "feature", "") or ""),
-                status=args.status,
-                waiver=getattr(args, "why_waiver", "") or "")
-            if _yg_state in ("dead_end", "unasked") and _yg_enforced():
-                print(f"\n!! WHY GATE - refused: {args.feature} '{args.status}' — {_yg_detail}")
-                print(_yg_guide)
-                try:
-                    from core.graphify_interface import record_surprise as _yg_rs
-                    _yg_rs(context=f"postflight refused by why gate: {args.feature} -> {args.status}",
-                           reality=_yg_detail,
-                           expectation="a finalized claim's why-chain reaches PHYSICS or THE HUMAN",
-                           source="agent")
-                except Exception:
-                    pass
-                try:
-                    from core.capcom import post_safe as _yg_ps
-                    _yg_ps("why", f"postflight BLOCKED: {args.feature} '{args.status}' — {_yg_detail}",
-                           level="warn", source="why-gate")
-                except Exception:
-                    pass
-                raise SystemExit(1)
-            print(f"[Why Gate] {_yg_state}: {_yg_detail}")
-            if _yg_state == "waived":
-                try:
-                    from core.capcom import post_safe as _yg_ps
-                    _yg_ps("why", f"why WAIVED: {args.feature} {args.status} - {_yg_detail}",
-                           level="note", source="why-gate")
-                except Exception:
-                    pass
-        except SystemExit:
-            raise
-        except ImportError as _yg_e:
-            print(f"[Why Gate] not installed ({_yg_e}) — passing open")
-        except Exception as _yg_e:
-            _gate_broken("Why Gate", _yg_e)
+        # (The WHY gate ran ABOVE this block — it is the one gate that applies to
+        # derived features too, so it lives outside the act-gate stack.)
 
         # Visual Gate — the local model must have LOOKED at a verified feature: a
         # feature can't be marked verified/observed without a recorded LM screenshot
