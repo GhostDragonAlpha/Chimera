@@ -230,13 +230,36 @@ def synthesize_draft_rule(signature: str, kind: str, samples: list) -> str:
             words = rule_template.split()[:25]
             return " ".join(words) + ("." if not words[-1].endswith(".") else "")
 
-    # Fallback: try to extract prominent keywords and build a generic rule
-    sig_tokens = sorted(_tokens(signature))
-    if sig_tokens:
-        key_sig = " ".join(sig_tokens[:2])  # first 2 significant tokens from signature
-        return f"Investigate {key_sig}; verify test harness and beat registration."[:80]
-
-    # Last resort: placeholder
+    # NO PATTERN MATCHED -> SAY SO. Do not build a sentence out of two tokens.
+    #
+    # What stood here (2026-07-16, removed — the human: "the reasoning trace is the
+    # code"):
+    #     key_sig = " ".join(sorted(_tokens(signature))[:2])
+    #     return f"Investigate {key_sig}; verify test harness and beat registration."
+    #
+    # That is not a distilled heuristic. It is a FORMAT STRING with the nouns swapped,
+    # and it reached the CONSTITUTION thirteen times:
+    #     H-41  "Investigate bad costless; verify test harness and beat registration."
+    #     H-43  "Investigate chaos chaos_organ; verify test harness and beat registration."
+    #     H-45  "Investigate bridge dsl; verify test harness and beat registration."
+    # Every agent reads those. They say nothing. Measured: of 31 H-rules, the 18 that
+    # came from the REAL pattern table above are NAMED in core/ code — they became
+    # mechanism. All 13 that came from THIS fallback are prose, and they are the same
+    # sentence. A reasoning trace that becomes code is a rule; one that cannot is
+    # noise, and manufacturing the sentence anyway just automates the noise.
+    #
+    # THE HONEST PATH ALREADY EXISTED, one line below, and this defeated it. The
+    # gardener refuses any draft_rule starting with "(" and flags it NEEDS-DRAFT for a
+    # capable cycle (gardener.py:140,146) — which is why the "(agent: write ONE
+    # sentence...)" placeholder has NEVER been promoted, not once. This fallback got in
+    # because it does NOT start with "(": it wore the shape of a real rule, so the
+    # guard waved it through. The same shape as every other defect found today —
+    # `derived_from="x"`, an English sentence in an evidence_ids field — SOMETHING THAT
+    # LOOKS LIKE THE THING, IN A SLOT THAT ACCEPTS ANYTHING.
+    #
+    # So: fall through to the honest placeholder. "I could not distil this" is a true
+    # statement and a capable cycle can act on it. A fabricated rule is neither.
+    # (Rule 0: no fallback ladders; never fake a default.)
     return "(agent: write ONE sentence from the evidence, <=25 words)"
 
 
