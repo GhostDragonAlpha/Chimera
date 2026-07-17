@@ -302,7 +302,7 @@ void RunWeightShiftTests()
 #include "Misc/AutomationTest.h"
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FWeightShiftAnimationAutomationTest,
 	"Chimera.Animation.WeightShift",
-	EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::EngineFilter)
+	EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::EngineFilter)
 bool FWeightShiftAnimationAutomationTest::RunTest(const FString& Parameters)
 {
 	return FWeightShiftAnimationTests::RunAllTests();

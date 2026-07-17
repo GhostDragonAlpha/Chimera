@@ -20,6 +20,9 @@ public class Chimera : ModuleRules
 			"GameplayAbilities",
 			"Niagara",
 			"NiagaraCore",
+			"UMG",
+			"Slate",
+			"SlateCore",
 		});
 
 		PrivateIncludePaths.AddRange(new string[] {

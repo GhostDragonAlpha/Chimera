@@ -518,7 +518,19 @@ def reconcile_stale_pain_tasks() -> int:
     the number closed."""
     import re as _re
     state = get_state()
+
+    def _is_verdict_task(t):
+        # Only tasks whose JOB is the verdict. Ripener FIX tasks carry the pain
+        # id too (follow-up:phase_...) and exist BECAUSE the pain was
+        # dispositioned — closing them forges done-with-zero-work (caught live
+        # 2026-07-17: tb-0103/0106/0107/0108 eaten within hours of mint).
+        # Title-prefix ONLY (the ripener's mint format): this close is
+        # destructive, and a recipe that merely QUOTES --pain-verdict while
+        # describing other work must not qualify (tb-0109 did exactly that).
+        return str(t.get("title") or "").lower().startswith("pain verdict")
+
     candidates = [t for t in state["tasks"] if t["status"] == OPEN
+                  and _is_verdict_task(t)
                   and _re.search(r"phase_[0-9a-f]{6,}:P\d+",
                                  str(t.get("recipe", "")) + " " + str(t.get("title", "")))]
     if not candidates:
@@ -660,21 +672,30 @@ _PIE_FAMILIES = ("witness", "collapse", "observe", "observation",
                  "game_feel", "feel", "telemetry", "playtest", "beat")
 
 
+def _has_word(text: str, key: str) -> bool:
+    # Word-boundary membership: raw substring bit live — 'bUIld' contains 'ui',
+    # so every "Build toward the seed:" title claimed the UI subtree
+    # (phase_abff24b31ea8c308:P1). Underscores/punctuation count as boundaries
+    # so Verb_PickUp still matches 'verb' and game_feel still matches whole.
+    import re
+    return re.search(rf"(?<![a-z0-9]){re.escape(key)}(?![a-z0-9])", text) is not None
+
+
 def _scope_for(name: str) -> dict:
     low = name.lower()
     # 1) PIE-driving work — the one editor session (game_feel edits movement/
     #    sound; a pure witness run edits nothing).
-    if any(k in low for k in _PIE_FAMILIES):
+    if any(_has_word(low, k) for k in _PIE_FAMILIES):
         files = ([f"{_PG}/ChimeraMovementComponent.*", f"{_PG}/Sound/**"]
-                 if ("feel" in low or "telemetry" in low) else [])
+                 if (_has_word(low, "feel") or _has_word(low, "telemetry")) else [])
         return {"files": files, "editor": "open", "exclusive": [_PIE]}
     # 2) Envelope / Malcolm live in docs, not the C++ tree.
-    if "envelope" in low or "malcolm" in low:
+    if _has_word(low, "envelope") or _has_word(low, "malcolm"):
         return {"files": ["docs/envelope.json", "docs/world/**"],
                 "editor": "none", "exclusive": []}
     # 3) Loop-built subtrees — headless, parallel across different subtrees.
     for key, files in _LOOPBUILT_SCOPES.items():
-        if key in low:
+        if _has_word(low, key):
             return {"files": list(files), "editor": "none", "exclusive": []}
     # 4) Generator-owned + 5) unknown (assume generator-owned — safest: serialize
     #    on the generator rather than risk two agents clobbering it). Headless;

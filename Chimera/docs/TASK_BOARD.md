@@ -1,17 +1,17 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T04:53:46+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T05:27:38+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0079 | open | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/**, core/game_code_generator.py; excl:generator | Wrong task assigned; need to claim tb-0057 per instructions |
-| tb-0106 | open | 0.75 | Fix confirmed pain: The observation_queue_processing dispatc | Source/Chimera/** |  |
-| tb-0107 | open | 0.75 | Fix confirmed pain: Player_Character_Animation carries a rea | Source/Chimera/** |  |
-| tb-0108 | open | 0.75 | Fix confirmed pain: The 4 pipeline/meta queue entries (Demo_ | Source/Chimera/** |  |
+| tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie |  |
+| tb-0119 | open | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** |  |
+| tb-0120 | open | 0.65 | ripener: minted fix-tasks must carry the real feature field | core/training_gate.py |  |
 | tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
@@ -52,13 +52,25 @@ so claimed tasks are safe to run in parallel.
 | tb-0076 | done | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie | simtest_6eda875b25fb7be3: 2/2 beats reached in 'social_trade |
 | tb-0077 | done | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie | simtest_f2856885f26a021f: 1/1 beats reached in 'shelter_habi |
 | tb-0078 | done | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie | witness_runner completed successfully with simtest_50995d727 |
+| tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
 | tb-0104 | done | 0.8 | training_gate: classify Pain-verdict tasks as research (misr | core/game_code_generator.py; excl:generator | classify_task patched (core/training_gate.py): pain-verdict  |
 | tb-0105 | done | 0.8 | task_board: rescope clobbers explicitly-declared footprints  | core/task_board.py | core/task_board.py: (1) _new_task stamps scoped=declared whe |
+| tb-0117 | done | 0.8 | Fix build: DemoPlayerController VFX include uses module-root | Source/Chimera/ProceduralGenerated/Demo/** | DemoPlayerController.cpp:15 include fixed to codebase idiom  |
+| tb-0118 | done | 0.8 | Fix build: Build.cs lacks UMG/Slate/SlateCore for generated  | core/build_orchestrator.py, Source/Chimera/Chimera.Build.cs | build_orchestrator required_modules += UMG/Slate/SlateCore ( |
 | tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
 | tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
 | tb-0098 | done | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** | auto-closed: pain phase_c67559a04eceaec4:P2 already disposit |
 | tb-0103 | done | 0.75 | Fix confirmed pain: WeightShiftAnimationTests.cpp compiles c | Source/Chimera/** | auto-closed: pain phase_2f2d78e48da8f355:P1 already disposit |
+| tb-0106 | done | 0.75 | Fix confirmed pain: The observation_queue_processing dispatc | ../.claude/workflows/chimera-task-cycling.js | auto-closed: pain phase_e0b68063201645ae:P1 already disposit |
+| tb-0107 | done | 0.75 | Fix confirmed pain: Player_Character_Animation carries a rea | Source/Chimera/** | auto-closed: pain phase_e0b68063201645ae:P2 already disposit |
+| tb-0108 | done | 0.75 | Fix confirmed pain: The 4 pipeline/meta queue entries (Demo_ | Source/Chimera/** | auto-closed: pain phase_e0b68063201645ae:P3 already disposit |
+| tb-0110 | done | 0.75 | Fix confirmed pain: WeightShiftAnimationTests RunAllTests ha | Source/Chimera/ProceduralGenerated/Tests/** | Chimera.Animation.WeightShift EXECUTED headlessly (nullrhi c |
+| tb-0111 | done | 0.75 | Fix confirmed pain: frozen dispatch prompt in chimera-task-c | ../.claude/workflows/chimera-task-cycling.js | chimera-task-cycling.js TASK_CONTEXT rewritten under the ant |
+| tb-0121 | done | 0.75 | Fix confirmed pain: task_board._scope_for keyword matching i | Source/Chimera/** | Already fixed by tb-0116 (same session, before this mint): _ |
+| tb-0113 | done | 0.7 | Fix confirmed pain: 4 meta labels sit in the feature ledger  | docs/world/** | 4 meta ledger entries reclassified with typed records + beca |
+| tb-0115 | done | 0.7 | training_gate: .claude/ footprints are infra, not default-ga | core/training_gate.py | core/training_gate.py: .claude/ added to infra file markers. |
+| tb-0116 | done | 0.7 | task_board: _scope_for keyword match needs word boundaries ( | core/task_board.py | core/task_board.py: _has_word() word-boundary matcher replac |
 | tb-0019 | done | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** | REFUTED phase_da55128aec6d109a:P1. Empirical vs live 160347- |
 | tb-0020 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** | REFUTED phase_62a9bf8fa8e97b42:P1 - DUPLICATE of phase_da551 |
 | tb-0021 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 distiller token-cove | docs/research/** | STALE/ALREADY-DISPOSITIONED: phase_a3193c8fa52533c6:P1 was r |
@@ -101,6 +113,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0101 | done | 0.6 | Pain verdict: The 4 pipeline/meta queue entries (Demo_Regoli | docs/research/** | CONFIRMED phase_e0b68063201645ae:P3 - Demo_RegolithYard_L1 v |
 | tb-0102 | done | 0.6 | Pain verdict: Future sessions attempting Niagara authoring w | docs/research/** | REFUTED phase_31a7a0b115ebf674:P1 - the finding IS durably r |
 | tb-0003 | done | 0.4 | Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie | Verb_Shovel: Implemented ATool_Shovel::Dig() (was rejected e |
+| tb-0114 | done | 0.1 | Pain verdict: FIXTURE for tb-0109 reconciler proof (should a | docs/research/** | auto-closed: pain phase_2f2d78e48da8f355:P2 already disposit |
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |
 | tb-0028 | done | 0.01 | Gauntlet sandbox: haiku-1 | docs/gauntlet/haiku-1/** | docs/gauntlet/haiku-1/tunnel_note.md (one paragraph explaini |
 | tb-0038 | done | 0.01 | Gauntlet sandbox: pi-agent-1 | docs/gauntlet/pi-agent-1/** | docs/gauntlet/pi-agent-1/tunnel_note.md |
@@ -109,11 +122,11 @@ so claimed tasks are safe to run in parallel.
 | tb-0069 | abandoned | 0.9 | Witness & collapse: Sky_Moon_Model | editor:open; excl:pie |  |
 | tb-0070 | abandoned | 0.9 | Witness & collapse: Sky_Moon_Material | editor:open; excl:pie |  |
 | tb-0071 | abandoned | 0.9 | Witness & collapse: Sky_Sun_Lighting | editor:open; excl:pie |  |
-| tb-0082 | abandoned | 0.8 | Build toward the seed: FFootstepEvent | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0083 | abandoned | 0.8 | Build toward the seed: FGestureEvent | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0084 | abandoned | 0.75 | Build toward the seed: UWeatherSubsystem | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0085 | abandoned | 0.75 | Build toward the seed: AErisaidActor | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0086 | abandoned | 0.75 | Build toward the seed: AHabitatActor | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0087 | abandoned | 0.75 | Build toward the seed: FStar | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0088 | abandoned | 0.75 | Build toward the seed: UStarMemorialSubsystem | Source/Chimera/ProceduralGenerated/UI/** |  |
-| tb-0091 | abandoned | 0.75 | Build toward the seed: USacrificeLogComponent | Source/Chimera/ProceduralGenerated/UI/** |  |
+| tb-0082 | abandoned | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
+| tb-0083 | abandoned | 0.8 | Build toward the seed: FGestureEvent | core/game_code_generator.py; excl:generator |  |
+| tb-0084 | abandoned | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
+| tb-0085 | abandoned | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
+| tb-0086 | abandoned | 0.75 | Build toward the seed: AHabitatActor | core/game_code_generator.py; excl:generator |  |
+| tb-0087 | abandoned | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
+| tb-0088 | abandoned | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
+| tb-0091 | abandoned | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |

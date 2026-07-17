@@ -143,7 +143,10 @@ def classify_task(task) -> str:
     files = " ".join((task or {}).get("resources", {}).get("files", []) or []).lower()
     if any(m in files for m in GAME_MARKERS):
         return "game"
-    if files and ("core/" in files or "docs/" in files):
+    # .claude/ (workflows, skills, settings) is harness infrastructure — without
+    # this marker a .claude-footprinted fix falls to the default-game catchall
+    # and gets asked to enroll in the curriculum (caught live: tb-0111).
+    if files and ("core/" in files or "docs/" in files or ".claude/" in files):
         return "infra"
     return "game"  # default: an unclassified named piece is treated as game work
 

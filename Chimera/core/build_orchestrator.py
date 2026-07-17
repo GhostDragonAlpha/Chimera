@@ -596,7 +596,12 @@ class BuildOrchestrator:
             if m:
                 existing_modules.add(m.group(1))
         
-        required_modules = ["GameplayAbilities", "Niagara", "NiagaraCore"]
+        # UMG/Slate/SlateCore: generate_gesture_wheel_files emits a UUserWidget
+        # unconditionally, and FReply::Handled() links against SlateCore — these
+        # are structural deps of generator output, not DSL content (LNK2019
+        # caught 2026-07-17 on the first honest UBT pass over 74a3280).
+        required_modules = ["GameplayAbilities", "Niagara", "NiagaraCore",
+                            "UMG", "Slate", "SlateCore"]
         
         if "technical" in dsl_data and "module_dependencies" in dsl_data["technical"]:
             for dep in dsl_data["technical"]["module_dependencies"]:
@@ -609,13 +614,23 @@ class BuildOrchestrator:
             print("Build.cs already has all required modules")
             return
         
-        # Insert missing modules before the closing });
+        # Insert missing modules before the closing }); of the
+        # PublicDependencyModuleNames block ONLY — Build.cs has several
+        # AddRange blocks (include-path arrays), and a bare '});' match
+        # used to insert module names into every one of them (caught live
+        # 2026-07-17: UMG/Slate/SlateCore landed in all five blocks).
         out_lines = []
+        in_deps = False
+        inserted = False
         for line in lines:
-            if line.rstrip() == '\t\t});':
+            if 'PublicDependencyModuleNames.AddRange' in line:
+                in_deps = True
+            if in_deps and not inserted and line.rstrip() == '\t\t});':
                 for mod in missing:
                     out_lines.append(f'\t\t\t"{mod}",\n')
                     print(f"Added {mod} to Build.cs")
+                inserted = True
+                in_deps = False
             out_lines.append(line)
         
         with open(build_cs_path, 'w', encoding='utf-8') as f:

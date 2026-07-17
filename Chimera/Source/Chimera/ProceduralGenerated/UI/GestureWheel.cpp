@@ -15,7 +15,7 @@ void UGestureWheel::NativeConstruct()
 	Super::NativeConstruct();
 
 	// Register TAB key handlers via the owning Pawn/Character
-	if (APlayerController* PC = GetOwningPlayerClient())
+	if (APlayerController* PC = GetOwningPlayer())
 	{
 	    // Wheel is controlled by the pawn's input binding;
 	    // this widget simply provides the UI and delegates.
@@ -31,7 +31,7 @@ void UGestureWheel::OpenWheel()
 {
 	if (bIsOpen) return;
 	bIsOpen = true;
-	if (WheelOverlay) WheelOverlay->SetVisibility(true);
+	if (WheelOverlay) WheelOverlay->SetVisibility(ESlateVisibility::Visible);
 	OnWheelVisibilityChanged.Broadcast(true);
 }
 
@@ -39,7 +39,7 @@ void UGestureWheel::CloseWheel()
 {
 	if (!bIsOpen) return;
 	bIsOpen = false;
-	if (WheelOverlay) WheelOverlay->SetVisibility(false);
+	if (WheelOverlay) WheelOverlay->SetVisibility(ESlateVisibility::Collapsed);
 	OnWheelVisibilityChanged.Broadcast(false);
 }
 
@@ -54,7 +54,7 @@ void UGestureWheel::CommitGesture(AActor* Target)
 	if (Target == nullptr) Target = CurrentTarget;
 
 	FGestureEvent Event;
-	Event.From = this->GetOwningPlayerClient() ? this->GetOwningPlayerClient()->GetPawn() : nullptr;
+	Event.From = GetOwningPlayer() ? GetOwningPlayer()->GetPawn() : nullptr;
 	Event.To = Target;
 	Event.Gesture = static_cast<EChimeraGesture>(SelectedSlotIndex);
 

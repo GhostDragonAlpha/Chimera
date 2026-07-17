@@ -607,7 +607,7 @@ class GameCodeGenerator:
         cpp_content += '{\n'
         cpp_content += '\tSuper::NativeConstruct();\n\n'
         cpp_content += '\t// Register TAB key handlers via the owning Pawn/Character\n'
-        cpp_content += '\tif (APlayerController* PC = GetOwningPlayerClient())\n'
+        cpp_content += '\tif (APlayerController* PC = GetOwningPlayer())\n'
         cpp_content += '\t{\n'
         cpp_content += "\t    // Wheel is controlled by the pawn's input binding;\n"
         cpp_content += '\t    // this widget simply provides the UI and delegates.\n'
@@ -625,7 +625,7 @@ class GameCodeGenerator:
         cpp_content += '{\n'
         cpp_content += '\tif (bIsOpen) return;\n'
         cpp_content += '\tbIsOpen = true;\n'
-        cpp_content += '\tif (WheelOverlay) WheelOverlay->SetVisibility(true);\n'
+        cpp_content += '\tif (WheelOverlay) WheelOverlay->SetVisibility(ESlateVisibility::Visible);\n'
         cpp_content += '\tOnWheelVisibilityChanged.Broadcast(true);\n'
         cpp_content += '}\n\n'
 
@@ -634,7 +634,7 @@ class GameCodeGenerator:
         cpp_content += '{\n'
         cpp_content += '\tif (!bIsOpen) return;\n'
         cpp_content += '\tbIsOpen = false;\n'
-        cpp_content += '\tif (WheelOverlay) WheelOverlay->SetVisibility(false);\n'
+        cpp_content += '\tif (WheelOverlay) WheelOverlay->SetVisibility(ESlateVisibility::Collapsed);\n'
         cpp_content += '\tOnWheelVisibilityChanged.Broadcast(false);\n'
         cpp_content += '}\n\n'
 
@@ -650,7 +650,7 @@ class GameCodeGenerator:
         cpp_content += '{\n'
         cpp_content += '\tif (Target == nullptr) Target = CurrentTarget;\n\n'
         cpp_content += '\tFGestureEvent Event;\n'
-        cpp_content += '\tEvent.From = this->GetOwningPlayerClient() ? this->GetOwningPlayerClient()->GetPawn() : nullptr;\n'
+        cpp_content += '\tEvent.From = GetOwningPlayer() ? GetOwningPlayer()->GetPawn() : nullptr;\n'
         cpp_content += '\tEvent.To = Target;\n'
         cpp_content += '\tEvent.Gesture = static_cast<EChimeraGesture>(SelectedSlotIndex);\n\n'
         cpp_content += '\tOnGestureCommitted.Broadcast(Event);\n'

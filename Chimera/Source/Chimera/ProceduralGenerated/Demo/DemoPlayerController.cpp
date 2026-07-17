@@ -12,7 +12,7 @@
 #include "../Suit/SuitLifeSupportComponent.h"
 #include "../Shelter/ShelterHabitatComponent.h"
 #include "../UI/WID_O2HUD.h"
-#include "ProceduralGenerated/VFX/ErisaidResonanceVFXComponent.h"
+#include "../VFX/ErisaidResonanceVFXComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -128,7 +128,7 @@ void ADemoPlayerController::EnsureSuitLifeSupport(APawn* InPawn)
 
 void ADemoPlayerController::EnsureResonanceVFX(APawn* InPawn)
 {
-	// Erisaid Resonance VFX — the visual feedback layer for the player's suit.
+	// Erisaid Resonance VFX ï¿½ the visual feedback layer for the player's suit.
 	// Attach it to the possessed pawn so resonance visuals are live from first possess (H-34).
 	if (!InPawn || InPawn->FindComponentByClass<UErisaidResonanceVFXComponent>())
 	{

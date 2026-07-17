@@ -8,6 +8,54 @@ Chosen by core.rehearsal (score 0.4, p_success 0.2, evidence: sim:0/1, failure_m
 
 ---
 
+# Session 2026-07-17 continued (fable-1) — reconciler was EATING fix tasks; HEAD didn't compile; WeightShift suite ran for the FIRST TIME
+
+Continuation of the same session after "Is that it?" — the deeper dig found the worst defects yet.
+
+## The reconciler forged done-ness (tb-0109, worst find of the session)
+reconcile_stale_pain_tasks matched ANY task carrying a phase id and closed it once the pain was
+dispositioned — but ripener FIX tasks carry the pain id as provenance and exist BECAUSE the pain
+was confirmed. Every claim auto-closed them as done with ZERO work performed: tb-0103 (WeightShift
+dead tests), tb-0106/0107/0108 all eaten within hours, closures indistinguishable from real ones.
+FIXED: reconciler is now verdict-tasks-only (title prefix, destructive-action-tight). Proof both
+directions: fixture verdict task auto-closed; 4 re-minted fix tasks (tb-0110..0113) survived.
+
+## HEAD did not compile — the 20/20 green trend was stale (builds recorded only when someone builds)
+First honest UBT pass since 2026-07-15 04:16 failed on THREE never-compiled clusters from that
+day's commits (rep-atom text greps had "verified" them; no session ran UBT):
+1. WeightShiftAnimationTests.cpp:303 — UE5.8 moved the automation mask to a GLOBAL
+   (EAutomationTestFlags_ApplicationContextMask, engine header AutomationTest.h:144). Fixed.
+2. GestureWheel — GENERATOR emitted GetOwningPlayerClient (doesn't exist) + SetVisibility(bool).
+   Fixed in generate_gesture_wheel_files, artifact REGENERATED (diff = exactly the 4 fixes).
+   Plus Build.cs lacked UMG/Slate/SlateCore entirely (LNK2019 FReply) — added via
+   build_orchestrator required_modules baseline; the updater itself had a bug (inserted before
+   EVERY '});' — all five AddRange blocks) — fixed to single-block, Build.cs restored + re-updated.
+3. DemoPlayerController.cpp:15 — module-root include (unique in repo); fixed to ../VFX idiom.
+Build 3: UBT Succeeded (mutation_43e7a6d30693; both failures recorded verbatim first).
+
+## WeightShift suite EXECUTED for the first time in its existence → Result={Fail} 2/4
+PASS clamping (2.60<=3.5cm) + overshoot (peak 2.98cm @0.496s); FAIL first-tick response
+(0.04cm < 0.1 — the spring ramps ~0.5s) + FAIL settle (samples initial PRE-swing, assert
+unsatisfiable by construction). tb-0119 minted for the diagnosis (component gain vs test timing).
+**Automation lane finding (phantom pain phase_db1defa161b0e4ed:P1): in-editor Automation RunTests
+stalls at FPS=3 despite the #34 ini fix + AppActivate=True. THE WORKING LANE: UnrealEditor-Cmd
+-ExecCmds "Automation RunTests <suite>" -TestExit "Automation Test Queue Empty" -nullrhi
+-unattended (ran the whole suite in <1s).**
+
+## Also this continuation
+- chimera-task-cycling.js TASK_CONTEXT rewritten under the ANTI-STALENESS INVARIANT (mission +
+  live-read commands, zero baked facts; stale weight_shift_build_fix → generic build_health with
+  stop-if-green rule). node --check OK.
+- 4 meta ledger entries (Demo_RegolithYard_L1, Sleepwalker_System, Pipeline, AAA Quality) →
+  status meta_record with because-edges (proves=RECORDED → phase_abff24b31ea8c308). tb-0113.
+- training_gate: .claude/ footprints now classify infra (tb-0115); _scope_for word-boundary
+  matching (tb-0116, kills bUIld→ui); tb-0121 (ripener re-mint of the already-fixed pain) closed.
+- tb-0079 RELEASED with progress: GestureWheel compiles for the first time since mint; remaining
+  is the real seed gap — TAB-hold input driving the wheel in PIE + witness. tb-0120 open: ripener
+  fix-tasks should carry the real feature field (three closures needed waivers tonight).
+
+---
+
 # Session 2026-07-16 (fable-1) — workflow unjam: 2 gate defects fixed live, 5 pain verdicts, tb-0079 unblocked
 
 Ask was "make my project workflow work well" — worked the conveyor and fixed what it jammed on.
