@@ -8,6 +8,22 @@ Chosen by core.rehearsal (score 0.4, p_success 0.2, evidence: sim:0/1, failure_m
 
 ---
 
+# WORKFLOW: GO FOR EXTERNAL AGENT TEST (2026-07-17, fable-1 final round)
+
+State at handoff: both brains UP (ds4 deepseek-v4-flash 29ms; LM Studio qwen resident/adopted),
+preflight ALL GATES PASS, build GREEN (trend now honest: 18/2 with the two recorded failures),
+board 0 blocked / 5 open all parallel-claimable, editor RUNNING, master prompt updated to match
+live behavior (6 amendments: green-trend trap, real-feature enrollment, footprint provenance +
+scope verb, 8c commandlet automation lane, anti-staleness invariant for dispatch prompts, lead
+UBT rule). Entry path validated end-to-end this hour via dryrun-1 (claim -> packet -> tunnel ->
+release clean). A generic claim serves tb-0079 (p=1.0, UGestureWheel): the CLASS COMPILES now —
+the work is TAB-hold input wiring + verb dispatch + witness, NOT scaffolding (its minted recipe
+still says '0% realized', a mint-time snapshot — declared as phantom pain
+phase_5e8c8870d6c43de7:P1). C++ automation suites: use the nullrhi commandlet lane (MASTER
+ONBOARDING 8c / MCP_PATHWAYS #34 amendment); in-editor Automation RunTests stalls at 3fps.
+
+---
+
 # Session 2026-07-17 continued (fable-1) — reconciler was EATING fix tasks; HEAD didn't compile; WeightShift suite ran for the FIRST TIME
 
 Continuation of the same session after "Is that it?" — the deeper dig found the worst defects yet.

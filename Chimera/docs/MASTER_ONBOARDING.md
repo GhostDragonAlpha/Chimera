@@ -52,7 +52,7 @@ answer. You are not just doing work; you are testing the machine by running it.
 `python -m core.capcom tell "GATE DEFECT: <gate> passed but I never did <X>"`.
 That is the ONLY way its holes are found. A quiet gate is not a passed gate.
 
-**THE FOUR WAYS AGENTS ACTUALLY FAIL HERE** (all four are real; do not repeat them):
+**THE WAYS AGENTS ACTUALLY FAIL HERE** (all are real; do not repeat them):
 - **Silence-as-permission** — skipping a step because nothing complained. A gate that
   didn't stop you did not bless you. Prove each step yourself, explicitly.
 - **"It doesn't exist yet" → release** — for a BUILD task, absence IS the work
@@ -67,6 +67,11 @@ That is the ONLY way its holes are found. A quiet gate is not a passed gate.
   live?** Four measures were computed, written to the artifact, and bound by NOTHING
   (`distance_worst`, `routes_used`, `frame_time_stable`, `robustness`) — half-doing the
   honest thing looks exactly like doing it.
+- **A green trend is not a green HEAD** — builds are recorded only when someone runs
+  UBT. Three 2026-07-15 commits sat "verified" by text-grep rep atoms for TWO DAYS while
+  HEAD failed to compile (never-compiled automation flags, a generator emitting
+  nonexistent API, missing module deps) — the 20/20 trend predated them all. **If your
+  session touched C++, run one real UBT before you claim anything.**
 
 **THE ASYMMETRY — the single most useful sentence here:** *every restrictive branch in
 this codebase is careful and every permissive twin is sloppy.* The reject path filtered
@@ -136,9 +141,13 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
    printing "passing open" (that swallow hid a whole dead organ: `critic.py` raised
    NameError on every call for days).
 5. **TRAINING = the piece you worked** (the task, any size), ENFORCED AT CLOSURE,
-   domain-appropriate: game→curriculum enroll + reps; infra→proof-of-work;
-   research→research gate; witness→it runs training; non-done→nothing.
-   `--training-waiver` for honest exceptions. **TRAIN DATA** (evolve via
+   domain-appropriate: game→curriculum enroll + reps; infra→proof-of-work
+   (`core/`, `docs/`, `.claude/` footprints); research→research gate (Pain-verdict
+   tasks classify here — a verdict's deliverable is knowledge); witness→it runs
+   training; non-done→nothing. `--training-waiver` for honest exceptions.
+   **Enroll the REAL feature, never the chore title** — ripener fix-tasks now carry
+   `feature:` when the pain names exactly one ledger feature; if yours is blank and
+   the work IS about a feature, enroll that feature by its ledger name. **TRAIN DATA** (evolve via
    `docs/objectives/*.json`; iterate the objective, never the artifact); **you
    CANNOT train CODE**. Evaluate honestly (N random restarts, keep the WORST). Rep
    gate = ≥min(200, atoms×25) reps AND last-8-runs each ≥95%.
@@ -150,8 +159,15 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
 7. **BOARD:** claims footprint-DISJOINT (resources: `pie`=the one PIE session,
    headless NEVER claims it; `generator`=the generator file; file globs). The
    wellspring keeps it full; CAPPED at Malcolm's `open_board_tasks` wall (24) — tasks
-   DISPOSABLE (`task_board trim`). Ghost/stale tasks auto-close at claim. Claims
-   auto-reap at 2h TTL; you can't force-release another's lane.
+   DISPOSABLE (`task_board trim`). Stale pain-VERDICT tasks auto-close at claim
+   (FIX tasks never do — a fix task exists BECAUSE its pain was confirmed; the old
+   reconciler ate four of them as done-with-zero-work, 2026-07-17). Claims auto-reap
+   at 2h TTL; you can't force-release another's lane.
+   **Footprints carry PROVENANCE:** resources you declare (at `add`, or via
+   `task_board scope --agent <id> --id tb-N --files "..." --editor ... --exclusive ...`)
+   are marked `scoped=declared` and NEVER rewritten; underived ones are re-derived
+   from title keywords (word-boundary matched). **If your packet's footprint is wrong,
+   `scope` it — narrowing the lane is a first-class verb, not a rule violation.**
    **A "Build toward the seed" task's PREMISE is that the thing does NOT exist —
    absence is the WORK, never a reason to release.** These come from the helm's
    vision gap (`helm targets`, e.g. `realized 0% gap 0.90`): the whole point is that
@@ -184,6 +200,16 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
    REFUSED (exit 1). You are not asked to judge the run, only to RUN it — the simtest
    already settled it, and a relay that can lie is not a relay. (`--from-playtest` DOES
    still take one: that valence is the HUMAN's judgement and nothing can derive it.)
+8c. **C++ AUTOMATION SUITES — use the COMMANDLET lane.** In-editor
+   `Automation RunTests <suite>` stalls at 3 FPS on this box
+   (`FWaitForInteractiveFrameRate` never releases; pathway #34's ini fix + a
+   successful AppActivate were both insufficient, 2026-07-17). The lane that works,
+   whole suite in under a second:
+   `& "C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe"
+   "E:\PythonChimera\Chimera\Chimera.uproject" -ExecCmds="Automation RunTests <suite>"
+   -TestExit="Automation Test Queue Empty" -nullrhi -unattended -nosplash -NoSound
+   -abslog=<your log path>` — then read the suite's OWN result lines from that log
+   (`Test Completed. Result={...}`); the exit code alone can race `-TestExit`.
 9. **RESEARCH — SELF-IMPOSED, EVERY session:** ALWAYS pass postflight `--researched
    "<what you ACTUALLY looked up>"` or `--research-waiver "<reasoned>"`. **The gate
    now REFUSES a topic with no research** (fixed 2026-07-16 — it used to accept any
@@ -306,10 +332,18 @@ get DS4 up, say so explicitly in CAPCOM + your summary; never let it pass unment
 3. **DISPATCH ONE subagent:** unique id (`sub-01`, then `sub-02`…), hand it THIS
    WHOLE DOC + "you are a focused subagent, id `sub-NN`". **Do NOT spawn the next
    until this one has closed AND you've verified + integrated its work.**
+   **ANTI-STALENESS INVARIANT for anything you write into a dispatch prompt:** a
+   prompt carries a STABLE MISSION plus LIVE-READ COMMANDS, never baked state — no
+   counts, no feature lists, no build status, no heuristic ids. A frozen snapshot
+   shipped "14 features await…" unchanged across 4+ dispatches while the live queue
+   moved 15→9→13, and sent an agent chasing a build failure that was already fixed.
+   If you are tempted to paste a fact, paste the COMMAND that prints it.
 4. **WATCH** `capcom brief`: claimed → training BLOCKED/WAIVED → completed.
 5. **VERIFY INDEPENDENTLY** (the job): `git diff` (additive & consistent — nothing
-   still-used deleted) · `rep_engine tend` (green for the RIGHT reason) · C++
-   compile-plausibility by analogy to a working sibling. The Coin: claim↔evidence
+   still-used deleted) · `rep_engine tend` (green for the RIGHT reason) · **if ANY
+   C++ changed this session, run ONE real UBT before integrating** —
+   compile-plausibility-by-analogy passed three broken clusters for two days
+   (2026-07-17); a text-grep atom cannot see a C2838. The Coin: claim↔evidence
    must match, else fiction — DON'T keep it.
 6. **INTEGRATE + CLOSE:** keep genuine work; `git checkout --`/`revert` fiction.
    Commit verified work by-path to master, **state the SHA** (rule 12) — check

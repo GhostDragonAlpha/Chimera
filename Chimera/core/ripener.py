@@ -90,6 +90,18 @@ def confirmed_unaddressed(nodes: list, tasks: list,
     return out
 
 
+def _feature_named_by(nodes, text: str):
+    """The ONE ledger feature a pain text names, or None. Deterministic: scan
+    the text for known feature_name strings; exactly one distinct hit wins.
+    Zero or several (a pain COMPARING features) -> None — a fix task minted
+    without a real subject trains by waiver, never by a guessed enrollment
+    (tb-0120: 'Fix confirmed pain: <chore title>' is not a curriculum subject)."""
+    known = {str(n.get("feature_name")) for n in nodes
+             if n.get("type") == "FeatureUpdate" and n.get("feature_name")}
+    hits = {f for f in known if f and f in text}
+    return hits.pop() if len(hits) == 1 else None
+
+
 def spawn_followups(pain_ids: list = None, since_days: int = FOLLOWUP_SINCE_DAYS,
                     max_new: int = MAX_PER_TEND, dry_run: bool = False) -> list:
     """Turn confirmed pain verdicts into board FIX tasks. pain_ids given
@@ -125,7 +137,8 @@ def spawn_followups(pain_ids: list = None, since_days: int = FOLLOWUP_SINCE_DAYS
             f"with evidence (build/sim/telemetry — never a bare compile), then close via "
             f"postflight. The confirmed claim: {text[:400]}",
             files=["Source/Chimera/**"], editor="none",
-            feature=None, priority=0.75, created_by="pain-verdict")
+            feature=_feature_named_by(nodes, text), priority=0.75,
+            created_by="pain-verdict")
         seeded.append(t["id"])
     if seeded:
         print(f"[ripener] {len(seeded)} confirmed pain(s) -> follow-up fix task(s): "

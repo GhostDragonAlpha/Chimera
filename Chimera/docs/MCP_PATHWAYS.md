@@ -575,6 +575,18 @@ If your task is NOT listed here:
   `control_editor console_command` through the MCP bridge, and poll `Chimera.log` for
   `LogAutomationController`/`LogAutomationTest` result lines with your OWN bounded timeout — the same
   discipline pathway #33 documents for witness beat runs applies here too.
+- **AMENDMENT (2026-07-17, WeightShift suite first-ever run): the ini fix is NOT sufficient on this
+  box.** `bThrottleCPUWhenNotForeground=False` verified present in the right section
+  (`EditorPerProjectUserSettings.ini` [/Script/UnrealEd.EditorPerformanceSettings]), editor launched
+  AFTER it, `AppActivate` returned True — and `FWaitForInteractiveFrameRate` still held `Current FPS=3`
+  for 6+ minutes (phantom pain phase_db1defa161b0e4ed:P1: either UE5.8 changed the throttle path or a
+  bridge-launched editor ignores the setting). **THE LANE THAT WORKS — nullrhi commandlet, whole suite
+  in <1s:** `UnrealEditor-Cmd.exe <uproject> -ExecCmds="Automation RunTests <suite>"
+  -TestExit="Automation Test Queue Empty" -nullrhi -unattended -nosplash -NoSound -abslog=<path>`,
+  then read the suite's OWN `Test Completed. Result={...}` lines from that log — the exit code alone
+  can race `-TestExit` (this section's own earlier caveat, now with the mitigation: require the result
+  lines, not the exit code). Suits headless/unit-style suites (NewObject + logic); anything needing a
+  real viewport still fights the throttle.
 - **Compress game-time, don't wait it out**: `core/sleepwalker.py` gained an `advance_suit_seconds` beat
   action instead of `wait`-ing out the real ~5-6 minute O2 drain/regen curves.
   - **First attempt (FAILED, corrected same session)**: called `USuitLifeSupportComponent::AdvanceLifeSupport(N)`

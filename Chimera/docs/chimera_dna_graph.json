@@ -67558,6 +67558,26 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_a2f5a8265fcb"
+    },
+    {
+      "id": "phase_5e8c8870d6c43de7",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T05:37:09.315054",
+      "phase": "Master prompt refresh + fix-task feature provenance - workflow GO for external agent test",
+      "result": "tb-0120: ripener fix-tasks now carry feature via deterministic ledger-name scan (single-hit=Ground_Sand_Sound, multi/zero-hit=None proven); _task_subject strips Fix-prefixes. tb-0121 closed pre-satisfied (tb-0116 cross-ref). MASTER_ONBOARDING.md: 6 amendments (green-trend-not-green-HEAD failure mode; enroll-the-real-feature; footprint provenance + scope verb + reconciler scoping; 8c commandlet automation lane; anti-staleness invariant for dispatch prompts; lead must UBT when C++ changed). MCP_PATHWAYS #34 dated amendment (ini fix insufficient, nullrhi lane). Dry-run: circadian no-op correct, ds4 UP 29ms deepseek-v4-flash, lm_gateway UP qwen adopted, preflight all gates pass with HONEST build trend 18/2, dryrun-1 claim->packet->tunnel->release validated on tb-0079.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Master prompt refresh + fix-task feature provenance - workflow GO for external agent test",
+      "error_category": "none",
+      "fix_description": "Phase 'Master prompt refresh + fix-task feature provenance - workflow GO for external agent test' complete: tb-0120: ripener fix-tasks now carry feature via deterministic ledger-name scan (single-hit=Ground_Sand_Sound, multi/zero-hit=None proven); _task_subject strips Fix-prefixes. tb-0121 closed pre-satisf",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "tb-0079's minted recipe still reads '0% realized (gap 1.00)' though GestureWheel now compiles and is generator-owned - wellspring recipes are mint-time snapshots and nothing updates them as realization moves; a fresh agent that skips task_progress.md may re-scaffold the widget instead of wiring TAB input. Recipe staleness is the same disease the dispatch-prompt fix cured, one layer down."
+      ],
+      "inheritance": "The workflow is in test-ready state: both brains up, all gates pass, board 0 blocked with 5 parallel-claimable lanes, master prompt matches live behavior. A fresh agent claiming generically gets tb-0079 (p=1, UGestureWheel TAB wiring + witness - GestureWheel now COMPILES, see task_progress.md top). The commandlet lane is the way to run C++ automation suites.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_2ce22e5d46d3"
     }
   ],
   "edges": [
