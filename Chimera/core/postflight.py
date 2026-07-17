@@ -229,6 +229,68 @@ def main():
     except Exception as _gg_e:            # BROKEN: it raised. That is not a pass.
         _gate_broken("Generator Guard", _gg_e)
 
+    # ---------------------------------------------------------------------------
+    # THE GATE STACK WAS OPT-IN, AND NOBODY OPTED IN (fixed 2026-07-17).
+    # ---------------------------------------------------------------------------
+    # Everything below gates on `args.feature and args.status in FINAL`. MEASURED on a
+    # real LEAD session: 9 of 9 postflights passed NO --feature and NO --status. So
+    # Witness, WHY, Visual, Training, Coin and Council DID NOT RUN. Not once. Every
+    # gate this studio has ever built was dead in the flow agents actually use, because
+    # agents postflight a PHASE ("Witness & collapse: Social_Trade") and the gates want
+    # a FEATURE.
+    #
+    # That is the mechanism behind the 76 assertions: the checks that would catch an
+    # unearned `verified` are unreachable from the command everyone runs. A gate you
+    # have to opt into is a suggestion.
+    #
+    # THE FEATURE NAME IS ALREADY IN THE PHASE. "Witness & collapse: Social_Trade".
+    # So derive it — and gate ONLY when the derived name matches a feature whose LEDGER
+    # says it is finalized. That keeps the blast radius exactly where it belongs;
+    # measured against the same session:
+    #   Witness & collapse: Social_Trade          -> REFUSE (verified, why=unasked)
+    #                                                the collapse genuinely never ran
+    #   Witness & collapse: Tool_Scanner_Material -> n/a (needs_refinement — an honest
+    #                                                rejection is not a claim)
+    #   Build toward the seed: ADotCharacter      -> n/a (no finalized status)
+    #   rep_promotion:Game_Feel / SMOKE:          -> n/a (not feature claims)
+    # It refuses the one that overclaimed and nothing else.
+    #
+    # The STATUS comes from the ledger, never from the agent: this is the gate asking
+    # "the record says X is verified — what makes that true?", which is a question
+    # about the RECORD and cannot be dodged by declining to mention it.
+    #
+    # A DERIVED FEATURE GATES; IT NEVER RECORDS. `_derived_feature` exists because my
+    # first cut set args.feature and stopped looking — and line ~677 ALSO reads it, to
+    # `record_feature(args.feature, args.loop, args.status)`. So deriving a name for a
+    # READ-ONLY check would have tripped `--feature requires --loop and --status`
+    # (exit 2), and with --loop present would have WRITTEN A DUPLICATE FeatureUpdate to
+    # the ledger — a name invented for gating, laundered into the record as a claim.
+    # I wired it to the gates and did not ask what else reads it, which is the exact
+    # trap the onboarding names: "half-doing the honest thing looks exactly like doing
+    # it."
+    _derived_feature = False
+    if not args.feature and args.phase:
+        _final = {"verified", "accepted", "observed", "observed_provisional"}
+        _ledger = {}
+        for _n in load_dna_graph().get("nodes", []):
+            if _n.get("type") == "FeatureUpdate" and _n.get("feature_name"):
+                _t = _n.get("timestamp", "")
+                if _n["feature_name"] not in _ledger or _t > _ledger[_n["feature_name"]][1]:
+                    _ledger[_n["feature_name"]] = (_n.get("status"), _t)
+        # after the colon first ("Witness & collapse: Social_Trade"), else any known
+        # feature named anywhere in the phase. Longest match wins — Tool_Scanner_Material
+        # must not resolve to Tool_Scanner.
+        _cand = args.phase.split(":")[-1].strip() if ":" in args.phase else ""
+        _hit = _cand if _cand in _ledger else next(
+            (f for f in sorted(_ledger, key=len, reverse=True) if f and f in args.phase), "")
+        if _hit and _ledger[_hit][0] in _final:
+            args.feature, args.status = _hit, _ledger[_hit][0]
+            _derived_feature = True
+            print(f"[postflight] no --feature given; DERIVED '{_hit}' from the phase — "
+                  f"the ledger says it is '{_ledger[_hit][0]}', so the gate stack applies "
+                  f"(it GATES only; nothing is recorded from a derived name). "
+                  f"Pass --feature explicitly to control this.")
+
     # Witness Gate — a feature can't be recorded verified/observed on a compile
     # alone (H-14: a compile is not proof). Requires witness evidence this session
     # (SimPlaytest/telemetry/observation), --witnessed, or a reasoned
@@ -623,7 +685,11 @@ def main():
         except Exception as e:
             print(f"  !! elimination failed to record: {e}")
 
-    if args.feature:
+    # `not _derived_feature`: a name DERIVED from the phase for gating must never reach
+    # the ledger. The gates above ask "the record says X is verified — what makes that
+    # true?"; recording here would make postflight ANSWER its own question by writing
+    # the claim it was checking.
+    if args.feature and not _derived_feature:
         if args.loop is None or not args.status:
             parser.error("--feature requires --loop and --status")
         fid = record_feature(args.feature, args.loop, args.status)
