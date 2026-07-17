@@ -66496,6 +66496,46 @@
       "links": [],
       "recorded_by": "rep_engine.py",
       "run_id": "run_b7ddd12bd9df"
+    },
+    {
+      "id": "discovery_ebdfd5bbcd915aba",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T02:41:16.064139",
+      "feature": "Witness & collapse: Social_Trade",
+      "campus_sources": [],
+      "web_sources": [
+        "docs/beats/social_trade.beats.json, docs/rep_batteries/Social_Trade.json, simtest_6eda875b25fb7be3 witness evidence for Social_Trade feature"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Witness & collapse: Social_Trade",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Witness & collapse: Social_Trade': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_96d2c220e9bd"
+    },
+    {
+      "id": "phase_62d06230597df4d7",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T02:41:16.449094",
+      "phase": "Witness & collapse: Social_Trade",
+      "result": "simtest_6eda875b25fb7be3: 2/2 beats reached in 'social_trade'. Clean walk.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness & collapse: Social_Trade",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness & collapse: Social_Trade' complete: simtest_6eda875b25fb7be3: 2/2 beats reached in 'social_trade'. Clean walk.",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_96d2c220e9bd"
     }
   ],
   "edges": [
