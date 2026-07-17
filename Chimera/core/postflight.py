@@ -314,7 +314,33 @@ def main():
                 feature=(getattr(args, "feature", "") or ""),
                 status=args.status,
                 waiver=getattr(args, "why_waiver", "") or "")
-            if _yg_state in ("dead_end", "unasked") and _yg_enforced():
+            # DERIVED = a MENTION, and a mention is ASKED, never sentenced (2026-07-17).
+            # Proven in a membrane before this landed: the refusal's own escape path can
+            # be legitimately closed — Social_Trade's collapse is blocked by the rep
+            # gate (4/50 reps, and reps accumulate across NIGHTS by design), so an agent
+            # whose witness ran clean and whose collapse was honestly refused could not
+            # even postflight that partial result, because its phase NAMED a feature
+            # whose OLD record is a lie the agent did not write and cannot fix today.
+            # Block on a mention and every honest bystander is hostage to the worst
+            # record it stands near — the observation queue jams wholesale.
+            # So: derived -> the question is asked LOUDLY and posted to CAPCOM, every
+            # time, until the record is repaired. Explicit claim -> refused, as before.
+            # The lie still cannot PROGRESS: record_observation, collapse_proxy and
+            # task closure keep their hard gates at the write-moments.
+            if _yg_state in ("dead_end", "unasked") and _derived_feature:
+                print(f"\n?? WHY GATE (advisory — feature was DERIVED, not claimed): "
+                      f"{args.feature} '{args.status}' — {_yg_detail}")
+                print("   The RECORD is unbacked. This will be said on every mention "
+                      "until someone repairs it; it does not block THIS postflight, "
+                      "because you did not write that record by mentioning it.")
+                try:
+                    from core.capcom import post_safe as _yg_ps
+                    _yg_ps("why", f"UNBACKED RECORD (mentioned in '{args.phase[:48]}'): "
+                           f"{args.feature} is '{args.status}' with {_yg_detail[:100]}",
+                           level="warn", source="why-gate")
+                except Exception:
+                    pass
+            elif _yg_state in ("dead_end", "unasked") and _yg_enforced():
                 print(f"\n!! WHY GATE - refused: {args.feature} '{args.status}' — {_yg_detail}")
                 print(_yg_guide)
                 try:
