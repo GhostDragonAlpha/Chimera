@@ -69886,6 +69886,71 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_bc6a4d4e6001"
+    },
+    {
+      "id": "discovery_f9a5dda46e5e5c01",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T21:04:21.464195",
+      "feature": "Fix 1 red rep atom(s): Sky_Loop_Realization",
+      "campus_sources": [],
+      "web_sources": [
+        "docs/world/reps.db, docs/rep_batteries/Sky_Loop_Realization.json, core/rep_engine.py gen_curriculum function, Python/realize_sky_loop.py"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Fix 1 red rep atom(s): Sky_Loop_Realization",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Fix 1 red rep atom(s): Sky_Loop_Realization': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_b60a921800f7"
+    },
+    {
+      "id": "discovery_5dc2e295b56eea96",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T21:04:34.681948",
+      "feature": "Fix 1 red rep atom(s): Sky_Loop_Realization",
+      "campus_sources": [],
+      "web_sources": [
+        "docs/world/reps.db, docs/rep_batteries/Sky_Loop_Realization.json, core/rep_engine.py gen_curriculum function, Python/realize_sky_loop.py"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Fix 1 red rep atom(s): Sky_Loop_Realization",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Fix 1 red rep atom(s): Sky_Loop_Realization': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_92e0d79546bf"
+    },
+    {
+      "id": "phase_4f022935591d56bf",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T21:04:35.050113",
+      "phase": "Fix 1 red rep atom(s): Sky_Loop_Realization",
+      "result": "prune removed identity atom atom_2100bcb11f34 for Sky_Loop_Realization; battery now has 1 atom (enrolled-atom only); tend shows 52 passing batteries, 1 failing (subsystem_Audio) - Sky_Loop_Realization is no longer failing",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Fix 1 red rep atom(s): Sky_Loop_Realization",
+      "error_category": "none",
+      "fix_description": "Phase 'Fix 1 red rep atom(s): Sky_Loop_Realization' complete: prune removed identity atom atom_2100bcb11f34 for Sky_Loop_Realization; battery now has 1 atom (enrolled-atom only); tend shows 52 passing batteries, 1 failing (subsystem_Audio) - Sky_Loop_Realization",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "Fixed STALE probe by adding Sky_Loop_Realization to META_WORKFLOW_FEATURES in core/rep_engine.py and pruning the identity atom from the battery.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_92e0d79546bf"
     }
   ],
   "edges": [
