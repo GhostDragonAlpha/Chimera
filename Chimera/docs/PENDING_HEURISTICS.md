@@ -520,3 +520,20 @@ Wait, looking at the
 - evidence: observation_6df7bf32c69dc5ff
 - sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_66602b2b8529179a
 - draft_rule: Investigate human_rejection sky_atmosphere_scattering; verify test harness and b
+
+<!-- distilled 2026-07-17T03:37:16Z -->
+## H-48: human_rejection: Tool_Scanner_Model
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-16T15:21:04
+- proposed_organ: claude_md
+- evidence: observation_b1c08c983da0e237
+- sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_df1a03ae03c7e517
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-49: human_rejection: Tool_Scanner_Material
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-17T01:29:07
+- proposed_organ: claude_md
+- evidence: observation_92639a8143037cac
+- sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_55695e524afd4f24
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
