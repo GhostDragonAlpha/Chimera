@@ -929,12 +929,26 @@ def _mutate_feature_complete(details: dict) -> str:
     # structural fact any reader can see, instead of a line on stderr that scrolled
     # past months ago. A node with no because-edge is an ASSERTION. That is now
     # something the graph knows about itself.
+    # AND ITS OWN WHY MUST RESOLVE (2026-07-16). The first cut of this block tested
+    # `and n.get("derived_from")` — TRUTHINESS — because that is what the scan I
+    # replaced did, and I rewrote everything around it while keeping the defect at its
+    # centre. It is the exact bug this session exists to close, written by the person
+    # closing it.
+    #
+    # The consequence was precise: record_feature("System_Economy", "verified") would
+    # find the Observation citing `session_continuous_workflow_20260706` (truthy!), and
+    # write `claim --because(MEASURED)--> observation`. The claim would then WALK TO
+    # PHYSICS through a fabrication — laundering exactly what why.backfill refuses.
+    #
+    # An Observation whose own why does not resolve cannot back a claim. The evidence
+    # for the evidence has to exist, all the way down, or the chain is decoration.
+    _ids = {n.get("id") for n in nodes}
     _evidence = None
     if status in ("verified", "accepted"):
         for n in nodes:                 # newest first: the freshest evidence is the
             if (n.get("type") == "Observation"          # one being cited (H-19)
                     and n.get("feature_name") == feature_name
-                    and n.get("derived_from")):
+                    and n.get("derived_from") in _ids):
                 if _evidence is None or n.get("timestamp", "") > _evidence.get("timestamp", ""):
                     _evidence = n
         if _evidence is None:
@@ -970,18 +984,31 @@ def _mutate_feature_complete(details: dict) -> str:
 
     nodes.append(mutation_node)
 
-    # The why, kept. `proves` is MEASURED because an Observation with derived_from is
-    # attributed to a simtest — the engine ran and something read the world back. That
-    # is the ONLY class of reason that can terminate a why-chain in PHYSICS, and it is
-    # exactly the distinction the old scan collapsed by asking a yes/no question
-    # ("has_evidence?") about a thing whose whole meaning is WHAT KIND of evidence.
+    # The why, kept — and it proves RECORDED, NOT MEASURED.
+    #
+    # My first cut wrote MEASURED here, justified in a comment as "an Observation with
+    # derived_from is attributed to a simtest, so the engine read the world back."
+    # THAT IS ASKING WHY ONCE AND CALLING THE ANSWER PROOF — the precise habit this
+    # whole change exists to break, committed at the centre of the change. It collapses
+    # two hops into one and TERMINATES THE CHAIN AT A WRITTEN VERDICT.
+    #
+    # An Observation is an agent writing down a judgement. What reaches physics is the
+    # SimPlaytest it cites, one hop further on. So:
+    #
+    #     claim --because(RECORDED)--> Observation --because(MEASURED)--> SimPlaytest
+    #       "keep asking"                              => PHYSICS => YES
+    #
+    # The distinction is load-bearing, not pedantic: with MEASURED here, an Observation
+    # later found to rest on a fabrication STILL leaves the claim's edge reading
+    # MEASURED, and the chain lies with a straight face. With RECORDED, the walk has to
+    # go and look, every time, and finds nothing to stand on.
     if _evidence is not None:
         mutation_node["links"] = [_evidence["id"]]
         edges.append(because_edge(
             claim=mutation_node["id"],
             evidence=_evidence["id"],
             question=f"WHY is {feature_name} '{status}'?",
-            proves="MEASURED",
+            proves="RECORDED",
         ))
 
     save_dna_graph({"nodes": nodes, "edges": edges})
