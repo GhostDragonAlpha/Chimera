@@ -40,6 +40,7 @@ void UNPCTradeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	{
 		if (!bIsTradingActive)
 		{
+			// Witness marker: sleepwalker log_contains expects key on this exact string.
 			UE_LOG(LogTemp, Log, TEXT("[NPCTrade] Player within trade range of %s (distance: %.1f)"),
 				*GetOwner()->GetName(), GetDistanceToPlayer());
 		}
@@ -64,6 +65,7 @@ void UNPCTradeComponent::StartTradeInteraction()
 	if (!bIsTradingActive && IsPlayerWithinRange())
 	{
 		bIsTradingActive = true;
+		// Witness marker: sleepwalker log_contains expects key on this exact string.
 		UE_LOG(LogTemp, Log, TEXT("[NPCTrade] Trade interaction started on %s with player: %s"),
 		       *GetOwner()->GetName(), *GetNameSafe(PlayerActor));
 	}

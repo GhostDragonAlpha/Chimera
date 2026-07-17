@@ -243,6 +243,7 @@ void ADemoPlayerController::StopCrouch()
 void ADemoPlayerController::Interact()
 {
 	if (PickupInteraction && PickupInteraction->TryInteract())
+		// Witness marker: sleepwalker log_contains expects key on this exact string.
 	{
 		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Interact action triggered - picked up '%s'"), *PickupInteraction->HeldItemName.ToString());
 	}
