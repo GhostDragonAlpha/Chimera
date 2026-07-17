@@ -3401,6 +3401,489 @@
       "line": 124,
       "quote": "FAnimSubsystemInstance_NodeRelevancy& RelevancySubsystem = CastChecked<UAnimInstance>(InContext.GetAnimInstanceObject())->GetSubsystem<FAnimSubsystemInstance_NodeRelevancy>();",
       "at": "2026-07-15T19:11:55.921Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\PawnMovementComponent.h",
+      "line": 57,
+      "quote": "* @see APawn::AddMovementInput()",
+      "at": "2026-07-17T13:52:14.522Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Pawn.h",
+      "line": 499,
+      "quote": "ENGINE_API virtual void AddMovementInput(FVector WorldDirection, float ScaleValue = 1.0f, bool bForce = false);",
+      "at": "2026-07-17T13:52:14.522Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Pawn.h",
+      "line": 506,
+      "quote": "* @see AddMovementInput(), GetLastMovementInputVector(), ConsumeMovementInputVector()",
+      "at": "2026-07-17T13:52:14.522Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Pawn.h",
+      "line": 518,
+      "quote": "* @see AddMovementInput(), GetPendingMovementInputVector(), ConsumeMovementInputVector()",
+      "at": "2026-07-17T13:52:14.522Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\Matrix.h",
+      "line": 274,
+      "quote": "[[nodiscard]] inline TVector<T> GetUnitAxis(EAxis::Type Axis) const;",
+      "at": "2026-07-17T13:52:14.675Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 189,
+      "quote": "FVector GetUp() const\t\t{ return Transform.GetUnitAxis(EAxis::Z); }",
+      "at": "2026-07-17T13:52:14.675Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 190,
+      "quote": "FVector GetFront() const\t{ return Transform.GetUnitAxis(EAxis::Y); }",
+      "at": "2026-07-17T13:52:14.675Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AudioDevice.h",
+      "line": 191,
+      "quote": "FVector GetRight() const\t{ return Transform.GetUnitAxis(EAxis::X); }",
+      "at": "2026-07-17T13:52:14.675Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Misc\\ExpressionParserTypes.h",
+      "line": 314,
+      "quote": "/** Jump table specifying how to execute an operator with different types */",
+      "at": "2026-07-17T13:52:14.813Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 1558,
+      "quote": "void ACharacter::Jump()",
+      "at": "2026-07-17T13:52:14.813Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 1153,
+      "quote": "// For subsequent frames, during the time Jump is held, it depends...",
+      "at": "2026-07-17T13:52:14.813Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 8066,
+      "quote": "// Jump",
+      "at": "2026-07-17T13:52:14.813Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 1564,
+      "quote": "void ACharacter::StopJumping()",
+      "at": "2026-07-17T13:52:14.957Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 13424,
+      "quote": "CharacterOwner->StopJumping();",
+      "at": "2026-07-17T13:52:14.957Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Character.h",
+      "line": 726,
+      "quote": "* Note that if StopJumping() is not called before the max jump hold time is reached,",
+      "at": "2026-07-17T13:52:14.957Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Character.h",
+      "line": 728,
+      "quote": "* best to call StopJumping() when jump input has ceased (such as a button up event).",
+      "at": "2026-07-17T13:52:14.957Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 420,
+      "quote": "CharacterMovement->Crouch(true);",
+      "at": "2026-07-17T13:52:15.098Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 469,
+      "quote": "void ACharacter::Crouch(bool bClientSimulation)",
+      "at": "2026-07-17T13:52:15.098Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 3262,
+      "quote": "void UCharacterMovementComponent::Crouch(bool bClientSimulation)",
+      "at": "2026-07-17T13:52:15.098Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 3513,
+      "quote": "Crouch(false);",
+      "at": "2026-07-17T13:52:15.098Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\CharacterMovementComponentAsync.cpp",
+      "line": 2091,
+      "quote": "//UnCrouch(false);",
+      "at": "2026-07-17T13:52:15.247Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 425,
+      "quote": "CharacterMovement->UnCrouch(true);",
+      "at": "2026-07-17T13:52:15.247Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 486,
+      "quote": "void ACharacter::UnCrouch(bool bClientSimulation)",
+      "at": "2026-07-17T13:52:15.247Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 1384,
+      "quote": "UnCrouch(true);",
+      "at": "2026-07-17T13:52:15.247Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationTestingActor.h",
+      "line": 225,
+      "quote": "virtual const FNavAgentProperties& GetNavAgentPropertiesRef() const override { return NavAgentProps; }",
+      "at": "2026-07-17T13:52:15.400Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystem.cpp",
+      "line": 2244,
+      "quote": "const FNavAgentProperties& AgentProps = NavAgent->GetNavAgentPropertiesRef();",
+      "at": "2026-07-17T13:52:15.400Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystem.cpp",
+      "line": 2308,
+      "quote": "const FNavAgentProperties& AgentProps = MyNavAgent->GetNavAgentPropertiesRef();",
+      "at": "2026-07-17T13:52:15.400Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystem.cpp",
+      "line": 6266,
+      "quote": "const FNavAgentProperties& AgentProps = AsNavAgent->GetNavAgentPropertiesRef();",
+      "at": "2026-07-17T13:52:15.400Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 751,
+      "quote": "SetCrouchedHalfHeight(40.0f);",
+      "at": "2026-07-17T13:52:15.551Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 3247,
+      "quote": "void UCharacterMovementComponent::SetCrouchedHalfHeight(const float NewValue)",
+      "at": "2026-07-17T13:52:15.551Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+      "line": 385,
+      "quote": "UE_DEPRECATED_FORGAME(5.0, \"Public access to this property is deprecated, and it will become private in a future release. Please use SetCrouchedHalfHeight and GetCrouchedHalfHeight instead.\")",
+      "at": "2026-07-17T13:52:15.551Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\CharacterMovementComponent.h",
+      "line": 386,
+      "quote": "UPROPERTY(Category=\"Character Movement (General Settings)\", EditAnywhere, BlueprintReadWrite, BlueprintSetter=SetCrouchedHalfHeight, BlueprintGetter=GetCrouchedHalfHeight, meta=(ClampMin=\"0\", UIMin=\"0\", ForceUnits=cm))",
+      "at": "2026-07-17T13:52:15.551Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\CheatManager.cpp",
+      "line": 210,
+      "quote": "Character->GetCapsuleComponent()->SetCapsuleSize(DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleRadius() * F, DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight() * F);",
+      "at": "2026-07-17T13:52:15.703Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 3275,
+      "quote": "if (CharacterOwner->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight() == CrouchedHalfHeight)",
+      "at": "2026-07-17T13:52:15.703Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 3289,
+      "quote": "CharacterOwner->GetCapsuleComponent()->SetCapsuleSize(DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight());",
+      "at": "2026-07-17T13:52:15.703Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 3295,
+      "quote": "const float OldUnscaledHalfHeight = CharacterOwner->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();",
+      "at": "2026-07-17T13:52:15.703Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Character.cpp",
+      "line": 539,
+      "quote": "CrouchedEyeHeight = CharacterMovement->GetCrouchedHalfHeight() * EyeHeightRatio;",
+      "at": "2026-07-17T13:52:15.855Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 3257,
+      "quote": "float UCharacterMovementComponent::GetCrouchedHalfHeight() const",
+      "at": "2026-07-17T13:52:15.855Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\RecastNavMeshGenerator.cpp",
+      "line": 915,
+      "quote": "const FRotationMatrix ArcRot( ArcRotator );",
+      "at": "2026-07-17T13:52:16.006Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\RecastNavMeshGenerator.cpp",
+      "line": 979,
+      "quote": "const FRotationMatrix ArcRot( ArcRotator );",
+      "at": "2026-07-17T13:52:16.006Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\RandomStream.h",
+      "line": 278,
+      "quote": "FMatrix const DirMat = FRotationMatrix(Dir.Rotation());",
+      "at": "2026-07-17T13:52:16.006Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\RandomStream.h",
+      "line": 328,
+      "quote": "FMatrix const DirMat = FRotationMatrix(Dir.Rotation());",
+      "at": "2026-07-17T13:52:16.006Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AnimationRuntime.h",
+      "line": 613,
+      "quote": "static ENGINE_API FVector MirrorVector(const FVector& V, EAxis::Type MirrorAxis);",
+      "at": "2026-07-17T13:52:16.159Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AnimationRuntime.h",
+      "line": 621,
+      "quote": "static ENGINE_API FQuat MirrorQuat(const FQuat& Q, EAxis::Type MirrorAxis);",
+      "at": "2026-07-17T13:52:16.159Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\AnimationRuntime.h",
+      "line": 640,
+      "quote": "static ENGINE_API void MirrorPose(FCompactPose& Pose, EAxis::Type MirrorAxis, const TArray<FCompactPoseBoneIndex>& CompactPoseMirrorBones, const TCustomBoneIndexArray<FQuat, FCompactPoseBoneIndex>& ComponentSpaceRefRotations);",
+      "at": "2026-07-17T13:52:16.159Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 236,
+      "quote": "// Made ACameraActor use a UCameraComponent for parameter storage, etc...",
+      "at": "2026-07-17T13:52:16.309Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 490,
+      "quote": "// Rename UCameraComponent::bUseControllerViewRotation to bUsePawnViewRotation (and change the default value)",
+      "at": "2026-07-17T13:52:16.309Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 495,
+      "quote": "// Rename UCameraComponent::bUsePawnViewRotation to bUsePawnControlRotation",
+      "at": "2026-07-17T13:52:16.309Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 42,
+      "quote": "class UCameraComponent;",
+      "at": "2026-07-17T13:52:16.309Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 489,
+      "quote": "// Rename USpringArmComponent::bUseControllerViewRotation to bUsePawnViewRotation,",
+      "at": "2026-07-17T13:52:16.461Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 494,
+      "quote": "// Rename USpringArmComponent::bUsePawnViewRotation to bUsePawnControlRotation",
+      "at": "2026-07-17T13:52:16.461Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameFramework\\SpringArmComponent.cpp",
+      "line": 14,
+      "quote": "// USpringArmComponent",
+      "at": "2026-07-17T13:52:16.461Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameFramework\\SpringArmComponent.cpp",
+      "line": 16,
+      "quote": "const FName USpringArmComponent::SocketName(TEXT(\"SpringEndpoint\"));",
+      "at": "2026-07-17T13:52:16.461Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\WorldPartition\\WorldPartitionRuntimeCellTransformerISM.cpp",
+      "line": 31,
+      "quote": "AllowedClasses.Add(AStaticMeshActor::StaticClass());",
+      "at": "2026-07-17T13:52:16.613Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\HUD.h",
+      "line": 343,
+      "quote": "*      TArray<AStaticMeshActor*> ActorsInSelectionRect;",
+      "at": "2026-07-17T13:52:16.613Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\HUD.h",
+      "line": 344,
+      "quote": "* \t\tGetActorsInSelectionRectangle<AStaticMeshActor>(FirstPoint,SecondPoint,ActorsInSelectionRect);",
+      "at": "2026-07-17T13:52:16.613Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\HUD.h",
+      "line": 382,
+      "quote": "*       TArray<AStaticMeshActor*> ActorsInSelectionRect;",
+      "at": "2026-07-17T13:52:16.613Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystemTypes.cpp",
+      "line": 30,
+      "quote": "if (Cast<UStaticMeshComponent>(Hit.Component.Get()))",
+      "at": "2026-07-17T13:52:16.769Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\EngineFwd.h",
+      "line": 104,
+      "quote": "class UStaticMeshComponent;",
+      "at": "2026-07-17T13:52:16.769Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ISMPartition\\ISMComponentDescriptor.h",
+      "line": 29,
+      "quote": "ENGINE_API virtual void InitFrom(const UStaticMeshComponent* Component, bool bInitBodyInstance = true);",
+      "at": "2026-07-17T13:52:16.769Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\ISMPartition\\ISMComponentDescriptor.h",
+      "line": 267,
+      "quote": "static ENGINE_API FISMComponentDescriptor CreateFrom(const TSubclassOf<UStaticMeshComponent>& ComponentClass);",
+      "at": "2026-07-17T13:52:16.769Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavSystemConfigOverride.cpp",
+      "line": 25,
+      "quote": "RootComponent->Mobility = EComponentMobility::Static;",
+      "at": "2026-07-17T13:52:16.923Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavSystemConfigOverride.cpp",
+      "line": 56,
+      "quote": "SpriteComponent->Mobility = EComponentMobility::Static;",
+      "at": "2026-07-17T13:52:16.923Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavMesh\\NavMeshBoundsVolume.cpp",
+      "line": 39,
+      "quote": "GetBrushComponent()->Mobility = EComponentMobility::Static;",
+      "at": "2026-07-17T13:52:16.923Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavLinkRenderingComponent.cpp",
+      "line": 32,
+      "quote": "Mobility = EComponentMobility::Stationary;",
+      "at": "2026-07-17T13:52:16.923Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavigationSystemTypes.cpp",
+      "line": 247,
+      "quote": "&& BodySetup.DefaultInstance.GetCollisionEnabled() == ECollisionEnabled::QueryAndPhysics;",
+      "at": "2026-07-17T13:52:17.070Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\PhysicsEngine\\ShapeElem.h",
+      "line": 45,
+      "quote": ", CollisionEnabled(ECollisionEnabled::QueryAndPhysics)",
+      "at": "2026-07-17T13:52:17.070Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\PhysicsEngine\\ShapeElem.h",
+      "line": 56,
+      "quote": ", CollisionEnabled(ECollisionEnabled::QueryAndPhysics)",
+      "at": "2026-07-17T13:52:17.070Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\PhysicsEngine\\ShapeElem.h",
+      "line": 108,
+      "quote": "void SetCollisionEnabled(ECollisionEnabled::Type InCollisionEnabled) { CollisionEnabled = InCollisionEnabled; }",
+      "at": "2026-07-17T13:52:17.070Z"
     }
   ]
 }

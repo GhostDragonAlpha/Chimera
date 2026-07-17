@@ -68595,6 +68595,53 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_c904ba8e7443"
+    },
+    {
+      "id": "discovery_1a56899ab5fc8a2f",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T15:34:49.247821",
+      "feature": "Build-currency gate: refuse done/postflight when Source/** c",
+      "campus_sources": [],
+      "web_sources": [
+        "Reviewed closure_report.py, agent_tunnel.py, postflight.py for build-currency gate implementation; added Build.bat command + editor-cycle instructions in refusal message when Source/** changed with no newer build; added --build-waiver parameter support"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Build-currency gate: refuse done/postflight when Source/** c",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Build-currency gate: refuse done/postflight when Source/** c': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_3d77b9a2727a"
+    },
+    {
+      "id": "phase_e2ef50e3e27b39b3",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T15:34:49.660800",
+      "phase": "Build-currency gate: refuse done/postflight when Source/** changed with no newer build",
+      "result": "Added build-currency gate to closure_report.py: added Build.bat command + editor-cycle instructions in refusal message when Source/** changed with no newer build; added --build-waiver parameter support for honest exceptions (e.g. header-only doc comment); updated agent_tunnel.py and postflight.py to support --build-waiver",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Build-currency gate: refuse done/postflight when Source/** changed with no newer build",
+      "error_category": "none",
+      "fix_description": "Phase 'Build-currency gate: refuse done/postflight when Source/** changed with no newer build' complete: Added build-currency gate to closure_report.py: added Build.bat command + editor-cycle instructions in refusal message when Source/** changed with no newer build; added --build-waiver parameter suppor",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "<declare one>"
+      ],
+      "inheritance": "<=3 sentences",
+      "pain_verdicts": {
+        "<id>:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_3d77b9a2727a"
     }
   ],
   "edges": [

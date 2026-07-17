@@ -106,6 +106,9 @@ def main():
                         help="Why Gate: reasoned waiver when a finalized claim's why-chain "
                              "genuinely cannot reach PHYSICS or THE HUMAN. Recorded and read — "
                              "'nothing measured it' is the finding, not the exception")
+    parser.add_argument("--build-waiver", default="", dest="build_waiver",
+                        help="Build-currency gate: reasoned waiver when Source/** changed but "
+                             "no build is needed (e.g. header-only doc comment)")
     args = parser.parse_args()
 
     # Research Gate — the mandated research must be EXPLICIT, not silently skipped

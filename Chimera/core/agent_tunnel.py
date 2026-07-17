@@ -379,7 +379,7 @@ def tunnel_heartbeat(agent_id: str) -> dict:
 def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
                 note: str = "", training_waiver: str = "",
                 build_evidence: str = "", witness_evidence: str = "",
-                could_not_verify: str = None, report_waiver: str = "") -> dict:
+                could_not_verify: str = None, report_waiver: str = "", build_waiver: str = "") -> dict:
     """Finish the session: settle the board task, release the editor, return
     what happened (including the prefilled postflight command)."""
     sess = _read_session(agent_id)
@@ -405,7 +405,8 @@ def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
             _st, _detail, _report = _cr_validate(
                 _tsk or {}, sess, result, build_evidence=build_evidence,
                 witness_evidence=witness_evidence,
-                could_not_verify=could_not_verify, waiver=report_waiver)
+                could_not_verify=could_not_verify, waiver=report_waiver,
+                build_waiver=build_waiver)
             print(f"[Closure Report] {_st}: {_detail[:200]}")
             if _st == "missing" and _cr_gate() == "block":
                 raise ValueError(f"CLOSURE REPORT refused — {_detail}")
@@ -462,6 +463,8 @@ def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
     postflight = (f'python -m core.postflight --phase "{sess["task_title"]}" '
                   f'--result "{evidence[:200]}" --inheritance "<=3 sentences" '
                   f'--phantom-pain "<declare one>" --pain-verdict "<id>:still-open"')
+    if build_waiver:
+        postflight += f' --build-waiver "{build_waiver[:100]}"'
     return {"task": task, "outcome": outcome, "postflight": postflight,
             "footprint_warnings": warnings}
 
@@ -559,6 +562,8 @@ def main(argv=None):
                     help="MANDATORY on done: what you could NOT verify, or 'none'")
     px.add_argument("--report-waiver", default="", dest="report_waiver",
                     help="honest exception to the closure report; recorded + CAPCOM'd")
+    px.add_argument("--build-waiver", default="", dest="build_waiver",
+                    help="honest exception for build-currency gate (e.g. header-only doc comment)")
 
     sub.add_parser("status", help="Active tunnel sessions")
     sub.add_parser("tend", help="Close sessions whose claim vanished; free their editor")
@@ -589,7 +594,8 @@ def main(argv=None):
                               build_evidence=getattr(args, "build_evidence", ""),
                               witness_evidence=getattr(args, "witness_evidence", ""),
                               could_not_verify=getattr(args, "could_not_verify", None),
-                              report_waiver=getattr(args, "report_waiver", ""))
+                              report_waiver=getattr(args, "report_waiver", ""),
+                              build_waiver=getattr(args, "build_waiver", ""))
         except (KeyError, ValueError) as e:
             print(f"REFUSED: {e}")
             sys.exit(1)

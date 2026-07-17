@@ -59,9 +59,11 @@ void ADemoPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("DemoCrouch"), IE_Released, this, &ADemoPlayerController::StopCrouch);
 	InputComponent->BindAction(TEXT("DemoInteract"), IE_Pressed, this, &ADemoPlayerController::Interact);
 	InputComponent->BindAction(TEXT("DemoDrop"), IE_Pressed, this, &ADemoPlayerController::DropItem);
-	// TAB input binding for GestureWheel: key_down TAB -> OpenWheel, key_up TAB -> CommitGesture+CloseWheel
-	InputComponent->BindAction(TEXT("Tab"), IE_Pressed, this, &ADemoPlayerController::OnTabPressed);
-	InputComponent->BindAction(TEXT("Tab"), IE_Released, this, &ADemoPlayerController::OnTabReleased);
+	// TAB input binding for GestureWheel: key_down TAB -> OpenWheel, key_up TAB -> CommitGesture+CloseWheel.
+	// "DemoGestureWheel" must exist as an ActionMapping in Config/DefaultInput.ini —
+	// binding a bare key name ("Tab") maps to NO action (simtest_457320c3449e9c1f).
+	InputComponent->BindAction(TEXT("DemoGestureWheel"), IE_Pressed, this, &ADemoPlayerController::OnTabPressed);
+	InputComponent->BindAction(TEXT("DemoGestureWheel"), IE_Released, this, &ADemoPlayerController::OnTabReleased);
 	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] DemoPlayerController input bound (WASD/mouse/space/C/interact/drop/TAB-gesture-wheel)"));
 }
 

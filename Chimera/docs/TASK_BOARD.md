@@ -1,15 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T14:50:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T15:32:00+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0131 | claimed | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | fable-1 |
-| tb-0128 | open | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… |  |
 | tb-0123 | open | 0.8 | Fix 6 tautological beats in 4 files (false-accept evidence r | docs/beats/** |  |
 | tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie |  |
 | tb-0119 | open | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** |  |
@@ -63,6 +62,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0132 | done | 0.9 | Typed closure report at tunnel exit (subsumes tb-0128 build- | core/closure_report.py, core/agent_tunnel.py… | Typed closure report LIVE across both paths (tunnel + raw):  |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
+| tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
 | tb-0104 | done | 0.8 | training_gate: classify Pain-verdict tasks as research (misr | core/game_code_generator.py; excl:generator | classify_task patched (core/training_gate.py): pain-verdict  |
 | tb-0105 | done | 0.8 | task_board: rescope clobbers explicitly-declared footprints  | core/task_board.py | core/task_board.py: (1) _new_task stamps scoped=declared whe |

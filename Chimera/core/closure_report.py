@@ -170,7 +170,7 @@ _WITNESS_TYPES = {"SimPlaytest", "Observation"}
 
 def validate(task: dict, session: dict, result: str, build_evidence: str = "",
              witness_evidence: str = "", could_not_verify: str = None,
-             waiver: str = "") -> tuple:
+             waiver: str = "", build_waiver: str = "") -> tuple:
     """(status, detail, report). status: 'pass' | 'waived' | 'missing'.
     The caller refuses closure on 'missing' when gate_mode() == 'block'."""
     changes = source_changes(session)
@@ -183,6 +183,7 @@ def validate(task: dict, session: dict, result: str, build_evidence: str = "",
         "action_log": action_log(session),
         "validated": {},
         "waiver": (waiver or "").strip(),
+        "build_waiver": (build_waiver or "").strip(),
         "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
     misses = []
@@ -201,7 +202,10 @@ def validate(task: dict, session: dict, result: str, build_evidence: str = "",
                 f'{len(changes["files"])} Source file(s) changed this session but '
                 f'build_evidence names no graph node — run the real UBT, record it '
                 f'(record_build), cite the mutation id. Files: '
-                f'{", ".join(changes["files"][:4])}…')
+                f'{", ".join(changes["files"][:4])}…\n'
+                f'To build: E:\\PythonChimera\\Chimera> run_build.bat build\n'
+                f'Or via UBT directly: dotnet "C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll" '
+                f'Chimera Win64 Development -project="E:\\PythonChimera\\Chimera\\Chimera.uproject" -progress')
             report["validated"]["build"] = "missing"
         else:
             ok_pass = (node.get("error_signature") == "success_no_error"
@@ -212,7 +216,10 @@ def validate(task: dict, session: dict, result: str, build_evidence: str = "",
             if not ok_fresh:
                 misses.append(
                     f'build_evidence {node["id"]} is OLDER than the newest Source '
-                    f'change — a historical green is not a current green; rebuild')
+                    f'change — a historical green is not a current green; rebuild.\n'
+                    f'To build: E:\\PythonChimera\\Chimera> run_build.bat build\n'
+                    f'Or via UBT directly: dotnet "C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll" '
+                    f'Chimera Win64 Development -project="E:\\PythonChimera\\Chimera\\Chimera.uproject" -progress')
             report["validated"]["build"] = ("ok" if (ok_pass and ok_fresh)
                                             else "stale-or-failing")
     else:
@@ -245,6 +252,10 @@ def validate(task: dict, session: dict, result: str, build_evidence: str = "",
 
     if not misses:
         return "pass", "closure report validated", report
+    # Check for build-waiver (honest exceptions like header-only doc comment)
+    if report["build_waiver"] and any("build_evidence" in m or "historical green" in m or "names no graph node" in m for m in misses):
+        _capcom(f"report WAIVED on {task.get('id')}: build-waiver — {report['build_waiver'][:70]}", "note")
+        return "waived", report["build_waiver"], report
     if report["waiver"]:
         _capcom(f"report WAIVED on {task.get('id')}: {report['waiver'][:70]}", "note")
         return "waived", report["waiver"], report
