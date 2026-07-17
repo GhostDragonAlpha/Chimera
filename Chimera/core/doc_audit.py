@@ -52,7 +52,7 @@ DOCS = [WS / "CLAUDE.md", WS / "CYCLE_PROMPT.md", WS / "SUCCESSOR_RUNBOOK.md",
         # actually exist. It is current only because the human re-tests it by hand every
         # revision; the machine had never looked at it once. The doc most likely to be
         # OBEYED was the doc least likely to be AUDITED.
-        ROOT / "docs" / "MASTER_ONBOARDING.md",
+        ROOT / "docs" / "MASTER_ONBOARDING.md", ROOT / "docs" / "THREAT_MODEL.md",
         ROOT / "docs" / "GENERATION_PROTOCOL.md", ROOT / "docs" / "SLEEPWALKER_DESIGN.md",
         ROOT / "docs" / "DEMO_ARCHITECTURE.md", ROOT / "docs" / "MCP_PATHWAYS.md",
         WS / ".roo" / "rules" / "01-chimera.md", WS / ".roo" / "rules" / "02-traps.md",
