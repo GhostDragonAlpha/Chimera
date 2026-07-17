@@ -90,6 +90,24 @@ write wishes.
 
 ## PROVEN RECIPES (copy exactly)
 
+- **Postflight refused you with `!! WHY GATE`** — it means the claim has no evidence
+  chain that reaches PHYSICS or THE HUMAN. It is NOT saying your work is bad. Do this,
+  in order, and do NOT reach for the waiver:
+  ```powershell
+  python -m core.why --feature <X> --loop        # SEE where the chain stops
+  python -m core.beat_lint --beats docs\beats\<x>.beats.json    # ALWAYS lint first
+  python -m core.sleepwalker --beats docs\beats\<x>.beats.json --session obs_<X>
+  python -m core.collapse_proxy --from-simtest <simtest_id> --valence accepted
+  ```
+  Then re-run postflight. If the chain SHOULD already reach evidence that exists but
+  the link was never recorded: `python -m core.why --backfill --apply`.
+  `--why-waiver "<reason>"` exists and is READ — "nothing measured it" is the finding,
+  not the exception.
+- **Postflight refused you with `RESEARCH GATE ... unwaivable`** — you are on a "Build
+  toward the seed" task. Those CANNOT waive research: the task's premise is that the
+  thing does not exist, so nothing in this repo can supply the answer. Cite real
+  sources: `--researched "UE5.8 <Subsystem> docs; <shipped game that solved it>; DSL bible"`.
+  Every other task can still waive.
 - **Connect to the editor (Python):**
   `from core.telemetry_probe import MCPStdioClient; c = MCPStdioClient(); resp = c.call(tool, args)`
   Editor must be running; bridge port is 8091. Launch editor:
@@ -154,6 +172,18 @@ write wishes.
   promised in 2006, never shipped). The GPU path is `mujoco-warp`. Bodies are NOT
   GPU-batchable (it batches N copies of ONE model) — morphology on CPU, brains on GPU.
 
+- **A STRING IS NOT A CITATION.** `derived_from` / `evidence_ids` name NODE IDS, and
+  every real id is `<type>_<sha256[:16]>` minted by a `record_*` helper. Never type one
+  by hand. 14 live Observations say `verdict=accepted` while citing
+  `session_continuous_workflow_202607…` and `pie_dropactor_20260708` — ids that never
+  existed — because every consumer tested TRUTHINESS, not resolution. Two
+  `evidence_ids` entries are ENGLISH SENTENCES. `record_observation` now REFUSES an
+  unresolvable id; that refusal is correct, and the fix is to run the beat, not to
+  invent an id. **The `record_*` helpers return their REFUSAL as a string — a refusal
+  is not an id; check for the `rejected_` prefix before using a return value.**
+- **NEVER end a why-chain at an LLM.** A model's opinion is another CLAIM, so the walk
+  recurses past it: `VisualVerification` proves RECORDED, not MEASURED. The deleted AAA
+  grader was fraud for exactly this — it terminated at the model's own adjective.
 - Niagara **authoring is broken**: create_niagara_system / add_emitter_to_system /
   add_*_module / set_niagara_parameter all return success and do NOTHING.
   get_niagara_info reports emitterCount=0 even for working systems.
