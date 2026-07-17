@@ -18,5 +18,17 @@
   },
   "desc": "component UChimeraAttunementComponent is spawned/registered in the shipped code OR its generator (H-34)",
   "provenance": "reflection:UCLASS:UChimeraAttunementComponent.h"
+ },
+ {
+  "id": "atom_c1b278791b58",
+  "feature": "subsystem/Audio",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/subsystem__Audio/transcript.json"
+  },
+  "desc": "'subsystem/Audio' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
  }
 ]
