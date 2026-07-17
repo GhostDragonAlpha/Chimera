@@ -537,3 +537,23 @@ Wait, looking at the
 - evidence: observation_92639a8143037cac
 - sample: automated rejection sweep: simulation evidence indicts this feature (1 failing outcome(s)) in simtest_55695e524afd4f24
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-17T03:38:39Z -->
+## H-50: grade_CF: X
+- status: pending
+- kind: grade  |  count: 11  |  last_seen: 2026-07-16T20:41:02
+- proposed_organ: claude_md
+- evidence: professor_grade_ac905fba474a25d0, professor_grade_82edc8d7f573c657, professor_grade_b938fb4036ab29b8, professor_grade_09a3128fe31df8dd, professor_grade_ce42b26ebc8e6140, professor_grade_350c4b5e69351cc1, professor_grade_e0670fd69dcea3fd, professor_grade_e331abf160ee4053
+- sample: [result-grader 40.0/100] correctness 40.0/40: 1/1 tests passed; coverage 1/1 declared criteria | stability 0.0/25: crash evidence or unknown (0/12); fps unmeasu
+- sample: [result-grader 10.0/100] correctness 10.0/40: 1/1 tests passed; coverage 1/4 declared criteria | stability 0.0/25: crash evidence or unknown (0/12); fps unmeasu
+- sample: [result-grader 30.0/100] correctness 30.0/40: 3/3 tests passed; coverage 3/4 declared criteria | stability 0.0/25: crash evidence or unknown (0/12); fps unmeasu
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-51: surprise: gate postflight refused shelter_habitat_materials
+- status: pending
+- kind: surprise  |  count: 3  |  last_seen: 2026-07-17T03:08:57
+- proposed_organ: claude_md
+- evidence: surprise_51840d8c049bd7db, surprise_0fbe4b443a01a026, surprise_95e75709dbfd8690
+- sample: expected 'a finalized claim's why-chain reaches PHYSICS or THE HUMAN' but 'no because-edge at all — NOBODY EVER ASKED why this is verif'
+- sample: expected 'the local model must LOOK at a verified feature (viewport sc' but 'no LM screenshot analysis on record this session'
+- draft_rule: Implement screenshot action and state-capture in sleepwalker beat registry.

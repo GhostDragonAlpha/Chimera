@@ -66846,6 +66846,133 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_6c1fdb5203eb"
+    },
+    {
+      "id": "simtest_50995d727bf1954b",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T03:50:50.753922",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Shelter_Habitat_Lighting",
+      "demo": "shelter_habitat_lighting",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "shelter_habitat_lighting_present",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "Demo_HabitatActor"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Shelter_Habitat_Lighting.json",
+      "temperature": "[SIM] 1/1 beats reached in 'shelter_habitat_lighting'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_Shelter_Habitat_Lighting': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8c9ce4f2c1e6"
+    },
+    {
+      "id": "phase_c99d8966e193c351",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T03:51:22.027598",
+      "phase": "rep_promotion:Sprint_Input/binding",
+      "result": "tier 0 -> 1 (behaves) after 100 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:Sprint_Input/binding",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:Sprint_Input/binding' complete: tier 0 -> 1 (behaves) after 100 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_a938ef6ee5a9"
+    },
+    {
+      "id": "phase_aa80371277dcb610",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T03:51:22.279367",
+      "phase": "rep_promotion:Sprint_Input/harness_parity",
+      "result": "tier 0 -> 1 (behaves) after 100 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:Sprint_Input/harness_parity",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:Sprint_Input/harness_parity' complete: tier 0 -> 1 (behaves) after 100 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_a938ef6ee5a9"
+    },
+    {
+      "id": "phase_1864548d7d23d69c",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T03:51:22.541418",
+      "phase": "rep_promotion:Sprint_Input/state",
+      "result": "tier 0 -> 1 (behaves) after 100 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:Sprint_Input/state",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:Sprint_Input/state' complete: tier 0 -> 1 (behaves) after 100 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_a938ef6ee5a9"
+    },
+    {
+      "id": "discovery_11bf96f9ff70ef93",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T03:51:42.124522",
+      "feature": "Witness & collapse: Shelter_Habitat_Lighting",
+      "campus_sources": [],
+      "web_sources": [
+        "Shelter_Habitat_Lighting feature in DNA graph, ShelterHabitatComponent.cpp SetupHabitatLighting() method, shelter_habitat_material.beats.json for reference beat script pattern"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Witness & collapse: Shelter_Habitat_Lighting",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Witness & collapse: Shelter_Habitat_Lighting': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_b2f2007e86b7"
     }
   ],
   "edges": [

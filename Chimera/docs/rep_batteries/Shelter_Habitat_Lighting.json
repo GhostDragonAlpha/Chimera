@@ -1,0 +1,34 @@
+[
+ {
+  "id": "atom_90cd5dc18393",
+  "feature": "Shelter_Habitat_Lighting",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source",
+    "tests/dsl_grammar",
+    "docs/beats"
+   ],
+   "globs": [
+    "*.*"
+   ],
+   "regex": "(Shelter_Habitat_Lighting|Shelter_Habitat_Lighting|ShelterHabitatLighting)"
+  },
+  "desc": "'Shelter_Habitat_Lighting' surfaces in Source, the DSL spec, or a beat script \u2014 its identity exists somewhere in the game",
+  "provenance": "curriculum:identity"
+ },
+ {
+  "id": "atom_c72e3cbd8f8c",
+  "feature": "Shelter_Habitat_Lighting",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/Shelter_Habitat_Lighting/transcript.json"
+  },
+  "desc": "'Shelter_Habitat_Lighting' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
+ }
+]
