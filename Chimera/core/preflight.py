@@ -152,6 +152,28 @@ def main():
     except Exception:
         pass
 
+    # Why pulse (2026-07-16) — how much of the ledger nobody ever questioned.
+    # A because-edge is the answer to "why is this true?"; no edge means the question
+    # was never PUT, which is narrower and worse than "unverified" (six gates cover
+    # that): there is no answer to have been wrong. Surfaced at START because the Why
+    # Gate refuses at CLOSURE, and an agent should not meet that for the first time
+    # after the work is done.
+    try:
+        from core.graphify_interface import load_dna_graph as _wl
+        _wg = _wl()
+        _claims = [n for n in _wg.get("nodes", [])
+                   if n.get("type") == "FeatureUpdate"
+                   and n.get("status") in ("verified", "accepted", "observed",
+                                           "observed_provisional")]
+        _asked = {e.get("src") for e in _wg.get("edges", []) if e.get("rel") == "because"}
+        _hollow = [n for n in _claims if n.get("id") not in _asked]
+        if _claims:
+            print(f"\n[why] {len(_claims) - len(_hollow)}/{len(_claims)} finalized claim(s) "
+                  f"carry a why-chain; {len(_hollow)} are ASSERTIONS (nobody ever asked)."
+                  + ("  `python -m core.why --assertions`" if _hollow else ""))
+    except Exception:
+        pass
+
     # ds4 deep brain — the OPTIONAL heavy CPU brain (DwarfStar / DeepSeek-V4-Flash).
     # Surfaces only when ONLINE so the operator/lead knows the slow, deep,
     # non-vision brain is available (LM Studio via lm_gateway stays the fast

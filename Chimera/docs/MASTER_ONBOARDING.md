@@ -103,7 +103,20 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
 4. **POSTFLIGHT STACK** (on feature verified/observed; each softenable
    `CHIMERA_*_GATE=warn`): Research (`--researched`/`--research-waiver`) → Generator
    Guard (no dirty generated C++) → Witness (sim/telemetry node; `--witnessed`) →
-   Visual (LM screenshot analysis; `--visual-*`) → Training (enroll+reps / full rep
+   **WHY (`--why-waiver`): the system asks the one word, and it is a TRAVERSAL, not an
+   opinion.** A why IS an EDGE (`A --because--> B`), so the chain WALKS: `claim
+   --because(RECORDED)--> Observation --because(MEASURED)--> SimPlaytest` **=> PHYSICS
+   => YES**. **Exactly two legal terminals** — PHYSICS (a fact; true in an empty
+   universe) and THE HUMAN (taste; the reference, and it is EARNED). **An LLM is NEVER
+   a terminal**: its answer is another claim, so the walk recurses past it. `proves`
+   comes from the CITED NODE'S TYPE, so there is no judgment in it and no LM to
+   fabricate one — it reports WHERE THE CHAIN STOPPED. **Strictly stronger than
+   Witness, and not redundant**: witness asks "does an evidence NODE exist?"
+   (System_Economy PASSES); why asks "does the CHAIN reach a terminal?"
+   (System_Economy REFUSED — its Observation cites a simtest that does not exist).
+   Inspect with `python -m core.why --feature X --loop`; `--assertions` lists every
+   claim nobody ever asked about. **A file existing is not proof — you wrote the file
+   (H-14, H-21).** → Visual (LM screenshot analysis; `--visual-*`) → Training (enroll+reps / full rep
    gate; `--training-waiver`) → Coin (LM judges claim↔evidence BOTH ways) → **Council
    (THE PARACLETE — it ASKS, it does not judge)**: the DEEP brain names the evidence
    that would have to EXIST for your claim, then the GRAPH answers, deterministically.

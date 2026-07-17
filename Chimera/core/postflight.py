@@ -102,6 +102,10 @@ def main():
                         help="Council (second-system) gate: reasoned override when the deep brain "
                              "REJECTS but you have a justified reason to finalize anyway "
                              "(only relevant with CHIMERA_COUNCIL_GATE=block)")
+    parser.add_argument("--why-waiver", default="", dest="why_waiver",
+                        help="Why Gate: reasoned waiver when a finalized claim's why-chain "
+                             "genuinely cannot reach PHYSICS or THE HUMAN. Recorded and read — "
+                             "'nothing measured it' is the finding, not the exception")
     args = parser.parse_args()
 
     # Research Gate — the mandated research must be EXPLICIT, not silently skipped
@@ -268,6 +272,61 @@ def main():
             print(f"[Witness Gate] not installed ({_wg_e}) — passing open")
         except Exception as _wg_e:            # BROKEN: it raised. That is not a pass.
             _gate_broken("Witness Gate", _wg_e)
+
+        # WHY GATE (2026-07-16) — the human: "get the system to guide the agent to ask
+        # these questions automatically, even if we just have to ask one question with
+        # one word: WHY." The loop was built and NOTHING RAN IT; an agent that
+        # remembers to interrogate its own work is not the agent a gate is for. That is
+        # how 150 claims finalized with zero recorded whys.
+        #
+        # Strictly stronger than the Witness Gate above, and not redundant with it:
+        #   witness  "does an evidence NODE exist?"      -> System_Economy PASSES
+        #   why      "does the CHAIN reach a terminal?"  -> System_Economy REFUSED
+        # System_Economy HAS an Observation; that Observation cites a simtest that does
+        # not exist. One checks for a node, the other follows it.
+        #
+        # It renders no verdict (why.py forbids it, rightly): it walks typed edges and
+        # reports where the chain stopped. `proves` comes from the CITED NODE'S TYPE, so
+        # there is no opinion anywhere in it and no LM to fabricate one.
+        try:
+            from core.why_gate import (check as _yg_check, enforced as _yg_enforced,
+                                       GUIDANCE as _yg_guide)
+            _yg_state, _yg_detail = _yg_check(
+                feature=(getattr(args, "feature", "") or ""),
+                status=args.status,
+                waiver=getattr(args, "why_waiver", "") or "")
+            if _yg_state in ("dead_end", "unasked") and _yg_enforced():
+                print(f"\n!! WHY GATE - refused: {args.feature} '{args.status}' — {_yg_detail}")
+                print(_yg_guide)
+                try:
+                    from core.graphify_interface import record_surprise as _yg_rs
+                    _yg_rs(context=f"postflight refused by why gate: {args.feature} -> {args.status}",
+                           reality=_yg_detail,
+                           expectation="a finalized claim's why-chain reaches PHYSICS or THE HUMAN",
+                           source="agent")
+                except Exception:
+                    pass
+                try:
+                    from core.capcom import post_safe as _yg_ps
+                    _yg_ps("why", f"postflight BLOCKED: {args.feature} '{args.status}' — {_yg_detail}",
+                           level="warn", source="why-gate")
+                except Exception:
+                    pass
+                raise SystemExit(1)
+            print(f"[Why Gate] {_yg_state}: {_yg_detail}")
+            if _yg_state == "waived":
+                try:
+                    from core.capcom import post_safe as _yg_ps
+                    _yg_ps("why", f"why WAIVED: {args.feature} {args.status} - {_yg_detail}",
+                           level="note", source="why-gate")
+                except Exception:
+                    pass
+        except SystemExit:
+            raise
+        except ImportError as _yg_e:
+            print(f"[Why Gate] not installed ({_yg_e}) — passing open")
+        except Exception as _yg_e:
+            _gate_broken("Why Gate", _yg_e)
 
         # Visual Gate — the local model must have LOOKED at a verified feature: a
         # feature can't be marked verified/observed without a recorded LM screenshot
