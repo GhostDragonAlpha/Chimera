@@ -66806,6 +66806,46 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_a7a8aae7c352"
+    },
+    {
+      "id": "discovery_978306a0b5e776a7",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T03:14:28.813343",
+      "feature": "LEAD integration + closure: sub-06 tb-0077 Witness & collaps",
+      "campus_sources": [],
+      "web_sources": [
+        "docs/beats/shelter_habitat_material.beats.json; docs/world/dna.db search for Shelter_Habitat_Materials; collapse_proxy output showing evidence 1/2 for Shelter_Habitat_Materials; rep_engine status showing 4 reps tier 0/0"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/LEAD integration + closure: sub-06 tb-0077 Witness & collaps",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'LEAD integration + closure: sub-06 tb-0077 Witness & collaps': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_6c1fdb5203eb"
+    },
+    {
+      "id": "phase_7493d37ba4064a58",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T03:14:29.194285",
+      "phase": "LEAD integration + closure: sub-06 tb-0077 Witness & collapse Shelter_Habitat_Materials",
+      "result": "simtest_f2856885f26a021f: 1/1 beats reached in 'shelter_habitat_material'. Clean walk. + provenance flags for SimPlaytest authenticity (witnessed_by_engine, chronicle_present, witness_authentic)",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/LEAD integration + closure: sub-06 tb-0077 Witness & collapse Shelter_Habitat_Materials",
+      "error_category": "none",
+      "fix_description": "Phase 'LEAD integration + closure: sub-06 tb-0077 Witness & collapse Shelter_Habitat_Materials' complete: simtest_f2856885f26a021f: 1/1 beats reached in 'shelter_habitat_material'. Clean walk. + provenance flags for SimPlaytest authenticity (witnessed_by_engine, chronicle_present, witness_authentic)",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_6c1fdb5203eb"
     }
   ],
   "edges": [
