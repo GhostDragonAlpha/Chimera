@@ -1,0 +1,39 @@
+{
+  "demo": "gesture_wheel",
+  "loop": 5,
+  "settle_s": 6,
+  "_provenance": "GestureWheel beat script for radial social verb menu. Exercises UGestureWheel functionality: TAB-hold to open wheel, release to commit gesture, seven social verbs (Wave, Offer, Refuse, Point, Kneel, Beckon, Thank).",
+  "beats": [
+    {
+      "name": "gesture_wheel_open_close",
+      "features": ["UGestureWheel"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 1.5},
+        {"key_down": "TAB", "hold_s": 2.0},
+        {"wait": 0.5},
+        {"key_up": "TAB"},
+        {"wait": 1.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"pawn_class": "BP_Astronaut_Character_C"}
+      ]
+    },
+    {
+      "name": "gesture_wheel_commit_gesture",
+      "features": ["UGestureWheel"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 1.5},
+        {"key_down": "TAB", "hold_s": 2.0},
+        {"key_up": "TAB"},
+        {"wait": 0.5}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"pawn_class": "BP_Astronaut_Character_C"}
+      ]
+    }
+  ]
+}

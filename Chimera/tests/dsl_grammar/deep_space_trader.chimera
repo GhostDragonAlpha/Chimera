@@ -274,6 +274,21 @@ ui {
     mission_board_ui "Mission_Dashboard" {
         sections = ["available_contracts", "active_missions", "completed_quests"];
     }
+
+    gesture_wheel_ui "GestureWheel" {
+        type = "radial_social_menu";
+        input_key = "TAB";
+        hold_to_open = true;
+        gestures = [
+            {"name": "Wave", "index": 0},
+            {"name": "Offer", "index": 1},
+            {"name": "Refuse", "index": 2},
+            {"name": "Point", "index": 3},
+            {"name": "Kneel", "index": 4},
+            {"name": "Beckon", "index": 5},
+            {"name": "Thank", "index": 6}
+        ];
+    }
 }
 
 gameplay {

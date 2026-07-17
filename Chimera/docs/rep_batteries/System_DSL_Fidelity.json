@@ -518,6 +518,20 @@
   "provenance": "dsl2:deep_space_trader.chimera"
  },
  {
+  "id": "atom_33b5e0dc8a15",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source",
+   "glob": "*.*",
+   "regex": "(input_key|InputKey)"
+  },
+  "desc": "DSL token 'input_key' (deep_space_trader.chimera) surfaces in Source (snake or CamelCase)",
+  "provenance": "dsl2:deep_space_trader.chimera"
+ },
+ {
   "id": "atom_3482d5ff4d23",
   "feature": "System_DSL_Fidelity",
   "tier": 0,
@@ -1414,6 +1428,20 @@
   "provenance": "dsl2:deep_space_trader.chimera"
  },
  {
+  "id": "atom_8ba613606327",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source",
+   "glob": "*.*",
+   "regex": "(hold_to_open|HoldToOpen)"
+  },
+  "desc": "DSL token 'hold_to_open' (deep_space_trader.chimera) surfaces in Source (snake or CamelCase)",
+  "provenance": "dsl2:deep_space_trader.chimera"
+ },
+ {
   "id": "atom_8f48373f25ce",
   "feature": "System_DSL_Fidelity",
   "tier": 0,
@@ -1944,6 +1972,20 @@
   },
   "desc": "DSL token 'weapon_slots' (ship_classes.chimera) surfaces in Source (snake or CamelCase)",
   "provenance": "dsl2:ship_classes.chimera"
+ },
+ {
+  "id": "atom_ba176d5a2db4",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source",
+   "glob": "*.*",
+   "regex": "(gestures|Gestures)"
+  },
+  "desc": "DSL token 'gestures' (deep_space_trader.chimera) surfaces in Source (snake or CamelCase)",
+  "provenance": "dsl2:deep_space_trader.chimera"
  },
  {
   "id": "atom_bbccca2b2bee",
