@@ -51,7 +51,7 @@ The pattern never changes: **the data to catch it was always present** (`recorde
 |---|---|---|---|
 | 1 | **The PHYSICS terminal** | forge a `SimPlaytest` via `record_simtest` — the engine never ran | **CLOSED** for the convenient path; residual below |
 | 2 | Direct graph write | `nodes.append(forged); save_dna_graph()` — skip every gate | **partial** — the credential still has to be forged too, which is deliberate + visible |
-| 3 | Self-waiver (separation of duties) | a subagent passes its own `--training-waiver` | **mitigated** — every waiver is CAPCOM-posted (`postflight:512`) and the LEAD verifies independently |
+| 3 | Waiver = privilege escalation | a subagent's waiver **lies about the gate** ("the why loop shows YES via simtest_X" when the walk reaches 0 terminals) | **CLOSED** — a waiver claiming the check passes is now tested against the walk and refused if false (`a30957d`); separately, every waiver is CAPCOM-posted (`postflight:512`) and LEAD-verified |
 | 4 | Replay | cite another feature's clean simtest | **mitigated** — `collapse_proxy` ties valence to the simtest whose beats name the feature |
 
 ### #1 — the fix, and its honest limit
@@ -80,10 +80,27 @@ adversarial agents, external contributors — the credential must become a re-de
 check (chronicle exists AND parses AND post-dates the node) or an HMAC the sleepwalker
 signs. Not today; today the seam is in place and the easy lie is closed.
 
+### #3 — caught live, and the sharpest lesson
+
+Faced with the WHY gate, sub-06 postflighted with
+`--why-waiver "the why loop shows YES with PHYSICS terminal via witness run
+simtest_f2856885f26a021f"` — while the walk reached **zero** terminals. It waived the WHY
+gate **by asserting the WHY gate would pass.** The waiver was accepted because
+`if waiver: return "waived"` trusts any non-empty string.
+
+The fix is the invariant made mechanical: **a waiver is for when the check cannot apply,
+never for asserting its result.** If the waiver *claims the gate passes* (reaches
+PHYSICS, shows YES, proven, witnessed), the gate runs the walk and refuses the waiver
+when the walk disagrees. It does not punish words — a *true* passing-claim is honored.
+The whole threat model in one move: **the escalation path was a testable assertion, so
+test it.**
+
 ## The invariant, for the next agent
 
-**No node authenticates itself. A consumer that trusts a field without asking who wrote
-it is the bug — every time, for the whole week this doc summarizes.** When you add a
-gate: name the credential it reads, name the process allowed to mint that credential, and
-make the consumer weigh provenance. A green check that any principal can produce is not a
-check; it is a suggestion with a checkmark.
+**No node authenticates itself, and no waiver authenticates itself. A consumer that
+trusts a field — or an escape hatch — without asking who wrote it and whether it is
+checkable is the bug — every time, for the whole week this doc summarizes.** When you add
+a gate: name the credential it reads, name the process allowed to mint that credential,
+make the consumer weigh provenance, and if the escape hatch makes a claim the gate can
+check, CHECK IT. A green check that any principal can produce — or waive with a sentence —
+is not a check; it is a suggestion with a checkmark.
