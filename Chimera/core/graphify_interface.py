@@ -1721,6 +1721,27 @@ def _mutate_simtest(details: dict) -> str:
     total = int(details.get("beats_total") or len(outcomes))
     reached = int(details.get("beats_reached") or
                   sum(1 for o in outcomes if o.get("outcome") == "reached"))
+    # PROVENANCE OF THE TERMINAL (2026-07-17, security reframe). A SimPlaytest is the
+    # PHYSICS terminal of the why-chain — reaching one is YES. So it is the single most
+    # attack-worthy node in the graph, and it was minted by a function that trusts its
+    # caller absolutely: `record_simtest(session, demo, 5, 5, [...])` forges a clean run
+    # the engine never performed, it RESOLVES (it is a real node), and the why-walk
+    # terminates at PHYSICS on a lie. Measured: 2 of 97 live simtests were recorded from
+    # `python -c`, not the sleepwalker — the system could not tell them apart.
+    #
+    # THE ONLY PROCESS THAT MAY WITNESS is the sleepwalker, and it announces itself:
+    # sleepwalker.py sets CHIMERA_AGENT_SIM=1 as a "constitution sentinel" the moment it
+    # imports. That sentinel is the trusted-process marker. Stamp what the caller CANNOT
+    # set for itself honestly — was the engine sentinel present, and does the chronicle
+    # the engine emits actually exist on disk — so a consumer can weigh a terminal by its
+    # origin instead of taking every node's word. This RECORDS, it does not yet refuse:
+    # a hard reject would strand the 12 live runs whose chronicle was archived. The
+    # witness_authentic flag is the credential; a later consumer decides what to trust.
+    import os as _os
+    _tl = str(details.get("timeline_path") or "")
+    _sentinel = _os.environ.get("CHIMERA_AGENT_SIM") == "1"
+    _chronicle_real = bool(_tl) and _os.path.exists(_tl)
+
     dna_graph = load_dna_graph()
     nodes = dna_graph.get("nodes", [])
     edges = dna_graph.get("edges", [])
@@ -1729,12 +1750,18 @@ def _mutate_simtest(details: dict) -> str:
         "type": "SimPlaytest",
         "timestamp": datetime.utcnow().isoformat(),
         "observer": "agent-sim",
+        # The credential. witnessed_by_engine = the trusted-process sentinel was set;
+        # chronicle_present = the engine's own artifact is on disk. A hand-typed forgery
+        # sets neither. recorded_by (stamped by _stamp_provenance) says which process.
+        "witnessed_by_engine": _sentinel,
+        "chronicle_present": _chronicle_real,
+        "witness_authentic": _sentinel and _chronicle_real,
         "session": session,
         "demo": str(details.get("demo") or ""),
         "beats_total": total,
         "beats_reached": reached,
         "outcomes": outcomes,
-        "timeline_path": str(details.get("timeline_path") or ""),
+        "timeline_path": _tl,
         "temperature": str(details.get("temperature") or "")[:400],
         "error_signature": "success_no_error" if reached == total else "sim_beats_failed",
         "template_file": "sleepwalker/beat_run",
@@ -1912,6 +1939,18 @@ def _mutate_observation(details: dict) -> str:
     if _cited is not None:
         _proves = {"SimPlaytest": "MEASURED", "PlaytestObservation": "HUMAN"}.get(
             _cited.get("type"), "RECORDED")
+        # A FORGED TERMINAL DOES NOT REACH PHYSICS (2026-07-17, security reframe). A
+        # SimPlaytest only proves MEASURED if the ENGINE witnessed it. One recorded
+        # from a shell — witnessed_by_engine False — is an agent's assertion wearing
+        # the terminal's clothes, so it proves RECORDED (keep asking), never MEASURED.
+        # Provenance absent entirely (pre-2026-07-17 nodes) is treated as authentic:
+        # they predate the credential and the sleepwalker is their only writer
+        # (measured: 95/97 recorded_by=sleepwalker.py). This DOWNGRADES; it never
+        # blocks — the chain simply refuses to TERMINATE on an unwitnessed claim, which
+        # is the whole point of a terminal that "needs no observer".
+        if (_cited.get("type") == "SimPlaytest"
+                and _cited.get("witnessed_by_engine") is False):
+            _proves = "RECORDED"
         node["links"] = [derived_from]
         edges.append(because_edge(node["id"], derived_from,
                                   "WHY is this observation held?", _proves))

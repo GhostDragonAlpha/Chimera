@@ -1,14 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T02:58:23+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T03:06:20+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0077 | claimed | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie | sub-06 |
 | tb-0078 | open | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0093 | open | 0.6 | Pain verdict: ChimeraMovementComponent.h/.cpp, WeightShiftAn | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* |  |
 | tb-0094 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | core/game_code_generator.py; excl:generator |  |
@@ -51,6 +50,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0074 | done | 0.9 | Witness & collapse: Tool_Scanner_Model | editor:open; excl:pie | simtest_df1a03ae03c7e517: [SIM] 0/1 beats reached in 'tool_s |
 | tb-0075 | done | 0.9 | Witness & collapse: Tool_Scanner_Material | editor:open; excl:pie | Tool_Scanner_Material witness & collapse: simtest_55695e524a |
 | tb-0076 | done | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie | simtest_6eda875b25fb7be3: 2/2 beats reached in 'social_trade |
+| tb-0077 | done | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie | simtest_f2856885f26a021f: 1/1 beats reached in 'shelter_habi |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
 | tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
 | tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
