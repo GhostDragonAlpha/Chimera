@@ -294,20 +294,6 @@
   "provenance": "dsl2:deep_space_trader.chimera"
  },
  {
-  "id": "atom_1cdc6326f472",
-  "feature": "System_DSL_Fidelity",
-  "tier": 0,
-  "kind": "headless",
-  "probe": {
-   "type": "tree_contains",
-   "root": "Source",
-   "glob": "*.*",
-   "regex": "(Game_Feel|GameFeel)"
-  },
-  "desc": "DSL token 'Game_Feel' (deep_space_trader.chimera) surfaces in Source (snake or CamelCase)",
-  "provenance": "dsl2:deep_space_trader.chimera"
- },
- {
   "id": "atom_1f04d6183f11",
   "feature": "System_DSL_Fidelity",
   "tier": 0,
@@ -516,6 +502,18 @@
   },
   "desc": "DSL token 'gravity_scale' (deep_space_trader.chimera) surfaces in Source (snake or CamelCase)",
   "provenance": "dsl2:deep_space_trader.chimera"
+ },
+ {
+  "id": "atom_33b1d07f16ff",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/System_DSL_Fidelity/transcript.json"
+  },
+  "desc": "'System_DSL_Fidelity' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
  },
  {
   "id": "atom_33b5e0dc8a15",
@@ -1428,20 +1426,6 @@
   "provenance": "dsl2:deep_space_trader.chimera"
  },
  {
-  "id": "atom_8ba613606327",
-  "feature": "System_DSL_Fidelity",
-  "tier": 0,
-  "kind": "headless",
-  "probe": {
-   "type": "tree_contains",
-   "root": "Source",
-   "glob": "*.*",
-   "regex": "(hold_to_open|HoldToOpen)"
-  },
-  "desc": "DSL token 'hold_to_open' (deep_space_trader.chimera) surfaces in Source (snake or CamelCase)",
-  "provenance": "dsl2:deep_space_trader.chimera"
- },
- {
   "id": "atom_8f48373f25ce",
   "feature": "System_DSL_Fidelity",
   "tier": 0,
@@ -1888,6 +1872,26 @@
   },
   "desc": "DSL token 'ability_activated' (tdd_test_suite.chimera) surfaces in Source (snake or CamelCase)",
   "provenance": "dsl2:tdd_test_suite.chimera"
+ },
+ {
+  "id": "atom_b0fe1fcdb9cb",
+  "feature": "System_DSL_Fidelity",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source",
+    "tests/dsl_grammar",
+    "docs/beats"
+   ],
+   "globs": [
+    "*.*"
+   ],
+   "regex": "(System_DSL_Fidelity|System_DSL_Fidelity|SystemDslFidelity)"
+  },
+  "desc": "'System_DSL_Fidelity' surfaces in Source, the DSL spec, or a beat script \u2014 its identity exists somewhere in the game",
+  "provenance": "curriculum:identity"
  },
  {
   "id": "atom_b30d5c8820c3",

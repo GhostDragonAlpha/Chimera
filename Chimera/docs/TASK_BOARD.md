@@ -1,18 +1,17 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T16:19:56+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T18:45:04+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0131 | claimed | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | fable-1 |
-| tb-0133 | open | 1.2 | Fix 2 red rep atom(s): System_DSL_Fidelity | core/game_code_generator.py; excl:generator |  |
 | tb-0134 | open | 1.2 | Fix 1 red rep atom(s): Beat_Scripts_Tautology_Fix | editor:open; excl:pie |  |
 | tb-0135 | open | 1.2 | Fix 1 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie |  |
 | tb-0137 | open | 1.2 | Fix 1 red rep atom(s): subsystem/Audio | Source/Chimera/ProceduralGenerated/Sound/** |  |
+| tb-0131 | open | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie |  |
 | tb-0138 | open | 0.9 | Witness: Social_Trade | editor:open; excl:pie |  |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0140 | open | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
@@ -25,7 +24,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
-| tb-0123 | open | 0.8 | Fix 6 tautological beats in 4 files (false-accept evidence r | docs/beats/** |  |
 | tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
 | tb-0151 | open | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0136 | blocked | 1.2 | Fix 1 red rep atom(s): Sky_Loop_Realization | Source/Chimera/ProceduralGenerated/Sky/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
@@ -58,6 +56,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0066 | done | 1.2 | Fix 1 red rep atom(s): subsystem/VFX | core/game_code_generator.py; excl:generator | rep_engine tend: subsystem_VFX went from 1 red to 0 red (all |
 | tb-0089 | done | 1.2 | Fix 1 red rep atom(s): Malcolm_Envelope | docs/envelope.json, docs/world/** | resolved: Malcolm_Envelope green (8 atoms) in run_1784134339 |
 | tb-0090 | done | 1.2 | Fix 1 red rep atom(s): UGestureWheel | core/game_code_generator.py; excl:generator | rep_engine tend: 4 failing (was 5), UGestureWheel no longer  |
+| tb-0133 | done | 1.2 | Fix 2 red rep atom(s): System_DSL_Fidelity | core/game_code_generator.py; excl:generator | Fixed 2 red rep atoms for System_DSL_Fidelity by adding 'Gam |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |
 | tb-0014 | done | 1.2 | Sprint_Input: input binding: the physical key drives the sta ⇐ tb-0013 | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/GameMode/** | Sprint_Input/binding atom GREEN x2 (LeftShift polled via Pla |
@@ -87,6 +86,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0105 | done | 0.8 | task_board: rescope clobbers explicitly-declared footprints  | core/task_board.py | core/task_board.py: (1) _new_task stamps scoped=declared whe |
 | tb-0117 | done | 0.8 | Fix build: DemoPlayerController VFX include uses module-root | Source/Chimera/ProceduralGenerated/Demo/** | DemoPlayerController.cpp:15 include fixed to codebase idiom  |
 | tb-0118 | done | 0.8 | Fix build: Build.cs lacks UMG/Slate/SlateCore for generated  | core/build_orchestrator.py, Source/Chimera/Chimera.Build.cs | build_orchestrator required_modules += UMG/Slate/SlateCore ( |
+| tb-0123 | done | 0.8 | Fix 6 tautological beats in 4 files (false-accept evidence r | docs/beats/** | Fixed 6 tautological beats in 4 files: added actor_exists/lo |
 | tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
 | tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
 | tb-0098 | done | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** | auto-closed: pain phase_c67559a04eceaec4:P2 already disposit |

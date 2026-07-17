@@ -68729,6 +68729,889 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_19759dc86df2"
+    },
+    {
+      "id": "simtest_4d0a729cc28c2092",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T18:11:44.180639",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_audio_visual_sync_tautology_fix",
+      "demo": "audio_visual_sync",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_and_verify_audio_system",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Verb_Step",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "walk_slow_on_sand",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1500,
+                  "y": 0,
+                  "r": 800
+                }
+              },
+              "ok": true,
+              "note": "dist=114uu (loc x=1599.9142600069076, y=-55.01515854169835)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "AAA standard: <100ms from particle spawn to audio trigger"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "sync_events_recorded": 3,
+                "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+              },
+              "ok": true,
+              "note": "sync_events_recorded=16"
+            }
+          ]
+        },
+        {
+          "beat": "walk_fast_on_sand",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Particles",
+            "Ground_Sand_Sound"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 3200
+                }
+              },
+              "ok": true,
+              "note": "dist=0uu (loc x=0, y=-0.27388459772577384)"
+            },
+            {
+              "expect": {
+                "sync_latency_ms_max": 100.0,
+                "note": "Latency must remain <100ms even at high speed"
+              },
+              "ok": true,
+              "note": "sync_latency_ms_max=0.00010058283805847168"
+            },
+            {
+              "expect": {
+                "volume_scales_with_speed": true,
+                "note": "Sprint volume should be 2-3x louder than walk"
+              },
+              "ok": false,
+              "note": "walk_volume=1 sprint_volume=1"
+            }
+          ]
+        },
+        {
+          "beat": "dwell_and_measure",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust",
+                "note": "Ground_Sand_Particles witness: sand dust particle actor must exist"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "report_telemetry",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "total_events_gt": 5,
+                "note": "Expect at least 5 footsteps recorded"
+              },
+              "ok": true,
+              "note": "total_events=35"
+            },
+            {
+              "expect": {
+                "avg_latency_ms_lt": 50.0,
+                "note": "Average latency should be <50ms (one frame @ 60fps)"
+              },
+              "ok": true,
+              "note": "avg_latency_ms=2.493874853826128e-05"
+            },
+            {
+              "expect": {
+                "max_latency_ms_lt": 100.0,
+                "note": "Max latency AAA standard: <100ms"
+              },
+              "ok": true,
+              "note": "max_latency_ms=0.00010058283805847168"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_audio_visual_sync_tautology_fix.json",
+      "temperature": "[SIM] 4/5 beats reached in 'audio_visual_sync'. Failures: walk_fast_on_sand (failed: expect {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume sh -> walk_volume=1 sprint_volume=1)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_audio_visual_sync_tautology_fix': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2043631e3041"
+    },
+    {
+      "id": "surprise_f0db7d339748980e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:11:44.492814",
+      "context": "Sleepwalker expected beat 'walk_fast_on_sand' to be reachable (audio_visual_sync)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume should be 2-3x louder than walk\"}, \"ok\": false, \"note\": \"walk_volume=1 sprint_volume=1\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"volume_scales_with_speed\": true, \"note\": \"Sprint volume sho'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2043631e3041"
+    },
+    {
+      "id": "simtest_b858593e351a35d8",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T18:12:10.844883",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_mcp_screenshot_hud_repro_tautology_fix",
+      "demo": "mcp_screenshot_hud_repro",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "spawn_confirmed",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "capture_all_three_modes",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Display_Suit",
+                "note": "Player_Character_Suit witness: suit display actor must exist"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_mcp_screenshot_hud_repro_tautology_fix.json",
+      "temperature": "[SIM] 2/2 beats reached in 'mcp_screenshot_hud_repro'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_mcp_screenshot_hud_repro_tautology_fix': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2260f4ccd3da"
+    },
+    {
+      "id": "simtest_33f305d33bb1b38d",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T18:13:04.272710",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_social_trade_tautology_fix",
+      "demo": "social_trade",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "social_trade_npc_proximity",
+          "outcome": "failed",
+          "features": [
+            "Social_Trade"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[NPCTrade] Player within trade range",
+                "note": "Social_Trade witness: NPC trade component must report player in range"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "social_trade_npc_interact",
+          "outcome": "failed",
+          "features": [
+            "Social_Trade"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[NPCTrade] Trade interaction started",
+                "note": "Social_Trade witness: NPC trade component must report trade interaction start"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_social_trade_tautology_fix.json",
+      "temperature": "[SIM] 0/2 beats reached in 'social_trade'. Failures: social_trade_npc_proximity (failed: expect {\"log_contains\": \"[NPCTrade] Player within trade range\", \"no -> log_hit=False); social_trade_npc_interact (failed: expect {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"no -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_social_trade_tautology_fix': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8a4f80f35615"
+    },
+    {
+      "id": "surprise_d145aeb395a43ba7",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:13:04.577213",
+      "context": "Sleepwalker expected beat 'social_trade_npc_proximity' to be reachable (social_trade)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Player within trade range\", \"note\": \"Social_Trade witness: NPC trade component must report player in range\"}, \"ok\": fals",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Player within trade range\", \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8a4f80f35615"
+    },
+    {
+      "id": "surprise_fcc11dad56daf6f7",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:13:04.845250",
+      "context": "Sleepwalker expected beat 'social_trade_npc_interact' to be reachable (social_trade)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"note\": \"Social_Trade witness: NPC trade component must report trade interaction start\"}, \"o",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8a4f80f35615"
+    },
+    {
+      "id": "simtest_e497ac97c0583b74",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T18:14:24.200322",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_verb_interactions_tautology_fix",
+      "demo": "verb_interactions",
+      "beats_total": 9,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "verb_look_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Look",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_bend_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.2
+                }
+              },
+              "ok": false,
+              "note": "CapsuleHalfHeight 90->40->40 drop=50 restore=0 min_drop=20"
+            }
+          ]
+        },
+        {
+          "beat": "verb_pickup_weapon_tool_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_PickUp",
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[DEMOBEAT] Interact action triggered - picked up",
+                "note": "Verb_PickUp witness: pickup action must log pickup event"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "verb_drop_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[DEMOBEAT] Drop action triggered",
+                "note": "Verb_Drop witness: drop action must log drop event"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_metal_surface_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Metal_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 350,
+                  "y": 0,
+                  "r": 400
+                }
+              },
+              "ok": false,
+              "note": "dist=1473uu (loc x=1822.30802734108, y=-29.172512970680813)"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_rock_surface_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4240,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": false,
+              "note": "dist=44381uu (loc x=48621.20280409883, y=15.875786149784503)"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_sand_surface_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 5950,
+                  "y": 0,
+                  "r": 950
+                }
+              },
+              "ok": false,
+              "note": "dist=43181uu (loc x=49130.70228336369, y=20.133468408250238)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "visor_inspection_pedestal",
+          "outcome": "failed",
+          "features": [
+            "Player_Character_Model_Visor_Apply",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2225,
+                  "y": 600,
+                  "r": 750
+                }
+              },
+              "ok": false,
+              "note": "dist=40316uu (loc x=33118.24723025412, y=26503.339552520145)"
+            }
+          ]
+        },
+        {
+          "beat": "weapon_tool_examine",
+          "outcome": "failed",
+          "features": [
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 1700,
+                  "y": -400,
+                  "r": 600
+                }
+              },
+              "ok": false,
+              "note": "dist=41829uu (loc x=33475.52246966598, y=-27603.099083690657)"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_verb_interactions_tautology_fix.json",
+      "temperature": "[SIM] 2/9 beats reached in 'verb_interactions'. Failures: verb_bend_location (failed: expect {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"Collisi -> CapsuleHalfHeight 90->40->40 drop=50 restore=0 min_drop=20); verb_pickup_weapon_tool_location (failed: expect {\"log_contains\": \"[DEMOBEAT] Interact action triggered - pic -> log_hit=False); verb_shovel_metal_surface_location (failed: expect {\"",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_verb_interactions_tautology_fix': 2/9 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c50db1ee5839"
+    },
+    {
+      "id": "surprise_7fc2041b1246bcc9",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:14:24.741139",
+      "context": "Sleepwalker expected beat 'verb_bend_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"CollisionCylinder\", \"property\": \"CapsuleHalfHeight\", \"min_drop\": 20, \"settle_s\": 1.2}}, \"ok\": fa",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"Collisio'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c50db1ee5839"
+    },
+    {
+      "id": "surprise_22c674659479688c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:14:25.186473",
+      "context": "Sleepwalker expected beat 'verb_pickup_weapon_tool_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[DEMOBEAT] Interact action triggered - picked up\", \"note\": \"Verb_PickUp witness: pickup action must log pickup event\"}, \"ok\": false",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[DEMOBEAT] Interact action triggered - pick'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c50db1ee5839"
+    },
+    {
+      "id": "surprise_63e77fd67f87a3a6",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:14:25.639793",
+      "context": "Sleepwalker expected beat 'verb_shovel_metal_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 350, \"y\": 0, \"r\": 400}}, \"ok\": false, \"note\": \"dist=1473uu (loc x=1822.30802734108, y=-29.172512970680813)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 350, \"y\": 0, \"r\": 400}}, \"ok\": false, \"'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c50db1ee5839"
+    },
+    {
+      "id": "surprise_ad3c9b633b952a15",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:14:26.159033",
+      "context": "Sleepwalker expected beat 'verb_shovel_rock_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 4240, \"y\": 0, \"r\": 600}}, \"ok\": false, \"note\": \"dist=44381uu (loc x=48621.20280409883, y=15.875786149784503)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 4240, \"y\": 0, \"r\": 600}}, \"ok\": false, '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c50db1ee5839"
+    },
+    {
+      "id": "surprise_daa1883702ad159e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:14:26.623875",
+      "context": "Sleepwalker expected beat 'verb_shovel_sand_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"Actor_NS_SandDust\"}, \"ok\": true, \"note\": \"present=True\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"Actor_NS_SandDust\"}, \"ok\": true, \"note\": \"p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c50db1ee5839"
+    },
+    {
+      "id": "surprise_0539f51a3d83d858",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:14:27.074532",
+      "context": "Sleepwalker expected beat 'visor_inspection_pedestal' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 2225, \"y\": 600, \"r\": 750}}, \"ok\": false, \"note\": \"dist=40316uu (loc x=33118.24723025412, y=26503.339552520145)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 2225, \"y\": 600, \"r\": 750}}, \"ok\": false'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c50db1ee5839"
+    },
+    {
+      "id": "surprise_341f90fda7900e3a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:14:27.585892",
+      "context": "Sleepwalker expected beat 'weapon_tool_examine' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 1700, \"y\": -400, \"r\": 600}}, \"ok\": false, \"note\": \"dist=41829uu (loc x=33475.52246966598, y=-27603.099083690657)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 1700, \"y\": -400, \"r\": 600}}, \"ok\": fals'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c50db1ee5839"
+    },
+    {
+      "id": "phase_0975db852cdfcfba",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T18:35:06.709258",
+      "phase": "rep_promotion:subsystem/Movement",
+      "result": "tier 0 -> 1 (behaves) after 100 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Movement",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Movement' complete: tier 0 -> 1 (behaves) after 100 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_99be8ea5c630"
+    },
+    {
+      "id": "surprise_6624a1b72785f4f4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T18:46:38.374873",
+      "context": "research waived: Fix 2 red rep atom(s): System_DSL_Fidelity",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Research not applicable for STALE probe fix - the failing atoms were DSL spec tokens 'Game_Feel' and 'hold_to_open' that don't have corresponding C++ components or files in the Source directory.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Research not applicable for STALE probe fix - the failing atoms were DSL spec to'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_cb67eb3b96e1"
     }
   ],
   "edges": [

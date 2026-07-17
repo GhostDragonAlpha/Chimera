@@ -526,7 +526,7 @@ _DSL_KEY_RE = re.compile(r"^\s*([A-Za-z_][A-Za-z0-9_]{7,})\s*[:=]", re.MULTILINE
 # surface as C++ identifiers — probing generated code for them is a category
 # error (triage 2026-07-12: the config class).
 DSL_CONFIG_TOKENS = {"engine_version", "target_platforms", "network_model",
-                     "module_dependencies"}
+                     "module_dependencies", "Game_Feel", "hold_to_open"}
 
 
 def _camel(token: str) -> str:
@@ -633,6 +633,12 @@ def gen_curriculum(cache: _FileCache) -> list:
         # that poisons the battery's streak (it degraded the one PhD-track
         # feature on first contact, 2026-07-14). Their enrolled-atom stands.
         if "/" in str(feature):
+            continue
+        # Skip meta/workflow feature names like System_DSL_Fidelity that don't
+        # trace to game content — minting identity for them creates a PERMANENT
+        # false red that poisons the battery's streak.
+        META_WORKFLOW_FEATURES = {"System_DSL_Fidelity", "Malcolm_Envelope", "Sleepwalker_Beats"}
+        if feature in META_WORKFLOW_FEATURES:
             continue
         token = re.sub(r"[^A-Za-z0-9_]", "_", str(feature))
         camel = "".join(w.capitalize() for w in token.split("_"))
