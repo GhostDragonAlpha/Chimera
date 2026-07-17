@@ -68392,6 +68392,46 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_f9ee5db82bac"
+    },
+    {
+      "id": "discovery_5887a4d463cb773b",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T10:47:22.985285",
+      "feature": "LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL",
+      "campus_sources": [],
+      "web_sources": [
+        "deep_space_trader.chimera gesture_wheel_ui block; dsl_game_parser.py UI parsing; game_code_generator.py generator templates; UE5 UHT .generated.h include order rules"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_7fde988e900f"
+    },
+    {
+      "id": "phase_a719b1fadf4adc4c",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T10:47:23.376198",
+      "phase": "LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL spec and generator fix",
+      "result": "Generator template fixed: .generated.h is now the last #include per UE5 UHT rules. Generated DemoPlayerController.h has closing }; for class definition. UBT build verification skipped due to Live Coding active in editor.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL spec and generator fix",
+      "error_category": "none",
+      "fix_description": "Phase 'LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL spec and generator fix' complete: Generator template fixed: .generated.h is now the last #include per UE5 UHT rules. Generated DemoPlayerController.h has closing }; for class definition. UBT build verification skipped due to Live Codi",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_7fde988e900f"
     }
   ],
   "edges": [
