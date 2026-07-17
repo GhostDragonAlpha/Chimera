@@ -473,6 +473,18 @@ def scope_task(state, agent_id: str, task_id: str, files=None, editor=None,
 
 
 @_locked
+def set_report(state, task_id: str, report: dict):
+    """Attach a validated closure report to a task record (report-driven
+    closure, 2026-07-17). The report rides the board so the NEXT claim's
+    packet can hand it forward as the predecessor report."""
+    for t in state["tasks"]:
+        if t["id"] == task_id:
+            t["report"] = report
+            return t
+    raise KeyError(f"no such task {task_id}")
+
+
+@_locked
 def heartbeat(state, agent_id: str) -> int:
     """Refresh every claim held by agent_id. Returns how many were refreshed."""
     n = 0
@@ -964,6 +976,15 @@ def main(argv=None):
             px.add_argument("--training-waiver", default="", dest="training_waiver",
                             help="honest exception to training-at-closure (the piece "
                                  "genuinely can't be curriculum/rep-trained)")
+            px.add_argument("--build-evidence", default="", dest="build_evidence",
+                            help="graph node id of the PASSING build newer than this "
+                                 "session's Source changes")
+            px.add_argument("--witness-evidence", default="", dest="witness_evidence",
+                            help="SimPlaytest/Observation node id from THIS session")
+            px.add_argument("--could-not-verify", default=None, dest="could_not_verify",
+                            help="MANDATORY on done: what you could NOT verify, or 'none'")
+            px.add_argument("--report-waiver", default="", dest="report_waiver",
+                            help="honest exception to the closure report; recorded")
 
     pr = sub.add_parser("release", help="Put a claimed task back to open")
     pr.add_argument("--agent", required=True)
@@ -1147,21 +1168,64 @@ def main(argv=None):
                                   result=getattr(args, "result", ""),
                                   reason=getattr(args, "reason", ""),
                                   note=getattr(args, "note", ""),
-                                  training_waiver=getattr(args, "training_waiver", ""))
+                                  training_waiver=getattr(args, "training_waiver", ""),
+                                  build_evidence=getattr(args, "build_evidence", ""),
+                                  witness_evidence=getattr(args, "witness_evidence", ""),
+                                  could_not_verify=getattr(args, "could_not_verify", None),
+                                  report_waiver=getattr(args, "report_waiver", ""))
                 print(f"{args.cmd.upper()}: {args.id} (tunnel exited)")
                 for w in out.get("footprint_warnings", []):
                     print(f"  !! outside your footprint: {w}")
                 print(f"record it: {out['postflight']}")
             elif args.cmd == "done":
+                _rawt = next((t for t in get_state()["tasks"] if t["id"] == args.id), None)
+                # CLOSURE REPORT (raw/no-tunnel path): no enter snapshot, so the
+                # build-currency window falls back to claim time — weaker but
+                # honest; the mandatory fields and resolutions still bind.
+                _rep = None
+                try:
+                    from core.closure_report import (validate as _crv,
+                                                     brain_judgment as _crj,
+                                                     gate_mode as _crg)
+                except ImportError:
+                    _crv = None
+                if _rawt is not None and _crv is not None and _crg() != "off":
+                    _claimed = _rawt.get("claimed_at") or 0
+                    _synth = {"head_sha": "",
+                              "entered_at": (datetime.fromtimestamp(
+                                  _claimed, tz=timezone.utc).isoformat()
+                                  if _claimed else "")}
+                    _st, _detail, _rep = _crv(
+                        _rawt, _synth, args.result,
+                        build_evidence=getattr(args, "build_evidence", ""),
+                        witness_evidence=getattr(args, "witness_evidence", ""),
+                        could_not_verify=getattr(args, "could_not_verify", None),
+                        waiver=getattr(args, "report_waiver", ""))
+                    print(f"[Closure Report] {_st}: {_detail[:200]}")
+                    if _st == "missing" and _crg() == "block":
+                        print(f"REFUSED: CLOSURE REPORT — {_detail}")
+                        sys.exit(1)
+                    _j = _crj(_rep, _rawt)
+                    if _j is not None:
+                        from core.coin_verifier import format_judgment
+                        print("[Report Judge — the brain reads the typed faces]")
+                        print(format_judgment(_j))
+                        _rep["brain"] = {"verdict": _j.get("verdict"),
+                                         "same_coin": _j.get("same_coin"),
+                                         "confidence": _j.get("confidence")}
                 # TRAINING AT CLOSURE (raw/no-tunnel path): the piece must be
                 # trained (domain-appropriate) before it closes. Raises -> REFUSED.
-                _rawt = next((t for t in get_state()["tasks"] if t["id"] == args.id), None)
                 if _rawt is not None:
                     from core.training_gate import enforce_task_or_raise as _etr
                     _s, _d = _etr(_rawt, waiver=getattr(args, "training_waiver", ""),
                                   agent=args.agent)
                     print(f"[Training Gate] {_s}: {_d[:120]}")
                 _print_task(complete_task(args.agent, args.id, args.result))
+                if _rep is not None:
+                    try:
+                        set_report(args.id, _rep)
+                    except Exception:
+                        pass
             elif args.cmd == "block":
                 _print_task(block_task(args.agent, args.id, args.reason))
             else:

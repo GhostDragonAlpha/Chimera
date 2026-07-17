@@ -98,6 +98,34 @@ def _match_lines(text: str, tokens: set, must_contain: str = None, cap: int = 6)
     return [l for _, l in scored[:cap]]
 
 
+def _predecessor_report(task: dict):
+    """Agent-to-agent handoff (report-driven closure, 2026-07-17): the LAST
+    closure report/result for the SAME feature rides in the packet, so the next
+    agent reads the predecessor's report as primary context — not a stale
+    mint-time recipe (tb-0079's packet said '0% realized' while the previous
+    closure note knew the class already compiled)."""
+    feature = (task or {}).get("feature")
+    if not feature:
+        return None
+    try:
+        done = [t for t in board_state()["tasks"]
+                if t.get("status") == "done" and t.get("feature") == feature
+                and t.get("id") != task.get("id")]
+    except Exception:
+        return None
+    if not done:
+        return None
+    prev = done[-1]                      # board order is append order
+    out = {"task": prev["id"], "title": prev.get("title", "")[:90],
+           "result": (prev.get("result") or "")[:400]}
+    rep = prev.get("report")
+    if isinstance(rep, dict):
+        out["could_not_verify"] = str(rep.get("could_not_verify", ""))[:200]
+        out["build_evidence"] = rep.get("build_evidence", "")
+        out["witness_evidence"] = rep.get("witness_evidence", "")
+    return out
+
+
 def _relevant_heuristics(tokens: set) -> list:
     """Constitution H-rules whose text mentions the task's keywords."""
     try:
@@ -156,6 +184,13 @@ EXIT_CONTRACT = (
     "EXIT CONTRACT: `exit --outcome done` demands --result with VERBATIM evidence "
     "(UBT output / test counts / read-backs — never a summary). `blocked` demands "
     "--reason naming the cause (bare 'blocked' forbidden — run core.solver first). "
+    "THE CLOSURE REPORT (typed — free prose cannot pass it): --could-not-verify is "
+    "MANDATORY ('none' allowed, silence is not); if Source/** changed this session "
+    "-> --build-evidence <mutation id of a PASSING build NEWER than your changes>; "
+    "if the recipe demands witness/beats -> --witness-evidence <simtest id from "
+    "THIS session>. Your git diff is AUTO-attached (nobody summarizes their own "
+    "changes) and the brain judges claim vs record (advisory; recorded). "
+    "--report-waiver for honest exceptions. "
     "Before done, answer the Frame Audit (docs/RESULT_GRADING_RUBRIC.md): is the "
     "evidence the TARGET or a proxy? who judged it? did you fix the generator or "
     "the artifact? Record via record_* helpers; the tunnel prints your postflight."
@@ -303,12 +338,20 @@ def enter(agent_id: str, task_id: str = None, capable: bool = False,
             packet["heuristics"] = _relevant_heuristics(toks)
             packet["mcp_traps"] = _relevant_traps(toks)
             packet.update(_graph_context(task.get("feature"), toks))
+            packet["predecessor_report"] = _predecessor_report(task)
 
+        try:
+            from core.closure_report import head_sha as _head_sha
+        except ImportError:
+            from closure_report import head_sha as _head_sha
         _write_session({"agent": agent_id, "task_id": task["id"], "task_title": task["title"],
                         "editor_mode": mode, "editor_held": editor_held,
                         "entered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                         "exited_at": None, "outcome": None,
-                        "baseline_dirty": _dirty_files()})
+                        "baseline_dirty": _dirty_files(),
+                        # enter snapshot for the closure report's action log +
+                        # build-currency check (report-driven closure, 2026-07-17)
+                        "head_sha": _head_sha()})
         return packet
     except BaseException:
         if editor_held:
@@ -334,7 +377,9 @@ def tunnel_heartbeat(agent_id: str) -> dict:
 
 
 def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
-                note: str = "", training_waiver: str = "") -> dict:
+                note: str = "", training_waiver: str = "",
+                build_evidence: str = "", witness_evidence: str = "",
+                could_not_verify: str = None, report_waiver: str = "") -> dict:
     """Finish the session: settle the board task, release the editor, return
     what happened (including the prefilled postflight command)."""
     sess = _read_session(agent_id)
@@ -343,19 +388,60 @@ def exit_tunnel(agent_id: str, outcome: str, result: str = "", reason: str = "",
     tid = sess["task_id"]
     warnings = []
     if outcome == "done":
+        _tsk = next((t for t in board_state()["tasks"] if t["id"] == tid), None)
+        # CLOSURE REPORT (report-driven closure, 2026-07-17) — three layers:
+        # mechanical validation blocks (ids resolve, build newer than Source
+        # changes), the action log is auto-attached, the brain judges coherence.
+        _report = None
+        try:
+            from core.closure_report import (validate as _cr_validate,
+                                             brain_judgment as _cr_judge,
+                                             gate_mode as _cr_gate,
+                                             judge_mode as _cr_jmode,
+                                             _capcom as _cr_capcom)
+        except ImportError:
+            _cr_validate = None
+        if _cr_validate is not None and _cr_gate() != "off":
+            _st, _detail, _report = _cr_validate(
+                _tsk or {}, sess, result, build_evidence=build_evidence,
+                witness_evidence=witness_evidence,
+                could_not_verify=could_not_verify, waiver=report_waiver)
+            print(f"[Closure Report] {_st}: {_detail[:200]}")
+            if _st == "missing" and _cr_gate() == "block":
+                raise ValueError(f"CLOSURE REPORT refused — {_detail}")
+            _j = _cr_judge(_report, _tsk or {})
+            if _j is not None:
+                from core.coin_verifier import format_judgment
+                print("[Report Judge — the brain reads the typed faces]")
+                print(format_judgment(_j))
+                _report["brain"] = {"verdict": _j.get("verdict"),
+                                    "same_coin": _j.get("same_coin"),
+                                    "confidence": _j.get("confidence")}
+                if not _j.get("same_coin"):
+                    _cr_capcom(f"report judge: {tid} claim/record NOT the same "
+                               f"coin ({_j.get('verdict')})", "warn")
+                    if _cr_jmode() == "block":
+                        raise ValueError(
+                            "REPORT JUDGE refused — the claim and the record "
+                            "are not the same coin: "
+                            + "; ".join(str(m) for m in (_j.get("mismatches") or [])[:3]))
         # TRAINING AT CLOSURE: the piece you worked must be trained (domain-
         # appropriate) before it can close. Raises -> surfaced as REFUSED.
         try:
             from core.training_gate import enforce_task_or_raise
         except ImportError:
             enforce_task_or_raise = None
-        if enforce_task_or_raise is not None:
-            _tsk = next((t for t in board_state()["tasks"] if t["id"] == tid), None)
-            if _tsk is not None:
-                _tg_status, _tg_detail = enforce_task_or_raise(
-                    _tsk, waiver=training_waiver, agent=agent_id)
-                print(f"[Training Gate] {_tg_status}: {_tg_detail[:120]}")
+        if enforce_task_or_raise is not None and _tsk is not None:
+            _tg_status, _tg_detail = enforce_task_or_raise(
+                _tsk, waiver=training_waiver, agent=agent_id)
+            print(f"[Training Gate] {_tg_status}: {_tg_detail[:120]}")
         task = complete_task(agent_id, tid, result=result)      # demands evidence
+        if _report is not None:
+            try:
+                from core.task_board import set_report as _set_report
+                _set_report(tid, _report)
+            except Exception:
+                pass
         warnings = _footprint_warnings(task,
                                        baseline=set(sess.get("baseline_dirty") or []))
     elif outcome == "blocked":
@@ -423,6 +509,16 @@ def _print_packet(packet: dict):
         print("\n## Open phantom pains touching this area")
         for pn in packet["open_pains"]:
             print(f"  {pn}")
+    if packet.get("predecessor_report"):
+        pr = packet["predecessor_report"]
+        print(f"\n## PREDECESSOR REPORT ({pr['task']} — read this as primary context)")
+        print(f"  {pr.get('title', '')}")
+        print(f"  result: {pr.get('result', '')}")
+        if pr.get("could_not_verify"):
+            print(f"  its could_not_verify: {pr['could_not_verify']}")
+        if pr.get("build_evidence") or pr.get("witness_evidence"):
+            print(f"  evidence it cited: build={pr.get('build_evidence') or '—'} "
+                  f"witness={pr.get('witness_evidence') or '—'}")
     print(f"\n## Exit\n{packet['exit_contract']}")
     print(f"\nheartbeat: python -m core.agent_tunnel heartbeat --agent {packet['agent']}")
     print(f"exit:      python -m core.agent_tunnel exit --agent {packet['agent']} "
@@ -453,6 +549,16 @@ def main(argv=None):
     px.add_argument("--training-waiver", default="", dest="training_waiver",
                     help="honest exception to training-at-closure (the piece genuinely "
                          "can't be curriculum/rep-trained); recorded")
+    px.add_argument("--build-evidence", default="", dest="build_evidence",
+                    help="graph node id of the PASSING build newer than this session's "
+                         "Source changes (required when Source/** changed)")
+    px.add_argument("--witness-evidence", default="", dest="witness_evidence",
+                    help="SimPlaytest/Observation node id from THIS session (required "
+                         "when the recipe demands witness/beats)")
+    px.add_argument("--could-not-verify", default=None, dest="could_not_verify",
+                    help="MANDATORY on done: what you could NOT verify, or 'none'")
+    px.add_argument("--report-waiver", default="", dest="report_waiver",
+                    help="honest exception to the closure report; recorded + CAPCOM'd")
 
     sub.add_parser("status", help="Active tunnel sessions")
     sub.add_parser("tend", help="Close sessions whose claim vanished; free their editor")
@@ -479,7 +585,11 @@ def main(argv=None):
         try:
             out = exit_tunnel(args.agent, args.outcome, result=args.result,
                               reason=args.reason, note=args.note,
-                              training_waiver=getattr(args, "training_waiver", ""))
+                              training_waiver=getattr(args, "training_waiver", ""),
+                              build_evidence=getattr(args, "build_evidence", ""),
+                              witness_evidence=getattr(args, "witness_evidence", ""),
+                              could_not_verify=getattr(args, "could_not_verify", None),
+                              report_waiver=getattr(args, "report_waiver", ""))
         except (KeyError, ValueError) as e:
             print(f"REFUSED: {e}")
             sys.exit(1)

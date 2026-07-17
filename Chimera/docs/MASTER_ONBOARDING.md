@@ -104,7 +104,10 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
    Fix generator TEMPLATES, never generated C++ (content→DSL spec `tests/dsl_grammar/*.chimera`;
    code-shape→`core/game_code_generator.py`). Answer the Frame Audit before "done".
    Heartbeat long work. Exit with evidence; **bare 'blocked' forbidden** (evidence
-   or reasoned waiver).
+   or reasoned waiver). **Closure is a TYPED REPORT, not prose** (Part IV.5):
+   `could_not_verify` mandatory, build/witness evidence are resolving graph ids
+   checked for freshness, your diff is AUTO-attached, and the brain judges the
+   claim against that record.
 3. **HARD GATES** (`gates.py`, BLOCKER→exit 1): no junk nodes · GPA≥1.0 · provenance
    complete · nodes<5M · LM model resident · only `Chimera/` under `Source/` · UBT==0
    · auto-fixer attempted · zero playtest failures · git clean · no Malcolm breach ·
@@ -357,7 +360,10 @@ get DS4 up, say so explicitly in CAPCOM + your summary; never let it pass unment
    C++ changed this session, run ONE real UBT before integrating** —
    compile-plausibility-by-analogy passed three broken clusters for two days
    (2026-07-17); a text-grep atom cannot see a C2838. The Coin: claim↔evidence
-   must match, else fiction — DON'T keep it.
+   must match, else fiction — DON'T keep it. **The closure report pre-chews half
+   of this**: every done task carries its validated report + AUTO action log
+   (`task_board state` → the task's `report` field) — read it before re-deriving;
+   your job remains the parts no field can hold.
 6. **INTEGRATE + CLOSE:** keep genuine work; `git checkout --`/`revert` fiction.
    Commit verified work by-path to master, **state the SHA** (rule 12) — check
    `git status` for artifacts left untracked. Never a feature branch. Postflight YOUR
@@ -405,10 +411,19 @@ integrates); don't spawn subagents.
 4. **TRAIN (required to close):** `python -m core.curriculum enroll --feature
    "<subject>"` then `python -m core.rep_engine tend`. The gate refuses an untrained
    close; `--training-waiver "<reason>"` if training genuinely doesn't apply.
-5. **CLOSE:** `python -m core.agent_tunnel exit --agent <ID> --outcome done --result
-   "<VERBATIM evidence>"`, then run the postflight it prints **ONCE**, always adding
-   `--researched "<what you looked up>"` or `--research-waiver "<reasoned>"` — the gate
-   will NOT ask you (rule 9). Bare 'blocked' forbidden.
+5. **CLOSE — through the TYPED CLOSURE REPORT (2026-07-17; free prose cannot pass it):**
+   `python -m core.agent_tunnel exit --agent <ID> --outcome done --result "<VERBATIM evidence>"
+   --could-not-verify "<what you could NOT verify, or 'none'>"
+   [--build-evidence <mutation id>] [--witness-evidence <simtest id>]`
+   — `--could-not-verify` is MANDATORY (silence is refused); if Source/** changed this
+   session the build evidence must be a PASSING build NEWER than your changes (a
+   historical green is refused); if the recipe demands witness/beats the simtest must be
+   from THIS session (H-19). Your git diff is AUTO-attached — do not summarize your own
+   changes — and the brain (the Coin) judges your claim against that record; its verdict
+   is recorded. `--report-waiver "<reasoned>"` for honest exceptions. Then run the
+   postflight it prints **ONCE**, always adding `--researched "<what you looked up>"` or
+   `--research-waiver "<reasoned>"` — the gate will NOT ask you (rule 9). Bare 'blocked'
+   forbidden.
 6. **REPORT to the lead:** files + lines changed, verbatim evidence, and an HONEST
    list of what you could NOT verify. Never claim unverified success.
 

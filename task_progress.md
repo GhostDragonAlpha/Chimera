@@ -8,6 +8,28 @@ Chosen by core.rehearsal (score 0.4, p_success 0.2, evidence: sim:0/1, failure_m
 
 ---
 
+# REPORT-DRIVEN CLOSURE SHIPPED (2026-07-17, fable-1) — the human's design, live on both paths
+
+Closure is now a TYPED REPORT, not prose (core/closure_report.py; tb-0132, subsumes tb-0128):
+- MECHANICAL blocks: could_not_verify MANDATORY; Source changed -> build_evidence must be a
+  mutation id that RESOLVES, PASSES, and is NEWER than the session's changes ("a historical
+  green is not a current green"); recipe demands witness -> simtest id from THIS session (H-19).
+- AUTO ACTION LOG: git diff --stat since the tunnel's enter snapshot is attached, never described.
+- THE BRAIN judges the typed faces via the Coin (advisory; CHIMERA_REPORT_JUDGE=block hardens,
+  =off disables; LM down never blocks). First live flip caught a fixture overclaim at 0.9 with
+  three precise mismatches — the exact shape of yesterday's three prose failures.
+- Packet now hands forward the PREDECESSOR REPORT for the same feature; EXIT_CONTRACT +
+  MASTER_ONBOARDING Part IV.5 teach the flags (--could-not-verify / --build-evidence /
+  --witness-evidence / --report-waiver). CHIMERA_REPORT_GATE=warn softens.
+- Known edges (in could_not_verify of tb-0132's own report): judge block-mode untested; raw
+  claims lack baseline subtraction (tunnel claims get it); meta-recipes that MENTION witness
+  trip demands_witness (waiver absorbs).
+- STILL PENDING: tb-0131 (TAB wire fix) staged — DemoGestureWheel mapping + binding rename +
+  skeleton template RETIRED (it under-emitted ~300 lines and clobbered the artifact on regen;
+  restored) — needs UBT + re-witness once the editor frees.
+
+---
+
 # TEST-RUN AUDIT (2026-07-17, fable-1) — first external run graded; tautological-beat class discovered
 
 The external LEAD/sub-01 run on tb-0079 happened. Audit vs records:

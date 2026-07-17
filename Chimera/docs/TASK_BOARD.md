@@ -1,14 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T13:42:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-17T14:50:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0130 | open | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie |  |
+| tb-0131 | claimed | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | fable-1 |
 | tb-0128 | open | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… |  |
 | tb-0123 | open | 0.8 | Fix 6 tautological beats in 4 files (false-accept evidence r | docs/beats/** |  |
 | tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie |  |
@@ -59,6 +59,8 @@ so claimed tasks are safe to run in parallel.
 | tb-0076 | done | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie | simtest_6eda875b25fb7be3: 2/2 beats reached in 'social_trade |
 | tb-0077 | done | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie | simtest_f2856885f26a021f: 1/1 beats reached in 'shelter_habi |
 | tb-0078 | done | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie | witness_runner completed successfully with simtest_50995d727 |
+| tb-0130 | done | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | Witness RAN: sleepwalker obs_UGestureWheel simtest_457320c34 |
+| tb-0132 | done | 0.9 | Typed closure report at tunnel exit (subsumes tb-0128 build- | core/closure_report.py, core/agent_tunnel.py… | Typed closure report LIVE across both paths (tunnel + raw):  |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |

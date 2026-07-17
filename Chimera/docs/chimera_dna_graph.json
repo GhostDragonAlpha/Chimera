@@ -68432,6 +68432,169 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_7fde988e900f"
+    },
+    {
+      "id": "discovery_c083dbcdae31fccd",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-17T14:05:30.770010",
+      "feature": "LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL",
+      "campus_sources": [],
+      "web_sources": [
+        "deep_space_trader.chimera gesture_wheel_ui block; dsl_game_parser.py UI parsing; game_code_generator.py generator templates; UE5 UHT .generated.h include order rules; DemoPlayerController.cpp method implementations"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_39ddd47dd3c8"
+    },
+    {
+      "id": "phase_62291e25d4abab55",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-17T14:05:31.127983",
+      "phase": "LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL spec and generator fix",
+      "result": "Generator template fixed: .generated.h is now the last #include per UE5 UHT rules. Generated DemoPlayerController.h has closing }; for class definition. Complete DemoPlayerController.cpp restored with all method implementations. UBT build SUCCEEDED: Result: Succeeded, Total execution time: 8.47 seconds.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL spec and generator fix",
+      "error_category": "none",
+      "fix_description": "Phase 'LEAD integration + closure: sub-02 tb-0124 UGestureWheel DSL spec and generator fix' complete: Generator template fixed: .generated.h is now the last #include per UE5 UHT rules. Generated DemoPlayerController.h has closing }; for class definition. Complete DemoPlayerController.cpp restored with",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_39ddd47dd3c8"
+    },
+    {
+      "id": "simtest_457320c3449e9c1f",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-17T14:22:44.145484",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_UGestureWheel",
+      "demo": "gesture_wheel",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "gesture_wheel_open_close",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] OpenWheel"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "gesture_wheel_commit_gesture",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] CommitGesture"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_UGestureWheel.json",
+      "temperature": "[SIM] 0/2 beats reached in 'gesture_wheel'. Failures: gesture_wheel_open_close (failed: expect {\"log_contains\": \"[GestureWheel] OpenWheel\"} -> log_hit=False); gesture_wheel_commit_gesture (failed: expect {\"log_contains\": \"[GestureWheel] CommitGesture\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_UGestureWheel': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c904ba8e7443"
+    },
+    {
+      "id": "surprise_47b9fae934484363",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T14:22:44.399270",
+      "context": "Sleepwalker expected beat 'gesture_wheel_open_close' to be reachable (gesture_wheel)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] OpenWheel\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] OpenWheel\"}, \"ok\": false, \"n'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c904ba8e7443"
+    },
+    {
+      "id": "surprise_cb60d72a77f5aad9",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-17T14:22:44.652229",
+      "context": "Sleepwalker expected beat 'gesture_wheel_commit_gesture' to be reachable (gesture_wheel)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] CommitGesture\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] CommitGesture\"}, \"ok\": false'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c904ba8e7443"
     }
   ],
   "edges": [
