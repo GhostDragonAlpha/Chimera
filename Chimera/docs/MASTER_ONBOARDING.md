@@ -101,7 +101,11 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
    · auto-fixer attempted · zero playtest failures · git clean · no Malcolm breach ·
    4 visual layers.
 4. **POSTFLIGHT STACK** (on feature verified/observed; each softenable
-   `CHIMERA_*_GATE=warn`): Research (`--researched`/`--research-waiver`) → Generator
+   `CHIMERA_*_GATE=warn`): Research (`--researched`/`--research-waiver`; **a "Build
+   toward the seed" task CANNOT waive it — its premise is that the thing does NOT
+   exist (rule 7), so nothing here can be inherited; that is why the task exists.
+   "based on existing patterns" is not a reason research was unnecessary, it is a
+   description of not doing research**) → Generator
    Guard (no dirty generated C++) → Witness (sim/telemetry node; `--witnessed`) →
    **WHY (`--why-waiver`): the system asks the one word, and it is a TRAVERSAL, not an
    opinion.** A why IS an EDGE (`A --because--> B`), so the chain WALKS: `claim

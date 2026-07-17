@@ -119,8 +119,15 @@ def main():
             _rg_nodes, researched=getattr(args, "researched", "") or "",
             waiver=getattr(args, "research_waiver", "") or "",
             topic=(getattr(args, "phase", "") or getattr(args, "feature", "") or ""))
-        if _rg_status == "missing" and _rg_enforced():
-            print("\n!! RESEARCH GATE - refused: this postflight records work but no research is evident.")
+        # "unwaivable" (2026-07-16): a seed-build task cannot waive research — its own
+        # premise is that the thing does not exist, so there is nothing here to inherit
+        # the answer from. Blocks like "missing" because it IS missing: the waiver just
+        # named the reason it cannot be waived.
+        if _rg_status in ("missing", "unwaivable") and _rg_enforced():
+            if _rg_status == "unwaivable":
+                print(f"\n!! RESEARCH GATE - refused: {_rg_detail}")
+            else:
+                print("\n!! RESEARCH GATE - refused: this postflight records work but no research is evident.")
             print(_rg_guide)
             try:
                 from core.graphify_interface import record_surprise as _rg_rs

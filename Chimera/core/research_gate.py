@@ -27,6 +27,7 @@ runs postflight inherits it.
 Toggle: `CHIMERA_RESEARCH_GATE=warn` (or off/0/false) downgrades block -> warn.
 """
 import os
+import re                       # _SEED_BUILD
 from datetime import datetime, timedelta, timezone
 
 # Block a research-less session (True) vs. warn-and-proceed (False). Env overrides.
@@ -61,6 +62,16 @@ def _is_research(n: dict) -> bool:
         return True
     return str(n.get("template_file", "")).startswith(RESEARCH_TEMPLATE_PREFIXES)
 
+
+#: A task whose PREMISE is that the thing does not exist yet. MASTER_ONBOARDING rule 7:
+#: "A 'Build toward the seed' task's PREMISE is that the thing does NOT exist — absence
+#: is the WORK." These are minted by the helm/wellspring with this exact phrasing, so the
+#: match is on the string the machine writes, not on an agent's free prose.
+#: Module-level on purpose: `re` was missing from this file (the SIXTH missing stdlib
+#: import I have written today), and a module-level compile fails LOUD on load. The same
+#: bug inside a branch waits for the one moment the gate matters — which is how a
+#: `glob` I forgot would have crashed the evidence gate only when someone cited a fake id.
+_SEED_BUILD = re.compile(r"build\s+toward\s+the\s+seed", re.I)
 
 # Recipe/phase boilerplate that must NEVER carry a topic match on its own -
 # "Build toward the seed: X" and "... in live build" share the word `build`, and a
@@ -168,6 +179,37 @@ def check(nodes, researched="", waiver="", hours=8, topic=""):
                             f"{'; '.join(tags)}. This gate cannot tell whose research that was — "
                             f"if it was not yours, cite your own with --researched.")
     if (waiver or "").strip():
+        # A SEED-BUILD TASK CANNOT WAIVE RESEARCH (2026-07-16, the human's call).
+        #
+        # MASTER_ONBOARDING rule 7 already states the premise: "A 'Build toward the
+        # seed' task's PREMISE is that the thing does NOT exist — absence is the WORK."
+        # A task whose premise is that the thing does not exist is EXACTLY the task
+        # that cannot inherit its answer from this repo. There is nothing here to copy;
+        # that is why the task exists.
+        #
+        # THE WAIVER THAT PROMPTED THIS, verbatim from CAPCOM: an agent building
+        # ADotCharacter waived with "ADotCharacter implementation was based on helm
+        # target and existing patterns". Read it again — "based on existing patterns"
+        # is not a reason research was unnecessary, it is a description of NOT DOING
+        # research, offered as the excuse for not doing it. And it shipped an
+        # `int32 MassCount` with zero Mass framework symbols, which is what "existing
+        # patterns" gets you when the pattern for the thing does not exist yet (H-21:
+        # a verb needs behavior, not metadata).
+        #
+        # Every other waiver still passes: this refuses ONE class, where the task's own
+        # premise contradicts the excuse. That is a FACT about the task, not a judgement
+        # about the reason — the gate is not reading the waiver's quality, it is noticing
+        # that no waiver can be true here.
+        if _SEED_BUILD.search(topic or ""):
+            return "unwaivable", (
+                f"a seed-build task cannot waive research: {waiver.strip()[:120]!r}. "
+                f"This task's PREMISE is that the thing does NOT exist (MASTER_ONBOARDING "
+                f"rule 7: absence is the WORK) — so there is nothing in this repo to "
+                f"inherit the answer from, which is exactly why the task exists. Cite "
+                f"real sources with --researched: UE5.8 documentation for the systems you "
+                f"are about to name, a shipped game that solved it, the DSL bible. "
+                f"('based on existing patterns' is not a reason research was unnecessary; "
+                f"it is a description of not doing research.)")
         return "waived", waiver.strip()
     return "missing", ("no research recorded for this topic; no --researched / "
                        "--research-waiver given")
