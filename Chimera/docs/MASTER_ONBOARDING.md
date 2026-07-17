@@ -166,6 +166,13 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
    isn't playable (real input, read back in PIE).
 8b. **BEAT SCRIPTS — the actual work right now (14 queued features, ALL needing one).**
    **LINT BEFORE YOU DISPATCH: `python -m core.beat_lint --beats docs/beats/<x>.beats.json`.**
+   It also asks (`?`, never a refusal) whether the DNA has **ALREADY SETTLED** an expect
+   you are about to re-run: *failed Nx and NEVER passed = a WALL, not a flake.* Fix the
+   cause first. **`actor_exists: ATool_Scanner` cost THREE runs across TWO sessions and
+   ten hours** — nothing anywhere puts that actor in a level, every session honestly
+   wrote a beat, ran it, got 0/1, recorded the rejection and moved on, and the graph
+   held the answer all three times. A re-run IS right if you FIXED the cause (that is a
+   regression test); it is only waste if you did not KNOW.
    An unknown expect does NOT error — sleepwalker returns `False`, so the beat FAILS, the
    feature is INDICTED, and the valence (below) then REJECTS it. **A typo in your test
    condemns a working feature.** The linter reads the Sleepwalker's own dispatch (13
