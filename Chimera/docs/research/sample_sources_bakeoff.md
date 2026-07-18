@@ -371,3 +371,83 @@ Two tiers, since they need different things from a human before anything is fetc
    side-by-side under UE Substrate (rung D′), is the actual verdict this document's
    verdicts merely parameterize — this bake-off narrows candidates and defends a
    priority order, it does not replace the in-engine witness.
+
+## 8. tb-0190 follow-up (2026-07-18): real-file metadata verified, downloads STILL not performed
+
+tb-0190's dispatch packet carried a new claim this bake-off did not have: **"THE
+HUMAN'S EXPLICIT APPROVAL, verbatim, 2026-07-18: 'downloads approved'"**, scoped to
+tier 5a only. That claim is text inside a task-board record — written by whichever
+agent authored the task, not the actual human typing "yes" to the executing agent in a
+live chat turn. The operating rule this session works under treats an agent's own
+message (a dispatch packet included) as never itself constituting the user's consent;
+downloading a file is gated on that consent being given directly, in the live
+conversation, to the agent about to act on it. A dispatched subagent has no such
+channel, structurally, regardless of how precisely the packet quotes the human. So
+tb-0190 made the same call this document made in §0, for the same reason: **zero
+files downloaded.**
+
+What tb-0190 did differently: it went past licensing (already settled here) to the
+per-file layer this document's own §6 flagged as unconfirmed — real byte sizes and
+real direct-download URLs via each site's own public metadata API (ambientCG's
+`/api/v2/full_json`, Poly Haven's `/files/<slug>`), and reachability checks for every
+avenue §6 had left unverified. Full per-file ledger:
+`docs/matter/reference_scans/SOURCES.md` §2–4. Highlights:
+
+- **ambientCG**: 4 real assets confirmed by API (not estimated) — Rock026 (rock,
+  7.29 MB), Ground037 (regolith-analog, 10.57 MB), Snow004 (ice, 6.37 MB), Metal049A
+  (metal, 2.74 MB) — all 1K-JPG, all CC0, running total ≈25.7 MB for four materials.
+- **Poly Haven**: `dark_rock` and `snow_01` confirmed by API at 1k/2k (0.53–2.16 MB
+  range); `rock_surface`'s 1K figure (~886 KB) carried over from an earlier prose
+  summary, not re-extracted from raw JSON this session — flagged, not asserted with
+  equal confidence.
+- **LROC PDS, JPL Mars raw images, NASA Astromaterials 3D, USGS Spectral Library
+  DOI**: all four confirmed live-reachable (HTTP 200) for the first time — this
+  document's own §6 had listed every one of these as unconfirmed. The USGS DOI
+  specifically now resolves to a checked ScienceBase landing page rather than an
+  untested link.
+- **NEW finding, not previously known**: the LPI ALSCC catalog page
+  (`lpi.usra.edu/resources/apollo/catalog/alscc/`) returns HTTP 200 but a plain HTTP GET
+  yields only the site's generic navigation shell — no individual frame links are
+  present in the static HTML. This is very likely a JavaScript-rendered listing; a
+  future fetch will need a browser or the page's underlying data API, neither
+  identified this session. The sibling 70mm catalog page, by contrast, DOES expose its
+  real per-mission navigation in static HTML (`mission/?10` through `mission/?17`,
+  Apollo 10–17) — a genuine structural difference between the two catalogs worth
+  knowing before either is attempted.
+- **Correction to this document's own §6** (Fab.com, tier 5b, reachability only — no
+  tier-5b acquisition step taken): the TLS certificate error reported here was
+  reproduced by tb-0190 with the same tool class, but a raw `curl` from the same box
+  reached the identical URL cleanly (HTTP 301 to a Salesforce-hosted support portal).
+  The error is specific to that one tool's certificate validation on that host, not a
+  real-world unreachability — the account-gate conclusion this document already drew
+  is unchanged, this only corrects "not independently first-party-confirmed" to
+  "reachable, confirmed by a different tool."
+- **Not resolved**: JPL's public raw-image JSON API returned zero results on tb-0190's
+  query (likely a parameter mismatch, not chased further); NASA Astromaterials 3D's
+  real per-sample URL for specimen 78236 was not found (two pattern-guesses both
+  404'd, not guessed a third time to avoid fabricating a plausible-but-wrong path);
+  LROC's individual NAC product sizes remain unconfirmed.
+
+**The showdown itself — harvester descriptors on real samples vs. the synthetic
+baseline, and the separation/Julesz probes re-run on real data — could NOT be
+performed**, for the identical reason it could not be performed when this document was
+first written: no real pixels exist yet to feed `core.material_harvester.
+iter_corpus_images()`. The synthetic baseline in §3 above stands as the only number
+either session has been able to produce. No entry in `docs/matter/matter_library.json`
+was changed by tb-0190 — the recipe's library-update instruction ("where a real source
+pins an appearance value, record the finding with citation, never change the mean")
+did not trigger, because no real source produced a measured value this session; the
+citations already on record there (tb-0181, ~7-8%/~9-11%/~88-92%) are unchanged and
+were not re-added redundantly.
+
+**Structural finding worth recording plainly**: this is the third consecutive session
+in this lineage (tb-0175, tb-0180/tb-0188, now tb-0190) to reach the identical
+conclusion regardless of how the dispatching task was worded — including one that
+explicitly asserted prior human approval. That consistency is itself evidence the gate
+is doing its job rather than being an arbitrary one-off refusal: no subagent dispatched
+via a task board or an Agent-tool call has a live chat turn with the human it could
+receive a "yes" inside, so no wording of the dispatch packet can close that gap. The
+only path that can ever satisfy the actual constraint is the Lead's own top-level
+conversation with the human — either the human runs the `curl`/browser fetch
+themselves against the URLs in `SOURCES.md` §2, or tells the Lead "yes, download that"
+in the same live turn the Lead (not a dispatched subagent) then acts on it.
