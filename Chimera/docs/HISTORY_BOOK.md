@@ -5,11 +5,11 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1324 entries** across 8 chapters.
+**1334 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
-*72 entries; showing 40.*
+*79 entries; showing 40.*
 
 ### H-1
 <sub>`claude:H-1`</sub>
@@ -171,6 +171,11 @@
 
 > Implement screenshot action and state-capture in sleepwalker beat registry.
 
+### H-54
+<sub>`claude:H-54`</sub>
+
+> Verify event logging and signal traces on success path.
+
 ### compilation_fail `2026-07-07T01:45`
 <sub>`heuristic_837905aa7e86de78`</sub>
 
@@ -205,11 +210,6 @@
 <sub>`heuristic_495c8c49df214bdf`</sub>
 
 > Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
-
-### H-1 compilation_fail C2039 missing-member `2026-07-07T05:20`
-<sub>`heuristic_351b200ded96cdb0`</sub>
-
-> A C2039 missing-member error in ProceduralGenerated/ means template drift — emit the accessor in the same generator change that emits its test.
 
 ## II. Closed Doors (eliminations — proven negatives)
 
@@ -316,7 +316,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*461 entries; showing 40.*
+*464 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -1391,27 +1391,27 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                          96 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                          98 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    149 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    150 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access   1008 reps  100%  streak  8  battery  10 (3 pie)  READY
+> audio_visual_sync/telemetry_access   1015 reps  100%  streak  8  battery  10 (3 pie)  READY
 
 ### Beat_Scripts_Tautology_Fix — ledger standing
 <sub>`repstat:Beat_Scripts_Tautology_Fix`</sub>
 
-> Beat_Scripts_Tautology_Fix             52 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Beat_Scripts_Tautology_Fix             53 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### Demo_Level — ledger standing
 <sub>`repstat:Demo_Level`</sub>
 
-> Demo_Level                            147 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Demo_Level                            148 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 

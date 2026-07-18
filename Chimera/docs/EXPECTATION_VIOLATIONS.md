@@ -143,3 +143,32 @@ coverage 7/18 cells (39%)   QD-score 54.0
 - **assumption:** You must rigorously prove every action and state through strict logical rules before the system will accept it as valid.
 - **violation:** Retroactive Axiom Shift - Every third turn, the system re-evaluates all previous turns against a hidden entropy value; if entropy is high, actions validated by strict logic are retroactively collapsed, forcing players to treat logical proofs as temporary and probabilistic rather than permanent.
 - **why it works:** Forces abandonment of static verification in favor of probabilistic risk management and structural redundancy. This transforms rigid deduction into dynamic strategy, rewarding mastery through uncertainty mitigation rather than flawless logic alone.
+
+## Run (fast judge) - 3 cell(s) claimed
+
+```
+              scope0   scope1   scope2
+inversion       7/10     9/10     9/10
+coupling         .       9/10      .  
+delay            .        .       7/10
+scarcity         .       8/10      .  
+agency           .        .        .  
+identity        8/10     7/10      .  
+
+coverage 8/18 cells (44%)   QD-score 64.0
+```
+
+### UWeatherSubsystem  (9/10)  `inversion|scope1`
+- **assumption:** Players will assume they must proactively clean their suits and adapt their travel methods before the weekly storm hits, treating the weather as a mandatory maintenance cycle that degrades gear and resets navigation progress.
+- **violation:** The weekly storm creates high-velocity thermal updrafts that grant movement speed bonuses proportional to velocity; halting travel or reducing speed to 'adapt' causes a 'Thermal Collapse' state where suit integrity drains rapidly and navigation data is overwritten by corrupted static, forcing players to maintain maximum sprint speeds through the event.
+- **why it works:** It inverts the expected survival strategy by rewarding sustained momentum over caution, transforming a destructive weather event into a mastery-driven traversal challenge that encourages emergent route optimization.
+
+### AErisaidActor  (9/10)  `coupling|scope1`
+- **assumption:** Players will assume they are supposed to enter and explore the hollowed-out interior of the massive shell for loot or hidden secrets.
+- **violation:** The interior volume operates on a 'Respiration Cycle' where every interaction with a loot container or secret mechanism triggers a 'Contraction Phase' that physically collapses nearby walls and ceilings inward, reducing the explorable area and spawning aggressive shell-mites; players must balance their exploration speed against structural integrity, using specific 'Expansion Runes' found early in the run to temporarily halt contractions, transforming the interior from a static dungeon into a depleting resource management challenge where greed directly causes environmental collapse.
+- **why it works:** It couples loot acquisition with environmental stability, forcing players to abandon passive exploration for active risk-management and spatial planning. The greedy collapse mechanic creates emergent tactical depth by rewarding precise timing and resource allocation over mindless grinding.
+
+### UStarMemorialSubsystem  (8/10)  `scarcity|scope1`
+- **assumption:** Players will assume they can interact with designated memorial objects in the world to inscribe personal tributes that are then permanently displayed as stars within the game's celestial map or night sky.
+- **violation:** The celestial map enforces a hard limit of 100 active stars; inscribing a new tribute automatically erases the star linked to the earliest inscription in the global queue, turning memorial interaction into a strategic choice between preserving past tributes or claiming sky space.
+- **why it works:** It replaces an assumed infinite storage model with a strategic ledger system where players must weigh emotional attachment against mechanical utility, creating meaningful trade-offs and emergent curation strategies. This transforms passive commemoration into active management without disrupting core

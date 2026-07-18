@@ -1,11 +1,12 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-18T03:20:53Z
+consolidated: 2026-07-18T03:25:32Z
 
 ## Awaiting your approval
-3 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
+4 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
 - H-48: human_rejection: Tool_Scanner_Model
 - H-49: human_rejection: Tool_Scanner_Material
 - H-50: grade_CF: X
+- H-59: surprise: aerisaidactor candidate expectation score
 
 ## Open phantom pains
 - phase_4d2da4e032a4aa07:P1 [11d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
@@ -30,17 +31,17 @@ consolidated: 2026-07-18T03:20:53Z
 Record verdicts: `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`promoted:6; needs_draft:3; untouched:48 | provisional-collapse: 0 collapsed, 12 awaiting evidence`
+`promoted:1; needs_draft:4; untouched:54 | provisional-collapse: 0 collapsed, 12 awaiting evidence`
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 60 batteries, 827 atoms, 801 reps this pass (1 failing), 25 PIE atoms exported
+[rep] 60 batteries, 827 atoms, 802 reps this pass (1 failing), 25 PIE atoms exported
 [rep] failing: FFootstepEvent (1 atoms red)
 ```
 
 ## Tonight's distillation
 ```
-clusters >= 3: 64  |  suppressed (covered/pending): 59  |  staged: 2  |  deferred by cap: 3
+clusters >= 3: 65  |  suppressed (covered/pending): 61  |  staged: 2  |  deferred by cap: 2
   covered   [  5x] human_rejection: Verb_Shovel  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Look  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Bend  <- PENDING_HEURISTICS.md
@@ -76,6 +77,8 @@ clusters >= 3: 64  |  suppressed (covered/pending): 59  |  staged: 2  |  deferre
   covered   [  4x] sim_rejection: verb_interactions/verb_look_location  <- PENDING_HEURISTICS.md
   covered   [  4x] sim_rejection: gesture_wheel/gesture_wheel_open_close  <- PENDING_HEURISTICS.md
   covered   [  4x] sim_rejection: gesture_wheel/gesture_wheel_commit_gesture  <- PENDING_HEURISTICS.md
+  covered   [  4x] sim_rejection: verb_interactions/verb_bend_location  <- PENDING_HEURISTICS.md
+  covered   [  4x] sim_rejection: verb_interactions/verb_pickup_weapon_tool_location  <- PENDING_HEURISTICS.md
   covered   [210x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
   covered   [ 65x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
@@ -100,11 +103,10 @@ clusters >= 3: 64  |  suppressed (covered/pending): 59  |  staged: 2  |  deferre
   covered   [  3x] surprise: chaos chaos_organ core created  <- PENDING_HEURISTICS.md
   covered   [  3x] surprise: fixes generationsubsystem pipeline research  <- PENDING_HEURISTICS.md
   covered   [  3x] surprise: gate postflight refused shelter_habitat_materials  <- PENDING_HEURISTICS.md
-  CANDIDATE [  4x] sim_rejection: verb_interactions/verb_bend_location
-  CANDIDATE [  4x] sim_rejection: verb_interactions/verb_pickup_weapon_tool_location
-  deferred  [  3x] sim_rejection: verb_interactions/verb_drop_location (cap; next night)
-  deferred  [  3x] surprise: aerisaidactor candidate expectation score (cap; next night)
+  CANDIDATE [  3x] sim_rejection: verb_interactions/verb_drop_location
+  CANDIDATE [  4x] surprise: aerisaidactor candidate expectation score
   deferred  [  3x] surprise: atom beat_scripts_tautology_fix fix red (cap; next night)
+  deferred  [  3x] surprise: candidate expectation score uweathersubsystem (cap; next night)
 
 staged 2 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
 next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate-organ rules queue for a capable cycle); optional human veto-after.
@@ -112,7 +114,7 @@ next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 2727  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 2731  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 

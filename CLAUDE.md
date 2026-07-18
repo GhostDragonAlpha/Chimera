@@ -68,6 +68,7 @@
 - **[H-47, auto-promoted 2026-07-16]** Investigate human_rejection sky_atmosphere_scattering; verify test harness and b
 - **[H-51, auto-promoted 2026-07-17]** Implement screenshot action and state-capture in sleepwalker beat registry.
 - **[H-54, auto-promoted 2026-07-18]** Verify event logging and signal traces on success path.
+- **[H-58, auto-promoted 2026-07-18]** Verify correct pawn class and rig bindings on initialization.
 
 ## Architecture Overview
 

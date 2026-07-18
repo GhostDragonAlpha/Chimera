@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T03:24:47+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T03:29:16+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -31,6 +31,8 @@ so claimed tasks are safe to run in parallel.
 | tb-0160 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
 | tb-0161 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
 | tb-0162 | open | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
+| tb-0163 | open | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
+| tb-0164 | open | 0.6 | Pain verdict: ChimeraMovementComponent.cpp's footstep 'sync  | docs/research/** |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |

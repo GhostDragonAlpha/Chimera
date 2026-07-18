@@ -2,7 +2,7 @@
 
 **Good news:** 52 feature(s) have now earned full trust through repeated testing — ADotCharacter, audio_visual_sync/report_telemetry, audio_visual_sync/telemetry_accessors and more.
 **Watch:** 1 feature(s) failed some checks recently (FFootstepEvent); they are on the work board with evidence attached.
-**The queue:** 22 task(s) open for agents; 123 old worries await a confirm-or-refute verdict.
+**The queue:** 24 task(s) open for agents; 123 old worries await a confirm-or-refute verdict.
 **The container:** holding steady at the edge; no changes proposed.
 **Needs you today:** nothing — rest.
 

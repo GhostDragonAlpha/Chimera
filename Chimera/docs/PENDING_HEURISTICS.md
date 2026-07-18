@@ -618,7 +618,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-18T03:25:32Z -->
 ## H-58: sim_rejection: verb_interactions/verb_drop_location
-- status: pending
+- status: promoted (auto 2026-07-18)
 - kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-18T00:28:41
 - proposed_organ: claude_md
 - evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_16a2853df3c50be7
