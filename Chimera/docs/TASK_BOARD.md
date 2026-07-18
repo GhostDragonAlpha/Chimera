@@ -1,10 +1,10 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T03:10:07+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T03:24:47+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
@@ -28,6 +28,9 @@ so claimed tasks are safe to run in parallel.
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0158 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0159 | open | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
+| tb-0160 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
+| tb-0161 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
+| tb-0162 | open | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |

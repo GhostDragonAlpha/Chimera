@@ -114,3 +114,32 @@ coverage 4/18 cells (22%)   QD-score 31.0
 - **assumption:** Players will assume the half-buried leviathan shell is a static environmental landmark intended solely for visual observation and world-building, not for direct gameplay interaction or manipulation.
 - **violation:** The leviathan shell is now a dynamic environmental trigger that responds to player audio devices; activating a 'Sonic Emitter' within 5 meters causes the shell to vibrate and physically shift its buried position by 10 feet, unearthing a hidden subterranean passage that alters the map layout.
 - **why it works:** This rule creates productive cognitive friction by linking audio devices to environmental physics, forcing players to build a new mental model where sound manipulates terrain. It rewards mastery through an 'aha' moment and emergent strategies for altering map layouts via sonic emitters.
+
+## Run (fast judge) - 3 cell(s) claimed
+
+```
+              scope0   scope1   scope2
+inversion       7/10     8/10     9/10
+coupling         .       8/10      .  
+delay            .        .       7/10
+scarcity         .        .        .  
+agency           .        .        .  
+identity        8/10     7/10      .  
+
+coverage 7/18 cells (39%)   QD-score 54.0
+```
+
+### UWeatherSubsystem  (9/10)  `inversion|scope2`
+- **assumption:** Players will assume they must brace against gusts and time their activities around the weekly storms to protect their gear from damage and preserve their tracks for navigation.
+- **violation:** Replace 'Gear Durability' with a 'Wind-Infusion' mechanic where bracing against gusts causes immediate structural fatigue, while leaving equipment exposed during storms permanently fuses aerodynamic plating onto it, increasing stats but stripping its original utility functions.
+- **why it works:** The rule inverts expected protective behavior into a deliberate risk-reward system, forcing players to master strategic exposure and loadout optimization rather than relying on static durability management.
+
+### AErisaidActor  (7/10)  `inversion|scope0`
+- **assumption:** Players will assume there is an interactive terminal or hidden compartment embedded in the shell that allows them to retrieve rewards or narrative data despite its immovable, half-buried state.
+- **violation:** The AErisaidActor shell contains no interactive surface; data retrieval requires players to place a 'Bio-Link Injector' on the actor's exposed wiring while simultaneously controlling a drone to divert power from the local grid, causing the actor to twitch and bury itself deeper unless the player maintains precise button-mapping synchronization, transforming the static object into a dynamic resource-draining puzzle that punishes isolation.
+- **why it works:** It replaces passive loot retrieval with dynamic counter-play that rewards precise timing and multi-system coordination. This transforms a static environmental prop into an engaging skill check without breaking core game loops.
+
+### FStar  (7/10)  `delay|scope2`
+- **assumption:** You must rigorously prove every action and state through strict logical rules before the system will accept it as valid.
+- **violation:** Retroactive Axiom Shift - Every third turn, the system re-evaluates all previous turns against a hidden entropy value; if entropy is high, actions validated by strict logic are retroactively collapsed, forcing players to treat logical proofs as temporary and probabilistic rather than permanent.
+- **why it works:** Forces abandonment of static verification in favor of probabilistic risk management and structural redundancy. This transforms rigid deduction into dynamic strategy, rewarding mastery through uncertainty mitigation rather than flawless logic alone.

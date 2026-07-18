@@ -560,7 +560,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-18T03:13:54Z -->
 ## H-52: sim_rejection: social_trade/social_trade_npc_proximity
-- status: pending
+- status: promoted (auto 2026-07-18)
 - kind: sim_rejection  |  count: 5  |  last_seen: 2026-07-18T00:38:02
 - proposed_organ: claude_md
 - evidence: simtest_33f305d33bb1b38d, simtest_51d4dd9d23e83dd4, simtest_ba2a6d157832970a, simtest_79842a4f344337f9, simtest_d18f9ee548524798
@@ -568,7 +568,7 @@ Wait, looking at the
 - draft_rule: Verify required components and assets are spawned and registered.
 
 ## H-53: sim_rejection: social_trade/social_trade_npc_interact
-- status: pending
+- status: promoted (auto 2026-07-18)
 - kind: sim_rejection  |  count: 5  |  last_seen: 2026-07-18T00:38:02
 - proposed_organ: claude_md
 - evidence: simtest_33f305d33bb1b38d, simtest_51d4dd9d23e83dd4, simtest_ba2a6d157832970a, simtest_79842a4f344337f9, simtest_d18f9ee548524798
@@ -578,7 +578,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-18T03:15:25Z -->
 ## H-54: sim_rejection: gesture_wheel/gesture_wheel_open_close
-- status: pending
+- status: promoted (auto 2026-07-18)
 - kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-17T14:22:44
 - proposed_organ: claude_md
 - evidence: simtest_b30c4432bd2ecd93, simtest_1b335e28c700cd59, simtest_79c27b8c157dad4d, simtest_457320c3449e9c1f
@@ -586,10 +586,53 @@ Wait, looking at the
 - draft_rule: Verify event logging and signal traces on success path.
 
 ## H-55: sim_rejection: gesture_wheel/gesture_wheel_commit_gesture
-- status: pending
+- status: promoted (auto 2026-07-18)
 - kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-17T14:22:44
 - proposed_organ: claude_md
 - evidence: simtest_b30c4432bd2ecd93, simtest_1b335e28c700cd59, simtest_79c27b8c157dad4d, simtest_457320c3449e9c1f
 - sample: failed: [{"expect": {"log_contains": "[GestureWheel] CommitGesture"}, "ok": false, "note": "log_hit=False"}]
 - possible_conflict_with: H-54  (Gardener: reconcile)
 - draft_rule: Verify event logging and signal traces on success path.
+
+<!-- distilled 2026-07-18T03:20:53Z -->
+## H-56: sim_rejection: verb_interactions/verb_bend_location
+- status: promoted (auto 2026-07-18)
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-18T00:28:41
+- proposed_organ: claude_md
+- evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_e497ac97c0583b74, simtest_16a2853df3c50be7
+- sample: failed: [{"expect": {"pawn_class": "BP_Astronaut_Character_C"}, "ok": false, "note": "pawn_class=DefaultPawn"}]
+- sample: failed: [{"expect": {"pawn_property_toggles": {"key": "C", "component": "CollisionCylinder", "property": "CapsuleHalfHeight", "m
+- possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); heuristic_c7175a86c82c29e9 (Position-expect beats must reset_position at beat start — W-); heuristic_1d155a205edbbd4b (Expects are schema-bound like actions — unknown expects (scr)  (Gardener: reconcile)
+- draft_rule: Implement missing input bindings and verify actor registration.
+
+## H-57: sim_rejection: verb_interactions/verb_pickup_weapon_tool_location
+- status: promoted (auto 2026-07-18)
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-18T00:28:41
+- proposed_organ: claude_md
+- evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_e497ac97c0583b74, simtest_16a2853df3c50be7
+- sample: failed: [{"expect": {"screenshot_taken": "verb_pickup_weapon_tool_view"}, "ok": false, "note": "unknown expect ['screenshot_take
+- sample: failed: [{"expect": {"pawn_class": "BP_Astronaut_Character_C"}, "ok": false, "note": "pawn_class=DefaultPawn"}]
+- sample: failed: [{"expect": {"log_contains": "[DEMOBEAT] Interact action triggered - picked up", "note": "Verb_PickUp witness: pickup ac
+- possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); heuristic_c7175a86c82c29e9 (Position-expect beats must reset_position at beat start — W-); heuristic_1d155a205edbbd4b (Expects are schema-bound like actions — unknown expects (scr)  (Gardener: reconcile)
+- draft_rule: Verify event logging and signal traces on success path.
+
+<!-- distilled 2026-07-18T03:25:32Z -->
+## H-58: sim_rejection: verb_interactions/verb_drop_location
+- status: pending
+- kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-18T00:28:41
+- proposed_organ: claude_md
+- evidence: simtest_591e6833d4c01704, simtest_fbd1071132dfb65a, simtest_16a2853df3c50be7
+- sample: failed: [{"expect": {"pawn_class": "BP_Astronaut_Character_C"}, "ok": false, "note": "pawn_class=DefaultPawn"}]
+- sample: blocked: [{"error": "inspect.runtime_report: failed"}]
+- possible_conflict_with: heuristic_5031dfdbe0e5667d (Beat scripts must declare only Sleepwalker-registered action); heuristic_2dfd6804008ee83d (Beat scripts must declare only Sleepwalker-registered action); heuristic_c7175a86c82c29e9 (Position-expect beats must reset_position at beat start — W-); heuristic_1d155a205edbbd4b (Expects are schema-bound like actions — unknown expects (scr)  (Gardener: reconcile)
+- draft_rule: Verify correct pawn class and rig bindings on initialization.
+
+## H-59: surprise: aerisaidactor candidate expectation score
+- status: pending
+- kind: surprise  |  count: 4  |  last_seen: 2026-07-18T03:24:46
+- proposed_organ: claude_md
+- evidence: surprise_188b627fe0fafb46, surprise_14f14118b700a6ec, surprise_8b8219fa2d79c5c8, surprise_3dadbf9549ff2e3a
+- sample: expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume they are supposed to examine or'
+- sample: expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume the half-buried leviathan shell'
+- sample: expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume there is an interactive termina'
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
