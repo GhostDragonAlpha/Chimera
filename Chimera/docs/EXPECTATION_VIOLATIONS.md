@@ -172,3 +172,22 @@ coverage 8/18 cells (44%)   QD-score 64.0
 - **assumption:** Players will assume they can interact with designated memorial objects in the world to inscribe personal tributes that are then permanently displayed as stars within the game's celestial map or night sky.
 - **violation:** The celestial map enforces a hard limit of 100 active stars; inscribing a new tribute automatically erases the star linked to the earliest inscription in the global queue, turning memorial interaction into a strategic choice between preserving past tributes or claiming sky space.
 - **why it works:** It replaces an assumed infinite storage model with a strategic ledger system where players must weigh emotional attachment against mechanical utility, creating meaningful trade-offs and emergent curation strategies. This transforms passive commemoration into active management without disrupting core
+
+## Run (fast judge) - 1 cell(s) claimed
+
+```
+              scope0   scope1   scope2
+inversion       7/10     9/10     9/10
+coupling         .       9/10      .  
+delay            .        .       7/10
+scarcity         .       8/10      .  
+agency          8/10      .        .  
+identity        8/10     7/10      .  
+
+coverage 9/18 cells (50%)   QD-score 72.0
+```
+
+### AErisaidActor  (8/10)  `agency|scope0`
+- **assumption:** The player assumes they are supposed to examine or interact with this massive shell to trigger a narrative event or discover hidden rewards.
+- **violation:** ON_INTERACT_SHELL triggers 'Captive Burst' mechanic, instantly releasing stored toxic spores that apply 'Asphyxiation' to all players within radius and convert AErisaidActor into a stationary turret that fires based on player proximity, replacing the expected narrative reward with an immediate area-denial combat encounter.
+- **why it works:** Players must rapidly pivot from passive exploration to tactical positioning, mastering kiting and cover usage while mitigating area denial. This transforms a static interaction into an emergent combat loop that rewards spatial awareness and adaptive strategy.

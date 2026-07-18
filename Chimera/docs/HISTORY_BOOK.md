@@ -5,11 +5,11 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1334 entries** across 8 chapters.
+**1370 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
-*79 entries; showing 40.*
+*81 entries; showing 40.*
 
 ### H-1
 <sub>`claude:H-1`</sub>
@@ -176,6 +176,11 @@
 
 > Verify event logging and signal traces on success path.
 
+### H-58
+<sub>`claude:H-58`</sub>
+
+> Verify correct pawn class and rig bindings on initialization.
+
 ### compilation_fail `2026-07-07T01:45`
 <sub>`heuristic_837905aa7e86de78`</sub>
 
@@ -205,11 +210,6 @@
 <sub>`heuristic_a205a08f1a755211`</sub>
 
 > Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps; run telemetry foregrounded and test every declared criterion before grading System_Economy.
-
-### human_rejection: Verb_Step `2026-07-07T01:45`
-<sub>`heuristic_495c8c49df214bdf`</sub>
-
-> Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
 
 ## II. Closed Doors (eliminations — proven negatives)
 
@@ -316,7 +316,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*464 entries; showing 40.*
+*483 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -640,7 +640,7 @@
 
 ## IV. Verdicts & Grades
 
-*351 entries; showing 40.*
+*353 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -959,7 +959,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*360 entries; showing 40.*
+*372 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1211,7 +1211,7 @@
 
 ## VI. Rep Milestones (resolution through repetition)
 
-*67 entries; showing 40.*
+*68 entries; showing 40.*
 
 ### Ground_Sand_Sound promoted to tier 1
 <sub>`promo:Ground_Sand_Sound:1`</sub>
@@ -1388,30 +1388,30 @@
 
 > shaping promotion (streak rule): streak 8 @ 100%
 
+### subsystem/Characters promoted to tier 1
+<sub>`promo:subsystem/Characters:1`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                          98 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                         194 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    150 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    198 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ### audio_visual_sync/telemetry_access — ledger standing
 <sub>`repstat:audio_visual_sync/telemetry_access`</sub>
 
-> audio_visual_sync/telemetry_access   1015 reps  100%  streak  8  battery  10 (3 pie)  READY
+> audio_visual_sync/telemetry_access   1351 reps  100%  streak  8  battery  10 (3 pie)  READY
 
 ### Beat_Scripts_Tautology_Fix — ledger standing
 <sub>`repstat:Beat_Scripts_Tautology_Fix`</sub>
 
-> Beat_Scripts_Tautology_Fix             53 reps  100%  streak  8  battery   1 (0 pie)  READY
-
-### Demo_Level — ledger standing
-<sub>`repstat:Demo_Level`</sub>
-
-> Demo_Level                            148 reps  100%  streak  8  battery   1 (0 pie)  READY
+> Beat_Scripts_Tautology_Fix            101 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1479,7 +1479,7 @@
 - **Player_Character_Suit_Visor** — 1 entry: `professor_grade_1bf1d076b6c54468`
 - **Regolith_Dust_Accumulation_Visual_Feedback** — 1 entry: `observation_44947b0e1ef55883`
 - **Shelter_Habitat_Geometry** — 1 entry: `observation_1a64d91760b71c72`
-- **Shelter_Habitat_Lighting** — 1 entry: `repstat:Shelter_Habitat_Lighting`
+- **Shelter_Habitat_Lighting** — 2 entries: `observation_e5809b7506f928d1`, `repstat:Shelter_Habitat_Lighting`
 - **Shelter_Habitat_Materials** — 1 entry: `repstat:Shelter_Habitat_Materials`
 - **Sky_Atmosphere_Scattering** — 3 entries: `observation_6df7bf32c69dc5ff`, `observation_d9772e6bb1395ac4`, `repstat:Sky_Atmosphere_Scattering`
 - **Sky_Earth_Material** — 1 entry: `observation_d98165bc5d378bc0`
@@ -1513,6 +1513,7 @@
 - **Tool_Scanner_Model** — 1 entry: `observation_b1c08c983da0e237`
 - **Tool_Shovel_Model** — 1 entry: `professor_grade_ef64717b4d520850`
 - **Tool_Weapon_Model** — 2 entries: `observation_af7f40abe37d1f59`, `observation_c941ed7c5d84c89d`
+- **Travel_Vehicle_Basic** — 1 entry: `observation_a640c045d6ceaf69`
 - **Travel_Walking** — 1 entry: `professor_grade_f4fa95fd0c69ab19`
 - **UChimeraAttunementComponent** — 1 entry: `observation_455906b50c6a0a1a`
 - **UI_Suit_HUD** — 1 entry: `promo:UI_Suit_HUD:1`
@@ -1533,7 +1534,7 @@
 - **audio_visual_sync_telemetry_fix** — 1 entry: `observation_5df7cfceb2a42bff`
 - **subsystem/AI** — 2 entries: `promo:subsystem/AI:1`, `repstat:subsystem/AI`
 - **subsystem/Audio** — 1 entry: `repstat:subsystem/Audio`
-- **subsystem/Characters** — 1 entry: `repstat:subsystem/Characters`
+- **subsystem/Characters** — 2 entries: `promo:subsystem/Characters:1`, `repstat:subsystem/Characters`
 - **subsystem/Combat** — 2 entries: `promo:subsystem/Combat:1`, `repstat:subsystem/Combat`
 - **subsystem/Demo** — 2 entries: `promo:subsystem/Demo:1`, `repstat:subsystem/Demo`
 - **subsystem/Economy** — 2 entries: `promo:subsystem/Economy:1`, `repstat:subsystem/Economy`

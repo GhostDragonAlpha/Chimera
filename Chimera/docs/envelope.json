@@ -214,6 +214,14 @@
    "evidence": "distiller-candidate Heuristic nodes, last 24h (rejection-lineage records excluded)",
    "status": "ruled: hold current limit (max: 2); investigate before any loosening",
    "ruling": "hold current limit max:2 on heuristics_per_night; breach at 9 indicates distiller-candidate count exceeds distiller max-candidates; no loosening permitted until investigation completes"
+  },
+  {
+   "ts": "2026-07-18T07:15:10",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 19120); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
   }
  ]
 }

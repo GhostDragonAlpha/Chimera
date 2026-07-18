@@ -534,6 +534,20 @@
   "provenance": "reflection:UPROPERTY:WindSystemComponent.h"
  },
  {
+  "id": "atom_599c82032b76",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWeatherMPC\\b"
+  },
+  "desc": "UPROPERTY WeatherMPC (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
   "id": "atom_5a742900ea38",
   "feature": "subsystem/Environment",
   "tier": 1,
@@ -881,6 +895,20 @@
    "regex": "\\bGustPeriodMinSeconds\\b"
   },
   "desc": "UPROPERTY GustPeriodMinSeconds (WeatherComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WeatherComponent.h"
+ },
+ {
+  "id": "atom_c337267a10e9",
+  "feature": "subsystem/Environment",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustClogEffectClass\\b"
+  },
+  "desc": "UPROPERTY DustClogEffectClass (WeatherComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:WeatherComponent.h"
  },
  {

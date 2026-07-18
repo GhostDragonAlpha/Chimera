@@ -636,3 +636,21 @@ Wait, looking at the
 - sample: expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume the half-buried leviathan shell'
 - sample: expected 'the player's assumed mental model for the system' but 'VIOLATE 'Players will assume there is an interactive termina'
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-18T07:15:02Z -->
+## H-60: surprise: research shelter_habitat_lighting waived witness
+- status: pending
+- kind: surprise  |  count: 7  |  last_seen: 2026-07-18T03:37:47
+- proposed_organ: claude_md
+- evidence: surprise_525df411ff6355c6, surprise_ab437e4cfa7eb7f6, surprise_1294466e9aad704c, surprise_8a6188c5662a79cf, surprise_b5a537d36011f9a1, surprise_644a93ce02af1591, surprise_35c442795c19e6ba
+- sample: expected 'research per Research Depth Protocol' but 'Witness task verifying existing feature — no new technical d'
+- possible_conflict_with: heuristic_29d3294b7875942a (Investigate fixes generationsubsystem; verify test harness a); H-44  (Gardener: reconcile)
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-61: surprise: atom beat_scripts_tautology_fix fix red
+- status: pending
+- kind: surprise  |  count: 3  |  last_seen: 2026-07-17T19:16:06
+- proposed_organ: claude_md
+- evidence: surprise_4ed053b71dd5028c, surprise_074c4f5ce8137b19, surprise_e09b060aa7dd655a
+- sample: expected 'research per Research Depth Protocol' but 'No technical research needed for this fix - it was a STALE p'
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
