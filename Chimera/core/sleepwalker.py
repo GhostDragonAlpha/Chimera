@@ -469,7 +469,7 @@ class Sleepwalker:
         else:
             raise ValueError(f"unknown action {a}")
 
-    def _check_expect(self, e: dict, rt: dict, new_log: list) -> tuple[bool, str]:
+    def _check_expect(self, e: dict, rt: dict, log_lines: list) -> tuple[bool, str]:
         if "is_pie" in e:
             ok = bool(rt.get("isPIE")) == bool(e["is_pie"])
             return ok, f"isPIE={rt.get('isPIE')}"
@@ -490,7 +490,14 @@ class Sleepwalker:
             names = {a.get("label") for a in actors} | {a.get("name") for a in actors}
             return e["actor_exists"] in names, f"present={e['actor_exists'] in names}"
         if "log_contains" in e:
-            hit = any(e["log_contains"] in ln for ln in new_log)
+            # tb-0185: log_lines is the FULL unfiltered log tail for this beat's
+            # window (Witness.drain_all_new()), not the old [DEMOBEAT]-only
+            # subset — that filtering happened before this check ever saw the
+            # log, so any marker not tagged [DEMOBEAT] ([GestureWheel]/
+            # [Weather]/[Memorial]/[Sacrifice]/[Footstep]/[NPCTrade]) could
+            # never match. [DEMOBEAT]-anchored expects still match identically:
+            # those lines are a strict subset of log_lines.
+            hit = any(e["log_contains"] in ln for ln in log_lines)
             return hit, f"log_hit={hit}"
         if "world_is" in e:
             w = str(rt.get("worldName", ""))
@@ -702,7 +709,13 @@ class Sleepwalker:
                 try:
                     for a in beat.get("actions", []):
                         self._do_action(a)
-                    new_log = self.w.drain_demobeats()
+                    self.w.drain_demobeats()  # unchanged: chronicle "demobeat" marks
+                    # tb-0185: log_contains expects need the FULL raw tail for this
+                    # beat's window, not just [DEMOBEAT]-tagged lines — drain_all_new()
+                    # shares drain_demobeats()'s bounded offset-cursor read (no second
+                    # file read) and is a superset of it, so existing [DEMOBEAT]-anchored
+                    # expects are unaffected; non-DEMOBEAT markers become audible.
+                    raw_log = self.w.drain_all_new()
                     rt = self._runtime()
                     loc = ((rt.get("pawn") or {}).get("transform") or {}).get(
                         "location"
@@ -715,7 +728,7 @@ class Sleepwalker:
                         },
                     )
                     for e in beat.get("expects", []):
-                        ok, note = self._check_expect(e, rt, new_log)
+                        ok, note = self._check_expect(e, rt, raw_log)
                         evidence.append({"expect": e, "ok": ok, "note": note})
                         if not ok:
                             outcome = "failed"

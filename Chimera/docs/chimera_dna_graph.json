@@ -74371,6 +74371,220 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_838a58d6f306"
+    },
+    {
+      "id": "simtest_649bbf306ebf266a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T19:19:48.295373",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0185_probe",
+      "demo": "tb0185_witness_probe",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "tb0185_positive_and_negative_probe",
+          "outcome": "failed",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] OpenWheel"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] ZZZ_NEVER_EMITTED_MARKER_tb0185"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0185_probe.json",
+      "temperature": "[SIM] 0/1 beats reached in 'tb0185_witness_probe'. Failures: tb0185_positive_and_negative_probe (failed: expect {\"log_contains\": \"[GestureWheel] ZZZ_NEVER_EMITTED_MARKER_tb -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'tb0185_probe': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c2c9f1979f49"
+    },
+    {
+      "id": "surprise_456be7f575230170",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T19:19:48.589081",
+      "context": "Sleepwalker expected beat 'tb0185_positive_and_negative_probe' to be reachable (tb0185_witness_probe)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[GestureWheel] ZZZ_NEVER_EMITTED_MARKER_tb0185\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[GestureWheel] ZZZ_NEVER_EMITTED_MARKER_tb0'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c2c9f1979f49"
+    },
+    {
+      "id": "simtest_20b56df681eb48c8",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T19:21:21.973928",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0185_gesture_wheel_verify",
+      "demo": "gesture_wheel",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "gesture_wheel_open_close",
+          "outcome": "reached",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] OpenWheel"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        },
+        {
+          "beat": "gesture_wheel_commit_gesture",
+          "outcome": "reached",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] CommitGesture"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0185_gesture_wheel_verify.json",
+      "temperature": "[SIM] 2/2 beats reached in 'gesture_wheel'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'tb0185_gesture_wheel_verify': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c4079939fc06"
+    },
+    {
+      "id": "discovery_877a0d2dd1bf6a3f",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T19:28:36.114335",
+      "feature": "tb-0185: Witness log_contains deaf to every non-DEMOBEAT log",
+      "campus_sources": [],
+      "web_sources": [
+        "Read core/witness.py + core/sleepwalker.py in full (task subjects); traced GestureWheel TAB wiring end-to-end across Config/DefaultInput.ini (ActionMappings DemoGestureWheel->Tab), DemoPlayerController.cpp/.h (SetupInputComponent/OnTabPressed/OnTabReleased), and GestureWheel.cpp (OpenWheel/CommitGes"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0185: Witness log_contains deaf to every non-DEMOBEAT log",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0185: Witness log_contains deaf to every non-DEMOBEAT log': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_a30add23611b"
+    },
+    {
+      "id": "phase_c370ea3043724732",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T19:28:36.482559",
+      "phase": "tb-0185: Witness log_contains deaf to every non-DEMOBEAT log line",
+      "result": "Confirmed root cause: Witness.drain_demobeats() (core/witness.py) filtered the log tail to [DEMOBEAT]-only lines before sleepwalker._check_expect ever saw it -- log_contains structurally could not match ANY non-[DEMOBEAT] marker (GestureWheel/Weather/Memorial/Sacrifice/Footstep/NPCTrade all confirmed emitted without that tag via source grep). Fix: added Witness.drain_all_new() -- a strict superset of drain_demobeats()'s return, sharing its single bounded per-beat offset-cursor read (never a second/whole-file read) -- and repointed sleepwalker._check_expect's log_contains branch at it; drain_demobeats()'s own filter/mark logic is untouched so DEMOBEAT behavior is byte-identical. PROVEN LIVE in PIE, both directions in one beat/window (simtest_649bbf306ebf266a): log_contains=[GestureWheel] OpenWheel -> ok=true log_hit=True; a guaranteed-absent control string -> ok=false log_hit=False. Real docs/beats/gesture_wheel.beats.json then re-run clean (simtest_20b56df681eb48c8, passed as --witness-evidence): 2/2 beats reached, Clean walk. beat_lint on that file: 2 SETTLED-WALL flags before (log_hit=False x4, never passed) -> 'ok', zero WALL flags after. gesture_wheel.beats.json _provenance updated with this history. NOTE ON THE COIN: the tunnel-exit Coin returned NEEDS_REFINEMENT (advisory, did not block -- task closed done) because my --result prose foregrounded simtest_649bbf306ebf266a (the both-directions mechanism proof) while --witness-evidence formally cited simtest_20b56df681eb48c8 (the real target file's clean run) -- both simtests are genuine, live, this-session evidence for different (complementary) claims, but I should have named them more consistently; flagging this transparently rather than omitting it.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0185: Witness log_contains deaf to every non-DEMOBEAT log line",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0185: Witness log_contains deaf to every non-DEMOBEAT log line' complete: Confirmed root cause: Witness.drain_demobeats() (core/witness.py) filtered the log tail to [DEMOBEAT]-only lines before sleepwalker._check_expect ever saw it -- log_contains structurally could not mat",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "social_trade.beats.json's [NPCTrade] log_contains expects should now be audible (same fix, confirmed via source: NPCTradeComponent.cpp emits both strings untagged) but were not verified live this session -- unknown whether an NPC actor carrying a trade component is ever spawned into the demo level; if not, those 2 beats still fail, but for an entity-placement reason unrelated to this fix.",
+        "system_features.beats.json's log_contains expects for [Economy]/[SaveLoad]/[Faction]/[Mission] will keep failing unconditionally post-fix too -- grep-confirmed those literal tagged strings are emitted NOWHERE in Source, so drain_all_new() has nothing to find; needs a generator-template UE_LOG addition (separate footprint from core/witness.py+core/sleepwalker.py), not another witness-layer change."
+      ],
+      "inheritance": "log_contains now reads Witness.drain_all_new() (the raw per-beat log tail), not drain_demobeats()'s [DEMOBEAT]-only filter, so any UE_LOG marker is audible regardless of tag -- DEMOBEAT-anchored expects are unaffected (strict superset). gesture_wheel.beats.json is proven clean; social_trade.beats.json's [NPCTrade] markers share the identical prior bug but were not re-run live (NPC-actor precondition unverified); system_features.beats.json's [Economy]/[SaveLoad]/[Faction]/[Mission] markers do not exist anywhere in Source at all -- a distinct, unrelated missing-marker gap needing a generator-template fix, not a witness-layer one.",
+      "pain_verdicts": {
+        "phase_d7f6857cc7a33b36:P1": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_a30add23611b"
     }
   ],
   "edges": [
