@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T14:40:37+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T15:19:24+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -16,7 +16,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
-| tb-0170 | open | 0.85 | Substrate rung D-prime: Substrate-shaded splats in the LIVE  `capable` ⇐ tb-0168 | core/splat_to_ue5.py, docs/research/substrate_splats_ue58.md; editor:open |  |
 | tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
@@ -89,6 +88,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0165 | done | 0.85 | CWM rung 1: weather domain - train the storm cadence (Law-4  | core/trainables/weather.py, docs/objectives/weather.json | Files: core/trainables/weather.py (305 lines: seed/mutate/me |
 | tb-0166 | done | 0.85 | CWM rung 1: memorial domain - train the star brightness curv | core/trainables/memorial.py, docs/objectives/memorial.json | Wrote core/trainables/memorial.py (239 lines): seed()/mutate |
 | tb-0169 | done | 0.85 | Substrate rung C: terrain-as-matter - the shovel test (headl ⇐ tb-0168 | core/terrain_matter.py | Terrain-as-matter shovel test: KILL verdict. seam_stitched=F |
+| tb-0170 | done | 0.85 | Substrate rung D-prime: Substrate-shaded splats in the LIVE  `capable` ⇐ tb-0168 | core/splat_to_ue5.py, docs/research/substrate_splats_ue58.md; editor:open | Rung D-prime core criterion MET and encoded: per-splat COLOR |
 | tb-0179 | done | 0.85 | Substrate: high-resolution splat emission - the baby-toy cri | core/splat_emit.py, core/splat_to_ue5.py…; editor:open | DENSITY TABLE (target_len | splats | cm/voxel | quad half-si |
 | tb-0182 | done | 0.85 | closure_report: scope build-currency + action-log to the TAS | core/closure_report.py | Fixed core/closure_report.py (tb-0182): 12/12 closure_report |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |

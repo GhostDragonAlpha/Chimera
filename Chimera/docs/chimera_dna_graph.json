@@ -73720,6 +73720,53 @@
       "inheritance": "Concurrent subagents were false-convicting each other because the closure report's evidence-gathering diffed the WHOLE repo instead of the claiming task's own declared footprint; fnmatch-scoping resources.files (mirroring agent_tunnel's own _offenders_from_porcelain matching exactly) fixes it while keeping out-of-footprint changes visible, never hidden, under a labeled section. The Coin's own advisory NEEDS_REFINEMENT verdict on this closure demonstrates a follow-on gap worth inheriting: the auto action log is a git-diff, so it structurally cannot see a test run's stdout, and will keep flagging honest 'I ran N tests, verbatim result X' claims as unproven unless the output is captured to a file the diff can see. Two OTHER pre-existing, unrelated test failures (test_agent_tunnel.py silent crash, test_task_board.py seed-demotion assertion) were discovered and confirmed pre-existing via before/after isolation swapping the old closure_report.py back in, then flagged to CAPCOM rather than fixed, since both sit outside this task's core/closure_report.py footprint.",
       "recorded_by": "postflight.py",
       "run_id": "run_871fd4ef1b11"
+    },
+    {
+      "id": "discovery_d54fa1b052a50650",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T15:20:00.498800",
+      "feature": "Substrate rung D-prime: per-splat color LIT in-engine (fable",
+      "campus_sources": [],
+      "web_sources": [
+        "READ THE BRIDGE PLUGIN C++ SOURCE (McpAutomationBridge_MaterialAuthoringHandlers.cpp, _MaterialGraphHandlers.cpp, McpConsolidatedActionRouting.h) to derive the exact key vocab instead of guessing; live probes for the rest; UE material facts: Custom-HLSL Parameters.VertexColor does not set bUsesVerte"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Substrate rung D-prime: per-splat color LIT in-engine (fable",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Substrate rung D-prime: per-splat color LIT in-engine (fable': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_37428b08e958"
+    },
+    {
+      "id": "phase_6ce1cfee55cc45a7",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T15:20:00.905368",
+      "phase": "Substrate rung D-prime: per-splat color LIT in-engine (fable-5, tb-0170 closed)",
+      "result": "Core criterion MET: lit_vc_REAL.png shows the splat cloud's anatomy in color (muscle core in skin shell), per-splat COLOR_0 engine-lit via bridge-authored VertexColor->BaseColor material under Substrate; pixel-forensics R-G -31 -> +14.6 at connect. Recipe encoded: write_splat_glb (self-describing GLB) + ensure_splat_material (three-handler-family maze mapped from plugin C++ source). Commits 39ceca8/57516c0/f2b6+; M_SplatVC_Lit.uasset committed; level cleaned+saved.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Substrate rung D-prime: per-splat color LIT in-engine (fable-5, tb-0170 closed)",
+      "error_category": "none",
+      "fix_description": "Phase 'Substrate rung D-prime: per-splat color LIT in-engine (fable-5, tb-0170 closed)' complete: Core criterion MET: lit_vc_REAL.png shows the splat cloud's anatomy in color (muscle core in skin shell), per-splat COLOR_0 engine-lit via bridge-authored VertexColor->BaseColor material under Substra",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "ensure_splat_material assumes nodeId MaterialExpressionVertexColor_0 on a FRESH material; on a material that already has nodes the add returns _N and the fallback id is wrong - make it parse the add response strictly before relying on the default"
+      ],
+      "inheritance": "Per-splat color is engine-lit under Substrate; write_splat_glb + ensure_splat_material are the one-call recipe; the bridge material maze is documented in the module docstring so nobody re-pays it.",
+      "pain_verdicts": {
+        "phase_b6f472a09101b5fb:P1": "refuted"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_37428b08e958"
     }
   ],
   "edges": [
