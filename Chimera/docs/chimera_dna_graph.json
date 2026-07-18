@@ -72597,6 +72597,116 @@
       "inheritance": "Evaluate a splat-vs-mesh comparison the same way the studio learned to evaluate a gait: never trust a single-sample ratio, because a stable-but-elevated number and a genuinely unstable one can look identical at one sampling density. Rerunning the SAME ratio at 2x and 4x the sampling density, plus one determinism check (identical inputs twice should give exactly 0), is what actually distinguishes 'higher gain' from 'artifact' -- and it is cheap.",
       "recorded_by": "postflight.py",
       "run_id": "run_10410db33ed5"
+    },
+    {
+      "id": "discovery_7134554a4a299736",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T05:22:49.039998",
+      "feature": "CWM rung 1: director domain - train the encounter ecology (t",
+      "campus_sources": [],
+      "web_sources": [
+        "docs/MASTER_ONBOARDING.md Parts I/II/IV; CLAUDE.md NEW AGENT START HERE + TRAIN-dont-hand-tune section; docs/TRAINING_PROTOCOL.md in full (Sec 1/3/3.5/4/6); docs/THE_COMPOSITIONAL_WORLD_MODEL.md Sec 4 (UDirectorSubsystem row) + Sec 5 (seams); CHIMERA_VISION.py UDirectorSubsystem/TickDirector/BT_STRA"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/CWM rung 1: director domain - train the encounter ecology (t",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'CWM rung 1: director domain - train the encounter ecology (t': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_14521c3e0416"
+    },
+    {
+      "id": "phase_3c21b99df6eb8931",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T05:22:49.410597",
+      "phase": "CWM rung 1: director domain - train the encounter ecology (tb-0167)",
+      "result": "core/trainables/director.py (572 lines) + docs/objectives/director.json (67 lines, 8 constraints/4 hard) + docs/objectives/director.trained.json (42 lines) written and committed. Trained inside core.membrane (m1784351802, containment HELD, applied+burned): 300pop x 250gens = 75,000 evals in 66.1s, score 0.9533. All 4 hard gates satisfied (pirate_gate_violations=0, first_stranger_paid_fraction=0, concurrent_dots_p95 in [6,7] within Malcolm's live [2,24] band). Winning genome holds all 3 design-rule loci at exactly 0.0. Self-caught and fixed a blind spot before close: a first winner's nonzero pirate_wealth_gate_bypass_fraction=0.127 hid from 80 manual naturalistic restarts because its dense evolved cadence kept it wealthy 97.3% of sim time (poor+storm co-occurred 0% of 90 days) -- added a direct _probe_pirate_gate forcing all 4 (wealth,storm) cells, re-verified it catches the same genome (0->2000 violations), retrained clean. Also fixed a day-to-seconds unit bug (86400 vs the correct DAY_LENGTH_HOURS(27)*3600=97200) pre-training. Enrolled UDirectorSubsystem in the curriculum + ran rep_engine tend (2 reps begun, 1/2 passing -- the red atom checks for the C++ class in Source/, which legitimately does not exist yet; out of this data-only task's scope).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/CWM rung 1: director domain - train the encounter ecology (tb-0167)",
+      "error_category": "none",
+      "fix_description": "Phase 'CWM rung 1: director domain - train the encounter ecology (tb-0167)' complete: core/trainables/director.py (572 lines) + docs/objectives/director.json (67 lines, 8 constraints/4 hard) + docs/objectives/director.trained.json (42 lines) written and committed. Trained inside core.m",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Training runs inside core.membrane occasionally hang past their expected wall-clock (one 300pop/250gen/24-workers run exceeded 580s and left 20 orphaned multiprocessing.spawn workers with a dead parent after timeout-kill; an identical retry at 16 workers completed cleanly in 66s). Root cause not conclusively isolated -- diagnosed as likely contention from concurrent sibling agents (a live UnrealEditor.exe + evidence of parallel weather.py/memorial.py/splat_emit.py work was observed) but not confirmed. If a future core.trainer run under core.membrane hangs, check for orphaned python.exe multiprocessing.spawn processes with a dead parent_pid (Get-CimInstance Win32_Process, filter CommandLine LIKE '%spawn_main%') before assuming the domain/objective is at fault."
+      ],
+      "inheritance": "director.py/director.json/director.trained.json train UDirectorSubsystem's DATA (cadence, scenario mix, pirate gate) only -- the actual C++ UDirectorSubsystem class does not exist in Source/ yet, which is a separate future authoring task per the train-data/author-code split. Watch for the same class of blind spot on other hard-gated conditional rules: a naturalistic sim can fail to visit the cell that would expose a moderate rule violation, so pair every such hard gate with a direct forced-condition probe, not just more restarts.",
+      "pain_verdicts": {
+        "phase_ef0be888042d96ff:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_14521c3e0416"
+    },
+    {
+      "id": "surprise_bdd8122a304aa9d8",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T05:25:40.198299",
+      "context": "sub-23's director objective had a HARD gate (pirate_wealth_gate_bypass) measure 0 violations naturalistically while the genome actually carried a 0.127 bypass \u2014 the naturalistic sim never put the creature in the poor-AND-storm state that would expose it (0 percent of 90 simulated days)",
+      "expectation": "",
+      "reality": "A hard gate checked ONLY by naturalistic simulation passes FALSELY when the sim never visits the violating cell. The fix generalizes to EVERY trainer domain: pair the naturalistic count with a FORCED-CONDITION probe that directly visits every gate-relevant state (director added _probe_pirate_gate forcing all 4 wealth x storm cells, catching the same genome at ~1800 violations). Weather, memorial, and all future CWM domains should audit their hard gates this way \u2014 a gate you only observe passively is a gate you have not tested.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'A hard gate checked ONLY by naturalistic simulation passes FALSELY when the sim '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_23be85b3e164"
+    },
+    {
+      "id": "discovery_c4f2bf63c25a1284",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T05:27:06.755177",
+      "feature": "LEAD: Sonnet fleet of 4 verified + integrated (fable-1)",
+      "campus_sources": [],
+      "web_sources": [
+        "Verified each subagent's work against source: git diff additive-and-consistent, seeds cross-checked against CHIMERA_VISION.py (WIND/STAR/SACRIFICE_WEIGHTS/UDirectorSubsystem tables), trained.json values are trainer output not hand-faked, independent splat-vs-mesh rasterizers confirmed by reading spl"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/LEAD: Sonnet fleet of 4 verified + integrated (fable-1)",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'LEAD: Sonnet fleet of 4 verified + integrated (fable-1)': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_d13944b0ad75"
+    },
+    {
+      "id": "phase_a0cadb25c72ff7b4",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T05:27:07.137423",
+      "phase": "LEAD: Sonnet fleet of 4 verified + integrated (fable-1)",
+      "result": "4 Sonnet subagents at disjoint lanes, all verified INDEPENDENTLY and integrated by-path: sub-20/tb-0168 Substrate rung A+B SURVIVES (brick->splat emission relights correctly vs independent mesh, 3% MAE, Lead looked at the renders; de212b1), sub-21/tb-0165 weather domain (score 0.955), sub-22/tb-0166 memorial domain (score 0.839), sub-23/tb-0167 director domain (score 0.953, all 3 design-rule hard gates held at 0.0). Commits: 9079bef (weather+memorial), 099deac+dff0f56 (director), a465727 + 98b0f01 (two workflow-bug fixes the fleet surfaced), 3e2fb4c (handoff). Recorded surprise_bdd8122a304aa9d8 (naturalistic gates pass falsely on unvisited cells); minted tb-0171 (membrane untracked-files gap).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/LEAD: Sonnet fleet of 4 verified + integrated (fable-1)",
+      "error_category": "none",
+      "fix_description": "Phase 'LEAD: Sonnet fleet of 4 verified + integrated (fable-1)' complete: 4 Sonnet subagents at disjoint lanes, all verified INDEPENDENTLY and integrated by-path: sub-20/tb-0168 Substrate rung A+B SURVIVES (brick->splat emission relights correctly vs independent mesh, 3% MA",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Weather and memorial hard gates were NOT audited with forced-condition probes the way director was \u2014 one of them may carry a naturalistic blind spot (a gate that reads satisfied only because the sim never visits the violating state); re-audit both with the _probe pattern before rung 2 flows their tables into the generator."
+      ],
+      "inheritance": "The Sonnet fleet works: 4 disjoint domains trained in parallel, each verified alone, the flagship splat unification proven visually. The fleet is also a bug-finding engine \u2014 4 agents hitting one closure path surfaced 2 real gate defects a single agent would have waivered past.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_d13944b0ad75"
     }
   ],
   "edges": [
