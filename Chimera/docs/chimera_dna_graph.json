@@ -75091,6 +75091,243 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_134289de4ea5"
+    },
+    {
+      "id": "simtest_579122ea55c61beb",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T22:10:52.554665",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "grown_world_stand_v0",
+      "demo": "solar_system_stand",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "stand_on_grown_ocean_world",
+          "outcome": "blocked",
+          "features": [
+            "solar_accretion",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3630 (delta=+3500uu) \u2014 something external is still moving the pawn every tick; do not indict this beat's tagg"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\grown_world_stand_v0.json",
+      "temperature": "[SIM] 0/1 beats reached in 'solar_system_stand'. Failures: stand_on_grown_ocean_world (blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3630 (de)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'grown_world_stand_v0': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_46ebdab62e70"
+    },
+    {
+      "id": "surprise_847a7138caaf6c29",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T22:10:53.016901",
+      "context": "Sleepwalker expected beat 'stand_on_grown_ocean_world' to be reachable (solar_system_stand)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3630 (delta=+3500uu) \\u2014 something external is still mo",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wr'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_46ebdab62e70"
+    },
+    {
+      "id": "simtest_42f9f67531bcb374",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T22:12:26.356978",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "grown_world_stand_repro",
+      "demo": "solar_system_stand",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "stand_on_grown_ocean_world",
+          "outcome": "blocked",
+          "features": [
+            "solar_accretion",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3085 (delta=+2955uu) \u2014 something external is still moving the pawn every tick; do not indict this beat's tagg"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\grown_world_stand_repro.json",
+      "temperature": "[SIM] 0/1 beats reached in 'solar_system_stand'. Failures: stand_on_grown_ocean_world (blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3085 (de)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'grown_world_stand_repro': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e261377abe1e"
+    },
+    {
+      "id": "surprise_dafff3a449756b8b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T22:12:26.713286",
+      "context": "Sleepwalker expected beat 'stand_on_grown_ocean_world' to be reachable (solar_system_stand)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3085 (delta=+2955uu) \\u2014 something external is still mo",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wr'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e261377abe1e"
+    },
+    {
+      "id": "simtest_140a70674941d472",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T22:12:59.805458",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "grown_world_control_noactors",
+      "demo": "solar_system_stand",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "stand_on_grown_ocean_world",
+          "outcome": "blocked",
+          "features": [
+            "solar_accretion",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3085 (delta=+2955uu) \u2014 something external is still moving the pawn every tick; do not indict this beat's tagg"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\grown_world_control_noactors.json",
+      "temperature": "[SIM] 0/1 beats reached in 'solar_system_stand'. Failures: stand_on_grown_ocean_world (blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3085 (de)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'grown_world_control_noactors': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7cb4620be737"
+    },
+    {
+      "id": "surprise_cace67eb36324aed",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T22:13:00.264170",
+      "context": "Sleepwalker expected beat 'stand_on_grown_ocean_world' to be reachable (solar_system_stand)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3085 (delta=+2955uu) \\u2014 something external is still mo",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wr'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7cb4620be737"
+    },
+    {
+      "id": "surprise_7acd7405c164ca34",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T22:15:15.872256",
+      "context": "tb-0195 witness: expected the pawn to stand on the grown ocean world (three grounded witness runs earlier today said the rig was healthy)",
+      "expectation": "",
+      "reality": "THE LEVITATOR RESURRECTED WITH A GOLDEN REPRODUCER: three consecutive climbs (simtest_579122ea55c61beb z=3630, simtest_42f9f67531bcb374 z=3085, simtest_140a70674941d472 z=3085) - the endpoint is DETERMINISTIC (3085 twice exactly): a CONVERGENCE to fixed altitude, not a rate. Conjunction isolated live: ONLY sleepwalker-started (focused, possessed) PIE climbs; bridge-started unpossessed PIE is dead still in the SAME level state (probe series 130->130 over 6.2s, both pawns); the wiring actors are IRRELEVANT (climbs with them destroyed). Suspects for tb-0196: how sleepwalker starts PIE (focus + possession + possible spawn-at-camera editor preference vs bridge start_pie), since that is now the ONLY discriminating variable",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but 'THE LEVITATOR RESURRECTED WITH A GOLDEN REPRODUCER: three consecutive climbs (si'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_9358ba3249d6"
+    },
+    {
+      "id": "discovery_99da79cd3dbae3c9",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T22:16:20.664309",
+      "feature": "UE5 wiring workflow (tb-0195): grown system staged in the li",
+      "campus_sources": [],
+      "web_sources": [
+        "UE editor PIE spawn preferences (spawn-at-camera vs PlayerStart - the tb-0196 bisect axis); ExponentialHeightFog draw occlusion vs actor distance (the starward shot's missing star disk); proven MCP pathway book entries reused: destroy_actor verb, spawn BasicShapes, set_transform, H-2 viewport captur"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/UE5 wiring workflow (tb-0195): grown system staged in the li",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'UE5 wiring workflow (tb-0195): grown system staged in the li': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_c2cab07379fe"
+    },
+    {
+      "id": "phase_e277cdf19ae8214b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T22:16:21.117422",
+      "phase": "UE5 wiring workflow (tb-0195): grown system staged in the live editor; levitator golden reproducer found (tb-0196)",
+      "result": "core/system_to_ue5.py staged system 0 THREE times idempotently (every spawn/transform/light call OK; screenshots grown_world_stand/restage/starward.png): ocean world 0.83AU/293K as 1km patch, star + aimed DirectionalLight, 3 siblings at true azimuths. Witness runs: simtest_579122ea55c61beb (RIG FAULT z=3630), simtest_42f9f67531bcb374 + simtest_140a70674941d472 (z=3085 DETERMINISTIC twice) - blocked with rig attribution by the tb-0184 tripwire. Live discriminators: bridge-started unpossessed PIE dead still (130->130 over 6.2s, both pawns, same level state); wiring actors irrelevant (climbs after destruction). tb-0196 filed with the golden reproducer; surprise_7acd7405c164ca34.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/UE5 wiring workflow (tb-0195): grown system staged in the live editor; levitator golden reproducer found (tb-0196)",
+      "error_category": "none",
+      "fix_description": "Phase 'UE5 wiring workflow (tb-0195): grown system staged in the live editor; levitator golden reproducer found (tb-0196)' complete: core/system_to_ue5.py staged system 0 THREE times idempotently (every spawn/transform/light call OK; screenshots grown_world_stand/restage/starward.png): ocean world 0.83AU/293K as 1km patch, star + a",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "If tb-0196's bisect finds sleepwalker PIE spawns the pawn at the editor camera (a Play-From-Here preference), then EVERY historical levitation observation inherits reinterpretation: spawn z=133k-era numbers would be camera altitudes, not climb endpoints - re-read the tb-0189 dossier against that lens before closing tb-0196."
+      ],
+      "inheritance": "The levitator finally has an on-demand reproducer and one discriminating variable: sleepwalker-started (focused, possessed) PIE climbs to a DETERMINISTIC altitude (~3085 twice exactly - a convergence, not a rate) while bridge-started unpossessed PIE is still in identical level state - bisect the two PIE-start pathways (focus, possession, spawn-at-camera preference, pre-PIE editor camera) before reading any more code. The wiring workflow itself is sound and re-runnable; its next lane is fog-aware staging distances (ExponentialHeightFog occludes sky bodies at 5-14km) plus matter-library materials. A blocked witness with correct rig attribution is a SUCCESS of the honesty machinery - three simtests name the rig, zero false verdicts landed on solar_accretion or planet_averages.",
+      "pain_verdicts": {
+        "phase_c343f5ecd1c65d22:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_c2cab07379fe"
     }
   ],
   "edges": [

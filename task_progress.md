@@ -1,3 +1,27 @@
+# Session 2026-07-18 (fable-5, wiring) — tb-0195 DONE: grown system staged in UE5; tb-0196 FILED: levitator golden reproducer
+
+- **`core/system_to_ue5.py` (the workflow)**: trained artifacts → `resolve_system` → live editor over proven
+  pathways. System 0's ocean world (0.83 AU, 293 K, 0.9 M⊕) as a 1 km patch at origin; star sphere + the
+  level's DirectionalLight aimed on the true azimuth; 3 siblings (frozen + 2 hot_rock) at true relative
+  azimuths (deterministic golden-angle phases, documented as viz choice). **Staged 3× idempotently**
+  (destroy-first), screenshots in Saved/Screenshots/grown_world_*.png. Beat:
+  `docs/beats/solar_system_stand.beats.json` (registered vocab only) — heals solar_accretion's identity atom.
+- **THE LEVITATOR HAS A GOLDEN REPRODUCER (tb-0196, priority 1.0)**: witness (sleepwalker-started, focused,
+  possessed PIE) climbs the pawn to a **DETERMINISTIC z≈3085 (twice exact; once 3630)** within ~2 s of
+  reset — a CONVERGENCE, not a rate. Bridge-started unpossessed PIE: dead still, same level state, both
+  pawns. Wiring actors irrelevant (climbs after their destruction). The ONE discriminating variable is the
+  PIE-start pathway — bisect focus / possession / **spawn-at-camera preference** / pre-PIE editor camera
+  (the wiring ran BugItGo before PIE!). Three simtests: 579122ea (3630), 42f9f675 + 140a7067 (3085).
+  surprise_7acd7405c164ca34. NOTE the declared pain: if it's spawn-at-camera, tb-0189's whole historical
+  dossier (spawn z=133k!) reinterprets as camera altitudes.
+- **Aesthetic-lane findings**: ExponentialHeightFog occludes sky bodies at the 5–14 km staging distances
+  (no star disk in the starward shot); the level's dust fountain sits near origin. Next lane: fog-aware
+  distances or fog lift + matter-library materials.
+- The witness blocking with correct rig attribution is the honesty machinery SUCCEEDING: zero false
+  verdicts landed on solar_accretion / planet_averages.
+
+---
+
 # Session 2026-07-18 (fable-5, latest) — tb-0194 DONE: THE OPERATOR BAR MET — oceans, atmospheres, interior gradients
 
 - **THE LADDER NOW RUNS cloud → star → solar system → planets-with-climates**, each rung trained, each
