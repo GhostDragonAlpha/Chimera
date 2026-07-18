@@ -72089,6 +72089,78 @@
       "links": [],
       "recorded_by": "collapse_proxy.py",
       "run_id": "run_e2fb1af098b7"
+    },
+    {
+      "id": "simtest_b073f7b6fe011c4a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T04:19:03.804227",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb-0142_travel_vehicle_witness_v2",
+      "demo": "travel_vehicle_basic",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "vehicle_component_initialized",
+          "outcome": "reached",
+          "features": [
+            "Travel_Vehicle_Basic"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb-0142_travel_vehicle_witness_v2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'travel_vehicle_basic'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'tb-0142_travel_vehicle_witness_v2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_519dd0b1132c"
+    },
+    {
+      "id": "discovery_7fdf9007d6f34dd5",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T04:19:27.045675",
+      "feature": "Witness: Travel_Vehicle_Basic",
+      "campus_sources": [],
+      "web_sources": [
+        "TravelVehicleComponent.h/cpp source, Travel_Vehicle_Basic feature node in DNA graph, rep engine status, collapse_proxy sweep results, why chain traversal"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Witness: Travel_Vehicle_Basic",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Witness: Travel_Vehicle_Basic': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_abcaa9120996"
     }
   ],
   "edges": [

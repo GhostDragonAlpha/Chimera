@@ -1675,3 +1675,27 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 - FFootstepEvent identity atom is now green; the feature is enrolled in curriculum
 - Pre-existing VoiceEntity.h build errors remain — not caused by this session's changes
 - subsystem_root has 1 red atom remaining (unrelated to FFootstepEvent)
+
+---
+
+# Session 2026-07-18 (sub-18) — tb-0142 Witness: Travel_Vehicle_Basic DONE
+
+## Work Completed
+| Commit | Task | Fix |
+|--------|------|-----|
+| docs/beats/travel_vehicle_basic.beats.json | tb-0142 Witness: Travel_Vehicle_Basic | Created beat file, enrolled feature in curriculum, ran rep_engine tend (78 reps), witness runner completed simtest_b073f7b6fe011c4a (witnessed_by_engine=true), collapse_proxy accepted as observed |
+
+## Details
+- **Enrolled**: Travel_Vehicle_Basic in curriculum (starter battery: 2 atoms)
+- **Rep engine**: 78 reps this session, streak 8, gate=READY
+- **Beat file**: docs/beats/travel_vehicle_basic.beats.json — 1 beat (vehicle_component_initialized) with features=[Travel_Vehicle_Basic]
+- **Witness runner**: simtest_b073f7b6fe011c4a, witnessed_by_engine=true, chronicle_present=true
+- **Collapse proxy**: Travel_Vehicle_Basic swept as observed (accepted-tacit)
+- **Why chain**: YES via PHYSICS (simplaytest reached beat naming feature)
+- **PIE verified**: DemoPlayerController input bound, BP_Astronaut_Character_C possessed, economy/trade/factions/missions systems initialized
+
+## For the NEXT agent
+- tb-0142 is DONE. The witness beat verified PIE runs cleanly with Travel_Vehicle_Basic feature present but did not confirm vehicle component speed values (GetVehicleSpeed) were read back from PIE.
+- Travel_Vehicle_Basic has 78 reps, streak 8, gate=READY. Rep battery has 2 atoms both green.
+
+---
