@@ -442,6 +442,11 @@ class GameCodeGenerator:
         gw_h_path, gw_cpp_path = self.generate_gesture_wheel_files()
         generated_files["ui_widgets"].extend([gw_h_path, gw_cpp_path])
 
+        # Generate WeatherComponent (seed UWeatherSubsystem) — tb-0151, CWM rung 2:
+        # trained WIND-band numbers flow top-down from docs/objectives/weather.trained.json.
+        weather_files = self.generate_weather_subsystem_files()
+        generated_files["combat_components"].extend(weather_files)
+
         # DemoPlayerController: LOOP-BUILT, deliberately NOT generated here — the
         # TAB/GestureWheel skeleton template under-emitted by ~300 lines and
         # clobbered the artifact on its first regen (tb-0131, 2026-07-17).
@@ -742,6 +747,884 @@ class GameCodeGenerator:
             f.write(cpp_content)
 
         return str(header_path), str(source_path)
+
+    def _load_weather_trained_genome(self) -> tuple[dict, str]:
+        """Read docs/objectives/weather.trained.json's genome — CWM rung 2, tb-0151:
+        'trained data flows top-down.' The ten WIND-band loci (core/trainables/weather.py
+        seed()/mutate()) are read HERE, at generation time, and baked into the emitted
+        C++ as literals (a UE component constructor can't sanely do file I/O at runtime
+        for this, and shouldn't — the trained NUMBERS are the deliverable, not a live
+        file dependency at runtime). Falls back to the seed's own CHIMERA_VISION.py:1724
+        WIND defaults, loudly (a printed warning), if the trained artifact is absent or
+        malformed — never a silent substitution.
+
+        Returns (genome_dict, provenance_string). provenance_string is baked into the
+        generated file's own comments so a reader can tell, without re-deriving it,
+        whether the numbers in front of them are trained or a fallback.
+        """
+        trained_path = Path("E:/PythonChimera/Chimera/docs/objectives/weather.trained.json")
+        seed_defaults = {
+            "calm": 2.0, "breeze": 6.0, "gust": 12.0, "storm": 24.0,
+            "gust_period_s_lo": 8.0, "gust_period_s_hi": 30.0,
+            "storm_duration_min_lo": 18.0, "storm_duration_min_hi": 45.0,
+            "storm_period_days_lo": 5.0, "storm_period_days_hi": 9.0,
+        }
+        required_keys = set(seed_defaults.keys())
+
+        try:
+            with open(trained_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            genome = data.get("genome", {})
+            missing = required_keys - set(genome.keys())
+            if missing:
+                raise ValueError(f"genome missing keys: {sorted(missing)}")
+            for k in required_keys:
+                float(genome[k])  # every locus must be numeric
+            score = data.get("score")
+            if isinstance(score, (int, float)):
+                provenance = f"docs/objectives/weather.trained.json (score={score:.3f})"
+            else:
+                provenance = "docs/objectives/weather.trained.json"
+            return genome, provenance
+        except Exception as e:
+            print(f"[generate_weather_subsystem_files] WARNING: could not load "
+                  f"{trained_path} ({e}) -- falling back to seed CHIMERA_VISION.py:1724 "
+                  f"WIND defaults. Train the domain (core/trainables/weather.py) to "
+                  f"produce a real weather.trained.json.")
+            provenance = ("FALLBACK -- docs/objectives/weather.trained.json missing/invalid "
+                          "at generation time; seed CHIMERA_VISION.py:1724 WIND defaults used")
+            return seed_defaults, provenance
+
+    def generate_weather_subsystem_files(self) -> list[str]:
+        """Generate WeatherComponent.h/.cpp + WeatherAcceptanceTests.cpp — the seed's
+        UWeatherSubsystem (CHIMERA_VISION.py:3641-3698), realized as an actor
+        component (H-34 runtime-attach via ChimeraMovementComponent, the project's
+        live pattern for every seed "subsystem" — see USuitLifeSupportComponent's own
+        doc comment: "the same way UWeatherComponent realizes UWeatherSubsystem").
+
+        tb-0151 (2026-07-18, CWM rung 2 "trained data flows top-down"): brings this
+        file under generator ownership — it was hand-authored with no generate_*
+        method (CLAUDE.md: "when touching [a loop-built file] substantively, migrate
+        it under generator ownership first") — and closes three gaps named in the
+        seed but not yet real in the hand-authored version:
+          1. the six WIND-band numbers now come from
+             docs/objectives/weather.trained.json at GENERATION time (via
+             _load_weather_trained_genome), not hand-typed — the seed's own untrained
+             WIND dict is the fallback, never a silent substitution.
+          2. a REAL Material Parameter Collection push (UKismetMaterialLibrary::
+             SetScalarParameterValue) for WindSpeed/StormIntensity/DustAgeHours — the
+             prior version only exposed BlueprintReadOnly scalars and documented the
+             MPC bridge as a follow-up seam.
+          3. a REAL GAS hook (TSubclassOf<UGameplayEffect> DustClogEffectClass,
+             applied/removed via the owner's UAbilitySystemComponent) mirroring
+             CHIMERA_VISION.py:3694-3698's
+             ApplyGameplayEffectToSelf(GE_DustClog_Storm)/RemoveActiveGameplayEffect
+             exactly — the prior version only exposed a ShouldClogSuit() query with
+             nothing wired to consume it.
+        Both bridges are additive and OPT-IN (null-checked, harmless no-op when
+        unassigned) — ChimeraMovementComponent's runtime-attach and
+        WeatherAcceptanceTests.cpp's existing state-machine assertions keep working
+        unchanged; only the WIND-literal assertions move from exact pins to the
+        ordering invariants the trainer itself enforces (so the test survives the
+        NEXT retrain instead of going stale against it).
+
+        Research (UE 5.8, 2026-07-18 — this task's Research Gate is unwaivable, its
+        premise is that the feature does not yet exist):
+          - UWorldSubsystem lifecycle (ShouldCreateSubsystem/Initialize/Deinitialize;
+            TickableWorldSubsystem ticks after Initialize, stops at Deinitialize) —
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine
+            — this was the seed's literal class shape. The ActorComponent
+            realization is KEPT here for consistency with every other seed
+            "subsystem" already in this codebase, and because a UWorldSubsystem
+            would auto-instantiate independently of the H-34 runtime-attach this
+            file's MPC/GAS bridges lean on for owner/indoor context — migrating is a
+            real, documented follow-up (it touches ChimeraMovementComponent.cpp,
+            outside this generator's footprint), not a silent divergence from the
+            seed's design.
+          - Material Parameter Collection C++ usage (UKismetMaterialLibrary::
+            SetScalarParameterValue(WorldContextObject, Collection, ParameterName,
+            Value), Kismet/KismetMaterialLibrary.h; materials must read the
+            parameter via a Collection Parameter node, not a local Scalar Parameter
+            node) —
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/Kismet/UKismetMaterialLibrary
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/using-material-parameter-collections-in-unreal-engine
+          - GameplayEffect application pattern: the modern, documented route is
+            MakeEffectContext -> MakeOutgoingSpec -> ApplyGameplayEffectSpecToSelf
+            (not the raw-pointer ApplyGameplayEffectToSelf overload), removal via
+            RemoveActiveGameplayEffect(FActiveGameplayEffectHandle) —
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-effects-for-the-gameplay-ability-system-in-unreal-engine
+            https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/GameplayAbilities/UAbilitySystemComponent
+            GameplayAbilities is already a PublicDependencyModuleNames entry in
+            Source/Chimera/Chimera.Build.cs, so no Build.cs change is needed.
+        """
+        genome, provenance = self._load_weather_trained_genome()
+
+        def _f(v) -> str:
+            return f"{float(v):.6f}f"
+
+        env_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated/Environment")
+        env_dir.mkdir(parents=True, exist_ok=True)
+        tests_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated/Tests")
+        tests_dir.mkdir(parents=True, exist_ok=True)
+
+        # === WeatherComponent.h ===
+        header_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_weather_subsystem_files).
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
+#include "Math/RandomStream.h"
+#include "AbilitySystemComponent.h"
+#include "WeatherComponent.generated.h"
+
+class UWindSystemComponent;
+class UMaterialParameterCollection;
+class UGameplayEffect;
+
+/**
+ * Which edge of a storm the OnStormStateChanged broadcast is reporting.
+ */
+UENUM(BlueprintType)
+enum class EWeatherStormPhase : uint8
+{
+    Rising  UMETA(DisplayName = "Rising"),   // a storm just began
+    Passed  UMETA(DisplayName = "Passed"),   // a storm just ended (footprints erased)
+};
+
+/** Broadcast on every storm edge. FootprintsErased is 0 on Rising, the swept count
+ *  on Passed. The C++ realization of the seed's FStormEvent(phase, footprints_erased)
+ *  (CHIMERA_VISION.py:3643, :3676, :3690). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStormStateChanged, EWeatherStormPhase, Phase, int32, FootprintsErased);
+
+/**
+ * Weather authority — the seed's UWeatherSubsystem (CHIMERA_VISION.py:3641-3698),
+ * realized as an actor component (H-34 runtime-attach via ChimeraMovementComponent;
+ * the project's live pattern — see USuitLifeSupportComponent's own doc comment,
+ * "the same way UWeatherComponent realizes UWeatherSubsystem") rather than a
+ * UWorldSubsystem. A UWorldSubsystem would auto-instantiate independently of the
+ * per-owner attach this file's MPC/GAS bridges depend on; see this method's own
+ * docstring in core/game_code_generator.py for the research + tradeoff record.
+ *
+ * GENERATOR-OWNED (2026-07-18, tb-0151 — CWM rung 2, "trained data flows
+ * top-down"): the six WIND-band numbers below are READ from
+ * __WEATHER_PROVENANCE__ at generation time, not hand-typed — see
+ * core/trainables/weather.py (the domain) and docs/objectives/weather.json (the
+ * objective this genome was scored against).
+ *
+ *   - a wind BAND schedule (calm at night, breeze by day, brief gusts) that it
+ *     drives into the sibling UWindSystemComponent — this component decides the
+ *     wind; that one applies its physics. One authority each, no fighting over
+ *     state.
+ *   - the periodic STORM that raises wind to a howl, fills the DustAge with a
+ *     storm-wall, and on passing ERASES every impermanent (sand) footprint in the
+ *     world. This is the memento mori of Design Law 4: storms are why footprints
+ *     don't accumulate forever — metal grating and dug pits survive, sand does
+ *     not.
+ *   - DustAgeHours: rises while calm, decays 5x faster mid-storm — the "how long
+ *     since the land was scoured" term dust-accumulation materials read.
+ *
+ * MPC (real, 2026-07-18): if WeatherMPC is assigned, WindSpeed/StormIntensity/
+ * DustAgeHours are pushed every tick via UKismetMaterialLibrary::
+ * SetScalarParameterValue into that Material Parameter Collection under the exact
+ * parameter names the seed's game.mpc.SetScalarParameterValue calls use — a
+ * material with a matching Collection Parameter node reads them with zero further
+ * code. Unassigned = harmless no-op (same graceful-degradation idiom as
+ * CachedWind below).
+ *
+ * GAS (real, 2026-07-18): if DustClogEffectClass is assigned and the owner has a
+ * UAbilitySystemComponent, that effect is applied exactly while
+ * bStormActive && !bPlayerIndoors and removed the instant either flips —
+ * mirrors CHIMERA_VISION.py:3694-3698's
+ * ApplyGameplayEffectToSelf(GE_DustClog_Storm)/RemoveActiveGameplayEffect exactly.
+ * Unassigned/no ASC = harmless no-op.
+ *
+ * Deterministic: seeded FRandomStream, so a given WeatherSeed replays the same
+ * storm calendar — hard-fact verifiable, and ForceStorm() lets a beat script
+ * drive a storm on demand instead of waiting for the trained storm_period_days
+ * window (H-14/H-21: real behaviour reachable by real input, not injection).
+ */
+UCLASS(ClassGroup = (Chimera), meta = (BlueprintSpawnableComponent, Category = "Environment|Weather"))
+class CHIMERA_API UWeatherComponent : public UActorComponent
+{
+    GENERATED_BODY()
+
+public:
+    UWeatherComponent();
+
+    virtual void BeginPlay() override;
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+    // === Wind band tuning (uu/s) — TRAINED, see __WEATHER_PROVENANCE__ ===
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind")
+    float CalmWindSpeed;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind")
+    float BreezeWindSpeed;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind")
+    float GustWindSpeed;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Wind")
+    float StormWindSpeed;
+
+    // === Cadence — TRAINED, see __WEATHER_PROVENANCE__ ===
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Cadence")
+    float GustPeriodMinSeconds;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Cadence")
+    float GustPeriodMaxSeconds;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Cadence")
+    float StormDurationMinMinutes;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Cadence")
+    float StormDurationMaxMinutes;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Cadence")
+    float StormPeriodMinDays;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Cadence")
+    float StormPeriodMaxDays;
+
+    // === Clock ===
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Clock")
+    float DayLengthHours;          // 27 (seed DAY_LENGTH_HOURS; a sim constant, not trained)
+
+    /** Game-hours advanced per real second. The world has no shared sun subsystem
+     *  yet, so weather runs its own clock; a celestial system can later drive it. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Clock")
+    float HoursPerRealSecond;      // 0.1 -> a 27h day every ~4.5 real minutes
+
+    /** RNG seed — same seed replays the same storm calendar (deterministic verify). */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|Clock")
+    int32 WeatherSeed;
+
+    // === Live state (materials & telemetry read these; also pushed to WeatherMPC) ===
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|State")
+    float WindSpeed;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|State")
+    float WindDirectionRadians;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|State")
+    bool bStormActive;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|State")
+    float StormIntensity;          // 0..1 ramp (storm-wall fade)
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|State")
+    float DustAgeHours;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|State")
+    int32 DayNumber;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|State")
+    float TimeOfDayHours;
+
+    /** Set by shelter/suit systems; gates the storm's dust-clog (indoors = safe). */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|State")
+    bool bPlayerIndoors;
+
+    // === Material Parameter Collection bridge (real, 2026-07-18) ===
+    /** Assign a Material Parameter Collection asset exposing WindSpeed / StormIntensity /
+     *  DustAgeHours scalar parameters; unassigned = no-op (materials fall back to the
+     *  BlueprintReadOnly scalars above, read via a component reference). */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|MPC")
+    UMaterialParameterCollection* WeatherMPC;
+
+    // === GAS bridge (real, 2026-07-18) ===
+    /** GE_DustClog — applied to the owner's UAbilitySystemComponent (if any) exactly
+     *  while bStormActive && !bPlayerIndoors (CHIMERA_VISION.py:3694-3698); unassigned
+     *  or no ASC = no-op (the SuitLifeSupportComponent float-drain stand-in keeps
+     *  working regardless). */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weather|GAS")
+    TSubclassOf<UGameplayEffect> DustClogEffectClass;
+
+    // === Telemetry (hard-fact verification counters) ===
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|Telemetry")
+    int32 StormsPassed;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|Telemetry")
+    int32 LastStormFootprintsErased;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weather|Telemetry")
+    int32 TotalFootprintsErased;
+
+    /** Fires on every storm edge (rising / passed). */
+    UPROPERTY(BlueprintAssignable, Category = "Weather")
+    FOnStormStateChanged OnStormStateChanged;
+
+    // === Queries ===
+
+    /** Wind velocity vector (direction * current speed). */
+    UFUNCTION(BlueprintCallable, Category = "Weather|Query")
+    FVector GetWindVelocity() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Weather|Query")
+    bool IsStormActive() const { return bStormActive; }
+
+    /** Night = day-fraction < 0.20 or > 0.80 (seed ASun::IsNight). */
+    UFUNCTION(BlueprintCallable, Category = "Weather|Query")
+    bool IsNight() const;
+
+    /** The suit clogs with dust only during a storm and only while outdoors. */
+    UFUNCTION(BlueprintCallable, Category = "Weather|Query")
+    bool ShouldClogSuit() const { return bStormActive && !bPlayerIndoors; }
+
+    /** Beat/debug hook: begin a storm now. Returns false if one is already active. */
+    UFUNCTION(BlueprintCallable, Category = "Weather|Debug")
+    bool ForceStorm();
+
+    /**
+     * Seed the RNG from WeatherSeed and reset the clock + storm calendar to their
+     * start-of-life values. Called by BeginPlay; also the deterministic entry an
+     * acceptance test uses (same seed -> same storm calendar) without needing the
+     * component registered into a world.
+     */
+    UFUNCTION(BlueprintCallable, Category = "Weather|Debug")
+    void ResetWeather();
+
+    /** Advance the simulation by DeltaSeconds (real seconds) — the same path Tick
+     *  uses. Lets a beat/test fast-forward the clock and storm cycle on demand. */
+    UFUNCTION(BlueprintCallable, Category = "Weather|Debug")
+    void AdvanceWeather(float DeltaSeconds);
+
+protected:
+    virtual void TickWeather(float DeltaSeconds);
+    void BeginStorm();
+    void EndStorm();
+    void PushWindToSibling();
+    void PushWeatherToMPC();
+    void UpdateDustClogEffect();
+
+private:
+    FRandomStream Rng;
+    float NextGustSeconds;      // real-seconds until the next gust
+    float StormEndsInHours;     // game-hours remaining in the active storm
+    float StormTotalHours;      // this storm's full duration (for the intensity ramp)
+    float NextStormDay;         // fractional day the next storm begins
+
+    UPROPERTY(Transient)
+    UWindSystemComponent* CachedWind;
+
+    /** The exactly-one active GE_DustClog application this component owns, so it can
+     *  be removed precisely (never guesses at "remove all", mirrors the seed's
+     *  single-effect handle). Default-constructed (invalid) when nothing is applied. */
+    FActiveGameplayEffectHandle ActiveDustClogEffectHandle;
+};
+'''
+        header_content = header_content.replace("__WEATHER_PROVENANCE__", provenance)
+
+        # === WeatherComponent.cpp ===
+        cpp_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_weather_subsystem_files).
+
+#include "WeatherComponent.h"
+#include "WindSystemComponent.h"
+#include "FootprintComponent.h"
+#include "GameFramework/Actor.h"
+#include "Engine/World.h"
+#include "Materials/MaterialParameterCollection.h"
+#include "Kismet/KismetMaterialLibrary.h"
+#include "GameplayEffect.h"
+
+UWeatherComponent::UWeatherComponent()
+{
+    PrimaryComponentTick.bCanEverTick = true;
+
+    // Wind bands (uu/s) — TRAINED: __WEATHER_PROVENANCE__
+    CalmWindSpeed = __CALM_WIND_SPEED__;
+    BreezeWindSpeed = __BREEZE_WIND_SPEED__;
+    GustWindSpeed = __GUST_WIND_SPEED__;
+    StormWindSpeed = __STORM_WIND_SPEED__;
+
+    // Cadence — TRAINED: __WEATHER_PROVENANCE__
+    GustPeriodMinSeconds = __GUST_PERIOD_MIN_S__;
+    GustPeriodMaxSeconds = __GUST_PERIOD_MAX_S__;
+    StormDurationMinMinutes = __STORM_DUR_MIN_MIN__;
+    StormDurationMaxMinutes = __STORM_DUR_MAX_MIN__;
+    StormPeriodMinDays = __STORM_PERIOD_MIN_DAYS__;
+    StormPeriodMaxDays = __STORM_PERIOD_MAX_DAYS__;
+
+    // Clock (sim constant, not trained).
+    DayLengthHours = 27.0f;          // seed DAY_LENGTH_HOURS
+    HoursPerRealSecond = 0.1f;       // a full day every ~4.5 real minutes
+    WeatherSeed = 1337;
+
+    // State.
+    WindSpeed = CalmWindSpeed;
+    WindDirectionRadians = 0.0f;
+    bStormActive = false;
+    StormIntensity = 0.0f;
+    DustAgeHours = 0.0f;
+    DayNumber = 0;
+    TimeOfDayHours = 8.0f;           // seed seeds time_h = 8
+    bPlayerIndoors = false;
+
+    // MPC / GAS bridges — unassigned by default (harmless no-op; assign a
+    // Material Parameter Collection / GameplayEffect Blueprint asset on the
+    // Blueprint subclass or level default to activate).
+    WeatherMPC = nullptr;
+    DustClogEffectClass = nullptr;
+
+    // Telemetry.
+    StormsPassed = 0;
+    LastStormFootprintsErased = 0;
+    TotalFootprintsErased = 0;
+
+    // Internal.
+    NextGustSeconds = GustPeriodMaxSeconds;
+    StormEndsInHours = 0.0f;
+    StormTotalHours = 0.0f;
+    NextStormDay = StormPeriodMinDays;
+    CachedWind = nullptr;
+}
+
+void UWeatherComponent::ResetWeather()
+{
+    Rng.Initialize(WeatherSeed);
+    WindSpeed = CalmWindSpeed;
+    WindDirectionRadians = Rng.FRandRange(0.0f, 2.0f * PI);
+    NextGustSeconds = Rng.FRandRange(GustPeriodMinSeconds, GustPeriodMaxSeconds);
+    NextStormDay = Rng.FRandRange(StormPeriodMinDays, StormPeriodMaxDays);
+    DustAgeHours = 0.0f;
+    DayNumber = 0;
+    TimeOfDayHours = 8.0f;
+    bStormActive = false;
+    StormIntensity = 0.0f;
+    StormEndsInHours = 0.0f;
+}
+
+void UWeatherComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    ResetWeather();
+
+    if (AActor* Owner = GetOwner())
+    {
+        CachedWind = Owner->FindComponentByClass<UWindSystemComponent>();
+    }
+
+    UE_LOG(LogTemp, Log,
+        TEXT("[WEATHER] initialized (seed=%d) — next storm on day %.2f, %s driving sibling wind"),
+        WeatherSeed, NextStormDay, CachedWind ? TEXT("is") : TEXT("no"));
+}
+
+void UWeatherComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    AdvanceWeather(DeltaTime);
+}
+
+void UWeatherComponent::AdvanceWeather(float DeltaSeconds)
+{
+    if (DeltaSeconds > 0.0f)
+    {
+        TickWeather(DeltaSeconds);
+    }
+}
+
+void UWeatherComponent::TickWeather(float DeltaSeconds)
+{
+    // Two timescales, exactly as the seed models them: gusts are short-term and
+    // decrement in REAL seconds; the clock, dust, and storm duration are long-term
+    // and advance in GAME hours (dt * HoursPerRealSecond).
+    const float GameHours = DeltaSeconds * HoursPerRealSecond;
+
+    // Advance the clock and roll the day.
+    TimeOfDayHours += GameHours;
+    while (TimeOfDayHours >= DayLengthHours)
+    {
+        TimeOfDayHours -= DayLengthHours;
+        ++DayNumber;
+    }
+    const float FractionalDay = static_cast<float>(DayNumber) + TimeOfDayHours / DayLengthHours;
+
+    if (bStormActive)
+    {
+        // Howling wind, re-jittered each tick (seed: storm * uniform(0.85,1.15)).
+        WindSpeed = StormWindSpeed * Rng.FRandRange(0.85f, 1.15f);
+        StormEndsInHours -= GameHours;
+
+        // The scour: dust age falls fast mid-storm.
+        DustAgeHours = FMath::Max(0.0f, DustAgeHours - 5.0f * GameHours);
+
+        // Intensity ramps up over the first 15% and down over the last 15% so
+        // materials/Niagara can fade the storm-wall in and out.
+        const float Edge = FMath::Max(StormTotalHours * 0.15f, KINDA_SMALL_NUMBER);
+        const float Elapsed = StormTotalHours - StormEndsInHours;
+        StormIntensity = FMath::Clamp(FMath::Min3(Elapsed / Edge, StormEndsInHours / Edge, 1.0f), 0.0f, 1.0f);
+
+        if (StormEndsInHours <= 0.0f)
+        {
+            EndStorm();
+        }
+    }
+    else
+    {
+        StormIntensity = 0.0f;
+
+        // Base band: calm at night, breeze by day — with brief gusts.
+        float Base = IsNight() ? CalmWindSpeed : BreezeWindSpeed;
+        NextGustSeconds -= DeltaSeconds;
+        if (NextGustSeconds <= 0.0f)
+        {
+            NextGustSeconds = Rng.FRandRange(GustPeriodMinSeconds, GustPeriodMaxSeconds);
+            Base = GustWindSpeed;
+        }
+
+        // Ease toward the target band; let direction wander.
+        WindSpeed = FMath::Lerp(WindSpeed, Base, FMath::Clamp(0.4f * DeltaSeconds, 0.0f, 1.0f));
+        WindDirectionRadians += Rng.FRandRange(-0.1f, 0.1f) * DeltaSeconds;
+
+        // Between storms the land ages and dust settles.
+        DustAgeHours += GameHours;
+
+        if (FractionalDay >= NextStormDay)
+        {
+            BeginStorm();
+        }
+    }
+
+    PushWindToSibling();
+    PushWeatherToMPC();
+    UpdateDustClogEffect();
+}
+
+void UWeatherComponent::BeginStorm()
+{
+    bStormActive = true;
+    StormTotalHours = Rng.FRandRange(StormDurationMinMinutes, StormDurationMaxMinutes) / 60.0f;
+    StormEndsInHours = StormTotalHours;
+    StormIntensity = 0.0f;
+    NextStormDay += Rng.FRandRange(StormPeriodMinDays, StormPeriodMaxDays);
+
+    UE_LOG(LogTemp, Log,
+        TEXT("[DEMOBEAT][WEATHER] storm RISING on day %d (%.0f min) — next after day %.2f"),
+        DayNumber, StormTotalHours * 60.0f, NextStormDay);
+    // Witness marker (H-21: a verb needs behavior; beats assert on this exact tag).
+    UE_LOG(LogTemp, Log, TEXT("[Weather] StormRising"));
+
+    OnStormStateChanged.Broadcast(EWeatherStormPhase::Rising, 0);
+}
+
+void UWeatherComponent::EndStorm()
+{
+    bStormActive = false;
+    StormIntensity = 0.0f;
+
+    // The memento mori: the storm scours every impermanent (sand) print in the
+    // world. Durable surfaces (metal grating, dug pits) survive — this is why
+    // footprints don't accumulate forever (Design Law 4).
+    const int32 Erased = UFootprintComponent::EraseAllImpermanent(GetWorld());
+    LastStormFootprintsErased = Erased;
+    TotalFootprintsErased += Erased;
+    ++StormsPassed;
+
+    UE_LOG(LogTemp, Log,
+        TEXT("[DEMOBEAT][WEATHER] storm PASSED on day %d — erased %d sand footprint(s) (%d total)"),
+        DayNumber, Erased, TotalFootprintsErased);
+    // Witness marker (H-21: a verb needs behavior; beats assert on this exact tag).
+    UE_LOG(LogTemp, Log, TEXT("[Weather] StormPassed prints_erased=%d"), Erased);
+
+    OnStormStateChanged.Broadcast(EWeatherStormPhase::Passed, Erased);
+}
+
+void UWeatherComponent::PushWindToSibling()
+{
+    // Resolve lazily — the wind component may attach after us (H-34 attach order).
+    if (!CachedWind)
+    {
+        if (AActor* Owner = GetOwner())
+        {
+            CachedWind = Owner->FindComponentByClass<UWindSystemComponent>();
+            if (!CachedWind && bStormActive)
+            {
+                UE_LOG(LogTemp, Warning,
+                    TEXT("[WEATHER] Storm active but UWindSystemComponent not found on %s — wind not applied"),
+                    *Owner->GetName());
+            }
+        }
+    }
+    if (CachedWind)
+    {
+        const FVector Dir(FMath::Cos(WindDirectionRadians), FMath::Sin(WindDirectionRadians), 0.0f);
+        CachedWind->SetWindConfiguration(Dir, WindSpeed);
+    }
+}
+
+void UWeatherComponent::PushWeatherToMPC()
+{
+    // Real MPC bridge (tb-0151, 2026-07-18): mirrors CHIMERA_VISION.py:3691-3693's
+    // game.mpc.SetScalarParameterValue(...) calls exactly, under the same three
+    // parameter names, iff a Material Parameter Collection asset is assigned.
+    // Unassigned = no-op; materials/telemetry keep reading the scalars above.
+    UWorld* World = GetWorld();
+    if (!WeatherMPC || !World)
+    {
+        return;
+    }
+
+    UKismetMaterialLibrary::SetScalarParameterValue(World, WeatherMPC, TEXT("WindSpeed"), WindSpeed);
+    UKismetMaterialLibrary::SetScalarParameterValue(World, WeatherMPC, TEXT("StormIntensity"), bStormActive ? 1.0f : 0.0f);
+    UKismetMaterialLibrary::SetScalarParameterValue(World, WeatherMPC, TEXT("DustAgeHours"), DustAgeHours);
+}
+
+void UWeatherComponent::UpdateDustClogEffect()
+{
+    // Real GAS bridge (tb-0151, 2026-07-18): mirrors CHIMERA_VISION.py:3694-3698
+    // exactly — the dust-clog effect is applied to the OWNER's ability system
+    // component iff bStormActive && !bPlayerIndoors (ShouldClogSuit()), and removed
+    // the instant that flips false. Unassigned DustClogEffectClass or an owner with
+    // no ASC is a harmless no-op (the SuitLifeSupportComponent float-drain stand-in
+    // keeps working either way).
+    if (!DustClogEffectClass)
+    {
+        return;
+    }
+    AActor* Owner = GetOwner();
+    if (!Owner)
+    {
+        return;
+    }
+    UAbilitySystemComponent* ASC = Owner->FindComponentByClass<UAbilitySystemComponent>();
+    if (!ASC)
+    {
+        return;
+    }
+
+    const bool bShouldClog = ShouldClogSuit();
+    const bool bHasActiveEffect = ActiveDustClogEffectHandle.IsValid();
+
+    if (bShouldClog && !bHasActiveEffect)
+    {
+        const FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+        const FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(DustClogEffectClass, 1.0f, Context);
+        if (Spec.IsValid())
+        {
+            ActiveDustClogEffectHandle = ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+        }
+    }
+    else if (!bShouldClog && bHasActiveEffect)
+    {
+        ASC->RemoveActiveGameplayEffect(ActiveDustClogEffectHandle);
+        ActiveDustClogEffectHandle = FActiveGameplayEffectHandle();
+    }
+}
+
+FVector UWeatherComponent::GetWindVelocity() const
+{
+    return FVector(FMath::Cos(WindDirectionRadians), FMath::Sin(WindDirectionRadians), 0.0f) * WindSpeed;
+}
+
+bool UWeatherComponent::IsNight() const
+{
+    const float T = TimeOfDayHours / DayLengthHours;
+    return T < 0.20f || T > 0.80f;
+}
+
+bool UWeatherComponent::ForceStorm()
+{
+    if (bStormActive)
+    {
+        return false;
+    }
+    BeginStorm();
+    return true;
+}
+'''
+        cpp_content = (cpp_content
+            .replace("__CALM_WIND_SPEED__", _f(genome["calm"]))
+            .replace("__BREEZE_WIND_SPEED__", _f(genome["breeze"]))
+            .replace("__GUST_WIND_SPEED__", _f(genome["gust"]))
+            .replace("__STORM_WIND_SPEED__", _f(genome["storm"]))
+            .replace("__GUST_PERIOD_MIN_S__", _f(genome["gust_period_s_lo"]))
+            .replace("__GUST_PERIOD_MAX_S__", _f(genome["gust_period_s_hi"]))
+            .replace("__STORM_DUR_MIN_MIN__", _f(genome["storm_duration_min_lo"]))
+            .replace("__STORM_DUR_MAX_MIN__", _f(genome["storm_duration_min_hi"]))
+            .replace("__STORM_PERIOD_MIN_DAYS__", _f(genome["storm_period_days_lo"]))
+            .replace("__STORM_PERIOD_MAX_DAYS__", _f(genome["storm_period_days_hi"]))
+            .replace("__WEATHER_PROVENANCE__", provenance)
+        )
+
+        # === WeatherAcceptanceTests.cpp ===
+        test_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_weather_subsystem_files).
+#include "CoreMinimal.h"
+#include "../Environment/WeatherComponent.h"
+
+/**
+ * Weather System Acceptance Tests
+ * Verifies the meteorology authority (seed UWeatherSubsystem) as hard facts,
+ * world-independently (NewObject, no PIE), matching the WindSystem test style:
+ *   1. Initializes with the TRAINED WIND bands (__WEATHER_PROVENANCE__) in their
+ *      required order (calm<=breeze<=gust<=storm — a definitional invariant the
+ *      trainer itself re-clamps on every mutation, core/trainables/weather.py)
+ *      and a calm start. Checked by ORDER, not literal pins, so this test
+ *      survives the next retrain instead of going stale against it.
+ *   2. Seeded RNG is deterministic — same seed replays the same storm calendar.
+ *   3. Night bands match ASun::IsNight (day-fraction < 0.20 or > 0.80).
+ *   4. The storm STATE MACHINE runs: ForceStorm raises it, the clock passes it,
+ *      the passed-count and StormsPassed telemetry increment (the world-wide
+ *      footprint erasure itself is proven in PIE — see the beat follow-up).
+ *   5. Between storms wind eases toward the day band and the velocity vector
+ *      tracks the scalar speed.
+ */
+
+void TestWeather_Initialization()
+{
+	UWeatherComponent* Weather = NewObject<UWeatherComponent>();
+	check(Weather != nullptr);
+	Weather->ResetWeather();
+
+	// Ordering invariant (core/trainables/weather.py::mutate re-clamps this on
+	// EVERY mutation — "a gust slower than the ambient breeze is not a gust").
+	check(Weather->CalmWindSpeed > 0.0f);
+	check(Weather->BreezeWindSpeed >= Weather->CalmWindSpeed);
+	check(Weather->GustWindSpeed >= Weather->BreezeWindSpeed);
+	check(Weather->StormWindSpeed >= Weather->GustWindSpeed);
+	check(Weather->GustPeriodMinSeconds > 0.0f);
+	check(Weather->GustPeriodMaxSeconds >= Weather->GustPeriodMinSeconds);
+	check(Weather->StormDurationMinMinutes > 0.0f);
+	check(Weather->StormDurationMaxMinutes >= Weather->StormDurationMinMinutes);
+	check(Weather->StormPeriodMinDays > 0.0f);
+	check(Weather->StormPeriodMaxDays >= Weather->StormPeriodMinDays);
+	check(FMath::IsNearlyEqual(Weather->DayLengthHours, 27.0f)); // sim constant, not trained
+	check(FMath::IsNearlyEqual(Weather->WindSpeed, Weather->CalmWindSpeed));
+	check(!Weather->IsStormActive());
+	check(Weather->StormsPassed == 0);
+	check(Weather->DayNumber == 0);
+
+	UE_LOG(LogTemp, Display,
+		TEXT("[WEATHER TEST] Initialization: PASS (calm=%.3f breeze=%.3f gust=%.3f storm=%.3f)"),
+		Weather->CalmWindSpeed, Weather->BreezeWindSpeed, Weather->GustWindSpeed, Weather->StormWindSpeed);
+}
+
+void TestWeather_Determinism()
+{
+	UWeatherComponent* A = NewObject<UWeatherComponent>();
+	UWeatherComponent* B = NewObject<UWeatherComponent>();
+	UWeatherComponent* C = NewObject<UWeatherComponent>();
+	A->WeatherSeed = 1337;
+	B->WeatherSeed = 1337;
+	C->WeatherSeed = 4242;
+	A->ResetWeather();
+	B->ResetWeather();
+	C->ResetWeather();
+
+	// Same seed -> identical RNG-derived initial wind heading; different seed diverges.
+	check(FMath::IsNearlyEqual(A->WindDirectionRadians, B->WindDirectionRadians, 1e-4f));
+	check(!FMath::IsNearlyEqual(A->WindDirectionRadians, C->WindDirectionRadians, 1e-3f));
+
+	UE_LOG(LogTemp, Display, TEXT("[WEATHER TEST] Determinism: PASS"));
+}
+
+void TestWeather_NightBands()
+{
+	UWeatherComponent* Weather = NewObject<UWeatherComponent>();
+	Weather->ResetWeather();
+
+	Weather->TimeOfDayHours = 1.0f;   // t=0.037 < 0.20 -> night
+	check(Weather->IsNight());
+	Weather->TimeOfDayHours = 13.5f;  // t=0.50 -> day
+	check(!Weather->IsNight());
+	Weather->TimeOfDayHours = 24.0f;  // t=0.889 > 0.80 -> night
+	check(Weather->IsNight());
+
+	UE_LOG(LogTemp, Display, TEXT("[WEATHER TEST] NightBands: PASS"));
+}
+
+void TestWeather_StormCycle()
+{
+	UWeatherComponent* Weather = NewObject<UWeatherComponent>();
+	Weather->ResetWeather();
+	check(!Weather->IsStormActive());
+
+	// Raise a storm on demand; a second request is refused while one runs.
+	check(Weather->ForceStorm() == true);
+	check(Weather->IsStormActive());
+	check(Weather->ForceStorm() == false);
+
+	// Fast-forward the clock until the storm passes (bounded so a logic bug
+	// can't hang the suite). At 100 game-hours per tick even the trained
+	// storm_duration_min_hi (well under a game-day) ends within a couple ticks.
+	Weather->HoursPerRealSecond = 100.0f;
+	int32 Guard = 0;
+	while (Weather->IsStormActive() && Guard < 100)
+	{
+		Weather->AdvanceWeather(1.0f);
+		++Guard;
+	}
+
+	check(!Weather->IsStormActive());
+	check(Weather->StormsPassed == 1);
+	check(FMath::IsNearlyEqual(Weather->StormIntensity, 0.0f));
+	check(Weather->LastStormFootprintsErased == 0); // no world/prints in this harness
+
+	UE_LOG(LogTemp, Display, TEXT("[WEATHER TEST] StormCycle: PASS (passed in %d tick(s))"), Guard);
+}
+
+void TestWeather_WindBandResponse()
+{
+	UWeatherComponent* Weather = NewObject<UWeatherComponent>();
+	Weather->ResetWeather();
+	Weather->TimeOfDayHours = 8.0f; // daytime -> breeze band target
+
+	// Ease over ~2 s of small steps; no storm can trigger (next storm is at least
+	// StormPeriodMinDays out — always far beyond a couple of seconds of sim time).
+	for (int32 i = 0; i < 20; ++i)
+	{
+		Weather->AdvanceWeather(0.1f);
+	}
+
+	check(!Weather->IsStormActive());
+	check(Weather->WindSpeed > Weather->CalmWindSpeed);          // rose off calm toward breeze
+	check(Weather->WindSpeed <= Weather->GustWindSpeed * 1.2f);  // stayed in the ambient range
+
+	const FVector Velocity = Weather->GetWindVelocity();
+	check(FMath::IsNearlyEqual(Velocity.Size(), Weather->WindSpeed, 0.01f));
+
+	UE_LOG(LogTemp, Display, TEXT("[WEATHER TEST] WindBandResponse: PASS (speed=%.2f)"), Weather->WindSpeed);
+}
+
+// Helper function to run all weather system tests
+void RunWeatherSystemTests()
+{
+	UE_LOG(LogTemp, Warning, TEXT("\\n====== WEATHER SYSTEM ACCEPTANCE TESTS ======\\n"));
+
+	try
+	{
+		TestWeather_Initialization();
+		TestWeather_Determinism();
+		TestWeather_NightBands();
+		TestWeather_StormCycle();
+		TestWeather_WindBandResponse();
+
+		UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL WEATHER SYSTEM TESTS PASSED ======\\n"));
+	}
+	catch (const std::exception& e)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Weather system test failed: %s"), ANSI_TO_TCHAR(e.what()));
+	}
+}
+'''
+        test_content = test_content.replace("__WEATHER_PROVENANCE__", provenance)
+
+        header_path = env_dir / "WeatherComponent.h"
+        with open(header_path, 'w', encoding='utf-8') as f:
+            f.write(header_content)
+
+        cpp_path = env_dir / "WeatherComponent.cpp"
+        with open(cpp_path, 'w', encoding='utf-8') as f:
+            f.write(cpp_content)
+
+        test_path = tests_dir / "WeatherAcceptanceTests.cpp"
+        with open(test_path, 'w', encoding='utf-8') as f:
+            f.write(test_content)
+
+        return [str(header_path), str(cpp_path), str(test_path)]
 
     def generate_flight_component_files(self, module_name: str = None) -> tuple[str, str]:
         """Generate FlightComponent.h and .cpp with TickComponent for physics movement. FIX 3."""

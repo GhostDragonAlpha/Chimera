@@ -72751,6 +72751,200 @@
       "inheritance": "The matter library is the periodic table of the game: appearance is a distribution (coalesce=average, fracture=sample - LOD and appearance are one operation); interactions go through families never N-squared; every number carries provenance and every provisional is a named debt with a task that collects it.",
       "recorded_by": "postflight.py",
       "run_id": "run_e388cd8033eb"
+    },
+    {
+      "id": "simtest_b11c9d72b695ae62",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T06:00:29.714843",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 4,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=57uu (loc x=0, y=-57.49197056343683)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": false,
+              "note": "dist=2000uu (loc x=0, y=-0.09052083250698435)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": true,
+              "note": "dist=512uu (loc x=3488.1543602960587, y=-0.011353716738098594)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": true,
+              "note": "z=1025"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 4/5 beats reached in 'regolith_yard'. Failures: walk_metal_to_rock (failed: expect {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}} -> dist=2000uu (loc x=0, y=-0.09052083250698435))",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 4/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a4707d738c20"
+    },
+    {
+      "id": "surprise_e1294a93884a4b57",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T06:00:29.999612",
+      "context": "Sleepwalker expected beat 'walk_metal_to_rock' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, \"note\": \"dist=2000uu (loc x=0, y=-0.09052083250698435)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a4707d738c20"
+    },
+    {
+      "id": "mutation_a4f0f288efd8",
+      "type": "Mutation",
+      "timestamp": "2026-07-18T06:26:32.762458",
+      "error_signature": "success_no_error",
+      "template_file": "unspecified",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "Result: Succeeded (OtherCompilationError) \u2014 0 errors, 0 warnings in changed files",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_bf15c4aa94e5"
     }
   ],
   "edges": [
