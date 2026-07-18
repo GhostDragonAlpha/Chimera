@@ -72048,6 +72048,47 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_725ffcf06255"
+    },
+    {
+      "id": "observation_a640c045d6ceaf69",
+      "type": "Observation",
+      "timestamp": "2026-07-18T04:18:41.895763",
+      "feature_name": "Travel_Vehicle_Basic",
+      "verdict": "accepted",
+      "notes": "fully-automated acceptance sweep: exercised, unindicted",
+      "observer": "automated-via-attribution",
+      "derived_from": "simtest_8e2249197944c447",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Travel_Vehicle_Basic",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Travel_Vehicle_Basic': accepted \u2014 fully-automated acceptance sweep: exercised, unindicted",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_8e2249197944c447"
+      ],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_e2fb1af098b7"
+    },
+    {
+      "id": "feature_6cf7205fb0f2f76a",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-18T04:18:42.193372",
+      "feature_name": "Travel_Vehicle_Basic",
+      "loop": 7,
+      "status": "observed",
+      "parameters": {
+        "holistic_sweep": "simtest_8e2249197944c447"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_7/Travel_Vehicle_Basic",
+      "error_category": "none",
+      "fix_description": "Feature 'Travel_Vehicle_Basic' (Loop 7) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_e2fb1af098b7"
     }
   ],
   "edges": [
@@ -83251,6 +83292,18 @@
       "asked_by": "graphify_record.py",
       "source": "observation_e5809b7506f928d1",
       "target": "simtest_e0140db294d36f4e",
+      "type": "because"
+    },
+    {
+      "src": "observation_a640c045d6ceaf69",
+      "dst": "simtest_8e2249197944c447",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-18T04:18:41.895921",
+      "asked_by": "collapse_proxy.py",
+      "source": "observation_a640c045d6ceaf69",
+      "target": "simtest_8e2249197944c447",
       "type": "because"
     }
   ]
