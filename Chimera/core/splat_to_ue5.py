@@ -59,6 +59,10 @@ def quad_cloud(splats: dict, scale: float) -> "object":
     for a, b in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
         corners.append(pos + a * h * t1 + b * h * t2)
     verts = np.stack(corners, axis=1).reshape(-1, 3)            # (N*4, 3)
+    verts = verts - verts.mean(axis=0)                          # CENTER the pivot —
+    # uncentered verts (0..340cm from origin) made the spawned actor's geometry hang
+    # far from its pivot: it hovered in the sky while its transform read (x,y,100)
+    # (seen live 2026-07-18; the bake path recentres per-tissue for the same reason)
     base = np.arange(len(pos)) * 4
     f1 = np.stack([base, base + 1, base + 2], axis=1)
     f2 = np.stack([base, base + 2, base + 3], axis=1)
