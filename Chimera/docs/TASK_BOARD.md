@@ -1,14 +1,15 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T05:50:24+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T05:54:04+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0143 | claimed | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie | sub-19 |
+| tb-0169 | claimed | 0.85 | Substrate rung C: terrain-as-matter - the shovel test (headl ⇐ tb-0168 | core/terrain_matter.py | sub-25 |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -17,7 +18,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
-| tb-0169 | open | 0.85 | Substrate rung C: terrain-as-matter - the shovel test (headl ⇐ tb-0168 | core/terrain_matter.py |  |
 | tb-0170 | open | 0.85 | Substrate rung D-prime: Substrate-shaded splats in the LIVE  `capable` ⇐ tb-0168 | core/splat_to_ue5.py, docs/research/substrate_splats_ue58.md; editor:open |  |
 | tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
 | tb-0172 | open | 0.8 | Matter library: research-pin the provisional numbers (cached | docs/matter/matter_library.json, docs/research/matter_library_sources.md |  |
@@ -28,7 +28,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0158 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0159 | open | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
 | tb-0174 | open | 0.75 | Matter library: splat emitter reads optics from the library  ⇐ tb-0172 | core/splat_emit.py, docs/matter/matter_library.json |  |
-| tb-0171 | open | 0.7 | Infra: membrane seal() excludes untracked files (git stash c | core/membrane.py |  |
 | tb-0173 | open | 0.7 | Matter library: interaction family rules + wire matter.py ad ⇐ tb-0172 | docs/matter/matter_library.json, core/matter.py |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
@@ -175,6 +174,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0088 | abandoned | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0091 | abandoned | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
 | tb-0112 | abandoned | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0171 | abandoned | 0.7 | Infra: membrane seal() excludes untracked files (git stash c | core/membrane.py |  |
 | tb-0094 | abandoned | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0125 | abandoned | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0126 | abandoned | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
