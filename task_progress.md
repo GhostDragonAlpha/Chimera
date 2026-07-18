@@ -1,3 +1,34 @@
+# Session 2026-07-18 (fable-1) — THE MATTER LIBRARY: the data spine, seeded with provenance
+
+The human's third commission, verbatim in the doc: *"a library of materials .... esentaly
+typs of mater ind its propertys of interaction and also what the surface looks like even
+know it is not a surface but more of an average!"* — the data the substrate engine needs
+is not datasets; it is the periodic table of the game.
+
+- **`Chimera/docs/matter/matter_library.json`** — 9 starter materials (the seed's 6
+  environment surfaces: sand/basin/rock/metal/ice/interior — SURFACE_TABLE subsumed as
+  boot×ground pair_exceptions — plus the 3 witnessed tissues skin/muscle/bone with optics
+  verbatim from rung A's relight renders). Interactions via 6 interface FAMILIES + 8
+  family rules + 10 pair exceptions (never an N² matrix). **Appearance is a DISTRIBUTION
+  (mean + spread), never a painted surface** — the human's "average, not a surface" is
+  microfacet theory's own ontology; coalesce = average at coarser scale, fracture =
+  sample back out: the LOD system and the appearance model are the same operation.
+- **Provenance per number, no exceptions** (Malcolm's taxonomy + `trained`): live counts
+  seed:32 · provisional:21 · design:12 · code:5. Every `provisional` is a NAMED DEBT.
+- **Thesis §16** added to THE_COMPOSITIONAL_WORLD_MODEL.md Part II (the library as data
+  spine; one library, four readers: adhesion / splat emitter / Substrate slabs / trainers).
+- **Board:** tb-0172 (research-pin the 21 provisional numbers — research-FIRST, cached
+  sources: Lunar Sourcebook regolith mechanics, BSSRDF tissue optics) → tb-0173 (family
+  rules + wire matter.py adhesion to read the library, value-identical, re-run its proof
+  modes) + tb-0174 (splat emitter reads optics from the library — NO-VISUAL-CHANGE
+  refactor asserted pixel-identical, then per-particle distribution SAMPLING behind a
+  flag = the "average" thesis made visible; sand-patch smoke test bridges to rung C).
+
+NEXT: tb-0172 claimable now; 0173/0174 unlock on it. Rung C (tb-0169) + D′ (tb-0170)
+remain open from the substrate ladder.
+
+---
+
 # Session 2026-07-18 (fable-1 LEAD) — Sonnet fleet: 4 subagents, all verified + integrated
 
 Deployed 4 Sonnet subagents at disjoint lanes (disjoint from the live pi fleet's

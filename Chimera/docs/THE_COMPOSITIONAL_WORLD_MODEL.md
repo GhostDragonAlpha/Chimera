@@ -471,6 +471,49 @@ place in the stack — and where the live research happens.
 
 ---
 
+## 16. The Matter Library — the data spine
+
+> **The human's third commission, 2026-07-18, verbatim:** *"a library of materials ....
+> esentaly typs of mater ind its propertys of interaction and also what the surface
+> looks like even know it is not a surface but more of an average!"*
+
+The substrate engine's data is not datasets. It is **the periodic table of the game** —
+`docs/matter/matter_library.json` — three columns, exactly as commissioned:
+
+1. **Types of matter** — the brick identities. Nine starters, derived from what the
+   game already reads: the seed's six environment surfaces (sand, basin, rock, metal,
+   ice, interior — `SURFACE_TABLE` subsumed) plus the three witnessed tissues (skin,
+   muscle, bone — optics verbatim from rung A's relight renders).
+2. **Properties of interaction** — pairwise, but NEVER an N² hand-written matrix:
+   materials declare an interface **family** (mineral_dry, metallic, cryo,
+   composite_built, organic_wet, organic_hard); rules are written family×family (a
+   handful); only exceptional couples get explicit entries. The seed already contained
+   the first exception rows without naming them: `SURFACE_TABLE` *is* the boot×ground
+   interaction, and the storm×sand print-erasure *is* a weather×matter pair.
+3. **Appearance as a DISTRIBUTION, never a surface** — every appearance value is a
+   mean plus a spread, because the human's instinct is the physically correct
+   ontology: a real surface already IS a statistical average of its microstructure
+   (roughness literally = the variance of micro-facet normals; PBR renders the
+   statistics, never the facets). The splat emitter SAMPLES the distribution per
+   particle (mottled, organic); a coalesced aggregate uses the MEAN (cheap, smooth).
+   **Coalesce = take the average at a coarser scale. Fracture = sample individuals
+   back out. The LOD system and the appearance model are the same operation.**
+
+**Provenance per number, no exceptions** (same taxonomy as Malcolm's walls): `seed`
+(the vision's own tables) · `code` (survived a witnessed render/run) · `researched`
+(cited + cached source) · `provisional` (model-knowledge estimate — **a named debt**)
+· `trained` (a `.trained.json` objective output) · `design` (a chosen game value,
+admitted as such). A provisional value is not wrong to ship; shipping it *untagged*
+would be.
+
+**One library, four readers:** the adhesion assembler (physical + interaction), the
+splat emitter (appearance — replacing its hardcoded tissue table), rung D′'s UE
+Substrate slabs (appearance), and the trainer domains (physical/interaction columns
+as seeds — `trained` provenance flows back in). The library is how a new thing enters
+the world: a new entry, not new engine code.
+
+---
+
 > Part I said: everything specific, trained separately, composed where physics keeps
 > the receipts. Part II says what everything is MADE of, and who does the seeing:
 > one atom carrying its matter and its appearance; shapes and movements as the only

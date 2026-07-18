@@ -1,0 +1,233 @@
+{
+  "_doc": [
+    "THE MATTER LIBRARY — the data spine of the Substrate Engine.",
+    "Commissioned 2026-07-18, the human, verbatim: 'a library of materials .... esentaly",
+    "typs of mater ind its propertys of interaction and also what the surface looks like",
+    "even know it is not a surface but more of an average!'",
+    "",
+    "THREE COLUMNS, exactly as commissioned: (1) types of matter, (2) properties of",
+    "INTERACTION (pairwise, via interface FAMILIES so N materials never becomes an N^2",
+    "hand-written matrix — only exceptional pairs get explicit entries), (3) appearance",
+    "as a DISTRIBUTION, never a painted surface: every appearance value is a mean plus a",
+    "spread, because a real surface IS the statistical average of its microstructure",
+    "(roughness literally = variance of micro-facet normals). The splat emitter SAMPLES",
+    "the distribution per particle; a coalesced aggregate uses the MEAN — coalesce is",
+    "taking the average at a coarser scale, fracture is sampling individuals back out.",
+    "",
+    "EVERY NUMBER CARRIES PROVENANCE (same taxonomy as Malcolm's envelope walls).",
+    "No number without a tag. 'provisional' numbers are DEBTS — tb-0172 upgrades them",
+    "to researched with cached sources, or corrects them.",
+    "",
+    "CONSUMERS (one library, four readers): core/matter.py adhesion (physical +",
+    "interaction), core/splat_emit.py optics (appearance; wiring task tb-0174),",
+    "rung D-prime's UE Substrate slab materials (appearance), core/trainables/*",
+    "(physical + interaction columns as seed values; 'trained' provenance flows back)."
+  ],
+  "provenance_classes": {
+    "seed": "verbatim from CHIMERA_VISION.py (the game's own tables — SURFACE_TABLE etc.)",
+    "code": "verbatim from proven studio code (e.g. splat_emit.py OPTICAL, matter.py adhesion) — survived a witnessed render/run",
+    "researched": "cited external measurement with a cached source on disk",
+    "provisional": "model-knowledge estimate, plausible but UNVERIFIED — a debt owed to tb-0172",
+    "trained": "output of a trainer objective (docs/objectives/<f>.trained.json) — cite the objective",
+    "design": "a chosen game value with no real-world referent, named as such"
+  },
+  "families": {
+    "_doc": "Interface families keep interactions O(families^2), not O(materials^2). Pair rules below are family x family; materials inherit them; 'pair_exceptions' overrides for specific couples.",
+    "mineral_dry": ["sand", "basin", "rock"],
+    "metallic": ["metal"],
+    "cryo": ["ice"],
+    "composite_built": ["interior"],
+    "organic_wet": ["skin", "muscle"],
+    "organic_hard": ["bone"]
+  },
+  "family_pair_rules": {
+    "_doc": "Qualitative interaction classes + friction multiplier (applied to the softer party's traction). Sparse: unlisted pairs default to {contact:'dry', friction_mult:1.0, adhesion:'none', thermal:'slow'}.",
+    "mineral_dry|mineral_dry": { "contact": "granular", "friction_mult": 1.0, "adhesion": "weak_cohesion", "thermal": "slow" },
+    "mineral_dry|metallic": { "contact": "dusting", "friction_mult": 0.9, "adhesion": "dust_film", "thermal": "fast_into_metal", "note": "regolith dust electrostatically coats metal — why METAL makes_print=true in the seed despite being hard" },
+    "mineral_dry|cryo": { "contact": "abrasive_on_slick", "friction_mult": 0.6, "adhesion": "none", "thermal": "slow" },
+    "cryo|metallic": { "contact": "slick", "friction_mult": 0.5, "adhesion": "frost_bond_if_wet", "thermal": "fast" },
+    "organic_wet|organic_wet": { "contact": "wet", "friction_mult": 1.0, "adhesion": "membrane", "thermal": "body", "note": "matter.py: like-tissue cohesion drives the radial sort" },
+    "organic_wet|organic_hard": { "contact": "wet", "friction_mult": 1.0, "adhesion": "tendon_via_connector", "thermal": "body", "note": "muscle-bone junction REQUIRES the typed tendon connector (matter.py rung 1.5: adhesion alone cannot hold the interface)" },
+    "organic_wet|mineral_dry": { "contact": "dry", "friction_mult": 1.0, "adhesion": "dust_sticks_to_wet", "thermal": "fast_out_of_body" },
+    "organic_hard|mineral_dry": { "contact": "dry", "friction_mult": 1.0, "adhesion": "none", "thermal": "slow" }
+  },
+  "materials": {
+    "sand": {
+      "family": "mineral_dry",
+      "physical": {
+        "density_kg_m3": { "mean": 1500, "spread": 150, "provenance": "provisional", "note": "lunar regolith bulk density ~1.4-1.8 g/cc (Lunar Sourcebook ch.9, Carrier et al. 1991 — verify + cache via tb-0172)" },
+        "friction_angle_deg": { "mean": 38, "spread": 3, "provenance": "provisional", "note": "regolith angle of repose ~35-40 deg (Apollo soil mechanics — verify via tb-0172)" },
+        "cohesion_kpa": { "mean": 0.5, "spread": 0.4, "provenance": "provisional" },
+        "stiffness_class": { "value": "loose_granular", "provenance": "design" },
+        "traction": { "value": 0.75, "provenance": "seed", "note": "CHIMERA_VISION.py SURFACE_TABLE" },
+        "makes_print": { "value": true, "provenance": "seed" },
+        "dust_scale": { "value": 1.0, "provenance": "seed" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.55, 0.47, 0.38], "albedo_mottle_var": 0.04,
+        "roughness_mean": 0.95, "roughness_var": 0.03,
+        "subsurface_mfp_mm": 0.0, "translucency": 0.0,
+        "grain_size_mm": { "mean": 0.07, "spread": 0.05, "note": "regolith is FINE — median ~70 microns (provisional)" },
+        "provenance": "provisional", "note": "grey-tan regolith; calibrate against the NASA reference canon (tb-0172) and the live level's M_Sand"
+      },
+      "sound_synth": { "value": "SAND", "provenance": "seed" },
+      "granularity_default": "cell_when_active_region_when_quiet"
+    },
+    "basin": {
+      "family": "mineral_dry",
+      "physical": {
+        "density_kg_m3": { "mean": 1100, "spread": 200, "provenance": "provisional", "note": "unconsolidated fine-dust deposit — fluffier than packed sand" },
+        "friction_angle_deg": { "mean": 33, "spread": 4, "provenance": "provisional" },
+        "cohesion_kpa": { "mean": 0.2, "spread": 0.2, "provenance": "provisional" },
+        "stiffness_class": { "value": "very_loose_granular", "provenance": "design" },
+        "traction": { "value": 0.45, "provenance": "seed" },
+        "makes_print": { "value": true, "provenance": "seed" },
+        "dust_scale": { "value": 1.6, "provenance": "seed" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.60, 0.53, 0.44], "albedo_mottle_var": 0.02,
+        "roughness_mean": 0.98, "roughness_var": 0.02,
+        "subsurface_mfp_mm": 0.0, "translucency": 0.0,
+        "grain_size_mm": { "mean": 0.03, "spread": 0.02 },
+        "provenance": "provisional", "note": "finer + slightly paler than sand (dust pond)"
+      },
+      "sound_synth": { "value": "SAND", "provenance": "seed" },
+      "granularity_default": "cell_when_active_region_when_quiet"
+    },
+    "rock": {
+      "family": "mineral_dry",
+      "physical": {
+        "density_kg_m3": { "mean": 2900, "spread": 200, "provenance": "provisional", "note": "basaltic — verify via tb-0172" },
+        "youngs_modulus_gpa": { "mean": 70, "spread": 20, "provenance": "provisional" },
+        "tear_threshold_class": { "value": "fractures_not_tears", "provenance": "design" },
+        "traction": { "value": 1.0, "provenance": "seed" },
+        "makes_print": { "value": false, "provenance": "seed" },
+        "dust_scale": { "value": 0.15, "provenance": "seed" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.32, 0.30, 0.28], "albedo_mottle_var": 0.06,
+        "roughness_mean": 0.85, "roughness_var": 0.08,
+        "subsurface_mfp_mm": 0.0, "translucency": 0.0,
+        "grain_size_mm": { "mean": 2.0, "spread": 3.0, "note": "surface texture scale, not mineral grains" },
+        "provenance": "provisional", "note": "dark basalt; high mottle variance is what reads as rock vs the smoother regolith"
+      },
+      "sound_synth": { "value": "ROCK", "provenance": "seed" },
+      "granularity_default": "region"
+    },
+    "metal": {
+      "family": "metallic",
+      "physical": {
+        "density_kg_m3": { "mean": 2700, "spread": 50, "provenance": "provisional", "note": "Al-alloy pad plating" },
+        "youngs_modulus_gpa": { "mean": 69, "spread": 5, "provenance": "provisional" },
+        "tear_threshold_class": { "value": "dents_then_tears", "provenance": "design" },
+        "traction": { "value": 0.90, "provenance": "seed" },
+        "makes_print": { "value": true, "provenance": "seed", "note": "dust film on the plating takes prints; storm-proof (seed keeps METAL prints through storms)" },
+        "dust_scale": { "value": 0.05, "provenance": "seed" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.56, 0.57, 0.58], "albedo_mottle_var": 0.01,
+        "roughness_mean": 0.35, "roughness_var": 0.10,
+        "metallic": 1.0,
+        "subsurface_mfp_mm": 0.0, "translucency": 0.0,
+        "provenance": "provisional", "note": "brushed alloy; roughness_var carries the wear-streak variation"
+      },
+      "sound_synth": { "value": "METAL", "provenance": "seed" },
+      "granularity_default": "region"
+    },
+    "ice": {
+      "family": "cryo",
+      "physical": {
+        "density_kg_m3": { "mean": 917, "spread": 5, "provenance": "provisional", "note": "water ice — one of the few constants that IS near-exact" },
+        "youngs_modulus_gpa": { "mean": 9, "spread": 1, "provenance": "provisional" },
+        "tear_threshold_class": { "value": "brittle_fracture", "provenance": "design" },
+        "traction": { "value": 0.35, "provenance": "seed" },
+        "makes_print": { "value": false, "provenance": "seed" },
+        "dust_scale": { "value": 0.02, "provenance": "seed" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.75, 0.82, 0.88], "albedo_mottle_var": 0.02,
+        "roughness_mean": 0.15, "roughness_var": 0.06,
+        "subsurface_mfp_mm": 8.0, "translucency": 0.35,
+        "provenance": "provisional", "note": "the one environment material with real subsurface depth — the slab's MFP field earns its keep here"
+      },
+      "sound_synth": { "value": "ICE", "provenance": "seed" },
+      "granularity_default": "region"
+    },
+    "interior": {
+      "family": "composite_built",
+      "physical": {
+        "density_kg_m3": { "mean": 600, "spread": 100, "provenance": "design", "note": "habitat floor composite — a built thing, no natural referent" },
+        "traction": { "value": 1.0, "provenance": "seed" },
+        "makes_print": { "value": false, "provenance": "seed" },
+        "dust_scale": { "value": 0.0, "provenance": "seed" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.70, 0.70, 0.68], "albedo_mottle_var": 0.005,
+        "roughness_mean": 0.55, "roughness_var": 0.03,
+        "subsurface_mfp_mm": 0.0, "translucency": 0.0,
+        "provenance": "design", "note": "clean matte panel; the LOW variance is the point — built things are uniform, grown/natural things are not. Uniformity IS the tell."
+      },
+      "sound_synth": { "value": "INTERIOR", "provenance": "seed" },
+      "granularity_default": "region"
+    },
+    "skin": {
+      "family": "organic_wet",
+      "physical": {
+        "density_kg_m3": { "mean": 1100, "spread": 50, "provenance": "provisional" },
+        "stiffness_class": { "value": "elastic_membrane", "provenance": "design" },
+        "tear_threshold_class": { "value": "tears_revealing_muscle", "provenance": "design", "note": "THE_MATTER_MODEL SS9: the wound reveals structure" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.80, 0.62, 0.47], "albedo_mottle_var": 0.015,
+        "roughness_mean": 0.70, "roughness_var": 0.05,
+        "alpha": 0.88, "subsurface_strength": 0.55, "subsurface_mfp_mm": 2.0,
+        "provenance": "code", "note": "means verbatim from splat_emit.py OPTICAL — survived rung A's witnessed relight renders (tb-0168). mfp_mm provisional (skin dermis ~1-3mm, graphics BSSRDF literature — verify via tb-0172)."
+      },
+      "granularity_default": "cell"
+    },
+    "muscle": {
+      "family": "organic_wet",
+      "physical": {
+        "density_kg_m3": { "mean": 1060, "spread": 30, "provenance": "provisional" },
+        "stiffness_class": { "value": "contractile", "provenance": "design", "note": "behavior=contract is the ONE behavior field the game reads (THE_MATTER_MODEL SS2)" },
+        "anisotropy": { "value": "along_fiber", "provenance": "design", "note": "muscle is directional — the appearance AND the mechanics share the fiber axis" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.69, 0.23, 0.24], "albedo_mottle_var": 0.02,
+        "roughness_mean": 0.55, "roughness_var": 0.04,
+        "alpha": 0.75, "subsurface_strength": 0.30, "subsurface_mfp_mm": 1.0,
+        "anisotropy_appearance": 0.4,
+        "provenance": "code", "note": "means verbatim from splat_emit.py OPTICAL (tb-0168 witnessed). Striation = anisotropic roughness along the fiber axis, not a texture."
+      },
+      "granularity_default": "cell"
+    },
+    "bone": {
+      "family": "organic_hard",
+      "physical": {
+        "density_kg_m3": { "mean": 1900, "spread": 100, "provenance": "provisional", "note": "cortical bone" },
+        "youngs_modulus_gpa": { "mean": 18, "spread": 3, "provenance": "provisional" },
+        "tear_threshold_class": { "value": "brittle_fracture", "provenance": "design" }
+      },
+      "appearance": {
+        "albedo_mean_rgb": [0.93, 0.91, 0.82], "albedo_mottle_var": 0.008,
+        "roughness_mean": 0.55, "roughness_var": 0.03,
+        "alpha": 1.0, "subsurface_strength": 0.0, "subsurface_mfp_mm": 0.0,
+        "provenance": "code", "note": "verbatim from splat_emit.py OPTICAL (tb-0168 witnessed)"
+      },
+      "granularity_default": "chunk"
+    }
+  },
+  "pair_exceptions": {
+    "_doc": "Explicit couples that override family rules. boot|X rows ARE the seed's SURFACE_TABLE read as what it always was: the player-contact interaction row.",
+    "boot|sand": { "traction": 0.75, "makes_print": true, "dust_kick": 1.0, "sound": "SAND", "provenance": "seed" },
+    "boot|basin": { "traction": 0.45, "makes_print": true, "dust_kick": 1.6, "sound": "SAND", "provenance": "seed" },
+    "boot|rock": { "traction": 1.0, "makes_print": false, "dust_kick": 0.15, "sound": "ROCK", "provenance": "seed" },
+    "boot|metal": { "traction": 0.9, "makes_print": true, "dust_kick": 0.05, "sound": "METAL", "provenance": "seed" },
+    "boot|ice": { "traction": 0.35, "makes_print": false, "dust_kick": 0.02, "sound": "ICE", "provenance": "seed" },
+    "boot|interior": { "traction": 1.0, "makes_print": false, "dust_kick": 0.0, "sound": "INTERIOR", "provenance": "seed" },
+    "muscle|bone": { "connector": "tendon", "provenance": "code", "note": "matter.py rung 1.5: the typed tendon held 81% bonded, 0.00 skin/air exposure where the control drifted — adhesion alone cannot hold this interface" },
+    "skin|muscle": { "connector": "membrane", "provenance": "code", "note": "matter.py radial sort: skin shells muscle unattended when adhesion profiles differ" },
+    "storm_wind|sand": { "effect": "erases_prints", "provenance": "seed", "note": "UWeatherSubsystem: storm end filters footprints to METAL only — the memento mori. Cadence now TRAINED: docs/objectives/weather.trained.json" },
+    "storm_wind|metal": { "effect": "prints_survive", "provenance": "seed" }
+  }
+}

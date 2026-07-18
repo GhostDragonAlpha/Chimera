@@ -1,10 +1,10 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T05:25:45+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T05:37:31+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
@@ -20,12 +20,15 @@ so claimed tasks are safe to run in parallel.
 | tb-0169 | open | 0.85 | Substrate rung C: terrain-as-matter - the shovel test (headl ⇐ tb-0168 | core/terrain_matter.py |  |
 | tb-0170 | open | 0.85 | Substrate rung D-prime: Substrate-shaded splats in the LIVE  `capable` ⇐ tb-0168 | core/splat_to_ue5.py, docs/research/substrate_splats_ue58.md; editor:open |  |
 | tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
+| tb-0172 | open | 0.8 | Matter library: research-pin the provisional numbers (cached | docs/matter/matter_library.json, docs/research/matter_library_sources.md |  |
 | tb-0151 | open | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0158 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0159 | open | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
+| tb-0174 | open | 0.75 | Matter library: splat emitter reads optics from the library  ⇐ tb-0172 | core/splat_emit.py, docs/matter/matter_library.json |  |
 | tb-0171 | open | 0.7 | Infra: membrane seal() excludes untracked files (git stash c | core/membrane.py |  |
+| tb-0173 | open | 0.7 | Matter library: interaction family rules + wire matter.py ad ⇐ tb-0172 | docs/matter/matter_library.json, core/matter.py |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
