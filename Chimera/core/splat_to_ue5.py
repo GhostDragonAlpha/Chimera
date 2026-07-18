@@ -107,7 +107,9 @@ def quad_cloud(splats: dict, scale: float, tangent_scale: float = 1.15,
     base = np.arange(len(pos)) * 4
     f1 = np.stack([base, base + 1, base + 2], axis=1)
     f2 = np.stack([base, base + 2, base + 3], axis=1)
-    faces = np.concatenate([f1, f2, f1[:, ::-1], f2[:, ::-1]])  # double-sided
+    faces = np.concatenate([f1, f2])       # single-sided; glTF doubleSided flag
+    # (injected by write_splat_glb) replaces the old duplicated-reversed-faces
+    # hack — half the triangles, same coverage
     rgba = np.concatenate([np.clip(splats["albedo"], 0, 1),
                            np.clip(splats["alpha"], 0, 1)[:, None]], axis=1)
     vcol = (np.repeat(rgba, 4, axis=0) * 255).astype(np.uint8)
@@ -115,6 +117,101 @@ def quad_cloud(splats: dict, scale: float, tangent_scale: float = 1.15,
     scene = trimesh.Scene()
     scene.add_geometry(mesh, node_name="cloud", geom_name="cloud")
     return scene
+
+
+def _inject_material(glb_path: Path) -> None:
+    """Make the GLB SELF-DESCRIBING: declare a PBR material on the primitive.
+
+    ROOT CAUSE (found by pixel-forensics, 2026-07-18): trimesh's ColorVisuals
+    path exports COLOR_0 but NO material; UE's glTF importer then assigns a dead
+    default that ignores vertex color, so every splat imported WHITE (verified:
+    blob mean RGB 224.7/223.3/221.5 — neutral — where skin tint demands R>G>B by
+    ~46 8-bit steps; the debug-material override showed white = missing attr).
+    Per the glTF spec a declared material MUST be multiplied by COLOR_0, and
+    UE's importer builds that graph when — and only when — a material exists in
+    the file. doubleSided=true here replaces geometric double-siding."""
+    import struct
+
+    with open(glb_path, "rb") as f:
+        magic, ver, _total = struct.unpack("<III", f.read(12))
+        clen, ctype = struct.unpack("<II", f.read(8))
+        doc = json.loads(f.read(clen))
+        rest = f.read()                                    # BIN chunk(s), untouched
+    doc["materials"] = [{
+        "name": "M_SplatVC",
+        "pbrMetallicRoughness": {"baseColorFactor": [1.0, 1.0, 1.0, 1.0],
+                                  "metallicFactor": 0.0, "roughnessFactor": 0.85},
+        "doubleSided": True,
+    }]
+    for mesh in doc.get("meshes", []):
+        for prim in mesh.get("primitives", []):
+            prim["material"] = 0
+    payload = json.dumps(doc, separators=(",", ":")).encode()
+    payload += b" " * (-len(payload) % 4)                  # 4-byte alignment (spec)
+    with open(glb_path, "wb") as f:
+        f.write(struct.pack("<III", magic, ver, 12 + 8 + len(payload) + len(rest)))
+        f.write(struct.pack("<II", len(payload), ctype))
+        f.write(payload)
+        f.write(rest)
+
+
+def write_splat_glb(splats: dict, scale: float, path: Path, **kw) -> Path:
+    """Export + material injection in one step — the only correct way to write
+    a splat GLB for engine import (a bare quad_cloud().export() produces the
+    dead-default-material import; see _inject_material)."""
+    quad_cloud(splats, scale, **kw).export(str(path))
+    _inject_material(path)
+    return path
+
+
+SPLAT_MATERIAL = "/Game/Materials/M_SplatVC_Lit"
+
+
+def ensure_splat_material(client, material_path: str = SPLAT_MATERIAL) -> bool:
+    """Author (idempotently) the LIT per-splat-color material via the bridge and
+    return True when it exists wired: VertexColor -> BaseColor, DefaultLit — under
+    r.Substrate=1 this auto-converts to a Substrate slab, so splats are engine-lit
+    with their own COLOR_0 per particle.
+
+    THE MAZE THIS ENCODES (paid for 2026-07-18, tb-0170 — do not rediscover it):
+    - The bridge has THREE material handler families (MaterialGraph /
+      MaterialAuthoring / the JS router above both) with DIFFERENT key vocab.
+      `connect_material_pins` lives in MaterialAuthoring; nodes added by the
+      MaterialGraph family (`add_material_node`) are found by the authoring
+      family's lookup ONLY when the connect payload carries the full
+      belt-and-suspenders key set below — single-key variants return
+      NODE_NOT_FOUND / INVALID_PIN misleadingly.
+    - A Custom-HLSL node reading `Parameters.VertexColor` compiles but samples
+      BLACK: raw access does not set the material's bUsesVertexColor usage flag,
+      so the interpolator is stripped. Only a real MaterialExpressionVertexColor
+      node sets the flag — that is why this authors the real node.
+    - `add_material_node` returns nodeId = the expression object's GetName()
+      (e.g. 'MaterialExpressionVertexColor_0'); it is stable per-asset."""
+    import json as _json
+
+    def sc(r):
+        try:
+            return r["result"]["structuredContent"]
+        except (KeyError, TypeError):
+            return {}
+
+    client.call("manage_asset", {"action": "create_material",
+                                 "name": material_path.rsplit("/", 1)[-1],
+                                 "destinationPath": material_path.rsplit("/", 1)[0]})
+    add = sc(client.call("manage_asset", {"action": "add_material_node",
+                                          "assetPath": material_path,
+                                          "nodeType": "VertexColor"}))
+    nid = ((add.get("data") or {}).get("result") or add.get("result") or {}) \
+        .get("nodeId") or add.get("nodeId") or "MaterialExpressionVertexColor_0"
+    conn = sc(client.call("manage_asset", {
+        "action": "connect_material_pins",
+        "assetPath": material_path, "materialPath": material_path,
+        "sourceNodeId": nid, "fromExpression": nid, "sourceNode": nid, "nodeId": nid,
+        "inputName": "BaseColor", "targetNodeId": "Main",
+        "targetPin": "BaseColor", "sourcePin": "0"}))
+    built = sc(client.call("manage_asset", {"action": "rebuild_material",
+                                            "assetPath": material_path}))
+    return bool(conn.get("success")) and bool(built.get("success"))
 
 
 def _ok(resp) -> tuple:
@@ -173,6 +270,17 @@ def drive(splat_glb: Path, mesh_glb: Path) -> dict:
                 "meshPath": path, "actorName": name,
                 "location": {"x": x, "y": 0.0, "z": SPAWN_Z}}))
             log[f"spawn:{name}"] = (ok, msg)
+
+        # LIT per-splat color: author (idempotent) + apply the VertexColor->BaseColor
+        # material — without this the importer's default ignores COLOR_0 and the
+        # cloud renders grey (the whole 2026-07-18 material odyssey, encoded).
+        ok = ensure_splat_material(c)
+        log["material:wired"] = (ok, SPLAT_MATERIAL if ok else "authoring failed")
+        if ok:
+            ok2, msg2 = _ok(c.call("control_actor", {
+                "action": "set_material", "actorName": "Splat_Cloud",
+                "materialPath": SPLAT_MATERIAL, "slot": 0}))
+            log["material:applied"] = (ok2, msg2)
 
         c.call("control_editor", {"action": "console_command",
                                   "command": f"BugItGo {CAMERA}"})
