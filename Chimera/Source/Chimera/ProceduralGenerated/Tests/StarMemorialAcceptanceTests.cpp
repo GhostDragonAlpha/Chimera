@@ -135,19 +135,17 @@ void RunStarMemorialSystemTests()
 {
 	UE_LOG(LogTemp, Warning, TEXT("\n====== STAR MEMORIAL ACCEPTANCE TESTS ======\n"));
 
-	try
-	{
-		TestMemorial_Initialization();
-		TestMemorial_Monotonicity();
-		TestMemorial_CostlessBelowYardThreshold();
-		TestMemorial_GoldenAngleBearing();
-		TestMemorial_NightLightCap();
-		TestMemorial_TwinkleOnOpenPains();
+	// tb-0186: exception-free by design (C4530 on the GAME target, which
+	// builds without /EHsc unlike the editor target); check() failures below
+	// are UE fatal-asserts, never a thrown std::exception, so the removed
+	// catch block could never fire. Same coverage/order as before, matching
+	// RunFootstepEventSystemTests' already exception-free convention.
+	TestMemorial_Initialization();
+	TestMemorial_Monotonicity();
+	TestMemorial_CostlessBelowYardThreshold();
+	TestMemorial_GoldenAngleBearing();
+	TestMemorial_NightLightCap();
+	TestMemorial_TwinkleOnOpenPains();
 
-		UE_LOG(LogTemp, Warning, TEXT("\n====== ALL STAR MEMORIAL TESTS PASSED ======\n"));
-	}
-	catch (const std::exception& e)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Star memorial test failed: %s"), ANSI_TO_TCHAR(e.what()));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("\n====== ALL STAR MEMORIAL TESTS PASSED ======\n"));
 }

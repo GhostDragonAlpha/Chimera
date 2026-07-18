@@ -3521,20 +3521,20 @@ void RunWeatherSystemTests()
 {
 	UE_LOG(LogTemp, Warning, TEXT("\\n====== WEATHER SYSTEM ACCEPTANCE TESTS ======\\n"));
 
-	try
-	{
-		TestWeather_Initialization();
-		TestWeather_Determinism();
-		TestWeather_NightBands();
-		TestWeather_StormCycle();
-		TestWeather_WindBandResponse();
+	// tb-0186: exception-free by design, not by omission. try/catch here broke
+	// the standalone GAME target (C4530 -- built without /EHsc, unlike the
+	// editor target); it was also never load-bearing, since check() failures
+	// inside the Test*() calls below are UE fatal-asserts, not thrown
+	// std::exception, so the old catch (const std::exception&) could never
+	// fire. Same coverage and order as before, matching
+	// RunFootstepEventSystemTests' already exception-free convention.
+	TestWeather_Initialization();
+	TestWeather_Determinism();
+	TestWeather_NightBands();
+	TestWeather_StormCycle();
+	TestWeather_WindBandResponse();
 
-		UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL WEATHER SYSTEM TESTS PASSED ======\\n"));
-	}
-	catch (const std::exception& e)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Weather system test failed: %s"), ANSI_TO_TCHAR(e.what()));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL WEATHER SYSTEM TESTS PASSED ======\\n"));
 }
 '''
         test_content = test_content.replace("__WEATHER_PROVENANCE__", provenance)
@@ -4084,21 +4084,19 @@ void RunStarMemorialSystemTests()
 {
 	UE_LOG(LogTemp, Warning, TEXT("\\n====== STAR MEMORIAL ACCEPTANCE TESTS ======\\n"));
 
-	try
-	{
-		TestMemorial_Initialization();
-		TestMemorial_Monotonicity();
-		TestMemorial_CostlessBelowYardThreshold();
-		TestMemorial_GoldenAngleBearing();
-		TestMemorial_NightLightCap();
-		TestMemorial_TwinkleOnOpenPains();
+	// tb-0186: exception-free by design (C4530 on the GAME target, which
+	// builds without /EHsc unlike the editor target); check() failures below
+	// are UE fatal-asserts, never a thrown std::exception, so the removed
+	// catch block could never fire. Same coverage/order as before, matching
+	// RunFootstepEventSystemTests' already exception-free convention.
+	TestMemorial_Initialization();
+	TestMemorial_Monotonicity();
+	TestMemorial_CostlessBelowYardThreshold();
+	TestMemorial_GoldenAngleBearing();
+	TestMemorial_NightLightCap();
+	TestMemorial_TwinkleOnOpenPains();
 
-		UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL STAR MEMORIAL TESTS PASSED ======\\n"));
-	}
-	catch (const std::exception& e)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Star memorial test failed: %s"), ANSI_TO_TCHAR(e.what()));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL STAR MEMORIAL TESTS PASSED ======\\n"));
 }
 '''
         test_content = test_content.replace("__MEMORIAL_PROVENANCE__", provenance)
@@ -4756,18 +4754,16 @@ void RunSacrificeLogSeedApiTests()
 {
     UE_LOG(LogTemp, Warning, TEXT("\\n====== SACRIFICE LOG (SEED-SHAPE API) ACCEPTANCE TESTS ======\\n"));
 
-    try
-    {
-        TestSacrificeLog_WeightsTableMatchesTrainedJson();
-        TestSacrificeLog_WeightForGenerationSumsCorrectly();
-        TestSacrificeLog_UnknownKindHandledFailSafe();
+    // tb-0186: exception-free by design (C4530 on the GAME target, which
+    // builds without /EHsc unlike the editor target); check() failures below
+    // are UE fatal-asserts, never a thrown std::exception, so the removed
+    // catch block could never fire. Same coverage/order as before, matching
+    // RunFootstepEventSystemTests' already exception-free convention.
+    TestSacrificeLog_WeightsTableMatchesTrainedJson();
+    TestSacrificeLog_WeightForGenerationSumsCorrectly();
+    TestSacrificeLog_UnknownKindHandledFailSafe();
 
-        UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL SACRIFICE LOG (SEED-SHAPE API) TESTS PASSED ======\\n"));
-    }
-    catch (const std::exception& e)
-    {
-        UE_LOG(LogTemp, Error, TEXT("Sacrifice log seed-API test failed: %s"), ANSI_TO_TCHAR(e.what()));
-    }
+    UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL SACRIFICE LOG (SEED-SHAPE API) TESTS PASSED ======\\n"));
 }
 '''
         test_content = (test_content

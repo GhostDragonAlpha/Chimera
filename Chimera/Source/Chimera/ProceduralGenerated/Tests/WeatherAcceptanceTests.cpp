@@ -142,6 +142,13 @@ void RunWeatherSystemTests()
 {
 	UE_LOG(LogTemp, Warning, TEXT("\n====== WEATHER SYSTEM ACCEPTANCE TESTS ======\n"));
 
+	// tb-0186: exception-free by design, not by omission. try/catch here broke
+	// the standalone GAME target (C4530 -- built without /EHsc, unlike the
+	// editor target); it was also never load-bearing, since check() failures
+	// inside the Test*() calls below are UE fatal-asserts, not thrown
+	// std::exception, so the old catch (const std::exception&) could never
+	// fire. Same coverage and order as before, matching
+	// RunFootstepEventSystemTests' already exception-free convention.
 	TestWeather_Initialization();
 	TestWeather_Determinism();
 	TestWeather_NightBands();
