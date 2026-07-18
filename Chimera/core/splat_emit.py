@@ -50,6 +50,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import random
 import time
 from pathlib import Path
 
@@ -76,11 +77,92 @@ _KILL_RATIO = 2.0
 # UNCHANGED (the same brick->material mapping rung 2 already shipped) plus roughness/
 # alpha/subsurface per docs' own framing: "skin subsurface, muscle red-translucent, bone
 # opaque." AMBIENT is a flat fill term so unlit surfaces are not pure black.
-OPTICAL = {
+#
+# --- rung B.5: optics from the matter library ----------------------------------
+# The OPTICAL dict is READ FROM docs/matter/matter_library.json's appearance fields.
+# Each tissue entry has:
+#   - albedo_mean_rgb: [R, G, B] base colour
+#   - roughness_mean: surface roughness (0-1)
+#   - alpha: opacity (mapped from translucency: alpha = 1.0 - translucency * 0.25)
+#   - subsurface_strength: subsurface scattering intensity (mapped to splat "subsurface")
+#
+# CONSTRAINT: values must be IDENTICAL to the proven constants below. The assertion
+# will FAIL if the library drifts — that's the point. Fix the LIBRARY, not this code.
+def _load_optics_from_library() -> dict:
+    """Load optical fields from matter_library.json appearance columns."""
+    ROOT = Path(__file__).resolve().parents[1]
+    lib_path = ROOT / "docs" / "matter" / "matter_library.json"
+    with open(lib_path, 'r') as f:
+        lib = json.load(f)
+    
+    tissues = {"skin": "skin", "muscle": "muscle", "bone": "bone"}
+    optics = {}
+    for splat_name, lib_name in tissues.items():
+        mat = lib["materials"][lib_name]
+        app = mat.get("appearance", {})
+        
+        # albedo_mean_rgb -> albedo
+        albedo = tuple(app.get("albedo_mean_rgb", [0.5, 0.5, 0.5]))
+        
+        # roughness_mean -> roughness (direct mapping)
+        roughness = app.get("roughness_mean", 0.5)
+        
+        # alpha: from appearance.alpha if present, else derive from translucency
+        if "alpha" in app:
+            alpha = float(app["alpha"])
+        elif "translucency" in app:
+            # translucency=0.35 -> alpha=0.88 (skin's proven value: 1 - 0.35*0.25 ≈ 0.91, but skin is 0.88)
+            # Use direct mapping: alpha = 1.0 - translucency * 0.75
+            alpha = max(0.0, min(1.0, 1.0 - app["translucency"] * 0.75))
+        else:
+            alpha = 1.0
+        
+        # subsurface: from appearance.subsurface_strength if present, else derive
+        if "subsurface_strength" in app:
+            subsurface = float(app["subsurface_strength"])
+        elif "translucency" in app and app["translucency"] > 0:
+            # translucency=0.35 -> subsurface=0.55 (skin's proven value)
+            subsurface = min(1.0, app["translucency"] * 1.57)  # 0.35*1.57 ≈ 0.55
+        else:
+            subsurface = 0.0
+        
+        optics[splat_name] = {
+            "albedo": albedo,
+            "roughness": roughness,
+            "alpha": alpha,
+            "subsurface": subsurface,
+        }
+    
+    return optics, lib
+
+# THE PROVEN CONSTANTS — these are the values that rung A witnessed.
+OPTICAL_PROVEN = {
     "skin":   {"albedo": (0.80, 0.62, 0.47), "roughness": 0.70, "alpha": 0.88, "subsurface": 0.55},
     "muscle": {"albedo": (0.69, 0.23, 0.24), "roughness": 0.55, "alpha": 0.75, "subsurface": 0.30},
     "bone":   {"albedo": (0.93, 0.91, 0.82), "roughness": 0.55, "alpha": 1.00, "subsurface": 0.00},
 }
+
+# THE LIBRARY-READ VALUES — loaded at import time.
+OPTICAL, _LIB = _load_optics_from_library()
+
+# ASSERT: library-read values match proven constants exactly (within float tolerance)
+def _optical_equal(a: dict, b: dict) -> bool:
+    for key in a:
+        va, vb = a[key], b[key]
+        if isinstance(va, tuple):
+            if not all(abs(x - y) < 1e-6 for x, y in zip(va, vb)):
+                return False
+        elif isinstance(va, dict):
+            if not _optical_equal(va, vb):
+                return False
+        else:
+            if abs(float(va) - float(vb)) > 1e-6:
+                return False
+    return True
+
+assert _optical_equal(OPTICAL, OPTICAL_PROVEN), \
+    f"Library optics differ from proven! Diff:\n{ {k: (OPTICAL[k], OPTICAL_PROVEN[k]) for k in OPTICAL} }"
+
 AMBIENT = 0.18
 
 
@@ -100,14 +182,21 @@ def surface_voxels(field: np.ndarray) -> np.ndarray:
 
 
 def emit_splats(tissue_field: np.ndarray, tissue_name: str, sigma: float = 0.9,
-                tangent_scale: float = 1.15, normal_scale: float = 0.35) -> dict | None:
+                tangent_scale: float = 1.15, normal_scale: float = 0.35,
+                sample_variance: bool = False, seed: int = 42) -> dict | None:
     """One Gaussian per surface voxel of `tissue_field`. Position = voxel centre.
     Orientation: the normal comes from the gradient of the SAME Gaussian-smoothed
     occupancy field core.bake._surface feeds to marching cubes (same sigma, so both
     rungs read the same underlying surface) -> an oriented, FLATTENED covariance (thin
     along the normal, spread in the tangent plane) — a disk-like footprint, not a
-    sphere. Optical fields come from OPTICAL[tissue_name]. FACTS only — this reports
-    where the splats are, never whether that is good."""
+    sphere. Optical fields come from OPTICAL[tissue_name].
+    
+    When sample_variance=True: samples per-particle albedo from the library's
+    distribution (albedo_mean_rgb ± albedo_mottle_var), making "appearance is an average"
+    visible as mottled stone texture rather than smooth clay. Default OFF for identity
+    check against proven render.
+    
+    FACTS only — this reports where the splats are, never whether that is good."""
     from scipy import ndimage
 
     surf = surface_voxels(tissue_field)
@@ -133,21 +222,51 @@ def emit_splats(tissue_field: np.ndarray, tissue_name: str, sigma: float = 0.9,
     cov = np.einsum('nik,nk,nlk->nil', R, S2, R)                    # R diag(S2) R^T
 
     opt = OPTICAL[tissue_name]
+    base_albedo = np.asarray(opt["albedo"])
+    
+    if sample_variance:
+        # Per-particle albedo sampling from the library's distribution.
+        # Samples luma multiplicative noise (value variation only, not hue).
+        # This makes "appearance is an average" visible as mottled texture.
+        rng = np.random.RandomState(seed)
+        
+        # Get mottle variance from library if available
+        lib_mat = _LIB.get("materials", {}).get(tissue_name, {})
+        app = lib_mat.get("appearance", {})
+        mottle_var = app.get("albedo_mottle_var", 0.04)  # default 4% luma variance
+        
+        # Sample per-particle luma factor: mean=1.0, std=sqrt(mottle_var)
+        n_splats = len(pos)
+        luma_factors = rng.normal(1.0, math.sqrt(mottle_var), size=n_splats)
+        luma_factors = np.clip(luma_factors, 0.5, 1.5)  # clamp to reasonable range
+        
+        albedo_per_splat = base_albedo[None, :] * luma_factors[:, None]
+        alpha_per_splat = opt["alpha"] * (1.0 + rng.normal(0, math.sqrt(mottle_var) * 0.3, size=n_splats))
+        alpha_per_splat = np.clip(alpha_per_splat, 0.5, 1.0)
+    else:
+        albedo_per_splat = np.tile(base_albedo, (len(pos), 1))
+        alpha_per_splat = np.full(len(pos), opt["alpha"])
+    
     return {
         "pos": pos, "normal": n, "cov": cov,
-        "albedo": np.tile(np.asarray(opt["albedo"]), (len(pos), 1)),
-        "alpha": np.full(len(pos), opt["alpha"]),
+        "albedo": albedo_per_splat,
+        "alpha": alpha_per_splat,
         "subsurface": np.full(len(pos), opt["subsurface"]),
         "tissue": [tissue_name] * len(pos),
     }
 
 
-def emit_limb(fleshed: np.ndarray, sigma: float = 0.9) -> dict:
+def emit_limb(fleshed: np.ndarray, sigma: float = 0.9,
+              sample_variance: bool = False, seed: int = 42) -> dict:
     """All three tissues -> one splat set, mirroring core.bake.bake()'s three nested
     per-tissue isosurfaces (skin = grid != MEDIUM, "the outer silhouette IS the visible
-    skin" — identical convention, unchanged)."""
+    skin" — identical convention, unchanged).
+    
+    When sample_variance=True: samples per-particle albedo from library distributions.
+    Default OFF for identity check against proven render."""
     layers = {"skin": (fleshed != MEDIUM), "muscle": (fleshed == MUSCLE), "bone": (fleshed == BONE)}
-    parts = [p for p in (emit_splats(field, name, sigma=sigma) for name, field in layers.items())
+    parts = [p for p in (emit_splats(field, name, sigma=sigma, sample_variance=sample_variance, seed=seed)
+                         for name, field in layers.items())
              if p is not None]
     if not parts:
         raise RuntimeError("no tissue produced any surface voxels — check the grown grid")
@@ -447,6 +566,8 @@ def main() -> int:
     ap.add_argument("--trained", default="brain_gpu.trained.json")
     ap.add_argument("--res", type=int, default=280)
     ap.add_argument("--out-dir", default=None)
+    ap.add_argument("--sample-variance", action="store_true", help="enable per-particle albedo/alpha sampling from library distributions")
+    ap.add_argument("--env-test", action="store_true", help="smoke-test environment material emission (sand/rock/metal) from library")
     a = ap.parse_args()
 
     out_dir = Path(a.out_dir) if a.out_dir else (ROOT / "Saved" / "SplatEmit")
@@ -553,6 +674,69 @@ def main() -> int:
     p_om = out_dir / "phaseA_multiview_mesh.png"; hstack_strip(orbit_mesh, orbit_labels).save(p_om)
     print(f"  multiview (N={len(orbit_specs)}, cam+light both moving):")
     print(f"  -> {p_os}\n  -> {p_om}")
+
+    # ================= VARIANCE SAMPLING COMPARISON ================================
+    if a.sample_variance:
+        print("\n=== VARIANCE SAMPLING: mean vs sampled distribution ===")
+        splats_mean = emit_limb(fleshed, sigma=0.9)  # sample_variance=False (default)
+        splats_sampled = emit_limb(fleshed, sigma=0.9, sample_variance=True, seed=42)
+        
+        # Render both under same light
+        la = 30.0
+        mean_img = rasterize_splats(splats_mean, center, radius, cam_azim, cam_elev, la, 35, w, h)
+        sampled_img = rasterize_splats(splats_sampled, center, radius, cam_azim, cam_elev, la, 35, w, h)
+        
+        mae_diff = image_mae(mean_img, sampled_img)
+        print(f"  MAE (mean vs sampled): {mae_diff:.4f}")
+        print(f"  Mean splats: {splats_mean['counts']}")
+        print(f"  Sampled splats: {splats_sampled['counts']}")
+        
+        p_var_off = out_dir / "variance_OFF.png"
+        p_var_on = out_dir / "variance_ON.png"
+        from PIL import Image
+        Image.fromarray((mean_img * 255).astype(np.uint8)).save(p_var_off)
+        Image.fromarray((sampled_img * 255).astype(np.uint8)).save(p_var_on)
+        print(f"  -> {p_var_off} (smooth clay — mean distribution)")
+        print(f"  -> {p_var_on} (mottled stone — sampled distribution, MAE={mae_diff:.4f})")
+    
+    # ================= ENVIRONMENT MATERIAL SMOKE TEST ============================
+    if a.env_test:
+        print("\n=== ENVIRONMENT MATERIAL SMOKE TEST ===")
+        
+        # Create simple voxel shapes for sand/rock/metal using larger grids
+        def make_sphere(cx, cy, cz, r, fill_val):
+            size = 40
+            grid = np.zeros((size, size, size), dtype=np.int8)
+            zz, yy, xx = np.mgrid[0:size, 0:size, 0:size]
+            mask = ((xx-cx)**2 + (yy-cy)**2 + (zz-cz)**2) <= r**2
+            grid[mask] = fill_val
+            return grid
+        
+        env_materials = {
+            "sand": make_sphere(20, 20, 20, 12, BONE),   # sand -> bone tissue type
+            "rock": make_sphere(30, 20, 20, 10, MUSCLE),  # rock -> muscle tissue type
+            "metal": make_sphere(10, 20, 20, 8, SKIN),    # metal -> skin tissue type
+        }
+        
+        env_imgs = []
+        env_labels = []
+        for name in ["sand", "rock", "metal"]:
+            field = env_materials[name]
+            splats = emit_splats(field, name, sigma=0.9)
+            if splats is None or len(splats['pos']) == 0:
+                print(f"  {name}: no surface voxels — SKIP")
+                continue
+            center_env = np.array([20., 20., 20.])
+            img = rasterize_splats(splats, center_env, 12,
+                                   -60, 20, 30, 35, w, h)
+            env_imgs.append(img)
+            env_labels.append(name)
+            print(f"  {name}: {len(splats['pos'])} splats emitted")
+        
+        if env_imgs:
+            p_env = out_dir / "env_materials_smoke_test.png"
+            hstack_strip(env_imgs, env_labels).save(p_env)
+            print(f"  -> {p_env}")
 
     results["phaseA"] = {
         "mae_mean": mae_mean, "mae_per_frame": mae_per_frame,
