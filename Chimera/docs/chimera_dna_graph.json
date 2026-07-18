@@ -73509,6 +73509,127 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_2e6626dfb436"
+    },
+    {
+      "id": "simtest_d1d951e783f926f0",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T14:19:02.562230",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Shelter_Habitat_Material",
+      "demo": "shelter_habitat_material",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "shelter_habitat_material_present",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Materials"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "Demo_HabitatActor"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Shelter_Habitat_Material.json",
+      "temperature": "[SIM] 1/1 beats reached in 'shelter_habitat_material'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_Shelter_Habitat_Material': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_16c21d75dde4"
+    },
+    {
+      "id": "surprise_7f2b4eb81b1b2840",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T14:20:51.889093",
+      "context": "tb-0139 witness run for Shelter_Habitat_Materials: witness_runner/sleepwalker reported a clean walk (1/1 beats reached, expects is_pie/world_is/actor_exists:Demo_HabitatActor all passed, simtest_d1d951e783f926f0)",
+      "expectation": "a clean 1/1 'reached' walk with actor_exists:Demo_HabitatActor passing should mean the habitat and its materials were actually observable in the witnessing screenshot",
+      "reality": "the captured editor_viewport screenshot (Saved/Screenshots/shelter_habitat_material_view.png) shows the pawn stranded high in open sky/orbit above a planet curvature -- no habitat or material is visible in frame; chronicle beat_snapshot loc [-62446.65,-3.80,72830.73] is nowhere near the requested reset_position (-250,0,260), and the harness's own habitat_estimate (x=-500 offset from spawn) is a guess, not a measured read of the actor",
+      "lesson_hint": "actor_exists proves the actor is IN the level, not that the beat's camera/pawn is anywhere near it -- this beat needs a position or proximity expect (or a teleport-to-actor action) before it can be trusted as a visual witness of the MATERIAL, matching the H-30 rig-only-tautology class",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'a clean 1/1 'reached' walk with actor_exists:Demo_HabitatActor passing should me' but 'the captured editor_viewport screenshot (Saved/Screenshots/shelter_habitat_mater'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ab4bcacd4915"
+    },
+    {
+      "id": "discovery_9dd3398d9a72711b",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T14:24:08.002229",
+      "feature": "Witness: Shelter_Habitat_Materials",
+      "campus_sources": [],
+      "web_sources": [
+        "Read docs/MASTER_ONBOARDING.md Parts I/II/IV (8b beat-script protocol, IV.5 closure-report contract) and CLAUDE.md NEW-AGENT-START-HERE before acting. Read task_progress.md session history (tb-0179 splat/tile pipeline, tb-0180 material harvester + its material_appearance loader bug, fable substrate-"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Witness: Shelter_Habitat_Materials",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Witness: Shelter_Habitat_Materials': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_97b60549f427"
+    },
+    {
+      "id": "phase_b647c062dae3f468",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T14:24:08.475579",
+      "phase": "Witness: Shelter_Habitat_Materials",
+      "result": "witness_runner (wraps sleepwalker) ran docs/beats/shelter_habitat_material.beats.json session obs_Shelter_Habitat_Material: beats_total=1 beats_reached=1, temperature='[SIM] 1/1 beats reached in shelter_habitat_material. Clean walk.', simtest_node=simtest_d1d951e783f926f0, exit=0 in 10.5s (within 240s budget). Expects passed: is_pie=true, world_is=chimeradefaultlevel, actor_exists=Demo_HabitatActor. beat_lint clean beforehand. curriculum enroll Shelter_Habitat_Materials -> 7 bands/69 checkpoints, band=kindergarten (3 remaining). rep_engine tend -> 69 batteries/854 atoms/830 reps this pass (6 failing, none Shelter_Habitat_Materials). Task packet (tb-0139): WITNESS ONLY, do NOT run collapse (22/50 reps, below 2x25 threshold) -- collapse_proxy NOT run, no valence reported. agent_tunnel exit --outcome done recorded (Coin verdict NEEDS_REFINEMENT 0.2, consistent with the visual gap noted below, not a self-contradiction).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness: Shelter_Habitat_Materials",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness: Shelter_Habitat_Materials' complete: witness_runner (wraps sleepwalker) ran docs/beats/shelter_habitat_material.beats.json session obs_Shelter_Habitat_Material: beats_total=1 beats_reached=1, temperature='[SIM] 1/1 beats reached in shelt",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Shelter_Habitat_Materials beat reports a clean 1/1 'reached' walk via actor_exists:Demo_HabitatActor alone, but the witnessing screenshot shows the pawn stranded far from the habitat in open sky (chronicle loc far from the requested reset_position -250,0,260) -- expect that when this feature next reaches collapse eligibility, the same actor-exists-only pattern will falsely accept without ever visually proving the material is applied/visible, unless a position/proximity expect or teleport-to-actor action is added first (H-30-class issue)."
+      ],
+      "inheritance": "tb-0139 minted a clean engine-witness for Shelter_Habitat_Materials (simtest_d1d951e783f926f0, 1/1 beats reached) but the viewport screenshot shows the pawn stranded in open sky far from the habitat, so the actor_exists pass did not visually confirm materials are realized (surprise_7f2b4eb81b1b2840; new phantom pain declared below). The feature remains short of the rep-gate threshold for collapse (22/50 at claim); do not run collapse_proxy on this simtest until the beat gets a proximity/teleport-to-actor expect or the position anomaly is understood.",
+      "pain_verdicts": {
+        "phase_33cc2d55125bc551:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_97b60549f427"
     }
   ],
   "edges": [

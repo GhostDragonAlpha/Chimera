@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T14:16:51+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T14:21:59+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,8 +8,8 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0139 | claimed | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie | sub-34 |
 | tb-0182 | claimed | 0.85 | closure_report: scope build-currency + action-log to the TAS | core/closure_report.py | sub-33 |
+| tb-0159 | claimed | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator | sub-35 |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -22,7 +22,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
-| tb-0159 | open | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
 | tb-0176 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
 | tb-0177 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
 | tb-0178 | open | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
@@ -83,6 +82,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0130 | done | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | Witness RAN: sleepwalker obs_UGestureWheel simtest_457320c34 |
 | tb-0132 | done | 0.9 | Typed closure report at tunnel exit (subsumes tb-0128 build- | core/closure_report.py, core/agent_tunnel.py… | Typed closure report LIVE across both paths (tunnel + raw):  |
 | tb-0138 | done | 0.9 | Witness: Social_Trade | editor:open; excl:pie | UE_LOG witness markers present in NPCTradeComponent.cpp ([NP |
+| tb-0139 | done | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie | witness_runner (wraps sleepwalker, agent-sim source) ran doc |
 | tb-0140 | done | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie | Witness Shelter_Habitat_Lighting — 1/1 beats reached, clean  |
 | tb-0141 | done | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie | Witness runner completed: simtest_00a14b4bd09ea7ea (witnesse |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |

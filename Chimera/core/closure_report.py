@@ -26,9 +26,26 @@ THREE LAYERS (each catches what the previous cannot):
      verdict is another claim, recorded. CHIMERA_REPORT_JUDGE=block hardens,
      =off disables; LM down -> no judgment, never a block.
 
+FOOTPRINT SCOPING (2026-07-18, tb-0182): layers 1+2 used to diff the WHOLE
+repo. Three concurrent subagents false-convicted each other in one night —
+each got handed a build-evidence demand (or a Coin tails) naming a SIBLING's
+Source/ file, because `source_changes`/`action_log` never looked at the
+claiming task's own footprint (`resources.files`, already sitting on the
+`task` dict `validate()` receives). Fix: every changed-file list is split by
+`_in_scope()` (an fnmatch against the footprint globs, mirroring
+`agent_tunnel._offenders_from_porcelain`'s Chimera/-stripped matching) BEFORE
+it drives a demand. In-footprint files behave exactly as before; out-of-
+footprint files are never hidden — they still appear, under a labeled
+"outside footprint (concurrent sessions)" section — but they cannot trigger
+the build-evidence demand and the Coin's tails no longer sees them as if
+they were this task's own diff. No declared footprint (`resources.files`
+empty) -> everything counts as in-footprint, unchanged from before: absence
+of a footprint is not evidence a file is a sibling's, so nothing is exempted.
+
 CHIMERA_REPORT_GATE=warn softens mechanical blocks to warnings; =off disables.
 Waiver idiom preserved: --report-waiver records an honest exception (CAPCOM'd).
 """
+import fnmatch
 import json
 import os
 import re
@@ -79,35 +96,98 @@ def _epoch(ts) -> float:
         return 0.0
 
 
-def source_changes(session: dict) -> dict:
+_REPO_PREFIX = "Chimera/"
+
+
+def _footprint_scopes(task: dict) -> list:
+    """The claiming task's declared file footprint (resources.files globs,
+    Chimera-root-relative — see task_board.py's docstring). Empty when the
+    task declared none."""
+    return list(((task or {}).get("resources") or {}).get("files") or [])
+
+
+def _in_scope(path: str, scopes: list) -> bool:
+    """True if repo-relative `path` (e.g. 'Chimera/core/x.py') falls inside
+    one of the task's footprint globs. Mirrors agent_tunnel's
+    `_offenders_from_porcelain` matching exactly (fnmatch against both the
+    raw and the Chimera/-stripped path, plus a literal-prefix fallback for
+    globs without a trailing wildcard) — one matching rule, not two
+    almost-the-same ones. No scopes declared -> everything is in-footprint:
+    absence of a declared footprint is not evidence a file is a SIBLING's, so
+    nothing gets exempted from the demand by default."""
+    if not scopes:
+        return True
+    p = (path or "").replace("\\", "/")
+    rel = p[len(_REPO_PREFIX):] if p.startswith(_REPO_PREFIX) else p
+    return any(fnmatch.fnmatch(rel, g) or fnmatch.fnmatch(p, g)
+               or rel.startswith(g.split("*")[0]) for g in scopes)
+
+
+def _split_paths(paths, scopes: list) -> tuple:
+    """(in_footprint, out_of_footprint), order-preserving."""
+    inn, out = [], []
+    for p in paths:
+        (inn if _in_scope(p, scopes) else out).append(p)
+    return inn, out
+
+
+def _log_blocks(rev_args: list, pathspec: str) -> list:
+    """[(commit_epoch, [files]), ...], newest first, ONE git call. A footprint
+    split needs to know WHICH commit touched WHICH file — the old code read
+    timestamps and filenames as two unrelated streams (fine when nothing
+    needed to attribute a stamp to a file; not fine once a foreign commit
+    landed on HEAD mid-session from a concurrent agent's Lead-integration and
+    its timestamp got attributed to THIS task's footprint by proximity
+    alone)."""
+    out = _git("log", *rev_args, "--name-only", "--format=@@%at", "--", pathspec)
+    blocks, ts, cur = [], None, []
+    for line in out.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith("@@"):
+            if ts is not None:
+                blocks.append((ts, cur))
+            try:
+                ts = float(line[2:])
+            except ValueError:
+                ts = 0.0
+            cur = []
+        else:
+            cur.append(line)
+    if ts is not None:
+        blocks.append((ts, cur))
+    return blocks
+
+
+def source_changes(session: dict, task: dict = None) -> dict:
     """C++ (Chimera/Source/**) changed during THIS session: committed since the
-    enter snapshot's HEAD plus currently-dirty files. Returns {files, newest_ts}
-    (newest_ts = epoch of the latest change; 0 when nothing changed)."""
+    enter snapshot's HEAD plus currently-dirty files, SCOPED to the claiming
+    task's declared footprint (resources.files) so a CONCURRENT session's
+    sibling Source/ edits never feed THIS task's build-evidence demand (three
+    same-night false-convictions, tb-0182). Returns {files, newest_ts,
+    outside_footprint} — outside_footprint is never hidden, just excluded
+    from the demand (newest_ts is computed from in-footprint stamps only)."""
+    scopes = _footprint_scopes(task)
     sha = (session or {}).get("head_sha") or ""
     entered = _epoch((session or {}).get("entered_at"))
-    files, stamps = set(), []
+    files_in, files_out, stamps = set(), set(), []
+
     if sha:
-        names = _git("diff", "--name-only", f"{sha}..HEAD", "--", _SOURCE_PREFIX)
-        files |= {l.strip() for l in names.splitlines() if l.strip()}
-        for t in _git("log", f"{sha}..HEAD", "--format=%at", "--",
-                      _SOURCE_PREFIX).split():
-            try:
-                stamps.append(float(t))
-            except ValueError:
-                pass
+        blocks = _log_blocks([f"{sha}..HEAD"], _SOURCE_PREFIX)
     elif entered:
         # raw claims have no snapshot — fall back to commits since claim time
         since = datetime.fromtimestamp(entered, tz=timezone.utc).isoformat()
-        names = _git("log", f"--since={since}", "--name-only", "--format=%at",
-                     "--", _SOURCE_PREFIX)
-        for l in names.splitlines():
-            l = l.strip()
-            if not l:
-                continue
-            if re.fullmatch(r"\d{9,11}", l):
-                stamps.append(float(l))
-            elif l.startswith(_SOURCE_PREFIX):
-                files.add(l)
+        blocks = _log_blocks([f"--since={since}"], _SOURCE_PREFIX)
+    else:
+        blocks = []
+    for ts, fs in blocks:
+        inn, out = _split_paths(fs, scopes)
+        files_in.update(inn)
+        files_out.update(out)
+        if inn:
+            stamps.append(ts)
+
     # Pre-existing dirt (another lane's staged work, uncommitted session debris)
     # is NOT this session's change — same alarm-fatigue rationale as the tunnel's
     # footprint warnings. A baseline file counts only if touched AGAIN during
@@ -124,13 +204,28 @@ def source_changes(session: dict) -> dict:
             mtime = 0.0
         if p in baseline and (not entered or mtime <= entered):
             continue
-        files.add(p)
-        if mtime:
-            stamps.append(mtime)
-    return {"files": sorted(files)[:40], "newest_ts": max(stamps) if stamps else 0.0}
+        if _in_scope(p, scopes):
+            files_in.add(p)
+            if mtime:
+                stamps.append(mtime)
+        else:
+            files_out.add(p)
+    return {"files": sorted(files_in)[:40],
+            "newest_ts": max(stamps) if stamps else 0.0,
+            "outside_footprint": sorted(files_out)[:40]}
 
 
-def action_log(session: dict, cap: int = 2400) -> str:
+def _git_stat_for(extra_args: list, paths: list) -> str:
+    """`git diff --stat` restricted to an explicit pathspec list. Empty
+    `paths` returns '' rather than falling through to a bare `--` (which git
+    reads as NO restriction at all — exactly the silent-widen this scoping
+    exists to stop)."""
+    if not paths:
+        return ""
+    return _git("diff", *extra_args, "--stat", "--", *paths).strip()
+
+
+def action_log(session: dict, task: dict = None, cap: int = 2400) -> str:
     """The record IS the summary: everything that changed since the enter
     snapshot — committed, staged, unstaged, AND untracked-new.
 
@@ -140,26 +235,59 @@ def action_log(session: dict, cap: int = 2400) -> str:
     (whose `git stash create` only captures the index) forces it STAGED first —
     either way `git diff --stat` shows nothing, the log reads empty, and the Coin
     correctly convicts a claim whose files 'aren't in the record'. That was a
-    false negative on new-file work (found by sub-22 on tb-0166, 2026-07-18)."""
+    false negative on new-file work (found by sub-22 on tb-0166, 2026-07-18).
+
+    SCOPED to the claiming task's footprint (2026-07-18, tb-0182): each
+    changed-file list is split against resources.files globs before the stat
+    is computed, so a CONCURRENT session's edits elsewhere in the repo land
+    in a separate 'outside footprint (concurrent sessions)' section instead
+    of reading as THIS task's own diff — the Coin's tails face now judges
+    only what this task actually touched. Nothing is hidden: outside-
+    footprint files are still listed, just segregated."""
+    scopes = _footprint_scopes(task)
     sha = (session or {}).get("head_sha") or ""
-    parts = []
+    parts, outside = [], set()
+
     if sha:
-        committed = _git("diff", "--stat", f"{sha}..HEAD").strip()
+        names = [n.strip() for n in
+                 _git("diff", "--name-only", f"{sha}..HEAD").splitlines() if n.strip()]
+        inn, out = _split_paths(names, scopes)
+        outside |= set(out)
+        committed = _git_stat_for([f"{sha}..HEAD"], inn)
         if committed:
             parts.append(f"committed since enter ({sha[:9]}..HEAD):\n{committed}")
-    staged = _git("diff", "--cached", "--stat").strip()
+
+    staged_names = [n.strip() for n in
+                    _git("diff", "--cached", "--name-only").splitlines() if n.strip()]
+    inn, out = _split_paths(staged_names, scopes)
+    outside |= set(out)
+    staged = _git_stat_for(["--cached"], inn)
     if staged:
         parts.append(f"staged (index):\n{staged}")
-    working = _git("diff", "--stat").strip()
+
+    working_names = [n.strip() for n in
+                     _git("diff", "--name-only").splitlines() if n.strip()]
+    inn, out = _split_paths(working_names, scopes)
+    outside |= set(out)
+    working = _git_stat_for([], inn)
     if working:
         parts.append(f"working tree (unstaged):\n{working}")
+
     # Untracked NEW files appear in NO `git diff` — only in status --porcelain.
     untracked = [ln[3:].strip() for ln in _git("status", "--porcelain").splitlines()
                  if ln.startswith("??")]
-    if untracked:
-        shown = "\n".join(f" {u}" for u in untracked[:40])
-        more = f"\n …(+{len(untracked) - 40} more)" if len(untracked) > 40 else ""
+    inn, out = _split_paths(untracked, scopes)
+    outside |= set(out)
+    if inn:
+        shown = "\n".join(f" {u}" for u in inn[:40])
+        more = f"\n …(+{len(inn) - 40} more)" if len(inn) > 40 else ""
         parts.append(f"untracked (new files):\n{shown}{more}")
+
+    if outside:
+        shown = "\n".join(f" {u}" for u in sorted(outside)[:40])
+        more = f"\n …(+{len(outside) - 40} more)" if len(outside) > 40 else ""
+        parts.append(f"outside footprint (concurrent sessions):\n{shown}{more}")
+
     return ("\n".join(parts) or "(no tracked changes since enter)")[:cap]
 
 
@@ -197,14 +325,15 @@ def validate(task: dict, session: dict, result: str, build_evidence: str = "",
              waiver: str = "", build_waiver: str = "") -> tuple:
     """(status, detail, report). status: 'pass' | 'waived' | 'missing'.
     The caller refuses closure on 'missing' when gate_mode() == 'block'."""
-    changes = source_changes(session)
+    changes = source_changes(session, task)
     report = {
         "claim": (result or "")[:800],
         "build_evidence": (build_evidence or "").strip(),
         "witness_evidence": (witness_evidence or "").strip(),
         "could_not_verify": (could_not_verify or "").strip(),
         "source_changes": changes["files"],
-        "action_log": action_log(session),
+        "source_changes_outside_footprint": changes.get("outside_footprint", []),
+        "action_log": action_log(session, task),
         "validated": {},
         "waiver": (waiver or "").strip(),
         "build_waiver": (build_waiver or "").strip(),
