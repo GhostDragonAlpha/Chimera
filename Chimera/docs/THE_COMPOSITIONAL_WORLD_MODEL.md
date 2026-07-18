@@ -512,6 +512,22 @@ Substrate slabs (appearance), and the trainer domains (physical/interaction colu
 as seeds — `trained` provenance flows back in). The library is how a new thing enters
 the world: a new entry, not new engine code.
 
+**Appearance entries are TRAINABLE against captured reality** (the human, 2026-07-18:
+*"we may have to train materials from looking at real splat scans"*). Real
+splat/photogrammetry scans of actual materials — rock, regolith, ice, worn metal —
+are reality's own answer sheet for "what the surface looks like as an average": NO
+REFERENCE, NO VERDICT is satisfied because the scan IS the reference. The loop runs
+in **statistics space, never image space**: extract descriptor vectors from the scan
+(albedo moments, luma-vs-chroma variance split, spatial autocorrelation length = the
+grain/mottle scale) and from our emitted splat population, and train the entry's
+distribution parameters until the statistics match — thousands of evals/sec, no
+renderer in the loop. Provenance: `trained(ref=<scan>)`. **The WITNESS is the UE
+SUBSTRATE render** (the human's standing directive: quality is judged in-engine under
+Substrate + Lumen, rung D′) — side-by-side against the scan; the CPU sandbox
+(`core/matter_items.py`) is a probe, never the judge. Candidate scan sources, to be
+licensing-verified live: Quixel Megascans via Fab (real-world scans, free for Unreal
+use), CC0 photogrammetry captures, and eventually our own captures.
+
 ---
 
 > Part I said: everything specific, trained separately, composed where physics keeps
