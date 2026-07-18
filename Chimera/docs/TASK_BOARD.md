@@ -1,14 +1,15 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T01:07:49+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T01:50:53+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0139 | claimed | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie | sub-11 |
+| tb-0150 | claimed | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator | sub-12 |
 | tb-0140 | open | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0141 | open | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
@@ -19,7 +20,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
-| tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
 | tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0151 | open | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0119 | open | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** | Working on different task tb-0123 (Fix 6 tautological beats  |

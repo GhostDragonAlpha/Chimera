@@ -86,7 +86,7 @@
   },
   "defaultProvider": "lmstudio",
   "_defaultModel_note": "Keep this equal to the model you have loaded in LM Studio. pi NAMES a model on every request, so a mismatch makes LM Studio JIT-load pi's model alongside yours (observed 2026-07-14: hand-loaded -moe 20.69GB + pi's JIT-loaded -nvfp4 20.62GB = 41.3GB resident, both evicting each other mid-load). Chimera does NOT name a model - it adopts whatever is resident - so aligning pi is all that is needed.",
-  "defaultModel": "qwen-agentworld-35b-a3b-moe",
+  "defaultModel": "qwen-agentworld-35b-a3b-mtp-apex",
   "environment": {
     "nodePath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64",
     "npmPath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64/npm.cmd",

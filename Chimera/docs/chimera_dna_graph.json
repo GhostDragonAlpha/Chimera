@@ -70958,6 +70958,25 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_3f609a988aeb"
+    },
+    {
+      "id": "surprise_ebb3b99f3dd4f922",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T02:01:25.205802",
+      "context": "Believed hardcoded LM Studio model ids were fully purged after the 2026-07-14 adoption redesign (lm_gateway resolve_model retargets every request)",
+      "expectation": "",
+      "reality": "Sweep found 6 live pin surfaces: CHIMERA_VISION_MODEL env in .claude/settings.local.json (reroute code deleted but the var + WORKFLOW_SPEC doc remained), .pi defaultModel=-moe (misaligned - the documented 41GB double-load shape), opencode.json pinning the DELETED qwen3.6, 4 direct-POST helpers (lm.ps1 LM-Chat.py context_compressor.py mcp_context_server.py) naming dead qwen3.6 ids, 2 .roo rules instructing lms load of a specific id. Resident model meanwhile drifted moe to nvfp4 to mtp-apex - any pinned id goes stale in days. All now adopt the resident model",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Sweep found 6 live pin surfaces: CHIMERA_VISION_MODEL env in .claude/settings.lo'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2e91a45969d9"
     }
   ],
   "edges": [

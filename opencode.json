@@ -8,8 +8,8 @@
       }
     }
   },
-  "model": "openai/qwen3.6-35b-a3b-mtp@iq2_m",
-  "small_model": "openai/qwen3.6-35b-a3b-mtp@iq2_m",
+  "model": "openai/qwen-agentworld-35b-a3b-mtp-apex",
+  "small_model": "openai/qwen-agentworld-35b-a3b-mtp-apex",
   "permission": {
     "edit": "allow",
     "bash": "allow",

@@ -383,8 +383,10 @@ Single endpoint arbitrated across PROCESSES via a fair FIFO file-queue
 - Serializes by default; `CHIMERA_LM_CONCURRENCY=N` raises in-flight slots.
 - **Never gate on `llm`/`vlm`/`capabilities.vision`** (wrong for these builds).
 - `status` (which model) · `evict` (manual VRAM free, never automatic).
-- Vision routing (`Python/lmstudio_client.py`): image + text-only model →
-  `CHIMERA_VISION_MODEL`, loud log, never silent strip. Token budget
+- Vision (`Python/lmstudio_client.py`): images go to the RESIDENT model — no
+  reroute, no vision-model var. (The old `CHIMERA_VISION_MODEL` reroute JIT-loaded
+  a second multi-GB model next to the resident one; removed 2026-07-17. Loading a
+  sighted model is the operator's job.) Token budget
   `CHIMERA_LM_MAX_TOKENS` (default 32768, cap 131072), ×2 on reasoning-dump retry
   (H-3), timeout 600s. Latency ~20 tok/s — batch behind a deterministic pre-filter.
 
@@ -450,7 +452,7 @@ archive_old_mutations, *_demo. **Tests:** test_*.py (25+).
 | `CHIMERA_GENERATOR_GUARD` | `warn` softens the generator guard |
 | `CHIMERA_ENFORCE_REP_GATE` | `1` hardens the advisory rep gate |
 | `CHIMERA_TASK_CLAIM_TTL` | stale-claim reap seconds (default 7200) |
-| `CHIMERA_LM_MODEL` / `CHIMERA_VISION_MODEL` | (legacy pin / vision route target) |
+| `CHIMERA_LM_MODEL` | legacy pin — normally ignored: the gateway adopts the resident model |
 | `CHIMERA_LM_MAX_TOKENS` / `CHIMERA_LM_CONCURRENCY` | LM token budget / in-flight slots |
 | `CHIMERA_DNA_BACKEND` | `json` reverts DNA graph off SQLite |
 | `CHIMERA_AGENT_SIM` | sleepwalker automated-verification sentinel |

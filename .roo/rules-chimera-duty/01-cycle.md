@@ -11,7 +11,8 @@ only the hard token rules and the branch summary:
 - **C2**: NEXT empty -> `python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json
   --decide`, then execute the item it wrote (respect capable-only marking).
 - **D**: fallback pipeline health check (`python run_deep_space_trader_pipeline.py`;
-  requires `lms load qwen3.6-35b-a3b-mtp@iq2_m` first). Record UBT verbatim.
+  requires SOME model loaded in LM Studio — it is adopted at call time; never load a
+  specific id next to the resident one). Record UBT verbatim.
 
 TOKEN RULES (hard): never read a file wholesale — grep/head with limits; do not re-read files
 you just wrote; view at most 1 screenshot; quote <=5 lines of any tool output. STOP RULE: any

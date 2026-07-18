@@ -35,7 +35,8 @@ Workdir for ALL python commands: `E:/PythonChimera/Chimera`.
 ## Building & grading
 
 - The Pipeline is authoritative: `python run_deep_space_trader_pipeline.py`. It needs
-  qwen3.6-35b-a3b-mtp@iq2_m loaded in LM Studio (`lms load ...`) — gate_lm_available is a BLOCKER.
+  SOME model loaded in LM Studio — whichever is loaded is ADOPTED at call time; never
+  `lms load` a specific id next to the resident one — gate_lm_available is a BLOCKER.
 - Direct UBT (no LM needed): close the editor first (DLL lock), build, relaunch:
   `& "C:/Program Files/Epic Games/UE_5.8/Engine/Build/BatchFiles/Build.bat" ChimeraEditor Win64 Development "E:\PythonChimera\Chimera\Chimera.uproject" -waitmutex`
 - **The gate is the RESULT grade** (`core/result_grader.py`, zero-LM): A>=90 B>=75 C>=60;

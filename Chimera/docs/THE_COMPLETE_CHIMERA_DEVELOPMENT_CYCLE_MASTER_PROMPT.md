@@ -752,7 +752,7 @@ GRAPHIFY (records every pattern, every verification, every iteration, every less
 - **Complete Cycle Doc:** E:/PythonChimera/Chimera/docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md
 - **DNA Graph:** E:/PythonChimera/Chimera/docs/chimera_dna_graph.json
 - **Knowledge Graph:** E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json
-- **LM Studio:** qwen3.6-35b-a3b-mtp@iq2_m via REST API /api/v0/chat/completions
+- **LM Studio:** whatever model is loaded (adopted at call time — never pinned) via REST API /api/v0/chat/completions
 - **UE 5.8:** C:/Program Files/Epic Games/UE_5.8/
 - **Editor Launch:** `cmd /c start "" "C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "E:\PythonChimera\Chimera\Chimera.uproject"`
 

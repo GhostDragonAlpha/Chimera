@@ -175,7 +175,7 @@ The Professor is LM Studio running a vision-capable model. It grades research BE
 **Submit to LM Studio:**
 ```
 POST http://localhost:1234/v1/chat/completions
-Model: qwen3.6-35b-a3b-mtp@iq2_m
+Model: (whatever LM Studio has loaded — adopted at call time, never pinned)
 
 Prompt:
 I am building a game feature: [feature name].
@@ -594,7 +594,7 @@ Future automation: the Orchestrator will write the prompt file and trigger a new
 
 ### LM Studio Verification
 POST to `http://localhost:1234/v1/chat/completions`
-Model: `qwen3.6-35b-a3b-mtp@iq2_m`
+Model: whatever LM Studio has loaded (adopted at call time — never pinned)
 
 Format the image as base64: `data:image/png;base64,{base64_string}`
 
