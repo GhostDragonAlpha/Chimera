@@ -75697,6 +75697,25 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_f68a1b8195e0"
+    },
+    {
+      "id": "surprise_f14d0396d25cb260",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T23:22:43.036928",
+      "context": "tb-0197 closure claimed 'pawn stands on formed matter, witnessed clean' from beat existence checks + rig-silence",
+      "expectation": "",
+      "reality": "THE HUMAN'S EDITOR SCREENSHOT REFUTED IT: the materialized patch imported ROTATED 90 deg (glTF Y-up vs UE Z-up - my terrain built Z-up, importer tipped it vertical; splat clouds never showed the class because rotated point clouds look identical). The pawn settled on the flat average plane next to a sideways wall; the beat asserted actor_exists + came-to-rest, NEVER contact-with-the-formed-mesh - the claim exceeded the evidence (H-14 shape: verified-by-adjacency). The Coin's NEEDS_REFINEMENT dissents on these closures were directionally right and were noted-and-passed. CORRECTION DIRECTION (operator, verbatim intent): no more editor-staged scaffolding - build the materialization as a generator-owned RUNTIME subsystem, native DynamicMesh in UE coords (dissolves the axis bug class), real collision, beats asserting pawn_z contact bands + heard log markers",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'THE HUMAN'S EDITOR SCREENSHOT REFUTED IT: the materialized patch imported ROTATE'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_6ca7cb7db0f3"
     }
   ],
   "edges": [
