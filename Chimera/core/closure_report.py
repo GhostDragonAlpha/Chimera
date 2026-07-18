@@ -131,17 +131,35 @@ def source_changes(session: dict) -> dict:
 
 
 def action_log(session: dict, cap: int = 2400) -> str:
-    """The record IS the summary: committed + working-tree diff --stat since
-    the enter snapshot."""
+    """The record IS the summary: everything that changed since the enter
+    snapshot — committed, staged, unstaged, AND untracked-new.
+
+    Naive `git diff --stat` sees only UNSTAGED tracked changes, so it is blind to
+    exactly the work a build/train task exists to do: a brand-new trainables/*.py
+    or objectives/*.json is untracked, and running it through `core.membrane`
+    (whose `git stash create` only captures the index) forces it STAGED first —
+    either way `git diff --stat` shows nothing, the log reads empty, and the Coin
+    correctly convicts a claim whose files 'aren't in the record'. That was a
+    false negative on new-file work (found by sub-22 on tb-0166, 2026-07-18)."""
     sha = (session or {}).get("head_sha") or ""
     parts = []
     if sha:
         committed = _git("diff", "--stat", f"{sha}..HEAD").strip()
         if committed:
             parts.append(f"committed since enter ({sha[:9]}..HEAD):\n{committed}")
+    staged = _git("diff", "--cached", "--stat").strip()
+    if staged:
+        parts.append(f"staged (index):\n{staged}")
     working = _git("diff", "--stat").strip()
     if working:
-        parts.append(f"working tree (uncommitted):\n{working}")
+        parts.append(f"working tree (unstaged):\n{working}")
+    # Untracked NEW files appear in NO `git diff` — only in status --porcelain.
+    untracked = [ln[3:].strip() for ln in _git("status", "--porcelain").splitlines()
+                 if ln.startswith("??")]
+    if untracked:
+        shown = "\n".join(f" {u}" for u in untracked[:40])
+        more = f"\n …(+{len(untracked) - 40} more)" if len(untracked) > 40 else ""
+        parts.append(f"untracked (new files):\n{shown}{more}")
     return ("\n".join(parts) or "(no tracked changes since enter)")[:cap]
 
 
