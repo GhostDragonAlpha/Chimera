@@ -1,0 +1,38 @@
+{
+  "regolith": {
+    "photo": "synthetic_placeholder/regolith_01.png",
+    "yx": [
+      120,
+      120
+    ],
+    "tag_kind": "provisional-tag",
+    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+  },
+  "rock": {
+    "photo": "synthetic_placeholder/rock_01.png",
+    "yx": [
+      120,
+      120
+    ],
+    "tag_kind": "provisional-tag",
+    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+  },
+  "brushed_metal": {
+    "photo": "synthetic_placeholder/brushed_metal_01.png",
+    "yx": [
+      120,
+      120
+    ],
+    "tag_kind": "provisional-tag",
+    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+  },
+  "ice": {
+    "photo": "synthetic_placeholder/ice_01.png",
+    "yx": [
+      120,
+      120
+    ],
+    "tag_kind": "provisional-tag",
+    "note": "tagged by sub-31/tb-0180 (agent), NOT the human \u2014 supersede on sight"
+  }
+}

@@ -32,6 +32,18 @@
   "provenance": "curriculum:identity"
  },
  {
+  "id": "atom_d8e0db8d71df",
+  "feature": "Substrate_Terrain",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "free-sphere DEM macro-particles at ATOM_PITCH~0.167m recoalesce seamlessly into the heightfield without an explicit blend pass, AND the curr"
+  },
+  "desc": "regression (PIE): free-sphere DEM macro-particles at ATOM_PITCH~0.167m recoalesce seamlessly into the heightfield with",
+  "provenance": "elimination:elim_d7f65379cd4984b1"
+ },
+ {
   "id": "atom_fe7cb44403d0",
   "feature": "Substrate_Terrain",
   "tier": 1,

@@ -265,15 +265,23 @@ def emit_splats(tissue_field: np.ndarray, tissue_name: str, sigma: float = 0.9,
 
 
 def emit_limb(fleshed: np.ndarray, sigma: float = 0.9,
-              sample_variance: bool = False, seed: int = 42) -> dict:
+              sample_variance: bool = False, seed: int = 42,
+              tangent_scale: float = 1.15, normal_scale: float = 0.35) -> dict:
     """All three tissues -> one splat set, mirroring core.bake.bake()'s three nested
     per-tissue isosurfaces (skin = grid != MEDIUM, "the outer silhouette IS the visible
     skin" — identical convention, unchanged).
-    
+
     When sample_variance=True: samples per-particle albedo from library distributions.
-    Default OFF for identity check against proven render."""
+    Default OFF for identity check against proven render.
+
+    tb-0179 (the baby-toy critique): tangent_scale/normal_scale are the per-splat
+    FOOTPRINT size in VOXEL units (unchanged defaults = the proven identity render).
+    Forwarded to emit_splats so a caller doing finer-voxel-pitch density scaling can
+    ALSO shrink the footprint proportionally — the recipe's lever (2), independent of
+    lever (1) (the grid resolution itself, in core.limb.voxelize's target_len)."""
     layers = {"skin": (fleshed != MEDIUM), "muscle": (fleshed == MUSCLE), "bone": (fleshed == BONE)}
-    parts = [p for p in (emit_splats(field, name, sigma=sigma, sample_variance=sample_variance, seed=seed)
+    parts = [p for p in (emit_splats(field, name, sigma=sigma, sample_variance=sample_variance, seed=seed,
+                                     tangent_scale=tangent_scale, normal_scale=normal_scale)
                          for name, field in layers.items())
              if p is not None]
     if not parts:

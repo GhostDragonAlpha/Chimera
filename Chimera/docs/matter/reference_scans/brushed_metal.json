@@ -1,0 +1,38 @@
+{
+  "material": "brushed_metal",
+  "provenance": "provisional-tag",
+  "source_provenance": [
+    "synthetic-placeholder"
+  ],
+  "n_regions_pooled": 17,
+  "descriptors": {
+    "albedo_mean_luminance": 0.5776130654555939,
+    "albedo_std_luminance": 0.11400030526143856,
+    "albedo_skew_luminance": 0.11849810520936735,
+    "albedo_kurt_luminance": -0.0032424945041396036,
+    "luma_variance": 0.012996069599701177,
+    "chroma_variance": 6.788601512599469e-05,
+    "luma_chroma_ratio": 191.4395274415453
+  },
+  "pattern_descriptors": {
+    "filter_bank_energies": [
+      51.375587463378906,
+      17.055376950432272,
+      65.49518540326287,
+      66.36364521699794,
+      259.7401643640855,
+      64.11953107048484,
+      338.11155790441177,
+      375.46744851505053,
+      1219.5359030330883,
+      585.4889382755055,
+      1482.2386330997242,
+      1152.7706873276654
+    ],
+    "grain_length_px": 3.0588235294117645,
+    "periodicity": 0.02347417904449997,
+    "anisotropy": 0.24555981384100148,
+    "roughness_proxy_from_texture_energy": 500.67093251555366
+  },
+  "note": "descriptors above are COLOR MOMENTS ONLY, kept in this shape for compatibility with core.trainables.material_appearance.load_reference_descriptors(); pattern_descriptors is what actually IDENTIFIED these regions as material \u2014 color moments were never the retrieval basis (Julesz)."
+}

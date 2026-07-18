@@ -447,6 +447,12 @@ class GameCodeGenerator:
         weather_files = self.generate_weather_subsystem_files()
         generated_files["combat_components"].extend(weather_files)
 
+        # Generate StarMemorialComponent (seed UStarMemorialSubsystem) — tb-0158,
+        # CWM rung 2: trained brightness_k/bright_lights_yard numbers flow top-down
+        # from docs/objectives/memorial.trained.json.
+        memorial_files = self.generate_star_memorial_files()
+        generated_files["combat_components"].extend(memorial_files)
+
         # DemoPlayerController: LOOP-BUILT, deliberately NOT generated here — the
         # TAB/GestureWheel skeleton template under-emitted by ~300 lines and
         # clobbered the artifact on its first regen (tb-0131, 2026-07-17).
@@ -1621,6 +1627,570 @@ void RunWeatherSystemTests()
             f.write(cpp_content)
 
         test_path = tests_dir / "WeatherAcceptanceTests.cpp"
+        with open(test_path, 'w', encoding='utf-8') as f:
+            f.write(test_content)
+
+        return [str(header_path), str(cpp_path), str(test_path)]
+
+    def _load_memorial_trained_genome(self) -> tuple[dict, str]:
+        """Read docs/objectives/memorial.trained.json's genome — CWM rung 2, tb-0158:
+        'trained data flows top-down' (same idiom as _load_weather_trained_genome).
+        The two STAR-dict loci (core/trainables/memorial.py seed()/mutate()) are
+        read HERE, at generation time, and baked into the emitted C++ as literals.
+        Falls back to the seed's own CHIMERA_VISION.py:3153 STAR dict defaults,
+        loudly (a printed warning), if the trained artifact is absent or malformed
+        — never a silent substitution. The eight SACRIFICE_WEIGHTS
+        (CHIMERA_VISION.py:3141-3145) are ALSO read and returned (genome["weights"])
+        so the full trained genome is discoverable and citable — see this method's
+        caller docstring for why they are not yet baked as C++ literals here.
+
+        Returns (genome_dict, provenance_string). genome_dict =
+        {"brightness_k": float, "bright_lights_yard": float, "weights": {8 named
+        kind->weight floats}}. provenance_string is baked into the generated
+        file's own comments so a reader can tell, without re-deriving it, whether
+        the numbers in front of them are trained or a fallback.
+        """
+        trained_path = Path("E:/PythonChimera/Chimera/docs/objectives/memorial.trained.json")
+        weight_keys = [
+            "REFUSED_PROFIT", "GAVE_CARGO", "GAVE_O2", "SPENT_TIME_UNPAYABLE",
+            "TOOK_RISK_FOR_OTHER", "BURIED_STRANGER", "WEAPON_NEVER_FIRED", "HEIRLOOM_GIVEN",
+        ]
+        seed_defaults = {
+            "brightness_k": 6.0,
+            "bright_lights_yard": 0.75,
+            "weights": {
+                "REFUSED_PROFIT": 1.0, "GAVE_CARGO": 1.5, "GAVE_O2": 3.0,
+                "SPENT_TIME_UNPAYABLE": 2.0, "TOOK_RISK_FOR_OTHER": 2.5,
+                "BURIED_STRANGER": 3.5, "WEAPON_NEVER_FIRED": 2.0, "HEIRLOOM_GIVEN": 5.0,
+            },
+        }
+
+        try:
+            with open(trained_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            genome_raw = data.get("genome", {})
+            if "brightness_k" not in genome_raw or "bright_lights_yard" not in genome_raw:
+                raise ValueError("genome missing brightness_k/bright_lights_yard")
+            weights_raw = genome_raw.get("weights", {})
+            missing = set(weight_keys) - set(weights_raw.keys())
+            if missing:
+                raise ValueError(f"genome.weights missing keys: {sorted(missing)}")
+            genome = {
+                "brightness_k": float(genome_raw["brightness_k"]),
+                "bright_lights_yard": float(genome_raw["bright_lights_yard"]),
+                "weights": {k: float(weights_raw[k]) for k in weight_keys},
+            }
+            score = data.get("score")
+            if isinstance(score, (int, float)):
+                provenance = f"docs/objectives/memorial.trained.json (score={score:.3f})"
+            else:
+                provenance = "docs/objectives/memorial.trained.json"
+            return genome, provenance
+        except Exception as e:
+            print(f"[generate_star_memorial_files] WARNING: could not load "
+                  f"{trained_path} ({e}) -- falling back to seed CHIMERA_VISION.py:3153 "
+                  f"STAR / :3141-3145 SACRIFICE_WEIGHTS defaults. Train the domain "
+                  f"(core/trainables/memorial.py) to produce a real memorial.trained.json.")
+            provenance = ("FALLBACK -- docs/objectives/memorial.trained.json missing/invalid "
+                          "at generation time; seed CHIMERA_VISION.py:3153/3141-3145 defaults used")
+            return seed_defaults, provenance
+
+    def generate_star_memorial_files(self) -> list[str]:
+        """Generate StarMemorialComponent.h/.cpp + StarMemorialAcceptanceTests.cpp —
+        the seed's UStarMemorialSubsystem (CHIMERA_VISION.py:3750-3767, FStar
+        dataclass :3745-3747), realized as an actor component (H-34 runtime-attach
+        via ChimeraMovementComponent::BeginPlay — ALREADY wired there since commit
+        859d453, unchanged by this method; "the same way UWeatherComponent
+        realizes UWeatherSubsystem", see SuitLifeSupportComponent.h's identical
+        doc comment for the established phrasing this docstring reuses).
+
+        tb-0158 (2026-07-18, CWM rung 2 "trained data flows top-down", same
+        precedent as tb-0151/Weather): brings this file under generator
+        ownership — it was hand-authored (commit 859d453, "feat(memorial): build
+        the Star Memorial") with no generate_* method (CLAUDE.md: "when touching
+        [a loop-built file] substantively, migrate it under generator ownership
+        first") — and closes two gaps:
+          1. BrightnessK / BrightLightsYardThreshold now come from
+             docs/objectives/memorial.trained.json at GENERATION time (via
+             _load_memorial_trained_genome), not the seed's untrained STAR dict
+             (brightness_k=6.0, bright_lights_yard=0.75) — the fallback, never a
+             silent substitution. Measured trained values (score=0.839):
+             brightness_k=14.275, bright_lights_yard=0.4556 (see
+             docs/objectives/memorial.trained.json genome).
+          2. H-21 witness markers: AddLife did not emit any UE_LOG a beat could
+             assert on — "a verb needs behavior, not metadata" applies equally to
+             an ending-payoff system as to an input rig. Added
+             "[Memorial] StarAdded gen=%d brightness=%.4f kind=%s" (kind =
+             BRIGHT/QUIET by the SAME BrightLightsYardThreshold
+             GetNightLightLevel sums over) immediately followed by
+             "[Memorial] NightLight level=%.4f" — logged from AddLife because
+             that is the ONLY edge that ever changes the yard's light level
+             (PrimaryComponentTick stays OFF, matching the seed's own
+             Tick(dt): pass — no per-tick spam).
+
+        NOT changed (explicitly out of this task's scope, tb-0158 names only
+        UStarMemorialSubsystem):
+          - DimThreshold (0.08) is NOT a trained locus — the seed's STAR dict and
+            core/trainables/memorial.py's genome have no "barely registers"
+            threshold distinct from BrightLightsYardThreshold; DimThreshold/
+            IsCostless() are a pre-existing, un-migrated design addition and stay
+            exactly as authored (their rep atoms — docs/rep_batteries/
+            System_SaveGame.json atom_35fdc6da66e9 — probe for the literal
+            identifier, unaffected either way).
+          - The eight trained SACRIFICE_WEIGHTS (genome["weights"], e.g.
+            HEIRLOOM_GIVEN=6.575, GAVE_O2=3.096 — docs/objectives/
+            memorial.trained.json) are loaded by _load_memorial_trained_genome
+            and cited in this generated header's own comments (below) so they
+            are DISCOVERABLE, but are NOT baked as C++ literals here: the shipped
+            USacrificeLogComponent (Source/Chimera/ProceduralGenerated/Save/
+            SacrificeLogComponent.h) does not implement the seed's
+            weight-keyed Record(kind, note, generation, day) /
+            WeightForGeneration(generation) shape at all — it exposes an
+            unrelated RecordProtectionAtCost/RecordTradeRefused/
+            HasAnySacrifices API with no SACRIFICE_WEIGHTS table — so there is
+            nowhere in the CURRENT shipped code for a weight literal to land.
+            AddLife receives SacrificeWeight as a plain float parameter (already
+            computed by whatever calls it — GenerationSubsystem::
+            WriteStarFromSacrificeLog does so today), so this component's own
+            contract does not require the weight table. Migrating
+            USacrificeLogComponent to the seed's shape is a real, documented
+            follow-up (out of this generator method's footprint — it touches a
+            DIFFERENT class with no generate_* method yet), not a silent
+            divergence.
+          - StarMemorialAcceptanceTests.cpp previously bundled SacrificeLogComponent
+            tests in the SAME file (UE Automation-macro style,
+            IMPLEMENT_SIMPLE_AUTOMATION_TEST). Bringing this file under generator
+            ownership in the Weather plain-function idiom (this method) would
+            silently DELETE that unrelated coverage on first regen — so those
+            SacrificeLog-only tests (+ the cross-component integration test) were
+            extracted VERBATIM into a new, hand-authored sibling file,
+            Source/Chimera/ProceduralGenerated/Tests/SacrificeLogAcceptanceTests.cpp
+            (loop-built — USacrificeLogComponent has no generate_* method), so no
+            existing coverage is lost. This generator only ever writes
+            StarMemorialAcceptanceTests.cpp from here on.
+
+        Research (UE 5.8, 2026-07-18 — this task's Research Gate is unwaivable,
+        its premise is that the feature does not yet exist):
+          - UPROPERTY SaveGame specifier (marks a field for UGameplayStatics::
+            SaveGameToSlot/LoadGameFromSlot; FStarEntry's fields and the Stars
+            array carry it so the memorial persists across generations even as
+            the pawn recreates each life) —
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine
+          - UActorComponent::BeginPlay / component lifecycle (this component has
+            no BeginPlay override — Stars/BrightnessK/BrightLightsYardThreshold
+            are set in the constructor and mutated only by AddLife, so no
+            per-play reset is needed, unlike Weather's seeded-RNG ResetWeather()) —
+            https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/UActorComponent/BeginPlay?lang=en-US
+          - UE_LOG logging macro (category/verbosity/format-string contract the
+            two new H-21 witness markers use) —
+            https://dev.epicgames.com/documentation/unreal-engine/logging-in-unreal-engine
+        """
+        genome, provenance = self._load_memorial_trained_genome()
+
+        def _f(v) -> str:
+            return f"{float(v):.6f}f"
+
+        weights_comment_lines = "\n".join(
+            f" *   {k} = {genome['weights'][k]:.4f}" for k in sorted(genome["weights"])
+        )
+
+        save_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated/Save")
+        save_dir.mkdir(parents=True, exist_ok=True)
+        tests_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated/Tests")
+        tests_dir.mkdir(parents=True, exist_ok=True)
+
+        # === StarMemorialComponent.h ===
+        header_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_star_memorial_files).
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
+#include "StarMemorialComponent.generated.h"
+
+/**
+ * One finished life, written into the sky. Brightness IS what that life
+ * sacrificed (Design Law 2; the seed's FStar dataclass, CHIMERA_VISION.py:3745-
+ * 3747); twinkle is regret it never resolved; the bearing places it on the
+ * memorial band by the golden angle so no two stars crowd.
+ */
+USTRUCT(BlueprintType)
+struct FStarEntry
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Memorial")
+	FString LifeName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Memorial")
+	int32 Generation = 0;
+
+	// 0..1, = 1 - exp(-SacrificeWeight / BrightnessK). A costless life -> ~0.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Memorial")
+	float Brightness = 0.0f;
+
+	// Unresolved phantom pains at death — the star flickers.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Memorial")
+	bool bTwinkle = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Memorial")
+	float BearingDeg = 0.0f;
+};
+
+/**
+ * The sky above the Yard, accumulated across generations — the seed's
+ * UStarMemorialSubsystem (CHIMERA_VISION.py:3750-3767), realized as an actor
+ * component (H-34 runtime-attach via ChimeraMovementComponent::BeginPlay, the
+ * project's live pattern; the same way UWeatherComponent realizes
+ * UWeatherSubsystem — see SuitLifeSupportComponent.h's identical doc comment).
+ * A UWorldSubsystem would auto-instantiate independently of that per-owner
+ * attach and of the SaveGame array's per-pawn persistence contract below; see
+ * this method's own docstring in core/game_code_generator.py for the research
+ * + tradeoff record (mirrors generate_weather_subsystem_files' identical
+ * reasoning).
+ *
+ * Every finished life becomes a star (AddLife); bright ancestors LITERALLY
+ * light the night for the generations that follow (GetNightLightLevel). A
+ * world full of costless lives stays dark — the ending taught wordlessly, in
+ * the sky (Design Law 2).
+ *
+ * GENERATOR-OWNED (2026-07-18, tb-0158 — CWM rung 2, "trained data flows
+ * top-down"): BrightnessK and BrightLightsYardThreshold below are READ from
+ * __MEMORIAL_PROVENANCE__ at generation time — see core/trainables/memorial.py
+ * (the domain) and docs/objectives/memorial.json (the objective this genome
+ * was scored against). The full trained SACRIFICE_WEIGHTS genome (not yet
+ * consumed by any shipped class — see this method's own docstring):
+__MEMORIAL_WEIGHTS_COMMENT__
+ * DimThreshold is NOT a trained locus (no such threshold exists in the seed's
+ * STAR dict or the trainer's genome) and stays a fixed design constant.
+ *
+ * Stars are UPROPERTY(SaveGame) so the memorial persists across lives even as
+ * the pawn that carries this component is recreated each generation.
+ *
+ * Witness markers (H-21 — a verb needs behavior a beat can observe): AddLife
+ * logs "[Memorial] StarAdded gen=%d brightness=%.4f kind=%s" (kind is
+ * BRIGHT/QUIET by the SAME threshold GetNightLightLevel sums over) immediately
+ * followed by "[Memorial] NightLight level=%.4f" — the only two moments in
+ * this component's lifecycle that ever CHANGE the yard's light level, so
+ * logging on that edge (not every tick — PrimaryComponentTick stays off,
+ * matching the seed's own Tick(dt): pass) gives a beat something to assert on
+ * without spam.
+ */
+UCLASS(ClassGroup=(Save), meta=(BlueprintSpawnableComponent))
+class CHIMERA_API UStarMemorialComponent : public UActorComponent
+{
+	GENERATED_BODY()
+
+public:
+	UStarMemorialComponent(const FObjectInitializer& ObjectInitializer);
+
+	// The whole sky so far. Persists across generations.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category="Memorial")
+	TArray<FStarEntry> Stars;
+
+	// brightness = 1 - exp(-w / BrightnessK): diminishing returns on sacrifice,
+	// never saturating — a life can always shine a little brighter.
+	// TRAINED, see __MEMORIAL_PROVENANCE__.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Memorial")
+	float BrightnessK = __BRIGHTNESS_K__;
+
+	// At/above this a star is "bright" and contributes to lighting the Yard.
+	// TRAINED, see __MEMORIAL_PROVENANCE__.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Memorial")
+	float BrightLightsYardThreshold = __BRIGHT_LIGHTS_YARD__;
+
+	// Below this a star "barely registers" — the costless-life dimness. NOT a
+	// trained locus (fixed design constant; see class doc comment above).
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Memorial")
+	float DimThreshold = 0.08f;
+
+	/** Write a finished life into the sky. Returns the star it became. Logs
+	 *  the two H-21 witness markers documented on the class. */
+	UFUNCTION(BlueprintCallable, Category="Memorial")
+	FStarEntry AddLife(const FString& LifeName, int32 Generation,
+	                   float SacrificeWeight, int32 OpenPains);
+
+	/** How much light the ancestors give the Yard tonight (0..0.5). Sums only
+	 *  the bright stars — costless ancestors give nothing. */
+	UFUNCTION(BlueprintCallable, Category="Memorial")
+	float GetNightLightLevel() const;
+
+	UFUNCTION(BlueprintCallable, Category="Memorial")
+	int32 GetStarCount() const { return Stars.Num(); }
+
+	/** Index of the brightest star, or INDEX_NONE if the sky is empty. */
+	UFUNCTION(BlueprintCallable, Category="Memorial")
+	int32 GetBrightestStarIndex() const;
+
+	/** True if this life's star would barely register — the costless warning. */
+	UFUNCTION(BlueprintCallable, Category="Memorial")
+	bool IsCostless(float SacrificeWeight) const;
+};
+'''
+        header_content = (header_content
+            .replace("__MEMORIAL_PROVENANCE__", provenance)
+            .replace("__MEMORIAL_WEIGHTS_COMMENT__", weights_comment_lines)
+            .replace("__BRIGHTNESS_K__", _f(genome["brightness_k"]))
+            .replace("__BRIGHT_LIGHTS_YARD__", _f(genome["bright_lights_yard"]))
+        )
+
+        # === StarMemorialComponent.cpp ===
+        cpp_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_star_memorial_files).
+#include "StarMemorialComponent.h"
+
+namespace
+{
+	// Phyllotaxis: consecutive stars sit ~137.5 deg apart on the memorial band,
+	// so the sky fills evenly without any two lives crowding the same bearing.
+	// Matches the seed's GOLDEN_ANGLE_DEG (CHIMERA_VISION.py:105) — a fixed
+	// geometric constant, not a trained locus.
+	constexpr float GoldenAngleDeg = 137.50776405003785f;
+}
+
+UStarMemorialComponent::UStarMemorialComponent(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	PrimaryComponentTick.bCanEverTick = false;
+}
+
+FStarEntry UStarMemorialComponent::AddLife(const FString& LifeName, int32 Generation,
+                                           float SacrificeWeight, int32 OpenPains)
+{
+	FStarEntry Star;
+	Star.LifeName = LifeName;
+	Star.Generation = Generation;
+
+	// Brightness IS the sacrifice (Design Law 2). Diminishing returns, never
+	// saturating; a costless life (weight <= 0) yields ~0 — a star so dim it
+	// barely registers.
+	const float SafeWeight = FMath::Max(SacrificeWeight, 0.0f);
+	Star.Brightness = 1.0f - FMath::Exp(-SafeWeight / FMath::Max(BrightnessK, KINDA_SMALL_NUMBER));
+
+	// Regret it never put down: unresolved phantom pains at death make it flicker.
+	Star.bTwinkle = OpenPains > 0;
+
+	// Golden-angle placement by ordinal — no crowding.
+	Star.BearingDeg = FMath::Fmod(static_cast<float>(Stars.Num()) * GoldenAngleDeg, 360.0f);
+
+	Stars.Add(Star);
+
+	// Witness markers (H-21: a verb needs behavior; beats assert on these exact
+	// tags). This is the only edge that ever changes the yard's light level, so
+	// log it here rather than every tick (Tick stays off).
+	const bool bBright = Star.Brightness >= BrightLightsYardThreshold;
+	UE_LOG(LogTemp, Log, TEXT("[Memorial] StarAdded gen=%d brightness=%.4f kind=%s"),
+		Generation, Star.Brightness, bBright ? TEXT("BRIGHT") : TEXT("QUIET"));
+	UE_LOG(LogTemp, Log, TEXT("[Memorial] NightLight level=%.4f"), GetNightLightLevel());
+
+	return Star;
+}
+
+float UStarMemorialComponent::GetNightLightLevel() const
+{
+	// Only bright ancestors light the Yard; costless ones give nothing. Capped
+	// at 0.5 so even a sky full of saints never turns night into day.
+	float Sum = 0.0f;
+	for (const FStarEntry& Star : Stars)
+	{
+		if (Star.Brightness >= BrightLightsYardThreshold)
+		{
+			Sum += Star.Brightness;
+		}
+	}
+	return FMath::Min(0.5f, Sum * 0.18f);
+}
+
+int32 UStarMemorialComponent::GetBrightestStarIndex() const
+{
+	int32 BestIndex = INDEX_NONE;
+	float Best = -1.0f;
+	for (int32 i = 0; i < Stars.Num(); ++i)
+	{
+		if (Stars[i].Brightness > Best)
+		{
+			Best = Stars[i].Brightness;
+			BestIndex = i;
+		}
+	}
+	return BestIndex;
+}
+
+bool UStarMemorialComponent::IsCostless(float SacrificeWeight) const
+{
+	const float SafeWeight = FMath::Max(SacrificeWeight, 0.0f);
+	const float Brightness = 1.0f - FMath::Exp(-SafeWeight / FMath::Max(BrightnessK, KINDA_SMALL_NUMBER));
+	return Brightness < DimThreshold;
+}
+'''
+
+        # === StarMemorialAcceptanceTests.cpp ===
+        test_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_star_memorial_files).
+#include "CoreMinimal.h"
+#include "../Save/StarMemorialComponent.h"
+
+/**
+ * Star Memorial Acceptance Tests
+ * Verifies the memorial authority (seed UStarMemorialSubsystem) as hard facts,
+ * world-independently (NewObject, no PIE), matching the Weather test style:
+ *   1. Initializes with the TRAINED brightness curve (__MEMORIAL_PROVENANCE__)
+ *      — BrightnessK positive, BrightLightsYardThreshold in (0,1), DimThreshold
+ *      below it — and an empty sky. Checked by RANGE, not literal pins, so
+ *      this test survives the next retrain instead of going stale against it.
+ *   2. Monotonicity: more sacrifice must never read as a DIMMER star — the
+ *      same invariant core/trainables/memorial.py::measure polices at 35kHz
+ *      (monotonicity_violations); true for ANY BrightnessK > 0 by the
+ *      formula's own shape, so this holds across the entire trainer search
+ *      space, not just the current trained point.
+ *   3. A costless life (weight <= 0) reads brightness EXACTLY 0 — below any
+ *      valid yard threshold (trainer bounds keep it in [0.05, 0.95]) — Design
+ *      Law 2's failure ending, taught wordlessly in the sky.
+ *   4. Golden-angle bearing spacing — consecutive stars ~137.5 deg apart (a
+ *      fixed geometric constant, not trained), no crowding.
+ *   5. GetNightLightLevel sums only bright stars and caps at 0.5 — checked
+ *      with an extreme sacrifice weight guaranteed bright across the entire
+ *      trainer search space (BrightnessK <= 20), not just the current point.
+ *   6. Twinkle is set exactly by OpenPains > 0.
+ */
+
+void TestMemorial_Initialization()
+{
+	UStarMemorialComponent* Memorial = NewObject<UStarMemorialComponent>();
+	check(Memorial != nullptr);
+
+	check(Memorial->GetStarCount() == 0);
+	check(FMath::IsNearlyEqual(Memorial->GetNightLightLevel(), 0.0f));
+	check(Memorial->GetBrightestStarIndex() == INDEX_NONE);
+	check(Memorial->BrightnessK > 0.0f);
+	check(Memorial->BrightLightsYardThreshold > 0.0f && Memorial->BrightLightsYardThreshold < 1.0f);
+	check(Memorial->DimThreshold < Memorial->BrightLightsYardThreshold);
+
+	UE_LOG(LogTemp, Display,
+		TEXT("[MEMORIAL TEST] Initialization: PASS (brightness_k=%.4f bright_lights_yard=%.4f)"),
+		Memorial->BrightnessK, Memorial->BrightLightsYardThreshold);
+}
+
+void TestMemorial_Monotonicity()
+{
+	// An increasing sacrifice-weight ladder must produce a NON-DECREASING
+	// brightness ladder — core/trainables/memorial.py's own trained invariant
+	// (monotonicity_violations == 0.0 in docs/objectives/memorial.trained.json).
+	UStarMemorialComponent* Memorial = NewObject<UStarMemorialComponent>();
+	const float Ladder[] = { 0.0f, 0.5f, 1.0f, 2.5f, 5.0f, 10.0f, 25.0f, 100.0f };
+	float PrevBrightness = -1.0f;
+	for (float W : Ladder)
+	{
+		FStarEntry Star = Memorial->AddLife(TEXT("Ladder"), 0, W, 0);
+		check(Star.Brightness >= PrevBrightness - KINDA_SMALL_NUMBER);
+		PrevBrightness = Star.Brightness;
+	}
+
+	UE_LOG(LogTemp, Display, TEXT("[MEMORIAL TEST] Monotonicity: PASS (%d-rung ladder never dimmed)"),
+		UE_ARRAY_COUNT(Ladder));
+}
+
+void TestMemorial_CostlessBelowYardThreshold()
+{
+	// Design Law 2's failure ending: a costless life (weight <= 0) reads a
+	// star DIMMER than the yard threshold — it does not light the night.
+	UStarMemorialComponent* Memorial = NewObject<UStarMemorialComponent>();
+
+	FStarEntry Costless = Memorial->AddLife(TEXT("Costless"), 0, 0.0f, 0);
+	check(Costless.Brightness < Memorial->BrightLightsYardThreshold);
+	check(Memorial->IsCostless(0.0f));
+	check(FMath::IsNearlyEqual(Memorial->GetNightLightLevel(), 0.0f));
+
+	// Negative sacrifice (shouldn't happen but clamped to 0) reads the same.
+	FStarEntry Negative = Memorial->AddLife(TEXT("Negative"), 0, -5.0f, 0);
+	check(Negative.Brightness < Memorial->BrightLightsYardThreshold);
+
+	UE_LOG(LogTemp, Display,
+		TEXT("[MEMORIAL TEST] CostlessBelowYardThreshold: PASS (brightness=%.4f < yard=%.4f)"),
+		Costless.Brightness, Memorial->BrightLightsYardThreshold);
+}
+
+void TestMemorial_GoldenAngleBearing()
+{
+	UStarMemorialComponent* Memorial = NewObject<UStarMemorialComponent>();
+	const float GoldenAngleDeg = 137.50776405003785f;
+
+	FStarEntry S0 = Memorial->AddLife(TEXT("S0"), 0, 5.0f, 0);
+	FStarEntry S1 = Memorial->AddLife(TEXT("S1"), 1, 5.0f, 0);
+	FStarEntry S2 = Memorial->AddLife(TEXT("S2"), 2, 5.0f, 0);
+
+	check(FMath::IsNearlyEqual(S0.BearingDeg, 0.0f, 0.01f));
+	check(FMath::IsNearlyEqual(S1.BearingDeg, FMath::Fmod(GoldenAngleDeg, 360.0f), 0.01f));
+	check(FMath::IsNearlyEqual(S2.BearingDeg, FMath::Fmod(2.0f * GoldenAngleDeg, 360.0f), 0.01f));
+
+	UE_LOG(LogTemp, Display, TEXT("[MEMORIAL TEST] GoldenAngleBearing: PASS"));
+}
+
+void TestMemorial_NightLightCap()
+{
+	UStarMemorialComponent* Memorial = NewObject<UStarMemorialComponent>();
+
+	// A flood of extreme-sacrifice stars (guaranteed >= threshold across the
+	// ENTIRE trainer search space — core/trainables/memorial.py::mutate bounds
+	// BrightnessK in [1,20] and BrightLightsYardThreshold in [0.05,0.95], and
+	// 500 clears even the k=20 floor) still caps the light at 0.5 — a sky full
+	// of saints never turns night into day.
+	for (int32 i = 0; i < 30; ++i)
+	{
+		Memorial->AddLife(FString::Printf(TEXT("Bright%d"), i), 10, 500.0f, 0);
+	}
+	check(FMath::IsNearlyEqual(Memorial->GetNightLightLevel(), 0.5f, 0.001f));
+
+	UE_LOG(LogTemp, Display, TEXT("[MEMORIAL TEST] NightLightCap: PASS"));
+}
+
+void TestMemorial_TwinkleOnOpenPains()
+{
+	UStarMemorialComponent* Memorial = NewObject<UStarMemorialComponent>();
+
+	FStarEntry Clear = Memorial->AddLife(TEXT("Clear"), 0, 5.0f, 0);
+	FStarEntry Flickers = Memorial->AddLife(TEXT("Flickers"), 1, 5.0f, 2);
+
+	check(!Clear.bTwinkle);
+	check(Flickers.bTwinkle);
+
+	UE_LOG(LogTemp, Display, TEXT("[MEMORIAL TEST] TwinkleOnOpenPains: PASS"));
+}
+
+// Helper function to run all star memorial acceptance tests
+void RunStarMemorialSystemTests()
+{
+	UE_LOG(LogTemp, Warning, TEXT("\\n====== STAR MEMORIAL ACCEPTANCE TESTS ======\\n"));
+
+	try
+	{
+		TestMemorial_Initialization();
+		TestMemorial_Monotonicity();
+		TestMemorial_CostlessBelowYardThreshold();
+		TestMemorial_GoldenAngleBearing();
+		TestMemorial_NightLightCap();
+		TestMemorial_TwinkleOnOpenPains();
+
+		UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL STAR MEMORIAL TESTS PASSED ======\\n"));
+	}
+	catch (const std::exception& e)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Star memorial test failed: %s"), ANSI_TO_TCHAR(e.what()));
+	}
+}
+'''
+        test_content = test_content.replace("__MEMORIAL_PROVENANCE__", provenance)
+
+        header_path = save_dir / "StarMemorialComponent.h"
+        with open(header_path, 'w', encoding='utf-8') as f:
+            f.write(header_content)
+
+        cpp_path = save_dir / "StarMemorialComponent.cpp"
+        with open(cpp_path, 'w', encoding='utf-8') as f:
+            f.write(cpp_content)
+
+        test_path = tests_dir / "StarMemorialAcceptanceTests.cpp"
         with open(test_path, 'w', encoding='utf-8') as f:
             f.write(test_content)
 

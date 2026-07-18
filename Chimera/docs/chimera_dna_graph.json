@@ -73185,6 +73185,41 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_3168d5c8041c"
+    },
+    {
+      "id": "surprise_43c5a16e0f439c80",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T07:52:31.363430",
+      "context": "tb-0180 material_harvester.py: wrote docs/matter/reference_scans/<material>.json in the exact format core.trainables.material_appearance.load_reference_descriptors() expects, then called that loader directly to verify the integration point actually works",
+      "expectation": "",
+      "reality": "load_reference_descriptors('regolith') returned None. Root cause: core/trainables/material_appearance.py's ROOT = Path(__file__).resolve().parents[1] resolves to .../core/ (the file lives at core/trainables/material_appearance.py, so parents[1] is core/, not the project root) \u2014 it needs parents[2]. So ref_path becomes core/docs/matter/reference_scans/<name>.json, which can never exist; the loader is structurally broken regardless of what any harvester writes to the real docs/matter/reference_scans/. Confirmed via direct import: ma.ROOT == E:\\PythonChimera\\Chimera\\core.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'load_reference_descriptors('regolith') returned None. Root cause: core/trainable'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2ac7d0435c63"
+    },
+    {
+      "id": "phase_74c1f726afdd4ae0",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T07:53:43.455952",
+      "phase": "rep_promotion:audio_visual_sync/report_telemetry",
+      "result": "tier 1 -> 2 (measures) after 200 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:audio_visual_sync/report_telemetry",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:audio_visual_sync/report_telemetry' complete: tier 1 -> 2 (measures) after 200 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_74499f600c81"
     }
   ],
   "edges": [
