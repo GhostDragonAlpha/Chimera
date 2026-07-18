@@ -179,8 +179,14 @@ def _resolve(node_id: str):
 
 
 def demands_witness(task: dict) -> bool:
+    # Match the witness ARTIFACT, never the English verb. Bare singular "beat"
+    # caught "cannot beat the mesh render" in tb-0168's own recipe and forced a
+    # bogus witness demand (found by sub-20, 2026-07-18). The real signals are
+    # the plural "beats" (the file convention, "run the beats"), "beat script",
+    # a ".beats"/"beats.json" path, or the tool names — not "beat" alone.
     text = f"{(task or {}).get('title', '')} {(task or {}).get('recipe', '')}"
-    return re.search(r"\b(witness|sleepwalker|simtest|beats?)\b", text, re.I) is not None
+    pat = r"\b(witness|sleepwalker|simtest|beats|beat[\s_-]scripts?)\b|\.beats\b|beats\.json"
+    return re.search(pat, text, re.I) is not None
 
 
 _WITNESS_TYPES = {"SimPlaytest", "Observation"}
