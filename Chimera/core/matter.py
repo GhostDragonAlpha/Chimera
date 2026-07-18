@@ -40,6 +40,7 @@ the bricks ended up, never whether that is beautiful.
 from __future__ import annotations
 
 import argparse
+import json
 import math
 from pathlib import Path
 
@@ -53,29 +54,89 @@ MEDIUM, BONE, MUSCLE, SKIN = 0, 1, 2, 3
 NAMES = {MEDIUM: "medium", BONE: "bone", MUSCLE: "muscle", SKIN: "skin"}
 TISSUES = (BONE, MUSCLE, SKIN)
 
-# Contact energy J[a][b]: the cost of a unit of a-b interface. LOWER = more adhesive.
-# Symmetric. The whole design lives in these 16 numbers.
+# --- rung 0.5: adhesion profile from the matter library -----------------------
+# The J matrix is READ FROM docs/matter/matter_library.json's adhesion fields.
+# Each tissue entry has:
+#   - medium_contact: how much this tissue hates being exposed to empty space
+#   - self_cohesion: how strongly it sticks to itself (lower = more adhesive)
+#   - cross_adhesion[other_tissue]: explicit contact energy for that pair
 #
-# Read the medium column as "how much this brick hates being exposed":
-#   bone 16 (buries itself)  >  muscle 11  >  skin 5 (tolerates the surface).
-# and the diagonal as self-cohesion (lower = sticks to its own kind harder):
-#   bone 2 (most cohesive)   <  muscle 4   <  skin 6.
-# => gamma(bone)=16-1=15  >  gamma(muscle)=11-2=9  >  gamma(skin)=5-3=2.
-# Bone innermost, skin outermost. bone<->skin is made expensive (12) so muscle is
-# forced to sit between them rather than bone and skin touching directly.
-J_DIFFERENTIAL = np.array([
+# CONSTRAINT: values must be IDENTICAL to the proven constants below. The assertion
+# will FAIL if the library drifts — that's the point. Fix the LIBRARY, not this code.
+def _build_J_from_library() -> tuple:
+    """Build the 4x4 adhesion matrix from matter_library.json.
+    
+    Returns (J_matrix, medium_contact_dict).
+    J[a][b] is read explicitly from the library's cross_adhesion fields,
+    with medium_contact for tissue-medium interfaces and self_cohesion on diagonal.
+    """
+    ROOT = Path(__file__).resolve().parents[1]
+    lib_path = ROOT / "docs" / "matter" / "matter_library.json"
+    with open(lib_path, 'r') as f:
+        lib = json.load(f)
+    
+    # Read per-tissue adhesion fields
+    mc = {}  # medium_contact values
+    sc = {}  # self_cohesion values
+    ca = {}  # cross_adhesion: {(a,b): value}
+    
+    for i, name in [(BONE, "bone"), (MUSCLE, "muscle"), (SKIN, "skin")]:
+        adh = lib["materials"][name]["adhesion"]
+        mc[i] = adh["medium_contact"]["value"]
+        sc[i] = adh["self_cohesion"]["value"]
+        if "cross_adhesion" in adh:
+            for other_name, val_info in adh["cross_adhesion"].items():
+                # Map library names to indices
+                name_map = {"bone": BONE, "muscle": MUSCLE, "skin": SKIN}
+                j = name_map.get(other_name)
+                if j is not None:
+                    ca[(i, j)] = val_info["value"]
+    
+    # Build symmetric J matrix
+    size = 4
+    J = np.zeros((size, size), dtype=np.float64)
+    for a in range(size):
+        for b in range(size):
+            if a == MEDIUM and b == MEDIUM:
+                J[a][b] = 0.0
+            elif a == MEDIUM or b == MEDIUM:
+                # Medium contact: the exposed tissue's medium_contact value
+                other = a if b == MEDIUM else b
+                J[a][b] = mc[other]
+            elif a == b:
+                # Self-cohesion (diagonal)
+                J[a][b] = sc[a]
+            else:
+                # Cross-adhesion: read explicitly from library (symmetric)
+                val = ca.get((a, b), ca.get((b, a)))
+                if val is not None:
+                    J[a][b] = val
+    
+    return J, mc
+
+# THE PROVEN CONSTANTS — these are the values that rung-1 witnessed.
+# The library reader MUST produce identical values; assert before deleting.
+J_PROVEN_DIFFERENTIAL = np.array([
     #  MED  BONE  MUS  SKIN
     [   0,   16,  11,    5],   # MEDIUM
     [  16,    2,   6,   12],   # BONE
     [  11,    6,   4,    6],   # MUSCLE
     [   5,   12,   6,    6],   # SKIN
 ], dtype=np.float64)
+J_PROVEN_UNIFORM = np.full((4, 4), 8.0)
+J_PROVEN_UNIFORM[MEDIUM, MEDIUM] = 0.0
+
+# THE LIBRARY-READ VALUES — loaded at import time.
+J_DIFFERENTIAL, _MC_LIB = _build_J_from_library()
+J_UNIFORM = J_PROVEN_UNIFORM.copy()  # uniform is always the same
+
+# ASSERT: library-read values match proven constants exactly
+assert np.array_equal(J_DIFFERENTIAL, J_PROVEN_DIFFERENTIAL), \
+    f"Library adhesion differs from proven! Diff:\n{np.abs(J_DIFFERENTIAL - J_PROVEN_DIFFERENTIAL)}"
 
 # THE CONTROL. Every brick sticks to everything (and to medium) equally, so there is no
 # energetic reason to sort. If THIS also sorts, the sort was an artifact of the machine,
 # not of adhesion, and the whole claim is dead. It must come out mixed.
-J_UNIFORM = np.full((4, 4), 8.0)
-J_UNIFORM[MEDIUM, MEDIUM] = 0.0
 
 # --- rung 1.5: 3D, an elongated limb, and a TYPED CONNECTOR (tendon) -----------
 # A tendon is the first "typed interface": a connector brick that bonds specifically to
@@ -87,9 +148,51 @@ J_UNIFORM[MEDIUM, MEDIUM] = 0.0
 TENDON = 4
 NAMES[TENDON] = "tendon"
 
-# 5x5 differential profile: the 4x4 above plus the tendon row/col. Tendon is strong to
-# muscle and bone (3), hostile to skin (12) and medium (15) so it stays at the junction.
-J_DIFFERENTIAL_3D = np.array([
+def _build_J_3d_from_library() -> np.ndarray:
+    """Build the 5x5 adhesion matrix including TENDON from matter_library.json."""
+    ROOT = Path(__file__).resolve().parents[1]
+    lib_path = ROOT / "docs" / "matter" / "matter_library.json"
+    with open(lib_path, 'r') as f:
+        lib = json.load(f)
+    
+    # Read all tissue adhesion fields (bone, muscle, skin, tendon)
+    tissues = [(BONE, "bone"), (MUSCLE, "muscle"), (SKIN, "skin"), (TENDON, "tendon")]
+    mc = {}
+    sc = {}
+    ca = {}  # cross_adhesion
+    
+    for i, name in tissues:
+        adh = lib["materials"][name]["adhesion"]
+        mc[i] = adh["medium_contact"]["value"]
+        sc[i] = adh["self_cohesion"]["value"]
+        if "cross_adhesion" in adh:
+            name_map = {"bone": BONE, "muscle": MUSCLE, "skin": SKIN, "tendon": TENDON}
+            for other_name, val_info in adh["cross_adhesion"].items():
+                j = name_map.get(other_name)
+                if j is not None:
+                    ca[(i, j)] = val_info["value"]
+    
+    # Build symmetric 5x5 J matrix
+    size = 5
+    J = np.zeros((size, size), dtype=np.float64)
+    for a in range(size):
+        for b in range(size):
+            if a == MEDIUM and b == MEDIUM:
+                J[a][b] = 0.0
+            elif a == MEDIUM or b == MEDIUM:
+                other = a if b == MEDIUM else b
+                J[a][b] = mc[other]
+            elif a == b:
+                J[a][b] = sc[a]
+            else:
+                val = ca.get((a, b), ca.get((b, a)))
+                if val is not None:
+                    J[a][b] = val
+    
+    return J
+
+# THE PROVEN 3D CONSTANTS — these are the values that rung-1.5 witnessed.
+J_PROVEN_DIFFERENTIAL_3D = np.array([
     #  MED  BONE  MUS  SKIN  TEN
     [   0,   16,  11,    5,  15],   # MEDIUM
     [  16,    2,   6,   12,    3],  # BONE
@@ -97,8 +200,16 @@ J_DIFFERENTIAL_3D = np.array([
     [   5,   12,   6,    6,   12],  # SKIN
     [  15,    3,   3,   12,    3],  # TENDON
 ], dtype=np.float64)
-J_UNIFORM_3D = np.full((5, 5), 8.0)
-J_UNIFORM_3D[MEDIUM, MEDIUM] = 0.0
+J_PROVEN_UNIFORM_3D = np.full((5, 5), 8.0)
+J_PROVEN_UNIFORM_3D[MEDIUM, MEDIUM] = 0.0
+
+# THE LIBRARY-READ 3D VALUES — loaded at import time.
+J_DIFFERENTIAL_3D = _build_J_3d_from_library()
+J_UNIFORM_3D = J_PROVEN_UNIFORM_3D.copy()  # uniform is always the same
+
+# ASSERT: library-read 3D values match proven constants exactly
+assert np.array_equal(J_DIFFERENTIAL_3D, J_PROVEN_DIFFERENTIAL_3D), \
+    f"Library 3D adhesion differs from proven! Diff:\n{np.abs(J_DIFFERENTIAL_3D - J_PROVEN_DIFFERENTIAL_3D)}"
 
 # 8-neighbourhood (Moore) — 4-connectivity gives blocky, axis-aligned interfaces that
 # fake-sort along the grid; 8 rounds them.
