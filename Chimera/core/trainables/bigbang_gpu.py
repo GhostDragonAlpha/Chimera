@@ -92,10 +92,17 @@ def k_drift(pos: wp.array2d(dtype=wp.vec3), vel: wp.array2d(dtype=wp.vec3),
 
 @wp.kernel
 def k_drag(pos: wp.array2d(dtype=wp.vec3), vel: wp.array2d(dtype=wp.vec3),
-           kcirc: wp.array(dtype=float), dt: float):
+           kcirc: wp.array(dtype=float), ramp: wp.array(dtype=float),
+           dt: float, ramp_t: float):
     # Radial + vertical damping only: torque-free about z (the gas shortcut).
+    # Effective drag = k_circ * min(1, t/ramp): per-world ramp fraction rides
+    # in as an array; the CURRENT time fraction ramp_t is a launch scalar -
+    # no readback, the schedule is known in advance.
     w, i = wp.tid()
-    f = kcirc[w] * dt
+    r_frac = 1.0
+    if ramp[w] > 0.0:
+        r_frac = wp.min(1.0, ramp_t / ramp[w])
+    f = kcirc[w] * r_frac * dt
     if f > 0.0:
         p = pos[w, i]
         rho = wp.sqrt(p[0] * p[0] + p[1] * p[1]) + 1.0e-9
@@ -229,6 +236,7 @@ def rollout_states(genomes: list[dict], restarts: int = N_RESTARTS,
     lz0 = np.empty(W, np.float64)
     kcirc = np.empty(W, np.float32)
     mscale = np.empty(W, np.float32)
+    kramp = np.empty(W, np.float32)
     for g, genome in enumerate(genomes):
         for r in range(restarts):
             w = g * restarts + r
@@ -236,6 +244,7 @@ def rollout_states(genomes: list[dict], restarts: int = N_RESTARTS,
             pos0[w], vel0[w], m0[w], lz0[w] = p, v, mm, l0
             kcirc[w] = genome["k_circ"]
             mscale[w] = genome["merge_scale"]
+            kramp[w] = float(genome.get("k_ramp", 0.0))
 
     dev = wp.get_device()
     pos = wp.array(pos0.reshape(W, N0, 3), dtype=wp.vec3, device=dev)
@@ -245,6 +254,7 @@ def rollout_states(genomes: list[dict], restarts: int = N_RESTARTS,
     merges_of = wp.array(np.ones((W, N0), np.int32), dtype=int, device=dev)
     kc = wp.array(kcirc, dtype=float, device=dev)
     ms = wp.array(mscale, dtype=float, device=dev)
+    kr = wp.array(kramp, dtype=float, device=dev)
     lz_spin = wp.zeros(W, dtype=float, device=dev)
     lz_removed = wp.zeros(W, dtype=float, device=dev)
     merges_late = wp.zeros(W, dtype=int, device=dev)
@@ -267,7 +277,9 @@ def rollout_states(genomes: list[dict], restarts: int = N_RESTARTS,
         wp.launch(k_drift, dim=dim2, inputs=[pos, vel, DT], device=dev)
         wp.launch(k_accel, dim=dim2, inputs=[pos, m, acc], device=dev)
         wp.launch(k_kick, dim=dim2, inputs=[vel, acc, 0.5 * DT], device=dev)
-        wp.launch(k_drag, dim=dim2, inputs=[pos, vel, kc, DT], device=dev)
+        wp.launch(k_drag, dim=dim2,
+                  inputs=[pos, vel, kc, kr, DT, step / float(STEPS)],
+                  device=dev)
         if step % MERGE_EVERY == 0:
             wp.launch(k_merge_escape, dim=W,
                       inputs=[pos, vel, m, merges_of, ms, lz_spin, lz_removed,
@@ -421,6 +433,24 @@ def render_winner(trained_json: str, png_path: str) -> str:
 
     snaps_pos = np.array([s[0][w] for s in st["snaps"]])      # (S, N0, 3)
     snaps_m = np.array([s[1][w] for s in st["snaps"]])        # (S, N0)
+
+    # Survivor table — the diagnosis view theory kept missing.
+    me, pe, ve = st["m"][w], st["pos"][w], st["vel"][w]
+    cw = int(np.argmax(me))
+    print(f"world {w}: central mass {me[cw]/M_TOT*100:.1f}%  survivors:")
+    for b in np.flatnonzero(me > 0):
+        if b == cw:
+            continue
+        rv = pe[b] - pe[cw]
+        vv = ve[b] - ve[cw]
+        mu = G * (me[cw] + me[b])
+        r = np.linalg.norm(rv)
+        e_orb = 0.5 * float(vv @ vv) - mu / r
+        a_el = -mu / (2 * e_orb) if e_orb < 0 else float("inf")
+        h2 = float(np.cross(rv, vv) @ np.cross(rv, vv))
+        ecc = math.sqrt(max(0.0, 1.0 + 2.0 * e_orb * h2 / (mu * mu)))
+        print(f"  body {b:3d}: m={me[b]/M_TOT*100:5.1f}%  seeds={st['merges_of'][w][b]:3d}  "
+              f"r_now={r:6.2f}  a={a_el:6.2f}  e={ecc:5.2f}")
     m_end = st["m"][w]
     pos_end = st["pos"][w]
     alive = m_end > 0.0

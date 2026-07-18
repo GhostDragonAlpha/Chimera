@@ -111,7 +111,16 @@ GENOME_SCHEMA = {
     "spread":      {"min": 0.60, "max": 3.00, "init": 1.00},
     # --- SHORTCUTS: compressed evolution ---
     "merge_scale": {"min": 0.80, "max": 4.00, "init": 1.50},
-    "k_circ":      {"min": 0.00, "max": 0.80, "init": 0.10},
+    "k_circ":      {"min": 0.00, "max": 2.00, "init": 0.10},
+    # Round-5 lesson (from LOOKING at round 4's winner: 95.8% star + one
+    # scattered straggler, spread pinned at MIN, i.e. "collapse everything,
+    # keep a survivor"): at N0=96 each seed is ~1% of the star, so the disk
+    # is dynamically HOT and constant drag cannot fix it - drag must be LOW
+    # during collapse (or radial infall dies and the star starves) and HIGH
+    # late (to cool survivors into isolated circular orbits). k_ramp is the
+    # fraction of the run over which drag linearly rises from 0 to k_circ:
+    # gas arriving as one coefficient over time.
+    "k_ramp":      {"min": 0.00, "max": 1.00, "init": 0.30},
 }
 
 
@@ -169,6 +178,7 @@ def _rollout(genome: dict, restart: int) -> dict:
     spin_out = float(genome.get("spin_out", spin_in))
     flat0 = genome["flatten0"]
     mscale, k_circ = genome["merge_scale"], genome["k_circ"]
+    ramp_steps = max(1.0, float(genome.get("k_ramp", 0.0)) * STEPS)
 
     m0 = M_TOT / N0
     m = np.full(N0, m0)
@@ -207,11 +217,13 @@ def _rollout(genome: dict, restart: int) -> dict:
 
         if k_circ > 0.0:
             # Damp radial + vertical components only (torque-free about z):
-            # megayears of nebular gas compressed into one coefficient.
+            # megayears of nebular gas compressed into one coefficient,
+            # ramped in over k_ramp of the run (low early: let the star
+            # feed; high late: cool the survivor disk into isolation).
             rho = np.hypot(pos[:, 0], pos[:, 1]) + 1e-9
             rx, ry = pos[:, 0] / rho, pos[:, 1] / rho
             v_r = vel[:, 0] * rx + vel[:, 1] * ry
-            f = k_circ * DT
+            f = k_circ * min(1.0, step / ramp_steps) * DT
             vel[:, 0] -= f * v_r * rx
             vel[:, 1] -= f * v_r * ry
             vel[:, 2] *= (1.0 - f)
