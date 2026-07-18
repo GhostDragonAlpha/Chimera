@@ -1,3 +1,26 @@
+# Session 2026-07-18 (fable-5, THE BUBBLE) — tb-0197 DONE: trained matter forms and MIXES the ground under the player
+
+- **THE OPERATOR'S PRINCIPLE, ENACTED (doc §19)**: *"no aesthetic pass if you have all the LOD for the
+  meaning... materializes the ground particles around the player... the entire game is a big fractal"* +
+  *"this is the part where you have to MIX MATTER TOGETHER."* An aesthetic pass is an admission the model
+  is incomplete — appearance DERIVES or the ladder is broken.
+- **`core/materialize.py`**: three rungs down, nothing authored — planet climate (ocean@0.83AU/293K)
+  derives the MIX; immovable bedrock (frozen cells) + the TRAINED granular genome (the 40° rule) FORM the
+  relief as a fixed point; water finds its level at the height the planet's ocean coverage implies (8.2%
+  pooled); matter-library albedo mottles each 25cm cell. **Deterministic: seed=(system,planet,patch) —
+  same coordinates, same ground, forever (the fractal property).** Engine chain green: GLB (meters +
+  _inject_material) → import → Materialized_Ground + Materialized_Water spawned INSIDE the flat average
+  plane (both LODs of meaning in one frame) → M_SplatVC_Lit.
+- **WITNESSED**: pawn drops 5 m onto FORMED matter and comes to rest — 1/1 clean walk
+  (simtest_5ac155d7050249bd), PIE shot `materialized_stand_pie.png` with live suit HUD and the mottle
+  grain visible. **granular_matter's red identity atom HEALED** (the beat names it — the sand engine now
+  exists in the game).
+- Honest v0 scope (postflight pain declared): blanketed ridges are real physics (outcrops need steeper
+  substrate or erosion verbs); water is a level sheet, lit-render unverified at pixel level (verify before
+  the streaming lane; may need tb-0187 first); the bubble doesn't yet FOLLOW the player (streaming lane).
+
+---
+
 # Session 2026-07-18 (fable-5, THE KILL) — tb-0196 DONE: levitator dead, pawn STANDS on the grown world
 
 - **ROOT CAUSE, NAMED AND KILLED: `SM_StarSphere`** — a 2 km-radius COLLIDING sphere centered at the origin,

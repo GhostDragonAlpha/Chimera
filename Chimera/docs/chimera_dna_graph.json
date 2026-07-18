@@ -75586,6 +75586,117 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_5de0fa7adc14"
+    },
+    {
+      "id": "simtest_5ac155d7050249bd",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T23:16:06.166508",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "materialized_stand_v0",
+      "demo": "materialized_ground",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "stand_on_materialized_matter",
+          "outcome": "reached",
+          "features": [
+            "materialization",
+            "granular_matter",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Materialized_Ground"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Materialized_Water"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Grown_Star"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\materialized_stand_v0.json",
+      "temperature": "[SIM] 1/1 beats reached in 'materialized_ground'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'materialized_stand_v0': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_07d863d0fd55"
+    },
+    {
+      "id": "discovery_6832b1b0b0b4810f",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T23:18:02.066023",
+      "feature": "tb-0197: the materialization bubble - trained matter forms a",
+      "campus_sources": [],
+      "web_sources": [
+        "Regolith-over-bedrock cover physics (blanketed ridges are the lunar norm; outcrops need steep substrate or erosion); hydrostatic sea level from area-fraction percentile (basin fill deferred, isolated pans physically plausible as brine pans); the studio's own proven pathways reused from source: _inje"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0197: the materialization bubble - trained matter forms a",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0197: the materialization bubble - trained matter forms a': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f68a1b8195e0"
+    },
+    {
+      "id": "phase_758091dd637c344d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T23:18:02.525623",
+      "phase": "tb-0197: the materialization bubble - trained matter forms and mixes the ground under the player",
+      "result": "core/materialize.py: planet climate -> matter mix (regolith + water + frozen bedrock) -> TRAINED granular genome forms relief as a fixed point (2D sandpile, bounded, quenched crit) -> water finds its derived level (8.2 pct pooled) -> matter-library per-cell colors -> GLB (meters, _inject_material) -> import/spawn/M_SplatVC_Lit all OK -> WITNESS 1/1 clean walk simtest_5ac155d7050249bd: pawn drops 5m onto FORMED matter and rests, PIE shot materialized_stand_pie.png (25cm mottle grain visible), the coalesced average plane still visible beyond the bubble - both LODs of meaning in one frame. granular_matter identity rep atom healed (beat names it). Doc section 19: NO AESTHETIC PASSES + the fractal + the bubble.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0197: the materialization bubble - trained matter forms and mixes the ground under the player",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0197: the materialization bubble - trained matter forms and mixes the ground under the player' complete: core/materialize.py: planet climate -> matter mix (regolith + water + frozen bedrock) -> TRAINED granular genome forms relief as a fixed point (2D sandpile, bounded, quenched crit) -> water finds its ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The water sheet's lit render is unverified at pixel level (set_material reported OK; the PIE frame shows the terrain mottle clearly but no confirmed water read) - before the streaming lane builds on it, capture a framed shot of a pooled basin and confirm the water family's albedo actually renders (the M_SplatVC_Lit-on-water pathway may need the tb-0187 idempotency fix first)."
+      ],
+      "inheritance": "The LOD-of-meaning chain is now executable end to end: planet numbers -> trained matter rule -> formed mixed ground -> pawn standing on it, with determinism as the fractal property (seed = coordinates). An aesthetic pass is an admission the model is incomplete - appearance derives or the ladder is broken. Mixing is arrangement-by-physics: bedrock as frozen cells in the SAME rule, water as a derived level, outcrops only where cover physically thins (and at trained repose, gentle crests HOLD their blanket - blanketed ridges are honest physics, not a defect).",
+      "pain_verdicts": {
+        "phase_c343f5ecd1c65d22:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_f68a1b8195e0"
     }
   ],
   "edges": [

@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T22:48:08+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T23:17:36+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -93,6 +93,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0193 | done | 0.9 | Big-bang rung v0: grow a solar system on the GPU (trainable  | core/trainables/bigbang.py, core/trainables/bigbang_gpu.py… | THE BIG BANG GROWS A SOLAR SYSTEM - all walls satisfied, bes |
 | tb-0194 | done | 0.9 | Planet-averages rung: oceans, atmospheres, interior gradient | core/trainables/planet.py, docs/objectives/planet*.json… | THE OPERATOR BAR IS MET - all walls satisfied, best 0.9194,  |
 | tb-0195 | done | 0.9 | Wire a grown system into UE5: stand on an ocean world (workf | core/system_to_ue5.py, docs/beats/solar_system_stand.beats.json; editor:open | THE WIRING WORKFLOW IS DELIVERED AND PROVEN RE-RUNNABLE; the |
+| tb-0197 | done | 0.9 | Materialization bubble v0: trained matter forms the ground u | core/materialize.py, docs/beats/materialized_ground.beats.json…; editor:open | THE MATERIALIZATION BUBBLE v0 STANDS, MATTER MIXED, WITNESSE |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |
