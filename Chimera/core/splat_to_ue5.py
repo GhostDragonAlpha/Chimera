@@ -127,9 +127,29 @@ def quad_cloud(splats: dict, scale: float, tangent_scale: float = 1.15,
     base = np.arange(len(pos)) * 4
     f1 = np.stack([base, base + 1, base + 2], axis=1)
     f2 = np.stack([base, base + 2, base + 3], axis=1)
-    faces = np.concatenate([f1, f2])       # single-sided; glTF doubleSided flag
-    # (injected by write_splat_glb) replaces the old duplicated-reversed-faces
-    # hack — half the triangles, same coverage
+    # DOUBLE-SIDED VIA DUPLICATED REVERSED-WINDING FACES (tb-0183, re-measured
+    # 2026-07-18): a comment here used to claim the glTF `doubleSided` material flag
+    # (injected by write_splat_glb/_inject_material) "replaces the old duplicated-
+    # reversed-faces hack — half the triangles, same coverage" — that claim was NEVER
+    # exercised in-engine (write_splat_glb had no caller anywhere in the codebase before
+    # this task wired it into main()'s default export path) and is FALSE at this
+    # density: single-sided quads backface-cull per splat, and a splat CLOUD is not a
+    # watertight shell (unlike a normal mesh, where backfaces are occluded by the
+    # front anyway) — through the gaps between non-overlapping quads, a camera ray can
+    # hit a quad from its culled (away-facing) side with nothing else behind it, so the
+    # ray shows background instead. Proven side-by-side (2026-07-18, in-engine): the
+    # ORIGINAL tb-0179 splatlimb_tl224.glb (4 tris/quad, both windings, no material —
+    # predates write_splat_glb entirely) renders as a DENSE, CONTINUOUS blob; a
+    # byte-identical-geometry re-export through single-sided+doubleSided-flag renders
+    # as SPARSE, ISOLATED specks — same positions, same colors, same material JSON,
+    # confirmed by direct accessor comparison. The one measured difference was exactly
+    # this face count (4,479,276 vs 2,239,638 indices — precisely 2x). Restoring the
+    # duplicate reversed-winding triangles costs indices (cheap; Nanite virtualizes
+    # triangle count) in exchange for CORRECTNESS that does not depend on every
+    # importer/material-graph path honouring a doubleSided flag identically.
+    f3 = np.stack([base, base + 2, base + 1], axis=1)      # reversed winding
+    f4 = np.stack([base, base + 3, base + 2], axis=1)
+    faces = np.concatenate([f1, f2, f3, f4])
     rgba = np.concatenate([np.clip(splats["albedo"], 0, 1),
                            np.clip(splats["alpha"], 0, 1)[:, None]], axis=1)
     vcol = (np.repeat(rgba, 4, axis=0) * 255).astype(np.uint8)
@@ -175,14 +195,24 @@ def _inject_material(glb_path: Path) -> None:
         f.write(rest)
 
 
-def _falloff_png_bytes(size: int = 64, sigma: float = 0.35) -> bytes:
+def _falloff_png_bytes(size: int = 64, sigma: float = 0.55) -> bytes:
     """A small, centred radial-Gaussian alpha texture: white RGB (so it never tints —
     COLOR_0 already carries the per-splat tissue albedo), alpha carries the falloff.
     Same Gaussian family as the Warp/CPU rasterizers' own per-splat compositing term
     `alpha * exp(-0.5*m)` (core.splat_gpu / splat_emit.rasterize_splats) — the recipe's
     'the Warp rasterizer is the ground-truth look' made into an engine-side texture
     instead of a per-pixel computation, so a MASKed quad reads as the same soft
-    footprint the rasterizers already treat as reference."""
+    footprint the rasterizers already treat as reference.
+
+    sigma=0.55 (paired with alpha_cutoff=0.15 below) is TUNED, not guessed: caught live
+    in-engine (2026-07-18) — the first attempt (sigma=0.35, cutoff=0.5) passed the mask
+    test on only ~13% of each quad's own area (r_cut = sigma*sqrt(-2*ln(cutoff)) = 0.41
+    of the quad's half-width), so the 373k cloud rendered as sparse, isolated specks
+    even at point-blank camera range — NOT a camera/framing bug (verified: moving the
+    camera changed the frame completely; the object itself was the sparse thing).
+    sigma=0.55/cutoff=0.15 gives r_cut≈1.07 — just PAST the quad's own flat edge — so
+    almost the whole quad passes and only the outer corners taper, softening the shape
+    without hollowing it out."""
     import io
     from PIL import Image
 
@@ -199,7 +229,7 @@ def _falloff_png_bytes(size: int = 64, sigma: float = 0.35) -> bytes:
 
 
 def _inject_falloff_material(glb_path: Path, alpha_mode: str = "MASK",
-                             alpha_cutoff: float = 0.5, tex_size: int = 64) -> None:
+                             alpha_cutoff: float = 0.15, tex_size: int = 64) -> None:
     """Make the GLB SELF-DESCRIBING with a SOFT EDGE (tb-0183): extends
     _inject_material's proven chunk-surgery pattern (declare a real PBR material so
     UE's importer multiplies it by COLOR_0 — see that function's docstring) with an
@@ -295,7 +325,7 @@ def _inject_falloff_material(glb_path: Path, alpha_mode: str = "MASK",
 
 
 def write_splat_glb(splats: dict, scale: float, path: Path, soft_edge: bool = True,
-                    alpha_mode: str = "MASK", alpha_cutoff: float = 0.5,
+                    alpha_mode: str = "MASK", alpha_cutoff: float = 0.15,
                     tex_size: int = 64, **kw) -> Path:
     """Export + material injection in one step — the only correct way to write
     a splat GLB for engine import (a bare quad_cloud().export() produces the
@@ -658,8 +688,9 @@ def main() -> int:
     ap.add_argument("--alpha-mode", default="MASK", choices=["MASK", "BLEND"],
                     help="tb-0183: soft-edge alphaMode — MASK (Nanite-safe, default) or "
                          "BLEND (recipe's fallback 'only if sorting holds')")
-    ap.add_argument("--alpha-cutoff", type=float, default=0.5,
-                    help="tb-0183: MASK alpha-test cutoff")
+    ap.add_argument("--alpha-cutoff", type=float, default=0.15,
+                    help="tb-0183: MASK alpha-test cutoff (tuned with the default sigma=0.55 "
+                         "so ~79%% of each quad's own area passes -- see _falloff_png_bytes)")
     ap.add_argument("--tex-size", type=int, default=64,
                     help="tb-0183: embedded radial-falloff texture size, pixels")
     ap.add_argument("--shape-study", action="store_true",
