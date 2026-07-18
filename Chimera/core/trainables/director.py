@@ -293,6 +293,49 @@ def _weighted_percentile(hist: list, q: float) -> float:
     return float(ordered[-1][1])
 
 
+_PROBE_DAYS = 30.0     # per cell -- NOT genome; a fixed probe duration (see _probe_pirate_gate)
+_PROBE_SLICES = 50     # independent bypass rolls per cell
+
+
+def _probe_pirate_gate(g: dict, rng: random.Random) -> dict:
+    """A DIRECT, CONTROLLED probe of the pirate gate -- found necessary live, 2026-07-17:
+    the naturalistic economy in _simulate_once can make "poor" (credits <= threshold) so
+    rare once cadence densifies (measured on the first trained winner: wealthy 97.3% of the
+    time, poor+storm co-occurring in ZERO of 90 simulated days across 80 independent
+    restarts) that a NON-ZERO pirate_wealth_gate_bypass_fraction rides for free -- not
+    because the gate is mis-wired (forcing either bypass to 1.0 elsewhere in this module
+    produces hundreds to thousands of violations, so the wiring is proven correct), but
+    because the naturalistic run may never VISIT the (poor, storm) cell that would expose a
+    moderate bypass rate. "More restarts of the same genome" does not fix this -- the
+    missing exposure is structural to that genome's own wealth trajectory, not sampling
+    noise, so it does not average out.
+
+    This probe sidesteps the naturalistic economy entirely: it FORCES each of the four
+    (wealth, storm) cells in turn for `_PROBE_DAYS` and gives the bypass loci
+    `_PROBE_SLICES` independent rolls per cell (matching how often the naturalistic sim
+    re-rolls them, once per event) -- at slices=50, a 12.7% bypass rate (the exact value
+    that hid from 80 natural restarts above) has a 99.85% chance of producing at least one
+    spawn in a single call. Still FACTS ONLY: it reports what the genome's own gate
+    parameters produce under a controlled condition, never an opinion about whether that
+    count is good."""
+    rate = g["pirate_spawn_rate_per_sec"]
+    storm_bypass = g["pirate_storm_gate_bypass_fraction"]
+    wealth_bypass = g["pirate_wealth_gate_bypass_fraction"]
+    slice_secs = (_PROBE_DAYS * DAY_UNIT_SECONDS) / _PROBE_SLICES
+
+    out = {}
+    for wealthy, stormy, label in ((True, True, "rich_storm"), (True, False, "rich_calm"),
+                                   (False, True, "poor_storm"), (False, False, "poor_calm")):
+        total = 0
+        for _ in range(_PROBE_SLICES):
+            wealth_ok = wealthy or (rng.random() < wealth_bypass)
+            storm_ok = stormy or (rng.random() < storm_bypass)
+            if wealth_ok and storm_ok and rate > 0.0:
+                total += _poisson_bounded(rate, slice_secs, rng)
+        out[label] = total
+    return out
+
+
 def _simulate_once(g: dict, rng: random.Random) -> dict:
     """One realisation of the encounter stream: event-driven (bounded by MAX_EVENTS), never
     a fixed-timestep tick loop -- storms (18-45 real minutes) and multi-day spawn cadences
@@ -439,6 +482,14 @@ def _simulate_once(g: dict, rng: random.Random) -> dict:
     else:
         ent_norm = 0.0
 
+    # THE DIRECT GATE PROBE (see _probe_pirate_gate): the naturalistic run above may never
+    # visit the (poor, storm) cell at all -- that is a fact about THIS genome's economy, not
+    # a reason to skip auditing the gate. Folded into the SAME violations/correct facts the
+    # naturalistic count uses, so one hard gate in the objective covers both channels.
+    probe = _probe_pirate_gate(g, rng)
+    probe_violations = probe["poor_storm"] + probe["poor_calm"] + probe["rich_calm"]
+    probe_correct = probe["rich_storm"]
+
     return {
         "concurrent_dots_mean": concurrent_mean,
         "concurrent_dots_p95": concurrent_p95,
@@ -447,8 +498,10 @@ def _simulate_once(g: dict, rng: random.Random) -> dict:
         "encounter_gap_min_days": gap_min,
         "encounter_gap_cv": gap_cv,
         "scenario_entropy_norm": ent_norm,
-        "pirate_spawns_correct": float(pirate_correct),
-        "pirate_gate_violations": float(pirate_violations),
+        "pirate_spawns_correct": float(pirate_correct + probe_correct),
+        "pirate_gate_violations": float(pirate_violations + probe_violations),
+        "pirate_gate_violations_observed": float(pirate_violations),
+        "pirate_gate_violations_probed": float(probe_violations),
         "pirate_spawns_total": float(pirate_correct + pirate_violations),
         "first_stranger_paid_fraction": (first_paid / first_total) if first_total > 0 else 0.0,
         "generations_completed": float(generation),
@@ -475,6 +528,17 @@ def measure(g: dict) -> dict:
         keeping the domain innocent of what counts as "in band" (that is the OBJECTIVE's
         job; see TRAINING_PROTOCOL.md Sec.1's three-part split).
       - scenario diversity -> MIN across restarts (least diverse draw is the worst one).
+
+    `pirate_gate_violations` is the SUM of two channels (see _probe_pirate_gate): what the
+    naturalistic run happened to observe, plus a direct, controlled probe of all four
+    (wealth, storm) cells. Found necessary live: the first trained winner carried
+    pirate_wealth_gate_bypass_fraction=0.127 yet measured ZERO naturalistic violations
+    across 80 independent restarts, because that genome's own dense cadence keeps it
+    wealthy 97.3% of the time -- "poor AND storm" never co-occurred, not because the gate
+    doesn't fire (forcing either bypass to 1.0 produces hundreds-to-thousands of
+    violations), but because the naturalistic economy never visited the cell that would
+    expose a MODEST bypass. The probe closes that blind spot without touching the
+    naturalistic accounting, which stays separately reported for transparency.
     """
     runs = [_simulate_once(g, random.Random(EVAL_SEED + 104729 * i)) for i in range(N_RESTARTS)]
 
@@ -496,6 +560,8 @@ def measure(g: dict) -> dict:
         "scenario_entropy_norm": min(r["scenario_entropy_norm"] for r in runs),
 
         "pirate_gate_violations": float(max(r["pirate_gate_violations"] for r in runs)),
+        "pirate_gate_violations_observed": float(max(r["pirate_gate_violations_observed"] for r in runs)),
+        "pirate_gate_violations_probed": float(max(r["pirate_gate_violations_probed"] for r in runs)),
         "pirate_spawns_correct_total": float(sum(r["pirate_spawns_correct"] for r in runs)),
         "pirate_spawns_total": float(sum(r["pirate_spawns_total"] for r in runs)),
 

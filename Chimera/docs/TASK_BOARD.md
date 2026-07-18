@@ -1,14 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T04:51:21+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T05:05:11+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0168 | claimed | 0.95 | Substrate rung A+B: brick-to-splat emission + gait coherence | core/splat_emit.py | sub-20 |
 | tb-0143 | claimed | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie | sub-19 |
 | tb-0167 | claimed | 0.8 | CWM rung 1: director domain - train the encounter ecology | core/trainables/director.py, docs/objectives/director.json | sub-23 |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
@@ -71,6 +70,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
 | tb-0131 | done | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | UE_LOG witness markers verified present in NPCTradeComponent |
+| tb-0168 | done | 0.95 | Substrate rung A+B: brick-to-splat emission + gait coherence | core/splat_emit.py | core/splat_emit.py: NEW file, 699 lines (auto-flush commit d |
 | tb-0010 | done | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md | Created core/roadmap.py for Producer Roadmap Layer (DREAM_RO |
 | tb-0072 | done | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie | WITNESS & COLLAPSE tb-0072 Sky_Starfield -> OUTCOME: rejecti |
 | tb-0073 | done | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | editor:open; excl:pie | WITNESS & COLLAPSE tb-0073 Sky_Atmosphere_Scattering -> hone |
