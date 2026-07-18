@@ -73027,6 +73027,69 @@
       "links": [],
       "recorded_by": "dream_loop.py",
       "run_id": "run_f57e9d96c952"
+    },
+    {
+      "id": "surprise_bcc70ec773b70513",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T07:35:39.496711",
+      "context": "Lead dispatched wave-3 subagents from the killed-wave-2 narrative (baked state in the dispatch prompts)",
+      "expectation": "",
+      "reality": "All three targets were ALREADY DONE - a parallel fleet completed tb-0151/0169/0172 (commit cb4cbbc) while the Lead composed prompts. The anti-staleness invariant (MASTER_ONBOARDING: prompts carry live-read commands, never baked facts) applies to the LEAD's own dispatches, not just written prompts - sub-29 correctly refused, verified the done work independently, and recommended re-orienting off live state",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'All three targets were ALREADY DONE - a parallel fleet completed tb-0151/0169/01'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_62f86a86c22e"
+    },
+    {
+      "id": "discovery_b74e51d6069e1af0",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T07:36:10.933929",
+      "feature": "Substrate rung D-prime: first landing (fable-5, released for",
+      "campus_sources": [],
+      "web_sources": [
+        "LIVE: UE 5.7/5.8 Substrate production status + enable cvars (Epic docs + release notes, cached with URLs in docs/research/substrate_splats_ue58.md); bridge action schemas probed live (create_material works, execute_python absent)"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Substrate rung D-prime: first landing (fable-5, released for",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Substrate rung D-prime: first landing (fable-5, released for': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_b9309432e238"
+    },
+    {
+      "id": "phase_b6f472a09101b5fb",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T07:36:11.334362",
+      "phase": "Substrate rung D-prime: first landing (fable-5, released for lane availability)",
+      "result": "Substrate enabled project-wide and level renders (research cached docs/research/substrate_splats_ue58.md); 22.6k-splat cloud imported+spawned live; capture-race trap found+fixed (settle delay); pivot fix committed 39ceca8; M_SplatVC created via bridge; scene_model+photo_studio built so no camera is ever guessed again (f033758). Released tb-0170 so tb-0179 lane frees; VertexColor-to-slab wiring + solved side-by-side + visual gate remain for the re-claim.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Substrate rung D-prime: first landing (fable-5, released for lane availability)",
+      "error_category": "none",
+      "fix_description": "Phase 'Substrate rung D-prime: first landing (fable-5, released for lane availability)' complete: Substrate enabled project-wide and level renders (research cached docs/research/substrate_splats_ue58.md); 22.6k-splat cloud imported+spawned live; capture-race trap found+fixed (settle delay); pivot ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The re-claimed tb-0170 session assumes M_SplatVC still exists and Substrate still enabled - if the parallel fleet or an editor crash reverted DefaultEngine.ini (untracked change!), the session starts from a legacy-material editor and the wiring silently no-ops; check r.Substrate=1 and the asset FIRST"
+      ],
+      "inheritance": "Substrate is ON and stable; splats reach the engine over proven pathways; the agent now senses by derivation (scene_model predictions before pixels). The remaining D-prime work is ONE material graph + solved screenshots.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_b9309432e238"
     }
   ],
   "edges": [
