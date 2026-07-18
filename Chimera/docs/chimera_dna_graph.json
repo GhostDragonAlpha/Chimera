@@ -71956,6 +71956,50 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_cc5d1ad612a3"
+    },
+    {
+      "id": "discovery_d1015b3e0211d42f",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T04:07:50.786041",
+      "feature": "Compositional World Model thesis + rung 1 minted (fable-1)",
+      "campus_sources": [],
+      "web_sources": [
+        "Full internal read this session: WORKFLOW_SPEC.md, MASTER_ONBOARDING.md, TRAINING_PROTOCOL.md, THE_EVOLUTION_ENGINE.md, GENERATION_PROTOCOL.md, THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md, GAUNTLET.md, RESULT_GRADING_RUBRIC.md, SLEEPWALKER_DESIGN.md, TERRARIUM_DESIGN.md, THE_MATTER_MODEL.md, SUCCESSOR"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Compositional World Model thesis + rung 1 minted (fable-1)",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Compositional World Model thesis + rung 1 minted (fable-1)': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_88377c495cc9"
+    },
+    {
+      "id": "phase_f347fffc1cafe3ec",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T04:07:51.525099",
+      "phase": "Compositional World Model thesis + rung 1 minted (fable-1)",
+      "result": "docs/THE_COMPOSITIONAL_WORLD_MODEL.md written AFTER a full-system read; board tasks tb-0165 (weather domain), tb-0166 (memorial curve domain), tb-0167 (director ecology domain) minted with self-contained TRAINING_PROTOCOL recipes; pushed 9960c80. Earlier this session: LM model pins purged (251d2d4), LM Studio justInTimeModelLoading=false written (effective on restart/UI toggle).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Compositional World Model thesis + rung 1 minted (fable-1)",
+      "error_category": "none",
+      "fix_description": "Phase 'Compositional World Model thesis + rung 1 minted (fable-1)' complete: docs/THE_COMPOSITIONAL_WORLD_MODEL.md written AFTER a full-system read; board tasks tb-0165 (weather domain), tb-0166 (memorial curve domain), tb-0167 (director ecology domain) minted with self-contai",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "A CWM domain task gets claimed by an agent that skips TRAINING_PROTOCOL and writes taste into the objective (names the answer instead of the physics); the first membrane run's pins will expose it - check pins before accepting any trained.json commit."
+      ],
+      "inheritance": "The compositional world model is the named destination: every specific piece trained separately against its own objective, composed in-engine; the workflow already IS the per-piece training harness; seams are the one new machinery; rungs 1-3 need zero new engine code.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_88377c495cc9"
     }
   ],
   "edges": [
