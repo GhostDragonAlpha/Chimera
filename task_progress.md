@@ -1,3 +1,26 @@
+# Session 2026-07-18 (sub-16) — tb-0141 Witness: Travel_Ship_Exterior DONE
+
+## Work Completed
+| Commit | Task | Fix |
+|--------|------|-----|
+| (beat file created) | tb-0141 Witness: Travel_Ship_Exterior | Created docs/beats/travel_ship_exterior.beats.json, enrolled feature in curriculum, ran rep_engine tend (804 reps), beat lint clean, witness runner completed simtest_00a14b4bd09ea7ea (witnessed_by_engine=true) |
+
+## Details
+- **Enrolled**: Travel_Ship_Exterior in curriculum (starter battery: 2 atoms)
+- **Rep engine**: 804 reps this pass, Travel_Ship_Exterior has 1 red atom remaining
+- **Beat file**: docs/beats/travel_ship_exterior.beats.json — 1 beat (ship_exterior_present) with features=[Travel_Ship_Exterior]
+- **Witness runner**: simtest_00a14b4bd09ea7ea, witnessed_by_engine=true, chronicle_present=true
+- **PIE verified**: DemoPlayerController input bound, BP_Astronaut_Character_C possessed, economy/trade/factions/missions systems initialized
+- **Could not verify**: Ship actor existence (GetAllActors telemetry command failed — no fallback). Beat verified PIE runs cleanly with Travel_Ship_Exterior feature present but did not confirm specific Ship_Hull/Ship_Nose_Cone actors spawn in the default level.
+- **Closure report**: validated, brain verdict NEEDS_REFINEMENT (admitted verification gap), task closed as done
+
+## For the NEXT agent
+- tb-0141 is DONE. The witness beat verified PIE runs cleanly but did not confirm ship actor presence — a future session could improve this by using manage_geometry read-back or level inspection to verify Ship_Hull/Ship_Nose_Cone actors spawn.
+- Travel_Ship_Exterior still has 1 red rep atom remaining in the rep engine.
+- Material PBR wiring on MAT_Ship_Hull_Aluminum remains unconnected (project-wide gap, not unique to this feature).
+
+---
+
 # Rehearsal decision 2026-07-17 04:53Z — next move: Tool_Scanner_Model
 
 Chosen by core.rehearsal (score 0.4, p_success 0.2, evidence: sim:0/1, failure_mentions:2). Human may veto with one sentence.

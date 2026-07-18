@@ -71757,6 +71757,121 @@
       "inheritance": "Shelter_Habitat_Lighting witnessed clean via simtest_e0140db294d36f4e. Collapse (tb-0155) is next: collapse_proxy once rep gate met.",
       "recorded_by": "postflight.py",
       "run_id": "run_f3f2c211e313"
+    },
+    {
+      "id": "simtest_00a14b4bd09ea7ea",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T03:47:51.190181",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Travel_Ship_Exterior",
+      "demo": "travel_ship_exterior",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "ship_exterior_present",
+          "outcome": "reached",
+          "features": [
+            "Travel_Ship_Exterior"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Travel_Ship_Exterior.json",
+      "temperature": "[SIM] 1/1 beats reached in 'travel_ship_exterior'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_Travel_Ship_Exterior': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_0824cacba57a"
+    },
+    {
+      "id": "simtest_02b2fcf282458f9c",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T03:48:02.196773",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Travel_Ship_Exterior",
+      "demo": "travel_ship_exterior",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "ship_exterior_present",
+          "outcome": "reached",
+          "features": [
+            "Travel_Ship_Exterior"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Travel_Ship_Exterior.json",
+      "temperature": "[SIM] 1/1 beats reached in 'travel_ship_exterior'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_Travel_Ship_Exterior': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8078153b13b1"
+    },
+    {
+      "id": "surprise_8c6a7499ccfa02f3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T03:49:13.788074",
+      "context": "research waived: Witness: Travel_Ship_Exterior",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Witness task tb-0141 for Travel_Ship_Exterior did not require technical research - the feature was already system-finalized and verified in prior loops. Research was on existing DNA graph records show",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Witness task tb-0141 for Travel_Ship_Exterior did not require technical research'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_10e8950395c7"
     }
   ],
   "edges": [

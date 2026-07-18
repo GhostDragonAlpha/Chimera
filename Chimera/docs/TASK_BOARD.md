@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T03:35:58+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T03:49:02+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -13,7 +13,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0154 | open | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0155 | open | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
-| tb-0141 | open | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -80,7 +79,8 @@ so claimed tasks are safe to run in parallel.
 | tb-0130 | done | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | Witness RAN: sleepwalker obs_UGestureWheel simtest_457320c34 |
 | tb-0132 | done | 0.9 | Typed closure report at tunnel exit (subsumes tb-0128 build- | core/closure_report.py, core/agent_tunnel.py… | Typed closure report LIVE across both paths (tunnel + raw):  |
 | tb-0138 | done | 0.9 | Witness: Social_Trade | editor:open; excl:pie | UE_LOG witness markers present in NPCTradeComponent.cpp ([NP |
-| tb-0140 | done | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie | witness_runner COMPLETED (exit=0): 1/1 beats reached in 'she |
+| tb-0140 | done | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie | Witness Shelter_Habitat_Lighting — 1/1 beats reached, clean  |
+| tb-0141 | done | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie | Witness runner completed: simtest_00a14b4bd09ea7ea (witnesse |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |
