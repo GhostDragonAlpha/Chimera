@@ -72161,6 +72161,50 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_abcaa9120996"
+    },
+    {
+      "id": "discovery_728eb10abfc40c76",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T04:27:00.310375",
+      "feature": "PART II: The Substrate Engine \u2014 thesis chapter + rungs A/C/D",
+      "campus_sources": [],
+      "web_sources": [
+        "Internal: THE_MATTER_MODEL.md (brick optical fields, coalesce/fracture SS6, rung ladder), TRAINING_PROTOCOL.md SS3.5 (honest eval carried into splat rungs), rig.py/bake.py artifact chain, seed AGroundActor+DIG+SURFACE_TABLE. External (MODEL KNOWLEDGE, marked verify-live in the doc and enforced in tb"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/PART II: The Substrate Engine \u2014 thesis chapter + rungs A/C/D",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'PART II: The Substrate Engine \u2014 thesis chapter + rungs A/C/D': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_3ee4eb87c98a"
+    },
+    {
+      "id": "phase_1fc717dadb5899f4",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T04:27:00.881198",
+      "phase": "PART II: The Substrate Engine \u2014 thesis chapter + rungs A/C/D-prime minted (fable-1)",
+      "result": "PART II (SS10-SS15) appended to docs/THE_COMPOSITIONAL_WORLD_MODEL.md with the human's commission verbatim; board tasks tb-0168 (splat emission + gait coherence, headless), tb-0169 (terrain-as-matter shovel test, depends tb-0168), tb-0170 (in-editor Substrate splats, capable-only, depends tb-0168) minted with kill criteria; pushed ebf0cd7.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/PART II: The Substrate Engine \u2014 thesis chapter + rungs A/C/D-prime minted (fable-1)",
+      "error_category": "none",
+      "fix_description": "Phase 'PART II: The Substrate Engine \u2014 thesis chapter + rungs A/C/D-prime minted (fable-1)' complete: PART II (SS10-SS15) appended to docs/THE_COMPOSITIONAL_WORLD_MODEL.md with the human's commission verbatim; board tasks tb-0168 (splat emission + gait coherence, headless), tb-0169 (terrain-as-matter ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "tb-0170 (in-engine splats) gets claimed and the agent, finding UE splat plugins are unlit viewers, hand-rolls a translucent unlit path and declares it done - the KILL criterion (must be lit by the moving directional light, matched against the mesh) is the tripwire; check the screenshots show light ANGLE changing the shading."
+      ],
+      "inheritance": "The substrate engine unifies physics and rendering on ONE atom (brick+slab+splat); splats carry matter not light because this studio emits from known materials; rungs A/B/C are pure Python on existing artifacts; a measured kill on any rung is a recorded win.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_3ee4eb87c98a"
     }
   ],
   "edges": [
