@@ -73239,6 +73239,191 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_9629fdffb996"
+    },
+    {
+      "id": "discovery_f22f9ae436c42c44",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T08:06:09.108821",
+      "feature": "Build toward the seed: UStarMemorialSubsystem",
+      "campus_sources": [],
+      "web_sources": [
+        "UE5.8 UPROPERTY SaveGame specifier + save/load contract (dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties, /saving-and-loading-your-game-in-unreal-engine); UActorComponent::BeginPlay lifecycle \u2014 confirmed no BeginPlay override needed since constructor-set trained literal"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Build toward the seed: UStarMemorialSubsystem",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Build toward the seed: UStarMemorialSubsystem': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_2cfb9d01f021"
+    },
+    {
+      "id": "phase_0a180d438ced7437",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T08:06:09.578990",
+      "phase": "Build toward the seed: UStarMemorialSubsystem",
+      "result": "tb-0158 DONE via typed closure (report-waiver recorded; Coin judged NEEDS_REFINEMENT 0.95 on the deferred build \u2014 honest, recorded). Added core/game_code_generator.py::_load_memorial_trained_genome() + generate_star_memorial_files() (mirrors generate_weather_subsystem_files idiom incl. generation-time trained-genome load with loud documented fallback to seed CHIMERA_VISION.py:3153/3141-3145) + wiring in generate_all_from_dsl(). Generator ran clean (no fallback warning = trained genome adopted): emitted Save/StarMemorialComponent.h (BrightnessK=14.275037f, BrightLightsYardThreshold=0.455572f baked as literals; 8 trained SACRIFICE_WEIGHTS cited in header comment), Save/StarMemorialComponent.cpp (H-21 witness markers '[Memorial] StarAdded gen=%d brightness=%.4f kind=%s' + '[Memorial] NightLight level=%.4f' in AddLife), Tests/StarMemorialAcceptanceTests.cpp (6 plain-function tests: init ranges, monotonicity ladder, costless-below-yard, golden-angle bearing, night-light 0.5 cap, twinkle). Extracted pre-existing SacrificeLog automation-macro tests verbatim to NEW Tests/SacrificeLogAcceptanceTests.cpp so regen cannot delete unrelated coverage. UBT verbatim: 'Unable to build while Live Coding is active. Exit the editor and game, or press Ctrl+Alt+F11 if iterating on code in the editor or game / Result: Failed (OtherCompilationError) / Total execution time: 8.96 seconds' \u2014 live MCP-bridge-responsive UnrealEditor.exe PID 163904, unowned per agent_tunnel status, NOT killed per task instruction. rep_engine tend: 68 batteries, 852 atoms, 828 reps (5 failing, none memorial-related); System_SaveGame gate=READY 4739 reps streak 8.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Build toward the seed: UStarMemorialSubsystem",
+      "error_category": "none",
+      "fix_description": "Phase 'Build toward the seed: UStarMemorialSubsystem' complete: tb-0158 DONE via typed closure (report-waiver recorded; Coin judged NEEDS_REFINEMENT 0.95 on the deferred build \u2014 honest, recorded). Added core/game_code_generator.py::_load_memorial_trained_genome() ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "P1: The regenerated StarMemorialComponent.h/.cpp + two test files have never been compiled \u2014 Live Coding in the running editor blocked UBT all session; if the header/test idiom has any UHT or C++20 defect (e.g. UE_ARRAY_COUNT in a printf %d slot, try/catch in the test runner mirroring WeatherAcceptanceTests' pattern), the first real UBT after integration will surface it, and rep atoms (text-grep) structurally cannot."
+      ],
+      "inheritance": "StarMemorialComponent is now generator-owned (generate_star_memorial_files) \u2014 fix the template, never the emitted C++; trained memorial numbers flow from docs/objectives/memorial.trained.json at generation time. The emitted C++ has NOT been compiled this session (Live Coding blocked UBT; editor PID 163904 was live and unowned) \u2014 run one real UBT before treating it as build-verified. SacrificeLog test coverage now lives in its own loop-built file Tests/SacrificeLogAcceptanceTests.cpp; USacrificeLogComponent still does not implement the seed's weight-keyed Record()/WeightForGeneration() shape, so the 8 trained weights have no consumer yet.",
+      "pain_verdicts": {
+        "phase_0a105b3f5bf72854:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_2cfb9d01f021"
+    },
+    {
+      "id": "discovery_0fb6a6e9c18cde68",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T08:08:48.788367",
+      "feature": "Lead verification: deferred memorial UBT (tb-0158)",
+      "campus_sources": [],
+      "web_sources": [
+        "n/a - single verification build of sub-32's audited generator output"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Lead verification: deferred memorial UBT (tb-0158)",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Lead verification: deferred memorial UBT (tb-0158)': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_664c7cdeaa9b"
+    },
+    {
+      "id": "phase_99c77733e653c4eb",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T08:08:49.208723",
+      "phase": "Lead verification: deferred memorial UBT (tb-0158)",
+      "result": "UBT ChimeraEditor Win64 Development: Result: Succeeded, Total execution time: 19.56 seconds (Unreal Build Accelerator 18.70s). Compiles StarMemorialComponent.h/.cpp + StarMemorialAcceptanceTests.cpp + the extracted SacrificeLogAcceptanceTests.cpp at HEAD 13a36a5+. Editor (unclaimed, Live-Coding-blocked) closed for the build per no-claim rule; relaunching via unblock.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Lead verification: deferred memorial UBT (tb-0158)",
+      "error_category": "none",
+      "fix_description": "Phase 'Lead verification: deferred memorial UBT (tb-0158)' complete: UBT ChimeraEditor Win64 Development: Result: Succeeded, Total execution time: 19.56 seconds (Unreal Build Accelerator 18.70s). Compiles StarMemorialComponent.h/.cpp + StarMemorialAcceptanceTests.cpp +",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The regenerated StarMemorialAcceptanceTests use plain-function idiom - if the nullrhi commandlet automation lane (MASTER_ONBOARDING 8c) does not discover plain-function tests, memorial coverage silently never RUNS despite compiling; verify the suite actually executes in the commandlet lane"
+      ],
+      "inheritance": "Memorial rung 2 is BUILD-VERIFIED: trained brightness curve (k=14.275, yard=0.4556) compiled into the generated component; the 8 trained weights await the SacrificeLog seed-shape migration (named in the generator docstring). Next: a beat asserting [Memorial] StarAdded markers once witnessed.",
+      "pain_verdicts": {
+        "phase_0a180d438ced7437:P1": "refuted"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_664c7cdeaa9b"
+    },
+    {
+      "id": "discovery_99932f01820e6020",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T08:09:19.448299",
+      "feature": "Matter library: fix mojibake + finish remaining provisional ",
+      "campus_sources": [],
+      "web_sources": [
+        "Fetched live this session: NIST cryogenics Al-6061-T6 property page (trc.nist.gov - full 5-coefficient Young's modulus polynomial, evaluated at T=293K = 68.9 GPa); NASA NTRS 20210026714 (grain sizes 10084=24.5um, 67461=118.5um); Wikipedia Ice (density 0.9167-0.9168 g/cm3 quote); Warren 2019 'Optical"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Matter library: fix mojibake + finish remaining provisional ",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Matter library: fix mojibake + finish remaining provisional ': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_d93cf1739985"
+    },
+    {
+      "id": "phase_5460b777e2a3e47c",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T08:09:19.833011",
+      "phase": "Matter library: fix mojibake + finish remaining provisional research (tb-0172 follow-up)",
+      "result": "tb-0181 (follow-up to tb-0172, which the board already held as done): repaired 21 mojibake-corrupted strings in docs/matter/matter_library.json (cp1252/UTF-8 round-trip corruption: em-dash, approx, plus-minus, degree; verified 0 residual fixable strings, 0 U+FFFD, python -m json.tool passes). basin.physical.density_kg_m3 upgraded provisional->researched with mean corrected 1100->900 kg/m3 (Fa et al. 2020 Chang'E-3 lunar penetrating radar: 0.85 g/cm3 surface). Provenance-integrity correction: sand/rock/metal appearance blocks reverted researched->provisional (git show c456be1 proves they were originally provisional pending in-engine M_Sand calibration that was never done; numbers untouched). basin/ice appearance notes enriched (Warren 2019: pure-ice absorption MFP is hundreds of metres, so the 8mm subsurface_mfp_mm is stylistic scattering, not a constant). 4 predecessor citations independently re-verified (NIST Al6061-T6 polynomial evaluated at 293K = 68.9 GPa; NTRS 20210026714 grain sizes exact; Wikipedia Ice density exact; Mitchell 1972 consistent) - zero fabrication found. Census now: researched 33, seed 32, design 17, code 8, provisional 5. Sources file extended with RESOLVED section, spot-check log, tb-0181 totals, tendon family-membership observation.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Matter library: fix mojibake + finish remaining provisional research (tb-0172 follow-up)",
+      "error_category": "none",
+      "fix_description": "Phase 'Matter library: fix mojibake + finish remaining provisional research (tb-0172 follow-up)' complete: tb-0181 (follow-up to tb-0172, which the board already held as done): repaired 21 mojibake-corrupted strings in docs/matter/matter_library.json (cp1252/UTF-8 round-trip corruption: em-dash, approx, pl",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "sand/rock/metal/basin appearance albedo means are 3-6x brighter than measured physical reflectance (regolith 7-8 percent vs the entry's ~47 percent luminance) - documented as a finding, but nothing enforces a decision at rung D' calibration time; naive adoption of raw literature albedos could crush the level near-black under current exposure, while ignoring them leaves the library's appearance column permanently uncitable."
+      ],
+      "inheritance": "The matter library is now mojibake-free with honest provenance: 5 appearance blocks remain provisional because their albedo/roughness need in-engine Substrate calibration (tb-0174/rung D'), not more literature. The sources file (docs/research/matter_library_sources.md) carries a spot-check verification log pattern worth reusing: NIST temperature-polynomial fits must be EVALUATED at 293K, not read off the constant term. closure_report's build-currency check is repo-wide git-status, so concurrent agents touching Source/ false-positive each other's closures - three subagents hit it simultaneously tonight.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_d93cf1739985"
+    },
+    {
+      "id": "discovery_06044a85503bce61",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T08:09:26.070373",
+      "feature": "Material harvester: GPU region-scan + PATTERN matching over ",
+      "campus_sources": [],
+      "web_sources": [
+        "Julesz texton theory + Gabor filter-bank texture discrimination (Julesz 1981 'A theory of preattentive texture discrimination based on first-order statistics of textons', Biological Cybernetics / pubmed 7248342; Turner 'Texture discrimination by Gabor functions', Biological Cybernetics BF00341922; L"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Material harvester: GPU region-scan + PATTERN matching over ",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Material harvester: GPU region-scan + PATTERN matching over ': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_4dbec4cd3b4a"
+    },
+    {
+      "id": "phase_56108f89b6ca1ee9",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T08:09:26.446963",
+      "phase": "Material harvester: GPU region-scan + PATTERN matching over the photo corpus",
+      "result": "Built core/material_harvester.py (tb-0180). Corpus: 4 synthetic-placeholder images (regolith/rock/brushed_metal/ice, 320x320, calibrated to matter_library.json researched/provisional entries; real CC0 downloads not performed -- safety boundary, tb-0175 hit the same wall). 256 regions scanned (40px tiles). Measured: CPU 154.9 regions/sec vs GPU 5141.0 regions/sec (33.2x), filter-bank parity MAE=0.000245 (<1e-2, PASS). KILL criterion regolith-vs-brushed_metal: cross=6.468 vs within=1.685, ratio=3.839 PASS; regolith-vs-rock ratio=3.382 PASS. Julesz adversarial probe: color-only distance 0.0167 vs full-pattern 6.854 PASS (pattern, not averages, discriminates). Harvested sets: 16 regions each x 4 materials under docs/matter/reference_scans/harvested/ with photo+coords+distance provenance; exemplar tags all provisional-tag (NO REFERENCE NO VERDICT -- human tag supersedes). Reference-descriptor files written in the exact shape core.trainables.material_appearance.load_reference_descriptors() reads; that loader's pre-existing ROOT path bug (parents[1] -> parents[2], out of my footprint) found, verified by direct call, recorded as surprise_43c5a16e0f439c80 + spawned fix task. Coin verdict on closure: NEEDS_REFINEMENT 0.8 (diff carried no execution log; numbers live in harvested/separation_report.json, run is deterministic).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Material harvester: GPU region-scan + PATTERN matching over the photo corpus",
+      "error_category": "none",
+      "fix_description": "Phase 'Material harvester: GPU region-scan + PATTERN matching over the photo corpus' complete: Built core/material_harvester.py (tb-0180). Corpus: 4 synthetic-placeholder images (regolith/rock/brushed_metal/ice, 320x320, calibrated to matter_library.json researched/provisional entries; real CC0",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "P1: the synthetic-placeholder corpus may flatter the descriptors -- textures synthesized from the same library numbers the harvester then matches are a closed loop; expect the separation margins (3.8x, 3.4x) to compress on real photos with lighting/perspective variance, and the KILL criterion must be re-run the day real CC0 photos land."
+      ],
+      "inheritance": "material_harvester.py follows the splat_gpu CPU-reference+Warp-twin idiom: only the O(regions x filters x pixels) filter-bank moves to GPU, one launch, zero syncs inside the batch. Descriptor ordering is load-bearing: 12 Gabor energies + grain length + periodicity + anisotropy first, color moments last at weight 0.1 -- the Julesz probe in-module is the numeric tripwire if anyone reweights. Real photos drop into docs/matter/reference_scans/ top-level and ingest with zero code changes; material_appearance.py's ROOT bug must be fixed (parents[2]) before its loader can read ANY reference file.",
+      "pain_verdicts": {
+        "phase_4d2da4e032a4aa07:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_4dbec4cd3b4a"
     }
   ],
   "edges": [

@@ -1,3 +1,36 @@
+# Session 2026-07-18 (sub-31) — tb-0180 DONE: material harvester, pattern-not-averages, GPU-proven
+
+- **`core/material_harvester.py`** (new, ~700 lines): GPU region-scan + PATTERN matching
+  over the photo corpus. Follows splat_gpu's CPU-reference + Warp-twin idiom exactly:
+  only the filter-bank energies (O(regions×filters×pixels)) move to GPU — one launch,
+  zero syncs in the batch; grain/periodicity/aniso/color reductions stay numpy. Measured:
+  **CPU 154.9 vs GPU 5141.0 regions/sec (33.2×), parity MAE 2.4e-4**. Descriptor order is
+  load-bearing (Julesz): 12 Gabor energies → grain length → periodicity → anisotropy →
+  color moments LAST at weight 0.1.
+- **KILL criterion PASS**: regolith-vs-brushed_metal separation ratio 3.84 (cross 6.47 vs
+  within 1.68); harder pair regolith-vs-rock 3.38. **Julesz adversarial probe PASS**: a
+  metal-patterned region 3-way color-matched to regolith reads color-only distance 0.017
+  (an averages-matcher calls them THE SAME) vs full-pattern 6.85 — pattern discriminates.
+- **Corpus is SYNTHETIC-PLACEHOLDER** (4 images calibrated to matter_library.json's own
+  researched numbers, provenance-tagged everywhere): real CC0 downloads are gated on the
+  human's own permission (subagent cannot obtain; tb-0175 hit the same wall). Real photos
+  drop into `docs/matter/reference_scans/` top-level and ingest with ZERO code changes —
+  re-run the KILL test that day (declared phantom pain: closed-loop margins may compress).
+- **Harvested**: 16 regions × 4 materials under `docs/matter/reference_scans/harvested/`
+  (photo+coords+distance provenance); exemplar tags all `provisional-tag` (NO REFERENCE
+  NO VERDICT — a human tag supersedes). Reference-descriptor files written in exactly the
+  shape `material_appearance.load_reference_descriptors()` reads — **and that loader has
+  a pre-existing ROOT bug (parents[1]→parents[2], core/trainables/material_appearance.py)
+  making it ALWAYS return None; verified by direct call, surprise_43c5a16e0f439c80,
+  fix task spawned. Out of sub-31's footprint — not fixed here.**
+- Coin on closure: NEEDS_REFINEMENT 0.8 (diff carried no execution log; the numbers live
+  in `harvested/separation_report.json`, run is deterministic — `python -m
+  core.material_harvester` reproduces). Postflight: phase_56108f89b6ca1ee9. CAPCOM gate
+  defect posted: exit's build-currency check flagged 4 Source files OUTSIDE the declared
+  footprint (concurrent sibling session's) — check should scope to resources.files.
+
+---
+
 # Session 2026-07-18 late (fable-1/fable-5) — Substrate ON; the agent gets a world model; GPU light
 
 - **SUBSTRATE ENABLED project-wide** (r.Substrate=1 + GBufferFormat=1 Adaptive in

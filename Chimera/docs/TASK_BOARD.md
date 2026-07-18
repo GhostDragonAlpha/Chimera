@@ -1,17 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T07:41:07+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T08:08:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0181 | claimed | 1 | Matter library: fix mojibake + finish remaining provisional  | docs/matter/matter_library.json, docs/research/matter_library_sources.md | sub-27 |
 | tb-0179 | claimed | 0.85 | Substrate: high-resolution splat emission - the baby-toy cri | core/splat_emit.py, core/splat_to_ue5.py… | sub-30 |
-| tb-0180 | claimed | 0.8 | Material harvester: GPU region-scan + PATTERN matching over  | core/material_harvester.py, docs/matter/reference_scans/** | sub-31 |
-| tb-0158 | claimed | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator | sub-32 |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
@@ -70,6 +67,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0153 | done | 1 | Collapse: Social_Trade | editor:open; excl:pie | Collapse: Social_Trade accepted via collapse_proxy from simt |
 | tb-0154 | done | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie | Sleepwalker simtest_8e2249197944c447: 1/1 beats reached for  |
 | tb-0155 | done | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie | Witness: Travel_Vehicle_Basic DONE. Created beat file docs/b |
+| tb-0181 | done | 1 | Matter library: fix mojibake + finish remaining provisional  | docs/matter/matter_library.json, docs/research/matter_library_sources.md | tb-0172 follow-up (tb-0181): repaired 21 mojibake-corrupted  |
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
 | tb-0131 | done | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | UE_LOG witness markers verified present in NPCTradeComponent |
@@ -102,6 +100,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0167 | done | 0.8 | CWM rung 1: director domain - train the encounter ecology | core/trainables/director.py, docs/objectives/director.json | FILES: core/trainables/director.py (572 lines: seed/mutate/m |
 | tb-0172 | done | 0.8 | Matter library: research-pin the provisional numbers (cached | docs/matter/matter_library.json, docs/research/matter_library_sources.md | Library updated: 15 physical fields + 2 nested grain_size_mm |
 | tb-0175 | done | 0.8 | Matter library: train appearance entries against REAL splat/ | core/trainables/material_appearance.py, docs/objectives/material_appearance.json… | Material appearance trainable domain created. 1,355 evals/se |
+| tb-0180 | done | 0.8 | Material harvester: GPU region-scan + PATTERN matching over  | core/material_harvester.py, docs/matter/reference_scans/** | Built core/material_harvester.py (tb-0180): GPU region-scan  |
 | tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
 | tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
 | tb-0098 | done | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** | auto-closed: pain phase_c67559a04eceaec4:P2 already disposit |
@@ -113,6 +112,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0111 | done | 0.75 | Fix confirmed pain: frozen dispatch prompt in chimera-task-c | ../.claude/workflows/chimera-task-cycling.js | chimera-task-cycling.js TASK_CONTEXT rewritten under the ant |
 | tb-0121 | done | 0.75 | Fix confirmed pain: task_board._scope_for keyword matching i | Source/Chimera/** | Already fixed by tb-0116 (same session, before this mint): _ |
 | tb-0151 | done | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator | UWeatherSubsystem C++ generated from trained data (score=0.9 |
+| tb-0158 | done | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator | Added core/game_code_generator.py::_load_memorial_trained_ge |
 | tb-0174 | done | 0.75 | Matter library: splat emitter reads optics from the library  ⇐ tb-0172 | core/splat_emit.py, docs/matter/matter_library.json | splat_emit optics wired from library (no-visual-change). OPT |
 | tb-0113 | done | 0.7 | Fix confirmed pain: 4 meta labels sit in the feature ledger  | docs/world/** | 4 meta ledger entries reclassified with typed records + beca |
 | tb-0115 | done | 0.7 | training_gate: .claude/ footprints are infra, not default-ga | core/training_gate.py | core/training_gate.py: .claude/ added to infra file markers. |
