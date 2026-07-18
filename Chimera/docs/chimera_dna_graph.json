@@ -73424,6 +73424,91 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_4dbec4cd3b4a"
+    },
+    {
+      "id": "surprise_04d336c878601508",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T08:53:38.278486",
+      "context": "tb-0179: quad_cloud exported splat GLBs with vertex values in CENTIMETERS; expected the imported cloud to spawn at true limb size (~86cm radius)",
+      "expectation": "",
+      "reality": "glTF's spec unit is METERS and UE's importer multiplies by 100 on the m->cm convert: get_actor_bounds measured extent [3234, 8690, 3799] cm for an 87.7cm-radius GLB \u2014 every splat cloud ever imported was 100x oversized, which is the MECHANISM behind the human's original 'giant plates' baby-toy verdict (2.7cm quads rendered as 2.7 METER slabs). Fixed by exporting meters in quad_cloud; bounds now read [29.5, 85.4, 36.0] cm. Caught by scene_model prediction-vs-pixels divergence + ONE get_actor_bounds call after three sessions of eyeballing had not measured it",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but 'glTF's spec unit is METERS and UE's importer multiplies by 100 on the m->cm conv'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8996b71eafed"
+    },
+    {
+      "id": "surprise_0bac03411fffea5d",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T08:53:43.169015",
+      "context": "tb-0179: called control_actor action 'delete_actor' to clean up staged actors before respawn, as core/bake_to_ue5.py, core/splat_to_ue5.py and core/photo_studio.py all do",
+      "expectation": "",
+      "reality": "'delete_actor' is NOT a bridge action \u2014 returns success:false 'Unknown actor control action: delete_actor'; every repo call site ignores the response so it is a SILENT NO-OP (a 'deleted' cloud survived and photobombed the next solved portrait; the scene_model prediction exposed it as an unexpected 0.765-coverage actor before any pixel was read). Real verbs per McpTool_ControlActor.cpp: 'delete' / 'destroy_actor' \u2014 destroy_actor verified success:true + get_transform confirms gone. splat_to_ue5.py fixed; bake_to_ue5.py + photo_studio.py flagged to Lead",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but ''delete_actor' is NOT a bridge action \u2014 returns success:false 'Unknown actor con'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_cfc92f0df47c"
+    },
+    {
+      "id": "discovery_6f5a279d9364f485",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T08:58:13.842043",
+      "feature": "Substrate: high-resolution splat emission - the baby-toy cri",
+      "campus_sources": [],
+      "web_sources": [
+        "Read Plugins/McpAutomationBridge/.../McpTool_ControlActor.cpp to find the real bridge verbs (delete/destroy_actor/get_actor_bounds - how the delete_actor no-op was proven); inspected warp 1.15.0 utils signatures (radix_sort_pairs/segmented_sort_pairs) before choosing numpy stable-sort tile binning; "
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Substrate: high-resolution splat emission - the baby-toy cri",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Substrate: high-resolution splat emission - the baby-toy cri': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_2e6626dfb436"
+    },
+    {
+      "id": "phase_694abf39310359dc",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T08:58:14.272310",
+      "phase": "Substrate: high-resolution splat emission - the baby-toy critique (tb-0179, sub-30)",
+      "result": "tb-0179 DONE. Density staircase measured 22.6k -> 991.9k splats (7 tiers); sub-cm from tl224 (0.786cm quads, 373,273 splats). 3DGS tile pipeline built in core/splat_gpu.py, parity MAE 0.00000 vs per-pixel GPU at every tier tested (7.6k-992k), CPU reference untouched (MAE 0.00022). In-engine hero (373k/1.49M verts, Nanite): bounds [29.5, 85.4, 36.0] cm true-size, fps 120 cap / frame 8.33ms vs 16.6ms Malcolm wall HOLDS (game 4.59 / render 2.78 / gpu 2.42 ms), portrait matched its scene_model prediction (coverage 0.29 on-axis). NOT KILLED. Two mechanism bugs found+fixed: glTF-units 100x (the actual 'giant plates' mechanism - quad_cloud now exports meters; proven by before/after bounds) and delete_actor-is-not-a-bridge-action (silent no-op; my call sites fixed, bake_to_ue5/photo_studio flagged). PNGs: Saved/Screenshots/studio_Splat_Cloud.png, studio_Cloud_tl64.png, studio_Cloud_tl224.png, studio_pair_Cloud_tl64_Cloud_tl224.png; predictions written before pixels in Saved/SubstrateSplats/.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Substrate: high-resolution splat emission - the baby-toy critique (tb-0179, sub-30)",
+      "error_category": "none",
+      "fix_description": "Phase 'Substrate: high-resolution splat emission - the baby-toy critique (tb-0179, sub-30)' complete: tb-0179 DONE. Density staircase measured 22.6k -> 991.9k splats (7 tiers); sub-cm from tl224 (0.786cm quads, 373,273 splats). 3DGS tile pipeline built in core/splat_gpu.py, parity MAE 0.00000 vs per-p",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The 992k/tl320 tier (111MB GLB, 3.97M verts) may break the in-engine import path - expect bridge timeout or Nanite build stall at that scale; untested this session."
+      ],
+      "inheritance": "The density levers are CLI knobs now (splat_to_ue5 --target-len/--tangent-scale/--quad-overlap) and every run prints a DENSITY_ROW - a density study is a rerun, not a rebuild. quad_cloud exports glTF METERS (the importer x100 restores cm) - do not \"fix\" that back to cm or every cloud spawns 100x oversized again. Growth is the wall for 1M+ (486s at 992k, pure-Python adhesion sweeps) - the next density order needs matter.assemble_3d vectorized or GPU, not more patience.",
+      "pain_verdicts": {
+        "phase_4d2da4e032a4aa07:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_2e6626dfb436"
     }
   ],
   "edges": [

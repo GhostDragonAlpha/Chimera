@@ -1,3 +1,36 @@
+# Session 2026-07-18 (sub-30) — tb-0179 DONE: sub-cm splats, tile pipeline, and the 100x plate bug
+
+- **The density staircase, measured** (seed=0, bent_limb; DENSITY_ROW lines + Saved/SubstrateSplats/density_*.json):
+  22.6k @1.77cm/vox (2.75cm quads) -> 52k -> 96k -> 157k -> 245k @0.59 -> **373k @0.51 (0.786cm quads, SUB-CM)** ->
+  **992k @0.35 (0.549cm)**. Emission stays trivial (0.02s->1.5s); **GROWTH is the wall**
+  (pure-Python adhesion sweeps: 3s -> 486s at 992k) — next density order needs matter.assemble_3d
+  vectorized/GPU, not patience. GLBs: 2.5MB -> 41.8MB (373k) -> 111MB (992k).
+- **3DGS TILE pipeline built** (core/splat_gpu.py: project -> bin 16x16 tiles -> ONE stable sort
+  preserves global front-to-back order per tile -> composite kernel; shared _project_and_shade so
+  parity isolates compositing strategy): **parity MAE 0.00000 vs per-pixel GPU at 7.6k/22.6k/157k/373k/992k**;
+  CPU reference untouched (MAE 2.2e-4). Tiled wins where tiles are sparse (x1.21 wide at 22.6k) and at
+  high N (x1.41 at 992k: 870->617ms); tight small frames slightly favor per-pixel — both recorded.
+- **THE 100x PLATE BUG (the actual 'giant plates' mechanism): glTF's unit is METERS, quad_cloud exported
+  CM, UE importer multiplies x100** — get_actor_bounds measured [3234, 8690, 3799]cm extent for an
+  87.7cm-radius GLB. Every splat cloud ever imported was 100x oversized. Fixed (quad_cloud exports meters);
+  after: [29.5, 85.4, 36.0]cm = the true 171cm limb. Caught by scene_model prediction-vs-pixels divergence
+  + ONE bounds read-back. **Do not 'fix' the meters export back to cm.**
+- **In-engine verdict (373k hero, 1.49M verts, Nanite): NOT KILLED** — fps 120 (cap), frame 8.33ms vs
+  Malcolm 16.6ms wall HOLDS with 2x headroom (game 4.59 / render 2.78 / gpu 2.42 ms, cloud in frustum,
+  editor foregrounded). Portrait matched its prediction (0.29 coverage on-axis). Side-by-side money shot:
+  tl64 = visible PLATES, tl224 = continuous matter (Saved/Screenshots/studio_pair_Cloud_tl64_Cloud_tl224.png).
+- **delete_actor IS NOT A BRIDGE ACTION** (silent no-op; returns 'Unknown actor control action', nobody
+  checked) — real verbs: delete / destroy_actor (McpTool_ControlActor.cpp). splat_to_ue5 fixed;
+  **bake_to_ue5.py:60 + photo_studio.py:68 still broken** (chip spawned; also scene_model KNOWN_RADIUS
+  stale — prefer get_actor_bounds at ingest). Surprises: surprise_04d336c878601508, surprise_0bac03411fffea5d.
+- Ops: editor was wedged on a 'Restore Packages' modal (unclean shutdown from a sibling UBT cycle) —
+  killed, archived Saved/Autosaves/PackageRestoreData.json.bak-tb0179 aside (only stale splat/mesh
+  auto-saves), relaunched clean. tb-0182 misattribution fired at closure as predicted; honest build-waiver.
+- Untested honestly: 992k in-engine (111MB GLB), COLOR_0 tint (tb-0170 importer-material item, fable-5),
+  rung-B gait at high density, true sub-8.33ms frame cost (120fps cap). Postflight phase_694abf39310359dc.
+
+---
+
 # Session 2026-07-18 (sub-31) — tb-0180 DONE: material harvester, pattern-not-averages, GPU-proven
 
 - **`core/material_harvester.py`** (new, ~700 lines): GPU region-scan + PATTERN matching

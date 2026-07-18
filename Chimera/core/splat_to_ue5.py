@@ -62,6 +62,9 @@ CAMERA = "130 -520 130 0 90 0"          # stand back on -Y, look at the pair
 SUN_SWEEP = [(-35, 25), (-45, 140), (-25, 260)]   # (pitch, yaw) — three sun positions
 EDITOR_TITLE = "Chimera - Unreal Editor"
 MALCOLM_FRAME_MS = 16.6
+PORTRAIT_FILL = 0.45      # fill for an ELONGATED subject: its bounding-SPHERE radius is
+# the half-diagonal, so fill=0.7 puts a 90-degree camera ~0.5 radii from the surface and
+# the frame is wall-to-wall speckle (seen live, tl224). 0.45 backs off to ~2.2 radii.
 
 
 def quad_cloud(splats: dict, scale: float, tangent_scale: float = 1.15,
@@ -71,7 +74,17 @@ def quad_cloud(splats: dict, scale: float, tangent_scale: float = 1.15,
     passed to emit_limb — the emission's own disk radius, not a re-guessed number) x
     scale (cm/voxel) x overlap (closes seams between neighbouring quads; tb-0179: shrink
     this ALONGSIDE tangent_scale, not instead of finer voxel pitch, when pushing density
-    up — the recipe's lever (2), independent of lever (1))."""
+    up — the recipe's lever (2), independent of lever (1)).
+
+    UNITS (the 100x plate bug, found by engine bounds read-back, tl224 2026-07-18):
+    glTF's spec unit is METERS; UE's importer multiplies by 100 on the m->cm convert.
+    This function's math is in CENTIMETERS (scale = cm/voxel), so the export step below
+    divides by 100 — the GLB carries meters, the importer's x100 restores true size.
+    Before this fix every splat GLB spawned 100x oversized: the first 22.6k cloud's
+    bounds measured 87 METERS ([3234, 8690, 3799] cm extent for an 87.7cm-radius GLB),
+    which is the mechanism behind the human's original 'giant plates' — 2.7cm quads
+    rendered as 2.7 METER slabs. The prediction-vs-pixels loop plus one
+    get_actor_bounds call caught what three sessions of eyeballing had not measured."""
     import trimesh
 
     pos = splats["pos"] * scale
@@ -90,6 +103,7 @@ def quad_cloud(splats: dict, scale: float, tangent_scale: float = 1.15,
     # uncentered verts (0..340cm from origin) made the spawned actor's geometry hang
     # far from its pivot: it hovered in the sky while its transform read (x,y,100)
     # (seen live 2026-07-18; the bake path recentres per-tissue for the same reason)
+    verts = verts * 0.01                                        # cm -> glTF METERS (see docstring)
     base = np.arange(len(pos)) * 4
     f1 = np.stack([base, base + 1, base + 2], axis=1)
     f2 = np.stack([base, base + 2, base + 3], axis=1)
@@ -150,7 +164,10 @@ def drive(splat_glb: Path, mesh_glb: Path) -> dict:
             ("Mesh_Skin", f"{DEST}{mesh_glb.stem}/StaticMeshes/skin", MESH_X),
         ]
         for name, path, x in spawns:
-            c.call("control_actor", {"action": "delete_actor", "actorName": name})
+            # NOT "delete_actor" — that action does not exist in the bridge (silent no-op;
+            # McpTool_ControlActor.cpp registers "delete"/"destroy_actor"). Found live
+            # 2026-07-18 when a "deleted" cloud photobombed the next portrait.
+            c.call("control_actor", {"action": "destroy_actor", "actorName": name})
             ok, msg = _ok(c.call("control_actor", {
                 "action": "spawn_actor", "classPath": "/Script/Engine.StaticMeshActor",
                 "meshPath": path, "actorName": name,
@@ -224,21 +241,30 @@ def drive_density_study(splat_glb: Path, cloud_radius: float, tag: str = "",
         ok, msg = st.build()
         log["stage:ground"] = (ok, msg)
 
-        c.call("control_actor", {"action": "delete_actor", "actorName": "Splat_Cloud"})
+        c.call("control_actor", {"action": "destroy_actor", "actorName": "Splat_Cloud"})
         ok, msg = _ok(c.call("control_actor", {
             "action": "spawn_actor", "classPath": "/Script/Engine.StaticMeshActor",
             "meshPath": mesh_path, "actorName": "Splat_Cloud",
             "location": {"x": 0.0, "y": 0.0, "z": 0.0}}))
         log["spawn:Splat_Cloud"] = (ok, msg)
 
-        ok, msg = st.place("Splat_Cloud", 0, cloud_radius)
-        log["place:Splat_Cloud"] = (ok, msg)
+        placed, msg = st.place("Splat_Cloud", 0, cloud_radius)
+        log["place:Splat_Cloud"] = (placed, msg)
 
         sm = SceneModel(client=c)
         n = sm.ingest()
         log["scene_model:ingest"] = (n > 0, f"{n} actors held")
         if "Splat_Cloud" in sm.actors:
-            exp = sm.expectation("Splat_Cloud")
+            # ONE radius for prediction AND portrait — scene_model's KNOWN_RADIUS table
+            # holds 160cm baked from the FIRST (22.6k) cloud; solving the prediction with
+            # the stale constant while the portrait used the true export-time radius put
+            # the two cameras 117cm apart, and the divergence showed up as pixels-vs-
+            # prediction mismatch (caught live, tl224, 2026-07-18 — the one-step stale-
+            # model detection scene_model's docstring promises). The export-time radius
+            # is the DATA; the table is only a fallback for actors with no exporter.
+            sm.actors["Splat_Cloud"]["radius"] = float(cloud_radius)
+            sm.actors["Splat_Cloud"]["radius_known"] = True
+            exp = sm.expectation("Splat_Cloud", azim_deg=205.0, elev_deg=12.0, fill=PORTRAIT_FILL)
             pred_path = OUT / f"prediction{('_' + tag) if tag else ''}.json"
             OUT.mkdir(parents=True, exist_ok=True)
             pred_path.write_text(json.dumps(exp, indent=2), encoding="utf-8")
@@ -254,8 +280,13 @@ def drive_density_study(splat_glb: Path, cloud_radius: float, tag: str = "",
             log["frame_vs_malcolm_wall"] = (frame_ms <= MALCOLM_FRAME_MS,
                                             f"{frame_ms:.2f}ms  (wall={MALCOLM_FRAME_MS}ms)")
 
-        shot = st.portrait("Splat_Cloud", fill=0.7)      # SOLVED camera, settled, per the rule
-        log["portrait"] = (True, str(shot))
+        if placed:               # portrait only if the subject registered (KeyError guard —
+            # the first tl224 run died HERE unlogged when place failed, taking the whole
+            # step log with it; a failed step must fail ITS OWN line, not the report)
+            shot = st.portrait("Splat_Cloud", fill=PORTRAIT_FILL)  # SOLVED camera, settled
+            log["portrait"] = (True, str(shot))
+        else:
+            log["portrait"] = (False, "skipped: place failed, no registered subject to solve for")
     finally:
         c.close()
     return log
