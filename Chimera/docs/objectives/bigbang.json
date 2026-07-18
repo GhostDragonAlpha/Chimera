@@ -1,0 +1,90 @@
+{
+  "name": "bigbang",
+  "author": "LLM, from the human's big-bang scenario (2026-07-18). Research-pinned architecture facts, never taste. Serves BOTH twins (core/trainables/bigbang.py CPU, bigbang_gpu.py GPU) - same fact names.",
+  "scenario": "The metaphorical big bang: seed a spinning 3D cloud of matter parcels (INITIAL CONDITIONS: spin, flatten0 - where all authorship lives once the law is fixed), run one uniform law (softened gravity + inelastic mergers + torque-free gas circularization - the SHORTCUTS that compress un-simulable megayears into the budget), and demand the settled result be a SOLAR SYSTEM in the researched, architecture-level sense: one dominant central mass, a handful of planets on nearly-circular, nearly-coplanar orbits obeying an EMPIRICALLY MEASURED Kepler third law, with the giant-impact era over. Reality pins: the Sun holds 99.86 percent of the solar system's mass; 8 planets; T^2 proportional to a^3 (Kepler 1619, measured here as the log T vs log a slope of the grown orbits - the law is never coded, it must emerge); 6 of 8 planets have e < 0.1 (Mercury's 0.206 is the outlier); planetary inclinations to the invariable plane are a few degrees (Mercury 6.3 the outlier); formation simulations routinely eject substantial planetesimal mass. Scale honesty: N0=96 equal-mass parcels cannot reproduce Sun:Mercury = 6e6 mass ratios or Myr timescales - every anchor here is an ARCHITECTURE fact, not an absolute mass or age.",
+  "constraints": [
+    {
+      "measure": "lz_drift_worst",
+      "kind": "at_most",
+      "max": 5e-05,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE PHYSICS RECEIPT, HARD: pairwise central forces and radial-only drag are exactly torque-free about z, mergers bank their internal angular momentum in a spin ledger, escapees in a removal ledger - so L_z(alive)+L_z(spin)+L_z(removed) vs L_z(t0) measures ONLY floating-point error and bookkeeping sins. The ledger already caught one structural bug (stale post-merge forces: drift 0.527 on the first CPU smoke). Measured fp32 GPU floor: 8.4e-6 over 10k steps with ~90 mergers; the wall sits 6x above it. A universe that leaks angular momentum is not simulating gravity."
+    },
+    {
+      "measure": "central_frac_mean",
+      "kind": "band",
+      "min": 0.55,
+      "max": 0.995,
+      "weight": 2.0,
+      "why": "A STAR MUST FORM: the Sun holds 99.86 percent of the solar system's mass. At N0=96 equal parcels the fraction is quantized (0.55 = 53 seeds accreted into the central body), so the band demands central DOMINANCE without asking fp-precision for the real 0.9986. The floor kills failed collapses (smoke seed genome: 0.36 - a crowd, not a system); the ceiling kills total collapse where nothing is left to be planets."
+    },
+    {
+      "measure": "n_planets_worst",
+      "kind": "band",
+      "min": 2.0,
+      "max": 10.0,
+      "weight": 2.5,
+      "why": "A SYSTEM, NOT A BINARY - on the WORST restart: our reference architecture has 8 planets; every seed must grow at least 2 bodies that each accreted >= 3 parcels onto bound orbits, and none may fragment into a dozen-body debris swarm still calling itself planets. Worst-cased because a genome whose unlucky seed makes zero planets has not produced a material law, it has produced a lottery."
+    },
+    {
+      "measure": "n_planets_mean",
+      "kind": "band",
+      "min": 2.5,
+      "max": 10.0,
+      "weight": 1.0,
+      "why": "Gradient shaping toward the multi-planet regime (mean across restarts) so the search feels progress between the integer jumps the worst-case band moves in."
+    },
+    {
+      "measure": "kepler_slope_mean",
+      "kind": "band",
+      "min": 1.3,
+      "max": 1.7,
+      "weight": 3.0,
+      "why": "THE LAW MUST EMERGE: Kepler's third law (1619) - T^2 proportional to a^3, slope 1.5 in log-log - measured EMPIRICALLY from each grown system's orbits (winding-accumulated periods vs mean radii; nothing in the simulation states it). Hitting this band requires the system to have actually become star-dominated and near-integrable: planets on independent Keplerian orbits with negligible cross-perturbation. The +/-0.2 tolerance covers finite eccentricity and the few-planet fit. A 0.0 (fewer than 3 measurable planets) fails the band, coupling this term to planet formation itself."
+    },
+    {
+      "measure": "kepler_r2_worst",
+      "kind": "band",
+      "min": 0.85,
+      "max": 1.01,
+      "weight": 1.5,
+      "why": "The Kepler fit must be a LAW, not a coincidence of scatter: log T vs log a must be tight (r^2 >= 0.85) on every restart's worst fit. Guards against a slope that lands near 1.5 by averaging wild residuals."
+    },
+    {
+      "measure": "ecc_median_mean",
+      "kind": "at_most",
+      "max": 0.2,
+      "weight": 1.5,
+      "why": "ACCRETION CIRCULARIZES: 6 of 8 real planets have e < 0.1 (Mercury's 0.206 is the famous outlier). A median above 0.2 means the gas shortcut and the merger history failed to damp the orbits - a system of crossing ellipses is a demolition derby, not an architecture."
+    },
+    {
+      "measure": "incl_rms_deg_mean",
+      "kind": "at_most",
+      "max": 12.0,
+      "weight": 1.5,
+      "why": "THE DISK MUST EMERGE: real planetary inclinations to the invariable plane are a few degrees (Mercury 6.3 the outlier). The cloud starts 3D (flatten0 up to a raw sphere); flattening into a common plane is angular-momentum physics the genome cannot fake - rms inclination of the grown planets vs the system's own total-L plane must land in the researched range."
+    },
+    {
+      "measure": "merges_late_worst",
+      "kind": "at_most",
+      "max": 2.0,
+      "weight": 1.0,
+      "why": "SETTLED ARCHITECTURE: the giant-impact era must be OVER by sim end - at most 2 mergers in the final 20 percent of any restart. A system still eating itself has not reached its attractor; the game world plays inside the settled result."
+    },
+    {
+      "measure": "escaped_frac_worst",
+      "kind": "at_most",
+      "max": 0.5,
+      "weight": 0.5,
+      "why": "Ejection is real formation physics (scattering tosses planetesimals out; the solar system did plenty) but a law that flings half the cloud past 50 length units has chosen explosion over accretion. Loose wall, mostly a degeneracy guard."
+    },
+    {
+      "measure": "planet_mass_frac_worst",
+      "kind": "maximize",
+      "ref": 0.3,
+      "weight": 2.0,
+      "why": "THE CLIMBING TERM (a spec made only of walls gets you exactly the walls): of the mass that neither fell into the star nor escaped, how much got PACKED into actual planets (>= 3 parcels, bound) - accretion completeness, worst restart. ref=0.3 sits near the smoke seed's 0.32 so there is real room to climb, and climbing is resisted by the ecc and late-merger walls: aggressive accretion pumps eccentricity and keeps the impact era running. The tension is the design."
+    }
+  ]
+}

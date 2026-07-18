@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T20:42:24+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T21:02:06+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,6 +8,7 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
+| tb-0193 | claimed | 0.9 | Big-bang rung v0: grow a solar system on the GPU (trainable  | core/trainables/bigbang.py, core/trainables/bigbang_gpu.py… | fable-5 |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
 | tb-0145 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
