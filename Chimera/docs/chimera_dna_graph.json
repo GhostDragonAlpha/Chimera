@@ -73220,6 +73220,25 @@
       "links": [],
       "recorded_by": "rep_engine.py",
       "run_id": "run_74499f600c81"
+    },
+    {
+      "id": "surprise_1c3a2bb0e3911613",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T08:02:51.109746",
+      "context": "Three subagents (sub-27/31/32) in one night each finished their real work, then backgrounded their CLOSURE command (postflight/Coin at ~20 tok/s) and stopped to 'wait for the completion notification'",
+      "expectation": "",
+      "reality": "Subagents never receive background-task notifications - only the Lead's manual message wakes them, so all three slept parked at the finish line with the work done. Root cause: agents adopt the main-loop's background idiom without the main-loop's wake source. Fix: MASTER_ONBOARDING Part IV now mandates FOREGROUND closure commands with long timeouts (LM latency is not a hang)",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Subagents never receive background-task notifications - only the Lead's manual m'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_9629fdffb996"
     }
   ],
   "edges": [

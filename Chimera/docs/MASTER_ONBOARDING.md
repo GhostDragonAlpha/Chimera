@@ -428,6 +428,13 @@ integrates); don't spawn subagents.
    postflight it prints **ONCE**, always adding `--researched "<what you looked up>"` or
    `--research-waiver "<reasoned>"` — the gate will NOT ask you (rule 9). Bare 'blocked'
    forbidden.
+   **RUN EVERY CLOSURE COMMAND IN THE FOREGROUND** (tunnel exit, postflight, the Coin) with
+   a LONG timeout (the local LM needs ≥300s — that is latency, not a hang). NEVER
+   background a closure and stop "to wait for the notification": **subagents do not
+   receive background-task notifications — you will sleep forever until the Lead
+   manually wakes you.** Three subagents stalled exactly this way in one night
+   (2026-07-18, sub-27/31/32); every one had finished the actual work and died parked
+   at the finish line.
 6. **REPORT to the lead:** files + lines changed, verbatim evidence, and an HONEST
    list of what you could NOT verify. Never claim unverified success.
 
