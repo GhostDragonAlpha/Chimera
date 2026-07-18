@@ -72707,6 +72707,50 @@
       "inheritance": "The Sonnet fleet works: 4 disjoint domains trained in parallel, each verified alone, the flagship splat unification proven visually. The fleet is also a bug-finding engine \u2014 4 agents hitting one closure path surfaced 2 real gate defects a single agent would have waivered past.",
       "recorded_by": "postflight.py",
       "run_id": "run_d13944b0ad75"
+    },
+    {
+      "id": "discovery_0547dc4d17938def",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T05:38:28.230475",
+      "feature": "The Matter Library seeded \u2014 the substrate engine's data spin",
+      "campus_sources": [],
+      "web_sources": [
+        "Internal: CHIMERA_VISION.py SURFACE_TABLE/WIND grepped verbatim into seed-provenance rows; splat_emit.py OPTICAL + bake.py TISSUE colors read and carried as code-provenance (rung-A witnessed values); THE_MATTER_MODEL.md sections 2/6/9 (brick schema, coalesce/fracture, tendon findings); matter.py run"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/The Matter Library seeded \u2014 the substrate engine's data spin",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'The Matter Library seeded \u2014 the substrate engine's data spin': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_e388cd8033eb"
+    },
+    {
+      "id": "phase_6cc3994721b778eb",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T05:38:28.643782",
+      "phase": "The Matter Library seeded \u2014 the substrate engine's data spine (fable-1)",
+      "result": "docs/matter/matter_library.json created: 9 materials (6 seed environment surfaces + 3 rung-A-witnessed tissues), 6 interface families, 8 family rules, 10 pair exceptions, appearance as mean+spread distributions, provenance per number (seed:32/provisional:21/design:12/code:5, validated by structural check). Thesis section 16 appended. Lanes minted: tb-0172 (research-pin the 21 provisional debts), tb-0173 (matter.py wiring, value-identical), tb-0174 (splat_emit wiring, pixel-identical + variance sampling). Pushed c456be1.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/The Matter Library seeded \u2014 the substrate engine's data spine (fable-1)",
+      "error_category": "none",
+      "fix_description": "Phase 'The Matter Library seeded \u2014 the substrate engine's data spine (fable-1)' complete: docs/matter/matter_library.json created: 9 materials (6 seed environment surfaces + 3 rung-A-witnessed tissues), 6 interface families, 8 family rules, 10 pair exceptions, appearance as mean+spread dis",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The pixel-identical assert in tb-0174 may fail not from the refactor but from float formatting drift (JSON roundtrip of 0.80 vs the literal in code) - if MAE is tiny-but-nonzero, check number identity between OPTICAL and the library entry before blaming the loader."
+      ],
+      "inheritance": "The matter library is the periodic table of the game: appearance is a distribution (coalesce=average, fracture=sample - LOD and appearance are one operation); interactions go through families never N-squared; every number carries provenance and every provisional is a named debt with a task that collects it.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_e388cd8033eb"
     }
   ],
   "edges": [
