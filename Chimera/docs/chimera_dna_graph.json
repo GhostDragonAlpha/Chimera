@@ -73118,6 +73118,73 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_949297f43580"
+    },
+    {
+      "id": "discovery_000e59f4b9844f4e",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T07:42:00.539704",
+      "feature": "tb-0169 audit: Substrate rung C terrain-as-matter (shovel te",
+      "campus_sources": [],
+      "web_sources": [
+        "codebase+docs this session: docs/MASTER_ONBOARDING.md Parts I/II/IV, docs/THE_COMPOSITIONAL_WORLD_MODEL.md Part II SS11-17 (the atom, two engines, scale ladder, experiment ladder rung C, matter library, sensing-by-derivation), docs/THE_MATTER_MODEL.md SS6 (coalesce/fracture hysteresis+seam+forgettin"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0169 audit: Substrate rung C terrain-as-matter (shovel te",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0169 audit: Substrate rung C terrain-as-matter (shovel te': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_3168d5c8041c"
+    },
+    {
+      "id": "phase_4ed1cf1e2cc90158",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T07:42:00.911080",
+      "phase": "tb-0169 audit: Substrate rung C terrain-as-matter (shovel test) - closure-gap remediation (sub-28)",
+      "result": "AUDIT, not fresh completion: core/terrain_matter.py already existed, fully written, committed at e794f1a (contradicting the brief's premise it did not exist), with results.json + PNG already produced and a KILL verdict already reached. Task board showed tb-0169 status=done, claimed_by=None -- claim REFUSED ('tb-0169 is done, not open'); reopen REFUSED (reopen_task only accepts blocked/abandoned, not done); agent_tunnel exit REFUSED ('no open tunnel session for sub-28') -- confirmed by trying all three, not assumed. Zero DNA graph footprint existed for Substrate_Terrain (search empty) and zero curriculum/rep footprint (Matter_Library, tb-0172's feature from the SAME commit, showed the identical gap) -- the predecessor session committed real work but never ran agent_tunnel exit / postflight for either task. I independently REPRODUCED the experiment in a burned membrane (containment HELD, nothing leaked): verdict KILL both times; seam_max=0.4000m (bar 0.333m) both cycles both runs; frame wall held both times (~0.31ms/step vs 16.6ms, >50x headroom); settled_within_budget=False both cycles both runs. Exit fractions: committed 57/225(25.3%),50/225(22.2%); my reproduction 60/225(26.7%),47/225(20.9%) -- same regime, not bit-identical (numpy/mujoco micro-nondeterminism), verdict-determining metrics identical. Looked at Saved/TerrainMatter/shovel_test_strip.png: after-recoalesced frames show a persistent raised jagged ridge at the dig site never blending into the flat surrounding patch -- visually corroborates seam_stitched=False. Filled the actual missing pieces: recorded the Elimination (elim_06e43126d4d0332f, --observed/--eliminates x2/--survives x3 verbatim), enrolled Substrate_Terrain in curriculum (starter battery, 2 atoms), ran rep_engine tend (2 reps earned, 1 atom green [enrollment-transcript], 1 atom red [tree_contains identity in Source/dsl/beats -- expected: this is a KILLED headless research probe, never meant to ship an in-game identity; forcing a fake Source/beats mention to green it would be fabrication, so left honestly red and explained]). Posted the gate-defect finding to CAPCOM.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0169 audit: Substrate rung C terrain-as-matter (shovel test) - closure-gap remediation (sub-28)",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0169 audit: Substrate rung C terrain-as-matter (shovel test) - closure-gap remediation (sub-28)' complete: AUDIT, not fresh completion: core/terrain_matter.py already existed, fully written, committed at e794f1a (contradicting the brief's premise it did not exist), with results.json + PNG already produced ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Substrate_Terrain's tier-0 curriculum identity atom (tree_contains over Source/tests/dsl_grammar/docs/beats) will stay permanently red for this and any other KILLED/Elimination-only research rung enrolled under the standard template -- the next agent should recognize the structural mismatch (an eliminated rung never ships in-game identity) rather than injecting a fake Source/beats string to force it green",
+        "tb-0169 and tb-0172 were both marked done by one predecessor session with no agent_tunnel exit / postflight for either -- worth a sweep of other done tasks from that same window cross-checked against curriculum status, in case more were left the same way",
+        "the 0.4m seam failure may be partly a dig-PLACEMENT artifact, not purely settle physics: both dig centers (2,2) and (4,4) sit at or near the 8x8-dig-cell patch's edge given DIG_CELL_HALFWIDTH=2 -- a dig centered with full margin on all sides (untested) might show a smaller seam, which would narrow the KILL's actual cause"
+      ],
+      "inheritance": "A board status of done is not evidence a closure pipeline ran -- it can be a bare field flip with zero curriculum/rep/Elimination footprint behind it, and the two must be checked separately, not inferred from each other. Independently reproducing the physics in a burned membrane before trusting the numbers turned a suspicious coincidence (my exit fractions landing in the same range the file's own docstring describes as a PRIOR bug) into confirmed, robust evidence instead of an assumption. Audit exists before you build on it; audit done before you trust it -- the same discipline, at two different words.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_3168d5c8041c"
+    },
+    {
+      "id": "elim_d7f65379cd4984b1",
+      "type": "Elimination",
+      "timestamp": "2026-07-18T07:42:01.186828",
+      "feature": "Substrate_Terrain",
+      "boundary": "free-sphere DEM macro-particles at ATOM_PITCH~0.167m recoalesce seamlessly into the heightfield without an explicit blend pass, AND the current friction tuning lets a 225-grain GA_Dig-sized event settle within a 10s/2000-step budget",
+      "observed": "",
+      "eliminates": [],
+      "survives": [],
+      "evidence_ref": "elim_06e43126d4d0332f (+ independent membrane reproduction, this session)",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_Substrate_Terrain",
+      "template_file": "elimination/Substrate_Terrain",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Substrate_Terrain: free-sphere DEM macro-particles at ATOM_PITCH~0.167m recoalesce seamlessly into the heightfield with",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_3168d5c8041c"
     }
   ],
   "edges": [
