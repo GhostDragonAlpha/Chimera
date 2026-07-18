@@ -276,6 +276,12 @@ def main() -> int:
     ap.add_argument("--no-nanite", action="store_true", help="skip the Nanite attempt")
     ap.add_argument("--sun-sweep", action="store_true",
                     help="also run the ORIGINAL drive() sun-sweep (tb-0170's own check)")
+    ap.add_argument("--no-raster", action="store_true",
+                    help="skip the per-pixel/tiled ms-per-frame measurement (GPU required)")
+    ap.add_argument("--raster-wide", action="store_true",
+                    help="ALSO time a wide framing (3x radius -> mostly-empty tiles) — "
+                         "isolates the tile pipeline's real advantage (sparse occupancy) "
+                         "from a tight portrait where the object fills most of the frame")
     a = ap.parse_args()
 
     tag = a.tag or f"tl{a.target_len}"
@@ -316,16 +322,53 @@ def main() -> int:
     quad_h_cm = a.tangent_scale * scale * a.quad_overlap
     print(f"  wrote {splat_glb.name} ({splat_mb:.2f} MB, {n_verts:,} verts) "
           f"+ {mesh_glb.name} ({mesh_mb:.2f} MB)")
-    print(f"DENSITY_ROW tag={tag} target_len={a.target_len} splats={n_splats} "
-          f"verts={n_verts} scale_cm_per_voxel={scale:.4f} quad_halfsize_cm={quad_h_cm:.4f} "
-          f"grow_s={t_grow:.3f} emit_s={t_emit:.3f} splat_export_s={t_splat_export:.3f} "
-          f"mesh_export_s={t_mesh_export:.3f} splat_glb_mb={splat_mb:.3f} mesh_glb_mb={mesh_mb:.3f}")
 
     results = {"tag": tag, "target_len": a.target_len, "tangent_scale": a.tangent_scale,
                "quad_overlap": a.quad_overlap, "shape": list(shape), "splats": n_splats,
                "verts": n_verts, "scale_cm_per_voxel": scale, "quad_halfsize_cm": quad_h_cm,
                "grow_s": t_grow, "emit_s": t_emit, "splat_export_s": t_splat_export,
                "mesh_export_s": t_mesh_export, "splat_glb_mb": splat_mb, "mesh_glb_mb": mesh_mb}
+
+    if not a.no_raster:
+        from core import splat_gpu as sg
+        center_vox = (occ.min(axis=0) + occ.max(axis=0)) / 2.0
+        radius_vox = extent / 2.0 * 1.15
+        if sg.available():
+            _ = sg.rasterize(splats, center_vox, radius_vox, -60, 20, 60, 35, 340, 340)
+            t0 = time.time(); img_pp = sg.rasterize(splats, center_vox, radius_vox, -60, 20, 60, 35, 340, 340)
+            t_pp = time.time() - t0
+            _ = sg.rasterize_tiled(splats, center_vox, radius_vox, -60, 20, 60, 35, 340, 340)
+            t0 = time.time(); img_tl = sg.rasterize_tiled(splats, center_vox, radius_vox, -60, 20, 60, 35, 340, 340)
+            t_tl = time.time() - t0
+            mae_rt = float(np.abs(img_pp - img_tl).mean())
+            results["per_pixel_ms"] = t_pp * 1000
+            results["tiled_ms"] = t_tl * 1000
+            results["per_pixel_vs_tiled_mae"] = mae_rt
+            print(f"  rasterizer (tight, fill~0.84): per-pixel={t_pp*1000:.2f}ms  "
+                  f"tiled={t_tl*1000:.2f}ms  MAE={mae_rt:.5f}  "
+                  f"(wall={MALCOLM_FRAME_MS}ms: per-pixel {'HOLDS' if t_pp*1000<=MALCOLM_FRAME_MS else 'MISSES'}, "
+                  f"tiled {'HOLDS' if t_tl*1000<=MALCOLM_FRAME_MS else 'MISSES'})")
+
+            if a.raster_wide:
+                wide_r = radius_vox * 3.0     # object fills ~1/9 the area -> mostly-empty tiles
+                _ = sg.rasterize(splats, center_vox, wide_r, -60, 20, 60, 35, 340, 340)
+                t0 = time.time(); sg.rasterize(splats, center_vox, wide_r, -60, 20, 60, 35, 340, 340)
+                t_pp_w = time.time() - t0
+                _ = sg.rasterize_tiled(splats, center_vox, wide_r, -60, 20, 60, 35, 340, 340)
+                t0 = time.time(); sg.rasterize_tiled(splats, center_vox, wide_r, -60, 20, 60, 35, 340, 340)
+                t_tl_w = time.time() - t0
+                results["per_pixel_ms_wide3x"] = t_pp_w * 1000
+                results["tiled_ms_wide3x"] = t_tl_w * 1000
+                print(f"  rasterizer (WIDE 3x radius, sparse occupancy): per-pixel={t_pp_w*1000:.2f}ms  "
+                      f"tiled={t_tl_w*1000:.2f}ms  speedup x{t_pp_w/max(t_tl_w,1e-9):.2f}")
+        else:
+            print("  rasterizer: no CUDA device — skipped (use --no-raster to silence this)")
+
+    print(f"DENSITY_ROW tag={tag} target_len={a.target_len} splats={n_splats} "
+          f"verts={n_verts} scale_cm_per_voxel={scale:.4f} quad_halfsize_cm={quad_h_cm:.4f} "
+          f"grow_s={t_grow:.3f} emit_s={t_emit:.3f} splat_export_s={t_splat_export:.3f} "
+          f"mesh_export_s={t_mesh_export:.3f} splat_glb_mb={splat_mb:.3f} mesh_glb_mb={mesh_mb:.3f} "
+          f"per_pixel_ms={results.get('per_pixel_ms')} tiled_ms={results.get('tiled_ms')}")
     (OUT / f"density_{tag}.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
 
     if a.no_editor:
