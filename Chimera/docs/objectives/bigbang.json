@@ -14,23 +14,23 @@
     {
       "measure": "central_frac_mean",
       "kind": "band",
-      "min": 0.55,
+      "min": 0.85,
       "max": 0.995,
-      "weight": 2.0,
-      "why": "A STAR MUST FORM: the Sun holds 99.86 percent of the solar system's mass. At N0=96 equal parcels the fraction is quantized (0.55 = 53 seeds accreted into the central body), so the band demands central DOMINANCE without asking fp-precision for the real 0.9986. The floor kills failed collapses (smoke seed genome: 0.36 - a crowd, not a system); the ceiling kills total collapse where nothing is left to be planets."
+      "weight": 2.5,
+      "why": "A STAR MUST DOMINATE, not merely form: the Sun holds 99.86 percent of the solar system's mass, and dominance is not cosmetic - it is what makes MULTIPLE planets possible. Run-2 lesson (objective iteration, never artifact): with the floor at 0.55 the optimizer parked at 0.579, leaving 42 percent of the mass to accrete into 1-2 STELLAR COMPANIONS whose Hill spheres spanned half the disk - one sweeper, no system, Kepler term never engaged. At 0.85+ the leftover is <= 15 percent, each planet a few percent, Hill isolation holds, and a multi-planet architecture is physically reachable at N0=96. Original floor rationale (kill failed collapses like the smoke seed's 0.36) is strictly contained in the new floor."
     },
     {
       "measure": "n_planets_worst",
       "kind": "band",
-      "min": 2.0,
+      "min": 3.0,
       "max": 10.0,
       "weight": 2.5,
-      "why": "A SYSTEM, NOT A BINARY - on the WORST restart: our reference architecture has 8 planets; every seed must grow at least 2 bodies that each accreted >= 3 parcels onto bound orbits, and none may fragment into a dozen-body debris swarm still calling itself planets. Worst-cased because a genome whose unlucky seed makes zero planets has not produced a material law, it has produced a lottery."
+      "why": "A SYSTEM, NOT A BINARY - on the WORST restart. Floor raised 2 -> 3 after run 2: the empirical-Kepler fit needs 3 or more measurable planets, and with the floor at 2 the band paid 0.94 satisfaction at ONE planet, hiding the Kepler cliff from the gradient entirely. Now the planet-count pressure and the Kepler requirement point the same way. Ceiling unchanged: a dozen-body debris swarm is not planets."
     },
     {
       "measure": "n_planets_mean",
       "kind": "band",
-      "min": 2.5,
+      "min": 3.0,
       "max": 10.0,
       "weight": 1.0,
       "why": "Gradient shaping toward the multi-planet regime (mean across restarts) so the search feels progress between the integer jumps the worst-case band moves in."
