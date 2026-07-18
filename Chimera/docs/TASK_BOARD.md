@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T16:54:42+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T17:20:49+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -18,6 +18,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0187 | open | 0.9 | Splat material v2: idempotent authoring + masked VertexColor | core/splat_to_ue5.py |  |
+| tb-0188 | open | 0.9 | Sample-source bake-off: multiple avenues, per-material optim | docs/matter/reference_scans/**, docs/research/sample_sources_bakeoff.md |  |
 | tb-0186 | open | 0.85 | Generator tests: try/catch breaks the GAME target (/EHsc gap | core/game_code_generator.py |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
