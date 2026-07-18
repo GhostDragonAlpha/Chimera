@@ -1,14 +1,15 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T08:57:35+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T14:16:51+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
+| tb-0139 | claimed | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie | sub-34 |
+| tb-0182 | claimed | 0.85 | closure_report: scope build-currency + action-log to the TAS | core/closure_report.py | sub-33 |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -18,7 +19,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0170 | open | 0.85 | Substrate rung D-prime: Substrate-shaded splats in the LIVE  `capable` ⇐ tb-0168 | core/splat_to_ue5.py, docs/research/substrate_splats_ue58.md; editor:open |  |
-| tb-0182 | open | 0.85 | closure_report: scope build-currency + action-log to the TAS | core/closure_report.py |  |
 | tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
