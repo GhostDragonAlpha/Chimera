@@ -703,25 +703,28 @@ def main() -> int:
     if a.env_test:
         print("\n=== ENVIRONMENT MATERIAL SMOKE TEST ===")
         
-        # Create simple voxel shapes for sand/rock/metal using larger grids
-        def make_sphere(cx, cy, cz, r, fill_val):
+        # Create simple voxel shapes for sand/rock/metal using boolean fields
+        # (emit_splats uses surface_voxels which does binary_erosion on the field)
+        def make_sphere(cx, cy, cz, r):
             size = 40
-            grid = np.zeros((size, size, size), dtype=np.int8)
+            grid = np.zeros((size, size, size), dtype=bool)
             zz, yy, xx = np.mgrid[0:size, 0:size, 0:size]
             mask = ((xx-cx)**2 + (yy-cy)**2 + (zz-cz)**2) <= r**2
-            grid[mask] = fill_val
-            return grid
+            grid[mask] = True
+            return grid.astype(np.int8)
         
+        # Map environment materials to library optics via tissue_name parameter
         env_materials = {
-            "sand": make_sphere(20, 20, 20, 12, BONE),   # sand -> bone tissue type
-            "rock": make_sphere(30, 20, 20, 10, MUSCLE),  # rock -> muscle tissue type
-            "metal": make_sphere(10, 20, 20, 8, SKIN),    # metal -> skin tissue type
+            "sand": make_sphere(20, 20, 20, 12),
+            "rock": make_sphere(30, 20, 20, 10),
+            "metal": make_sphere(10, 20, 20, 8),
         }
         
         env_imgs = []
         env_labels = []
         for name in ["sand", "rock", "metal"]:
             field = env_materials[name]
+            # Use tissue_name to look up optics from library
             splats = emit_splats(field, name, sigma=0.9)
             if splats is None or len(splats['pos']) == 0:
                 print(f"  {name}: no surface voxels — SKIP")
