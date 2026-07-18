@@ -1,3 +1,26 @@
+# Session 2026-07-18 (fable-5, latest) — tb-0194 DONE: THE OPERATOR BAR MET — oceans, atmospheres, interior gradients
+
+- **THE LADDER NOW RUNS cloud → star → solar system → planets-with-climates**, each rung trained, each
+  handing the next its averages as DATA: solar winner → `docs/objectives/bigbang.systems.json` (5 systems,
+  19 planets as m/a/e — "each planet is ONE") → `core/trainables/planet.py` (researched effective laws:
+  T_eq, Jeans retention, greenhouse, MOIST-GREENHOUSE LIMIT, condensation, interior heat, ice-albedo damped
+  fixed point) → `docs/objectives/planet.trained.json`, best **0.9194, ALL walls, 8,736 evals/sec**.
+- **The bar, verbatim met**: oceans form in EVERY system (HARD), atmospheres form (100%), interior thermal
+  gradient on every rocky world; every system independently resolved a **hot_rock → ocean → frozen ladder
+  (the habitable zone EMERGED, unplaced)**; ocean worlds 315.8K liquid, greenhouse +12K, cores 3,285K.
+- **THE STRONGEST VALIDATION YET: learned constants landed on research** — moist_limit 352.8K (Kasting
+  ~340-350), jeans_threshold 5.5 (literature ~6), g_exp 0.585 (Venus–Earth bracket 0.60). The walls were
+  built from anchors; the search rediscovered the constants BETWEEN them.
+- **Round-1 lesson**: without the moist-greenhouse limit, 376K steam pressure-cookers scored as "oceans"
+  and diversity died at 2 classes — ONE researched law fixed both (recorded in schema + objective whys).
+- **Honest remainders (postflight pain)**: water_frac PINNED at min → ocean worlds are 3%-coverage, not
+  blue marbles (narrow temperate bands: wetter → warmer → drier; lever = wider annuli next solar round or
+  cloud feedback); airless class unreachable at super-Earth catalog masses (atmo ceiling opened, documented);
+  all laws 0-D averages by design — seasons/geography/carbon cycle are fracture-time rungs.
+- Renders: `Saved/BigBang/planet_ladders.png` (+ solar system before/after from tb-0193).
+
+---
+
 # Session 2026-07-18 (fable-5, later) — tb-0193 DONE: THE BIG BANG GROWS A SOLAR SYSTEM (GPU, six rounds, rung split)
 
 - **THE RESULT**: `core/trainables/bigbang.py` (CPU twin + shared `build_init`) + `bigbang_gpu.py` (Warp,

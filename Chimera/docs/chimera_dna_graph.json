@@ -75044,6 +75044,53 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_ffcbdf2d99a6"
+    },
+    {
+      "id": "discovery_a95e59eec4d24417",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T21:56:03.376133",
+      "feature": "Planet-averages rung (tb-0194): the operator bar met - ocean",
+      "campus_sources": [],
+      "web_sources": [
+        "Kasting habitable-zone inner edge / moist-greenhouse limit (~340-350K, the round-2 law); Jeans escape parameter threshold ~6 (Earth holds N2 at lambda 27, loses H2 at 7); Earth anchors: 288K surface / +33K greenhouse / ~5,700K core / ocean 2.3e-4 of mass / atmosphere 8.7e-7; Venus +500K at 92 bar (w"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Planet-averages rung (tb-0194): the operator bar met - ocean",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Planet-averages rung (tb-0194): the operator bar met - ocean': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_134289de4ea5"
+    },
+    {
+      "id": "phase_ef9df25446b6cae0",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T21:56:03.779069",
+      "phase": "Planet-averages rung (tb-0194): the operator bar met - oceans, atmospheres, interior gradients on grown systems",
+      "result": "Trainer verbatim: '51,200 evaluations in 5.9s = 8,736 evals/sec, best score 0.9194' - all 9 walls satisfied on the first objective iteration: has_ocean_worst=1 HARD, ocean_temp 315.8K liquid, gradient_frac=1, climate classes worst 3, greenhouse +12.1K, cores 3,285K, atmo=1, runaway 0. The chain composes: bigbang winner -> systems catalog (5 systems / 19 planets) -> researched effective laws -> every system independently resolved a hot_rock -> ocean -> frozen ladder (the habitable zone EMERGED). Learned constants landed on research: moist_limit 352.8K vs Kasting ~340-350, jeans_threshold 5.5 vs literature ~6, g_exp 0.585 vs Venus-Earth bracket 0.60. Renders: Saved/BigBang/planet_ladders.png",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Planet-averages rung (tb-0194): the operator bar met - oceans, atmospheres, interior gradients on grown systems",
+      "error_category": "none",
+      "fix_description": "Phase 'Planet-averages rung (tb-0194): the operator bar met - oceans, atmospheres, interior gradients on grown systems' complete: Trainer verbatim: '51,200 evaluations in 5.9s = 8,736 evals/sec, best score 0.9194' - all 9 walls satisfied on the first objective iteration: has_ocean_worst=1 HARD, ocean_temp 315.8K liquid, gradient",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The planet rung's ocean worlds are 3-percent-coverage worlds (water_frac pinned at min): if the next solar round widens annuli and cools the temperate band, re-train planet.json expecting water_frac to lift off its floor - if it stays pinned, the moist-limit/albedo coupling is over-drying and needs cloud feedback before trusting coverage numbers."
+      ],
+      "inheritance": "The rung chain is real: each rung exports its output as the next rung's DATA (solar catalog -> planet averages), and a rung's laws can be iterated in seconds when evals are milliseconds - the moist-greenhouse limit fixed steam-oceans AND diversity in one researched law. When a trainer pins a SEED locus at its floor (water_frac 1e-5), read it as the catalog's physics talking: these temperate bands are narrow, so wetter worlds dry themselves - wider annuli in the next solar round is the lever. The learned-constants-landing-on-research pattern (Kasting, Jeans, greenhouse exponent) is the strongest validation this method has produced: the walls were built from anchors, and the search rediscovered the constants BETWEEN the anchors.",
+      "pain_verdicts": {
+        "phase_c343f5ecd1c65d22:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_134289de4ea5"
     }
   ],
   "edges": [

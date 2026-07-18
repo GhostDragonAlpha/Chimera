@@ -488,6 +488,47 @@ def render_winner(trained_json: str, png_path: str) -> str:
     return str(out)
 
 
+def export_catalog(trained_json: str, out_json: str) -> str:
+    """THE RUNG HANDOFF: grow the trained winner's N_RESTARTS systems once and
+    write every surviving planet as (m_rel, a, e) — the solar rung's output
+    coalesced into data the planet-averages rung consumes. Each planet is ONE."""
+    import json
+    from pathlib import Path
+
+    genome = json.load(open(trained_json))["genome"]
+    st = rollout_states([genome], restarts=N_RESTARTS)
+    systems = []
+    for w in range(N_RESTARTS):
+        m, pos, vel = st["m"][w], st["pos"][w], st["vel"][w]
+        merges = st["merges_of"][w]
+        c = int(np.argmax(m))
+        planets = []
+        for b in np.flatnonzero(m > 0):
+            if b == c or merges[b] < PLANET_MIN_MERGES:
+                continue
+            rv, vv = pos[b] - pos[c], vel[b] - vel[c]
+            mu = G * (m[c] + m[b])
+            r = float(np.linalg.norm(rv))
+            e_orb = 0.5 * float(vv @ vv) - mu / r
+            if e_orb >= 0.0:
+                continue
+            h = np.cross(rv, vv)
+            ecc = math.sqrt(max(0.0, 1.0 + 2.0 * e_orb * float(h @ h)
+                                / (mu * mu)))
+            planets.append({"m_rel": float(m[b] / m[c]),
+                            "a": float(-mu / (2.0 * e_orb)),
+                            "e": round(ecc, 4)})
+        systems.append(sorted(planets, key=lambda p: p["a"]))
+    out = Path(out_json)
+    out.write_text(json.dumps({
+        "source": trained_json, "star_mass_frac": float(
+            max(st["m"][w].max() for w in range(N_RESTARTS)) / M_TOT),
+        "systems": systems}, indent=1))
+    n = sum(len(s) for s in systems)
+    print(f"catalog: {len(systems)} systems, {n} planets -> {out}")
+    return str(out)
+
+
 if __name__ == "__main__":
     import argparse
     import json as _json
@@ -497,8 +538,14 @@ if __name__ == "__main__":
                     help="trained json -> grow the winner and paint it")
     ap.add_argument("--png",
                     default=r"E:\PythonChimera\Chimera\Saved\BigBang\solar_system.png")
+    ap.add_argument("--export-catalog", default=None,
+                    help="trained json -> write bigbang.systems.json for the planet rung")
     a = ap.parse_args()
-    if a.render:
+    if a.export_catalog:
+        export_catalog(
+            a.export_catalog,
+            r"E:\PythonChimera\Chimera\docs\objectives\bigbang.systems.json")
+    elif a.render:
         render_winner(a.render, a.png)
     else:
         g0 = {k: s["init"] for k, s in GENOME_SCHEMA.items()}

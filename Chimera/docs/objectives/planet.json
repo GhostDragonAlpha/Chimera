@@ -1,0 +1,78 @@
+{
+  "name": "planet",
+  "author": "LLM, from the human's operator bar (2026-07-18): 'We know it works when oceans form, an atmosphere forms, and there is a temperature gradient in the planet interior.' Research-pinned planetary science, never taste.",
+  "scenario": "The planet-averages rung: the solar rung's grown planets (docs/objectives/bigbang.systems.json - 5 systems, 19 planets as (m_rel, a, e), each planet ONE thing) resolve through researched effective laws (equilibrium temperature, Jeans atmosphere retention, greenhouse, water condensation, interior heat retention, ice-albedo fixed point) into planet-scale averages. The objective binds the emergent CLIMATE ARCHITECTURE to the solar system's researched shape: every grown system must contain at least one ocean world in the liquid-water window (the operator bar), every rocky world must carry an interior thermal gradient (the operator bar), the system must span at least 3 distinct climate classes (our system spans airless Mercury, runaway Venus, ocean Earth, frozen Mars, giants - diversity is the fingerprint of real orbital ladders), the ocean world's greenhouse must be Earth-magnitude, and not everything may run away to Venus. Anchors: Earth T_surf 288 K / greenhouse +33 K / core ~5,700 K / ocean inventory 2.3e-4 of mass / atmosphere 8.7e-7; Venus +500 K at 92 bar; Mars dry because 0.006 bar sits below water's triple point; Jeans retention threshold ~6 (Earth keeps N2 at lambda 27, loses H2 at 7).",
+  "constraints": [
+    {
+      "measure": "has_ocean_worst",
+      "kind": "band",
+      "min": 0.99,
+      "max": 1.01,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE OPERATOR BAR, FIRST CLAUSE, HARD: 'we know it works when oceans form.' Every grown system - the WORST catalog system included - must resolve at least one planet into the ocean class (condensed liquid water: 273-647 K surface AND pressure above the triple point). A ladder of grown solar systems where some system has no wet world anywhere fails the bar outright."
+    },
+    {
+      "measure": "ocean_temp_mean",
+      "kind": "band",
+      "min": 275.0,
+      "max": 320.0,
+      "weight": 3.0,
+      "why": "LIQUID means LIQUID: the ocean-class worlds' mean surface temperature must sit in the habitable liquid window (Earth: 288 K). The untrained genome resolves every world to a 456 K mean - steam-pressure-cooker 'oceans' just under the critical point. This band is what separates a wet world you could stand on from a autoclave."
+    },
+    {
+      "measure": "gradient_frac_worst",
+      "kind": "band",
+      "min": 0.99,
+      "max": 1.01,
+      "weight": 2.0,
+      "why": "THE OPERATOR BAR, THIRD CLAUSE: 'a temperature gradient in the planet interior.' Every rocky world in every system must carry interior heat (center at least 500 K over surface - accretion energy plus radiogenic retention; Earth's core runs ~5,700 K against a 288 K surface). Worst-cased so no system ships cold dead rocks."
+    },
+    {
+      "measure": "climate_classes_worst",
+      "kind": "band",
+      "min": 3.0,
+      "max": 6.0,
+      "weight": 2.5,
+      "why": "DIVERSITY IS THE FINGERPRINT of a real orbital ladder: our own system spans airless (Mercury), runaway (Venus), ocean (Earth), frozen (Mars), giant (Jupiter). A grown system must resolve into at least 3 distinct climate classes on its worst restart - a monoculture (the untrained genome: all-steam, classes=1) means the effective laws are not actually reading the orbit ladder."
+    },
+    {
+      "measure": "ocean_greenhouse_mean",
+      "kind": "band",
+      "min": 10.0,
+      "max": 60.0,
+      "weight": 1.5,
+      "why": "THE SECOND CLAUSE ('an atmosphere forms') made quantitative on the world that matters: the ocean world's greenhouse lift must be Earth-magnitude (+33 K researched; the band brackets it). Too little means effectively no atmosphere over the ocean; too much is sliding toward the runaway regime."
+    },
+    {
+      "measure": "ocean_t_center_mean",
+      "kind": "band",
+      "min": 2500.0,
+      "max": 9000.0,
+      "weight": 1.0,
+      "why": "The ocean world's interior must be Earth-like in magnitude, not just present: ~5,700 K core researched, band widened for the catalog's super-Earth masses (2.7-9.8 M_e; interior heat scales with M/R). The untrained 18,800 K says heat_retention is running far too hot."
+    },
+    {
+      "measure": "atmo_frac_mean",
+      "kind": "band",
+      "min": 0.3,
+      "max": 1.01,
+      "weight": 1.0,
+      "why": "Atmospheres must exist (the second operator clause) - floor at 0.3. Ceiling honestly OPENED to 1.01 in round 2: the current catalog's planets are ALL super-Earths (2.7-9.8 M_e; N0=24 quantization), and a super-Earth's escape velocity holds N2 at ANY temperature in these orbits - the airless class (Mercury, Moon) requires sub-Mars masses this catalog cannot contain. Demanding airless here would train the jeans_threshold into nonsense to satisfy an impossible band. Reopen the ceiling when a finer solar round delivers a wider mass spectrum."
+    },
+    {
+      "measure": "runaway_frac_mean",
+      "kind": "at_most",
+      "max": 0.4,
+      "weight": 0.5,
+      "why": "Venus is one planet of eight, not the norm: runaway greenhouse worlds are allowed (they are real physics and their presence is a diversity credit) but a ladder where most worlds run away has tuned the greenhouse shortcut into a furnace."
+    },
+    {
+      "measure": "habitable_frac_worst",
+      "kind": "maximize",
+      "ref": 0.25,
+      "weight": 2.0,
+      "why": "THE CLIMBING TERM: the worst system's fraction of ocean-class worlds. ref=0.25 sits at one-wet-world-in-four. Climbing means MORE of each grown system resolves habitable - which the diversity band (need 3+ classes), the atmo ceiling (some must be airless), and the ocean-temp band (no steam credit) all actively resist. The tension is the design: a system CANNOT be all-ocean and still show 3 classes."
+    }
+  ]
+}
