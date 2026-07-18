@@ -73090,6 +73090,34 @@
       "inheritance": "Substrate is ON and stable; splats reach the engine over proven pathways; the agent now senses by derivation (scene_model predictions before pixels). The remaining D-prime work is ONE material graph + solved screenshots.",
       "recorded_by": "postflight.py",
       "run_id": "run_b9309432e238"
+    },
+    {
+      "id": "elim_06e43126d4d0332f",
+      "type": "Elimination",
+      "timestamp": "2026-07-18T07:38:29.098298",
+      "feature": "Substrate_Terrain",
+      "boundary": "Coarse free-sphere MuJoCo grain physics (ATOM_PITCH ~0.167m macro-particles standing in for 0.07mm regolith grains, GA_Dig's own dig footprint replicated verbatim from CHIMERA_VISION.py, mu=tan(35deg) sand friction from matter_library.json) cannot re-coalesce a dig event back into a seamless heightfield within the current recoalesce algorithm (per-cell mass summing, no blend pass).",
+      "observed": "Committed run (core/terrain_matter.py, commit e794f1a, seed=11): cycle1 n_freed=225 n_exited=57 (25.3%) seam_max=0.4000m (bar 0.333m) mass_drift=-4.86%; cycle2 n_freed=225 n_exited=50 (22.2%) seam_max=0.4000m mass_drift=-7.12%; mean_ms/step=0.31 vs frame wall 16.6ms (held, >50x headroom); settled_within_budget=False both cycles (2000-step/10s cap hit). INDEPENDENTLY REPRODUCED by sub-28 in a burned membrane (2026-07-18, same seed): cycle1 n_exited=60 (26.7%) seam_max=0.4000m mass_drift=-4.69%; cycle2 n_exited=47 (20.9%) seam_max=0.4000m mass_drift=-8.51%; verdict KILL both the original and the reproduction run. Render (Saved/TerrainMatter/shovel_test_strip.png) visually confirms: the after-recoalesced frames show a persistent raised, jagged bright ridge at the dig site that never blends into the flat surrounding patch.",
+      "eliminates": [
+        "free-sphere DEM macro-particles at this ATOM_PITCH recoalesce seamlessly into the coarse heightfield without an explicit smoothing/blend pass across the fracture boundary",
+        "the current rolling/torsional friction tuning (mu*0.2 / mu*0.4) lets a 225-grain GA_Dig-sized event reach the quiet-hold threshold within a 10s/2000-step settle budget"
+      ],
+      "survives": [
+        "frame budget is NOT the blocker -- 0.31ms/step vs a 16.6ms wall holds over 50x headroom, so landscaping-as-matter is not killed by compute cost, only by the seam/settle algorithm",
+        "cohesive bonding (matter_library sand cohesion_kpa=0.5+/-0.4, not modelled this rung -- MuJoCo stock contact is frictional-only) or an explicit post-recoalesce smoothing pass across the seam boundary might close the 0.4m gap -- untested, named as the next rung",
+        "a larger settle budget or a retuned velocity-quiet threshold might let grains settle in-budget without necessarily changing the seam outcome -- untested"
+      ],
+      "evidence_ref": "",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_Substrate_Terrain",
+      "template_file": "elimination/Substrate_Terrain",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for Substrate_Terrain: Coarse free-sphere MuJoCo grain physics (ATOM_PITCH ~0.167m macro-particles standing in for 0.07mm r",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_949297f43580"
     }
   ],
   "edges": [

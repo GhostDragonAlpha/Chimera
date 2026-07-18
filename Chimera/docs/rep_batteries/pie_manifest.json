@@ -266,6 +266,18 @@
   "provenance": "decomposition:dc_b1af6b6e2f33"
  },
  {
+  "id": "atom_fe7cb44403d0",
+  "feature": "Substrate_Terrain",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "Coarse free-sphere MuJoCo grain physics (ATOM_PITCH ~0.167m macro-particles standing in for 0.07mm regolith grains, GA_Dig's own dig footpri"
+  },
+  "desc": "regression (PIE): Coarse free-sphere MuJoCo grain physics (ATOM_PITCH ~0.167m macro-particles standing in for 0.07mm r",
+  "provenance": "elimination:elim_06e43126d4d0332f"
+ },
+ {
   "id": "atom_80e981b2a84c",
   "feature": "System_DSL_Fidelity",
   "tier": 1,
