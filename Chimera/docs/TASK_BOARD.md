@@ -1,15 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-17T21:51:59+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T00:38:58+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0131 | open | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie |  |
-| tb-0138 | open | 0.9 | Witness: Social_Trade | editor:open; excl:pie |  |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0140 | open | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0141 | open | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie |  |
@@ -64,6 +62,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0124 | done | 1 | UGestureWheel completion: TAB binding + DSL consumption + ho | Source/Chimera/ProceduralGenerated/UI/**, Source/Chimera/ProceduralGenerated/Demo/**…; editor:open; excl:generator | UGestureWheel DSL spec parsing added to dsl_game_parser.py;  |
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
+| tb-0131 | done | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | UE_LOG witness markers verified present in NPCTradeComponent |
 | tb-0010 | done | 0.9 | Producer_Roadmap_Layer (DREAM_ROSTER #9, remaining half) `capable` | core/roadmap.py, docs/ROADMAP.md | Created core/roadmap.py for Producer Roadmap Layer (DREAM_RO |
 | tb-0072 | done | 0.9 | Witness & collapse: Sky_Starfield | editor:open; excl:pie | WITNESS & COLLAPSE tb-0072 Sky_Starfield -> OUTCOME: rejecti |
 | tb-0073 | done | 0.9 | Witness & collapse: Sky_Atmosphere_Scattering | editor:open; excl:pie | WITNESS & COLLAPSE tb-0073 Sky_Atmosphere_Scattering -> hone |
@@ -74,6 +73,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0078 | done | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie | witness_runner completed successfully with simtest_50995d727 |
 | tb-0130 | done | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | Witness RAN: sleepwalker obs_UGestureWheel simtest_457320c34 |
 | tb-0132 | done | 0.9 | Typed closure report at tunnel exit (subsumes tb-0128 build- | core/closure_report.py, core/agent_tunnel.py… | Typed closure report LIVE across both paths (tunnel + raw):  |
+| tb-0138 | done | 0.9 | Witness: Social_Trade | editor:open; excl:pie | UE_LOG witness markers present in NPCTradeComponent.cpp ([NP |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |

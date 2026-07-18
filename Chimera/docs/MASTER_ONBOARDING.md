@@ -354,7 +354,11 @@ get DS4 up, say so explicitly in CAPCOM + your summary; never let it pass unment
    shipped "14 features await…" unchanged across 4+ dispatches while the live queue
    moved 15→9→13, and sent an agent chasing a build failure that was already fixed.
    If you are tempted to paste a fact, paste the COMMAND that prints it.
-4. **WATCH** `capcom brief`: claimed → training BLOCKED/WAIVED → completed.
+4. **WATCH & STEER:** While a sub-agent runs, periodically check its progress via
+   `get_subagent_result`. If the agent enters a repetitive loop or repeats itself
+   without forward progress, interrupt it immediately using `steer_subagent` with a
+   jarring message (e.g., "...") to jar the agent out of its loop and force it to
+   re-evaluate or proceed.
 5. **VERIFY INDEPENDENTLY** (the job): `git diff` (additive & consistent — nothing
    still-used deleted) · `rep_engine tend` (green for the RIGHT reason) · **if ANY
    C++ changed this session, run ONE real UBT before integrating** —

@@ -70025,6 +70025,752 @@
       "inheritance": "Generator now generates AttunementComponentAttachment.h/cpp with NewObject<UChimeraAttunementComponent> and RegisterComponent() pattern for runtime attachment to pawns.",
       "recorded_by": "postflight.py",
       "run_id": "run_98ab4ca9770e"
+    },
+    {
+      "id": "simtest_ba2a6d157832970a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T00:26:59.449769",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "sim_social_trade_20260717",
+      "demo": "social_trade",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "social_trade_npc_proximity",
+          "outcome": "failed",
+          "features": [
+            "Social_Trade"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[NPCTrade] Player within trade range",
+                "note": "Social_Trade witness: NPC trade component must report player in range"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "social_trade_npc_interact",
+          "outcome": "failed",
+          "features": [
+            "Social_Trade"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[NPCTrade] Trade interaction started",
+                "note": "Social_Trade witness: NPC trade component must report trade interaction start"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sim_social_trade_20260717.json",
+      "temperature": "[SIM] 0/2 beats reached in 'social_trade'. Failures: social_trade_npc_proximity (failed: expect {\"log_contains\": \"[NPCTrade] Player within trade range\", \"no -> log_hit=False); social_trade_npc_interact (failed: expect {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"no -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sim_social_trade_20260717': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_05d750be9098"
+    },
+    {
+      "id": "surprise_4552d885052fbb52",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:26:59.736140",
+      "context": "Sleepwalker expected beat 'social_trade_npc_proximity' to be reachable (social_trade)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Player within trade range\", \"note\": \"Social_Trade witness: NPC trade component must report player in range\"}, \"ok\": fals",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Player within trade range\", \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_05d750be9098"
+    },
+    {
+      "id": "surprise_99874317990f7b46",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:27:00.037518",
+      "context": "Sleepwalker expected beat 'social_trade_npc_interact' to be reachable (social_trade)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"note\": \"Social_Trade witness: NPC trade component must report trade interaction start\"}, \"o",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_05d750be9098"
+    },
+    {
+      "id": "simtest_16a2853df3c50be7",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T00:28:41.618212",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "sim_verb_interactions_20260717",
+      "demo": "verb_interactions",
+      "beats_total": 9,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "verb_look_location",
+          "outcome": "reached",
+          "features": [
+            "Verb_Look",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            }
+          ]
+        },
+        {
+          "beat": "verb_bend_location",
+          "outcome": "failed",
+          "features": [
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.2
+                }
+              },
+              "ok": false,
+              "note": "CapsuleHalfHeight 90->40->40 drop=50 restore=0 min_drop=20"
+            }
+          ]
+        },
+        {
+          "beat": "verb_pickup_weapon_tool_location",
+          "outcome": "blocked",
+          "features": [
+            "Verb_PickUp",
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "error": "control_editor.simulate_input: Failed to execute control_editor: Connection lost"
+            }
+          ]
+        },
+        {
+          "beat": "verb_drop_location",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_metal_surface_location",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Metal_Surface"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_rock_surface_location",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        },
+        {
+          "beat": "verb_shovel_sand_surface_location",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Shovel",
+            "Ground_Sand_Surface"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        },
+        {
+          "beat": "visor_inspection_pedestal",
+          "outcome": "blocked",
+          "features": [
+            "Player_Character_Model_Visor_Apply",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        },
+        {
+          "beat": "weapon_tool_examine",
+          "outcome": "blocked",
+          "features": [
+            "Tool_Weapon_Model"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sim_verb_interactions_20260717.json",
+      "temperature": "[SIM] 1/9 beats reached in 'verb_interactions'. Failures: verb_bend_location (failed: expect {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"Collisi -> CapsuleHalfHeight 90->40->40 drop=50 restore=0 min_drop=20); verb_pickup_weapon_tool_location (blocked: {\"error\": \"control_editor.simulate_input: Failed to execute control_editor: Connection lost\"}); verb_drop_location (blocked: {\"error\": \"ins",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sim_verb_interactions_20260717': 1/9 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "surprise_0d89a30aaabc5c86",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:28:41.896916",
+      "context": "Sleepwalker expected beat 'verb_bend_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"CollisionCylinder\", \"property\": \"CapsuleHalfHeight\", \"min_drop\": 20, \"settle_s\": 1.2}}, \"ok\": fa",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"Collisio'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "surprise_c647e40f48219885",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:28:42.189232",
+      "context": "Sleepwalker expected beat 'verb_pickup_weapon_tool_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"control_editor.simulate_input: Failed to execute control_editor: Connection lost\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"control_editor.simulate_input: Failed to execute control_edi'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "surprise_9aab86f1ba8bbd11",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:28:42.465300",
+      "context": "Sleepwalker expected beat 'verb_drop_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "surprise_01abb66759ac021e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:28:42.737847",
+      "context": "Sleepwalker expected beat 'verb_shovel_metal_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "surprise_10e96408b95bb563",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:28:43.024149",
+      "context": "Sleepwalker expected beat 'verb_shovel_rock_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "surprise_f34542af92c3fa43",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:28:43.310816",
+      "context": "Sleepwalker expected beat 'verb_shovel_sand_surface_location' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "surprise_18887477ca39a9ff",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:28:43.587600",
+      "context": "Sleepwalker expected beat 'visor_inspection_pedestal' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "surprise_35546359f85793ea",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:28:43.869861",
+      "context": "Sleepwalker expected beat 'weapon_tool_examine' to be reachable (verb_interactions)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_73cb71f81001"
+    },
+    {
+      "id": "simtest_79842a4f344337f9",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T00:30:49.112701",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "sim_social_trade_verify_20260717c",
+      "demo": "social_trade",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "social_trade_npc_proximity",
+          "outcome": "failed",
+          "features": [
+            "Social_Trade"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[NPCTrade] Player within trade range",
+                "note": "Social_Trade witness: NPC trade component must report player in range"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "social_trade_npc_interact",
+          "outcome": "failed",
+          "features": [
+            "Social_Trade"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[NPCTrade] Trade interaction started",
+                "note": "Social_Trade witness: NPC trade component must report trade interaction start"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sim_social_trade_verify_20260717c.json",
+      "temperature": "[SIM] 0/2 beats reached in 'social_trade'. Failures: social_trade_npc_proximity (failed: expect {\"log_contains\": \"[NPCTrade] Player within trade range\", \"no -> log_hit=False); social_trade_npc_interact (failed: expect {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"no -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sim_social_trade_verify_20260717c': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_cb8a94a4ab16"
+    },
+    {
+      "id": "surprise_7b7abb142da5dbfa",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:30:49.378254",
+      "context": "Sleepwalker expected beat 'social_trade_npc_proximity' to be reachable (social_trade)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Player within trade range\", \"note\": \"Social_Trade witness: NPC trade component must report player in range\"}, \"ok\": fals",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Player within trade range\", \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_cb8a94a4ab16"
+    },
+    {
+      "id": "surprise_9fd0a60705cdab57",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:30:49.655731",
+      "context": "Sleepwalker expected beat 'social_trade_npc_interact' to be reachable (social_trade)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"note\": \"Social_Trade witness: NPC trade component must report trade interaction start\"}, \"o",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_cb8a94a4ab16"
+    },
+    {
+      "id": "simtest_d18f9ee548524798",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T00:38:02.256412",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Social_Trade",
+      "demo": "social_trade",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "social_trade_npc_proximity",
+          "outcome": "failed",
+          "features": [
+            "Social_Trade"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[NPCTrade] Player within trade range",
+                "note": "Social_Trade witness: NPC trade component must report player in range"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "social_trade_npc_interact",
+          "outcome": "failed",
+          "features": [
+            "Social_Trade"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[NPCTrade] Trade interaction started",
+                "note": "Social_Trade witness: NPC trade component must report trade interaction start"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Social_Trade.json",
+      "temperature": "[SIM] 0/2 beats reached in 'social_trade'. Failures: social_trade_npc_proximity (failed: expect {\"log_contains\": \"[NPCTrade] Player within trade range\", \"no -> log_hit=False); social_trade_npc_interact (failed: expect {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"no -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_Social_Trade': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e1483b50838c"
+    },
+    {
+      "id": "surprise_2c8c38074378ccc7",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:38:02.520116",
+      "context": "Sleepwalker expected beat 'social_trade_npc_proximity' to be reachable (social_trade)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Player within trade range\", \"note\": \"Social_Trade witness: NPC trade component must report player in range\"}, \"ok\": fals",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Player within trade range\", \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e1483b50838c"
+    },
+    {
+      "id": "surprise_3c7d5b7c6f8fb6f4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:38:02.797609",
+      "context": "Sleepwalker expected beat 'social_trade_npc_interact' to be reachable (social_trade)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"note\": \"Social_Trade witness: NPC trade component must report trade interaction start\"}, \"o",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[NPCTrade] Trade interaction started\", \"not'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e1483b50838c"
+    },
+    {
+      "id": "surprise_56cfe763d08f7b2a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:39:30.468448",
+      "context": "postflight refused by research gate: Witness: Social_Trade",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_7eeba663cf92"
+    },
+    {
+      "id": "surprise_58b941fe875fd14f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T00:39:56.817247",
+      "context": "research waived: Witness: Social_Trade",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "Research confirmed UE_LOG markers exist in NPCTradeComponent.cpp and DemoPlayerController.cpp but demo levels lack required actors (NPCs with NPCTradeComponent, pickup actors) to trigger them at runti",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'Research confirmed UE_LOG markers exist in NPCTradeComponent.cpp and DemoPlayerC'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_a800901c0dc1"
     }
   ],
   "edges": [
