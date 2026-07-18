@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T03:29:16+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T03:35:58+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -13,7 +13,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0154 | open | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0155 | open | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
-| tb-0140 | open | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0141 | open | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
@@ -28,10 +27,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0158 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0159 | open | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
-| tb-0160 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
-| tb-0161 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
-| tb-0162 | open | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
-| tb-0163 | open | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
 | tb-0164 | open | 0.6 | Pain verdict: ChimeraMovementComponent.cpp's footstep 'sync  | docs/research/** |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
@@ -85,6 +80,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0130 | done | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | Witness RAN: sleepwalker obs_UGestureWheel simtest_457320c34 |
 | tb-0132 | done | 0.9 | Typed closure report at tunnel exit (subsumes tb-0128 build- | core/closure_report.py, core/agent_tunnel.py… | Typed closure report LIVE across both paths (tunnel + raw):  |
 | tb-0138 | done | 0.9 | Witness: Social_Trade | editor:open; excl:pie | UE_LOG witness markers present in NPCTradeComponent.cpp ([NP |
+| tb-0140 | done | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie | witness_runner COMPLETED (exit=0): 1/1 beats reached in 'she |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |
@@ -173,3 +169,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0125 | abandoned | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0126 | abandoned | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0127 | abandoned | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
+| tb-0160 | abandoned | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
+| tb-0161 | abandoned | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
+| tb-0162 | abandoned | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
+| tb-0163 | abandoned | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
