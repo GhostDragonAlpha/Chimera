@@ -74978,6 +74978,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_ec2f0f2f98e7"
+    },
+    {
+      "id": "surprise_df1220da5eeddbb9",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T21:41:32.200397",
+      "context": "bigbang round 5 + N0=256 probe: ramped drag didn't unlock multi-planet; expected finer granularity (256 seeds at 0.4% each) to cool the disk into gentle accretion",
+      "expectation": "",
+      "reality": "REFUTED IN 7 SECONDS OF GPU TIME: N0=256 made everything WORSE (0-1 planets, central DOWN to 0.59-0.74, ecc UP to 0.35-0.58) - more bodies = more scattering heat, not less. The wall was never granularity; it was RUNG CONFLATION (assembling planets from pebbles WHILE settling a system). The human's correction named it: think of the planet as ONE when we get to that scale. v2 rung split (star pre-formed as body 0, seeds = protoplanet EMBRYOS, the Chambers-2001 late-stage-accretion architecture) unlocked the regime ON THE FIRST UNTRAINED SMOKE: 3 planets mean, Kepler slope engaging (1.11), 94 percent star, 1.4 deg disk, ledger 2e-6 - after five trained rounds at the conflated rung never exceeded 1 planet. THE LADDER IS LOAD-BEARING: each rung's atoms must be the rung below's averages, or the dynamics of the wrong scale eat the search",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but 'REFUTED IN 7 SECONDS OF GPU TIME: N0=256 made everything WORSE (0-1 planets, cen'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ca91a6208b62"
     }
   ],
   "edges": [

@@ -66,17 +66,32 @@ which facts are GOOD.
 from __future__ import annotations
 
 import math
+import os
 
 import numpy as np
 
 # --- sim settings (test conditions, NOT genome) --------------------------------
-N0 = 96                  # planetesimals in the cloud
+# RUNG SPLIT (v2, 2026-07-18 — the human: "think of the planet as ONE when we
+# get to that scale"): five training rounds at N0=96 all collapsed to
+# star+one-survivor, and an N0=256 probe REFUTED the granularity theory
+# (more seeds = hotter disk: 0-1 planets, central 0.59-0.74, ecc 0.35-0.58).
+# The wall was RUNG CONFLATION: assembling planets from pebbles WHILE
+# settling a system fights N-body scattering chaos at every step. The scale
+# ladder's answer: at the system rung every body is ONE — the star already
+# formed (the cloud rung measured 96% collapse; kept in git history), and
+# the seeds are protoplanet EMBRYOS, each an average of the rung below.
+# This is also how planetary science actually does it: late-stage accretion
+# (Chambers 2001; Raymond) starts from ~20-30 Mars-mass embryos and grows
+# 3-4 planets through giant impacts. N0 = star + embryos, env-tunable.
+N0 = int(os.environ.get("CHIMERA_BIGBANG_N0", "24"))
 M_TOT = 1.0              # total cloud mass (G = 1 units)
 G = 1.0
 R_CLOUD = 1.0            # cloud scale radius
 SOFT = 0.005             # gravitational softening
 SOFT2 = SOFT * SOFT
-R0 = 0.006               # body radius at seed mass m0 (merge cross-sections)
+# Body radius at seed mass, scaled so MATERIAL density is N0-invariant
+# (R0 fixed while m0 shrinks would inflate total cross-section with N0).
+R0 = 0.006 * (96.0 / N0) ** (1.0 / 3.0)
 DT = 0.0045
 STEPS = 10000            # T_sim = 45 time units (~hundreds of inner orbits)
 MERGE_EVERY = 4          # merge pass cadence (steps)
@@ -90,38 +105,67 @@ EVAL_SEED = 20260719
 THERMAL_FRAC = 0.05      # velocity noise as a fraction of local circular speed
 
 GENOME_SCHEMA = {
-    # --- SEED: the initial conditions ---
-    # Angular-momentum GRADIENT (round-4 lesson): with one uniform spin,
-    # star-dominance and disk-width are mutually exclusive — sub-Keplerian
-    # parcels circularize at r*spin^2, compressing the whole cloud into ONE
-    # narrow annulus while it feeds the star (rounds 1-3 all plateaued at
-    # 1-2 planets for exactly this reason). Real clouds have an L gradient:
-    # low-L inner material builds the star, high-L outer material stays out
-    # as a wide disk with separated feeding zones. spin_in is the rotation
-    # factor at the center, spin_out at ~2 sigma of the cloud.
-    "spin_in":     {"min": 0.10, "max": 1.05, "init": 0.50},
-    "spin_out":    {"min": 0.50, "max": 1.10, "init": 1.00},
-    "flatten0":    {"min": 0.15, "max": 1.00, "init": 1.00},
-    # Radial extent of the cloud. Added after the first GPU training run
-    # plateaued at 1-2 planets with central_frac pinned on its FLOOR: a
-    # compact collapsed disk is ONE feeding zone, and one feeding zone grows
-    # ONE runaway body (real protoplanetary disks are extended - separated
-    # feeding zones are why systems have several planets). The optimizer
-    # told us the seed was missing a degree of freedom reality has.
-    "spread":      {"min": 0.60, "max": 3.00, "init": 1.00},
+    # --- SEED: the initial conditions of the EMBRYO DISK (v2 rung split;
+    # the cloud-collapse seed loci — spin gradient, flatten, spread — did
+    # their rung's job, measured 96% star formation, and retired to git
+    # history with rounds 1-5's lessons in the surprise ledger) ---
+    # Mass NOT in the star: the embryo disk's total share.
+    # Minimum-Mass Solar Nebula solids are well under 1%, but N0-1 embryos
+    # must quantize planets, so the range runs generous.
+    "disk_frac":   {"min": 0.02, "max": 0.15, "init": 0.06},
+    # Disk annulus: inner edge and outer/inner ratio (log-spaced embryos).
+    "a_in":        {"min": 0.15, "max": 0.60, "init": 0.30},
+    "a_ratio":     {"min": 2.00, "max": 8.00, "init": 5.00},
+    # Initial dynamical temperature: eccentricity / inclination dispersion.
+    "ecc0":        {"min": 0.00, "max": 0.15, "init": 0.03},
+    "incl0_deg":   {"min": 0.00, "max": 10.0, "init": 2.00},
     # --- SHORTCUTS: compressed evolution ---
     "merge_scale": {"min": 0.80, "max": 4.00, "init": 1.50},
     "k_circ":      {"min": 0.00, "max": 2.00, "init": 0.10},
-    # Round-5 lesson (from LOOKING at round 4's winner: 95.8% star + one
-    # scattered straggler, spread pinned at MIN, i.e. "collapse everything,
-    # keep a survivor"): at N0=96 each seed is ~1% of the star, so the disk
-    # is dynamically HOT and constant drag cannot fix it - drag must be LOW
-    # during collapse (or radial infall dies and the star starves) and HIGH
-    # late (to cool survivors into isolated circular orbits). k_ramp is the
-    # fraction of the run over which drag linearly rises from 0 to k_circ:
-    # gas arriving as one coefficient over time.
+    # Drag ramps in over k_ramp of the run (gas arriving over time): low
+    # early lets giant impacts happen, high late freezes the survivors.
     "k_ramp":      {"min": 0.00, "max": 1.00, "init": 0.30},
 }
+
+
+def build_init(genome: dict, rng) -> tuple:
+    """SHARED initial-condition builder (both twins call this — init drift
+    between CPU and GPU was a latent bug class until v2 unified it).
+
+    Body 0 is THE STAR, already ONE (the cloud rung's output). Bodies 1..N0-1
+    are embryos: equal masses summing to disk_frac, log-spaced semi-major
+    axes in [a_in, a_in*a_ratio], near-circular near-coplanar Keplerian
+    orbits with (ecc0, incl0) dispersion. Returns (pos, vel, m, lz0)."""
+    n_emb = N0 - 1
+    m_star = M_TOT * (1.0 - genome["disk_frac"])
+    m_emb = M_TOT * genome["disk_frac"] / n_emb
+    m = np.empty(N0)
+    m[0] = m_star
+    m[1:] = m_emb
+
+    a = np.exp(rng.uniform(math.log(genome["a_in"]),
+                           math.log(genome["a_in"] * genome["a_ratio"]),
+                           n_emb))
+    theta = rng.uniform(0.0, 2.0 * math.pi, n_emb)
+    ecc = np.abs(rng.normal(0.0, max(genome["ecc0"], 1e-4), n_emb))
+    incl = np.abs(rng.normal(0.0, max(math.radians(genome["incl0_deg"]),
+                                      1e-4), n_emb))
+
+    pos = np.zeros((N0, 3))
+    vel = np.zeros((N0, 3))
+    v_k = np.sqrt(G * m_star / a)
+    pos[1:, 0] = a * np.cos(theta)
+    pos[1:, 1] = a * np.sin(theta)
+    pos[1:, 2] = a * np.sin(incl) * np.sin(theta + rng.uniform(
+        0.0, 2.0 * math.pi, n_emb))
+    # Tangential Keplerian speed with a radial eccentricity kick (a body at
+    # this speed mix traces e ~ ecc): the standard dispersion construction.
+    vel[1:, 0] = -v_k * np.sin(theta) + v_k * ecc * np.cos(theta) * rng.choice(
+        [-1.0, 1.0], n_emb)
+    vel[1:, 1] = v_k * np.cos(theta) + v_k * ecc * np.sin(theta)
+    vel -= (m[:, None] * vel).sum(axis=0) / m.sum()   # zero net momentum
+    lz0 = float(np.sum(m * (pos[:, 0] * vel[:, 1] - pos[:, 1] * vel[:, 0])))
+    return pos, vel, m, lz0
 
 
 def seed(rng=None) -> dict:
@@ -174,32 +218,13 @@ def _lz(pos: np.ndarray, vel: np.ndarray, m: np.ndarray) -> float:
 
 def _rollout(genome: dict, restart: int) -> dict:
     rng = np.random.default_rng(EVAL_SEED + restart)
-    spin_in = float(genome.get("spin_in", genome.get("spin", 0.85)))
-    spin_out = float(genome.get("spin_out", spin_in))
-    flat0 = genome["flatten0"]
     mscale, k_circ = genome["merge_scale"], genome["k_circ"]
     ramp_steps = max(1.0, float(genome.get("k_ramp", 0.0)) * STEPS)
 
     m0 = M_TOT / N0
-    m = np.full(N0, m0)
-    merges_of = np.ones(N0, dtype=np.int32)          # seeds absorbed (self counts 1)
+    merges_of = np.ones(N0, dtype=np.int32)          # bodies absorbed (self counts 1)
     alive = np.ones(N0, dtype=bool)
-
-    spread = float(genome.get("spread", 1.0))        # pre-spread genomes: 1.0
-    pos = rng.normal(0.0, spread * R_CLOUD / 2.0, (N0, 3))
-    pos[:, 2] *= flat0
-    pos -= pos.mean(axis=0)
-
-    rxy = np.hypot(pos[:, 0], pos[:, 1]) + 0.05
-    v_circ = np.sqrt(G * M_TOT / rxy)
-    r_norm = np.clip(rxy / (spread * R_CLOUD), 0.0, 1.0)   # ~2 sigma at 1.0
-    spin_r = spin_in + (spin_out - spin_in) * r_norm
-    tang = np.stack([-pos[:, 1] / rxy, pos[:, 0] / rxy, np.zeros(N0)], axis=1)
-    vel = spin_r[:, None] * v_circ[:, None] * tang
-    vel += rng.normal(0.0, 1.0, (N0, 3)) * (THERMAL_FRAC * v_circ[:, None])
-    vel -= (m[:, None] * vel).sum(axis=0) / m.sum()   # zero net momentum
-
-    lz0 = _lz(pos, vel, m)
+    pos, vel, m, lz0 = build_init(genome, rng)
     lz_spin_ledger = 0.0                              # merger-absorbed internal L
     lz_removed_ledger = 0.0                           # escapees' exported L
     merges_total, merges_late = 0, 0
