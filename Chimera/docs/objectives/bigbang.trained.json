@@ -1,28 +1,29 @@
 {
   "objective": "bigbang",
-  "score": 0.3666706186551997,
+  "score": 0.9719893561327111,
   "measures": {
-    "central_frac_mean": 0.8499999880790711,
-    "n_planets_worst": 1.0,
-    "n_planets_mean": 1.0,
-    "ecc_median_mean": 0.20056686439239707,
-    "incl_rms_deg_mean": 0.5037887387546645,
-    "kepler_slope_mean": 0.0,
-    "kepler_slope_spread": 0.0,
-    "kepler_r2_worst": 0.0,
-    "planet_mass_frac_worst": 0.7499999944120646,
+    "central_frac_mean": 0.9803478479385376,
+    "n_planets_worst": 3.0,
+    "n_planets_mean": 3.8,
+    "ecc_median_mean": 0.11518204095016085,
+    "incl_rms_deg_mean": 0.003801735578349822,
+    "kepler_slope_mean": 1.48300546578878,
+    "kepler_slope_spread": 0.04552926534132773,
+    "kepler_r2_worst": 0.9997837601844878,
+    "planet_mass_frac_worst": 0.913043480032407,
     "merges_late_worst": 2.0,
-    "escaped_frac_worst": 6.426125764846802e-08,
-    "lz_drift_worst": 3.5165460067329096e-06,
-    "spin_l_frac_mean": 0.21242217570050254
+    "escaped_frac_worst": -1.9907020032405853e-08,
+    "lz_drift_worst": 3.774768811986819e-06,
+    "spin_l_frac_mean": 0.008024927277021992
   },
   "genome": {
-    "spin_in": 0.43048684772793944,
-    "spin_out": 0.6616598034352363,
-    "flatten0": 0.15936952192028722,
-    "spread": 1.6272934964737968,
-    "merge_scale": 2.6220164437647604,
-    "k_circ": 0.2761843403024209,
-    "k_ramp": 0.33728031932301267
+    "disk_frac": 0.02,
+    "a_in": 0.35925187145987103,
+    "a_ratio": 2.89065287489695,
+    "ecc0": 0.03185060981830154,
+    "incl0_deg": 2.4877749154302675,
+    "merge_scale": 2.9169977799122315,
+    "k_circ": 1.0284228881106974,
+    "k_ramp": 0.6145599233108073
   }
 }

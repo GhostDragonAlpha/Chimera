@@ -1,3 +1,32 @@
+# Session 2026-07-18 (fable-5, later) — tb-0193 DONE: THE BIG BANG GROWS A SOLAR SYSTEM (GPU, six rounds, rung split)
+
+- **THE RESULT**: `core/trainables/bigbang.py` (CPU twin + shared `build_init`) + `bigbang_gpu.py` (Warp,
+  whole population × restarts resident, zero in-loop syncs, one readback) + research-pinned
+  `docs/objectives/bigbang.json`. Round 6: **23,040 universes in 144.8s (159 evals/sec, 1,656× CPU), best
+  0.9720, ALL walls satisfied — Kepler slope 1.483/1.50 with r² 0.9998-1.000 MEASURED from grown orbits
+  (winding-accumulated periods, never coded), star 98.0%, 3-4 planets, ecc 0.115, disk 0.004°, L_z ledger
+  3.8e-6 HARD.** Winner genome = a nebula recipe (disk_frac PINNED at 0.02 min — MMSN-consistent; annulus
+  0.36-1.04; born cold; gas ramping in at 0.61). Renders: `Saved/BigBang/solar_system_trained.png` (+
+  `_v2_untrained.png` — the before/after of selection: ecc 0.47→0.12, slope 1.33→1.50).
+- **THE SIX-ROUND STORY (all surprise-recorded)**: L_z ledger caught a STRUCTURAL bug on first smoke (stale
+  post-merge forces → drift 0.527 → refresh-after-merge fix → 8.4e-6). Rounds 1-5 at the conflated
+  cloud-rung plateaued at 1-2 planets through spread, star-dominance objective, L-gradient (spin_in/out),
+  and ramped-drag levers (surprise_08d9fd67cb088ef1, surprise_92ecf9f8616cc4fb); **N0=256 probe REFUTED
+  granularity in 7s (more seeds = hotter disk)**. The human's correction — "think of the planet as ONE when
+  we get to that scale" — became the **v2 RUNG SPLIT** (star pre-formed as body 0; seeds = protoplanet
+  EMBRYOS; the Chambers-2001 late-stage-accretion architecture; N0 24, 16× cheaper) and the regime unlocked
+  **on the untrained smoke** (surprise_df1220da5eeddbb9). RUNG CONFLATION is now a named failure mode.
+- **OPERATOR BAR recorded (CAPCOM sig_01784410624594832700)**: keep going until oceans/atmosphere/interior
+  temperature gradient — i.e., the NEXT rung: planet-scale AVERAGES from each grown planet's (mass, a, e)
+  vs researched planetary science (geotherm, equilibrium temperature, habitable-zone condensation).
+  "Intelligence is compression": the genome IS the compressed world; hardware sets max fidelity; averages
+  at each scale, physics as the decompressor.
+- **Blind spots declared (postflight phantom pain)**: empirical-Kepler window blind past a~2.2 (unmeasured
+  outer planets possible for wide-annulus winners); fp64 CPU-twin verification of the winner not yet run;
+  solar_accretion's identity-in-game rep atom correctly RED until the UE5 wiring lane.
+
+---
+
 # Session 2026-07-18 (fable-5) — tb-0189 DONE (levitation hunt), tb-0192 IN FLIGHT (granular emergence rung), 4 handed defects fixed
 
 - **tb-0189 CLOSED, criterion met, mechanism honestly partial**: the ONLY per-tick position writer in code was

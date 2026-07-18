@@ -74997,6 +74997,53 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_ca91a6208b62"
+    },
+    {
+      "id": "discovery_7a17f0c9de10da61",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T21:45:52.609090",
+      "feature": "Big-bang rung: a solar system GROWN on the GPU (tb-0193) - s",
+      "campus_sources": [],
+      "web_sources": [
+        "Chambers 2001 / Raymond late-stage accretion (20-30 embryos -> 3-4 planets via giant impacts - the v2 architecture); Kepler 1619 third law (emergent objective, slope 1.5); Sun mass fraction 99.86 pct; solar-system eccentricities (6 of 8 under 0.1) + invariable-plane inclinations (few deg); Minimum-M"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Big-bang rung: a solar system GROWN on the GPU (tb-0193) - s",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Big-bang rung: a solar system GROWN on the GPU (tb-0193) - s': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_ffcbdf2d99a6"
+    },
+    {
+      "id": "phase_18dfea9683b70b8a",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T21:45:53.015930",
+      "phase": "Big-bang rung: a solar system GROWN on the GPU (tb-0193) - six rounds, rung split, Kepler emerges",
+      "result": "Trainer verbatim: '23,040 evaluations in 144.8s = 159 evals/sec, best score 0.9720' - all 11 walls satisfied: kepler_slope_mean 1.483 (rendered winner 1.50, r2 1.000 - the law MEASURED from grown orbits, never coded), central 98.0 pct, planets worst 3 / mean 3.8, ecc median 0.115, disk rms 0.004 deg, late merges 2, L_z ledger 3.775e-6 HARD PASS. GPU-resident batches (zero in-loop syncs): 1,656x the CPU baseline. Renders: Saved/BigBang/solar_system_trained.png + _v2_untrained.png. Surprises: stale-force ledger catch (drift 0.527 structural, fixed), rounds 1-5 plateau + N256 refutation (surprise_08d9fd67cb088ef1, surprise_92ecf9f8616cc4fb), rung-split breakthrough (surprise_df1220da5eeddbb9).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Big-bang rung: a solar system GROWN on the GPU (tb-0193) - six rounds, rung split, Kepler emerges",
+      "error_category": "none",
+      "fix_description": "Phase 'Big-bang rung: a solar system GROWN on the GPU (tb-0193) - six rounds, rung split, Kepler emerges' complete: Trainer verbatim: '23,040 evaluations in 144.8s = 159 evals/sec, best score 0.9720' - all 11 walls satisfied: kepler_slope_mean 1.483 (rendered winner 1.50, r2 1.000 - the law MEASURED from grown orbi",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The empirical-Kepler window is structurally blind past a~2.2 (period > sample window): a future wide-annulus winner could carry UNMEASURED outer planets and still score - if a later round's winner has a_ratio near max with high a_in, re-derive the window or extend SAMPLE_FRAC before trusting its Kepler numbers. Also: fp64 CPU-twin verification of the winner rollout not yet run (fp32 ledger floor only)."
+      ],
+      "inheritance": "RUNG CONFLATION is the named failure mode: five trained rounds could not grow planets from pebbles while settling a system, and finer granularity made it WORSE - the ladder is load-bearing, each rung's atoms must be the rung below's averages (the human: think of the planet as ONE at that scale; star pre-formed, seeds = Chambers-2001 embryos, regime unlocked on the untrained smoke). The L_z honesty ledger is the physics receipt that catches structural bugs (stale post-merge forces) that no score notices. Next rung per the operator bar (CAPCOM sig_01784410624594832700): planet-scale AVERAGES - interior thermal gradient, atmosphere, ocean fraction from each planet's (mass, a, e) against researched planetary science.",
+      "pain_verdicts": {
+        "phase_c343f5ecd1c65d22:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_ffcbdf2d99a6"
     }
   ],
   "edges": [

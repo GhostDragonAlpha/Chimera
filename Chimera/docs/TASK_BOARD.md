@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T21:02:06+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T21:45:27+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,7 +8,6 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0193 | claimed | 0.9 | Big-bang rung v0: grow a solar system on the GPU (trainable  | core/trainables/bigbang.py, core/trainables/bigbang_gpu.py… | fable-5 |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
 | tb-0145 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
@@ -90,6 +89,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0142 | done | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie | witness_runner (wraps core.sleepwalker) ran docs/beats/trave |
 | tb-0188 | done | 0.9 | Sample-source bake-off: multiple avenues, per-material optim | docs/matter/reference_scans/**, docs/research/sample_sources_bakeoff.md | Wrote docs/research/sample_sources_bakeoff.md (373 lines, ne |
 | tb-0192 | done | 0.9 | Granular matter engine v0: trainable sandpile domain (emerge | core/trainables/granular.py, docs/objectives/granular*.json | GRANULAR EMERGENCE RUNG v0 TRAINED AND STANDING. Domain core |
+| tb-0193 | done | 0.9 | Big-bang rung v0: grow a solar system on the GPU (trainable  | core/trainables/bigbang.py, core/trainables/bigbang_gpu.py… | THE BIG BANG GROWS A SOLAR SYSTEM - all walls satisfied, bes |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |
