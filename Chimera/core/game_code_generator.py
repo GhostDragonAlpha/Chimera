@@ -453,6 +453,13 @@ class GameCodeGenerator:
         memorial_files = self.generate_star_memorial_files()
         generated_files["combat_components"].extend(memorial_files)
 
+        # Generate SacrificeLogComponent (seed USacrificeLogComponent) — tb-0159,
+        # CWM rung 2 continuation: adds the seed's weight-keyed Record()/
+        # WeightForGeneration() shape alongside the existing shipped API,
+        # reusing the SAME trained genome memorial_files just loaded above.
+        sacrifice_log_files = self.generate_sacrifice_log_files()
+        generated_files["combat_components"].extend(sacrifice_log_files)
+
         # DemoPlayerController: LOOP-BUILT, deliberately NOT generated here — the
         # TAB/GestureWheel skeleton template under-emitted by ~300 lines and
         # clobbered the artifact on its first regen (tb-0131, 2026-07-17).
@@ -2191,6 +2198,678 @@ void RunStarMemorialSystemTests()
             f.write(cpp_content)
 
         test_path = tests_dir / "StarMemorialAcceptanceTests.cpp"
+        with open(test_path, 'w', encoding='utf-8') as f:
+            f.write(test_content)
+
+        return [str(header_path), str(cpp_path), str(test_path)]
+
+    def generate_sacrifice_log_files(self) -> list[str]:
+        """Generate SacrificeLogComponent.h/.cpp + SacrificeLogAcceptanceTests.cpp —
+        the seed's USacrificeLogComponent (CHIMERA_VISION.py:3771-3784), bringing
+        the SHIPPED component (Source/Chimera/ProceduralGenerated/Save/
+        SacrificeLogComponent.h/.cpp, hand-authored) under generator ownership
+        for the first time. This is the exact follow-up
+        generate_star_memorial_files' own docstring named and deferred:
+        "Migrating USacrificeLogComponent to the seed's shape is a real,
+        documented follow-up (out of this generator method's footprint --
+        it touches a DIFFERENT class with no generate_* method yet), not a
+        silent divergence."
+
+        tb-0159 (2026-07-18): adds the seed's weight-keyed shape ALONGSIDE the
+        existing shipped API rather than replacing it —
+
+          1. Record(Kind, Note, Generation, Day) / WeightForGeneration(Generation)
+             / GetSacrificeWeights() -- CHIMERA_VISION.py:3771-3784's
+             `self.entries.append((kind, SACRIFICE_WEIGHTS[kind], note,
+             generation, day))` / `sum(e[1] for e in self.entries if e[3] ==
+             generation)`, ported directly. The 8-kind weight table is loaded
+             from docs/objectives/memorial.trained.json AT GENERATION TIME by
+             reusing _load_memorial_trained_genome() UNCHANGED -- the SAME
+             genome generate_star_memorial_files loads for BrightnessK/
+             BrightLightsYardThreshold -- so the sacrifice log and the star
+             memorial can never silently read two different trainings of the
+             same 8 numbers (score=0.839; see that method's docstring for the
+             brightness-side measured values). The weights themselves are
+             cited in this file's own generated header comment below.
+          2. The original shipped API (RecordProtectionAtCost/
+             RecordTradeRefused/HasAnySacrifices/GetSacrificeCount/
+             GetSacrificeDescriptions, ProtectedAtCostEntries/
+             TotalSacrificesCount) is reproduced BYTE-FOR-BYTE. Not caution
+             for its own sake -- three files OUTSIDE this method's resource
+             footprint (core/game_code_generator.py only; tb-0159's board
+             packet scopes no other file) call it TODAY, and none of them is
+             generator-owned itself (no generate_* method exists for any of
+             the three, so there is no lever here to migrate their call
+             sites):
+               - Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.cpp
+                 (H-34 runtime-attach: FindComponentByClass/NewObject/
+                 RegisterComponent only -- no API-shaped call, unaffected
+                 either way)
+               - Source/Chimera/ProceduralGenerated/Subsystems/
+                 GenerationSubsystem.cpp (WriteStarFromSacrificeLog reads
+                 HasAnySacrifices()/GetSacrificeCount())
+               - Source/Chimera/ProceduralGenerated/Save/
+                 CostlessLifeEndingDiagnostic.cpp
+                 (CheckSacrificeLogAndTriggerEnding reads HasAnySacrifices())
+             docs/rep_batteries/System_SaveGame.json also carries two
+             reflection-derived atoms (provenance
+             reflection:UPROPERTY:SacrificeLogComponent.h) probing
+             TotalSacrificesCount/ProtectedAtCostEntries by name -- removing
+             either field would silently orphan that coverage. Migrating the
+             three callers above onto Record()/WeightForGeneration() (a
+             sacrifice-WEIGHTED read; GetSacrificeCount() is a plain entry
+             count, not that) is the natural next follow-up, once one of them
+             gains a generate_* method of its own -- same shape as this
+             method's own predecessor-deferral, one task later, now with the
+             seed-shape API actually in place for that follow-up to call.
+          3. H-21 witness marker: Record logs
+             "[Sacrifice] Recorded kind=%s weight=%.4f gen=%d" on every call
+             -- including the fail-safe path (Kind outside the 8 trained
+             keys: weight 0.0, still recorded, loudly WARN-logged; never a
+             crash, never a silent drop -- H-1, drift made visible instead of
+             swallowed).
+          4. Tests/SacrificeLogAcceptanceTests.cpp -- PREVIOUSLY a loop-built
+             file (tb-0158 extracted these VERBATIM out of the old
+             StarMemorialAcceptanceTests.cpp specifically because
+             USacrificeLogComponent had no generate_* method yet -- see that
+             file's own PROVENANCE header comment). This method now OWNS it:
+             the four original IMPLEMENT_SIMPLE_AUTOMATION_TEST tests
+             (FSacrificeLog_Init/_RecordProtectionAtCost/
+             _EmptyDescriptionRejected/_RecordTradeRefused) and the
+             cross-component integration test (FStarMemorial_FullNarrativeFlow)
+             are reproduced UNCHANGED -- same names, same assertions, zero
+             coverage lost crossing into generator ownership -- plus THREE
+             new plain-function tests (the WeatherAcceptanceTests /
+             StarMemorialAcceptanceTests idiom, not the UE Automation-macro
+             style) for the new seed-shape API: the weights table matches the
+             trained json, WeightForGeneration sums correctly per-generation,
+             and an unknown kind is handled fail-safe.
+
+        Research (UE 5.8, 2026-07-18 -- this task's Research Gate is
+        unwaivable, its premise is that the feature does not yet exist):
+          - FString's operator== is CASE-INSENSITIVE by default, and
+            GetTypeHash(FString) is defined to match case-insensitively so
+            the TMap<FString,float> hash-map invariant (equal keys hash
+            equal) holds --
+            https://dev.epicgames.com/documentation/unreal-engine/string-handling-in-unreal-engine
+            https://craftedcart.gitlab.io/unrealbookoftips/containers/tmap/case_sensitive_fstring_keys.html
+            (harmless here: every producer of a Kind string uses the same
+            literal casing as the 8 trained keys).
+          - TMap::Add/Find contract -- Find returns a pointer-or-nullptr,
+            guarded before dereference in Record(); FindChecked is used only
+            in the generated TEST file below, where the key is asserted
+            present a line earlier, never in production Record() where an
+            unrecognized Kind is a recoverable, expected input --
+            https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Core/TMap?lang=en-US
+            https://dev.epicgames.com/documentation/unreal-engine/map-containers-in-unreal-engine
+          - UFUNCTION BlueprintPure on a const method (WeightForGeneration),
+            matching the existing HasAnySacrifices/GetSacrificeCount/
+            GetSacrificeDescriptions precedent in this same class --
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/ufunctions-in-unreal-engine
+          - UPROPERTY SaveGame specifier (Entries persists across the heir's
+            respawn, same contract UStarMemorialComponent::Stars already
+            relies on) --
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine
+            https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-uproperties
+        """
+        genome, provenance = self._load_memorial_trained_genome()
+
+        weight_keys_sorted = sorted(genome["weights"])
+        weights_comment_lines = "\n".join(
+            f" *   {k} = {genome['weights'][k]:.4f}" for k in weight_keys_sorted
+        )
+        weights_map_lines = "\n".join(
+            f'        Weights.Add(TEXT("{k}"), {genome["weights"][k]:.6f}f);' for k in weight_keys_sorted
+        )
+        weights_check_lines = "\n".join(
+            f'    check(FMath::IsNearlyEqual(Weights.FindChecked(TEXT("{k}")), {genome["weights"][k]:.6f}f, 0.0001f));'
+            for k in weight_keys_sorted
+        )
+
+        save_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated/Save")
+        save_dir.mkdir(parents=True, exist_ok=True)
+        tests_dir = Path("E:/PythonChimera/Chimera/Source/Chimera/ProceduralGenerated/Tests")
+        tests_dir.mkdir(parents=True, exist_ok=True)
+
+        # === SacrificeLogComponent.h ===
+        header_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_sacrifice_log_files).
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
+#include "SacrificeLogComponent.generated.h"
+
+/**
+ * One thing the player protected at cost, keyed by KIND (the seed's 8
+ * SACRIFICE_WEIGHTS kinds, CHIMERA_VISION.py:3141-3145) -- the C++ mirror of
+ * USacrificeLogComponent.Record()'s tuple (CHIMERA_VISION.py:3771-3784:
+ * `self.entries.append((kind, SACRIFICE_WEIGHTS[kind], note, generation, day))`).
+ */
+USTRUCT(BlueprintType)
+struct FSacrificeEntry
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Sacrifice Log")
+    FString Kind;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Sacrifice Log")
+    float Weight = 0.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Sacrifice Log")
+    FString Note;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Sacrifice Log")
+    int32 Generation = 0;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, SaveGame, Category="Sacrifice Log")
+    int32 Day = 0;
+};
+
+/**
+ * Tracks what the player protected at cost - trades refused, cargo burned to save a stranger,
+ * hours spent on someone who couldn't pay. The Erisaid shows a composite of everything this
+ * run protected at cost — assembled from the actual sacrifice log.
+ *
+ * GENERATOR-OWNED (2026-07-18, tb-0159): carries TWO API surfaces --
+ *
+ *  1. THE ORIGINAL SHIPPED API below (RecordProtectionAtCost/
+ *     RecordTradeRefused/HasAnySacrifices/GetSacrificeCount/
+ *     GetSacrificeDescriptions, ProtectedAtCostEntries/TotalSacrificesCount)
+ *     is UNCHANGED, byte-for-byte, so every existing caller keeps compiling
+ *     with zero edits: ChimeraMovementComponent.cpp (spawns+registers it,
+ *     H-34), GenerationSubsystem.cpp (WriteStarFromSacrificeLog reads
+ *     HasAnySacrifices/GetSacrificeCount), CostlessLifeEndingDiagnostic.cpp
+ *     (CheckSacrificeLogAndTriggerEnding reads HasAnySacrifices) -- none of
+ *     these three are generator-owned themselves yet, so migrating their
+ *     call sites is a documented follow-up, not this method's footprint.
+ *
+ *  2. THE SEED'S SHAPE (CHIMERA_VISION.py:3771-3784) -- Record(Kind, Note,
+ *     Generation, Day), keyed by the 8 trained SACRIFICE_WEIGHTS kinds
+ *     (weight looked up from __MEMORIAL_PROVENANCE__ -- the SAME genome
+ *     generate_star_memorial_files already loads, so the sacrifice log and
+ *     the star memorial can never silently read two different trainings),
+ *     and WeightForGeneration(Generation) -- summed per life. Design Law 2:
+ *     read TWICE EVER (the star at death, the Erisaid's mirror). NO gauge,
+ *     NO UI surfaces this value.
+ *
+ * The 8 trained SACRIFICE_WEIGHTS (__MEMORIAL_PROVENANCE__):
+__MEMORIAL_WEIGHTS_COMMENT__
+ *
+ * Witness marker (H-21): Record logs
+ * "[Sacrifice] Recorded kind=%s weight=%.4f gen=%d" on every call, including
+ * the fail-safe path for a Kind outside the 8 trained keys (weight 0.0,
+ * still recorded, loudly WARN-logged -- never a crash, never a silent drop).
+ *
+ * FString-keyed TMap note: FString's operator== (and its matching
+ * GetTypeHash) is CASE-INSENSITIVE by default in Unreal Engine, so
+ * GetSacrificeWeights() matches Kind case-insensitively -- harmless here
+ * since every caller uses the same literal casing as the 8 trained keys.
+ */
+UCLASS(ClassGroup=(Save), meta=(BlueprintSpawnableComponent))
+class CHIMERA_API USacrificeLogComponent : public UActorComponent
+{
+    GENERATED_BODY()
+
+public:
+    USacrificeLogComponent(const FObjectInitializer& ObjectInitializer);
+
+protected:
+    virtual void BeginPlay() override;
+
+public:
+    // --- Original shipped API (UNCHANGED -- see class comment, part 1) ---
+
+    UFUNCTION(BlueprintCallable, Category="Sacrifice Log")
+    void RecordProtectionAtCost(const FString& Description, float CostPaid);
+
+    UFUNCTION(BlueprintCallable, Category="Sacrifice Log")
+    void RecordTradeRefused(const FString& TradeDescription, float ValueAtRisk);
+
+    UFUNCTION(BlueprintPure, Category="Sacrifice Log")
+    bool HasAnySacrifices() const;
+
+    UFUNCTION(BlueprintPure, Category="Sacrifice Log")
+    int32 GetSacrificeCount() const;
+
+    UFUNCTION(BlueprintPure, Category="Sacrifice Log")
+    TArray<FString> GetSacrificeDescriptions() const;
+
+    // --- Seed-shape API (NEW, tb-0159 -- see class comment, part 2) ---
+
+    /** Record a sacrifice AT the moment it happens, keyed by one of the 8
+     *  trained SACRIFICE_WEIGHTS kinds. An unrecognized Kind is fail-safe:
+     *  weight 0.0, still appended, loudly logged -- never a crash, never a
+     *  silent drop (H-1). */
+    UFUNCTION(BlueprintCallable, Category="Sacrifice Log")
+    void Record(const FString& Kind, const FString& Note, int32 Generation, int32 Day);
+
+    /** Sum of sacrifice weights for one life (one generation). Design Law 2:
+     *  read TWICE EVER (the star at death, the Erisaid's mirror). No gauge,
+     *  no UI. */
+    UFUNCTION(BlueprintPure, Category="Sacrifice Log")
+    float WeightForGeneration(int32 Generation) const;
+
+    /** The trained weight table (8 kinds -> weight), __MEMORIAL_PROVENANCE__.
+     *  An unrecognized kind is simply absent from this map. Not a
+     *  UFUNCTION -- Blueprint doesn't take a const TMap& return; call this
+     *  from C++ only. */
+    static const TMap<FString, float>& GetSacrificeWeights();
+
+    // Every sacrifice this component has ever logged via Record() (seed's
+    // `entries` list). SaveGame so it survives the heir's respawn across
+    // generations -- same contract as UStarMemorialComponent::Stars.
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category="Sacrifice Log")
+    TArray<FSacrificeEntry> Entries;
+
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sacrifice Log")
+    TArray<FString> ProtectedAtCostEntries;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sacrifice Log")
+    int32 TotalSacrificesCount;
+};
+'''
+        header_content = (header_content
+            .replace("__MEMORIAL_PROVENANCE__", provenance)
+            .replace("__MEMORIAL_WEIGHTS_COMMENT__", weights_comment_lines)
+        )
+
+        # === SacrificeLogComponent.cpp ===
+        cpp_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_sacrifice_log_files).
+#include "SacrificeLogComponent.h"
+
+USacrificeLogComponent::USacrificeLogComponent(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    PrimaryComponentTick.bCanEverTick = false;
+}
+
+void USacrificeLogComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    TotalSacrificesCount = 0;
+}
+
+void USacrificeLogComponent::RecordProtectionAtCost(const FString& Description, float CostPaid)
+{
+    if (!Description.IsEmpty())
+    {
+        ProtectedAtCostEntries.Add(Description);
+        TotalSacrificesCount++;
+    }
+}
+
+void USacrificeLogComponent::RecordTradeRefused(const FString& TradeDescription, float ValueAtRisk)
+{
+    FString Entry = FString::Printf(TEXT("Trade refused: %s (Value at risk: %.2f)"), *TradeDescription, ValueAtRisk);
+    RecordProtectionAtCost(Entry, ValueAtRisk);
+}
+
+bool USacrificeLogComponent::HasAnySacrifices() const
+{
+    return TotalSacrificesCount > 0 && ProtectedAtCostEntries.Num() > 0;
+}
+
+int32 USacrificeLogComponent::GetSacrificeCount() const
+{
+    return TotalSacrificesCount;
+}
+
+TArray<FString> USacrificeLogComponent::GetSacrificeDescriptions() const
+{
+    return ProtectedAtCostEntries;
+}
+
+void USacrificeLogComponent::Record(const FString& Kind, const FString& Note, int32 Generation, int32 Day)
+{
+    const TMap<FString, float>& Weights = GetSacrificeWeights();
+    const float* FoundWeight = Weights.Find(Kind);
+    const float Weight = FoundWeight ? *FoundWeight : 0.0f;
+
+    if (!FoundWeight)
+    {
+        // Fail-safe, never a crash: an unrecognized Kind still gets recorded
+        // (weight 0) so the log never silently drops a call -- but it is
+        // loudly surfaced, since it means a caller drifted from the 8
+        // trained kinds (H-1: template/spec drift).
+        UE_LOG(LogTemp, Warning,
+            TEXT("[Sacrifice] Unknown kind '%s' -- recording with weight 0.0 (not one of the 8 trained SACRIFICE_WEIGHTS kinds)"),
+            *Kind);
+    }
+
+    FSacrificeEntry NewEntry;
+    NewEntry.Kind = Kind;
+    NewEntry.Weight = Weight;
+    NewEntry.Note = Note;
+    NewEntry.Generation = Generation;
+    NewEntry.Day = Day;
+    Entries.Add(NewEntry);
+
+    // H-21 witness marker: a verb needs behavior a beat can observe.
+    UE_LOG(LogTemp, Log, TEXT("[Sacrifice] Recorded kind=%s weight=%.4f gen=%d"), *Kind, Weight, Generation);
+}
+
+float USacrificeLogComponent::WeightForGeneration(int32 Generation) const
+{
+    float Total = 0.0f;
+    for (const FSacrificeEntry& Entry : Entries)
+    {
+        if (Entry.Generation == Generation)
+        {
+            Total += Entry.Weight;
+        }
+    }
+    return Total;
+}
+
+const TMap<FString, float>& USacrificeLogComponent::GetSacrificeWeights()
+{
+    static TMap<FString, float> Weights;
+    if (Weights.Num() == 0)
+    {
+__MEMORIAL_WEIGHTS_MAP__
+    }
+    return Weights;
+}
+'''
+        cpp_content = cpp_content.replace("__MEMORIAL_WEIGHTS_MAP__", weights_map_lines)
+
+        # === SacrificeLogAcceptanceTests.cpp ===
+        test_content = '''// Copyright 2026 Chimera Project. All Rights Reserved.
+// Generated by GameCodeGenerator (core/game_code_generator.py::generate_sacrifice_log_files).
+// Sacrifice Log Acceptance Tests — Design Law 2 (dead players become
+// memorials/stars). Proves USacrificeLogComponent's own behaviours, plus the
+// cross-component integration with UStarMemorialComponent (world-independently
+// via NewObject, no PIE).
+//
+// PROVENANCE: tb-0158 (2026-07-18) extracted the ORIGINAL-API tests below
+// VERBATIM from StarMemorialAcceptanceTests.cpp (commit 859d453) into this
+// sibling file, loop-built at the time because USacrificeLogComponent had no
+// generate_* method yet. tb-0159 (2026-07-18,
+// core/game_code_generator.py::generate_sacrifice_log_files) gives
+// USacrificeLogComponent its generate_* method and this file becomes
+// GENERATOR-OWNED from here on -- regen reproduces every test below, nothing
+// is hand-added. The four original-API tests (FSacrificeLog_*) and the
+// cross-component integration test (FStarMemorial_FullNarrativeFlow) are
+// UNCHANGED -- same assertions, same names -- no coverage lost crossing into
+// generator ownership. New tests (TestSacrificeLog_*) cover the seed-shape
+// API added alongside the original one (Record/WeightForGeneration/
+// GetSacrificeWeights -- see SacrificeLogComponent.h class comment for why
+// both APIs coexist), in the plain-function idiom (mirrors
+// WeatherAcceptanceTests.cpp / StarMemorialAcceptanceTests.cpp, not the UE
+// Automation-macro style above).
+
+#include "CoreMinimal.h"
+#include "Misc/AutomationTest.h"
+#include "../Save/SacrificeLogComponent.h"
+#include "../Save/StarMemorialComponent.h"
+
+#if WITH_DEV_AUTOMATION_TESTS
+
+// ==================================================================
+// SacrificeLogComponent: Initialization & Basic Recording
+// ==================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSacrificeLog_Init,
+    "ChimeraTests.Acceptance.SacrificeLog.Init",
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FSacrificeLog_Init::RunTest(const FString& Parameters)
+{
+    USacrificeLogComponent* Log = NewObject<USacrificeLogComponent>();
+    TestNotNull(TEXT("SacrificeLog instantiated"), Log);
+
+    TestFalse(TEXT("initially no sacrifices"), Log->HasAnySacrifices());
+    TestEqual(TEXT("initial sacrifice count is zero"), Log->GetSacrificeCount(), 0);
+
+    TArray<FString> Descriptions = Log->GetSacrificeDescriptions();
+    TestEqual(TEXT("initial description array empty"), Descriptions.Num(), 0);
+    return true;
+}
+
+// ==================================================================
+// RecordProtectionAtCost: Records a single sacrifice entry
+// ==================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSacrificeLog_RecordProtectionAtCost,
+    "ChimeraTests.Acceptance.SacrificeLog.RecordProtectionAtCost",
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FSacrificeLog_RecordProtectionAtCost::RunTest(const FString& Parameters)
+{
+    USacrificeLogComponent* Log = NewObject<USacrificeLogComponent>();
+
+    // Record first sacrifice
+    Log->RecordProtectionAtCost(TEXT("Saved stranded miner"), 500.0f);
+    TestEqual(TEXT("sacrifice count incremented to 1"), Log->GetSacrificeCount(), 1);
+    TestTrue(TEXT("HasAnySacrifices now true"), Log->HasAnySacrifices());
+
+    TArray<FString> Desc1 = Log->GetSacrificeDescriptions();
+    TestEqual(TEXT("description array has 1 entry"), Desc1.Num(), 1);
+    TestEqual(TEXT("description text recorded"), Desc1[0], TEXT("Saved stranded miner"));
+
+    // Record second sacrifice
+    Log->RecordProtectionAtCost(TEXT("Shared O2 with wounded crew"), 250.0f);
+    TestEqual(TEXT("sacrifice count is 2"), Log->GetSacrificeCount(), 2);
+
+    TArray<FString> Desc2 = Log->GetSacrificeDescriptions();
+    TestEqual(TEXT("description array has 2 entries"), Desc2.Num(), 2);
+    TestEqual(TEXT("first entry unchanged"), Desc2[0], TEXT("Saved stranded miner"));
+    TestEqual(TEXT("second entry recorded"), Desc2[1], TEXT("Shared O2 with wounded crew"));
+    return true;
+}
+
+// ==================================================================
+// RecordProtectionAtCost: Empty descriptions are rejected
+// ==================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSacrificeLog_EmptyDescriptionRejected,
+    "ChimeraTests.Acceptance.SacrificeLog.EmptyDescriptionRejected",
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FSacrificeLog_EmptyDescriptionRejected::RunTest(const FString& Parameters)
+{
+    USacrificeLogComponent* Log = NewObject<USacrificeLogComponent>();
+
+    // Attempt to record empty description
+    Log->RecordProtectionAtCost(TEXT(""), 100.0f);
+    TestEqual(TEXT("empty description not recorded"), Log->GetSacrificeCount(), 0);
+    TestFalse(TEXT("HasAnySacrifices still false"), Log->HasAnySacrifices());
+
+    // Add a real entry
+    Log->RecordProtectionAtCost(TEXT("Valid entry"), 50.0f);
+    TestEqual(TEXT("valid entry counted"), Log->GetSacrificeCount(), 1);
+
+    // Try empty again
+    Log->RecordProtectionAtCost(TEXT(""), 75.0f);
+    TestEqual(TEXT("count unchanged by empty"), Log->GetSacrificeCount(), 1);
+
+    TArray<FString> Desc = Log->GetSacrificeDescriptions();
+    TestEqual(TEXT("only valid entry in array"), Desc.Num(), 1);
+    return true;
+}
+
+// ==================================================================
+// RecordTradeRefused: Records a formatted trade refusal
+// ==================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSacrificeLog_RecordTradeRefused,
+    "ChimeraTests.Acceptance.SacrificeLog.RecordTradeRefused",
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FSacrificeLog_RecordTradeRefused::RunTest(const FString& Parameters)
+{
+    USacrificeLogComponent* Log = NewObject<USacrificeLogComponent>();
+
+    // Record a trade refusal
+    Log->RecordTradeRefused(TEXT("Cargo of medical supplies"), 2500.0f);
+    TestEqual(TEXT("trade refusal recorded as sacrifice"), Log->GetSacrificeCount(), 1);
+    TestTrue(TEXT("HasAnySacrifices true"), Log->HasAnySacrifices());
+
+    TArray<FString> Desc = Log->GetSacrificeDescriptions();
+    TestEqual(TEXT("one entry in descriptions"), Desc.Num(), 1);
+
+    // Verify formatted string contains both description and value
+    TestTrue(TEXT("formatted entry contains 'Trade refused'"), Desc[0].Contains(TEXT("Trade refused")));
+    TestTrue(TEXT("formatted entry contains description"), Desc[0].Contains(TEXT("Cargo of medical supplies")));
+    TestTrue(TEXT("formatted entry contains value"), Desc[0].Contains(TEXT("2500.00")));
+
+    // Record another with different value
+    Log->RecordTradeRefused(TEXT("Rare ore shipment"), 5000.0f);
+    TestEqual(TEXT("second trade refusal recorded"), Log->GetSacrificeCount(), 2);
+
+    TArray<FString> Desc2 = Log->GetSacrificeDescriptions();
+    TestTrue(TEXT("second entry formatted correctly"), Desc2[1].Contains(TEXT("Rare ore shipment")));
+    TestTrue(TEXT("second entry has correct value"), Desc2[1].Contains(TEXT("5000.00")));
+    return true;
+}
+
+// ==================================================================
+// Integration: Both components working together
+// ==================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FStarMemorial_FullNarrativeFlow,
+    "ChimeraTests.Acceptance.StarMemorial.FullNarrativeFlow",
+    EAutomationTestFlags_ApplicationContextMask | EAutomationTestFlags::ProductFilter)
+bool FStarMemorial_FullNarrativeFlow::RunTest(const FString& Parameters)
+{
+    // Simulate a full generation: player makes sacrifices, then dies
+    USacrificeLogComponent* Sacrifices = NewObject<USacrificeLogComponent>();
+    UStarMemorialComponent* Memorial = NewObject<UStarMemorialComponent>();
+
+    // Player makes two sacrifices during their run
+    Sacrifices->RecordProtectionAtCost(TEXT("Saved colony from solar flare"), 1000.0f);
+    Sacrifices->RecordTradeRefused(TEXT("Refused to abandon injured worker"), 3000.0f);
+
+    TestEqual(TEXT("player recorded 2 sacrifices"), Sacrifices->GetSacrificeCount(), 2);
+
+    // Player dies; the sacrifice log becomes the basis for their memorial star
+    int32 SacrificeCount = Sacrifices->GetSacrificeCount();
+    float TotalSacrificeValue = 1000.0f + 3000.0f; // simplified
+    int32 UnresolvedPains = 1; // e.g., from pending narrative choices
+
+    // Add life to memorial using sacrifice data
+    FStarEntry MemoryStar = Memorial->AddLife(
+        TEXT("Explorer_Gen1"),
+        1,
+        TotalSacrificeValue,
+        UnresolvedPains
+    );
+
+    TestEqual(TEXT("memorial records the life"), Memorial->GetStarCount(), 1);
+    TestEqual(TEXT("star name matches"), MemoryStar.LifeName, TEXT("Explorer_Gen1"));
+    TestEqual(TEXT("star generation is 1"), MemoryStar.Generation, 1);
+    TestTrue(TEXT("star twinkles from unresolved pain"), MemoryStar.bTwinkle);
+    TestTrue(TEXT("star brightness reflects sacrifice"), MemoryStar.Brightness > 0.5f);
+
+    // Next generation can query the memorial
+    TestEqual(TEXT("memorial visible to next gen"), Memorial->GetStarCount(), 1);
+    TestTrue(TEXT("night light contributed by ancestor"), Memorial->GetNightLightLevel() > 0.0f);
+    return true;
+}
+
+#endif // WITH_DEV_AUTOMATION_TESTS
+
+// ==================================================================
+// Seed-shape API (tb-0159): Record / WeightForGeneration / GetSacrificeWeights
+// Plain-function idiom -- mirrors WeatherAcceptanceTests.cpp /
+// StarMemorialAcceptanceTests.cpp, world-independent (NewObject, no PIE).
+// ==================================================================
+
+void TestSacrificeLog_WeightsTableMatchesTrainedJson()
+{
+    // The 8 trained SACRIFICE_WEIGHTS (__MEMORIAL_PROVENANCE__) baked into
+    // GetSacrificeWeights() must match exactly what
+    // _load_memorial_trained_genome() read at generation time -- the SAME
+    // genome UStarMemorialComponent's own header comment cites, so the two
+    // components can never silently diverge on the same training.
+    const TMap<FString, float>& Weights = USacrificeLogComponent::GetSacrificeWeights();
+    check(Weights.Num() == 8);
+
+__MEMORIAL_WEIGHTS_CHECKS__
+
+    UE_LOG(LogTemp, Display, TEXT("[SACRIFICE LOG TEST] WeightsTableMatchesTrainedJson: PASS (%d kinds)"), Weights.Num());
+}
+
+void TestSacrificeLog_WeightForGenerationSumsCorrectly()
+{
+    USacrificeLogComponent* Log = NewObject<USacrificeLogComponent>();
+    check(Log != nullptr);
+
+    // Two sacrifices in generation 1, one in generation 2 -- WeightForGeneration
+    // must sum only the matching generation's weights (seed's
+    // `sum(e[1] for e in self.entries if e[3] == generation)`,
+    // CHIMERA_VISION.py:3783-3784). Expectation is recomputed from the SAME
+    // weight table under test, so this holds across any future retrain.
+    Log->Record(TEXT("GAVE_CARGO"), TEXT("gave cargo to a stranger"), 1, 3);
+    Log->Record(TEXT("BURIED_STRANGER"), TEXT("dug a grave"), 1, 4);
+    Log->Record(TEXT("HEIRLOOM_GIVEN"), TEXT("gave the heirloom away"), 2, 9);
+
+    const TMap<FString, float>& Weights = USacrificeLogComponent::GetSacrificeWeights();
+    const float ExpectedGen1 = Weights.FindChecked(TEXT("GAVE_CARGO")) + Weights.FindChecked(TEXT("BURIED_STRANGER"));
+    const float ExpectedGen2 = Weights.FindChecked(TEXT("HEIRLOOM_GIVEN"));
+
+    check(FMath::IsNearlyEqual(Log->WeightForGeneration(1), ExpectedGen1, 0.001f));
+    check(FMath::IsNearlyEqual(Log->WeightForGeneration(2), ExpectedGen2, 0.001f));
+    check(FMath::IsNearlyEqual(Log->WeightForGeneration(3), 0.0f)); // no entries this gen
+    check(Log->Entries.Num() == 3);
+
+    UE_LOG(LogTemp, Display,
+        TEXT("[SACRIFICE LOG TEST] WeightForGenerationSumsCorrectly: PASS (gen1=%.4f gen2=%.4f)"),
+        Log->WeightForGeneration(1), Log->WeightForGeneration(2));
+}
+
+void TestSacrificeLog_UnknownKindHandledFailSafe()
+{
+    USacrificeLogComponent* Log = NewObject<USacrificeLogComponent>();
+    check(Log != nullptr);
+
+    // A kind outside the 8 trained keys must never crash the log -- it is
+    // recorded (so the call is never silently dropped) at weight 0.0 (so it
+    // never contaminates a real generation's WeightForGeneration sum with a
+    // value nobody trained).
+    Log->Record(TEXT("NOT_A_REAL_KIND"), TEXT("typo or future kind"), 1, 1);
+    check(Log->Entries.Num() == 1);
+    check(FMath::IsNearlyEqual(Log->Entries[0].Weight, 0.0f));
+    check(FMath::IsNearlyEqual(Log->WeightForGeneration(1), 0.0f));
+
+    // A real sacrifice recorded afterward in the SAME generation is unaffected.
+    Log->Record(TEXT("REFUSED_PROFIT"), TEXT("refused the trade"), 1, 2);
+    const TMap<FString, float>& Weights = USacrificeLogComponent::GetSacrificeWeights();
+    check(FMath::IsNearlyEqual(Log->WeightForGeneration(1), Weights.FindChecked(TEXT("REFUSED_PROFIT")), 0.001f));
+    check(Log->Entries.Num() == 2);
+
+    UE_LOG(LogTemp, Display, TEXT("[SACRIFICE LOG TEST] UnknownKindHandledFailSafe: PASS"));
+}
+
+// Helper function to run all seed-shape sacrifice log acceptance tests
+void RunSacrificeLogSeedApiTests()
+{
+    UE_LOG(LogTemp, Warning, TEXT("\\n====== SACRIFICE LOG (SEED-SHAPE API) ACCEPTANCE TESTS ======\\n"));
+
+    try
+    {
+        TestSacrificeLog_WeightsTableMatchesTrainedJson();
+        TestSacrificeLog_WeightForGenerationSumsCorrectly();
+        TestSacrificeLog_UnknownKindHandledFailSafe();
+
+        UE_LOG(LogTemp, Warning, TEXT("\\n====== ALL SACRIFICE LOG (SEED-SHAPE API) TESTS PASSED ======\\n"));
+    }
+    catch (const std::exception& e)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Sacrifice log seed-API test failed: %s"), ANSI_TO_TCHAR(e.what()));
+    }
+}
+'''
+        test_content = (test_content
+            .replace("__MEMORIAL_PROVENANCE__", provenance)
+            .replace("__MEMORIAL_WEIGHTS_CHECKS__", weights_check_lines)
+        )
+
+        header_path = save_dir / "SacrificeLogComponent.h"
+        with open(header_path, 'w', encoding='utf-8') as f:
+            f.write(header_content)
+
+        cpp_path = save_dir / "SacrificeLogComponent.cpp"
+        with open(cpp_path, 'w', encoding='utf-8') as f:
+            f.write(cpp_content)
+
+        test_path = tests_dir / "SacrificeLogAcceptanceTests.cpp"
         with open(test_path, 'w', encoding='utf-8') as f:
             f.write(test_content)
 

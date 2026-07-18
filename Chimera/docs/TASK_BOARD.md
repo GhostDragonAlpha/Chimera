@@ -1,15 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T14:21:59+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T14:40:37+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0182 | claimed | 0.85 | closure_report: scope build-currency + action-log to the TAS | core/closure_report.py | sub-33 |
-| tb-0159 | claimed | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator | sub-35 |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -92,6 +90,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0166 | done | 0.85 | CWM rung 1: memorial domain - train the star brightness curv | core/trainables/memorial.py, docs/objectives/memorial.json | Wrote core/trainables/memorial.py (239 lines): seed()/mutate |
 | tb-0169 | done | 0.85 | Substrate rung C: terrain-as-matter - the shovel test (headl ⇐ tb-0168 | core/terrain_matter.py | Terrain-as-matter shovel test: KILL verdict. seam_stitched=F |
 | tb-0179 | done | 0.85 | Substrate: high-resolution splat emission - the baby-toy cri | core/splat_emit.py, core/splat_to_ue5.py…; editor:open | DENSITY TABLE (target_len | splats | cm/voxel | quad half-si |
+| tb-0182 | done | 0.85 | closure_report: scope build-currency + action-log to the TAS | core/closure_report.py | Fixed core/closure_report.py (tb-0182): 12/12 closure_report |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
 | tb-0104 | done | 0.8 | training_gate: classify Pain-verdict tasks as research (misr | core/game_code_generator.py; excl:generator | classify_task patched (core/training_gate.py): pain-verdict  |
 | tb-0105 | done | 0.8 | task_board: rescope clobbers explicitly-declared footprints  | core/task_board.py | core/task_board.py: (1) _new_task stamps scoped=declared whe |
@@ -114,6 +113,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0121 | done | 0.75 | Fix confirmed pain: task_board._scope_for keyword matching i | Source/Chimera/** | Already fixed by tb-0116 (same session, before this mint): _ |
 | tb-0151 | done | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator | UWeatherSubsystem C++ generated from trained data (score=0.9 |
 | tb-0158 | done | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator | Added core/game_code_generator.py::_load_memorial_trained_ge |
+| tb-0159 | done | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator | Added core/game_code_generator.py::generate_sacrifice_log_fi |
 | tb-0174 | done | 0.75 | Matter library: splat emitter reads optics from the library  ⇐ tb-0172 | core/splat_emit.py, docs/matter/matter_library.json | splat_emit optics wired from library (no-visual-change). OPT |
 | tb-0113 | done | 0.7 | Fix confirmed pain: 4 meta labels sit in the feature ledger  | docs/world/** | 4 meta ledger entries reclassified with typed records + beca |
 | tb-0115 | done | 0.7 | training_gate: .claude/ footprints are infra, not default-ga | core/training_gate.py | core/training_gate.py: .claude/ added to infra file markers. |

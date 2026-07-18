@@ -73630,6 +73630,50 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_97b60549f427"
+    },
+    {
+      "id": "discovery_429c682a4479579e",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T14:39:52.690584",
+      "feature": "Build toward the seed: USacrificeLogComponent (tb-0159)",
+      "campus_sources": [],
+      "web_sources": [
+        "UE5.8 FString::operator== is case-insensitive and GetTypeHash(FString) matches case-insensitively so TMap<FString,*> keeps the equal-keys-hash-equal invariant: https://dev.epicgames.com/documentation/unreal-engine/string-handling-in-unreal-engine https://craftedcart.gitlab.io/unrealbookoftips/contai"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Build toward the seed: USacrificeLogComponent (tb-0159)",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Build toward the seed: USacrificeLogComponent (tb-0159)': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_384c0906b764"
+    },
+    {
+      "id": "phase_460216f91c910de8",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T14:39:53.107710",
+      "phase": "Build toward the seed: USacrificeLogComponent (tb-0159)",
+      "result": "tb-0159 done: generate_sacrifice_log_files() added to core/game_code_generator.py (git diff +679 lines total for the file), emitting SacrificeLogComponent.h/.cpp + SacrificeLogAcceptanceTests.cpp with the seed-shape Record/WeightForGeneration/GetSacrificeWeights API added ALONGSIDE the original shipped API (byte-for-byte preserved) so ChimeraMovementComponent.cpp/GenerationSubsystem.cpp/CostlessLifeEndingDiagnostic.cpp keep compiling untouched. 8 trained SACRIFICE_WEIGHTS baked from docs/objectives/memorial.trained.json (score=0.839) via the existing _load_memorial_trained_genome() (reused unchanged from generate_star_memorial_files). Standalone generation verified (files emitted + read back correct). UBT attempted, FAILED verbatim 'Unable to build while Live Coding is active' (a live, unclaimed UnrealEditor.exe held Live Coding at attempt time) -- build-waiver recorded, no editor touched/killed. curriculum enrolled + rep_engine tend run (2 reps begun, System_SaveGame reflection atoms for the OLD API still pass at 4808 reps/streak 8). No witness/PIE run this session -- footprint is core/game_code_generator.py only, no editor/PIE resource, and the two intended seed-shape callers (GenerationSubsystem, CostlessLifeEndingDiagnostic) are not yet wired to it (documented follow-up, out of this footprint). Report Judge (the Coin) returned NEEDS_REFINEMENT (advisory, not blocking): flagged that could_not_verify is non-empty on a 'done' claim (expected -- explicit honesty, not a defect), a ~490-line self-estimate vs 679 actual git insertions (my estimate was imprecise, corrected here), and a claim that 'UBT sees no source changes' which does not match the captured build log (UBT aborted at the Live-Coding guard before any dependency analysis; the log's own 'Invalidating makefile...working set of source files changed' line contradicts that reading) -- flagging as a possible Coin misread for the record, not disputing the overall advisory verdict.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Build toward the seed: USacrificeLogComponent (tb-0159)",
+      "error_category": "none",
+      "fix_description": "Phase 'Build toward the seed: USacrificeLogComponent (tb-0159)' complete: tb-0159 done: generate_sacrifice_log_files() added to core/game_code_generator.py (git diff +679 lines total for the file), emitting SacrificeLogComponent.h/.cpp + SacrificeLogAcceptanceTests.cpp with",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "USacrificeLogComponent's new seed-shape API (Record/WeightForGeneration) has NO production caller yet -- GenerationSubsystem::WriteStarFromSacrificeLog and CostlessLifeEndingDiagnostic::CheckSacrificeLogAndTriggerEnding still read only the OLD API (HasAnySacrifices/GetSacrificeCount, an unweighted entry count). Design Law 2's two named readers (the star at death, the Erisaid's mirror) are not actually wired to the trained sacrifice weights until one of those two files gains a generate_* method and its call sites are migrated -- next session should confirm whether that migration happened or whether the weighted WeightForGeneration() value is still unused dead-alongside code."
+      ],
+      "inheritance": "The old shipped API and the seed's weighted API can coexist in one component without conflict -- migrating a class to its seed shape does not require deleting or breaking what already compiles against it, only that no generator method existed yet is what made the seed shape absent, not any real incompatibility.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_384c0906b764"
     }
   ],
   "edges": [
