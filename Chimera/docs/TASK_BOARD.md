@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T17:24:35+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T17:39:56+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,8 +8,7 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0186 | claimed | 0.85 | Generator tests: try/catch breaks the GAME target (/EHsc gap | core/game_code_generator.py | sub-40 |
-| tb-0184 | open | 1.1 | Witness rig: reset_position does not ground the pawn (z=124k | core/sleepwalker.py, core/witness.py… |  |
+| tb-0184 | claimed | 1.1 | Witness rig: reset_position does not ground the pawn (z=124k | core/sleepwalker.py, core/witness.py… | sub-39 |
 | tb-0185 | open | 1.1 | Witness: log_contains is deaf to every non-DEMOBEAT log line ⇐ tb-0184 | core/witness.py, core/sleepwalker.py… |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -19,7 +18,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0187 | open | 0.9 | Splat material v2: idempotent authoring + masked VertexColor | core/splat_to_ue5.py |  |
-| tb-0188 | open | 0.9 | Sample-source bake-off: multiple avenues, per-material optim | docs/matter/reference_scans/**, docs/research/sample_sources_bakeoff.md |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0176 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
@@ -86,6 +84,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0140 | done | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie | Witness Shelter_Habitat_Lighting — 1/1 beats reached, clean  |
 | tb-0141 | done | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie | Witness runner completed: simtest_00a14b4bd09ea7ea (witnesse |
 | tb-0142 | done | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie | witness_runner (wraps core.sleepwalker) ran docs/beats/trave |
+| tb-0188 | done | 0.9 | Sample-source bake-off: multiple avenues, per-material optim | docs/matter/reference_scans/**, docs/research/sample_sources_bakeoff.md | Wrote docs/research/sample_sources_bakeoff.md (373 lines, ne |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |
@@ -95,6 +94,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0170 | done | 0.85 | Substrate rung D-prime: Substrate-shaded splats in the LIVE  `capable` ⇐ tb-0168 | core/splat_to_ue5.py, docs/research/substrate_splats_ue58.md; editor:open | Rung D-prime core criterion MET and encoded: per-splat COLOR |
 | tb-0179 | done | 0.85 | Substrate: high-resolution splat emission - the baby-toy cri | core/splat_emit.py, core/splat_to_ue5.py…; editor:open | DENSITY TABLE (target_len | splats | cm/voxel | quad half-si |
 | tb-0182 | done | 0.85 | closure_report: scope build-currency + action-log to the TAS | core/closure_report.py | Fixed core/closure_report.py (tb-0182): 12/12 closure_report |
+| tb-0186 | done | 0.85 | Generator tests: try/catch breaks the GAME target (/EHsc gap | core/game_code_generator.py | BASELINE (pre-fix) GAME target Build.bat Chimera Win64 Devel |
 | tb-0004 | done | 0.8 | Research: procedural dust-accumulation mask material creatio | docs/research/** | Research completed for procedural dust-accumulation mask mat |
 | tb-0104 | done | 0.8 | training_gate: classify Pain-verdict tasks as research (misr | core/game_code_generator.py; excl:generator | classify_task patched (core/training_gate.py): pain-verdict  |
 | tb-0105 | done | 0.8 | task_board: rescope clobbers explicitly-declared footprints  | core/task_board.py | core/task_board.py: (1) _new_task stamps scoped=declared whe |

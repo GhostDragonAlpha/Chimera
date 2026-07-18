@@ -74071,6 +74071,113 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_37b122296c01"
+    },
+    {
+      "id": "mutation_dd11b65ca0d7",
+      "type": "Mutation",
+      "timestamp": "2026-07-18T17:36:15.213769",
+      "error_signature": "success_no_error",
+      "template_file": "core/game_code_generator.py",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "Building Chimera...\n===== Toolchain Information =====\nUsing ISPC compiler (C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\ThirdParty\\Intel\\ISPC\\bin\\Windows\\ispc.exe)\n  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) \nUsing Visual Studio 14.44.35228 toolchain (C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207) and Windows 10.0.22621.0 SDK (C:\\Program Files (x86)\\Windows Kits\\10).\n[Adaptive Build] Excluded from Chimera unity file: SacrificeLogAcceptanceTests.cpp, StarMemorialAcceptanceTests.cpp, WeatherAcceptanceTests.cpp\n=================================\nUsing Unreal Build Accelerator local executor to run 8 action(s)\n  CPU 24 physical cores, 32 logical cores\n  Memory 127.78 GB physical, 143.44 GB/202.97 GB committed\n  UBA Storage capacity 40 GB\n[1/8] Compile [x64] StarMemorialAcceptanceTests.cpp\n[2/8] Compile [x64] SacrificeLogAcceptanceTests.cpp\n[3/8] Compile [x64] WeatherAcceptanceTests.cpp\n[4/8] Compile [x64] Module.Chimera.3.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(11,4): warning C5038: data member 'UErisaidResonanceVFXComponent::bVisualsActive' will be initialized after data member 'UErisaidResonanceVFXComponent::ResonanceNiagaraComp'\n\t  bVisualsActive(false),\n\t  ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(123,25): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"Intensity\")), Intensity);\n\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(127,26): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\t\tResonanceNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"WaveAmplitude\")), Intensity * 2.0f);\n\t\t\t                      ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\VFX\\ErisaidResonanceVFXComponent.cpp(134,23): warning C4996: 'UNiagaraComponent::SetNiagaraVariableFloat': This method will be removed in a future release.  Please update to use the FName variant - Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.\n\t\tShimmerNiagaraComp->SetNiagaraVariableFloat(FString(TEXT(\"ShimmerIntensity\")), Intensity * 0.5f);\n\t\t                    ^\n[5/8] Compile [x64] Module.Chimera.1.cpp\n[6/8] Compile [x64] Module.Chimera.2.cpp\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Materials\\DustAccumulationMaterial.cpp(5,45): warning C5038: data member 'UDustAccumulationMaterial::NormalThreshold' will be initialized after data member 'UDustAccumulationMaterial::NoiseScale'\n\t: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)\n\t                                           ^\nE:\\PythonChimera\\Chimera\\Source\\Chimera\\ProceduralGenerated\\Sound\\SandSoundComponent.cpp(12,7): warning C5038: data member 'USandSoundComponent::bIsVacuum' will be initialized after data member 'USandSoundComponent::FootstepSyncEventCount'\n    , bIsVacuum(true)\n      ^\n[7/8] Link [x64] Chimera.exe\n[8/8] WriteMetadata Chimera.target [NoUba]\n\nTotal time in Unreal Build Accelerator local executor: 19.66 seconds\nOutput binary: E:\\PythonChimera\\Chimera\\Binaries\\Win64\\Chimera.exe\n\nResult: Succeeded\nTotal execution time: 24.40 seconds\nTrace written to file C:\\Users\\allen\\AppData\\Local\\UnrealBuildTool\\Trace.uba with size 8.6kb",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "tb0186_record_build.py",
+      "run_id": "run_dd7c0a02016e"
+    },
+    {
+      "id": "discovery_4a633bbec44bf73a",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T17:39:55.709171",
+      "feature": "Generator tests: try/catch breaks the GAME target (/EHsc gap",
+      "campus_sources": [],
+      "web_sources": [
+        "Confirmed MSVC C4530 semantics + /EHsc requirement (https://learn.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4530) before deciding try/catch removal (vs adding /EHsc to the game target's Build.cs, which is out of generator-template scope and CLAUDE.md forbids "
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Generator tests: try/catch breaks the GAME target (/EHsc gap",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Generator tests: try/catch breaks the GAME target (/EHsc gap': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_36b8d971b620"
+    },
+    {
+      "id": "phase_60401ca5ccb7b85d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T17:39:56.207364",
+      "phase": "Generator tests: try/catch breaks the GAME target (/EHsc gap) - emit exception-free tests",
+      "result": "GAME target (Build.bat Chimera Win64 Development -waitmutex) baseline: C4530 in SacrificeLogAcceptanceTests.cpp(271,5) and StarMemorialAcceptanceTests.cpp(138,2) -> Result: Failed (OtherCompilationError). Fixed at the generator layer (core/game_code_generator.py): removed try/catch(const std::exception&) from RunWeatherSystemTests, RunStarMemorialSystemTests, RunSacrificeLogSeedApiTests -- direct sequential Test*() calls + unconditional PASS log, matching RunFootstepEventSystemTests' pre-existing exception-free convention (same coverage/order, zero behavior change since check() never throws). Regenerated the 3 test files via generate_weather_subsystem_files/generate_star_memorial_files/generate_sacrifice_log_files. Post-fix GAME target: all 3 files recompiled (Weather's latent copy of the pattern confirmed and fixed too) -> 'Result: Succeeded', 'Output binary: Chimera.exe', 24.40s (recorded as mutation_dd11b65ca0d7). ChimeraEditor Win64 Development: blocked -- 'Unable to build while Live Coding is active' (UnrealEditor.exe PID 181060 live; editor_scheduler owner=null, so no claimed lane to name) -> Result: Failed (OtherCompilationError); honest deferral, not fixed this session. rep_engine tend post-regen: UWeatherSubsystem/UStarMemorialSubsystem/USacrificeLogComponent/System_DSL_Fidelity all 100% recent, unaffected by the edit.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Generator tests: try/catch breaks the GAME target (/EHsc gap) - emit exception-free tests",
+      "error_category": "none",
+      "fix_description": "Phase 'Generator tests: try/catch breaks the GAME target (/EHsc gap) - emit exception-free tests' complete: GAME target (Build.bat Chimera Win64 Development -waitmutex) baseline: C4530 in SacrificeLogAcceptanceTests.cpp(271,5) and StarMemorialAcceptanceTests.cpp(138,2) -> Result: Failed (OtherCompilationErr",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "ChimeraEditor Win64 Development has NOT been proven to build clean after this fix -- Live Coding was active in the running UnrealEditor.exe (PID 181060) this whole session and UBT refused outright before reaching the compile step, so the editor target's own C4530 clearance (sub-37's original finding) is inferred from the identical fix, not independently re-verified. Next agent with real editor access (Live Coding off, or the editor closed) should run Build.bat ChimeraEditor Win64 Development once and confirm Result: Succeeded."
+      ],
+      "inheritance": "The try/catch(const std::exception&) wrapper around these plain-function test runners was ALWAYS dead code, not merely a portability gap: Unreal's check() macro is a fatal-assert that halts the process, it never throws a C++ exception, so the catch clause could never fire in either target -- its only real effect was blocking the GAME target's compile (module bEnableExceptions defaults off, unlike editor-only modules). RunFootstepEventSystemTests already had the correct exception-free shape before this task; the other three were copy-drift from an earlier, uncompiled-on-GAME-target precedent. Next generator method that emits a plain-function Run*Tests wrapper should copy FootstepEvent's shape, never Weather's original one.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_36b8d971b620"
+    },
+    {
+      "id": "discovery_83c13b158a8bba10",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T17:41:18.049828",
+      "feature": "tb-0188 Sample-source bake-off: multiple avenues, per-materi",
+      "campus_sources": [],
+      "web_sources": [
+        "Live WebSearch+WebFetch 2026-07-18: help.quixel.com/support.fab.com (Fab licensing/account), forums.unrealengine.com + cgchannel.com (Megascans pricing history), docs.ambientcg.com/license, polyhaven.com/license, ambientcg.com asset pages (Ground037/Rock026/Rock011/Rock016/Rock029/Snow004), polyhave"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0188 Sample-source bake-off: multiple avenues, per-materi",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0188 Sample-source bake-off: multiple avenues, per-materi': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_cb5d95b8465d"
+    },
+    {
+      "id": "phase_8617207c70809331",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T17:41:18.559542",
+      "phase": "tb-0188 Sample-source bake-off: multiple avenues, per-material optimal references (sub-41)",
+      "result": "docs/research/sample_sources_bakeoff.md (373 lines, new). 5 avenues live-verified 2026-07-18 (WebSearch+WebFetch, 25+ distinct URLs, not recalled from memory): (1) scanned PBR libs -- Quixel/Fab (account-gated, mostly paid since Dec 2024), ambientCG + Poly Haven (CC0, no account, license pages fetched); (2) NASA/planetary -- LROC terms fetched (PDS=public domain/commercial-clean, website featured images are not), JPL Mars policy fetched (commercial-OK+attribution), NASA Astromaterials3D confirmed CC0 (8 named lunar samples), Apollo Image Atlas/ALSCC (public domain); (3) photogrammetry -- Sketchfab (per-item license, download-login unconfirmed), Astromaterials3D preferred over Sketchfab mirror; (4) lab datasets -- MERL BRDF (found a genuine unresolved license ambiguity between merl.com and its Zenodo mirror, reported not resolved), USGS Spectral Library v7 (public domain, DOI fetched); (5) synthetic baseline re-measured on GPU (RTX 4090): reproduced tb-0180's KILL-criterion numbers exactly (separation ratios 3.839/3.382, Julesz probe 0.0167/6.854, both PASS) plus NEW per-material richness numbers (trace-cov: regolith 136541, rock 421233, brushed_metal 61567, ice 11817). Cross-checked matter_library.json's own provenance (sand/basin/rock/metal provisional with documented real gaps; skin/muscle/bone code/already-settled; interior/tendon design/intentionally-not-realistic). Produced per-material verdict table + 2-tier permission list (5a ready-to-fetch pending only a live human yes, 5b needs the human's own account/agreement). Zero files downloaded -- same wall tb-0175/tb-0180 hit, no live chat channel to the human in this dispatched-subagent context.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0188 Sample-source bake-off: multiple avenues, per-material optimal references (sub-41)",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0188 Sample-source bake-off: multiple avenues, per-material optimal references (sub-41)' complete: docs/research/sample_sources_bakeoff.md (373 lines, new). 5 avenues live-verified 2026-07-18 (WebSearch+WebFetch, 25+ distinct URLs, not recalled from memory): (1) scanned PBR libs -- Quixel/Fab (acco",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "ALSCC/Apollo catalog frames are digitized at only 756x486 (the Atlas's own stated resolution) -- when a real sample is finally run through the harvester, the next session must check whether any richness/separation 'win' survives a compression/low-res-scan artifact control, not just a naive descriptor-distance comparison against the smooth synthetic baseline.",
+        "None of the permission-list file sizes were measured (no HEAD request, no Content-Length read) -- LROC NAC full-archive products in particular are historically hundreds of MB to low-GB; the next session should size-check before committing to a full download, not just the browse/thumbnail product.",
+        "The MERL BRDF license ambiguity (merl.com 'research/academic use' vs its Zenodo mirror's CC-BY-SA-4.0 tag) was named, not resolved -- if a future session ingests it without a human ruling on which license actually governs, that repeats this codebase's own documented asymmetry (the permissive path gets debugged less carefully than the restrictive one)."
+      ],
+      "inheritance": "Sampling is not a single-source decision: this session found genuinely different winners per material (NASA/ALSCC for regolith's lunar-specific albedo debt vs generic CC0 for rock/metal/ice's cheap pattern coverage) and one real license ambiguity (MERL BRDF) that a prior session would have had to either paper over or block on -- naming the ambiguity instead of resolving it by fiat is the actual deliverable. The download wall is structural, not a one-off: any dispatched subagent without a live chat channel will hit it identically, so the durable fix is the permission list format itself (named item + URL + size + gate-reason), not another agent re-discovering the wall.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_cb5d95b8465d"
     }
   ],
   "edges": [
