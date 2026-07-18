@@ -1,15 +1,16 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T04:26:04+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T04:31:47+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
+| tb-0168 | claimed | 0.95 | Substrate rung A+B: brick-to-splat emission + gait coherence | core/splat_emit.py | sub-20 |
 | tb-0143 | claimed | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie | sub-19 |
-| tb-0168 | open | 0.95 | Substrate rung A+B: brick-to-splat emission + gait coherence | core/splat_emit.py |  |
+| tb-0166 | claimed | 0.85 | CWM rung 1: memorial domain - train the star brightness curv | core/trainables/memorial.py, docs/objectives/memorial.json | sub-22 |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -19,7 +20,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0165 | open | 0.85 | CWM rung 1: weather domain - train the storm cadence (Law-4  | core/trainables/weather.py, docs/objectives/weather.json |  |
-| tb-0166 | open | 0.85 | CWM rung 1: memorial domain - train the star brightness curv | core/trainables/memorial.py, docs/objectives/memorial.json |  |
 | tb-0169 | open | 0.85 | Substrate rung C: terrain-as-matter - the shovel test (headl ⇐ tb-0168 | core/terrain_matter.py |  |
 | tb-0170 | open | 0.85 | Substrate rung D-prime: Substrate-shaded splats in the LIVE  `capable` ⇐ tb-0168 | core/splat_to_ue5.py, docs/research/substrate_splats_ue58.md; editor:open |  |
 | tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |

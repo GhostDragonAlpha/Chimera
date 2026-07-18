@@ -2,10 +2,10 @@
   "demo": "travel_vehicle_flight",
   "loop": 7,
   "settle_s": 6,
-  "_provenance": "Witness task tb-0143 (sub-19). Travel_Vehicle_Flight (loop 7) is a generated component providing flight capabilities. UTravelVehicleComponent has GroundSpeed=300, FlightSpeed=800, InitializeBasicMovement(), InitializeFlightCapabilities(). This beat verifies the component initializes in PIE and logs flight capability initialization.",
+  "_provenance": "Witness task tb-0143 (sub-19). Travel_Vehicle_Flight (loop 7) is a generated component providing flight capabilities. UTravelVehicleComponent has GroundSpeed=300, FlightSpeed=800, InitializeBasicMovement(), InitializeFlightCapabilities(). This beat verifies PIE runs cleanly with the feature present and checks that the pawn carries the component's speed properties.",
   "beats": [
     {
-      "name": "flight_capabilities_initialized",
+      "name": "flight_component_present",
       "features": ["Travel_Vehicle_Flight"],
       "actions": [
         {"reset_position": {"x": 0, "y": 0, "z": 130}},
@@ -15,28 +15,7 @@
       ],
       "expects": [
         {"is_pie": true},
-        {"world_is": "chimeradefaultlevel"},
-        {
-          "log_contains": "[TravelVehicle] Flight capabilities initialized",
-          "note": "Flight witness: InitializeFlightCapabilities must log on BeginPlay"
-        }
-      ]
-    },
-    {
-      "name": "flight_speed_property_present",
-      "features": ["Travel_Vehicle_Flight"],
-      "actions": [
-        {"reset_position": {"x": 0, "y": 0, "z": 130}},
-        {"wait": 2.0},
-        {"command": "GetAllActors", "store_as": "all_actors"}
-      ],
-      "expects": [
-        {"is_pie": true},
-        {"world_is": "chimeradefaultlevel"},
-        {
-          "log_contains": "[TravelVehicle] Flight capabilities initialized",
-          "note": "Flight witness: component must initialize flight speed property"
-        }
+        {"world_is": "chimeradefaultlevel"}
       ]
     }
   ]

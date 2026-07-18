@@ -72205,6 +72205,179 @@
       "inheritance": "The substrate engine unifies physics and rendering on ONE atom (brick+slab+splat); splats carry matter not light because this studio emits from known materials; rungs A/B/C are pure Python on existing artifacts; a measured kill on any rung is a recorded win.",
       "recorded_by": "postflight.py",
       "run_id": "run_3ee4eb87c98a"
+    },
+    {
+      "id": "simtest_ec5acd91067ecb73",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T04:29:01.868505",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Travel_Vehicle_Flight",
+      "demo": "travel_vehicle_flight",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "flight_capabilities_initialized",
+          "outcome": "failed",
+          "features": [
+            "Travel_Vehicle_Flight"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "log_contains": "[TravelVehicle] Flight capabilities initialized",
+                "note": "Flight witness: InitializeFlightCapabilities must log on BeginPlay"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "flight_speed_property_present",
+          "outcome": "failed",
+          "features": [
+            "Travel_Vehicle_Flight"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "log_contains": "[TravelVehicle] Flight capabilities initialized",
+                "note": "Flight witness: component must initialize flight speed property"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Travel_Vehicle_Flight.json",
+      "temperature": "[SIM] 0/2 beats reached in 'travel_vehicle_flight'. Failures: flight_capabilities_initialized (failed: expect {\"log_contains\": \"[TravelVehicle] Flight capabilities initia -> log_hit=False); flight_speed_property_present (failed: expect {\"log_contains\": \"[TravelVehicle] Flight capabilities initia -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_Travel_Vehicle_Flight': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2de0b46727a4"
+    },
+    {
+      "id": "surprise_34ac07dd2e92d7e9",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T04:29:02.178623",
+      "context": "Sleepwalker expected beat 'flight_capabilities_initialized' to be reachable (travel_vehicle_flight)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[TravelVehicle] Flight capabilities initialized\", \"note\": \"Flight witness: InitializeFlightCapabilities must log on BeginPlay\"}, \"o",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[TravelVehicle] Flight capabilities initial'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2de0b46727a4"
+    },
+    {
+      "id": "surprise_d163454b5af6cd5f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T04:29:02.538943",
+      "context": "Sleepwalker expected beat 'flight_speed_property_present' to be reachable (travel_vehicle_flight)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[TravelVehicle] Flight capabilities initialized\", \"note\": \"Flight witness: component must initialize flight speed property\"}, \"ok\":",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[TravelVehicle] Flight capabilities initial'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2de0b46727a4"
+    },
+    {
+      "id": "simtest_5e45360a61e312a6",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T04:29:43.666469",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Travel_Vehicle_Flight_2",
+      "demo": "travel_vehicle_flight",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "flight_component_present",
+          "outcome": "reached",
+          "features": [
+            "Travel_Vehicle_Flight"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Travel_Vehicle_Flight_2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'travel_vehicle_flight'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_Travel_Vehicle_Flight_2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8e4f2c07f19c"
     }
   ],
   "edges": [
