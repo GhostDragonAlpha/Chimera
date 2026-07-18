@@ -34,8 +34,20 @@ Both are now CLI knobs (see main()); every run prints an instrumented DENSITY_RO
 The in-engine check drives cameras through core.photo_studio + core.scene_model (SOLVED,
 PREDICTION-before-pixel — never hand-aimed BugItGo) per the standing rule.
 
+tb-0183 (2026-07-18, the human: "remember there's other shapes besides square"):
+quad_cloud now consumes emit_splats' per-splat ANISOTROPIC axes/radii (t1/t2/r1/r2 —
+neighbor-PCA surface shape; muscle fiber-aligned along the library's along_fiber axis)
+instead of re-deriving an isotropic square, and write_splat_glb can embed a radial-
+falloff MASK texture (--soft-edge, OPT-IN — killed as default by a measured wall: UE's
+glTF importer drops COLOR_0 when a baseColorTexture exists, so splats render white;
+fps/Nanite walls both held at 373k — see write_splat_glb's docstring). ALSO re-measured
+here: quads MUST ship duplicated reversed-winding faces (4 tris/quad) — the glTF
+doubleSided flag alone backface-culls a non-watertight splat cloud into sparse specks
+(see quad_cloud). drive_shape_study stages the squares-vs-ellipses side-by-side.
+
 Run:  python -m core.splat_to_ue5 --target-len 160          (editor must be up + bridge)
       python -m core.splat_to_ue5 --target-len 64 --no-editor   (headless density row only)
+      python -m core.splat_to_ue5 --target-len 224 --shape-study   (tb-0183's proof)
 """
 
 from __future__ import annotations
@@ -324,18 +336,31 @@ def _inject_falloff_material(glb_path: Path, alpha_mode: str = "MASK",
         f.write(bytes(bin_data))
 
 
-def write_splat_glb(splats: dict, scale: float, path: Path, soft_edge: bool = True,
+def write_splat_glb(splats: dict, scale: float, path: Path, soft_edge: bool = False,
                     alpha_mode: str = "MASK", alpha_cutoff: float = 0.15,
                     tex_size: int = 64, **kw) -> Path:
     """Export + material injection in one step — the only correct way to write
     a splat GLB for engine import (a bare quad_cloud().export() produces the
     dead-default-material import; see _inject_material).
 
-    tb-0183: soft_edge=True (default) additionally embeds a radial-falloff texture +
-    UVs (_inject_falloff_material) so the anisotropic quads quad_cloud now builds
-    render as soft ellipses, not hard-edged rectangles. soft_edge=False keeps the
-    original hard-edge material (_inject_material) — the 'squares' baseline for the
-    side-by-side comparison (core.splat_to_ue5.drive_shape_study)."""
+    tb-0183: soft_edge=True additionally embeds a radial-falloff texture + UVs
+    (_inject_falloff_material) so the anisotropic quads quad_cloud now builds render
+    as soft ellipses, not hard-edged rectangles.
+
+    SOFT EDGES ARE OPT-IN, NOT THE DEFAULT — KILLED AT THE MATERIAL LAYER (tb-0183,
+    measured in-engine 2026-07-18): the recipe's two named kill walls both HELD
+    (373k-tier, BOTH clouds staged at once: fps 120-cap / 8.33ms vs Malcolm's 16.6ms
+    wall; Nanite built on both; Substrate lighting shades the masked cloud fine), but a
+    third wall fired: **UE's glTF importer drops the COLOR_0 multiply from its
+    auto-generated material when baseColorTexture is present**, so every splat renders
+    WHITE — measured on the side-by-side (pink-tissue pixel fraction: squares/textureless
+    0.4394, soft-MASK 0.0000; same COLOR_0 bytes in both files, verified by accessor
+    dump). Per-splat color IS the rung D-prime criterion (the anatomy render), so the
+    color-correct path stays default. The falloff machinery is kept whole behind this
+    flag because the export side is proven structurally sound (imports, Nanite-compatible,
+    fps holds); what's missing is engine-side — a bridge-authored MASKED
+    VertexColor-times-RadialGradient material to apply post-import, which is
+    material-authoring work in ensure_splat_material's family, not an exporter change."""
     quad_cloud(splats, scale, **kw).export(str(path))
     if soft_edge:
         _inject_falloff_material(path, alpha_mode=alpha_mode, alpha_cutoff=alpha_cutoff,
@@ -584,15 +609,19 @@ def drive_density_study(splat_glb: Path, cloud_radius: float, tag: str = "",
 def drive_shape_study(splat_glb_hard: Path, splat_glb_soft: Path, cloud_radius: float) -> dict:
     """tb-0183's in-engine proof: the SAME limb, exported TWICE at the SAME density tier
     — hard isotropic SQUARES (quad_cloud/write_splat_glb with anisotropic=False,
-    soft_edge=False — the pre-tb-0183 shape) vs anisotropic ELLIPSES + soft radial
-    falloff (the new defaults) — imported side by side via core.photo_studio.Studio
-    (the SAME known-extent staging drive_density_study already trusts), fps measured
-    around the soft-edge cloud specifically (the one adding a masked/alpha-tested
-    material — the KILL risk the recipe names), and ONE screenshot pair for a human to
-    actually look at. Mirrors drive_density_study's foreground+settle discipline.
+    soft_edge=False — the pre-tb-0183 shape) vs main()'s primary export (anisotropic
+    ELLIPSES; + radial falloff too when --soft-edge is opted in) — imported side by
+    side via core.photo_studio.Studio (the SAME known-extent staging
+    drive_density_study already trusts), fps measured with BOTH clouds staged (the
+    masked/alpha-tested material being the KILL risk the recipe names), and ONE
+    screenshot pair for a human to actually look at. Mirrors drive_density_study's
+    foreground+settle discipline.
 
-    Returns a log dict; the KILL verdict is NOT decided here (facts only) — see
-    main()'s --shape-study branch for the stated criteria."""
+    Returns a log dict; the KILL verdict is NOT decided here (facts only). The verdict
+    this run settled (2026-07-18, 373k tier): fps wall HELD (120-cap/8.33ms with both
+    clouds), Nanite HELD (both), but soft-MASK LOSES per-splat COLOR_0 through UE's
+    auto-generated glTF material (pink-pixel fraction 0.4394 vs 0.0000) — recorded in
+    write_splat_glb's docstring; soft_edge demoted to opt-in."""
     from core.photo_studio import Studio
 
     log = {}
@@ -683,8 +712,11 @@ def main() -> int:
                     help="tb-0183: neighbours used for the local surface-PCA footprint shape")
     ap.add_argument("--max-aniso-ratio", type=float, default=2.2,
                     help="tb-0183: cap on the per-splat major/minor radius ratio")
-    ap.add_argument("--no-soft-edge", action="store_true",
-                    help="tb-0183: legacy hard-edge square material (no falloff texture)")
+    ap.add_argument("--soft-edge", action="store_true",
+                    help="tb-0183: OPT-IN radial-falloff MASK material. KILLED as default "
+                         "(UE's glTF importer drops COLOR_0 when a baseColorTexture exists "
+                         "-> splats render WHITE; see write_splat_glb docstring). fps/Nanite "
+                         "walls both HELD at 373k - the color wall is the open one.")
     ap.add_argument("--alpha-mode", default="MASK", choices=["MASK", "BLEND"],
                     help="tb-0183: soft-edge alphaMode — MASK (Nanite-safe, default) or "
                          "BLEND (recipe's fallback 'only if sorting holds')")
@@ -728,7 +760,7 @@ def main() -> int:
                                                       # twice just to read this back
     splat_glb = OUT / f"splatlimb_{tag}.glb"
     write_splat_glb(splats, scale, splat_glb, tangent_scale=a.tangent_scale,
-                    overlap=a.quad_overlap, soft_edge=not a.no_soft_edge,
+                    overlap=a.quad_overlap, soft_edge=a.soft_edge,
                     alpha_mode=a.alpha_mode, alpha_cutoff=a.alpha_cutoff, tex_size=a.tex_size)
     t_splat_export = time.time() - t0
     splat_mb = splat_glb.stat().st_size / 1e6

@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T16:01:33+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T16:51:47+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,7 +8,6 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0183 | claimed | 0.8 | Splat footprint shapes: anisotropic ellipses + soft falloff  | core/splat_to_ue5.py, core/splat_emit.py | sub-36 |
 | tb-0184 | open | 1.1 | Witness rig: reset_position does not ground the pawn (z=124k | core/sleepwalker.py, core/witness.py… |  |
 | tb-0185 | open | 1.1 | Witness: log_contains is deaf to every non-DEMOBEAT log line ⇐ tb-0184 | core/witness.py, core/sleepwalker.py… |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
@@ -105,6 +104,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0172 | done | 0.8 | Matter library: research-pin the provisional numbers (cached | docs/matter/matter_library.json, docs/research/matter_library_sources.md | Library updated: 15 physical fields + 2 nested grain_size_mm |
 | tb-0175 | done | 0.8 | Matter library: train appearance entries against REAL splat/ | core/trainables/material_appearance.py, docs/objectives/material_appearance.json… | Material appearance trainable domain created. 1,355 evals/se |
 | tb-0180 | done | 0.8 | Material harvester: GPU region-scan + PATTERN matching over  | core/material_harvester.py, docs/matter/reference_scans/** | Built core/material_harvester.py (tb-0180): GPU region-scan  |
+| tb-0183 | done | 0.8 | Splat footprint shapes: anisotropic ellipses + soft falloff  | core/splat_to_ue5.py, core/splat_emit.py | DENSITY_ROW tag=tb0183_224final target_len=224 splats=373273 |
 | tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
 | tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
 | tb-0098 | done | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** | auto-closed: pain phase_c67559a04eceaec4:P2 already disposit |

@@ -1,3 +1,35 @@
+# Session 2026-07-18 (sub-36) — tb-0183 DONE: anisotropic ellipse splats; soft-MASK killed by a COLOR_0 wall; double-sided regression fixed
+
+- **Anisotropic footprints SHIPPED** (core/splat_emit.py): `_neighbor_tangent_anisotropy` (k-NN tangent-plane
+  PCA, AREA-PRESERVING — max|r1*r2−ts²| = 2.2e-16, ratio 1.0 reproduces the old disk exactly) +
+  `_local_fiber_axis` (muscle major axis = LOCAL bone-shaft PCA, k sized adaptively from the bone geometry;
+  alignment 0.999 straight / 0.997 bent rod vs true local tangent; gated on the LIBRARY's
+  `physical.anisotropy.value == "along_fiber"`, never hardcoded). emit_splats/emit_limb return per-splat
+  `t1/t2/r1/r2`; `quad_cloud` consumes them (fallback keeps the legacy disk). Rung A+B regression with the
+  anisotropic default: SURVIVES/SURVIVES. Small-fixed-k PCA on a FILLED bone rod recovers the cross-section,
+  not the shaft — the adaptive-k span fix is documented in the docstring with the measured failure.
+- **THE DOUBLE-SIDED REGRESSION (collateral, real):** quad_cloud claimed the glTF `doubleSided` flag "replaces
+  the duplicated-reversed-faces hack" — `write_splat_glb` had ZERO callers, so that claim was never exercised.
+  FALSE: a splat cloud is not watertight; single-sided quads backface-cull into sparse specks (373k cloud =
+  isolated speckle). Controlled A/B vs the original tb-0179 GLB (dense blob; index count exactly 2× the ONLY
+  diff) proved it. Fixed: 4 tris/quad restored. surprise_89059b9637676854.
+- **Soft-MASK falloff: KILLED AS DEFAULT, wall recorded** (surprise_031b5c6ec3310d2a): embedded radial-falloff
+  baseColorTexture+UVs+MASK works structurally (imports, Nanite OK, fps 120-cap/8.33ms vs 16.6ms wall with
+  BOTH 373k clouds staged — the recipe's two named kill walls HELD) but **UE 5.8's glTF importer drops the
+  COLOR_0 multiply when a baseColorTexture is present** → splats render WHITE (pink-pixel fraction 0.4394
+  squares vs 0.0000 soft; same COLOR_0 bytes, accessor-verified). Per-splat color is rung D′'s criterion, so
+  `--soft-edge` is opt-in; the fix is a bridge-authored masked VertexColor material (ensure_splat_material's
+  family), NOT an exporter change. Side-by-side: Saved/Screenshots/studio_pair_Shape_Squares_Shape_Ellipses.png.
+- **OPEN FLAG for fable-5/tb-0170** (CAPCOM'd + phantom pain phase_c343f5ecd1c65d22:P1): my
+  `ensure_splat_material()` re-run left `Content/Materials/M_SplatVC_Lit.uasset` changed on disk and both
+  staged clouds rendered white right after (anomalous even for the cloud on its imported material) — re-verify
+  VertexColor→BaseColor before relying on M_SplatVC_Lit.
+- Untested honestly: BLEND mode in-engine; cold-import >30s MCP timeout on 42–54MB GLBs (imports complete —
+  spawns against those paths succeeded; tb-0179's same wall); Warp ms/frame at 373k noisy under editor GPU
+  contention (parity MAE 0.00000 is the stable claim). Postflight phase_c343f5ecd1c65d22.
+
+---
+
 # Session 2026-07-18 (sub-30) — tb-0179 DONE: sub-cm splats, tile pipeline, and the 100x plate bug
 
 - **The density staircase, measured** (seed=0, bent_limb; DENSITY_ROW lines + Saved/SubstrateSplats/density_*.json):

@@ -73986,6 +73986,91 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_f52ed54196a9"
+    },
+    {
+      "id": "surprise_89059b9637676854",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T16:50:22.507996",
+      "context": "tb-0183: quad_cloud carried a comment claiming the glTF doubleSided material flag 'replaces the old duplicated-reversed-faces hack - half the triangles, same coverage'; write_splat_glb (which injects that flag) had ZERO callers before this task wired it into main(), so the claim was never exercised in-engine",
+      "expectation": "",
+      "reality": "FALSE at splat-cloud density: single-sided quads backface-cull per splat and a cloud is not watertight, so rays pass through culled quads to background - 373k cloud rendered as sparse isolated specks. Proven by controlled A/B: original tb-0179 GLB (4 tris/quad, both windings) renders DENSE; byte-identical-geometry re-export via single-sided+doubleSided-flag renders SPARSE; only measured diff was index count exactly 2x (4479276 vs 2239638). Fix: quad_cloud restores duplicated reversed-winding faces",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'FALSE at splat-cloud density: single-sided quads backface-cull per splat and a c'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_a7ea0ebc4c86"
+    },
+    {
+      "id": "surprise_031b5c6ec3310d2a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T16:50:23.065047",
+      "context": "tb-0183 soft-edge splats: embedded a radial-falloff baseColorTexture + UVs + alphaMode MASK in the splat GLB expecting per-splat COLOR_0 tint times texture falloff, per the glTF spec (declared material MUST multiply COLOR_0)",
+      "expectation": "",
+      "reality": "UE 5.8's glTF importer DROPS the COLOR_0 multiply from its auto-generated material when baseColorTexture is present: soft-MASK cloud renders WHITE (pink-tissue pixel fraction 0.0000 vs 0.4394 for the textureless sibling; same COLOR_0 bytes verified by accessor dump). fps (120-cap/8.33ms, 2x373k clouds) and Nanite both held - the recipe's two named kill walls passed, a third (color) fired. soft_edge demoted to opt-in; engine-side fix path is a bridge-authored masked VertexColor material",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but 'UE 5.8's glTF importer DROPS the COLOR_0 multiply from its auto-generated materi'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_37c79ad93260"
+    },
+    {
+      "id": "discovery_5e10f2048cb0f6a2",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T16:52:53.186701",
+      "feature": "Splat footprint shapes: anisotropic ellipses + soft falloff ",
+      "campus_sources": [],
+      "web_sources": [
+        "In-repo: docs/matter/SPLAT_LINEAGE.md (standing rule honored - zero Inria code consulted), core/splat_gpu.py ellipse compositing math as the ground-truth reference, docs/matter/matter_library.json anisotropy schema (muscle.physical.anisotropy.value=along_fiber), tb-0179 predecessor report + density_"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Splat footprint shapes: anisotropic ellipses + soft falloff ",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Splat footprint shapes: anisotropic ellipses + soft falloff ': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_37b122296c01"
+    },
+    {
+      "id": "phase_c343f5ecd1c65d22",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T16:52:53.718666",
+      "phase": "Splat footprint shapes: anisotropic ellipses + soft falloff - not just squares (tb-0183, sub-36)",
+      "result": "Anisotropic per-splat footprints SHIPPED (emit_splats: neighbor-tangent-PCA shape, area-preserving max|r1*r2-ts^2|=2.2e-16; muscle major axis fiber-aligned via library's along_fiber field + adaptive-k bone-shaft PCA, alignment 0.999 straight/0.997 bent rod; quad_cloud consumes t1/t2/r1/r2). Rung A+B regression with anisotropic default: SURVIVES/SURVIVES. In-engine 373k tier (tb0183_224final): fps 119.999 -> 8.33ms vs Malcolm 16.6ms wall HELD with BOTH clouds staged, nanite_all_ok both, GPU parity MAE 0.00000. Side-by-side LOOKED AT (studio_pair_Shape_Squares_Shape_Ellipses.png): squares tissue-colored (pink fraction 0.4394), soft-MASK ellipses soft-rimmed but WHITE (0.0000) -> soft-edge KILLED AS DEFAULT at the material layer (UE glTF importer drops COLOR_0 when baseColorTexture present), demoted to --soft-edge opt-in with wall documented. COLLATERAL: quad_cloud's never-exercised doubleSided-flag claim proven FALSE by controlled A/B vs tb-0179 GLB (sparse specks; index count exactly 2x the only diff) - duplicated reversed-winding faces restored. Surprises: surprise_89059b9637676854, surprise_031b5c6ec3310d2a.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Splat footprint shapes: anisotropic ellipses + soft falloff - not just squares (tb-0183, sub-36)",
+      "error_category": "none",
+      "fix_description": "Phase 'Splat footprint shapes: anisotropic ellipses + soft falloff - not just squares (tb-0183, sub-36)' complete: Anisotropic per-splat footprints SHIPPED (emit_splats: neighbor-tangent-PCA shape, area-preserving max|r1*r2-ts^2|=2.2e-16; muscle major axis fiber-aligned via library's along_fiber field + adaptive-k",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "M_SplatVC_Lit.uasset changed on disk during sub-36's ensure_splat_material re-run and both staged clouds rendered white immediately after (anomalous even for the untouched imported-material cloud) - tb-0170's VertexColor->BaseColor wiring may be reset/broken; re-verify against lit_vc_REAL.png's criterion before relying on it"
+      ],
+      "inheritance": "Splat quads MUST ship duplicated reversed-winding faces (4 tris/quad) - the glTF doubleSided flag backface-culls a non-watertight cloud into sparse specks. Per-splat COLOR_0 and a baseColorTexture are mutually exclusive through UE's auto-generated glTF material, so soft-falloff needs a bridge-authored masked VertexColor material (engine-side, ensure_splat_material's family), not an exporter change. The anisotropy is data-derived and area-preserving: neighbor-PCA reshapes footprints without changing coverage, and muscle's fiber axis comes from the library's along_fiber declaration plus local bone-shaft PCA with adaptive k sized from the bone geometry itself.",
+      "pain_verdicts": {
+        "phase_ef0be888042d96ff:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_37b122296c01"
     }
   ],
   "edges": [
