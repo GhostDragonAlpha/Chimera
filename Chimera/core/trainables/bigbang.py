@@ -91,7 +91,16 @@ THERMAL_FRAC = 0.05      # velocity noise as a fraction of local circular speed
 
 GENOME_SCHEMA = {
     # --- SEED: the initial conditions ---
-    "spin":        {"min": 0.30, "max": 1.05, "init": 0.85},
+    # Angular-momentum GRADIENT (round-4 lesson): with one uniform spin,
+    # star-dominance and disk-width are mutually exclusive — sub-Keplerian
+    # parcels circularize at r*spin^2, compressing the whole cloud into ONE
+    # narrow annulus while it feeds the star (rounds 1-3 all plateaued at
+    # 1-2 planets for exactly this reason). Real clouds have an L gradient:
+    # low-L inner material builds the star, high-L outer material stays out
+    # as a wide disk with separated feeding zones. spin_in is the rotation
+    # factor at the center, spin_out at ~2 sigma of the cloud.
+    "spin_in":     {"min": 0.10, "max": 1.05, "init": 0.50},
+    "spin_out":    {"min": 0.50, "max": 1.10, "init": 1.00},
     "flatten0":    {"min": 0.15, "max": 1.00, "init": 1.00},
     # Radial extent of the cloud. Added after the first GPU training run
     # plateaued at 1-2 planets with central_frac pinned on its FLOOR: a
@@ -156,7 +165,9 @@ def _lz(pos: np.ndarray, vel: np.ndarray, m: np.ndarray) -> float:
 
 def _rollout(genome: dict, restart: int) -> dict:
     rng = np.random.default_rng(EVAL_SEED + restart)
-    spin, flat0 = genome["spin"], genome["flatten0"]
+    spin_in = float(genome.get("spin_in", genome.get("spin", 0.85)))
+    spin_out = float(genome.get("spin_out", spin_in))
+    flat0 = genome["flatten0"]
     mscale, k_circ = genome["merge_scale"], genome["k_circ"]
 
     m0 = M_TOT / N0
@@ -171,8 +182,10 @@ def _rollout(genome: dict, restart: int) -> dict:
 
     rxy = np.hypot(pos[:, 0], pos[:, 1]) + 0.05
     v_circ = np.sqrt(G * M_TOT / rxy)
+    r_norm = np.clip(rxy / (spread * R_CLOUD), 0.0, 1.0)   # ~2 sigma at 1.0
+    spin_r = spin_in + (spin_out - spin_in) * r_norm
     tang = np.stack([-pos[:, 1] / rxy, pos[:, 0] / rxy, np.zeros(N0)], axis=1)
-    vel = spin * v_circ[:, None] * tang
+    vel = spin_r[:, None] * v_circ[:, None] * tang
     vel += rng.normal(0.0, 1.0, (N0, 3)) * (THERMAL_FRAC * v_circ[:, None])
     vel -= (m[:, None] * vel).sum(axis=0) / m.sum()   # zero net momentum
 

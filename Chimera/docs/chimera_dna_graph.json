@@ -74959,6 +74959,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_5418eb1d92ab"
+    },
+    {
+      "id": "surprise_92ecf9f8616cc4fb",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T21:22:21.163429",
+      "context": "bigbang rounds 2-3: expected the spread locus, then the star-dominance objective, to unlock multi-planet systems",
+      "expectation": "",
+      "reality": "BOTH plateaued at 1-2 planets. Round 3's pins named the CONTRADICTION: with one uniform spin, star-dominance and disk-width are mutually exclusive - sub-Keplerian parcels circularize at r*spin^2 (the whole cloud compresses into ONE feeding zone while feeding the star), Keplerian spin keeps the disk wide but starves the star. Real clouds carry an ANGULAR-MOMENTUM GRADIENT: low-L inner material builds the star, high-L outer material becomes the wide disk. Replaced uniform spin with spin_in/spin_out (radial L-gradient) - the missing initial condition, the human's own emphasis",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but 'BOTH plateaued at 1-2 planets. Round 3's pins named the CONTRADICTION: with one '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ec2f0f2f98e7"
     }
   ],
   "edges": [

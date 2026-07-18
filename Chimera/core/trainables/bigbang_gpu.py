@@ -192,7 +192,9 @@ def k_sample(pos: wp.array2d(dtype=wp.vec3), m: wp.array2d(dtype=float),
 def _init_world(genome: dict, restart: int):
     """Identical construction to the CPU twin's _rollout preamble."""
     rng = np.random.default_rng(EVAL_SEED + restart)
-    spin, flat0 = genome["spin"], genome["flatten0"]
+    spin_in = float(genome.get("spin_in", genome.get("spin", 0.85)))
+    spin_out = float(genome.get("spin_out", spin_in))
+    flat0 = genome["flatten0"]
     m = np.full(N0, _M0)
     spread = float(genome.get("spread", 1.0))        # see bigbang.GENOME_SCHEMA
     pos = rng.normal(0.0, spread * R_CLOUD / 2.0, (N0, 3))
@@ -200,8 +202,10 @@ def _init_world(genome: dict, restart: int):
     pos -= pos.mean(axis=0)
     rxy = np.hypot(pos[:, 0], pos[:, 1]) + 0.05
     v_circ = np.sqrt(G * M_TOT / rxy)
+    r_norm = np.clip(rxy / (spread * R_CLOUD), 0.0, 1.0)   # ~2 sigma at 1.0
+    spin_r = spin_in + (spin_out - spin_in) * r_norm
     tang = np.stack([-pos[:, 1] / rxy, pos[:, 0] / rxy, np.zeros(N0)], axis=1)
-    vel = spin * v_circ[:, None] * tang
+    vel = spin_r[:, None] * v_circ[:, None] * tang
     vel += rng.normal(0.0, 1.0, (N0, 3)) * (THERMAL_FRAC * v_circ[:, None])
     vel -= (m[:, None] * vel).sum(axis=0) / m.sum()
     lz0 = float(np.sum(m * (pos[:, 0] * vel[:, 1] - pos[:, 1] * vel[:, 0])))
