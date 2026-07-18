@@ -296,3 +296,185 @@ second; 6 is not a build step but the state the conveyor converges to.
 > bright as what a life gave up, because the curve that says so was trained against
 > that sentence and can prove it. Everything specific. Trained separately. Composed
 > where physics keeps the receipts.
+
+---
+---
+
+# PART II — THE SUBSTRATE ENGINE
+
+> **The human's second commission, 2026-07-18, assembled from their own words:**
+> *"Make matter atoms... and just piece them together. I want to use the same physics
+> that the universe uses."* · *"I know it's computationally impossible — but not if we
+> give it the proper context through pre-programmed algorithms."* · *"If we can train
+> the SHAPES and we can train the MOVEMENTS, what else do we need?"* · *"The magic
+> sauce is Gaussian splatting... little shapes that are translucent and angled."* ·
+> *"We'd have to program Gaussian in a way that allows dynamic lighting — Substrate in
+> Unreal Engine is the technology that would make it possible."* And the closing
+> sentence, which is the whole part in one line:
+>
+> **"It'll be both a physics and a rendering engine that combines physics to make
+> rendering possible."**
+
+---
+
+## 10. The problem Part II solves — the AI cannot invent decompositions
+
+Part I's §4 asks the LLM to write a bespoke domain per seed system. That works for the
+systems the seed already names — but inventing trainable framings for arbitrary content
+is creative decomposition, and it is the LLM's weakest act. The human's fix: **go below
+the systems.** On a universal matter substrate, decomposition stops being invented and
+becomes mechanical:
+
+- **A world model is exactly two things: state and dynamics.** The human named them —
+  **SHAPES** (what matter is arranged as) and **MOVEMENTS** (how arrangements change).
+  Train shapes; train movements; compose. There is no third kind of thing.
+- **Objectives collapse into a template library.** Shape objectives: *stands, holds
+  under load, encloses volume, spans a gap.* Movement objectives: *travels, lifts,
+  cycles, throws* — always worst-of-N, always robustness (`TRAINING_PROTOCOL.md` §3.5).
+  The AI stops inventing framings and starts filling templates — the thing it is
+  actually good at.
+- Both trainables are ALREADY PROVEN on this box: shapes (`core/terrarium.py`, 35k
+  evals/sec) and movements (`core/trainables/brain_gpu.py`, honest eval), composed
+  (`core/rig.py` — the trained brain posing the grown flesh). Part II generalizes the
+  proven pair from creatures to *everything*.
+
+Part I's system-level domains (weather, memorial, director) remain valid — they are
+cheap data trainables. The **long road** is substrate-level.
+
+---
+
+## 11. The atom — one primitive, two field sets
+
+The Matter Model's brick (`THE_MATTER_MODEL.md` §2) and the rendering primitive unify
+into a single particle:
+
+```
+ATOM {
+  physical   — the brick:  identity, density, stiffness, adhesion[], tear, granularity
+  optical    — the slab:   albedo, roughness, F0, subsurface MFP, translucency, anisotropy
+  footprint  — the splat:  position + oriented anisotropic covariance
+                           (the covariance hands you a surface normal and a spread for free)
+}
+```
+
+At the research frontier the splat and the simulation particle are already the same
+object — continuum physics run directly on Gaussians is an existing line of work (as of
+model knowledge; **verify the current state at build time**, the research gate will
+demand it). The two ideas are not being combined; they are the same primitive wearing
+two field sets.
+
+---
+
+## 12. Two engines, one substrate
+
+Every engine today keeps **two copies of the world**: a low-resolution invisible one
+for physics (collision proxies, capsules) and a high-resolution dead one for rendering
+(meshes that feel nothing), glued by animation. A whole class of bugs lives in the gap
+between the copies. The substrate engine keeps ONE copy: **the render state IS the
+physical state.** Nothing is drawn that is not physically there; nothing exists that
+cannot be seen.
+
+And the human's sentence runs in BOTH directions, which is why it is an engine and not
+an aesthetic:
+
+- **Physics makes rendering affordable.** Coalescence is a physical event (quiet
+  uniform matter congeals into a rigid aggregate) and it IS the LOD system. The dune is
+  drawable because it is asleep.
+- **Rendering makes physics affordable.** Visibility and activity tell the substrate
+  where to spend live simulation (the BEHAVE budget). The wound simulates because
+  someone is looking at it, cutting into it.
+
+### The rendering division of labor
+
+| layer | carried by | does |
+|---|---|---|
+| **Geometry** | the Gaussian footprint — oriented anisotropic spread from the covariance | where matter is; how its surface is oriented |
+| **Material** | an Unreal **Substrate** slab, parameterized per-particle from the atom's optical fields | what the matter is, optically — the brick's `optical` maps ~1:1 onto slab parameters |
+| **Light** | Lumen + the 27-hour sun + the memorial night-light — the engine's own pipeline | dynamic illumination, shadows, GI |
+
+**Splats carry MATTER, not LIGHT.** Captured 3DGS bakes real-world lighting into its
+radiance — which is exactly why it cannot be relit, and why relighting is a research
+problem *for capture pipelines*. This studio EMITS splats from grown matter whose true
+material parameters it already knows — nothing was ever entangled, so nothing needs
+disentangling. The hard research problem becomes an engineering problem: render the
+particles into the deferred pipeline (oriented particles writing GBuffer attributes,
+dithered/stochastic opacity for the soft edges) and let Unreal light the matter.
+
+**The honest trade:** captured splats look real largely because real global
+illumination is baked in. Relighting dynamically means realism is EARNED from materials
++ Lumen — which is where this studio's advantage (ground-truth materials per atom)
+actually lives. Earned, not free.
+
+**The convergence that matters to THIS studio:** in a physics-rendered world, a
+screenshot is a physics measurement. The visual gate and the witness gate converge by
+construction — "looks right" and "is right" stop being separate claims, which is the
+gap H-14 exists to police.
+
+---
+
+## 13. The scale ladder — pre-programmed laws per scale
+
+*"The same physics the universe uses"* does not mean simulating atoms — the universe
+itself is computed with effective theories per scale (nobody derives sand from quarks).
+The pre-programmed algorithms the human names ARE these per-scale laws:
+
+- **grain scale** — contact physics where the shovel digs, live particles at the wound;
+- **bulk scale** — statics where the dune sleeps: one rigid aggregate, one draw;
+- **the switch** — coalesce/fracture (`THE_MATTER_MODEL.md` §6, rung 4 — the one real
+  unbuilt machine): quiet uniform regions merge (with hysteresis; merging forgets
+  per-cell state, so merge only what individuality you will surrender); a cut fractures
+  locally, instantly.
+
+**On abandoning standard landscaping:** less radical than it sounds. The seed's
+`AGroundActor` already bypasses UE Landscape — procedural height plus LIVE dig deltas
+(`GA_Dig` writes into the ground's own truth). Terrain-as-matter is that same ground
+made of atoms: coalesced at rest, fracturing under the shovel, splat-rendered. The
+experiment that decides it is rung C below.
+
+---
+
+## 14. What else is needed — the short honest list
+
+The human asked: *"if we can train the shapes and we can train the movements, what else
+do we need?"* The studio's own measured findings answer — the list is short:
+
+1. **Joints.** Rung 1.5 proved it physically: adhesion alone cannot hold an axis
+   (Rayleigh-Plateau pinching). Shapes need typed connections — tendons, hinges,
+   sockets. The part that failed when omitted gets named.
+2. **The scale ladder** (§13) — coalesce/fracture is the one real build.
+3. **The read-surface.** Law 1 — the world answers the body — means the substrate must
+   expose the variables verbs touch: traction, temperature, tear. A physics world
+   nothing reads is a screensaver. "Pull only what the game reads" is the whole rule.
+4. **Objective templates** — small, reusable, physics-not-taste (§10).
+5. **Storage, measured early.** Splats and Nanite make detail free to *draw*, not to
+   *store*. This bounds the ambition; measure it, never assume it.
+6. **Substrate maturity in UE 5.8** — per-particle slab parameter binding, deferred
+   compositing, performance: verify LIVE at build time (model knowledge ends before
+   5.8; the research gate on rung D′ enforces this).
+
+Fun stays the human's. That never changes, at any scale.
+
+---
+
+## 15. The experiment ladder — every rung killable
+
+| rung | experiment | inputs that already exist | KILL IF |
+|---|---|---|---|
+| **A** | **Brick→splat emission**, headless: emit one Gaussian per surface tissue-voxel of the baked limb (optical fields from tissue type), render N views under a MOVING light with a small splat rasterizer, in a membrane | `core/bake.py` voxel tissues; `core/rig.py` | it cannot beat the marching-cubes render of the same limb, or relighting artifacts dominate |
+| **B** | **Movement**: skin the splats with rig.py's own LBS weights, replay the trained gait, check temporal coherence | `core/rig.py --mode walk` frames | splats shear/swim/pop under animation |
+| **C** | **Terrain-as-matter (the shovel test)**, headless first: a bounded ground patch of atoms, coalesced at rest, a scripted dig fractures it locally, grain physics on the freed particles, splats follow | the seed's `DIG`/`GA_Dig` design; MuJoCo grain sim | fracture seams cannot be stitched, or the grain budget breaks the frame — then landscaping is NOT abandoned and the finding is recorded |
+| **D′** | **In-engine**: the limb as per-particle Substrate-shaded splats in the LIVE editor under a moving directional light (the 27h-sun stand-in), MCP viewport screenshot, side-by-side vs its own mesh | rung A's emitter; the MCP bridge | no viable UE 5.8 path (plugin/Niagara/GBuffer) reaches acceptable compositing + perf, or it cannot match the mesh under dynamic light |
+
+A and B are pure Python on artifacts that exist today. C decides the landscaping
+question honestly in both directions. D′ is where Unreal's own Substrate earns its
+place in the stack — and where the live research happens.
+
+---
+
+> Part I said: everything specific, trained separately, composed where physics keeps
+> the receipts. Part II says what everything is MADE of, and who does the seeing:
+> one atom carrying its matter and its appearance; shapes and movements as the only
+> two things ever trained; physics that congeals into rendering where the world is
+> quiet and wakes into simulation where a body touches it. A physics engine and a
+> rendering engine that are the same engine — because matter simulated correctly is
+> already most of the way to being seen correctly.

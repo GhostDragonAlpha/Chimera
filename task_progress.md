@@ -1,3 +1,34 @@
+# Session 2026-07-18 (fable-1, later) — PART II: THE SUBSTRATE ENGINE; rungs A/C/D′ on the board
+
+The human's second commission, in their own words across the design dialogue: matter
+ATOMS pieced together under the universe's own (scale-appropriate, pre-programmed)
+physics; SHAPES and MOVEMENTS as the only two trainables ("what else do we need?");
+Gaussian splats as the rendering primitive ("little shapes that are translucent and
+angled"); UE Substrate as the material half of dynamic lighting; and the unification —
+**"it'll be both a physics and a rendering engine that combines physics to make
+rendering possible."**
+
+- **PART II appended to `Chimera/docs/THE_COMPOSITIONAL_WORLD_MODEL.md`** (§10–§15):
+  the atom (brick fields + slab fields + splat footprint, one primitive); two engines
+  one substrate (render state IS physical state; coalesce = LOD = physics; visibility
+  pays for BEHAVE); splats carry MATTER not LIGHT (we emit, never capture — nothing
+  baked, so relighting is engineering not research); the scale ladder; the short honest
+  what-else list (joints, read-surface, objective templates, storage, Substrate-in-5.8
+  verify-live); the killable experiment ladder.
+- **Board:** tb-0168 (rung A+B: brick→splat emission + gait coherence, headless, pure
+  Python on existing bake/rig artifacts) → tb-0169 (rung C: terrain-as-matter shovel
+  test — DECIDES the abandon-landscaping question honestly, either direction, depends
+  tb-0168) → tb-0170 (rung D′: Substrate-shaded splats in the LIVE editor vs mesh,
+  capable-only, research-first — UE 5.8 Substrate + splat-plugin state MUST be looked
+  up live, model knowledge predates 5.8).
+- Screenshot-as-measurement convergence noted in the doc: in a physics-rendered world
+  the visual gate and witness gate converge by construction (H-14's gap closed).
+
+NEXT: tb-0168 is claimable now (0.95, headless, disjoint). tb-0169/0170 unlock on its
+completion. CWM rung 1 (tb-0165/66/67) unchanged.
+
+---
+
 # Session 2026-07-18 (fable-1) — THE COMPOSITIONAL WORLD MODEL named; rung 1 on the board
 
 The human named the destination: **a world model with everything specific trained
