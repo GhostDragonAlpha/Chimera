@@ -4817,7 +4817,11 @@ void RunSacrificeLogSeedApiTests()
         header_content += f"\tfloat TurnRate;\n\n"
         header_content += "\tUPROPERTY(EditDefaultsOnly, Category = \"Flight\")\n"
         header_content += f"\tfloat InertiaDamping;\n\n"
-        
+        # tb-0189: the input surface. Zero until ship possession (or a beat) drives it —
+        # replaces the emitted hardcoded full-thrust that levitated every carrier.
+        header_content += "\tUPROPERTY(EditAnywhere, BlueprintReadWrite, Category = \"Flight\")\n"
+        header_content += f"\tfloat ThrustAxis = 0.0f;\n\n"
+
         header_content += "public:\n"
         header_content += f"\tvirtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;\n\n"
         header_content += f"\tvoid InitializeFromShip(float FuelCapacityLiters, float ConsumptionRate, float QuantumFuelCost, float QuantumTravelTime);\n\n"
@@ -4857,10 +4861,18 @@ void RunSacrificeLogSeedApiTests()
         cpp_content += "\tSuper::TickComponent(DeltaTime, TickType, ThisTickFunction);\n\n"
         cpp_content += "\tif (!GetOwner()) return;\n\n"
         
-        # Read input (hardcoded for testing - thrust on)
+        # tb-0189 THE LEVITATION ROOT CAUSE: this used to emit ThrustInput = 1.0f
+        # ("Full thrust for testing") — FULL THRUST EVERY TICK, UNCONDITIONALLY, then
+        # SetActorLocation past CharacterMovement's bookkeeping. Any pawn carrying a
+        # FlightComponent rose forever; velocity read pure gravity while world-Z
+        # climbed (sub-39's forensic, exactly). Thrust now defaults to the bound
+        # input value (0 until a ship possession wires ThrustAxis) — a parked ship,
+        # or a pawn wrongly carrying the component, goes NOWHERE.
         cpp_content += f"\t// === FIX 3: Flight Physics Movement Component ===\n"
-        cpp_content += f"\t// Read input (hardcoded for verification)\n"
-        cpp_content += f"\tfloat ThrustInput = 1.0f; // Full thrust for testing\n"
+        cpp_content += f"\t// Thrust comes from bound input (ThrustAxis, set by ship possession).\n"
+        cpp_content += f"\t// tb-0189: NEVER default to full thrust - a hardcoded 1.0f here made\n"
+        cpp_content += f"\t// every carrier climb forever (the pawn-levitation bug).\n"
+        cpp_content += f"\tfloat ThrustInput = ThrustAxis;\n"
         cpp_content += f"\tfloat PitchInput = 0.0f;\n"
         cpp_content += f"\tfloat YawInput = 0.0f;\n"
         cpp_content += f"\tfloat RollInput = 0.0f;\n\n"

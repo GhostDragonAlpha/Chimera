@@ -65,7 +65,9 @@ class Studio:
 
     def build(self):
         """Ground plane at the stage block. Engine basic shapes are stable paths."""
-        self.c.call("control_actor", {"action": "delete_actor", "actorName": GROUND})
+        # "delete_actor" is NOT a bridge action (silent no-op); real verb: destroy_actor
+        # (McpTool_ControlActor.cpp:28-29 — a "deleted" ground once photobombed a portrait)
+        self.c.call("control_actor", {"action": "destroy_actor", "actorName": GROUND})
         ok, msg = _ok(self.c.call("control_actor", {
             "action": "spawn_actor", "classPath": "/Script/Engine.StaticMeshActor",
             "meshPath": "/Engine/BasicShapes/Plane", "actorName": GROUND,

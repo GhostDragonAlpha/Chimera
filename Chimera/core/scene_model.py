@@ -82,11 +82,30 @@ class SceneModel:
                     scale = np.array(d["scale"], dtype=float)
                 except (KeyError, TypeError):
                     continue
-                r0 = KNOWN_RADIUS.get(name, DEFAULT_RADIUS) * float(np.max(scale))
+                # Radius from the ENGINE's own bounds, never a baked table: the stale
+                # KNOWN_RADIUS["Splat_Cloud"]=160 solved a camera 117cm off the true
+                # 86.2cm subject during tb-0179 — and live bounds would have caught the
+                # 100x glTF unit bug on sight. Table + default remain the fallback only
+                # when the bounds call fails (marked radius_known=False).
+                r0, known = None, False
+                b = self.c.call("control_actor", {"action": "get_actor_bounds",
+                                                  "actorName": name})
+                try:
+                    sc_ = b["result"]["structuredContent"]
+                    bd = (sc_.get("result") or {}).get("data") or sc_.get("data") or sc_
+                    ext = bd.get("extent") or bd.get("boxExtent")
+                    if ext:
+                        r0 = float(np.linalg.norm(np.array(ext, dtype=float)))
+                        known = True
+                except (KeyError, TypeError, ValueError):
+                    pass
+                if r0 is None:
+                    r0 = KNOWN_RADIUS.get(name, DEFAULT_RADIUS) * float(np.max(scale))
+                    known = name in KNOWN_RADIUS
                 self.actors[name] = {
                     "class": cls, "loc": loc, "rot": np.array(d.get("rotation", [0, 0, 0]), float),
                     "scale": scale, "radius": r0,
-                    "radius_known": name in KNOWN_RADIUS,
+                    "radius_known": known,
                     "in_cube": bool(np.all(np.abs(loc) < WORLD_HALF_CM)),
                 }
         return len(self.actors)

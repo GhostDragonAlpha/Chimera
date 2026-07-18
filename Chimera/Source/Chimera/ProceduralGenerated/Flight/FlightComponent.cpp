@@ -23,8 +23,10 @@ void UFlightComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	if (!GetOwner()) return;
 
 	// === FIX 3: Flight Physics Movement Component ===
-	// Read input (hardcoded for verification)
-	float ThrustInput = 1.0f; // Full thrust for testing
+	// Thrust comes from bound input (ThrustAxis, set by ship possession).
+	// tb-0189: NEVER default to full thrust - a hardcoded 1.0f here made
+	// every carrier climb forever (the pawn-levitation bug).
+	float ThrustInput = ThrustAxis;
 	float PitchInput = 0.0f;
 	float YawInput = 0.0f;
 	float RollInput = 0.0f;

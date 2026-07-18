@@ -22,7 +22,11 @@ import math
 import numpy as np
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]   # core/trainables/x.py -> project root
+# (parents[1] was core/ — one level too shallow: load_reference_descriptors built
+#  core/docs/matter/... which never exists, so it silently returned None for every
+#  scan. Found by sub-31 (surprise_43c5a16e0f439c80); the sibling rule of thumb:
+#  count your own depth — core/material_harvester.py's parents[1] IS correct.)
 
 
 # --- genome structure -----------------------------------------------------------

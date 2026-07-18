@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Flight")
 	float InertiaDamping;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flight")
+	float ThrustAxis = 0.0f;
+
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

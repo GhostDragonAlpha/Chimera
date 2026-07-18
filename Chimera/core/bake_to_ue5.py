@@ -57,7 +57,9 @@ def to_ue5(glb: Path, shot: Path, client=None) -> dict:
             log[f"nanite:{t}"] = (ok, msg)
 
         for t in TISSUES:                              # clear any prior run's actors first
-            c.call("control_actor", {"action": "delete_actor", "actorName": f"Grown_{t}"})
+            # "delete_actor" is NOT a bridge action (silent no-op — success:false ignored);
+            # real verbs are "delete"/"destroy_actor" (McpTool_ControlActor.cpp:28-29).
+            c.call("control_actor", {"action": "destroy_actor", "actorName": f"Grown_{t}"})
         for t, path in meshes.items():
             ok, msg = _ok(c.call("control_actor", {
                 "action": "spawn_actor", "classPath": "/Script/Engine.StaticMeshActor",
