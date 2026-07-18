@@ -74178,6 +74178,199 @@
       "inheritance": "Sampling is not a single-source decision: this session found genuinely different winners per material (NASA/ALSCC for regolith's lunar-specific albedo debt vs generic CC0 for rock/metal/ice's cheap pattern coverage) and one real license ambiguity (MERL BRDF) that a prior session would have had to either paper over or block on -- naming the ambiguity instead of resolving it by fiat is the actual deliverable. The download wall is structural, not a one-off: any dispatched subagent without a live chat channel will hit it identically, so the durable fix is the permission list format itself (named item + URL + size + gate-reason), not another agent re-discovering the wall.",
       "recorded_by": "postflight.py",
       "run_id": "run_cb5d95b8465d"
+    },
+    {
+      "id": "simtest_8c89d59be803b78e",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T18:08:23.682069",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "sub39_tb0184_travel_vehicle",
+      "demo": "travel_vehicle_basic",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "vehicle_component_initialized",
+          "outcome": "failed",
+          "features": [
+            "Travel_Vehicle_Basic"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "AShip_Trader_Vessel_Alpha"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub39_tb0184_travel_vehicle.json",
+      "temperature": "[SIM] 0/1 beats reached in 'travel_vehicle_basic'. Failures: vehicle_component_initialized (failed: expect {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'sub39_tb0184_travel_vehicle': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5a4830733a01"
+    },
+    {
+      "id": "surprise_67e125a1e7b3969a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T18:08:24.245778",
+      "context": "Sleepwalker expected beat 'vehicle_component_initialized' to be reachable (travel_vehicle_basic)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"}, \"ok\": false, \"'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5a4830733a01"
+    },
+    {
+      "id": "simtest_c7136e95cebadd12",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T18:09:42.359157",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "sub39_tb0184_shelter_habitat",
+      "demo": "shelter_habitat_material",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "shelter_habitat_material_present",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Materials"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "Demo_HabitatActor"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\sub39_tb0184_shelter_habitat.json",
+      "temperature": "[SIM] 1/1 beats reached in 'shelter_habitat_material'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'sub39_tb0184_shelter_habitat': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_fdb1910e9221"
+    },
+    {
+      "id": "mutation_7f643f2bcb36",
+      "type": "Mutation",
+      "timestamp": "2026-07-18T18:14:01.681468",
+      "error_signature": "success_no_error",
+      "template_file": "Plugins/McpAutomationBridge/Source/McpAutomationBridge/Private/McpAutomationBridge_ControlHandlers.cpp",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "UnrealBuildTool: ChimeraEditor Win64 Development E:\\PythonChimera\\Chimera\\Chimera.uproject -waitmutex\n[Adaptive Build] Excluded from McpAutomationBridge unity file: McpAutomationBridge_ControlHandlers.cpp\nUsing Unreal Build Accelerator local executor to run 12 action(s)\n[1/12] Compile [x64] Module.Chimera.3.cpp\n[2/12] Compile [x64] Module.Chimera.1.cpp\n[3/12] Compile [x64] Module.Chimera.2.cpp\n[4/12] Link [x64] UnrealEditor-Chimera.lib\n[5/12] Link [x64] UnrealEditor-Chimera.dll\n[6/12] Compile [x64] Module.McpAutomationBridge.7.cpp\n[7/12] Compile [x64] Module.McpAutomationBridge.18.cpp\n[8/12] Compile [x64] McpAutomationBridge_ControlHandlers.cpp\n[9/12] Compile [x64] Module.McpAutomationBridge.1.cpp\n[10/12] Link [x64] UnrealEditor-McpAutomationBridge.lib\n[11/12] Link [x64] UnrealEditor-McpAutomationBridge.dll\n[12/12] WriteMetadata ChimeraEditor.target [NoUba]\nTotal time in Unreal Build Accelerator local executor: 59.67 seconds\nOutput binary: C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe\nResult: Succeeded\nTotal execution time: 70.94 seconds",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "record_build.py",
+      "run_id": "run_3e1d871cec78"
+    },
+    {
+      "id": "discovery_e0c4d3efb7ef652f",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T18:16:27.295134",
+      "feature": "tb-0184: Witness rig: reset_position does not ground the paw",
+      "campus_sources": [],
+      "web_sources": [
+        "docs/MASTER_ONBOARDING.md Parts I/II/IV; core/sleepwalker.py (reset_position, run(), _check_expect, _runtime); core/witness.py (Witness chronicle format); Plugins/McpAutomationBridge_EnvironmentHandlers.cpp (runtime_report handler, McpGetRuntimeInspectionWorld, McpDescribeRuntimeActor/Component); Pl"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0184: Witness rig: reset_position does not ground the paw",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0184: Witness rig: reset_position does not ground the paw': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_838a58d6f306"
+    },
+    {
+      "id": "phase_d7f6857cc7a33b36",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T18:16:27.810772",
+      "phase": "tb-0184: Witness rig: reset_position does not ground the pawn",
+      "result": "Fixed two in-footprint bugs: (1) core/sleepwalker.py reset_position's default anchor z=130.0 was being ADDED to every beat's requested z (not replaced), so all 38 no-anchor reset_position calls across docs/beats/ landed at z=260/230 instead of the requested 130/100 -- default anchor z now 0.0. (2) reset_position now verifies its own write via a fresh runtime_report read-back (reset_position_verify witness event) and raises a distinctly-labeled RIG FAULT if the pawn drifts >2000uu, instead of silently trusting the write-time echo. (3) Plugins/McpAutomationBridge HandleControlActorSetTransform now calls CharacterMovementComponent->StopMovementImmediately()+SetMovementMode(MOVE_Walking) on teleport of an ACharacter. Rebuilt ChimeraEditor+McpAutomationBridge: Result Succeeded (mutation_7f643f2bcb36). Re-ran travel_vehicle_basic.beats.json (simtest_8c89d59be803b78e) and shelter_habitat_material.beats.json (simtest_c7136e95cebadd12) via witness_runner: shelter_habitat now reaches 1/1 clean (post-reset loc=[-278.66,-0.0017,151.29] vs requested [-250,0,130], was historically stranded at [-62446.65,-3.80,72830.73]); travel_vehicle_basic still fails but ONLY on the pre-existing, separately-diagnosed AShip_Trader_Vessel_Alpha absence, with post-reset z now 629.99 (verified, within tolerance) drifting to 4630 by beat end -- two orders of magnitude below the historical 124259.99/56759.9995/200092. CONFIRMED via 4 live PIE experiments that an EXTERNAL per-tick +Z force (independent of the MCP bridge -- proven by non-actor-touching get_performance_stats calls showing the identical climb rate as runtime_report calls) still acts on the pawn; it is not sourced in any C++ I have read access to (DemoPlayerController, DemoOnFootGameMode, ChimeraMovementComponent, FootprintComponent, SuitLifeSupportComponent, ErisaidResonanceVFXComponent, PCGVolumeManager, UniverseGenerationComponent all read in full) -- likely BP_Astronaut_Character_C's own Blueprint Event Graph, out of footprint, flagged for follow-up.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0184: Witness rig: reset_position does not ground the pawn",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0184: Witness rig: reset_position does not ground the pawn' complete: Fixed two in-footprint bugs: (1) core/sleepwalker.py reset_position's default anchor z=130.0 was being ADDED to every beat's requested z (not replaced), so all 38 no-anchor reset_position calls across",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Any position-dependent beat against chimeradefaultlevel can still show residual (now ~500-4600uu, down from 100,000+) upward drift after reset_position, because the external per-tick +Z force is confirmed still active and unfixed outside tb-0184's footprint (likely BP_Astronaut_Character_C's Blueprint Event Graph or native parent class -- manage_blueprint get_nodes returned UNKNOWN_ACTION when tried, so it could not be read live). Confirm via the new reset_position_verify witness event in the chronicle before trusting any position expect that runs long after a reset."
+      ],
+      "inheritance": "reset_position's anchor-z-doubling bug (130+130=260) and its lack of any post-write verification are fixed and rebuilt; the pawn's real altitude corruption is an external per-tick force confirmed independent of the MCP bridge and of every pawn-side C++ file readable from this footprint, most likely inside BP_Astronaut_Character_C's own Blueprint graph or native parent class. Both target beats now show grounded (not six-figure) positions after reset, and shelter_habitat_material passes clean for the first time on record.",
+      "pain_verdicts": {
+        "phase_b647c062dae3f468:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_838a58d6f306"
     }
   ],
   "edges": [

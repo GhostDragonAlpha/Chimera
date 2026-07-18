@@ -283,8 +283,27 @@ class Sleepwalker:
         elif "reset_position" in a:
             # Position reset for pawn during PIE (BugItGo doesn't work in PIE).
             # Uses control_actor set_transform on the possessed pawn directly.
+            #
+            # tb-0184 fix: the default anchor used to be {"x":0,"y":0,"z":130.0}
+            # and z was computed as `anchor["z"] + loc["z"]` whenever the beat
+            # supplied a z — i.e. ADDED to, not replaced by, the anchor default.
+            # For x/y this is harmless (their anchor defaults to 0.0, so adding
+            # is a no-op), but every existing beat file supplies z (almost
+            # always 130, matching PlayerStart/the placed pawn's own ground
+            # height) with NO anchor, so EVERY ONE of them was silently sent to
+            # the engine as z=260 (130+130), not the z=130 the beat author
+            # wrote — this is exactly the "reset_position{z:260}" this task's
+            # own recipe cites (surprise_ae20639b202d972b): that 260 was never
+            # a beat's request, it was 130 (requested) + 130 (this bug). Fixed
+            # by making the no-anchor default z 0.0, matching x/y, so a
+            # supplied z is used AS the absolute world coordinate — exactly
+            # what the comment below already documented as the intended,
+            # backward-compatible behaviour. GROUND_Z_FALLBACK below preserves
+            # the old sensible-default behaviour for the (currently unused by
+            # any beat file) case of a beat omitting z entirely with no anchor.
+            GROUND_Z_FALLBACK = 130.0
             loc = a["reset_position"]
-            anchor = {"x": 0.0, "y": 0.0, "z": 130.0}
+            anchor = {"x": 0.0, "y": 0.0, "z": 0.0}
             anchor_name = loc.get("anchor")
             if anchor_name == "habitat" and getattr(self, "habitat_estimate", None):
                 anchor = self.habitat_estimate
@@ -295,7 +314,10 @@ class Sleepwalker:
             # x/y/z are absolute world coordinates (anchor defaults to origin).
             x = anchor["x"] + float(loc.get("x", 0))
             y = anchor["y"] + float(loc.get("y", 0))
-            z = anchor["z"] + float(loc.get("z", 0)) if "z" in loc else anchor["z"]
+            if "z" in loc:
+                z = anchor["z"] + float(loc["z"])
+            else:
+                z = anchor["z"] if anchor_name else GROUND_Z_FALLBACK
             self.w.mark(
                 "action",
                 {"reset_position": {"x": x, "y": y, "z": z, "anchor": anchor_name}},
@@ -315,6 +337,40 @@ class Sleepwalker:
                     "location": {"x": x, "y": y, "z": z},
                 },
             )
+            # tb-0184 (witness rig: reset_position does not ground the pawn):
+            # the bridge's set_transform already verifies the write landed at
+            # the instant it ran (bLocMatch), but proven-live evidence
+            # (surprise_ae20639b202d972b + this task's own repro) shows the
+            # pawn can still be found tens-to-hundreds-of-thousands of units
+            # in the air moments later — an external per-tick force keeps
+            # acting on the pawn regardless of which (if any) MCP call is
+            # made, so a reset that was momentarily correct does not stay
+            # correct. Read the position straight back so THIS session's
+            # chronicle records whether the ground actually held, instead of
+            # trusting the write-time echo and letting a later expect fail
+            # against a corrupted position with no attribution back to the
+            # reset. A large deviation here is a RIG/PAWN fault, not the
+            # tagged feature's — raise distinctly so run()'s outcome=blocked
+            # path carries that in the evidence (H-29: attribute rejection to
+            # the actual failing subsystem).
+            rt_verify = self._runtime()
+            actual_loc = (
+                (rt_verify.get("pawn") or {}).get("transform") or {}
+            ).get("location") or {}
+            actual_z = float(actual_loc.get("z", float("nan")))
+            delta_z = actual_z - z
+            self.w.mark(
+                "reset_position_verify",
+                {"requested_z": z, "actual_z": actual_z, "delta_z": delta_z},
+            )
+            RESET_POSITION_TOLERANCE_UU = 2000.0  # see tb-0184: real corruption is 7,000+/tick, settle jitter is O(10)
+            if not (abs(delta_z) <= RESET_POSITION_TOLERANCE_UU):
+                raise RuntimeError(
+                    f"RIG FAULT (tb-0184, not a feature defect): reset_position wrote "
+                    f"z={z:.0f} but pawn now reads z={actual_z:.0f} (delta={delta_z:+.0f}uu) "
+                    f"— something external is still moving the pawn every tick; do not "
+                    f"indict this beat's tagged feature from this failure"
+                )
         elif "advance_suit_seconds" in a:
             # Compress game-time instead of waiting real time (design directive
             # Part A #2): simulates N seconds of the suit's OWN drain/regen math

@@ -132,6 +132,8 @@
 #include "Components/PrimitiveComponent.h"
 #include "EditorViewportClient.h"
 #include "Engine/Blueprint.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
@@ -1175,6 +1177,33 @@ bool UMcpAutomationBridgeSubsystem::HandleControlActorSetTransform(
   Found->MarkComponentsRenderStateDirty();
   Found->MarkPackageDirty();
 
+  // tb-0184 (witness rig: reset_position does not ground the pawn): a bare
+  // SetActorLocation() repositions the actor but leaves ACharacter's
+  // CharacterMovementComponent velocity/movement-mode untouched. If the
+  // pawn carried residual velocity (e.g. it was mid-fall when a beat script
+  // called reset_position), that velocity keeps integrating on the very
+  // next tick and the teleport is undone within a second or two — this is
+  // why sleepwalker beats observed the pawn "snap back" to a large altitude
+  // shortly after a reset_position that had, moments earlier, verified
+  // bLocMatch==true. StopMovementImmediately() zeroes Velocity/Acceleration/
+  // pending forces (the correct CharacterMovementComponent API for this,
+  // not a raw member write), then MOVE_Walking lets the component
+  // re-evaluate footing fresh from the new location on its next tick
+  // instead of carrying over a stale Falling/Flying mode across the jump.
+  // This does NOT mask a genuine external cause of unwanted motion (e.g. a
+  // Tick elsewhere still adding to the actor's position every frame) — it
+  // only stops THIS teleport from being immediately undone by the character
+  // movement component's own carried-over state, which is a real, separate
+  // defect in its own right regardless of any other cause.
+  bool bCharacterMovementReset = false;
+  if (ACharacter *Char = Cast<ACharacter>(Found)) {
+    if (UCharacterMovementComponent *CMC = Char->GetCharacterMovement()) {
+      CMC->StopMovementImmediately();
+      CMC->SetMovementMode(MOVE_Walking);
+      bCharacterMovementReset = true;
+    }
+  }
+
   // Verify transform
   const FVector NewLoc = Found->GetActorLocation();
   const FRotator NewRot = Found->GetActorRotation();
@@ -1187,6 +1216,7 @@ bool UMcpAutomationBridgeSubsystem::HandleControlActorSetTransform(
 
   TSharedPtr<FJsonObject> Data = McpHandlerUtils::CreateResultObject();
   Data->SetStringField(TEXT("actorName"), Found->GetActorLabel());
+  Data->SetBoolField(TEXT("characterMovementReset"), bCharacterMovementReset);
 
   auto MakeArray = [](const FVector &Vec) {
     TArray<TSharedPtr<FJsonValue>> Arr;

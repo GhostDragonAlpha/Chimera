@@ -1,14 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T17:39:56+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T18:15:20+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0184 | claimed | 1.1 | Witness rig: reset_position does not ground the pawn (z=124k | core/sleepwalker.py, core/witness.py… | sub-39 |
 | tb-0185 | open | 1.1 | Witness: log_contains is deaf to every non-DEMOBEAT log line ⇐ tb-0184 | core/witness.py, core/sleepwalker.py… |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -58,6 +57,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0015 | done | 1.2 | Sprint_Input: harness parity: sleepwalker and bridge agree o | core/sleepwalker.py, Plugins/McpAutomationBridge/Source/** | harness_parity atom GREEN x2 from birth: Plugins tree alread |
 | tb-0016 | done | 1.1 | Sprint_Input: live read-back: a beat proves the verb changed ⇐ tb-0014,tb-0015 | docs/beats/audio_visual_sync.beats.json; editor:open | READBACK PROVEN: simtest_2d3122d6cefb0009 5/5 — real LeftShi |
 | tb-0008 | done | 1.1 | Hire_Lighting_Artist (DREAM_ROSTER #8) `capable` | core/lumen_rig.py; editor:open | Created core/lumen_rig.py for Lighting Artist (DREAM_ROSTER  |
+| tb-0184 | done | 1.1 | Witness rig: reset_position does not ground the pawn (z=124k | core/sleepwalker.py, core/witness.py… | ROOT CAUSE (confirmed via 4 live PIE experiments, hard evide |
 | tb-0009 | done | 1 | Hire_Trailer_Director (DREAM_ROSTER #12) `capable` | core/trailer.py, Saved/Trailers/**; editor:open; excl:pie | Created core/trailer.py for Trailer Director (DREAM_ROSTER # |
 | tb-0079 | done | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/**, core/game_code_generator.py; excl:generator | UGestureWheel DSL spec added to deep_space_trader.chimera wi |
 | tb-0124 | done | 1 | UGestureWheel completion: TAB binding + DSL consumption + ho | Source/Chimera/ProceduralGenerated/UI/**, Source/Chimera/ProceduralGenerated/Demo/**…; editor:open; excl:generator | UGestureWheel DSL spec parsing added to dsl_game_parser.py;  |
