@@ -488,6 +488,20 @@
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {
+  "id": "atom_912a988efee0",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSourceActor\\b"
+  },
+  "desc": "UPROPERTY SourceActor (FFootstepEvent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
+ },
+ {
   "id": "atom_91685beff4e0",
   "feature": "subsystem/root",
   "tier": 1,
@@ -726,6 +740,20 @@
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {
+  "id": "atom_ca8a2d9df3af",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbLanding\\b"
+  },
+  "desc": "UPROPERTY bLanding (FFootstepEvent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
+ },
+ {
   "id": "atom_cce9ef6cc2c3",
   "feature": "subsystem/root",
   "tier": 1,
@@ -807,6 +835,34 @@
    "regex": "\\bLocation\\b"
   },
   "desc": "UPROPERTY Location (FFootstepEvent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
+ },
+ {
+  "id": "atom_e7e70dd2f5fd",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnFootstep\\b"
+  },
+  "desc": "UPROPERTY OnFootstep (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
+  "id": "atom_e83de365b541",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbLeftFoot\\b"
+  },
+  "desc": "UPROPERTY bLeftFoot (FFootstepEvent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
  },
  {

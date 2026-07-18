@@ -175,12 +175,143 @@ def _inject_material(glb_path: Path) -> None:
         f.write(rest)
 
 
-def write_splat_glb(splats: dict, scale: float, path: Path, **kw) -> Path:
+def _falloff_png_bytes(size: int = 64, sigma: float = 0.35) -> bytes:
+    """A small, centred radial-Gaussian alpha texture: white RGB (so it never tints —
+    COLOR_0 already carries the per-splat tissue albedo), alpha carries the falloff.
+    Same Gaussian family as the Warp/CPU rasterizers' own per-splat compositing term
+    `alpha * exp(-0.5*m)` (core.splat_gpu / splat_emit.rasterize_splats) — the recipe's
+    'the Warp rasterizer is the ground-truth look' made into an engine-side texture
+    instead of a per-pixel computation, so a MASKed quad reads as the same soft
+    footprint the rasterizers already treat as reference."""
+    import io
+    from PIL import Image
+
+    ys, xs = np.mgrid[0:size, 0:size].astype(np.float64)
+    c = (size - 1) / 2.0
+    r2 = ((xs - c) ** 2 + (ys - c) ** 2) / (c ** 2)      # 0 at centre, 1 at a side's midpoint
+    alpha = np.clip(np.exp(-r2 / (2.0 * sigma ** 2)), 0.0, 1.0)
+    rgba = np.zeros((size, size, 4), dtype=np.uint8)
+    rgba[..., :3] = 255                                   # white -- never tints COLOR_0
+    rgba[..., 3] = (alpha * 255).astype(np.uint8)
+    buf = io.BytesIO()
+    Image.fromarray(rgba, mode="RGBA").save(buf, format="PNG")
+    return buf.getvalue()
+
+
+def _inject_falloff_material(glb_path: Path, alpha_mode: str = "MASK",
+                             alpha_cutoff: float = 0.5, tex_size: int = 64) -> None:
+    """Make the GLB SELF-DESCRIBING with a SOFT EDGE (tb-0183): extends
+    _inject_material's proven chunk-surgery pattern (declare a real PBR material so
+    UE's importer multiplies it by COLOR_0 — see that function's docstring) with an
+    embedded radial-falloff texture + per-vertex UVs, so a quad — still geometrically a
+    rectangle, now sized from the splat's own anisotropic axes by quad_cloud — RENDERS
+    as a soft ellipse instead of a hard-edged shape. Same reasoning as _inject_material
+    for doing this as raw GLB bytes rather than via trimesh's high-level export:
+    trimesh's vertex-color path does not reliably co-export a second (UV+texture)
+    attribute set on the same primitive; proven the hard way for materials already, so
+    UVs get the identical treatment — computed here, appended to the SAME buffer.
+
+    alphaMode MASK (default; the recipe's 'preferred') alpha-tests each pixel against
+    `alpha_cutoff` and is Nanite-compatible; BLEND is offered for the recipe's explicit
+    fallback ('only if sorting holds') — Nanite does not support translucent materials
+    in general, which is the concrete mechanism the KILL check
+    (drive_shape_study) is testing, not an aesthetic preference. Nothing in this
+    function decides which mode wins."""
+    import struct
+
+    with open(glb_path, "rb") as f:
+        magic, ver, _total = struct.unpack("<III", f.read(12))
+        clen, ctype = struct.unpack("<II", f.read(8))
+        doc = json.loads(f.read(clen))
+        rest = f.read()
+    bin_len, bin_type = struct.unpack("<II", rest[:8])
+    bin_data = bytearray(rest[8:8 + bin_len])              # the buffer's true bytes only —
+                                                            # anything past bin_len is outside
+                                                            # the chunk's declared length (spec)
+
+    mesh = doc["meshes"][0]
+    prim = mesh["primitives"][0]
+    pos_accessor = doc["accessors"][prim["attributes"]["POSITION"]]
+    n_verts = int(pos_accessor["count"])
+    n_quads = n_verts // 4
+
+    # --- UVs: one unit square per quad, corner order matching quad_cloud's own
+    # ((-1,-1),(1,-1),(1,1),(-1,1)) -> (0,0),(1,0),(1,1),(0,1) ------------------------
+    uv_corner = np.array([[0., 0.], [1., 0.], [1., 1.], [0., 1.]], dtype="<f4")
+    uv_bytes = np.tile(uv_corner, (n_quads, 1)).tobytes()
+    assert len(uv_bytes) % 4 == 0
+    uv_bv_offset = len(bin_data)
+    bin_data += uv_bytes
+
+    # --- the falloff texture, embedded as PNG bytes in the SAME buffer --------------
+    png_bytes = _falloff_png_bytes(tex_size)
+    img_bv_offset = len(bin_data)
+    bin_data += png_bytes
+    bin_data += b"\x00" * ((-len(bin_data)) % 4)           # glTF BIN padding byte is 0x00
+
+    uv_bv_idx = len(doc["bufferViews"])
+    doc["bufferViews"].append({"buffer": 0, "byteOffset": uv_bv_offset, "byteLength": len(uv_bytes)})
+    img_bv_idx = len(doc["bufferViews"])
+    doc["bufferViews"].append({"buffer": 0, "byteOffset": img_bv_offset, "byteLength": len(png_bytes)})
+
+    uv_accessor_idx = len(doc["accessors"])
+    doc["accessors"].append({"componentType": 5126, "type": "VEC2", "byteOffset": 0,
+                             "bufferView": uv_bv_idx, "count": n_verts})
+    prim["attributes"]["TEXCOORD_0"] = uv_accessor_idx
+
+    doc["images"] = [{"bufferView": img_bv_idx, "mimeType": "image/png"}]
+    doc["samplers"] = [{"magFilter": 9729, "minFilter": 9729,             # LINEAR
+                        "wrapS": 33071, "wrapT": 33071}]                  # CLAMP_TO_EDGE
+    doc["textures"] = [{"source": 0, "sampler": 0}]
+
+    mat = {
+        "name": "M_SplatVC_Soft",
+        "pbrMetallicRoughness": {
+            "baseColorFactor": [1.0, 1.0, 1.0, 1.0],
+            "baseColorTexture": {"index": 0, "texCoord": 0},
+            "metallicFactor": 0.0, "roughnessFactor": 0.85,
+        },
+        "doubleSided": True,
+    }
+    if alpha_mode == "MASK":
+        mat["alphaMode"] = "MASK"
+        mat["alphaCutoff"] = float(alpha_cutoff)
+    elif alpha_mode == "BLEND":
+        mat["alphaMode"] = "BLEND"
+    doc["materials"] = [mat]
+    for m in doc.get("meshes", []):
+        for p in m.get("primitives", []):
+            p["material"] = 0
+    doc["buffers"][0]["byteLength"] = len(bin_data)
+
+    payload = json.dumps(doc, separators=(",", ":")).encode()
+    payload += b" " * (-len(payload) % 4)                  # 4-byte alignment (spec)
+    with open(glb_path, "wb") as f:
+        f.write(struct.pack("<III", magic, ver, 12 + 8 + len(payload) + 8 + len(bin_data)))
+        f.write(struct.pack("<II", len(payload), ctype))
+        f.write(payload)
+        f.write(struct.pack("<II", len(bin_data), bin_type))
+        f.write(bytes(bin_data))
+
+
+def write_splat_glb(splats: dict, scale: float, path: Path, soft_edge: bool = True,
+                    alpha_mode: str = "MASK", alpha_cutoff: float = 0.5,
+                    tex_size: int = 64, **kw) -> Path:
     """Export + material injection in one step — the only correct way to write
     a splat GLB for engine import (a bare quad_cloud().export() produces the
-    dead-default-material import; see _inject_material)."""
+    dead-default-material import; see _inject_material).
+
+    tb-0183: soft_edge=True (default) additionally embeds a radial-falloff texture +
+    UVs (_inject_falloff_material) so the anisotropic quads quad_cloud now builds
+    render as soft ellipses, not hard-edged rectangles. soft_edge=False keeps the
+    original hard-edge material (_inject_material) — the 'squares' baseline for the
+    side-by-side comparison (core.splat_to_ue5.drive_shape_study)."""
     quad_cloud(splats, scale, **kw).export(str(path))
-    _inject_material(path)
+    if soft_edge:
+        _inject_falloff_material(path, alpha_mode=alpha_mode, alpha_cutoff=alpha_cutoff,
+                                 tex_size=tex_size)
+    else:
+        _inject_material(path)
     return path
 
 
@@ -420,6 +551,81 @@ def drive_density_study(splat_glb: Path, cloud_radius: float, tag: str = "",
     return log
 
 
+def drive_shape_study(splat_glb_hard: Path, splat_glb_soft: Path, cloud_radius: float) -> dict:
+    """tb-0183's in-engine proof: the SAME limb, exported TWICE at the SAME density tier
+    — hard isotropic SQUARES (quad_cloud/write_splat_glb with anisotropic=False,
+    soft_edge=False — the pre-tb-0183 shape) vs anisotropic ELLIPSES + soft radial
+    falloff (the new defaults) — imported side by side via core.photo_studio.Studio
+    (the SAME known-extent staging drive_density_study already trusts), fps measured
+    around the soft-edge cloud specifically (the one adding a masked/alpha-tested
+    material — the KILL risk the recipe names), and ONE screenshot pair for a human to
+    actually look at. Mirrors drive_density_study's foreground+settle discipline.
+
+    Returns a log dict; the KILL verdict is NOT decided here (facts only) — see
+    main()'s --shape-study branch for the stated criteria."""
+    from core.photo_studio import Studio
+
+    log = {}
+    fg = _foreground_editor()
+    log["foreground_editor"] = (fg, "SetForegroundWindow OK" if fg
+                                else "window not found by title — fps readings may be throttle noise")
+
+    c = MCPStdioClient()
+    try:
+        specs = [("Squares", splat_glb_hard), ("Ellipses", splat_glb_soft)]
+        mesh_paths = {}
+        for label, glb in specs:
+            ok, msg = _ok(c.call("manage_asset", {
+                "action": "import", "sourcePath": str(glb), "destinationPath": DEST}))
+            log[f"import:{label}"] = (ok, msg)
+            mesh_paths[label] = f"{DEST}{glb.stem}/StaticMeshes/{glb.stem}"
+
+        fps0, fps0_note = probe_fps(c)
+        log["fps_before_spawn"] = (fps0 is not None, f"{fps0}  ({fps0_note})")
+
+        st = Studio(client=c)
+        ok, msg = st.build()
+        log["stage:ground"] = (ok, msg)
+
+        # main() runs drive_density_study (actor "Splat_Cloud", slot 0) right before
+        # this when --shape-study is passed — same stage slot 0 this function's first
+        # actor lands on. Clear it so the pair shot below isn't photobombed/z-fighting.
+        c.call("control_actor", {"action": "destroy_actor", "actorName": "Splat_Cloud"})
+
+        nanite_ok = {}
+        for i, (label, _glb) in enumerate(specs):
+            actor = f"Shape_{label}"
+            mpath = mesh_paths[label]
+            c.call("control_actor", {"action": "destroy_actor", "actorName": actor})
+            ok, msg = _ok(c.call("control_actor", {
+                "action": "spawn_actor", "classPath": "/Script/Engine.StaticMeshActor",
+                "meshPath": mpath, "actorName": actor,
+                "location": {"x": 0.0, "y": 0.0, "z": 0.0}}))
+            log[f"spawn:{actor}"] = (ok, msg)
+            nok, nmsg = _ok(c.call("manage_asset", {
+                "action": "nanite_rebuild_mesh", "assetPath": mpath, "meshPath": mpath,
+                "bEnableNanite": True}))
+            log[f"nanite:{label}"] = (nok, nmsg)
+            nanite_ok[label] = nok
+            placed, pmsg = st.place(actor, i, cloud_radius)
+            log[f"place:{actor}"] = (placed, pmsg)
+
+        time.sleep(1.0)          # let both spawns/Nanite builds settle before steady-state fps
+        fps1, fps1_note = probe_fps(c)
+        log["fps_after_spawn"] = (fps1 is not None, f"{fps1}  ({fps1_note})")
+        if fps1:
+            frame_ms = 1000.0 / fps1
+            log["frame_vs_malcolm_wall"] = (frame_ms <= MALCOLM_FRAME_MS,
+                                            f"{frame_ms:.2f}ms  (wall={MALCOLM_FRAME_MS}ms)")
+
+        shot = st.pair("Shape_Squares", "Shape_Ellipses")
+        log["side_by_side"] = (True, str(shot))
+        log["nanite_all_ok"] = (all(nanite_ok.values()), str(nanite_ok))
+    finally:
+        c.close()
+    return log
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--target-len", type=int, default=64,
@@ -441,6 +647,25 @@ def main() -> int:
                     help="ALSO time a wide framing (3x radius -> mostly-empty tiles) — "
                          "isolates the tile pipeline's real advantage (sparse occupancy) "
                          "from a tight portrait where the object fills most of the frame")
+    ap.add_argument("--no-anisotropic", action="store_true",
+                    help="tb-0183: legacy isotropic-disk footprint (pre-tb-0183 shape)")
+    ap.add_argument("--k-neighbors", type=int, default=8,
+                    help="tb-0183: neighbours used for the local surface-PCA footprint shape")
+    ap.add_argument("--max-aniso-ratio", type=float, default=2.2,
+                    help="tb-0183: cap on the per-splat major/minor radius ratio")
+    ap.add_argument("--no-soft-edge", action="store_true",
+                    help="tb-0183: legacy hard-edge square material (no falloff texture)")
+    ap.add_argument("--alpha-mode", default="MASK", choices=["MASK", "BLEND"],
+                    help="tb-0183: soft-edge alphaMode — MASK (Nanite-safe, default) or "
+                         "BLEND (recipe's fallback 'only if sorting holds')")
+    ap.add_argument("--alpha-cutoff", type=float, default=0.5,
+                    help="tb-0183: MASK alpha-test cutoff")
+    ap.add_argument("--tex-size", type=int, default=64,
+                    help="tb-0183: embedded radial-falloff texture size, pixels")
+    ap.add_argument("--shape-study", action="store_true",
+                    help="tb-0183: ALSO export the legacy hard-square variant at this same "
+                         "tier and run the in-engine side-by-side (drive_shape_study); "
+                         "ignored with --no-editor")
     a = ap.parse_args()
 
     tag = a.tag or f"tl{a.target_len}"
@@ -452,7 +677,9 @@ def main() -> int:
     t_grow = time.time() - t0
 
     t0 = time.time()
-    splats = emit_limb(fleshed, tangent_scale=a.tangent_scale)
+    splats = emit_limb(fleshed, tangent_scale=a.tangent_scale,
+                       anisotropic=not a.no_anisotropic, k_neighbors=a.k_neighbors,
+                       max_aniso_ratio=a.max_aniso_ratio)
     t_emit = time.time() - t0
     n_splats = len(splats["pos"])
 
@@ -465,10 +692,13 @@ def main() -> int:
 
     OUT.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
-    scene = quad_cloud(splats, scale, tangent_scale=a.tangent_scale, overlap=a.quad_overlap)
-    n_verts = int(scene.geometry["cloud"].vertices.shape[0])
+    n_verts = n_splats * 4                          # quad_cloud is always 4 verts/splat —
+                                                      # no need to build+inspect the scene
+                                                      # twice just to read this back
     splat_glb = OUT / f"splatlimb_{tag}.glb"
-    scene.export(str(splat_glb))
+    write_splat_glb(splats, scale, splat_glb, tangent_scale=a.tangent_scale,
+                    overlap=a.quad_overlap, soft_edge=not a.no_soft_edge,
+                    alpha_mode=a.alpha_mode, alpha_cutoff=a.alpha_cutoff, tex_size=a.tex_size)
     t_splat_export = time.time() - t0
     splat_mb = splat_glb.stat().st_size / 1e6
 
@@ -545,6 +775,19 @@ def main() -> int:
         log2 = drive(splat_glb, mesh_glb)
         for step, (ok, msg) in log2.items():
             print(f"  {'OK ' if ok else 'FAIL'} {step:<18} {str(msg)[:90]}")
+
+    if a.shape_study:
+        print("\ntb-0183 shape study: exporting the legacy hard-square variant at the SAME "
+              "tier for a side-by-side ...")
+        splats_hard = emit_limb(fleshed, tangent_scale=a.tangent_scale, anisotropic=False)
+        splat_glb_hard = OUT / f"splatlimb_{tag}_squares.glb"
+        write_splat_glb(splats_hard, scale, splat_glb_hard, tangent_scale=a.tangent_scale,
+                        overlap=a.quad_overlap, soft_edge=False)
+        print(f"  wrote {splat_glb_hard.name} ({splat_glb_hard.stat().st_size/1e6:.2f} MB)")
+        log3 = drive_shape_study(splat_glb_hard, splat_glb, cloud_radius)
+        for step, (ok, msg) in log3.items():
+            print(f"  {'OK ' if ok else 'FAIL'} {step:<24} {str(msg)[:100]}")
+        good = good and all(ok for ok, _ in log3.values())
 
     print("\n  SPLATS UNDER SUBSTRATE." if good else "\n  Some in-engine steps failed — see above.")
     return 0 if good else 1

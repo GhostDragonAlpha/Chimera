@@ -400,6 +400,20 @@
   "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
  },
  {
+  "id": "atom_a814b8f5fe4c",
+  "feature": "Ground_Sand_Sound",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCanonicalFootstepEventCount\\b"
+  },
+  "desc": "UPROPERTY CanonicalFootstepEventCount (SandSoundComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SandSoundComponent.h"
+ },
+ {
   "id": "atom_c0209a268543",
   "feature": "Ground_Sand_Sound",
   "tier": 1,
