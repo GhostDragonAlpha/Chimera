@@ -72000,6 +72000,54 @@
       "inheritance": "The compositional world model is the named destination: every specific piece trained separately against its own objective, composed in-engine; the workflow already IS the per-piece training harness; seams are the one new machinery; rungs 1-3 need zero new engine code.",
       "recorded_by": "postflight.py",
       "run_id": "run_88377c495cc9"
+    },
+    {
+      "id": "simtest_8e2249197944c447",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T04:13:19.092527",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb-0142_travel_vehicle_witness",
+      "demo": "travel_vehicle_basic",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "vehicle_component_initialized",
+          "outcome": "reached",
+          "features": [
+            "Travel_Vehicle_Basic"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb-0142_travel_vehicle_witness.json",
+      "temperature": "[SIM] 1/1 beats reached in 'travel_vehicle_basic'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'tb-0142_travel_vehicle_witness': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_725ffcf06255"
     }
   ],
   "edges": [

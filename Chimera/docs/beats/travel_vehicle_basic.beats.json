@@ -1,0 +1,22 @@
+{
+  "demo": "travel_vehicle_basic",
+  "loop": 7,
+  "settle_s": 6,
+  "_provenance": "Witness task tb-0142 (sub-18). Travel_Vehicle_Basic (loop 7) is a generated component providing basic vehicle movement and flight capabilities. UTravelVehicleComponent has GroundSpeed (300), FlightSpeed (800), InitializeBasicMovement(), InitializeFlightCapabilities(), GetVehicleSpeed(). This beat verifies the component initializes in PIE and reports its speed values.",
+  "beats": [
+    {
+      "name": "vehicle_component_initialized",
+      "features": ["Travel_Vehicle_Basic"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 0, "z": 130}},
+        {"wait": 2.0},
+        {"command": "GetAllActors", "store_as": "all_actors"},
+        {"screenshot": "travel_vehicle_basic_view"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"world_is": "chimeradefaultlevel"}
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T04:08:04+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T04:13:46+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,8 +8,7 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0154 | claimed | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie | sub-18 |
-| tb-0155 | open | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
+| tb-0155 | claimed | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie | sub-18 |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
@@ -67,6 +66,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0079 | done | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/**, core/game_code_generator.py; excl:generator | UGestureWheel DSL spec added to deep_space_trader.chimera wi |
 | tb-0124 | done | 1 | UGestureWheel completion: TAB binding + DSL consumption + ho | Source/Chimera/ProceduralGenerated/UI/**, Source/Chimera/ProceduralGenerated/Demo/**…; editor:open; excl:generator | UGestureWheel DSL spec parsing added to dsl_game_parser.py;  |
 | tb-0153 | done | 1 | Collapse: Social_Trade | editor:open; excl:pie | Collapse: Social_Trade accepted via collapse_proxy from simt |
+| tb-0154 | done | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie | Sleepwalker simtest_8e2249197944c447: 1/1 beats reached for  |
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
 | tb-0131 | done | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | UE_LOG witness markers verified present in NPCTradeComponent |
