@@ -74634,6 +74634,81 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_d4ec40021f30"
+    },
+    {
+      "id": "surprise_0a8748de89fd2afe",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T20:16:45.192119",
+      "context": "granular v0 smoke: init genome (p_stick=0.03, point pour) expected a repose triangle",
+      "expectation": "",
+      "reality": "EMERGED A FROZEN DRIP-CASTLE CHIMNEY: 5 columns at ~360 cells on a ~40-cell apron - 3 percent instant cementation under a point pour ratchets a spire, exactly like wet-sand drip castles. And the naive flank fit (band of raw peak) saw ~1 point per side and LIED 0.0 deg; replaced with percentile-banded flank + aspect angle + consistency divergence as the needle detector (measure honestly, let the objective wall it out)",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'EMERGED A FROZEN DRIP-CASTLE CHIMNEY: 5 columns at ~360 cells on a ~40-cell apro'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_4e6a06e2a2c5"
+    },
+    {
+      "id": "simtest_294b7002d65b7a26",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T20:19:50.089108",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0189_flight_template_fix",
+      "demo": "travel_vehicle_basic",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "vehicle_component_initialized",
+          "outcome": "blocked",
+          "features": [
+            "Travel_Vehicle_Basic"
+          ],
+          "evidence": [
+            {
+              "error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (delta=+3000uu) \u2014 something external is still moving the pawn every tick; do not indict this beat's tagg"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0189_flight_template_fix.json",
+      "temperature": "[SIM] 0/1 beats reached in 'travel_vehicle_basic'. Failures: vehicle_component_initialized (blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (de)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'tb0189_flight_template_fix': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_70343cad1ebf"
+    },
+    {
+      "id": "surprise_bba19d9d7e588b59",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T20:19:50.554766",
+      "context": "Sleepwalker expected beat 'vehicle_component_initialized' to be reachable (travel_vehicle_basic)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (delta=+3000uu) \\u2014 something external is still mo",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wr'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_70343cad1ebf"
     }
   ],
   "edges": [

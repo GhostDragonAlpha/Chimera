@@ -1,0 +1,74 @@
+{
+  "name": "granular",
+  "author": "LLM, from the human's emergence scenario (2026-07-18). Research-pinned physics, never taste.",
+  "scenario": "The box of sand: matter parcels governed only by a LOCAL rule (topple when standing too proud of a neighbor; sometimes freeze where you land), poured into a world with walls. Nothing in the genome names an angle, a settling time, or an avalanche size — those EMERGE, and this objective binds the emergent numbers to researched granular reality. The target material is the Yard's lunar regolith (matter_library family: regolith). Reality pins: angle of repose for lunar soil ~35-40 deg, steeper than terrestrial dry quartz sand (~30-35 deg) because angular, cohesive grains interlock (Carrier, Olhoeft & Mendell, Lunar Sourcebook 1991, friction angle 30-50 deg; Carrier 2003, D50=72um, already pinned in matter_library.json). The sleep thesis must hold: a poured pile MUST reach a true fixed point (a settled world costs zero), and a single-grain poke must trigger a LOCAL avalanche that dies out, not a global reorganization (Bak-Tang-Wiesenfeld 1987 is the lineage; we are on the subcritical side of it by design — a game world wants perturbations that heal, not system-spanning cascades).",
+  "constraints": [
+    {
+      "measure": "unsettled_worst",
+      "kind": "at_most",
+      "max": 0.0,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE SLEEP THESIS AS AN ABSOLUTE: every restart must reach a true fixed point (zero topples for K_QUIET consecutive sweeps) inside the sweep budget. A rule that never settles is not a material, it is a perpetual-motion liability the whole cost model depends on excluding. Worst-cased: one unlucky seed failing to settle kills the genome."
+    },
+    {
+      "measure": "angle_mean_deg",
+      "kind": "band",
+      "min": 33.0,
+      "max": 41.0,
+      "weight": 3.0,
+      "why": "THE RESEARCHED WALL: lunar regolith's angle of repose is ~35-40 deg (Lunar Sourcebook 1991 ch. 9; Carrier's soil mechanics — angular interlocking grains plus cohesion make it steeper than terrestrial dry sand's ~30-35). The band is the researched range plus 1-2 deg of measurement slack for the flank-fit estimator. NOTHING in the rule states an angle; the only way to satisfy this term is for the pile to actually organize itself to regolith's slope."
+    },
+    {
+      "measure": "angle_spread_deg",
+      "kind": "at_most",
+      "max": 6.0,
+      "weight": 2.0,
+      "why": "ROBUSTNESS ACROSS RESTARTS: a rule whose emergent angle varies wildly with the seed has not produced a material property, it has produced a lottery (the one-rollout-is-a-coin-toss lesson, TRAINING_PROTOCOL S3.5). Six degrees of seed-to-seed spread is the honesty bar: real repose measurements repeat to within a few degrees."
+    },
+    {
+      "measure": "aspect_angle_mean_deg",
+      "kind": "band",
+      "min": 28.0,
+      "max": 48.0,
+      "weight": 2.0,
+      "why": "THE NEEDLE DETECTOR, half one: atan(peak/halfwidth) is the pile's GLOBAL form. The very first smoke run (init genome, p_stick=0.03) emerged a frozen chimney — five columns at ~360 cells on an apron of ~40 — because 3% instant cementation under a point pour ratchets a drip-castle spire. Its flank fit can read sane while the global form screams needle (aspect ~80 deg). A true repose pile's aspect ~= its flank angle, so this band is the researched angle band widened by fit slack."
+    },
+    {
+      "measure": "angle_consistency_deg",
+      "kind": "at_most",
+      "max": 10.0,
+      "weight": 1.5,
+      "why": "THE NEEDLE DETECTOR, half two: |flank - aspect| per restart, averaged. The two estimators agree on a homogeneous repose pile and diverge exactly when the pile is COMPOSITE (spire on apron, mesa, wall-clipped slab). Divergence means the material did not organize into a single free-surface slope, whatever either single number claims."
+    },
+    {
+      "measure": "settle_sweeps_worst",
+      "kind": "at_most",
+      "max": 2500.0,
+      "weight": 1.0,
+      "why": "Settling must be prompt, not merely eventual — a pile that takes most of the sweep budget to find its fixed point would translate to seconds of visible simmering after every disturbance in-engine. Soft wall; unsettled_worst is the hard one."
+    },
+    {
+      "measure": "avalanche_max_worst",
+      "kind": "at_most",
+      "max": 400.0,
+      "weight": 1.5,
+      "why": "NO GLOBAL CASCADES: the single worst avalanche any single poured grain triggers, across all probes and restarts, must stay far below system size (2600 grains). This is the locality guarantee — the difference between a world where a footstep reshapes a dune locally and one where it can reorganize the whole map. BTW criticality has power-law (system-spanning) avalanches; a game substrate deliberately sits subcritical."
+    },
+    {
+      "measure": "probe_locality_worst",
+      "kind": "maximize",
+      "ref": 0.08,
+      "weight": 2.0,
+      "why": "THE CLIMBING TERM (a spec made only of walls gets you exactly the walls): probe_locality = 1/(1+mean avalanche size), worst restart. This is the human's 'autonomous functions that don't require calculation' made a number — cost is proportional to change, and this term pays for perturbations that die out FAST. ref=0.08 puts sat~0.5 near mean avalanche ~11 topples; climbing further means ever-tighter locality, which the angle band resists (a maximally-frozen pile is maximally local but too steep), so the tension is real."
+    },
+    {
+      "measure": "frozen_fraction_mean",
+      "kind": "band",
+      "min": 0.005,
+      "max": 0.6,
+      "weight": 0.75,
+      "why": "Cohesion must participate without dominating: regolith IS cohesive (the researched reason its repose beats terrestrial sand), so a winner that ignores p_stick entirely (frozen ~0) has probably found a non-physical route to the angle band; a winner that freezes most of the world has built concrete, not soil. Loose band, mostly a degeneracy guard on the search."
+    }
+  ]
+}

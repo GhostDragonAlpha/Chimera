@@ -1,10 +1,10 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T19:31:18+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T20:16:01+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
@@ -17,6 +17,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0187 | open | 0.9 | Splat material v2: idempotent authoring + masked VertexColor | core/splat_to_ue5.py |  |
+| tb-0192 | open | 0.9 | Granular matter engine v0: trainable sandpile domain (emerge | core/trainables/granular.py, docs/objectives/granular*.json |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0191 | open | 0.75 | Fix confirmed pain: Any position-dependent beat against chim | Source/Chimera/** |  |

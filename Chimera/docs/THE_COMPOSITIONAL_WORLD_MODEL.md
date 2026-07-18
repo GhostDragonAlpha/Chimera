@@ -573,6 +573,69 @@ never navigate by pixels. Built and proven live:
 
 ---
 
+## 18. The emergence rung — the box of sand, and the big bang (2026-07-18)
+
+> The human: *"each particle is held in, not by the force of gravity, but by the force
+> of the surrounding objects... autonomous functions that don't require calculation
+> because the aggregate of simple calculations allows for emergence."* And then:
+> *"Theoretically we should be able to just create a metaphorical big bang and allow
+> solar systems to form as it were. That would be natural emergence. And then if we
+> had a game where we could interact with that environment that was created — that's
+> the idea."*
+
+Three real mechanisms, each with a name, none a stretch:
+
+1. **The self-contained entity is a LOCAL UPDATE RULE** — `rule(me, neighborhood) →
+   me'`. No global solver. Held-by-neighbors is textbook granular statics: force
+   chains carry the load (photoelastic experiments show them), and the Janssen
+   effect (1895) — silo walls, not the floor, carry the fill — is why an hourglass
+   runs at constant rate. The player's intuition and the substrate's mechanism are
+   the same mechanism.
+2. **The aggregate IS the physics** — nobody programs the pile, the avalanche, or
+   the 34°; those are consequences of the rule. Already proven in this repo twice:
+   `core/matter.py` (one adhesion energy per tissue pair → layered anatomy) and now
+   `core/trainables/granular.py`.
+3. **"No calculation" = FIXED POINTS + SLEEPING** — a settled pile is a computation
+   that has HALTED. Cost is proportional to CHANGE, never to world size: the quiet
+   universe is data. This is the only known way a persistent world scales, and it is
+   the same move as coalesce/fracture — a slept region coalesces to its average
+   *because held-by-neighbors makes its microstate redundant*.
+
+**HOW EMERGENCE IS SET (the studio's move): you don't call for it — you SELECT for
+it.** The local rule is the genome (topple thresholds, cohesion, kinetics — DATA).
+The emergent macro-numbers are the measure (angle of repose, settling to a true
+fixed point, avalanche locality — facts no rule states, so they cannot be faked,
+only produced). Researched reality is the objective (lunar regolith repose ~35–40°,
+Lunar Sourcebook 1991 / Carrier; the library's D50=72 µm is already pinned).
+`docs/objectives/granular.json` binds them; the trainer turns the crank. Emergence
+is the phenotype under selection.
+
+**v0 stands (tb-0192):** a stochastic sandpile height-field (BTW lineage, held
+subcritical on purpose — a game wants perturbations that heal, not system-spanning
+cascades). Totality by bounded `for`; honest eval by N fixed-seed restarts,
+worst-cased; first smoke run emerged a frozen drip-castle chimney and the measure
+was rebuilt to SEE it (flank + aspect + consistency = the needle detector,
+`surprise_0a8748de89fd2afe`). Honest scope: a height-field has no load network —
+no Janssen, no arching, no Beverloo claims until v1's full 2D occupancy grid.
+
+**THE BIG BANG is this same thesis one rung up the scale ladder (§13).** Seed a
+cloud of matter parcels, let the rung's effective law run, and the *world map is
+the settled fixed point* — worldgen by simulated formation, not by authored
+placement. What that buys, for free, is **coherence**: a solar system formed by
+accretion has stable orbits, debris belts where resonances forbid planets, moons
+and rotation from conserved angular momentum — consistent *because it is the fixed
+point of real dynamics*, not because a designer checked it. One physics correction
+carries the whole idea: gravity is long-range, so the cosmic rung's effective law
+is not neighbor-contact but tree-summed attraction (Barnes–Hut O(N log N) /
+particle-mesh — per-scale laws are exactly what §13 is for). And the same
+train-the-rule discipline applies: the emergent system must pass Kepler residuals
+and orbit stability over N periods — measured, never asserted. Then the game is
+played *inside the settled result*, which wakes locally wherever a body touches it
+(§12): the big bang runs at generation time, sleeps at play time, and the player
+interacts with a world that earned its shape.
+
+---
+
 > Part I said: everything specific, trained separately, composed where physics keeps
 > the receipts. Part II says what everything is MADE of, and who does the seeing:
 > one atom carrying its matter and its appearance; shapes and movements as the only

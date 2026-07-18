@@ -1531,7 +1531,13 @@ void UMcpAutomationBridgeSubsystem::InitializeHandlers() {
                         // set, so manage_blueprint requests fell through to
                         // HandleBlueprintAction and returned UNKNOWN_ACTION.
                         TEXT("list_animbp_graphs"),
-                        TEXT("get_transition_rule_graph")};
+                        TEXT("get_transition_rule_graph"),
+                        // tb-0189: get_nodes — the FIRST action in
+                        // BlueprintGraphHandlers.cpp's own doc header — had the
+                        // exact same routing gap as the Wave 6B entries above;
+                        // reading a Blueprint's graph (the levitation forensic)
+                        // was impossible through manage_blueprint until now.
+                        TEXT("get_nodes")};
                     if (GraphSubActions.Contains(SubAction)) {
                       const TSharedPtr<FJsonObject> RoutedPayload =
                           McpConsolidatedActions::WithPayloadSubAction(P, SubAction);
