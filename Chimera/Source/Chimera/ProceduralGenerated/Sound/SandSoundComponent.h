@@ -136,6 +136,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Telemetry")
     int32 GetCanonicalFootstepEventCount() const { return CanonicalFootstepEventCount; }
 
+    /** Backing counter for GetCanonicalFootstepEventCount(). BlueprintReadOnly
+     *  UPROPERTYs must live on a non-private member (UHT: "BlueprintReadOnly
+     *  should not be used on private members") — kept public, matching
+     *  FootstepSyncEventCount's own visibility above. */
+    UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+    int32 CanonicalFootstepEventCount = 0;
+
 private:
     UPROPERTY(VisibleAnywhere, Category = "Audio")
     TObjectPtr<UAudioComponent> AudioComponent;
@@ -157,7 +164,4 @@ private:
     int32 SlowBucketCount = 0;
     float FastBucketVolumeSum = 0.0f;
     int32 FastBucketCount = 0;
-
-    UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
-    int32 CanonicalFootstepEventCount = 0;
 };

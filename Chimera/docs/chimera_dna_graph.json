@@ -73923,6 +73923,69 @@
       "inheritance": "Travel_Vehicle_Basic cannot be witnessed by sight until a design decision places AShip_Trader_Vessel_Alpha (or some vehicle) somewhere in the demo's reachable levels -- that is a design call, not a witness-task fix. Independently, chimeradefaultlevel's reset_position is not reliably grounding the pawn right now (reproducible, PlayerStart is fine, so it is in-PIE) -- treat today's position-dependent beat evidence from ANY session against this level as suspect until root-caused. A future witness-marker convention must tag UE_LOG lines '[DEMOBEAT]' or log_contains will never see them, regardless of correctness.",
       "recorded_by": "postflight.py",
       "run_id": "run_ecbe4779fbaa"
+    },
+    {
+      "id": "discovery_0148f17144221b7b",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T15:59:03.344685",
+      "feature": "FFootstepEvent",
+      "campus_sources": [],
+      "web_sources": [
+        "UE 5.8 docs (dev.epicgames.com): Dynamic Delegates in Unreal Engine (DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam with a USTRUCT(BlueprintType) param by value, UFUNCTION()-required AddDynamic/AddUniqueDynamic binding) - https://dev.epicgames.com/documentation/en-us/unreal-engine/dynamic-delegates-in-"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/FFootstepEvent",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'FFootstepEvent': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f52ed54196a9"
+    },
+    {
+      "id": "phase_6fa5735a5bb82ba6",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T15:59:03.750877",
+      "phase": "Build toward the seed: FFootstepEvent (tb-0150)",
+      "result": "Generator now emits FFootstepEvent as the seed's canonical body-fact (USTRUCT+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam FOnFootstepEvent) broadcast from ChimeraMovementComponent's existing footstep-timer hook and consumed via a real AddUniqueDynamic binding on USandSoundComponent::HandleFootstepEvent; ChimeraMovementComponent + SandSoundComponent migrated from loop-built to generator-owned (core/game_code_generator.py). Surface reaction traits (traction/makes_print/dust_kick) now sourced from docs/matter/matter_library.json pair_exceptions (boot|sand/metal/rock/basin/ice/interior) gating footprint spawn + scaling dust particle count, previously flat/ungated. Witness marker '[Footstep] surface=%s intensity=%.2f' added. Plain-function acceptance tests (FootstepEventAcceptanceTests.cpp, Weather/Memorial idiom) added: struct defaults, matter-library trait regression, single-listener broadcast, multi-listener unification. UBT ChimeraEditor: UHT parsed clean (after fixing a real BlueprintReadOnly-on-private-member error I introduced) but blocked by a live, healthy (non-zombie, bridge-answering) UnrealEditor.exe with Live Coding active \u2014 never killed. UBT Chimera (game target): real MSVC compile of every changed file with zero errors, overall target still failed on 2 pre-existing unrelated /EHsc errors in files I never touched. rep_engine: FFootstepEvent battery 128 reps/100%/streak 8/gate READY (unchanged, no regression); curriculum enrolled kindergarten.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Build toward the seed: FFootstepEvent (tb-0150)",
+      "error_category": "none",
+      "fix_description": "Phase 'Build toward the seed: FFootstepEvent (tb-0150)' complete: Generator now emits FFootstepEvent as the seed's canonical body-fact (USTRUCT+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam FOnFootstepEvent) broadcast from ChimeraMovementComponent's existing footstep-",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "FFootstepEvent's OnFootstep broadcast + AddUniqueDynamic binding are UHT/compiler-verified but never exercised in a live PIE session - the next session should run a real playtest and confirm the [Footstep] log line fires, left/right alternates, and SandSoundComponent's HandleFootstepEvent actually increments, rather than trusting the compile alone.",
+        "The live UnrealEditor.exe (PID 181060) blocking this session's ChimeraEditor build via Live Coding may still be up next session - if so, ChimeraEditor has STILL never compiled this task's exact code; do not treat the Chimera-game-target compiler pass as equivalent, retry a real ChimeraEditor UBT the moment the editor is free.",
+        "GetSurfaceFootstepTraits' ESurfaceMaterialType::Ground -> boot|sand mapping is a documented judgment call, not a measured fact (no literal boot|ground key exists in matter_library.json) - if the matter library ever gains a real boot|ground entry, this switch case must be updated to read it instead of silently keeping the sand fallback forever."
+      ],
+      "inheritance": "This session proved FFootstepEvent's canonical-event architecture compiles and delegate-binds correctly (UHT clean, a real MSVC pass on every changed file, rep gate READY at 128 reps) but could not prove it RUNS, because a live, healthy editor with Live Coding engaged is not this studio's to interrupt - the next agent inherits both the code and the unwitnessed gap, and must not mistake a green compile for a green playtest. The matter_library.json boot|* citation is now load-bearing code (GetSurfaceFootstepTraits), not just documentation, so drift between the JSON and the C++ switch statement is a real bug class this codebase didn't have before.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_f52ed54196a9"
+    },
+    {
+      "id": "feature_a385b5f37cce7c2d",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-18T15:59:04.081464",
+      "feature_name": "FFootstepEvent",
+      "loop": 8,
+      "status": "encoded",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_8/FFootstepEvent",
+      "error_category": "none",
+      "fix_description": "Feature 'FFootstepEvent' (Loop 8) recorded as 'encoded'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_f52ed54196a9"
     }
   ],
   "edges": [

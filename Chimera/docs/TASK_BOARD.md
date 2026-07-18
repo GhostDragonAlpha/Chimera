@@ -1,14 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T15:47:55+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T15:57:28+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0150 | claimed | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator | sub-37 |
 | tb-0183 | claimed | 0.8 | Splat footprint shapes: anisotropic ellipses + soft falloff  | core/splat_to_ue5.py, core/splat_emit.py | sub-36 |
 | tb-0184 | open | 1.1 | Witness rig: reset_position does not ground the pawn (z=124k | core/sleepwalker.py, core/witness.py… |  |
 | tb-0185 | open | 1.1 | Witness: log_contains is deaf to every non-DEMOBEAT log line ⇐ tb-0184 | core/witness.py, core/sleepwalker.py… |  |
@@ -100,6 +99,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0117 | done | 0.8 | Fix build: DemoPlayerController VFX include uses module-root | Source/Chimera/ProceduralGenerated/Demo/** | DemoPlayerController.cpp:15 include fixed to codebase idiom  |
 | tb-0118 | done | 0.8 | Fix build: Build.cs lacks UMG/Slate/SlateCore for generated  | core/build_orchestrator.py, Source/Chimera/Chimera.Build.cs | build_orchestrator required_modules += UMG/Slate/SlateCore ( |
 | tb-0123 | done | 0.8 | Fix 6 tautological beats in 4 files (false-accept evidence r | docs/beats/** | Fixed 6 tautological beats in 4 files: added actor_exists/lo |
+| tb-0150 | done | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator | Generator-emitted the seed's canonical FFootstepEvent broadc |
 | tb-0167 | done | 0.8 | CWM rung 1: director domain - train the encounter ecology | core/trainables/director.py, docs/objectives/director.json | FILES: core/trainables/director.py (572 lines: seed/mutate/m |
 | tb-0172 | done | 0.8 | Matter library: research-pin the provisional numbers (cached | docs/matter/matter_library.json, docs/research/matter_library_sources.md | Library updated: 15 physical fields + 2 nested grain_size_mm |
 | tb-0175 | done | 0.8 | Matter library: train appearance entries against REAL splat/ | core/trainables/material_appearance.py, docs/objectives/material_appearance.json… | Material appearance trainable domain created. 1,355 evals/se |
