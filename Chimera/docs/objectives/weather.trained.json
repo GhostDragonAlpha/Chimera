@@ -1,0 +1,37 @@
+{
+  "objective": "weather",
+  "score": 0.9546354385061888,
+  "measures": {
+    "storm_interval_days_mean": 14.353935760510144,
+    "storm_interval_days_var": 12.41547382525019,
+    "storm_interval_days_min": 8.490892713203266,
+    "storm_interval_days_max": 20.919788972640482,
+    "storm_duration_hours_mean": 1.5495752185082852,
+    "storm_duration_hours_max": 2.9146493609074344,
+    "sand_erasure_fraction_mean": 1.0,
+    "sand_erasure_fraction_min": 1.0,
+    "longest_footprint_lifetime_days": 20.909503188864417,
+    "mean_footprint_lifetime_days": 14.427985866215638,
+    "lifetime_period_ratio": 1.0051588711933084,
+    "dead_calm_fraction_mean": 0.0,
+    "dead_calm_fraction_worst": 0.0,
+    "storm_time_fraction_mean": 0.003968638634148813,
+    "storm_time_fraction_worst": 0.005093054550578906,
+    "gust_interval_mean_s": 6.560832521933468,
+    "gust_interval_cv": 0.3148807386172945,
+    "storms_observed": 17.875,
+    "robustness": 0.5915376002004273
+  },
+  "genome": {
+    "calm": 1.3054133516460849,
+    "breeze": 8.756836574149832,
+    "gust": 12.792488130442363,
+    "storm": 25.805517673771668,
+    "gust_period_s_lo": 2.982623762542976,
+    "gust_period_s_hi": 10.13904128132396,
+    "storm_duration_min_lo": 7.629537332263011,
+    "storm_duration_min_hi": 175.44748573810688,
+    "storm_period_days_lo": 8.451431201671442,
+    "storm_period_days_hi": 21.00380144830191
+  }
+}
