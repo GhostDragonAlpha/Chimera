@@ -73674,6 +73674,52 @@
       "inheritance": "The old shipped API and the seed's weighted API can coexist in one component without conflict -- migrating a class to its seed shape does not require deleting or breaking what already compiles against it, only that no generator method existed yet is what made the seed shape absent, not any real incompatibility.",
       "recorded_by": "postflight.py",
       "run_id": "run_384c0906b764"
+    },
+    {
+      "id": "discovery_3552a3bdf01dc661",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T14:42:26.461374",
+      "feature": "closure_report: scope build-currency + action-log to the TAS",
+      "campus_sources": [],
+      "web_sources": [
+        "core/agent_tunnel.py's _offenders_from_porcelain/_footprint_warnings (the existing footprint-matching convention this fix mirrors exactly, including the Chimera/-prefix-stripping rule and the literal-prefix fallback for globs with no trailing wildcard); core/task_board.py's resources.files docstring"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/closure_report: scope build-currency + action-log to the TAS",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'closure_report: scope build-currency + action-log to the TAS': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_871fd4ef1b11"
+    },
+    {
+      "id": "phase_3ad3887a661bd33b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T14:42:26.836864",
+      "phase": "closure_report: scope build-currency + action-log to the TASK FOOTPRINT (tb-0182)",
+      "result": "core/closure_report.py: source_changes()/action_log() now fnmatch-filter every changed-file list to the claiming task's resources.files footprint (mirrors agent_tunnel._offenders_from_porcelain's Chimera/-stripped matching) before demanding build evidence; out-of-footprint changes stay visible under a labeled 'outside footprint (concurrent sessions)' section that never triggers the demand; brain_judgment's tails inherits the scoped log automatically since it reads report['action_log']. New core/test_closure_report.py: 12/12 PASS verbatim = '12/12 closure_report tests passed'. Also live-verified against tonight's real concurrent SacrificeLogComponent.cpp/.h dirt: my own footprint (core/closure_report.py) shows source_changes files=[] outside_footprint=[3 real sibling paths], validate() status=pass build=n/a (no Source changes). Tunnel exit printed '[Closure Report] pass: closure report validated' and 'DONE: tb-0182'; the advisory Coin flagged NOT_SAME_COIN/NEEDS_REFINEMENT because the git-diff-based action_log cannot show test-execution stdout, only file diffs -- recorded, non-blocking (CHIMERA_REPORT_JUDGE=advisory default).",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/closure_report: scope build-currency + action-log to the TASK FOOTPRINT (tb-0182)",
+      "error_category": "none",
+      "fix_description": "Phase 'closure_report: scope build-currency + action-log to the TASK FOOTPRINT (tb-0182)' complete: core/closure_report.py: source_changes()/action_log() now fnmatch-filter every changed-file list to the claiming task's resources.files footprint (mirrors agent_tunnel._offenders_from_porcelain's Chim",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The Coin will likely keep flagging NEEDS_REFINEMENT on honest infra-task closures whenever the claim cites test results that never landed in a file the git diff can see -- the auto action log has no channel for captured stdout.",
+        "core/test_agent_tunnel.py's silent (traceback-less) crash is still unexplained; if it is brain_judgment's un-stubbed real LM call inside tb.main(['done',...]), every future closure_report.py change is flying blind on that fixture until it's stubbed or the crash is root-caused.",
+        "action_log()'s footprint split relies on per-file porcelain/diff lines; a footprint whose own files land inside a brand-new, entirely-untracked sibling directory could collapse to one directory-level porcelain entry (git's default granularity) and be misattributed as a block rather than split per-file -- not hit by any real scenario yet, but untested."
+      ],
+      "inheritance": "Concurrent subagents were false-convicting each other because the closure report's evidence-gathering diffed the WHOLE repo instead of the claiming task's own declared footprint; fnmatch-scoping resources.files (mirroring agent_tunnel's own _offenders_from_porcelain matching exactly) fixes it while keeping out-of-footprint changes visible, never hidden, under a labeled section. The Coin's own advisory NEEDS_REFINEMENT verdict on this closure demonstrates a follow-on gap worth inheriting: the auto action log is a git-diff, so it structurally cannot see a test run's stdout, and will keep flagging honest 'I ran N tests, verbatim result X' claims as unproven unless the output is captured to a file the diff can see. Two OTHER pre-existing, unrelated test failures (test_agent_tunnel.py silent crash, test_task_board.py seed-demotion assertion) were discovered and confirmed pre-existing via before/after isolation swapping the old closure_report.py back in, then flagged to CAPCOM rather than fixed, since both sit outside this task's core/closure_report.py footprint.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_871fd4ef1b11"
     }
   ],
   "edges": [
