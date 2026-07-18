@@ -1,3 +1,26 @@
+# Session 2026-07-18 late (fable-1/fable-5) — Substrate ON; the agent gets a world model; GPU light
+
+- **SUBSTRATE ENABLED project-wide** (r.Substrate=1 + GBufferFormat=1 Adaptive in
+  DefaultEngine.ini — deliberately NOT committed per standing rule; operator may commit).
+  Production-ready since 5.7 (research cached: docs/research/substrate_splats_ue58.md).
+  Level auto-converted and renders. First splat cloud (22.6k) imported + spawned live;
+  VertexColor→slab wiring remains (fable-5 HOLDS tb-0170's tunnel; create_material WORKS,
+  M_SplatVC exists; execute_python ruled out).
+- **Traps paid:** bridge screenshot RACES console commands (~2s settle fixes — proven);
+  uncentered GLB pivot (fixed at export). Board: tb-0179 (high-res splats — the human:
+  'baby toy', target 200k-1.5M sub-cm), tb-0180 (GPU pattern harvester — 'pattern
+  matching, NOT statistical averages').
+- **core/splat_gpu.py**: Warp splat rasterizer — 41×/frame, 162 fps sweeps, parity 2.2e-4.
+- **core/scene_model.py + core/photo_studio.py**: the agent senses by DERIVATION — world
+  ingested as coordinates, cameras solved, predictions written before pixels; screenshots
+  demoted to prediction-verification. Thesis §17 records it all.
+- **Matter items**: 5 library-driven examples + variance/family thesis shots
+  (Saved/MatterItems/). Session-limit killed wave 2 mid-flight (sub-24 partially
+  upgraded sand rows + left encoding mojibake in matter_library.json; sub-25/26 left no
+  splice). Wave 3 dispatched: tb-0172 finish+fix, tb-0169 shovel test, tb-0151 weather shell.
+
+---
+
 # Session 2026-07-18 (fable-1) — THE MATTER LIBRARY: the data spine, seeded with provenance
 
 The human's third commission, verbatim in the doc: *"a library of materials .... esentaly

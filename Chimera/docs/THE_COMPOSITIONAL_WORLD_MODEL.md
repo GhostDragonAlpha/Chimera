@@ -530,6 +530,49 @@ use), CC0 photogrammetry captures, and eventually our own captures.
 
 ---
 
+## 17. The agent inside the cube — sensing by derivation (2026-07-18, the night it landed)
+
+> The human, watching the camera fumble by screenshots: *"You have no idea how to move
+> a camera in three dimensional space since you've never done that before... you don't
+> even need to look at screenshots if you understand the phys, the math... the entire
+> game world is just one giant cube. THIS is what I mean by world model."*
+
+The inversion that completes Part II: **the world model is the AGENT'S senses, not
+only the game's substrate.** An LLM has no embodied spatial intuition — so it must
+never navigate by pixels. Built and proven live:
+
+- **`core/scene_model.py`** — the editor world held as math: one bulk ingest (every
+  tracked actor: class, transform, known-vs-assumed extent, inside-the-cube check),
+  cameras SOLVED from state, and a PREDICTION written before any pixel (which actors
+  must be visible, at what coverage, how far off-axis). A screenshot is verification
+  of a prediction; divergence = stale model or a LYING PATHWAY. Prediction error IS
+  the training signal — the studio's own loop, pointed at the agent's tooling.
+- **`core/photo_studio.py`** — the tuned stage: reserved block far from the playfield,
+  engine-plane ground, exact slots, framings computed from `d = r/(fill·tan(fov/2))`,
+  settle-delay captures. No number in any shot is ever guessed.
+- **Two traps paid for and recorded:** the bridge executes console commands FOR REAL
+  but an immediate screenshot captures the PRE-command frame (~2s settle fixes it);
+  and divergences between API readbacks and rendered state are detected in ONE step by
+  prediction-vs-pixels instead of hand-aimed shot sequences.
+- **`core/splat_gpu.py`** — the splat rasterizer as a Warp kernel: 41× per frame,
+  162 fps relight sweeps, parity MAE 2.2e-4 vs the CPU reference. Warp now runs all
+  three pillars — physics, brains, light — on one kernel dialect.
+- **Substrate is ON** (production-ready since 5.7; enabled for this upgraded project,
+  Adaptive GBuffer; the whole level auto-converted and renders). The first splat cloud
+  is in-engine; VertexColor→slab wiring is the held remainder of rung D′.
+- **Pattern, not averages** (the human's binding correction): material identification
+  in the photo corpus is TEXTURE matching — multi-scale filter-bank energies, grain
+  autocorrelation, periodicity — because identical color moments can carry
+  nothing-alike materials (Julesz). Color stats come last. The harvester (tb-0180)
+  region-scans many photos on the GPU, reads pixels like byte streams (never
+  vision-model glancing), and retrieves sample regions from ONE human-tagged exemplar
+  — the tag is the reference, per NO REFERENCE, NO VERDICT.
+- **The resolution verdict** (the human, on the first cloud): *"a baby toy compared to
+  what we need"* — sub-cm splats at 200k–1.5M density is the standing target
+  (tb-0179), with the 3DGS tile pipeline as the named rasterizer upgrade past ~100k.
+
+---
+
 > Part I said: everything specific, trained separately, composed where physics keeps
 > the receipts. Part II says what everything is MADE of, and who does the seeing:
 > one atom carrying its matter and its appearance; shapes and movements as the only
