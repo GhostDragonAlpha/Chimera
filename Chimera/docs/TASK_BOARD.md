@@ -1,13 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T17:20:49+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T17:24:35+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 5 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
+| tb-0186 | claimed | 0.85 | Generator tests: try/catch breaks the GAME target (/EHsc gap | core/game_code_generator.py | sub-40 |
 | tb-0184 | open | 1.1 | Witness rig: reset_position does not ground the pawn (z=124k | core/sleepwalker.py, core/witness.py… |  |
 | tb-0185 | open | 1.1 | Witness: log_contains is deaf to every non-DEMOBEAT log line ⇐ tb-0184 | core/witness.py, core/sleepwalker.py… |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
@@ -19,7 +20,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0187 | open | 0.9 | Splat material v2: idempotent authoring + masked VertexColor | core/splat_to_ue5.py |  |
 | tb-0188 | open | 0.9 | Sample-source bake-off: multiple avenues, per-material optim | docs/matter/reference_scans/**, docs/research/sample_sources_bakeoff.md |  |
-| tb-0186 | open | 0.85 | Generator tests: try/catch breaks the GAME target (/EHsc gap | core/game_code_generator.py |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0176 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
