@@ -71054,6 +71054,113 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_47db277bef48"
+    },
+    {
+      "id": "observation_a54d668be0240c2b",
+      "type": "Observation",
+      "timestamp": "2026-07-18T03:08:39.294004",
+      "feature_name": "Social_Trade",
+      "verdict": "accepted",
+      "notes": "fully-automated acceptance sweep: exercised, unindicted",
+      "observer": "automated-via-attribution",
+      "derived_from": "simtest_6eda875b25fb7be3",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Social_Trade",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Social_Trade': accepted \u2014 fully-automated acceptance sweep: exercised, unindicted",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_6eda875b25fb7be3"
+      ],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_143769e230a2"
+    },
+    {
+      "id": "feature_44b3cca13544bc32",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-18T03:08:39.576546",
+      "feature_name": "Social_Trade",
+      "loop": 5,
+      "status": "observed",
+      "parameters": {
+        "holistic_sweep": "simtest_6eda875b25fb7be3"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Social_Trade",
+      "error_category": "none",
+      "fix_description": "Feature 'Social_Trade' (Loop 5) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "collapse_proxy.py",
+      "run_id": "run_143769e230a2"
+    },
+    {
+      "id": "observation_a02f3340f1bf3b5c",
+      "type": "Observation",
+      "timestamp": "2026-07-18T03:08:54.007577",
+      "feature_name": "Social_Trade",
+      "verdict": "accepted",
+      "notes": "",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_6eda875b25fb7be3",
+      "quote": "automated sweep accepted Social_Trade as tacit",
+      "tacit": false,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Social_Trade",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Social_Trade': accepted",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_6eda875b25fb7be3"
+      ],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8e58f54694aa"
+    },
+    {
+      "id": "feature_69275fde6e4368ef",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-18T03:08:54.284331",
+      "feature_name": "Social_Trade",
+      "loop": 0,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "attribution": "derived from simtest_6eda875b25fb7be3 | quote: automated sweep accepted Social_Trade as tacit"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_0/Social_Trade",
+      "error_category": "none",
+      "fix_description": "Feature 'Social_Trade' (Loop 0) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8e58f54694aa"
+    },
+    {
+      "id": "discovery_22dcfe4c089edfc2",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T03:10:12.479137",
+      "feature": "Collapse: Social_Trade",
+      "campus_sources": [],
+      "web_sources": [
+        "NPCTradeComponent.cpp UE_LOG markers, social_trade.beats.json expects, collapse_proxy sweep results, why-chain traversal for Social_Trade"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Collapse: Social_Trade",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Collapse: Social_Trade': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_464f3f92886b"
     }
   ],
   "edges": [
@@ -82180,6 +82287,72 @@
       "source": "feature_097444351480f096",
       "target": "phase_abff24b31ea8c308",
       "type": "because"
+    },
+    {
+      "src": "observation_a54d668be0240c2b",
+      "dst": "simtest_6eda875b25fb7be3",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-18T03:08:39.294141",
+      "asked_by": "collapse_proxy.py",
+      "source": "observation_a54d668be0240c2b",
+      "target": "simtest_6eda875b25fb7be3",
+      "type": "because"
+    },
+    {
+      "src": "observation_a02f3340f1bf3b5c",
+      "dst": "simtest_6eda875b25fb7be3",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-18T03:08:54.007725",
+      "asked_by": "graphify_record.py",
+      "source": "observation_a02f3340f1bf3b5c",
+      "target": "simtest_6eda875b25fb7be3",
+      "type": "because"
+    },
+    {
+      "src": "feature_9bcf1bcb5f9340b2",
+      "dst": "observation_a02f3340f1bf3b5c",
+      "rel": "because",
+      "question": "WHY is Social_Trade 'verified'?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-18T03:10:23.804287",
+      "asked_by": "why.py",
+      "source": "feature_9bcf1bcb5f9340b2",
+      "target": "observation_a02f3340f1bf3b5c",
+      "type": "because",
+      "derived": true,
+      "derived_how": "feature_name match \u2014 record_feature() never cited evidence"
+    },
+    {
+      "src": "feature_44b3cca13544bc32",
+      "dst": "observation_a02f3340f1bf3b5c",
+      "rel": "because",
+      "question": "WHY is Social_Trade 'observed'?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-18T03:10:23.804320",
+      "asked_by": "why.py",
+      "source": "feature_44b3cca13544bc32",
+      "target": "observation_a02f3340f1bf3b5c",
+      "type": "because",
+      "derived": true,
+      "derived_how": "feature_name match \u2014 record_feature() never cited evidence"
+    },
+    {
+      "src": "feature_69275fde6e4368ef",
+      "dst": "observation_a02f3340f1bf3b5c",
+      "rel": "because",
+      "question": "WHY is Social_Trade 'observed'?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-18T03:10:23.804323",
+      "asked_by": "why.py",
+      "source": "feature_69275fde6e4368ef",
+      "target": "observation_a02f3340f1bf3b5c",
+      "type": "because",
+      "derived": true,
+      "derived_how": "feature_name match \u2014 record_feature() never cited evidence"
     }
   ]
 }

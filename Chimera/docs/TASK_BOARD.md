@@ -1,15 +1,18 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T02:59:55+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T03:10:07+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 0 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0139 | claimed | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie | sub-11 |
 | tb-0150 | claimed | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator | sub-12 |
+| tb-0152 | open | 1.2 | Fix 1 red rep atom(s): FFootstepEvent | core/game_code_generator.py; excl:generator |  |
+| tb-0154 | open | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
+| tb-0155 | open | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
+| tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0140 | open | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0141 | open | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
@@ -20,8 +23,11 @@ so claimed tasks are safe to run in parallel.
 | tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
-| tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0151 | open | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
+| tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
+| tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
+| tb-0158 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
+| tb-0159 | open | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
@@ -59,6 +65,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0009 | done | 1 | Hire_Trailer_Director (DREAM_ROSTER #12) `capable` | core/trailer.py, Saved/Trailers/**; editor:open; excl:pie | Created core/trailer.py for Trailer Director (DREAM_ROSTER # |
 | tb-0079 | done | 1 | Build toward the seed: UGestureWheel | Source/Chimera/ProceduralGenerated/UI/**, core/game_code_generator.py; excl:generator | UGestureWheel DSL spec added to deep_space_trader.chimera wi |
 | tb-0124 | done | 1 | UGestureWheel completion: TAB binding + DSL consumption + ho | Source/Chimera/ProceduralGenerated/UI/**, Source/Chimera/ProceduralGenerated/Demo/**…; editor:open; excl:generator | UGestureWheel DSL spec parsing added to dsl_game_parser.py;  |
+| tb-0153 | done | 1 | Collapse: Social_Trade | editor:open; excl:pie | Collapse: Social_Trade accepted via collapse_proxy from simt |
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
 | tb-0131 | done | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | UE_LOG witness markers verified present in NPCTradeComponent |
@@ -95,7 +102,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0113 | done | 0.7 | Fix confirmed pain: 4 meta labels sit in the feature ledger  | docs/world/** | 4 meta ledger entries reclassified with typed records + beca |
 | tb-0115 | done | 0.7 | training_gate: .claude/ footprints are infra, not default-ga | core/training_gate.py | core/training_gate.py: .claude/ added to infra file markers. |
 | tb-0116 | done | 0.7 | task_board: _scope_for keyword match needs word boundaries ( | core/task_board.py | core/task_board.py: _has_word() word-boundary matcher replac |
-| tb-0119 | done | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** | Diagnosed and fixed WeightShift 2/4 test failures. Root caus |
+| tb-0119 | done | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** | Diagnosed and fixed WeightShift 2/4 test failures: (1) First |
 | tb-0120 | done | 0.65 | ripener: minted fix-tasks must carry the real feature field | core/training_gate.py, core/ripener.py | ripener.spawn_followups now sets feature via _feature_named_ |
 | tb-0019 | done | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** | REFUTED phase_da55128aec6d109a:P1. Empirical vs live 160347- |
 | tb-0020 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** | REFUTED phase_62a9bf8fa8e97b42:P1 - DUPLICATE of phase_da551 |
@@ -156,6 +163,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0087 | abandoned | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0088 | abandoned | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0091 | abandoned | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
+| tb-0112 | abandoned | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0094 | abandoned | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0125 | abandoned | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0126 | abandoned | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | Working on tb-0123 (Fix 6 tautological beats in 4 files) |

@@ -1589,3 +1589,17 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 - WeightShift curriculum enrolled + rep_engine tend completed (800 reps, 1 failing unrelated atom)
 - Fixes are logically correct based on code analysis; test pass/fail needs verification in native Windows environment
 - Run: `UnrealEditor-Cmd Chimera.uproject -ExecCmds="Automation RunTests Chimera.Animation.WeightShift" -TestExit="Automation Test Queue Empty" -nullrhi -unattended` from PowerShell or cmd.exe (not WSL bash)
+
+---
+
+# Session 2026-07-17 (sub-14) — tb-0153 Collapse: Social_Trade DONE
+
+## Work Completed
+| Commit | Task | Fix |
+|--------|------|-----|
+| (graph ops only) | tb-0153 Collapse: Social_Trade | collapse_proxy accepted Social_Trade as tacit from simtest_6eda875b25fb7be3; why-chain reaches PHYSICS terminal; observation recorded (observation_a02f3340f1bf3b5c); feature enrolled in curriculum + rep_engine tend completed |
+
+## Notes for Next Agent
+- tb-0140 (Witness: Shelter_Habitat_Lighting) remains open, blocked by sub-011 holding tb-0139 (Shelter_Habitat_Materials) on PIE resource. Once sub-011 releases, tb-0140 can be claimed.
+- Social_Trade beat expects (`[NPCTrade] Player within trade range`, `[NPCTrade] Trade interaction started`) have failed 5x and never passed — the UE_LOG markers exist in NPCTradeComponent.cpp but NPCs may not spawn in PIE level. This is a known wall, not addressed in this session.
+- Malcolm WARN: generated_loc near wall (check current status)
