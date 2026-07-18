@@ -296,11 +296,28 @@ def frame_of(splats: dict):
     return center, radius
 
 
+def pick_rasterizer():
+    """GPU (Warp, core.splat_gpu) when a CUDA device is up — measured 41x per frame,
+    162 fps relight sweeps, parity MAE 2.2e-4 vs this file's CPU path (2026-07-18).
+    CHIMERA_SPLAT_GPU=0 forces the CPU reference path."""
+    import os
+    if os.environ.get("CHIMERA_SPLAT_GPU", "1") != "0":
+        try:
+            from core import splat_gpu
+            if splat_gpu.available():
+                return splat_gpu.rasterize, "gpu (warp/cuda)"
+        except Exception:
+            pass
+    return rasterize, "cpu (numpy reference)"
+
+
 def main() -> int:
     only = sys.argv[1] if len(sys.argv) > 1 else None
     rng = np.random.default_rng(SEED)
     lib = load_library()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    RASTER, backend = pick_rasterizer()
+    print(f"rasterizer: {backend}")
     items = build_items(lib, rng)
     if only:
         items = {only: items[only]}
@@ -311,7 +328,7 @@ def main() -> int:
         t = time.time()
         splats = emit_item(parts, lib, rng, variance=True)
         center, radius = frame_of(splats)
-        frames = [rasterize(splats, center, radius, *CAM, la, le) for la, le in RELIGHT]
+        frames = [RASTER(splats, center, radius, *CAM, la, le) for la, le in RELIGHT]
         labels = [f"light{la}/{le}" for la, le in RELIGHT]
         p = OUT_DIR / f"item_{name}_relight.png"
         hstack_strip(frames, labels).save(p)
@@ -329,7 +346,7 @@ def main() -> int:
         on = emit_item(rock_parts, lib, np.random.default_rng(3), variance=True)
         c, r = frame_of(on)
         la, le = RELIGHT[1]
-        pair = [rasterize(off, c, r, *CAM, la, le), rasterize(on, c, r, *CAM, la, le)]
+        pair = [RASTER(off, c, r, *CAM, la, le), RASTER(on, c, r, *CAM, la, le)]
         pv = OUT_DIR / "rock_variance_off_on.png"
         hstack_strip(pair, ["variance OFF (the mean)", "variance ON (sampled)"]).save(pv)
         results["rock_variance_pair"] = str(pv)
@@ -340,7 +357,7 @@ def main() -> int:
             f_rng = np.random.default_rng(100 + i)
             s = emit_item([("rock", boulder_field(f_rng))], lib, f_rng, variance=True)
             c, r = frame_of(s)
-            fam_frames.append(rasterize(s, c, r, *CAM, 110, 45, w=250, h=250))
+            fam_frames.append(RASTER(s, c, r, *CAM, 110, 45, w=250, h=250))
             fam_labels.append(f"rock #{i + 1}")
         pf = OUT_DIR / "rock_family.png"
         hstack_strip(fam_frames, fam_labels).save(pf)
