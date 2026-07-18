@@ -1,0 +1,23 @@
+{
+  "objective": "material_appearance",
+  "score": 1.0,
+  "measures": {
+    "albedo_mean_luminance": 0.6988857878381131,
+    "albedo_std_luminance": 0.2240231195736243,
+    "albedo_skew_luminance": -0.014867873355979859,
+    "albedo_kurt_luminance": -1.153103763978966,
+    "luma_variance": 0.05018635810349837,
+    "chroma_variance": 0.10274760071210028,
+    "luma_chroma_ratio": 1.2323213046695414,
+    "roughness_mean": 0.774339316163437,
+    "roughness_var": 0.022987166239734385
+  },
+  "genome": {
+    "albedo_r": 0.45039111128945053,
+    "albedo_g": 0.8647852366539379,
+    "albedo_b": 0.48275651183014656,
+    "albedo_mottle_var": 0.1544660419596136,
+    "roughness_mean": 0.774339316163437,
+    "roughness_var": 0.022987166239734385
+  }
+}
