@@ -557,3 +557,39 @@ Wait, looking at the
 - sample: expected 'a finalized claim's why-chain reaches PHYSICS or THE HUMAN' but 'no because-edge at all — NOBODY EVER ASKED why this is verif'
 - sample: expected 'the local model must LOOK at a verified feature (viewport sc' but 'no LM screenshot analysis on record this session'
 - draft_rule: Implement screenshot action and state-capture in sleepwalker beat registry.
+
+<!-- distilled 2026-07-18T03:13:54Z -->
+## H-52: sim_rejection: social_trade/social_trade_npc_proximity
+- status: pending
+- kind: sim_rejection  |  count: 5  |  last_seen: 2026-07-18T00:38:02
+- proposed_organ: claude_md
+- evidence: simtest_33f305d33bb1b38d, simtest_51d4dd9d23e83dd4, simtest_ba2a6d157832970a, simtest_79842a4f344337f9, simtest_d18f9ee548524798
+- sample: failed: [{"expect": {"log_contains": "[NPCTrade] Player within trade range", "note": "Social_Trade witness: NPC trade component 
+- draft_rule: Verify required components and assets are spawned and registered.
+
+## H-53: sim_rejection: social_trade/social_trade_npc_interact
+- status: pending
+- kind: sim_rejection  |  count: 5  |  last_seen: 2026-07-18T00:38:02
+- proposed_organ: claude_md
+- evidence: simtest_33f305d33bb1b38d, simtest_51d4dd9d23e83dd4, simtest_ba2a6d157832970a, simtest_79842a4f344337f9, simtest_d18f9ee548524798
+- sample: failed: [{"expect": {"log_contains": "[NPCTrade] Trade interaction started", "note": "Social_Trade witness: NPC trade component 
+- possible_conflict_with: H-52  (Gardener: reconcile)
+- draft_rule: Verify required components and assets are spawned and registered.
+
+<!-- distilled 2026-07-18T03:15:25Z -->
+## H-54: sim_rejection: gesture_wheel/gesture_wheel_open_close
+- status: pending
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-17T14:22:44
+- proposed_organ: claude_md
+- evidence: simtest_b30c4432bd2ecd93, simtest_1b335e28c700cd59, simtest_79c27b8c157dad4d, simtest_457320c3449e9c1f
+- sample: failed: [{"expect": {"log_contains": "[GestureWheel] OpenWheel"}, "ok": false, "note": "log_hit=False"}]
+- draft_rule: Verify event logging and signal traces on success path.
+
+## H-55: sim_rejection: gesture_wheel/gesture_wheel_commit_gesture
+- status: pending
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-17T14:22:44
+- proposed_organ: claude_md
+- evidence: simtest_b30c4432bd2ecd93, simtest_1b335e28c700cd59, simtest_79c27b8c157dad4d, simtest_457320c3449e9c1f
+- sample: failed: [{"expect": {"log_contains": "[GestureWheel] CommitGesture"}, "ok": false, "note": "log_hit=False"}]
+- possible_conflict_with: H-54  (Gardener: reconcile)
+- draft_rule: Verify event logging and signal traces on success path.
