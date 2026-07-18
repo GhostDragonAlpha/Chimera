@@ -194,7 +194,8 @@ def _init_world(genome: dict, restart: int):
     rng = np.random.default_rng(EVAL_SEED + restart)
     spin, flat0 = genome["spin"], genome["flatten0"]
     m = np.full(N0, _M0)
-    pos = rng.normal(0.0, R_CLOUD / 2.0, (N0, 3))
+    spread = float(genome.get("spread", 1.0))        # see bigbang.GENOME_SCHEMA
+    pos = rng.normal(0.0, spread * R_CLOUD / 2.0, (N0, 3))
     pos[:, 2] *= flat0
     pos -= pos.mean(axis=0)
     rxy = np.hypot(pos[:, 0], pos[:, 1]) + 0.05

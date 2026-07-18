@@ -93,6 +93,13 @@ GENOME_SCHEMA = {
     # --- SEED: the initial conditions ---
     "spin":        {"min": 0.30, "max": 1.05, "init": 0.85},
     "flatten0":    {"min": 0.15, "max": 1.00, "init": 1.00},
+    # Radial extent of the cloud. Added after the first GPU training run
+    # plateaued at 1-2 planets with central_frac pinned on its FLOOR: a
+    # compact collapsed disk is ONE feeding zone, and one feeding zone grows
+    # ONE runaway body (real protoplanetary disks are extended - separated
+    # feeding zones are why systems have several planets). The optimizer
+    # told us the seed was missing a degree of freedom reality has.
+    "spread":      {"min": 0.60, "max": 3.00, "init": 1.00},
     # --- SHORTCUTS: compressed evolution ---
     "merge_scale": {"min": 0.80, "max": 4.00, "init": 1.50},
     "k_circ":      {"min": 0.00, "max": 0.80, "init": 0.10},
@@ -157,7 +164,8 @@ def _rollout(genome: dict, restart: int) -> dict:
     merges_of = np.ones(N0, dtype=np.int32)          # seeds absorbed (self counts 1)
     alive = np.ones(N0, dtype=bool)
 
-    pos = rng.normal(0.0, R_CLOUD / 2.0, (N0, 3))
+    spread = float(genome.get("spread", 1.0))        # pre-spread genomes: 1.0
+    pos = rng.normal(0.0, spread * R_CLOUD / 2.0, (N0, 3))
     pos[:, 2] *= flat0
     pos -= pos.mean(axis=0)
 

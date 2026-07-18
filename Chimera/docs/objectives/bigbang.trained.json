@@ -1,0 +1,25 @@
+{
+  "objective": "bigbang",
+  "score": 0.3748082917688549,
+  "measures": {
+    "central_frac_mean": 0.5791666865348816,
+    "n_planets_worst": 1.0,
+    "n_planets_mean": 1.6,
+    "ecc_median_mean": 0.1739210890146982,
+    "incl_rms_deg_mean": 0.1593253200109842,
+    "kepler_slope_mean": 0.0,
+    "kepler_slope_spread": 0.0,
+    "kepler_r2_worst": 0.0,
+    "planet_mass_frac_worst": 1.0,
+    "merges_late_worst": 1.0,
+    "escaped_frac_worst": 0.0,
+    "lz_drift_worst": 4.79330989848613e-06,
+    "spin_l_frac_mean": 0.14506834288451395
+  },
+  "genome": {
+    "spin": 1.05,
+    "flatten0": 0.19243996879585867,
+    "merge_scale": 3.7327979494498593,
+    "k_circ": 0.2753859529343575
+  }
+}

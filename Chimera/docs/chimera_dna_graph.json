@@ -74940,6 +74940,25 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_9dcec450aec8"
+    },
+    {
+      "id": "surprise_08d9fd67cb088ef1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T21:07:53.036044",
+      "context": "bigbang GPU run 1 (10,240 universes, 262s): expected the optimizer to find multi-planet systems within the seed genome (spin, flatten0) + shortcuts (merge_scale, k_circ)",
+      "expectation": "",
+      "reality": "PLATEAUED AT A BINARY: 1-2 planets, Kepler term never engaged (needs 3+), central_frac PINNED ON ITS FLOOR (0.579 vs min 0.55) - the optimizer was starving for disk material. Diagnosis: a compact collapsed cloud is ONE feeding zone, and one feeding zone grows one runaway body; real protoplanetary disks are EXTENDED (separated feeding zones = several planets). The seed genome was missing a degree of freedom reality has: radial extent. Added 'spread' locus (0.6-3.0). The walls diagnosed the missing physics lever - the exploit audit working exactly as intended",
+      "lesson_hint": "",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected '' but 'PLATEAUED AT A BINARY: 1-2 planets, Kepler term never engaged (needs 3+), centra'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_5418eb1d92ab"
     }
   ],
   "edges": [
