@@ -5,140 +5,159 @@
 #include "Components/AudioComponent.h"
 #include "GameFramework/Actor.h"
 #include "Sound/SoundBase.h"
+#include "../FFootstepEvent.h"
 #include "SandSoundComponent.generated.h"
 
 UCLASS(meta = (BlueprintType, Category = "Audio"))
 class CHIMERA_API USandSoundComponent : public UActorComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	USandSoundComponent(const FObjectInitializer& ObjectInitializer);
+    USandSoundComponent(const FObjectInitializer& ObjectInitializer);
 
 protected:
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "Audio")
-	TObjectPtr<USoundBase> ImpactSound;
+    UPROPERTY(EditDefaultsOnly, Category = "Audio")
+    TObjectPtr<USoundBase> ImpactSound;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Audio")
-	float VolumeMultiplier;
+    UPROPERTY(EditDefaultsOnly, Category = "Audio")
+    float VolumeMultiplier;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Audio")
-	float PitchMultiplier;
+    UPROPERTY(EditDefaultsOnly, Category = "Audio")
+    float PitchMultiplier;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Audio")
-	float LowPassFrequency;
+    UPROPERTY(EditDefaultsOnly, Category = "Audio")
+    float LowPassFrequency;
 
-	// === Wind Layer (continuous, speed-driven) ===
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
-	TObjectPtr<USoundBase> WindLoopSound;
+    // === Wind Layer (continuous, speed-driven) ===
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+    TObjectPtr<USoundBase> WindLoopSound;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
-	float WindMinVolume = 0.05f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+    float WindMinVolume = 0.05f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
-	float WindMaxVolume = 0.6f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+    float WindMaxVolume = 0.6f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
-	float WindSpeedForMaxVolume = 600.0f; // cm/s that maps to max wind volume/pitch
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+    float WindSpeedForMaxVolume = 600.0f; // cm/s that maps to max wind volume/pitch
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
-	float WindLowPassMin = 300.0f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+    float WindLowPassMin = 300.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
-	float WindLowPassMax = 2200.0f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio|Wind")
+    float WindLowPassMax = 2200.0f;
 
-	UFUNCTION(BlueprintCallable, Category = "Audio")
-	void PlayImpactSound(FVector Location);
+    UFUNCTION(BlueprintCallable, Category = "Audio")
+    void PlayImpactSound(FVector Location);
 
-	UFUNCTION(BlueprintCallable, Category = "Audio")
-	void SetVacuumMode(bool bIsVacuum);
+    UFUNCTION(BlueprintCallable, Category = "Audio")
+    void SetVacuumMode(bool bIsVacuum);
 
-	// Start / stop the continuous wind layer (no-op if no WindLoopSound or in vacuum)
-	UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
-	void StartWind();
+    // Start / stop the continuous wind layer (no-op if no WindLoopSound or in vacuum)
+    UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
+    void StartWind();
 
-	UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
-	void StopWind();
+    UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
+    void StopWind();
 
-	// Drive wind intensity from a wind speed (cm/s). Volume / pitch / low-pass scale with speed.
-	UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
-	void SetWindIntensity(float WindSpeed);
+    // Drive wind intensity from a wind speed (cm/s). Volume / pitch / low-pass scale with speed.
+    UFUNCTION(BlueprintCallable, Category = "Audio|Wind")
+    void SetWindIntensity(float WindSpeed);
 
-	// --- Telemetry counters for audio-visual sync verification ---
+    // --- Telemetry counters for audio-visual sync verification ---
 
-	/** Call this every time a footstep particle is spawned + audio triggered.
-	 *  SpeedCmS < 0 means "speed unknown" — the event still counts but is
-	 *  excluded from the volume-vs-speed comparison buckets. */
-	UFUNCTION(BlueprintCallable, Category = "Telemetry")
-	void RecordFootstepSyncEvent(float LatencyMs, float Volume, float SpeedCmS = -1.0f);
+    /** Call this every time a footstep particle is spawned + audio triggered.
+     *  SpeedCmS < 0 means "speed unknown" — the event still counts but is
+     *  excluded from the volume-vs-speed comparison buckets. */
+    UFUNCTION(BlueprintCallable, Category = "Telemetry")
+    void RecordFootstepSyncEvent(float LatencyMs, float Volume, float SpeedCmS = -1.0f);
 
-	/** Reset all counters (call at start of measurement period) */
-	UFUNCTION(BlueprintCallable, Category = "Telemetry")
-	void ClearFootstepSyncTelemetry();
+    /** Reset all counters (call at start of measurement period) */
+    UFUNCTION(BlueprintCallable, Category = "Telemetry")
+    void ClearFootstepSyncTelemetry();
 
-	// --- tb-0001 accessor contract: these exact names are what the MCP
-	// bridge queries. The old bridge queried names that existed nowhere
-	// (movement had GetAverageFootstepSyncLatencyMs, not ...AvgLatencyMs),
-	// so telemetry fell back to defaults (H-31/H-32/H-33 lineage). ---
+    // --- tb-0001 accessor contract: these exact names are what the MCP
+    // bridge queries. The old bridge queried names that existed nowhere
+    // (movement had GetAverageFootstepSyncLatencyMs, not ...AvgLatencyMs),
+    // so telemetry fell back to defaults (H-31/H-32/H-33 lineage). ---
 
-	UFUNCTION(BlueprintCallable, Category = "Telemetry")
-	int32 GetFootstepSyncEventCount() const { return FootstepSyncEventCount; }
+    UFUNCTION(BlueprintCallable, Category = "Telemetry")
+    int32 GetFootstepSyncEventCount() const { return FootstepSyncEventCount; }
 
-	UFUNCTION(BlueprintCallable, Category = "Telemetry")
-	float GetFootstepSyncAvgLatencyMs() const { return AverageFootstepSyncLatencyMs; }
+    UFUNCTION(BlueprintCallable, Category = "Telemetry")
+    float GetFootstepSyncAvgLatencyMs() const { return AverageFootstepSyncLatencyMs; }
 
-	UFUNCTION(BlueprintCallable, Category = "Telemetry")
-	float GetFootstepSyncMaxLatencyMs() const { return MaxFootstepSyncLatencyMs; }
+    UFUNCTION(BlueprintCallable, Category = "Telemetry")
+    float GetFootstepSyncMaxLatencyMs() const { return MaxFootstepSyncLatencyMs; }
 
-	/** True iff both speed buckets have samples AND mean fast-bucket volume
-	 *  exceeds mean slow-bucket volume — the beat expect
-	 *  volume_scales_with_speed, answered from measured data, never assumed. */
-	UFUNCTION(BlueprintCallable, Category = "Telemetry")
-	bool GetVolumeScalesWithSpeed() const;
+    /** True iff both speed buckets have samples AND mean fast-bucket volume
+     *  exceeds mean slow-bucket volume — the beat expect
+     *  volume_scales_with_speed, answered from measured data, never assumed. */
+    UFUNCTION(BlueprintCallable, Category = "Telemetry")
+    bool GetVolumeScalesWithSpeed() const;
 
-	/** Boundary between the slow/fast volume buckets (cm/s). Walk ~WalkSpeed,
-	 *  sprint ~2x — 300 splits them for the default rig. */
-	UPROPERTY(EditAnywhere, Category = "Telemetry")
-	float SpeedBucketThresholdCmS = 300.0f;
+    /** Boundary between the slow/fast volume buckets (cm/s). Walk ~WalkSpeed,
+     *  sprint ~2x — 300 splits them for the default rig. */
+    UPROPERTY(EditAnywhere, Category = "Telemetry")
+    float SpeedBucketThresholdCmS = 300.0f;
 
-	/** Number of sync events recorded */
-	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
-	int32 FootstepSyncEventCount;
+    /** Number of sync events recorded */
+    UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+    int32 FootstepSyncEventCount;
 
-	/** Maximum latency in ms across all recorded events */
-	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
-	float MaxFootstepSyncLatencyMs;
+    /** Maximum latency in ms across all recorded events */
+    UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+    float MaxFootstepSyncLatencyMs;
 
-	/** Average latency in ms across all recorded events */
-	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
-	float AverageFootstepSyncLatencyMs;
+    /** Average latency in ms across all recorded events */
+    UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+    float AverageFootstepSyncLatencyMs;
 
-	/** Last recorded volume */
-	UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
-	float LastFootstepVolume;
+    /** Last recorded volume */
+    UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+    float LastFootstepVolume;
+
+    // === Canonical Footstep Event listener (tb-0150) ===
+    // The seed's UChimeraSandSoundComponent.OnFootstep(self, ev)
+    // (CHIMERA_VISION.py:1685), realized as a genuine delegate listener bound in
+    // UChimeraMovementComponent::BeginPlay via AddUniqueDynamic. Deliberately
+    // separate from RecordFootstepSyncEvent above (a different, pre-existing,
+    // already-tested responsibility) — this is the NEW, additive one.
+    UFUNCTION()
+    void HandleFootstepEvent(FFootstepEvent Event);
+
+    /** How many times this component has received the canonical OnFootstep
+     *  broadcast — proof of genuine delegate receipt, independent of the
+     *  pre-existing FootstepSyncEventCount telemetry counter above. */
+    UFUNCTION(BlueprintCallable, Category = "Telemetry")
+    int32 GetCanonicalFootstepEventCount() const { return CanonicalFootstepEventCount; }
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Audio")
-	TObjectPtr<UAudioComponent> AudioComponent;
+    UPROPERTY(VisibleAnywhere, Category = "Audio")
+    TObjectPtr<UAudioComponent> AudioComponent;
 
-	bool bIsVacuum;
+    bool bIsVacuum;
 
-	// Dedicated looping audio component for the wind layer
-	UPROPERTY(VisibleAnywhere, Category = "Audio|Wind")
-	TObjectPtr<UAudioComponent> WindAudioComponent;
+    // Dedicated looping audio component for the wind layer
+    UPROPERTY(VisibleAnywhere, Category = "Audio|Wind")
+    TObjectPtr<UAudioComponent> WindAudioComponent;
 
-	bool bWindActive = false;
+    bool bWindActive = false;
 
-	/** Running total of latency for averaging */
-	UPROPERTY()
-	float TotalFootstepSyncLatencyMs;
+    /** Running total of latency for averaging */
+    UPROPERTY()
+    float TotalFootstepSyncLatencyMs;
 
-	// Volume-vs-speed buckets backing GetVolumeScalesWithSpeed()
-	float SlowBucketVolumeSum = 0.0f;
-	int32 SlowBucketCount = 0;
-	float FastBucketVolumeSum = 0.0f;
-	int32 FastBucketCount = 0;
+    // Volume-vs-speed buckets backing GetVolumeScalesWithSpeed()
+    float SlowBucketVolumeSum = 0.0f;
+    int32 SlowBucketCount = 0;
+    float FastBucketVolumeSum = 0.0f;
+    int32 FastBucketCount = 0;
+
+    UPROPERTY(BlueprintReadOnly, Category = "Telemetry")
+    int32 CanonicalFootstepEventCount = 0;
 };

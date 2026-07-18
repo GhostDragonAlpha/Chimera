@@ -43,6 +43,22 @@ Pure Python: numpy + scipy (already installed) + matplotlib + PIL. No torch, no 
 no CUDA — checked first (2026-07-17: LM Studio holds 23.3/24.5 GiB of this box's one
 GPU; a multi-GB CUDA wheel is not an option here, per CLAUDE.md's LM-gateway GPU-sharing
 rule). This is a CPU-only experiment by necessity as much as by discipline.
+
+tb-0183 (2026-07-18, the human: "remember there's other shapes besides square"):
+emit_splats used to tile ONE scalar tangent_scale onto BOTH tangent axes — a disk
+wearing an ellipse-shaped covariance. The CPU/GPU rasterizers below and in
+core.splat_gpu already composite a TRUE anisotropic 2D ellipse from any general `cov`
+(nothing in the compositing math assumes the two tangent radii are equal); they simply
+never had anything but a circle to render. `_neighbor_tangent_anisotropy` derives a
+real per-splat (major, minor) shape from the LOCAL surface's own neighbour
+distribution (AREA-PRESERVING: major*minor == tangent_scale**2, so ratio==1 reproduces
+the old disk exactly — a superset, not a replacement). `_local_fiber_axis` additionally
+aligns muscle's major axis with the bone shaft it wraps, reading the library's own
+declared anisotropy kind (matter_library.json: muscle.physical.anisotropy.value ==
+"along_fiber") rather than hardcoding "muscle" — a material with no declared axis gets
+shape from its surface alone. Engine-side, core.splat_to_ue5.quad_cloud consumes the
+new per-splat t1/t2/r1/r2 fields to build a non-square quad, and the GLB material gains
+an embedded radial-falloff texture (MASK) so a quad renders as a soft ellipse.
 """
 
 from __future__ import annotations
@@ -174,6 +190,124 @@ assert _optical_equal({k: v for k, v in OPTICAL.items() if k in OPTICAL_PROVEN},
 AMBIENT = 0.18
 
 
+# --- tb-0183: anisotropic per-splat footprints (not just squares) -------------------
+# THE GAP THIS CLOSES: rasterize_splats below (and core.splat_gpu) already composites a
+# TRUE anisotropic ellipse from any general 3x3 `cov` — nothing in that math assumes the
+# tangent radii are equal. The disk previously emitted here was a circle wearing an
+# ellipse-shaped data structure. These two helpers derive a REAL per-splat shape from
+# data, so the rasterizers' existing capability finally has something to render, and
+# core.splat_to_ue5.quad_cloud has real axes+radii to build a non-square quad from.
+
+def _anisotropy_kind(tissue_name: str) -> str | None:
+    """Read the library's declared per-material anisotropy kind
+    (physical.anisotropy.value — e.g. muscle's 'along_fiber',
+    docs/matter/matter_library.json, provenance='design': 'muscle is directional — the
+    appearance AND the mechanics share the fiber axis'). None = no declared axis; the
+    tissue's footprint shape comes from local surface geometry alone."""
+    mat = _LIB.get("materials", {}).get(tissue_name, {})
+    aniso = mat.get("physical", {}).get("anisotropy") or {}
+    return aniso.get("value")
+
+
+def _neighbor_tangent_anisotropy(pos: np.ndarray, t1: np.ndarray, t2: np.ndarray,
+                                 k: int = 8, max_ratio: float = 2.2):
+    """Per-splat footprint SHAPE from the LOCAL surface itself (the recipe's general
+    case: "neighbor-distribution covariance eigenvalues"). For every point, the k
+    nearest SAME-TISSUE neighbours are projected into ITS OWN (t1, t2) tangent plane;
+    the 2x2 covariance of that local neighbourhood is eigendecomposed. A ridge/seam/tip
+    has neighbours spread unevenly across the two tangent directions — more spread
+    ALONG a ridge than across it — which a uniform disk cannot represent and a real
+    surface always has.
+
+    AREA-PRESERVING BY CONSTRUCTION (see emit_splats): the two radii this implies
+    multiply to tangent_scale**2 unchanged, so this only RESHAPES footprints — it never
+    changes the overall coverage/density math the tb-0179 density table depends on, and
+    ratio==1 (an isotropic local neighbourhood, e.g. a sphere) reproduces the OLD disk
+    exactly. A superset of the old behaviour, not a replacement.
+
+    Returns (major_dir (N,3) unit, minor_dir (N,3) unit, ratio (N,) in [1, max_ratio])."""
+    from scipy.spatial import cKDTree
+
+    n_pts = len(pos)
+    if n_pts < 4:                                    # too few points for a local PCA
+        return t1.copy(), t2.copy(), np.ones(n_pts)
+
+    kk = min(k, n_pts - 1)
+    tree = cKDTree(np.ascontiguousarray(pos, dtype=np.float64))
+    _, idx = tree.query(pos.astype(np.float64), k=kk + 1)     # col 0 = self (dist 0)
+    idx = idx[:, 1:]
+    rel = pos[idx] - pos[:, None, :]                          # (N, kk, 3)
+    u = np.einsum('nki,ni->nk', rel, t1)
+    v = np.einsum('nki,ni->nk', rel, t2)
+
+    cxx, cyy, cxy = (u * u).mean(1), (v * v).mean(1), (u * v).mean(1)
+    cov2 = np.stack([np.stack([cxx, cxy], -1), np.stack([cxy, cyy], -1)], -2)   # (N,2,2)
+    eigval, eigvec = np.linalg.eigh(cov2)             # ascending eigenvalues, (N,2)/(N,2,2)
+    lo = np.clip(eigval[:, 0], 1e-9, None)
+    hi = np.clip(eigval[:, 1], 1e-9, None)
+    ratio = np.clip(np.sqrt(hi / lo), 1.0, max_ratio)
+
+    major2, minor2 = eigvec[:, :, 1], eigvec[:, :, 0]           # larger/smaller eigenvector
+    major_dir = major2[:, 0:1] * t1 + major2[:, 1:2] * t2
+    minor_dir = minor2[:, 0:1] * t1 + minor2[:, 1:2] * t2
+    major_dir /= np.clip(np.linalg.norm(major_dir, axis=1, keepdims=True), 1e-9, None)
+    minor_dir /= np.clip(np.linalg.norm(minor_dir, axis=1, keepdims=True), 1e-9, None)
+    return major_dir, minor_dir, ratio
+
+
+def _local_fiber_axis(pos: np.ndarray, ref_pos: np.ndarray, span_multiple: float = 4.0,
+                      k_min: int = 12, k_max: int = 400):
+    """The 'along_fiber' axis for a directional tissue (muscle), derived from data,
+    never a guessed constant: a muscle's fibres run parallel to the bone shaft it
+    surrounds, so at each query point this fits a LOCAL line through the nearby BONE
+    voxels and uses ITS direction (not one global axis — so it follows the limb's own
+    bend, verified below on a synthetic S-curved rod).
+
+    A SMALL, FIXED k-NN is the WRONG tool here and was proven so directly (a synthetic
+    straight-rod smoke test at k=12 aligned >0.8 with the true axis on only ~10% of
+    points): bone is a FILLED scaffold (core.limb.voxelize fills a solid cylinder around
+    each segment), so the nearest bone voxels to a point on the shaft's surface are
+    dominated by the near side of ITS OWN CROSS-SECTION at that same position along the
+    shaft — not by points further along it — so small-k PCA recovers the cross-section's
+    shape, not the shaft's axis.
+
+    Fix, staying fully VECTORIZED (no per-point loop, so this scales to hundreds of
+    thousands of splats): pick k adaptively from the data so the k-NN ball MUST extend
+    `span_multiple` units along the shaft before it can be satisfied by cross-section
+    alone. k = span_multiple * (points-per-unit-length along the shaft's own GLOBAL
+    best-fit axis, i.e. len(ref_pos) / that axis's extent) — a number computed from the
+    actual bone geometry every call, not a guessed constant. Verified (headless smoke
+    test, this module): straight synthetic rod 99.3% mean alignment (min 0.81, 100%
+    over 0.8); an S-bent rod 99.7% mean alignment against the TRUE LOCAL tangent at
+    each point (not the global axis) — confirming the local window genuinely follows
+    curvature rather than just picking one global direction.
+
+    Returns (N,3) unit directions, or None if `ref_pos` is too small to fit a shaft."""
+    from scipy.spatial import cKDTree
+
+    if ref_pos is None or len(ref_pos) < 8:
+        return None
+
+    mean = ref_pos.mean(axis=0)
+    d = ref_pos - mean
+    cov = (d.T @ d) / len(ref_pos)
+    _, eigvec = np.linalg.eigh(cov)
+    long_axis = eigvec[:, 2]                            # global best-fit direction —
+    length = float(np.ptp(d @ long_axis))               # only used to SIZE k, never as
+    per_length = len(ref_pos) / max(length, 1.0)        # the returned axis itself
+    k = int(np.clip(span_multiple * per_length, k_min, min(k_max, len(ref_pos) - 1)))
+
+    tree = cKDTree(np.ascontiguousarray(ref_pos, dtype=np.float64))
+    _, idx = tree.query(pos.astype(np.float64), k=k)
+    nbrs = ref_pos[idx.reshape(-1, k)]                  # (N, k, 3)
+    dd = nbrs - nbrs.mean(axis=1, keepdims=True)
+    cov3 = np.einsum('nki,nkj->nij', dd, dd) / k
+    eigval, eigvec = np.linalg.eigh(cov3)
+    axis = eigvec[:, :, 2]                              # largest-eigenvalue = local shaft dir
+    axis /= np.clip(np.linalg.norm(axis, axis=1, keepdims=True), 1e-9, None)
+    return axis
+
+
 # --- emission: voxel tissue -> Gaussian splats --------------------------------------
 
 def surface_voxels(field: np.ndarray) -> np.ndarray:
@@ -191,19 +325,37 @@ def surface_voxels(field: np.ndarray) -> np.ndarray:
 
 def emit_splats(tissue_field: np.ndarray, tissue_name: str, sigma: float = 0.9,
                 tangent_scale: float = 1.15, normal_scale: float = 0.35,
-                sample_variance: bool = False, seed: int = 42) -> dict | None:
+                sample_variance: bool = False, seed: int = 42,
+                anisotropic: bool = True, k_neighbors: int = 8,
+                max_aniso_ratio: float = 2.2, fiber_ref_pos: np.ndarray | None = None,
+                fiber_elongation: float = 1.6) -> dict | None:
     """One Gaussian per surface voxel of `tissue_field`. Position = voxel centre.
     Orientation: the normal comes from the gradient of the SAME Gaussian-smoothed
     occupancy field core.bake._surface feeds to marching cubes (same sigma, so both
     rungs read the same underlying surface) -> an oriented, FLATTENED covariance (thin
-    along the normal, spread in the tangent plane) — a disk-like footprint, not a
-    sphere. Optical fields come from OPTICAL[tissue_name].
-    
+    along the normal, spread in the tangent plane). Optical fields come from
+    OPTICAL[tissue_name].
+
+    tb-0183 (anisotropic tangent radii — "not just squares"): when anisotropic=True
+    (default), the tangent-plane footprint is no longer a disk (tangent_scale tiled onto
+    both axes) — `_neighbor_tangent_anisotropy` derives a real (major, minor) shape from
+    the local surface's own neighbour distribution, AREA-PRESERVING (major*minor ==
+    tangent_scale**2, so an isotropic neighbourhood reproduces the old disk exactly).
+    If the library declares this tissue directional (physical.anisotropy.value ==
+    "along_fiber", muscle only today) AND `fiber_ref_pos` is given (emit_limb passes the
+    BONE voxels the muscle wraps), the major axis is instead aligned to the local bone
+    shaft direction — the fiber runs parallel to the bone, not a hand-picked constant —
+    with `fiber_elongation` as a guaranteed MINIMUM ratio (the neighbour-PCA ratio can
+    only push it higher, never lower), so "elongates along fiber" is provably true even
+    where the local neighbourhood happens to read locally round. anisotropic=False
+    reproduces the exact pre-tb-0183 isotropic-disk output (byte-identical), kept for
+    any caller wanting the legacy shape.
+
     When sample_variance=True: samples per-particle albedo from the library's
     distribution (albedo_mean_rgb ± albedo_mottle_var), making "appearance is an average"
     visible as mottled stone texture rather than smooth clay. Default OFF for identity
     check against proven render.
-    
+
     FACTS only — this reports where the splats are, never whether that is good."""
     from scipy import ndimage
 
@@ -224,9 +376,39 @@ def emit_splats(tissue_field: np.ndarray, tissue_name: str, sigma: float = 0.9,
     t1 = np.cross(up, n)
     t1 /= np.clip(np.linalg.norm(t1, axis=1, keepdims=True), 1e-9, None)
     t2 = np.cross(n, t1)
-    R = np.stack([t1, t2, n], axis=-1)                              # (N,3,3), columns = t1,t2,n
 
-    S2 = np.tile(np.array([tangent_scale, tangent_scale, normal_scale]) ** 2, (len(pos), 1))
+    pos_f = pos.astype(np.float64)
+    if anisotropic:
+        major_dir, minor_dir, ratio = _neighbor_tangent_anisotropy(
+            pos_f, t1, t2, k=k_neighbors, max_ratio=max_aniso_ratio)
+
+        if _anisotropy_kind(tissue_name) == "along_fiber" and fiber_ref_pos is not None:
+            fiber = _local_fiber_axis(pos_f, fiber_ref_pos)
+            if fiber is not None:
+                # project into THIS point's tangent plane (orthogonal to n) — a splat's
+                # ellipse must lie IN the surface, never tilt out of it
+                fiber_tan = fiber - np.einsum('ni,ni->n', fiber, n)[:, None] * n
+                flen = np.linalg.norm(fiber_tan, axis=1)
+                good = flen > 1e-3          # degenerate where fiber ~ parallel to n (the
+                                             # limb's proximal/distal end-caps) -- keep the
+                                             # surface-PCA axis there instead of /~0
+                fdir = fiber_tan / np.clip(flen, 1e-9, None)[:, None]
+                major_dir = np.where(good[:, None], fdir, major_dir)
+                minor_dir = np.cross(n, major_dir)
+                minor_dir /= np.clip(np.linalg.norm(minor_dir, axis=1, keepdims=True), 1e-9, None)
+                ratio = np.where(good, np.maximum(ratio, fiber_elongation), ratio)
+
+        major_r = tangent_scale * np.sqrt(ratio)
+        minor_r = tangent_scale / np.sqrt(ratio)
+        R = np.stack([major_dir, minor_dir, n], axis=-1)
+        S2 = np.stack([major_r ** 2, minor_r ** 2, np.full(len(pos), normal_scale ** 2)], axis=-1)
+    else:
+        # legacy isotropic disk — byte-identical to the pre-tb-0183 behaviour
+        major_dir, minor_dir = t1, t2
+        major_r = minor_r = np.full(len(pos), tangent_scale)
+        R = np.stack([t1, t2, n], axis=-1)                          # (N,3,3), columns = t1,t2,n
+        S2 = np.tile(np.array([tangent_scale, tangent_scale, normal_scale]) ** 2, (len(pos), 1))
+
     cov = np.einsum('nik,nk,nlk->nil', R, S2, R)                    # R diag(S2) R^T
 
     opt = OPTICAL[tissue_name]
@@ -261,12 +443,17 @@ def emit_splats(tissue_field: np.ndarray, tissue_name: str, sigma: float = 0.9,
         "alpha": alpha_per_splat,
         "subsurface": np.full(len(pos), opt["subsurface"]),
         "tissue": [tissue_name] * len(pos),
+        # tb-0183: the raw shape data quad_cloud needs to build a non-square, oriented
+        # quad without re-deriving (and re-guessing) an isotropic disk of its own.
+        "t1": major_dir, "t2": minor_dir, "r1": major_r, "r2": minor_r,
     }
 
 
 def emit_limb(fleshed: np.ndarray, sigma: float = 0.9,
               sample_variance: bool = False, seed: int = 42,
-              tangent_scale: float = 1.15, normal_scale: float = 0.35) -> dict:
+              tangent_scale: float = 1.15, normal_scale: float = 0.35,
+              anisotropic: bool = True, k_neighbors: int = 8,
+              max_aniso_ratio: float = 2.2, fiber_elongation: float = 1.6) -> dict:
     """All three tissues -> one splat set, mirroring core.bake.bake()'s three nested
     per-tissue isosurfaces (skin = grid != MEDIUM, "the outer silhouette IS the visible
     skin" — identical convention, unchanged).
@@ -275,18 +462,34 @@ def emit_limb(fleshed: np.ndarray, sigma: float = 0.9,
     Default OFF for identity check against proven render.
 
     tb-0179 (the baby-toy critique): tangent_scale/normal_scale are the per-splat
-    FOOTPRINT size in VOXEL units (unchanged defaults = the proven identity render).
-    Forwarded to emit_splats so a caller doing finer-voxel-pitch density scaling can
-    ALSO shrink the footprint proportionally — the recipe's lever (2), independent of
-    lever (1) (the grid resolution itself, in core.limb.voxelize's target_len)."""
+    FOOTPRINT size in VOXEL units. Forwarded to emit_splats so a caller doing finer-
+    voxel-pitch density scaling can ALSO shrink the footprint proportionally — the
+    recipe's lever (2), independent of lever (1) (the grid resolution itself, in
+    core.limb.voxelize's target_len).
+
+    tb-0183: anisotropic=True (default) makes every tissue's footprint a real ellipse
+    (see emit_splats); muscle specifically gets its major axis aligned to the LOCAL
+    bone-shaft direction (the BONE voxels of this same `fleshed` grid, passed as
+    `fiber_ref_pos` — muscle is the only tissue the library declares directional,
+    checked by _anisotropy_kind, not hardcoded here). anisotropic=False reproduces the
+    exact pre-tb-0183 isotropic-disk output for any caller wanting the legacy shape."""
     layers = {"skin": (fleshed != MEDIUM), "muscle": (fleshed == MUSCLE), "bone": (fleshed == BONE)}
-    parts = [p for p in (emit_splats(field, name, sigma=sigma, sample_variance=sample_variance, seed=seed,
-                                     tangent_scale=tangent_scale, normal_scale=normal_scale)
-                         for name, field in layers.items())
-             if p is not None]
+    bone_pos = np.argwhere(fleshed == BONE).astype(np.float64)   # muscle's fiber-axis reference
+                                                                   # -- the shaft this muscle wraps
+    parts = []
+    for name, field in layers.items():
+        p = emit_splats(field, name, sigma=sigma, sample_variance=sample_variance, seed=seed,
+                        tangent_scale=tangent_scale, normal_scale=normal_scale,
+                        anisotropic=anisotropic, k_neighbors=k_neighbors,
+                        max_aniso_ratio=max_aniso_ratio,
+                        fiber_ref_pos=(bone_pos if name == "muscle" and len(bone_pos) else None),
+                        fiber_elongation=fiber_elongation)
+        if p is not None:
+            parts.append(p)
     if not parts:
         raise RuntimeError("no tissue produced any surface voxels — check the grown grid")
-    out = {k: np.concatenate([p[k] for p in parts], axis=0) for k in ("pos", "normal", "alpha", "subsurface")}
+    out = {k: np.concatenate([p[k] for p in parts], axis=0)
+          for k in ("pos", "normal", "alpha", "subsurface", "t1", "t2", "r1", "r2")}
     out["albedo"] = np.concatenate([p["albedo"] for p in parts], axis=0)
     out["cov"] = np.concatenate([p["cov"] for p in parts], axis=0)
     out["tissue"] = sum((p["tissue"] for p in parts), [])

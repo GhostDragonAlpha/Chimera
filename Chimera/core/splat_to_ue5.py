@@ -76,6 +76,17 @@ def quad_cloud(splats: dict, scale: float, tangent_scale: float = 1.15,
     this ALONGSIDE tangent_scale, not instead of finer voxel pitch, when pushing density
     up — the recipe's lever (2), independent of lever (1)).
 
+    tb-0183 ("not just squares"): the quad's two half-widths now come from the splat's
+    OWN per-splat axes/radii (`t1`/`t2`/`r1`/`r2` — emit_splats' real, data-derived
+    anisotropic footprint: neighbour-surface-PCA shape, muscle fiber-aligned) instead of
+    re-deriving a FRESH, unrelated tangent frame from the normal and tiling one scalar
+    onto it. THIS WAS THE ACTUAL GAP (the operator's own framing): the CPU/GPU
+    rasterizers already composite a true anisotropic ellipse from any general `cov` —
+    only this engine-side quad mesh was throwing that shape away and rebuilding an
+    isotropic square from scratch. `tangent_scale`/`overlap` remain the fallback for any
+    caller passing splats without per-splat axes (none do today; kept for robustness)
+    and as the SCALE multiplier applied on top of the per-splat radii either way.
+
     UNITS (the 100x plate bug, found by engine bounds read-back, tl224 2026-07-18):
     glTF's spec unit is METERS; UE's importer multiplies by 100 on the m->cm convert.
     This function's math is in CENTIMETERS (scale = cm/voxel), so the export step below
@@ -89,15 +100,24 @@ def quad_cloud(splats: dict, scale: float, tangent_scale: float = 1.15,
 
     pos = splats["pos"] * scale
     n = splats["normal"]
-    up = np.where(np.abs(n[:, 2:3]) < 0.9, np.array([0., 0., 1.]), np.array([1., 0., 0.]))
-    t1 = np.cross(up, n)
-    t1 /= np.clip(np.linalg.norm(t1, axis=1, keepdims=True), 1e-9, None)
-    t2 = np.cross(n, t1)
-    h = tangent_scale * scale * overlap          # tangent_scale voxels -> cm, +overlap
+    if "t1" in splats and "r1" in splats:
+        # the REAL per-splat anisotropic axes (tb-0183) — r1/r2 are already in VOXEL
+        # units exactly like the old scalar tangent_scale was, so the same scale*overlap
+        # conversion to centimeters applies unchanged.
+        t1, t2 = splats["t1"], splats["t2"]
+        h1 = splats["r1"][:, None] * scale * overlap
+        h2 = splats["r2"][:, None] * scale * overlap
+    else:
+        # legacy fallback: an isotropic disk, byte-identical to the pre-tb-0183 shape
+        up = np.where(np.abs(n[:, 2:3]) < 0.9, np.array([0., 0., 1.]), np.array([1., 0., 0.]))
+        t1 = np.cross(up, n)
+        t1 /= np.clip(np.linalg.norm(t1, axis=1, keepdims=True), 1e-9, None)
+        t2 = np.cross(n, t1)
+        h1 = h2 = tangent_scale * scale * overlap     # tangent_scale voxels -> cm, +overlap
 
     corners = []
     for a, b in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
-        corners.append(pos + a * h * t1 + b * h * t2)
+        corners.append(pos + a * h1 * t1 + b * h2 * t2)
     verts = np.stack(corners, axis=1).reshape(-1, 3)            # (N*4, 3)
     verts = verts - verts.mean(axis=0)                          # CENTER the pivot —
     # uncentered verts (0..340cm from origin) made the spawned actor's geometry hang
