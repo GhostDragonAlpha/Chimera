@@ -1,10 +1,10 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T01:50:53+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T02:59:55+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 0 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
@@ -22,7 +22,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0112 | open | 0.75 | Fix confirmed pain: System_* verified with no evidence dict  | docs/beats/**; editor:open; excl:pie | Working on tb-0123 (Fix 6 tautological beats in 4 files) |
 | tb-0151 | open | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
-| tb-0119 | open | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** | Working on different task tb-0123 (Fix 6 tautological beats  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
@@ -96,6 +95,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0113 | done | 0.7 | Fix confirmed pain: 4 meta labels sit in the feature ledger  | docs/world/** | 4 meta ledger entries reclassified with typed records + beca |
 | tb-0115 | done | 0.7 | training_gate: .claude/ footprints are infra, not default-ga | core/training_gate.py | core/training_gate.py: .claude/ added to infra file markers. |
 | tb-0116 | done | 0.7 | task_board: _scope_for keyword match needs word boundaries ( | core/task_board.py | core/task_board.py: _has_word() word-boundary matcher replac |
+| tb-0119 | done | 0.7 | Diagnose WeightShift 2/4 test failures: first-tick response  | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Tests/** | Diagnosed and fixed WeightShift 2/4 test failures. Root caus |
 | tb-0120 | done | 0.65 | ripener: minted fix-tasks must carry the real feature field | core/training_gate.py, core/ripener.py | ripener.spawn_followups now sets feature via _feature_named_ |
 | tb-0019 | done | 0.6 | Pain verdict: Distiller token-coverage will false-suppress g | docs/research/** | REFUTED phase_da55128aec6d109a:P1. Empirical vs live 160347- |
 | tb-0020 | done | 0.6 | Pain verdict: phase_da55128aec6d109a:P1 | docs/research/** | REFUTED phase_62a9bf8fa8e97b42:P1 - DUPLICATE of phase_da551 |

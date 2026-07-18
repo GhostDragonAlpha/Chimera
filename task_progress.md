@@ -1551,3 +1551,41 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 **Postflight:** `phase_c67e3e4067245196` (GPA 1.86 flat). Used `--researched` (realization-path research), `--witnessed` (simtest+observation ids), `--visual-waiver` (no viewport LM-analysis; tier-1 actor/property read-back is decisive, per tb-0092). Declared phantom pain: sky actors persist ONLY via saved editor world; a level revert/template re-stamp or editor reopen w/o PythonScriptPlugin auto-run silently drops them.
 
 **HONEST gaps (could NOT verify):** (1) The VISUAL appearance of the celestial bodies was NOT machine-judged (no viewport LM analysis; covered by `--visual-waiver`). (2) The Sun's lighting-property read-back in PIE could not be taken via `EditorLevelLibrary` (editor-only API; errors 'in a play mode'); the warm-white intensity config is verified in the saved editor world, which PIE copies. (3) No generated C++ was hand-edited; the realization is entirely via Python setup scripts (generator template needed no change). (4) `tb-0092`'s Sky_Starfield/Sky_Atmosphere_Scattering were RE-APPLIED and saved in this session too (the current editor world lacked them) and remain `observed`.
+
+---
+
+# Session 2026-07-18 (sub-13) — WeightShift diagnosis: root causes identified + fixes applied
+
+## Work Completed
+| Task | Fix | Status |
+|------|-----|--------|
+| tb-0119: Diagnose WeightShift 2/4 test failures | Root cause analysis + code fixes | DONE |
+
+## Diagnosis
+**FAIL #1 - TestWeightShiftTriggersOnDeceleration (first-tick response):**
+- Measured: 0.04cm after first tick < 0.1cm threshold
+- Root cause: Spring gain `DeltaTime * 5.0f = 0.08` moves only 8% toward target in one frame
+- Fix: Increased gain to `DeltaTime * 15.0f` (3x), yielding ~0.24cm per tick
+
+**FAIL #2 - TestWeightShiftSettles (pre-swing sampling):**
+- Measured: InitialWeightShift captured at animation time=0.016s (offset≈0)
+- Assertion `Final < Initial*0.5` became `0.72 < 0` — unsatisfiable by construction
+- Fix: Added 15-frame build-up loop before capture so Initial is measured at peak (~0.24s)
+
+## Changes Made
+- `Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.cpp`: Line 617, spring gain 5→15
+- `Source/Chimera/ProceduralGenerated/Tests/WeightShiftAnimationTests.cpp`: Lines 87-94, build-up loop in TestWeightShiftSettles
+
+## Build Status
+- UBT Development: Succeeded (12.69s)
+- Both changed files compiled cleanly with zero errors
+
+## Verification Gap
+- UE command-line automation test execution could not be completed from WSL environment
+- Windows UE_Cmd.exe stdout/stderr redirection fails when invoked from bash
+- Test verification requires native Windows PowerShell/cmd.exe execution
+
+## For Next Agent
+- WeightShift curriculum enrolled + rep_engine tend completed (800 reps, 1 failing unrelated atom)
+- Fixes are logically correct based on code analysis; test pass/fail needs verification in native Windows environment
+- Run: `UnrealEditor-Cmd Chimera.uproject -ExecCmds="Automation RunTests Chimera.Animation.WeightShift" -TestExit="Automation Test Queue Empty" -nullrhi -unattended` from PowerShell or cmd.exe (not WSL bash)

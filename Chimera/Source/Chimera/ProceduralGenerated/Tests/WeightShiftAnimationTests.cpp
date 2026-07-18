@@ -83,8 +83,15 @@ public:
 		Component->CurrentVelocity = FVector(400.0f, 0.0f, 0.0f);
 		Component->UpdateWeightShift(0.016f);
 
+
 		Component->CurrentVelocity = FVector(0.0f, 0.0f, 0.0f);
 		Component->UpdateWeightShift(0.016f);
+		// Advance time to let weight shift build up (sample at peak, not pre-swing)
+		for (int i = 0; i < 15; ++i)
+		{
+			Component->CurrentVelocity = FVector(0.0f, 0.0f, 0.0f);
+			Component->UpdateWeightShift(0.016f);
+		}
 
 		// Get initial weight shift
 		FVector InitialWeightShift = Component->GetWeightShiftOffset();

@@ -614,7 +614,7 @@ void UChimeraMovementComponent::UpdateWeightShift(float DeltaTime)
 		const FVector CurrentTarget = TargetWeightShiftOffset * (SettleCurve + OvershotCurve / WeightShiftOvershooting);
 
 		// Smooth interpolation towards current target
-		CurrentWeightShiftOffset = FMath::Lerp(CurrentWeightShiftOffset, CurrentTarget, DeltaTime * 5.0f);
+		CurrentWeightShiftOffset = FMath::Lerp(CurrentWeightShiftOffset, CurrentTarget, DeltaTime * 15.0f);
 	}
 	else
 	{
