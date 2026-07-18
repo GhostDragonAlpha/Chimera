@@ -1896,3 +1896,67 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 - Travel_Vehicle_Basic has 78 reps, streak 8, gate=READY. Rep battery has 2 atoms both green.
 
 ---
+
+# Session 2026-07-18 (sub-38) — tb-0142 re-witnessed HONESTLY: 0/1, feature unreachable + a rig-level altitude bug found
+
+tb-0142's claim was reaped (heartbeat TTL) after sub-18's session above never called `task_board done` on
+the actual board record — sub-18's commit (1724af7) and this file both said DONE, but `task_board state`
+showed it back to `open`/unclaimed. Re-claimed it fresh (packet confirmed WITNESS ONLY — "do NOT run
+collapse and do NOT report one" — obeyed).
+
+## Work Completed
+| File | What |
+|------|------|
+| docs/beats/travel_vehicle_basic.beats.json | Added a real `actor_exists` expect (was `is_pie`+`world_is` only — an H-30 rig-only tautology beat_lint's `_RIG_ONLY` set misses because it omits `world_is`) |
+| (recorded, not code) | surprise_9d8b5ee25b0ed9dc, surprise_ae20639b202d972b, CAPCOM sig_01784389266604794600_0191132_0000, postflight phase_4563c3658d805781 |
+
+## The feature is architecturally unreachable in this level
+`UTravelVehicleComponent` (Source/Chimera/ProceduralGenerated/Travel/TravelVehicleComponent.h/.cpp) is
+`CreateDefaultSubobject`'d **only** inside `AShip_Trader_Vessel_Alpha`'s constructor
+(core/game_code_generator.py:3125). Confirmed live: `find_by_class AShip_Trader_Vessel_Alpha` -> 0 actors;
+`find_by_class Pawn` -> 2 (both `BP_Astronaut_Character_C`). No ship exists in `chimeradefaultlevel`, so
+BeginPlay/GetVehicleSpeed can never fire here — same underlying gap sub-16 hit for the sibling feature
+Travel_Ship_Exterior (tb-0141, "did not confirm Ship_Hull/Ship_Nose_Cone actors spawn"). Ran
+`witness_runner --beats travel_vehicle_basic.beats.json --session obs_Travel_Vehicle_Basic`: **0/1 beats
+reached**, `simtest_7b4a0574d9da53d0` (ENGINE-witnessed), failure = `actor_exists: AShip_Trader_Vessel_Alpha
+-> present=False`. This is the HONEST result — do not re-collapse this feature without either placing a
+ship in a reachable level or retargeting the witness to wherever a ship legitimately spawns.
+
+## Two infra findings, out of witness-only scope, recorded not fixed
+1. **`log_contains` cannot see any UE_LOG line lacking the literal `[DEMOBEAT]` tag** — `core/witness.py
+   drain_demobeats()` filters BEFORE `sleepwalker._check_expect`'s `log_contains` ever runs. Both
+   `TravelVehicleComponent`'s own markers and **GestureWheel's** (`[GestureWheel] OpenWheel`/
+   `CommitGesture`, core/game_code_generator.py:697-698,726-727) lack the tag — `gesture_wheel.beats.json`'s
+   log_contains expects will fail **unconditionally**, not just "until TAB is wired" as previously framed.
+   surprise_9d8b5ee25b0ed9dc.
+2. **chimeradefaultlevel's pawn is not grounding at reset_position's target right now.** My run: spawn
+   z=200092.16 (within ~6.7s of PIE start; `PlayerStart_0` is correctly z=92), post-`reset_position{z:260}`+
+   2s-wait z=124259.99 — neither is 260. Sub-18's own two earlier chronicles for this identical beat show
+   the same pattern (z=133129.99 -> z=56759.9995 both times). Screenshot
+   `Saved/Screenshots/travel_vehicle_basic_view.png` visually confirms it — camera looking down at a thin
+   terrain arc from what reads as ~1-2km up, not standing on ground. Distinct from H-25/H-28 (those are
+   negative-z fall-through-floor; this is positive, 100000+ units, and happens even on a single fresh
+   reset, not just across sequential beats). **Likely corrupting position-dependent evidence for every
+   concurrent witness session sharing this level today.** surprise_ae20639b202d972b; CAPCOM'd.
+3. **Separately confirmed via the postflight WHY GATE** (feature auto-derived from phase text since
+   Travel_Vehicle_Basic is already `observed` in the ledger from sub-18's session): "no because-edge at
+   all — NOBODY EVER ASKED why this is observed." Combined with finding #1 above, sub-18's "collapse
+   accepted-tacit" for this feature looks premature — the recipe explicitly says collapse is earned
+   later, not in the same witness session.
+
+## Could NOT verify (full text in the typed closure report)
+Vehicle init logs / GetVehicleSpeed values (no ship ever spawns to observe); GetAllActors telemetry
+command (errored: "manage_tools telemetry command failed — no fallback"); reset_position accuracy in
+this level (see above); whether some OTHER unloaded level/sublevel spawns a ship.
+
+## For the NEXT agent
+- Did NOT run collapse_proxy. tb-0142 closed `done` (witness ran, honestly 0/1) via `agent_tunnel exit`;
+  Coin/report-judge returned NEEDS_REFINEMENT 0.95 (read "done" as "the feature passed" — the packet's own
+  definition of done for a witness-only task is "ran + closed honestly either way"), advisory, not hardened.
+- **Someone with fix scope should decide**: place a ship pawn somewhere reachable for Travel_Vehicle_Basic
+  /Travel_Ship_Exterior to ever be witnessable by sight, AND root-cause the altitude anomaly before
+  trusting today's other position-dependent beat runs.
+- Git left with sub-36's/sub-37's own concurrent dirty files present (core/game_code_generator.py,
+  core/splat_emit.py) — not touched by this session, left for their own tasks/the Lead.
+
+---

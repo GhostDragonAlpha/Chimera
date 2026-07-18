@@ -1,14 +1,17 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T15:22:40+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T15:47:55+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
+| tb-0150 | claimed | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator | sub-37 |
+| tb-0183 | claimed | 0.8 | Splat footprint shapes: anisotropic ellipses + soft falloff  | core/splat_to_ue5.py, core/splat_emit.py | sub-36 |
+| tb-0184 | open | 1.1 | Witness rig: reset_position does not ground the pawn (z=124k | core/sleepwalker.py, core/witness.py… |  |
+| tb-0185 | open | 1.1 | Witness: log_contains is deaf to every non-DEMOBEAT log line ⇐ tb-0184 | core/witness.py, core/sleepwalker.py… |  |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
 | tb-0145 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
@@ -16,8 +19,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
-| tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
-| tb-0183 | open | 0.8 | Splat footprint shapes: anisotropic ellipses + soft falloff  | core/splat_to_ue5.py, core/splat_emit.py |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0176 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
@@ -83,6 +84,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0139 | done | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie | witness_runner (wraps sleepwalker, agent-sim source) ran doc |
 | tb-0140 | done | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie | Witness Shelter_Habitat_Lighting — 1/1 beats reached, clean  |
 | tb-0141 | done | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie | Witness runner completed: simtest_00a14b4bd09ea7ea (witnesse |
+| tb-0142 | done | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie | witness_runner (wraps core.sleepwalker) ran docs/beats/trave |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |

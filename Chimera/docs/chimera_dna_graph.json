@@ -73767,6 +73767,162 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_37428b08e958"
+    },
+    {
+      "id": "simtest_7b4a0574d9da53d0",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T15:37:01.031471",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Travel_Vehicle_Basic",
+      "demo": "travel_vehicle_basic",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "vehicle_component_initialized",
+          "outcome": "failed",
+          "features": [
+            "Travel_Vehicle_Basic"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "AShip_Trader_Vessel_Alpha"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Travel_Vehicle_Basic.json",
+      "temperature": "[SIM] 0/1 beats reached in 'travel_vehicle_basic'. Failures: vehicle_component_initialized (failed: expect {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_Travel_Vehicle_Basic': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_fcbc88809f3a"
+    },
+    {
+      "id": "surprise_67d5231fb52380a0",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T15:37:01.486792",
+      "context": "Sleepwalker expected beat 'vehicle_component_initialized' to be reachable (travel_vehicle_basic)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"}, \"ok\": false, \"'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_fcbc88809f3a"
+    },
+    {
+      "id": "surprise_9d8b5ee25b0ed9dc",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T15:40:33.321564",
+      "context": "tb-0142 witness (Travel_Vehicle_Basic): considered adding a log_contains expect for UTravelVehicleComponent's UE_LOG markers ('TravelVehicle: Basic movement initialized' / 'TravelVehicle: Flight capabilities initialized') to make the beat feature-observing per H-30",
+      "expectation": "log_contains would match any UE_LOG(LogTemp,...) line containing the given substring, regardless of tag",
+      "reality": "core/witness.py:drain_demobeats() only returns log lines containing the literal '[DEMOBEAT]' tag; core/sleepwalker.py:_check_expect's log_contains only searches that pre-filtered list. UE_LOG(LogTemp,...) lines without '[DEMOBEAT]' are invisible to log_contains regardless of whether the code actually ran. Confirmed the SAME gap independently affects GestureWheel.cpp's UE_LOG(LogTemp, Log, TEXT(\"[GestureWheel] OpenWheel\")) / CommitGesture markers (core/game_code_generator.py:697-698,726-727, comment literally says 'sleepwalker log_contains expects key on this exact string') -- those markers also lack '[DEMOBEAT]', so gesture_wheel.beats.json's log_contains expects will fail UNCONDITIONALLY even once TAB is correctly wired, not only 'until TAB is wired' as task_progress.md currently frames it.",
+      "lesson_hint": "generator templates that add a witness UE_LOG marker for log_contains must tag it [DEMOBEAT] or drain_demobeats() will never surface it to the expect check, no matter how correct the feature is",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'log_contains would match any UE_LOG(LogTemp,...) line containing the given subst' but 'core/witness.py:drain_demobeats() only returns log lines containing the literal '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_9c28bdd53db9"
+    },
+    {
+      "id": "surprise_ae20639b202d972b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T15:40:52.986403",
+      "context": "tb-0142 witness (Travel_Vehicle_Basic) sleepwalker run against chimeradefaultlevel: beat action sequence was reset_position{x:0,y:0,z:260} -> wait 2.0s -> command GetAllActors -> screenshot, then pawn location read back at beat_snapshot",
+      "expectation": "reset_position{z:260} would place the pawn at world z=260 (near PlayerStart's z=92), matching the beat author's evident intent (an astronaut standing on the ground)",
+      "reality": "reset_position did not put the pawn anywhere near z=260. My run (simtest_7b4a0574d9da53d0, chronicle Saved/SessionChronicles/obs_Travel_Vehicle_Basic.json): spawn_captured z=200092.16 BEFORE reset_position even ran (i.e. within ~6.7s of PIE start, PlayerStart_0 is at a normal z=92 per live runtime_report), then beat_snapshot AFTER reset_position+wait shows z=124259.99 -- neither number is 260 nor matches the other. Cross-checked sub-18's two earlier chronicles for the SAME beat/level (Saved/SessionChronicles/tb-0142_travel_vehicle_witness.json and _v2.json): spawn z=133129.99 both times, post-reset z=56759.9995 both times -- same pattern (huge, non-260, non-reproducing-exact-value across sessions), confirming this is a persistent, reproducible rig issue, not a one-off race. Screenshot (Saved/Screenshots/travel_vehicle_basic_view.png) visually confirms it: the view looks down at a thin terrain arc far below through open grey sky, consistent with the pawn/camera suspended roughly 1-2km up, not standing on the ground. GetAllActors telemetry command also errored ('manage_tools telemetry command failed - no fallback, real data unavailable') in my run, same as sub-16's tb-0141 session found for a sibling feature.",
+      "lesson_hint": "something in-PIE (not the static level -- PlayerStart is correctly z=92) launches or fails to place the astronaut pawn at an extreme altitude within the first ~6-7s of play, and reset_position does not correct it; every position-dependent beat/expect run against chimeradefaultlevel right now should be treated as suspect until this is root-caused (distinct from H-25/H-28's negative-z fall-through-floor pattern -- this is positive, 100000+ unit range)",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'reset_position{z:260} would place the pawn at world z=260 (near PlayerStart's z=' but 'reset_position did not put the pawn anywhere near z=260. My run (simtest_7b4a057'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8c5f90f862a5"
+    },
+    {
+      "id": "discovery_87a1305ede3a046e",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T15:44:42.337956",
+      "feature": "Witness: Travel_Vehicle_Basic (tb-0142, sub-38)",
+      "campus_sources": [],
+      "web_sources": [
+        "Read core/game_code_generator.py (generate_ship_class_with_flight_and_combat_components, lines ~3005-3140, confirms TravelVehicleComponent is only attached to AShip_Trader_Vessel_Alpha); Source/Chimera/ProceduralGenerated/Travel/TravelVehicleComponent.h/.cpp (component behavior, UE_LOG markers); cor"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Witness: Travel_Vehicle_Basic (tb-0142, sub-38)",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Witness: Travel_Vehicle_Basic (tb-0142, sub-38)': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_ecbe4779fbaa"
+    },
+    {
+      "id": "phase_4563c3658d805781",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T15:44:42.828206",
+      "phase": "Witness: Travel_Vehicle_Basic (tb-0142, sub-38)",
+      "result": "Ran python -m core.witness_runner --beats docs/beats/travel_vehicle_basic.beats.json --session obs_Travel_Vehicle_Basic --budget-s 240 --agent-id sub-38: child completed in 11.2s, exit=0. beats_total=1 beats_reached=0. simtest_node=simtest_7b4a0574d9da53d0 (ENGINE-witnessed, real PIE). Failure evidence verbatim: 'vehicle_component_initialized (failed: expect {actor_exists: AShip_Trader_Vessel_Alpha} -> present=False)'. Pre-run engine queries: control_actor find_by_class AShip_Trader_Vessel_Alpha -> 0 actors; find_by_class Pawn -> 2 (BP_Astronaut_Character_C x2 only). Source confirms UTravelVehicleComponent is CreateDefaultSubobject'd only inside AShip_Trader_Vessel_Alpha's constructor (core/game_code_generator.py:3125) and that ship is never spawned in chimeradefaultlevel, so BeginPlay/GetVehicleSpeed cannot fire here. Extended docs/beats/travel_vehicle_basic.beats.json with a real actor_exists expect (was is_pie+world_is only, an H-30 rig-only tautology beat_lint's _RIG_ONLY set misses because it omits world_is). beat_lint clean before/after. Curriculum enrollment confirmed (idempotent) + rep_engine tend run (856 atoms, 829 reps, 6 failing elsewhere, 0 in Travel_Vehicle_Basic). Did NOT run collapse_proxy, per this task's explicit WITNESS-ONLY packet ('do NOT run collapse and do NOT report one... NEVER claim a collapse'). Two surprises recorded: surprise_9d8b5ee25b0ed9dc (log_contains is structurally blind to any UE_LOG line lacking the literal '[DEMOBEAT]' tag; TravelVehicleComponent's and GestureWheel's witness-marker logs both lack it) and surprise_ae20639b202d972b (reset_position does not place the pawn near its declared z=260 target in chimeradefaultlevel -- reproducible across 3 runs / 2 sessions, pawn found at z=124259.99/56759.9995 instead; PlayerStart_0 itself is z=92, so the fault is in-PIE, not level data; confirmed visually via Saved/Screenshots/travel_vehicle_basic_view.png showing the pawn suspended far above terrain). Posted CAPCOM notice sig_01784389266604794600_0191132_0000 flagging the altitude anomaly for the Lead + concurrent sibling sessions sharing this level today. tb-0142 closed via agent_tunnel exit --outcome done; Coin/report-judge returned NEEDS_REFINEMENT 0.95 (it read 'done' as a claim the FEATURE passed; the witness-only packet instead defines done as 'the witness attempt ran and was closed honestly either way') -- advisory, not hardened, closure proceeded.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness: Travel_Vehicle_Basic (tb-0142, sub-38)",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness: Travel_Vehicle_Basic (tb-0142, sub-38)' complete: Ran python -m core.witness_runner --beats docs/beats/travel_vehicle_basic.beats.json --session obs_Travel_Vehicle_Basic --budget-s 240 --agent-id sub-38: child completed in 11.2s, exit=0. beats_total=",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "chimeradefaultlevel's astronaut pawn will still be found suspended at extreme altitude (100,000+ Z units) within seconds of PIE start, and reset_position will still fail to bring it back to a ground-level z (~92-260), independent of which beat/agent runs it -- confirm/refute by reading pawn_z from any fresh sleepwalker/witness_runner chronicle against this level."
+      ],
+      "inheritance": "Travel_Vehicle_Basic cannot be witnessed by sight until a design decision places AShip_Trader_Vessel_Alpha (or some vehicle) somewhere in the demo's reachable levels -- that is a design call, not a witness-task fix. Independently, chimeradefaultlevel's reset_position is not reliably grounding the pawn right now (reproducible, PlayerStart is fine, so it is in-PIE) -- treat today's position-dependent beat evidence from ANY session against this level as suspect until root-caused. A future witness-marker convention must tag UE_LOG lines '[DEMOBEAT]' or log_contains will never see them, regardless of correctness.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_ecbe4779fbaa"
     }
   ],
   "edges": [
