@@ -1,14 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T03:54:23+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T04:04:38+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0152 | claimed | 1.2 | Fix 1 red rep atom(s): FFootstepEvent | core/game_code_generator.py; excl:generator | sub-17 |
 | tb-0154 | open | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0155 | open | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
@@ -55,6 +54,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0135 | done | 1.2 | Fix 1 red rep atom(s): Game_Feel | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/Sound/**; editor:open; excl:pie | Added UE_LOG witness marker comments to NPCTradeComponent.cp |
 | tb-0136 | done | 1.2 | Fix 1 red rep atom(s): Sky_Loop_Realization | Source/Chimera/ProceduralGenerated/Sky/** | prune removed identity atom atom_2100bcb11f34 for Sky_Loop_R |
 | tb-0137 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Audio | Source/Chimera/ProceduralGenerated/Sound/** | Generator modified to generate AttunementComponentAttachment |
+| tb-0152 | done | 1.2 | Fix 1 red rep atom(s): FFootstepEvent | core/game_code_generator.py; excl:generator | [rep] 61 batteries, 834 atoms, 809 reps this pass (1 failing |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |
 | tb-0014 | done | 1.2 | Sprint_Input: input binding: the physical key drives the sta ⇐ tb-0013 | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/GameMode/** | Sprint_Input/binding atom GREEN x2 (LeftShift polled via Pla |

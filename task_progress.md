@@ -1626,3 +1626,24 @@ Chosen by core.rehearsal (score 0.91, p_success 0.6, evidence: no history (explo
 - tb-0140 (Witness: Shelter_Habitat_Lighting) remains open, blocked by sub-011 holding tb-0139 (Shelter_Habitat_Materials) on PIE resource. Once sub-011 releases, tb-0140 can be claimed.
 - Social_Trade beat expects (`[NPCTrade] Player within trade range`, `[NPCTrade] Trade interaction started`) have failed 5x and never passed — the UE_LOG markers exist in NPCTradeComponent.cpp but NPCs may not spawn in PIE level. This is a known wall, not addressed in this session.
 - Malcolm WARN: generated_loc near wall (check current status)
+
+---
+
+# Session 2026-07-18 (sub-17) — tb-0152 Fix 1 red rep atom(s): FFootstepEvent DONE
+
+## Work Completed
+| Commit | Task | Fix |
+|--------|------|-----|
+| (generator change) | tb-0152 Fix 1 red rep atom(s): FFootstepEvent | Added generate_footstep_event_struct_files() to core/game_code_generator.py producing Source/Chimera/ProceduralGenerated/FFootstepEvent.h with plain struct FFootstepEvent mirroring FAudioVisualSyncEvent pattern |
+
+## Details
+- **Classification**: UNSPAWNED component — FFootstepEvent should exist in Source/ but hadn't been generated
+- **Fix**: Added `generate_footstep_event_struct_files()` method to GameCodeGenerator that produces a plain C++ struct (no USTRUCT/GENERATED_BODY) containing ESurfaceMaterialType SurfaceMaterial, FVector Location, float SpeedMagnitude, float AudioVolume, double TriggerTime
+- **Rep engine**: 809 reps this pass, FFootstepEvent: atom_e9783393af92 passed=1 (identity), atom_f4ce5ca22d96 passed=1 (enrolled) — both atoms now green
+- **UBT compilation**: FFootstepEvent.h compiles cleanly; full build fails on pre-existing VoiceEntity.h errors (undeclared VoiceStartSound/VoiceEndSound) and test file exception handler issues — unrelated to this session's changes
+- **Closure**: Report waiver accepted for build_evidence (pre-existing failures prevent any passing build); Coin verdict VERIFIED (confidence 0.95)
+
+## For the NEXT agent
+- FFootstepEvent identity atom is now green; the feature is enrolled in curriculum
+- Pre-existing VoiceEntity.h build errors remain — not caused by this session's changes
+- subsystem_root has 1 red atom remaining (unrelated to FFootstepEvent)

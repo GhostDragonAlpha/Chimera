@@ -71888,6 +71888,74 @@
       "links": [],
       "recorded_by": "rep_engine.py",
       "run_id": "run_ddb71e619e16"
+    },
+    {
+      "id": "discovery_df76b20db348341b",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T04:04:44.622555",
+      "feature": "Fix 1 red rep atom(s): FFootstepEvent",
+      "campus_sources": [],
+      "web_sources": [
+        "core/game_code_generator.py generator patterns, ChimeraMovementComponent.h ESurfaceMaterialType enum definition, FAudioVisualSyncEvent struct pattern in ChimeraMovementComponent.cpp, rep_engine.py atom generation and tend workflow"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Fix 1 red rep atom(s): FFootstepEvent",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Fix 1 red rep atom(s): FFootstepEvent': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_617f79cca2cc"
+    },
+    {
+      "id": "discovery_63fd456b0fc4d081",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T04:04:49.806081",
+      "feature": "Fix 1 red rep atom(s): FFootstepEvent",
+      "campus_sources": [],
+      "web_sources": [
+        "core/game_code_generator.py generator patterns, ChimeraMovementComponent.h ESurfaceMaterialType enum definition, FAudioVisualSyncEvent struct pattern in ChimeraMovementComponent.cpp, rep_engine.py atom generation and tend workflow"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Fix 1 red rep atom(s): FFootstepEvent",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Fix 1 red rep atom(s): FFootstepEvent': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_cc5d1ad612a3"
+    },
+    {
+      "id": "phase_f4adc38148ac59e4",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T04:04:50.193385",
+      "phase": "Fix 1 red rep atom(s): FFootstepEvent",
+      "result": "[rep] 61 batteries, 834 atoms, 809 reps this pass (1 failing) \u2014 FFootstepEvent: atom_e9783393af92 passed=1 (identity), atom_f4ce5ca22d96 passed=1 (enrolled). Generator added generate_footstep_event_struct_files() producing Source/Chimera/ProceduralGenerated/FFootstepEvent.h with plain struct FFootstepEvent containing ESurfaceMaterialType SurfaceMaterial, FVector Location, float SpeedMagnitude, float AudioVolume, double TriggerTime.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Fix 1 red rep atom(s): FFootstepEvent",
+      "error_category": "none",
+      "fix_description": "Phase 'Fix 1 red rep atom(s): FFootstepEvent' complete: [rep] 61 batteries, 834 atoms, 809 reps this pass (1 failing) \u2014 FFootstepEvent: atom_e9783393af92 passed=1 (identity), atom_f4ce5ca22d96 passed=1 (enrolled). Generator added generate_footstep_event_st",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "FFootstepEvent identity atom fixed by adding generator method that produces a plain C++ struct mirroring FAudioVisualSyncEvent pattern. Pre-existing VoiceEntity.h build failures prevent full UBT pass but FFootstepEvent.h compiles cleanly.",
+      "pain_verdicts": {
+        "phase_1b01fac303f3c24e:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_cc5d1ad612a3"
     }
   ],
   "edges": [
