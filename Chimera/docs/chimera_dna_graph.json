@@ -70771,6 +70771,193 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_a800901c0dc1"
+    },
+    {
+      "id": "simtest_d5d782fc29b5648b",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T01:16:36.360762",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_system_features",
+      "demo": "system_features",
+      "beats_total": 4,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "system_economy_check",
+          "outcome": "failed",
+          "features": [
+            "System_Economy"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[Economy]",
+                "note": "System_Economy witness: economy system must log economic activity"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "system_save_load_check",
+          "outcome": "failed",
+          "features": [
+            "System_SaveLoad"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[SaveLoad]",
+                "note": "System_SaveLoad witness: save/load system must log save activity"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "system_factions_check",
+          "outcome": "blocked",
+          "features": [
+            "System_Factions"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: Failed to execute inspect: Request 1562be64-b117-47c4-b6a9-e3bd522727ad timed out after 30000ms"
+            }
+          ]
+        },
+        {
+          "beat": "system_missions_check",
+          "outcome": "blocked",
+          "features": [
+            "System_Missions"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: Failed to execute inspect: Request 485b155b-50f4-45bb-8ed4-34cd11d9081c timed out after 30000ms"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_system_features.json",
+      "temperature": "[SIM] 0/4 beats reached in 'system_features'. Failures: system_economy_check (failed: expect {\"log_contains\": \"[Economy]\", \"note\": \"System_Economy witnes -> log_hit=False); system_save_load_check (failed: expect {\"log_contains\": \"[SaveLoad]\", \"note\": \"System_SaveLoad witn -> log_hit=False); system_factions_check (blocked: {\"error\": \"inspect.runtime_report: Failed to execute inspect: Request 1562be",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'obs_system_features': 0/4 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3f609a988aeb"
+    },
+    {
+      "id": "surprise_5af5c1101ffdf3a1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T01:16:36.736526",
+      "context": "Sleepwalker expected beat 'system_economy_check' to be reachable (system_features)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[Economy]\", \"note\": \"System_Economy witness: economy system must log economic activity\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[Economy]\", \"note\": \"System_Economy witness'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3f609a988aeb"
+    },
+    {
+      "id": "surprise_84f088d499ad3125",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T01:16:37.055459",
+      "context": "Sleepwalker expected beat 'system_save_load_check' to be reachable (system_features)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"[SaveLoad]\", \"note\": \"System_SaveLoad witness: save/load system must log save activity\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"[SaveLoad]\", \"note\": \"System_SaveLoad witne'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3f609a988aeb"
+    },
+    {
+      "id": "surprise_ff2257ce25b80456",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T01:16:37.351043",
+      "context": "Sleepwalker expected beat 'system_factions_check' to be reachable (system_features)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: Failed to execute inspect: Request 1562be64-b117-47c4-b6a9-e3bd522727ad timed out after 30000ms\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: Failed to execute inspect: Request 1'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3f609a988aeb"
+    },
+    {
+      "id": "surprise_4af1cf4e22beb156",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T01:16:37.658402",
+      "context": "Sleepwalker expected beat 'system_missions_check' to be reachable (system_features)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: Failed to execute inspect: Request 485b155b-50f4-45bb-8ed4-34cd11d9081c timed out after 30000ms\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: Failed to execute inspect: Request 4'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3f609a988aeb"
     }
   ],
   "edges": [

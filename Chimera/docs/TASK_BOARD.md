@@ -1,14 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T00:38:58+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T01:07:49+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
+| tb-0139 | claimed | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie | sub-11 |
 | tb-0140 | open | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0141 | open | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
