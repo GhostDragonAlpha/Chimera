@@ -1,0 +1,67 @@
+{
+  "name": "director",
+  "author": "LLM (sub-23, tb-0167), from THE_COMPOSITIONAL_WORLD_MODEL.md Sec.4's UDirectorSubsystem row and the seed's own UDirectorSubsystem code. Calibrated against measured output of core/trainables/director.py, not guessed.",
+  "scenario": "UDirectorSubsystem is 'the circadian dungeon master' -- an ecology, not a script. The seed states three things that must stay true no matter how the cadences are tuned: the FIRST stranger of a generation can never pay (the Yard teaches Law 2 -- help before commerce -- before it ever asks for payment); pirates 'only bother the visibly rich during storms', i.e. wealth AND storm both, never either alone; and the world should feel populated -- Malcolm's active_dots band [2,24] (read live via `python -m core.malcolm status`, band experience/provisional as of 2026-07-17) -- without ever overwhelming it. Those three are HARD gates: the optimiser may tune cadence, scenario mix, the pay fraction and the pirate rate, but it may never trade away the design rules themselves. Encounter pacing (how far apart arrivals feel) and scenario variety are softer, banded/maximized quality terms.",
+  "constraints": [
+    {
+      "measure": "pirate_gate_violations",
+      "kind": "at_most",
+      "max": 0.0,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE GATE for 'pirates only bother the visibly rich during storms'. The vision writes this as an unconditional Python `if credits>200 and storm_active and roll(0.02*dt)` -- no numeric knob at all -- so core/trainables/director.py gives the rule two REACHABLE loci seeded at 0.0 (pirate_storm_gate_bypass_fraction, pirate_wealth_gate_bypass_fraction; TRAINING_PROTOCOL.md Sec.6, the dead-gene trap: a rule mutation can never reach is a comment, not a test). Verified live before writing this file: with either bypass forced to 1.0, pirate_gate_violations jumps from 0 to hundreds/thousands across the worst of 6 restarts -- the gate is not decorative, it visibly fires. At the seed (both loci at 0.0) it measures exactly 0 across every restart tested."
+    },
+    {
+      "measure": "first_stranger_paid_fraction",
+      "kind": "at_most",
+      "max": 0.0,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE GATE for the seed's other unconditional rule: `can_pay = False if first_of_gen else ...` (CHIMERA_VISION.py:3923). Same dead-gene discipline: first_stranger_can_pay_fraction is seeded at 0.0 and IS reachable by mutation -- verified live: forcing it to 0.6 pushed the worst-of-6-restarts fraction to 0.8 (small-sample variance over ~10 first-strangers per restart, expected). If even the WORST of N honest restarts shows a first stranger paying, the rule the whole Yard's tutorialisation depends on is gone, not just bent."
+    },
+    {
+      "measure": "concurrent_dots_p95_worst_low",
+      "kind": "at_least",
+      "min": 2.0,
+      "weight": 2.5,
+      "hard": true,
+      "why": "Malcolm's active_dots FLOOR [2,24] (experience/provisional; `python -m core.malcolm status`, 2026-07-17). p95 (not mean or max) is the representative fact -- a rare spike or a rare lull should not decide the gate, the TYPICAL busy state should. Reported as the WORST (lowest) of N restarts' own p95, per TRAINING_PROTOCOL Sec.3.5, so a genome cannot pass on a lucky draw. Verified live: at the seed's own cadences (stranger 1.0-2.2d, trader 0.7-1.5d) this sits at 1.0 -- the seed itself is expected to sit ON or BELOW this floor (exactly like economy.json's seed scoring 0.0 on rate_decay) -- but pushing cadence to the densest core/trainables/director.py's mutate() allows (0.2-0.3d both archetypes) measured 6.0, comfortably clear. The floor is reachable; it is not a wall nothing can climb."
+    },
+    {
+      "measure": "concurrent_dots_p95_worst_high",
+      "kind": "at_most",
+      "max": 24.0,
+      "weight": 2.5,
+      "hard": true,
+      "why": "Malcolm's active_dots CEILING [2,24], same band, same live-read provenance as the floor above, reported as the WORST (highest) of N restarts. A dungeon master that floods the Yard with dots stops being 'a circadian rhythm' and starts being noise. At the densest cadence tested this sits at 7 -- well clear -- so this gate is a genuine safety fence rather than a wall the genome is already pressed against; if training ever pins it, that is the signal to revisit either the cadence bounds or the pirate-swarm finding below."
+    },
+    {
+      "measure": "pirate_spawns_correct_total",
+      "kind": "at_least",
+      "min": 5.0,
+      "weight": 1.0,
+      "why": "THE ESCAPE HATCH, CLOSED BEFORE TRAINING RATHER THAN AFTER (TRAINING_PROTOCOL Sec.3's lesson, applied pre-emptively): `pirate_gate_violations <= 0` is satisfied EITHER by a genuinely storm-and-wealth-gated pirate presence, OR trivially by a genome that mutates pirate_spawn_rate_per_sec toward its floor and never spawns a pirate at all. The second is a lollipop -- zero pirates is not an ecology, it is the absence of one. This floor is set far below what was actually measured at the seed (2,300-2,600 correct-bucket spawns across 6 restarts) purely to block the zero-pirate degenerate; it is not a tuning target."
+    },
+    {
+      "measure": "encounter_gap_mean_worst_low",
+      "kind": "at_least",
+      "min": 0.15,
+      "weight": 1.5,
+      "why": "BANDED ENCOUNTER PRESSURE, floor half. Reported as the worst (smallest, burstiest) of N restarts' own mean gap between successive stranger/trader arrivals. Below this, encounters start to overlap into a scrum rather than a rhythm. Measured at the densest cadence tested (0.2-0.3d both archetypes, the same genome that clears the active_dots floor): 0.125 days -- just under this floor, which is an honest, informative tension: the SAME extreme densification that satisfies the concurrent-dots gate pushes gap pacing to its edge. That tension is the point of a banded (not maximized) pressure term; the optimiser must find a cadence that satisfies BOTH, not max out either alone."
+    },
+    {
+      "measure": "encounter_gap_mean_worst_high",
+      "kind": "at_most",
+      "max": 3.0,
+      "weight": 1.5,
+      "why": "BANDED ENCOUNTER PRESSURE, ceiling half. Reported as the worst (largest, loneliest) of N restarts' own mean gap. Above this the Yard reads as abandoned rather than patient. Seed measures 0.63-0.67 days here, comfortably inside; the ceiling exists to stop the optimiser drifting cadence upward chasing some OTHER term (e.g. easing the concurrent-dots ceiling) at the cost of an empty-feeling world."
+    },
+    {
+      "measure": "scenario_entropy_norm",
+      "kind": "maximize",
+      "ref": 0.5,
+      "weight": 2.0,
+      "why": "THE >=1 MAXIMIZE TERM this file is required to carry (TRAINING_PROTOCOL.md Sec.3.2, the satisficer trap: a spec made only of walls gets you exactly the walls). Normalised Shannon entropy (0..1) of the REALISED stranger `need` draws across the whole run -- not the assigned weights, the actual sampled mix -- so it rewards a world where all six SCENARIOS ('suit hissing' through 'carries a body') genuinely show up, not just a config that claims they will. Non-saturating (x/(x+ref)); measured at the seed: 0.95-0.96, so ref=0.5 still leaves real gradient (sat~0.66-0.68) rather than sitting the term at its ceiling from generation zero. Never asks for a specific mix -- naming the answer would only rediscover this author's own assumption (TRAINING_PROTOCOL Sec.4's own rule: encode physics/a measurable consequence, never taste)."
+    }
+  ]
+}

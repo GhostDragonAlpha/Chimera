@@ -72378,6 +72378,119 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_8e4f2c07f19c"
+    },
+    {
+      "id": "discovery_869b22b0ed39f723",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T04:52:37.475827",
+      "feature": "tb-0166 CWM rung 1: memorial domain (star brightness curve, ",
+      "campus_sources": [],
+      "web_sources": [
+        "CHIMERA_VISION.py (grepped STAR/brightness_k/SACRIFICE_WEIGHTS/NightLightLevel/EvaluateEnding, read lines 3130-3200 and 3740-3830: UStarMemorialSubsystem, USacrificeLogComponent, UCostlessLifeEndingDiagnostic). docs/THE_COMPOSITIONAL_WORLD_MODEL.md (full, esp. section 4's UStarMemorialSubsystem row "
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0166 CWM rung 1: memorial domain (star brightness curve, ",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0166 CWM rung 1: memorial domain (star brightness curve, ': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_1e07faa761a7"
+    },
+    {
+      "id": "phase_2c8371709d35684b",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T04:52:37.853069",
+      "phase": "tb-0166 CWM rung 1: memorial domain (star brightness curve, Law 2)",
+      "result": "tb-0166 (CWM rung 1, memorial domain) CLOSED done. Wrote core/trainables/memorial.py (239 lines: seed/mutate/measure trainable domain) + docs/objectives/memorial.json (67 lines: 8 constraints, 3 hard gates, 2 non-saturating maximize terms) + docs/objectives/memorial.trained.json (32 lines, trainer output). genome={brightness_k, bright_lights_yard, weights{8 SACRIFICE_WEIGHTS kinds}} grepped verbatim from CHIMERA_VISION.py (STAR=dict(brightness_k=6.0,bright_lights_yard=0.75) line 3153; SACRIFICE_WEIGHTS line 3141; b=1-exp(-w/k) curve lines 3760/3816). Trained inside membrane \"memorial_tb0166\" (python -m core.membrane run --name memorial_tb0166 -- python -m core.trainer --domain core.trainables.memorial --objective docs/objectives/memorial.json --pop 300 --gens 300; applied; burned): 90,000 evals in 22.0s (4,094 evals/sec). WINNER score 0.8392 (seed 0.7136). Measures: monotonicity_violations=0 (HARD sat1.00), frac_dim_costless=1.0 (HARD sat1.00), frac_bright_generous=0.86 (HARD sat1.00), min_tier_separation=0.2589 (maximize sat0.63, up from seed 0.1286), min_kind_gap=0.02335 (maximize sat0.32, down from seed 0.0485), night_light_final_mean=0.4365 (band sat1.00, seed 0.5 was OUTSIDE the band), night_light_at_cap_frac=0.5375 (sat0.98, seed was 1.0), night_light_zero_frac=0.0125 (sat1.00). PINNED (verbatim): \"monotonicity_violations = 0 is riding its max (0)\" / \"frac_bright_generous = 0.86 is riding its min (0.85)\" / \"night_light_final_mean = 0.4365 is riding its max (0.45)\" -- a genuine structural tension: the same bright_lights_yard/brightness_k that make generous-tier sacrifice reliably visible also feed the (fixed, non-genome) night-light sum toward its cap. Enrolled UStarMemorialSubsystem in core.curriculum (2-atom starter battery); ran core.rep_engine tend (815 reps this pass; UStarMemorialSubsystem 2 reps, 1/2 green -- the tree_contains identity atom is red because the class has no Source/DSL/beat presence yet, which is Rung 2's job per docs/THE_COMPOSITIONAL_WORLD_MODEL.md section 8, not this Rung-1 task's scope). agent_tunnel exit --outcome done PASSED mechanical closure-report validation (could_not_verify present; no Source changes so build n/a; recipe demands no witness so n/a) but the advisory Report Judge (Coin) returned NOT THE SAME COIN / NEEDS_REFINEMENT (confidence 0.95), citing \"memorial.py absent from commit log\" -- root-caused (not disputed as a false claim): I had `git add`ed the 2 new files so membrane.seal()'s `git stash create` would capture them (untracked files are otherwise invisible to it, confirmed by a first failed run: FileNotFoundError), and closure_report.action_log() only checks `git diff --stat` (unstaged) + `git diff --stat sha..HEAD` (committed) -- it never checks staged/cached diffs, so my genuinely-staged files were invisible to the judge's evidence. Files are verifiably present via `git status` (now unstaged back to untracked, confirmed). Non-blocking (advisory mode); recorded as-is.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0166 CWM rung 1: memorial domain (star brightness curve, Law 2)",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0166 CWM rung 1: memorial domain (star brightness curve, Law 2)' complete: tb-0166 (CWM rung 1, memorial domain) CLOSED done. Wrote core/trainables/memorial.py (239 lines: seed/mutate/measure trainable domain) + docs/objectives/memorial.json (67 lines: 8 constraints, 3 hard ",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "core.closure_report.action_log() calls git diff --stat (unstaged) and git diff --stat sha..HEAD (committed) but NEVER checks staged/cached changes -- any subagent who git-adds new files before closing (e.g. so core.membrane's git-stash-create snapshot captures them) will see the Coin's brain-judgment report files as absent and return NOT_THE_SAME_COIN/NEEDS_REFINEMENT even though the work is entirely real. Confirmed live this session (tb-0166, confidence 0.95 false mismatch on genuine memorial.py/memorial.json).",
+        "core.membrane.seal() snapshots via git stash create (or HEAD if clean), which captures TRACKED changes only -- brand-new untracked domain/objective files (the exact core.trainer workflow: author core/trainables/<f>.py + docs/objectives/<f>.json, THEN train in a membrane) are silently excluded and the trainer fails with FileNotFoundError inside the membrane unless the agent knows to git add first. Confirmed live this session: first membrane run failed until I staged both new files."
+      ],
+      "inheritance": "Training a data domain against a membrane requires staging brand-new files first, because core.membrane.seal()'s git-stash-create snapshot silently excludes untracked files. Staging those files then makes them invisible to closure_report.action_log()'s evidence-gathering (unstaged + committed diffs only, never staged/cached), so a perfectly genuine deliverable can score a false NEEDS_REFINEMENT from the Coin's brain-judgment step -- verify by git status, never by trusting an advisory judge that never looked at the index. A curve trained honestly against adversarially-probed hard gates surfaced a real structural tension between 'sacrifice reliably reads as bright' and 'the night-light budget stays sub-cap', both pinned at the same winner -- exactly the exploit-is-the-product finding the next objective-repair pass should read, not paper over.",
+      "pain_verdicts": {
+        "phase_224c1a84c61a9429:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_1e07faa761a7"
+    },
+    {
+      "id": "surprise_79758082f3d10915",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T04:54:18.230603",
+      "context": "tb-0165: closed the weather trainable (core/trainables/weather.py + docs/objectives/weather.json + weather.trained.json) through agent_tunnel exit, all 3 files verified present and correct via git diff --cached --stat and wc -l",
+      "expectation": "the closure report's auto-attached action_log would reflect the actual deliverables, and the Coin would judge claim-vs-evidence against that real record",
+      "reality": "action_log only showed an unrelated docs/TASK_BOARD.md diff; core/closure_report.py:142 calls bare 'git diff --stat' which is blind to staged-new files (weather.py/weather.json had to be 'git add'-ed for core.membrane's 'git stash create' to see them at all) and to ALL untracked files (weather.trained.json, the trainer's own output). The Coin verdicted NEEDS_REFINEMENT citing files 'missing from git changes' that were genuinely present -- a false negative baked into the evidence-gathering, not a judgment error. Recurs for every future train-a-new-domain-in-a-membrane task.",
+      "lesson_hint": "action_log() should diff against HEAD (git diff --stat HEAD, catching staged+unstaged) and separately list untracked paths from git status --porcelain, not rely on bare git diff --stat",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the closure report's auto-attached action_log would reflect the actual deliverab' but 'action_log only showed an unrelated docs/TASK_BOARD.md diff; core/closure_report'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_223424a1783d"
+    },
+    {
+      "id": "discovery_b0d4e13335e37ea4",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T04:55:26.595605",
+      "feature": "CWM rung 1: weather domain - train the storm cadence (Law-4 ",
+      "campus_sources": [],
+      "web_sources": [
+        "TRAINING_PROTOCOL.md full (S3.5 honest eval N-restarts-keep-worst, S4 objective authoring/physics-not-taste, S6 dead-gene trap); THE_COMPOSITIONAL_WORLD_MODEL.md S4 (UWeatherSubsystem row) + S5 (weather x footprints seam); MASTER_ONBOARDING.md Parts I/II/IV; CHIMERA_VISION.py WIND table L1724-1726, "
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/CWM rung 1: weather domain - train the storm cadence (Law-4 ",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'CWM rung 1: weather domain - train the storm cadence (Law-4 ': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_b99fc9a4fcdf"
+    },
+    {
+      "id": "phase_7da20f4f276e7c2d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T04:55:26.982484",
+      "phase": "CWM rung 1: weather domain - train the storm cadence (Law-4 tension)",
+      "result": "Wrote core/trainables/weather.py (305 lines: seed/mutate/measure) + docs/objectives/weather.json (76 lines: 9 constraints, 2 HARD gates, 1 maximize) from the live WIND table (CHIMERA_VISION.py:1724-1726) and UWeatherSubsystem mechanics (:3641-3698). Trained inside core.membrane (m1784350070, containment HELD, applied+burned): 120,000 evals in 4.0s = 30,062/sec, score 0.9546. PINNED (verbatim): storm_interval_days_mean=14.35 riding max(14); lifetime_period_ratio=1.005 riding max(0.999); longest_footprint_lifetime_days=20.91 riding max(21); storm_duration_hours_max=2.915 riding max(3). Enrolled UWeatherSubsystem + rep_engine tend (2 reps, streak 1). Closed tb-0165 done via agent_tunnel; Coin verdicted NEEDS_REFINEMENT but on a CONFIRMED FALSE PREMISE (action_log only captured an unrelated TASK_BOARD.md diff, blind to my staged-new + untracked files) -- reported as a GATE DEFECT to CAPCOM (sig_01784350430125526300_0183968_0000) and surprise_79758082f3d10915.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/CWM rung 1: weather domain - train the storm cadence (Law-4 tension)",
+      "error_category": "none",
+      "fix_description": "Phase 'CWM rung 1: weather domain - train the storm cadence (Law-4 tension)' complete: Wrote core/trainables/weather.py (305 lines: seed/mutate/measure) + docs/objectives/weather.json (76 lines: 9 constraints, 2 HARD gates, 1 maximize) from the live WIND table (CHIMERA_VISION.py:1724-17",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Rung 2 (DSL/generator wiring) may find the trained storm_duration_min_hi=175.4 (2.9h storms) reads as absurdly long in actual PIE play regardless of what the objective's numbers say -- play it before trusting it.",
+        "dead_calm_fraction hit an exact 0.0 floor by exploiting this domain's own GUST_PULSE_HOURS=8s modeling constant (gust_interval_mean_s shrank to 6.56s, below it), not a genuine WIND insight -- retraining without revisiting GUST_PULSE_HOURS will just re-trigger the same exploit.",
+        "weather.py does not model the footprint ring-buffer's 4096-entry FIFO cap (CHIMERA_VISION.py:4446) -- if real play generates footprints faster than the assumed PRINT_RATE_PER_DAY=30/day, volume eviction could dominate lifetime before any storm fires, invalidating this trainable's erasure/lifetime story; measure the real footstep rate in PIE."
+      ],
+      "inheritance": "Training a brand-new domain inside core.membrane requires staging (git add) new files first because membrane.seal()'s 'git stash create' does not capture untracked files -- but staging then blinds core/closure_report.py's action_log() (bare 'git diff --stat', no --cached) to exactly those files, producing a false NEEDS_REFINEMENT Coin verdict on genuinely complete work. The trained weather genome pushes storms toward rare-but-long (up to 2.9h) rather than the seed's frequent-but-brief pattern -- read the PINNED walls before trusting docs/objectives/weather.trained.json at face value; do not wire it into the DSL/generator (rung 2) unverified.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_b99fc9a4fcdf"
     }
   ],
   "edges": [
