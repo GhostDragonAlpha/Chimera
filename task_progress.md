@@ -1,3 +1,31 @@
+# Session 2026-07-18 (fable-1) — THE COMPOSITIONAL WORLD MODEL named; rung 1 on the board
+
+The human named the destination: **a world model with everything specific trained
+SEPARATELY** — the counter-position to monolithic ("trained everything") neural world
+models. Full-system read preceded writing (WORKFLOW_SPEC, MASTER_ONBOARDING,
+TRAINING_PROTOCOL, THE_EVOLUTION_ENGINE, GENERATION_PROTOCOL, the Contract, GAUNTLET,
+RESULT_GRADING_RUBRIC, SLEEPWALKER/TERRARIUM/MATTER designs, SUCCESSOR_RUNBOOK, seed §10).
+
+- **Thesis doc: `Chimera/docs/THE_COMPOSITIONAL_WORLD_MODEL.md`.** Core identity: this
+  workflow already IS a per-piece training harness (the curriculum's founding words:
+  "if an AI was one feature, think of it like that"); the seed's §10 is a shelf of
+  untrained models (every subsystem = authored C++ shell around trainable data tables);
+  SEAMS (measurable claims about two trained systems interacting) are the one genuinely
+  new machinery; ladder rungs 1–6 each with a KILL IF. Rungs 1–3 need zero new engine code.
+- **Board: tb-0165 (weather cadence / Law-4 tension), tb-0166 (star brightness curve /
+  Law 2), tb-0167 (director encounter ecology)** — rung 1; each recipe is self-contained
+  (domain + objective + membrane train + pins, per TRAINING_PROTOCOL §4/§6; seed design
+  rules are HARD gates the optimiser cannot trade away).
+- Earlier this session: LM Studio hardcoded model pins purged repo-wide (251d2d4) and
+  server-side JIT model loading DISABLED (`justInTimeModelLoading: false` in
+  `~/.lmstudio/.internal/http-server-config.json` — takes effect on LM Studio restart or
+  the Developer-tab toggle); double-load class dead at the choke point.
+
+NEXT: the witness backlog continues as helm/CAPCOM rank it; then tb-0165/0166/0167
+(recipes on the board — claim with `--id`).
+
+---
+
 # Session 2026-07-18 (sub-16) — tb-0141 Witness: Travel_Ship_Exterior DONE
 
 ## Work Completed
