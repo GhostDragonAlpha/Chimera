@@ -1,0 +1,22 @@
+{
+  "objective": "granular",
+  "score": 0.930981836331134,
+  "measures": {
+    "unsettled_worst": 0.0,
+    "angle_mean_deg": 40.02772059848177,
+    "angle_spread_deg": 1.553067509842073,
+    "aspect_angle_mean_deg": 37.559239200335334,
+    "angle_consistency_deg": 2.4684813981464417,
+    "settle_sweeps_worst": 2205.0,
+    "avalanche_mean_worst": 9.25,
+    "avalanche_max_worst": 37.0,
+    "probe_locality_worst": 0.0975609756097561,
+    "topples_per_grain_mean": 12.217576923076923,
+    "frozen_fraction_mean": 0.0
+  },
+  "genome": {
+    "h_crit_mean": 1.181009059070868,
+    "p_topple": 0.5154120105309726,
+    "p_stick": 0.0
+  }
+}

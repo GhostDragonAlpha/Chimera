@@ -74893,6 +74893,53 @@
       "links": [],
       "recorded_by": "-c",
       "run_id": "run_4deef62125ad"
+    },
+    {
+      "id": "discovery_e2312432df4e637d",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T20:42:50.740761",
+      "feature": "tb-0189 levitation hunt closed + tb-0192 granular emergence ",
+      "campus_sources": [],
+      "web_sources": [
+        "Lunar Sourcebook 1991 ch.9 (Carrier/Olhoeft/Mendell): lunar soil friction angle 30-50 deg, repose ~35-40 deg (objective band); Carrier 2003 D50=72um (already the matter-library pin); Bak-Tang-Wiesenfeld 1987 self-organized criticality (sandpile lineage - we sit deliberately subcritical); Janssen 189"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0189 levitation hunt closed + tb-0192 granular emergence ",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0189 levitation hunt closed + tb-0192 granular emergence ': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_9dcec450aec8"
+    },
+    {
+      "id": "phase_0c0ae5266a19994d",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T20:42:51.144664",
+      "phase": "tb-0189 levitation hunt closed + tb-0192 granular emergence rung v0 trained + 4 handed defect fixes",
+      "result": "UBT verbatim: 'Result: Succeeded. Total execution time: 18.20 seconds' (flight template fix regen) and 'Result: Succeeded. Total execution time: 44.83 seconds' (get_nodes routing), build node mutation_88d332e25b6d. Witness: simtest_294b7002d65b7a26 (RIG FAULT z=130->3130, the before), simtest_12a08e5b4755f972 + simtest_549d2c42e57f4a6e (rig check passes, delta_z within tolerance, two fresh boots). Trainer verbatim: '5,760 evaluations in 1456.8s = 4 evals/sec, best score 0.9310' - emergent angle 40.03 deg (researched band 33-41), spread 1.55, unsettled_worst=0 HARD PASS, avalanche_max 37/2600, pinned walls: angle_mean@41-max + unsettled@0.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0189 levitation hunt closed + tb-0192 granular emergence rung v0 trained + 4 handed defect fixes",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0189 levitation hunt closed + tb-0192 granular emergence rung v0 trained + 4 handed defect fixes' complete: UBT verbatim: 'Result: Succeeded. Total execution time: 18.20 seconds' (flight template fix regen) and 'Result: Succeeded. Total execution time: 44.83 seconds' (get_nodes routing), build node mutation",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "Witness on ALREADY-FIXED binaries climbed once (simtest_294b7002d65b7a26, boot #2, z=130->3130) then never again across two boots and three grounded runs - unexplained single occurrence. If the tb-0184 RIG FAULT fires again, run the live isolation probe DURING the climb (unpossessed-twin comparison + component kills) before touching any code; do not indict features."
+      ],
+      "inheritance": "Emergence is trainable on the first try: a local-rule genome (topple threshold mix, kinetics, cohesion) selected against researched emergent numbers (lunar repose, fixed-point settling, avalanche locality) produced a 40-degree material nothing programmed - the box-of-sand thesis and the sleep thesis are now measured facts. The bridge's spawn_actor during PIE lands in the PERSISTENT level, not the PIE world (surprise_52861a1e95a4fc6b) - PIE spawn-and-observe experiments silently test the wrong world. tb-0189's historical climber is boot-state-dependent, not a standing code path: the only ticking position writer in the repo (flight template full-thrust landmine) is fixed at the generator, and the tb-0184 RIG FAULT tripwire attributes any recurrence at reset time.",
+      "pain_verdicts": {
+        "phase_c343f5ecd1c65d22:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_9dcec450aec8"
     }
   ],
   "edges": [
