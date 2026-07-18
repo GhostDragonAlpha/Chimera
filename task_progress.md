@@ -1,3 +1,49 @@
+# Session 2026-07-18 (fable-1 LEAD) — Sonnet fleet: 4 subagents, all verified + integrated
+
+Deployed 4 Sonnet subagents at disjoint lanes (disjoint from the live pi fleet's
+pie/collapse work). ALL FOUR verified INDEPENDENTLY by the Lead (git diff additive,
+seed matches CHIMERA_VISION.py, winner is trainer output not hand-faked, images LOOKED
+at) and integrated by-path. Both brains up throughout (ds4 + LM Studio adopted).
+
+**THE FLAGSHIP — sub-20 / tb-0168 (Substrate rung A+B): SURVIVES, Lead-verified by LOOKING.**
+Brick->splat emission is REAL: 18,897 Gaussians from the grown limb's tissue voxels,
+relit under a 6-angle moving light vs an INDEPENDENT marching-cubes-mesh rasterizer,
+3% mean MAE, both relighting in the same direction (the -0.54 lum-corr is a noisy
+6-sample background stat — the images settle it). Gait-skinned splats ride the trained
+gait coherently. First visual proof of the physics-rendering unification: flesh emitted
+as splats, relit from KNOWN materials, nothing baked. Renders in Chimera/Saved/SplatEmit/
+(gitignored). Honest boundary: headless CPU REPRESENTATION proof, not performance/in-engine
+— that's rung D' (tb-0170). Code auto-flushed (de212b1).
+
+**CWM rung-1 domains — all 3 trained, verified, integrated:**
+- WEATHER (sub-21/tb-0165, 9079bef): Law-4 tension. score 0.955. PIN: storms want rare+long.
+- MEMORIAL (sub-22/tb-0166, 9079bef): Law 2 perceptual physics. score 0.839. PIN: winner
+  pinned between "generous reads bright" floor and "night-light sub-cap" ceiling — the fixed
+  0.18/star + 0.5 cap are candidates to promote INTO the genome at rung 2.
+- DIRECTOR (sub-23/tb-0167, 099deac+dff0f56): encounter ecology. score 0.953. All 3 design-rule
+  loci held at 0.0; gates proven WIRED (forcing a bypass -> thousands of violations).
+
+**TWO WORKFLOW BUGS the fleet surfaced (both fixed + pushed):**
+- action_log was blind to new/staged files -> false Coin NEEDS_REFINEMENT on every
+  train-a-domain task (a465727). Found independently by sub-21 AND sub-22.
+- demands_witness matched the VERB "beat" ("cannot beat the mesh") -> bogus witness demand
+  on a headless task (98b0f01). Found by sub-20.
+
+**GENERALIZABLE LESSON recorded (surprise_bdd8122a304aa9d8):** a hard gate checked ONLY
+naturalistically passes FALSELY when the sim never visits the violating cell (sub-23's
+0.127 bypass measured 0 violations because poor+storm never co-occurred). Fix generalizes
+to every domain: pair the naturalistic count with a forced-condition PROBE. Weather/memorial
+should get the same audit.
+
+**Follow-ups minted:** tb-0171 (membrane seal() excludes untracked files — hit by all 3
+domain authors; fix without weakening containment). sub-19 (pi fleet) still holds tb-0143's
+tunnel — live, not orphaned (tend reaped 0); leave it.
+
+NEXT: rung C (tb-0169 terrain shovel test) + rung D' (tb-0170 in-engine Substrate) now
+unblocked (dep tb-0168 done). CWM rung 2 = flow the trained tables into the DSL/generator.
+
+---
+
 # Session 2026-07-18 (fable-1, later) — PART II: THE SUBSTRATE ENGINE; rungs A/C/D′ on the board
 
 The human's second commission, in their own words across the design dialogue: matter

@@ -1,15 +1,14 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T05:05:11+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T05:25:45+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0143 | claimed | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie | sub-19 |
-| tb-0167 | claimed | 0.8 | CWM rung 1: director domain - train the encounter ecology | core/trainables/director.py, docs/objectives/director.json | sub-23 |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0142 | open | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
@@ -26,6 +25,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0158 | open | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0159 | open | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator |  |
+| tb-0171 | open | 0.7 | Infra: membrane seal() excludes untracked files (git stash c | core/membrane.py |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
@@ -95,6 +95,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0117 | done | 0.8 | Fix build: DemoPlayerController VFX include uses module-root | Source/Chimera/ProceduralGenerated/Demo/** | DemoPlayerController.cpp:15 include fixed to codebase idiom  |
 | tb-0118 | done | 0.8 | Fix build: Build.cs lacks UMG/Slate/SlateCore for generated  | core/build_orchestrator.py, Source/Chimera/Chimera.Build.cs | build_orchestrator required_modules += UMG/Slate/SlateCore ( |
 | tb-0123 | done | 0.8 | Fix 6 tautological beats in 4 files (false-accept evidence r | docs/beats/** | Fixed 6 tautological beats in 4 files: added actor_exists/lo |
+| tb-0167 | done | 0.8 | CWM rung 1: director domain - train the encounter ecology | core/trainables/director.py, docs/objectives/director.json | FILES: core/trainables/director.py (572 lines: seed/mutate/m |
 | tb-0096 | done | 0.75 | Fix confirmed pain: The 54 founding checkpoints are untested | Source/Chimera/** | auto-closed: pain phase_c2b05e119221ff60:P1 already disposit |
 | tb-0097 | done | 0.75 | Fix confirmed pain: walk_fast will keep failing until the Sh | Source/Chimera/** | auto-closed: pain phase_ac024b0d825b07d7:P1 already disposit |
 | tb-0098 | done | 0.75 | Fix confirmed pain: A future session may assume 'the Bridge  | Source/Chimera/** | auto-closed: pain phase_c67559a04eceaec4:P2 already disposit |
