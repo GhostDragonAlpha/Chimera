@@ -71872,6 +71872,22 @@
       "links": [],
       "recorded_by": "postflight.py",
       "run_id": "run_10e8950395c7"
+    },
+    {
+      "id": "phase_7fe98173a0c2deb4",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T03:57:50.091951",
+      "phase": "rep_promotion:subsystem/Characters",
+      "result": "tier 0 -> 1 (behaves) after 100 reps",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/rep_promotion:subsystem/Characters",
+      "error_category": "none",
+      "fix_description": "Phase 'rep_promotion:subsystem/Characters' complete: tier 0 -> 1 (behaves) after 100 reps",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "rep_engine.py",
+      "run_id": "run_ddb71e619e16"
     }
   ],
   "edges": [

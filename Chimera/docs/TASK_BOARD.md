@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T03:49:02+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T03:54:23+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,8 +8,7 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0150 | claimed | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator | sub-12 |
-| tb-0152 | open | 1.2 | Fix 1 red rep atom(s): FFootstepEvent | core/game_code_generator.py; excl:generator |  |
+| tb-0152 | claimed | 1.2 | Fix 1 red rep atom(s): FFootstepEvent | core/game_code_generator.py; excl:generator | sub-17 |
 | tb-0154 | open | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
 | tb-0155 | open | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie |  |
 | tb-0139 | open | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie |  |
@@ -21,6 +20,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
+| tb-0150 | open | 0.8 | Build toward the seed: FFootstepEvent | core/game_code_generator.py; excl:generator |  |
 | tb-0151 | open | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |

@@ -96,6 +96,20 @@
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
  },
  {
+  "id": "atom_0e6cf6b8b023",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAudioVolume\\b"
+  },
+  "desc": "UPROPERTY AudioVolume (FFootstepEvent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
+ },
+ {
   "id": "atom_102e3deba9bf",
   "feature": "subsystem/root",
   "tier": 1,
@@ -206,6 +220,20 @@
   },
   "desc": "UPROPERTY CurrentWeightShiftOffset (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
+  "id": "atom_33d0cdf6408f",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTriggerTime\\b"
+  },
+  "desc": "UPROPERTY TriggerTime (FFootstepEvent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
  },
  {
   "id": "atom_35cfa9379ed5",
@@ -430,6 +458,20 @@
   },
   "desc": "UPROPERTY FlightSystemsSpec (SatelliteSpecBindingsActor.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
+ },
+ {
+  "id": "atom_88ca30293419",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSpeedMagnitude\\b"
+  },
+  "desc": "UPROPERTY SpeedMagnitude (FFootstepEvent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
  },
  {
   "id": "atom_8c9e7301c87d",
@@ -698,6 +740,20 @@
   "provenance": "reflection:UPROPERTY:SatelliteSpecBindingsActor.h"
  },
  {
+  "id": "atom_d3a1af77dc30",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSurfaceMaterial\\b"
+  },
+  "desc": "UPROPERTY SurfaceMaterial (FFootstepEvent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
+ },
+ {
   "id": "atom_d3d96394990c",
   "feature": "subsystem/root",
   "tier": 1,
@@ -738,6 +794,20 @@
   },
   "desc": "UPROPERTY FootprintSizeZ (ChimeraMovementComponent.h) is used in a .cpp, not dead metadata",
   "provenance": "reflection:UPROPERTY:ChimeraMovementComponent.h"
+ },
+ {
+  "id": "atom_e14657cd5ea1",
+  "feature": "subsystem/root",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLocation\\b"
+  },
+  "desc": "UPROPERTY Location (FFootstepEvent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FFootstepEvent.h"
  },
  {
   "id": "atom_f043e076a6b0",
