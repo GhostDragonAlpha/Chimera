@@ -1,3 +1,41 @@
+# Session 2026-07-18 (fable-5) — tb-0189 DONE (levitation hunt), tb-0192 IN FLIGHT (granular emergence rung), 4 handed defects fixed
+
+- **tb-0189 CLOSED, criterion met, mechanism honestly partial**: the ONLY per-tick position writer in code was
+  the flight template's `ThrustInput = 1.0f; // Full thrust for testing` (full thrust EVERY tick +
+  SetActorLocation past CharacterMovement) — fixed at the GENERATOR (`ThrustAxis` input-driven, 0 default;
+  commit 1710208), regenerated, UBT 18.2s Succeeded (build node mutation_88d332e25b6d). BUT the rate
+  arithmetic (21k u/s unfocused vs ~1k focused = rate∝dt) says a 200-clamped mover can't be the historical
+  climber, and witness on ALREADY-FIXED binaries climbed once more (simtest_294b7002d65b7a26, z=130→3130),
+  then NEVER AGAIN across two fresh boots: unpossessed probe 0 u/s 8s BOTH pawns; witness rig-check passes
+  twice (simtest_12a08e5b4755f972, simtest_549d2c42e57f4a6e — beats now fail only on their honest
+  actor_exists Travel_Vehicle gap). Recorded hypothesis (not proven): depenetration ejection from stray
+  oversized session actors (×100-mesh era correlation). tb-0184 RIG FAULT tripwire guards recurrence.
+- **manage_blueprint get_nodes ROUTED** (was UNKNOWN_ACTION — missing from GraphSubActions, the exact bug
+  class the Wave-6B comment above it documents; auto-flush 0fb1f87): first-ever bridge BP-graph read.
+  BP_Astronaut EventGraph = 4 stub nodes (innocent); SCS = PickupComp + ChimeraMovementComp (both
+  position-innocent by full read). NEW TRAP (surprise_52861a1e95a4fc6b): `spawn_actor` during PIE lands in
+  the PERSISTENT level, not the PIE world — PIE spawn-and-observe experiments silently test the wrong world;
+  get/set_transform on existing pawns DO hit live PIE instances. `get_blueprint_scs` takes snake_case
+  `blueprint_path` ONLY.
+- **4 handed defects fixed + committed (1710208)**: material_appearance ROOT parents[2] (descriptors load:
+  7 keys, closes surprise_43c5a16e0f439c80); delete_actor→destroy_actor in bake_to_ue5 + photo_studio;
+  scene_model radius from live get_actor_bounds (table now fallback-only).
+- **tb-0192 granular emergence rung (CLAIMED, training in flight)**: `core/trainables/granular.py` —
+  stochastic sandpile height-field (quenched per-site thresholds resampled on landing, cohesion freezing,
+  walls, bounded-for totality, N=10 fixed-seed restarts worst-cased) + research-pinned
+  `docs/objectives/granular.json` (lunar regolith repose 33–41° per Carrier/Lunar Sourcebook; hard
+  fixed-point wall; avalanche locality climbing term; needle detectors). First smoke run emerged a FROZEN
+  DRIP-CASTLE CHIMNEY (p_stick + point pour) and the flank fit lied 0.0° — measure rebuilt honest
+  (percentile-band flank + aspect + consistency divergence; surprise_0a8748de89fd2afe). Trainer run
+  96×60 in background; READ THE PINNED WALLS before accepting a winner; rep atom "identity in
+  Source/DSL/beats" is correctly RED until the wiring lane. v1 (2D occupancy: arching/clogging/Beverloo)
+  is a named follow-up task.
+- **Doc: THE_COMPOSITIONAL_WORLD_MODEL.md §18** — the emergence rung + the human's big-bang worldgen
+  (cosmic rung = same thesis, tree-summed gravity as that rung's effective law; worldgen = play inside the
+  settled fixed point; Kepler residuals as the objective).
+
+---
+
 # Session 2026-07-18 (sub-36) — tb-0183 DONE: anisotropic ellipse splats; soft-MASK killed by a COLOR_0 wall; double-sided regression fixed
 
 - **Anisotropic footprints SHIPPED** (core/splat_emit.py): `_neighbor_tangent_anisotropy` (k-NN tangent-plane

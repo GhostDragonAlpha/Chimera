@@ -74709,6 +74709,190 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_70343cad1ebf"
+    },
+    {
+      "id": "simtest_12a08e5b4755f972",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T20:27:03.056487",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0189_isolation_recheck",
+      "demo": "travel_vehicle_basic",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "vehicle_component_initialized",
+          "outcome": "failed",
+          "features": [
+            "Travel_Vehicle_Basic"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "AShip_Trader_Vessel_Alpha"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0189_isolation_recheck.json",
+      "temperature": "[SIM] 0/1 beats reached in 'travel_vehicle_basic'. Failures: vehicle_component_initialized (failed: expect {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'tb0189_isolation_recheck': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_44c5b583ffd1"
+    },
+    {
+      "id": "surprise_566c458dff8e8add",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T20:27:03.375325",
+      "context": "Sleepwalker expected beat 'vehicle_component_initialized' to be reachable (travel_vehicle_basic)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"}, \"ok\": false, \"'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_44c5b583ffd1"
+    },
+    {
+      "id": "simtest_549d2c42e57f4a6e",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T20:28:51.437795",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0189_first_pie_test",
+      "demo": "travel_vehicle_basic",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "vehicle_component_initialized",
+          "outcome": "failed",
+          "features": [
+            "Travel_Vehicle_Basic"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "AShip_Trader_Vessel_Alpha"
+              },
+              "ok": false,
+              "note": "present=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0189_first_pie_test.json",
+      "temperature": "[SIM] 0/1 beats reached in 'travel_vehicle_basic'. Failures: vehicle_component_initialized (failed: expect {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"} -> present=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'tb0189_first_pie_test': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_9391b009cfb1"
+    },
+    {
+      "id": "surprise_be80a4199f493d9f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T20:28:51.727770",
+      "context": "Sleepwalker expected beat 'vehicle_component_initialized' to be reachable (travel_vehicle_basic)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"}, \"ok\": false, \"note\": \"present=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"AShip_Trader_Vessel_Alpha\"}, \"ok\": false, \"'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_9391b009cfb1"
+    },
+    {
+      "id": "surprise_52861a1e95a4fc6b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T20:31:38.413566",
+      "context": "tb-0189 ejection repro: spawned a 3000uu collision cube via bridge control_actor spawn_actor DURING an active PIE session, expecting it to land in the PIE world",
+      "expectation": "",
+      "reality": "The spawn landed in the PERSISTENT EDITOR LEVEL (actor id chimeradefaultlevel:PersistentLevel...), not the UEDPIE world - bridge spawns during PIE do not target the PIE world, so any PIE-time spawn-and-observe experiment silently tests against the wrong world. get_transform/set_transform on EXISTING pawns do hit the live PIE instances (witness rig depends on it). Trap for MCP_PATHWAYS",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'The spawn landed in the PERSISTENT EDITOR LEVEL (actor id chimeradefaultlevel:Pe'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2c4d8f91358b"
+    },
+    {
+      "id": "mutation_88d332e25b6d",
+      "type": "Mutation",
+      "timestamp": "2026-07-18T20:32:46.009557",
+      "error_signature": "success_no_error",
+      "template_file": "core/game_code_generator.py",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "Build.bat ChimeraEditor Win64 Development -waitmutex: [5/5] WriteMetadata ChimeraEditor.target. Result: Succeeded. Total execution time: 18.20 seconds (FlightComponent template fix regen). Second pass after get_nodes routing fix: Result: Succeeded. Total execution time: 44.83 seconds.",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_4deef62125ad"
     }
   ],
   "edges": [

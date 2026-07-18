@@ -334,6 +334,20 @@
   "provenance": "reflection:UPROPERTY:FlightSystemsSpecComponent.h"
  },
  {
+  "id": "atom_fc412c2bc306",
+  "feature": "subsystem/Flight",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bThrustAxis\\b"
+  },
+  "desc": "UPROPERTY ThrustAxis (FlightComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:FlightComponent.h"
+ },
+ {
   "id": "atom_ff15581e7d79",
   "feature": "subsystem/Flight",
   "tier": 1,

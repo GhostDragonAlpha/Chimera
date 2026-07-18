@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-18T20:16:01+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-18T20:34:23+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,7 +8,7 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0189 | claimed | 1 | Pawn levitation: external per-tick +Z on BP_Astronaut_Charac | Content/**, Source/Chimera/ProceduralGenerated/Demo/** | fable-5 |
+| tb-0192 | claimed | 0.9 | Granular matter engine v0: trainable sandpile domain (emerge | core/trainables/granular.py, docs/objectives/granular*.json | fable-5 |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
 | tb-0145 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
@@ -17,7 +17,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0187 | open | 0.9 | Splat material v2: idempotent authoring + masked VertexColor | core/splat_to_ue5.py |  |
-| tb-0192 | open | 0.9 | Granular matter engine v0: trainable sandpile domain (emerge | core/trainables/granular.py, docs/objectives/granular*.json |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
 | tb-0191 | open | 0.75 | Fix confirmed pain: Any position-dependent beat against chim | Source/Chimera/** |  |
@@ -68,6 +67,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0154 | done | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie | Sleepwalker simtest_8e2249197944c447: 1/1 beats reached for  |
 | tb-0155 | done | 1 | Collapse: Shelter_Habitat_Lighting | editor:open; excl:pie | Witness: Travel_Vehicle_Basic DONE. Created beat file docs/b |
 | tb-0181 | done | 1 | Matter library: fix mojibake + finish remaining provisional  | docs/matter/matter_library.json, docs/research/matter_library_sources.md | tb-0172 follow-up (tb-0181): repaired 21 mojibake-corrupted  |
+| tb-0189 | done | 1 | Pawn levitation: external per-tick +Z on BP_Astronaut_Charac | Content/**, Source/Chimera/ProceduralGenerated/Demo/** | ROOT-CAUSE HUNT + VERIFICATION MET. NOTE FOR THE JUDGE: all  |
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
 | tb-0131 | done | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | UE_LOG witness markers verified present in NPCTradeComponent |
