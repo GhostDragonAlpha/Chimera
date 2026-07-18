@@ -89,13 +89,18 @@ _KILL_RATIO = 2.0
 # CONSTRAINT: values must be IDENTICAL to the proven constants below. The assertion
 # will FAIL if the library drifts — that's the point. Fix the LIBRARY, not this code.
 def _load_optics_from_library() -> dict:
-    """Load optical fields from matter_library.json appearance columns."""
+    """Load optical fields from matter_library.json appearance columns.
+    
+    Loads both tissue types (skin/muscle/bone) and environment materials
+    (sand/rock/metal) so the emitter is tissue-agnostic."""
     ROOT = Path(__file__).resolve().parents[1]
     lib_path = ROOT / "docs" / "matter" / "matter_library.json"
     with open(lib_path, 'r') as f:
         lib = json.load(f)
     
-    tissues = {"skin": "skin", "muscle": "muscle", "bone": "bone"}
+    # Map splat names to library material names
+    tissues = {"skin": "skin", "muscle": "muscle", "bone": "bone",
+               "sand": "sand", "rock": "rock", "metal": "metal"}
     optics = {}
     for splat_name, lib_name in tissues.items():
         mat = lib["materials"][lib_name]
@@ -148,6 +153,8 @@ OPTICAL, _LIB = _load_optics_from_library()
 # ASSERT: library-read values match proven constants exactly (within float tolerance)
 def _optical_equal(a: dict, b: dict) -> bool:
     for key in a:
+        if key not in b:
+            return False  # extra keys in a are OK (env materials)
         va, vb = a[key], b[key]
         if isinstance(va, tuple):
             if not all(abs(x - y) < 1e-6 for x, y in zip(va, vb)):
@@ -160,8 +167,9 @@ def _optical_equal(a: dict, b: dict) -> bool:
                 return False
     return True
 
-assert _optical_equal(OPTICAL, OPTICAL_PROVEN), \
-    f"Library optics differ from proven! Diff:\n{ {k: (OPTICAL[k], OPTICAL_PROVEN[k]) for k in OPTICAL} }"
+# Only assert on tissue types (skin/muscle/bone); env materials are new additions
+assert _optical_equal({k: v for k, v in OPTICAL.items() if k in OPTICAL_PROVEN}, OPTICAL_PROVEN), \
+    f"Library optics differ from proven! Diff:\n{ {k: (OPTICAL[k], OPTICAL_PROVEN[k]) for k in set(OPTICAL) & set(OPTICAL_PROVEN)} }"
 
 AMBIENT = 0.18
 
@@ -200,13 +208,13 @@ def emit_splats(tissue_field: np.ndarray, tissue_name: str, sigma: float = 0.9,
     from scipy import ndimage
 
     surf = surface_voxels(tissue_field)
-    pos = np.argwhere(surf).astype(np.float64)                    # (N,3), native voxel coords
+    pos = np.argwhere(surf).astype(int)                             # (N,3), native voxel coords
     if len(pos) == 0:
         return None
 
     smooth = ndimage.gaussian_filter(tissue_field.astype(np.float32), sigma=sigma)
     grad = np.stack(np.gradient(smooth), axis=-1)                  # (Z,Y,X,3)
-    n = grad[surf]                                                  # (N,3)
+    n = grad[pos[:, 0], pos[:, 1], pos[:, 2]]                      # (N,3)
     norm = np.linalg.norm(n, axis=1, keepdims=True)
     fallback = np.array([0.0, 0.0, 1.0])
     n = np.where(norm > 1e-6, n / np.clip(norm, 1e-6, None), fallback)
