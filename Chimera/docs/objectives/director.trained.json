@@ -1,19 +1,21 @@
 {
   "objective": "director",
-  "score": 0.9533112583316378,
+  "score": 0.9532864677738019,
   "measures": {
     "concurrent_dots_p95_worst_low": 6.0,
     "concurrent_dots_p95_worst_high": 7.0,
-    "concurrent_dots_mean_of_restarts": 4.017220009443224,
-    "concurrent_dots_max_ever": 86.0,
-    "encounter_gap_mean_worst_low": 0.1706649967218542,
-    "encounter_gap_mean_worst_high": 0.17434599784531155,
-    "encounter_gap_min_days_ever": 0.00026782460091112625,
-    "encounter_gap_cv_mean": 0.49073577100184346,
-    "scenario_entropy_norm": 0.997149708428471,
+    "concurrent_dots_mean_of_restarts": 3.8914119271677783,
+    "concurrent_dots_max_ever": 28.0,
+    "encounter_gap_mean_worst_low": 0.17944372439339437,
+    "encounter_gap_mean_worst_high": 0.18145081527878673,
+    "encounter_gap_min_days_ever": 6.659729443470042e-05,
+    "encounter_gap_cv_mean": 0.4667008740520682,
+    "scenario_entropy_norm": 0.9964900906390135,
     "pirate_gate_violations": 0.0,
-    "pirate_spawns_correct_total": 3895.0,
-    "pirate_spawns_total": 3895.0,
+    "pirate_gate_violations_observed": 0.0,
+    "pirate_gate_violations_probed": 0.0,
+    "pirate_spawns_correct_total": 60718.0,
+    "pirate_spawns_total": 718.0,
     "first_stranger_paid_fraction": 0.0,
     "generations_completed_min": 10.0,
     "days_simulated_min": 90.0
@@ -21,21 +23,21 @@
   "genome": {
     "stranger_cadence_min_days": 0.2,
     "stranger_cadence_max_days": 0.3,
-    "trader_cadence_min_days": 0.43411744700869137,
-    "trader_cadence_max_days": 0.6983766723498495,
+    "trader_cadence_min_days": 0.6020850695072915,
+    "trader_cadence_max_days": 0.6943616578318949,
     "scenario_weights": {
-      "o2": 1.0632044554333717,
-      "parts": 1.1470758646948513,
-      "water": 1.0998996040854867,
-      "warmth": 1.1783985661350074,
-      "burial": 1.2873124941380192,
-      "ride": 1.0391478034931994
+      "o2": 1.1004562064833323,
+      "parts": 1.075137450767366,
+      "water": 1.0110734567300461,
+      "warmth": 0.957502710995578,
+      "burial": 0.9770304261063656,
+      "ride": 1.0079930768933494
     },
-    "can_pay_fraction": 0.46864840226381027,
+    "can_pay_fraction": 0.07902426449495664,
     "first_stranger_can_pay_fraction": 0.0,
     "pirate_storm_gate_bypass_fraction": 0.0,
-    "pirate_wealth_gate_bypass_fraction": 0.12694030411979632,
-    "pirate_wealth_threshold": 264.6109924289412,
-    "pirate_spawn_rate_per_sec": 0.029790344592444062
+    "pirate_wealth_gate_bypass_fraction": 0.0,
+    "pirate_wealth_threshold": 443.75491635232527,
+    "pirate_spawn_rate_per_sec": 0.007063275024474129
   }
 }
