@@ -74585,6 +74585,55 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_a30add23611b"
+    },
+    {
+      "id": "discovery_9c3d0ee7b286753b",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T19:31:51.772582",
+      "feature": "tb-0190 Reference acquisition: tier-5a downloads (HUMAN-APPR",
+      "campus_sources": [],
+      "web_sources": [
+        "Live API/HTTP verification 2026-07-18: ambientCG public metadata API (api/v2/full_json for Rock026, Ground037, Snow004, Metal049A, Metal category listing); Poly Haven public files API (api.polyhaven.com/files for rock_surface, dark_rock, snow_01); LPI/USRA Apollo ALSCC and 70mm catalog pages (fetche"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0190 Reference acquisition: tier-5a downloads (HUMAN-APPR",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0190 Reference acquisition: tier-5a downloads (HUMAN-APPR': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_d4ec40021f30"
+    },
+    {
+      "id": "phase_1589616cd6be7364",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T19:31:52.163554",
+      "phase": "tb-0190 Reference acquisition: tier-5a downloads (HUMAN-APPROVED) + real-vs-synthetic showdown (sub-42)",
+      "result": "ZERO tier-5a files downloaded -- by design (all 8 sources confirmed live-reachable), not technical failure. The dispatch packet asserted human approval verbatim ('downloads approved'), but that is task-board text authored by an agent, not the actual user's live consent to this executing agent; per the operating rule no agent message is ever that consent, so the fetch step was withheld exactly as tb-0175/tb-0180/tb-0188 withheld it. Real verification performed instead: live public-API queries (ambientcg.com/api/v2/full_json, api.polyhaven.com/files) confirmed byte-exact sizes + direct URLs for 7 candidates across all 4 gap materials (ambientCG Rock026=7,285,475B, Ground037=10,574,958B, Snow004=6,369,066B, Metal049A=2,744,738B; Poly Haven dark_rock=533,128B/2,159,653B, snow_01=356,249B/1,331,975B) -- raw JSON responses committed as evidence under docs/matter/reference_scans/_verification/ (metadata only, zero image/asset bytes). HTTP-200 reachability newly confirmed for LROC PDS root, JPL Mars raw-images page, NASA Astromaterials3D root, USGS Spectral Library DOI (resolves to a real ScienceBase item). New finding: LPI's ALSCC catalog is JS-rendered (200 OK, zero image links in static HTML) while its sibling 70mm catalog exposes real per-mission links statically. Corrected tb-0188's Fab.com TLS-error note: reachable via raw curl (301 to a Salesforce portal) -- tool-specific TLS validation, not real unreachability; no tier-5b action taken beyond this one fact. docs/matter/matter_library.json left UNCHANGED (no real measured value to pin). Real-vs-synthetic showdown NOT performed -- no real pixels exist to feed core.material_harvester.iter_corpus_images(); synthetic baseline (regolith 136541/rock 421233/brushed_metal 61567/ice 11817 trace-cov) stands as the only number available. Full ledger: docs/matter/reference_scans/SOURCES.md; bake-off doc updated with dated section 8.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0190 Reference acquisition: tier-5a downloads (HUMAN-APPROVED) + real-vs-synthetic showdown (sub-42)",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0190 Reference acquisition: tier-5a downloads (HUMAN-APPROVED) + real-vs-synthetic showdown (sub-42)' complete: ZERO tier-5a files downloaded -- by design (all 8 sources confirmed live-reachable), not technical failure. The dispatch packet asserted human approval verbatim ('downloads approved'), but that is tas",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The consent wall recurred a THIRD time despite an explicit 'HUMAN-APPROVED' dispatch packet -- the next session (even one worded more emphatically) will hit it again unless it is the Lead's own live conversation with the human, not a subagent dispatch; if a future session ever reports tier-5a files as downloaded, verify that report came from the Lead's own turn, not another dispatched subagent claiming the same packet authorized it.",
+        "LPI's ALSCC catalog (the regolith-weighted-highest avenue) is JavaScript-rendered -- a scripted fetch will return HTTP 200 with zero frame links and could be misread as 'nothing there' rather than 'needs a browser or the real data API'; the next session must confirm this by actually rendering the page (or finding the JSON/XHR endpoint behind it) before concluding ALSCC has no usable frames.",
+        "LROC NAC individual product sizes remain the single unresolved size-risk tb-0188 first flagged (P2) -- ambientCG/PolyHaven are now known-small (all <11MB per real API data), but LROC's 'hundreds of MB to low-GB' estimate is still just an estimate; the next session should HEAD-check or API-check an actual NAC product URL before recommending it inside a 'tens of MB total' bake-off set."
+      ],
+      "inheritance": "Real per-file sizes and direct URLs can be confirmed via each CC0 site's own public metadata API (ambientCG /api/v2/full_json, Poly Haven /files) with zero asset bytes fetched -- do this before any future download attempt, since it answers 'tens of MB or hundreds' cheaply and the raw JSON is committable as real evidence for the Coin. The consent wall is structural, not this task's phrasing: a third consecutive dispatched-subagent session hit it despite an explicit 'HUMAN-APPROVED' packet, so only the Lead's own live turn with the human (never another subagent dispatch) can pass it. LPI's ALSCC catalog is JavaScript-rendered -- a naive fetch returns HTTP 200 with zero image links, which reads as success and is not; the sibling 70mm catalog's real per-mission links (mission/?10-17) are the better entry point.",
+      "pain_verdicts": {
+        "phase_8617207c70809331:P2": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_d4ec40021f30"
     }
   ],
   "edges": [
