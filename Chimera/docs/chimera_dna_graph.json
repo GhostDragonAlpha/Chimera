@@ -75328,6 +75328,264 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_c2cab07379fe"
+    },
+    {
+      "id": "simtest_6ba72f3a8f193188",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T22:41:21.810790",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0196_no_starsphere",
+      "demo": "solar_system_stand",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "stand_on_grown_ocean_world",
+          "outcome": "reached",
+          "features": [
+            "solar_accretion",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Grown_Ground"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Grown_Star"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0196_no_starsphere.json",
+      "temperature": "[SIM] 1/1 beats reached in 'solar_system_stand'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'tb0196_no_starsphere': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_91c4f2582d7a"
+    },
+    {
+      "id": "simtest_ae7dc6dd3cca28a9",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T22:45:01.373329",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0196_durable_fix_proof",
+      "demo": "solar_system_stand",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "stand_on_grown_ocean_world",
+          "outcome": "blocked",
+          "features": [
+            "solar_accretion",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (delta=+3000uu) \u2014 something external is still moving the pawn every tick; do not indict this beat's tagg"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0196_durable_fix_proof.json",
+      "temperature": "[SIM] 0/1 beats reached in 'solar_system_stand'. Failures: stand_on_grown_ocean_world (blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (de)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'tb0196_durable_fix_proof': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b10804ca600d"
+    },
+    {
+      "id": "surprise_620965a7a588ece5",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T22:45:01.742888",
+      "context": "Sleepwalker expected beat 'stand_on_grown_ocean_world' to be reachable (solar_system_stand)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (delta=+3000uu) \\u2014 something external is still mo",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"RIG FAULT (tb-0184, not a feature defect): reset_position wr'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b10804ca600d"
+    },
+    {
+      "id": "simtest_4ea739ba22ed2aaa",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T22:46:14.770724",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0196_matrix_sphere_gone_actors_present",
+      "demo": "solar_system_stand",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "stand_on_grown_ocean_world",
+          "outcome": "reached",
+          "features": [
+            "solar_accretion",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Grown_Ground"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Grown_Star"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0196_matrix_sphere_gone_actors_present.json",
+      "temperature": "[SIM] 1/1 beats reached in 'solar_system_stand'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'tb0196_matrix_sphere_gone_actors_present': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_732722a2320c"
+    },
+    {
+      "id": "elim_41064db78ef9a045",
+      "type": "Elimination",
+      "timestamp": "2026-07-18T22:47:19.387972",
+      "feature": "witness_rig",
+      "boundary": "The witness anchor (0,0,130) must never sit inside colliding geometry: SM_StarSphere (2km-radius colliding shell centered at origin, unowned - zero repo references) was THE levitator behind tb-0189/tb-0184/tb-0196 - CharacterMovement penetration-resolves possessed pawns upward every move tick (unpossessed pawns never move, hence the possession discriminator; per-tick pushout, hence dt-proportional rates; fixed verify window, hence deterministic z~3085)",
+      "observed": "",
+      "eliminates": [],
+      "survives": [
+        "4/4 causal matrix same boot: sphere present = climb (simtest_140a70674941d472, simtest_ae7dc6dd3cca28a9 - the latter WITH root-collision stripped, proving editor-runtime SetCollisionEnabled does not survive into PIE duplication), sphere destroyed = clean walk (simtest_6ba72f3a8f193188, simtest_4ea739ba22ed2aaa - the latter with all wiring actors present, exonerating them). Durable fix: sphere deleted from chimeradefaultlevel and level SAVED"
+      ],
+      "evidence_ref": "",
+      "probe": {},
+      "tier": 1,
+      "error_signature": "elimination_witness_rig",
+      "template_file": "elimination/witness_rig",
+      "error_category": "elimination",
+      "fix_description": "Eliminated for witness_rig: The witness anchor (0,0,130) must never sit inside colliding geometry: SM_StarSphere (2km-radius col",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8e763ec18ccc"
+    },
+    {
+      "id": "surprise_cf06e671257b265c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-18T22:47:19.837320",
+      "context": "tb-0196 durable fix attempt: set_collision (control_actor, collisionEnabled key, handler ControlHandlers.cpp:2909) returned success and set NoCollision on the root component in the editor world",
+      "expectation": "",
+      "reality": "THE STRIP DID NOT REACH PIE: the pawn climbed anyway (simtest_ae7dc6dd3cca28a9) - editor-world runtime SetCollisionEnabled is TRANSIENT (component not dirtied/serialized), and PIE duplicates SERIALIZED state, so the change evaporates at PIE start; level save likewise skips it. The handler also silently no-ops when the root is not a UPrimitiveComponent (success response regardless). PATHWAY TRAP: set_collision is fine for editor-time probing, NEVER a durable or PIE-effective fix - destroy the actor or edit the asset instead",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'THE STRIP DID NOT REACH PIE: the pawn climbed anyway (simtest_ae7dc6dd3cca28a9) '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_0cedc43b33ec"
+    },
+    {
+      "id": "discovery_320ab1ac256b85a3",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T22:48:41.788386",
+      "feature": "tb-0196: the levitator killed - SM_StarSphere named, causal ",
+      "campus_sources": [],
+      "web_sources": [
+        "UE CharacterMovement penetration resolution (per-move pushout, possessed-only - the mechanism); PIE world duplication semantics (serialized state only - why runtime SetCollisionEnabled evaporates); UE level save dirtying rules; the bridge's own handler contracts read from source (set_collision Contr"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0196: the levitator killed - SM_StarSphere named, causal ",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0196: the levitator killed - SM_StarSphere named, causal ': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_5de0fa7adc14"
+    },
+    {
+      "id": "phase_8ad4a1adb56b09de",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T22:48:42.242301",
+      "phase": "tb-0196: the levitator killed - SM_StarSphere named, causal matrix 4/4, durable level fix, standing witnessed",
+      "result": "ROOT CAUSE: SM_StarSphere, a 2km-radius colliding shell centered at origin (unowned, zero repo references), swallowed the witness anchor - CharacterMovement penetration resolution pushed possessed pawns up every move tick (dt-proportional rates, deterministic z~3085 endpoints, spawn z=133k history all retro-explained; unpossessed pawns never move = the discriminator). Matrix 4/4 same boot: present=climb (simtest_140a70674941d472, simtest_ae7dc6dd3cca28a9 with collision 'stripped' - editor-transient, does not survive PIE duplication, surprise_cf06e671257b265c), destroyed=clean (simtest_6ba72f3a8f193188, simtest_4ea739ba22ed2aaa with wiring actors present). Sphere deleted + level saved (manage_level 'Level saved'). Elimination elim_41064db78ef9a045. THE PRIZE: 1/1 clean walk with the grown system staged - pawn standing on the grown ocean world in PIE, live suit HUD, Saved/Screenshots/grown_world_stand_pie.png.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0196: the levitator killed - SM_StarSphere named, causal matrix 4/4, durable level fix, standing witnessed",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0196: the levitator killed - SM_StarSphere named, causal matrix 4/4, durable level fix, standing witnessed' complete: ROOT CAUSE: SM_StarSphere, a 2km-radius colliding shell centered at origin (unowned, zero repo references), swallowed the witness anchor - CharacterMovement penetration resolution pushed possessed paw",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The boot-flicker residue stays open: boots 3-4 walked clean on a disk level that presumably already contained the colliding sphere - if the RIG FAULT ever fires at a fresh anchor, scan geometry FIRST, and if the sphere provenance matters (who spawned SM_StarSphere and which session saved it), the level's git history of chimeradefaultlevel.umap holds the answer."
+      ],
+      "inheritance": "When a rig fault has a DETERMINISTIC endpoint, suspect geometry before code: scan for colliding actors at the anchor (elim_41064db78ef9a045 is the precedent and the permanent boundary). set_collision is editor-transient - it neither survives PIE duplication nor level save, and silently no-ops on non-primitive roots; destroy the actor or edit the asset for durable fixes. The witness-anchor-inside-geometry class of fault produced weeks of misattributed levitation evidence - the tb-0184 tripwire plus this elimination now close that class.",
+      "pain_verdicts": {
+        "phase_c343f5ecd1c65d22:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_5de0fa7adc14"
     }
   ],
   "edges": [

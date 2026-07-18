@@ -1,3 +1,29 @@
+# Session 2026-07-18 (fable-5, THE KILL) — tb-0196 DONE: levitator dead, pawn STANDS on the grown world
+
+- **ROOT CAUSE, NAMED AND KILLED: `SM_StarSphere`** — a 2 km-radius COLLIDING sphere centered at the origin,
+  saved in chimeradefaultlevel, owned by NOTHING (zero repo references; a leftover shell inside the real
+  16 km SM_SkySphere). The witness anchor (0,0,130) sat deep inside it; CharacterMovement resolves
+  penetration on every MOVE tick → possessed pawns pushed upward (per-tick quantum = the dt-proportional
+  rates; fixed verify window = the deterministic z≈3085; historical spawn z=133k = long ejections toward
+  the 200k surface). Unpossessed pawns never move → never resolve → the possession discriminator.
+  **Causal matrix 4/4 same boot** (climb: simtest_140a70674941d472 + simtest_ae7dc6dd3cca28a9; clean:
+  simtest_6ba72f3a8f193188 + simtest_4ea739ba22ed2aaa). Elimination **elim_41064db78ef9a045** (permanent
+  boundary: witness anchors must never sit inside colliding geometry — scan geometry FIRST on any
+  deterministic-endpoint rig fault).
+- **DURABLE FIX**: sphere deleted, transient staging cleaned, level SAVED (`manage_level` "Level saved").
+- **NEW PATHWAY TRAP (surprise_cf06e671257b265c)**: `control_actor set_collision` is EDITOR-TRANSIENT —
+  does NOT survive PIE duplication (PIE copies serialized state) nor level save, and silently no-ops on
+  non-primitive roots. Editor-time probing only; destroy the actor / edit the asset for durable fixes.
+  `manage_level` vocab: `{action: load_level, levelPath}` / `{action: save}`.
+- **THE PRIZE: `Saved/Screenshots/grown_world_stand_pie.png`** — the astronaut IN PIE, live suit HUD
+  (O2/BAT/DUST), standing on the grown ocean world (0.83 AU, 293 K) under the aimed star, beat 1/1 CLEAN
+  WALK with the full wired system staged. The operator's sentence ("stand on one of these worlds") is a
+  screenshot now. tb-0195's blocked witness is retroactively healed.
+- Boot-flicker residue honestly open (postflight pain): boots 3-4 walked clean with the sphere on disk —
+  provenance answer lives in chimeradefaultlevel.umap's git history if ever needed.
+
+---
+
 # Session 2026-07-18 (fable-5, wiring) — tb-0195 DONE: grown system staged in UE5; tb-0196 FILED: levitator golden reproducer
 
 - **`core/system_to_ue5.py` (the workflow)**: trained artifacts → `resolve_system` → live editor over proven
