@@ -142,18 +142,11 @@ void RunWeatherSystemTests()
 {
 	UE_LOG(LogTemp, Warning, TEXT("\n====== WEATHER SYSTEM ACCEPTANCE TESTS ======\n"));
 
-	try
-	{
-		TestWeather_Initialization();
-		TestWeather_Determinism();
-		TestWeather_NightBands();
-		TestWeather_StormCycle();
-		TestWeather_WindBandResponse();
+	TestWeather_Initialization();
+	TestWeather_Determinism();
+	TestWeather_NightBands();
+	TestWeather_StormCycle();
+	TestWeather_WindBandResponse();
 
-		UE_LOG(LogTemp, Warning, TEXT("\n====== ALL WEATHER SYSTEM TESTS PASSED ======\n"));
-	}
-	catch (const std::exception& e)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Weather system test failed: %s"), ANSI_TO_TCHAR(e.what()));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("\n====== ALL WEATHER SYSTEM TESTS PASSED ======\n"));
 }

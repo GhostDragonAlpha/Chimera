@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/TextRenderComponent.h"
+#include "Sound/SoundCue.h"
 #include "../Economy/EconomyManager.h"
 #include "../Inventory/InventoryTradeComponent.h"
 #include "../Factions/FactionComponent.h"

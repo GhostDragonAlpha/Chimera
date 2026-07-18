@@ -115,18 +115,11 @@ void RunWindSystemTests()
 {
 	UE_LOG(LogTemp, Warning, TEXT("\n====== WIND SYSTEM ACCEPTANCE TESTS ======\n"));
 
-	try
-	{
-		TestWindSystem_Initialization();
-		TestWindSystem_VelocityQuery();
-		TestWindSystem_ResponseParameter();
-		TestWindSystem_DriftDirection();
-		TestWindSystem_Variation();
+	TestWindSystem_Initialization();
+	TestWindSystem_VelocityQuery();
+	TestWindSystem_ResponseParameter();
+	TestWindSystem_DriftDirection();
+	TestWindSystem_Variation();
 
-		UE_LOG(LogTemp, Warning, TEXT("\n====== ALL WIND SYSTEM TESTS PASSED ======\n"));
-	}
-	catch (const std::exception& e)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Wind system test failed: %s"), ANSI_TO_TCHAR(e.what()));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("\n====== ALL WIND SYSTEM TESTS PASSED ======\n"));
 }
