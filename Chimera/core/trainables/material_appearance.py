@@ -142,17 +142,48 @@ def _kurtosis(x: np.ndarray) -> float:
     return float(np.mean(((x - m) / s) ** 4) - 3)
 
 
+from pathlib import Path as _Path  # noqa: E402  (kept local to the reference shim)
+import os as _os  # noqa: E402
+
+# THE LOOP'S MISSING LINK (2026-07-18, tb-0199): the trainer calls measure(genome)
+# with ONE argument, so reference_descriptors was ALWAYS None in training — the
+# existing material_appearance.trained.json was optimized against NOTHING (and
+# before the parents[2] ROOT fix, the loader returned None even when asked). The
+# domain now self-loads its reference at import: the scan named by
+# CHIMERA_MATAPP_SCAN (default regolith — the real downloaded corpus,
+# docs/matter/reference_scans/SOURCES.md). Loud print either way: training
+# against reality and training blind must never look alike again.
+_SCAN = _os.environ.get("CHIMERA_MATAPP_SCAN", "regolith")
+REFERENCE = None
+try:
+    REFERENCE = load_reference_descriptors(_SCAN)  # noqa: F821 (defined below)
+except NameError:
+    pass  # resolved at module bottom (load_reference_descriptors defined later)
+
+
+def _ensure_reference():
+    global REFERENCE
+    if REFERENCE is None:
+        REFERENCE = load_reference_descriptors(_SCAN)
+        print(f"[material_appearance] reference '{_SCAN}': "
+              + ("LOADED " + str(sorted(REFERENCE.keys())) if REFERENCE
+                 else "MISSING - TRAINING BLIND (dist_* absent)"))
+    return REFERENCE
+
+
 def measure(genome: dict, reference_descriptors: dict | None = None) -> dict:
-    """Measure a genome against optional reference descriptors.
-    
-    If reference_descriptors is provided, returns descriptor distances (for optimization).
-    If not, returns raw descriptors (for reporting).
-    
-    Returns {metric_name: float} — facts only.
+    """Measure a genome against reference descriptors (self-loaded from the real
+    scan corpus when not passed — the trainer passes nothing).
+
+    Returns {metric_name: float} — facts only; dist_<key> = normalized distance
+    to REALITY's statistics for every shared descriptor.
     """
+    if reference_descriptors is None:
+        reference_descriptors = _ensure_reference()
+
     # Compute our descriptor vector
     our_desc = _compute_descriptor_vector(genome)
-    
+
     if reference_descriptors is None:
         return our_desc
     

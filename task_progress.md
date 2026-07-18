@@ -1,4 +1,31 @@
-# Session 2026-07-18 (fable-5, THE BUBBLE) — tb-0197 DONE: trained matter forms and MIXES the ground under the player
+# Session 2026-07-18 (fable-5, THE RIGHT WAY) — tb-0198 DONE: runtime materialization subsystem; tb-0197's claim REFUTED by the operator
+
+- **THE CORRECTION (operator, after their editor screenshot)**: tb-0197's "pawn stands on formed matter" was
+  FALSE — the GLB patch imported ROTATED 90° (glTF Y-up vs UE Z-up) and the beat asserted existence, not
+  contact: the pawn stood on the flat plane beside a sideways wall (surprise_f14d0396d25cb260). The Coin's
+  NEEDS_REFINEMENT dissents were directionally right all day. Editor-staged scaffolding is the WRONG WAY.
+  `core/materialize.py` is marked SUPERSEDED (Python reference of the rule only).
+- **THE RIGHT WAY (tb-0198)**: `generate_materialization_subsystem_files` emits **UMaterializationSubsystem**
+  (UTickableWorldSubsystem, Game/PIE only) — trained literals baked with provenance (h_crit 1.181009,
+  p_topple 0.515412, ocean_cov 0.0304 from the full chain), C++ sandpile (bounded sweeps, quenched crit),
+  per-cell deterministic seeds (emitted automation test), patches = instanced engine cubes with REAL
+  collision (zero Build.cs edits, zero glTF — the axis bug class is unrepresentable), water sheet at the
+  derived sea level, bubble forms 3×3 one-patch-per-tick and COALESCES beyond radius 2, [Materialize] log
+  markers. **UBT first-compile clean 44.78s (mutation_ce2e52592a11).**
+- **WITNESS 2/2 CLEAN WALK (simtest_a43f778f4392a6e8), CONTACT not existence**: pawn settles into the
+  relief band (pawn_z_above 100 AND below 800; bare-Floor rest ≈90) with subsystem markers HEARD; then
+  **six seconds of REAL held W** and still in the band — ground formed under a MOVING player. Frames:
+  `materialized_runtime_stand.png` (formed mottled hills, water pooled in basins, live HUD) and
+  `materialized_runtime_walk.png` (mid-stride on a formed dune, O2 99→98).
+- Honest remainders (postflight pain): no direction-specific new-cell assert (needs a set_rotation beat
+  verb); stepped-voxel fidelity (DynamicMesh smoothing needs a generator-owned Build.cs lane — never
+  hand-edit); water sheet has no collision/wading; per-patch ms unprofiled (keep one-patch-per-tick).
+- Board hygiene note: closure gate refused a STALE build node ("a historical green is not a current
+  green") before accepting the fresh one — the gates are working.
+
+---
+
+# Session 2026-07-18 (fable-5, THE BUBBLE) — tb-0197 DONE: trained matter forms and MIXES the ground under the player [CLAIM REFUTED — see THE RIGHT WAY entry above]
 
 - **THE OPERATOR'S PRINCIPLE, ENACTED (doc §19)**: *"no aesthetic pass if you have all the LOD for the
   meaning... materializes the ground particles around the player... the entire game is a big fractal"* +

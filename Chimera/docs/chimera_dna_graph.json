@@ -75716,6 +75716,171 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_6ca7cb7db0f3"
+    },
+    {
+      "id": "simtest_a43f778f4392a6e8",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-18T23:41:56.082521",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tb0198_runtime_bubble_r2",
+      "demo": "materialized_runtime",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "bubble_forms_and_pawn_stands_on_relief",
+          "outcome": "reached",
+          "features": [
+            "materialization",
+            "granular_matter",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "[Materialize] subsystem online"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            },
+            {
+              "expect": {
+                "log_contains": "[Materialize] formed cell"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            },
+            {
+              "expect": {
+                "pawn_z_above": 100
+              },
+              "ok": true,
+              "note": "z=342"
+            },
+            {
+              "expect": {
+                "pawn_z_below": 800
+              },
+              "ok": true,
+              "note": "z=342"
+            }
+          ]
+        },
+        {
+          "beat": "bubble_follows_the_walking_pawn",
+          "outcome": "reached",
+          "features": [
+            "materialization"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_z_above": 100
+              },
+              "ok": true,
+              "note": "z=155"
+            },
+            {
+              "expect": {
+                "pawn_z_below": 800
+              },
+              "ok": true,
+              "note": "z=155"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tb0198_runtime_bubble_r2.json",
+      "temperature": "[SIM] 2/2 beats reached in 'materialized_runtime'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'tb0198_runtime_bubble_r2': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_610735792255"
+    },
+    {
+      "id": "mutation_ce2e52592a11",
+      "type": "Mutation",
+      "timestamp": "2026-07-18T23:43:51.190092",
+      "error_signature": "success_no_error",
+      "template_file": "core/game_code_generator.py",
+      "template_line": 0,
+      "error_category": "none",
+      "fix_description": "build_completed",
+      "fix_diff": "build_completed",
+      "ubt_output_excerpt": "Build.bat ChimeraEditor Win64 Development -waitmutex: [10/10] WriteMetadata ChimeraEditor.target. Result: Succeeded. Total execution time: 44.78 seconds (MaterializationSubsystem.h/.cpp first compile, clean).",
+      "failing_files": [],
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "-c",
+      "run_id": "run_286adc6ea54d"
+    },
+    {
+      "id": "discovery_ab510033468c9f92",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-18T23:45:03.587201",
+      "feature": "tb-0198: the materialization bubble THE RIGHT WAY - generato",
+      "campus_sources": [],
+      "web_sources": [
+        "UTickableWorldSubsystem lifecycle + DoesSupportWorldType (Game/PIE gating); UInstancedStaticMeshComponent runtime instancing + per-ISM MID coloring via BasicShapeMaterial Color param (zero new Build.cs modules); FRandomStream determinism for per-cell seeds (HashCombine); glTF Y-up vs UE Z-up axis co"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0198: the materialization bubble THE RIGHT WAY - generato",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0198: the materialization bubble THE RIGHT WAY - generato': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_dd05556a99d6"
+    },
+    {
+      "id": "phase_1103ecbbea887efb",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-18T23:45:03.995050",
+      "phase": "tb-0198: the materialization bubble THE RIGHT WAY - generator-owned runtime subsystem, contact-witnessed",
+      "result": "UBT verbatim 'Result: Succeeded. Total execution time: 44.78 seconds' FIRST COMPILE (mutation_ce2e52592a11). Witness 2/2 clean walk (simtest_a43f778f4392a6e8): pawn settles INTO THE RELIEF BAND (pawn_z_above 100 AND pawn_z_below 800 - contact, not existence; bare-Floor rest reads ~90), [Materialize] subsystem-online + formed-cell markers HEARD from the raw tail, then SIX SECONDS OF REAL HELD W and the pawn is still in the band - ground formed under a moving player. Rig: reset 900 -> 899.15 (delta -0.85). Frames: materialized_runtime_stand.png (formed mottled hills, water pooled at the derived sea level, live HUD), materialized_runtime_walk.png (mid-stride on a formed dune, O2 99->98). Trained literals baked with provenance: h_crit 1.181009 / p_topple 0.515412 / ocean_cov 0.0304.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0198: the materialization bubble THE RIGHT WAY - generator-owned runtime subsystem, contact-witnessed",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0198: the materialization bubble THE RIGHT WAY - generator-owned runtime subsystem, contact-witnessed' complete: UBT verbatim 'Result: Succeeded. Total execution time: 44.78 seconds' FIRST COMPILE (mutation_ce2e52592a11). Witness 2/2 clean walk (simtest_a43f778f4392a6e8): pawn settles INTO THE RELIEF BAND (pawn_",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The movement beat cannot assert WHICH new cell formed (spawn rotation unset, direction unknown) - a set_rotation beat verb would upgrade the bubble-follows proof from the contact band to hearing the specific new cell id; also profile the per-patch formation ms from the PIE log before shrinking the one-patch-per-tick throttle, and the stepped-voxel fidelity upgrade needs a generator-owned Build.cs lane for the DynamicMesh module (never hand-edit Build.cs)."
+      ],
+      "inheritance": "The correction that mattered came from the operator: editor-staged scaffolding is the WRONG WAY - the realization goes INTO the game (generator-owned runtime C++), and doing it right DISSOLVED the active bug class (no glTF, no importer, no axis convention). Assert CONTACT, never existence: pawn_z bands discriminate resting-on-formed-relief from resting-on-the-floor; a beat that only checks actor_exists can pass beside a sideways wall (tb-0197's refuted witness, surprise_f14d0396d25cb260). The Coin's repeated NEEDS_REFINEMENT dissents on closure claims were directionally right all day - treat them as signal, not noise.",
+      "pain_verdicts": {
+        "phase_c343f5ecd1c65d22:P1": "still-open"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_dd05556a99d6"
     }
   ],
   "edges": [

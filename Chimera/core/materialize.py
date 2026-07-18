@@ -1,4 +1,17 @@
-"""materialize — the materialization bubble: trained matter FORMS the ground under the player.
+"""materialize — SUPERSEDED editor-staged prototype. The REAL bubble is the runtime
+UMaterializationSubsystem (generator-owned, Source/Chimera/ProceduralGenerated/
+Materialization/, tb-0198) — use that; this file stays as the Python reference
+implementation of the forming rule ONLY.
+
+REFUTED AS A REALIZATION (surprise_f14d0396d25cb260, the human's screenshot,
+2026-07-18): the GLB path imports ROTATED 90 deg (glTF Y-up vs UE Z-up — the
+terrain here is built Z-up and this exporter was never corrected), and tb-0197's
+witness asserted existence, not contact — the pawn stood on the flat plane beside
+a sideways wall. Editor staging is the WRONG WAY (operator directive): the runtime
+subsystem has no glTF, no importer, no staging — the whole bug class dissolves.
+
+Original doctrine text follows (still true — it just lives in C++ now):
+the materialization bubble: trained matter FORMS the ground under the player.
 
 Commissioned 2026-07-18 (tb-0197), the human, killing the phrase "aesthetic pass":
 "It shouldn't need an aesthetic pass if you have all the LOD for the meaning — I
