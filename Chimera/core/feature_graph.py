@@ -24,11 +24,18 @@ FEATURES_DIR.mkdir(parents=True, exist_ok=True)
 # Category tree that grows with the project
 # Node categories - what IS this thing
 NODE_CATEGORIES = [
-    "education",    # Does it teach real knowledge?
-    "fame",         # Does it make the game desirable?
-    "world",        # Does it feel real and alive?
-    "shipping",     # Does it move toward release?
-    "foundation",   # Does it strengthen the toolchain?
+    "education",      # Does it teach real knowledge?
+    "fame",           # Does it make the game desirable?
+    "world",          # Does it feel real and alive?
+    "shipping",       # Does it move toward release?
+    "foundation",     # Does it strengthen the toolchain?
+    "platform",       # Does it work in UE5.8 without hacks?
+    "performance",    # Does it run at 30+ fps on target hardware?
+    "accessibility",  # Can all players interact with it?
+    "audio",          # Does it sound as good as it looks?
+    "multiplayer",    # Does it work with multiple players?
+    "modding",        # Can the community extend it?
+    "localization",   # Does it work in multiple languages?
 ]
 
 # Edge categories - how does it RELATE to other things

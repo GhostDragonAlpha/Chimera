@@ -243,6 +243,60 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Yes. Steam shopper sees screenshot, reads learn geology, wishlists. That is a human terminal."
+    },
+    {
+      "id": 33,
+      "category": "platform",
+      "question": "Does this work in UE5.8 without hacks or workarounds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The demo uses existing UE5.8 features: VolumetricCloudComponent, landscape spawning, and MCP bridge. No engine forks or plugins beyond McpAutomationBridge which is already compiled."
+    },
+    {
+      "id": 34,
+      "category": "performance",
+      "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Unknown without telemetry. The splat renderer + volumetric clouds together have not been benchmarked. Need a probe."
+    },
+    {
+      "id": 35,
+      "category": "accessibility",
+      "question": "Can a colorblind or hearing-impaired player fully experience this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Text-based educational prompts need screen reader support. Color-coded geology layers need patterns as fallback."
+    },
+    {
+      "id": 36,
+      "category": "audio",
+      "question": "Does this have sound design that matches the visual quality?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet designed. The demo currently has no audio beyond footsteps. Wind/ambient audio would significantly enhance the canyon experience."
+    },
+    {
+      "id": 37,
+      "category": "modding",
+      "question": "Can the community extend or modify this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "The educational content is data-driven (JSON prompt lists). Modders can add new observations without touching code. The canyon terrain itself is procedurally generated and not easily moddable."
+    },
+    {
+      "id": 38,
+      "category": "localization",
+      "question": "Can this be translated without breaking?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The educational prompts are text strings in Python modules. They can be extracted to .json for translation. No hardcoded UI text."
     }
   ],
   "answers": [],

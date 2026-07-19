@@ -291,6 +291,60 @@
       "mirror_trace": null,
       "answered": false,
       "answer": null
+    },
+    {
+      "id": 33,
+      "category": "platform",
+      "question": "Does this work in UE5.8 without hacks or workarounds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 34,
+      "category": "performance",
+      "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 35,
+      "category": "accessibility",
+      "question": "Can a colorblind or hearing-impaired player fully experience this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 36,
+      "category": "audio",
+      "question": "Does this have sound design that matches the visual quality?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 37,
+      "category": "modding",
+      "question": "Can the community extend or modify this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 38,
+      "category": "localization",
+      "question": "Can this be translated without breaking?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
     }
   ],
   "answers": [],
