@@ -49,6 +49,15 @@ The feature status goes: questioning -> designed -> building -> verified.
 5. **Check MCP** — port 3000 and 8091 must be listening. If not, restart UE5 editor.
 6. **Check git** — commit any pending changes before starting new work.
 
+## The Two-Phase Workflow
+
+See WORKFLOW.md for the complete cycle. In short:
+
+**DESIGN MODE:** Ask all questions -> saturate the graph -> feature becomes "designed"
+**BUILD MODE:** Read designed feature -> construct in UE5 via MCP -> verify with screenshots -> commit
+
+The system alternates between these two modes. Every question answered feeds the build. Every build reveals new questions.
+
 ## The Cycle
 
 ```

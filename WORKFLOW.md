@@ -2,120 +2,124 @@
 
 This is the master workflow. Everything else is reference.
 
-## 1. RECEIVE DIRECTION
+## PHASES
 
-Human gives a goal, problem, or question.
+The system has two modes that alternate:
 
-## 1.5 QUERY THE GRAPH
+### DESIGN MODE — "What do we need to ask?"
 
-Before answering any question, check if it has already been answered.
-The graph is the project's living memory — chronicle files, knowledge graph
-nodes, feature records, pathway attempts.
+Purpose: Saturate a feature with questions until every angle is covered.
 
-Use `python worker_bridge/graph_before_council.py` to search:
-- Existing chronicle Q&A for matching word patterns
-- Knowledge graph for related nodes and communities
-- Chimera DNA graph for feature/pathway records
+1. RECEIVE DIRECTION — Human gives a goal, problem, or question.
+2. QUERY THE GRAPH — Search chronicle + knowledge graph for existing answers.
+3. INTERNAL COUNCIL — Run 7 gates: Frame → 10Q → Answer → 10Q → Answer → Saturate → Spec.
+4. RECORD — Write all Q&A pairs to the feature JSON in `Chimera/docs/features/`.
+5. REPEAT — If META questions say "needs deeper zoom," create sub-features and repeat.
 
-If a question's answer exists in the graph:
-  Reference the existing answer. Do NOT re-answer.
-  Mark it as `[GRAPH: turn_042_answer.txt]` in the report.
+A feature transitions from `questioning` -> `designed` when ALL questions are answered.
 
-If a question is genuinely new:
-  Answer it via the internal council.
-  Record the new answer to the chronicle after the cycle.
+### BUILD MODE — "Construct what we know."
 
-This prevents redundant cycles. The graph grows with every answer.
-Every new question checks the graph first.
+Purpose: Take a designed feature and construct it from the graph answers.
 
-## 2. INTERNAL COUNCIL (7 gates, ~3 min)
+1. LOAD FEATURE — Read the designed feature JSON (all questions answered = spec).
+2. READ SUB-FEATURES — Load all sub-features for full context.
+3. CONSTRUCT IN UE5 — Use `mcp_builder.py` to:
+   - Spawn actors (TriggerBox, StaticMesh, VolumetricCloud)
+   - Set component properties (density, color, shadow, rotation)
+   - Position cameras and lights
+   - Apply materials
+4. VERIFY — Capture viewport screenshots via MCP to confirm construction.
+5. REPORT — Show what was built with screenshot evidence.
 
-Run this in your own context. No external agents.
+Python abstractions are built first, then MCP constructs them in UE5.
+The Python layer is DATA. The MCP layer is CONSTRUCTION.
 
-```
-Gate 1 — Frame the problem
-  Write a one-sentence definition. What are we actually solving?
-
-Gate 2 — 10 questions
-  Ask 10 specific, technical questions about the problem.
-  Each question probes a different angle.
-
-Gate 3 — Answer all 10
-  Answer every question from what you already know.
-  If you genuinely don't know, say it.
-
-Gate 4 — Deeper questions
-  The answers from Gate 3 reveal 10 deeper questions.
-  Each builds on something one of the answers said.
-
-Gate 5 — Answer those
-  Answer the deeper questions.
-  At this point you should see the implementation.
-
-Gate 6 — Saturation check
-  Can you see the exact file changes?
-  If yes: proceed to Gate 7.
-  If no: loop back to Gate 4 with the remaining unknowns.
-
-Gate 7 — Output spec
-  Produce a structured spec with:
-  - mechanic_name or change_title
-  - target_files (exact paths)
-  - code_changes (what changes in each file)
-  - player_experience (how it feels from the user's side)
-```
-
-## 3. EXECUTE
-
-Choose the right tool:
-
-| If you need... | Use... |
-|----------------|--------|
-| Research UE5 source code | `research_engine` tool |
-| Search project code | `readSeek_grep`, `readSeek_refs` |
-| Read/edit a file | `read`, `edit`, `write` |
-| Run a bash command | `bash` |
-| Send a prompt to the worker agent | `worker_client.py` -> PiWorker.prompt() |
-| Run the forge pipeline | `forge.py` with a spec JSON |
-| Check project health | `chimera_preflight` |
-| Access UE5 viewport | `mcp_capture_viewport`, `mcp_set_camera` |
-| Spawn actors in UE5 | `mcp_spawn_actor` |
-
-## 4. REPORT
-
-Post the full council report verbatim:
-- All 20 Q&A pairs (Gates 2-5)
-- What was implemented this cycle (file paths, line counts)
-- What's still open (next direction)
-- Saturation state (which targets are clear)
-
-The human reads every Q&A to determine the next direction.
-
-## 5. COMMIT
-
-`git add -A && git commit -m "[summary]" && git push origin master`
-
----
-
-## FILE ARCHITECTURE
+## THE COMPLETE CYCLE
 
 ```
-worker_bridge/
-  main.py              — FastAPI bridge server (keep running)
-  forge.py             — Workshop pipeline (use when you have a spec)
-  worker_client.py     — Python SDK for bridge (use for worker prompts)
-  dashboard.html       — Monitoring UI
-  send_build_brief.py  — Example: send brief to worker
-  *.bat, *.ps1         — Launchers for visible windows
-  chronicle/           — Q&A records (auto-generated)
-  specs/               — Spec manifests (auto-generated)
+HUMAN DIRECTION
+    │
+    ▼
+DESIGN MODE (feature_graph.py)
+    │  Create feature node
+    │  Ask 21 category questions + 5 META
+    │  Answer from existing knowledge
+    │  Zoom deeper if META says so
+    │
+    ▼
+SATURATION (all questions answered -> feature = 'designed')
+    │
+    ▼
+BUILD MODE (mcp_builder.py)
+    │  Read designed feature JSON
+    │  Construct in UE5 via MCP calls
+    │  Verify with screenshots
+    │
+    ▼
+REPORT (verbatim Q&A + build evidence)
+    │
+    ▼
+COMMIT
+    │
+    ▼
+(repeat)
 ```
 
-## TOOL HIERARCHY
+## QUESTION CATEGORIES
 
-1. **Internal council** — fastest path, use first
-2. **Direct file edit** — `read` + `edit` tools for Python files
-3. **Worker bridge** — `worker_client.py` for design work, research, second opinions
-4. **Forge** — `forge.py spec.json` for multi-file implementations with gates
-5. **MCP tools** — for UE5 viewport, actor spawning, screenshots
-6. **Research engine** — for UE5 source code lookups
+Every question belongs to one of 22 categories across 4 groups:
+
+### NODE (12) — what IS this feature?
+education, fame, world, shipping, foundation, platform, performance,
+accessibility, audio, multiplayer, modding, localization
+
+### EDGE (5) — how does it RELATE?
+depends_on, proves, derived_from, conflicts, requires
+
+### MIRROR (4) — why does it EXIST?
+vision, tradeoff, evidence, terminal
+
+### META (5) — where does it FIT in the tree?
+depth, breadth, parent, priority, dependency
+
+## TOOL HIERARCHY (fastest first)
+
+1. **Internal council** — 7 gates in your own context. No API calls.
+2. **Direct file tools** — `read`, `edit`, `write`, `readSeek_grep`.
+3. **Worker bridge** — `worker_client.py` for design briefs.
+4. **Graph tools** — `core/feature_graph.py` for feature management.
+5. **MCP builder** — `worker_bridge/mcp_builder.py` for UE5 construction.
+6. **Forge** — `worker_bridge/forge.py` for multi-file implementations.
+7. **Research engine** — `research_engine` for UE5 source.
+
+## KEY FILES
+
+| File | Purpose |
+|------|---------|
+| `ONBOARDING.md` | Lead agent onboarding — read first every session |
+| `WORKFLOW.md` | THIS FILE — detailed workflow |
+| `CLAUDE.md` | Project constitution, gates, conventions |
+| `Chimera/core/feature_graph.py` | Feature graph management (create, ask, answer) |
+| `worker_bridge/mcp_builder.py` | MCP client for UE5 construction |
+| `worker_bridge/worker_client.py` | Worker bridge SDK |
+| `Chimera/docs/features/*.json` | All features as graph nodes |
+| `Chimera/core/geology.py` | Rock type / strata system |
+| `Chimera/core/env_education.py` | Environmental education prompts |
+| `Chimera/core/cloud_education.py` | Cloud type education |
+| `Chimera/core/cloud_weather.py` | Weather state machine |
+| `Chimera/core/celestial_rotation.py` | Day/night cycle |
+| `Chimera/core/env_temperature.py` | Temperature simulation |
+| `Chimera/core/night_visibility.py` | Night gameplay |
+| `Chimera/core/day_night_orchestrator.py` | Day/night orchestrator |
+
+## COMMON GOTCHAS
+
+- **MCP config**: Section header must be `[/Script/McpAutomationBridge.McpAutomationBridgeSettings]`.
+- **MCP session**: Call `initialize` first to get a `Mcp-Session-Id` header. Sessions expire.
+- **MCP responses**: Are SSE format (`event: message\ndata: {...}`). Parse the `data:` line.
+- **MCP port 3000**: HTTP/JSON-RPC server. Port 8091 is WebSocket-only.
+- **UE5 editor path**: `C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe`
+- **ProceduralGenerated/**: Never edit directly. Fix `game_code_generator.py` instead.
+- **The graph lives on disk, not in your head**. Never assume state — read the JSON.
+- **Build from answers, not from scratch**. The graph IS the design. Implement literally.
