@@ -79681,6 +79681,101 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_ddadba231a9b"
+    },
+    {
+      "id": "feature_3da8501680c32f3d",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T23:02:10.765838",
+      "feature_name": "Demo_Volumetric_Clouds",
+      "loop": 3,
+      "status": "encoded",
+      "parameters": {
+        "notes": "Constructed in UE5 via MCP. Configured DemoClouds VolumetricCloudComponent with all 5 educational cloud type presets (cumulus, stratus, cirrus, nimbostratus, cumulonimbus) by altitude/height. Screenshots verified."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Demo_Volumetric_Clouds",
+      "error_category": "none",
+      "fix_description": "Feature 'Demo_Volumetric_Clouds' (Loop 3) recorded as 'encoded'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_6bfc2ae64316"
+    },
+    {
+      "id": "feature_c54325ba9e6e50b1",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T23:02:11.202406",
+      "feature_name": "Cloud_Types_Educational",
+      "loop": 3,
+      "status": "encoded",
+      "parameters": {
+        "notes": "5 cloud types configured on VolumetricCloudComponent with distinct altitude ranges per spec. Data-driven spec at worker_bridge/specs/cloud_types_educational.json loaded by cloud_education.py. Screenshots captured for all types."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Cloud_Types_Educational",
+      "error_category": "none",
+      "fix_description": "Feature 'Cloud_Types_Educational' (Loop 3) recorded as 'encoded'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_437d71bbda25"
+    },
+    {
+      "id": "feature_83bc64ecb5d413ab",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T23:02:11.631829",
+      "feature_name": "Cloud_Shadow_Rendering",
+      "loop": 3,
+      "status": "encoded",
+      "parameters": {
+        "notes": "bCastCloudShadows enabled via MCP. ShadowResolution per cloud type. ShadowDistance configured. Shadow observations coded in cloud_education.py (SHADOW_OBSERVATIONS)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Cloud_Shadow_Rendering",
+      "error_category": "none",
+      "fix_description": "Feature 'Cloud_Shadow_Rendering' (Loop 3) recorded as 'encoded'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_a38b20060c38"
+    },
+    {
+      "id": "feature_d90c0b4cea4cbcc4",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T23:02:12.089058",
+      "feature_name": "Cloud_Weather_Connection",
+      "loop": 3,
+      "status": "encoded",
+      "parameters": {
+        "notes": "CloudMCPBridge in cloud_weather.py handles weather-to-cloud-type MCP property setting. WeatherStateMachine connects cloud types to weather states (clear/fair_weather/overcast/changing/rain/storm) with gradual transitions. WindState tied to cloud type."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Cloud_Weather_Connection",
+      "error_category": "none",
+      "fix_description": "Feature 'Cloud_Weather_Connection' (Loop 3) recorded as 'encoded'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_6d552fd172f4"
+    },
+    {
+      "id": "surprise_528761d61b6d67a8",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T23:02:16.494766",
+      "context": "postflight refused by research gate: Demo_Volumetric_Clouds construction",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_b1819219ad68"
     }
   ],
   "edges": [
