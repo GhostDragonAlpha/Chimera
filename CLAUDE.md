@@ -226,24 +226,20 @@ python fix_dna_key_mismatch_pollution.py
 cd core/dna && uvicorn query_api:app --host localhost --port 8766
 ```
 
-### Gaussian Foundry — Autonomous Dialectical Development
+### Foundry Bridge
 
-The Foundry (`worker_bridge/`) is a multi-agent system that orchestrates a dialectical
-Q&A loop (Council → Bridge → Workshop) to design, implement, and verify changes
-autonomously.
+The Foundry bridge (`worker_bridge/`) provides a second PI agent and a build pipeline.
+See `WORKFLOW.md` for the complete workflow.
 
 | Tool | File | Purpose |
 |------|------|---------|
-| **Worker Bridge** | `worker_bridge/main.py` | FastAPI server wrapping `pi --mode rpc` |
-| **Council** | `worker_bridge/dialogos.py` | Automated 2-role Q&A cycle (10 Q per phase) |
-| **Bridge** | `worker_bridge/council_to_forge.py` | Extract spec from dialectic chronicle |
+| **Bridge Server** | `worker_bridge/main.py` | FastAPI server wrapping `pi --mode rpc` |
 | **Workshop** | `worker_bridge/forge.py` | Writer→Builder→Reviewer→Beats pipeline |
-| **Orchestrator** | `worker_bridge/run.py` | Unified entry point |
+| **SDK** | `worker_bridge/worker_client.py` | Python client for the bridge API |
 
 ```powershell
 cd E:\PythonChimera\worker_bridge
-python -m uvicorn main:app --host 127.0.0.1 --port 8891   # start worker
-python run.py --turns 2                                     # full pipeline
+python -m uvicorn main:app --host 127.0.0.1 --port 8895
 ```
 
 ### Generation Protocol (circadian — full spec: docs/GENERATION_PROTOCOL.md)

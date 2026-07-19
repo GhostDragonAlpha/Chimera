@@ -22,8 +22,8 @@
 
 | # | Doc | What it OWNS |
 |---|---|---|
-| 1 | **`CLAUDE.md`** | **THE CONSTITUTION.** The Contract, the gates, Key Paths, conventions, troubleshooting. If a rule is anywhere, it is here. |
-| 2 | **`Chimera/docs/MASTER_ONBOARDING.md`** | **THE AGENT PROMPT.** Goals + rules, as handed to a LEAD or subagent. The most current doc in the repo, and for one measurable reason: **the human re-tests it every revision.** It is the only doc that gets executed. |
+| 1 | **`WORKFLOW.md`** | **THE WORKFLOW.** The 7-gate internal council, tool hierarchy, execution steps. Read this first every session. |
+| 2 | **`CLAUDE.md`** | **THE CONSTITUTION.** The Contract, the gates, Key Paths, conventions, troubleshooting. If a rule is anywhere, it is here. |
 | 3 | **`SUCCESSOR_RUNBOOK.md`** | **RECIPES, not principles.** Copy-paste exactly. Read this instead of improvising if you are a less capable model or unsure. |
 | 4 | **`Chimera/docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md`** | **INTENT ONLY** — the Spiral, the Pillars, the Voice. No state, no procedure. |
 
