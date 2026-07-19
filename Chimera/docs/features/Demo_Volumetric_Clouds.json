@@ -399,6 +399,60 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "No cross-blocking. Each sub-feature is independent."
+    },
+    {
+      "id": 45,
+      "category": "foundation",
+      "question": "Can MCP spawn a VolumetricCloud actor reliably on first attempt?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP spawn_actor with /Script/Engine.VolumetricCloud creates the actor instantly. No retry needed."
+    },
+    {
+      "id": 46,
+      "category": "foundation",
+      "question": "What is the correct Z height for cloud actor relative to terrain?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Z=2000 places clouds visibly above terrain. Adjust based on camera height and terrain elevation."
+    },
+    {
+      "id": 47,
+      "category": "shipping",
+      "question": "Can VolumetricCloudComponent properties be set individually via MCP set_component_property?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each property (LayerBottomAltitude, Density, bCastCloudShadows) is separately settable. No batch-set needed."
+    },
+    {
+      "id": 48,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: MCP successfully spawned VolumetricCloud at Z=2000. LayerBottomAltitude=1500, La...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "MCP successfully spawned VolumetricCloud at Z=2000. LayerBottomAltitude=1500, LayerHeight=4000."
+    },
+    {
+      "id": 49,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: All cloud properties (density, altitude, shadow, color) individually settable vi...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "All cloud properties (density, altitude, shadow, color) individually settable via MCP set_component_property."
+    },
+    {
+      "id": 50,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: bCastCloudShadows=True + ShadowMapResolution=512 produces visible moving cloud s...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "bCastCloudShadows=True + ShadowMapResolution=512 produces visible moving cloud shadows on terrain."
     }
   ],
   "answers": [],

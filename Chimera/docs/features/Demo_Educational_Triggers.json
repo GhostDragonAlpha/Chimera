@@ -399,6 +399,60 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "No cross-blocking. Each sub-feature is independent."
+    },
+    {
+      "id": 45,
+      "category": "shipping",
+      "question": "Can MCP spawn 18 TriggerBox actors reliably in sequence?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Successfully spawned 18/18 TriggerBox actors. 0 failures."
+    },
+    {
+      "id": 46,
+      "category": "foundation",
+      "question": "What is the optimal rate limit between MCP spawn_actor calls to avoid connection issues?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Batch of 5 consecutive spawns works. Adding 0.5s delay every 5 prevents timeout on RTX 3060 setup."
+    },
+    {
+      "id": 47,
+      "category": "world",
+      "question": "Do the 18 geological trigger zones form a coherent educational path from sedimentary to igneous?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Zones follow geological order: sedimentary (east) -> metamorphic (mid-canyon) -> igneous (west terminus)."
+    },
+    {
+      "id": 48,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 18 TriggerBox volumes spawned across geological zones. 18 succeeded, 0 failed....",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "18 TriggerBox volumes spawned across geological zones. 18 succeeded, 0 failed."
+    },
+    {
+      "id": 49,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Trigger volume positions follow geological west-to-east path: sedimentary at +48...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Trigger volume positions follow geological west-to-east path: sedimentary at +480 -> metamorphic at -80 -> igneous at -500."
+    },
+    {
+      "id": 50,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Educational trigger zones need linked prompt system to fire educational text whe...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Educational trigger zones need linked prompt system to fire educational text when player enters volume."
     }
   ],
   "answers": [],

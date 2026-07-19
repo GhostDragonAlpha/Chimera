@@ -237,6 +237,33 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 27,
+      "category": "shipping",
+      "question": "Can UE5 Sequencer keyframes be created from MCP-spawned camera waypoints?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Waypoints are positional markers. Sequencer keyframes need manual creation or a Sequencer-specific MCP tool. Waypoints serve as visual guides."
+    },
+    {
+      "id": 28,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Camera waypoints serve as positional guides. UE5 Sequencer needed for actual cin...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Camera waypoints serve as positional guides. UE5 Sequencer needed for actual cinematic flythrough keyframes."
+    },
+    {
+      "id": 29,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 30-second flythrough tempo: 5s per geological zone entrance. 7 zones = ~35s tota...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "30-second flythrough tempo: 5s per geological zone entrance. 7 zones = ~35s total flythrough."
     }
   ],
   "answers": [],

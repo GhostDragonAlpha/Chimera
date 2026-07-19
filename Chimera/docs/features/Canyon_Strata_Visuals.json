@@ -237,6 +237,33 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 27,
+      "category": "foundation",
+      "question": "What is the minimum viable strata visualization: colored markers or actual layered materials?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "SphereReflectionCapture markers are minimal viability. For visual strata, need landscape layer blends or splat materials colored by rock type."
+    },
+    {
+      "id": 28,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: No dedicated strata materials yet. Position markers serve as placeholders. Need ...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No dedicated strata materials yet. Position markers serve as placeholders. Need landscape layer blends for visual strata."
+    },
+    {
+      "id": 29,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 3 rock types mapped to 3 color markers: sedimentary=brown, metamorphic=green, ig...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "3 rock types mapped to 3 color markers: sedimentary=brown, metamorphic=green, igneous=red palette."
     }
   ],
   "answers": [],

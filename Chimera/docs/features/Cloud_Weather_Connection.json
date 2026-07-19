@@ -597,6 +597,15 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 67,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Weather state machine can be driven by cloud material parameters. No native UE5 ...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Weather state machine can be driven by cloud material parameters. No native UE5 weather system needed for v1."
     }
   ],
   "answers": [],

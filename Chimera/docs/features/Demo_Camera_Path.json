@@ -399,6 +399,42 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "No cross-blocking. Each sub-feature is independent."
+    },
+    {
+      "id": 45,
+      "category": "shipping",
+      "question": "Can MCP spawn PlayerCameraManager actors at specific waypoint positions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. PlayerCameraManager actors can be spawned at precise positions along the canyon flythrough path."
+    },
+    {
+      "id": 46,
+      "category": "education",
+      "question": "Does the west-to-east camera path reveal geological transitions in correct order?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Path starts at sedimentary entrance (east), moves through metamorphic mid-canyon, ends at igneous terminus (west)."
+    },
+    {
+      "id": 47,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 7 camera waypoints placed along canyon west-to-east path. PlayerCameraManager ac...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "7 camera waypoints placed along canyon west-to-east path. PlayerCameraManager actors spawned at each."
+    },
+    {
+      "id": 48,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Camera path covers: start -> entrance -> sedimentary -> metamorphic -> igneous -...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Camera path covers: start -> entrance -> sedimentary -> metamorphic -> igneous -> terminus -> sunset vista."
     }
   ],
   "answers": [],

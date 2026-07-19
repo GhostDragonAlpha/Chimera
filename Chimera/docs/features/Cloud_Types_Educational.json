@@ -597,6 +597,33 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 67,
+      "category": "shipping",
+      "question": "What existing materials are available in the content browser for cloud type presets?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Search returned 3 materials. Cloud type materials may need to be created if none exist."
+    },
+    {
+      "id": 68,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: No pre-made cloud type materials found in existing content browser. Need to crea...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No pre-made cloud type materials found in existing content browser. Need to create 5 material instances."
+    },
+    {
+      "id": 69,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Cloud type identification needs: (1) distinct material per type, (2) educational...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Cloud type identification needs: (1) distinct material per type, (2) educational widget, (3) trigger system."
     }
   ],
   "answers": [],

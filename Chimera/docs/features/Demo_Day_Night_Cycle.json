@@ -29,7 +29,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "ZE47-3: Rocks cracked by thermal expansion at noon are visible cooling at night. Star patterns teach navigation — same constellation from different canyon locations. Deep geology: 'Why are some rocks cracked and others smooth?' leads to thermal expansion + mineral composition lesson."
+      "answer": "ZE47-3: Rocks cracked by thermal expansion at noon are visible cooling at night. Star patterns teach navigation \u2014 same constellation from different canyon locations. Deep geology: 'Why are some rocks cracked and others smooth?' leads to thermal expansion + mineral composition lesson."
     },
     {
       "id": 4,
@@ -38,7 +38,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "ZE47-4: At night: condensation observations near canyon walls (temperature drop + humidity). Day: mineral identification by color. Different rocks conduct heat differently — touch test. Noon observations (thermal expansion cracking) teach material properties used in shelter-building (Loop 6)."
+      "answer": "ZE47-4: At night: condensation observations near canyon walls (temperature drop + humidity). Day: mineral identification by color. Different rocks conduct heat differently \u2014 touch test. Noon observations (thermal expansion cracking) teach material properties used in shelter-building (Loop 6)."
     },
     {
       "id": 5,
@@ -371,7 +371,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "3 sub-features complete this zoom: (1) Celestial_Light_Rotation — light mechanics, (2) Temperature_Time_System — thermal gameplay, (3) Night_Visibility_Gameplay — darkness effects. Together they cover all daylight-related systems for v1 demo."
+      "answer": "3 sub-features complete this zoom: (1) Celestial_Light_Rotation \u2014 light mechanics, (2) Temperature_Time_System \u2014 thermal gameplay, (3) Night_Visibility_Gameplay \u2014 darkness effects. Together they cover all daylight-related systems for v1 demo."
     },
     {
       "id": 42,
@@ -399,6 +399,51 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "No cross-blocking. Each sub-feature is independent."
+    },
+    {
+      "id": 45,
+      "category": "foundation",
+      "question": "Does MCP support setting LightColor as an RGB struct?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. LightColor is set as {R: int, G: int, B: int}. Range 0-255. Warm white 255,240,220 works well."
+    },
+    {
+      "id": 46,
+      "category": "education",
+      "question": "Does light state transition between dawn/noon/sunset/night teach players about sun arc?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each state has distinct pitch (elevation), intensity, and color temperature. Players learn sun position = time."
+    },
+    {
+      "id": 47,
+      "category": "foundation",
+      "question": "Can MCP transition between 4 distinct day states without desync?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. All 4 states (DAWN, NOON, SUNSET, NIGHT) were applied successfully. Each produces visibly different lighting."
+    },
+    {
+      "id": 48,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 4 distinct light states (DAWN/NOON/SUNSET/NIGHT) applied via MCP. Each has uniqu...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "4 distinct light states (DAWN/NOON/SUNSET/NIGHT) applied via MCP. Each has unique pitch, intensity, and color temperature."
+    },
+    {
+      "id": 49,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Light state transitions work via set_actor_transform (rotation) + set_component_...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Light state transitions work via set_actor_transform (rotation) + set_component_property (intensity, color)."
     }
   ],
   "answers": [],

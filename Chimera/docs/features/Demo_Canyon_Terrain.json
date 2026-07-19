@@ -399,6 +399,42 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "No cross-blocking. Each sub-feature is independent."
+    },
+    {
+      "id": 45,
+      "category": "world",
+      "question": "Are canyon wall markers (captures) sufficient as temporary stratum indicators, or do we need actual landscape sculpting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "SphereReflectionCapture actors serve as position markers. Actual landscape strata need splat rendering or terrain sculpting for v1 demo quality."
+    },
+    {
+      "id": 46,
+      "category": "education",
+      "question": "Do the three rock formation zones (sedimentary east, metamorphic mid, igneous west) form a coherent geology lesson?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Geological order is visible as player traverses west: layered sandstone -> folded schist -> granite batholith."
+    },
+    {
+      "id": 47,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 7 SphereReflectionCapture markers placed as geological zone indicators. Actual t...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "7 SphereReflectionCapture markers placed as geological zone indicators. Actual terrain needs matter_gpu landscape generation."
+    },
+    {
+      "id": 48,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Canyon geological zones: sedimentary (east, X=300), metamorphic (mid, X=-100), i...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Canyon geological zones: sedimentary (east, X=300), metamorphic (mid, X=-100), igneous (west, X=-450)."
     }
   ],
   "answers": [],

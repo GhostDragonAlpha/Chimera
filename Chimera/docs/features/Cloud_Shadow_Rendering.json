@@ -597,6 +597,33 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 67,
+      "category": "performance",
+      "question": "What is the visual quality difference at 512 vs 1024 cloud shadow map resolution on RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "512 is visibly softer but performant. 1024 sharper but ~1ms more GPU cost. 512 is good for v1."
+    },
+    {
+      "id": 68,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 512 shadow resolution: softer edges, ~0.5ms GPU cost. 1024: sharper, ~1.5ms. 512...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "512 shadow resolution: softer edges, ~0.5ms GPU cost. 1024: sharper, ~1.5ms. 512 sufficient for v1."
+    },
+    {
+      "id": 69,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Cloud shadows are visible on canyon terrain when directional light is above hori...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Cloud shadows are visible on canyon terrain when directional light is above horizon (pitch > -30)."
     }
   ],
   "answers": [],

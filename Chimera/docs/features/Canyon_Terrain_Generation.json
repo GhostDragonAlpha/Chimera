@@ -237,6 +237,24 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 27,
+      "category": "shipping",
+      "question": "Can MCP spawn basic terrain markers for canyon geological zones?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. 7 SphereReflectionCapture actors placed as position markers for canyon features. Actual terrain generation needs matter_gpu.py."
+    },
+    {
+      "id": 28,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: MCP can place basic position markers. Full terrain generation needs separate lan...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "MCP can place basic position markers. Full terrain generation needs separate landscape tool or matter_gpu.py."
     }
   ],
   "answers": [],

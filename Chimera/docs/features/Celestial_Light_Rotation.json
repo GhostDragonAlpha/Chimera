@@ -47,7 +47,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "A four-panel showing the same canyon at dawn, noon, sunset, and night — with the sun position visibly different in each and long shadows at morning/evening."
+      "answer": "A four-panel showing the same canyon at dawn, noon, sunset, and night \u2014 with the sun position visibly different in each and long shadows at morning/evening."
     },
     {
       "id": 6,
@@ -74,7 +74,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Shadow length changing continuously. UE5's dynamic shadow system means every rock and canyon wall casts a shadow that stretches at sunset and shrinks at noon — visible without any UI."
+      "answer": "Shadow length changing continuously. UE5's dynamic shadow system means every rock and canyon wall casts a shadow that stretches at sunset and shrinks at noon \u2014 visible without any UI."
     },
     {
       "id": 9,
@@ -237,6 +237,33 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Yes. The parent feature established that day/night uses UE5 directional light rotation and world-aligned stars. This sub-feature specifies the rotation mechanics in detail."
+    },
+    {
+      "id": 27,
+      "category": "shipping",
+      "question": "Can the directional light rotation be controlled via MCP set_actor_transform?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Pitch controls sun elevation (-90=midnight, 0=horizon, 90=noon). Yaw rotates 360 for full day cycle."
+    },
+    {
+      "id": 28,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Directional light rotation controllable via MCP. Pitch -70 to 60 maps midnight t...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directional light rotation controllable via MCP. Pitch -70 to 60 maps midnight to noon. Yaw 0-360 for full rotation."
+    },
+    {
+      "id": 29,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Star sphere needs separate rotation. Not yet spawned. World-aligned stars need s...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Star sphere needs separate rotation. Not yet spawned. World-aligned stars need sky sphere actor."
     }
   ],
   "answers": [],
