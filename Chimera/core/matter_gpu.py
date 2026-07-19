@@ -144,9 +144,14 @@ def assemble_3d_gpu(grid, shape, targets, J, connectivity=18, sweeps=90,
     colors = [wp.vec3i(cz, cy, cx)
               for cz in (0, 1) for cy in (0, 1) for cx in (0, 1)]
     for s in range(sweeps):
+        # Snapshot counts at the start of each color pass so the volume constraint
+        # reads deterministic pass-start values instead of racing mid-flip atomics.
+        wp.synchronize_device(dev)
+        area_snap = wp.array(aread.numpy(), dtype=wp.int32, device=dev)
+        tgt_snap = wp.array(tgtd.numpy(), dtype=wp.int32, device=dev)
         for ci, col in enumerate(colors):
             wp.launch(_potts_color_pass, dim=shape,
-                      inputs=[lat, aread, Jd, offs, tgtd, col,
+                      inputs=[lat, area_snap, tgt_snap, Jd, offs, col,
                               float(temp), float(lam), int(frozen),
                               seed * 131 + s * 8 + ci, len(_OFF18)],
                       device=dev)

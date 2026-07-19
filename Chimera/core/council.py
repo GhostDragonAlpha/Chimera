@@ -267,7 +267,8 @@ def _check_telemetry(nodes, f):
 
 
 def _check_build(nodes, f):
-    return _has(nodes, f, lambda n: n.get("type") == "Build")
+    # Compilation mutations are written as Mutation nodes with a compilation_result field.
+    return _has(nodes, f, lambda n: n.get("type") == "Mutation" and bool(n.get("compilation_result")))
 
 
 def _check_grade(nodes, f):
