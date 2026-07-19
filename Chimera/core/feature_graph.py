@@ -30,6 +30,7 @@ NODE_CATEGORIES = [
     "testing",        # Can we verify it works?
     "shipping",       # Does it move toward release?
     "foundation",     # Does it strengthen the toolchain?
+    "foundry",        # Does the autonomous build system support this?
     "platform",       # Does it work in UE5.8 without hacks?
     "performance",    # Does it run at 30+ fps on target hardware?
     "accessibility",  # Can all players interact with it?

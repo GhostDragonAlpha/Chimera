@@ -309,6 +309,51 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 37,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 38,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 39,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
     }
   ],
   "answers": [],
