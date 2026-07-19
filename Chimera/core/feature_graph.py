@@ -22,12 +22,22 @@ FEATURES_DIR = Path("E:/PythonChimera/Chimera/docs/features")
 FEATURES_DIR.mkdir(parents=True, exist_ok=True)
 
 # Category tree that grows with the project
-CATEGORIES = [
-    "education",
-    "fame",
-    "world",
-    "shipping",
-    "foundation",
+# Node categories - what IS this thing
+NODE_CATEGORIES = [
+    "education",    # Does it teach real knowledge?
+    "fame",         # Does it make the game desirable?
+    "world",        # Does it feel real and alive?
+    "shipping",     # Does it move toward release?
+    "foundation",   # Does it strengthen the toolchain?
+]
+
+# Edge categories - how does it RELATE to other things
+EDGE_CATEGORIES = [
+    "depends_on",   # What must exist before this?
+    "proves",       # What existing answer does this validate?
+    "derived_from", # What question led to this?
+    "conflicts",    # What existing design does this challenge?
+    "requires",     # What skills, tools, or data are needed?
 ]
 
 
@@ -62,7 +72,8 @@ def load_feature(name: str) -> Optional[Dict]:
     return None
 
 
-def ask_question(feature_name: str, category: str, question: str) -> int:
+def ask_question(feature_name: str, category: str, question: str, 
+                   is_edge: bool = False) -> int:
     """Add a question to a feature.
     
     Questions are added before answers. A feature is not ready to build
@@ -77,6 +88,7 @@ def ask_question(feature_name: str, category: str, question: str) -> int:
         "id": q_id,
         "category": category,
         "question": question,
+        "is_edge": is_edge,
         "answered": False,
         "answer": None,
     })

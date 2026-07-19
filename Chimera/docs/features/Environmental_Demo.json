@@ -143,6 +143,70 @@
       "question": "What is the graph query performance at 3000+ nodes?",
       "answered": false,
       "answer": null
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on the geology module (core/geology.py)?",
+      "is_edge": true,
+      "answered": true,
+      "answer": "Yes. core/geology.py is required for strata and rock type descriptions."
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the volumetric cloud actor being spawned?",
+      "is_edge": true,
+      "answered": true,
+      "answer": "Yes. The VolumetricCloud actor must exist in the level."
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on the env_education module being wired to UE5?",
+      "is_edge": true,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that MCP tools can build game content reliably?",
+      "is_edge": true,
+      "answered": true,
+      "answer": "Yes. Spawning clouds, placing cameras, capturing viewport all succeeded via MCP."
+    },
+    {
+      "id": 25,
+      "category": "proves",
+      "question": "Does this prove that educational mechanics can exist without a separate UI?",
+      "is_edge": true,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "derived_from",
+      "question": "Was this derived from the internal council on environmental systems?",
+      "is_edge": true,
+      "answered": true,
+      "answer": "Yes. The environmental council cycle produced the spec for geology + clouds + education."
+    },
+    {
+      "id": 27,
+      "category": "conflicts",
+      "question": "Does this conflict with the current pipeline compile errors?",
+      "is_edge": true,
+      "answered": true,
+      "answer": "No direct conflict. The pipeline errors are in other generated files, not in the environment systems."
+    },
+    {
+      "id": 28,
+      "category": "requires",
+      "question": "What UE5 knowledge is required to configure volumetric cloud properties?",
+      "is_edge": true,
+      "answered": false,
+      "answer": null
     }
   ],
   "answers": [],
