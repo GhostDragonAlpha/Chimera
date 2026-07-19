@@ -4,12 +4,12 @@
  * Provides direct access to Unreal Engine's ModelContextProtocol plugin tools.
  * All development coding, level editing, and asset management goes through MCP.
  * 
- * Configuration: .pi/settings.json -> mcp.serverUrl (default: http://localhost:30010)
+ * Configuration: .pi/settings.json -> mcp.serverUrl (default: http://localhost:8091)
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-const DEFAULT_MCP_URL = "http://localhost:30010";
+const DEFAULT_MCP_URL = "http://localhost:8091";
 const MCP_TIMEOUT_MS = 30000; // 30s timeout for MCP calls
 
 class McpBridgeClient {

@@ -20,7 +20,7 @@
     "enabled": true,
     "servers": {
       "unreal-engine": {
-        "url": "http://localhost:3000/mcp",
+        "url": "http://localhost:8091/mcp",
         "tools": [
           "control_editor",
           "control_actor",
@@ -31,12 +31,16 @@
       "graphify": {
         "type": "stdio",
         "command": "C:\\Users\\allen\\.local\\bin\\graphify-mcp.exe",
-        "args": ["E:/PythonChimera/Chimera/docs/chimera_dna_graph.json"]
+        "args": [
+          "E:/PythonChimera/Chimera/docs/chimera_dna_graph.json"
+        ]
       },
       "chiR24-unreal-mcp": {
         "type": "stdio",
         "command": "node",
-        "args": ["E:/ChiR24-Unreal_mcp-test/dist/cli.js"]
+        "args": [
+          "E:/ChiR24-Unreal_mcp-test/dist/cli.js"
+        ]
       },
       "playwright": {
         "url": "http://localhost:8342/sse",

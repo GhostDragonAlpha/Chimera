@@ -174,7 +174,7 @@ class VisualMcpClient {
   private sessionId: string | null = null;
   private nextId: number = 1;
 
-  constructor(serverUrl: string = "http://localhost:3000/mcp") {
+  constructor(serverUrl: string = "http://localhost:8091/mcp") {
     this.baseUrl = serverUrl;
   }
 
@@ -311,7 +311,7 @@ class VisualMcpClient {
 // ─── Pi Tool Registration ───────────────────────────────────────────
 
 export default function (api: ExtensionAPI): void {
-  const mcp = new VisualMcpClient("http://localhost:3000/mcp");
+  const mcp = new VisualMcpClient("http://localhost:8091/mcp");
 
   // Expose globally for other extensions/tools
   (globalThis as any).__VISUAL_DEV__ = {
