@@ -89,10 +89,23 @@ def voxelize(bones, target_len=64, flesh_scale=2.7, fractions=(0.55, 0.45),
     return g, D, targets
 
 
-def grow_limb(bones, sweeps=70, seed=0, **kw):
+def grow_limb(bones, sweeps=70, seed=0, gpu=True, **kw):
     """Voxelize the skeleton, then wrap it in flesh by differential adhesion with the bone
-    FROZEN. Returns (scaffold_grid, fleshed_grid, shape, targets)."""
+    FROZEN. Returns (scaffold_grid, fleshed_grid, shape, targets).
+
+    gpu=True (tb-0199) runs THE SHAKER in Warp (core.matter_gpu, 6.3B site-updates/sec
+    on the 4090 vs a single CPU core) — same J matrix, same lambda volume constraint,
+    same frozen scaffold, 18-connectivity via the safe 8-color decomposition. Falls
+    back to the CPU model (byte-for-byte the rung-1 witness) if Warp is unavailable."""
     grid, shape, targets = voxelize(bones, seed=seed, **kw)
+    if gpu:
+        try:
+            from core.matter_gpu import assemble_3d_gpu
+            fleshed = assemble_3d_gpu(grid, shape, targets, matter.J_DIFFERENTIAL_3D,
+                                      sweeps=sweeps, seed=seed, frozen_type=BONE)
+            return grid, fleshed, shape, targets
+        except Exception as e:                          # Warp missing / OOM -> CPU
+            print(f"[limb] GPU shaker unavailable ({type(e).__name__}: {e}); CPU fallback")
     fleshed = matter.assemble_3d(grid, shape, targets, matter.J_DIFFERENTIAL_3D,
                                  sweeps=sweeps, seed=seed, frozen_type=BONE)
     return grid, fleshed, shape, targets
