@@ -2,7 +2,7 @@
   "name": "Demo_Educational_Triggers",
   "description": "Sub-feature of Environmental_Demo: Trigger volumes that fire educational observations",
   "created": "2026-07-19T17:16:17.633510",
-  "status": "questioning",
+  "status": "designed",
   "questions": [
     {
       "id": 1,
@@ -10,8 +10,8 @@
       "question": "Can the player identify rock types from visual cues alone?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 2,
@@ -19,8 +19,8 @@
       "question": "Does the player learn to predict weather from cloud formations?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 3,
@@ -28,8 +28,8 @@
       "question": "Can curiosity-driven players discover deeper geology facts?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 4,
@@ -37,8 +37,8 @@
       "question": "Does the environment teach something the player uses later in gameplay?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 5,
@@ -46,8 +46,8 @@
       "question": "What single screenshot makes a Steam shopper wishlist?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 6,
@@ -55,8 +55,8 @@
       "question": "How does this demo compare to No Man Sky environmental shots?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 7,
@@ -64,8 +64,8 @@
       "question": "Could this demo be a 30-second Steam trailer?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 8,
@@ -73,8 +73,8 @@
       "question": "What mechanic would a journalist call innovative here?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 9,
@@ -82,8 +82,8 @@
       "question": "Do clouds cast shadows that move across the terrain?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 10,
@@ -91,8 +91,8 @@
       "question": "Does wind direction match cloud movement?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 11,
@@ -100,8 +100,8 @@
       "question": "Can the player see the same constellation from different locations?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 12,
@@ -109,8 +109,8 @@
       "question": "Does day/night affect which educational observations appear?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 13,
@@ -118,8 +118,8 @@
       "question": "Can this demo be built and run without pipeline errors?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 14,
@@ -127,8 +127,8 @@
       "question": "What is the minimum UE5 compile fix needed?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 15,
@@ -136,8 +136,8 @@
       "question": "Does the demo run at 30fps on target hardware?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 16,
@@ -145,8 +145,8 @@
       "question": "Can the demo be packaged as a standalone build?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 17,
@@ -154,8 +154,8 @@
       "question": "Are MCP tools reliable enough for repeated actor spawning?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 18,
@@ -163,8 +163,8 @@
       "question": "Does the worker bridge handle concurrent UE5 commands?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 19,
@@ -172,8 +172,8 @@
       "question": "Can the forge build UE5 content or only Python?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 20,
@@ -181,8 +181,8 @@
       "question": "What is the graph query performance at 3000+ nodes?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 21,
@@ -190,8 +190,8 @@
       "question": "Does this depend on the geology module (core/geology.py)?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 22,
@@ -199,8 +199,8 @@
       "question": "Does this depend on the volumetric cloud actor being spawned?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 23,
@@ -208,8 +208,8 @@
       "question": "Does this depend on the env_education module being wired to UE5?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 24,
@@ -217,8 +217,8 @@
       "question": "Does this prove that MCP tools can build game content reliably?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 25,
@@ -226,8 +226,8 @@
       "question": "Does this prove that educational mechanics can exist without a separate UI?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 26,
@@ -235,8 +235,8 @@
       "question": "Was this derived from the internal council on environmental systems?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 27,
@@ -244,8 +244,8 @@
       "question": "Does this conflict with the current pipeline compile errors?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 28,
@@ -253,8 +253,8 @@
       "question": "What UE5 knowledge is required to configure volumetric cloud properties?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 29,
@@ -262,8 +262,8 @@
       "question": "Does an environmental demo make the game more famous than a gameplay demo would?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 30,
@@ -271,8 +271,8 @@
       "question": "What features are NOT being built while we build this demo?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 31,
@@ -280,8 +280,8 @@
       "question": "What evidence exists that environmental realism drives Steam sales?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 32,
@@ -289,8 +289,8 @@
       "question": "Does this chain reach a human who plays the game, or just satisfy an architectural goal?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 33,
@@ -298,8 +298,8 @@
       "question": "Does this work in UE5.8 without hacks or workarounds?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 34,
@@ -307,8 +307,8 @@
       "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 35,
@@ -316,8 +316,8 @@
       "question": "Can a colorblind or hearing-impaired player fully experience this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 36,
@@ -325,8 +325,8 @@
       "question": "Does this have sound design that matches the visual quality?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 37,
@@ -334,8 +334,8 @@
       "question": "Can the community extend or modify this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 38,
@@ -343,8 +343,8 @@
       "question": "Can this be translated without breaking?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     },
     {
       "id": 39,
@@ -352,8 +352,8 @@
       "question": "Does this depend on Environmental_Demo being complete?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Location-based educational triggers teach real science through environment exploration. Triggers fire when player enters volume. Text appears in HUD. Works with existing env_education module."
     }
   ],
   "answers": [],

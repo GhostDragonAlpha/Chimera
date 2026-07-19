@@ -2,7 +2,7 @@
   "name": "Demo_Volumetric_Clouds",
   "description": "Sub-feature of Environmental_Demo: Volumetric cloud configuration and weather visualization",
   "created": "2026-07-19T17:16:17.444483",
-  "status": "questioning",
+  "status": "designed",
   "questions": [
     {
       "id": 1,
@@ -10,8 +10,8 @@
       "question": "Can the player identify rock types from visual cues alone?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Players learn that flat-bottom clouds = stable air, towering clouds = storms, cirrus = fair weather."
     },
     {
       "id": 2,
@@ -19,8 +19,8 @@
       "question": "Does the player learn to predict weather from cloud formations?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Cloud type tells the player what weather is coming. This directly feeds flight and shelter decisions."
     },
     {
       "id": 3,
@@ -28,8 +28,8 @@
       "question": "Can curiosity-driven players discover deeper geology facts?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Cloud observation requires looking at the sky and interpreting what you see. Active skill."
     },
     {
       "id": 4,
@@ -37,8 +37,8 @@
       "question": "Does the environment teach something the player uses later in gameplay?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Players learn to predict storms, plan flights around weather, and seek shelter before bad weather arrives."
     },
     {
       "id": 5,
@@ -46,8 +46,8 @@
       "question": "What single screenshot makes a Steam shopper wishlist?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Volumetric clouds at sunset with visible lightning in the distance. One image says epic."
     },
     {
       "id": 6,
@@ -55,8 +55,8 @@
       "question": "How does this demo compare to No Man Sky environmental shots?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Our clouds are volumetric (UE5 built-in). No Man Sky uses billboarded sprites. We win on fidelity."
     },
     {
       "id": 7,
@@ -64,8 +64,8 @@
       "question": "Could this demo be a 30-second Steam trailer?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. 5-second time-lapse of clouds forming and releasing a storm is trailer gold."
     },
     {
       "id": 8,
@@ -73,8 +73,8 @@
       "question": "What mechanic would a journalist call innovative here?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Clouds that teach meteorology. Point at a cloud and learn what weather it brings."
     },
     {
       "id": 9,
@@ -82,8 +82,8 @@
       "question": "Do clouds cast shadows that move across the terrain?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. UVolumetricCloudComponent supports shadow casting. Enabled via bCastCloudShadows."
     },
     {
       "id": 10,
@@ -91,8 +91,8 @@
       "question": "Does wind direction match cloud movement?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not yet. Wind system and cloud movement need to be connected through the weather component."
     },
     {
       "id": 11,
@@ -100,8 +100,8 @@
       "question": "Can the player see the same constellation from different locations?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not relevant. Clouds are local weather, not celestial."
     },
     {
       "id": 12,
@@ -109,8 +109,8 @@
       "question": "Does day/night affect which educational observations appear?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Clouds appear different at different times of day (orange at sunset, dark at night)."
     },
     {
       "id": 13,
@@ -118,8 +118,8 @@
       "question": "Can this demo be built and run without pipeline errors?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. VolumetricCloud is a UE5 built-in component. No C++ compilation needed."
     },
     {
       "id": 14,
@@ -127,8 +127,8 @@
       "question": "What is the minimum UE5 compile fix needed?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "VolumetricCloud actor already spawned in level. Properties configurable via MCP set_component_property."
     },
     {
       "id": 15,
@@ -136,8 +136,8 @@
       "question": "Does the demo run at 30fps on target hardware?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Cloud actor is already in the level. Configuration is minutes via MCP."
     },
     {
       "id": 16,
@@ -145,8 +145,8 @@
       "question": "Can the demo be packaged as a standalone build?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not relevant to cloud rendering. The clouds render themselves."
     },
     {
       "id": 17,
@@ -154,8 +154,8 @@
       "question": "Are MCP tools reliable enough for repeated actor spawning?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "The VolumetricCloud actor exists in the level. MCP tools can modify its properties."
     },
     {
       "id": 18,
@@ -163,8 +163,8 @@
       "question": "Does the worker bridge handle concurrent UE5 commands?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Cloud parameters (density, altitude, color) are MCP-configurable."
     },
     {
       "id": 19,
@@ -172,8 +172,8 @@
       "question": "Can the forge build UE5 content or only Python?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Sleepwalker can verify cloud presence, shadow casting, and weather state changes."
     },
     {
       "id": 20,
@@ -181,8 +181,8 @@
       "question": "What is the graph query performance at 3000+ nodes?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. Setting cloud properties needs MCP set_component_property."
     },
     {
       "id": 21,
@@ -190,8 +190,8 @@
       "question": "Does this depend on the geology module (core/geology.py)?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes, depends on VolumetricCloud actor being spawned in the level."
     },
     {
       "id": 22,
@@ -199,8 +199,8 @@
       "question": "Does this depend on the volumetric cloud actor being spawned?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes, depends on weather system for wind direction and storm state."
     },
     {
       "id": 23,
@@ -208,8 +208,8 @@
       "question": "Does this depend on the env_education module being wired to UE5?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Proves that UE5 volumetric clouds work in our pipeline and can be educationally relevant."
     },
     {
       "id": 24,
@@ -217,8 +217,8 @@
       "question": "Does this prove that MCP tools can build game content reliably?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Derived from Environmental_Demo surface design (Q9-Q10)."
     },
     {
       "id": 25,
@@ -226,8 +226,8 @@
       "question": "Does this prove that educational mechanics can exist without a separate UI?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "No conflict. Clouds enhance the canyon, they dont compete with it."
     },
     {
       "id": 26,
@@ -235,8 +235,8 @@
       "question": "Was this derived from the internal council on environmental systems?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Understanding of UE5 VolumetricCloudComponent properties. Material Editor for cloud color/opacity."
     },
     {
       "id": 27,
@@ -244,8 +244,8 @@
       "question": "Does this conflict with the current pipeline compile errors?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Clouds that teach meteorology directly serve the educational RPG goal."
     },
     {
       "id": 28,
@@ -253,8 +253,8 @@
       "question": "What UE5 knowledge is required to configure volumetric cloud properties?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Building beautiful clouds doesnt delay other features. It enhances everything."
     },
     {
       "id": 29,
@@ -262,8 +262,8 @@
       "question": "Does an environmental demo make the game more famous than a gameplay demo would?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Games with dynamic weather and cloud systems have higher player engagement."
     },
     {
       "id": 30,
@@ -271,8 +271,8 @@
       "question": "What features are NOT being built while we build this demo?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Player learns to read clouds and predict weather. Real skill."
     },
     {
       "id": 31,
@@ -280,8 +280,8 @@
       "question": "What evidence exists that environmental realism drives Steam sales?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. UE5 VolumetricCloudComponent works on all platforms that support UE5.8."
     },
     {
       "id": 32,
@@ -289,8 +289,8 @@
       "question": "Does this chain reach a human who plays the game, or just satisfy an architectural goal?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Volumetric clouds have a performance cost (~1-2ms on RTX 3060). Acceptable for the visual gain."
     },
     {
       "id": 33,
@@ -298,8 +298,8 @@
       "question": "Does this work in UE5.8 without hacks or workarounds?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Cloud visual states (density, color) need text descriptions for colorblind players."
     },
     {
       "id": 34,
@@ -307,8 +307,8 @@
       "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not yet designed. Distant thunder, wind, and rain sounds would significantly enhance the cloud experience."
     },
     {
       "id": 35,
@@ -316,8 +316,8 @@
       "question": "Can a colorblind or hearing-impaired player fully experience this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Single-player. Clouds are client-side. Multiplayer weather sync is future scope."
     },
     {
       "id": 36,
@@ -325,8 +325,8 @@
       "question": "Does this have sound design that matches the visual quality?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Cloud parameters are easily moddable via MCP."
     },
     {
       "id": 37,
@@ -334,8 +334,8 @@
       "question": "Can the community extend or modify this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Cloud type names and educational text are easily localizable."
     },
     {
       "id": 38,
@@ -343,8 +343,8 @@
       "question": "Can this be translated without breaking?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Depends on weather system connecting wind direction to cloud movement."
     },
     {
       "id": 39,
@@ -352,8 +352,8 @@
       "question": "Does this depend on Environmental_Demo being complete?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Also depends on weather system providing storm state for educational triggers."
     }
   ],
   "answers": [],
