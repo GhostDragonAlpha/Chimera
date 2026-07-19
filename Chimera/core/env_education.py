@@ -1,36 +1,31 @@
-"""env_education.py — Environmental education system.
+# -*- coding: utf-8 -*-
+"""env_education.py - Environmental education system.
 
 Generates context-aware educational prompts based on terrain geology,
-weather conditions, celestial positions, and time of day. No UE5
-dependency — pure Python, works with existing Chimera systems.
-
-The player encounters these as environmental observations:
-- "The canyon walls show sedimentary limestone over igneous granite —
-  this planet had an ocean millions of years ago."
-- "Flat-bottom clouds mean stable air. You have good flying weather."
-- "That constellation is Orion. You're in the northern hemisphere."
+weather conditions, celestial positions, and time of day.
 
 Teaches: Geology, meteorology, astronomy through environmental observation.
 """
 
-from typing import Optional, Dict
 import random
+from typing import Optional, Dict
 
-# ─── Geology prompts ───────────────────────────────────────────────────────
+# --- Geology prompts ---
 
 GEOLOGY_PROMPTS = {
     "regolith_breccia": [
         "Wind-blown debris covers the surface. Nothing stays buried here long.",
-        "This regolith is young — no soil formation yet. Constant wind erosion.",
+        "This regolith is young - no soil formation yet. Constant wind erosion.",
     ],
     "sedimentary_sandstone": [
-        "Cross-bedding in the sandstone — ancient dune fields, now stone.",
-        "Sandstone layers tilt at different angles. The wind direction changed over millennia.",
+        "Cross-bedding in the sandstone - ancient dune fields, now stone.",
+        "The sandstone layers tilt at different angles. The wind direction shifted over centuries.",
+        "Ripple marks preserved in the stone. Ancient shoreline.",
     ],
     "sedimentary_limestone": [
         "Fossil fragments in the limestone. This was once a shallow sea.",
         "Limestone dissolves in rainwater. These caves are still growing.",
-        "Calcium carbonate precipitate — the remains of countless tiny marine organisms.",
+        "Calcium carbonate precipitate - the remains of tiny marine organisms.",
     ],
     "metamorphic_schist": [
         "The foliation bands in this schist run vertical. Intense pressure from tectonic activity.",
@@ -39,14 +34,15 @@ GEOLOGY_PROMPTS = {
     "igneous_granite": [
         "Large crystal grains in the granite. Slow cooling deep underground.",
         "This granite was once magma, cooling over millions of years. Erosion exposed it.",
+        "Granite weathers into rounded shapes. Spheroidal weathering - water seeps along joints.",
     ],
     "igneous_basalt": [
         "Columnar jointing in the basalt. Rapid cooling of a lava flow.",
-        "Basalt means volcanic activity. This entire region was built by eruptions.",
+        "Basalt means volcanic activity. This region was built by eruptions.",
     ],
 }
 
-# ─── Weather prompts ───────────────────────────────────────────────────────
+# --- Weather prompts ---
 
 WEATHER_PROMPTS = {
     "clear": [
@@ -70,92 +66,127 @@ WEATHER_PROMPTS = {
     ],
 }
 
-# ─── Astronomy prompts ─────────────────────────────────────────────────────
+# --- Astronomy prompts ---
 
 ASTRONOMY_PROMPTS = {
     "constellation": [
-        "That pattern of stars is a constellation — different stars, same story, every night.",
+        "That pattern of stars is a constellation - same stars, every night.",
         "The stars change position through the night as the planet rotates.",
-        "If you recognize this constellation, you know which hemisphere you're on.",
+        "If you recognize this constellation, you know which hemisphere you are on.",
     ],
     "moon": [
-        "The moon is [PHASE] tonight. In [N] days it will be full.",
-        "The moon's phase affects the tides — and the tide affects the shoreline access.",
+        "The moon is {phase} tonight. In {days} days it will be full.",
+        "The moon phase affects the tides and the shoreline access.",
     ],
     "sunset": [
-        "The sun is [COLOR] at this angle. More atmosphere = more red. Dust in the air shifts it further.",
+        "The sun is red at this angle. More atmosphere = more red.",
         "Green flash at sunset means exceptionally clear air. Rare.",
     ],
     "night_sky": [
-        "Light from those stars left them [YEARS] years ago. You're looking back in time.",
-        "The Milky Way is brighter here than on Earth. No light pollution for a thousand light-years.",
+        "Light from those stars left them years ago. You are looking back in time.",
+        "The Milky Way is brighter here than on Earth. No light pollution.",
     ],
 }
 
-# ─── Time-of-day context ──────────────────────────────────────────────────
+ASTRONOMY_CONSTELLATIONS = {
+    "orion": "Three stars in a row - Orion's belt. Visible from most of the planet.",
+    "ursa_major": "The Big Dipper. Points to the North Star.",
+    "crux": "The Southern Cross. Only visible in the southern hemisphere.",
+    "scorpius": "Scorpius - shaped like its namesake. Visible in summer months.",
+}
+
+# --- Time prompts ---
 
 TIME_PROMPTS = {
-    "dawn": "First light. The temperature is rising fast without an atmosphere to trap heat.",
-    "day": "The sun is high. Heat shimmer on the horizon. Minimal cloud cover.",
-    "dusk": "Long shadows. The day's heat radiating back into space. Temperature dropping.",
-    "night": "The surface is cooling rapidly. Stars sharp and numerous without atmospheric distortion.",
+    "dawn": "First light. The temperature rises fast without an atmosphere.",
+    "day": "The sun is high. Heat shimmer on the horizon.",
+    "dusk": "Long shadows. The day's heat radiating back into space.",
+    "night": "Surface cooling rapidly. Stars sharp without atmospheric distortion.",
 }
 
 
 def geology_prompt(rock_type: str, terrain_feature: str = "canyon") -> str:
-    """Generate an educational observation about the current terrain."""
-    prompts = GEOLOGY_PROMPTS.get(rock_type, [f"The {rock_type} here tells a story of this planet's formation."])
+    """Educational observation about the current terrain."""
+    prompts = GEOLOGY_PROMPTS.get(rock_type, [])
+    if not prompts:
+        return f"[Geology] The {rock_type} here tells a story of this planet's formation."
     return f"[Geology] {random.choice(prompts)}"
 
 
+def deep_geology_observation(rock_type: str) -> str:
+    """Deeper geology observation for close examination."""
+    extras = {
+        "sedimentary_sandstone": [
+            "The sandstone has cross-bedding at 30 degrees. Wind direction was consistent for centuries.",
+        ],
+        "igneous_granite": [
+            "Feldspar crystals in this granite are 5mm. Cooling took approximately 10,000 years.",
+        ],
+        "igneous_basalt": [
+            "The basalt columns are hexagonal. Typical of slow, uniform cooling.",
+        ],
+    }
+    obs = extras.get(rock_type, [])
+    if obs and random.random() < 0.3:
+        return f"[Geology Detail] {random.choice(obs)}"
+    return geology_prompt(rock_type)
+
+
 def weather_prompt(weather_state: str) -> str:
-    """Generate an educational observation about the current weather."""
-    prompts = WEATHER_PROMPTS.get(weather_state, ["The weather is unremarkable. No educational signal."])
+    """Educational observation about current weather."""
+    prompts = WEATHER_PROMPTS.get(weather_state, [])
+    if not prompts:
+        return "[Weather] The weather is unremarkable."
     return f"[Weather] {random.choice(prompts)}"
 
 
 def astronomy_prompt(sky_feature: str, context: Optional[Dict] = None) -> str:
-    """Generate an educational observation about the sky."""
+    """Educational observation about the sky."""
     if sky_feature == "moon" and context:
         phase = context.get("moon_phase", "waxing")
-        days_to_full = context.get("days_to_full", 7)
-        prompt = f"The moon is {phase} tonight. In {days_to_full} days it will be full."
-        return f"[Astronomy] {prompt}"
-    
-    prompts = ASTRONOMY_PROMPTS.get(sky_feature, ["The sky is clear. Good for navigation."])
-    return f"[Astronomy] {random.choice(prompts)}"
+        days = context.get("days_to_full", 7)
+        return f"[Astronomy] The moon is {phase} tonight. In {days} days it will be full."
+    prompts = ASTRONOMY_PROMPTS.get(sky_feature, [])
+    if prompts:
+        return f"[Astronomy] {random.choice(prompts)}"
+    return "[Astronomy] The sky is clear. Good for navigation."
+
+
+def constellation_observation(constellation: str = None) -> str:
+    """Observation about a specific constellation."""
+    if constellation and constellation in ASTRONOMY_CONSTELLATIONS:
+        return f"[Astronomy] {ASTRONOMY_CONSTELLATIONS[constellation]}"
+    return f"[Astronomy] {random.choice(ASTRONOMY_PROMPTS['constellation'])}"
 
 
 def time_prompt(time_of_day: str) -> str:
-    """Generate an observation based on time of day."""
+    """Observation based on time of day."""
     prompt = TIME_PROMPTS.get(time_of_day, f"It is {time_of_day}.")
     return f"[Environment] {prompt}"
 
 
 def random_observation(geology_type: str, weather_state: str, time_of_day: str) -> str:
-    """Generate a random environmental observation weighted by context.
-    
-    The player sees these periodically as they explore.
-    """
+    """Random environmental observation weighted by context."""
     roll = random.random()
     if roll < 0.35:
         return geology_prompt(geology_type)
     elif roll < 0.60:
         return weather_prompt(weather_state)
     elif roll < 0.80:
-        return astronomy_prompt("constellation")
+        return constellation_observation()
     else:
         return time_prompt(time_of_day)
 
 
-def environment_report(geology_type: str, weather_state: str, 
+def environment_report(geology_type: str, weather_state: str,
                        time_of_day: str, sky_feature: str = "clear") -> str:
-    """Full environmental status report — like a survival scanner readout."""
-    lines = []
-    lines.append("=== ENVIRONMENTAL SCAN ===")
-    lines.append(f"Time: {time_of_day.upper()}")
-    lines.append(f"Weather: {weather_state.upper()}")
-    lines.append(f"Terrain: {geology_type}")
-    lines.append("")
-    lines.append(random_observation(geology_type, weather_state, time_of_day))
+    """Full environmental status report."""
+    lines = [
+        "=== ENVIRONMENTAL SCAN ===",
+        f"Time: {time_of_day.upper()}",
+        f"Weather: {weather_state.upper()}",
+        f"Terrain: {geology_type}",
+        "",
+        random_observation(geology_type, weather_state, time_of_day),
+    ]
     return "\n".join(lines)
