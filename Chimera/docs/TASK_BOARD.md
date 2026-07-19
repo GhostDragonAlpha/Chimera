@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-19T00:30:58+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-19T00:34:03+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,7 +8,6 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0187 | claimed | 0.9 | Splat material v2: idempotent authoring + masked VertexColor | core/splat_to_ue5.py | fable-1 |
 | tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
 | tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
 | tb-0145 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
@@ -89,6 +88,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0140 | done | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie | Witness Shelter_Habitat_Lighting — 1/1 beats reached, clean  |
 | tb-0141 | done | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie | Witness runner completed: simtest_00a14b4bd09ea7ea (witnesse |
 | tb-0142 | done | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie | witness_runner (wraps core.sleepwalker) ran docs/beats/trave |
+| tb-0187 | done | 0.9 | Splat material v2: idempotent authoring + masked VertexColor | core/splat_to_ue5.py | Splat material v2: idempotent authoring + soft-edge mask imp |
 | tb-0188 | done | 0.9 | Sample-source bake-off: multiple avenues, per-material optim | docs/matter/reference_scans/**, docs/research/sample_sources_bakeoff.md | Wrote docs/research/sample_sources_bakeoff.md (373 lines, ne |
 | tb-0192 | done | 0.9 | Granular matter engine v0: trainable sandpile domain (emerge | core/trainables/granular.py, docs/objectives/granular*.json | GRANULAR EMERGENCE RUNG v0 TRAINED AND STANDING. Domain core |
 | tb-0193 | done | 0.9 | Big-bang rung v0: grow a solar system on the GPU (trainable  | core/trainables/bigbang.py, core/trainables/bigbang_gpu.py… | THE BIG BANG GROWS A SOLAR SYSTEM - all walls satisfied, bes |
