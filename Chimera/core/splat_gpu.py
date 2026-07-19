@@ -208,7 +208,8 @@ def _cull_to_screen(sx, sy, rad2, order, w, h, max_visible):
 
 def rasterize(splats: dict, center: np.ndarray, radius: float,
               azim: float, elev: float, light_azim: float, light_elev: float,
-              w: int = 340, h: int = 340) -> np.ndarray:
+              w: int = 340, h: int = 340,
+              visibility_modifier: float = 1.0) -> np.ndarray:
     """GPU twin of matter_items.rasterize — identical projection + shading math
     (numpy), compositing in one Warp kernel. O(W*H*N): every pixel scans every splat.
     Fast and simple to ~100k splats (see rasterize_tiled for the pipeline past that)."""
@@ -216,10 +217,14 @@ def rasterize(splats: dict, center: np.ndarray, radius: float,
     sx, sy, inv00, inv01, inv11, rad2, color, order = _project_and_shade(
         splats, center, radius, azim, elev, light_azim, light_elev, w, h)
 
+    # Weather visibility: storms reduce visible splats
+    max_visible = int(w * h * 1.5 * max(0.1, min(1.0, visibility_modifier)))
+
     # Screen-space density cap: when camera is inside the fractal, ALL splats
     # are visible and the O(W*H*N) compositing becomes the bottleneck (540ms).
     # Keep only the closest splats within the viewport budget.
-    max_visible = int(w * h * 1.5)
+    # Weather visibility: storms reduce visible splats
+    max_visible = int(w * h * 1.5 * max(0.1, min(1.0, visibility_modifier)))
     capped = _cull_to_screen(sx, sy, rad2, order, w, h, max_visible)
     n_visible = len(capped)
 
@@ -298,7 +303,8 @@ def rasterize_tiled(splats: dict, center: np.ndarray, radius: float,
         splats, center, radius, azim, elev, light_azim, light_elev, w, h)
     # Screen-space density cap: cap the depth-sorted order BEFORE binning
     # so the tile pipeline doesn't explode when camera is inside the fractal.
-    max_visible = int(w * h * 1.5)
+    # Weather visibility: storms reduce visible splats
+    max_visible = int(w * h * 1.5 * max(0.1, min(1.0, visibility_modifier)))
     capped = _cull_to_screen(sx, sy, rad2, order, w, h, max_visible)
 
     # When the density cap keeps splats under ~200k, the per-pixel compositor

@@ -3884,6 +3884,76 @@
       "line": 108,
       "quote": "void SetCollisionEnabled(ECollisionEnabled::Type InCollisionEnabled) { CollisionEnabled = InCollisionEnabled; }",
       "at": "2026-07-17T13:52:17.070Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\RendererSettings.h",
+      "line": 1033,
+      "quote": "ToolTip = \"Enable cloud shadow on translucent surface not relying on the translucenct lighting volume, e.g. using Forward lighting. This is evaluated per vertex to reduce GPU cost and requires extra samplers/textures to be bound to vertex shaders. This is not implemented on mobile as VolumetricClouds are not available on these platforms.\",",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\RendererSettings.h",
+      "line": 1222,
+      "quote": "ToolTip = \"Enable cloud shadow on SingleLayerWater. This is evaluated per vertex to reduce GPU cost and requires extra samplers/textures to be bound to vertex shaders. This is not implemented on mobile as VolumetricClouds are not available on these platforms.\",",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 12,
+      "quote": "#include \"VolumetricCloudComponent.generated.h\"",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 15,
+      "quote": "class FVolumetricCloudSceneProxy;",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 18,
+      "quote": "enum class EVolumetricCloudTracingMaxDistanceMode : uint8",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 28,
+      "quote": "class UVolumetricCloudComponent : public USceneComponent",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 32,
+      "quote": "~UVolumetricCloudComponent();",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 52,
+      "quote": "EVolumetricCloudTracingMaxDistanceMode TracingMaxDistanceMode;",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 85,
+      "quote": "* The sample count resolution is still clamped according to scalability setting to 'r.VolumetricCloud.ViewRaySampleCountMax'.",
+      "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 91,
+      "quote": "* The sample count resolution is still clamped according to scalability setting to 'r.VolumetricCloud.ReflectionRaySampleMaxCount'.",
+      "at": "2026-07-19T21:09:32.266Z"
     }
   ]
 }
