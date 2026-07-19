@@ -79600,6 +79600,66 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_e74ce5a39e31"
+    },
+    {
+      "id": "feature_737f75e61eb0584c",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:35:28.832444",
+      "feature_name": "Scanner_Tool_Implementation",
+      "loop": 4,
+      "status": "designed",
+      "parameters": {
+        "parent": "Tool_Systems",
+        "description": "The core handheld scanner tool: equip, aim, scan, read-out. Real-time geological/mineral/atmospheric"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Scanner_Tool_Implementation",
+      "error_category": "none",
+      "fix_description": "Feature 'Scanner_Tool_Implementation' (Loop 4) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_4cf4474eaad7"
+    },
+    {
+      "id": "feature_0944953fd98649c9",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:35:29.243237",
+      "feature_name": "Tool_Durability_Maintenance",
+      "loop": 4,
+      "status": "designed",
+      "parameters": {
+        "parent": "Tool_Systems",
+        "description": "Tool degradation over use, material-dependent wear rates, repair mechanics with tools and workstatio"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Tool_Durability_Maintenance",
+      "error_category": "none",
+      "fix_description": "Feature 'Tool_Durability_Maintenance' (Loop 4) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_d40c9bbe5356"
+    },
+    {
+      "id": "feature_ce041f1120b7177b",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:35:29.652735",
+      "feature_name": "Tool_Crafting_System",
+      "loop": 4,
+      "status": "designed",
+      "parameters": {
+        "parent": "Tool_Systems",
+        "description": "Building tools from raw materials: assembly at crafting stations, material properties affecting tool"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Tool_Crafting_System",
+      "error_category": "none",
+      "fix_description": "Feature 'Tool_Crafting_System' (Loop 4) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_b08e01536dd3"
     }
   ],
   "edges": [

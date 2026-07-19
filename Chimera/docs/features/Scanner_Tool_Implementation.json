@@ -1,0 +1,244 @@
+{
+  "name": "Scanner_Tool_Implementation",
+  "description": "The core handheld scanner tool: equip, aim, scan, read-out. Real-time geological/mineral/atmospheric data collection with educational contextual feedback.",
+  "created": "2026-07-19T17:35:28.716144",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the scanner teach real geological identification through in-game analysis?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Scanner classifies rock types by grain size, color, hardness, and effervescence. Player learns to identify basalt vs. granite vs. sandstone by observable properties, not just labels."
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Does the scanner generate screenshot-worthy 'discovery' moments?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Full scan readout with cross-sectional terrain analysis and annotated mineral layers makes a visually impressive screenshot. Rich HUD overlay with real data is shareable."
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Does the scanner give meaningful data that changes by location and time?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Scans differ by biome, altitude, time of day, and weather. Mineral composition, atmosphere, POIs, and hazard warnings all vary dynamically. World feels alive and scientific."
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can the scanner be prototyped in one sprint using existing patterns?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Scanner equips to tool slot using existing Verb_Look/tool-switching patterns. UMG readout display uses standard widgets. Core scan raycast + mineral ID can be built in 3-5 days."
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Is scanner logic data-driven and extendable?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Mineral definitions, atmosphere tables, hardness values, and scan range are DataTable-driven. Adding new minerals or gases requires only data changes."
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Does the scanner work in UE5.8 without hacks?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Uses GAS (Gameplay Ability System), UMG widgets, line traces -- all standard UE5.8 subsystems. No engine modifications needed."
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Does the scanner run at 30+ fps on RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Scanner uses a single line trace on activation (negligible CPU cost), simple data lookup, and lightweight UMG overlay. No GPU impact."
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Can a colorblind or hearing-impaired player fully use the scanner?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Results are primarily text-based with icons. Mineral ID uses shape + text, not color-only. Audio scan sound is supplementary."
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Does the scanner have distinctive sound design?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "v1: equip hum, charge-up ascending tone, data-burst release, result ping -- all achievable with synthetic audio. No dedicated audio team needed for prototype."
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Does the scanner work in multiplayer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "v1 is single-player. Each player has own scanner; scan results are independent. Scan data sharing is v2."
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can the community add new scannable items?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Mineral and atmosphere data tables are JSON/DataTable. Modders add new scannables, data categories, and custom scan feedback."
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Can scanner data be localized?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. All mineral names, descriptions, property labels, and measurement units use UE5 FText. Scientific symbols and numbers are locale-friendly."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does Scanner_Tool_Implementation depend on Tool_Systems parent?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Tool_Systems provides the tool-equip framework, slot system, and tool-switching input. Scanner is one tool type within that system."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does Scanner_Tool_Implementation prove educational tools are viable in UE5?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A working scanner with real scientific data output proves educational content can be delivered through gameplay tools, not menus or text boxes."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was Scanner_Tool_Implementation derived from Tool_Systems Q1 (educational science)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Tool_Systems Q1 asked 'Do tools teach real science through their use?' and answered yes. This sub-feature materializes that answer as a specific tool."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does scanner conflict with the environmental demo focus?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No. Scanner enhances the environmental demo. A canyon scan revealing strata layers is a highlight moment that showcases both the environment AND the educational tool."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What UE5 knowledge is required for scanner implementation?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "GAS, line traces, UMG widgets, data tables. Moderate difficulty. Core scanning logic is ~1 week for a UE5-capable C++ developer."
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does this need sub-features or is it detailed enough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Detailed enough at this level. Future sub-features: Scanner_Mineral_Database, Scanner_Atmosphere_Analyzer, Scanner_Discovery_Log."
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are siblings missing at this level?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No. Scanner (core tool), Durability (lifecycle), Crafting (creation) form the complete tool system triad."
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is Tool_Systems complete enough to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Tool_Systems is at DESIGNED status with all 41 questions answered."
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should Scanner_Tool_Implementation be built before its siblings?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Scanner is the highest-priority tool as it directly supports the educational mission and environmental demo."
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does Scanner_Tool_Implementation block other features?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Tool_Crafting_System benefits from scanner (identifying materials) but does not require it. Tool_Durability is independent."
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does Scanner_Tool_Implementation serve the educational RPG goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Scanner is the primary educational tool. Through scanning, players learn real geology, meteorology, and astronomy."
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What is sacrificed by building scanner now?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building scanner prioritizes educational tool depth over other tool types (weapon, construction). Acceptable: scanner is the most educational tool."
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows real-data scanners drive engagement?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Elite Dangerous' discovery scanner and No Man's Sky's analysis visor prove scan-based gameplay with real data is deeply engaging."
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does scanner chain reach a human learning something real?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Player learns geological identification, Mohs hardness scale, atmospheric science -- transferable scientific literacy skills."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}
