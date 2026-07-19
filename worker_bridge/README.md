@@ -1,97 +1,64 @@
 # PI Worker Bridge + Gaussian Foundry
 
-A multi-agent autonomous game development system. Spawns a second PI agent via `pi --mode rpc`, wraps it in a **FastAPI** server, and orchestrates a dialectical development loop:
+A multi-agent game development system. Spawns a second PI agent via `pi --mode rpc`,
+wraps it in a FastAPI server, and runs a build pipeline.
+
+## Architecture (Simplified)
 
 ```
-Council (Q&A debate) → Bridge (spec extraction) → Workshop (code → build → review → test) → Commit
+Main Session ──HTTP/WS──► FastAPI Server ──stdin/stdout JSONL──► pi --mode rpc (worker)
+                                │
+                                ▼
+                     Workshop: Writer → Builder → Reviewer → Beats
 ```
 
-## Architecture
+**The Council (dialogos.py) is retired.** The exploratory Q&A phase completed after 10 cycles.
+The system now operates in BUILD mode: direct design briefs to the worker, implementation
+via the Workshop (forge.py), results reported to the human.
 
-```
-┌────────────────┐   HTTP/WS     ┌─────────────────┐   stdin/stdout JSONL    ┌─────────────┐
-│  Main Session  │ ──────────►   │  FastAPI Server  │ ◄────────────────────   │ pi --mode   │
-│  (this AI)     │ ◄──────────   │  127.0.0.1:8891  │ ────────────────────►  │ rpc (worker)│
-└────────────────┘               └────────┬────────┘                        └─────────────┘
-                                           │
-                                    ┌──────┴──────┐
-                                    │  Gaussian    │
-                                    │  Foundry     │
-                                    │  Pipeline    │
-                                    └──────┬──────┘
-                                           │
-              ┌────────────────────────────┼────────────────────────────┐
-              ▼                            ▼                            ▼
-     ┌─────────────────┐       ┌─────────────────────┐       ┌──────────────────┐
-     │  COUNCIL         │       │  WORKSHOP            │       │  PROVING GROUND   │
-     │  dialogos.py     │       │  forge.py            │       │  (status checks)  │
-     │  Q&A dialectic   │ ──►   │  Writer→Builder→     │ ──►   │  Build, Model,    │
-     │  10 per turn     │       │  Reviewer→Beats      │       │  Visual verify    │
-     └─────────────────┘       └─────────────────────┘       └──────────────────┘
-```
+## Files
 
-## How it works
-
-**The Council (dialogos.py):** Two simulated roles (Worker and Main) take turns asking and answering 10 technical questions each, building on the entire prior conversation. Each turn produces 4 chronicle files (worker_questions, main_answers, main_questions, worker_answers).
-
-**The Bridge (council_to_forge.py):** Reads the chronicle and extracts a `spec_manifest.json` identifying target files, edit plans, and test strategies from the dialectical discussion.
-
-**The Workshop (forge.py):** Four-stage gated pipeline:
-1. **Writer** — Reads the spec and makes file edits via the worker PI
-2. **Builder** — Compiles (full pipeline or Python syntax check)
-3. **Reviewer** — Checks diff against project conventions
-4. **Beats** — Runs sleepwalker beat tests in Unreal Engine PIE
-
-**The Orchestrator (run.py):** Single entry point for the full pipeline or individual stages.
+| File | Status | Purpose |
+|------|--------|---------|
+| `main.py` | ACTIVE | FastAPI server wrapping `pi --mode rpc` |
+| `forge.py` | ACTIVE | Workshop: Writer→Builder→Reviewer→Beats pipeline |
+| `worker_client.py` | ACTIVE | Python SDK for bridge API |
+| `dashboard.html` | ACTIVE | Live monitoring UI at `/` |
+| `monitor.ps1` | ACTIVE | PowerShell live monitor |
+| `launch_visible.bat` | ACTIVE | Opens visible bridge + monitor windows |
+| `run_bridge_visible.bat` | ACTIVE | Opens bridge in visible window |
+| `open_windows.bat` | ACTIVE | Opens both bridge and chronicle watcher |
+| `watch_chronicle.bat` | ACTIVE | Tails chronicle files in real-time |
+| `README.md` | ACTIVE | This file |
+| `FOUNDRY_DESIGN.md` | ACTIVE | Architecture design doc |
+| `dialogos.py` | DELETED | Council format retired |
+| `council_to_forge.py` | DELETED | Depended on Council |
+| `run.py` | DELETED | Replaced by direct forge invocation |
 
 ## Running
 
 ```powershell
 cd E:\PythonChimera\worker_bridge
 
-# Start the worker bridge (port 8891)
-python -m uvicorn main:app --host 127.0.0.1 --port 8891
+# Start the bridge
+python -m uvicorn main:app --host 127.0.0.1 --port 8895
 
-# Full pipeline: 2 turns of Council + Bridge + Workshop
-python run.py --turns 2
+# Or with a visible window
+.\run_bridge_visible.bat
 
-# Individual stages:
-python run.py --council-only --turns 2   # just the Q&A cycle
-python run.py --bridge-only               # extract spec from chronicle
-python run.py --forge-only specs/spec.json # implement from spec
+# Send a design brief and run the forge:
+python -c "
+from worker_client import PiWorker
+w = PiWorker('http://127.0.0.1:8895')
+w.prompt('Design an educational mechanic...')
+"
 ```
 
-## REST API
+## Workflow
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/status` | Worker bridge health check |
-| POST | `/api/prompt` | Send prompt to worker PI |
-| POST | `/api/bash` | Execute bash command on worker |
-| POST | `/api/steer` | Interrupt worker mid-run |
-| POST | `/api/follow_up` | Queue message for after finish |
-| GET | `/api/get_state` | Full session state |
-| GET | `/api/get_messages` | All session messages |
-| GET | `/api/get_entries` | Session entries |
-| GET | `/api/get_tree` | Session entry tree |
-| GET | `/api/get_commands` | Available commands |
-| GET | `/api/get_available_models` | All models |
-| GET | `/api/get_session_stats` | Session statistics |
-| POST | `/api/cycle_model` | Cycle to next model |
-| WS | `/ws` | Real-time event stream |
-
-## Files
-
-| File | Purpose |
-|------|---------|
-| `main.py` | FastAPI server wrapping `pi --mode rpc` |
-| `dialogos.py` | Council: automated dialectical Q&A loop |
-| `council_to_forge.py` | Bridge: extract spec from chronicle |
-| `forge.py` | Workshop: Writer→Builder→Reviewer→Beats |
-| `run.py` | Unified entry point |
-| `worker_client.py` | Python SDK for REST API |
-| `launch.ps1` / `launch.py` | Launcher scripts |
-
-## Chronicle
-
-All Q&A cycles are saved to `chronicle/turn_NNN_phase.txt`. Spec files go to `specs/spec_turn_NNN.json`. Forge results go to `chronicle/forge_result_*.json`.
+1. Human gives direction
+2. Agent sends design brief to worker via bridge
+3. Worker responds with design/code
+4. Forge implements if spec is produced
+5. Agent reports results to human
+6. Commit
