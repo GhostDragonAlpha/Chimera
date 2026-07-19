@@ -24,6 +24,12 @@ and it landed on the Fourier limit nobody knew.
 
 **The Council will not speak on its own authority.** It returns QUESTIONS, never a
 verdict. A question cannot be fabricated; a verdict can, and a fabricated verdict
+
+**The Foundry (`worker_bridge/`) implements this Council autonomously:**
+`dialogos.py` runs the full dialectical loop (Worker asks 10 Q → Main answers →
+Main asks 10 Q → Worker answers), `council_to_forge.py` extracts a spec from the
+chronicle, and `forge.py` runs the Workshop (Writer→Builder→Reviewer→Beats).
+Run `worker_bridge/run.py --turns 2` for the complete autonomous pipeline.
 poisons the graph and everything downstream that trusts it. THERE WAS NEVER A BAD
 QUESTION — a bad one costs an afternoon, a bad verdict costs the record.
 

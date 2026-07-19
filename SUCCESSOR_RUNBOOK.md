@@ -51,6 +51,32 @@ Two storage facts changed under you, both TRANSPARENT (your recipes are unchange
 `python -m core.gauntlet enter --agent <id>` (7 verified stations). If that is beyond
 you, take a non-capable task instead — do NOT improvise around the gate.
 
+## FOUNDRY RECIPE (automated dialectical development)
+
+For autonomous design discussion + implementation via the Gaussian Foundry:
+
+```powershell
+# 1. Ensure the worker bridge is running (new terminal)
+cd E:\PythonChimera\worker_bridge
+python -m uvicorn main:app --host 127.0.0.1 --port 8891
+
+# 2. Run the full pipeline (Council + Bridge + Workshop)
+python run.py --turns 2
+
+# Or individual stages:
+python run.py --council-only --turns 2   # Q&A debate only
+python run.py --bridge-only               # extract spec from chronicle
+python run.py --forge-only specs/spec.json # implement from spec
+
+# 3. Results go to:
+ls chronicle/    # Q&A turns + forge logs
+ls specs/        # generated implementation specs
+```
+
+The Council runs 2 simulated roles (Worker asks, Main answers; Main asks, Worker
+answers) — 40 questions per full cycle. Results feed the Workshop which writes,
+builds, reviews, and tests the proposed changes.
+
 ## YOUR TASKS (in order — stop at the first one that applies)
 
 1. **Promote heuristics (automated — no human approval step).** `python -m core.dream_loop`
