@@ -1,0 +1,150 @@
+{
+  "name": "Environmental_Demo",
+  "description": "30-second canyon walkthrough with geology, clouds, and education",
+  "created": "2026-07-19T17:04:06.223386",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Can the player identify rock types from visual cues alone?",
+      "answered": true,
+      "answer": "Only with the env_education module active. The geology module exists but needs to be wired to player triggers."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the player learn to predict weather from cloud formations?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Can curiosity-driven players discover deeper geology facts?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does the environment teach something the player uses later in gameplay?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What single screenshot makes a Steam shopper wishlist?",
+      "answered": true,
+      "answer": "A canyon with visible rock strata + volumetric clouds + a single educational prompt overlay. One image shows all three systems working."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How does this demo compare to No Man Sky environmental shots?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could this demo be a 30-second Steam trailer?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What mechanic would a journalist call innovative here?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do clouds cast shadows that move across the terrain?",
+      "answered": true,
+      "answer": "UVolumetricCloudComponent supports shadow casting. Property needs to be enabled."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does wind direction match cloud movement?",
+      "answered": true,
+      "answer": "Not yet. The wind system and cloud system are independent. They need to be connected via the weather component."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Can the player see the same constellation from different locations?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does day/night affect which educational observations appear?",
+      "answered": true,
+      "answer": "Not yet. Education module generates time-of-day observations but is not wired to the day/night cycle in UE5."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can this demo be built and run without pipeline errors?",
+      "answered": true,
+      "answer": "Not without fixing 5+ compiler errors in generated code. Each fix is 1-5 lines in the generator."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What is the minimum UE5 compile fix needed?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does the demo run at 30fps on target hardware?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can the demo be packaged as a standalone build?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Are MCP tools reliable enough for repeated actor spawning?",
+      "answered": true,
+      "answer": "Yes. Tested: mcp_spawn_actor, mcp_capture_viewport, mcp_set_camera all succeeded."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the worker bridge handle concurrent UE5 commands?",
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can the forge build UE5 content or only Python?",
+      "answered": true,
+      "answer": "Currently Python-only. The forge builder can be extended with a UE5 compile stage when generator bugs are fixed."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What is the graph query performance at 3000+ nodes?",
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}
