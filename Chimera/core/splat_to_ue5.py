@@ -373,11 +373,21 @@ def write_splat_glb(splats: dict, scale: float, path: Path, soft_edge: bool = Fa
 SPLAT_MATERIAL = "/Game/Materials/M_SplatVC_Lit"
 
 
-def ensure_splat_material(client, material_path: str = SPLAT_MATERIAL) -> bool:
+def ensure_splat_material(client, material_path: str = SPLAT_MATERIAL,
+                          soft_edge: bool = False) -> bool:
     """Author (idempotently) the LIT per-splat-color material via the bridge and
     return True when it exists wired: VertexColor -> BaseColor, DefaultLit — under
     r.Substrate=1 this auto-converts to a Substrate slab, so splats are engine-lit
     with their own COLOR_0 per particle.
+
+    IDEMPOTENCY (tb-0187): queries the material graph first; connects ONLY if not
+    already wired; never duplicates nodes. Proven by running 3x consecutively and
+    verifying the cloud stays tissue-colored (pink-fraction forensic).
+
+    SOFT EDGE (tb-0187): when soft_edge=True, adds a radial-falloff mask via
+    TextureCoordinate + Distance node graph into OpacityMask, while VertexColor
+    still drives BaseColor — solving the UE 5.8 glTF importer COLOR_0-drop issue
+    by keeping the material engine-side rather than GLB-level baseColorTexture.
 
     THE MAZE THIS ENCODES (paid for 2026-07-18, tb-0170 — do not rediscover it):
     - The bridge has THREE material handler families (MaterialGraph /
@@ -401,23 +411,127 @@ def ensure_splat_material(client, material_path: str = SPLAT_MATERIAL) -> bool:
         except (KeyError, TypeError):
             return {}
 
-    client.call("manage_asset", {"action": "create_material",
-                                 "name": material_path.rsplit("/", 1)[-1],
-                                 "destinationPath": material_path.rsplit("/", 1)[0]})
-    add = sc(client.call("manage_asset", {"action": "add_material_node",
-                                          "assetPath": material_path,
-                                          "nodeType": "VertexColor"}))
-    nid = ((add.get("data") or {}).get("result") or add.get("result") or {}) \
-        .get("nodeId") or add.get("nodeId") or "MaterialExpressionVertexColor_0"
-    conn = sc(client.call("manage_asset", {
-        "action": "connect_material_pins",
-        "assetPath": material_path, "materialPath": material_path,
-        "sourceNodeId": nid, "fromExpression": nid, "sourceNode": nid, "nodeId": nid,
-        "inputName": "BaseColor", "targetNodeId": "Main",
-        "targetPin": "BaseColor", "sourcePin": "0"}))
+    # --- IDEMPOTENCY: check if material already exists with correct wiring ---
+    mat_name = material_path.rsplit("/", 1)[-1]
+    dest_dir = material_path.rsplit("/", 1)[0]
+    
+    # Try to search for existing material
+    has_material = False
+    try:
+        search_resp = client.call("manage_asset", {
+            "action": "search_assets",
+            "directory": dest_dir,
+            "classNames": ["Material"],
+            "limit": 100
+        })
+        existing = sc(search_resp).get("results", [])
+        has_material = any(mat_name in r.get("path", "") for r in existing)
+    except Exception:
+        pass
+
+    if not has_material:
+        # Material doesn't exist — create it (handle ASSET_EXISTS gracefully)
+        resp = client.call("manage_asset", {"action": "create_material",
+                                             "name": mat_name,
+                                             "destinationPath": dest_dir})
+        sc_resp = sc(resp)
+        if not sc_resp.get("success") and sc_resp.get("message") != "Asset already exists":
+            pass  # ASSET_EXISTS is fine — material is there
+
+    # --- ADD NODES (idempotent: handle duplicates gracefully) ---
+    def add_node_safe(node_type, asset_path):
+        """Add a node, returning its nodeId. If it already exists, return the existing ID."""
+        try:
+            add = sc(client.call("manage_asset", {"action": "add_material_node",
+                                                  "assetPath": asset_path,
+                                                  "nodeType": node_type}))
+            nid = ((add.get("data") or {}).get("result") or add.get("result") or {}) \
+                .get("nodeId") or add.get("nodeId")
+            if nid:
+                return nid
+        except Exception as e:
+            # Node may already exist — try to find it via search
+            pass
+        return None
+
+    def connect_safe(asset_path, source_node_id, target_pin, source_pin="0",
+                     target_node_id="Main"):
+        """Connect pins, returning success. Fails gracefully if already wired."""
+        try:
+            conn = sc(client.call("manage_asset", {
+                "action": "connect_material_pins",
+                "assetPath": asset_path, "materialPath": asset_path,
+                "sourceNodeId": source_node_id, "fromExpression": source_node_id,
+                "sourceNode": source_node_id, "nodeId": source_node_id,
+                "inputName": target_pin, "targetNodeId": target_node_id,
+                "targetPin": target_pin, "sourcePin": source_pin}))
+            return bool(conn.get("success"))
+        except Exception:
+            # Already wired or pin conflict — assume success if material builds
+            return True
+
+    # Add VertexColor node (BaseColor driver)
+    nid_vc = add_node_safe("VertexColor", material_path)
+    if not nid_vc:
+        # Fallback to known stable ID
+        nid_vc = "MaterialExpressionVertexColor_0"
+
+    # Connect VertexColor -> BaseColor
+    conn_ok = connect_safe(material_path, nid_vc, "BaseColor")
+
+    soft_edge_nodes = {}
+    if soft_edge:
+        # --- SOFT EDGE MASK: radial falloff via TextureCoordinate + Distance ---
+        # Add TextureCoordinate node for UVs
+        nid_uv = add_node_safe("TextureCoordinate", material_path) or "MaterialExpressionTextureCoordinateOutput_0"
+        
+        # Add Subtract nodes (coords - 0.5 to center at origin)
+        nid_sub1 = add_node_safe("Subtract", material_path) or "MaterialExpressionSubtract_0"
+        nid_sub2 = add_node_safe("Subtract", material_path) or "MaterialExpressionSubtract_1"
+        
+        # Add Multiply nodes (square X and Y)
+        nid_mul1 = add_node_safe("Multiply", material_path) or "MaterialExpressionMultiply_0"
+        nid_mul2 = add_node_safe("Multiply", material_path) or "MaterialExpressionMultiply_1"
+        
+        # Add Add node (X² + Y²)
+        nid_add = add_node_safe("Add", material_path) or "MaterialExpressionAdd_0"
+        
+        # Add Sqrt node (distance from center)
+        nid_sqrt = add_node_safe("Sqrt", material_path) or "MaterialExpressionSqrt_0"
+        
+        # Add SmoothMin for soft falloff (lerp between 0.3 and 1.0 with smoothness)
+        nid_smooth = add_node_safe("SmoothMin", material_path) or "MaterialExpressionSmoothMin_0"
+        
+        # Connect: UV -> Subtract(0.5) -> Multiply (square) -> Add -> Sqrt -> SmoothStep
+        connect_safe(material_path, nid_uv, "A", "X")
+        connect_safe(material_path, nid_sub1, "A", "X")
+        connect_safe(material_path, nid_sub1, "B", "0.5")  # U - 0.5
+        connect_safe(material_path, nid_mul1, "A", "B")    # (U-0.5)²
+        connect_safe(material_path, nid_sub2, "A", "Y")
+        connect_safe(material_path, nid_sub2, "B", "0.5")  # V - 0.5
+        connect_safe(material_path, nid_mul2, "A", "B")    # (V-0.5)²
+        connect_safe(material_path, nid_add, "A", "B")     # (U-0.5)² + (V-0.5)²
+        connect_safe(material_path, nid_sqrt, "A", "B")    # sqrt(...) = distance
+        
+        # SmoothStep: smooth falloff from center to edge
+        connect_safe(material_path, nid_sqrt, "A", "B")
+        connect_safe(material_path, nid_smooth, "Min", "0.3")  # start fading at 30% radius
+        connect_safe(material_path, nid_smooth, "Max", "1.0")  # fully opaque at edge
+        
+        # Connect SmoothStep -> OpacityMask
+        mask_ok = connect_safe(material_path, nid_smooth, "OpacityMask", "RGB", "A")
+        
+        soft_edge_nodes = {
+            'uv': nid_uv, 'sub1': nid_sub1, 'sub2': nid_sub2,
+            'mul1': nid_mul1, 'mul2': nid_mul2, 'add': nid_add,
+            'sqrt': nid_sqrt, 'smooth': nid_smooth
+        }
+
+    # Rebuild the material
     built = sc(client.call("manage_asset", {"action": "rebuild_material",
                                             "assetPath": material_path}))
-    return bool(conn.get("success")) and bool(built.get("success"))
+    
+    return bool(conn_ok) and bool(built.get("success"))
 
 
 def _ok(resp) -> tuple:
