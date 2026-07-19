@@ -9,6 +9,7 @@
 #include "../Stations/StationActor.h"
 
 #include "PCGVolumeManager.h"
+#include "PCG/UniverseGenerationComponent.h"
 #include "FlightComponent.h"
 #include "WeaponComponent.h"
 #include "ShieldComponent.h"
@@ -37,6 +38,10 @@ ADeepSpaceTraderGameMode::ADeepSpaceTraderGameMode()
 
 	PlayerControllerClass = ADemoPlayerController::StaticClass();
 	UE_LOG(LogTemp, Log, TEXT("GAMEMODE CONSTRUCTOR: PlayerControllerClass set to ADemoPlayerController"));
+
+	// Initialize Universe Generation Component
+	UniverseGen = CreateDefaultSubobject<UUniverseGenerationComponent>(TEXT("UniverseGen"));
+	if (UniverseGen) { UE_LOG(LogTemp, Log, TEXT("GAMEMODE CONSTRUCTOR: UniverseGen created via CreateDefaultSubobject")); }
 }
 
 void ADeepSpaceTraderGameMode::BeginPlay()

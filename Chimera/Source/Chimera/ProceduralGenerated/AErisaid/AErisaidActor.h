@@ -11,8 +11,7 @@
 UENUM(BlueprintType)
 enum class ERespirationPhase : uint8 {
 	Expansion,
-	Contraction,
-	UMETA(DisplayName = "Respiration Phase")
+	Contraction
 };
 
 UENUM(BlueprintType)

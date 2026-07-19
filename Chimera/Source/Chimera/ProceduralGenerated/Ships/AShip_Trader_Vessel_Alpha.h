@@ -10,9 +10,11 @@
 #include "SystemDamageComponent.h"
 #include "CombatTargetComponent.h"
 #include "DockingComponent.h"
+#include "QuantumTravelComponent.h"
 #include "MissionComponent.h"
 #include "FactionComponent.h"
 #include "SaveGameComponent.h"
+#include "TravelVehicleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SceneComponent.h"
@@ -74,6 +76,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UDockingComponent* DockingComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UQuantumTravelComponent* QuantumTravelComponent;
+
 	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
 	UMissionComponent* MissionComponent;
 
@@ -82,6 +87,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Combat Components", meta = (AllowPrivateAccess = "true"))
 	USaveGameComponent* SaveGameComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Travel Components", meta = (AllowPrivateAccess = "true"))
+	UTravelVehicleComponent* TravelVehicleComponent;
 
 public:
 	virtual void BeginPlay() override;

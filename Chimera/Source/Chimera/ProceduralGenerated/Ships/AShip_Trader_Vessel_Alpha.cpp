@@ -25,9 +25,11 @@ AShip_Trader_Vessel_Alpha::AShip_Trader_Vessel_Alpha(const FObjectInitializer& O
 	SystemDamageComponent = CreateDefaultSubobject<USystemDamageComponent>(TEXT("SystemDamageComponent"));
 	CombatTargetComponent = CreateDefaultSubobject<UCombatTargetComponent>(TEXT("CombatTargetComponent"));
 	DockingComponent = CreateDefaultSubobject<UDockingComponent>(TEXT("DockingComponent"));
+	QuantumTravelComponent = CreateDefaultSubobject<UQuantumTravelComponent>(TEXT("QuantumTravelComponent"));
 	MissionComponent = CreateDefaultSubobject<UMissionComponent>(TEXT("MissionComponent"));
 	FactionComponent = CreateDefaultSubobject<UFactionComponent>(TEXT("FactionComponent"));
 	SaveGameComponent = CreateDefaultSubobject<USaveGameComponent>(TEXT("SaveGameComponent"));
+	TravelVehicleComponent = CreateDefaultSubobject<UTravelVehicleComponent>(TEXT("TravelVehicleComponent"));
 }
 
 void AShip_Trader_Vessel_Alpha::BeginPlay()

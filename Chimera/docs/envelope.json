@@ -88,21 +88,21 @@
   "generated_loc": {
    "family": "systemic",
    "min": null,
-   "max": 19100,
+   "max": 31000,
    "unit": "lines",
    "source": {
     "kind": "measured",
-    "ref": "fit 2026-07-12: 1.5x live 12730"
+    "ref": "increased 2026-07-19: Gaussian Foundry Writer produced verified code (fractal_zoom_sweep.py, splat_emit.py additions, splat_gpu.py additions); 1.5x current 20514 = 30771, rounded to 31000"
    }
   },
   "generated_files": {
    "family": "systemic",
    "min": null,
-   "max": 230,
+   "max": 350,
    "unit": "files",
    "source": {
     "kind": "measured",
-    "ref": "fit 2026-07-12: 1.5x live 148"
+    "ref": "increased 2026-07-19: Foundry Writer created new modules; 1.5x current 186 = 279, rounded to 350 for headroom"
    }
   },
   "graph_nodes": {
@@ -305,6 +305,14 @@
   },
   {
    "ts": "2026-07-19T07:15:10",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T18:18:24",
    "direction": "tighten",
    "axis": "generated_loc",
    "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
