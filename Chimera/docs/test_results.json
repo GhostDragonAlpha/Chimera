@@ -1,0 +1,36 @@
+{
+  "pass": 5,
+  "fail": 1,
+  "tests": [
+    {
+      "name": "MCP Bridge",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "Volumetric clouds",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "Trigger volumes",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "Star sphere",
+      "result": "FAIL",
+      "detail": ""
+    },
+    {
+      "name": "Player start",
+      "result": "PASS",
+      "detail": ""
+    },
+    {
+      "name": "Screenshot capture",
+      "result": "PASS",
+      "detail": ""
+    }
+  ]
+}
