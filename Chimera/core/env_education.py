@@ -10,6 +10,9 @@ Teaches: Geology, meteorology, astronomy through environmental observation.
 import random
 from typing import Optional, Dict
 
+from . import cloud_education
+from . import cloud_weather
+
 # --- Geology prompts ---
 
 GEOLOGY_PROMPTS = {
@@ -41,6 +44,42 @@ GEOLOGY_PROMPTS = {
         "Basalt means volcanic activity. This region was built by eruptions.",
     ],
 }
+
+# --- Cloud type education sub-feature ---
+
+def cloud_observation(cloud_type_id: str) -> str:
+    """Educational observation about a specific cloud type.
+    
+    Sub-feature of Demo_Volumetric_Clouds: Teaches real meteorology
+    through interactive cloud type identification.
+    
+    Cloud types: cumulus (fair weather), stratus (overcast),
+    cirrus (changing), nimbostratus (rain), cumulonimbus (storm).
+    """
+    return cloud_education.cloud_type_observation(cloud_type_id)
+
+
+def weather_prediction_from_cloud(cloud_type_id: str) -> str:
+    """Predict weather 5-10 minutes ahead from cloud type.
+    
+    Education: Players learn to predict storms, plan flights,
+    and seek shelter before bad weather arrives.
+    """
+    weather = cloud_weather.WeatherStateMachine()
+    weather.set_cloud_type(cloud_type_id)
+    weather.tick(1.0)
+    return weather.get_prediction_text()
+
+
+def shadow_educational_note(shadow_type: str) -> str:
+    """Educational note about cloud shadow meaning.
+    
+    Education: moving cloud shadows = wind,
+    sudden darkening = thick cloud overhead,
+    shadow softness = cloud altitude.
+    """
+    return cloud_education.shadow_observation(shadow_type)
+
 
 # --- Weather prompts ---
 

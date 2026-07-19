@@ -1,0 +1,132 @@
+{
+  "spec_name": "Cloud_Types_Educational",
+  "version": "1.0",
+  "description": "Meteorology education through cloud type identification. Teaches real science through gameplay.",
+  "cloud_types": [
+    {
+      "id": "cumulus",
+      "display_name": "Cumulus",
+      "altitude": "low (500-2000m)",
+      "description": "Fluffy, flat-bottomed clouds with cauliflower tops. Form in stable air on sunny days.",
+      "educational_fact": "Flat-bottom clouds = stable air. Cumulus means fair weather, but if they grow tall, watch for storms.",
+      "weather_meaning": "Fair weather marker. If small and scattered = continued clear skies. If growing vertically = instability building.",
+      "visual_cues": "Flat bottom, rounded top, white, distinct edges, scattered across sky",
+      "color": "bright white",
+      "shadow_behavior": "Soft, well-defined edges moving steadily across terrain",
+      "wind_correlation": "Move with prevailing wind at low altitude",
+      "player_action": "Good day for flying and exploring. Monitor for vertical growth."
+    },
+    {
+      "id": "stratus",
+      "display_name": "Stratus",
+      "altitude": "low (0-2000m)",
+      "description": "Uniform gray layer covering the entire sky like a blanket. Featureless and low-hanging.",
+      "educational_fact": "Stratus = gray blanket. Overcast with no distinct features. May produce light drizzle or mist.",
+      "weather_meaning": "Stable overcast. Gray skies but no immediate heavy rain. Gradual transitions.",
+      "visual_cues": "Uniform gray cover, no distinct shapes, low ceiling, featureless",
+      "color": "uniform gray to light gray",
+      "shadow_behavior": "No distinct shadows - diffuse light, shadows barely visible or absent",
+      "wind_correlation": "Layer moves slowly as a whole, little internal motion",
+      "player_action": "Low visibility. Stay near landmarks. Light precipitation possible."
+    },
+    {
+      "id": "cirrus",
+      "display_name": "Cirrus",
+      "altitude": "high (5000-15000m)",
+      "description": "Wispy, feathery streaks of ice crystals high in the atmosphere. Delicate and thin.",
+      "educational_fact": "Cirrus = fair weather changing. High ice clouds mean a front is approaching within 24-48 hours.",
+      "weather_meaning": "Fair weather for now, but a weather change is coming within 1-2 days.",
+      "visual_cues": "Wispy streaks, feathery, high altitude, ice crystal shimmer, thin enough to see blue through",
+      "color": "white to light gray, can catch sunset colors",
+      "shadow_behavior": "Very soft, almost invisible shadows - too high and thin for sharp shadows",
+      "wind_correlation": "Move with high-altitude jet stream winds, often fast",
+      "player_action": "Current conditions good, but plan for changing weather in the next day. Monitor for thickening."
+    },
+    {
+      "id": "nimbostratus",
+      "display_name": "Nimbostratus",
+      "altitude": "low to mid (500-5500m)",
+      "description": "Dark, thick gray cloud layer producing steady, prolonged precipitation. Rain or snow.",
+      "educational_fact": "Nimbostratus = rain-bearing blanket. Thick enough to block sunlight entirely. Steady precipitation.",
+      "weather_meaning": "Prolonged precipitation. Steady rain or snow lasting hours. Seek shelter or prepare for wet conditions.",
+      "visual_cues": "Dark uniform gray, no lightning, steady rain curtain visible below, blocks sun completely",
+      "color": "dark gray to near-black",
+      "shadow_behavior": "Deep continuous shadow across entire area, near-darkness under thickest parts",
+      "wind_correlation": "Layer moves steadily, rain curtains tilt with wind direction",
+      "player_action": "Seek shelter. Prepare for extended wet conditions. Flight not recommended."
+    },
+    {
+      "id": "cumulonimbus",
+      "display_name": "Cumulonimbus",
+      "altitude": "low to very high (500-16000m)",
+      "description": "Towering thunderhead reaching from low to high altitude. Flat anvil top. Produces thunderstorms.",
+      "educational_fact": "Towering clouds = storms. Cumulonimbus with anvil top means severe weather. Seek shelter immediately.",
+      "weather_meaning": "Thunderstorms, lightning, heavy rain, hail, strong wind gusts, possible tornadoes.",
+      "visual_cues": "Towering vertical structure, flat anvil-shaped top, dark base, lightning visible, rain curtains",
+      "color": "dark base (near-black), white/gray tower, bright anvil top",
+      "shadow_behavior": "Dark, fast-moving shadow with sharp edges under the storm core. Deep darkness underneath.",
+      "wind_correlation": "Turbulent internal winds. Base moves with low-level wind, anvil shears with upper-level wind.",
+      "player_action": "Seek shelter NOW. Avoid flight. Lightning hazard. Wait for storm to pass completely."
+    }
+  ],
+  "weather_states": {
+    "clear": {
+      "display": "Clear",
+      "cloud_types_present": [],
+      "description": "No clouds visible. High pressure dominates.",
+      "educational_text": "High pressure dominates. Stable air. Good for flying.",
+      "survival_advice": "Best time for travel, exploration, and flight."
+    },
+    "fair_weather": {
+      "display": "Fair Weather",
+      "cloud_types_present": ["cumulus"],
+      "description": "Scattered cumulus clouds. Stable conditions.",
+      "educational_text": "Cumulus means fair weather. Monitor for vertical growth.",
+      "survival_advice": "Good conditions. Watch for clouds growing taller."
+    },
+    "overcast": {
+      "display": "Overcast",
+      "cloud_types_present": ["stratus"],
+      "description": "Uniform gray layer covering the sky.",
+      "educational_text": "Stratus layer overhead. Light precipitation possible.",
+      "survival_advice": "Reduced visibility. Stay near landmarks."
+    },
+    "changing": {
+      "display": "Weather Changing",
+      "cloud_types_present": ["cirrus"],
+      "description": "High cirrus clouds indicating an approaching front.",
+      "educational_text": "Cirrus means weather change within 24-48 hours. Plan ahead.",
+      "survival_advice": "Current conditions fair but monitor sky for thickening clouds."
+    },
+    "rain": {
+      "display": "Rain",
+      "cloud_types_present": ["nimbostratus"],
+      "description": "Steady precipitation from thick nimbostratus layer.",
+      "educational_text": "Nimbostratus = prolonged rain. Seek shelter and wait it out.",
+      "survival_advice": "Find shelter. Extended wet conditions. Avoid flight."
+    },
+    "storm": {
+      "display": "Thunderstorm",
+      "cloud_types_present": ["cumulonimbus"],
+      "description": "Cumulonimbus thunderhead with lightning and heavy rain.",
+      "educational_text": "Cumulonimbus = severe storm. Lightning, hail, strong winds. Seek shelter NOW.",
+      "survival_advice": "SHELTER IMMEDIATELY. Stay low. Avoid high ground and tall objects."
+    }
+  },
+  "weather_transition_rules": [
+    {"from": "clear", "to": "fair_weather", "trigger": "cumulus_formation", "duration_minutes": 5},
+    {"from": "fair_weather", "to": "changing", "trigger": "cirrus_arrival", "duration_minutes": 10},
+    {"from": "changing", "to": "overcast", "trigger": "stratus_thickening", "duration_minutes": 15},
+    {"from": "overcast", "to": "rain", "trigger": "nimbostratus_formation", "duration_minutes": 5},
+    {"from": "fair_weather", "to": "storm", "trigger": "cumulonimbus_development", "duration_minutes": 20},
+    {"from": "rain", "to": "changing", "trigger": "clearing_indicator", "duration_minutes": 10},
+    {"from": "storm", "to": "rain", "trigger": "storm_weakening", "duration_minutes": 15},
+    {"from": "rain", "to": "fair_weather", "trigger": "full_clearing", "duration_minutes": 20}
+  ],
+  "accessibility": {
+    "text_fallback": true,
+    "screen_reader_compatible": true,
+    "colorblind_support": "All cloud types identifiable by shape, altitude, and behavior - not just color",
+    "pattern_indicators": "Text descriptions, shape cues, and altitude information provided for all observations"
+  }
+}
