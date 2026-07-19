@@ -3954,6 +3954,20 @@
       "line": 91,
       "quote": "* The sample count resolution is still clamped according to scalability setting to 'r.VolumetricCloud.ReflectionRaySampleMaxCount'.",
       "at": "2026-07-19T21:09:32.266Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\VolumetricCloudProxy.h",
+      "line": 13,
+      "quote": "class UVolumetricCloudComponent;",
+      "at": "2026-07-19T21:12:37.097Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 264,
+      "quote": "TObjectPtr<class UVolumetricCloudComponent> VolumetricCloudComponent;",
+      "at": "2026-07-19T21:12:37.097Z"
     }
   ]
 }
