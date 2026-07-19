@@ -14,7 +14,7 @@
 #include "MissionComponent.h"
 #include "FactionComponent.h"
 #include "SaveGameComponent.h"
-#include "TravelVehicleComponent.h"
+#include "../Travel/TravelVehicleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SceneComponent.h"

@@ -4953,7 +4953,7 @@ void RunSacrificeLogSeedApiTests()
         header_content += f'#include "MissionComponent.h"\n'
         header_content += f'#include "FactionComponent.h"\n'
         header_content += f'#include "SaveGameComponent.h"\n'
-        header_content += f'#include "TravelVehicleComponent.h"\n'
+        header_content += f'#include "../Travel/TravelVehicleComponent.h"\n'
         header_content += f'#include "Camera/CameraComponent.h"\n'
         header_content += f'#include "Components/StaticMeshComponent.h"\n'
         header_content += f'#include "Components/SceneComponent.h"\n'
