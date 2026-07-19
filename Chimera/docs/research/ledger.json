@@ -3968,6 +3968,27 @@
       "line": 264,
       "quote": "TObjectPtr<class UVolumetricCloudComponent> VolumetricCloudComponent;",
       "at": "2026-07-19T21:12:37.097Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\ScriptPlatformInterface.cpp",
+      "line": 307,
+      "quote": "int32 UCloudStorageBase::CreateCloudDocument(const FString& Filename)",
+      "at": "2026-07-19T21:28:19.662Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Engine\\CloudStorageBase.h",
+      "line": 98,
+      "quote": "virtual int32 CreateCloudDocument(const FString& Filename);",
+      "at": "2026-07-19T21:28:19.662Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\VolumetricCloudComponent.h",
+      "line": 257,
+      "quote": "class AVolumetricCloud : public AInfo",
+      "at": "2026-07-19T21:28:19.662Z"
     }
   ]
 }
