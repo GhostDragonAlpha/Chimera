@@ -75,6 +75,9 @@ public:
 	/** Timer tracking respiration cycle progress */
 	float RespirationTimer;
 
+	/** Timer tracking repulsion reset cycle */
+	float RepulsionResetTimer;
+
 	// Contraction radius from shell center
 	UPROPERTY(EditDefaultsOnly, Category = "Respiration")
 	float ContractionRadiusMeters = 5.0f;
