@@ -173,5 +173,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "RespirationEvents")
 	void OnRespirationPhaseChanged(ERespirationPhase NewPhase);
 
+	UFUNCTION()
+	void OnRepulsionComplete();
+
 };
 
