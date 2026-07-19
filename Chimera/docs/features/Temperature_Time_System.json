@@ -65,7 +65,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Yes. 'Every hour of the day teaches something different — because the temperature tells you what's happening in the rock.' That is a tagline no competitor can match."
+      "answer": "Yes. 'Every hour of the day teaches something different \u2014 because the temperature tells you what's happening in the rock.' That is a tagline no competitor can match."
     },
     {
       "id": 8,
@@ -92,7 +92,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Not in v1. The global temperature curve does not account for local geography. A canyon with thermal mass would stay warmer at night than exposed terrain — that level of simulation is future scope."
+      "answer": "Not in v1. The global temperature curve does not account for local geography. A canyon with thermal mass would stay warmer at night than exposed terrain \u2014 that level of simulation is future scope."
     },
     {
       "id": 11,
@@ -178,7 +178,7 @@
     {
       "id": 20,
       "category": "foundation",
-      "question": "What happens at the boundary between day and night — does temperature snap or lerp?",
+      "question": "What happens at the boundary between day and night \u2014 does temperature snap or lerp?",
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
@@ -237,6 +237,51 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Yes. The parent feature stated 'Temperature and education observations change with time.' This sub-feature specifies the temperature curve, the educational mapping, and the integration with the day/night clock."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
     }
   ],
   "answers": [],

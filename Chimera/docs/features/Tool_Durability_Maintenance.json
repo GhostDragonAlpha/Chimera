@@ -237,6 +237,51 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Yes. Player learns: wear rates depend on material hardness vs. target, preventative maintenance is more efficient than reactive repair."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
     }
   ],
   "answers": [],

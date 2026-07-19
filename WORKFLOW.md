@@ -71,7 +71,7 @@ COMMIT
 Every question belongs to one of 22 categories across 4 groups:
 
 ### NODE (12) — what IS this feature?
-education, fame, world, shipping, foundation, platform, performance,
+education, fame, world, testing, shipping, foundation, platform, performance,
 accessibility, audio, multiplayer, modding, localization
 
 ### EDGE (5) — how does it RELATE?

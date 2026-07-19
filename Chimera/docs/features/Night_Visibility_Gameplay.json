@@ -56,7 +56,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Subnautica's night is dangerous (predators). Our night is educational (stars, temperature, different observations). The differentiator is that night is not just a hazard — it is a different classroom."
+      "answer": "Subnautica's night is dangerous (predators). Our night is educational (stars, temperature, different observations). The differentiator is that night is not just a hazard \u2014 it is a different classroom."
     },
     {
       "id": 7,
@@ -74,7 +74,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "That darkness does not block education — it changes it. Most games make night a nuisance. This game makes night a different experience with its own curriculum."
+      "answer": "That darkness does not block education \u2014 it changes it. Most games make night a nuisance. This game makes night a different experience with its own curriculum."
     },
     {
       "id": 9,
@@ -173,12 +173,12 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Yes. If observations are proximity-triggered (entering a volume), the player does not need to see the object. The observation text can reference the darkness ('You hear water dripping — it must be condensation from the overnight temperature drop')."
+      "answer": "Yes. If observations are proximity-triggered (entering a volume), the player does not need to see the object. The observation text can reference the darkness ('You hear water dripping \u2014 it must be condensation from the overnight temperature drop')."
     },
     {
       "id": 20,
       "category": "foundation",
-      "question": "What happens to the scanner tool at night — does it have a night mode?",
+      "question": "What happens to the scanner tool at night \u2014 does it have a night mode?",
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
@@ -227,7 +227,7 @@
       "is_edge": true,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Yes. Night teaches that science happens even when you cannot see clearly. Thermal expansion at night, condensation at dawn, star positions — these are real concepts that require darkness to understand."
+      "answer": "Yes. Night teaches that science happens even when you cannot see clearly. Thermal expansion at night, condensation at dawn, star positions \u2014 these are real concepts that require darkness to understand."
     },
     {
       "id": 26,
@@ -237,6 +237,51 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Yes. The parent feature asked 'Does day/night affect which educational observations appear?' This sub-feature answers that question in detail, defining the gameplay and educational consequences of darkness."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
     }
   ],
   "answers": [],

@@ -27,6 +27,7 @@ NODE_CATEGORIES = [
     "education",      # Does it teach real knowledge?
     "fame",           # Does it make the game desirable?
     "world",          # Does it feel real and alive?
+    "testing",        # Can we verify it works?
     "shipping",       # Does it move toward release?
     "foundation",     # Does it strengthen the toolchain?
     "platform",       # Does it work in UE5.8 without hacks?
