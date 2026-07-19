@@ -2,7 +2,7 @@
   "name": "Environmental_Demo",
   "description": "30-second canyon walkthrough with geology, clouds, and education",
   "created": "2026-07-19T17:04:06.223386",
-  "status": "questioning",
+  "status": "designed",
   "questions": [
     {
       "id": 1,
@@ -15,22 +15,22 @@
       "id": 2,
       "category": "education",
       "question": "Does the player learn to predict weather from cloud formations?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not yet. Needs weather-observer trigger that fires env_education.weather_prompt() on weather state change."
     },
     {
       "id": 3,
       "category": "education",
       "question": "Can curiosity-driven players discover deeper geology facts?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. deep_geology_observation() exists but needs a scanner tool or examine action to trigger."
     },
     {
       "id": 4,
       "category": "education",
       "question": "Does the environment teach something the player uses later in gameplay?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not yet designed. Possible: basalt = volcanic activity (resources), limestone = caves (shelter), flat-bottom clouds = stable weather (flight)."
     },
     {
       "id": 5,
@@ -43,22 +43,22 @@
       "id": 6,
       "category": "fame",
       "question": "How does this demo compare to No Man Sky environmental shots?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "No Man Sky has more colors but zero education. Our differentiator: every rock, cloud, and star teaches something real."
     },
     {
       "id": 7,
       "category": "fame",
       "question": "Could this demo be a 30-second Steam trailer?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. 30-second trailer: canyon -> strata -> clouds -> learn geology -> day/night -> stars -> title card."
     },
     {
       "id": 8,
       "category": "fame",
       "question": "What mechanic would a journalist call innovative here?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "The scanner. Point at rock, learn geology. Point at cloud, learn meteorology. No game does this."
     },
     {
       "id": 9,
@@ -78,8 +78,8 @@
       "id": 11,
       "category": "world",
       "question": "Can the player see the same constellation from different locations?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes, because the star sphere (SM_StarSphere) is world-aligned, not camera-aligned. A player at two different locations on the same planet sees the same star positions shifted by parallax. Different latitudes see different constellations \u2014 teaching celestial navigation naturally."
     },
     {
       "id": 12,
@@ -99,22 +99,22 @@
       "id": 14,
       "category": "shipping",
       "question": "What is the minimum UE5 compile fix needed?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Fix RespirationTimer undeclared identifier in generator. One 2-line change in game_code_generator.py."
     },
     {
       "id": 15,
       "category": "shipping",
       "question": "Does the demo run at 30fps on target hardware?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Unknown. Splat renderer not benchmarked with volumetric clouds. Needs telemetry probe."
     },
     {
       "id": 16,
       "category": "shipping",
       "question": "Can the demo be packaged as a standalone build?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes, UE5 supports standalone packaging. Blocked by same compile issue as Q14."
     },
     {
       "id": 17,
@@ -127,8 +127,8 @@
       "id": 18,
       "category": "foundation",
       "question": "Does the worker bridge handle concurrent UE5 commands?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not tested. Bridge processes sequentially. Concurrent MCP calls need queuing."
     },
     {
       "id": 19,
@@ -141,8 +141,8 @@
       "id": 20,
       "category": "foundation",
       "question": "What is the graph query performance at 3000+ nodes?",
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Fast. Feature JSON lookup is O(1). Knowledge graph search is ~50ms over 4.3MB."
     },
     {
       "id": 21,
@@ -165,8 +165,8 @@
       "category": "depends_on",
       "question": "Does this depend on the env_education module being wired to UE5?",
       "is_edge": true,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Python functions exist but need generator or MCP trigger volume to appear in-game."
     },
     {
       "id": 24,
@@ -181,8 +181,8 @@
       "category": "proves",
       "question": "Does this prove that educational mechanics can exist without a separate UI?",
       "is_edge": true,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not yet proven. Prompts need to be wired to HUD message or world-space text in UE5."
     },
     {
       "id": 26,
@@ -205,8 +205,8 @@
       "category": "requires",
       "question": "What UE5 knowledge is required to configure volumetric cloud properties?",
       "is_edge": true,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Basic UE5 actor property knowledge. Set LayerBottomAltitude, LayerHeight, CloudDensity, CloudAlbedo via MCP."
     },
     {
       "id": 29,
@@ -214,8 +214,8 @@
       "question": "Does an environmental demo make the game more famous than a gameplay demo would?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Steam shoppers judge by screenshots. A canyon + clouds + education screenshot generates more wishlists than a UI screenshot."
     },
     {
       "id": 30,
@@ -223,8 +223,8 @@
       "question": "What features are NOT being built while we build this demo?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "NPC systems (Loop 5), shelter (Loop 6), travel (Loop 7) \u2014 all deferred. The demo is the marketing asset."
     },
     {
       "id": 31,
@@ -232,8 +232,8 @@
       "question": "What evidence exists that environmental realism drives Steam sales?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "No Man Sky sold 10M+ on planet screenshots. Subnautica marketed entirely on beautiful ocean. Education is our differentiator."
     },
     {
       "id": 32,
@@ -241,8 +241,8 @@
       "question": "Does this chain reach a human who plays the game, or just satisfy an architectural goal?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Steam shopper sees screenshot, reads learn geology, wishlists. That is a human terminal."
     }
   ],
   "answers": [],
