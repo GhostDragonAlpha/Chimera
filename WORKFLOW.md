@@ -6,6 +6,28 @@ This is the master workflow. Everything else is reference.
 
 Human gives a goal, problem, or question.
 
+## 1.5 QUERY THE GRAPH
+
+Before answering any question, check if it has already been answered.
+The graph is the project's living memory — chronicle files, knowledge graph
+nodes, feature records, pathway attempts.
+
+Use `python worker_bridge/graph_before_council.py` to search:
+- Existing chronicle Q&A for matching word patterns
+- Knowledge graph for related nodes and communities
+- Chimera DNA graph for feature/pathway records
+
+If a question's answer exists in the graph:
+  Reference the existing answer. Do NOT re-answer.
+  Mark it as `[GRAPH: turn_042_answer.txt]` in the report.
+
+If a question is genuinely new:
+  Answer it via the internal council.
+  Record the new answer to the chronicle after the cycle.
+
+This prevents redundant cycles. The graph grows with every answer.
+Every new question checks the graph first.
+
 ## 2. INTERNAL COUNCIL (7 gates, ~3 min)
 
 Run this in your own context. No external agents.
