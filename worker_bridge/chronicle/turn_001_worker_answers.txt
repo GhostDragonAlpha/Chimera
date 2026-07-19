@@ -1,1 +1,1 @@
-Conversation concluded. Both parties have consistently signaled completion. The dialectical loop is closed by mutual agreement. No further responses will be exchanged.
+Conversation concluded. This exchange is complete. No further turns will be processed.

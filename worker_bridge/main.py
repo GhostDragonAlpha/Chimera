@@ -299,6 +299,48 @@ async def status():
 
 # ─── Direct execution ──────────────────────────────────────────────────────
 
+@app.get("/")
+async def root():
+    """Serve the live dashboard."""
+    from pathlib import Path
+    html = Path(__file__).parent / "dashboard.html"
+    if html.exists():
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=html.read_text(encoding="utf-8"), status_code=200)
+    return {"message": "Dashboard not found. Ensure dashboard.html exists in worker_bridge/."}
+
+
+
+
+@app.get("/api/chronicle")
+async def list_chronicle():
+    """List chronicle files and their contents."""
+    from pathlib import Path
+    chronicle_dir = Path(__file__).parent / "chronicle"
+    if not chronicle_dir.exists():
+        return {"files": []}
+    files = sorted(chronicle_dir.glob("*.txt"))
+    result = []
+    for f in files[-8:]:
+        content = f.read_text(encoding="utf-8")
+        result.append({"name": f.name, "size": len(content), "preview": content[:300]})
+    for suffix in ["forge_*.log", "forge_result_*.json"]:
+        for f in chronicle_dir.glob(suffix):
+            content = f.read_text(encoding="utf-8")
+            result.append({"name": f.name, "size": len(content), "preview": content[:300]})
+    return {"files": result}
+
+@app.get("/")
+async def root():
+    """Serve the live dashboard."""
+    from pathlib import Path
+    html_path = Path(__file__).parent / "dashboard.html"
+    if html_path.exists():
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=html_path.read_text(encoding="utf-8"), status_code=200)
+    return {"message": "Dashboard not found"}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8888, reload=True)
