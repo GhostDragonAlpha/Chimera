@@ -76413,6 +76413,61 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_a42094d0304b"
+    },
+    {
+      "id": "simtest_4a5722f841309d8a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:54:01.794566",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "shelter_mat_collapse",
+      "demo": "shelter_habitat_material",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "shelter_habitat_material_present",
+          "outcome": "reached",
+          "features": [
+            "Shelter_Habitat_Materials"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "Demo_HabitatActor"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\shelter_mat_collapse.json",
+      "temperature": "[SIM] 1/1 beats reached in 'shelter_habitat_material'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'shelter_mat_collapse': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_f49b789cc68b"
     }
   ],
   "edges": [

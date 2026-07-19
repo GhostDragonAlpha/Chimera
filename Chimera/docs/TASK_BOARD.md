@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-19T01:51:54+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-19T01:56:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,14 +8,6 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0201 | open | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
-| tb-0202 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
-| tb-0203 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
-| tb-0204 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
-| tb-0205 | open | 0.9 | Witness: Universe_Asteroid_Field | editor:open; excl:pie |  |
-| tb-0206 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
-| tb-0207 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
-| tb-0208 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0209 | open | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie |  |
 | tb-0210 | open | 0.75 | Build toward the seed: UCostlessLifeEndingDiagnostic | core/game_code_generator.py; excl:generator |  |
 | tb-0211 | open | 0.75 | Build toward the seed: TitanRunTrack | core/game_code_generator.py; excl:generator |  |
@@ -68,6 +60,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0189 | done | 1 | Pawn levitation: external per-tick +Z on BP_Astronaut_Charac | Content/**, Source/Chimera/ProceduralGenerated/Demo/** | ROOT-CAUSE HUNT + VERIFICATION MET. NOTE FOR THE JUDGE: all  |
 | tb-0196 | done | 1 | Levitator golden reproducer: sleepwalker PIE converges pawn  | core/sleepwalker.py, core/witness.py…; editor:open | THE LEVITATOR IS KILLED, MECHANISM NAMED, FIX DURABLE, STAND |
 | tb-0198 | done | 1 | Materialization THE RIGHT WAY: generator-owned runtime subsy | core/game_code_generator.py, Source/Chimera/ProceduralGenerated/Materialization/*…; editor:open; excl:build | THE MATERIALIZATION BUBBLE, THE RIGHT WAY, RUNS IN THE GAME. |
+| tb-0201 | done | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie | Shelter_Habitat_Materials collapse: sleepwalker reached 1/1  |
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
 | tb-0131 | done | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | UE_LOG witness markers verified present in NPCTradeComponent |
@@ -103,6 +96,13 @@ so claimed tasks are safe to run in parallel.
 | tb-0194 | done | 0.9 | Planet-averages rung: oceans, atmospheres, interior gradient | core/trainables/planet.py, docs/objectives/planet*.json… | THE OPERATOR BAR IS MET - all walls satisfied, best 0.9194,  |
 | tb-0195 | done | 0.9 | Wire a grown system into UE5: stand on an ocean world (workf | core/system_to_ue5.py, docs/beats/solar_system_stand.beats.json; editor:open | THE WIRING WORKFLOW IS DELIVERED AND PROVEN RE-RUNNABLE; the |
 | tb-0197 | done | 0.9 | Materialization bubble v0: trained matter forms the ground u | core/materialize.py, docs/beats/materialized_ground.beats.json…; editor:open | THE MATERIALIZATION BUBBLE v0 STANDS, MATTER MIXED, WITNESSE |
+| tb-0202 | done | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie | Travel_Vehicle_Flight witness beats reached via sleepwalker  |
+| tb-0203 | done | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie | Universe_Planet_Generation witness beats reached via sleepwa |
+| tb-0204 | done | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie | Universe_Moon_Generation witness beats reached via sleepwalk |
+| tb-0205 | done | 0.9 | Witness: Universe_Asteroid_Field | editor:open; excl:pie | Universe_Asteroid_Field witness beats reached via sleepwalke |
+| tb-0206 | done | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie | Universe_Debris_Field witness beats reached via sleepwalker  |
+| tb-0207 | done | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie | Tool_Shovel_Model witness beats reached via sleepwalker (sim |
+| tb-0208 | done | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie | Tool_Shovel_Material witness beats reached via sleepwalker ( |
 | tb-0109 | done | 0.85 | task_board: pain-reconciler eats ripener FIX tasks (forges d | core/task_board.py | reconcile_stale_pain_tasks now filters to verdict tasks only |
 | tb-0122 | done | 0.85 | beat_lint: tautological beats (rig-only expects) + make gest | core/beat_lint.py, docs/beats/gesture_wheel.beats.json…; excl:generator | beat_lint tautology check live: OLD gesture fixture FLAGGED  |
 | tb-0128 | done | 0.85 | Build-currency gate: refuse done/postflight when Source/** c | core/task_board.py, core/training_gate.py… | Added build-currency gate to closure_report.py: added Build. |
