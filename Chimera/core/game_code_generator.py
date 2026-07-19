@@ -5104,7 +5104,7 @@ void RunSacrificeLogSeedApiTests()
         # Add PCGVolumeManager include if procedural generation is present
         if has_pcg:
             header_content += f'#include "PCGVolumeManager.h"\n'
-            header_content += f'#include "PCG/UniverseGenerationComponent.h"\n'
+            header_content += f'#include "../PCG/UniverseGenerationComponent.h"\n'
         
         # Add ship and component includes if ships are present
         if has_ships:
@@ -5169,7 +5169,7 @@ void RunSacrificeLogSeedApiTests()
         # Add PCGVolumeManager include if procedural generation is present
         if has_pcg:
             source_content += f'#include "PCGVolumeManager.h"\n'
-            source_content += f'#include "PCG/UniverseGenerationComponent.h"\n'
+            source_content += f'#include "../PCG/UniverseGenerationComponent.h"\n'
         
         # Add ship and component includes if ships are present
         if has_ships:
@@ -5728,7 +5728,7 @@ if __name__ == "__main__":
         attach_header_content += f"#pragma once\n\n"
         attach_header_content += f'#include "CoreMinimal.h"\n'
         attach_header_content += f'#include "GameFramework/Pawn.h"\n'
-        attach_header_content += f'#include "Audio/UChimeraAttunementComponent.h"\n\n'
+        attach_header_content += f'#include "../Audio/UChimeraAttunementComponent.h"\n\n'
 
         attach_header_content += f'UCLASS()\n'
         attach_header_content += f'class CHIMERA_API UAttunementComponentAttachment : public UObject\n'

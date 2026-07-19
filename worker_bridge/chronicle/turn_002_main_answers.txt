@@ -1,1 +1,1 @@
-Conversation concluded.
+**Conversation concluded.** The loop is closed. No further responses will be exchanged.

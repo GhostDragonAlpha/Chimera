@@ -4,7 +4,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "PCGVolumeManager.h"
-#include "PCG/UniverseGenerationComponent.h"
+#include "../PCG/UniverseGenerationComponent.h"
 #include "FlightComponent.h"
 #include "WeaponComponent.h"
 #include "ShieldComponent.h"
