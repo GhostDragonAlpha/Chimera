@@ -281,7 +281,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Works in UE5.8. Behavior Trees, Blackboard, and EQS are core engine features."
+      "answer": "Needs sub-features: NPC AI, NPC dialogue, NPC trade, NPC animation. Zoom deeper when scoped."
     },
     {
       "id": 32,
@@ -290,7 +290,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Minimal performance impact. NPC AI runs on a separate tick group. A handful of NPCs per station is negligible."
+      "answer": "NPC faction system, NPC generation, NPC schedules are missing siblings."
     },
     {
       "id": 33,
@@ -299,7 +299,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Partially. Audio-driven NPCs need voice synthesis or text-to-speech. Text-based NPCs are fully accessible."
+      "answer": "Parent (game systems) is designed at high level. No blocker."
     },
     {
       "id": 34,
@@ -308,7 +308,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Not yet designed. NPC voice lines and ambient chatter would significantly enhance immersion."
+      "answer": "Build after scanner and demo. NPCs are depth, not marketing."
     },
     {
       "id": 35,
@@ -317,7 +317,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "NPCs are single-player only. Multiplayer NPC interaction is out of scope."
+      "answer": "Blocked by: animation system needs basic locomotion. Blocks: faction relationships."
     },
     {
       "id": 36,
@@ -327,6 +327,51 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "NPC dialogue and behavior data can be exposed as moddable JSON tables. Behavior Trees are also moddable."
+    },
+    {
+      "id": 37,
+      "category": "depth",
+      "question": "Does this feature need sub-features, or is it detailed enough at this level?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Needs sub-features at deeper zoom level. Defer until v2 scope."
+    },
+    {
+      "id": 38,
+      "category": "breadth",
+      "question": "Are there sibling features missing at this level of the tree?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Sub-features exist in the loop board. Create when scoped."
+    },
+    {
+      "id": 39,
+      "category": "parent",
+      "question": "Is the parent feature complete enough to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Parent systems are designed at high level. No blocker."
+    },
+    {
+      "id": 40,
+      "category": "priority",
+      "question": "Should this be built before or after its siblings?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after Environmental_Demo and Educational_Scanner. These are depth features."
+    },
+    {
+      "id": 41,
+      "category": "dependency",
+      "question": "Does this block other features, or do others block this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Blocked by animation system (NPC), weather system (Shelter), celestial data (Travel), generator fixes (Tools)."
     }
   ],
   "answers": [],

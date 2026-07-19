@@ -47,6 +47,16 @@ EDGE_CATEGORIES = [
     "requires",     # What skills, tools, or data are needed?
 ]
 
+# Meta category - how does it fit in the tree?
+# Controls graph growth: zoom deeper, add sibling, or mark ready.
+META_QUESTIONS = [
+    "depth",       # Does this need sub-features, or is it detailed enough?
+    "breadth",     # Are sibling features missing at this level?
+    "parent",      # Is the parent feature complete enough?
+    "priority",    # Should this be built before or after siblings?
+    "dependency",  # Does this block other features?
+]
+
 # Mirror category - why does it EXIST?
 # Every question must trace to the ultimate goal:
 #   "The most famous educational RPG on Steam, whose proceeds advance life in the universe."

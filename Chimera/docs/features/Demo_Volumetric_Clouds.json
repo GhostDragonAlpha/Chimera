@@ -354,6 +354,51 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Also depends on weather system providing storm state for educational triggers."
+    },
+    {
+      "id": 40,
+      "category": "depth",
+      "question": "Does this feature need sub-features, or is it detailed enough at this level?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Detailed enough at this level. No deeper zoom needed for v1 demo."
+    },
+    {
+      "id": 41,
+      "category": "breadth",
+      "question": "Are there sibling features missing at this level of the tree?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Complete. All 5 sub-features cover the demo requirements."
+    },
+    {
+      "id": 42,
+      "category": "parent",
+      "question": "Is the parent feature complete enough to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Parent Environmental_Demo is designed at 38/38. Ready to build."
+    },
+    {
+      "id": 43,
+      "category": "priority",
+      "question": "Should this be built before or after its siblings?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build in parallel. All sub-features are independent and can be constructed simultaneously."
+    },
+    {
+      "id": 44,
+      "category": "dependency",
+      "question": "Does this block other features, or do others block this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No cross-blocking. Each sub-feature is independent."
     }
   ],
   "answers": [],
