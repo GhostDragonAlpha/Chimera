@@ -72,6 +72,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Respiration")
 	float RespirationCyclePeriodSec = 30.0f;
 
+	/** Timer tracking respiration cycle progress */
+	float RespirationTimer;
+
 	// Contraction radius from shell center
 	UPROPERTY(EditDefaultsOnly, Category = "Respiration")
 	float ContractionRadiusMeters = 5.0f;
