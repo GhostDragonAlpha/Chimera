@@ -76328,6 +76328,91 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_9a62f3020a6a"
+    },
+    {
+      "id": "simtest_2afea168456b3544",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:47:03.595845",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_UGestureWheel_v2",
+      "demo": "gesture_wheel",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "gesture_wheel_open_close",
+          "outcome": "reached",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] OpenWheel"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        },
+        {
+          "beat": "gesture_wheel_commit_gesture",
+          "outcome": "reached",
+          "features": [
+            "UGestureWheel"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "log_contains": "[GestureWheel] CommitGesture"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_UGestureWheel_v2.json",
+      "temperature": "[SIM] 2/2 beats reached in 'gesture_wheel'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_UGestureWheel_v2': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a42094d0304b"
     }
   ],
   "edges": [

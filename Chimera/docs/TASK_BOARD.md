@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-19T01:36:02+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-19T01:48:45+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -8,7 +8,6 @@ so claimed tasks are safe to run in parallel.
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
@@ -68,7 +67,8 @@ so claimed tasks are safe to run in parallel.
 | tb-0076 | done | 0.9 | Witness & collapse: Social_Trade | editor:open; excl:pie | simtest_6eda875b25fb7be3: 2/2 beats reached in 'social_trade |
 | tb-0077 | done | 0.9 | Witness & collapse: Shelter_Habitat_Materials | editor:open; excl:pie | simtest_f2856885f26a021f: 1/1 beats reached in 'shelter_habi |
 | tb-0078 | done | 0.9 | Witness & collapse: Shelter_Habitat_Lighting | editor:open; excl:pie | witness_runner completed successfully with simtest_50995d727 |
-| tb-0130 | done | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | Witness RAN: sleepwalker obs_UGestureWheel simtest_457320c34 |
+| tb-0129 | done | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | Superseded by tb-0130 which completed gesture wheel witness  |
+| tb-0130 | done | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | Gesture wheel witness RAN: sleepwalker obs_UGestureWheel_v2  |
 | tb-0132 | done | 0.9 | Typed closure report at tunnel exit (subsumes tb-0128 build- | core/closure_report.py, core/agent_tunnel.py… | Typed closure report LIVE across both paths (tunnel + raw):  |
 | tb-0138 | done | 0.9 | Witness: Social_Trade | editor:open; excl:pie | UE_LOG witness markers present in NPCTradeComponent.cpp ([NP |
 | tb-0139 | done | 0.9 | Witness: Shelter_Habitat_Materials | editor:open; excl:pie | witness_runner (wraps sleepwalker, agent-sim source) ran doc |
