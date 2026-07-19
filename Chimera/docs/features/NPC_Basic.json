@@ -1,0 +1,280 @@
+{
+  "name": "NPC_Basic",
+  "description": "NPC characters with basic AI, animation, and social interaction.",
+  "created": "2026-07-19T17:13:00.618945",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Do NPCs teach real social science (game theory, negotiation, cultural dynamics)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player learn about alien cultures through NPC interaction?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Do NPC interactions require real communication skills, not just dialogue trees?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Can the player learn negotiation game theory through trade with NPCs?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Are NPCs a feature that screenshots can show off?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Do NPCs differentiate us from procedurally-generated NPCs in other games?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Can a single memorable NPC character generate social media buzz?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "Is the NPC interaction system intuitive and fun, not tedious?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do NPCs have daily routines that make the world feel alive?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Do NPCs react to weather, time of day, and player actions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Do NPCs speak a constructed alien language or use translation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Can the player build relationships with NPCs over time?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can NPCs be implemented with existing generator tools?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "Are NPCs Blueprint or C++?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Do NPCs require the animation system to be fixed first?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can a single NPC be prototyped in one sprint?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Does the AI system exist in the current codebase?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the NPC system depend on the generator?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Are NPC behaviors data-driven or hardcoded?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "Can NPC interactions be recorded and played back for testing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on the character model system?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the animation Blueprint system?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "proves",
+      "question": "Does this prove the game has social depth beyond trading?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "derived_from",
+      "question": "Was this derived from the initial loop board (Loop 5)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "conflicts",
+      "question": "Does this conflict with the current AI system design?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "requires",
+      "question": "What AI/behavior tree knowledge is required?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 27,
+      "category": "vision",
+      "question": "Do NPCs serve the most famous educational RPG goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 28,
+      "category": "tradeoff",
+      "question": "What is sacrificed by building NPCs now vs later?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 29,
+      "category": "evidence",
+      "question": "What evidence shows NPCs drive RPG engagement?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 30,
+      "category": "terminal",
+      "question": "Does NPC interaction chain reach a human learning something real?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

@@ -1,0 +1,298 @@
+{
+  "name": "Educational_Scanner",
+  "description": "A tool the player points at the environment to learn real science. Point at rock -> learn geology. Point at cloud -> learn meteorology. Point at star -> learn astronomy.",
+  "created": "2026-07-19T17:12:31.132937",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the scanner teach real, verifiable science \u2014 not fictional lore?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player use scanner knowledge to make gameplay decisions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does scanning require active curiosity, or is it passive?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does the scanner content scale with player progression?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Is the scanner a feature that generates press coverage?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Can a 10-second clip of the scanner go viral on social media?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Does the scanner differentiate us from No Man Sky and Star Citizen?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "Is the scanner intuitive enough for a Steam shopper to understand instantly?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Does the scanner work on every surface and sky object?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does the scanner have a visual/sound feedback that feels real?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Does the scanner reveal hidden world details (fossils, minerals, rare clouds)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Can the scanner detect weather patterns before they arrive?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can the scanner be implemented without UE5 pipeline fixes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "Is the scanner a Blueprint or C++ implementation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does the scanner need new UI widgets or can it use existing HUD?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can the scanner be prototyped in a single day?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Does the scanner depend on the env_education module?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Can scanner data be extended without code changes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Is the scanner testable via sleepwalker beats?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "Does the scanner require new MCP pathways?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on Environmental_Demo being built first?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the geology module (core/geology.py)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on the env_education module?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that educational mechanics can work without breaking immersion?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "proves",
+      "question": "Does this prove that MCP can spawn interactive tools?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "derived_from",
+      "question": "Was this derived from the Environmental_Demo council (Q8 answer)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 27,
+      "category": "conflicts",
+      "question": "Does this conflict with the existing verb interaction system?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 28,
+      "category": "requires",
+      "question": "What UE5 Blueprint knowledge is required to build the scanner?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 29,
+      "category": "vision",
+      "question": "Does the scanner directly serve the most famous educational RPG goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 30,
+      "category": "tradeoff",
+      "question": "What existing feature development is delayed to build the scanner?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 31,
+      "category": "evidence",
+      "question": "What evidence exists that scanning mechanics drive engagement?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 32,
+      "category": "terminal",
+      "question": "Does the scanner chain reach a human learning something, or is it just a UI mechanic?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

@@ -1,0 +1,280 @@
+{
+  "name": "Shelter_Habitat",
+  "description": "Player-built shelters for protection from weather and hostile environments.",
+  "created": "2026-07-19T17:13:00.779213",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does shelter-building teach real survival science?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the player learn about material properties by choosing shelter materials?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does shelter placement teach geography and microclimate awareness?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Can the player experiment with different shelter designs?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Is base-building a feature that drives Steam sales?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Does shelter construction generate shareable screenshots?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Does our shelter system differ from other survival games?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "Is shelter-building satisfying and educational simultaneously?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Does weather physically affect shelter integrity?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Do different biomes require different shelter strategies?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Can the player decorate and personalize their shelter?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does the shelter interact with environment systems?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can shelter be implemented using existing procedural generation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "Does shelter require new UE5 systems?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Can a basic shelter be prototyped quickly?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Does shelter save/load work across sessions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Does the existing generator support modular actor spawning?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Is shelter data stored in the save game system?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can shelter placement be tested via sleepwalker?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "Does shelter need new MCP pathways?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on weather system being complete?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the generator for modular buildings?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "proves",
+      "question": "Does this prove survival mechanics work alongside education?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "derived_from",
+      "question": "Was this derived from the original Loop 6 definition?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "conflicts",
+      "question": "Does shelter conflict with the educational scanner focus?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "requires",
+      "question": "What UE5 modular building knowledge is required?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 27,
+      "category": "vision",
+      "question": "Does shelter-building serve the most famous educational RPG goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 28,
+      "category": "tradeoff",
+      "question": "What is sacrificed by building shelter systems now?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 29,
+      "category": "evidence",
+      "question": "What evidence shows base-building drives player retention?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 30,
+      "category": "terminal",
+      "question": "Does shelter chain reach a human learning real survival science?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}
