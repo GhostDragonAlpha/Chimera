@@ -11,7 +11,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+      "answer": "ZE47-1: Sun arc teaches time estimation (sun height = time). ZE47-2: Star sphere is world-aligned, enabling celestial navigation. ZE47-3: Temperature curve peaks 1-2h after solar noon (thermal inertia lesson). ZE47-4: Night changes observations (stars, condensation, cold-related geology). ZE47-5: 3 sub-features (Celestial_Light_Rotation, Temperature_Time_System, Night_Visibility_Gameplay) each drive specific education via shared time-of-day variable."
     },
     {
       "id": 2,
@@ -20,7 +20,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+      "answer": "ZE47-2: Flat-bottom clouds = stable air (day). Towering clouds = storms building (afternoon). Star visibility = clear night. Cloud color at sunset predicts next-day weather. Each requires time-of-day-specific observation."
     },
     {
       "id": 3,
@@ -29,7 +29,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+      "answer": "ZE47-3: Rocks cracked by thermal expansion at noon are visible cooling at night. Star patterns teach navigation — same constellation from different canyon locations. Deep geology: 'Why are some rocks cracked and others smooth?' leads to thermal expansion + mineral composition lesson."
     },
     {
       "id": 4,
@@ -38,7 +38,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+      "answer": "ZE47-4: At night: condensation observations near canyon walls (temperature drop + humidity). Day: mineral identification by color. Different rocks conduct heat differently — touch test. Noon observations (thermal expansion cracking) teach material properties used in shelter-building (Loop 6)."
     },
     {
       "id": 5,
@@ -362,7 +362,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Detailed enough at this level. No deeper zoom needed for v1 demo."
+      "answer": "Zoom completed. 3 sub-features designed: Celestial_Light_Rotation (26 questions), Temperature_Time_System (26 questions), Night_Visibility_Gameplay (26 questions). Each recorded in DNA graph. No deeper zoom needed beyond these 3."
     },
     {
       "id": 41,
@@ -371,7 +371,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Complete. All 5 sub-features cover the demo requirements."
+      "answer": "3 sub-features complete this zoom: (1) Celestial_Light_Rotation — light mechanics, (2) Temperature_Time_System — thermal gameplay, (3) Night_Visibility_Gameplay — darkness effects. Together they cover all daylight-related systems for v1 demo."
     },
     {
       "id": 42,

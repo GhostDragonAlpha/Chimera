@@ -1,0 +1,245 @@
+{
+  "name": "Shelter_Material_Properties",
+  "description": "Insulation, durability, and weather resistance properties of building materials.",
+  "parent": "Shelter_Habitat",
+  "created": "2026-07-19T17:16:00.000000",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does choosing building materials teach real thermal conductivity and R-value concepts?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Materials display their R-value per unit thickness. Players learn that aerogel insulates better than regolith brick."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can players learn about specific heat capacity and thermal mass through shelter temperature management?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. High-thermal-mass materials like stone buffer temperature swings. Players discover this through night-day comparisons."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does material durability under weather teach real material science concepts like weathering, spalling, and fatigue?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Freeze-thaw cycles crack porous materials. Thermal expansion fatigues joints. Players learn real degradation science."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Can players experiment with composite materials (layered walls, reinforced panels) to discover emergent properties?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A metal skin over an insulating core gives both durability and thermal performance. Players discover this combination."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Is realistic material simulation with scientific accuracy a unique selling point for the game?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. No survival game simulates real material science. This is a distinct market differentiator."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Do meaningful material choices create emergent player stories (my ice roof melted, my stone base survived the storm)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Material failures create memorable emergent narratives that players share in forums and reviews."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Does material variety across biomes drive exploration and replayability?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Rare materials in dangerous biomes incentivize exploration. Each playthrough uses different material combos."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "Can visible material degradation over time drive emotional attachment and maintenance gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Watching your carefully built shelter weather and age creates maintenance urgency and emotional investment."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do materials visually degrade, crack, discolor, and erode with prolonged weather exposure?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Visual degradation uses material-appropriate shader effects: rust on metal, spalling on stone, warping on wood."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Do different materials (regolith, ice, metal, composite, organic) have visually distinct textures and shaders?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each material family has unique albedo, roughness, normal maps, and subsurface scattering behavior."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Can local materials be gathered from the environment based on biome geology?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Biome-specific resource nodes yield region-appropriate materials. Desert biomes yield sand-based composites; ice biomes yield ice blocks."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Do rare or high-performance materials require exploration of dangerous or distant locations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. High-grade insulation ores exist only in deep caves. Aerogel precursors require extreme altitude collection."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can material property definitions be fully data-driven from JSON/CSV data tables?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each material has a data table row: density, R-value, tensile strength, weather resistance, cost, weight."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "Is real-time insulation and thermal simulation cheap enough to run on the target RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Thermal simulation is a simplified finite-difference model per-shelter, computed every 30s. Negligible GPU cost."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Can a basic material system (3 materials, R-value affecting temperature) be prototyped in one day?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Three materials with different R-values and a simple interior-temperature delta tick can be built in 4 hours."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Do material states (mass, assigned module, degradation level) save and load correctly with the save game system?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Per-module material assignment and degradation percentage serialize to save game JSON."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Does the game code generator need templates for material data asset classes and material instance components?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A UMaterialPropertiesDataAsset class and per-module dynamic material instance component need generator templates."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Can material property interactions (thermal, structural, weather) be tested via automated sleepwalker sims?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can build identical shelters with different materials, expose them to weather, and measure temperature/degradation differences."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Is material degradation implementable as a simple damage-over-time tick with material-specific rates?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each material defines (weather resistance, fatigue rate, repair cost). Degradation is time-exposure * weather-severity / resistance."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "Can material balance (cost vs. performance) be tuned entirely through data tables without code changes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. All material parameters live in data tables. Balance passes require no code recompilation."
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does material temperature simulation depend on the planet temperature system being operational?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Ambient temperature from the planet system drives the delta that material insulation resists."
+    },
+    {
+      "id": 22,
+      "category": "proves",
+      "question": "Does this prove that educational mechanics (real material science) can coexist with fun survival gameplay?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Material choice becomes a meaningful gameplay decision with visible consequences, proving education and fun are compatible."
+    },
+    {
+      "id": 23,
+      "category": "derived_from",
+      "question": "Was this sub-feature derived from Shelter_Habitat question 2 (learning material properties through choice)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Shelter_Habitat Q2 introduces material property education, which requires detailed property simulation to deliver."
+    },
+    {
+      "id": 24,
+      "category": "conflicts",
+      "question": "Does complex per-polygon material degradation conflict with the 30+ fps performance target?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minor conflict. Full polygon-level weathering is expensive. Use vertex-annealed material parameter blending per module face."
+    },
+    {
+      "id": 25,
+      "category": "requires",
+      "question": "What domain knowledge is needed for accurate material property values in the simulation?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Published material science data for R-values, tensile strengths, and weathering rates of extraterrestrial-relevant materials."
+    },
+    {
+      "id": 26,
+      "category": "vision",
+      "question": "Does teaching real material science through gameplay serve the goal of becoming the most famous educational RPG?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Material science is a core STEM topic. Teaching it through survival gameplay directly advances the educational RPG vision."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

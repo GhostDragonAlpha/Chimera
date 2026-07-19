@@ -79444,6 +79444,162 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_09405a63aa2e"
+    },
+    {
+      "id": "feature_cf419b3f2ebbb000",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:31:40.186016",
+      "feature_name": "NPC_AI_Behavior",
+      "loop": 5,
+      "status": "designed",
+      "parameters": {
+        "parent": "NPC_Basic",
+        "description": "NPC behavior trees, daily routines, environmental reactions, and decision-making driven by faction m"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/NPC_AI_Behavior",
+      "error_category": "none",
+      "fix_description": "Feature 'NPC_AI_Behavior' (Loop 5) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_7b51009632bd"
+    },
+    {
+      "id": "feature_b0ce1040a46bf2c3",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:31:40.583612",
+      "feature_name": "NPC_Dialogue_System",
+      "loop": 5,
+      "status": "designed",
+      "parameters": {
+        "parent": "NPC_Basic",
+        "description": "NPC conversation system with cultural context, universal translator, reputation-gated dialogue, and "
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/NPC_Dialogue_System",
+      "error_category": "none",
+      "fix_description": "Feature 'NPC_Dialogue_System' (Loop 5) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_0d5a9cb425d4"
+    },
+    {
+      "id": "feature_892eb53e635a1d3c",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:31:41.000920",
+      "feature_name": "NPC_Trade_Mechanics",
+      "loop": 5,
+      "status": "designed",
+      "parameters": {
+        "parent": "NPC_Basic",
+        "description": "Dynamic trade bargaining system with supply/demand, reputation modifiers, cultural negotiation style"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/NPC_Trade_Mechanics",
+      "error_category": "none",
+      "fix_description": "Feature 'NPC_Trade_Mechanics' (Loop 5) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c48fff3f4724"
+    },
+    {
+      "id": "feature_102fe83f75303e33",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:32:15.958012",
+      "feature_name": "Shelter_Weather_Interaction",
+      "loop": 6,
+      "status": "designed",
+      "parameters": {},
+      "error_signature": "success_no_error",
+      "template_file": "loop_6/Shelter_Weather_Interaction",
+      "error_category": "none",
+      "fix_description": "Feature 'Shelter_Weather_Interaction' (Loop 6) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_db48139e64c7"
+    },
+    {
+      "id": "feature_c16ac7b6e30b8b29",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:32:20.485585",
+      "feature_name": "NPC_AI_Behavior",
+      "loop": 5,
+      "status": "designed",
+      "parameters": {
+        "parent": "NPC_Basic",
+        "sub_features": 3
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/NPC_AI_Behavior",
+      "error_category": "none",
+      "fix_description": "Feature 'NPC_AI_Behavior' (Loop 5) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_e67a5cb4b016"
+    },
+    {
+      "id": "feature_7457c6c11c907aad",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:32:20.884160",
+      "feature_name": "NPC_Dialogue_System",
+      "loop": 5,
+      "status": "designed",
+      "parameters": {
+        "parent": "NPC_Basic",
+        "sub_features": 3
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/NPC_Dialogue_System",
+      "error_category": "none",
+      "fix_description": "Feature 'NPC_Dialogue_System' (Loop 5) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8c18f3f6f6ca"
+    },
+    {
+      "id": "feature_aecf17c16eaae8ba",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:32:21.305400",
+      "feature_name": "NPC_Trade_Mechanics",
+      "loop": 5,
+      "status": "designed",
+      "parameters": {
+        "parent": "NPC_Basic",
+        "sub_features": 3
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/NPC_Trade_Mechanics",
+      "error_category": "none",
+      "fix_description": "Feature 'NPC_Trade_Mechanics' (Loop 5) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_5ce9b34c888b"
+    },
+    {
+      "id": "feature_55a79d6cb4aeeca9",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:32:34.254099",
+      "feature_name": "Shelter_Habitat",
+      "loop": 6,
+      "status": "designed",
+      "parameters": {
+        "sub_features": "Shelter_Module_System,Shelter_Material_Properties,Shelter_Weather_Interaction"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_6/Shelter_Habitat",
+      "error_category": "none",
+      "fix_description": "Feature 'Shelter_Habitat' (Loop 6) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_e74ce5a39e31"
     }
   ],
   "edges": [

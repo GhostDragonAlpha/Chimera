@@ -1,0 +1,244 @@
+{
+  "name": "NPC_AI_Behavior",
+  "description": "NPC behavior trees, daily routines, environmental reactions, and decision-making driven by faction membership, time-of-day, and player reputation.",
+  "created": "2026-07-19T17:32:20.367437",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Observing NPC daily routines teaches the player about cultural rhythms: a merchant guild NPC spends mornings at market, afternoons in transit, evenings in the guild hall. The player learns cultural patterns by watching behavior unfold in real-time.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Observing NPC daily routines teaches the player about cultural rhythms: a merchant guild NPC spends mornings at market, afternoons in transit, evenings in the guild hall. The player learns cultural patterns by watching behavior unfold in real-time."
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "NPCs with distinctive daily routines (a trader who always watches sunset at the same viewport) create emergent storytelling that players share: 'This NPC watches the sunset every day.' Most space games have static quest-givers; ours have living inhabitants.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "NPCs with distinctive daily routines (a trader who always watches sunset at the same viewport) create emergent storytelling that players share: 'This NPC watches the sunset every day.' Most space games have static quest-givers; ours have living inhabitants."
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Each NPC has a full daily schedule (sleep, work, leisure, transit) varying by faction and role. NPCs react to weather, events, and player actions with persistent memory. The station feels alive because NPCs move with purpose throughout the day.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Each NPC has a full daily schedule (sleep, work, leisure, transit) varying by faction and role. NPCs react to weather, events, and player actions with persistent memory. The station feels alive because NPCs move with purpose throughout the day."
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "AI uses standard UE5 Behavior Trees with Blackboard. Routines are JSON schedule tables. No hardcoded AI logic. One NPC with basic BT (idle, patrol, react) prototypes in 3-5 days.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "AI uses standard UE5 Behavior Trees with Blackboard. Routines are JSON schedule tables. No hardcoded AI logic. One NPC with basic BT (idle, patrol, react) prototypes in 3-5 days."
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "UE5 Behavior Trees, Blackboard, AI Perception, and EQS are mature built-in systems. New behaviors are C++ UBTService/UBTTaskNode subclasses or Blueprint tasks. No custom AI framework needed.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "UE5 Behavior Trees, Blackboard, AI Perception, and EQS are mature built-in systems. New behaviors are C++ UBTService/UBTTaskNode subclasses or Blueprint tasks. No custom AI framework needed."
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Standard UE5 subsystems (AI Perception, Behavior Trees, NavMesh, EQS). No hacks, no plugins, no engine modifications required.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Standard UE5 subsystems (AI Perception, Behavior Trees, NavMesh, EQS). No hacks, no plugins, no engine modifications required."
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "10-20 active NPCs cost negligible CPU (BT ticks are microseconds, AI Perception is throttled, NavMesh pre-computed). GPU impact is mesh rendering only, independent of AI.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "10-20 active NPCs cost negligible CPU (BT ticks are microseconds, AI Perception is throttled, NavMesh pre-computed). GPU impact is mesh rendering only, independent of AI."
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "NPC behavior is primarily visual (movement, posture, positioning) and perceivable without color or audio. Add optional subtitles for NPC non-verbal sounds for full accessibility.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "NPC behavior is primarily visual (movement, posture, positioning) and perceivable without color or audio. Add optional subtitles for NPC non-verbal sounds for full accessibility."
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Footstep sounds exist per Environmental_Demo. NPC-specific sounds (greetings, alerts) are not yet implemented. Priority: footsteps + simple vocalizations for v1.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Footstep sounds exist per Environmental_Demo. NPC-specific sounds (greetings, alerts) are not yet implemented. Priority: footsteps + simple vocalizations for v1."
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "AI Perception handles multiple player stimuli natively. But per-player reputation tracking and simultaneous AI interaction need dedicated multiplayer AI manager. Out of v1 scope.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "AI Perception handles multiple player stimuli natively. But per-player reputation tracking and simultaneous AI interaction need dedicated multiplayer AI manager. Out of v1 scope."
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Behavior Tree assets are content-moddable. Schedule JSON tables are replaceable. Modders can create entirely new NPC archetypes by combining BT fragments with new schedule data.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Behavior Tree assets are content-moddable. Schedule JSON tables are replaceable. Modders can create entirely new NPC archetypes by combining BT fragments with new schedule data."
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Schedule names, location names, and reaction descriptions are text strings in data files, extractable for translation. Behavior Tree logic is locale-independent.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Schedule names, location names, and reaction descriptions are text strings in data files, extractable for translation. Behavior Tree logic is locale-independent."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Depends on NPC_Basic (character skeleton, mesh, base components). Partially depends on animation system (basic locomotion works, expressive behavior needs animation extension).",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on NPC_Basic (character skeleton, mesh, base components). Partially depends on animation system (basic locomotion works, expressive behavior needs animation extension)."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Proves the world is alive: scheduled routines + environmental reactions = player perceives inhabited stations, not decorated sets.",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Proves the world is alive: scheduled routines + environmental reactions = player perceives inhabited stations, not decorated sets."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Derived from NPC_Basic Q9 (daily routines that make the world feel alive).",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from NPC_Basic Q9 (daily routines that make the world feel alive)."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "No conflict with Verb interaction system. Verb_Look at an NPC triggers AI greeting response. Actions and AI layer together, not compete.",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with Verb interaction system. Verb_Look at an NPC triggers AI greeting response. Actions and AI layer together, not compete."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "UE5 Behavior Trees, Blackboard, AI Perception, NavMesh knowledge. Standard UE5 AI toolkit \u2014 learnable in 1-2 weeks.",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "UE5 Behavior Trees, Blackboard, AI Perception, NavMesh knowledge. Standard UE5 AI toolkit \u2014 learnable in 1-2 weeks."
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Detailed enough at this level. Future sub-features: NPC_Patrol_Routes, NPC_Reaction_System, NPC_Scheduling_Editor.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Detailed enough at this level. Future sub-features: NPC_Patrol_Routes, NPC_Reaction_System, NPC_Scheduling_Editor."
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "No siblings missing at this level. AI_Behavior, Dialogue_System, and Trade_Mechanics are the three core NPC interaction sub-features.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No siblings missing at this level. AI_Behavior, Dialogue_System, and Trade_Mechanics are the three core NPC interaction sub-features."
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "NPC_Basic is at DESIGNED status with all 41 questions answered. Parent is complete enough to support this.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "NPC_Basic is at DESIGNED status with all 41 questions answered. Parent is complete enough to support this."
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Build first among siblings. AI Behavior is the foundation \u2014 Dialogue and Trade depend on NPCs existing with AI state.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build first among siblings. AI Behavior is the foundation \u2014 Dialogue and Trade depend on NPCs existing with AI state."
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Partially blocks NPC_Dialogue_System (NPC must exist and have state before dialogue) and NPC_Trade_Mechanics (NPC must enter trade state).",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially blocks NPC_Dialogue_System (NPC must exist and have state before dialogue) and NPC_Trade_Mechanics (NPC must enter trade state)."
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "NPCs with real behavior patterns teach social observation and behavioral cause-and-effect. The player learns to READ behavior, not quest text \u2014 directly serving the educational RPG mission.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "NPCs with real behavior patterns teach social observation and behavioral cause-and-effect. The player learns to READ behavior, not quest text \u2014 directly serving the educational RPG mission."
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "Building NPC AI now prioritizes world depth over environmental breadth. Station content ships before planetary content. Acceptable: living stations drive social gameplay.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building NPC AI now prioritizes world depth over environmental breadth. Station content ships before planetary content. Acceptable: living stations drive social gameplay."
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "RPGs with scheduled NPC routines have higher emotional investment (Skyrim radiant AI, Witcher 3 schedules). Players form attachments to observed NPCs.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "RPGs with scheduled NPC routines have higher emotional investment (Skyrim radiant AI, Witcher 3 schedules). Players form attachments to observed NPCs."
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Player learns to read social cues, predict behavior from patterns, and understand social cause-and-effect. Transferable real-world observational skills.",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Player learns to read social cues, predict behavior from patterns, and understand social cause-and-effect. Transferable real-world observational skills."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}
