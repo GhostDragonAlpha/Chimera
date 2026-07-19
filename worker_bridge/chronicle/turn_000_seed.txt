@@ -1,10 +1,28 @@
+PHASE 2 BEGINS. THE EXPLORATION PHASE IS OVER.
 
-GAUSSIAN SPLATTING SYSTEM -- Current state:
-- splat_gpu.py: GPU render pipeline with tile-based radix sort (256-splat tiles)
-- splat_emit.py: per-batch normalization, logistic midpoint
-- bake.py: asset baking pipeline (resolve_assets function MISSING -- needs creation)
-- fractal_zoom_sweep.py: 614,813 splats, 7 zoom levels, tested pass
-- Dyad module: LM Studio two-brain (Qwen 3.6B MoE + 27B dense)
-- Build: last 20 all pass. GPA 1.78 (flat). Vision track CONTAIN at 86%
-- Pending: Tool_Scanner_Model (needs_refinement), Tool_Scanner_Material (needs_refinement)
-- Gaps: screen-space density cap in splat_gpu.py incomplete, per-batch normalization bug in emit, resolve_assets missing in bake.py
+We are now in BUILD mode. The system exists. The methodology is proven.
+Now we ship the most famous educational RPG on Steam.
+
+DEEP SPACE TRADER — EDUCATIONAL MECHANIC DESIGN BRIEF
+
+The game already has: trading, navigation, ship systems, exploration,
+factions, combat, resource management, procedural generation.
+
+REQUIREMENT: Design one educational mechanic that teaches real knowledge
+through the EXISTING gameplay loop. Not a new system — an enhancement
+to something that already works.
+
+The mechanic must:
+1. Teach something real (economics, physics, astronomy, biology, game theory)
+2. Fit within existing systems (no new engine dependencies)
+3. Be implementable in a single Foundry cycle
+4. Make the game more famous, not just more complex
+
+OUTPUT FORMAT: A single JSON object with:
+- mechanic_name: string
+- teaches: what real-world knowledge
+- existing_system: which game system it enhances
+- implementation: what code changes in what files
+- player_experience: how the player encounters it
+
+This is not a discussion. This is a design brief. Produce the output.

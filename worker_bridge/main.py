@@ -314,20 +314,26 @@ async def root():
 
 @app.get("/api/chronicle")
 async def list_chronicle():
-    """List chronicle files and their contents."""
+    """List chronicle files with FULL raw content — nothing hidden."""
     from pathlib import Path
     chronicle_dir = Path(__file__).parent / "chronicle"
     if not chronicle_dir.exists():
         return {"files": []}
-    files = sorted(chronicle_dir.glob("*.txt"))
+    # All .txt files (chronicle turns), .log files (forge), .json files (results)
+    patterns = ["*.txt", "forge_*.log", "forge_result_*.json", "*.json"]
     result = []
-    for f in files[-8:]:
-        content = f.read_text(encoding="utf-8")
-        result.append({"name": f.name, "size": len(content), "preview": content[:300]})
-    for suffix in ["forge_*.log", "forge_result_*.json"]:
-        for f in chronicle_dir.glob(suffix):
+    seen = set()
+    for pat in patterns:
+        for f in sorted(chronicle_dir.glob(pat)):
+            if f.name in seen:
+                continue
+            seen.add(f.name)
             content = f.read_text(encoding="utf-8")
-            result.append({"name": f.name, "size": len(content), "preview": content[:300]})
+            result.append({
+                "name": f.name,
+                "size": len(content),
+                "raw": content  # FULL content, no truncation
+            })
     return {"files": result}
 
 @app.get("/")

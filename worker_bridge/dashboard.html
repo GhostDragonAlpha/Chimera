@@ -2,229 +2,137 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Gaussian Foundry — Live Dashboard</title>
+<title>Foundry — Raw Output</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Courier New', monospace; background: #0a0a0a; color: #c0c0c0; padding: 20px; }
-  h1 { color: #00ff88; font-size: 18px; margin-bottom: 20px; }
-  h2 { color: #00ccff; font-size: 14px; margin: 15px 0 5px 0; }
-  .status-grid { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-  .status-card { background: #141414; border: 1px solid #2a2a2a; padding: 12px; border-radius: 4px; min-width: 180px; }
-  .status-card .label { color: #666; font-size: 11px; text-transform: uppercase; }
-  .status-card .value { color: #0f0; font-size: 20px; font-weight: bold; }
-  .status-card .value.warn { color: #ff0; }
-  .status-card .value.danger { color: #f00; }
-  .log-section { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 10px; margin-bottom: 15px; border-radius: 4px; max-height: 400px; overflow-y: auto; font-size: 12px; line-height: 1.6; }
-  .log-section .timestamp { color: #555; }
-  .log-section .role-worker { color: #ff8844; }
-  .log-section .role-main { color: #44bbff; }
-  .log-section .info { color: #888; }
-  .log-section .pass { color: #0f0; }
-  .log-section .fail { color: #f44; }
-  .log-section .edit { color: #ff0; }
-  .error { color: #f44; }
-  .footer { color: #444; font-size: 11px; margin-top: 30px; text-align: center; }
-  pre { white-space: pre-wrap; word-break: break-word; }
-  .section-header { cursor: pointer; user-select: none; }
-  .section-header:hover { color: #fff; }
-  .badge { background: #2a2a2a; color: #aaa; font-size: 10px; padding: 2px 6px; border-radius: 8px; margin-left: 8px; }
+  body { font-family: 'Courier New', monospace; background: #080808; color: #d0d0d0; padding: 10px; }
+  h1 { color: #00ff88; font-size: 16px; margin-bottom: 10px; }
+  .bar { background: #111; border: 1px solid #222; padding: 8px 12px; margin-bottom: 8px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .bar span { font-size: 12px; }
+  .label { color: #666; }
+  .val { color: #0f0; font-weight: bold; }
+  .val.streaming { color: #ff0; }
+  .val.stopped { color: #f44; }
+  pre { white-space: pre-wrap; word-break: break-word; font-size: 11px; line-height: 1.5; }
+  .raw-block { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 10px; margin-bottom: 6px; border-radius: 3px; max-height: none; overflow: visible; }
+  .raw-block .filename { color: #00ccff; font-size: 11px; margin-bottom: 4px; }
+  .raw-block .filesize { color: #555; font-size: 10px; margin-left: 8px; }
+  .raw-block .content { color: #c0c0c0; }
+  .raw-block .content .q { color: #ff8844; }
+  .raw-block .content .a { color: #88ddff; }
+  .msg { border-bottom: 1px solid #1a1a1a; padding: 6px 0; }
+  .msg .role { color: #666; font-size: 10px; }
+  .msg .text { color: #c0c0c0; font-size: 11px; }
+  .footer { color: #333; font-size: 10px; margin-top: 20px; text-align: center; }
+  .tab { display: inline-block; padding: 4px 12px; margin-right: 2px; cursor: pointer; font-size: 11px; background: #1a1a1a; color: #888; border: none; border-radius: 3px 3px 0 0; }
+  .tab.active { background: #0a0a0a; color: #0f0; border-bottom: 2px solid #0f0; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
 </style>
 </head>
 <body>
 
-<h1>✦ Gaussian Foundry — Live Dashboard</h1>
+<h1>✦ Foundry — Raw Output (nothing hidden)</h1>
 
-<div class="status-grid" id="statusGrid">
-  <div class="status-card">
-    <div class="label">Worker Bridge</div>
-    <div class="value" id="workerStatus">—</div>
-  </div>
-  <div class="status-card">
-    <div class="label">Agent State</div>
-    <div class="value" id="agentState">—</div>
-  </div>
-  <div class="status-card">
-    <div class="label">Messages</div>
-    <div class="value" id="messageCount">—</div>
-  </div>
-  <div class="status-card">
-    <div class="label">Model</div>
-    <div class="value" id="modelName" style="font-size:13px">—</div>
-  </div>
-  <div class="status-card">
-    <div class="label">Chronicle Files</div>
-    <div class="value" id="chronicleCount">—</div>
-  </div>
-  <div class="status-card">
-    <div class="label">Forge Results</div>
-    <div class="value" id="forgeCount">—</div>
-  </div>
+<div class="bar">
+  <span><span class="label">Bridge:</span> <span class="val" id="bridgeStatus">—</span></span>
+  <span><span class="label">Agent:</span> <span class="val" id="agentState">—</span></span>
+  <span><span class="label">Msgs:</span> <span class="val" id="msgCount">—</span></span>
+  <span><span class="label">Model:</span> <span class="val" id="modelName" style="font-size:11px">—</span></span>
+  <span><span class="label">Files:</span> <span class="val" id="fileCount">—</span></span>
 </div>
 
-<h2 class="section-header" onclick="toggleSection('forgeLogsSection')">▼ Workshop (Forge) Logs <span class="badge" id="forgeBadge">0</span></h2>
-<div id="forgeLogsSection" class="log-section" id="forgeLogs"><pre id="forgeLogsContent">Waiting for forge runs...</pre></div>
-
-<h2 class="section-header" onclick="toggleSection('chronicleSection')">▼ Council Chronicle <span class="badge" id="chronicleBadge">0</span></h2>
-<div id="chronicleSection" class="log-section" id="chronicleContent"><pre id="chronicleContent">Waiting for chronicle...</pre></div>
-
-<h2 class="section-header" onclick="toggleSection('workerSection')">▼ Worker Messages (last 10) <span class="badge" id="workerBadge">0</span></h2>
-<div id="workerSection" class="log-section" id="workerMessages"><pre id="workerMessagesContent">Connecting...</pre></div>
-
-<h2 class="section-header" onclick="toggleSection('stderrSection')">▼ Stderr (errors) <span class="badge" id="stderrBadge">0</span></h2>
-<div id="stderrSection" class="log-section" id="stderrLog"><pre id="stderrContent">No errors</pre></div>
-
-<div class="footer">
-  Auto-refreshes every 5s · Last update: <span id="lastUpdate">—</span>
+<div style="margin-bottom:10px">
+  <button class="tab active" onclick="switchTab('messages')">Raw Messages</button>
+  <button class="tab" onclick="switchTab('chronicle')">Chronicle Files</button>
+  <button class="tab" onclick="switchTab('stderr')">Stderr</button>
 </div>
+
+<div id="tab-messages" class="tab-content active" id="msgContainer"></div>
+<div id="tab-chronicle" class="tab-content" id="chronicleContainer"></div>
+<div id="tab-stderr" class="tab-content" id="stderrContainer"></div>
+
+<div class="footer">Raw view · refreshes every 8s · <span id="lastUpdate">—</span></div>
 
 <script>
-const WORKER_URL = 'http://127.0.0.1:8893';
-const CHRONICLE_DIR = '/worker_bridge/chronicle/';
+const WORKER = 'http://127.0.0.1:8894';
 
-function toggleSection(id) {
-  const el = document.getElementById(id);
-  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab:nth-child(${name === 'messages' ? 1 : name === 'chronicle' ? 2 : 3})`).classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
 }
 
-async function fetchJson(url) {
+async function get(path) {
   try {
-    const resp = await fetch(url);
-    return await resp.json();
-  } catch(e) {
-    return null;
-  }
+    const r = await fetch(WORKER + path);
+    return await r.json();
+  } catch(e) { return null; }
 }
 
-async function fetchText(url) {
-  try {
-    const resp = await fetch(url);
-    return await resp.text();
-  } catch(e) {
-    return '';
-  }
-}
-
-function escapeHtml(text) {
-  if (!text) return '';
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\n/g, '<br>')
-    .replace(/  /g, '&nbsp;&nbsp;');
-}
-
-async function updateStatus() {
-  const status = await fetchJson(`${WORKER_URL}/api/status`);
-  if (status) {
-    document.getElementById('workerStatus').textContent = status.status || '?';
-    document.getElementById('workerStatus').className = 'value ' + (status.status === 'running' ? '' : 'danger');
-    document.getElementById('stderrBadge').textContent = status.stderr_lines || 0;
-    if (status.stderr_tail && status.stderr_tail.length > 0) {
-      document.getElementById('stderrContent').innerHTML = escapeHtml(status.stderr_tail.join('\n'));
-    }
-  }
-
-  const state = await fetchJson(`${WORKER_URL}/api/get_state`);
-  if (state && state.data) {
-    const d = state.data;
-    document.getElementById('agentState').textContent = d.isStreaming ? '📡 Streaming' : '💤 Idle';
-    document.getElementById('agentState').className = 'value ' + (d.isStreaming ? 'warn' : '');
-    document.getElementById('messageCount').textContent = d.messageCount || 0;
-    document.getElementById('modelName').textContent = (d.model && d.model.id) || '?';
-  }
-}
-
-async function updateChronicle() {
-  try {
-    // Fetch chronicle directory listing (simulated via known file patterns)
-    const resp = await fetchText(`${WORKER_URL}/api/get_commands`);
-    // Read latest chronicle files directly
-    const files = [
-      'turn_001_worker_questions.txt', 'turn_001_main_answers.txt',
-      'turn_001_main_questions.txt', 'turn_001_worker_answers.txt',
-      'turn_002_worker_questions.txt', 'turn_002_main_answers.txt',
-      'turn_002_main_questions.txt', 'turn_002_worker_answers.txt',
-    ];
-    let content = '';
-    let count = 0;
-    for (const file of files) {
-      try {
-        const resp = await fetch(`${WORKER_URL}/api/bash`, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({command: `if exist "worker_bridge/chronicle/${file}" echo FILE_EXISTS`})
-        });
-        const data = await resp.json();
-        // This is hacky - let me use a different approach
-      } catch(e) {}
-    }
-    
-    // Alternative: just show what we can from the worker's messages
-    const msgs = await fetchJson(`${WORKER_URL}/api/get_messages`);
-    if (msgs && msgs.data && msgs.data.messages) {
-      const allMsgs = msgs.data.messages;
-      const assistantMsgs = allMsgs.filter(m => m.role === 'assistant');
-      document.getElementById('workerBadge').textContent = assistantMsgs.length;
-      
-      let html = '';
-      for (const m of assistantMsgs.slice(-10)) {
-        let text = m.content || '';
-        if (Array.isArray(text)) {
-          text = text.map(s => s.text || s.thinking || '').join(' ');
-        }
-        const role = m.role === 'assistant' ? 'Worker' : 'System';
-        const cls = 'role-worker';
-        html += `<div><span class="timestamp">${role}</span> <span class="${cls}">${escapeHtml(text.slice(0, 500))}</span></div>`;
-      }
-      document.getElementById('workerMessagesContent').innerHTML = html || 'No messages';
-    }
-  } catch(e) {
-    document.getElementById('workerMessagesContent').innerHTML = `<span class="error">Error: ${e.message}</span>`;
-  }
-}
-
-async function updateForgeLogs() {
-  try {
-    const resp = await fetch(`${WORKER_URL}/api/bash`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({command: 'dir /b E:\\PythonChimera\\worker_bridge\\chronicle\\forge_*.log 2>nul'})
-    });
-    const data = await resp.json();
-    const output = (data.data && data.data.output) || '';
-    const files = output.trim().split('\n').filter(f => f.trim());
-    document.getElementById('forgeBadge').textContent = files.length;
-
-    if (files.length > 0) {
-      // Read the latest forge log
-      const latestFile = files[files.length - 1].trim();
-      const resp2 = await fetch(`${WORKER_URL}/api/bash`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({command: `type "E:\\PythonChimera\\worker_bridge\\chronicle\\${latestFile}" 2>nul`})
-      });
-      const data2 = await resp2.json();
-      const logContent = (data2.data && data2.data.output) || '';
-      document.getElementById('forgeLogsContent').innerHTML = escapeHtml(logContent.slice(-3000));
-    }
-  } catch(e) {
-    document.getElementById('forgeLogsContent').innerHTML = `<span class="error">${e.message}</span>`;
-  }
+function esc(s) { 
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 async function update() {
-  await updateStatus();
-  await updateChronicle();
-  await updateForgeLogs();
+  // Status bar
+  const st = await get('/api/status');
+  if (st) {
+    document.getElementById('bridgeStatus').textContent = st.status || '?';
+    document.getElementById('bridgeStatus').className = 'val ' + (st.status === 'running' ? '' : 'stopped');
+  }
+
+  const state = await get('/api/get_state');
+  if (state && state.data) {
+    document.getElementById('agentState').textContent = state.data.isStreaming ? 'STREAMING' : 'idle';
+    document.getElementById('agentState').className = 'val ' + (state.data.isStreaming ? 'streaming' : '');
+    document.getElementById('msgCount').textContent = state.data.messageCount || 0;
+    document.getElementById('modelName').textContent = (state.data.model && state.data.model.id) || '?';
+  }
+
+  // Raw messages
+  const msgs = await get('/api/get_messages');
+  if (msgs && msgs.data && msgs.data.messages) {
+    const all = msgs.data.messages;
+    let html = '';
+    for (const m of all.slice(-20)) { // last 20 messages, fully raw
+      let text = m.content || '';
+      if (Array.isArray(text)) {
+        text = text.map(s => s.text || s.thinking || '').join('\n');
+      }
+      const role = m.role || '?';
+      const cls = role === 'assistant' ? 'a' : 'q';
+      html += `<div class="msg"><span class="role">[${role}]</span><pre class="text ${cls}">${esc(text)}</pre></div>`;
+    }
+    document.getElementById('msgContainer').innerHTML = html || '<pre>No messages</pre>';
+  }
+
+  // Raw chronicle files
+  const ch = await get('/api/chronicle');
+  if (ch && ch.files) {
+    document.getElementById('fileCount').textContent = ch.files.length;
+    let html = '';
+    for (const f of ch.files) {
+      html += `<div class="raw-block">`;
+      html += `<div class="filename">${esc(f.name)} <span class="filesize">${f.size} bytes</span></div>`;
+      html += `<pre class="content">${esc(f.raw)}</pre>`;
+      html += `</div>`;
+    }
+    document.getElementById('chronicleContainer').innerHTML = html || '<pre>No chronicle files</pre>';
+  }
+
+  // Stderr
+  if (st && st.stderr_tail && st.stderr_tail.length > 0) {
+    document.getElementById('stderrContainer').innerHTML = `<pre>${esc(st.stderr_tail.join('\n'))}</pre>`;
+  }
+
   document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
 }
 
-// Initial update
 update();
-
-// Refresh every 5 seconds
-setInterval(update, 5000);
+setInterval(update, 8000);
 </script>
 </body>
 </html>
