@@ -61,11 +61,13 @@ Choose the right tool:
 
 ## 4. REPORT
 
-Post a structured report:
-- What the problem was
-- What the internal council produced
-- What was implemented
-- What's still open
+Post the full council report verbatim:
+- All 20 Q&A pairs (Gates 2-5)
+- What was implemented this cycle (file paths, line counts)
+- What's still open (next direction)
+- Saturation state (which targets are clear)
+
+The human reads every Q&A to determine the next direction.
 
 ## 5. COMMIT
 
