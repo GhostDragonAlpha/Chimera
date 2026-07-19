@@ -22,8 +22,7 @@ enum class EShellState : uint8 {
 	Beacon_Unlocked,
 	Interior_Open,
 	Captive_Burst_Fired,
-	Turret_Mode,
-	UMETA(DisplayName = "Shell State")
+	Turret_Mode
 };
 
 USTRUCT(BlueprintType)
