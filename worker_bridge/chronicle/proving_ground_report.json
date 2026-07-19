@@ -1,0 +1,12 @@
+{
+  "build": {
+    "output": "C:\\Python314\\python.exe: No module named ubt\n",
+    "exitCode": 0,
+    "cancelled": false,
+    "truncated": false
+  },
+  "agent_state": {
+    "model": "deepseek-v4-flash",
+    "messages": 68
+  }
+}
