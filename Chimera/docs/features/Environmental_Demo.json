@@ -350,7 +350,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+      "answer": "Pipeline proven via TextRenderActor. Educational text displays in UE5 viewport."
     },
     {
       "id": 45,

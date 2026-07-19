@@ -407,7 +407,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Successfully spawned 18/18 TriggerBox actors. 0 failures."
+      "answer": "18 triggers placed. 1 connected to educational text. 17 remaining need TextRenderActors."
     },
     {
       "id": 46,
