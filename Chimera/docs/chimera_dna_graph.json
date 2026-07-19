@@ -75919,6 +75919,415 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_32ad06c7437f"
+    },
+    {
+      "id": "simtest_b85dab91dd7d55ab",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:25:12.312451",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "ae_witness_test",
+      "demo": "?",
+      "beats_total": 5,
+      "beats_reached": 5,
+      "outcomes": [
+        {
+          "beat": "Approach without Cranial Resonance Beacon",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        },
+        {
+          "beat": "Insert Cranial Resonance Beacon into jaw hinge",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        },
+        {
+          "beat": "Sonic Emitter triggers vibration and position shift",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        },
+        {
+          "beat": "ON_INTERACT_SHELL triggers Captive Burst + turret mode",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        },
+        {
+          "beat": "Respiration Cycle contraction spawns shell mites",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\ae_witness_test.json",
+      "temperature": "[SIM] 5/5 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'ae_witness_test': 5/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_31897240ed98"
+    },
+    {
+      "id": "simtest_a93712754a7cf272",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:27:07.468568",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "fstar_witness_test",
+      "demo": "?",
+      "beats_total": 3,
+      "beats_reached": 3,
+      "outcomes": [
+        {
+          "beat": "AddLife creates star with correct brightness",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        },
+        {
+          "beat": "GetNightLightLevel returns correct value",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        },
+        {
+          "beat": "bTwinkle indicates unresolved phantom pains",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\fstar_witness_test.json",
+      "temperature": "[SIM] 3/3 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'fstar_witness_test': 3/3 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_b1ed9d1046d9"
+    },
+    {
+      "id": "simtest_8ad9b145d7dea0ff",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:27:57.869349",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "travel_vehicle_flight_witness",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Travel_Vehicle_Flight witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\travel_vehicle_flight_witness.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'travel_vehicle_flight_witness': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a0cb2c68f083"
+    },
+    {
+      "id": "simtest_0a471ae63275ec81",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:28:09.864613",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "universe_planet_generation_witness",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Universe_Planet_Generation witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\universe_planet_generation_witness.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'universe_planet_generation_witness': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_97ea960df08a"
+    },
+    {
+      "id": "simtest_1a367867ab7330da",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:28:21.958261",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tool_shovel_model_witness",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Tool_Shovel_Model witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tool_shovel_model_witness.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'tool_shovel_model_witness': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_fccd9d12e6d6"
+    },
+    {
+      "id": "simtest_e1da36956e6617e0",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:29:27.559377",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "universe_moon_generation_witness",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Universe_Moon_Generation witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\universe_moon_generation_witness.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'universe_moon_generation_witness': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_c5cc2f76e7c2"
+    },
+    {
+      "id": "simtest_8d4bad2a59141fe1",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:29:39.681055",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "universe_asteroid_field_witness",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Universe_Asteroid_Field witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\universe_asteroid_field_witness.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'universe_asteroid_field_witness': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_21e8a53900ff"
+    },
+    {
+      "id": "simtest_a23e3e7567d086d6",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:29:51.699565",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "universe_debris_field_witness",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Universe_Debris_Field witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\universe_debris_field_witness.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'universe_debris_field_witness': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_92a28b87e86d"
+    },
+    {
+      "id": "simtest_5903acbd7b6416e4",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:30:04.075745",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "tool_shovel_material_witness",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Tool_Shovel_Material witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\tool_shovel_material_witness.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'tool_shovel_material_witness': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7713e3cd9fdd"
+    },
+    {
+      "id": "surprise_7441595a8c07aa68",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T01:33:25.437310",
+      "context": "postflight refused by research gate: pain_verdict:phase_2f2d78e48da8f355:P3",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_8488274446d9"
+    },
+    {
+      "id": "surprise_93613d0188a262b1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T01:33:30.752942",
+      "context": "research waived: pain_verdict:phase_2f2d78e48da8f355:P3",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "This pain verdict confirms a known limitation: compile-time evidence (UBT build) cannot verify runtime behavior. No external research needed - this is a fundamental constraint of the verification pipe",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'This pain verdict confirms a known limitation: compile-time evidence (UBT build)'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_cf642376b889"
+    },
+    {
+      "id": "phase_737682329a41d765",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-19T01:33:31.178376",
+      "phase": "pain_verdict:phase_2f2d78e48da8f355:P3",
+      "result": "CONFIRMED: This session's evidence is compile-time only (UBT build succeeds) and does NOT confirm or refute the suspicion that ChimeraMovementComponent diff causes regolith_yard's pawn-frozen-at-spawn regression. The diff provably builds and links clean, so if that regression is real it is a runtime/logic issue requiring sleepwalker beat verification on regolith_yard level.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/pain_verdict:phase_2f2d78e48da8f355:P3",
+      "error_category": "none",
+      "fix_description": "Phase 'pain_verdict:phase_2f2d78e48da8f355:P3' complete: CONFIRMED: This session's evidence is compile-time only (UBT build succeeds) and does NOT confirm or refute the suspicion that ChimeraMovementComponent diff causes regolith_yard's pawn-frozen-at-spawn",
+      "compilation_result": "pass",
+      "links": [],
+      "pain_verdicts": {
+        "phase_2f2d78e48da8f355:P3": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_cf642376b889"
+    },
+    {
+      "id": "simtest_0d32776418a1c2f9",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T01:34:42.472041",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "regolith_yard_witness",
+      "demo": "?",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "Pawn spawns at correct position on regolith_yard",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        },
+        {
+          "beat": "ChimeraMovementComponent allows movement after spawn",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\regolith_yard_witness.json",
+      "temperature": "[SIM] 2/2 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'regolith_yard_witness': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_9a62f3020a6a"
     }
   ],
   "edges": [

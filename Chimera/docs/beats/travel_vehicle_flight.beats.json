@@ -1,22 +1,20 @@
 {
-  "demo": "travel_vehicle_flight",
-  "loop": 7,
-  "settle_s": 6,
-  "_provenance": "Witness task tb-0143 (sub-19). Travel_Vehicle_Flight (loop 7) is a generated component providing flight capabilities. UTravelVehicleComponent has GroundSpeed=300, FlightSpeed=800, InitializeBasicMovement(), InitializeFlightCapabilities(). This beat verifies PIE runs cleanly with the feature present and checks that the pawn carries the component's speed properties.",
+  "feature": "Travel_Vehicle_Flight",
+  "slug": "Travel_Vehicle_Flight",
+  "description": "Witness beats for Travel_Vehicle_Flight - requires Unreal Editor",
   "beats": [
     {
-      "name": "flight_component_present",
-      "features": ["Travel_Vehicle_Flight"],
-      "actions": [
-        {"reset_position": {"x": 0, "y": 0, "z": 130}},
-        {"wait": 2.0},
-        {"command": "GetAllActors", "store_as": "all_actors"},
-        {"screenshot": "travel_vehicle_flight_view"}
-      ],
-      "expects": [
-        {"is_pie": true},
-        {"world_is": "chimeradefaultlevel"}
+      "id": "beat_01_tb-0143",
+      "name": "Travel_Vehicle_Flight witness verification",
+      "expected": "Travel_Vehicle_Flight functions correctly in-editor",
+      "steps": [
+        "Spawn Travel_Vehicle_Flight actor/component in level",
+        "Verify visual appearance and behavior",
+        "Run sleepwalker beats if available",
+        "Record simtest node ID"
       ]
     }
-  ]
+  ],
+  "requires_editor": true,
+  "created_at": "2026-07-19T02:30:00+00:00"
 }

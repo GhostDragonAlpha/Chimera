@@ -1,24 +1,13 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-19T00:59:58+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-19T01:36:02+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 0 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0143 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
-| tb-0144 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
-| tb-0145 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
-| tb-0146 | open | 0.9 | Witness: Universe_Asteroid_Field | editor:open; excl:pie |  |
-| tb-0147 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
-| tb-0148 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
-| tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
-| tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
-| tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
-| tb-0176 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
-| tb-0177 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
@@ -86,6 +75,13 @@ so claimed tasks are safe to run in parallel.
 | tb-0140 | done | 0.9 | Witness: Shelter_Habitat_Lighting | editor:open; excl:pie | Witness Shelter_Habitat_Lighting — 1/1 beats reached, clean  |
 | tb-0141 | done | 0.9 | Witness: Travel_Ship_Exterior | editor:open; excl:pie | Witness runner completed: simtest_00a14b4bd09ea7ea (witnesse |
 | tb-0142 | done | 0.9 | Witness: Travel_Vehicle_Basic | editor:open; excl:pie | witness_runner (wraps core.sleepwalker) ran docs/beats/trave |
+| tb-0143 | done | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie | Travel_Vehicle_Flight witness beats reached via sleepwalker  |
+| tb-0144 | done | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie | Universe_Planet_Generation witness beats reached via sleepwa |
+| tb-0145 | done | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie | Universe_Moon_Generation witness beats reached via sleepwalk |
+| tb-0146 | done | 0.9 | Witness: Universe_Asteroid_Field | editor:open; excl:pie | Universe_Asteroid_Field witness beats reached via sleepwalke |
+| tb-0147 | done | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie | Universe_Debris_Field witness beats reached via sleepwalker  |
+| tb-0148 | done | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie | Tool_Shovel_Model witness beats reached via sleepwalker (sim |
+| tb-0149 | done | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie | Tool_Shovel_Material witness beats reached via sleepwalker ( |
 | tb-0187 | done | 0.9 | Splat material v2: idempotent authoring + masked VertexColor | core/splat_to_ue5.py | Splat material v2: idempotent authoring + soft-edge mask imp |
 | tb-0188 | done | 0.9 | Sample-source bake-off: multiple avenues, per-material optim | docs/matter/reference_scans/**, docs/research/sample_sources_bakeoff.md | Wrote docs/research/sample_sources_bakeoff.md (373 lines, ne |
 | tb-0192 | done | 0.9 | Granular matter engine v0: trainable sandpile domain (emerge | core/trainables/granular.py, docs/objectives/granular*.json | GRANULAR EMERGENCE RUNG v0 TRAINED AND STANDING. Domain core |
@@ -126,10 +122,13 @@ so claimed tasks are safe to run in parallel.
 | tb-0111 | done | 0.75 | Fix confirmed pain: frozen dispatch prompt in chimera-task-c | ../.claude/workflows/chimera-task-cycling.js | chimera-task-cycling.js TASK_CONTEXT rewritten under the ant |
 | tb-0121 | done | 0.75 | Fix confirmed pain: task_board._scope_for keyword matching i | Source/Chimera/** | Already fixed by tb-0116 (same session, before this mint): _ |
 | tb-0151 | done | 0.75 | Build toward the seed: UWeatherSubsystem | core/game_code_generator.py; excl:generator | UWeatherSubsystem C++ generated from trained data (score=0.9 |
+| tb-0156 | done | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator | AErisaidActor DSL spec + C++ generation complete. DSL spec d |
+| tb-0157 | done | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator | FStar (UStarMemorialSubsystem) already implemented in StarMe |
 | tb-0158 | done | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator | Added core/game_code_generator.py::_load_memorial_trained_ge |
 | tb-0159 | done | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator | Added core/game_code_generator.py::generate_sacrifice_log_fi |
 | tb-0174 | done | 0.75 | Matter library: splat emitter reads optics from the library  ⇐ tb-0172 | core/splat_emit.py, docs/matter/matter_library.json | splat_emit optics wired from library (no-visual-change). OPT |
 | tb-0191 | done | 0.75 | Fix confirmed pain: Any position-dependent beat against chim | Source/Chimera/** | Confirmed: residual upward drift (~500-4600uu/s) persists af |
+| tb-0199 | done | 0.75 | Fix confirmed pain: This session's evidence is compile-time  | Source/Chimera/** | Follow-up from tb-0176 confirmed pain: compile-time evidence |
 | tb-0113 | done | 0.7 | Fix confirmed pain: 4 meta labels sit in the feature ledger  | docs/world/** | 4 meta ledger entries reclassified with typed records + beca |
 | tb-0115 | done | 0.7 | training_gate: .claude/ footprints are infra, not default-ga | core/training_gate.py | core/training_gate.py: .claude/ added to infra file markers. |
 | tb-0116 | done | 0.7 | task_board: _scope_for keyword match needs word boundaries ( | core/task_board.py | core/task_board.py: _has_word() word-boundary matcher replac |
@@ -177,6 +176,8 @@ so claimed tasks are safe to run in parallel.
 | tb-0100 | done | 0.6 | Pain verdict: Player_Character_Animation carries a real, ric | docs/research/** | CONFIRMED phase_e0b68063201645ae:P2 - asymmetry live in grap |
 | tb-0101 | done | 0.6 | Pain verdict: The 4 pipeline/meta queue entries (Demo_Regoli | docs/research/** | CONFIRMED phase_e0b68063201645ae:P3 - Demo_RegolithYard_L1 v |
 | tb-0102 | done | 0.6 | Pain verdict: Future sessions attempting Niagara authoring w | docs/research/** | REFUTED phase_31a7a0b115ebf674:P1 - the finding IS durably r |
+| tb-0176 | done | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** | Pain verdict CONFIRMED via postflight (phase_2f2d78e48da8f35 |
+| tb-0177 | done | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** | Pain verdict: Whether create_niagara_system's authored syste |
 | tb-0178 | done | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | REFUTED: No DREAM_ROSTER.md or MCP_PATHWAYS.md edits are cur |
 | tb-0003 | done | 0.4 | Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie | Verb_Shovel: Implemented ATool_Shovel::Dig() (was rejected e |
 | tb-0114 | done | 0.1 | Pain verdict: FIXTURE for tb-0109 reconciler proof (should a | docs/research/** | auto-closed: pain phase_2f2d78e48da8f355:P2 already disposit |

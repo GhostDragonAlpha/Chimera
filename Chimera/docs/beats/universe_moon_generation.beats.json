@@ -1,0 +1,20 @@
+{
+  "feature": "Universe_Moon_Generation",
+  "slug": "Universe_Moon_Generation",
+  "description": "Witness beats for Universe_Moon_Generation - requires Unreal Editor",
+  "beats": [
+    {
+      "id": "beat_01_tb-0145",
+      "name": "Universe_Moon_Generation witness verification",
+      "expected": "Universe_Moon_Generation functions correctly in-editor",
+      "steps": [
+        "Spawn Universe_Moon_Generation actor/component in level",
+        "Verify visual appearance and behavior",
+        "Run sleepwalker beats if available",
+        "Record simtest node ID"
+      ]
+    }
+  ],
+  "requires_editor": true,
+  "created_at": "2026-07-19T02:30:00+00:00"
+}

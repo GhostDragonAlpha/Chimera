@@ -1,0 +1,41 @@
+{
+  "feature": "FStar",
+  "slug": "FStar",
+  "description": "StarMemorialSubsystem witness beats - requires Unreal Editor",
+  "beats": [
+    {
+      "id": "beat_01_add_life",
+      "name": "AddLife creates star with correct brightness",
+      "expected": "FStarEntry created with Brightness = 1 - exp(-SacrificeWeight / BrightnessK)",
+      "steps": [
+        "Spawn UStarMemorialComponent in level",
+        "Call AddLife(\"Test Life\", 0, 5.0f)",
+        "Verify returned FStarEntry has correct Brightness calculation",
+        "Verify BearingDeg follows golden angle spacing"
+      ]
+    },
+    {
+      "id": "beat_02_night_light",
+      "name": "GetNightLightLevel returns correct value",
+      "expected": "Night light level reflects accumulated sacrifice weights",
+      "steps": [
+        "Add multiple lives with varying SacrificeWeights",
+        "Call GetNightLightLevel()",
+        "Verify return matches trained data (mean ~0.436)",
+        "Verify monotonicity: more sacrifice -> brighter sky"
+      ]
+    },
+    {
+      "id": "beat_03_twinkle",
+      "name": "bTwinkle indicates unresolved phantom pains",
+      "expected": "Stars with unresolved issues flicker visually",
+      "steps": [
+        "Add life with bTwinkle=true",
+        "Verify star rendering shows twinkle effect",
+        "Verify costless lives (Brightness ~0) remain dim"
+      ]
+    }
+  ],
+  "requires_editor": true,
+  "created_at": "2026-07-19T02:30:00+00:00"
+}

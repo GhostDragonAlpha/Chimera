@@ -1,0 +1,64 @@
+{
+  "star_memorial": {
+    "type": "subsystem",
+    "class_name": "UStarMemorialComponent",
+    "description": "The sky above the Yard, accumulated across generations \u2014 every finished life becomes a star",
+    "properties": {
+      "brightness_k": 14.275036905713053,
+      "bright_lights_yard_threshold": 0.4555723551860046,
+      "golden_angle_deg": 137.508,
+      "night_light_final_mean": 0.4364868524008817,
+      "design_law_2": "the bad ending is a costless life taught only through consequence"
+    },
+    "data_struct": {
+      "name": "FStarEntry",
+      "fields": [
+        {
+          "name": "LifeName",
+          "type": "FString"
+        },
+        {
+          "name": "Generation",
+          "type": "int32"
+        },
+        {
+          "name": "Brightness",
+          "type": "float (0..1)"
+        },
+        {
+          "name": "bTwinkle",
+          "type": "bool"
+        },
+        {
+          "name": "BearingDeg",
+          "type": "float"
+        }
+      ]
+    },
+    "methods": [
+      {
+        "name": "AddLife",
+        "params": [
+          "FString LifeName",
+          "int32 Generation",
+          "float SacrificeWeight"
+        ],
+        "returns": "FStarEntry"
+      },
+      {
+        "name": "GetNightLightLevel",
+        "params": [],
+        "returns": "float"
+      }
+    ],
+    "trained_data": {
+      "source": "docs/objectives/memorial.trained.json",
+      "score": 0.8391758994127773,
+      "measures": {
+        "min_tier_separation": 0.2588902240033101,
+        "frac_bright_generous": 0.86,
+        "monotonicity_violations": 0.0
+      }
+    }
+  }
+}
