@@ -1,0 +1,244 @@
+{
+  "name": "Scanner_UI_Display",
+  "description": "How scan results visually appear to the player: HUD overlay, world-space text, icons, scan progress indicator, targeting reticle, and knowledge-log integration.",
+  "created": "2026-07-19T17:30:05.013518",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the UI present science as a natural readout (diegetic) rather than a textbook popup?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Can a 10-second GIF of the UI (crosshair on rock -> science panel) sell the game on Steam?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Does the scan result feel like an in-world instrument readout, not a menu screen?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can the UI be built with existing UMG TextBlock + Image widgets without custom rendering?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Does the UI depend on any new widget framework or engine plugin?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Does the HUD approach work in UE5.8 without hacks (no Slate custom panels needed)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Does the UI add measurable frame time (UMG text updates are near-free; what about scan-line overlay effects)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Is the scan result readable for low-vision players (font size, contrast, screen-reader compat)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Does the UI have audio accompaniment (scanning ping crescendo, result chime) synced to text reveal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "In co-op, can each player see their own scan results without cluttering the shared HUD?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can modders customize the scan result panel layout, fonts, and colors through data files?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Is the UI layout flexible enough to accommodate text expansion (e.g., German noun-compounds)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does this depend on the main Educational_Scanner Scan() output being wired to HUD?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does this prove that diegetic tool UIs are viable in UE5.8 without engine modifications?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was this derived from Educational_Scanner Q10 (no visual/audio feedback yet) as the gap it fills?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does the scanner panel conflict with the Verb_Look description overlay (both claim the same HUD region)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What Blueprint/UMG skills are required to build the scan result panel and targeting reticle?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does this need sub-sub-features (panel layout, reticle design, knowledge-log integration) or is 26 Qs enough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are sibling UI features missing (e.g., Scanner_Scan_Progress, Scanner_History_Log)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is the parent Educational_Scanner designed enough to finalize UI questions (Scan() API stable)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should the UI panel be built before or after Scanner_Audio_Feedback (visual is primary channel)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does the UI block other scanner sub-features, or do other sub-features block it?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does a beautiful, readable scan panel directly serve 'most famous educational RPG on Steam'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What development time is sacrificed to polish UI animations vs shipping a simpler text panel?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows that diegetic HUD (Dead Space, Metroid Prime) drives more engagement than menu-based info?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does the UI chain reach PLAYER LEARNING (the terminal) or is it just cosmetic decoration?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

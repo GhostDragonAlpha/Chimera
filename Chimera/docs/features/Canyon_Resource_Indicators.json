@@ -1,0 +1,244 @@
+{
+  "name": "Canyon_Resource_Indicators",
+  "description": "Visual hints of resources embedded in rock types \u2014 ore veins, crystal seams, fossil deposits visible in canyon walls",
+  "created": "2026-07-19T17:28:07.616722",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Can the player learn to associate specific rock types with potential resources such as basalt yielding iron or limestone indicating cave systems?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Would a screenshot showing visible ore veins and crystal seams embedded in canyon walls be a compelling discovery marketing image?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Do resource indicators appear naturally embedded in strata such as veins, nodules, crystal seams, and fossil bands rather than floating UI markers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can resource indicators be implemented using existing UE5 decal actor systems or material-layer overrides without new C++ components?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Do resource indicators require a new resource-data model or can they use the existing geology module rock-type taxonomy?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Are detailed resource-vein indicators using nanite-favorable geometry compatible with UE5.8 virtual texture streaming?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Can resource indicator decals and overlay geometry be rendered without exceeding 50 extra draw calls per canyon vista?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Can colorblind players distinguish resource indicators via shape differences, shimmer effects, or tooltip descriptions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Do resource-rich rock surfaces produce a distinct scanning ping or mining-impact sound compared to barren rock?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Are resource indicator placements deterministic and consistent across all clients so every player sees the same vein at the same spot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can the community define new resource types and their corresponding visual indicators through data configs without touching C++?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Are resource names, tooltip descriptions, mineral identifiers, and gather instructions stored in localization tables?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Do resource indicators depend on the geology module having a complete rock-type taxonomy with resource-association mappings?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Do resource indicators prove that the environmental demo produces actionable gameplay consequences via a gather-loop?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Is this derived from the educational principle that visual geology knowledge should produce tangible gameplay rewards?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Do colorful resource indicators visually clutter the canyon wall or distract from the educational strata layers they sit on top of?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What art-pipeline knowledge (decal authoring, material layering, mesh LODs) is needed to author resource-vein indicators?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "vision",
+      "question": "Do resource indicators serve the seed goal of exploration-driven gameplay where observation yields real gameplay advantage?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "tradeoff",
+      "question": "What visual subtlety is sacrificed if resource indicators are 2D decals rather than embedded 3D vein geometry?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "evidence",
+      "question": "How do we know that visual resource indicators actually motivate players to learn rock types rather than just mining every visible vein?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "terminal",
+      "question": "Does the chain see indicator -> identify resource -> harvest -> use reach a human player making a deliberate gameplay decision?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "depth",
+      "question": "Does this need deeper sub-features such as a resource scanner tool, minimap overlay, or extraction animations, or are static indicators sufficient?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "breadth",
+      "question": "Are sibling resource features missing such as a resource map, portable scanner device, or extraction spot animations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "parent",
+      "question": "Is Demo_Canyon_Terrain specific enough about resource gameplay to fully scope these indicators without reopening parent questions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "priority",
+      "question": "Should resource indicators be built after strata visuals since they render on top of visible rock layers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "dependency",
+      "question": "Does incomplete resource indicators block the gathering gameplay loop, or can gathering work with text labels while indicators are built?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

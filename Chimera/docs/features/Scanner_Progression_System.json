@@ -1,0 +1,244 @@
+{
+  "name": "Scanner_Progression_System",
+  "description": "How the scanner upgrades over time: radius upgrades, scan-time reduction, new detection categories (fossils, minerals, lifeforms), durability system, and knowledge-tier unlocks tied to player XP.",
+  "created": "2026-07-19T17:30:05.289932",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does scanner progression unlock deeper science (surface-ID -> composition analysis -> formation history)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Can the progression system be shown as a compelling Steam trailer hook: 'Scan rocks -> unlock geology PhD'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Does scanner progression feel like real scientific instrument advancement (bigger dish = more data), not a game-y skill tree?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can progression be shipped incrementally (v1: radius only, v2: new categories, v3: composition analysis)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Does progression depend on a player XP/level system (does that system exist yet)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Does the upgrade system work in UE5.8 using existing GameplayAbilitySystem or custom UpgradeComponent?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Does tracking scan count, categories unlocked, and upgrade tiers add measurable save-game overhead?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Can a player who only scans occasionally still unlock meaningful upgrades (casual vs completionist pacing)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Do scanner upgrades have distinct unlock sounds (new category unlocked, radius increased) that reward progression?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Do players share scanner progression or is each player's scanner independent in co-op?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can modders define new upgrade tiers, categories, and unlock conditions through data tables?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Are upgrade descriptions, category names, and unlock notifications localizable without code changes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does the progression system depend on the Player_Progression/XP feature being built first?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does this prove that educational content can be gated rewardingly (progression = deeper science) without frustrating?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was this derived from Educational_Scanner Q4 (scan radius/time/durability as upgradable properties)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does gating science behind progression conflict with the educational mission (player must scan a lot before learning deep geology)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What C++/Blueprint systems are needed (upgrade component, save-game tier storage, XP hooks)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does this need sub-sub-features (Upgrade_Tree, Category_Unlocks, Knowledge_Tiers) or are 26 Qs enough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are sibling progression features missing (e.g., Scanner_Recipe_Unlocks, Scanner_Crafting)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is Educational_Scanner designed enough to finalize progression (ATool_Scanner Durability/ScanRadius/ScanTime properties stable)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should progression be designed before or after the base scan mechanic works (progression depends on base scan existing)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does progression block other scanner features, or do UI/audio need to be built before progression can be shown?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does a meaningful progression system (unlock deeper science through scanning) serve 'most famous educational RPG'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What is sacrificed by making progression scan-count-based vs XP-based (casual players vs depth)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows that gating educational content behind progression (KSP tech tree) increases motivation vs open access?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does the progression chain reach PLAYER MASTERY (player earns deeper knowledge through curiosity) or is it just a grind loop?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

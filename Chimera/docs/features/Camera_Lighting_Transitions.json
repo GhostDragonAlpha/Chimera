@@ -1,0 +1,244 @@
+{
+  "name": "Camera_Lighting_Transitions",
+  "description": "Day/night lighting changes during the camera flythrough. Time-of-day transition, sun position, cloud shadows, exposure adaptation.",
+  "created": "2026-07-19T17:28:36.249796",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the lighting transition show how shadows change length and direction through the day?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the player learn to tell time from sky color alone?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Can the lighting cycle be paused at a specific time of day for observation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "fame",
+      "question": "Is the golden-hour lighting shot beautiful enough for a screenshot gallery?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Does the day-to-night transition create a 'wow' moment on social media clips?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Does the night sky with stars and galaxy look distinct and photorealistic?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "world",
+      "question": "Do cloud shadows sweep across the terrain during the flythrough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "world",
+      "question": "Does the sun disk appear at the correct position for the time of day?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Does the sky transition through sunset/sunrise color gradients naturally?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "shipping",
+      "question": "Is the time-of-day system driven by a Blueprint or C++ time-of-day manager?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "shipping",
+      "question": "Does the Lighting Transitions feature work without manual lightmass bakes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "shipping",
+      "question": "Can the lighting transition be reset and replayed for iteration?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "foundation",
+      "question": "Does the MCP toolchain support setting time-of-day parameters programmatically?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "platform",
+      "question": "Does UE5.8's dynamic global illumination handle day/night without precomputed lighting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "performance",
+      "question": "Does the lighting change run at 30+ fps including dynamic shadow updates?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "accessibility",
+      "question": "Is there a brightness/contrast adjustment for the night sequence?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "audio",
+      "question": "Does ambient audio change (crickets at night, birds at dawn) with the lighting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "vision",
+      "question": "Does a dynamic day/night flythrough show planet-scale realism better than static shots?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "tradeoff",
+      "question": "What frame budget is consumed by dynamic lighting vs baked lighting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "evidence",
+      "question": "What reference games (e.g. KSP2, No Man's Sky) set the bar for time-of-day transitions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "terminal",
+      "question": "Does this chain reach a human who experiences wonder at the sky transition?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the volumetric cloud system being fully implemented?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on the directional light actor being accessible via MCP?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that dynamic time-of-day works at cinematic quality in UE5.8?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "derived_from",
+      "question": "Was the lighting transition speed derived from real planetary rotation rates?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "requires",
+      "question": "What UE5 render settings (post-process volume, exposure, sky atmosphere) must be configured?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

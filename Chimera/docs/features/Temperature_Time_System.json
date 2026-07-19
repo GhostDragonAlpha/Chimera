@@ -1,0 +1,244 @@
+{
+  "name": "Temperature_Time_System",
+  "description": "Sub-feature of Demo_Day_Night_Cycle: Temperature changes tied to time of day, affecting gameplay and education",
+  "created": "2026-07-20T00:00:00.000000",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the temperature system teach the player about thermal inertia (hottest time is after noon, not at noon)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes if the temperature curve includes thermal lag. Peak temperature should occur 1-2 hours after solar noon, matching real physics. This is a configurable offset in the temperature curve."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player feel or measure temperature without a numerical HUD display?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1 without environmental audio/visual cues. Cracking ground, heat shimmer, or condensation would convey temperature non-numerically. A visible thermometer or color-tinted HUD edge is the fallback."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does temperature affect which educational observations about geology appear?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Thermal expansion explains cracked rock formations. Dew point explains condensation on minerals. The env_education module can key specific observations to temperature thresholds."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does the temperature curve vary by biome (canyon floor vs. rim vs. shaded wall)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. Temperature is a single global curve. Microclimate temperature variation by altitude, shade, or proximity to canyon walls is a future enhancement for deeper education."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What single screenshot would make temperature feel real to a Steam shopper?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Heat shimmer visible over sun-baked canyon rock at noon, with condensation visible on a scanner screen. One image that communicates 'this planet has weather that matters.'"
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How does temperature-as-gameplay compare to survival games like Subnautica?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Subnautica uses temperature as a hazard (hot vents, cold deep). Our system uses temperature as an educational signal first, hazard second. The differentiator is that players learn WHY temperature changes."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could temperature being tied to education be a marketing hook?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. 'Every hour of the day teaches something different — because the temperature tells you what's happening in the rock.' That is a tagline no competitor can match."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What would a journalist call the most innovative aspect of this temperature system?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Temperature that explains why you see what you see. Not just 'it's hot' but 'the rock cracked because it expanded in the noon heat and contracted at night.' The environment is the teacher."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Does temperature affect cloud formation or dissipation in the demo?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. Cloud state changes are driven by a separate weather timer. Connecting temperature to cloud state (hot = clear, cooling = clouds form) is a future integration."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does the canyon's thermal mass create a measurable temperature lag vs. open plain?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. The global temperature curve does not account for local geography. A canyon with thermal mass would stay warmer at night than exposed terrain — that level of simulation is future scope."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Is there a visible condensation or dew effect at dawn when temperature drops?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. Visual condensation on surfaces (rocks, scanner lens) is a particle/VFX enhancement. The temperature system defines the state; visual effects are a separate implementation layer."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does the temperature curve produce a believable desert diurnal swing (hot day, cold night)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A desert canyon on an alien world can have a 30-40C diurnal swing. The curve should peak at ~45C at 14:00 and drop to ~5C just before dawn. This is a configurable parameter set."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can the temperature system be implemented purely in Python/Blueprint without C++?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A float curve driven by time-of-day is trivial in Blueprint (curve asset + tick read). Python can set the curve parameters via the env_education module. No C++ compilation required."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What is the minimum implementation to get temperature into the demo?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "A single UCurveFloat asset mapping 0.0-1.0 (normalized time) to temperature in Celsius. A Blueprint read on tick. A HUD widget showing the value. Total: ~30 minutes of BP work."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does the temperature system have any per-frame performance cost?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Negligible. Reading a curve value at a time input is a single float evaluation. No physics, no overlap checks, no rendering cost. Zero measurable impact on frame time."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can temperature be overridden for cinematics or testing via console?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A Blueprint variable 'CurrentTemperature' can be set via console command or MCP. This enables testing educational triggers at specific temperature thresholds without waiting for the day cycle."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Can MCP set the temperature value to trigger specific educational observations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. If the temperature is exposed as a Blueprint property on a manager actor, MCP set_component_property can override it. This enables automated testing of temperature-gated content."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the temperature system share a time-of-day clock with the celestial rotation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes, and this is critical. Both systems must read from the same normalized time-of-day variable. If they drift (one at 0.3, other at 0.35), temperature and sun position will mismatch."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can the temperature Python module (env_temperature) be tested independently of UE5?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The temperature curve and educational mapping are pure Python functions taking a float time input and returning temperature + observation strings. Unit-testable without UE5."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What happens at the boundary between day and night — does temperature snap or lerp?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "The curve is continuous (smooth lerp). Temperature does not snap. Dawn and dusk show gradual cooling/warming that matches the sun's changing angle. This is the correct physical behavior."
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on Celestial_Light_Rotation for the time-of-day signal?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The temperature system requires a shared time-of-day variable. If Celestial_Light_Rotation provides the clock, Temperature_Time_System consumes it. They share a single source of truth."
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the env_education module for observation text?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The temperature value alone is just a number. Educational observations about why rocks crack at noon vs. night require the env_education module's prompt generation."
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on a HUD/text system to display temperature to the player?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not strictly. Temperature can exist as a hidden gameplay variable. But without display output, the player cannot learn from it. A HUD widget or environmental audio cue is recommended for education to function."
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that educational RPG mechanics can emerge from a simple curve?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A single float curve plus educational text mapping creates genuine learning moments. The player observes hot rock behavior at noon, cold behavior at night, and internalizes the real science."
+    },
+    {
+      "id": 25,
+      "category": "proves",
+      "question": "Does this prove that time-of-day systems can have gameplay substance beyond visuals?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Temperature directly affects what the player can learn and when. A player who only plays during in-game noon misses the cold-related observations. This creates a reason to experience the full cycle."
+    },
+    {
+      "id": 26,
+      "category": "derived_from",
+      "question": "Was this derived from the Demo_Day_Night_Cycle surface design (temperature changes with time)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The parent feature stated 'Temperature and education observations change with time.' This sub-feature specifies the temperature curve, the educational mapping, and the integration with the day/night clock."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

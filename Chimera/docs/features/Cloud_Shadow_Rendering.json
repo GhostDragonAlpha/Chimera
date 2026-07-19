@@ -1,0 +1,604 @@
+{
+  "name": "Cloud_Shadow_Rendering",
+  "description": "Sub-feature of Demo_Volumetric_Clouds: Cloud shadow visuals and performance \u2014 volumetric cloud shadow casting on terrain, shadow movement with wind, shadow optimization for 30+ fps target.",
+  "created": "2026-07-19T17:28:54.781989",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the player learn that moving cloud shadows mean wind is pushing clouds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the player learn that a sudden darkening means a thick cloud bank is overhead?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does the player learn to estimate cloud altitude from shadow softness (high=soft, low=sharp)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does the player learn that shadows moving faster = higher wind speed aloft?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What screenshot of dappled cloud shadows moving across a canyon floor wows a Steam shopper?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How do our real-time cloud shadows compare to static-baked shadows in other indie games?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could a 10-second time-lapse of shadows sweeping across terrain be a Steam trailer clip?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What mechanic would a journalist call innovative: gameplay-relevant dynamic cloud shadows?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do cloud shadows track the exact shape of the volumetric cloud above?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Do cloud shadows move at the same speed and direction as the cloud layer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Do shadows darken realistically when multiple cloud layers overlap?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does shadow softness vary with cloud altitude and thickness?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can cloud shadow rendering ship using UE5's built-in VolumetricCloud bCastCloudShadows?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What minimum UE5 setup: enable bCastCloudShadows + configure shadow distance + shadow resolution?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does cloud shadow rendering maintain 30fps with shadows enabled on RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can cloud shadows be toggled off for low-end hardware without breaking other cloud features?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Are MCP tools reliable enough to enable/disable bCastCloudShadows and verify shadow presence?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the worker bridge handle adjusting shadow resolution + distance together for performance tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can Sleepwalker verify cloud shadows by comparing light levels in shadow vs sunlit areas?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What graph query finds shadow performance test results across different shadow resolutions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "platform",
+      "question": "Does UE5.8 VolumetricCloud support bCastCloudShadows on all target platforms (Windows, Steam Deck)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "platform",
+      "question": "Does UE5.8 support cloud shadow rendering on DX12 and Vulkan without hacks?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "platform",
+      "question": "Is there a UE5.8 bug where cloud shadows disappear at certain camera angles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "platform",
+      "question": "Does UE5.8 support cloud shadow distance culling (shadows fade at distance)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "performance",
+      "question": "What is the GPU cost (ms) of cloud shadow rendering at 512x512 shadow resolution on RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "performance",
+      "question": "What is the GPU cost at 1024x1024 shadow resolution?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 27,
+      "category": "performance",
+      "question": "Does cloud shadow resolution affect cloud rendering performance (not just shadow pass)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 28,
+      "category": "performance",
+      "question": "What is the performance cliff where shadow quality drops without visual improvement?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 29,
+      "category": "accessibility",
+      "question": "Can a low-vision player perceive cloud shadows as darkening of the ground?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 30,
+      "category": "accessibility",
+      "question": "Do cloud shadows have enough contrast against terrain to be visible on low-brightness screens?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 31,
+      "category": "accessibility",
+      "question": "Can a player with photosensitivity disable shadow transitions (sudden darkening)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 32,
+      "category": "accessibility",
+      "question": "Is cloud shadow movement indicated by an accessibility marker for players who can't see shadow detail?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 33,
+      "category": "audio",
+      "question": "Does shadow darkening correlate with audio wind/rain cues (shadow deepens \u2192 wind rises)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 34,
+      "category": "audio",
+      "question": "Does a sudden shadow passage (fast-moving cloud) have a subtle whoosh audio cue?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 35,
+      "category": "audio",
+      "question": "Do shadow-light transitions follow the audio mix (shadow darker = audio more muffled)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 36,
+      "category": "audio",
+      "question": "Is there an audio occlusion effect when a thick cloud shadow passes overhead?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 37,
+      "category": "multiplayer",
+      "question": "Do all players see the same cloud shadows at the same positions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 38,
+      "category": "multiplayer",
+      "question": "Does shadow rendering replicate or is it client-side from shared cloud state?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 39,
+      "category": "multiplayer",
+      "question": "Does cloud shadow movement add network cost if driven by server-side wind?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 40,
+      "category": "multiplayer",
+      "question": "Do all players experience the same shadow-based gameplay cues simultaneously?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 41,
+      "category": "modding",
+      "question": "Can modders add custom cloud shadow colors (e.g., red shadows for alien skies)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 42,
+      "category": "modding",
+      "question": "Is cloud shadow intensity and distance exposed as a config parameter modders can edit?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 43,
+      "category": "modding",
+      "question": "Can community-created cloud shadow LUTs be swapped without recompiling?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 44,
+      "category": "modding",
+      "question": "Does cloud shadow distance support per-map override in config?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 45,
+      "category": "localization",
+      "question": "Are cloud shadow UI settings (intensity, toggle) in the standard settings loc table?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 46,
+      "category": "localization",
+      "question": "Do shadow quality preset labels localize correctly per language?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 47,
+      "category": "localization",
+      "question": "Can shadow performance benchmark results be displayed in locale units?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 48,
+      "category": "localization",
+      "question": "Does shadow accessibility toggle have localized descriptions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 49,
+      "category": "depends_on",
+      "question": "Does this depend on the VolumetricCloud actor being in the level?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 50,
+      "category": "depends_on",
+      "question": "Does this depend on bCastCloudShadows being a supported UE5.8 property?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 51,
+      "category": "depends_on",
+      "question": "Does this depend on Cloud_Weather_Connection providing wind speed for shadow movement?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 52,
+      "category": "proves",
+      "question": "Does this prove that volumetric cloud shadows are performant enough for 30fps survival gameplay?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 53,
+      "category": "proves",
+      "question": "Does this prove that shadow movement can be an educational cue (wind indicator) without extra UI?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 54,
+      "category": "derived_from",
+      "question": "Was this derived from Demo_Volumetric_Clouds Q9 (cloud shadows moving across terrain)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 55,
+      "category": "conflicts",
+      "question": "Does cloud shadow rendering conflict with the 'keep terrain lighting simple' design constraint?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 56,
+      "category": "requires",
+      "question": "What UE5 shadow rendering knowledge is needed to tune bCastCloudShadows for performance?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 57,
+      "category": "requires",
+      "question": "What GPU profiling knowledge (RenderDoc, GPU Visualizer) is needed to measure shadow cost?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 58,
+      "category": "vision",
+      "question": "Do dynamic cloud shadows make the game more famous as a technically impressive indie title?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 59,
+      "category": "tradeoff",
+      "question": "What other graphical features (SSAO, SSR quality) are reduced to maintain 30fps with cloud shadows on?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 60,
+      "category": "evidence",
+      "question": "What evidence exists that dynamic cloud shadows increase player immersion vs baked shadows?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 61,
+      "category": "terminal",
+      "question": "Does this chain reach a human player who reads the landscape differently because shadows have meaning, or does it end at a rendering tech demo?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 62,
+      "category": "depth",
+      "question": "Is Cloud_Shadow_Rendering detailed enough, or does it need sub-features per shadow quality tier?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 63,
+      "category": "breadth",
+      "question": "Are sibling features missing \u2014 e.g., 'Shadow-on-Grass Color', 'Shadow-on-Water Refraction'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 64,
+      "category": "parent",
+      "question": "Is Demo_Volumetric_Clouds designed enough to support this shadow-performance zoom?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 65,
+      "category": "priority",
+      "question": "Should Cloud_Shadow_Rendering be the last sub-feature built (optimization pass) or first (visual anchor)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 66,
+      "category": "dependency",
+      "question": "Does Cloud_Shadow_Rendering block any other sub-features from being visually impressive?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

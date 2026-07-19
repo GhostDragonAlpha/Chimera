@@ -1,0 +1,244 @@
+{
+  "name": "Camera_Educational_Showcase",
+  "description": "The camera highlights educational points of interest during flythrough. Geology labels, rock-type callouts, weather indicators, POI markers.",
+  "created": "2026-07-19T17:28:36.391014",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Can the player identify rock types from visual labels overlaid during flythrough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the camera pause or slow at educational POIs for reading time?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Do educational callouts use real geological terminology the player can learn?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Is the educational content discoverable without breaking the cinematic flow?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Do the educational overlays look premium (not like debug text) for screenshots?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Can a clip showing 'learning while flying' become a unique selling point in marketing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "world",
+      "question": "Are the educational POIs placed at locations that feel naturally interesting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "world",
+      "question": "Does the cloud education (stratus, cumulus types) match actual cloud formations in the sky?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do weather indicators (wind direction, pressure) appear contextually?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "shipping",
+      "question": "Are educational triggers in the Level Sequence as Camera Shots or events?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "shipping",
+      "question": "Can educational text be localized without modifying the Sequencer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "shipping",
+      "question": "Does the showcase clear all UI elements cleanly at the end of flythrough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "foundation",
+      "question": "Does the graph store educational content as separate data from camera positions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "platform",
+      "question": "Does UE5.8's Text Render or Widget system handle cinematic overlays without tearing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "performance",
+      "question": "Do educational overlays add zero frame-time cost (pre-rendered or cached)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "accessibility",
+      "question": "Is educational text large enough to read at 1080p from couch distance?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "audio",
+      "question": "Does a narrator or subtle voiceover accompany the educational callouts?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "vision",
+      "question": "Does educational-showcase-first differentiate this game from pure entertainment titles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "tradeoff",
+      "question": "What cinematic polish is reduced to make room for educational content?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "evidence",
+      "question": "What evidence exists that educational features drive wishlists or press coverage?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "terminal",
+      "question": "Does this chain reach a human who learns something about the real world?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the environment_education module being wired to Sequencer events?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on a localization system for educational text?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that educational mechanics can exist without a separate UI layer?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "derived_from",
+      "question": "Were the POI locations derived from real planetary geology surveys?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "requires",
+      "question": "What geological reference data is needed to write accurate educational callouts?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

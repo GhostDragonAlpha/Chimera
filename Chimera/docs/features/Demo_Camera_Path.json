@@ -362,7 +362,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Detailed enough at this level. No deeper zoom needed for v1 demo."
+      "answer": "Now zoomed deeper: 3 sub-features created (Camera_Cinematic_Sequence, Camera_Lighting_Transitions, Camera_Educational_Showcase) with 26 questions each."
     },
     {
       "id": 41,
@@ -371,7 +371,7 @@
       "is_edge": false,
       "mirror_trace": null,
       "answered": true,
-      "answer": "Complete. All 5 sub-features cover the demo requirements."
+      "answer": "Expanded: 3 new camera-focused sub-features added below Demo_Camera_Path."
     },
     {
       "id": 42,

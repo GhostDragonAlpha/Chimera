@@ -1,0 +1,244 @@
+{
+  "name": "Scanner_Audio_Feedback",
+  "description": "Audio design for the scanner: activation sound, scanning beam hum/whine, domain-specific result chimes, error/no-detection feedback, and ambient audio integration.",
+  "created": "2026-07-19T17:30:05.161669",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Do the scan audio cues reinforce learning (distinct tones for geology/minerals/weather/stars)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Is the scanner sound (rising-pitch sweep + domain chime) memorable enough for a TikTok sound bite?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Does the scanner audio sound like a real scientific instrument (spectrometer, LIDAR, Geiger counter references)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can the audio be implemented with UE5.8 MetaSounds without requiring Wwise or FMOD licensing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Does scanner audio depend on any audio middleware or existing sound cue system in the project?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Do MetaSounds for the scanner work on Win64 without platform-specific audio pipeline issues?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Does real-time MetaSound scanning add measurable CPU load (one-shot cues are free, but persistent scanning hum may add up)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Are all audio cues paired with visible subtitles so deaf/hard-of-hearing players get equal information?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Does the scanner have distinct audio states: idle hum, active scan, result-found, no-detection, error, and upgrade-unlocked?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Do multiple scanners in co-op create audio chaos, or are sounds spatialized per-player/local-pawn?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can modders replace scanner sound cues with custom MetaSound assets or WAV files?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Are scanner audio subtitles localizable separately from the main scan result text?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does scanner audio depend on the scanner actor existing in the level (audio emitter attached to actor)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does this prove that MetaSounds can deliver scientific-instrument-quality feedback in a survival game context?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was this derived from Educational_Scanner Q36 (no scanner audio exists, needs activation/scan/completion sounds)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does scanning audio conflict with the game's ambient soundscape (wind, footsteps, weather) during combat or tense moments?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What UE5 MetaSound or audio design knowledge is required to build the scanner sound cues?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does this need sub-sub-features (activation sound, scan-loop, result-chimes-per-domain, error-sound) or are 26 Qs enough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are sibling audio features missing (e.g., Scanner_Voiceover, Scanner_Music_Stinger)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is Educational_Scanner stable enough to finalize audio design (Scan() trigger points locked)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should audio be built before or after Scanner_UI_Display (visual is higher bandwidth, but audio adds polish)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does audio feedback block other scanner features, or do UI/progression block audio?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does distinctive, scientific-instrument audio for scanning serve 'most famous educational RPG on Steam'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What is sacrificed by investing in custom MetaSound design vs reusing existing UI-click sounds for scan feedback?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows that diegetic audio feedback (Subnautica scanner ping, Metroid scan visor) increases player engagement?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does the audio chain reach PLAYER IMMERSION (terminal: player feels like a real scientist using an instrument) or is it cosmetic?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

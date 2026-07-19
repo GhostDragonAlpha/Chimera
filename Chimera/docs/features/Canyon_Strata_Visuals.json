@@ -1,0 +1,244 @@
+{
+  "name": "Canyon_Strata_Visuals",
+  "description": "The visible rock layers in the canyon walls \u2014 color, texture, and stratification patterns that let players identify rock types by sight",
+  "created": "2026-07-19T17:28:07.616124",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Can the player visually distinguish between different rock strata types (sedimentary vs igneous layers) at a glance?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Would a close-up screenshot of stratified canyon walls showing distinct color bands be visually striking enough for Steam marketing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Do strata layers have realistic thickness variation, color transitions, and erosion patterns that make the canyon feel geologically ancient?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can strata materials be authored using existing UE5 landscape layer blends and material instances without requiring custom HLSL shaders?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Does strata visualization reuse the existing splat-rendering pipeline in core/matter_gpu.py, or does it require new rendering infrastructure?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Are strata layer materials compatible with UE5.8s virtual texture system without requiring workarounds for layer count limits?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Do strata visual layers fit within a draw-call budget of 200 or fewer per canyon vista at medium distance?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Is there a pattern-overlay or tooltip alternative so colorblind players can still distinguish strata layers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Does each rock type in the strata layer produce a distinct footstep or tool-impact audio response when the player walks across or mines it?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Are strata visual layers deterministic and consistent across all clients when multiple players view the same canyon wall section?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can community members add new rock-type materials and strata color palettes through data-driven configs without recompiling?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Are rock-type display names, stratum layer labels, and educational identifiers stored in localization tables for translation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does strata visuals depend on a completed geology data model (rock type definitions, layer ordering, color maps) before materials can be authored?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does rendering visually distinct strata prove that the procedural canyon generator produces geologically meaningful layered output?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Is strata visualization derived from the educational requirement that players identify rock types by observable visual features?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Do high-detail strata textures with 4+ material layers conflict with the performance budget for real-time camera flythroughs?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What material-editor and texture-pipeline knowledge is needed to author strata layer blends that look geologically plausible?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "vision",
+      "question": "Do visually distinct strata layers directly serve the seed goal of teaching real geology through pure environmental observation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "tradeoff",
+      "question": "What visual fidelity is sacrificed if strata layers use only 2 material layer blends instead of 4?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "evidence",
+      "question": "How do we know that players can actually learn to identify rock types from visual strata alone rather than needing a UI label?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "terminal",
+      "question": "Does the observation chain strata visible to player identifies rock -> player learns geology reach a human learner without requiring an intermediate LLM?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "depth",
+      "question": "Does strata visuals need deeper sub-features (fossil layer markers, specific erosion textures per rock type) or is it sufficient at current granularity?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "breadth",
+      "question": "Are sibling visual features missing at this level such as a strata-legend UI overlay or a strata-comparison tool?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "parent",
+      "question": "Is Demo_Canyon_Terrain already detailed enough about visual layering to support this sub-feature without reopening parent questions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "priority",
+      "question": "Should strata visuals be built before or after terrain generation given that strata render onto generated geometry?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "dependency",
+      "question": "Does incomplete strata visualization block any other canyon features or do other features depend on strata being visible first?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

@@ -1,0 +1,604 @@
+{
+  "name": "Cloud_Types_Educational",
+  "description": "Sub-feature of Demo_Volumetric_Clouds: Teach meteorology through interactive cloud type identification, where players learn to recognize cumulus, stratus, cirrus, nimbostratus, and cumulonimbus by visual cues, with educational feedback linking each type to real-world weather patterns.",
+  "created": "2026-07-19T17:28:54.053577",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Can the player visually identify cumulus clouds as fair-weather markers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the player learn that cirrus clouds indicate fair but changing weather?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Can the player distinguish stratus (gray blanket) from nimbostratus (rain-bearing blanket)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does identifying cumulonimbus (thunderhead) teach the player to seek shelter?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What single screenshot of cloud identification makes a Steam shopper wishlist?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How does cloud-type education compare to No Man Sky's environmental scanning?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could a 5-second clip of the player identifying each cloud type be a Steam trailer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What mechanic would a journalist call innovative here \u2014 cloud scanning as gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do each of the five cloud types have distinct visual shapes (flat-bottom cauliflower for cumulus, wispy streaks for cirrus, uniform layers for stratus, dark towers for cumulonimbus)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does cloud type visually shift with wind direction across the sky?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Can the player see the same cloud type from different angles and still recognize it?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does time of day (golden hour vs noon vs night) change how cloud types are visually identified?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can this educational cloud identification ship without custom C++ \u2014 purely material instances and Blueprint logic?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What is the minimum UE5 setup needed: material parameter collection + cloud type indicator widget?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does the cloud identification mechanic run at 30fps while scanning is active?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can the cloud identification be disabled as a tutorial toggle for speedrunners?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Are MCP tools reliable enough to set cloud material parameters (density, color, altitude) per type?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the worker bridge handle switching between 5 cloud-type material presets via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can Sleepwalker verify that the player correctly identified a cloud type by logging the feedback event?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What graph query will find related cloud-type feature nodes when a new type is added?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "platform",
+      "question": "Does VolumetricCloudComponent in UE5.8 support per-type material parameter overrides without hacks?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "platform",
+      "question": "Can cloud type materials be authored entirely in the Material Editor (no HLSL patches)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "platform",
+      "question": "Does the cloud identification UI (type name + fact text) work in UE5.8's Widget system?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "platform",
+      "question": "Are there any UE5.8 rendering bugs with layered cloud materials that need workarounds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "performance",
+      "question": "Does switching cloud type presets (material swaps) cause a hitch on RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "performance",
+      "question": "Can 5 distinct cloud type layers be rendered simultaneously at 30+ fps?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 27,
+      "category": "performance",
+      "question": "What is the draw call cost of displaying a cloud-type identification widget?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 28,
+      "category": "performance",
+      "question": "Does cloud type education cause additional GPU memory pressure from extra materials?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 29,
+      "category": "accessibility",
+      "question": "Can a colorblind player distinguish cumulonimbus (dark gray) from stratus (light gray) by shape alone?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 30,
+      "category": "accessibility",
+      "question": "Does cloud type identification include textual labels for each type (not just visual)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 31,
+      "category": "accessibility",
+      "question": "Can a hearing-impaired player receive cloud type feedback without audio cues?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 32,
+      "category": "accessibility",
+      "question": "Is the cloud type text readable at 1080p on a 24-inch monitor from couch distance?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 33,
+      "category": "audio",
+      "question": "Does each cloud type have a distinct ambient soundscape cue (e.g., distant rumble for cumulonimbus)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 34,
+      "category": "audio",
+      "question": "Does a successful cloud identification play a positive feedback sound?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 35,
+      "category": "audio",
+      "question": "Does the transition between cloud types have a subtle audio crossfade?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 36,
+      "category": "audio",
+      "question": "Is there a narrated educational voiceover option for cloud type facts?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 37,
+      "category": "multiplayer",
+      "question": "Do all players see the same cloud type at the same time in multiplayer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 38,
+      "category": "multiplayer",
+      "question": "Can one player identify a cloud type and the result be visible to their co-op partner?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 39,
+      "category": "multiplayer",
+      "question": "Does cloud type state replicate or is it client-side only?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 40,
+      "category": "multiplayer",
+      "question": "How does cloud type education scale with 2+ players scanning simultaneously?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 41,
+      "category": "modding",
+      "question": "Can modders add new cloud types by dropping a material + config entry?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 42,
+      "category": "modding",
+      "question": "Is the cloud type identification data (type names, descriptions) in a JSON file modders can edit?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 43,
+      "category": "modding",
+      "question": "Can community-created cloud shapes be added without recompiling?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 44,
+      "category": "modding",
+      "question": "Does the cloud type scanning system support custom modded scan feedback?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 45,
+      "category": "localization",
+      "question": "Are all cloud type names and educational descriptions in a single loc table?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 46,
+      "category": "localization",
+      "question": "Does the cloud type widget support text expansion for German/Russian?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 47,
+      "category": "localization",
+      "question": "Can the narrated educational voiceover be replaced per locale?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 48,
+      "category": "localization",
+      "question": "Do cloud type visual-only cues work without any text dependency?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 49,
+      "category": "depends_on",
+      "question": "Does this depend on the VolumetricCloud actor being spawned in the level?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 50,
+      "category": "depends_on",
+      "question": "Does this depend on 5 distinct cloud material presets existing in the content browser?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 51,
+      "category": "depends_on",
+      "question": "Does this depend on the Educational UI system (widget for type name + facts)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 52,
+      "category": "proves",
+      "question": "Does this prove that Unreal Engine can deliver educational gameplay through environmental visuals alone?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 53,
+      "category": "proves",
+      "question": "Does this prove that cloud rendering can serve a pedagogical purpose beyond eye candy?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 54,
+      "category": "derived_from",
+      "question": "Was this derived from the Environmental_Demo surface design Q1-Q4 (education category)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 55,
+      "category": "conflicts",
+      "question": "Does cloud-type educational scanning conflict with the 'keep skies simple' design principle?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 56,
+      "category": "requires",
+      "question": "What material knowledge is needed to create 5 distinct cloud look-up materials?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 57,
+      "category": "requires",
+      "question": "What widget/UI knowledge is needed to build the cloud identification feedback HUD?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 58,
+      "category": "vision",
+      "question": "Does teaching meteorology through cloud types make the game more famous as an educational RPG than a generic cloud system would?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 59,
+      "category": "tradeoff",
+      "question": "What visual fidelity are we sacrificing by authoring 5 distinct type-materials instead of one cinematic cloud setup?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 60,
+      "category": "evidence",
+      "question": "What evidence exists that players engage with environmental scanning mechanics (e.g., scanning in Subnautica) vs ignoring them?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 61,
+      "category": "terminal",
+      "question": "Does the cloud-type scanning chain reach a human player who now understands weather, or does it end at a design document satisfying an architectural goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 62,
+      "category": "depth",
+      "question": "Is Cloud_Types_Educational detailed enough at this level, or does it need deeper sub-features for each cloud type?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 63,
+      "category": "breadth",
+      "question": "Are sibling sub-features at this level missing \u2014 e.g., a 'Cloud Altitude Indicator' or 'Cloud Formation Speed' feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 64,
+      "category": "parent",
+      "question": "Is the parent Demo_Volumetric_Clouds feature complete enough (44 questions designed) to support this educational zoom?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 65,
+      "category": "priority",
+      "question": "Should Cloud_Types_Educational be built before Cloud_Weather_Connection, or after?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 66,
+      "category": "dependency",
+      "question": "Does Cloud_Types_Educational block Cloud_Weather_Connection from being understood by the player?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

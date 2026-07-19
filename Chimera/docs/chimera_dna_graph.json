@@ -79385,6 +79385,65 @@
       "links": [],
       "recorded_by": "run_deep_space_trader_pipeline.py",
       "run_id": "run_2d707f333282"
+    },
+    {
+      "id": "feature_98261cd7480c7b26",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:28:43.118834",
+      "feature_name": "Camera_Cinematic_Sequence",
+      "loop": 6,
+      "status": "questioning",
+      "parameters": {
+        "parent": "Demo_Camera_Path"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_6/Camera_Cinematic_Sequence",
+      "error_category": "none",
+      "fix_description": "Feature 'Camera_Cinematic_Sequence' (Loop 6) recorded as 'questioning'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f54f8cad6b33"
+    },
+    {
+      "id": "feature_c313a5716b1a6603",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:30:13.457108",
+      "feature_name": "Scanner_UI_Display",
+      "loop": 4,
+      "status": "questioning",
+      "parameters": {
+        "parent": "Educational_Scanner"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Scanner_UI_Display",
+      "error_category": "none",
+      "fix_description": "Feature 'Scanner_UI_Display' (Loop 4) recorded as 'questioning'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_0510f8ed1560"
+    },
+    {
+      "id": "feature_d0d4581a965c2ae3",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T22:31:27.512461",
+      "feature_name": "Celestial_Light_Rotation",
+      "loop": 9,
+      "status": "designed",
+      "parameters": {
+        "description": "Sub-feature of Demo_Day_Night_Cycle: UE5 directional light rotation + world-aligned star sphere",
+        "questions": 26,
+        "parent": "Demo_Day_Night_Cycle"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_9/Celestial_Light_Rotation",
+      "error_category": "none",
+      "fix_description": "Feature 'Celestial_Light_Rotation' (Loop 9) recorded as 'designed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_09405a63aa2e"
     }
   ],
   "edges": [

@@ -1,0 +1,244 @@
+{
+  "name": "Canyon_Terrain_Generation",
+  "description": "The procedural terrain system that generates the canyon shape, depth, width, and erosion features",
+  "created": "2026-07-19T17:28:07.616468",
+  "status": "questioning",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the visible terrain generation teach the player about canyon formation processes such as water erosion, uplift, and talus deposition?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Can the terrain generator produce a canyon vista screenshot with dramatic scale that rivals AAA open-world games for marketing use?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Does generated terrain include natural secondary features (alluvial fans, meander scars, slump blocks) that make the canyon feel real and lived-in?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can canyon terrain be fully generated at editor load time from a seed without requiring manual sculpting or post-processing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Does terrain generation reuse the existing core/matter_gpu.py heightmap pipeline or does it require a new procedural generation module?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Is the generated canyon terrain compatible with UE5.8 world-partition system for streaming large open-world sections?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Can the terrain LOD system maintain 30+ fps during a fast flythrough of a 4 km canyon section on the target RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Can the terrain scale and camera distance be adjusted for players with simulation-sickness sensitivity to deep canyon drop-offs?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Does canyon shape (width, depth, wall angle, overhangs) propagate realistic acoustic reverb and echo to the audio system?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Does deterministic seed-based terrain generation produce byte-identical heightfield output across all clients?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can the community generate custom canyon layouts by modifying heightmap seed parameters or supplying custom noise inputs?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Are generated terrain feature names (plateau, butte, arroyo, meander) stored for loc and referenced in educational observations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does terrain generation depend on the UE5 landscape subsystem being initialized with procedural material support before generation runs?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does deterministic seed-based canyon generation prove that the demo can be packaged without prebuilt static level geometry?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Is canyon terrain generation derived from the architectural requirement that all demo environments be procedurally generated?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does procedural canyon generation conflict with hand-placed demo props such as campsites, survey points, or quest markers?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What knowledge of UE5 procedural mesh generation, PCG volumes, and landscape sculpting APIs is needed to implement this generator?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 18,
+      "category": "vision",
+      "question": "Does procedural terrain generation serve the seed vision of an infinitely explorable procedurally generated universe?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 19,
+      "category": "tradeoff",
+      "question": "What is sacrificed by using procedural generation instead of hand-crafted canyon terrain in terms of visual uniqueness and authored storytelling?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 20,
+      "category": "evidence",
+      "question": "How do we know the terrain generator produces geologically plausible canyons rather than aesthetically pleasing noise?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 21,
+      "category": "terminal",
+      "question": "Does the generated terrain physically exist in the UE5 world as Landscape heightfield data that the player can stand on and traverse?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 22,
+      "category": "depth",
+      "question": "Does terrain generation need sub-features such as biome-specific erosion layers or river-carving simulation, or is a single heightmap generator sufficient?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 23,
+      "category": "breadth",
+      "question": "Are sibling terrain features missing such as cave generation, overhang support, or underground river systems?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 24,
+      "category": "parent",
+      "question": "Is Demo_Canyon_Terrain detailed enough about procedural generation requirements to fully define the terrain generators scope?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 25,
+      "category": "priority",
+      "question": "Should terrain generation be built first as the foundation that strata visuals and resource indicators render onto?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 26,
+      "category": "dependency",
+      "question": "Does incomplete terrain generation block all other canyon sub-features making it the hard critical-path dependency?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}
