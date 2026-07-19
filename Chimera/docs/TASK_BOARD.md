@@ -1,13 +1,26 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-19T01:48:45+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-19T01:51:54+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 0 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
+| tb-0201 | open | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie |  |
+| tb-0202 | open | 0.9 | Witness: Travel_Vehicle_Flight | editor:open; excl:pie |  |
+| tb-0203 | open | 0.9 | Witness: Universe_Planet_Generation | editor:open; excl:pie |  |
+| tb-0204 | open | 0.9 | Witness: Universe_Moon_Generation | editor:open; excl:pie |  |
+| tb-0205 | open | 0.9 | Witness: Universe_Asteroid_Field | editor:open; excl:pie |  |
+| tb-0206 | open | 0.9 | Witness: Universe_Debris_Field | editor:open; excl:pie |  |
+| tb-0207 | open | 0.9 | Witness: Tool_Shovel_Model | editor:open; excl:pie |  |
+| tb-0208 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
+| tb-0209 | open | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie |  |
+| tb-0210 | open | 0.75 | Build toward the seed: UCostlessLifeEndingDiagnostic | core/game_code_generator.py; excl:generator |  |
+| tb-0211 | open | 0.75 | Build toward the seed: TitanRunTrack | core/game_code_generator.py; excl:generator |  |
+| tb-0212 | open | 0.72 | Build toward the seed: FStationMarket | core/game_code_generator.py; excl:generator |  |
+| tb-0213 | open | 0.72 | Build toward the seed: UFactionSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
@@ -36,6 +49,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0136 | done | 1.2 | Fix 1 red rep atom(s): Sky_Loop_Realization | Source/Chimera/ProceduralGenerated/Sky/** | prune removed identity atom atom_2100bcb11f34 for Sky_Loop_R |
 | tb-0137 | done | 1.2 | Fix 1 red rep atom(s): subsystem/Audio | Source/Chimera/ProceduralGenerated/Sound/** | Generator modified to generate AttunementComponentAttachment |
 | tb-0152 | done | 1.2 | Fix 1 red rep atom(s): FFootstepEvent | core/game_code_generator.py; excl:generator | [rep] 61 batteries, 834 atoms, 809 reps this pass (1 failing |
+| tb-0200 | done | 1.2 | Fix 1 red rep atom(s): This session's evidence is compile-ti | core/game_code_generator.py; excl:generator | Fixed 1 red rep atom for 'This session's evidence is compile |
 | tb-0017 | done | 1.2 | Sprint_Input: volume normalizer must exceed sprint speed | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.* | volume_norm atom GREEN x2; normalizer = BaseMaxWalkSpeed(600 |
 | tb-0018 | done | 1.2 | Sprint_Input: capture peak volume, not the decel tail | core/sleepwalker.py, docs/beats/audio_visual_sync.beats.json; editor:open; excl:pie | 5/5 beats reached, simtest_2d3122d6cefb0009 'Clean walk': pe |
 | tb-0014 | done | 1.2 | Sprint_Input: input binding: the physical key drives the sta ⇐ tb-0013 | Source/Chimera/ProceduralGenerated/ChimeraMovementComponent.*, Source/Chimera/ProceduralGenerated/GameMode/** | Sprint_Input/binding atom GREEN x2 (LeftShift polled via Pla |
