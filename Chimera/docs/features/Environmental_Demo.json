@@ -207,6 +207,42 @@
       "is_edge": true,
       "answered": false,
       "answer": null
+    },
+    {
+      "id": 29,
+      "category": "vision",
+      "question": "Does an environmental demo make the game more famous than a gameplay demo would?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 30,
+      "category": "tradeoff",
+      "question": "What features are NOT being built while we build this demo?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 31,
+      "category": "evidence",
+      "question": "What evidence exists that environmental realism drives Steam sales?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
+    },
+    {
+      "id": 32,
+      "category": "terminal",
+      "question": "Does this chain reach a human who plays the game, or just satisfy an architectural goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": false,
+      "answer": null
     }
   ],
   "answers": [],

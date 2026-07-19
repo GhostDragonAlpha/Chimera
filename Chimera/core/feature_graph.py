@@ -40,6 +40,17 @@ EDGE_CATEGORIES = [
     "requires",     # What skills, tools, or data are needed?
 ]
 
+# Mirror category - why does it EXIST?
+# Every question must trace to the ultimate goal:
+#   "The most famous educational RPG on Steam, whose proceeds advance life in the universe."
+# If a question cannot answer 'how does this serve the Mirror?', it is not asked.
+MIRROR_QUESTIONS = [
+    "vision",       # Does this serve the ultimate goal?
+    "tradeoff",     # What are we sacrificing to do this?
+    "evidence",     # How do we know this is the right path?
+    "terminal",     # Does this chain reach a human or physics?
+]
+
 
 def create_feature(name: str, description: str = "") -> Dict:
     """Create a new feature node in the graph.
@@ -89,6 +100,7 @@ def ask_question(feature_name: str, category: str, question: str,
         "category": category,
         "question": question,
         "is_edge": is_edge,
+        "mirror_trace": None,
         "answered": False,
         "answer": None,
     })
