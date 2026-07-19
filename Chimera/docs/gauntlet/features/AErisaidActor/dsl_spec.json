@@ -1,0 +1,79 @@
+{
+  "ae_leviathan_shell": {
+    "type": "actor",
+    "class_name": "AErisaidActor",
+    "description": "Half-buried leviathan shell, 18m long, at the Yard's edge",
+    "properties": {
+      "length_meters": 18.0,
+      "burial_depth_ratio": 0.5,
+      "jaw_hinge_location": {
+        "x": 9.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "interior_volume": true,
+      "respiration_cycle_period_sec": 30.0,
+      "contraction_radius_meters": 5.0,
+      "spore_cloud_radius_meters": 15.0,
+      "turret_mode_range_meters": 50.0,
+      "sonic_emitter_trigger_distance_m": 5.0,
+      "inertial_repulsion_force": 50000.0,
+      "inertial_repulsion_pushback_m": 10.0
+    },
+    "mechanics": {
+      "cranial_resonance_beacon": {
+        "type": "key_item",
+        "interaction_point": "jaw_hinge",
+        "effect": "opens_interior"
+      },
+      "inertial_repulsion": {
+        "trigger": "approach_without_beacon",
+        "force_direction": "away_from_shell",
+        "pushback_distance_m": 10.0,
+        "force_magnitude": 50000.0
+      },
+      "sonic_vibration": {
+        "trigger": "sonic_emitter_within_5m",
+        "effect": "shift_buried_position",
+        "shift_distance_cm": 304.8,
+        "unearths_subterranean_passage": true
+      },
+      "bio_link_injector_puzzle": {
+        "type": "multi_system_interaction",
+        "requirements": [
+          "place_bio_link_injector_on_exposed_wiring",
+          "control_drone_to_divert_power_from_local_grid"
+        ],
+        "counter_mechanic": "actor_twitches_and_buries_deeper",
+        "synchronization_required": true,
+        "description": "Dynamic counter-play that rewards precise timing and multi-system coordination"
+      },
+      "respiration_cycle": {
+        "type": "interior_mechanic",
+        "cycle_period_sec": 30.0,
+        "phases": [
+          "expansion",
+          "contraction"
+        ],
+        "contraction_trigger": "loot_container_interaction_or_secret_mechanism",
+        "contraction_effect": "collapse_nearby_walls_and_ceilings",
+        "spawn_on_contraction": "shell_mites",
+        "mitigation": "expansion_runes_found_early_in_run"
+      },
+      "captive_burst": {
+        "trigger": "on_interact_shell",
+        "effect": "release_toxic_spores",
+        "status_effect": "Asphyxiation",
+        "radius_meters": 15.0,
+        "converts_to_turret_mode": true,
+        "turret_fire_trigger": "player_proximity",
+        "turret_range_meters": 50.0
+      }
+    },
+    "components": [
+      "AErisaidShellComponent",
+      "AErisaidRespirationComponent",
+      "AErisaidTurretComponent"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+[
+ {
+  "id": "atom_1e1161bc1eb2",
+  "feature": "AErisaidActor",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source",
+    "tests/dsl_grammar",
+    "docs/beats"
+   ],
+   "globs": [
+    "*.*"
+   ],
+   "regex": "(AErisaidActor|AErisaidActor|Aerisaidactor)"
+  },
+  "desc": "'AErisaidActor' surfaces in Source, the DSL spec, or a beat script \u2014 its identity exists somewhere in the game",
+  "provenance": "curriculum:identity"
+ },
+ {
+  "id": "atom_c7ad64ce9f27",
+  "feature": "AErisaidActor",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/AErisaidActor/transcript.json"
+  },
+  "desc": "'AErisaidActor' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
+ }
+]

@@ -1,10 +1,10 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-19T00:34:03+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-19T00:59:58+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
@@ -17,10 +17,8 @@ so claimed tasks are safe to run in parallel.
 | tb-0149 | open | 0.9 | Witness: Tool_Shovel_Material | editor:open; excl:pie |  |
 | tb-0156 | open | 0.75 | Build toward the seed: AErisaidActor | core/game_code_generator.py; excl:generator |  |
 | tb-0157 | open | 0.75 | Build toward the seed: FStar | core/game_code_generator.py; excl:generator |  |
-| tb-0191 | open | 0.75 | Fix confirmed pain: Any position-dependent beat against chim | Source/Chimera/** |  |
 | tb-0176 | open | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** |  |
 | tb-0177 | open | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** |  |
-| tb-0178 | open | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
 | tb-0129 | blocked | 0.9 | Witness UGestureWheel: gesture beats must pass on the log ma ⇐ tb-0125 | docs/beats/gesture_wheel.beats.json; editor:open; excl:pie | mis-minted: depends_on captured tb-0125 (an unrelated ripene |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
@@ -131,6 +129,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0158 | done | 0.75 | Build toward the seed: UStarMemorialSubsystem | core/game_code_generator.py; excl:generator | Added core/game_code_generator.py::_load_memorial_trained_ge |
 | tb-0159 | done | 0.75 | Build toward the seed: USacrificeLogComponent | core/game_code_generator.py; excl:generator | Added core/game_code_generator.py::generate_sacrifice_log_fi |
 | tb-0174 | done | 0.75 | Matter library: splat emitter reads optics from the library  ⇐ tb-0172 | core/splat_emit.py, docs/matter/matter_library.json | splat_emit optics wired from library (no-visual-change). OPT |
+| tb-0191 | done | 0.75 | Fix confirmed pain: Any position-dependent beat against chim | Source/Chimera/** | Confirmed: residual upward drift (~500-4600uu/s) persists af |
 | tb-0113 | done | 0.7 | Fix confirmed pain: 4 meta labels sit in the feature ledger  | docs/world/** | 4 meta ledger entries reclassified with typed records + beca |
 | tb-0115 | done | 0.7 | training_gate: .claude/ footprints are infra, not default-ga | core/training_gate.py | core/training_gate.py: .claude/ added to infra file markers. |
 | tb-0116 | done | 0.7 | task_board: _scope_for keyword match needs word boundaries ( | core/task_board.py | core/task_board.py: _has_word() word-boundary matcher replac |
@@ -178,6 +177,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0100 | done | 0.6 | Pain verdict: Player_Character_Animation carries a real, ric | docs/research/** | CONFIRMED phase_e0b68063201645ae:P2 - asymmetry live in grap |
 | tb-0101 | done | 0.6 | Pain verdict: The 4 pipeline/meta queue entries (Demo_Regoli | docs/research/** | CONFIRMED phase_e0b68063201645ae:P3 - Demo_RegolithYard_L1 v |
 | tb-0102 | done | 0.6 | Pain verdict: Future sessions attempting Niagara authoring w | docs/research/** | REFUTED phase_31a7a0b115ebf674:P1 - the finding IS durably r |
+| tb-0178 | done | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | REFUTED: No DREAM_ROSTER.md or MCP_PATHWAYS.md edits are cur |
 | tb-0003 | done | 0.4 | Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie | Verb_Shovel: Implemented ATool_Shovel::Dig() (was rejected e |
 | tb-0114 | done | 0.1 | Pain verdict: FIXTURE for tb-0109 reconciler proof (should a | docs/research/** | auto-closed: pain phase_2f2d78e48da8f355:P2 already disposit |
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |
