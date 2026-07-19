@@ -2,7 +2,7 @@
   "name": "NPC_Basic",
   "description": "NPC characters with basic AI, animation, and social interaction.",
   "created": "2026-07-19T17:13:00.618945",
-  "status": "questioning",
+  "status": "designed",
   "questions": [
     {
       "id": 1,
@@ -10,8 +10,8 @@
       "question": "Do NPCs teach real social science (game theory, negotiation, cultural dynamics)?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. NPCs can teach game theory through trade negotiation, cultural dynamics through faction relationships, and linguistics through alien language translation puzzles."
     },
     {
       "id": 2,
@@ -19,8 +19,8 @@
       "question": "Can the player learn about alien cultures through NPC interaction?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Different NPC factions have distinct cultural values that the player learns by interacting \u2014 a trading guild values profit, a scientific enclave values knowledge, a military faction values strength."
     },
     {
       "id": 3,
@@ -28,8 +28,8 @@
       "question": "Do NPC interactions require real communication skills, not just dialogue trees?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. No dialogue trees. NPCs respond to player actions, reputation, and communication style. The player must learn how to interact with each culture."
     },
     {
       "id": 4,
@@ -37,8 +37,8 @@
       "question": "Can the player learn negotiation game theory through trade with NPCs?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. The negotiation system teaches supply/demand elasticity, BATNA (best alternative to negotiated agreement), and value creation through trade bundles."
     },
     {
       "id": 5,
@@ -46,8 +46,8 @@
       "question": "Are NPCs a feature that screenshots can show off?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "NPCs themselves are not screenshot-friendly, but NPC-driven markets, faction hubs, and alien architecture are."
     },
     {
       "id": 6,
@@ -55,8 +55,8 @@
       "question": "Do NPCs differentiate us from procedurally-generated NPCs in other games?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Procedural NPCs with real cultural AI and educational interaction is unique."
     },
     {
       "id": 7,
@@ -64,8 +64,8 @@
       "question": "Can a single memorable NPC character generate social media buzz?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "A memorable alien trader character with a distinct personality and teaching style could be the face of the game."
     },
     {
       "id": 8,
@@ -73,8 +73,8 @@
       "question": "Is the NPC interaction system intuitive and fun, not tedious?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "NPC interaction must be satisfying \u2014 short, meaningful, and educational. Tedious NPCs kill RPGs."
     },
     {
       "id": 9,
@@ -82,8 +82,8 @@
       "question": "Do NPCs have daily routines that make the world feel alive?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "NPCs should have daily schedules: sleeping, trading, traveling. Makes the world feel alive."
     },
     {
       "id": 10,
@@ -91,8 +91,8 @@
       "question": "Do NPCs react to weather, time of day, and player actions?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. NPCs should seek shelter during storms, be more active during day, and comment on player actions."
     },
     {
       "id": 11,
@@ -100,8 +100,8 @@
       "question": "Do NPCs speak a constructed alien language or use translation?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "A constructed language is too expensive. Use universal translator with cultural context notes."
     },
     {
       "id": 12,
@@ -109,8 +109,8 @@
       "question": "Can the player build relationships with NPCs over time?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Reputation system tracks relationship over time. Actions affect standing."
     },
     {
       "id": 13,
@@ -118,8 +118,8 @@
       "question": "Can NPCs be implemented with existing generator tools?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "NPC AI can be implemented as UE5 Behavior Trees within existing generator framework."
     },
     {
       "id": 14,
@@ -127,8 +127,8 @@
       "question": "Are NPCs Blueprint or C++?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "C++ AI foundation with Blueprint behavior trees for designer iteration."
     },
     {
       "id": 15,
@@ -136,8 +136,8 @@
       "question": "Do NPCs require the animation system to be fixed first?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. The animation system needs basic locomotion and idle states. Can prototype with simple capsule NPCs first."
     },
     {
       "id": 16,
@@ -145,8 +145,8 @@
       "question": "Can a single NPC be prototyped in one sprint?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. A single NPC trader in one station can be prototyped in one sprint."
     },
     {
       "id": 17,
@@ -154,8 +154,8 @@
       "question": "Does the AI system exist in the current codebase?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "The AI system (Behavior Trees, Blackboard, Environment Query System) exists in UE5 natively."
     },
     {
       "id": 18,
@@ -163,8 +163,8 @@
       "question": "Does the NPC system depend on the generator?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. The generator creates actor classes but not AI behavior trees. BT assets are created in-editor."
     },
     {
       "id": 19,
@@ -172,8 +172,8 @@
       "question": "Are NPC behaviors data-driven or hardcoded?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Data-driven via Blackboard keys and Behavior Tree assets. No hardcoded AI logic in C++."
     },
     {
       "id": 20,
@@ -181,8 +181,8 @@
       "question": "Can NPC interactions be recorded and played back for testing?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. NPC interactions can be logged and replayed through the existing telemetry system."
     },
     {
       "id": 21,
@@ -190,8 +190,8 @@
       "question": "Does this depend on the character model system?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes, depends on basic character model (capsule + mesh)."
     },
     {
       "id": 22,
@@ -199,8 +199,8 @@
       "question": "Does this depend on the animation Blueprint system?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. Basic locomotion works without animation Blueprints. Full NPC needs animation."
     },
     {
       "id": 23,
@@ -208,8 +208,8 @@
       "question": "Does this prove the game has social depth beyond trading?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes, proves social depth beyond trading."
     },
     {
       "id": 24,
@@ -217,8 +217,8 @@
       "question": "Was this derived from the initial loop board (Loop 5)?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Derived from Loop 5 (Other Dots) definition."
     },
     {
       "id": 25,
@@ -226,8 +226,8 @@
       "question": "Does this conflict with the current AI system design?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "No direct conflict. NPCs and scanner serve different gameplay loops."
     },
     {
       "id": 26,
@@ -235,8 +235,8 @@
       "question": "What AI/behavior tree knowledge is required?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "UE5 Behavior Tree and Blackboard knowledge required. Basic BT is learnable in a week."
     },
     {
       "id": 27,
@@ -244,8 +244,8 @@
       "question": "Do NPCs serve the most famous educational RPG goal?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. NPCs with real cultural dynamics directly serve the educational RPG goal."
     },
     {
       "id": 28,
@@ -253,8 +253,8 @@
       "question": "What is sacrificed by building NPCs now vs later?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Building NPCs now means the environmental demo ships later. Tradeoff is acceptable \u2014 NPCs are depth, demo is marketing."
     },
     {
       "id": 29,
@@ -262,8 +262,8 @@
       "question": "What evidence shows NPCs drive RPG engagement?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "RPGs with memorable NPCs have higher player retention (Skyrim, Mass Effect). NPCs create emotional investment."
     },
     {
       "id": 30,
@@ -271,8 +271,8 @@
       "question": "Does NPC interaction chain reach a human learning something real?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. The player learns real negotiation and cultural dynamics, not just fictional lore."
     },
     {
       "id": 31,
@@ -280,8 +280,8 @@
       "question": "Does this work in UE5.8 without hacks or workarounds?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Works in UE5.8. Behavior Trees, Blackboard, and EQS are core engine features."
     },
     {
       "id": 32,
@@ -289,8 +289,8 @@
       "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Minimal performance impact. NPC AI runs on a separate tick group. A handful of NPCs per station is negligible."
     },
     {
       "id": 33,
@@ -298,8 +298,8 @@
       "question": "Can a colorblind or hearing-impaired player fully experience this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. Audio-driven NPCs need voice synthesis or text-to-speech. Text-based NPCs are fully accessible."
     },
     {
       "id": 34,
@@ -307,8 +307,8 @@
       "question": "Does this have sound design that matches the visual quality?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not yet designed. NPC voice lines and ambient chatter would significantly enhance immersion."
     },
     {
       "id": 35,
@@ -316,8 +316,8 @@
       "question": "Can the community extend or modify this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "NPCs are single-player only. Multiplayer NPC interaction is out of scope."
     },
     {
       "id": 36,
@@ -325,8 +325,8 @@
       "question": "Can this be translated without breaking?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "NPC dialogue and behavior data can be exposed as moddable JSON tables. Behavior Trees are also moddable."
     }
   ],
   "answers": [],

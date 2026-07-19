@@ -2,7 +2,7 @@
   "name": "Travel_Systems",
   "description": "Ship-based travel between star systems, orbital mechanics, and planetary landing.",
   "created": "2026-07-19T17:13:23.135543",
-  "status": "questioning",
+  "status": "designed",
   "questions": [
     {
       "id": 1,
@@ -10,8 +10,8 @@
       "question": "Does travel teach real orbital mechanics and physics?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Orbital mechanics, gravity wells, fuel efficiency, and celestial navigation are real physics."
     },
     {
       "id": 2,
@@ -19,8 +19,8 @@
       "question": "Can the player learn about celestial navigation through travel?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Players navigate by star positions, planet orbits, and gravity slingshots. Real astronomy."
     },
     {
       "id": 3,
@@ -28,8 +28,8 @@
       "question": "Does fuel management teach real energy physics?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Fuel = energy. Different maneuvers cost different delta-v. Real rocket science principles."
     },
     {
       "id": 4,
@@ -37,8 +37,8 @@
       "question": "Can the player learn about gravity wells and escape velocity through gameplay?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Escaping a gravity well at different altitudes teaches real escape velocity physics."
     },
     {
       "id": 5,
@@ -46,8 +46,8 @@
       "question": "Is space travel visually impressive enough for marketing?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Space travel screenshots are inherently impressive."
     },
     {
       "id": 6,
@@ -55,8 +55,8 @@
       "question": "Does our travel system differ from other space games?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Our travel teaches real orbital mechanics. Most space games use fake physics for accessibility."
     },
     {
       "id": 7,
@@ -64,8 +64,8 @@
       "question": "Can orbital mechanics be a selling point?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Teaching real orbital mechanics through gameplay is a unique selling point."
     },
     {
       "id": 8,
@@ -73,8 +73,8 @@
       "question": "Is travel satisfying and educational simultaneously?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Travel must be visually satisfying (cockpit view, stars, planets) and educationally transparent."
     },
     {
       "id": 9,
@@ -82,8 +82,8 @@
       "question": "Do different star systems have different physical properties?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Different star types, planet masses, orbital distances \u2014 real astrophysics."
     },
     {
       "id": 10,
@@ -91,8 +91,8 @@
       "question": "Does travel time feel realistic or tedious?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Travel time must be compressed (fast travel) or engaging (mini-games, education) to avoid tedium."
     },
     {
       "id": 11,
@@ -100,8 +100,8 @@
       "question": "Can the player navigate by visual astronomy?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Players navigate by real star positions. Different locations show different constellations."
     },
     {
       "id": 12,
@@ -109,8 +109,8 @@
       "question": "Do other ships and traffic exist in space?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not in v1. Other ships and traffic are future scope."
     },
     {
       "id": 13,
@@ -118,8 +118,8 @@
       "question": "Does travel require the UE5 pipeline to compile?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. The flight component exists. Full travel between systems needs more work."
     },
     {
       "id": 14,
@@ -127,8 +127,8 @@
       "question": "Can basic travel between two points be prototyped quickly?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Point-to-point travel between two locations can use existing flight component."
     },
     {
       "id": 15,
@@ -136,8 +136,8 @@
       "question": "Does travel require the ship model system?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. The ship model exists in procedural generated content."
     },
     {
       "id": 16,
@@ -145,8 +145,8 @@
       "question": "Can travel be tested via sleepwalker?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Sleepwalker can verify travel between points, fuel consumption, and orbital insertion."
     },
     {
       "id": 17,
@@ -154,8 +154,8 @@
       "question": "Does the flight component exist?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. FlightComponent.h/.cpp exists in ProceduralGenerated/Flight/."
     },
     {
       "id": 18,
@@ -163,8 +163,8 @@
       "question": "Does the generator support ship classes?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. The generator creates ship classes with flight components."
     },
     {
       "id": 19,
@@ -172,8 +172,8 @@
       "question": "Is travel data stored in the save system?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Travel state (position, fuel, destination) can be saved in the save system."
     },
     {
       "id": 20,
@@ -181,8 +181,8 @@
       "question": "Can travel be extended with new destination types?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. New destination types and travel mechanics can be added through the generator."
     },
     {
       "id": 21,
@@ -190,8 +190,8 @@
       "question": "Does this depend on the flight component?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes, depends on the flight component and celestial body system."
     },
     {
       "id": 22,
@@ -199,8 +199,8 @@
       "question": "Does this depend on the celestial body system?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes, depends on celestial body data (position, mass, orbit) being available."
     },
     {
       "id": 23,
@@ -208,8 +208,8 @@
       "question": "Does this prove the game has exploration depth?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Proves the game has exploration depth beyond a single planet."
     },
     {
       "id": 24,
@@ -217,8 +217,8 @@
       "question": "Was this derived from Loop 7?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Derived from Loop 7 (Travel) definition."
     },
     {
       "id": 25,
@@ -226,8 +226,8 @@
       "question": "Does travel conflict with the educational scanner focus?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "No direct conflict. Travel is a separate gameplay loop from scanning/shelter."
     },
     {
       "id": 26,
@@ -235,8 +235,8 @@
       "question": "What physics simulation knowledge is required?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Basic orbital mechanics and rocket equation understanding helpful. UE5 physics knowledge sufficient."
     },
     {
       "id": 27,
@@ -244,8 +244,8 @@
       "question": "Does space travel serve the most famous educational RPG goal?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Teaching real orbital mechanics directly serves the educational RPG goal."
     },
     {
       "id": 28,
@@ -253,8 +253,8 @@
       "question": "What is sacrificed by building travel now?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Building travel now means less time on the environmental demo. Tradeoff \u2014 demo is marketing, travel is depth."
     },
     {
       "id": 29,
@@ -262,8 +262,8 @@
       "question": "What evidence shows space travel drives wishlists?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Space games with realistic physics (Kerbal Space Program 5M+ copies) prove the market."
     },
     {
       "id": 30,
@@ -271,8 +271,8 @@
       "question": "Does travel chain reach a human learning real physics?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Player learns real orbital mechanics and celestial navigation through gameplay."
     },
     {
       "id": 31,
@@ -280,8 +280,8 @@
       "question": "Does this work in UE5.8 without hacks or workarounds?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Works in UE5.8. Physics simulation and celestial body positioning are engine features."
     },
     {
       "id": 32,
@@ -289,8 +289,8 @@
       "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Orbital physics calculations are trivial performance cost. Rendering distant planets is the main cost."
     },
     {
       "id": 33,
@@ -298,8 +298,8 @@
       "question": "Can a colorblind or hearing-impaired player fully experience this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. Color-coded trajectory lines help. Gravitational indicators need non-visual fallback."
     },
     {
       "id": 34,
@@ -307,8 +307,8 @@
       "question": "Does this have sound design that matches the visual quality?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not yet designed. Engine sounds, space ambient, and atmospheric entry audio would be significant."
     },
     {
       "id": 35,
@@ -316,8 +316,8 @@
       "question": "Can the community extend or modify this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Single-player only. Multiplayer fleet travel is future scope."
     },
     {
       "id": 36,
@@ -325,8 +325,8 @@
       "question": "Can this be translated without breaking?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Star systems, ship types, and travel mechanics can be exposed as moddable data."
     }
   ],
   "answers": [],

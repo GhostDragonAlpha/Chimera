@@ -2,7 +2,7 @@
   "name": "Tool_Systems",
   "description": "Player tools for interacting with the environment: scanner, shovel, weapon, and construction tools.",
   "created": "2026-07-19T17:13:23.292820",
-  "status": "questioning",
+  "status": "designed",
   "questions": [
     {
       "id": 1,
@@ -10,8 +10,8 @@
       "question": "Do tools teach real science through their use?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. The scanner teaches geology/meteorology/astronomy. Construction tools teach engineering."
     },
     {
       "id": 2,
@@ -19,8 +19,8 @@
       "question": "Does the scanner teach geology/meteorology/astronomy?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. The scanner (Educational_Scanner feature) teaches real geology through terrain analysis."
     },
     {
       "id": 3,
@@ -28,8 +28,8 @@
       "question": "Do construction tools teach engineering principles?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Shovel/mining tool teaches soil stratigraphy. Welding tool teaches metallurgy."
     },
     {
       "id": 4,
@@ -37,8 +37,8 @@
       "question": "Can tools be combined in educational ways?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Scanner + construction tool = find resources + build shelter. Educational combo."
     },
     {
       "id": 5,
@@ -46,8 +46,8 @@
       "question": "Are tools visually satisfying to use?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. A satisfying tool-use animation and effect is screenshot-worthy."
     },
     {
       "id": 6,
@@ -55,8 +55,8 @@
       "question": "Does the scanner generate press coverage?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. A scanner that teaches real science is unique and press-worthy."
     },
     {
       "id": 7,
@@ -64,8 +64,8 @@
       "question": "Do tools differentiate us from other survival games?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Our tools teach real science. Competitors use fictional tool mechanics."
     },
     {
       "id": 8,
@@ -73,8 +73,8 @@
       "question": "Is tool use intuitive and satisfying?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Tool use must be immediately satisfying (visual feedback, sound, result)."
     },
     {
       "id": 9,
@@ -82,8 +82,8 @@
       "question": "Do tools have realistic physics interactions?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Tools should have realistic physics interactions (mining speed depends on rock hardness)."
     },
     {
       "id": 10,
@@ -91,8 +91,8 @@
       "question": "Do tools degrade or need maintenance?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Tools degrade with use and need maintenance/repair. Teaches material durability."
     },
     {
       "id": 11,
@@ -100,8 +100,8 @@
       "question": "Can tools be upgraded or enhanced?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Scanner upgrades reveal deeper data. Construction upgrades build stronger shelters."
     },
     {
       "id": 12,
@@ -109,8 +109,8 @@
       "question": "Do tools interact with the educational scanner system?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Scanner is the primary educational tool. Other tools support the educational loop."
     },
     {
       "id": 13,
@@ -118,8 +118,8 @@
       "question": "Can existing Tool_Scanner_Model be refined quickly?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Tool_Scanner_Model can be refined by fixing the generator (already identified)."
     },
     {
       "id": 14,
@@ -127,8 +127,8 @@
       "question": "Can Tool_Scanner_Material be refined quickly?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Tool_Scanner_Material can be refined similarly \u2014 fix material references in generator."
     },
     {
       "id": 15,
@@ -136,8 +136,8 @@
       "question": "Do new tools need generator changes?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "New tools beyond scanner/shovel/weapon need generator changes for new actor classes."
     },
     {
       "id": 16,
@@ -145,8 +145,8 @@
       "question": "Can tools be tested via sleepwalker?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Tool usage can be tested via sleepwalker beats (equip, use, observe result)."
     },
     {
       "id": 17,
@@ -154,8 +154,8 @@
       "question": "Does the tool system already exist in the generator?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. Tool classes exist in generated code. New tools need generator entries."
     },
     {
       "id": 18,
@@ -163,8 +163,8 @@
       "question": "Are tool behaviors data-driven?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Tool behaviors are partially data-driven (stats, damage, range). Core logic is C++."
     },
     {
       "id": 19,
@@ -172,8 +172,8 @@
       "question": "Can new tools be added without code changes?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "New tools need generator entries + C++ behavior. Not purely data-driven."
     },
     {
       "id": 20,
@@ -181,8 +181,8 @@
       "question": "Does the MCP bridge support tool testing?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. MCP bridge can spawn tool actors and verify their properties."
     },
     {
       "id": 21,
@@ -190,8 +190,8 @@
       "question": "Does this depend on the Educational_Scanner?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. Scanner is independent. Construction tools depend on shelter system."
     },
     {
       "id": 22,
@@ -199,8 +199,8 @@
       "question": "Does this depend on the generator being fixed?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Partially. New tools need generator entries but existing tools work without fixes."
     },
     {
       "id": 23,
@@ -208,8 +208,8 @@
       "question": "Does this prove the core gameplay loop works?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Working tool system proves the core gameplay loop (scan, gather, build)."
     },
     {
       "id": 24,
@@ -217,8 +217,8 @@
       "question": "Was this derived from Loop 4?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Derived from Loop 4 (Tools) definition."
     },
     {
       "id": 25,
@@ -226,8 +226,8 @@
       "question": "Do tools conflict with the educational demo focus?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Minor \u2014 tool development takes time from the environmental demo. Acceptable."
     },
     {
       "id": 26,
@@ -235,8 +235,8 @@
       "question": "What UE5 Blueprint tool knowledge is needed?",
       "is_edge": true,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "UE5 Blueprint tool creation knowledge. Understanding of the generator tool patterns."
     },
     {
       "id": 27,
@@ -244,8 +244,8 @@
       "question": "Do tools serve the most famous educational RPG goal?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Tools that teach real science directly serve the educational RPG goal."
     },
     {
       "id": 28,
@@ -253,8 +253,8 @@
       "question": "What is sacrificed by building tools now?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Refining existing tools (scanner model/material) costs little. New tools defer other features."
     },
     {
       "id": 29,
@@ -262,8 +262,8 @@
       "question": "What evidence shows tool systems drive engagement?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Satisfying tool systems drive player engagement. Minecraft proved this."
     },
     {
       "id": 30,
@@ -271,8 +271,8 @@
       "question": "Do tools chain reach a human learning real skills?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Yes. Player learns real material properties and tool physics through gameplay."
     },
     {
       "id": 31,
@@ -280,8 +280,8 @@
       "question": "Does this work in UE5.8 without hacks or workarounds?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Works in UE5.8. Tools are actors with standard UE5 components."
     },
     {
       "id": 32,
@@ -289,8 +289,8 @@
       "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Minimal performance impact. Tool actors are spawned only when equipped."
     },
     {
       "id": 33,
@@ -298,8 +298,8 @@
       "question": "Can a colorblind or hearing-impaired player fully experience this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Tool visual feedback (highlight, outline) needs color alternatives for colorblind players."
     },
     {
       "id": 34,
@@ -307,8 +307,8 @@
       "question": "Does this have sound design that matches the visual quality?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Not yet designed. Tool swing sounds, mining impacts, and scanner beeps would significantly improve feel."
     },
     {
       "id": 35,
@@ -316,8 +316,8 @@
       "question": "Can the community extend or modify this?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Single-player only. Multiplayer tool sharing is future scope."
     },
     {
       "id": 36,
@@ -325,8 +325,8 @@
       "question": "Can this be translated without breaking?",
       "is_edge": false,
       "mirror_trace": null,
-      "answered": false,
-      "answer": null
+      "answered": true,
+      "answer": "Tool stats, models, and materials can be exposed as moddable data tables."
     }
   ],
   "answers": [],
