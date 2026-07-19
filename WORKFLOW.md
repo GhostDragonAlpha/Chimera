@@ -72,6 +72,7 @@ Every question belongs to one of 22 categories across 4 groups:
 
 ### NODE (12) — what IS this feature?
 education, fame, world, testing, shipping, foundation, foundry, platform, performance,
+  economy, narrative, UX, save_load, physics,
 accessibility, audio, multiplayer, modding, localization
 
 ### EDGE (5) — how does it RELATE?

@@ -20,9 +20,10 @@ MIRROR (why does this exist? — 4)
   vision, tradeoff, evidence, terminal
 
 NODE (what is this feature? — 13)
-  education, fame, world, testing, shipping, foundation,
-  platform, performance, accessibility, audio,
-  multiplayer, modding, localization
+  education, fame, world, testing, shipping, foundation, foundry,
+  platform, performance, accessibility, audio, multiplayer,
+  modding, localization, economy, narrative, UX,
+  save_load, physics
 
 EDGE (how does it relate? — 5)
   depends_on, proves, derived_from, conflicts, requires

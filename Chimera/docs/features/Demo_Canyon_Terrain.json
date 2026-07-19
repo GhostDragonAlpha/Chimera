@@ -525,6 +525,46 @@
       "mirror_trace": null,
       "answered": true,
       "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 59,
+      "category": "economy",
+      "question": "Does the economic system support or integrate with this feature?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+    },
+    {
+      "id": 60,
+      "category": "narrative",
+      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+    },
+    {
+      "id": 61,
+      "category": "UX",
+      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+    },
+    {
+      "id": 62,
+      "category": "save_load",
+      "question": "Does this feature persist correctly across save/load cycles?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+    },
+    {
+      "id": 63,
+      "category": "physics",
+      "question": "Does this feature balance physical accuracy with playability?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
     }
   ],
   "answers": [],

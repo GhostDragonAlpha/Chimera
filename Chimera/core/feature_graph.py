@@ -38,6 +38,11 @@ NODE_CATEGORIES = [
     "multiplayer",    # Does it work with multiple players?
     "modding",        # Can the community extend it?
     "localization",   # Does it work in multiple languages?
+    "economy",        # Does the economic system support this?
+    "narrative",      # Does this serve the story and worldbuilding?
+    "UX",             # Is the player interaction smooth and intuitive?
+    "save_load",      # Does this persist correctly across sessions?
+    "physics",        # Does this respect physical accuracy vs playability?
 ]
 
 # Edge categories - how does it RELATE to other things
