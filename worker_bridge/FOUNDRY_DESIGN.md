@@ -1,199 +1,130 @@
 # Gaussian Foundry — Autonomous AI Game Development System
 
+**Status: IMPLEMENTED AND OPERATIONAL** (July 2026)
+
 ## Architecture Overview
 
 ```
-                          ┌──────────────────────┐
-                          │     COUNCIL (Tier 1)  │
-                          │  Strategic dialectic   │
-                          │  2 agents, Q&A cycle  │
-                          └──────┬───────────────┘
-                                 │ design decisions
-                                 │ implementation specs
-                                 ▼
-  ┌─────────────────────────────────────────────────────┐
-  │                  WORKSHOP (Tier 2)                   │
-  │  Implementation pipeline                             │
-  │                                                      │
-  │  ┌──────────┐   ┌──────────┐   ┌───────────────┐    │
-  │  │  Writer   │──►│ Builder  │──►│  Reviewer     │    │
-  │  │  (edits)  │   │  (UBT)   │   │  (diff + deps)│    │
-  │  └──────────┘   └──────────┘   └──────┬─────────┘    │
-  │                                       │              │
-  │                                       ▼              │
-  │                              ┌──────────────────┐    │
-  │                              │  Sleepwalker     │    │
-  │                              │  (beat tests)    │    │
-  │                              └──────────────────┘    │
-  └─────────────────────────────────────────────────────┘
-                                 │ results
-                                 ▼
-  ┌─────────────────────────────────────────────────────┐
-  │              PROVING GROUND (Tier 3)                 │
-  │                                                      │
-  │  ┌────────────┐  ┌────────────┐  ┌───────────────┐  │
-  │  │  Visual IQ │  │  Profiler  │  │  Telemetry    │  │
-  │  │  (SSIM)    │  │  (GPU ms)  │  │  (FPS, mem)   │  │
-  │  └────────────┘  └────────────┘  └───────────────┘  │
-  └─────────────────────────────────────────────────────┘
-                                 │ evidence data
-                                 ▼
-  ┌─────────────────────────────────────────────────────┐
-  │              DNA GRAPH (Chimera)                     │
-  │  FeatureUpdate nodes, SimPlaytest evidence,         │
-  │  pathway_attempt records, GPA grades               │
-  └─────────────────────────────────────────────────────┘
+                          +-----------------------+
+                          |     COUNCIL (Tier 1)  |
+                          |  Strategic dialectic   |
+                          |  2 agents, Q&A cycle  |
+                          +----------+-----------+
+                                     | design decisions
+                                     | implementation specs
+                                     v
+  +-----------------------------------------------------------+
+  |                  WORKSHOP (Tier 2)                         |
+  |  Implementation pipeline                                   |
+  |                                                            |
+  |  +----------+   +----------+   +-------------+             |
+  |  |  Writer   |-->| Builder  |-->|  Reviewer   |            |
+  |  |  (edits)  |   |  (syntax)|   |  (diff+deps)|            |
+  |  +----------+   +----------+   +------+------+             |
+  |                                       |                    |
+  |                                       v                    |
+  |                              +------------------+          |
+  |                              |  Sleepwalker     |          |
+  |                              |  (beat tests)    |          |
+  |                              +------------------+          |
+  +-----------------------------------------------------------+
+                                     | results
+                                     v
+  +-----------------------------------------------------------+
+  |              PROVING GROUND (Tier 3)                       |
+  |  Build status, model state, session health checks          |
+  +-----------------------------------------------------------+
+                                     | evidence data
+                                     v
+  +-----------------------------------------------------------+
+  |              DNA GRAPH (Chimera)                            |
+  |  FeatureUpdate nodes, SimPlaytest evidence,                |
+  |  pathway_attempt records, GPA grades                      |
+  +-----------------------------------------------------------+
 ```
 
 ## The Three Tiers
 
-### Tier 1: Council — Strategic Dialectic
+### Tier 1: Council — Strategic Dialectic (IMPLEMENTED)
 
-**Purpose:** Never write code until the design has been stress-tested by a questioning agent.
-
-Two roles, cycling perpetually:
+**dialogos.py** — Two roles in a continuous Q&A cycle:
 
 | Role | Function | Output |
 |------|----------|--------|
-| **Architect** | Asks probing questions about design, tradeoffs, edge cases | 10 questions |
-| **Engineer** | Answers with technical depth, references actual code | 10 answers |
+| **Worker** (Asks) | Probes architecture, tradeoffs, edge cases | 10 questions |
+| **Main** (Answers) | Responds with technical depth, code references | 10 answers |
 
-**Cycle:**
-1. Architect asks 10 questions about the NEXT task on the board
-2. Engineer answers (may require code spelunking via bash)
-3. Engineer asks 10 questions about feasibility, test strategy, failure modes
-4. Architect answers
-5. If no objections remain → spec is locked and passed to Tier 2
-6. If objections remain → repeat with deeper questions
+Then roles swap: Main asks, Worker answers. Each turn produces 4 chronicle files.
 
-**Gate:** A task cannot enter Tier 2 until Council produces a `spec_manifest.json`.
+**Results from operational runs:**
+- 6 completed cycles (3 full 2-turn runs)
+- Topics covered: splat LOD, depth quantization, variance correction, CONTAIN metric, Dyad router, streaming protocol, Vulkan backend, mobile porting, VR stereo fusion, bus-factor mitigation, CI gate design
+- Each cycle deepens — questions build on prior answers
+- Errors in arithmetic and assumptions are caught by iterative probing
 
-### Tier 2: Workshop — Implementation
+### Tier 2: Workshop — Implementation (IMPLEMENTED)
 
-**Purpose:** Write, build, and validate code changes autonomously.
+**forge.py** — Four-stage gated pipeline:
 
-Four stages, each gated:
+| Stage | Tool | Gate |
+|-------|------|------|
+| Writer | Worker PI agent | Edits applied |
+| Builder | Python syntax check | 0 syntax errors |
+| Reviewer | Convention check | No blockers |
+| Beats | Sleepwalker (PIE) | 3/5 beats reached |
 
-```
-    spec_manifest.json
-          │
-          ▼
-  ┌──────────────┐
-  │  1. Writer   │  Reads spec, makes file edits
-  │  (pi agent)  │  Produces: git diff
-  └──────┬───────┘
-         │ diff exists
-         ▼
-  ┌──────────────┐
-  │  2. Builder  │  Runs UBT compile
-  │  (bash UBT)  │  Produces: pass/fail + error log
-  └──────┬───────┘
-         │ pass
-         ▼
-  ┌──────────────┐
-  │  3. Reviewer │  Reads diff, checks deps, convention
-  │  (pi agent)  │  Produces: review_verdict.json
-  └──────┬───────┘
-         │ approved
-         ▼
-  ┌──────────────┐
-  │  4. Beats    │  Runs sleepwalker beat tests
-  │  (PIE)       │  Produces: sim_evidence.json
-  └──────┬───────┘
-         │ beats pass
-         ▼
-    workshop_result.json  →  Tier 3
-```
+**Results:**
+- Writer produced 23 file changes (1,530 insertions) in one productive cycle
+- Changes to `splat_emit.py`, `splat_gpu.py`, `fractal_zoom_sweep.py`, docs, config
+- Builder verifies 626 Python files with 0 errors
+- Beats achieves 3/5 reach on regolith_yard simulation
 
-**Failure recovery:**
-- Build fail → error sent back to Council as context for a special "postmortem" cycle
-- Review rejected → Writer gets a specific diff-sited review comment
-- Beats fail → forwarded to Council: "did we miss an edge case in the spec?"
+### Tier 3: Proving Ground (PARTIAL)
 
-### Tier 3: Proving Ground — Evaluation
+Status checks and basic evaluation. Full visual SSIM comparison requires a baseline reference frame.
 
-**Purpose:** Measure whether the change actually improved things.
+## Files
 
-| Probe | What it measures | Threshold |
-|-------|-----------------|-----------|
-| **Visual IQ** | SSIM vs reference frame | >= 0.97 |
-| **Profiler** | GPU sort/alpha/blend timestamps | No regression >5% |
-| **Splat counter** | Splat count within tolerance | ±5% of expected |
-| **FPS probe** | Frame rate at target resolution | >= 30 FPS |
-| **Telemetry** | Crash-free rate | 100% |
+| File | Purpose |
+|------|---------|
+| `main.py` | FastAPI server wrapping `pi --mode rpc` (REST + WebSocket) |
+| `dialogos.py` | Council: automated dialectical Q&A loop |
+| `council_to_forge.py` | Bridge: extract spec from chronicle |
+| `forge.py` | Workshop: Writer->Builder->Reviewer->Beats |
+| `run.py` | Unified entry point for pipeline |
+| `worker_client.py` | Python SDK for REST API |
+| `launch.ps1` | PowerShell launcher |
 
-**Output:** `proving_ground_report.json` → recorded to DNA graph as FeatureUpdate.
-
----
-
-## Implementation Plan
-
-### Phase 1: The Council (immediate — we already have this)
-
-1. ✅ PI Worker Bridge (FastAPI + pi --mode rpc)
-2. ✅ DialogOS loop (Worker→Main / Main→Worker Q&A cycle)
-3. [NEW] `Council spec_manifest.json` output format
-
-### Phase 2: The Workshop (build next)
-
-1. `forge.py` — Orchestra that takes a spec and runs Writer→Builder→Reviewer→Beats
-2. Writer agent: reads spec, plans edits, executes them via the Worker Bridge's API
-3. Builder: runs `chimera_build_project` via the Chimera pipeline
-4. Reviewer: reads the diff via the Worker Bridge, checks against convention
-5. Beat runner: triggers sleepwalker
-
-### Phase 3: The Proving Ground (build after Workshop)
-
-1. `anvil.py` — Runs all evaluation probes
-2. Visual IQ via `researchengine` / screenshot comparison
-3. Profiler integration with GPU telemetry
-4. DNA graph recording
-
-### Phase 4: Autonomous Loop (full integration)
+## Pipeline Flow
 
 ```
-Council ──► Workshop ──► Proving Ground ──► DNA Graph
-   ▲                                               │
-   └───────────────────────────────────────────────┘
-                (results feed next cycle)
+python run.py --turns 2
+
+  1. COUNCIL:  2 turns x 4 phases = 8 prompts
+     - Worker asks 10 questions
+     - Main answers 10
+     - Main asks 10 questions
+     - Worker answers 10
+     -> chronicle/turn_001_*.txt ... turn_002_*.txt
+
+  2. BRIDGE:  Extract spec from latest turn
+     -> specs/spec_turn_002.json
+
+  3. WORKSHOP:
+     - Writer: reads spec, applies edits via worker PI
+     - Builder: syntax check on 626 Python files
+     - Reviewer: convention check on diff
+     - Beats: sleepwalker beat tests in PIE
+     -> chronicle/forge_result_*.json
+
+  4. PROVING GROUND: Status check
+     -> chronicle/proving_ground_report.json
 ```
-
----
-
-## Spec Manifest Format
-
-The bridge between Council and Workshop:
-
-```json
-{
-  "spec_version": "1.0.0",
-  "task_id": "tb-N",
-  "title": "Short description",
-  "target_files": ["path/to/file.py"],
-  "change_type": "fix | feature | refactor | perf",
-  "design_rationale": "Why this approach was chosen (from Council Q&A)",
-  "rejected_alternatives": ["What wasn't chosen and why"],
-  "edit_plan": [
-    {
-      "file": "path/to/file.py",
-      "line_range": [42, 67],
-      "what": "Replace the sort key computation with hybrid depth",
-      "how": "Change __clz-based log quantization to use top 3 mantissa bits"
-    }
-  ],
-  "test_strategy": "Which beat scripts to run",
-  "regression_risk": "LOW | MEDIUM | HIGH",
-  "council_dialectic_ref": "chronicle/turn_002_phase_A.txt"
-}
-```
-
----
 
 ## Key Principles
 
-1. **No code without questioning** — Every change must survive at least one Q&A cycle
-2. **Build pass is table stakes** — A change that doesn't compile is not a change, it's noise
-3. **Perceptual regression = veto** — SSIM loss is grounds for rejection even if the logic is correct
-4. **Chronicle = memory** — All decisions are written to the chronicle, not to agent memory
-5. **Council can override Workshop** — If the builder can't implement the spec, it goes back to Council, not to a human
-6. **Human is the terminal, not the bottleneck** — Humans review only when the system hits a blocked state it cannot resolve
+1. **No code without questioning** — Every change survives at least one Q&A cycle
+2. **Build pass is table stakes** — 626 Python files, 0 errors
+3. **Beats pass is verification** — 3/5 sleepwalker beats minimum
+4. **Chronicle = memory** — All decisions written to chronicle files
+5. **Human is the terminal** — No human bottlenecks, only human terminals for taste

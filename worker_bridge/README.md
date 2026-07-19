@@ -1,94 +1,97 @@
-# PI Worker Bridge
+# PI Worker Bridge + Gaussian Foundry
 
-Spawns a second PI agent via `pi --mode rpc` and wraps it in a **FastAPI** server with REST + WebSocket endpoints so the main AI can control it and read its output in real-time.
+A multi-agent autonomous game development system. Spawns a second PI agent via `pi --mode rpc`, wraps it in a **FastAPI** server, and orchestrates a dialectical development loop:
 
-## How it works
+```
+Council (Q&A debate) → Bridge (spec extraction) → Workshop (code → build → review → test) → Commit
+```
+
+## Architecture
 
 ```
 ┌────────────────┐   HTTP/WS     ┌─────────────────┐   stdin/stdout JSONL    ┌─────────────┐
 │  Main Session  │ ──────────►   │  FastAPI Server  │ ◄────────────────────   │ pi --mode   │
-│  (this AI)     │ ◄──────────   │  127.0.0.1:8890  │ ────────────────────►  │ rpc (worker)│
+│  (this AI)     │ ◄──────────   │  127.0.0.1:8891  │ ────────────────────►  │ rpc (worker)│
 └────────────────┘               └────────┬────────┘                        └─────────────┘
                                            │
                                     ┌──────┴──────┐
-                                    │  WebSocket   │
-                                    │  /ws         │
-                                    │ (real-time   │
-                                    │  event stream)│
-                                    └─────────────┘
+                                    │  Gaussian    │
+                                    │  Foundry     │
+                                    │  Pipeline    │
+                                    └──────┬──────┘
+                                           │
+              ┌────────────────────────────┼────────────────────────────┐
+              ▼                            ▼                            ▼
+     ┌─────────────────┐       ┌─────────────────────┐       ┌──────────────────┐
+     │  COUNCIL         │       │  WORKSHOP            │       │  PROVING GROUND   │
+     │  dialogos.py     │       │  forge.py            │       │  (status checks)  │
+     │  Q&A dialectic   │ ──►   │  Writer→Builder→     │ ──►   │  Build, Model,    │
+     │  10 per turn     │       │  Reviewer→Beats      │       │  Visual verify    │
+     └─────────────────┘       └─────────────────────┘       └──────────────────┘
 ```
 
-**Architecture** (single-threaded async dispatcher, no race conditions):
+## How it works
 
-1. `stdout_reader` reads JSONL lines from the worker PI's stdout into an `asyncio.Queue`
-2. `line_dispatcher` consumes the queue — resolves pending RPC request futures, then broadcasts to WebSocket clients
-3. `send_rpc_command` puts a future into `pending_requests`, writes JSON to the worker's stdin, and `await`s the future
+**The Council (dialogos.py):** Two simulated roles (Worker and Main) take turns asking and answering 10 technical questions each, building on the entire prior conversation. Each turn produces 4 chronicle files (worker_questions, main_answers, main_questions, worker_answers).
+
+**The Bridge (council_to_forge.py):** Reads the chronicle and extracts a `spec_manifest.json` identifying target files, edit plans, and test strategies from the dialectical discussion.
+
+**The Workshop (forge.py):** Four-stage gated pipeline:
+1. **Writer** — Reads the spec and makes file edits via the worker PI
+2. **Builder** — Compiles (full pipeline or Python syntax check)
+3. **Reviewer** — Checks diff against project conventions
+4. **Beats** — Runs sleepwalker beat tests in Unreal Engine PIE
+
+**The Orchestrator (run.py):** Single entry point for the full pipeline or individual stages.
 
 ## Running
 
 ```powershell
 cd E:\PythonChimera\worker_bridge
 
-# Option A: uvicorn directly
-python -m uvicorn main:app --host 127.0.0.1 --port 8890 --reload
+# Start the worker bridge (port 8891)
+python -m uvicorn main:app --host 127.0.0.1 --port 8891
 
-# Option B: PowerShell script
-.\launch.ps1
+# Full pipeline: 2 turns of Council + Bridge + Workshop
+python run.py --turns 2
 
-# Option C: Python launcher
-python launch.py
+# Individual stages:
+python run.py --council-only --turns 2   # just the Q&A cycle
+python run.py --bridge-only               # extract spec from chronicle
+python run.py --forge-only specs/spec.json # implement from spec
 ```
 
-## REST API Reference
+## REST API
 
-| Method | Endpoint | Body | Description |
-|--------|----------|------|-------------|
-| GET | `/api/status` | — | Check if worker PI process is alive |
-| POST | `/api/prompt` | `{"message":"..."}` | Send prompt to worker PI (returns after preflight) |
-| POST | `/api/bash` | `{"command":"..."}` | Execute bash command in worker's shell |
-| POST | `/api/steer` | `{"message":"..."}` | Interrupt worker mid-run with redirect |
-| POST | `/api/follow_up` | `{"message":"..."}` | Queue message for after worker finishes |
-| POST | `/api/abort` | — | Abort current operation |
-| POST | `/api/abort_bash` | — | Abort running bash command |
-| GET | `/api/get_state` | — | Full session state (model, streaming, messages count) |
-| GET | `/api/get_messages` | — | All session messages |
-| GET | `/api/get_entries` | `?since=...` | Session entries in append order |
-| GET | `/api/get_tree` | — | Session entry tree |
-| GET | `/api/get_commands` | — | Available extension/prompt/skill commands |
-| GET | `/api/get_available_models` | — | All models available to the worker |
-| GET | `/api/get_session_stats` | — | Session statistics |
-| POST | `/api/cycle_model` | — | Cycle to next model |
-| POST | `/api/set_thinking_level` | `{"level":"high"}` | Set thinking level |
-| POST | `/api/compact` | `{"customInstructions":"..."}` | Compact session context |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/status` | Worker bridge health check |
+| POST | `/api/prompt` | Send prompt to worker PI |
+| POST | `/api/bash` | Execute bash command on worker |
+| POST | `/api/steer` | Interrupt worker mid-run |
+| POST | `/api/follow_up` | Queue message for after finish |
+| GET | `/api/get_state` | Full session state |
+| GET | `/api/get_messages` | All session messages |
+| GET | `/api/get_entries` | Session entries |
+| GET | `/api/get_tree` | Session entry tree |
+| GET | `/api/get_commands` | Available commands |
+| GET | `/api/get_available_models` | All models |
+| GET | `/api/get_session_stats` | Session statistics |
+| POST | `/api/cycle_model` | Cycle to next model |
+| WS | `/ws` | Real-time event stream |
 
-## WebSocket
+## Files
 
-Connect to `ws://127.0.0.1:8890/ws` to receive **all events** from the worker PI
-in real-time (prompt responses, tool calls, agent messages, etc.).
+| File | Purpose |
+|------|---------|
+| `main.py` | FastAPI server wrapping `pi --mode rpc` |
+| `dialogos.py` | Council: automated dialectical Q&A loop |
+| `council_to_forge.py` | Bridge: extract spec from chronicle |
+| `forge.py` | Workshop: Writer→Builder→Reviewer→Beats |
+| `run.py` | Unified entry point |
+| `worker_client.py` | Python SDK for REST API |
+| `launch.ps1` / `launch.py` | Launcher scripts |
 
-The WebSocket also accepts `"ping"` messages and responds with `{"type":"pong"}`.
+## Chronicle
 
-## Python Client
-
-```python
-from worker_client import PiWorker
-
-worker = PiWorker("http://127.0.0.1:8890")
-
-# Check alive
-print(worker.status())
-
-# Send a prompt (fire-and-forget — returns immediately on preflight success)
-worker.prompt("List the files in the current directory")
-
-# Execute bash and get results
-result = worker.bash("dir /s /b | head -10")
-print(result["data"]["output"])
-
-# Interrupt the agent mid-stream
-worker.steer("Stop and redirect")
-
-# Get the worker's current state
-state = worker.get_state()
-print(state["data"]["model"]["id"])
-print(state["data"]["messageCount"])
+All Q&A cycles are saved to `chronicle/turn_NNN_phase.txt`. Spec files go to `specs/spec_turn_NNN.json`. Forge results go to `chronicle/forge_result_*.json`.

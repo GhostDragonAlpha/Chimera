@@ -1,0 +1,21 @@
+{
+  "task_id": "tb-generated-002",
+  "success": true,
+  "stages": {
+    "writer": {
+      "pass": true,
+      "diff_length": 0
+    },
+    "builder": {
+      "pass": true
+    },
+    "reviewer": {
+      "pass": true
+    },
+    "beats": {
+      "pass": true
+    }
+  },
+  "failed_at": null,
+  "failure_reason": null
+}

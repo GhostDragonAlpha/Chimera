@@ -2,22 +2,13 @@
   "spec_version": "1.0.0",
   "task_id": "tb-generated-002",
   "title": "Implementation targets from dialectical turn 2",
-  "target_files": [
-    "fractal_zoom_sweep.py"
-  ],
+  "target_files": [],
   "change_type": "fix",
-  "design_rationale": "Derived from dialectical turn 2.\nQuestions asked: 0\nImplementation targets identified: 1\n\nKey rationale:\n**1. View-distance-normalized threshold was tested \u2014 it regressed CONTAIN to 88.1% due to over-sensitivity at close range.**\n\nYes, the normalized threshold `threshold = 0.02 * (1.0 / first_splat_depth)` was benchmarked on a multi-depth test set (8 scenes: indoor 1m, tabletop 0.5m, corridor 5m, outdoor courtyard 20m, street 50m, mountain 500m, aerial 1,000m, satellite 10,000m). The normalized threshold achieved 93% precision across all depths (vs 93% for fixed 0.02 on the original 10-scene fractal-only set \u2014 no improvement). However, the normalized threshold introduced a new failure mode: at very close range (indoor 1m), `1.0 / first_splat_depth \u2248 1.0`, so the threshold was essentially unchanged at ~0.02 depth-units/pixel. But at the 10,000m satellite range, `1.0 / 10000 = 1e-4`, making the effective threshold `0.02 \u00d7 1e-4 = 2e-6` depth-units/pixel \u2014 far below the noise floor of the splat depth buffer (which has ~1e-3 depth-unit precision due to float32 quantization at that range). Every pixel was flagged as a depth edge, the truncated test was applied everywhere, and the 2.64% concavity failures reappeared, dropping CONTAIN to 88.1%. The fixed 0.02 threshold is robust across the tested depth range because the Sobel gradient magnitude itself scales with depth (farther objects have smaller per-pixel depth differences in world space), so the fixed threshold naturally adapts to depth without explicit normalization. The fixed threshold remains the default.\n\n**2. The isotropic penalty is a multi-task loss with a ratio of 0.3; the trade-off is stable within \u00b120%.**\n\nThe total loss is `L = L_ce + \u03bb_iso * L_iso + \u03bb_L1 * L1(weights)`, where `L_ce` is the cross-entropy loss on the full 18-class material classification, `L_iso` is the cross-entropy on a held-out isotropic-only validation batch (500 samples per epoch, not used for gradient computation \u2014 only as a penalty signal), and `L1(weights)` is the sum of absolute values of the 4,704 spatial filter weights. The hyperparame",
+  "design_rationale": "Derived from dialectical turn 2.\nQuestions asked: 0\nImplementation targets identified: 0\n\nKey rationale:\n**1. Integration review time is explicitly budgeted in the contractor timelines: each contractor's deliverable includes 4 hours of integration support (code review + CI pipeline updates) performed by the contractor themselves after the kernel passes the test suite. The GPU backend engineer's remaining 3 hours/week of slack is sufficient for oversight but not for the hands-on integration work.**\n\nThe contractor scope documents (commit `a3f7c9a3`) include a dedicated **integration support phase** for each deliverable: after the kernel passes the test suite (Tier 1 and Tier 2 with `--tolerance 1.0`), the contractor spends 4 hours updating the CI pipeline configuration (adding the new kernel to the test matrix), writing a one-page integration guide (`docs/integration/<kernel_name>.md`), and participating in a code review with the GPU backend engineer. The contractor's 4-hour integration support is part of their paid scope (included in the $5K/month retainer). The GPU backend engineer's role during integration is limited to oversight: reviewing the integration guide (30 minutes) and approving the CI pipeline changes (15 minutes) \u2014 totaling 45 minutes per deliverable, well within their 3 hours/week of remaining slack. For two deliverables (build 35 and build 39), the total GPU backend engineer integration time is 1.5 hours over 8 weeks \u2014 easily absorbed. The build 35 and build 39 deadlines are not at risk. The integration support phase was already part of the contractor scope before this question was raised \u2014 the earlier omission of this detail from the conversation was another instance of selective disclosure (pattern noted in question 5). The integration process is documented in `docs/CONTRACTOR_SCOPE.md` under \"Deliverable Acceptance\" (commit `a3f7c9a3`).\n\n**2. The conversation UI displays a 'checking...' indicator next to the answer during the 5-10 second LLM consistency check window \u2014 the ASKER is alerted to wait before reading, and the answer text is visually dimmed",
   "rejected_alternatives": [
     "Alternatives were discussed in the Council cycle and rejected before reaching the workshop stage."
   ],
-  "edit_plan": [
-    {
-      "file": "fractal_zoom_sweep.py",
-      "line_range": null,
-      "what": "Modify based on turn 2 dialectic findings",
-      "how": "See chronicle for details"
-    }
-  ],
+  "edit_plan": [],
   "test_strategy": "regolith_yard",
   "regression_risk": "MEDIUM",
   "council_dialectic_ref": "chronicle/turn_002_*.txt"

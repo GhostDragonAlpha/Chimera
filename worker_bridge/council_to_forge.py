@@ -43,6 +43,15 @@ def extract_implementation_targets(chronicle_text: str) -> list[dict]:
     - "add Y to path/to/file.py"
     - "modify lines 42-67"
     """
+    known_project_files = {
+        "splat_emit.py", "splat_gpu.py", "bake.py", "fractal_zoom_sweep.py",
+        "council.py", "ds4_brain.py", "lm_gateway.py", "preflight.py",
+        "postflight.py", "matter_gpu.py", "expectation_violator.py",
+        "onboarding_audit.py", "autonomous.py", "dyad.py",
+        "claude.md", "MASTER_ONBOARDING.md", "TASK_BOARD.md",
+        "HISTORY_BOOK.md", "PENDING_HEURISTICS.md", "envelope.json",
+        "chimera_dna_graph.json",
+    }
     targets = []
     
     # Pattern: file paths
@@ -90,6 +99,16 @@ def extract_implementation_targets(chronicle_text: str) -> list[dict]:
             })
 
     return targets
+    # Pattern: known project files mentioned anywhere in the text
+    for kf in known_project_files:
+        if kf in chronicle_text:
+            if not any(t["file"] == kf for t in targets):
+                targets.append({
+                    "file": kf,
+                    "line_range": None,
+                    "source": "known_project_file",
+                })
+
 
 
 def extract_questions(text: str) -> list[str]:
