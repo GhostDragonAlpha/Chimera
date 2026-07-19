@@ -151,7 +151,7 @@ def assemble_3d_gpu(grid, shape, targets, J, connectivity=18, sweeps=90,
         tgt_snap = wp.array(tgtd.numpy(), dtype=wp.int32, device=dev)
         for ci, col in enumerate(colors):
             wp.launch(_potts_color_pass, dim=shape,
-                      inputs=[lat, area_snap, tgt_snap, Jd, offs, col,
+                      inputs=[lat, area_snap, Jd, offs, tgt_snap, col,
                               float(temp), float(lam), int(frozen),
                               seed * 131 + s * 8 + ci, len(_OFF18)],
                       device=dev)

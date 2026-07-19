@@ -1,29 +1,12 @@
 """
-ds4_brain — THE DEEP BACKGROUND BRAIN (DwarfStar / DeepSeek-V4-Flash, CPU).
+ds4_brain — SUPERSEDED (2026-07-19). Replaced by dynamic model swapping
+through LM Studio. See core/council.py.
 
-Why (2026-07-15, measured live): the 4090 (24 GB) is too small to run the 80 GB
-DeepSeek-V4 model fast, and WSL2 cannot page-lock host memory — so the CUDA path
-crawls at ~0.8 t/s AND monopolizes VRAM (it OOM'd and crashed next to Unreal).
-The CPU path keeps the whole model in the 128 GB of RAM, touches ZERO VRAM (so it
-coexists with Unreal on the GPU + LM Studio floating GPU/RAM), and is ~2x FASTER
-(1.64 t/s). Counter-intuitive but correct for this exact hardware: when the GPU is
-smaller than the model and a virtualization layer throttles PCIe, everything-in-RAM
-on the CPU wins.
+Kept as a backwards-compatible stub; features merged into `core.council`.
+The Council now swaps between fast (MoE, 3.6B active) and deep (dense 27B)
+models on-demand on the GPU — no more 80GB RAM overhead.
 
-ROLE IN THE WORKFLOW: ds4 is the studio's OPTIONAL, slow, DEEP, non-vision brain —
-for reasoning where quality matters more than latency (nightly distillation,
-research briefs, a heavy second opinion). LM Studio (fast, vision-capable) stays
-the DEFAULT via `core.lm_gateway`, which is UNTOUCHED. This module is only the
-studio-side control + client; nothing here changes the gateway or the gates.
-
-  python -m core.ds4_brain serve    # start ds4-server --cpu in WSL (idempotent; ~80GB RAM while up)
-  python -m core.ds4_brain stop     # kill it (frees the RAM)
-  python -m core.ds4_brain status   # health: up? which model? latency?
-  python -m core.ds4_brain ask "…"  # send one deep (slow) prompt, print the reply
-
-Endpoint: CHIMERA_DS4_URL (default http://localhost:8000/v1 — WSL2 forwards the
-WSL server's port to Windows localhost). RAM budget: ds4-CPU ~80 GB + LM Studio +
-Unreal + Windows — stop ds4 when you need the RAM back.
+This module still works if you need the old server.
 """
 import json
 import os

@@ -283,35 +283,96 @@ def resolve_model() -> str:
     return resident[0]
 
 
-def evict_others(model: str | None) -> list:
-    """MANUAL ONLY — `python -m core.lm_gateway evict`. The request path never
-    calls this; it exists to reclaim VRAM from a model that is squatting.
+def load_model(model_id: str, timeout: float = 120.0,
+               flash_attention: bool = True, context_length: int = 32768) -> dict:
+    """Load a model in LM Studio via the v1 REST API.
 
-    Unload every resident model that isn't `model` (None = unload everything).
-    Returns what was evicted."""
+    Uses `POST /api/v1/models/load` — no subprocess, no CLI.
+    Returns the response dict (includes instance_id, load_time_seconds, status).
+    Raises on failure or timeout."""
+    if model_id in loaded_models():
+        return {"status": "loaded", "instance_id": model_id}
+    body = json.dumps({"model": model_id, "flash_attention": flash_attention,
+                    "context_length": context_length}).encode()
+    req = urllib.request.Request(
+        LM_BASE + "/api/v1/models/load", data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST")
+    deadline = time.time() + timeout
+    attempt = 0
+    while time.time() < deadline:
+        attempt += 1
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                result = json.loads(r.read().decode("utf-8", "replace"))
+            if result.get("status") == "loaded":
+                return result
+            # status is not "loaded" yet (shouldn't happen, but handle gracefully)
+            time.sleep(2)
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", "replace")[:200]
+            if e.code == 400 and "already" in detail.lower():
+                # Model is already being loaded by another request
+                time.sleep(3)
+                if model_id in loaded_models():
+                    return {"status": "loaded", "instance_id": model_id}
+                continue
+            raise RuntimeError(f"POST /api/v1/models/load {model_id} "
+                              f"HTTP {e.code}: {detail}")
+        except (urllib.error.URLError, OSError) as e:
+            if attempt >= 3:
+                raise RuntimeError(f"POST /api/v1/models/load {model_id} "
+                                  f"failed after {attempt} attempts: {e}")
+            time.sleep(3)
+    raise TimeoutError(
+        f"Model {model_id} did not load within {timeout}s")
+
+def unload_model(instance_id: str) -> bool:
+    """Unload a model instance via the v1 REST API.
+
+    Uses `POST /api/v1/models/unload`. Returns True on success."""
+    body = json.dumps({"instance_id": instance_id}).encode()
+    req = urllib.request.Request(
+        LM_BASE + "/api/v1/models/unload", data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            result = json.loads(r.read().decode("utf-8", "replace"))
+        return result.get("instance_id") == instance_id
+    except (urllib.error.HTTPError, urllib.error.URLError, OSError) as e:
+        print(f"[lm_gateway] REST unload {instance_id} failed: {e}")
+        return False
+
+
+
+def evict_others(model: str | None) -> list:
+    """Unload every resident model that isn't `model` (None = unload everything).
+
+    Uses the v1 REST API for unloading. Falls back to `lms` CLI if the REST
+    endpoint is unavailable. Returns what was evicted."""
     others = [m for m in loaded_models() if m != model]
     if not others:
-        return []
-    exe = _lms_exe()
-    if not exe:
-        print(f"[lm_gateway] {len(others)} foreign model(s) resident ({', '.join(others)}) "
-              f"but the `lms` CLI was not found - cannot evict; set CHIMERA_LMS_EXE")
         return []
     evicted = []
     for m in others:
         try:
-            p = subprocess.run([exe, "unload", m], capture_output=True,
-                               text=True, timeout=90)
-            if p.returncode == 0:
+            if unload_model(m):
                 evicted.append(m)
-            else:
-                print(f"[lm_gateway] unload {m} failed rc={p.returncode}: "
-                      f"{(p.stderr or p.stdout or '').strip()[:200]}")
-        except (OSError, subprocess.SubprocessError) as e:
-            print(f"[lm_gateway] unload {m} errored: {e}")
+        except Exception as e:
+            print(f"[lm_gateway] REST unload {m} failed ({e}), trying lms CLI fallback...")
+            try:
+                exe = _lms_exe()
+                if exe:
+                    p = subprocess.run([exe, "unload", m], capture_output=True,
+                                       text=True, timeout=90)
+                    if p.returncode == 0:
+                        evicted.append(m)
+            except (OSError, subprocess.SubprocessError):
+                pass
     if evicted:
         tail = f"only {model} stays resident" if model else "endpoint now empty"
-        print(f"[lm_gateway] evicted {', '.join(evicted)} -> {tail}")
+        print(f"[lm_gateway] evicted {' '.join(evicted)} -> {tail}")
     return evicted
 
 
@@ -396,16 +457,20 @@ def queue_depth() -> int:
 
 
 def _main() -> int:
+    """status | evict | load — manage the resident model."""
     import argparse
 
     ap = argparse.ArgumentParser(
         prog="python -m core.lm_gateway",
         description="LM endpoint — which model the studio will use, and queue depth.")
-    ap.add_argument("command", choices=["status", "evict"], nargs="?", default="status",
+    ap.add_argument("command", choices=["status", "evict", "load"],
+                    nargs="?", default="status",
                     help="status: which model requests will use. "
-                         "evict: manually free VRAM (never happens on its own).")
+                         "evict: manually free VRAM (never happens on its own). "
+                         "load: load a model by id.")
     ap.add_argument("--model", default=None,
-                    help="evict: the model to KEEP resident (default: the resident one)")
+                    help="evict: the model to KEEP resident (default: the resident one); "
+                         "load: the model id to load")
     ap.add_argument("--all", action="store_true",
                     help="evict: unload everything, emptying the endpoint")
     args = ap.parse_args()
@@ -429,10 +494,30 @@ def _main() -> int:
                   f"`evict` frees the rest.")
         return 0 if resident or not ADOPT_RESIDENT else 1
 
-    keep = None if args.all else (args.model or (resident[0] if resident else None))
-    evicted = evict_others(keep)
-    if not evicted:
-        print("\nnothing to evict - endpoint already clean")
+    elif args.command == "evict":
+        keep = None if args.all else (args.model or (resident[0] if resident else None))
+        evicted = evict_others(keep)
+        if not evicted:
+            print("\nnothing to evict - endpoint already clean")
+        return 0
+
+    elif args.command == "load":
+        if not args.model:
+            print("error: --model is required for `load`")
+            return 1
+        print(f"loading {args.model}...")
+        try:
+            load_model(args.model)
+            print(f"{args.model} is now resident.")
+            return 0
+        except (RuntimeError, TimeoutError, OSError,
+                subprocess.SubprocessError) as _le:
+            print(f"load failed: {_le}")
+            return 1
+        except Exception as _le:
+            print(f"load failed ({type(_le).__name__}): {_le}")
+            return 1
+
     return 0
 
 

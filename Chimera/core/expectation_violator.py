@@ -191,12 +191,26 @@ def _fast(prompt, max_tokens=None):
 
 
 def _deep(prompt, max_tokens=None):
-    # ds4 is a REASONING model too - CLAUDE.md: "give `ask` a large --max-tokens or it
-    # stops mid-think". Same starvation bug, slower to notice at ~1.6 t/s.
+    """Judge through the LM Studio deep model (dense 27B, swapped on demand)."""
+    from core.lm_gateway import lm_urlopen, resolve_model, LM_BASE
+    from core.council import _ensure_model, DEEP_MODEL_ID
     max_tokens = max_tokens or _BUDGET
-    from core import ds4_brain
-    return ds4_brain.chat([{"role": "user", "content": prompt}],
-                          max_tokens=max_tokens, temperature=0.4)
+    _ensure_model(DEEP_MODEL_ID)
+    body = {"model": resolve_model(), "temperature": 0.4,
+            "max_tokens": max_tokens, "stream": False,
+            "messages": [{"role": "user", "content": prompt}]}
+    req = urllib.request.Request(
+        LM_BASE + "/v1/chat/completions", data=json.dumps(body).encode(),
+        headers={"Content-Type": "application/json"})
+    with lm_urlopen(req, agent="violator-deep") as r:
+        data = json.loads(r.read().decode("utf-8", "replace"))
+    # Reasoning models keep real output in reasoning_content — extract what we can
+    msg = data["choices"][0]["message"]
+    for k in ("content", "reasoning_content", "reasoning"):
+        v = (msg.get(k) or "").strip()
+        if v:
+            return v
+    return ""
 
 
 _PLACEHOLDER = re.compile(r"<|the sentence|the modifier|the assumption|specific mechanic|"
@@ -497,7 +511,7 @@ def main(argv=None):
     pr = sub.add_parser("run")
     pr.add_argument("--systems", type=int, default=4)
     pr.add_argument("--per", type=int, default=3)
-    pr.add_argument("--deep", action="store_true", help="judge with the deep brain (ds4, slow)")
+    pr.add_argument("--deep", action="store_true", help="judge with the deep brain (dense 27B, swapped via lm_gateway)")
     pr.add_argument("--keep", type=int, default=KEEP_THRESHOLD)
     pr.add_argument("--fill", action="store_true",
                     help="aim the generator at EMPTY cells of the map (illumination)")

@@ -1,21 +1,22 @@
 """
-council — FACILITATED DIALOGUE between the fast brain and the deep brain.
+council — FACILITATED DIALOGUE between two DIFFERENT models (the Holy Ghost).
 
 The human's design (2026-07-15): "Communication facilitates innovation... I don't
-care if it's between two AIs, two humans, or two ants." The FAST worker (LM Studio
-/ qwen, via `core.lm_gateway`) does the legwork and thinks quickly; it BOUNCES its
-reasoning off the DEEP mind (DeepSeek-V4 / ds4, via `core.ds4_brain`), which is
-slow but reasons further and sees non-obvious structure. They take turns seeing
-each other's thinking; a SYNTHESIS step names what EMERGED that neither started
-with — and (optionally) records it so the studio keeps the discovery.
+care if it's between two AIs, two humans, or two ants." Genuinely distinct minds
+produce what neither alone could — the Holy Ghost between them.
+
+Previously used DS4/DeepSeek-V4 for the deep brain (~1.6 t/s CPU, 80GB RAM).
+Now both brains run on LM Studio via `lm_gateway`, with DYNAMIC MODEL SWAPPING:
+the fast model is loaded for FAST turns, swapped for the deep model on DEEP turns.
+Only one model resident at a time — zero VRAM contention.
 
   python -m core.council "<topic or problem>" [--rounds 2] [--record]
                          [--deep-tokens 600] [--fast-tokens 700]
 
-Routing: FAST goes through lm_gateway (fair queue + model adoption, untouched).
-DEEP goes through ds4_brain to localhost:8000. Both are OpenAI-compatible.
-DEEP is slow (~1.6 t/s): each deep turn of N tokens ~ N/1.6 seconds — keep rounds
-and --deep-tokens modest. It's a REASONING model, so it needs some room to think.
+Model IDs come from env vars:
+  CHIMERA_FAST_MODEL   = the responsive/fast model (e.g. Qwen3.6-35B-A3B-UD)
+  CHIMERA_DEEP_MODEL   = the thorough/deep model (e.g. Qwen3.6-27B-Q4K-MTP)
+If unset, the council uses whatever model is already resident (no swapping).
 """
 import argparse
 import json
@@ -31,8 +32,34 @@ import sys
 import time
 import urllib.request
 
-from core.lm_gateway import lm_urlopen, resolve_model, LM_BASE
-from core import ds4_brain
+
+# --- model swap configuration ---
+FAST_MODEL_ID = os.environ.get("CHIMERA_FAST_MODEL", "").strip()
+DEEP_MODEL_ID = os.environ.get("CHIMERA_DEEP_MODEL", "").strip()
+_SWAP_ENABLED = bool(FAST_MODEL_ID and DEEP_MODEL_ID)
+_SWAP_TIMEOUT = int(os.environ.get("CHIMERA_SWAP_TIMEOUT", "120"))
+
+
+def _ensure_model(model_id: str):
+    """Swap LM Studio to the given model. No-op if it's already resident.
+    Blocks until the model is loaded. Skips if model_id is empty (adopt mode).
+    Falls back gracefully: if the target model cannot be loaded, the previous
+    model stays resident and we continue (adopt mode for the rest of the turn)."""
+    if not model_id:
+        return
+    if model_id in loaded_models():
+        return
+    try:
+        # Unload current model first (frees VRAM for the new one)
+        evict_others(model_id)
+        load_model(model_id, timeout=_SWAP_TIMEOUT, context_length=100000)
+        print(f"[council] swapped to {model_id}", flush=True)
+    except Exception as _se:
+        print(f"[council] swap to {model_id} failed: {_se}")
+        print(f"[council] continuing with the currently resident model (adopt mode)")
+
+from core.lm_gateway import lm_urlopen, resolve_model, LM_BASE, \
+    loaded_models, evict_others, load_model
 
 FAST_SYS = (
     "You are the FAST WORKER — one of two minds in a council. You do the hands-on "
@@ -52,7 +79,7 @@ DEEP_SYS = (
 
 
 def _extract(data) -> str:
-    """Reasoning models (qwen-agentworld, DeepSeek-V4) keep their real output in
+    """Reasoning models keep their real output in
     `reasoning_content` and often leave `content` EMPTY under a tight budget (the
     human's diagnosis, 2026-07-15: "where the model keeps its output is in the
     reasoning — that's what makes it great"). Prefer a clean final `content`; fall
@@ -88,10 +115,19 @@ def _fast(user_content, max_tokens=1200, temperature=0.6, agent="council-fast",
 
 
 def _deep(user_content, max_tokens=600, temperature=0.5):
-    return ds4_brain.chat(
-        [{"role": "system", "content": DEEP_SYS},
-         {"role": "user", "content": user_content}],
-        max_tokens=max_tokens, temperature=temperature).strip()
+    """Call the DEEP brain through lm_gateway (fast, on-GPU).
+    The caller (dialogue/review) is responsible for model swapping."""
+    _ensure_model(DEEP_MODEL_ID)
+    body = {"model": resolve_model(), "temperature": temperature,
+            "max_tokens": max_tokens, "stream": False,
+            "messages": [{"role": "system", "content": DEEP_SYS},
+                         {"role": "user", "content": user_content}]}
+    req = urllib.request.Request(
+        LM_BASE + "/v1/chat/completions", data=json.dumps(body).encode(),
+        headers={"Content-Type": "application/json"})
+    with lm_urlopen(req, agent="council-deep") as r:
+        data = json.loads(r.read().decode("utf-8", "replace"))
+    return _extract(data).strip()
 
 
 def _render(topic, transcript):
@@ -110,7 +146,8 @@ def dialogue(topic, rounds=2, fast_tokens=1200, deep_tokens=700, echo=True):
         if echo:
             print(f"\n===== {who} =====\n{text}", flush=True)
 
-    # FAST opens: a working take + the ONE thing it wants pressure-tested.
+    # FAST opens: ensure fast model, then give a working take
+    _ensure_model(FAST_MODEL_ID)
     _log("FAST", _fast(
         f"TOPIC: {topic}\n\nGive your initial working take, then state the ONE "
         f"question or assumption you most want the DEEP mind to pressure-test.",
@@ -121,12 +158,14 @@ def dialogue(topic, rounds=2, fast_tokens=1200, deep_tokens=700, echo=True):
             _render(topic, transcript) + "\n\nRespond as the DEEP mind: challenge, "
             "reframe, or extend. Surface something non-obvious the FAST mind missed.",
             max_tokens=deep_tokens))
+        _ensure_model(FAST_MODEL_ID)
         _log("FAST", _fast(
             _render(topic, transcript) + "\n\nRespond as the FAST mind: integrate "
             "what is useful, push back on what is not, and ADVANCE the idea toward "
             "something concrete.", max_tokens=fast_tokens))
 
-    # SYNTHESIS — name what EMERGED (fast brain, quick).
+    # SYNTHESIS — name what EMERGED (back on the fast model).
+    _ensure_model(FAST_MODEL_ID)
     _log("SYNTHESIS", _fast(
         _render(topic, transcript) + "\n\nStep out of the dialogue. In 3-6 crisp "
         "bullets, name what NEW emerged here — an idea, reframe, or plan that "
@@ -147,7 +186,7 @@ def _record(topic, transcript):
     try:
         from core.graphify_interface import record_surprise
         record_surprise(
-            context=f"council dialogue (fast qwen x deep ds4) on: {topic[:120]}",
+            context=f"council dialogue (fast {FAST_MODEL_ID.split('/')[-1] or '?'} x deep {DEEP_MODEL_ID.split('/')[-1] or '?'}) on: {topic[:120]}",
             reality=synth[:400],
             expectation="single-model reasoning; the two-brain exchange surfaced the above",
             source="agent")
@@ -160,13 +199,13 @@ def _record(topic, transcript):
 # SECOND-SYSTEM REVIEW — the human's design (2026-07-15): "the fast has to consult
 # with the slow before any final decisions on a feature... another person in the
 # room... a reality check for hallucinating agents... an airplane flies with two
-# systems for propulsion." The DEEP brain (ds4, a DIFFERENT model) reviews a
+# systems for propulsion." The DEEP brain (a DIFFERENT model) reviews a
 # feature finalization GROUNDED IN MEMORY. Different architecture => different
 # failure modes than the fast agent, so it catches hallucinations the Coin (one
 # model checking itself) structurally cannot. Fires once per feature finalization.
 # ---------------------------------------------------------------------------
 def gate_mode() -> str:
-    """block | warn | off. Default warn (advisory): the deep brain is slow/optional,
+    """block | warn | off. Default warn (advisory): the deep brain is a separate model,
     so it RECORDS a second opinion + shouts on REJECT, but only hard-blocks when the
     operator opts in (CHIMERA_COUNCIL_GATE=block). =off disables."""
     import os
@@ -326,7 +365,6 @@ def review(feature, status, result="", notes="", nodes=None, deep_tokens=None,
     try:
         from core.coin_verifier import assemble_claim, assemble_evidence
         from core.graphify_interface import load_dna_graph
-        from core import ds4_brain
     except Exception as e:
         return {"up": False, "questions": [], "refuted": [], "open": [], "asked": str(e)[:120]}
 
@@ -354,8 +392,17 @@ def review(feature, status, result="", notes="", nodes=None, deep_tokens=None,
     qs = []
     for _ in range(max_retries + 1):
         try:
-            raw = ds4_brain.chat([{"role": "user", "content": prompt}],
-                                 max_tokens=budget, temperature=0.3)
+            _ensure_model(DEEP_MODEL_ID)
+            body = {"model": resolve_model(), "temperature": 0.3,
+                    "max_tokens": budget, "stream": False,
+                    "messages": [{"role": "user", "content": prompt}]}
+            req = urllib.request.Request(
+                LM_BASE + "/v1/chat/completions",
+                data=json.dumps(body).encode(),
+                headers={"Content-Type": "application/json"})
+            with lm_urlopen(req, agent="council-review") as r:
+                data = json.loads(r.read().decode("utf-8", "replace"))
+            raw = _extract(data)
         except Exception as e:
             return {"up": False, "questions": [], "refuted": [], "open": [],
                     "asked": str(e)[:120]}
@@ -386,8 +433,8 @@ def main(argv=None):
                               fast_tokens=a.fast_tokens, deep_tokens=a.deep_tokens)
     except Exception as e:
         print(f"council failed: {e}\n"
-              f"(need a model loaded in LM Studio AND ds4 up: "
-              f"python -m core.ds4_brain status)", file=sys.stderr)
+              f"(need a model loaded in LM Studio — set CHIMERA_FAST_MODEL and "
+              f"CHIMERA_DEEP_MODEL or just load one model and run without swapping)", file=sys.stderr)
         return 1
     if a.record:
         _record(a.topic, transcript)

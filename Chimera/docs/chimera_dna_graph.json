@@ -76468,6 +76468,745 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_f49b789cc68b"
+    },
+    {
+      "id": "feature_b10c8134c3224ce1",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T02:54:13.397478",
+      "feature_name": "Truth_Sync_2026-07_18",
+      "loop": 99,
+      "status": "verified",
+      "parameters": {
+        "findings": "docs/CODE_AUDIT_2026-07-18.md"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_99/Truth_Sync_2026-07_18",
+      "error_category": "none",
+      "fix_description": "Feature 'Truth_Sync_2026-07_18' (Loop 99) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8b9e43b2f668"
+    },
+    {
+      "id": "simtest_365ca63f004abf36",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T03:47:15.627597",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "flight_tb0213",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Travel_Vehicle_Flight witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\flight_tb0213.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'flight_tb0213': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2e43b181986a"
+    },
+    {
+      "id": "simtest_74158636edaefb6a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T03:47:47.831754",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "mat_tb0213",
+      "demo": "materialized_runtime",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "bubble_forms_and_pawn_stands_on_relief",
+          "outcome": "reached",
+          "features": [
+            "materialization",
+            "granular_matter",
+            "planet_averages"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "[Materialize] subsystem online"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            },
+            {
+              "expect": {
+                "log_contains": "[Materialize] formed cell"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            },
+            {
+              "expect": {
+                "pawn_z_above": 100
+              },
+              "ok": true,
+              "note": "z=342"
+            },
+            {
+              "expect": {
+                "pawn_z_below": 800
+              },
+              "ok": true,
+              "note": "z=342"
+            }
+          ]
+        },
+        {
+          "beat": "bubble_follows_the_walking_pawn",
+          "outcome": "reached",
+          "features": [
+            "materialization"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_z_above": 100
+              },
+              "ok": true,
+              "note": "z=155"
+            },
+            {
+              "expect": {
+                "pawn_z_below": 800
+              },
+              "ok": true,
+              "note": "z=155"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\mat_tb0213.json",
+      "temperature": "[SIM] 2/2 beats reached in 'materialized_runtime'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'mat_tb0213': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_26a566122979"
+    },
+    {
+      "id": "discovery_4405ed97a2fffd2c",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-19T03:47:53.165679",
+      "feature": "tb-0213 build and sim verification",
+      "campus_sources": [],
+      "web_sources": [
+        "Chimera/core/council.py; Chimera/core/matter_gpu.py; core.sleepwalker simtest_365ca63f004abf36; core.sleepwalker simtest_74158636edaefb6a"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/tb-0213 build and sim verification",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'tb-0213 build and sim verification': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_af8f5f856118"
+    },
+    {
+      "id": "phase_68fc19bb033cc47e",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-19T03:47:53.604827",
+      "phase": "tb-0213 build and sim verification",
+      "result": "UBT unavailable in shell; SimPlaytest flight_tb0213 1/1 reached, mat_tb0213 2/2 reached. Clean walk.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/tb-0213 build and sim verification",
+      "error_category": "none",
+      "fix_description": "Phase 'tb-0213 build and sim verification' complete: UBT unavailable in shell; SimPlaytest flight_tb0213 1/1 reached, mat_tb0213 2/2 reached. Clean walk.",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_af8f5f856118"
+    },
+    {
+      "id": "simtest_a32d14eb451aa6ee",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-19T06:00:37.879489",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 3,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=20uu (loc x=19.97490119934082, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "reached",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": true,
+              "note": "dist=21uu (loc x=2021.3580864350354, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": false,
+              "note": "dist=2000uu (loc x=2000, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": false,
+              "note": "z=130"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 3/5 beats reached in 'regolith_yard'. Failures: walk_rock_to_sand_basin (failed: expect {\"pawn_within\": {\"x\": 4000, \"y\": 0, \"r\": 1100}} -> dist=2000uu (loc x=2000, y=0)); jump_probe (failed: expect {\"pawn_z_above\": 130} -> z=130)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 3/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_957b438139f3"
+    },
+    {
+      "id": "surprise_0b0b3d012dfb173b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T06:00:38.639593",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"Actor_NS_SandDust\"}, \"ok\": true, \"note\": \"present=True\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"Actor_NS_SandDust\"}, \"ok\": true, \"note\": \"p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_957b438139f3"
+    },
+    {
+      "id": "surprise_b2f2bf2cb19f0d75",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T06:00:39.398215",
+      "context": "Sleepwalker expected beat 'jump_probe' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=130\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=130\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_957b438139f3"
+    },
+    {
+      "id": "observation_f9f0c860d53c4d2a",
+      "type": "Observation",
+      "timestamp": "2026-07-19T06:39:56.258839",
+      "feature_name": "Shelter_Habitat_Materials",
+      "verdict": "accepted",
+      "notes": "provisional collapse: 4 clean sleepwalk exercises; human whole-experience verdict overrides anytime",
+      "observer": "agent-sim-provisional",
+      "derived_from": "simtest_4a5722f841309d8a",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Shelter_Habitat_Materials",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Shelter_Habitat_Materials': accepted \u2014 provisional collapse: 4 clean sleepwalk exercises; human whole-experience verdict overrides anytime",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_4a5722f841309d8a"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_7caa3dedff90"
+    },
+    {
+      "id": "feature_a3f26f35a64235a0",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-19T06:39:56.765224",
+      "feature_name": "Shelter_Habitat_Materials",
+      "loop": 6,
+      "status": "observed_provisional",
+      "parameters": {
+        "sim_evidence": [
+          "simtest_f2856885f26a021f",
+          "simtest_d1d951e783f926f0",
+          "simtest_c7136e95cebadd12",
+          "simtest_4a5722f841309d8a"
+        ]
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_6/Shelter_Habitat_Materials",
+      "error_category": "none",
+      "fix_description": "Feature 'Shelter_Habitat_Materials' (Loop 6) recorded as 'observed_provisional'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_7caa3dedff90"
+    },
+    {
+      "id": "surprise_7ec2ea95bd764552",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T07:59:32.959500",
+      "context": "dyad (fast qwen3.6-35b-a3b x deep qwen3.6-27b-mtp) on: Investigate Tool_Scanner: what evidence exists, what remains, what is the next step?",
+      "expectation": "single-model reasoning; the dyad surfaced the above",
+      "reality": "Here's a thinking process:\n\n1.  **Analyze User Input:**\n   - **Role:** FAST WORKER (one of two minds in a council). I do hands-on work, think quickly, partner is DEEP mind (slower, reasons further, sees non-obvious structure). My job is to THINK TOGETHER toward an idea neither had alone. Be concrete, disagree when needed, build on useful parts. Keep it tight (few sharp paragraphs, not an essay).",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'single-model reasoning; the dyad surfaced the above' but 'Here's a thinking process:\n\n1.  **Analyze User Input:**\n   - **Role:** FAST WORK'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "dyad.py",
+      "run_id": "run_51d8b7cf229d"
+    },
+    {
+      "id": "surprise_bb04ffd93eadb5b0",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T08:22:04.716481",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "Tool_Scanner does not exist as a concrete feature. The brief context was from an earlier example test. The real project state: full compositional pipeline from big bang through planet climates to materialization. Splat pipeline exists (splat_emit.py + splat_gpu.py). Matter model exists. Dyad system is operational. Mandate: grow everything organically from the splat pipeline.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'Tool_Scanner does not exist as a concrete feature. The brief context was from an'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "_report_turn1.py",
+      "run_id": "run_a2541d5a0516"
+    },
+    {
+      "id": "surprise_50aa93e241e92881",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T08:29:57.037581",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "Fractal zoom sweep test built and executed on a 157K-splat grown limb. Key findings:\n- At planetary scale (50km): 0 splats visible, 0 tiles (limb too far)\n- At orbital scale (10km): 64K visible, 1 tile coverage\n- At high altitude (1km) and below: all 157K splats visible at all distances\n- Tile coverage saturates at 104 tiles (out of 340 total) regardless of distance\n- Render time: 54-125ms per fra",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'Fractal zoom sweep test built and executed on a 157K-splat grown limb. Key findi'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "_report_sweep.py",
+      "run_id": "run_31e8b0d1ab0c"
+    },
+    {
+      "id": "surprise_743f29b584411eea",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T08:36:53.141388",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "Spatial LOD merger built and tested. Results on 157K-splat limb:\n- 50km (planetary): 1 splat after merge, 2.4ms render (BUDGET OK)\n- 10km (orbital): 1 splat, 2.4ms (OK)\n- 1km (high alt): 1 splat, 2.1ms (OK)\n- 100m (low alt): 16 splats, 3.9ms (OK)\n- 10m (ground): 16 splats, 2.2ms (OK)\n- 5m (close): 157K splats (no merge at this scale), 83ms (MISSES)\n- 1m (detail): 157K splats, 89ms (MISSES)\nThe fra",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'Spatial LOD merger built and tested. Results on 157K-splat limb:\n- 50km (planeta'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "_report_lod.py",
+      "run_id": "run_087c52dc6696"
+    },
+    {
+      "id": "surprise_b98b3f6e530ffac8",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T08:39:02.943903",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "The spatial LOD merger already exists as core/splat_lod.py (CPU, numpy). It was built in response to the previous dyad instruction. Results on 157K-splat limb: at 50km \u2192 1 merged splat (2.4ms, budget OK), at 100m \u2192 16 merged splats (3.9ms, OK), at 5m \u2192 157K (no merge, 83ms, misses). The fractal property works at distance: splat count drops to 1-16, 60x render speedup. Close range still needs hiera",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'The spatial LOD merger already exists as core/splat_lod.py (CPU, numpy). It was '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "_report_existing.py",
+      "run_id": "run_81fdd8a4a752"
+    },
+    {
+      "id": "surprise_61b630f8e526afb3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T09:03:48.912109",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "Stress mapper built: principal stress analysis on Cellular Potts tissue domains. Found 2 articulation candidates on a test bent limb (1 transition zone at the main bend, 1 tendon anchor). Export to limb.Bone format works. The GPU shaker has a pre-existing dtype bug that needs fixing for GPU-accelerated analysis.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'Stress mapper built: principal stress analysis on Cellular Potts tissue domains.'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "_report_stress.py",
+      "run_id": "run_39b9e6fb4da9"
+    },
+    {
+      "id": "surprise_8f32ce33f19809ef",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T09:09:24.994636",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "GPU shaker fixed (int32/float32 argument order). Full pipeline: GPU limb growth -> stress mapper -> 180 articulation candidates. Pipeline proven end-to-end on GPU.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'GPU shaker fixed (int32/float32 argument order). Full pipeline: GPU limb growth '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "_report_fix.py",
+      "run_id": "run_64045ff2b41d"
+    },
+    {
+      "id": "surprise_d76ed429f8dc58e4",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T09:14:17.948391",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "Stress mapper consolidation implemented. KDTree merging reduced 180 raw -> 31 consolidated candidates. Proper gradation values (0.21-0.28) instead of uniform 1.00. Output schema matches rig.py interface.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'Stress mapper consolidation implemented. KDTree merging reduced 180 raw -> 31 co'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "_report_consolidate.py",
+      "run_id": "run_11f2052ea15a"
+    },
+    {
+      "id": "surprise_95db455df6642c79",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T09:31:42.247034",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "Error: Unknown option: --approve\nError: Failed to load extension \"E:\\PythonChimera\\Chimera\\.pi\\extensions\\chimera-tools.ts\": Failed to load extension: ctx is not defined",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'Error: Unknown option: --approve\nError: Failed to load extension \"E:\\PythonChime'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "autonomous.py",
+      "run_id": "run_72e2cb58b616"
+    },
+    {
+      "id": "surprise_7ecb856901deecfa",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T09:35:24.122413",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "Error: Unknown option: --approve\nError: Failed to load extension \"E:\\PythonChimera\\Chimera\\.pi\\extensions\\chimera-tools.ts\": Failed to load extension: ctx is not defined",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'Error: Unknown option: --approve\nError: Failed to load extension \"E:\\PythonChime'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "autonomous.py",
+      "run_id": "run_72e2cb58b616"
+    },
+    {
+      "id": "surprise_5652e08a6b8326f2",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T09:50:24.641275",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "stress_gradient_to_emission_prob implemented in splat_emit.py. Gain-modulated logistic with adaptive gain per zone type. However the gradient range [0.21, 0.28] maps to only [0.49, 0.51] on the logistic \u2014 no compression. The midpoint or scaling needs adjustment.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'stress_gradient_to_emission_prob implemented in splat_emit.py. Gain-modulated lo'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "_report_emit.py",
+      "run_id": "run_4a2862524a53"
+    },
+    {
+      "id": "surprise_c50debb5a906136d",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T10:16:22.314284",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "[ERROR: [WinError 2] The system cannot find the file specified]",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but '[ERROR: [WinError 2] The system cannot find the file specified]'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "dyad.py",
+      "run_id": "run_0e2b5eb44e77"
+    },
+    {
+      "id": "surprise_e101c461197cc9e8",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T10:19:10.734962",
+      "context": "dyad turn result",
+      "expectation": "the dyad's instruction was executed",
+      "reality": "Ran fractal_zoom_sweep.py (tests/ version). No WinError 2 occurred \u2014 the test runs cleanly through all zoom levels. However, performance fails at close range (5m/1m): 540ms render time vs 16.6ms budget. At 50km, LOD reduces to 1 splat visible (over-aggressive merge). No resolve_assets() function exists in bake.py \u2014 the dyad's function reference was hallucinated. The actual code has no relative/tem",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'the dyad's instruction was executed' but 'Ran fractal_zoom_sweep.py (tests/ version). No WinError 2 occurred \u2014 the test ru'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "dyad.py",
+      "run_id": "run_86060588e950"
+    },
+    {
+      "id": "surprise_4d8190209f4824b7",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T10:19:23.540123",
+      "context": "postflight refused by research gate: dyad-cycle execute-and-report",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_eb0767246057"
+    },
+    {
+      "id": "surprise_a766afa9379df466",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-19T10:19:28.523867",
+      "context": "research waived: dyad-cycle execute-and-report",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "This was an execution-and-report cycle: run the dyad, execute its instruction (run sweep test), report back. The only research was LM Studio model loading API (lms CLI, /api/v1/models), which was expl",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'This was an execution-and-report cycle: run the dyad, execute its instruction (r'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_4d18d65420a8"
+    },
+    {
+      "id": "phase_19f50a87407aff5e",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-19T10:19:28.924304",
+      "phase": "dyad-cycle execute-and-report",
+      "result": "Dyad drive resolved and executed. LM Studio model loaded. fractal_zoom_sweep.py ran: 614,813 splats, 7 zoom levels, no WinError 2. Performance issue at close range (540ms vs 16.6ms) and over-aggressive LOD at distance.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/dyad-cycle execute-and-report",
+      "error_category": "none",
+      "fix_description": "Phase 'dyad-cycle execute-and-report' complete: Dyad drive resolved and executed. LM Studio model loaded. fractal_zoom_sweep.py ran: 614,813 splats, 7 zoom levels, no WinError 2. Performance issue at close range (540ms vs 16.6ms) and over-aggressiv",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "council _ensure_model evicts all models then fails to reload with :N suffix",
+        "dyad hallucinates function names (resolve_assets in bake.py doesn't exist)"
+      ],
+      "inheritance": "LM Studio model loaded and working. Council/dyad model swap has a bug: _ensure_model evicts all before loading, :N suffix not recognized. Dyad module drove but hallucinated function names (resolve_assets doesn't exist in bake.py).",
+      "recorded_by": "postflight.py",
+      "run_id": "run_4d18d65420a8"
     }
   ],
   "edges": [
@@ -87695,6 +88434,18 @@
       "asked_by": "dream_loop.py",
       "source": "observation_b4e929ab127f9760",
       "target": "simtest_02b2fcf282458f9c",
+      "type": "because"
+    },
+    {
+      "src": "observation_f9f0c860d53c4d2a",
+      "dst": "simtest_4a5722f841309d8a",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-19T06:39:56.259000",
+      "asked_by": "dream_loop.py",
+      "source": "observation_f9f0c860d53c4d2a",
+      "target": "simtest_4a5722f841309d8a",
       "type": "because"
     }
   ]

@@ -30,11 +30,12 @@ QUESTION — a bad one costs an afternoon, a bad verdict costs the record.
 **THE THREE HERESIES — run these against yourself, they are live failures here:**
 - **MODALISM** (one mind in three masks): the Council must be a DIFFERENT MODEL or it is
   a mask. This is exactly why the Coin — *one model checking itself* — cannot catch what
-  the Council can. Distinctness must be BOUGHT (`ds4`), never assumed.
+  the Council can. Distinctness must be BOUGHT (different architecture — MoE vs dense),
+  never assumed.
 - **DOCETISM** (it only *seemed* to have a body): work that only APPEARS to touch matter.
   A green atom on broken code; a subagent that deleted a declaration to pass a
   text-match. **If it did not touch matter, it did not happen.**
-- **ARIANISM** (the third person is optional): a down deep brain, a skipped Council, an
+|- **ARIANISM** (the third person is optional): only one model loaded, a skipped Council, an
   advisory-by-default check. A redundancy you can silently omit was never redundancy.
 
 ---
@@ -245,12 +246,14 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
     - **FAST** = LM Studio/qwen via `lm_gateway` (model ADOPTED, never pinned/loaded —
       `NoModelLoaded` if none, no JIT fallback, shared GPU; never gate on vision flags;
       timeouts ≥300s, batch behind a pre-filter). Check: `lm_gateway status`.
-    - **DEEP** = ds4/DeepSeek-V4 (284B MoE) on **CPU** (`core.ds4_brain`,
-      `localhost:8000`, ~2 t/s, **0 VRAM** so it coexists with Unreal + LM Studio;
-      non-vision). **At ORIENT run `python -m core.ds4_brain status`; if `up:false` →
-      `python -m core.ds4_brain serve` and FIGURE IT OUT** — the server is `ds4-server`
-      built in WSL2 (`~/ds4`), CPU/24-thread, ~80GB RAM while up (`stop` reclaims it);
-      loading takes minutes, so poll `status` until `up:true` before you rely on it.
+    - **DEEP** = a second, different model loaded dynamically through LM Studio
+      (e.g. Qwen 3.6 27B dense, via `core.lm_gateway`). Swapped on demand for
+      Council turns; only one model resident at a time. **The human's design says they must
+      be architecturally distinct** — MoE vs dense, or different families entirely.
+      `CHIMERA_FAST_MODEL` and `CHIMERA_DEEP_MODEL` env vars control which models swap.
+      Loading takes ~7–14s via the REST API (`POST /api/v1/models/load`), unloads the
+      previous model automatically. `load_model()` and `unload_model()` in `lm_gateway`
+      handle the swap; `_ensure_model()` in `council.py` orchestrates per-turn swaps.
       It's a REASONING model — give `ask` a large `--max-tokens` or it stops mid-think.
     - `core.council` = the two across a table: `dialogue` (fast bounces reasoning off
       deep) for discovery, `review` = **the Paraclete** — it returns QUESTIONS and the
@@ -260,6 +263,14 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
       a robe.** Its best outcome is making itself unnecessary: it asked "what about
       armature?", physics answered in four minutes, and the answer refuted a claim
       neither model could have checked.
+
+      `core.dyad` = the DRIVER — two-mind development partnership. The dyad
+      reads the brief, decides what to build next, hands an instruction to the
+      lead agent, the lead executes, reports back, and the dyad evaluates and
+      decides the next move. No task board — organic, piece-by-piece growth.
+      The loop continues until the human stops it manually.
+      `drive()` returns a concrete instruction; `report()` records the outcome.
+      Same model-swap mechanism as council.
       `core.expectation_violator` invents mechanics by breaking seed player-assumptions
       and MAPS them (MAP-Elites archive over friction-kind × scope: the best per cell,
       accumulating across runs; `--fill` aims at dark cells). Nightly in `dream_loop`
@@ -300,7 +311,7 @@ agent's own adjectives. If the reference is absent, the honest output is a REFUS
   `control_editor screenshot mode=editor_viewport`.
 - **Env:** `CHIMERA_*_GATE=warn` (soften) · `CHIMERA_COUNCIL_GATE=block` (harden the
   2nd-system review) · `CHIMERA_ENFORCE_REP_GATE=1` (harden) · `CHIMERA_TASK_CLAIM_TTL`
-  (7200) · `CHIMERA_LM_MAX_TOKENS`/`_CONCURRENCY` · `CHIMERA_DS4_URL`/`_THREADS` (deep
+  (7200) · `CHIMERA_LM_MAX_TOKENS`/`_CONCURRENCY` · `CHIMERA_FAST_MODEL`/`CHIMERA_DEEP_MODEL` (model swap)
   brain) · `CHIMERA_DNA_BACKEND=json`.
 
 ## PART III — LEAD PROTOCOL
@@ -335,7 +346,7 @@ dispatching focused subagents and VERIFYING their work — a self-report is a cl
 > question and dispatch. Report when the loop has actually turned.
 
 **STEP 0 — BRING THE STUDIO UP (before ANY dispatch; do not skip, do not assume):**
-`python -m core.ds4_brain status` → `up:false`? then `serve` and poll until `up:true`
+`python -m core.lm_gateway status` — shows resident model; `load` switches it
 (figure it out — rule 11). `python -m core.lm_gateway status` → a model MUST be
 resident. `python -m core.circadian tick --run`. **A brain that is down does not
 error — it silently skips its gate for every session that follows.** If you cannot
@@ -388,8 +399,11 @@ came back `open`, say so and say why. Never present an abandoned task as a
 conclusion.
 
 **Cmds:** `capcom brief`/`tell` · `preflight` · `helm targets` · `task_board
-claim`/`trim` · `rep_engine tend` · `curriculum enroll --feature "X"` · `ds4_brain
-serve`/`status` · `council "<hard call>"` (bounce a decision off the deep brain) ·
+claim`/`trim` · `rep_engine tend` · `curriculum enroll --feature "X"` ·
+`council "<hard call>"` (two-model dialogue via lm_gateway swap) ·
+`dyad drive` (two-mind driver: reads brief, returns instruction) ·
+`dyad report` (records outcome of executing the instruction) ·
+`dyad brief` (read the current brief) ·
 `expectation_violator map` (the design-space archive: what's explored, what's dark) /
 `run --fill` (aim at empty cells) · `beat_lint` (BEFORE any dispatch — a typo condemns a
 feature) · `wire_check` (what does the workflow COMPUTE that nothing CONSUMES? five

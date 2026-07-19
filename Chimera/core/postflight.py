@@ -610,7 +610,8 @@ def main():
                                       nodes=load_dna_graph().get("nodes", []))
                 if not _cr.get("up"):
                     print("[Council] deep brain unavailable — no questions asked "
-                          "(start it: python -m core.ds4_brain serve)")
+                          "(make sure a model is loaded in LM Studio, or set "
+                          "CHIMERA_DEEP_MODEL)")
                 else:
                     _refuted = _cr.get("refuted") or []
                     _open = _cr.get("open") or []

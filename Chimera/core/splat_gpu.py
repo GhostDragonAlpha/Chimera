@@ -185,6 +185,27 @@ def _project_and_shade(splats: dict, center: np.ndarray, radius: float,
     return sx, sy, inv00, inv01, inv11, rad2, color, order
 
 
+def _cull_to_screen(sx, sy, rad2, order, w, h, max_visible):
+    """Screen-space density cap: keep only the closest `max_visible` splats
+    whose screen footprint overlaps the viewport.
+
+    Returns a truncated order array (or full order if under budget).
+    This prevents the O(W*H*N) bottleneck when the camera is inside the
+    fractal and ALL splats are visible (observed 540ms at 5m range).
+    """
+    ok = rad2 >= 0.0
+    rad = np.sqrt(np.maximum(rad2, 0.0))
+    visible = (
+        ok &
+        (sx + rad >= 0) & (sx - rad < w) &
+        (sy + rad >= 0) & (sy - rad < h))
+    # Walk the depth-sorted order, keep only visible, cap at max_visible
+    visible_order = order[visible[order]]
+    if len(visible_order) > max_visible:
+        return visible_order[:max_visible]
+    return visible_order
+
+
 def rasterize(splats: dict, center: np.ndarray, radius: float,
               azim: float, elev: float, light_azim: float, light_elev: float,
               w: int = 340, h: int = 340) -> np.ndarray:
@@ -195,6 +216,13 @@ def rasterize(splats: dict, center: np.ndarray, radius: float,
     sx, sy, inv00, inv01, inv11, rad2, color, order = _project_and_shade(
         splats, center, radius, azim, elev, light_azim, light_elev, w, h)
 
+    # Screen-space density cap: when camera is inside the fractal, ALL splats
+    # are visible and the O(W*H*N) compositing becomes the bottleneck (540ms).
+    # Keep only the closest splats within the viewport budget.
+    max_visible = int(w * h * 1.5)
+    capped = _cull_to_screen(sx, sy, rad2, order, w, h, max_visible)
+    n_visible = len(capped)
+
     dev = "cuda:0"
     f32 = lambda a: wp.array(np.ascontiguousarray(a, dtype=np.float32), dtype=float, device=dev)
     img = wp.zeros(shape=(h, w), dtype=wp.vec3, device=dev)
@@ -202,7 +230,7 @@ def rasterize(splats: dict, center: np.ndarray, radius: float,
               inputs=[f32(sx), f32(sy), f32(inv00), f32(inv01), f32(inv11),
                       f32(rad2), f32(splats["alpha"]),
                       wp.array(np.ascontiguousarray(color, dtype=np.float32), dtype=wp.vec3, device=dev),
-                      wp.array(order, dtype=int, device=dev), int(len(order)), 0.06, img],
+                      wp.array(capped, dtype=int, device=dev), int(n_visible), 0.06, img],
               device=dev)
     return np.clip(img.numpy().astype(np.float64), 0.0, 1.0)
 
@@ -268,19 +296,45 @@ def rasterize_tiled(splats: dict, center: np.ndarray, radius: float,
     wp, _, kernel_tiled = _warp()
     sx, sy, inv00, inv01, inv11, rad2, color, order = _project_and_shade(
         splats, center, radius, azim, elev, light_azim, light_elev, w, h)
-    tile_offsets, tile_splats, tiles_x, _tiles_y = _tile_bins(sx, sy, rad2, order, w, h, tile)
+    # Screen-space density cap: cap the depth-sorted order BEFORE binning
+    # so the tile pipeline doesn't explode when camera is inside the fractal.
+    max_visible = int(w * h * 1.5)
+    capped = _cull_to_screen(sx, sy, rad2, order, w, h, max_visible)
+
+    # When the density cap keeps splats under ~200k, the per-pixel compositor
+    # is FASTER than the tile pipeline — large splats at close range overlap
+    # dozens of tiles each, generating O(N * tiles_overlapped) bin entries.
+    # Fall back to the global per-pixel kernel in that regime.
+    use_global = len(capped) < max_visible and len(capped) < w * h
 
     dev = "cuda:0"
     f32 = lambda a: wp.array(np.ascontiguousarray(a, dtype=np.float32), dtype=float, device=dev)
-    i32 = lambda a: wp.array(np.ascontiguousarray(a, dtype=np.int32), dtype=int, device=dev)
     img = wp.zeros(shape=(h, w), dtype=wp.vec3, device=dev)
-    wp.launch(kernel_tiled, dim=(h, w),
-              inputs=[f32(sx), f32(sy), f32(inv00), f32(inv01), f32(inv11), f32(rad2),
-                      f32(splats["alpha"]),
-                      wp.array(np.ascontiguousarray(color, dtype=np.float32), dtype=wp.vec3, device=dev),
-                      i32(tile_splats), i32(tile_offsets),
-                      int(tiles_x), int(tile), 0.06, img],
-              device=dev)
+
+    if use_global:
+        # Per-pixel compositor: O(W*H*N_capped) — fine for <~200k splats
+        wp.launch(_KERNEL, dim=(h, w),
+                  inputs=[f32(sx), f32(sy), f32(inv00), f32(inv01), f32(inv11),
+                          f32(rad2), f32(splats["alpha"]),
+                          wp.array(np.ascontiguousarray(color, dtype=np.float32),
+                                   dtype=wp.vec3, device=dev),
+                          wp.array(capped, dtype=int, device=dev),
+                          int(len(capped)), 0.06, img],
+                  device=dev)
+    else:
+        # Tile pipeline: bin into 16x16 tiles, one thread per pixel
+        tile_offsets, tile_splats, tiles_x, _tiles_y = _tile_bins(
+            sx, sy, rad2, capped, w, h, tile)
+        i32 = lambda a: wp.array(np.ascontiguousarray(a, dtype=np.int32),
+                                  dtype=int, device=dev)
+        wp.launch(_KERNEL_TILED, dim=(h, w),
+                  inputs=[f32(sx), f32(sy), f32(inv00), f32(inv01), f32(inv11),
+                          f32(rad2), f32(splats["alpha"]),
+                          wp.array(np.ascontiguousarray(color, dtype=np.float32),
+                                   dtype=wp.vec3, device=dev),
+                          i32(tile_splats), i32(tile_offsets),
+                          int(tiles_x), int(tile), 0.06, img],
+                  device=dev)
     return np.clip(img.numpy().astype(np.float64), 0.0, 1.0)
 
 

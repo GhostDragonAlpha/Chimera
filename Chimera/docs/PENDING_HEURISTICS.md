@@ -654,3 +654,23 @@ Wait, looking at the
 - evidence: surprise_4ed053b71dd5028c, surprise_074c4f5ce8137b19, surprise_e09b060aa7dd655a
 - sample: expected 'research per Research Depth Protocol' but 'No technical research needed for this fix - it was a STALE p'
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-19T03:50:43Z -->
+## H-62: sim_rejection: travel_vehicle_basic/vehicle_component_initialized
+- status: pending
+- kind: sim_rejection  |  count: 5  |  last_seen: 2026-07-18T20:28:51
+- proposed_organ: claude_md
+- evidence: simtest_7b4a0574d9da53d0, simtest_8c89d59be803b78e, simtest_294b7002d65b7a26, simtest_12a08e5b4755f972, simtest_549d2c42e57f4a6e
+- sample: failed: [{"expect": {"actor_exists": "AShip_Trader_Vessel_Alpha"}, "ok": false, "note": "present=False"}]
+- sample: blocked: [{"error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (delta=+3000
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-63: sim_rejection: solar_system_stand/stand_on_grown_ocean_world
+- status: pending
+- kind: sim_rejection  |  count: 4  |  last_seen: 2026-07-18T22:45:01
+- proposed_organ: claude_md
+- evidence: simtest_579122ea55c61beb, simtest_42f9f67531bcb374, simtest_140a70674941d472, simtest_ae7dc6dd3cca28a9
+- sample: blocked: [{"error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3630 (delta=+3500
+- sample: blocked: [{"error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3085 (delta=+2955
+- sample: blocked: [{"error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (delta=+3000
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

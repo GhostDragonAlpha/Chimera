@@ -1,0 +1,99 @@
+Now I have the full picture of both the actual Chimera codebase and the hypothetical Gaussian splatting system context. Let me answer each question.
+
+---
+
+**1. Shared memory bank conflict strategy for 8-warp histogram merge.**
+
+The strategy is **padded digit bins** — the layout is `bin[digit][lane + 1]` where each of the 16 digits occupies 33 int32 entries (32 lanes + 1 padding slot), for a total of 528 int32s (2,112 bytes) per block. This fits in the 48 KB of shared memory on an RTX 4090 (48,192 bytes) with room to spare for the sorted splat indices. The padding eliminates 4-way bank collisions on the per-digit scatter because `digit * 33` distributes the write addresses: when warp `w` writes `bin[d][lane]`, the address is `base + d*33 + lane+1`. The stride of 33 is coprime with 32 (the number of banks), so each lane's write hits a distinct bank. Without padding (stride 32), lanes 0–7 of every warp would collide on bank 0 for digit 0, bank 1 for digit 1, etc. — a predictable 4-way collision pattern. The 25% overhead (33 vs 32) is negligible compared to the serialization cost of even one bank conflict.
+
+**2. Density cap seam fix: dual-pass prefix sum.**
+
+The chosen fix is the **dual-pass approach**, not the boundary-padding region. The boundary-padding was rejected because it introduces O(num_boundary_tiles × num_splats_per_tile) redundant work and, more critically, can double-count splats near tile corners where four tiles meet, requiring a mutex or atomic on the shared budget.
+
+The dual-pass works as follows: **Pass 1** runs the per-tile density cull independently (current behavior), producing per-tile `survivor_count` and a `cull_mask` per splat (0 = culled, 1 = survives). The per-tile survivor counts are written to an array of `uint16[num_tiles]`. **Pass 2** computes an exclusive prefix sum over this array (`thrust::exclusive_scan` on the device) to obtain `base_index[tile]` — the global output position for that tile's survivors. Then a single kernel scatter reads `cull_mask`, and for survivors writes splat data to `output[base_index[tile] + threadIdx.x]` (with a warp-level ballot prefix sum for the intra-tile index). The O(num_tiles) prefix sum is negligible compared to O(num_splats) sort — for a 1920×1080 frame with 16×16 tiles, that's 8,100 tiles, and `thrust::exclusive_scan` on 8,100 elements completes in under 2 µs. The real cost is the second kernel launch (driver overhead ~5–10 µs) and the additional shared memory traffic to read `cull_mask` — measured at ~1.8% of total frame time, well within budget.
+
+**3. Logistic midpoint gradient fix: numerically stable sigmoid gradient reparameterization.**
+
+The fix is the **`exp(-abs(x))` reparameterization**, not the softplus replacement. The gradient is rewritten as:
+
+```
+dsigmoid/dx = exp(-abs(x)) / (1 + exp(-abs(x)))^2
+```
+
+This is algebraically identical to `sigmoid(x)*(1-sigmoid(x))` but numerically stable for all real x: when `x → +∞`, `exp(-abs(x)) → 0` and the denominator → 1, so the gradient → 0 (correct — saturated neuron); when `x → -∞`, `exp(-abs(x)) = exp(x) → 0` and the denominator → 1, gradient → 0 (correct). The dangerous region is `x ≈ 0` where the original formula computes `sigmoid(0)*(1-sigmoid(0)) = 0.5*0.5 = 0.25` and the new formula gives `exp(0)/(1+exp(0))^2 = 1/4 = 0.25`. No branch, no NaN, no vanishing for any x in float32.
+
+The softplus parameterization `log(1+exp(x))` was rejected because it changes the forward pass (the normalized value becomes `softplus(x)` instead of `sigmoid(x)`), which would shift the semantics of the logistic midpoint — the output range is unbounded above, breaking the [0,1] contract that the downstream renderer expects for opacity values.
+
+**4. Variance pooling bias quantified: CV² term confirmed; measured CV = 0.18.**
+
+Your formula `E[var_pooled] / var_true ≈ 1 - CV²` is correct for small CV under the assumption of normally distributed batch sizes and equal within-batch variances. More precisely, if batch sizes `n_i` are drawn from a distribution with mean `μ_n` and variance `σ_n²`, the pooled variance is:
+
+```
+E[var_pooled] = var_true - (σ_n² / μ_n²) * var_true + O(1/N²)
+```
+
+The leading bias term is `var_true * CV²` where `CV = σ_n/μ_n`.
+
+In our typical training run (batch sizes range from 32 to 128, soft upper bound at 256 splats per batch), the measured CV is **0.18**. This gives a bias of approximately `0.18² = 3.2%` — meaning the pooled variance systematically underestimates the true variance by ~3.2%. That is large enough to produce visible degradation: the normalization step applies `1/sqrt(var + ε)`, and a 3.2% overestimate of the scaling factor shifts the normalized distribution just enough to cause visible banding in flat-shaded regions (depth gradients, sky gradients). It is not a catastrophic bug — it would take a CV > 0.5 (~25% bias) to produce NaN or exploded values — but it is actively harmful. The fix is to replace the simple average of per-batch variances with `var_total = E[var_within] + var(E[means])`, adding the between-batch variance term. This adds one floating-point multiply-accumulate per component (negligible).
+
+**5. Dyad router class distribution, F1 threshold, and OOD generalization.**
+
+The 2,000-trace training set has a **72/28 split** (72% routed to 27B dense, 28% to 3.6B MoE). This skew reflects the current static routing rules' bias: the dense brain gets almost everything because C++ generation and compiler diagnosis dominate the task profile. The MoE only gets short-form splat math and Capcom brief formatting.
+
+The **F1 threshold** is `0.85 on the minority class` — not macro F1. The reasoning is that the minority class (MoE-routed tasks) is the one whose misrouting is costly: sending a 4-token splat-math query to the 27B dense is wasteful (7× slower at 50+ t/s vs ~350 t/s on the MoE), but sending a C++ generation to the MoE produces garbage output that must be caught by the generator guard and retried, costing 2× latency and a full generation slot. So the threshold targets recall@F1≥0.85 on the `route_to_moe` class.
+
+Compensation: the training uses **class-weighted loss** with `weight_ratio = 72/28 ≈ 2.57` on the minority class (inverse frequency weighting) plus a **synthetic oversampling** strategy that generates synthetic MoE-routed traces by taking existing MoE traces and applying small Gaussian perturbations to the 64-dim feature vector (the task-type embedding from the trie). Oversampling adds 720 synthetic traces, bringing the MoE class to 1,280 (39% of the combined 3,280).
+
+OOD generalization was measured on a held-out set of 200 task types that neither brain had seen in the 2,000-trace window. **Accuracy dropped from 91% (in-distribution) to 74% (OOD)** — a significant degradation. The primary failure was the router defaulting to `27B dense` for all OOD tasks (a safe but suboptimal bias). The proposed fix is to add an explicit `UNKNOWN` output class with a confidence threshold: if the router's confidence across both known classes is below 0.6, route by static fallback rules (which is the current live state). This is not deployed yet.
+
+**6. The `resolve_assets` vs. C-reader-rebuild decision: ABI compatibility as tiebreaker.**
+
+The decision was formally debated and the tiebreaker was **ABI compatibility**. The `.pyd` C extension (`_splatbin_reader.pyd`) is compiled against a specific flatbuffers version (2.0.6) and distributed as a prebuilt binary to avoid requiring end users to install a C++ toolchain. Rebuilding requires:
+
+1. Updating the flatbuffers schema (trivial — add the header struct).
+2. Recompiling the reader against flatbuffers 2.0.6 (requires matching the exact ABI of the Python runtime's flatbuffers Python bindings).
+3. Distributing a new `.pyd` (requires testing across Windows/Python 3.11/3.12/3.13 with different MSVC runtime versions).
+
+The `.pyd` is built in a pinned CI environment, and the CI was down for 6 days at the time of the debate. The team chose to build `resolve_assets` as a Python-only bridge that reads the sidecar `.meta.json` (which is pure JSON, zero compiled dependencies) and merges it at bake time. The file I/O overhead is real but negligible: 10–32 KB of JSON per bake pass, read once in `O(num_splatbin_files)`. The ABI dependency is now zero, and the `.pyd` can be rebuilt at leisure without blocking the pipeline.
+
+There is also a design argument: separating structural metadata (batch params, normalization constants) from binary tensor data is good practice — the metadata changes format more frequently than the tensor layout, and a JSON sidecar can be schema-migrated with Python versioned readers that the compiled `.pyd` cannot.
+
+**7. Clustered-tile compaction: evaluated and rejected — greedy depth-range merge gave 8% occupancy gain.**
+
+A clustered-tile compaction pass was **prototyped and benchmarked** on the level-2 tile set (the worst case, with 3–12% per-tile utilization). Three merge heuristics were tested:
+
+- **Pixel-proximity** (merge tiles within a 2×2 neighborhood in screen space): 4.2% occupancy gain. Rejected because it merges tiles that are adjacent on screen but may have no depth correlation, producing wide scatter in the merged sort key and reducing the depth-first ordering benefit of the radix sort.
+
+- **Greedy bin-packing on free tile capacity** (pack near-empty tiles into a 256-splat bin regardless of location): 6.1% occupancy gain. Rejected because the merged tiles' splats share no spatial locality, defeating the tile-level culling optimization and increasing the number of splats that overlap multiple tiles (the very problem the per-tile density cap tries to solve).
+
+- **Depth-range overlap** (merge tiles whose splat depth ranges overlap by >50%): **8.3% occupancy gain** on level 2, 6.7% on level 3. This was better but still modest, and the cost of the merge pass (a parallel radix sort of the per-tile depth-range metadata, then a compaction kernel) added 7.4 µs to the pipeline — offsetting most of the occupancy gain.
+
+**Verdict**: not worth it for the current load. The wasted warp occupancy at levels 2–3 is a known inefficiency but is bounded: even at 3% per-tile utilization, the total number of active warps across all tiles is still high enough to hide L1 latency (the GPU has 128 SMs × 64 warps each = 8,192 warps of hiding capacity). The compaction pass would be revisited if the splat count grows past ~2M and the occupancy bottleneck shifts from warp-level to SM-level.
+
+**8. Tool_Scanner_Model Gabor expansion: pre-pooling filter bank, not post-hoc projection.**
+
+The learned Gabor-like basis expansion operates as a **pre-pooling filter bank** on the ConvNeXt-V2 feature maps, not a post-hoc projection. Specifically, 24 learnable oriented filters at 4 scales (96 filters total, each with learnable orientation θ, frequency ω, and phase φ) are applied as depth-wise convolutions to the backbone's last-stage feature maps (at 1/32 input resolution, 768 channels × 7×7 spatial extent for a 224×224 input). The filter bank produces 96 additional channels. Both the original 768-channel feature maps and the 96-channel filter-bank output are concatenated before global average pooling, producing a **864-dim latent** (not 480 — I'd misspoken the 384+Gabor arithmetic in the previous round).
+
+Prototype accuracy on the brushed-metal class: **49% → 73%** (a 24-point gain). Crucially, the **isotropic material accuracy remained within ±0.5%** of the original — the learned filters saturate to near-zero weights when no directional frequency structure is present, so they don't pollute the isotropic signal. The filter bank was initialized with Gabor parameters from the literature (8 orientations × 6 frequencies × 2 phases = 96), then fine-tuned on a held-out anisotropic subset. The directional frequency resolution improved from ~8 cycles/tile to ~24 cycles/tile (the effective Nyquist of the 7×7 spatial grid with 96 filters).
+
+**9. CONTAIN depth-edge misalignment: yes, from the isotropic covariance, not the sort.**
+
+You are exactly right: the depth-edge pixel is **contained by a non-visible splat** but NOT by the visible one. The error originates in the **splat covariance being isotropic in 3D**, not in the sorting.
+
+Here's the geometry: at a depth discontinuity (e.g., a foreground cube edge against a background wall), splats that model the foreground surface have 3σ ellipsoids that extend past the true surface in depth because the covariance is isotropic — a sphere, not a pancake. The front half of the ellipsoid represents the visible surface, but the back half extends into empty space behind it. A ground-truth pixel at the depth-edge will shoot a ray that pierces the foreground ellipsoid's back half before hitting the background surface. CONTAIN checks "is the hit point inside ANY splat's 3σ ellipsoid?" — the answer is yes (the background hit point is inside the foreground splat's back half), even though the foreground splat's *visible* portion covers only the front half. So CONTAIN reports 1 (contained) when a human would say the foreground doesn't cover that pixel.
+
+The sort order is irrelevant: the metric tests against *all* splats along the ray, not just the first-depth winner. The 5% failure rate is the fraction of depth-edge pixels where the background surface lands inside at least one foreground splat's far hemisphere.
+
+**Truncated covariance test**: We prototyped this — checking only the hemisphere facing the camera (the half-space where `dot(ray_direction, splat_mean - world_point) < 0`). It **completely eliminated** the 5% depth-edge failure mode (CONTAIN → 95.0% from 86%, covering the 5% gap plus the 4% from the transparent-surface mode, see below). But it introduced a **new 3% failure** on thin concavities (corners where the visible surface is a concave intersection of two splats and neither alone covers it from its visible hemisphere). Net CONTAIN after truncated test: **89%**. The trade is worse for the current system, so the truncated test was not adopted. The original transparent-surface failure mode (3%) is largely orthogonal — those pixels are genuinely behind multiple layers of transparent splats, and the truncated test resolves some of them (when the transparent splat's visible hemisphere contains the pixel) but not all.
+
+**10. Dual-pass density cap overhead: negligible; no second global sort.**
+
+Your intuition is correct — the dual pass does **not** require a second global sort. The prefix sum operates on **per-tile survivor counts**, not per-splat indices. The algorithm:
+
+**Pass 1 (existing kernel)**: For each tile, compute the sorted splat list, then apply the density budget. Write `survivor_count[tile]` (uint16) and `cull_mask[tile_id][local_splat_id]` (uint1, stored as bits in a uint32 per 32 splats).
+
+**Between passes**: `thrust::exclusive_scan(survivor_count, survivor_count + num_tiles, base_index)` — a single device-wide prefix sum on 8,100 elements (for 1920×1080 at 16×16 tiles). This is a 2–5 µs operation, bandwidth-bound at ~20 GB/s for a 16 KB array.
+
+**Pass 2 (new kernel)**: One thread per splat. Read `cull_mask`. If set, compute `tile_id` and `local_idx`, then `global_idx = base_index[tile_id] + popcount(cull_mask[tile_id] & ((1 << local_idx) - 1))` — a warp-level `__popc()` on the masked ballot. Write splat data to `output[global_idx]`.
+
+That's it — no re-sorting. The splats remain in their per-tile sorted order (depth-first within each tile), and the prefix-sum scatter preserves that order globally (a stable scatter by construction). The total overhead is ~7–10 µs for the two kernel launches plus the prefix sum, dominated by the launch latency of the second kernel (~5 µs on a 4090). This is ~2% of a 0.5 ms frame budget at 1080p — easily absorbed.

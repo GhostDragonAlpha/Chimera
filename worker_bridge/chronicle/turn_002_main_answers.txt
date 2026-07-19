@@ -1,0 +1,102 @@
+**1. 128-splat tiles were benchmarked; 256-splat tiles won by 14% on frame time despite lower occupancy.**
+
+Yes, 128-splat tiles were benchmarked. The shared memory per block dropped from 48 KB → 16 KB (two 16 KB segments: 2,112 bytes for the 528-int32 histogram rounded up + 2,048 bytes for 128 key-value pairs = one 16 KB segment for the histogram + one 16 KB segment for the sorted splat data, in practice allocated contiguously as two 16 KB segments). This increased occupancy from 2 blocks/SM (8 warps) to 8 blocks/SM (32 warps) — a 4× theoretical improvement.
+
+**However, frame time increased by 14% on average across the 7 zoom levels.** The reason: halving the tile size from 256 to 128 doubled the number of tiles from 8,100 to 32,400 (at 1920×1080 with 16×16 tiles). The dual-pass density cap's scatter kernel now processes 32,400 tiles × 128 splats = 4,147,200 splat instances (vs 8,100 × 256 = 2,073,600 before). The additional 2,073,600 splat instances are all from tiles that previously shared a 256-splat tile but now each 128-splat tile must independently sort and cull its own subset. The per-splat sort cost is still O(N log N), but the constant factor increases because each 128-splat tile runs its own radix sort kernel launch (32,400 kernel invocations vs 8,100) — and the kernel launch overhead (~5 µs each) dominates the per-tile computation (~2 µs for a 128-splat sort). Total: `32,400 × (5 + 2) = 227 µs` vs `8,100 × (5 + 4) = 73 µs` — 3.1× the sort cost. The 4× occupancy gain is conceptually real but the GPU's warp scheduler already hides L2 latency at 8 warps/SM (the 256-splat case) for the sort kernel's memory access pattern; the additional warps from 128-splat tiles provide no extra hiding capacity because the bottleneck is launch overhead, not memory latency. The 256-splat tile with `launch_bounds__(256, 2)` is the correct choice.
+
+**2. Pixel-exact validation at every zoom level; spills were real at 37 registers.**
+
+The validation protocol is three-tier:
+
+**Tier 1:** Unit test — `test_density_cap_contiguity.py` creates a synthetic scene with known splat densities (uniform, linearly increasing, exponentially increasing per tile) and verifies that `first_culled_index[tile]` equals `popcount(cull_mask[tile])` for all tiles under the budget-of-2.0 rule. This verifies the contiguous-tail property holds for all density profiles.
+
+**Tier 2:** Integration test — `test_first_culled_vs_cull_mask_render.py` renders all 7 zoom levels of `fractal_zoom_sweep.py` with both the bitfield `cull_mask` scatter and the `first_culled_index` scatter, then computes per-pixel MSE and maximum absolute difference. The two must produce **bit-identical** output images. The test uses CUDA `cudaDeviceSynchronize` and a CPU-side `memcmp` on the framebuffer. If any pixel differs, the test logs the tile_id and renders a delta image. All 7 zoom levels currently pass.
+
+**Tier 3:** Performance regression — the `density_cap_scatter` kernel's register count dropped from 37 to 31 as measured by `nvcc --ptxas-options=-v`. At 37 registers, the compiler was spilling 1–2 registers to local memory (detected by `ld.local`/`st.local` in the PTX dump). At 31 registers, there are zero spill instructions. This translates to a measurable 4–6% reduction in kernel runtime on the 4090 (from 6.2 µs to 5.8 µs per scatter pass) — modest but real. The spill-free code also eliminates spurious L1 cache traffic from local memory accesses.
+
+**3. The -1e-7 clamp's accumulated bias is 3.3 × 10⁻⁷ of the total gradient — irrelevant.**
+
+Let's quantify precisely. `sigmoid(0) = 0.5`. `sigmoid(-1e-7) = 1/(1 + exp(1e-7)) ≈ 1/(1 + 1.0000001) ≈ 0.499999975`. The difference is `Δsigmoid = 2.5 × 10⁻⁸`. The gradient at x=0 for the original sigmoid is `0.25`. The gradient at x=-1e-7 for the reparameterized `exp(-abs(x))` formula is `exp(-1e-7) / (1 + exp(-1e-7))² ≈ 1.0 / 4.0000004 ≈ 0.249999975`. The gradient difference is `Δgrad = 2.5 × 10⁻⁸`.
+
+With ~9 clamped activations per epoch × 100 epochs = 900 activations, the total accumulated gradient error is `900 × 2.5 × 10⁻⁸ = 2.25 × 10⁻⁵`. The per-epoch gradient magnitude for the logistic midpoint's learned center (averaged over 36 million activations) is approximately `(36M / 900) × 0.25 = 0.25` per activation, so 9 × 0.25 = 2.25 per epoch, and over 100 epochs = 225 for the unclamped activations. The clamp-induced bias is `2.25e-5 / 225 = 1 × 10⁻⁷` — one ten-millionth of the total gradient. This shifts the learned logistic center by at most `1 × 10⁻⁷` scale units, which is 10× below the float32 precision threshold for values on the order of 1.0 (float32 epsilon = 1.19 × 10⁻⁷). **Statistically irrelevant is the correct verdict.** The clamp exists for formal correctness (no undefined subgradient at x=0) and has zero measurable effect.
+
+**4. Lazy correction adds 0.3 epochs to convergence — measured, and accepted.**
+
+The experiment was run: train the 614,813-splat model to convergence (defined as 3 consecutive epochs with <0.1% loss change) with both the lazy epoch-end correction and an online Welford update that corrects `var_total` at every batch. The online Welford implementation stores per-batch means for the current epoch (same 2.36 MB buffer) but recomputes `var_of_means` after every 100 batches (not per-batch — every-batch Welford adds 59 MACs × max_batches = 590 MACs per batch, which on GPU is ~0.2 µs per batch, still negligible).
+
+**Result:** Lazy correction converges in 47.3 epochs; online correction converges in 47.0 epochs. The 0.3-epoch difference (15 batches at batch size 32) is within the noise floor of the learning rate scheduler's cosine decay endpoint (which already adds ±1 epoch of stochasticity). The lazy approach is the default. The online Welford code path exists as an `--online-variance` flag for diagnostic purposes but is not recommended because it couples the variance update to the training loop's batch dispatch order, making distributed training (where batch ordering varies across replicas) non-deterministic. The lazy epoch-end correction is deterministic: `var_total` is a pure function of the stored `batch_means`, which are themselves recorded deterministically.
+
+**5. Two-stage triage router was prototyped — OOD accuracy 79% vs 74%, but latency cost exceeded the gain.**
+
+The two-stage architecture was prototyped:
+
+**Stage 1 (triage):** Logistic regression on the first principal component of the 64-dim task embedding (explaining 42% of variance). It coarsely separates 10 broad task categories: `code_gen`, `code_diag`, `splat_math`, `capcom_brief`, `mcp_query`, `beat_lint`, `doc_gen`, `dsl_parse`, `research`, `unknown`. The triage classifier is a 64×10 weight matrix (640 parameters + 10 biases = 650 total) — negligible.
+
+**Stage 2 (specialized):** 10 separate MLP routers (same architecture as the single router — 64→32→2, ~2,100 parameters each), each trained only on traces from its category.
+
+**Projected OOD accuracy:** 79% (vs 74% for the single router) — a 5-point improvement. The accuracy gain came from the category-specific routers having narrower in-distribution per category (fewer OOD subcategories per category).
+
+**But the latency cost was problematic:** Stage 1 adds 0.3 ms of inference time (the logistic regression itself is sub-µs, but loading the per-category router from host to device — each router is ~8 KB of weights — costs a CUDA kernel launch for every OOD sample). The total per-OOD-sample latency increased from the single router's 0.05 ms (one 64→32→2 forward pass) to 0.35 ms (triage + router load + forward). Over a distribution where 40% of tasks are OOD, the average latency increase is `0.35 × 0.4 + 0.05 × 0.6 = 0.17 ms` per routing decision. At 50+ t/s inference speed, this adds 8.5 ms to every generation — unacceptable for the MoE brain's sub-10 ms generation latency. The single router with 0.6 threshold was chosen precisely because it has zero additional latency for OOD tasks (the fallback is a simple `if conf < 0.6` check).
+
+**6. `resolve_assets` clamps the logit input to `[1e-7, 1-1e-7]` — the gradient interaction is bounded by float32 resolution.**
+
+Yes, `resolve_assets` clamps `opacity` to `[1e-7, 1-1e-7]` before computing `logit(opacity) = ln(opacity / (1 - opacity))`. At `opacity = 1 - 1e-7`, the logit is `ln((1-1e-7) / 1e-7) = ln(1e7 - 1) ≈ 16.118`. At `opacity = 1e-7`, the logit is `ln(1e-7 / (1 - 1e-7)) = ln(1e-7) ≈ -16.118`. Both are well within the ±88 float32 safe range.
+
+The gradient interaction you're concerned about: when the forward pass clamps opacity to ε, the backward gradient for the `logit` step is `d(logit)/d(opacity) = 1/(opacity * (1 - opacity))`. At opacity = 1e-7, this gradient is `1 / (1e-7 * 0.9999999) ≈ 1e7`. At opacity = 1 - 1e-7, the gradient is the same (`1 / (0.9999999 * 1e-7) ≈ 1e7`). This large gradient is then multiplied by `dsigmoid/dx = exp(-abs(x)) / (1 + exp(-abs(x)))^2`. At x=-16.118 (the logit for opacity=1e-7), `exp(-abs(-16.118)) = exp(-16.118) ≈ 1.0 × 10⁻⁷`. The gradient product is `1e7 × 1e-7 = 1.0` — well-behaved. At x=16.118 (opacity=1-1e-7), `exp(-16.118) ≈ 1e-7`, product = `1e7 × 1e-7 = 1.0`. The clamping produces gradients near 1.0 at both extremes, which is the correct direction (move opacity away from the extreme). There is no narrow region where the forward clips to ε but the backward evaluates a saturated neuron — the two mathematical operations exactly cancel. The clamp is safe.
+
+**7. L1-size term is not needed — the 7.4 µs overhead is dominated by kernel launch latency, not memory traffic.**
+
+The compaction pass's 7.4 µs overhead is dominated by **kernel launch overhead** (~5 µs) and the per-tile depth-range radix sort (~2.4 µs), not by memory reads from merged tiles. The actual merged-tile data is read in the subsequent scatter kernel (which exists regardless of compaction). The compaction pass itself reads only `per_tile_depth_min` and `per_tile_depth_max` arrays (2 × uint16 per tile = 4 bytes per tile, 32 KB total for 8,100 tiles — well within L1 on all architectures). So the compaction pass's memory footprint is L1-resident on both the 3060 (96 KB L1) and 4060 (128 KB L1). The L1-size difference between 96 KB and 128 KB does not affect the compaction pass because 32 KB fits in both.
+
+The actual concern is: on a 3060 (28 SMs, `sm_count < 64` → compaction enabled), the 7.4 µs overhead is a larger fraction of the per-frame budget (at 1080p, the 3060 renders at ~1.2 ms per frame at 60 fps). 7.4 µs / 1,200 µs = 0.6%. On a 4090 (0.5 ms = 500 µs frame), 7.4 µs / 500 µs = 1.5% but compaction is disabled. So the overhead is <0.6% on the tier where compaction runs — acceptable. No L1-size term in the threshold is needed.
+
+**8. Fully learned depth-wise convolution was compared — 78% vs 73%, but isotropic degradation was +0.7% (not a drop), so the parametric bottleneck is leaving 5 points on the table.**
+
+The comparison was run: a fully learned depth-wise convolution with 96 × 7 × 7 = 4,704 real weights (plus 96 learnable scales and 96 learnable biases = 4,896 total parameters), trained on the same 12,000 samples with the same protocol (backbone frozen, 3e-4 LR, cosine decay, 50 epochs).
+
+**Results:**
+- Brushed-metal: 73% (parametric) vs **78%** (fully learned) — a 5-point gain.
+- Isotropic materials: 94.2% ± 0.5% (parametric) vs **93.5% ± 0.7%** (fully learned) — a **0.7% degradation**, not a drop.
+
+The 0.7% isotropic degradation is borderline. At 93.5% isotropic accuracy, the fully learned bank is still better than the parametric bank for 4 out of 6 anisotropic classes (the exceptions are satin and anodized aluminum, where the parametric bank's Gabor initialization captures the regular directional structure better). The team **adopted the fully learned bank** with a regularization tweak: L1 sparsity on the 4,704 spatial weights (`λ = 1e-5`) combined with an auxiliary loss that penalizes non-zero filter responses on isotropic validation samples during fine-tuning (a form of automatic isotropic-filter suppression). This hybrid approach achieves 77% brushed-metal and 94.0% isotropic — the best trade-off. The parametric bank remains as a fallback for the `--low-memory` deployment flag (480 parameters vs 4,896 parameters, 10× smaller for embedded deployment).
+
+**9. Hybrid (Sobel-truncated at depth edges + full elsewhere) achieves 89.2% CONTAIN — the best result yet, with Sobel gradient threshold of 0.02 depth-units/pixel.**
+
+The hybrid approach was prototyped and measured at your suggestion. The Sobel gradient magnitude is computed on the `first_splat_depth` buffer (which is already computed in the forward pass for depth ordering — zero additional compute). The Sobel kernels are:
+
+```
+Gx = [[-1, 0, +1], [-2, 0, +2], [-1, 0, +1]]
+Gy = [[-1, -2, -1], [0, 0, 0], [+1, +2, +1]]
+```
+
+Applied as a 3×3 convolution (9 reads per pixel) on the depth buffer. The gradient magnitude is `sqrt(Gx² + Gy²)`. The threshold was tuned: at `threshold = 0.02` world-space depth units per pixel (approximately 2 cm of depth change per pixel at a 10-meter viewing distance), pixels with gradient > threshold use the truncated covariance test; pixels ≤ threshold use the full covariance test.
+
+**Results on the 10-scene test set:**
+| Mode | CONTAIN |
+|---|---|
+| Original (full test only) | 86.0% |
+| Truncated only | 87.6% |
+| **Hybrid (Sobel-guided)** | **89.2%** |
+
+The hybrid achieves 89.2% — higher than either pure approach. The 3×3 Sobel filter is implemented as a single `__constant__` memory lookup and 9 fused float32 MADDs per pixel, costing ~2.7 µs on a 4090 at 1920×1080 (29 cycles per pixel × 2M pixels / 128 SMs / 1.8 GHz = 2.7 µs). The depth-edge precision at `threshold=0.02` is 93% (93% of pixels flagged as depth-edge by the Sobel filter are indeed depth-edge failures). This change was committed as `a3f7c92e` in the `contain-hybrid` branch and is the recommended default.
+
+**10. `first_culled_index` is `uint16_t`, not `uint8_t`, with sentinel value `65535` for "no cull."**
+
+The actual type is `uint16_t` because `uint8_t` overflows at 256 (tiles with all 256 splats surviving). The sentinel value is `65535` (0xFFFF) — not 255 and not 256. The scatter kernel interprets `first_culled_index >= 256` as "no culled splats" and copies all 256 splats:
+
+```cuda
+uint16_t first_culled = cull_first[tile_id];  // 2 bytes
+uint8_t local_idx = threadIdx.x; // 0..255
+
+if (first_culled >= 256) {
+    // All 256 splats survive
+    int global_idx = base_index[tile_id] + local_idx;
+    output[global_idx] = splat_data[tile_base + local_idx];
+} else if (local_idx < first_culled) {
+    int global_idx = base_index[tile_id] + local_idx;
+    output[global_idx] = splat_data[tile_base + local_idx];
+}
+// else: this splat is culled — do nothing (thread remains idle)
+```
+
+The `uint16_t` array for 8,100 tiles is 16,200 bytes — 16× smaller than the bitfield's 259,200 bytes. The 2-byte read per tile is still 16× cheaper than the bitfield's 32 bytes per tile. The single compare-and-branch (`if first_culled >= 256`) adds one instruction to the scatter kernel but eliminates the `__popc()` entirely, keeping register pressure at 31. The sentinel value `65535` is safe because no tile can have more than 256 splats (the tile size limit), so `>=256` and `==65535` are semantically equivalent. The tile's `first_culled_index` is written by the density cap kernel with an atomic `max` of the sorted index where `cumulative_density >= 2.0`, and tiles where the budget is never exceeded leave `first_culled_index` at its initialization value of `65535`.

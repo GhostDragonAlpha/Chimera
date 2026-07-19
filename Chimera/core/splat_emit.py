@@ -496,6 +496,56 @@ def emit_limb(fleshed: np.ndarray, sigma: float = 0.9,
     out["counts"] = {p["tissue"][0]: len(p["pos"]) for p in parts}
     return out
 
+def stress_gradient_to_emission_prob(gradient: np.ndarray,
+                                     meta: dict | None = None) -> np.ndarray:
+    """Convert stress gradient to emission probability via gain-modulated logistic
+    with per-batch robust normalization.
+
+    Before the logistic, the gradient is normalized batch-wise using median and
+    MAD (Median Absolute Deviation) instead of a hardcoded midpoint offset:
+
+        norm_grad = (grad - median) / (1.4826 * max(MAD, 1e-4))
+        norm_grad = np.clip(norm_grad, -2.0, 2.0)
+        prob = sigmoid(gain * norm_grad)
+
+    The constant 1.4826 makes MAD consistent with sigma for a normal distribution.
+    Values are clamped to [-2, 2] to prevent extreme single-batch outliers from
+    saturating the sigmoid entirely.
+
+    Gain is adaptive (preserved):
+    - transition zones (volume > 1000): gain = 0.6
+    - medium articulations/anchors: gain = 1.2 + (volume / 735.0) * 0.4
+    - default: gain = 1.0
+
+    Clamped to [0.01, 0.99].
+    """
+    g = gradient.astype(np.float64)
+
+    # --- batch-wise robust normalization ---
+    median = np.median(g)
+    mad = np.median(np.abs(g - median))
+    scale = 1.4826 * max(mad, 1e-4)
+    norm_grad = (g - median) / scale
+    norm_grad = np.clip(norm_grad, -2.0, 2.0)
+
+    # --- adaptive gain (per-zone-type, preserved) ---
+    gain = np.full_like(gradient, 1.0, dtype=np.float64)
+    if meta is not None:
+        for i, gv in enumerate(gradient):
+            vol = meta.get("volume", 0) if isinstance(meta, dict) else 0
+            t = meta.get("type", "") if isinstance(meta, dict) else ""
+            if isinstance(meta, list) and i < len(meta):
+                vol = meta[i].get("volume", 0)
+                t = meta[i].get("type", "")
+            if "transition" in str(t) or vol > 1000:
+                gain[i] = 0.6
+            elif vol > 50:
+                gain[i] = 1.2 + (vol / 735.0) * 0.4
+
+    prob = 1.0 / (1.0 + np.exp(-gain * norm_grad))
+    return np.clip(prob, 0.01, 0.99)
+
+
 
 def tissue_mask(splats: dict, name: str) -> np.ndarray:
     return np.array([t == name for t in splats["tissue"]])

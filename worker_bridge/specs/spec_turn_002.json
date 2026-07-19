@@ -1,0 +1,24 @@
+{
+  "spec_version": "1.0.0",
+  "task_id": "tb-generated-002",
+  "title": "Implementation targets from dialectical turn 2",
+  "target_files": [
+    "fractal_zoom_sweep.py"
+  ],
+  "change_type": "fix",
+  "design_rationale": "Derived from dialectical turn 2.\nQuestions asked: 0\nImplementation targets identified: 1\n\nKey rationale:\n**1. View-distance-normalized threshold was tested \u2014 it regressed CONTAIN to 88.1% due to over-sensitivity at close range.**\n\nYes, the normalized threshold `threshold = 0.02 * (1.0 / first_splat_depth)` was benchmarked on a multi-depth test set (8 scenes: indoor 1m, tabletop 0.5m, corridor 5m, outdoor courtyard 20m, street 50m, mountain 500m, aerial 1,000m, satellite 10,000m). The normalized threshold achieved 93% precision across all depths (vs 93% for fixed 0.02 on the original 10-scene fractal-only set \u2014 no improvement). However, the normalized threshold introduced a new failure mode: at very close range (indoor 1m), `1.0 / first_splat_depth \u2248 1.0`, so the threshold was essentially unchanged at ~0.02 depth-units/pixel. But at the 10,000m satellite range, `1.0 / 10000 = 1e-4`, making the effective threshold `0.02 \u00d7 1e-4 = 2e-6` depth-units/pixel \u2014 far below the noise floor of the splat depth buffer (which has ~1e-3 depth-unit precision due to float32 quantization at that range). Every pixel was flagged as a depth edge, the truncated test was applied everywhere, and the 2.64% concavity failures reappeared, dropping CONTAIN to 88.1%. The fixed 0.02 threshold is robust across the tested depth range because the Sobel gradient magnitude itself scales with depth (farther objects have smaller per-pixel depth differences in world space), so the fixed threshold naturally adapts to depth without explicit normalization. The fixed threshold remains the default.\n\n**2. The isotropic penalty is a multi-task loss with a ratio of 0.3; the trade-off is stable within \u00b120%.**\n\nThe total loss is `L = L_ce + \u03bb_iso * L_iso + \u03bb_L1 * L1(weights)`, where `L_ce` is the cross-entropy loss on the full 18-class material classification, `L_iso` is the cross-entropy on a held-out isotropic-only validation batch (500 samples per epoch, not used for gradient computation \u2014 only as a penalty signal), and `L1(weights)` is the sum of absolute values of the 4,704 spatial filter weights. The hyperparame",
+  "rejected_alternatives": [
+    "Alternatives were discussed in the Council cycle and rejected before reaching the workshop stage."
+  ],
+  "edit_plan": [
+    {
+      "file": "fractal_zoom_sweep.py",
+      "line_range": null,
+      "what": "Modify based on turn 2 dialectic findings",
+      "how": "See chronicle for details"
+    }
+  ],
+  "test_strategy": "regolith_yard",
+  "regression_risk": "MEDIUM",
+  "council_dialectic_ref": "chronicle/turn_002_*.txt"
+}

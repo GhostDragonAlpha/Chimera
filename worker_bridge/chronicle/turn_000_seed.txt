@@ -1,0 +1,10 @@
+
+GAUSSIAN SPLATTING SYSTEM -- Current state:
+- splat_gpu.py: GPU render pipeline with tile-based radix sort (256-splat tiles)
+- splat_emit.py: per-batch normalization, logistic midpoint
+- bake.py: asset baking pipeline (resolve_assets function MISSING -- needs creation)
+- fractal_zoom_sweep.py: 614,813 splats, 7 zoom levels, tested pass
+- Dyad module: LM Studio two-brain (Qwen 3.6B MoE + 27B dense)
+- Build: last 20 all pass. GPA 1.78 (flat). Vision track CONTAIN at 86%
+- Pending: Tool_Scanner_Model (needs_refinement), Tool_Scanner_Material (needs_refinement)
+- Gaps: screen-space density cap in splat_gpu.py incomplete, per-batch normalization bug in emit, resolve_assets missing in bake.py

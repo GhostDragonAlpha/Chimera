@@ -222,6 +222,94 @@
    "proposal": "hold or reduce max on generated_loc (currently BREACHED at 19120); investigate before any loosening anywhere",
    "evidence": "walk of ProceduralGenerated",
    "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T03:50:52",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T04:35:23",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T05:03:11",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T05:07:09",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T05:09:43",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T05:42:17",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T05:43:38",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T05:47:12",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T06:01:18",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T06:07:45",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
+  },
+  {
+   "ts": "2026-07-19T07:15:10",
+   "direction": "tighten",
+   "axis": "generated_loc",
+   "proposal": "hold or reduce max on generated_loc (currently BREACHED at 20514); investigate before any loosening anywhere",
+   "evidence": "walk of ProceduralGenerated",
+   "status": "pending"
   }
  ]
 }

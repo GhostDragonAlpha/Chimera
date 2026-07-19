@@ -90,44 +90,24 @@ def _git(*args):
 # --------------------------------------------------------------------------
 # the checks - each returns (status, detail, evidence[])
 # --------------------------------------------------------------------------
-def check_ds4_up(win_nodes, sigs, win):
-    """Rule 11: BOTH brains up; the LEAD brings the deep one up.
-    A down deep brain SILENTLY skips the Council review - nothing errors."""
+def check_council_live(win_nodes, sigs, win):
+    """Rule 11: Council ran (two-model dialogue via lm_gateway swap).
+    The council posts CAPCOM signals and Surprise nodes when it runs;
+    their presence is evidence the model-swap mechanism worked."""
     ev = []
-    ds4_sigs = [s for s in sigs if (s.get("source") == "ds4_brain" or s.get("channel") == "ds4")]
-    for s in ds4_sigs[:3]:
-        ev.append(f"capcom {s.get('ts_iso')} ({s.get('channel')}) {str(s.get('msg'))[:90]}")
-    # Live status is evidence ONLY for a window that ends ~now. Scoring a HISTORICAL
-    # session, "it's up at this moment" says nothing about whether it was up THEN -
-    # and would hand a false PASS to the very session that left it down.
-    live_counts = (time.time() - win["end"]) < 900
-    if live_counts:
-        try:
-            from core import ds4_brain
-            live = ds4_brain.health(timeout=6.0)
-        except Exception as e:
-            live = {"up": False, "error": str(e)[:80]}
-        ev.append(f"live ds4_brain.health() -> up={live.get('up')}")
-    else:
-        live = {"up": False}
-        ev.append("live status NOT consulted (historical window - only in-window signals count)")
-    # Secondary proof: the council CANNOT run without the deep brain, so any council
-    # signal in-window is evidence it was up even after a `stop` (which is a sensible
-    # thing to do - it holds ~80GB of RAM).
     council_sigs = [s for s in sigs if s.get("channel") == "council" or s.get("source") == "council"]
-    for s in council_sigs[:2]:
-        ev.append(f"capcom {s.get('ts_iso')} (council) {str(s.get('msg'))[:80]}")
-    if ds4_sigs:
-        return PASS, "deep brain came up during the session (capcom ds4 signal)", ev
+    for s in council_sigs[:3]:
+        ev.append(f"capcom {s.get('ts_iso')} (council) {str(s.get('msg'))[:90]}")
     if council_sigs:
-        return PASS, "council ran, which is impossible with the deep brain down", ev
-    if live.get("up"):
-        return PASS, "deep brain is up at session end", ev
-    # NOTE: ds4_brain.serve() posts NOTHING to capcom, so absence of a signal is not
-    # by itself proof it never came up - only proof the audit cannot SEE that it did.
-    # Run this promptly after a session, or a correct `serve` + `stop` reads as a miss.
-    return FAIL, ("no evidence the deep brain was ever up (Council review silently "
-                  "skipped). NB: serve() leaves no capcom trace - audit promptly"), ev
+        return PASS, f"council ran ({len(council_sigs)} signal(s)) — two-model swap confirmed", ev
+    # Also check for lm_gateway swap signals
+    swap_sigs = [s for s in sigs if "swapped to" in str(s.get("msg", ""))]
+    for s in swap_sigs[:2]:
+        ev.append(f"capcom {s.get('ts_iso')} (swap) {str(s.get('msg'))[:80]}")
+    if swap_sigs:
+        return PASS, f"model swap occurred ({len(swap_sigs)} signal(s))", ev
+    return FAIL, ("no evidence the Council ran (was there a two-model dialogue "
+                  "this session?)"), ev
 
 
 def check_research_scoped(win_nodes, sigs, win):
@@ -256,7 +236,7 @@ def check_instrument_used(win_nodes, sigs, win):
 
 
 REQUIRED = [
-    ("DS4_UP", "r11", check_ds4_up),
+    ("COUNCIL", "r11", check_council_live),
     ("RESEARCH_SCOPED", "r9", check_research_scoped),
     ("SEED_TASK_KEPT", "r7", check_seed_task_not_abandoned),
     ("COMMITTED_SHA", "r12", check_committed_with_sha),

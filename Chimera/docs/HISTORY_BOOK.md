@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1370 entries** across 8 chapters.
+**1440 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -213,7 +213,7 @@
 
 ## II. Closed Doors (eliminations — proven negatives)
 
-*11 entries; showing 11.*
+*14 entries; showing 14.*
 
 ### audio_visual_sync/telemetry_accessors: NOT MCP action handlers / command dispatch as root cause `2026-07-12T16:21`
 <sub>`elim_65f84a195c149377`</sub>
@@ -314,9 +314,36 @@
 > SURVIVES (the narrowed search space): rule: SaveGame-flagged UPROPERTYs are data; gen_code_reflection now skips them, so red means real
 > evidence: rep prune System_SaveGame 40->15 atoms, 13 red -> 1 real (H-34)
 
+### Substrate_Terrain: NOT Coarse free-sphere MuJoCo grain physics (ATOM_PITCH ~0.167m macro-part `2026-07-18T07:38`
+<sub>`elim_06e43126d4d0332f`</sub>
+
+> NOT: Coarse free-sphere MuJoCo grain physics (ATOM_PITCH ~0.167m macro-particles standing in for 0.07mm regolith grains, GA_Dig's own dig footprint replicated verbatim from CHIMERA_VISION.py, mu=tan(35deg) sand friction from matter_library.json) cannot re-coalesce a dig event back into a seamless heightfield within the current recoalesce algorithm (per-cell mass summing, no blend pass).
+> observed: Committed run (core/terrain_matter.py, commit e794f1a, seed=11): cycle1 n_freed=225 n_exited=57 (25.3%) seam_max=0.4000m (bar 0.333m) mass_drift=-4.86%; cycle2 n_freed=225 n_exited=50 (22.2%) seam_max=0.4000m mass_drift=-7.12%; mean_ms/step=0.31 vs frame wall 16.6ms (held, >50x headroom); settled_within_budget=False both cycles (2000-step/10s cap hit). INDEPENDENTLY REPRODUCED by sub-28 in a burned membrane (2026-07-18, same seed): cycle1 n_exited=60 (26.7%) seam_max=0.4000m mass_drift=-4.69%; cycle2 n_exited=47 (20.9%) seam_max=0.4000m mass_drift=-8.51%; verdict KILL both the original and the reproduction run. Render (Saved/TerrainMatter/shovel_test_strip.png) visually confirms: the after-recoalesced frames show a persistent raised, jagged bright ridge at the dig site that never blends into the flat surrounding patch.
+> eliminates: free-sphere DEM macro-particles at this ATOM_PITCH recoalesce seamlessly into the coarse heightfield without an explicit smoothing/blend pass across the fracture boundary; the current rolling/torsional friction tuning (mu*0.2 / mu*0.4) lets a 225-grain GA_Dig-sized event reach the quiet-hold threshold within a 10s/2000-step settle budget
+> SURVIVES (the narrowed search space): frame budget is NOT the blocker -- 0.31ms/step vs a 16.6ms wall holds over 50x headroom, so landscaping-as-matter is not killed by compute cost, only by the seam/settle algorithm; cohesive bonding (matter_library sand cohesion_kpa=0.5+/-0.4, not modelled this rung -- MuJoCo stock contact is frictional-only) or an explicit post-recoalesce smoothing pass across the seam boundary might close the 0.4m gap -- untested, named as the next rung; a larger settle budget or a retuned velocity-quiet threshold might let grains settle in-budget without necessarily changing the seam outcome -- untested
+> evidence: 
+
+### Substrate_Terrain: NOT free-sphere DEM macro-particles at ATOM_PITCH~0.167m recoalesce seamle `2026-07-18T07:42`
+<sub>`elim_d7f65379cd4984b1`</sub>
+
+> NOT: free-sphere DEM macro-particles at ATOM_PITCH~0.167m recoalesce seamlessly into the heightfield without an explicit blend pass, AND the current friction tuning lets a 225-grain GA_Dig-sized event settle within a 10s/2000-step budget
+> observed: 
+> eliminates: 
+> SURVIVES (the narrowed search space): 
+> evidence: elim_06e43126d4d0332f (+ independent membrane reproduction, this session)
+
+### witness_rig: NOT The witness anchor (0,0,130) must never sit inside colliding geometry: `2026-07-18T22:47`
+<sub>`elim_41064db78ef9a045`</sub>
+
+> NOT: The witness anchor (0,0,130) must never sit inside colliding geometry: SM_StarSphere (2km-radius colliding shell centered at origin, unowned - zero repo references) was THE levitator behind tb-0189/tb-0184/tb-0196 - CharacterMovement penetration-resolves possessed pawns upward every move tick (unpossessed pawns never move, hence the possession discriminator; per-tick pushout, hence dt-proportional rates; fixed verify window, hence deterministic z~3085)
+> observed: 
+> eliminates: 
+> SURVIVES (the narrowed search space): 4/4 causal matrix same boot: sphere present = climb (simtest_140a70674941d472, simtest_ae7dc6dd3cca28a9 - the latter WITH root-collision stripped, proving editor-runtime SetCollisionEnabled does not survive into PIE duplication), sphere destroyed = clean walk (simtest_6ba72f3a8f193188, simtest_4ea739ba22ed2aaa - the latter with all wiring actors present, exonerating them). Durable fix: sphere deleted from chimeradefaultlevel and level SAVED
+> evidence: 
+
 ## III. Surprises (expectation vs reality)
 
-*483 entries; showing 40.*
+*519 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -640,7 +667,7 @@
 
 ## IV. Verdicts & Grades
 
-*353 entries; showing 40.*
+*355 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -959,7 +986,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*372 entries; showing 40.*
+*401 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1343,11 +1370,6 @@
 
 > shaping promotion (streak rule): streak 8 @ 100%
 
-### audio_visual_sync/report_telemetry promoted to tier 1
-<sub>`promo:audio_visual_sync/report_telemetry:1`</sub>
-
-> shaping promotion (streak rule): streak 8 @ 100%
-
 ### Sleepwalker_Beats promoted to tier 2
 <sub>`promo:Sleepwalker_Beats:2`</sub>
 
@@ -1393,25 +1415,30 @@
 
 > shaping promotion (streak rule): streak 8 @ 100%
 
+### audio_visual_sync/report_telemetry promoted to tier 2
+<sub>`promo:audio_visual_sync/report_telemetry:2`</sub>
+
+> shaping promotion (streak rule): streak 8 @ 100%
+
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                         194 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                         254 reps  100%  streak  8  battery   2 (0 pie)  READY
+
+### AErisaidActor — ledger standing
+<sub>`repstat:AErisaidActor`</sub>
+
+> AErisaidActor                          44 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+
+### Any — ledger standing
+<sub>`repstat:Any`</sub>
+
+> Any position-dependent beat agains     24 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    198 reps  100%  streak  8  battery   1 (0 pie)  READY
-
-### audio_visual_sync/telemetry_access — ledger standing
-<sub>`repstat:audio_visual_sync/telemetry_access`</sub>
-
-> audio_visual_sync/telemetry_access   1351 reps  100%  streak  8  battery  10 (3 pie)  READY
-
-### Beat_Scripts_Tautology_Fix — ledger standing
-<sub>`repstat:Beat_Scripts_Tautology_Fix`</sub>
-
-> Beat_Scripts_Tautology_Fix            101 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    228 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1442,6 +1469,8 @@
 - **AAA Quality** — 1 entry: `observation_766c8e839f115065`
 - **AAA_Quality** — 1 entry: `observation_e4d6503c704ed448`
 - **ADotCharacter** — 1 entry: `repstat:ADotCharacter`
+- **AErisaidActor** — 1 entry: `repstat:AErisaidActor`
+- **Any** — 1 entry: `repstat:Any`
 - **Beat_Scripts_Tautology_Fix** — 1 entry: `repstat:Beat_Scripts_Tautology_Fix`
 - **Build_Pipeline** — 65 entries: `professor_grade_1a92c9ff41eb66f4`, `professor_grade_8f4a03f041187ce9`, `professor_grade_0f7ad1992f6d1372`, `professor_grade_3b51652770d01ac1`, `professor_grade_828db6a52893ed78`, `professor_grade_9892b433ad232f61` ...
 - **CLI_Test** — 1 entry: `professor_grade_2e8f98354014d117`
@@ -1459,6 +1488,7 @@
 - **Demo_RegolithYard_Systems** — 1 entry: `professor_grade_9e2f64b5d75f177d`
 - **Diagnose** — 1 entry: `repstat:Diagnose`
 - **FFootstepEvent** — 1 entry: `repstat:FFootstepEvent`
+- **FStar** — 1 entry: `repstat:FStar`
 - **Game_Feel** — 2 entries: `promo:Game_Feel:3`, `repstat:Game_Feel`
 - **Ground_Metal_Surface** — 8 entries: `prof_grade_73b132f72683a4d3`, `prof_grade_6f1def660833e414`, `prof_grade_69ce58e03c7f5ac8`, `observation_b64690eb06c29e34`, `observation_620b633919bd58de`, `observation_72620c81985763fc` ...
 - **Ground_Rock_Surface** — 6 entries: `prof_grade_bec71f9e63043118`, `observation_8650722006d93846`, `observation_cf32cafa76fd3b40`, `observation_4041b18f4f89b640`, `observation_49ecad284084ddab`, `observation_1bc2480d62a36f98`
@@ -1480,7 +1510,7 @@
 - **Regolith_Dust_Accumulation_Visual_Feedback** — 1 entry: `observation_44947b0e1ef55883`
 - **Shelter_Habitat_Geometry** — 1 entry: `observation_1a64d91760b71c72`
 - **Shelter_Habitat_Lighting** — 2 entries: `observation_e5809b7506f928d1`, `repstat:Shelter_Habitat_Lighting`
-- **Shelter_Habitat_Materials** — 1 entry: `repstat:Shelter_Habitat_Materials`
+- **Shelter_Habitat_Materials** — 2 entries: `observation_f9f0c860d53c4d2a`, `repstat:Shelter_Habitat_Materials`
 - **Sky_Atmosphere_Scattering** — 3 entries: `observation_6df7bf32c69dc5ff`, `observation_d9772e6bb1395ac4`, `repstat:Sky_Atmosphere_Scattering`
 - **Sky_Earth_Material** — 1 entry: `observation_d98165bc5d378bc0`
 - **Sky_Earth_Model** — 1 entry: `observation_516b96cf549ce230`
@@ -1498,7 +1528,8 @@
 - **Sprint_Input/harness_parity** — 3 entries: `elim_e1ceb1b092b179af`, `promo:Sprint_Input/harness_parity:1`, `repstat:Sprint_Input/harness_parity`
 - **Sprint_Input/readback** — 1 entry: `repstat:Sprint_Input/readback`
 - **Sprint_Input/state** — 2 entries: `promo:Sprint_Input/state:1`, `repstat:Sprint_Input/state`
-- **Sprint_Input/volume_norm** — 2 entries: `promo:Sprint_Input/volume_norm:1`, `repstat:Sprint_Input/volume_norm`
+- **Sprint_Input/volume_norm** — 1 entry: `promo:Sprint_Input/volume_norm:1`
+- **Substrate_Terrain** — 2 entries: `elim_06e43126d4d0332f`, `elim_d7f65379cd4984b1`
 - **System_DSL_Fidelity** — 4 entries: `elim_5db874e721a6c962`, `elim_fc1e3b5e9ce65fbe`, `observation_178caf29b500bc22`, `promo:System_DSL_Fidelity:1`
 - **System_Economy** — 8 entries: `professor_grade_7886af92f495ccd1`, `professor_grade_987966987f9c8be5`, `professor_grade_cbdfff41c119fe65`, `professor_grade_364a07e3116f20a6`, `professor_grade_bf25d5d3a1fc673f`, `professor_grade_c5197b91a28559eb` ...
 - **System_Factions** — 6 entries: `professor_grade_eed210f4ab52757d`, `professor_grade_490fe77b72f70388`, `professor_grade_b2bb156bf98b0f0a`, `professor_grade_2cef42bbe0482227`, `professor_grade_311a8a7ca7b93bff`, `observation_dd211c641ad2d9ae`
@@ -1513,6 +1544,7 @@
 - **Tool_Scanner_Model** — 1 entry: `observation_b1c08c983da0e237`
 - **Tool_Shovel_Model** — 1 entry: `professor_grade_ef64717b4d520850`
 - **Tool_Weapon_Model** — 2 entries: `observation_af7f40abe37d1f59`, `observation_c941ed7c5d84c89d`
+- **Travel_Ship_Exterior** — 1 entry: `observation_b4e929ab127f9760`
 - **Travel_Vehicle_Basic** — 1 entry: `observation_a640c045d6ceaf69`
 - **Travel_Walking** — 1 entry: `professor_grade_f4fa95fd0c69ab19`
 - **UChimeraAttunementComponent** — 1 entry: `observation_455906b50c6a0a1a`
@@ -1527,18 +1559,22 @@
 - **Will_Forewarning_Inheritance_UI** — 1 entry: `observation_8ce91d7d1a60ddfc`
 - **Workflow_Test** — 1 entry: `professor_grade_609983d30ed38756`
 - **X** — 11 entries: `professor_grade_ac905fba474a25d0`, `professor_grade_82edc8d7f573c657`, `professor_grade_b938fb4036ab29b8`, `professor_grade_09a3128fe31df8dd`, `professor_grade_ce42b26ebc8e6140`, `professor_grade_350c4b5e69351cc1` ...
-- **audio_visual_sync/report_telemetry** — 5 entries: `observation_153fd8cfaaf2cae1`, `elim_b39ca7951a8cd8f8`, `observation_727df84d60f7d526`, `promo:audio_visual_sync/report_telemetry:1`, `repstat:audio_visual_sync/report_telemetry`
+- **audio_visual_sync/report_telemetry** — 5 entries: `observation_153fd8cfaaf2cae1`, `elim_b39ca7951a8cd8f8`, `observation_727df84d60f7d526`, `promo:audio_visual_sync/report_telemetry:2`, `repstat:audio_visual_sync/report_telemetry`
 - **audio_visual_sync/telemetry_access** — 1 entry: `repstat:audio_visual_sync/telemetry_access`
 - **audio_visual_sync/telemetry_accessors** — 5 entries: `observation_b7a437ed43c79e13`, `elim_65f84a195c149377`, `elim_71b935361cee2319`, `elim_043bb7affad30ff4`, `promo:audio_visual_sync/telemetry_accessors:1`
 - **audio_visual_sync_report_telemetry_fix** — 1 entry: `observation_700fa185592de247`
 - **audio_visual_sync_telemetry_fix** — 1 entry: `observation_5df7cfceb2a42bff`
-- **subsystem/AI** — 2 entries: `promo:subsystem/AI:1`, `repstat:subsystem/AI`
-- **subsystem/Audio** — 1 entry: `repstat:subsystem/Audio`
-- **subsystem/Characters** — 2 entries: `promo:subsystem/Characters:1`, `repstat:subsystem/Characters`
-- **subsystem/Combat** — 2 entries: `promo:subsystem/Combat:1`, `repstat:subsystem/Combat`
-- **subsystem/Demo** — 2 entries: `promo:subsystem/Demo:1`, `repstat:subsystem/Demo`
-- **subsystem/Economy** — 2 entries: `promo:subsystem/Economy:1`, `repstat:subsystem/Economy`
-- **subsystem/Environment** — 2 entries: `promo:subsystem/Environment:1`, `repstat:subsystem/Environment`
+- **granular_matter** — 1 entry: `repstat:granular_matter`
+- **materialization** — 1 entry: `repstat:materialization`
+- **matter_library** — 1 entry: `repstat:matter_library`
+- **planet_averages** — 1 entry: `repstat:planet_averages`
+- **solar_accretion** — 1 entry: `repstat:solar_accretion`
+- **subsystem/AI** — 1 entry: `promo:subsystem/AI:1`
+- **subsystem/Characters** — 1 entry: `promo:subsystem/Characters:1`
+- **subsystem/Combat** — 1 entry: `promo:subsystem/Combat:1`
+- **subsystem/Demo** — 1 entry: `promo:subsystem/Demo:1`
+- **subsystem/Economy** — 1 entry: `promo:subsystem/Economy:1`
+- **subsystem/Environment** — 1 entry: `promo:subsystem/Environment:1`
 - **subsystem/Flight** — 1 entry: `promo:subsystem/Flight:1`
 - **subsystem/GameMode** — 1 entry: `promo:subsystem/GameMode:1`
 - **subsystem/Inventory** — 1 entry: `promo:subsystem/Inventory:1`
@@ -1554,3 +1590,4 @@
 - **subsystem/Travel** — 1 entry: `promo:subsystem/Travel:1`
 - **subsystem/VFX** — 1 entry: `promo:subsystem/VFX:1`
 - **subsystem/root** — 1 entry: `promo:subsystem/root:1`
+- **witness_rig** — 1 entry: `elim_41064db78ef9a045`

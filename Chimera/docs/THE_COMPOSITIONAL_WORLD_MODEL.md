@@ -480,10 +480,11 @@ place in the stack — and where the live research happens.
 The substrate engine's data is not datasets. It is **the periodic table of the game** —
 `docs/matter/matter_library.json` — three columns, exactly as commissioned:
 
-1. **Types of matter** — the brick identities. Nine starters, derived from what the
-   game already reads: the seed's six environment surfaces (sand, basin, rock, metal,
-   ice, interior — `SURFACE_TABLE` subsumed) plus the three witnessed tissues (skin,
-   muscle, bone — optics verbatim from rung A's relight renders).
+1. **Types of matter** — the brick identities. Ten now (tendon joined 2026-07-14's
+   nine), derived from what the game already reads: the seed's six environment
+   surfaces (sand, basin, rock, metal, ice, interior — `SURFACE_TABLE` subsumed)
+   plus the witnessed tissues (skin, muscle, bone, tendon — optics verbatim from
+   rung A's relight renders).
 2. **Properties of interaction** — pairwise, but NEVER an N² hand-written matrix:
    materials declare an interface **family** (mineral_dry, metallic, cryo,
    composite_built, organic_wet, organic_hard); rules are written family×family (a
@@ -527,6 +528,19 @@ Substrate + Lumen, rung D′) — side-by-side against the scan; the CPU sandbox
 (`core/matter_items.py`) is a probe, never the judge. Candidate scan sources, to be
 licensing-verified live: Quixel Megascans via Fab (real-world scans, free for Unreal
 use), CC0 photogrammetry captures, and eventually our own captures.
+
+**HONEST STATUS OF THE EXTRACTION LOOP (2026-07-18, load-bearing — do not let a
+green artifact imply otherwise):** `docs/matter/reference_scans/` contains ONLY
+synthetic placeholders (`SOURCES.md`: "ZERO FILES DOWNLOADED"; every exemplar
+tagged provisional, "supersede on sight"). `material_appearance.trained.json`
+was additionally trained against **None** until 2026-07-18 — the trainer calls
+`measure(genome)` with one argument and the domain never self-loaded its
+reference (fixed: it now loads the scan named by `CHIMERA_MATAPP_SCAN`, loudly).
+The reality → descriptors → trained-library loop CLOSES ONLY when real scans
+land and the appearance retrains against them, and the trained values must then
+flow into **UE Substrate slab parameters** (albedo AND roughness — the operator's
+directive: roughness must physically matter). Until then, every appearance
+number in the library is a placeholder wearing trained clothes.
 
 ---
 
@@ -618,21 +632,39 @@ was rebuilt to SEE it (flank + aspect + consistency = the needle detector,
 `surprise_0a8748de89fd2afe`). Honest scope: a height-field has no load network —
 no Janssen, no arching, no Beverloo claims until v1's full 2D occupancy grid.
 
-**THE BIG BANG is this same thesis one rung up the scale ladder (§13).** Seed a
-cloud of matter parcels, let the rung's effective law run, and the *world map is
-the settled fixed point* — worldgen by simulated formation, not by authored
-placement. What that buys, for free, is **coherence**: a solar system formed by
-accretion has stable orbits, debris belts where resonances forbid planets, moons
-and rotation from conserved angular momentum — consistent *because it is the fixed
-point of real dynamics*, not because a designer checked it. One physics correction
-carries the whole idea: gravity is long-range, so the cosmic rung's effective law
-is not neighbor-contact but tree-summed attraction (Barnes–Hut O(N log N) /
-particle-mesh — per-scale laws are exactly what §13 is for). And the same
-train-the-rule discipline applies: the emergent system must pass Kepler residuals
-and orbit stability over N periods — measured, never asserted. Then the game is
-played *inside the settled result*, which wakes locally wherever a body touches it
+**THE BIG BANG is this same thesis one rung up the scale ladder (§13) — and as of
+the same day, IT IS BUILT AND TRAINED, not aspiration.**
+`core/trainables/bigbang.py` + `bigbang_gpu.py` (GPU-resident: whole population ×
+restarts in Warp, zero in-loop syncs, 159 evals/sec = 1,656× the CPU baseline)
+grow solar systems from a seeded embryo disk under softened gravity + inelastic
+mergers + torque-free gas drag, with an **L_z HONESTY LEDGER** (orbital + spin +
+escaped must equal t0 — it caught a real structural bug on first smoke: stale
+post-merge forces, drift 0.527). The trained winner
+(`docs/objectives/bigbang.trained.json`): **Kepler's third law EMERGES — slope
+1.483 with r² 0.9998, measured empirically from the grown orbits' own winding
+periods, never coded** — star 98% of mass, 3–4 planets per system, ecc 0.115,
+disk flat to 0.004°, disk_frac pinned at its MMSN-consistent minimum.
+**RUNG CONFLATION is the named failure mode this rung paid for**: five trained
+rounds could not grow planets from pebbles while settling a system (an N0=256
+granularity probe made it WORSE — more seeds, hotter disk); the human's
+correction — *"think of the planet as ONE when we get to that scale"* — became
+the rung split (star pre-formed as body 0, seeds = Chambers-2001 protoplanet
+embryos) and the multi-planet regime unlocked on the *untrained* smoke.
+The rung HANDS DOWN its averages as data: `--export-catalog` →
+`docs/objectives/bigbang.systems.json` (5 systems, each planet ONE (m, a, e)
+triple), consumed by the PLANET-AVERAGES RUNG (`core/trainables/planet.py`,
+trained same day): researched effective laws (T_eq, Jeans retention, greenhouse,
+moist-greenhouse limit, condensation, interior heat, ice-albedo fixed point)
+resolve every grown planet's climate — **the operator bar met (oceans in every
+system HARD, atmospheres 100%, interior gradients on every rocky world), the
+habitable zone EMERGING unplaced as hot_rock → ocean → frozen ladders in all
+five systems, and the learned constants LANDING ON RESEARCH: moist_limit
+352.8 K (Kasting ~340–350), Jeans threshold 5.5 (literature ~6), greenhouse
+exponent 0.585 (the Venus–Earth bracket 0.60).** Then the game is played
+*inside the settled result*, which wakes locally wherever a body touches it
 (§12): the big bang runs at generation time, sleeps at play time, and the player
-interacts with a world that earned its shape.
+interacts with a world that earned its shape — witnessed: the pawn stood on a
+grown ocean world's ground the same night (§19).
 
 ---
 
@@ -653,20 +685,32 @@ Determinism is the fractal property: seed = (system, planet, patch coords) — t
 same coordinates materialize the same ground forever, because the world IS the seed
 plus the laws (compression as intelligence, §18).
 
-**Proven (tb-0197, `core/materialize.py` + `docs/beats/materialized_ground.beats.json`):**
-the ground under the astronaut stopped being a placed plane. The chain walks down
-three rungs with nothing authored: the grown planet's climate (ocean, 293 K,
-coverage 3%) decides the MATTER MIX; immovable bedrock (frozen cells) + the
-TRAINED granular genome (the 40° regolith rule) FORM the relief as a fixed point;
-water finds its level at the height the planet's own ocean coverage implies; the
-matter library's albedo distributions color each cell (value-dominant mottle).
-Witnessed: pawn drops 5 m onto FORMED matter, comes to rest, clean walk 1/1
-(simtest_5ac155d7050249bd) — with the coalesced average (the flat plane) still
-visible beyond the bubble: both LODs of meaning in one frame. Honest v0 notes:
-rock stayed blanketed (at trained repose, gentle crests HOLD their cover — real
-physics; outcrops need steeper features or erosion verbs), water is a level sheet
-(no waves — a later rung), and the bubble does not yet follow the player
-(re-materialization on movement is the streaming lane).
+**THE RECORD, corrected (2026-07-18, same day):** tb-0197's first realization —
+`core/materialize.py`, editor-staged GLB — was **REFUTED BY THE OPERATOR'S OWN
+SCREENSHOT** (surprise_f14d0396d25cb260): the patch imported ROTATED 90° (glTF
+Y-up vs UE Z-up) and the witness had asserted *existence, not contact* — the pawn
+stood on the flat average plane beside a sideways wall while the beat passed.
+That file is retained as a SUPERSEDED Python reference of the forming rule only.
+
+**The standing realization is the RUNTIME one (tb-0198,
+`Source/Chimera/ProceduralGenerated/Materialization/` — generator-owned via
+`generate_materialization_subsystem_files`):** `UMaterializationSubsystem`
+(UTickableWorldSubsystem, Game/PIE only) forms the ground IN THE RUNNING GAME —
+trained granular literals baked with provenance (h_crit 1.181 / p_topple 0.515),
+resolved planet climate (ocean_cov 0.0304 from the bigbang→planet chain), C++
+sandpile to a fixed point per cell, per-cell deterministic seeds (same
+coordinates = same ground, forever), instanced-cube columns with REAL collision,
+water at the derived sea level, the bubble forming 3×3 around the pawn
+one-patch-per-tick and COALESCING beyond radius 2. **Witnessed by CONTACT, not
+existence** (simtest_a43f778f4392a6e8, 2/2): the pawn settles into the relief
+band (`pawn_z_above 100` AND `pawn_z_below 800` — bare-floor rest reads ~90),
+the subsystem's own `[Materialize]` markers are HEARD from the raw log tail, and
+after SIX SECONDS of real held-W the pawn is still in the band — ground formed
+under a moving player. Built native (no glTF, no importer), the axis bug class
+is unrepresentable. Honest scope: stepped voxel columns (mesh smoothing needs a
+generator-owned Build.cs lane for the DynamicMesh module); water sheet has no
+collision; no direction-specific new-cell assert yet (spawn rotation is unset —
+a set_rotation beat verb is the named upgrade).
 
 ---
 

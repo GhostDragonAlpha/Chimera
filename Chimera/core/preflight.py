@@ -174,18 +174,13 @@ def main():
     except Exception:
         pass
 
-    # ds4 deep brain — the OPTIONAL heavy CPU brain (DwarfStar / DeepSeek-V4-Flash).
-    # Surfaces only when ONLINE so the operator/lead knows the slow, deep,
-    # non-vision brain is available (LM Studio via lm_gateway stays the fast
-    # default). CPU-only: 0 VRAM, ~1.6 t/s, coexists with Unreal + LM Studio.
-    try:
-        from core.ds4_brain import health as _ds4_health
-        _dh = _ds4_health(timeout=2)
-        if _dh.get("up"):
-            print(f"\n[ds4] deep brain ONLINE — {_dh['model']} on CPU (~1.6 t/s, 0 VRAM) "
-                  f"for slow/deep/non-vision reasoning: python -m core.ds4_brain ask \"...\"")
-    except Exception:
-        pass
+    # Council brain — two models swapped dynamically through LM Studio.
+    # FAST_MODEL and DEEP_MODEL env vars control which models the Council uses;
+    # if unset, the Council just adopts whatever is resident.
+    print("")
+    print("  Council: two-brain dialogue via LM Studio (dynamic model swap)")
+    print("    CHIMERA_FAST_MODEL: fast/responsive brain (MoE, 3.6B active)")
+    print("    CHIMERA_DEEP_MODEL: deep/thorough brain (dense 27B)")
 
     # Generator-owned guard — fast, LM-FREE heads-up: dirty files that look
     # generator-owned get CLOBBERED on the next pipeline run. Postflight does the
