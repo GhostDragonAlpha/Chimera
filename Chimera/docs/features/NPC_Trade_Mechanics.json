@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How do supply/demand elasticity, cultural negotiation styles, reputation modifiers, and BATNA create a dynamic bargaining economy where player negotiation skill directly impacts purchasing power?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Each NPC has a reservation price determined by supply/demand and faction culture (Keepers: relational bargaining with gifts; Traders: hard numbers). Reputation modifies the band: +10 rep = 5% better rates. BATNA matters \u2014 if the NPC has another buyer, prices are less negotiable. A skilled negotiator reading cultural cues and bundling items achieves 20-35% better prices than a click-to-buy player."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does trading with NPCs tell the story of an economy that reflects local conditions \u2014 rare here is common there, prices reveal scarcity, and every trade teaches something about supply and demand in a real system?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Trade tells the story of a functional economy: a high price for water in the desert tells you about drought, cheap minerals near the canyon tell you about abundance \u2014 the player learns planetary economics through every transaction."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Is the trade interface intuitive -- can the player compare item values, adjust offer quantities, and see reputation-based price modifiers without opening nested sub-menus?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Trade screen shows side-by-side inventories with RMB-to-compare tooltip. Quantity uses +/- buttons with instant price recalculation. Reputation modifier is shown as a percentage badge on the trader's portrait. No nested menus."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Do trade inventories, prices, supply/demand modifiers, and player reputation per NPC need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Each NPC trader has inventory (item IDs + quantities), price modifiers, and dynamically adjusted supply/demand based on recent trades. Written on trade completion or manual save. Write frequency: every trade transaction."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the trade system model any physical constraints (cargo mass, storage volume, fuel cost of transporting goods) or is it purely economic?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Not in v1. Trade is purely economic (currency-for-goods) with no physical cargo simulation. Cargo mass/volume and transport costs are identified as a future enhancement for the economic system."
     }
   ],
   "answers": [],

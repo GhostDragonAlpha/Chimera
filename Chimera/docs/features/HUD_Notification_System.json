@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does notification design affect player reaction time in time-sensitive economic decisions \u2014 limited-stock bidding, repair-before-break warnings, trade-window expiration?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "HUD notifications are the attention-allocation mechanism. A red 'low fuel' alert triggers immediate response; a subtle 'trade opportunity nearby' ping may be missed. The design determines which economic signals players act on. A critical repair alert for a cheap tool may interrupt a high-value mining operation, while an important trade window in a minor notification may go unnoticed."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the notification system tell the story of the player's relationship with their ship \u2014 a companion that alerts them to danger, opportunity, and the quiet needs of the journey?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The HUD is the ship's voice: system-status pings are the ship checking in, discovery alerts are the ship getting excited, low-fuel warnings are the ship worrying \u2014 a non-human character with a quiet personality."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Do educational notifications appear in a consistent, non-blocking screen location that does not obstruct navigation, and can the player dismiss or recall past notifications easily?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Notifications appear in the lower-right corner (outside the center 60% of screen). They auto-dismiss after 6 seconds. A history log (key: H) shows the last 20 notifications. No notification blocks input or covers the reticle."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the notification history (which messages the player has seen/dismissed) and queue state need to persist across sessions?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Dismissed notification IDs should persist to avoid re-showing dismissed messages. Queue state (pending notifications) should also persist. Written on notification dismiss."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the HUD notification system have any physics-based animation (spring dynamics for pop-in, velocity-based scrolling)?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "No physics simulation. Animations are authored keyframes in UMG. Pop-in uses simple scale/fade curves. No spring dynamics or physics-driven layout."
     }
   ],
   "answers": [],

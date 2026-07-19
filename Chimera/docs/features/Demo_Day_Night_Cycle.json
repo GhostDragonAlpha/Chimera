@@ -538,42 +538,42 @@
     {
       "id": 60,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does the day/night cycle in the demo introduce temporal economics \u2014 diurnal resource windows, safety-vs-risk tradeoffs after dark, and time-dependent energy costs?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "The demo's day/night cycle teaches that time is a resource. Daytime = safe surface mining, clear visibility, solar charging. Nighttime = exclusive resources (bioluminescent compounds, night-blooming reagents) but also hazards. Delaying extraction by 4 hours changes both the cost structure and the opportunity set, establishing the core temporal economics concept."
     },
     {
       "id": 61,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the demo's accelerated day-night cycle tell the story of a full planetary rotation, compressing a day's narrative \u2014 morning glow, noon glare, twilight mystery \u2014 into minutes?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The compressed cycle is a story in miniature: dawn promises adventure, high noon pushes exploration, golden hour rewards it, nightfall brings contemplation and the stars \u2014 a full narrative day in sixty seconds."
     },
     {
       "id": 62,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Can the player observe the full day/night cycle clearly during the 30-second demo window, with visible lighting changes across the canyon?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "The demo runs at 300x time scale, completing a full day in ~30 seconds. Lighting visibly transitions through dawn, day, dusk, and night. Player sees the entire arc passively."
     },
     {
       "id": 63,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the demo's day/night phase need to persist on save so the player returns to the same time-of-day?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Time-of-day must persist for save/load consistency. One float: accumulated cycle time. Written on manual save."
     },
     {
       "id": 64,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the demo's day/night cycle follow a physically accurate sun trajectory or is it a simplified gameplay cycle?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simplified gameplay cycle. The sun rotates at a constant speed (compressed to ~5 minutes real-time) along a fixed equatorial arc. No axial tilt, no seasonal variation."
     }
   ],
   "answers": [],

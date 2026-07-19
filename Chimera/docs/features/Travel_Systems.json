@@ -466,42 +466,42 @@
     {
       "id": 52,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "What per-system travel costs (fuel, landing fees, port tariffs, hazard premiums) create route-level economics where low-cost shipping lanes compete with high-reward frontier routes?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Travel cost determines route profitability. A standard system hop costs 100 credits fuel + 25 landing fee + 5% cargo tariff. A frontier route costs 300 fuel + no landing fee + 20% hazard premium (piracy risk). The frontier must offer 4x margin to be worthwhile. Safe-core routes handle bulk low-margin goods; frontier routes carry high-value, low-volume goods."
     },
     {
       "id": 53,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the travel system as a whole tell the story of a journey \u2014 from walking to flying to interstellar travel, each mode a chapter in the player's growing mastery of distance?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Travel tells the epic story: walking is the humble beginning, flying a ship is the first power-up, orbital mechanics is mastery, and interstellar navigation is transcendence \u2014 the modes of travel are the acts of the player's odyssey."
     },
     {
       "id": 54,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does interstellar travel balance spectacle (starfield transition, warp visual) with gameplay (fuel planning, navigation decisions, orbital insertion) so the player never feels like they're just watching a loading screen?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Warp is 3-8 seconds depending on distance, with star streak visual. During warp, fuel consumption rate is shown. Post-warp, the player must execute orbital insertion (no autopilot). Travel decisions (route, fuel stops, cargo weight) matter before every jump."
     },
     {
       "id": 55,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the entire travel state (current system, current body, orbital parameters, fuel, plotted route) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Travel state is the most complex persistent data: current star system ID, current orbital body, orbital position/velocity, fuel levels per tank, plotted route waypoints, navigation history. This is the heart of the game's persistent state. Written on manual save or significant travel event."
     },
     {
       "id": 56,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does interstellar travel model real astrophysics (relativistic time dilation, light-speed lag, gravitational lensing) or use gameplay-friendly warp mechanics?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Gameplay-friendly warp mechanics. Interstellar travel uses 'warp drive' (skip to destination after a loading screen with travel time calculation). No relativistic effects. In-system travel uses the orbital mechanics model (real physics). This split keeps interstellar travel accessible while teaching real orbital physics in-system."
     }
   ],
   "answers": [],

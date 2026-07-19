@@ -332,42 +332,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How do material rarity tiers (common stone vs. rare slate vs. exotic crystalline alloys) create a construction-materials economy where material choice determines shelter performance and justifies premium pricing?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Material properties drive the construction economy. Common stone (free to quarry) insulates at R-10, degrades in 10 storms. Slate (moderate cost) insulates at R-20, lasts 30 storms. Crystalline alloy (high extraction cost) insulates at R-40, lasts 100 storms. Premium materials cost 4x upfront but reduce lifetime repair costs by 70% \u2014 an intertemporal economic decision."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Do material properties tell the story of what the shelter can withstand \u2014 thatched roofs leak in rain, metal panels conduct heat, stone walls insulate \u2014 teaching the physics of construction through consequence?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Material choices tell a survival story: thatch says 'I built fast,' metal says 'I prioritized heat,' stone says 'I planned for winter.' Every material is a chapter in the player's adaptation to this world."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the player see material stats (insulation, durability, weight, weather resistance) clearly in the build menu, and are the stat differences visually reflected in the constructed shelter's appearance?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Build menu shows 5 stat bars per material with color thresholds. Visual differences: straw=warm brown thatch, stone=gray with mortar lines, metal=silver with rivets. A poorly-insulated shelter shows frost forming inside during cold weather."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Are material property definitions (insulation values, durability, weight) authored as data tables (constant) or can players develop improved materials that need persistence?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Material base properties are authored data tables (constant). Player-crafted improved materials (e.g., reinforced composite) have modified properties that must persist. Written on material crafting or discovery."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Do material properties model real thermodynamics (thermal conductivity, R-value, specific heat capacity) for the temperature system?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Abstracted thermodynamics. Each material has insulation (0-100), durability (HP), and weight (kg). These are not derived from real R-values or specific heat but are authored for gameplay balance while being directionally accurate (stone insulates better than fabric)."
     }
   ],
   "answers": [],

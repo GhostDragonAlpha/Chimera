@@ -332,42 +332,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How do modular blueprints, component costs, and expansion multipliers create a construction economy where efficient layout design minimizes material waste?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Modularity introduces optimization economics. A 4m x 4m base module costs 40 units. Adding a second module in-line costs only 30 (shared wall), while a detached module costs a full 50. Adjacency bonuses incentivize compact connected designs. Efficient floor plans save 20-30% on materials compared to sprawling layouts."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does modular shelter construction tell the story of incremental progress \u2014 starting with a single cramped module and expanding room by room, each addition marking a milestone in the player's survival?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Module by module, the shelter tells a growth story: the first room is pure survival, the second adds comfort, the third adds purpose (a lab, a workshop), and the final layout is a map of the player's entire journey."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Do modular snap-points align predictably, and does the player receive instant feedback (highlight glow, snap sound, UI confirmation) when a module connects correctly?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Available snap points glow blue when a held module is within 1m. Connection triggers a white flash and short chime. Connected modules show a seam highlight for 2 seconds. Misaligned modules push away with a soft clunk sound."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the module blueprint definition, placement state, and connections to other modules need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Module placement is the core persistent data: module type ID, world transform (location + rotation), connected module IDs (array), current health. Written on module placement, destruction, or manual save."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Do module connections use physics constraints (snap-point alignment, joint strength, shear force limits) or simple positional snapping?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simple positional snapping with snap-point alignment. Connection integrity is tracked as a health value, not simulated via physics joints. Modules interlock via authored snap points similar to Valheim or Satisfactory."
     }
   ],
   "answers": [],

@@ -466,42 +466,42 @@
     {
       "id": 52,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does tool diversity (scanner, pickaxe, shovel, weapon, construction tool) create an equipment economy where specialization shapes player career choices and trade demand?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Each tool class defines an economic role. A high-end scanner (500 credits) enables survey/sales specialization. A steel pickaxe (200 credits) focuses on extraction. A rifle (300 credits) enables hunting/combat income. Players cannot excel at everything (tool-switching cost), so they specialize in 1-2 classes, creating natural division of labor and trade between specialists."
     },
     {
       "id": 53,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the suite of available tools tell the story of a versatile explorer \u2014 a scanner for science, a mining beam for resources, a grappling hook for traversal, each tool a different answer to a different problem?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The tool suite tells the story of preparation: the player doesn't just have tools, they have solutions. Each tool represents an anticipated challenge \u2014 and when an unanticipated challenge arrives, the player must combine tools in creative ways."
     },
     {
       "id": 54,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Can the player switch between tools (scanner, shovel, weapon, construction tool) with a single key press or quick-select radial, and does the active tool feel distinct in both animation and HUD display?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Number keys 1-4 equip directly. Holding Q opens a radial menu (0.5s hold, then flick). Each tool has a unique equip animation and HUD reticle (scanner=circle, shovel=arc, weapon=crosshair, construction=snap-preview). No cycling through unwanted tools."
     },
     {
       "id": 55,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the player's tool belt contents, equipped tool, and tool-specific auxiliary state (fuel, charge, ammo) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Tool inventory state: equipped tool ID, tool belt contents (array of item IDs), per-tool auxiliary resources (fuel/charge/ammo). Written on tool switch, use, or manual save."
     },
     {
       "id": 56,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What physical principles govern each tool's operation \u2014 for example, does the mining tool simulate impact force versus material hardness, or is it a DPS abstraction?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Damage-per-second abstraction for combat tools. Mining tools use a material hardness multiplier (softer materials mine faster) but do not simulate impact force or fracture mechanics. Scanner tools are data-driven with no physical emission simulation."
     }
   ],
   "answers": [],

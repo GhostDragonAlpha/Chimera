@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How do scanner upgrade costs, unlockable detection categories, and knowledge-tier gating create a progression economy where early specialization shapes late-game earning potential?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Scanner progression is an economic branching path. Each upgrade costs materials and credits \u2014 choosing fossil detection means forgoing mineral upgrades. If fossil-rich strata are abundant locally, that specialization pays off faster. The system forces investment in domain-specific capital, creating natural specialization that enables trade between scanner specialists."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does scanner progression tell the story of the player becoming a better field scientist \u2014 starting with basic identification and graduating to chemical analysis, dating, and holographic reconstruction?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Scanner upgrades are a research arc: the player starts identifying rocks by name, graduates to understanding their composition, then their age, then their history \u2014 each upgrade reveals a deeper layer of the planet's story."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the scanner upgrade progression feel rewarding -- do radius increases, scan-speed reductions, and new detection categories arrive at satisfying intervals that encourage further exploration?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Upgrades unlock at XP thresholds: scan range +50% at level 2, fossil detection at level 3, scan time -40% at level 4, lifeform detection at level 5. Each upgrade triggers a brief UI celebration animation. Cadence: ~20 minutes of play per level."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does every scanner upgrade state (unlocked tiers, current calibration level, XP/progress toward next unlock) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. This is inherently a progression system: unlocked upgrade tiers (array of IDs), current calibration level (integer), scan count per category (integer per category). This IS the persistent state. Written on upgrade unlock or manual save."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does scanner progression model real instrument physics (signal-to-noise ratio improving with calibration, resolution increasing with aperture) for educational value?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Abstracted progression. Upgrades improve numerical parameters (range +25%, scan speed -30%, new category unlock) rather than simulating real instrument physics. The educational connection is explained in flavor text but not simulated."
     }
   ],
   "answers": [],

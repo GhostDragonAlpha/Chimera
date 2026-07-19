@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does lighting angle during transitions reveal or conceal resource deposits at specific times, creating a temporal viewing economy where dawn/dusk specifically illuminate certain mineral veins or fossil layers?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Lighting angle is an economic filter: low-angle dawn/dusk light casts long shadows that make vein outcrops pop in relief, while noon washout hides subtle color variations that distinguish ore grades. A player who learns the lighting schedule gains a scouting advantage \u2014 they can time their prospecting trips to lighting conditions that reveal specific resource types, reducing search costs and increasing yield per expedition."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Do lighting transitions (dawn, dusk, storm clearing) signal narrative beats \u2014 the start of a journey, the approach of danger, the reveal after a challenge?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Every lighting transition carries emotional story weight: golden hour for hope, blue hour for mystery, storm-light for tension \u2014 the world's mood tracks the story's."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the lighting transition smoothly between day and night without flickering, sudden exposure changes, or visible light-source pop during the flythrough?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "UE5 auto-exposure handles transitions with 3-second adaptation curve. Sun light rotates continuously, not in steps. No discrete light source swapping."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the lighting transition timing (start time-of-day, transition duration, target time-of-day) need to persist per save slot?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "The transition timing parameters are authored in Sequencer. No runtime save/load needed. Lighting state is part of the authored sequence."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the lighting transition model physically correct light color temperature shifts (warm sunset to cool night) or is it artistic?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Artistic with educational anchoring. Light color temperature shifts follow real physics directionally (warm at low angle, cool at zenith) but values are authored for visual impact rather than spectroradiometric accuracy."
     }
   ],
   "answers": [],

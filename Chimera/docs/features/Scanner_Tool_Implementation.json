@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does scanner hardware tiering (basic vs. advanced vs. professional) create a differentiated tool economy where range, accuracy, and capability correlate with acquisition cost and unlock different economic activities?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Scanner tiers gatekeep economic specialization. A basic scanner (50m range, mineral-only) enables subsistence prospecting. A professional scanner (500m, full spectral/biological/atmospheric) unlocks deep vein location, rare-organism identification, and quality prediction. Premium scanners are capital investments that pay off only with volume \u2014 shaping career choice."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the scanner tool itself tell a believable science-fiction story \u2014 a handheld device with realistic spectroscopic, LIDAR, and ground-penetrating capabilities that a real field geologist would recognize?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The scanner feels real because its capabilities are real: Raman spectroscopy for minerals, LIDAR for topography, ground-penetrating radar for subsurface structures \u2014 tools a field scientist would actually use, adapted for gameplay."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the equip-aim-scan-read-out flow feel tactile and responsive, with clear visual feedback at each step -- equip animation, targeting reticle, scan progress ring, result card slide-in?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Equip: 0.4s weapon-raise animation with audio click. Aim: reticle tightens from circle to crosshair over 0.2s. Scan: progress ring fills clockwise (0.5-1.5s). Result: card slides in from bottom edge over 0.3s. Each step has distinct sound + visual."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the scanner's active state, current mode selection, and target lock need to persist between sessions?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Partially. Active state (equipped/not) is transient. Mode selection (geology vs atmosphere vs biology) should persist once unlocked. Target lock is transient. Written on mode change (infrequent)."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What physical principles govern the scanner's interaction with materials: does it use simulated reflectivity, density, or composition data, or a lookup table?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Lookup table driven by the graph knowledge base. When the scanner targets a canyon wall, it queries the feature graph for the geological data at that location. No simulated physics interaction with the material itself."
     }
   ],
   "answers": [],

@@ -436,42 +436,42 @@
     {
       "id": 54,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does the 30-second canyon demo integrate terrain, clouds, lighting, weather, and resources into a coherent spatial economy that introduces players to the relationship between geography, weather, and resource availability?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "The demo is economic geography boot camp. In 30 seconds it establishes: (1) terrain type determines mineral availability, (2) cloud cover affects energy and visibility, (3) time of day changes safety and resource availability, (4) weather creates risk windows. These four systems define the entire spatial-economic framework."
     },
     {
       "id": 55,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the environmental demo tell a complete world story \u2014 from sky to ground, from dawn to dusk, from calm to storm \u2014 in a single flythrough that feels like a short film?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The environmental demo is a micro-documentary: it tells the story of a living planet through its systems \u2014 atmosphere, geology, hydrology, ecology \u2014 working in concert, narrated by the player's own flight path."
     },
     {
       "id": 56,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the 30-second demo leave the player wanting to explore more, without feeling rushed, information-overloaded, or like they're watching a cutscene instead of previewing gameplay?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "The demo hits 3-4 educational beats in 30 seconds with 5-7 seconds of quiet between prompts. The camera never stops moving, simulating player exploration. Each prompt answers 'what am I looking at?' before moving on."
     },
     {
       "id": 57,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "What specific elements of the environmental demo need to persist: camera progress, educational triggers fired, time of day, or is it a fresh-start experience each time?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Fresh-start experience. The demo is a walkthrough meant to be experienced in one sitting. No save/load needed. Everything resets on launch."
     },
     {
       "id": 58,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the demo environment need any physics simulation (wind effects, particle systems, dynamic lighting) or is it primarily static geometry?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Primarily static geometry with dynamic lighting (day/night) and wind-driven cloud movement. No destructible physics or rigid body simulation. The physics needs are limited to the day/night cycle and cloud drift."
     }
   ],
   "answers": [],

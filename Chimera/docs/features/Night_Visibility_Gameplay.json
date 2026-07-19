@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "What night-specific resources and nocturnal creature activity create a darkness economy where night-vision equipment investments unlock exclusive after-hours market access?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Night is an economic filter. Bioluminescent organisms (for glow reagents) emerge only after sunset. Certain minerals are only identifiable by phosphorescent response in darkness. Nocturnal creatures drop materials worthless by day but valuable for night-vision crafting. Players who invest in night vision (~500 credits) gain exclusive access to a market segment day-only players cannot touch."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does reduced visibility at night tell a survival story \u2014 the player must navigate by starlight, use their scanner as a flashlight, and find shelter before full dark \u2014 making nightfall a narrative event?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Night is a story transition: the world narrows to the reach of your light, every sound is amplified, every shadow hides possibility. Surviving the night is a small heroic act repeated every cycle."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does nighttime darkness create meaningful gameplay constraint -- limited visibility, reliance on light sources, heightened threat awareness -- without making basic navigation impossible or frustrating?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Night reduces view distance to 30m (vs 200m daytime). Equipped light source (flashlight/headlamp) restores 50m. Stars provide 15m ambient silhouette visibility. Player can always see terrain at their feet. Nav markers remain visible at any distance."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the player's night-vision equipment state (active, charge level, upgrade level) and visibility settings need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Night vision equipment state (on/off, battery charge, upgrade tier) must persist. Also the player's brightness/contrast preferences for accessibility. Written on manual save or equipment change."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does night visibility simulate real scotopic/photopic vision (rod/cone adaptation, pupil dilation over time) or is it a simple brightness curve?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simple brightness curve in v1. Eye adaptation (darkness exposure time affecting visibility) is approximated but does not model real rod/cone photochemistry. Full adaptation takes ~2 seconds game-time, not the real-world 20-30 minutes."
     }
   ],
   "answers": [],

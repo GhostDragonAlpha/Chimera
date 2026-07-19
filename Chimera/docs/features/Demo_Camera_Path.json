@@ -529,42 +529,42 @@
     {
       "id": 59,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does the camera path function as an economic corridor connecting resource zones, where path-adjacent locations have higher prospecting value due to accessibility?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "The camera path defines the economic spine of the demo. Locations visible from or adjacent to the path are 'high-access' \u2014 they require minimal navigation effort, ideal for bulk resource extraction with low transportation cost. Remote areas may have richer deposits but require expedition-level investment. This creates a land-value gradient where path-adjacent nodes are 'prime real estate' and backcountry nodes demand risk/reward calculation."
     },
     {
       "id": 60,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "What story does the demo's fixed camera path tell \u2014 a tour that introduces the world's scale, its beauty, and its mysteries in a deliberate narrative sequence?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The demo camera path is the opening paragraph: it establishes scale (canyon walls), introduces characters (NPC outpost), hints at mystery (glowing strata), and ends on a question (what's beyond the ridge?)"
     },
     {
       "id": 61,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the demo camera path provide a satisfying reveal of the canyon environment without clipping through terrain, geometry, or vegetation?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Camera path stays \u22652m from all collision geometry. Reveal timing has 5-second curtain (entrance narrows) before the full canyon opens. No clipping occurs across the 30-second path."
     },
     {
       "id": 62,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Is the camera path authored in Sequencer and baked into the level, or are keyframes saved separately and loaded at runtime?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Authored and baked into the level via Sequencer. No separate save/load of path data. The camera path is part of the packaged level asset."
     },
     {
       "id": 63,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the camera flythrough use any physics-based camera damping or collision, or is it entirely spline-interpolated?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Entirely spline-interpolated. No physics applied to the camera. The camera follows the authored spline with no collision detection or momentum."
     }
   ],
   "answers": [],

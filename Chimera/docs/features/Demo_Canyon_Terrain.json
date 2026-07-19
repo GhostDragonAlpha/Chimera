@@ -529,42 +529,42 @@
     {
       "id": 59,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does terrain type distribution along the demo path determine which resources are visible to the introductory player, creating a curated first-impression economy that shapes early-game resource expectations?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "The demo terrain is the player's first economic textbook \u2014 it showcases one or two rock types and their associated resources, establishing the paradigm that terrain = resource availability. This shapes early economic behavior: players learn to associate canyon-wall strata with coal/oil deposits and canyon-floor alluvium with water-accessible clay. The demo sets the mental model for the entire resource-prospecting loop."
     },
     {
       "id": 60,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the demo terrain establish a specific sense of place \u2014 a real, named location with a geological identity that makes the world feel like somewhere, not just anywhere?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The demo terrain tells the story of one specific canyon: its color palette says 'iron-rich desert,' its strata say 'ancient seabed,' its watercourse says 'seasonal floods' \u2014 a place with a past."
     },
     {
       "id": 61,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the demo showcase the strata and geological variety in a way that feels like natural exploration rather than an artificially arranged museum exhibit?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Strata transitions are geologically plausible (sedimentary near entrance, metamorphic mid-canyon, igneous at terminus). The demo path follows the natural canyon gradient -- no teleporting between biomes."
     },
     {
       "id": 62,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Is the canyon terrain baked into the packaged level or regenerated from seed on each load, requiring seed persistence?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Regenerated from seed at level load for the demo. The seed (one integer) must persist. The demo always generates the same canyon from the demo seed value."
     },
     {
       "id": 63,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Is the demo canyon terrain shaped by procedural noise that mimics geological processes, or is it hand-sculpted?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Procedural noise approximating geological processes. The demo showcases the procedural generation pipeline rather than hand-sculpted terrain, demonstrating the seed-based approach."
     }
   ],
   "answers": [],

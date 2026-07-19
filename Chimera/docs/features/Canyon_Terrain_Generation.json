@@ -349,42 +349,42 @@
     {
       "id": 39,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does terrain generation control resource distribution density and accessibility, where erosion patterns and rock-type frequency create natural scarcity gradients that underpin regional material pricing?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Terrain generation is the fundamental supply-side engine. The procedural system determines which rock types appear, at what frequency, and how accessible they are (cliff-face vs. canyon floor vs. talus slope). A canyon with steep walls and deep igneous exposure will have abundant ore but dangerous access \u2014 higher risk, higher reward. Easy-to-reach sedimentary zones produce bulk common materials cheaply, while hazardous deep-igneous zones command premium prices."
     },
     {
       "id": 40,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does procedurally generated canyon terrain imply a story of erosion \u2014 wind, water, and time \u2014 that the player can infer just by looking at the shape of the land?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The terrain generation simulates real erosional processes, so every butte, wash, and hoodoo tells the story of millennia of weather \u2014 the land's age is legible in its forms."
     },
     {
       "id": 41,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does procedurally generated terrain maintain natural-looking formations without visible seams, repetition artifacts, or geometrically impossible overhangs?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Terrain uses layered Perlin noise at multiple octaves with erosion simulation. Seamless tile at canyon scale. Overhangs are physically plausible and occur only where erosion patterns justify them."
     },
     {
       "id": 42,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the terrain generation seed and any player-driven terrain modifications (digging, building) need to persist between sessions?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "The generation seed must persist (one integer). Terrain itself is regenerated deterministically from the seed. If the player modifies terrain (digging, building), those deltas must save. Write frequency: seed once at world creation, deltas on player edit."
     },
     {
       "id": 43,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does terrain erosion simulation use physically based hydraulic erosion (rainfall, runoff, sediment transport) or statistical noise that looks like erosion?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Statistical noise that approximates erosion. A full hydraulic erosion simulation (Navier-Stokes, sediment transport) is computationally prohibitive at runtime. The noise model produces visually plausible canyon shapes with V-shaped valleys, alluvial fans, and meander patterns."
     }
   ],
   "answers": [],

@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does navigation data (star charts, safe routes, shortcut paths) function as a tradeable information commodity that creates a cartographer career path?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Navigation data is high-value information. A full star chart costs 500 credits from NPC cartographers \u2014 or a player can discover routes for free then sell the data. A shortcut saving 2 hours has economic value: buyers save fuel costs. This creates a cartographer career where explorers generate revenue selling route data, not trading physical goods."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does navigating between star systems tell the story of charting the unknown \u2014 plotting courses by stellar cartography, discovering new systems, and leaving the player's mark on the map?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Star navigation tells an explorer's story: each jump is a step into the unknown, each unknown system is a blank page, each named discovery is a authored chapter \u2014 the player writes their own odyssey onto the galaxy."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Can the player plot a course between star systems using the star chart with clear visualization of waypoints, fuel requirements, and travel time -- without needing external tools or spreadsheets?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Star chart shows reachable systems highlighted within current fuel range. Click-to-plot draws a route line with fuel stops. Each leg shows distance (LY), fuel cost, and ETA. Route confirms with one button. No manual coordinate entry."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the player's discovered star chart data, plotted routes, and visited systems need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Star chart state is persistent exploration progress: discovered star positions (x,y,z in galaxy), visited system IDs (set), plotted routes (source-destination pairs), navigation waypoints. Heavy save data. Written on discovery or route plot."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the star navigation system use real stellar physics (proper motion, parallax, spectral classification, Hertzsprung-Russell diagram) or is it abstracted?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Abstracted with real references. Star positions are world-aligned and fixed (no proper motion simulation). Spectral classification (OBAFGKM) is used for star color and temperature display. The HR diagram is shown in educational annotations but does not drive the simulation."
     }
   ],
   "answers": [],

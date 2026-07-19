@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does information gained through NPC dialogue (trade routes, hidden resources, repair services, market rumors) function as economically valuable knowledge that can be acted upon for profit?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Dialogue is the primary channel for economic intelligence. NPC gossip about a collapsed ridge exposing a new iron vein reveals a supply shock to exploit. A bar rumor about the refinery overpaying for copper is an arbitrage opportunity. A player who chats regularly gains 2-3 actionable tips per session, worth 50-200 credits each \u2014 a ~15% income differential over non-talkative players."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does NPC dialogue reveal the world's history through personal stories \u2014 a trader's tale of the route they traveled, a scientist's theory about the canyon's formation, a survivor's account of a storm?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Dialogue is the world's oral history: every NPC carries a fragment of the planet's story. The prospector knows where to find water, the scientist knows what the strata mean, the hermit knows what happened to the last settlement."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does dialogue feel natural to navigate -- can the player select responses, skip already-read text, and exit conversations at any point without friction or animation lock?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Dialogue uses a radial response menu (4 options max). Already-read text auto-skips on replay. Player can press Escape at any time to exit -- no forced animation playout. Response timer auto-selects default after 30s of inactivity."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the dialogue state (active branch, completed topics, reputation-gated unlocks, conversation history) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Dialogue state is complex: completed topics (bitmask or set of IDs), current reputation thresholds met, active quest dialogue branches. Written on conversation end or manual save."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What physical principles apply to a dialogue system \u2014 is there any physics consideration (acoustic propagation, lip-sync physics, spatial audio)?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "No physics relevance for the dialogue logic itself. Spatial audio and lip-sync are handled by UE5's audio and animation systems, not by the dialogue state machine."
     }
   ],
   "answers": [],

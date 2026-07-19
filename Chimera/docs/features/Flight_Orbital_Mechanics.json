@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "What fuel-cost gradients, gravity-well exit windows, and orbital-insertion burn requirements create a delta-v economy where navigation skill directly translates to fuel cost savings?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Orbital mechanics is the physics engine of the travel economy. A pilot using Oberth maneuvers achieves orbit insertion with 30-40% less fuel than brute-force ascent. Skill = delta-v saved = credits earned. The gradient is steepest in high-gravity systems, making gravity knowledge economically valuable route-planning intelligence."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does mastering orbital mechanics tell the story of becoming a real pilot \u2014 from struggling with basic orbits to planning interplanetary transfers, each maneuver a chapter in the player's skill journey?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The orbital mechanics journey is a hero's arc: the player starts unable to orbit, learns through failure, achieves orbital insertion (first victory), executes a transfer burn (mastery), and finally slingshots between worlds (expertise)."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does orbital flight feel intuitive to control -- can the player establish orbit, execute transfer burns, and manage delta-v without reading a manual or memorizing keyboard shortcuts?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Controls use throttle (W/S) and attitude (mouse) with on-screen orbital vector indicators. A prograde/retrograde assist mode simplifies burns. Delta-v readout shows remaining budget. Tutorial tooltip appears on first orbit."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the ship's orbital state (position, velocity vector, current reference body, orbital parameters) need to persist and resume accurately on load?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Orbital state is the most critical save data for this feature: position (x,y,z), velocity vector (vx,vy,vz), current reference body, and time since insertion. This is ~7 floats. Written on manual save or checkpoint. Frequent auto-saves recommended during orbital maneuvers."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the flight model use real N-body orbital mechanics (Newtonian gravitation, Keplerian orbits, Lagrange points) or simplified patched-conic approximation?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simplified two-body patched-conic approximation in v1. Each body's sphere of influence is modeled separately with Newtonian gravity (F = GMm/r\u00b2). N-body interactions are deferred. This is sufficient for teaching orbital insertion, transfer burns, and gravity well traversal."
     }
   ],
   "answers": [],

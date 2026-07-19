@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How do raw-material cost curves, quality variance by skill, and tool-tier gradients create a manufacturing economy where masterwork tools command significant premiums?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "A basic pickaxe costs 10 iron and mines 50 units/hour. A masterwork pickaxe costs 10 iron + 1 rare crystal but mines 120 units/hour \u2014 240% productivity for 16x material cost. The premium reflects skill: only Journeyman+ crafters can attempt masterwork (15% success rate; failures produce standard grade). This creates a supply-constrained market where masterwork tools sell at 3-4x material cost, giving masters ~200% profit on skill alone."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does crafting tools tell the story of innovation born of necessity \u2014 a broken scanner repurposed as a mining tool, a fuel canister turned into a pressure vessel, scrap metal forged into a blade?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Every crafted tool has an origin story: it was made because something broke, something ran out, or something threatened. The crafting system lets the player write their own innovation narrative \u2014 from scavenger to engineer."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the crafting station present available recipes clearly, showing material requirements and resulting tool stats before the player commits to crafting -- avoiding guesswork or trial-and-error?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Recipes show in a categorized list with owned materials highlighted. Selecting a recipe shows stat preview (damage, durability, speed) vs current tool. Craft button is grayed with missing material list if requirements aren't met. No hidden recipes."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does every crafted item, recipe state, available blueprints, and crafting station inventory need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Crafting is a persistence-heavy system: known recipes (set of IDs), crafting station inventories (item stacks per station), player inventory of crafted items. Written on craft completion or manual save."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the crafting system model any physical fabrication process (heat treatment, alloy formation, forging pressure) or is it recipe-driven assembly?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Recipe-driven assembly. The player combines ingredients at a crafting station and receives the output. No physical fabrication simulation. Educational flavor text describes the real process (e.g., 'smelting iron ore at 1538\u00b0C separates metal from gangue') but no physics drives it."
     }
   ],
   "answers": [],

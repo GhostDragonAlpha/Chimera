@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does scan-result presentation affect the perceived and actual value of scan data as a tradeable commodity, with premium UI features increasing data valuation?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "UI quality is a value signal in the information market. A result with mineral icons, grade percentages, and estimated volume (professional UI) is 'verified survey-grade data' commanding a higher price than a text-only dump (basic UI). The UI tier certifies data reliability: buyers pay more for machine-verified data than raw telemetry needing interpretation."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the scanner's UI tell a visual story \u2014 data readouts that look like real scientific instruments, holographic projections that reveal hidden layers, and annotations that feel like a researcher's field notes?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The scanner UI tells a story through its visual language: clean scientific readouts say 'real instrument,' spectral graphs say 'real data,' hand-annotated overlays say 'someone was here before you, studying the same thing.'"
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the scan result UI clearly distinguish between different scan types (geology, meteorology, astronomy, biology) at a glance using color, iconography, and layout -- without requiring the player to read text to identify the category?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Each category uses a unique accent color (geology=amber, meteorology=cyan, astronomy=purple, biology=green) and icon. Result card layout is consistent but category header fills the top band. Category is recognizable from peripheral vision."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the scanner UI layout customization (element positions, visible panels, transparency, scale) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. UI layout preferences (element positions, visible panels, scale, opacity) should persist. Written when player customizes the HUD layout."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What physical principles apply to a scanner UI display system?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "No physics relevance. UI display is 2D screen-space rendering with no physics simulation."
     }
   ],
   "answers": [],

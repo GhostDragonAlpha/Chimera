@@ -466,42 +466,42 @@
     {
       "id": 52,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does shelter construction cost vs. quality create a housing economy where players balance material investment against survival needs and long-term maintenance costs?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Shelter is the largest capital investment. A basic shelter costs 50 units common material (easy to gather) but provides minimal insulation. A reinforced shelter costs 200 units including rare material but provides 3x durability. New players live cheaply but repair often; established players invest in premium shelters that reduce long-term maintenance. This is capital allocation: spend now on quality or later on repairs."
     },
     {
       "id": 53,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does building a shelter tell the story of making a home \u2014 from a bare survival pod to a personalized habitat with lights, furnishings, and the quiet evidence of a life being lived?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Every shelter tells a domestic story: the placement of furniture tells you how the player lives, the repairs tell you what the weather has done, the accumulated objects tell you how long they've stayed \u2014 a home with a biography."
     },
     {
       "id": 54,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Can the player place and orient shelter modules using simple snap-points and grid alignment, without fighting the placement system or needing precise pixel-level cursor positioning?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Modules snap to a 1m grid with 45-degree rotation increments. Placement preview shows green (valid) / red (invalid) with collision highlight. Snap distance is generous (0.5m threshold). RMB rotates, LMB confirms. No precision aiming required."
     },
     {
       "id": 55,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does every shelter's structural state (module list, positions, connections, damage, resource inventory) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Shelters have complex persistent state: list of placed modules with positions/rotations, module health/damage per module, stored resources, occupant count. This is heavy save data. Written on manual save or module change."
     },
     {
       "id": 56,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What structural physics apply to shelters \u2014 load-bearing, stress distribution, collapse mechanics under weight or storm stress?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simplified structural integrity model. Each module has a structural load capacity. Exceeding it (too many stacked modules, storm damage reducing capacity) causes progressive deformation then collapse. Collapse uses basic rigid body physics for debris."
     }
   ],
   "answers": [],

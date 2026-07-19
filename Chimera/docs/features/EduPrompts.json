@@ -220,20 +220,43 @@
   },
   "context_filters": {
     "required_time": {
-      "values": ["dawn", "day", "dusk", "night"],
+      "values": [
+        "dawn",
+        "day",
+        "dusk",
+        "night"
+      ],
       "description": "If set, prompt only fires during this time-of-day. null means any time."
     },
     "required_weather": {
-      "values": ["clear", "windy", "storm", "calm"],
+      "values": [
+        "clear",
+        "windy",
+        "storm",
+        "calm"
+      ],
       "description": "If set, prompt only fires when weather system matches. null means any weather."
     }
   },
   "suppression_tags": {
     "description": "Prompts are suppressed while player has these GameplayTags. Prompt queues and fires on exit.",
-    "tags": ["State.InCombat", "State.InDialogue"]
+    "tags": [
+      "State.InCombat",
+      "State.InDialogue"
+    ]
   },
   "test_mode": {
     "cvar": "ch.EduTriggers.TestMode",
     "description": "When 1, forces sequential fire of all prompts at player location, 3s apart, logging each to output log."
-  }
+  },
+  "questions": [
+    {
+      "id": 1,
+      "category": "UX",
+      "question": "When an educational prompt fires, is the text displayed at a comfortable reading pace (minimum 4 seconds for 30 words) with clear typography, and can the player dismiss it early or recall past prompts from a log?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Prompts display at 8 words/second minimum. Typography uses sans-serif at 24px minimum with high contrast. Early dismiss = E or click. History log (key: H) shows last 50 prompts with zone context. No prompt blocks movement input."
+    }
+  ]
 }

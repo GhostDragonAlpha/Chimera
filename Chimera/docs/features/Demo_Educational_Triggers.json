@@ -547,42 +547,42 @@
     {
       "id": 61,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How do educational trigger zones function as discovery nodes that unlock knowledge about nearby extractable resources, creating an information-access economy?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Each educational trigger is a free economic intelligence package \u2014 it tells the player what resource is nearby, how to identify it, and how to extract it. Trigger placement controls the distribution of economic knowledge: well-covered zones create 'transparent' markets where everyone knows resource value; gaps create 'opaque' zones where only scanner-equipped players find the wealth."
     },
     {
       "id": 62,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the demo sequence educational triggers in a narrative arc \u2014 first teach what rock is, then what the canyon is made of, then how it formed \u2014 building knowledge like chapters?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The demo's trigger sequence is a lesson plan with dramatic structure: Act I establishes vocabulary (strata, erosion), Act II applies it (this canyon was a sea), Act III asks the player to infer (what will this look like in a million years?)"
     },
     {
       "id": 63,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Do proximity-triggered educational prompts fire at the right spatial moment -- not so early that the player can't see the subject, and not so late that the player has walked past it?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Trigger volumes extend 3m in front of the subject and 2m behind. The prompt fires when the camera enters the front zone with the subject in frame. Leaving the zone before the prompt finishes closes it gracefully."
     },
     {
       "id": 64,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Do the trigger states (fired/not-fired, last-triggered-time, times-triggered) need to persist so the player does not see the same educational text on reload?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Each trigger's 'last_triggered_time' and 'times_triggered' count must persist. This prevents spam and allows cooldown tracking. Written on each trigger fire (frequent during exploration)."
     },
     {
       "id": 65,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Are trigger zones positioned with real-world physics considerations (line-of-sight, occlusion, distance-based falloff) or are they simple sphere volumes?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simple sphere/capsule volumes with distance fade. No physics occlusion. Triggers fire when the player enters the volume, regardless of visual line-of-sight."
     }
   ],
   "answers": [],

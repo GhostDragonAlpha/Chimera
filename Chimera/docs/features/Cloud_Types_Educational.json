@@ -718,42 +718,42 @@
     {
       "id": 80,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does cloud-type identification skill function as weather-prediction human capital, where accurate forecasting enables optimal timing of farming, solar charging, mining, and travel decisions?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Cloud literacy is a force-multiplier in the survival economy. A player who identifies cumulonimbus delays mining to avoid flash-flood risk; one who reads cirrus maximizes solar charging before cloud cover increases. The differential is measurable: weather-blind players lose 15-25% of expedition value to weather disruption, while cloud-literate players achieve near-100% scheduling efficiency."
     },
     {
       "id": 81,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Do the different cloud types (cirrus, cumulus, stratus, nimbostratus) tell the story of what the weather will do next, teaching the player to read the sky like a pilot or farmer?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Cloud types are a readable weather forecast: cirrus warns of approaching fronts, cumulus tells of thermal uplift, stratus promises drizzle, nimbostratus threatens persistent rain \u2014 the sky narrates tomorrow."
     },
     {
       "id": 82,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Can the player distinguish cloud types (cumulus, stratus, cirrus, nimbostratus, cumulonimbus) by shape, altitude, and color without needing to open a reference UI or pause gameplay?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Each cloud type uses distinct shape profiles (puffy sheets for cumulus, flat layers for stratus, wispy streaks for cirrus). Altitude banding helps identification. Educational labels appear on first hover."
     },
     {
       "id": 83,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the player's cloud-type identification progress (which clouds they have scanned, learned about, identified correctly) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. The player's cloud identification journal records which cloud types they have scanned. This is player progression state and must save. Written when the player scans a new cloud type (infrequent, once per type)."
     },
     {
       "id": 84,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the cloud classification system teach real cloud physics (cumulus convection, stratus stratification, cirrus ice crystal formation) or just visual identification?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Both. Visual identification (shape, color, altitude) is the primary interaction, but each scan also explains the meteorological physics: warm air rising for cumulus, stable layers for stratus, high-altitude ice for cirrus."
     }
   ],
   "answers": [],

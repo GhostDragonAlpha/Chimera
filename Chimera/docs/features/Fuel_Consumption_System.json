@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does delta-v costing, fuel-type price differentials (hydrogen vs. antimatter vs. solar), and refueling station scarcity create a travel economy where fuel budgeting is the primary constraint on trade route profitability?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Fuel is the operating cost of the interstellar economy. Hydrogen (cheap, low specific impulse) works for intrasystem hops; antimatter (expensive, high specific impulse) for interstellar transits. Refueling station density determines route viability \u2014 routes with mid-point stations are economical; those without require dead-weight fuel reserves, reducing cargo capacity and profit."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does fuel consumption tell the story of a finite resource that forces hard choices \u2014 every burn a tradeoff between ambition and survival, every drop a memory of the last refuel?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Fuel is the story of scarcity: a full tank is freedom, an empty tank is desperation. Every burn tells the story of a decision \u2014 go further or save for return \u2014 and the best stories come from the wrong choice."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the fuel gauge provide clear, at-a-glance feedback about remaining delta-v, current consumption rate, and efficiency status without requiring the player to do mental math?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "HUD shows delta-v remaining as a segmented bar (each segment = 100m/s). Current burn rate shows as a live number. Efficiency color-codes (green=optimal, yellow=wasteful, red=emergency). No calculation needed."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the fuel state per tank/resource type need to persist, and are consumption rates deterministic so fuel level is identical on reload at the same state?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Fuel levels per tank and fuel type are persistent state. Consumption must be deterministic (based on delta-v expended, not real time) so reloading at the same orbital position gives the same fuel level. Written on burn completion or manual save."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does fuel consumption model the Tsiolkovsky rocket equation with real specific impulse values for different fuel types, teaching the exponential cost of delta-v?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Yes. The rocket equation is the core mechanic. Different fuel types have different Isp values (chemical: ~350s, nuclear-thermal: ~900s, ion: ~3000s). The player must budget delta-v against the rocket equation, learning that higher Isp means less fuel for the same delta-v but potentially lower thrust."
     }
   ],
   "answers": [],

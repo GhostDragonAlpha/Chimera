@@ -332,42 +332,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does weather damage create recurring repair costs that form a maintenance economy, where storm frequency determines shelter total-cost-of-ownership?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Weather makes shelter an ongoing expense. A standard shelter in a low-weather zone (10 storms/month) costs 5 material units/month in repairs. In a high-weather zone (40 storms/month), repairs cost 25 units/month \u2014 5x the operating cost. This creates location-based economic decisions and differential land values based on microclimate."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the shelter's interaction with weather tell the story of an environment that pushes back \u2014 hail hammering the roof, wind rattling the panels, snow piling at the door \u2014 making each storm a narrative event?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Weather-shelter interaction is the story of a relationship: a gentle rain is background music, a hailstorm is a crisis, a blizzard is a siege \u2014 the shelter protects but the player hears the weather's voice through the walls."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the player feel the consequences of poor shelter placement or material choice through audiovisual cues (drips during rain, frost forming, wind howling through gaps) rather than abstract stat bars?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Rain on thatch roof = muffled thrum. Rain on metal = loud drumming. Gaps between modules show visible light leaks and wind particle effects. Interior breath fog appears in poorly-insulated shelters during cold. Frost creeps inward from module seams."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the accumulated weather damage per shelter module need to persist so damage is consistent across reloads?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Each module stores accumulated weather damage (float), current damage state (undamaged/damaged/critical/destroyed), and repair progress. Written on damage tick or repair action. Write frequency: every weather tick that changes state."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What atmospheric physics govern weather effects on shelters \u2014 wind load (force based on exposed surface area), thermal cycling, or precipitation erosion?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simplified wind load model. Damage rate scales with wind speed (exposed face takes more damage) and precipitation intensity. Thermal cycling (expansion/contraction from day/night temperature swings) is modeled as gradual fatigue damage. No fluid dynamics for water erosion."
     }
   ],
   "answers": [],

@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does premium audio feedback (mineral-specific chimes, discovery fanfares) function as a non-monetary reward signal in the scan-data economy, reinforcing value without direct currency?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Audio feedback is the reward mechanism of the scanning economy. A rising chime for a high-grade vein triggers dopamine reinforcement that makes scanning feel productive. This shapes economic behavior: players gravitate toward resource types with satisfying audio signatures, creating demand micro-economies around 'satisfying-to-scan' resources and reducing grind fatigue by ~30%."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the scanner's audio feedback tell the story of what the player is discovering \u2014 rising tones for valuable finds, deep resonance for geological features, harmonic shifts for biological signatures?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Scanner audio is the sound of discovery: a high chirp for rare minerals ('valuable!'), a low hum for dense rock ('solid'), a warble for organic material ('alive') \u2014 the player learns to identify finds by sound before sight."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the audio feedback let the player identify what they scanned (mineral ping, fossil chime, lifeform tone, atmospheric drone) by sound alone, without needing to look at the HUD?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Each scan category has a unique tonal signature: geology = low metallic ping, paleontology = wooden resonator chime, biology = organic warble, atmosphere = wind-through-reeds drone. Scan completion uses a rising arpeggio. Error = short buzz."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the audio settings (volume, mute state) specific to scanner sounds need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Scanner audio channel volume and mute state must persist as part of the global audio settings. Written when player changes audio settings."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the scanner audio simulate real acoustic phenomena (Doppler shift, attenuation over distance, material-dependent reflection) or is it stylized feedback?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "No. Scanner audio is stylized feedback (activation chirp, scanning hum, result chime). It does not simulate real acoustic physics. Each scan category has a distinct audio signature for gameplay clarity."
     }
   ],
   "answers": [],

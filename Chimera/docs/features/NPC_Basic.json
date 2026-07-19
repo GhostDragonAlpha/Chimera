@@ -466,42 +466,42 @@
     {
       "id": 52,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How do basic NPC needs (food, water, shelter materials, tool repair) create a baseline subsistence economy where communities consume specific resources, driving predictable demand that players can profitably supply?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Basic NPCs are the demand side of the player economy. Each NPC consumes food (0.5 units/day), water (1 unit/day), and shelter maintenance (0.1 unit/day). A settlement of 20 NPCs generates daily demand for 10 food, 20 water, and 2 building materials. This creates guaranteed recurring revenue for players who set up supply routes, independent of player-built demand."
     },
     {
       "id": 53,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the mere presence of NPCs in the canyon tell the story of a populated world \u2014 that the player is not the first (or only) person to find this place, that life persists here?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Every NPC is a story node: they exist because there's a reason to exist here. A prospector means resources, a hermit means refuge, a trader means a route \u2014 their presence tells you what kind of place this is."
     },
     {
       "id": 54,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Can the player tell at a glance whether an NPC is friendly, neutral, or hostile based on posture, animation, and proximity behavior without needing a colored nameplate or faction icon?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Friendly NPCs have open posture, slow approach, and make eye contact. Neutrals ignore the player unless addressed. Hostiles crouch, circle, and animate weapons. Nameplate colors reinforce (green/white/red) but aren't the primary signal."
     },
     {
       "id": 55,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the basic NPC's spawn state, location, and conversation flags (greeted, quest items received) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. NPC location, spawn state (alive/disabled), and interaction flags must persist. These are core world state. Written on manual save."
     },
     {
       "id": 56,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the NPC character use physics-based ragdoll on death, or standard animation state transitions?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Standard animation state transitions. Ragdoll physics is not planned for v1. NPC death triggers a canned animation, not a physics simulation."
     }
   ],
   "answers": [],

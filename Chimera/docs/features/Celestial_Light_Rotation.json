@@ -358,42 +358,42 @@
     {
       "id": 40,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does the day/night sun arc create temporal harvesting windows where solar-dependent activities (photovoltaic charging, photosensitive material collection, heat-requiring crafting) have time-sensitive profitability?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Sun arc creates a predictable economic rhythm. Solar-powered equipment charges at peak efficiency only during midday, photosynthetic reagents are harvestable only during certain light angles, and certain minerals are extractable only during specific illumination windows. Players who optimize their daily schedule \u2014 charging at noon, mining dark minerals at midnight \u2014 extract more value per 24-hour cycle."
     },
     {
       "id": 41,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the slow rotation of celestial light sources across the sky tell the story of this planet's place in its solar system \u2014 its day length, axial tilt, and orbital season?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The celestial cycle is the planet's pulse: the length of day tells you how fast it spins, the arc of the sun tells you its axial tilt, the color of light tells you its atmospheric chemistry."
     },
     {
       "id": 42,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the celestial rotation feel continuous and natural to the player without visible angular jumps when time-of-day advances, especially during fast-forwarded time?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Sun light rotates on a continuous quaternion slerp. Star sphere rotates separately. At 100x time scale the motion is visible but smooth -- no stepping artifacts."
     },
     {
       "id": 43,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the current time-of-day (sun angle, star sphere rotation) need to persist and resume on load, or does the cycle always restart from dawn?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes, time-of-day must persist. If the player saves at sunset and loads the save, the sun should still be at sunset position. One float value: accumulated rotation angle. Written only on manual save or checkpoint."
     },
     {
       "id": 44,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the sun arc model real orbital mechanics (axial tilt, latitude-dependent arc, seasonal variation) or is it a fixed equatorial rotation?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Fixed equatorial rotation in v1. Axial tilt and seasonal variation are identified as future enhancement. The rotation rate is constant and the arc is symmetric about the zenith with no seasonal change."
     }
   ],
   "answers": [],

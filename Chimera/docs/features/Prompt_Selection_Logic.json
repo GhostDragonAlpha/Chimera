@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does prompt priority and cooldown management create an attention economy where educational content competes with economic alerts (fuel critical, repair needed, trade expiring) for the player's limited attention?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "With 5-7 simultaneous signals possible, the system prioritizes: economic-survival alerts (ship crashing, 60s trade window) preempt education, but cooldown ensures education is not permanently suppressed \u2014 after a crisis, educational prompts get a priority boost in the 'downtime classroom' window."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does prompt selection tell the story of an adaptive teacher \u2014 one that watches what the player engages with and offers the next piece of exactly the knowledge they're ready for?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Prompt selection is the story of guided discovery: the system doesn't dump facts, it watches what fascinates the player and offers the next chapter precisely when they're curious enough to want it."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the prompt selection system avoid repeating the same educational text within a session, and does it choose contextually relevant prompts (matching current weather, time, and location) without feeling like spam?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Prompts have per-session cooldowns (30-120s depending on tier). Context filter checks time-of-day, weather, and zone before selecting. Priority queue prevents more than 1 prompt per 8-second window. Revisiting a zone after 5min may fire the next tier."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the prompt history (which educational prompts have been shown, priority scores, debounce timers) need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Prompt selection state requires persistence: every prompt ID has a 'last_shown_time' and 'display_count'. Priority scores are recalculated from state. Written on each prompt display."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What physical principles apply to a prompt selection system?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "No physics relevance. Prompt selection is a priority-scored decision engine with debouncing. No physical simulation."
     }
   ],
   "answers": [],

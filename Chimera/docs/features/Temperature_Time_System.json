@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does temperature-sensitive resource availability create a thermal economy where time-of-day temperature variation controls which economic activities are viable?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Temperature controls production schedules. Midday warm rock fractures more easily (20% higher mining yield). Certain alloys need sustained solar-furnace heat (daytime only). Cryo-extraction requires sub-zero night temps for unique volatiles. Players ignorant of the thermal cycle operate at ~60% efficiency; those who schedule around temperature peak at 95%+."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Do temperature cycles tell the story of a planet with seasons, where the player must learn the rhythm of hot and cold to survive \u2014 planting before the thaw, hunting before the freeze, migrating before the kill-season?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Temperature tells a seasonal survival story: the heat of day pushes the player to seek shade and water, the cold of night pushes them toward shelter, and the slow shift between seasons creates long-term goals and looming deadlines."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the player perceive temperature changes through environmental cues (breath fog at cold, heat shimmer at hot, screen condensation on transition) rather than just a number changing on the HUD thermometer?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Below 5C: breath fog particle effect, character rubs arms. Above 35C: heat shimmer distortion at horizon, screen edge tint orange. Temperature drop >10C in 60s: screen edge condensation beads. HUD thermometer is secondary confirmation."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the current ambient temperature and daily temperature curve parameters need to persist so the player returns to the same thermal environment?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Current temperature (float) and time-of-day phase (float) must persist. The temperature curve is deterministic from time-of-day and weather state, so only the time reference needs to save. Written on manual save."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the temperature system model real thermodynamic processes (solar irradiance, albedo, greenhouse effect, thermal mass, convection cooling by wind)?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simplified thermodynamic model. Temperature is computed from a base value modulated by: solar angle (irradiance proxy), cloud cover (albedo/shading), and wind speed (convection cooling). No greenhouse gas model or ground thermal mass simulation. The curve is physically plausible but not precise."
     }
   ],
   "answers": [],

@@ -718,42 +718,42 @@
     {
       "id": 80,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does cloud shadow coverage affect solar-dependent equipment (chargers, greenhouse panels), creating a real-time energy economics where atmospheric conditions directly control power input and operational costs?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Cloud shadows create microeconomic variability in energy supply. A solar farm under full cloud cover produces 30-60% of clear-sky output, forcing players to maintain battery reserves (capital cost) or use expensive backup fuel (operating cost). A player who predicts cloud cover schedules energy-intensive activities around clear windows, reducing fuel expenditure by up to 40%."
     },
     {
       "id": 81,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "What does the movement of cloud shadows across the canyon floor tell the player about wind patterns, weather fronts, and the planet's atmospheric circulation?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Cloud shadows are the visible breath of the atmosphere: their speed and direction reveal planetary wind patterns, their shape changes reveal altitude shear, their darkening reveals approaching weather."
     },
     {
       "id": 82,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Do cloud shadows move smoothly across the terrain in sync with wind direction, and maintain visual consistency with the overhead cloud positions at all view angles?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Shadows project from volumetric cloud texture onto terrain in real-time. Wind-driven shadow drift matches cloud movement with 2-second latency buffer. Shadows fade at steep view angles to avoid disconnect."
     },
     {
       "id": 83,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Are cloud shadow parameters (shadow density, softness, coverage) authored at build time or runtime-modifiable and in need of persistence?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Authored at build time. Cloud shadow parameters are part of the volumetric cloud configuration. No runtime save/load needed for shadow properties."
     },
     {
       "id": 84,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Do cloud shadows model the physical relationship between cloud optical depth and shadow darkness, or is shadow density a fixed aesthetic value?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Fixed aesthetic value in v1. A physically accurate model would tie shadow darkness to cloud water content and optical depth, but v1 uses authored density for performance and visual consistency."
     }
   ],
   "answers": [],

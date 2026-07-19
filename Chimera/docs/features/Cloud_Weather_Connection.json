@@ -700,42 +700,42 @@
     {
       "id": 78,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does the cloud-to-weather pipeline (cloud type driving precipitation, wind, storm severity) create a risk-assessment economy where accurate prediction determines safe windows for extraction, travel, and construction?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "The cloud-weather connection is the backbone of environmental risk economics. A player who reads altocumulus castellanus knows to wrap up extraction by noon before thunderstorms develop. Forecast ability controls expedition duration, whether to bring storm-proof shelters (extra weight = cost), and whether to deploy delicate scanning equipment. Poor forecast = lost equipment = direct economic penalty."
     },
     {
       "id": 79,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the causal chain from cloud formation to rain to fog to clearing tell a continuous weather story that the player experiences as a journey through a living atmosphere?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The cloud-weather connection creates a narrative arc: the player watches a system develop from high cirrus to thickening deck to rain to clearing \u2014 every weather cycle tells the story of an atmospheric front passing through."
     },
     {
       "id": 80,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the player intuitively understand that cloud changes predict incoming weather, enabling anticipatory gameplay decisions like seeking shelter before a storm?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Cloud-to-weather transitions have visual lead time: darkening bases signal rain 30s before precipitation, anvil spreading signals storm 60s ahead. The player learns to read clouds as warnings."
     },
     {
       "id": 81,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Do weather state parameters (current weather pattern, storm progression, cloud-to-weather mapping) need to persist and resume on load?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Weather state (current pattern, intensity, remaining duration) must save. Multiple float/integer values representing the weather system state machine. Written on manual save or weather transition."
     },
     {
       "id": 82,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the weather system model real atmospheric physics (pressure gradients, humidity, adiabatic cooling, condensation) or is it a state machine with visual states?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "State machine with visual states, informed by real meteorology. The system cycles through weather patterns (clear, building clouds, storm, clearing) in a physically plausible order, but does not simulate air pressure or humidity numerically."
     }
   ],
   "answers": [],

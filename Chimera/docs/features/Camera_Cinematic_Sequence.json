@@ -358,42 +358,42 @@
     {
       "id": 40,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does the cinematic flythrough function as an economic tour that introduces players to resource zones, biomes with harvestable materials, and trade-route geography visible from the flight path?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "The cinematic sequence is the player's first economic orientation \u2014 it reveals where resources cluster (ore veins in canyon walls, crystal seams near strata transitions), which biomes yield which material tiers, and the spatial layout that will later define trade routes. This visual catalog of opportunity is the foundation of the player's mental economic map, directly influencing early extraction efficiency and travel planning."
     },
     {
       "id": 41,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "What story moment does each pre-scripted camera shot serve \u2014 arrival at a new canyon, discovering a ruin, or witnessing a weather event?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The cinematic camera tells the story of the player's journey: every establishing shot frames a discovery, and every close-up emphasizes what matters about that discovery."
     },
     {
       "id": 42,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the cinematic camera path maintain visual interest without camera shake or motion sickness during the 30-second passive flythrough?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "The flythrough uses smooth UE5 Sequencer curves with no sudden acceleration. Focal length stays in comfortable 35-50mm range. Player never controls the camera -- this is pure spectacle."
     },
     {
       "id": 43,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the camera path keyframe data (position, rotation, FOV at each waypoint) need to persist between sessions, or is it authored at build time?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Path keyframes are authored at build time in Sequencer. No runtime save/load needed. Only camera FOV preference and starting position may optionally persist."
     },
     {
       "id": 44,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does the camera flythrough obey any physical constraints (acceleration limits, momentum, collision) or is it purely cinematic spline interpolation?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Purely cinematic. The camera follows an authored spline with no physics. No collision response, no momentum, no acceleration curves beyond Sequencer easing."
     }
   ],
   "answers": [],

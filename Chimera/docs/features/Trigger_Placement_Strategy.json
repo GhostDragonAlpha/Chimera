@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does trigger placement density control the distribution of free economic intelligence, creating knowledge gaps that scanner-specialist players can profitably fill?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "High-trigger-density zones create 'educated' markets where every player knows resource value \u2014 transparent, competitive pricing. Low-density zones create 'opaque' markets where only scanner-equipped players know resource worth. This is directly exploitable: a specialist can underpay in opaque zones (sellers undervalue what they don't understand) and resell at transparent-zone prices, capturing the 20-40% information arbitrage spread."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does trigger placement tell a story of carefully paced discovery \u2014 leading the player's eye from one point of interest to the next, creating a rhythm of wonder and understanding?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Trigger placement is directorial: it tells the player where to look and in what order. A well-paced trigger sequence is a guided tour of a mystery \u2014 reveal, explain, deepen, reveal \u2014 each trigger a beat in a designed experience."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Do trigger volumes cover the player's expected path without creating overlaps that fire multiple prompts simultaneously, and without leaving dead zones where the player sees geology but receives no educational context?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Triggers are placed at 15-25m intervals along the path with 1m overlap buffer (prevents gaps). Priority system selects only one trigger when overlaps occur. Dead zones exist only in transitional areas where no geological feature is visible. Max gap: 30m."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Are trigger volume positions and configurations authored in the level (constant) or can they be modified at runtime, requiring persistence?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Authored at build time. Trigger volumes are placed during level design and baked into the level. No runtime modification of trigger placement needed. Therefore no persistence needed."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Do trigger volumes use any physics-based detection (line-of-sight raytracing, occlusion queries, physics channels) or simple overlap tests?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simple overlap tests via UE5 trigger volumes (BoxComponent/CapsuleComponent with OnComponentBeginOverlap). No raytracing or occlusion queries. A trigger fires when the player's collision capsule enters the volume regardless of intervening geometry."
     }
   ],
   "answers": [],

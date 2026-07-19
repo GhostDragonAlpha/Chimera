@@ -547,42 +547,42 @@
     {
       "id": 61,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does volumetric cloud coverage affect economic activity \u2014 reducing solar efficiency, obscuring visual resource indicators, and altering flight-path fuel consumption?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Volumetric clouds are an economic modifier on all surface activity. Thick cloud cover cuts solar charging 40-70% (increasing fuel costs), obscures distant resource indicators (increasing scouting time), and traps warm air (altering wind-dependent equipment). A clear-sky day has fundamentally different economics than an overcast one."
     },
     {
       "id": 62,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Do the volumetric clouds in the demo tell a visual story of weather approaching \u2014 from harmless fair-weather cumulus to towering storm cells that change the light and mood?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The demo's clouds are characters: they enter as friendly puffballs, build to dramatic thunderheads, then clear to reveal a transformed landscape \u2014 a weather narrative with a beginning, middle, and end."
     },
     {
       "id": 63,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Do the volumetric clouds maintain consistent visual quality from the demo camera path without visible pop-in, resolution stepping, or quality degradation at different altitudes?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Clouds use distance-based LOD with no visible pop-in (2-frame crossfade between LODs). Resolution holds at full quality within 500m of camera. No quality degradation at canyon floor or rim elevation."
     },
     {
       "id": 64,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Are cloud configuration parameters (density, coverage, type) authored at build time or do they need runtime persistence across sessions?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Authored at build time. Cloud configuration is part of the volumetric cloud asset. No runtime save/load for cloud parameters in the demo."
     },
     {
       "id": 65,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Do the volumetric clouds simulate real atmospheric light scattering (Mie scattering, Rayleigh scattering, phase functions) or use simplified shading?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Simplified shading using UE5's volumetric cloud system, which approximates multiple scattering but does not model Mie/Rayleigh phase functions with physical accuracy. The visual result is convincing without being physically precise."
     }
   ],
   "answers": [],

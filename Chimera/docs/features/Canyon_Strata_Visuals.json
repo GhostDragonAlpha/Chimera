@@ -358,42 +358,42 @@
     {
       "id": 40,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does visible strata layering (color banding, grain size, fracture patterns) function as an economic map where players who understand stratigraphy can predict which resource-bearing rock types appear at which canyon depths?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Strata control extraction economics. Sedimentary layers near the top yield fossil fuels and limestone; metamorphic mid-layers host marble and slate; igneous basement rock contains ore veins and gemstones. A player who reads strata color and texture targets their mining depth precisely, avoiding wasted excavation in barren layers. This literacy reduces extraction cost \u2014 the right layer on the first dig versus five shafts in unproductive rock."
     },
     {
       "id": 41,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Do the visible rock strata tell the geological story of this planet \u2014 ancient seas, volcanic epochs, impact events \u2014 written in layers the player can read at a glance?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Each stratum is a chapter in the planet's biography: sedimentary bands tell of ancient oceans, ash layers tell of eruptions, shock-metamorphic lines tell of impacts \u2014 the canyon wall is a library."
     },
     {
       "id": 42,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Can the player distinguish different rock strata by color, texture, and layering pattern at a glance, supporting the educational goal of teaching geological identification?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Sedimentary = warm banded browns/oranges. Metamorphic = cool grays with foliation lines. Igneous = dark speckled with visible crystal grains. Color palette is distinct enough for pattern-matching."
     },
     {
       "id": 43,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Are stratum layer parameters (color, thickness, order) authored at build time or can they be modified at runtime and need to persist?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Authored at build time. Strata layers are part of the terrain material and are deterministic from the seed. No save/load needed for strata visuals themselves."
     },
     {
       "id": 44,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does strata formation simulate real sedimentary processes (grain size sorting, cross-bedding, unconformities) or is it aesthetic layering informed by geology?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Aesthetic layering for visual readability, informed by real geology. Layer order follows actual deposition principles (older below, younger above) but individual layers do not simulate grain sorting or cross-bedding physics."
     }
   ],
   "answers": [],

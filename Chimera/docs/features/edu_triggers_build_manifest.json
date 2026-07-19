@@ -291,5 +291,15 @@
       "tier": "advanced",
       "landmark": "Crystal-lined geode formation, mineral deposits from hydrothermal activity"
     }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "category": "UX",
+      "question": "Does the trigger build manifest ensure that trigger volumes are placed without gaps or overlaps along the canyon path, so every geological feature is covered exactly once?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Manifest validates minimum spacing (10m between triggers) and maximum gap (30m max) on build. Overlap detection warns if two trigger volumes intersect >1m. Coverage report shows percentage of canyon path covered. Build fails below 85% coverage."
+    }
   ]
 }

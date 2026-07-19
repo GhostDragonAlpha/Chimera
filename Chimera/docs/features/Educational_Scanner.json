@@ -484,42 +484,42 @@
     {
       "id": 54,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does scan-data acquisition create an information economy where geological surveys, atmospheric readings, and resource maps have tradeable value as commodities that reduce prospecting risk for buyers?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "The scanner generates economic intelligence. A completed survey of an unexplored canyon section (rock types, resource locations, hazards) is a commodity prospectors can sell. This creates an information economy parallel to the physical resource economy: exploration specialists can earn credits without extracting ore, funded by the value of reduced uncertainty for extractors."
     },
     {
       "id": 55,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does the scanner reveal the stories hidden in objects \u2014 the mineral's formation conditions, the fossil's age, the artifact's purpose \u2014 making every scan an act of archaeological discovery?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "The scanner is the player's narrator: pointing it at any object draws out the story embedded in that object \u2014 how it formed, what it means, why it matters \u2014 turning exploration into historical investigation."
     },
     {
       "id": 56,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the point-and-scan interaction feel responsive -- with no perceptible lag between aiming at a target and receiving scan results -- and does the player immediately understand what they scanned?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Scan completes in 0.5-1.5s depending on target complexity. Reticle color (white\u2192yellow\u2192green) shows progress. Result card appears with target name, category icon, and 1-sentence educational fact. No input lag below 16ms."
     },
     {
       "id": 57,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the scanner's calibration state, unlocked categories, and scan history (journal of scanned objects) need to persist across sessions?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. The scanner is a persistent tool with progression state: unlocked categories, calibration level, and scan history journal. This is core player state. Written on progression unlock or manual save."
     },
     {
       "id": 58,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What physical sensing principle does the scanner simulate (spectroscopy, LIDAR, ground-penetrating radar, mass spectrometry) and how does accuracy degrade with distance?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Multi-principle simulation. The scanner uses 'spectral analysis' for mineral identification (simulated reflectance spectroscopy), 'GPR mode' for subsurface features, and 'atmospheric sampling' for air composition. Accuracy degrades with distance quadratically and is reduced by weather interference."
     }
   ],
   "answers": [],

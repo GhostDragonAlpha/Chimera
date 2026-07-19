@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How does NPC faction reputation function as an economic asset, where good standing unlocks better trade rates, exclusive supply contracts, and faction-affiliated work orders?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Reputation is relational capital that behaves like currency. High reputation with the Miners' Guild unlocks 15% bulk ore discounts; high reputation with the Keepers unlocks repair bays that save 40% on ship maintenance. Reputation gates economic opportunities: 'Trusted Trader' status enables credit-based purchasing; 'Outcast' status means paying 30% markup at faction markets."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "Does NPC behavior tell stories through action rather than dialogue \u2014 a trader who nervously checks over their shoulder, a scientist who keeps looking at a data tablet, a scavenger who flinches at loud noises?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "NPC behaviors are silent stories: a guard who paces tells you they're expecting trouble, a merchant who counts coins tells you they've been cheated, a wanderer who looks at the sky tells you they're lost \u2014 every animation is a narrative."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Do NPCs react believably to time of day, weather conditions, and player proximity -- creating the feeling of a lived-in world rather than static animatronics?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "NPCs have 4 daily phases (morning routine, active work, evening social, sleep). Weather drives shelter-seeking. Player proximity within 8m triggers contextual greeting/notice animations. No NPC stands idle for >30s during active hours."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does each NPC's current state (location, activity, faction reputation, task queue, schedule position) need to persist and resume on load?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. NPC AI state is complex and must persist: current location (vector3), current activity (enum), task queue (array of task IDs), schedule position (time of day), faction standing (float per faction). Heavy save data. Written on manual save or zone unload."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "Does NPC movement use physics-based locomotion (momentum, acceleration curves, ground friction) or animation-driven root motion?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Animation-driven root motion with navigation mesh pathfinding. No physics simulation for NPC bodies. Collision is handled by UE5's character movement component with standard capsule collision."
     }
   ],
   "answers": [],

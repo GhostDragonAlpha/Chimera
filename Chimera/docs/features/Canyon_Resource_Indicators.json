@@ -331,42 +331,42 @@
     {
       "id": 37,
       "category": "economy",
-      "question": "Does the economic system support or integrate with this feature?",
+      "question": "How do visual resource indicators (ore vein coloration, crystal seam refraction, fossil shape silhouettes) create a prospector economy where geological literacy \u2014 not just tool level \u2014 determines resource-finding efficiency?",
       "is_edge": false,
       "answered": true,
-      "answer": "Integrated where applicable. Not all features directly touch the economy system."
+      "answer": "Visual indicators are the bedrock of the extractive economy. A player who can read rusty-red staining (iron), green patina (copper), or angular fracture patterns (flint/chert) finds resources 3-5x faster than a player relying solely on the scanner. This creates a skill-based economic advantage: geological knowledge is human capital that directly increases hourly resource yield."
     },
     {
       "id": 38,
       "category": "narrative",
-      "question": "Does this feature serve the story, lore, or worldbuilding?",
+      "question": "What does the presence of a rare mineral outcrop or water seep tell the player about why previous travelers stopped here, and what they left behind?",
       "is_edge": false,
       "answered": true,
-      "answer": "Supports the educational RPG narrative. Every feature teaches something real."
+      "answer": "Resource indicators are fossilized stories: a spent fuel deposit tells of a desperate landing, a water vein tells of a settlement that survived here \u2014 the player reads the land's history through its resources."
     },
     {
       "id": 39,
       "category": "UX",
-      "question": "Is the player interaction for this feature smooth and intuitive?",
+      "question": "Does the player intuitively recognize resource indicators (ore veins, crystal seams, fossil deposits) by visual cues alone, without needing an explicit tutorial legend?",
       "is_edge": false,
       "answered": true,
-      "answer": "Designed for intuitive interaction. MCP-constructible elements have clear player feedback."
+      "answer": "Ore veins use metallic specular sheen vs matte rock. Crystals emit subtle ambient glow. Fossils show distinct skeletal/organic silhouettes against sedimentary rock. Color contrast signals interactability."
     },
     {
       "id": 40,
       "category": "save_load",
-      "question": "Does this feature persist correctly across save/load cycles?",
+      "question": "Does the player's discovered resource locations and status (mined, depleted, pending) need to persist across sessions?",
       "is_edge": false,
       "answered": true,
-      "answer": "State is serializable via UE5 save system. Python modules reload from disk."
+      "answer": "Yes. Resource node states (mined/unmined, depleted/active) are persistent game state. Each node has a unique ID and its extraction status must save. Frequent writes: every time the player extracts a resource."
     },
     {
       "id": 41,
       "category": "physics",
-      "question": "Does this feature balance physical accuracy with playability?",
+      "question": "What geological principles determine resource distribution \u2014 does the system model hydrothermal vein deposition, sedimentary stratification, or magmatic concentration?",
       "is_edge": false,
       "answered": true,
-      "answer": "Physical accuracy serves educational goals. Playability adjustments made where needed."
+      "answer": "Sedimentary stratification and hydrothermal deposition. Ore veins follow real geological rules: heavier minerals settle in lower strata, quartz veins fill fracture lines, fossil deposits occur in sedimentary layers. This teaches economic geology."
     }
   ],
   "answers": [],
