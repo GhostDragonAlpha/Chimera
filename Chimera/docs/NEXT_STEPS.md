@@ -336,3 +336,38 @@ Total: 50 questions, 120 to-do items. Next execution entry point: P0 #1 (circadi
 3. Prepare (not apply) the lm_gateway model-swap fix.
 4. Begin P2 Loop 4 Tools ONLY after lead releases the construction lane.
 
+---
+## BATCH 2 — recommended items executed (2026-07-19, post night-fix)
+
+### (1) End-to-end confirm `circadian tick --run` — DONE
+- Forced a due night (moved docs/world/last_night.json aside), ran the REAL
+  `python -m core.circadian tick --run`.
+- EXIT=0. The violator printed the intended guard:
+  `[dream] expectation-violator skipped: timed out after 180s (LM gateway still
+  queued - night proceeds model-free)` and result shows `ran_night: true`.
+- The prescribed session-entry command is now fixed end-to-end.
+- Restored: the run re-created docs/world/last_night.json (clock marked 23:24).
+
+### (2) Collapse observation-queue features with >=2 sim sessions — NOTHING READY
+- `collapse_proxy.tend(min_sessions=2)` -> 0 collapsed, 9 awaiting evidence.
+- Only `Travel_Vehicle_Flight` has any (1/2); the other 8 are 0/2.
+- Per project rule 'no reference, no verdict', NONE were collapsed (would fabricate).
+- To unblock: run sleepwalker sim sessions for these features so each reaches 2/2.
+  Closest candidate: Travel_Vehicle_Flight needs 1 more session.
+
+### (3) Prepare (NOT apply) the lm_gateway._ensure_model fix — DONE (proposed)
+- KEY CORRECTION: the bug is in `core/council.py::_ensure_model` (Will mislabeled it
+  `lm_gateway`). AND in THIS environment `CHIMERA_FAST_MODEL`/`CHIMERA_DEEP_MODEL` are
+  UNSET -> `_SWAP_ENABLED=False` -> `_ensure_model` is a NO-OP. So it did NOT cause the
+  observed night-hang.
+- The actual hang = violator generation request stalling in the lm_gateway fair-queue
+  (concurrency=1); already neutralized by the dream_loop 180s thread-timeout (Batch 1).
+- The `_ensure_model` `:N`-suffix / evict-order defect is a REAL LATENT bug (per Will)
+  that bites only when swap is enabled. Proposed fix written to
+  `docs/COUNCIL_ENSURE_MODEL_FIX.md`: load-then-evict (no empty-VRAM window),
+  `_normalize_model_id` for unrecognized `:N` suffixes, and a loud failure if the
+  endpoint ends up empty. NOT applied (lead is live on council/dyad).
+- Companion recommendation (separate, for the real hang): add a per-request timeout to
+  the violator generation so a wedged model skips cleanly instead of burning 180s.
+
+

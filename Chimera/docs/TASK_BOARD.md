@@ -1,23 +1,24 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-20T04:27:23+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-20T07:18:17+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0209 | claimed | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie | lead |
-| tb-0219 | claimed | 0.6 | Pain verdict: control_actor set_material reports success:tru | docs/research/** | opencode |
+| tb-0209 | open | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie |  |
 | tb-0210 | open | 0.75 | Build toward the seed: UCostlessLifeEndingDiagnostic | core/game_code_generator.py; excl:generator |  |
 | tb-0211 | open | 0.75 | Build toward the seed: TitanRunTrack | core/game_code_generator.py; excl:generator |  |
+| tb-0227 | open | 0.75 | Fix confirmed pain: control_actor set_material reports succe | Source/Chimera/** |  |
 | tb-0212 | open | 0.72 | Build toward the seed: FStationMarket | core/game_code_generator.py; excl:generator |  |
 | tb-0213 | open | 0.72 | Build toward the seed: UFactionSubsystem | core/game_code_generator.py; excl:generator |  |
 | tb-0215 | open | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
 | tb-0216 | open | 0.6 | Pain verdict: ChimeraMovementComponent.cpp's footstep 'sync  | docs/research/** |  |
 | tb-0217 | open | 0.6 | Pain verdict: A separate concurrent session (shared task lis | docs/research/** |  |
 | tb-0218 | open | 0.6 | Pain verdict: Material PBR wiring on MAT_Ship_Hull_Aluminum  | docs/research/** |  |
+| tb-0219 | open | 0.6 | Pain verdict: control_actor set_material reports success:tru | docs/research/** |  |
 | tb-0220 | open | 0.6 | Pain verdict: Live concurrent-agent interference (PIE toggli | docs/research/** |  |
 | tb-0221 | open | 0.6 | Pain verdict: MAT_WeaponBody (the name Loop4_Tools_Complete. | docs/research/** |  |
 | tb-0222 | open | 0.6 | Pain verdict: manage_geometry create_box/create_cylinder/cre | docs/research/** |  |
@@ -25,6 +26,9 @@ so claimed tasks are safe to run in parallel.
 | tb-0224 | open | 0.6 | Pain verdict: P1: BS_Idle_Walk_Run's sample grid/notify-trig | docs/research/** |  |
 | tb-0225 | open | 0.6 | Pain verdict: P2: manage_blueprint (Blueprint graph tool) ha | docs/research/** |  |
 | tb-0226 | open | 0.6 | Pain verdict: P3: This editor session had at least 2 other c | docs/research/** |  |
+| tb-0228 | open | 0.6 | Pain verdict: manage_blueprint has no standalone compile sub | docs/research/** |  |
+| tb-0229 | open | 0.6 | Pain verdict: BS_Idle_Walk_Run blend space sample grid and n | docs/research/** |  |
+| tb-0230 | open | 0.6 | Pain verdict: Verb_Bend/PickUp/Drop remain unimplemented ind | docs/research/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
