@@ -4,6 +4,8 @@
 // point; water finds the level the planet's own ocean coverage implies
 // (TRAINED CHAIN (bigbang.systems.json system 0 -> planet.trained.json: ocean @ 0.83 AU, 293 K, ocean_cov 0.030)); the matter families color the columns. Same cell = same seed =
 // same ground, forever. The pawn walks on the relief (instanced cube collision).
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "MaterializationSubsystem.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Engine/StaticMesh.h"

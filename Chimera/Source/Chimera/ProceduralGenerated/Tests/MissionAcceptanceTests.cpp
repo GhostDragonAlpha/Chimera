@@ -5,6 +5,8 @@
 // mission moves it to active; UpdateObjective advances progress; completing all
 // objectives removes the mission from active and adds it to completed.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "../Missions/MissionComponent.h"

@@ -2,6 +2,8 @@
 // Dust Accumulation Integration Acceptance Test Suite
 // Tests particle emission, settling, material application, and telemetry measurement
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "Engine/Engine.h"

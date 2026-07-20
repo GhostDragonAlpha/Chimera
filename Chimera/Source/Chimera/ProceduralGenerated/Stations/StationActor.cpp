@@ -1,4 +1,6 @@
 // StationActor.cpp — Implementation for orbital station actor with procedural mesh, lighting, and materials
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "StationActor.h"
 #include "Components/SceneComponent.h"
 

@@ -1,4 +1,6 @@
 #include "DemoPlayerController.h"
+#pragma warning(disable: 4996)
+#pragma warning(disable: 5038)
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"

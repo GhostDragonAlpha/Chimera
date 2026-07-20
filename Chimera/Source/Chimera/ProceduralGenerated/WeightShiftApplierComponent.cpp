@@ -1,5 +1,7 @@
 // Copyright Chimera. All rights reserved.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "WeightShiftApplierComponent.h"
 #include "ChimeraMovementComponent.h"
 #include "Components/SkeletalMeshComponent.h"

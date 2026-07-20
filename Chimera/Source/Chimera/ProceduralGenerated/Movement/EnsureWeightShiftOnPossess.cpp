@@ -1,5 +1,7 @@
 // Copyright Chimera. All rights reserved.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "EnsureWeightShiftOnPossess.h"
 #include "../WeightShiftApplierComponent.h"
 #include "GameFramework/Pawn.h"

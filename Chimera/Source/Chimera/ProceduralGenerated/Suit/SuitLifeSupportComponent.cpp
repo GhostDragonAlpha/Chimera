@@ -1,4 +1,6 @@
 // Copyright 2026 Chimera Project. All Rights Reserved.
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "SuitLifeSupportComponent.h"
 #include "GameFramework/Actor.h"
 #include "Engine/Engine.h"   // GEngine on-screen readout

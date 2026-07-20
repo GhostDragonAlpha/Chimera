@@ -4,6 +4,8 @@
 // setup idempotency, and public interface to USuitLifeSupportComponent's bInShelter flag.
 // Overlap-trigger logic requires PIE; reported as scope boundary.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "../Shelter/ShelterHabitatComponent.h"

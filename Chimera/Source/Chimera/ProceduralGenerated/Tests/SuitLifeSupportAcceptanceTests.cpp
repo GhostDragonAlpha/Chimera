@@ -4,6 +4,8 @@
 // behaviour: O2 drains by exertion, regenerates in a garden, the suit dies at 0,
 // the low-O2 alarm fires on its threshold edge, and storms clog / shelters scrub.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "../Suit/SuitLifeSupportComponent.h"

@@ -1,4 +1,6 @@
 #include "NPCBasicAIController.h"
+#pragma warning(disable: 4996)
+#pragma warning(disable: 5038)
 #include "BehaviorTree/BehaviorTree.h"
 
 ANPCBasicAIController::ANPCBasicAIController()

@@ -3,6 +3,8 @@
 // Measures PBR material properties, visual fidelity, and audio-visual sync
 // Evidence feeds result_grader_aaa_expanded for spec_fidelity scoring
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "Engine/Engine.h"

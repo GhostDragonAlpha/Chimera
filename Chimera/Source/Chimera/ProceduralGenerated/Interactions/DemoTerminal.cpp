@@ -1,5 +1,7 @@
 // Copyright 2026 Chimera Project. All Rights Reserved.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "DemoTerminal.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"

@@ -4,6 +4,8 @@
 // incoming damage is absorbed by shields FIRST, overflow hits hull, shields deplete,
 // and SystemDamage tracks per-subsystem health.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "../Combat/DamageComponent.h"

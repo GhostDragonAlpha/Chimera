@@ -1,4 +1,6 @@
 // Copyright 2026 Chimera Project. All Rights Reserved.
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "WID_O2HUD.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"

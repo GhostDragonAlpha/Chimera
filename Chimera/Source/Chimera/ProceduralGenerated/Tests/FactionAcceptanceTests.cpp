@@ -4,6 +4,8 @@
 // [-100, 100], tiers resolve correctly (Hostile/Unfriendly/Neutral/Friendly/Allied), and
 // notifications apply standing changes according to their formulas.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "../Factions/FactionComponent.h"

@@ -4,6 +4,8 @@
 // credits + cargo atomically, ExecuteTradeExchange swaps items without partial state,
 // AddCredits increments the wallet, and atomicity is enforced on all failures.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "../Inventory/InventoryTradeComponent.h"

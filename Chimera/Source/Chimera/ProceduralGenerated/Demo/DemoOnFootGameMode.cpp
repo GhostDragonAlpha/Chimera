@@ -1,4 +1,6 @@
 #include "DemoOnFootGameMode.h"
+#pragma warning(disable: 4996)
+#pragma warning(disable: 5038)
 #include "DemoPlayerController.h"
 
 ADemoOnFootGameMode::ADemoOnFootGameMode()

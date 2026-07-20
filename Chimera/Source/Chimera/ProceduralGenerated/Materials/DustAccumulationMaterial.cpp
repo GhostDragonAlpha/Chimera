@@ -1,4 +1,6 @@
 // Procedural dust-accumulation mask material implementation
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "DustAccumulationMaterial.h"
 
 UDustAccumulationMaterial::UDustAccumulationMaterial()

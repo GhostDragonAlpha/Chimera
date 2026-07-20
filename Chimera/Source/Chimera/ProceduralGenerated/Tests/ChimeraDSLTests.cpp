@@ -2,6 +2,8 @@
 // DSL test block implementations. Names are prefixed "ChimeraTests." so the
 // Pipeline's automation filter (Automation RunTests ChimeraTests) matches them.
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 

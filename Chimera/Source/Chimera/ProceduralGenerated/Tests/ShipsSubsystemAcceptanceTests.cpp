@@ -5,6 +5,8 @@
 // repair restores health (clamped to max), status queries reflect actual health
 // percentages, and health never goes negative (no underflow).
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "../Combat/SystemDamageComponent.h"

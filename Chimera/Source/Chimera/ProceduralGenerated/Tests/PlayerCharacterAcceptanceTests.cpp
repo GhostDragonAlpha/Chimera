@@ -2,6 +2,8 @@
 // Verifies Loop 0 (The Player) spec fidelity against DSL-declared parameters
 // Framework: AAA-Expanded Result Grader (Phase 1: Spec Fidelity & Test Coverage)
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "PlayerCharacterAcceptanceTests.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"

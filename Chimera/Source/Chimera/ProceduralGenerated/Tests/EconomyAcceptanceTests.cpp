@@ -4,6 +4,8 @@
 // GetCommodityPrice returns supply/demand-derived values, and UpdateCommodityPrices
 // shifts prices as supply/demand change. Headless (NewObject, no PIE).
 
+#pragma warning(disable: 5038)
+#pragma warning(disable: 4996)
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "../Economy/EconomyManager.h"
