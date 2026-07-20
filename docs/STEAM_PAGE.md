@@ -33,3 +33,17 @@ This is an early prototype demonstrating the educational environment system. Wal
 3. Cloud formations — "Cumulus, flat bottom means stable air"
 4. Night sky — "Stars shift position through the night as the planet rotates"
 5. Canyon overview with geological zoning — sedimentary (east) → metamorphic → igneous (west)
+
+## Coming Soon
+
+Deep Space Trader: Educational Frontier is in active development.
+A Coming Soon page on Steam will be published when the capsule image
+and store assets are finalized. Wishlisting helps prioritize features.
+
+Target price: 9.99 USD (Early Access)
+
+## Steam Page Assets
+
+- Capsule image: docs/steam_capsule.png (616x353)
+- Screenshots: docs/demo_images/slide_01.png through slide_10.png
+- HTML walkthrough: docs/DEMO_WALKTHROUGH.html
