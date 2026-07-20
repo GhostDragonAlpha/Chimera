@@ -168,6 +168,11 @@ def mutate(genome: dict, rng: random.Random | None = None) -> dict:
     g["selection_prob_browse"] = max(0.01, min(1.0, g["selection_prob_browse"]))
     g["selection_prob_focus"] = max(0.01, min(1.0, g["selection_prob_focus"]))
 
+    # Clamp step_cost params to [0.5, 12.0] so they don't explode or vanish
+    for k in ["step_cost_idle_approach", "step_cost_approach_browse",
+              "step_cost_browse_focus", "step_cost_focus_select"]:
+        g[k] = max(0.5, min(12.0, g[k]))
+
     return g
 
 
@@ -272,15 +277,22 @@ def _step_player(player: _Player, g: dict) -> None:
 
     player.state = proposed
 
-    # Move toward mirror: dwell params reduce step size per zone
-    # High dwell_browsing = slower movement in near zone = longer BROWSING dwell
-    # High dwell_focused = slower movement in touching zone = longer FOCUSED dwell
+    # Move toward mirror: step_cost params reduce step size per zone
+    # Higher cost = slower movement = more steps in zone = higher dwell metric
     step_mult = 1.0
-    if z == "near":
-        step_mult = max(0.15, 1.0 - g.get("dwell_browsing", 0.3))
-    elif z == "touching":
-        step_mult = max(0.15, 1.0 - g.get("dwell_focused", 0.5))
-    step = abs(player.rng.gauss(3.0 * step_mult, 1.5))
+    if z == "distant":
+        step_mult = max(0.1, 1.0 / max(1.0, g.get("step_cost_idle_approach", 4.0)))
+    elif z == "approaching":
+        step_mult = max(0.1, 1.0 / max(1.0, g.get("step_cost_approach_browse", 3.0)))
+    elif z == "near":
+        step_mult = max(0.1, 1.0 / max(1.0, g.get("step_cost_browse_focus", 2.0)))
+        # Extra slowdown from dwell_browsing
+        step_mult *= max(0.2, 1.0 - g.get("dwell_browsing", 0.3))
+    else:  # touching
+        step_mult = max(0.1, 1.0 / max(1.0, g.get("step_cost_focus_select", 1.5)))
+        # Extra slowdown from dwell_focused
+        step_mult *= max(0.2, 1.0 - g.get("dwell_focused", 0.5))
+    step = abs(player.rng.gauss(3.0 * step_mult, 1.2))
     old_pos = player.position
     player.position = max(0.5, player.position - step)
     player.distance_traveled += abs(player.position - old_pos)

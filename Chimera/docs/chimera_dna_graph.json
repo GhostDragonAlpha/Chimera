@@ -92874,6 +92874,32 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_7260b1ee74e5"
+    },
+    {
+      "id": "heuristic_f965a655a329e982",
+      "type": "Heuristic",
+      "timestamp": "2026-07-20T22:12:35.486217",
+      "signature": "sim_rejection: chimera_complete/generation_transition",
+      "rule": "Verify event logging and signal traces on success path.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "simtest_9d46c02be04fed93",
+        "simtest_7e4fff8702385eef",
+        "simtest_dd356f6bd6db7922"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/sim_rejection: chimera_complete/generation_transition",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Verify event logging and signal traces on success path.",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_9d46c02be04fed93",
+        "simtest_7e4fff8702385eef",
+        "simtest_dd356f6bd6db7922"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_98d431cf2da2"
     }
   ],
   "edges": [
@@ -105640,6 +105666,20 @@
       "source": "observation_706c1623cb76b4b5",
       "target": "simtest_e99c62a48889bec7",
       "type": "because"
+    },
+    {
+      "src": "feature_1685be20a6ef5fe6",
+      "dst": "observation_706c1623cb76b4b5",
+      "rel": "because",
+      "question": "WHY is Generational_Loop_Complete 'observed'?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-20T22:12:42.180782",
+      "asked_by": "why.py",
+      "source": "feature_1685be20a6ef5fe6",
+      "target": "observation_706c1623cb76b4b5",
+      "type": "because",
+      "derived": true,
+      "derived_how": "feature_name match \u2014 record_feature() never cited evidence"
     }
   ]
 }

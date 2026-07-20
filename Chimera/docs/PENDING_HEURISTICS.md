@@ -688,7 +688,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-20T22:07:21Z -->
 ## H-65: sim_rejection: chimera_complete/generation_transition
-- status: pending
+- status: promoted (auto 2026-07-20)
 - kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-20T20:39:53
 - proposed_organ: claude_md
 - evidence: simtest_9d46c02be04fed93, simtest_7e4fff8702385eef, simtest_dd356f6bd6db7922

@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-20T16:29:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-20T22:12:33+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -28,6 +28,9 @@ so claimed tasks are safe to run in parallel.
 | tb-0228 | open | 0.6 | Pain verdict: manage_blueprint has no standalone compile sub | docs/research/** |  |
 | tb-0229 | open | 0.6 | Pain verdict: BS_Idle_Walk_Run blend space sample grid and n | docs/research/** |  |
 | tb-0230 | open | 0.6 | Pain verdict: Verb_Bend/PickUp/Drop remain unimplemented ind | docs/research/** |  |
+| tb-0231 | open | 0.6 | Pain verdict: ADemoPlayerController is now wired into the sh | docs/research/** |  |
+| tb-0232 | open | 0.6 | Pain verdict: ChimeraMovementComponent's FootTraceDistance h | docs/research/** |  |
+| tb-0233 | open | 0.6 | Pain verdict: Player_Astronaut sits at (3200,400,130) instea | docs/research/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
