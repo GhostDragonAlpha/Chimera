@@ -1,0 +1,23 @@
+{
+  "_comment": "Season model assignments. Edit provider and modelId to switch. SPRING needs the smartest model. SUMMER/FALL/WINTER can use cheaper local models.",
+  "SPRING": {
+    "provider": "deepseek",
+    "modelId": "deepseek-v4-pro",
+    "reason": "Council debates, design spec writing — needs creative synthesis"
+  },
+  "SUMMER": {
+    "provider": "lmstudio",
+    "modelId": "unsloth/qwen3.6-35b-a3b",
+    "reason": "Training, decoding, building — mechanical execution"
+  },
+  "FALL": {
+    "provider": "lmstudio",
+    "modelId": "unsloth/qwen3.6-35b-a3b",
+    "reason": "Sleepwalker, observation, postflight — following recipes"
+  },
+  "WINTER": {
+    "provider": "ds4",
+    "modelId": "deepseek-v4-flash",
+    "reason": "Auditing, dreaming, gardening — batch processing"
+  }
+}
