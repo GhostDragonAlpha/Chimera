@@ -90,6 +90,13 @@ Read `task_progress.md` for the handoff from the last session.
 
 - **Never edit** `Source/Chimera/ProceduralGenerated/` — fix the generator instead (but DemoPlayerController.cpp is the pragmatic exception)
 - **Never trust `success: true`** — read the value back. No read-back = not done.
+- **Never declare something "MCP can't do" without FIRST checking available actions.**
+  ```python
+  from core.telemetry_probe import MCPStdioClient; c = MCPStdioClient()
+  # Try the action. If it fails, try variants. If all fail, THEN it's blocked.
+  # Never assume. Always verify.
+  ```
+- **Never run MCP without the editor running.** If you just built, relaunch: `chimera_unblock(ensure="editor")`
 - **Never take screenshots without foregrounding the editor first**:
   ```powershell
   powershell -NoProfile -Command '$ws = New-Object -ComObject WScript.Shell; $p = Get-Process UnrealEditor | Where-Object {$_.MainWindowTitle} | Select-Object -First 1; if ($p) { $ws.AppActivate($p.Id) | Out-Null }'

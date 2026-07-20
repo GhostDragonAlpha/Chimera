@@ -93757,6 +93757,74 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_2fa6e9be0135"
+    },
+    {
+      "id": "simtest_8be02980cdfb48d1",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T23:08:00.906022",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "geo_pickup",
+      "demo": "geo_pickup",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "collect_geo",
+          "outcome": "failed",
+          "features": [
+            "Verb_PickUp",
+            "Ground_Geology_Education"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "picked up"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\geo_pickup.json",
+      "temperature": "[SIM] 0/1 beats reached in 'geo_pickup'. Failures: collect_geo (failed: expect {\"log_contains\": \"picked up\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'geo_pickup': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7bd5be00c06c"
+    },
+    {
+      "id": "surprise_289c6735e97d50bd",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T23:08:01.324919",
+      "context": "Sleepwalker expected beat 'collect_geo' to be reachable (geo_pickup)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"picked up\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"picked up\"}, \"ok\": false, \"note\": \"log_hit='",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7bd5be00c06c"
     }
   ],
   "edges": [

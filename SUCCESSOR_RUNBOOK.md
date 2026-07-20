@@ -244,6 +244,15 @@ write wishes.
 
 ## TRAPS — NEVER DO (each cost a real session real hours)
 
+- **Never declare something impossible without checking MCP actions.** Before saying "MCP can't do X":
+  ```python
+  from core.telemetry_probe import MCPStdioClient; c = MCPStdioClient()
+  # Try the action. Try variant parameters. Check the source code for registered handlers.
+  # grep -n "RegisterHandler" Plugins/McpAutomationBridge/Source/.../McpAutomationBridgeSubsystem.cpp
+  # Only after exhausting all approaches: record as pathway_attempt with result=failed.
+  ```
+- **Never run MCP operations without the editor running.** After every build: `chimera_unblock(ensure="editor")`
+
 - **ONE ROLLOUT IS A COIN TOSS.** Never trust a single-rollout fitness in a contact-rich
   (chaotic) sim: a 1-micron start change once swung a result 5.5 body lengths, and an
   80,000-eval "champion" scored WORSE THAN UNTRAINED when measured honestly. Always score
