@@ -93537,6 +93537,164 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_509a9ac43924"
+    },
+    {
+      "id": "simtest_91d3f201416eaf9a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:38:30.760431",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "edu_test",
+      "demo": "multitool_catalyst",
+      "beats_total": 2,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "pickup",
+          "outcome": "failed",
+          "features": [
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "picked up"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "sacrifice",
+          "outcome": "failed",
+          "features": [
+            "Verb_Drop",
+            "System_Sacrifice"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "item dropped"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\edu_test.json",
+      "temperature": "[SIM] 0/2 beats reached in 'multitool_catalyst'. Failures: pickup (failed: expect {\"log_contains\": \"picked up\"} -> log_hit=False); sacrifice (failed: expect {\"log_contains\": \"item dropped\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'edu_test': 0/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_485af9d6529c"
+    },
+    {
+      "id": "surprise_8720498b06d4bd68",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T22:38:31.112892",
+      "context": "Sleepwalker expected beat 'pickup' to be reachable (multitool_catalyst)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"picked up\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"picked up\"}, \"ok\": false, \"note\": \"log_hit='",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_485af9d6529c"
+    },
+    {
+      "id": "surprise_0cce50be9ac260ec",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T22:38:31.509888",
+      "context": "Sleepwalker expected beat 'sacrifice' to be reachable (multitool_catalyst)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"item dropped\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"item dropped\"}, \"ok\": false, \"note\": \"log_h'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_485af9d6529c"
+    },
+    {
+      "id": "simtest_c9723747123a290e",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:39:08.105271",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "edu2",
+      "demo": "edu_test2",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "pickup",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "LEARN"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\edu2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'edu_test2'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'edu2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_d87709cb28fd"
     }
   ],
   "edges": [

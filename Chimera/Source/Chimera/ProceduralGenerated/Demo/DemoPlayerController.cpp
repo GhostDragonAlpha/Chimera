@@ -255,7 +255,14 @@ void ADemoPlayerController::Interact()
 	if (PickupInteraction && PickupInteraction->TryInteract())
 		// Witness marker: sleepwalker log_contains expects key on this exact string.
 	{
-		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Interact action triggered - picked up '%s'"), *PickupInteraction->HeldItemName.ToString());
+		// Educational: teach player about collected specimen
+		FString ItemName = PickupInteraction->HeldItemName.ToString();
+		FString EduNote;
+		if (ItemName.Contains(TEXT("Basalt"))) EduNote = TEXT(" [LEARN: Igneous volcanic rock - rapid surface cooling]");
+		else if (ItemName.Contains(TEXT("Granite"))) EduNote = TEXT(" [LEARN: Intrusive igneous rock - slow underground cooling]");
+		else if (ItemName.Contains(TEXT("Multitool"))) EduNote = TEXT(" [LEARN: Versatile exploration and collection tool]");
+		else EduNote = TEXT(" [LEARN: Unknown specimen - further analysis needed]");
+		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Interact action triggered - picked up '%s'%s"), *ItemName, *EduNote);
 	}
 	else
 	{
