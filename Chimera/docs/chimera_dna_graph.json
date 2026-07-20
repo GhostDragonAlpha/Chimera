@@ -93257,6 +93257,147 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_8a7ea2d18f7f"
+    },
+    {
+      "id": "simtest_d81d79e32553056d",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:31:24.427494",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "npc_react",
+      "demo": "generation_full",
+      "beats_total": 2,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "pickup_multitool",
+          "outcome": "failed",
+          "features": [
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "picked up"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        },
+        {
+          "beat": "sacrifice_and_transition",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop",
+            "System_Sacrifice",
+            "System_Generation"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "item dropped"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\npc_react.json",
+      "temperature": "[SIM] 1/2 beats reached in 'generation_full'. Failures: pickup_multitool (failed: expect {\"log_contains\": \"picked up\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'npc_react': 1/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_855d89dc0fab"
+    },
+    {
+      "id": "surprise_767a1b47bfdabd49",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T22:31:24.771419",
+      "context": "Sleepwalker expected beat 'pickup_multitool' to be reachable (generation_full)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"picked up\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"picked up\"}, \"ok\": false, \"note\": \"log_hit='",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_855d89dc0fab"
+    },
+    {
+      "id": "simtest_49795d7b17bbed4a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:31:46.767988",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "react_test",
+      "demo": "react",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "drop_near_erisaid",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop",
+            "System_Sacrifice"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "nothing currently held"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\react_test.json",
+      "temperature": "[SIM] 1/1 beats reached in 'react'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'react_test': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_27b42b634ccd"
     }
   ],
   "edges": [

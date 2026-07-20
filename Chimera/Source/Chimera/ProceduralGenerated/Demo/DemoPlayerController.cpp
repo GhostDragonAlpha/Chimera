@@ -298,6 +298,24 @@ void ADemoPlayerController::DropItem()
 						float NewIntensity = FMath::Min(20.0f, 10.0f + TotalSacrifices * 0.5f);
 						Sun->GetLightComponent()->SetIntensity(NewIntensity);
 						UE_LOG(LogTemp, Display, TEXT("[Catalyst] Sun intensity -> %.1f (%d sacrifices)"), NewIntensity, TotalSacrifices);
+
+						// NPCs react: spawn a beacon near each NPC showing they noticed
+						TArray<AActor*> NPCs;
+						UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), NPCs);
+						int32 reacted = 0;
+						for (AActor* A : NPCs)
+						{
+							if (A && A->GetName().Contains(TEXT("NPC_")) && reacted < 3)
+							{
+								FVector NPCLoc = A->GetActorLocation();
+								FVector BeaconLoc = NPCLoc + FVector(0, 0, 100);
+								AStaticMeshActor* Beacon = GetWorld()->SpawnActor<AStaticMeshActor>(
+									AStaticMeshActor::StaticClass(), BeaconLoc, FRotator::ZeroRotator);
+								if (Beacon) reacted++;
+							}
+						}
+						UE_LOG(LogTemp, Display, TEXT("[Catalyst] %d NPCs reacted to sacrifice"), reacted);
+						UE_LOG(LogTemp, Display, TEXT("[Catalyst] Sun intensity -> %.1f (%d sacrifices)"), NewIntensity, TotalSacrifices);
 					}
 					}
 				}
