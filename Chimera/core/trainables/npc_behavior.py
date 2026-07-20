@@ -62,10 +62,15 @@ def seed(rng: random.Random | None = None) -> dict:
 def mutate(genome: dict, rng: random.Random | None = None) -> dict:
     rng = rng or random.Random()
     g = copy.deepcopy(genome)
-    for k in ["approach_radius", "interact_radius", "memory_decay", "reciprocity_strength",
+    for k in ["approach_radius", "interact_radius", "memory_decay",
               "pirate_aggression", "trader_generosity", "quiet_avoidance", "response_delay", "persistence_threshold"]:
         if rng.random() < 0.5:
             g[k] = max(0.001, g[k] * math.exp(rng.uniform(-0.2, 0.2)))
+
+    # reciprocity_strength: wider perturbation so the trainer can un-stick it
+    if rng.random() < 0.6:
+        g["reciprocity_strength"] = max(0.001, min(0.99,
+            g["reciprocity_strength"] + rng.uniform(-0.15, 0.15)))
     for role in ROLES:
         for gesture in GESTURES:
             if rng.random() < 0.3:

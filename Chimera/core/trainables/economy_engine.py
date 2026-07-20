@@ -50,6 +50,16 @@ def mutate(g, rng=None):
     for k in ["supply_elasticity", "demand_elasticity", "arbitrage_threshold", "faction_price_modifier", "volatility"]:
         if rng.random() < 0.5:
             g[k] = max(0.001, g[k] * math.exp(rng.uniform(-0.15, 0.15)))
+
+    # Mutate per-station supply/demand so the trainer can evolve price dynamics
+    for s in range(N_STATIONS):
+        for c in COMMODITIES:
+            if rng.random() < 0.3:
+                g["station_supply"][s][c] = max(10.0, min(500.0,
+                    g["station_supply"][s][c] * math.exp(rng.uniform(-0.15, 0.15))))
+            if rng.random() < 0.3:
+                g["station_demand"][s][c] = max(10.0, min(500.0,
+                    g["station_demand"][s][c] * math.exp(rng.uniform(-0.15, 0.15))))
     return g
 
 def measure(g):

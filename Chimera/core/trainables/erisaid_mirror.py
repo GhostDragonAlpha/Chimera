@@ -95,6 +95,10 @@ def seed(rng: random.Random | None = None) -> dict:
 
         # Self-reflection properties
         "self_reflection_brightness_scale": rng.uniform(0.5, 2.0),
+
+        # Dwell probabilities: chance of lingering in a state beyond the zone boundary
+        "dwell_browsing": rng.uniform(0.0, 0.5),
+        "dwell_focused": rng.uniform(0.0, 0.7),
     }
 
 
@@ -111,6 +115,7 @@ def mutate(genome: dict, rng: random.Random | None = None) -> dict:
         "step_cost_idle_approach", "step_cost_approach_browse",
         "step_cost_browse_focus", "step_cost_focus_select",
         "min_brightness_visible", "self_reflection_brightness_scale",
+        "dwell_browsing", "dwell_focused",
     ]
     for k in continuous_keys:
         if rng.random() < 0.5:
@@ -197,18 +202,28 @@ def _step_player(player: _Player, g: dict) -> None:
 
     z = _zone(player.position, g)
 
-    # State transitions driven by proximity
+    # State transitions driven by proximity, with stochastic dwell inertia
+    proposed = "IDLE"  # fallback
     if z == "distant":
-        player.state = "IDLE"
+        proposed = "IDLE"
     elif z == "approaching":
-        player.state = "APPROACHING"
+        proposed = "APPROACHING"
     elif z == "near":
-        player.state = "BROWSING"
+        proposed = "BROWSING"
     else:  # touching
-        player.state = "FOCUSED"
+        proposed = "FOCUSED"
 
-    # Move toward mirror (stochastic step size)
-    step = abs(player.rng.gauss(3.0, 1.5))
+    # Dwell inertia: chance of staying in BROWSING/FOCUSED despite zone change
+    if proposed == "BROWSING" and player.rng.random() < g.get("dwell_browsing", 0.3):
+        player.state = "BROWSING"
+    elif proposed == "FOCUSED" and player.rng.random() < g.get("dwell_focused", 0.5):
+        player.state = "FOCUSED"
+    else:
+        player.state = proposed
+
+    # Move toward mirror (stochastic step size with genome-driven noise scale)
+    step_noise_scale = 1.0 + g.get("dwell_browsing", 0.3) + g.get("dwell_focused", 0.3)
+    step = abs(player.rng.gauss(3.0, 1.5 * step_noise_scale))
     old_pos = player.position
     player.position = max(0.5, player.position - step)
     player.distance_traveled += abs(player.position - old_pos)

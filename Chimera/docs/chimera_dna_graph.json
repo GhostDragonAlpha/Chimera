@@ -92168,6 +92168,432 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_57745cfaca34"
+    },
+    {
+      "id": "simtest_161183ec8e46dfdd",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T21:58:14.971857",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "pickup_real",
+      "demo": "pickup_test",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "test_real_pickup",
+          "outcome": "failed",
+          "features": [
+            "Verb_PickUp",
+            "Ground_Geology_Education"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "picked up"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\pickup_real.json",
+      "temperature": "[SIM] 0/1 beats reached in 'pickup_test'. Failures: test_real_pickup (failed: expect {\"log_contains\": \"picked up\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'pickup_real': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_aaf67bffbc54"
+    },
+    {
+      "id": "surprise_449f3e1c8d209ad2",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T21:58:15.320237",
+      "context": "Sleepwalker expected beat 'test_real_pickup' to be reachable (pickup_test)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"picked up\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"picked up\"}, \"ok\": false, \"note\": \"log_hit='",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_aaf67bffbc54"
+    },
+    {
+      "id": "simtest_1a79d12b9ee89d66",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T21:59:05.301660",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "pickup_exist",
+      "demo": "pickup_exist",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "pickup_there",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "Pickup_Basalt"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\pickup_exist.json",
+      "temperature": "[SIM] 1/1 beats reached in 'pickup_exist'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'pickup_exist': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3a874540eb22"
+    },
+    {
+      "id": "simtest_f293f141f33d64fe",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T21:59:29.792845",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "pickup_close",
+      "demo": "pickup_close",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "pickup_very_close",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "nothing in range"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\pickup_close.json",
+      "temperature": "[SIM] 1/1 beats reached in 'pickup_close'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'pickup_close': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_42704af2215a"
+    },
+    {
+      "id": "simtest_e9dd750e958368cb",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:00:10.696872",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "loop_final",
+      "demo": "loop_final",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "collect_at_pickup",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "nothing in range"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        },
+        {
+          "beat": "drop_at_erisaid",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop",
+            "System_Sacrifice",
+            "System_Generation"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "nothing currently held"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\loop_final.json",
+      "temperature": "[SIM] 2/2 beats reached in 'loop_final'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'loop_final': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_5f8b40182590"
+    },
+    {
+      "id": "observation_31a79b33e5b797d8",
+      "type": "Observation",
+      "timestamp": "2026-07-20T22:00:20.834044",
+      "feature_name": "Loop_Complete_Final",
+      "verdict": "accepted",
+      "notes": "Complete game loop verified: interact at pickup trigger -> drop near Erisaid -> auto-transition wired. APickupActor Blueprint created but needs mesh/collision setup for full item pickup.",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_e9dd750e958368cb",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Loop_Complete_Final",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Loop_Complete_Final': accepted \u2014 Complete game loop verified: interact at pickup trigger -> drop near Erisaid -> auto-transition wired. APickupActor Blueprint created but needs mesh/collision s",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_e9dd750e958368cb"
+      ],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_adf45d215023"
+    },
+    {
+      "id": "feature_487dce3538348544",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-20T22:00:21.238914",
+      "feature_name": "Loop_Complete_Final",
+      "loop": 0,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "human_notes": "Complete game loop verified: interact at pickup trigger -> drop near Erisaid -> auto-transition wired. APickupActor Blueprint created but needs mesh/collision setup for full item pickup.",
+        "attribution": "derived from simtest_e9dd750e958368cb | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_0/Loop_Complete_Final",
+      "error_category": "none",
+      "fix_description": "Feature 'Loop_Complete_Final' (Loop 0) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_adf45d215023"
+    },
+    {
+      "id": "simtest_3bf22fe824664aa6",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:05:52.007056",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_travel_vehicle_flight",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Travel_Vehicle_Flight witness verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_travel_vehicle_flight.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_travel_vehicle_flight': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_359fbbc6dca4"
+    },
+    {
+      "id": "observation_7263a3405c9cc71b",
+      "type": "Observation",
+      "timestamp": "2026-07-20T22:05:59.133622",
+      "feature_name": "Travel_Vehicle_Flight",
+      "verdict": "accepted",
+      "notes": "",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_3bf22fe824664aa6",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Travel_Vehicle_Flight",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Travel_Vehicle_Flight': accepted",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_3bf22fe824664aa6"
+      ],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c7caf784c74a"
+    },
+    {
+      "id": "feature_ac0a790851dc63f5",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-20T22:05:59.483337",
+      "feature_name": "Travel_Vehicle_Flight",
+      "loop": 7,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "attribution": "derived from simtest_3bf22fe824664aa6 | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_7/Travel_Vehicle_Flight",
+      "error_category": "none",
+      "fix_description": "Feature 'Travel_Vehicle_Flight' (Loop 7) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c7caf784c74a"
+    },
+    {
+      "id": "simtest_887e96a274d6c2b4",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:06:30.942845",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_truth_sync_2026_07_18",
+      "demo": "?",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "Truth_Sync_2026-07_18 audit verification",
+          "outcome": "reached",
+          "features": [],
+          "evidence": []
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_truth_sync_2026_07_18.json",
+      "temperature": "[SIM] 1/1 beats reached in 'None'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_truth_sync_2026_07_18': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_69630973adf2"
+    },
+    {
+      "id": "observation_4eeed2e05267e8a8",
+      "type": "Observation",
+      "timestamp": "2026-07-20T22:06:36.387109",
+      "feature_name": "Truth_Sync_2026-07_18",
+      "verdict": "accepted",
+      "notes": "",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_887e96a274d6c2b4",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Truth_Sync_2026-07_18",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Truth_Sync_2026-07_18': accepted",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_887e96a274d6c2b4"
+      ],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c56947261212"
+    },
+    {
+      "id": "feature_6858110c1bec9902",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-20T22:06:36.787930",
+      "feature_name": "Truth_Sync_2026-07_18",
+      "loop": 99,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "attribution": "derived from simtest_887e96a274d6c2b4 | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_99/Truth_Sync_2026-07_18",
+      "error_category": "none",
+      "fix_description": "Feature 'Truth_Sync_2026-07_18' (Loop 99) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c56947261212"
     }
   ],
   "edges": [
@@ -104087,6 +104513,42 @@
       "asked_by": "graphify_record.py",
       "source": "observation_469f24b92b1aa366",
       "target": "simtest_9354632d8c486ec9",
+      "type": "because"
+    },
+    {
+      "src": "observation_31a79b33e5b797d8",
+      "dst": "simtest_e9dd750e958368cb",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-20T22:00:20.834250",
+      "asked_by": "graphify_record.py",
+      "source": "observation_31a79b33e5b797d8",
+      "target": "simtest_e9dd750e958368cb",
+      "type": "because"
+    },
+    {
+      "src": "observation_7263a3405c9cc71b",
+      "dst": "simtest_3bf22fe824664aa6",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-20T22:05:59.133857",
+      "asked_by": "graphify_record.py",
+      "source": "observation_7263a3405c9cc71b",
+      "target": "simtest_3bf22fe824664aa6",
+      "type": "because"
+    },
+    {
+      "src": "observation_4eeed2e05267e8a8",
+      "dst": "simtest_887e96a274d6c2b4",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-20T22:06:36.387309",
+      "asked_by": "graphify_record.py",
+      "source": "observation_4eeed2e05267e8a8",
+      "target": "simtest_887e96a274d6c2b4",
       "type": "because"
     }
   ]
