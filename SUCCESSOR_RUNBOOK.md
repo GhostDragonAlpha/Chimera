@@ -170,6 +170,18 @@ write wishes.
   ```
   Full framework: docs/THE_STATE_MACHINE_PHYSICS.md
 
+- **Farm launcher (proven 2026-07-20, multi-model dispatching):**
+  ```powershell
+  cd E:\PythonChimera\Chimera
+  python core/farm_launcher.py SPRING "<design topic>"  # deepseek-v4-pro
+  python core/farm_launcher.py SUMMER                   # lmstudio qwen (local)
+  python core/farm_launcher.py FALL                     # lmstudio qwen (local)
+  python core/farm_launcher.py WINTER                   # ds4 flash (local CPU)
+  ```
+  Edit `docs/season_models.json` to switch models per season.
+  Prints Agent() calls ready to paste into Pi. SPRING needs the smartest model.
+  SUMMER/FALL/WINTER are mechanical — any model can execute them.
+
 - **Postflight refused you with `!! WHY GATE`** — it means the claim has no evidence
   chain that reaches PHYSICS or THE HUMAN. It is NOT saying your work is bad. Do this,
   in order, and do NOT reach for the waiver:

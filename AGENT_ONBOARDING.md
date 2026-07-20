@@ -77,6 +77,15 @@ Read `task_progress.md` for the handoff from the last session.
    beat = decode_to_beat(trained_genome, 'erisaid_mirror')   # genome -> beat script
    ```
 
+9. **Farm launcher** — dispatch sub-agents with correct model per season:
+   ```powershell
+   python core/farm_launcher.py SPRING "<design topic>"  # deepseek-v4-pro (smart)
+   python core/farm_launcher.py SUMMER                   # local LM Studio (free)
+   python core/farm_launcher.py FALL                     # local LM Studio (free)
+   python core/farm_launcher.py WINTER                   # local DS4 (free)
+   ```
+   Edit `docs/season_models.json` to switch models per season.
+
 ## NEVER DO
 
 - **Never edit** `Source/Chimera/ProceduralGenerated/` — fix the generator instead (but DemoPlayerController.cpp is the pragmatic exception)
@@ -93,15 +102,20 @@ Read `task_progress.md` for the handoff from the last session.
 ## CURRENT GAME STATE (2026-07-20)
 
 - **Player**: BP_Astronaut_Character with 6 working verbs (look, crouch, pickup, drop, shovel, interact)
-- **NPCs**: 8 in the yard (Trader, Pirate, Stranger, Drifter, Merchant, Quiet, Wanderer, Seeker) with Tab-gesture interaction
-- **Erisaid**: AErisaidActor at center (0,0,150) — the moral core
-- **Core loop**: Excavate → Collect → Sacrifice at Erisaid — verified 4/4
+- **NPCs**: 36 in the yard with Tab-gesture interaction
+- **Erisaid**: AErisaidActor at center (0,0,150) — the moral core, Environmental Catalyst
+- **Core loop**: Pick up item → drop at Erisaid → sacrifice recorded → sun brightens → NPCs react → auto-transition
 - **Sacrifice**: USacrificeLogComponent records GAVE_CARGO on drop near Erisaid (2000uu radius)
-- **Generation**: CostlessLifeEndingDiagnostic + StarMemorialComponent wired, awaits death trigger
-- **Level**: 103 actors saved in chimeradefaultlevel.umap
-- **Loops done**: 0 (Player), 1 (Ground), 2 (Verbs), 3 (Sky), 5 (Dots), 9 (Universe)
-- **Loops open**: 4 (Tools: Scanner needs_refinement), 6 (Shelter: 1/7), 7 (Travel: 2/7)
-- **C++ spawnability**: AErisaidActor spawns. AStationActor, AShip_Trader_Vessel_Alpha, ACostlessLifeEndingDiagnostic need RootComponent in constructor (generator fix)
+- **Generation**: Auto-transition wired in DemoPlayerController DropItem
+- **Education**: LEARN messages on pickup (Multitool, Basalt, Granite). 64+ labeled specimens.
+- **Level**: 229 actors saved in chimeradefaultlevel.umap
+- **Loops done**: 0 (Player), 1 (Ground), 2 (Verbs), 3 (Sky), 4 (Tools), 5 (Dots), 9 (Universe)
+- **Loops open**: 6 (Shelter: 4/7), 7 (Travel: 2/7)
+- **Catalog**: 69,749 elements across 10 sources
+- **Domains**: 21 trainable, all 0% stuck, objectives written
+- **Framework**: State machine physics (docs/THE_STATE_MACHINE_PHYSICS.md)
+- **Model routing**: Edit docs/season_models.json to switch models per season
+- **Launcher**: python core/farm_launcher.py SPRING|SUMMER|FALL|WINTER
 
 ## QUICK VERIFICATION
 

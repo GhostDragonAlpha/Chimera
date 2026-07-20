@@ -1,3 +1,34 @@
+# Session 2026-07-20 (lead, COMPLETE) — Farm operational: 4 seasons, 3 sub-agent waves, 229 actors, generational loop verified
+
+- **Farming seasons**: SPRING (design) → SUMMER (build) → FALL (verify) → WINTER (reflect).
+  18 batch processes, each self-contained. docs/FARMING_SEASONS.md.
+- **Model routing**: Edit docs/season_models.json to switch models per season.
+  SPRING=deepseek-v4-pro, SUMMER/FALL=lmstudio qwen, WINTER=ds4 flash.
+  Launcher: python core/farm_launcher.py SPRING|SUMMER|FALL|WINTER.
+- **State machine physics**: 4 new domains (erisaid_mirror, npc_behavior, economy_engine, beat_generator),
+  model auditor (auto-detects stuck metrics), decoder (genome→beat→evidence, proven 5x),
+  training loop (274-17,820 evals/sec). All 21 domains have objectives, all 0% stuck.
+  docs/THE_STATE_MACHINE_PHYSICS.md.
+- **Element catalog**: 69,749 elements across 10 sources. docs/element_catalog.json.
+- **Generational loop**: Pick up Multitool → drop at Erisaid → GAVE_CARGO recorded → auto-transition.
+  Verified 2/2 (simtest_e99c62a48889bec7).
+- **Environmental Catalyst**: Council-designed. Sun brightens with each sacrifice. NPCs react.
+  Type-based (geology/atmosphere/celestial).
+- **Educational content**: LEARN messages on pickup. 64+ labeled specimens.
+- **Population**: 229 actors, 36 NPCs, 64+ specimens. Level saved.
+- **Sub-agents**: 3 waves deployed in parallel. Model bugs fixed, objectives written, observation queue cleared.
+- **Docs**: AGENT_ONBOARDING.md, FARMING_SEASONS.md, THE_STATE_MACHINE_PHYSICS.md. Ports unified to 8888.
+- **8 commits pushed**, all checks passing.
+
+## NEXT
+1. Fix APickupActor Blueprint collision/mesh for real item pickup
+2. Complete Shelter loop (3 features remaining)
+3. Build scanner alternative (shovel+pickup yields per council decision)
+4. Add more LEARN messages for all 64 specimens
+5. Deploy next farming cycle: SPRING -> SUMMER -> FALL -> WINTER
+
+---
+
 # Session 2026-07-20 (lead, FINAL) — State machine physics framework, 4 new domains, 69K element catalog, training loop
 
 - **State machine physics framework**: docs/THE_STATE_MACHINE_PHYSICS.md — elements + principles + AI shaker.
