@@ -94188,6 +94188,117 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_570945632f04"
+    },
+    {
+      "id": "simtest_389e4bb9d076f794",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T23:17:09.703488",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "edu_final",
+      "demo": "edu_spawn",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "collect_basalt",
+          "outcome": "blocked",
+          "features": [
+            "Verb_PickUp",
+            "Ground_Geology_Education"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\edu_final.json",
+      "temperature": "[SIM] 0/1 beats reached in 'edu_spawn'. Failures: collect_basalt (blocked: {\"error\": \"inspect.runtime_report: failed\"})",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'edu_final': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7bb4ee03b9ad"
+    },
+    {
+      "id": "surprise_90801c95182e56ba",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T23:17:10.101999",
+      "context": "Sleepwalker expected beat 'collect_basalt' to be reachable (edu_spawn)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_7bb4ee03b9ad"
+    },
+    {
+      "id": "simtest_828d6e7fdf5745b1",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T23:18:04.542098",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "minimal",
+      "demo": "minimal",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "minimal",
+          "outcome": "blocked",
+          "features": [],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\minimal.json",
+      "temperature": "[SIM] 0/1 beats reached in 'minimal'. Failures: minimal (blocked: {\"error\": \"inspect.runtime_report: failed\"})",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'minimal': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8572abdab117"
+    },
+    {
+      "id": "surprise_4098eb384c624dcd",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T23:18:04.937229",
+      "context": "Sleepwalker expected beat 'minimal' to be reachable (minimal)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8572abdab117"
     }
   ],
   "edges": [
