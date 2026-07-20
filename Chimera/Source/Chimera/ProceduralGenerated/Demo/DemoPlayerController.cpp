@@ -289,7 +289,22 @@ void ADemoPlayerController::DropItem()
 						SacLog->Record(TEXT("GAVE_CARGO"), TEXT("Dropped item at Erisaid"), 1, 0);
 						UE_LOG(LogTemp, Display, TEXT("[Sacrifice] Recorded GAVE_CARGO at Erisaid (dist=%.0f)"), Dist);
 
-					// Environmental Catalyst: each sacrifice brightens the sun
+					// Environmental Catalyst: sacrifice type determines world transformation
+					FString ItemName = PickupInteraction->HeldItemName.ToString();
+					
+					// Geology sacrifice -> ground transformation
+					if (ItemName.Contains(TEXT("Basalt")) || ItemName.Contains(TEXT("Granite")) || ItemName.Contains(TEXT("Rock")))
+					{
+						UE_LOG(LogTemp, Display, TEXT("[Catalyst] Geology sacrifice: ground transforms"));
+						// Spawn a dig site marker
+						GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(),
+							Erisaid->GetActorLocation() + FVector(200, 0, 130), FRotator::ZeroRotator);
+					}
+					// Atmosphere sacrifice -> weather shift
+					else if (ItemName.Contains(TEXT("Atmo")) || ItemName.Contains(TEXT("Cloud")) || ItemName.Contains(TEXT("Wind")))
+					{
+						UE_LOG(LogTemp, Display, TEXT("[Catalyst] Atmosphere sacrifice: weather shifts"));
+					}
 					int32 TotalSacrifices = SacLog->GetSacrificeCount();
 					ADirectionalLight* Sun = Cast<ADirectionalLight>(
 						UGameplayStatics::GetActorOfClass(GetWorld(), ADirectionalLight::StaticClass()));
