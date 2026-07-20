@@ -1,47 +1,31 @@
 {
-  "name": "attunement",
-  "author": "LLM, from a scenario. NOT hand-tuned numbers - a statement of what good means, in physics.",
-  "scenario": "THE AUDIO MINIGAME (UChimeraAttunementComponent, the seed's #1 gap at 0% realized). A chimera emits a call. The player emits a counter-wave. The two pressure fields ADD - that is the entire game, and superposition alone decides the outcome. The player's assumption is that attunement means MATCHING the sound, and the physics punishes that fourfold without anyone authoring a punishment; the answer is the inverse-phase wave that cancels it. A good design is one where LISTENING BEATS FLAILING by a wide margin, where the naive assumption genuinely costs you, where the exact inverse really does buy silence, and where getting there is neither handed to you nor hopeless. What a human decides is whether that is FUN. What this objective decides is whether it is worth their five minutes.",
-
+  "_provenance": "Player-NPC resonance as a measurable physics fact, not a taste judgment. The emitter generates a call (partials); the listener attunes (oscillators). The objective binds the encounter space to the FOUR facts the physicist needs: solvability, the naive trap, the skill gap, and learnability — all worst-cased across K encounters, because the player does not experience the mean.",
+  "maximize": [
+    "solvable",
+    "punishes_naive",
+    "skill_gap",
+    "learnability"
+  ],
+  "minimize": [
+    "headroom"
+  ],
   "constraints": [
-    {
-      "measure": "skill_gap",
-      "kind": "maximize",
-      "ref": 3.0,
-      "weight": 3.0,
-      "why": "THE GAME, AND THE ONLY MAXIMIZE. Everything else here is a floor or a band, and a spec made only of floors is a SATISFICER - the optimiser finds the laziest design that clears every bar and then stops, because nothing asks it to keep going. This asks it to keep going forever: how much better is a listener than a flailer? That IS the skill in the minigame, measured, with no judge. Non-saturating by construction (x/(x+ref)) - at ref it scores 0.5 and there is always somewhere left to climb. Measured WORST-of-K encounters: a design is judged on the nights it generates, not its best one."
-    },
-    {
-      "measure": "solvable",
-      "kind": "at_most", "max": 0.02,
-      "weight": 3.0,
-      "hard": true,
-      "why": "THE GATE. The exact inverse must actually silence the call - residual under 2% of the call's own energy. This is not a difficulty knob, it is a correctness check: if the player's emitter cannot express the call (too few oscillators for too many partials), the game is UNWINNABLE BY ANYONE and no amount of skill helps. Hard because an unwinnable design must never reach a human; physics already knows, and spending a person to discover it is outsourcing arithmetic."
-    },
-    {
-      "measure": "punishes_naive",
-      "kind": "at_least", "min": 2.0,
-      "weight": 2.0,
-      "hard": true,
-      "why": "The player's assumed mental model - 'attunement means matching' - must COST something, or there is no expectation to violate and nothing to discover. Note what this asks: it cannot be satisfied by tuning any number, because superposition sets it. sin(x)+sin(x)=2sin(x) gives 4x when the emitter can reproduce the call, and less when it cannot. If the optimiser satisfies this it did so STRUCTURALLY, by making an emitter that can voice the call - which is the same structure `solvable` demands. The two constraints are the same physical truth seen from opposite sides."
-    },
-    {
-      "measure": "learnability",
-      "kind": "at_least", "min": 0.5,
-      "weight": 2.0,
-      "why": "Listening must PAY: a learner that only hears the residual should remove at least half the energy it started with. A flat curve is an unlearnable game, and that is visible without a person."
-    },
-    {
-      "measure": "headroom",
-      "kind": "band", "min": 0.05, "max": 0.80,
-      "weight": 1.5,
-      "why": "Where the best listener lands, against the raw call. Under 0.05 the answer was handed over (the assist did the work and there was no skill to find); over 0.80 the best listener barely dents it and the outcome is luck. A game lives between."
-    },
-    {
-      "measure": "n_partials",
-      "kind": "at_least", "min": 2.0,
-      "weight": 1.0,
-      "why": "One partial is a single tone: one knob, one answer, no structure to hear. A call worth attuning to has parts."
-    }
-  ]
+    {"field": "solvable", "min": 1.0},
+    {"field": "punishes_naive", "min": 0.10},
+    {"field": "skill_gap", "min": 0.15},
+    {"field": "learnability", "min": 0.10},
+    {"field": "headroom", "max": 0.70},
+    {"field": "n_partials", "min": 2, "max": 6},
+    {"field": "n_osc", "min": 2, "max": 6},
+    {"field": "assist_hz", "max": 80.0},
+    {"field": "band_hz", "min": 100.0, "max": 1500.0}
+  ],
+  "walls": {
+    "solvable": "The exact inverse MUST be able to silence the call. solvable=0 means too few oscillators for too many partials — the encounter is UNWINNABLE by anyone. This is the anti-frustration gate: the encounter must have a solution at all.",
+    "punishes_naive": "The ASSUMED strategy (match it directly) MUST be measurably worse than listening. Below 0.10 means 'copy the emitter and hope' works almost as well as actually attuning — the game has no skill curve. The naive player must feel resistance.",
+    "skill_gap": "Listening MUST outperform flailing by a measurable margin. Below 0.15 means the best listener is barely better than random oscillator settings — the encounter rewards luck, not skill. The gap IS the game: how much better the attentive player does than the button-masher.",
+    "headroom": "The best listener's residual MUST NOT exceed 70% of the raw call energy. Above 0.70 means even perfect play leaves most of the call uncancelled — the encounter is hopelessly difficult, or the band is too narrow for the partial spread. A game where the best possible outcome is still 70% noise is not fun — it is a punishment.",
+    "learnability": "Listening MUST pay. learnability is the fraction of call energy a competent listener removes. Below 0.10 means the player gets almost no feedback that they are improving — the energy bar barely moves. The player must SEE their skill register.",
+    "assist_hz": "The tolerance window MUST stay tight. Above 80 Hz means the assist is so generous that random twiddling converges — the naive player gets rewarded accidentally. The seed started at 40 Hz (deliberately loose); the objective demands it tighten."
+  }
 }

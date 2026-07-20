@@ -1,68 +1,33 @@
 {
-  "name": "walker",
-  "author": "LLM, from a scenario. It asks for MOVEMENT. It does not ask for legs, and it does not ask for a gait.",
-  "scenario": "A body that MOVES itself across the ground under real gravity, contact and friction. Go somewhere and keep going. This is the objective that cannot be faked: static stability could always be gamed with outriggers, but OUTRIGGERS DO NOT WALK. A lollipop cannot chase anything. Nothing here says how to move — walk, hop, slither, roll, gallop. If the universe has a better idea than mine, I want to be told.",
+  "_provenance": "Locomotion as a physics fact, not a morphology check. Distance travelled under rigid-body dynamics, with robustness across randomized starts — no single lucky pose wins. The body co-evolves with the CPG rhythm; the objective binds what a GOOD walker IS.",
+  "maximize": [
+    "distance",
+    "robustness",
+    "straightness"
+  ],
+  "minimize": [
+    "exploded",
+    "degenerate",
+    "airborne_frac",
+    "energy"
+  ],
   "constraints": [
-    {
-      "measure": "exploded",
-      "kind": "at_most",
-      "max": 0.0,
-      "weight": 3.0,
-      "hard": true,
-      "why": "THE GATE. NaN, a body flung to infinity, a degenerate rig. A physics glitch is not a gait, and if we do not gate it the optimiser WILL find it — that is the one thing it is reliably good at."
-    },
-    {
-      "measure": "airborne_frac",
-      "kind": "at_most",
-      "max": 0.4,
-      "weight": 2.0,
-      "hard": true,
-      "why": "THE SECOND GATE, and it is pre-emptive: the classic exploit here is BALLISTIC LAUNCH — coil up, fire yourself down the field, and bank the distance. That is not locomotion, it is artillery. The body must stay in contact with the ground for most of the run."
-    },
-    {
-      "measure": "degenerate",
-      "kind": "at_most",
-      "max": 0.0,
-      "weight": 3.0,
-      "hard": true,
-      "why": "THE THIRD GATE, and it is a REPAIR (2026-07-14). The first run produced a BRISTLEBOT: 8 microscopic bones (two of length exactly 0.00), buzzing at the maximum 5 Hz and ratcheting along on friction asymmetry. It worked because of TWO bugs of mine. (1) The mass floor was 50 g, so a bone of r=1mm, L=1cm — true mass 25 MICROGRAMS — was handed the density of neutron-star matter; every bone was pinned at that floor, so they all weighed the same regardless of size, and the physics was a lie. (2) `distance` is measured in BODY LENGTHS, so SHRINKING YOURSELF inflates the score for free. It did not learn to walk. It learned to be small and dense. This gate now rejects any body with zero-length stubs, hair-thin limbs, or a total size outside 0.8–6.0 m — so body-length normalisation, which IS the right metric in locomotion research, is only ever applied between COMPARABLE bodies."
-    },
-    {
-      "measure": "distance",
-      "kind": "maximize",
-      "ref": 6.0,
-      "weight": 4.0,
-      "why": "THE POINT. Net displacement in BODY LENGTHS, so it cannot win by simply being enormous. `maximize`, not a band — a spec made only of walls gets you exactly the walls, and I have already been burned by a satisficer once today. Falling over is worth about one body length, and only once, so this term excludes toppling all by itself."
-    },
-    {
-      "measure": "straightness",
-      "kind": "at_least",
-      "min": 0.5,
-      "weight": 1.5,
-      "why": "net displacement over path length. A creature that spins in place travels a long way and arrives nowhere."
-    },
-    {
-      "measure": "energy",
-      "kind": "minimize",
-      "ref": 12.0,
-      "weight": 1.0,
-      "why": "metabolic cost. Thrashing every joint at full torque is a real way to move and a bad way to be alive. ... RECALIBRATED 2026-07-16 (ref 400.0 -> 12.0): measured 12.12; ref 400 gave sat 0.971 — 33x too high in the OTHER direction, so the term was DEAD and the winner never had to be cheap. Two refs in one repo, wrong by 89x and 33x in opposite directions, is proof neither was calibrated against a measurement. Set AT the measurement so metabolic cost actually pulls."
-    },
-    {
-      "measure": "bones",
-      "kind": "band",
-      "min": 10.0,
-      "max": 34.0,
-      "weight": 1.0,
-      "why": "an animal, not a stick and not a hairball."
-    },
-    {
-      "measure": "robustness",
-      "kind": "at_least",
-      "min": 0.75,
-      "weight": 2.5,
-      "hard": true,
-      "why": "THE ANTI-LOTTERY (added 2026-07-16, the same day walker.measure() finally got restarts). worst/mean across N randomized starts: a real gait converges onto the same behaviour from every start (~1.0); a lucky roll does not (~0). MEASURED ON THE INCUMBENT: 0.6298 — the FIXED BODY that brain_cpu loads as 'grown once, reused for every brain, forever' loses 52% of its recorded 6.81 body lengths to a 2 cm nudge, and would FAIL brain_gpu's identical 0.75 floor. Every brain this studio has trained stands on a body selected by a coin toss. HARD, because a body that only works from one exact pose is not a body — it is that pose, and no brain standing on it can be measured honestly either. Note this cannot be satisfied by tuning any number: robustness is a ratio ACROSS rollouts, so the optimiser can only satisfy it STRUCTURALLY, by finding a body that actually stands up."
-    }
-  ]
+    {"field": "exploded", "max": 0},
+    {"field": "degenerate", "max": 0},
+    {"field": "distance", "min": 0.5},
+    {"field": "robustness", "min": 0.30},
+    {"field": "straightness", "min": 0.40},
+    {"field": "airborne_frac", "max": 0.40},
+    {"field": "torso_z", "min": 0.05, "max": 0.60},
+    {"field": "energy", "max": 200.0}
+  ],
+  "walls": {
+    "exploded": "The body MUST survive simulation. NaN position or flung to orbit is not a walker — it is a debris field. This gate catches every degenerate before it scores.",
+    "degenerate": "The body MUST pass the structural floor. Under-size bodies, zero-length bones, and hair-thin limbs are NOT creatures — they are exploits the last run found and this gate walls out.",
+    "distance": "A walker MUST travel at least 0.5 body lengths. Zero distance means the body fell over and twitched — the name is walker, not seizure. The seed quadruped already walks ~2 body lengths; this floor exists only to catch regressions.",
+    "robustness": "The worst restart MUST travel at least 30% of the mean. Below 0.30 means the body has a LUCKY pose, not a gait — change the start height by 2 cm and it collapses. A limit cycle is robust ~1.0; a lottery ticket is ~0.0.",
+    "airborne_frac": "The walker MUST stay on the ground. Above 40% airborne means it is launching itself ballistically — that is not walking, it is ricocheting. The first CPU winner was a neutron-star bristlebot; this is the physics gate that catches its successor.",
+    "torso_z": "Torso height MUST stay between heel and half a body height. Crawling on the ground (0.05) means it never stood up; towering above 0.60 means it is a stilt-walker, not a balanced quadruped. Both are degenerate optima the first run produced.",
+    "energy": "Energy per unit material MUST be bounded. 999.0 is the dead sentinel; above 200.0 means every joint is fighting every other joint — a convulsion, not a coordinated gait. The brain's job is to lower this; the body's job is to not start at seizure-level waste."
+  }
 }

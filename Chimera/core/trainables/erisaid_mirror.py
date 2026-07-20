@@ -96,9 +96,14 @@ def seed(rng: random.Random | None = None) -> dict:
         # Self-reflection properties
         "self_reflection_brightness_scale": rng.uniform(0.5, 2.0),
 
-        # Dwell probabilities: chance of lingering in a state beyond the zone boundary
-        "dwell_browsing": rng.uniform(0.0, 0.5),
-        "dwell_focused": rng.uniform(0.0, 0.7),
+        # Dwell probabilities: chance of lingering in BROWSING/FOCUSED (skip movement)
+        "dwell_browsing": rng.uniform(0.0, 0.6),
+        "dwell_focused": rng.uniform(0.0, 0.6),
+
+        # Selection probabilities (replaces hardcoded 0.1/0.4/0.7)
+        "selection_prob_approach": rng.uniform(0.02, 0.3),
+        "selection_prob_browse": rng.uniform(0.1, 0.5),
+        "selection_prob_focus": rng.uniform(0.3, 0.8),
     }
 
 
@@ -116,6 +121,7 @@ def mutate(genome: dict, rng: random.Random | None = None) -> dict:
         "step_cost_browse_focus", "step_cost_focus_select",
         "min_brightness_visible", "self_reflection_brightness_scale",
         "dwell_browsing", "dwell_focused",
+        "selection_prob_approach", "selection_prob_browse", "selection_prob_focus",
     ]
     for k in continuous_keys:
         if rng.random() < 0.5:
@@ -196,14 +202,19 @@ def _visible_count(g: dict, zone: str) -> int:
 
 
 def _step_player(player: _Player, g: dict) -> None:
-    """One step of the state machine."""
+    """One step of the state machine.
+
+    State transitions are stochastic, driven by genome params:
+    - step_cost_* controls how long before transition is allowed
+    - dwell_* controls lingering (skip movement) in BROWSING/FOCUSED
+    - selection_prob_* controls likelihood of selecting a reflection
+    """
     if player.state == "SELECTED":
         return  # selection is terminal for this encounter
 
     z = _zone(player.position, g)
 
-    # State transitions driven by proximity, with stochastic dwell inertia
-    proposed = "IDLE"  # fallback
+    # Determine proposed state from zone (proximity physics)
     if z == "distant":
         proposed = "IDLE"
     elif z == "approaching":
@@ -213,17 +224,37 @@ def _step_player(player: _Player, g: dict) -> None:
     else:  # touching
         proposed = "FOCUSED"
 
-    # Dwell inertia: chance of staying in BROWSING/FOCUSED despite zone change
-    if proposed == "BROWSING" and player.rng.random() < g.get("dwell_browsing", 0.3):
-        player.state = "BROWSING"
-    elif proposed == "FOCUSED" and player.rng.random() < g.get("dwell_focused", 0.5):
-        player.state = "FOCUSED"
-    else:
-        player.state = proposed
+    # Step-cost-driven transition resistance: higher cost = harder to leave current state
+    if player.state == "IDLE" and proposed != "IDLE":
+        cost = g.get("step_cost_idle_approach", 4.0)
+        if player.rng.random() > 1.0 / max(1.0, cost):
+            proposed = player.state  # resist transition
+    elif player.state == "APPROACHING" and proposed not in ("IDLE", "APPROACHING"):
+        cost = g.get("step_cost_approach_browse", 3.0)
+        if player.rng.random() > 1.0 / max(1.0, cost):
+            proposed = player.state
+    elif player.state == "BROWSING" and proposed == "FOCUSED":
+        cost = g.get("step_cost_browse_focus", 2.0)
+        if player.rng.random() > 1.0 / max(1.0, cost):
+            proposed = player.state
 
-    # Move toward mirror (stochastic step size with genome-driven noise scale)
-    step_noise_scale = 1.0 + g.get("dwell_browsing", 0.3) + g.get("dwell_focused", 0.3)
-    step = abs(player.rng.gauss(3.0, 1.5 * step_noise_scale))
+    # Dwell inertia: linger in BROWSING/FOCUSED — skip movement, stay put
+    dw_browse = g.get("dwell_browsing", 0.3)
+    dw_focus = g.get("dwell_focused", 0.5)
+
+    if proposed == "BROWSING" and player.rng.random() < dw_browse:
+        proposed = player.state  # stay in current state
+    elif proposed == "FOCUSED" and player.rng.random() < dw_focus:
+        proposed = player.state
+
+    player.state = proposed
+
+    # Move toward mirror: dwell params reduce step size (linger = slower approach)
+    step_penalty = 1.0
+    if player.state in ("BROWSING", "FOCUSED"):
+        dw = dw_browse if player.state == "BROWSING" else dw_focus
+        step_penalty = max(0.2, 1.0 - dw)  # high dwell = tiny steps
+    step = abs(player.rng.gauss(3.0 * step_penalty, 1.5))
     old_pos = player.position
     player.position = max(0.5, player.position - step)
     player.distance_traveled += abs(player.position - old_pos)
@@ -234,9 +265,14 @@ def _step_player(player: _Player, g: dict) -> None:
     for i in range(visible):
         player.reflections_seen.add(i)
 
-    # Selection: can select from any non-idle state, probability increases with proximity
+    # Selection: genome-driven probabilities per state
     if player.state in ("APPROACHING", "BROWSING", "FOCUSED") and player.selected_index is None:
-        prob = 0.1 if player.state == "APPROACHING" else 0.4 if player.state == "BROWSING" else 0.7
+        if player.state == "APPROACHING":
+            prob = g.get("selection_prob_approach", 0.1)
+        elif player.state == "BROWSING":
+            prob = g.get("selection_prob_browse", 0.4)
+        else:
+            prob = g.get("selection_prob_focus", 0.7)
         if player.rng.random() < prob:
             visible = _visible_count(g, z)
             if visible > 0:
@@ -320,8 +356,10 @@ def measure(genome: dict) -> dict:
         results["navigation_efficiencies"].append(eff)
 
         # Can a costless player see their dim reflection?
+        # Phantom pains dim the self-reflection (twinkle distracts) — makes this trainable
         if arch == "costless":
-            self_brightness = _brightness(0.0, g["brightness_k"], g.get("baseline_brightness", 0.05)) * g["self_reflection_brightness_scale"]
+            pain_penalty = max(0.2, 1.0 - player.pain_count * 0.08)
+            self_brightness = _brightness(0.0, g["brightness_k"], g.get("baseline_brightness", 0.05)) * g["self_reflection_brightness_scale"] * pain_penalty
             results["costless_visible"].append(1.0 if self_brightness >= g["min_brightness_visible"] else 0.0)
 
         # Does a generous player's star dominate?

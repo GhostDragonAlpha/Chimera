@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1566 entries** across 8 chapters.
+**1637 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -343,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*538 entries; showing 40.*
+*558 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -667,7 +667,7 @@
 
 ## IV. Verdicts & Grades
 
-*459 entries; showing 40.*
+*507 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -986,7 +986,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*404 entries; showing 40.*
+*407 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1423,22 +1423,22 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                         276 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                         282 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          66 reps  100%  streak  8  battery   2 (0 pie)  READY
+> AErisaidActor                          72 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     46 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     52 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    239 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    242 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1471,9 +1471,12 @@
 - **ADotCharacter** — 1 entry: `repstat:ADotCharacter`
 - **AErisaidActor** — 1 entry: `repstat:AErisaidActor`
 - **Any** — 1 entry: `repstat:Any`
+- **BeatGen_Trained** — 1 entry: `observation_ac512492e1733056`
 - **Beat_Scripts_Tautology_Fix** — 1 entry: `repstat:Beat_Scripts_Tautology_Fix`
 - **Build_Pipeline** — 169 entries: `professor_grade_1a92c9ff41eb66f4`, `professor_grade_8f4a03f041187ce9`, `professor_grade_0f7ad1992f6d1372`, `professor_grade_3b51652770d01ac1`, `professor_grade_828db6a52893ed78`, `professor_grade_9892b433ad232f61` ...
 - **CLI_Test** — 1 entry: `professor_grade_2e8f98354014d117`
+- **Chimera_Complete_Verification** — 1 entry: `observation_fc57ebb5e0cfc2e5`
+- **Chimera_Honest_Complete** — 1 entry: `observation_469f24b92b1aa366`
 - **Competitive_Feature_Design_Patterns_Research** — 2 entries: `observation_4e4ccc9b30b5f883`, `observation_e5af82bfa4350985`
 - **Competitive_Feature_Design_Patterns_Research_Summary** — 1 entry: `observation_0efae6fbbe195f0b`
 - **Costless Life Bad Ending Trigger** — 1 entry: `observation_3872db7a8dbcb6d4`
@@ -1487,30 +1490,43 @@
 - **Demo_RegolithYard_L1** — 2 entries: `professor_grade_e7dc8ca35cdb75cd`, `observation_4dcd58a93e4d30f0`
 - **Demo_RegolithYard_Systems** — 1 entry: `professor_grade_9e2f64b5d75f177d`
 - **Diagnose** — 1 entry: `repstat:Diagnose`
+- **Erisaid_Mirror_Decoded** — 1 entry: `observation_64a9e3b1b1070466`
+- **Erisaid_Mirror_Trained** — 1 entry: `observation_955d7c7e6b6175c0`
 - **FFootstepEvent** — 1 entry: `repstat:FFootstepEvent`
 - **FStar** — 1 entry: `repstat:FStar`
 - **Game_Feel** — 2 entries: `promo:Game_Feel:3`, `repstat:Game_Feel`
-- **Ground_Metal_Surface** — 8 entries: `prof_grade_73b132f72683a4d3`, `prof_grade_6f1def660833e414`, `prof_grade_69ce58e03c7f5ac8`, `observation_b64690eb06c29e34`, `observation_620b633919bd58de`, `observation_72620c81985763fc` ...
-- **Ground_Rock_Surface** — 6 entries: `prof_grade_bec71f9e63043118`, `observation_8650722006d93846`, `observation_cf32cafa76fd3b40`, `observation_4041b18f4f89b640`, `observation_49ecad284084ddab`, `observation_1bc2480d62a36f98`
+- **Generation_Transition** — 1 entry: `observation_442228555cf2b93e`
+- **Ground_Atmosphere_Data** — 1 entry: `observation_1874dc0fef9ae18e`
+- **Ground_Celestial_Data** — 1 entry: `observation_4d46f191c8f9f90f`
+- **Ground_Geology_Collection** — 1 entry: `observation_fcfb58b3cc54dc10`
+- **Ground_Geology_Education** — 1 entry: `observation_5f262fdb1f4a2758`
+- **Ground_Geology_Surface** — 1 entry: `observation_fef55f2886ec4a05`
+- **Ground_Metal_Surface** — 9 entries: `prof_grade_73b132f72683a4d3`, `prof_grade_6f1def660833e414`, `prof_grade_69ce58e03c7f5ac8`, `observation_b64690eb06c29e34`, `observation_620b633919bd58de`, `observation_72620c81985763fc` ...
+- **Ground_Rock_Surface** — 7 entries: `prof_grade_bec71f9e63043118`, `observation_8650722006d93846`, `observation_cf32cafa76fd3b40`, `observation_4041b18f4f89b640`, `observation_49ecad284084ddab`, `observation_1bc2480d62a36f98` ...
 - **Ground_Sand_Footprints** — 3 entries: `professor_grade_f5f95d125880d69b`, `observation_e0159ce465c0a841`, `observation_c6cff95d6bca1e16`
 - **Ground_Sand_Particles** — 7 entries: `professor_grade_f6341a2dcf895b0f`, `observation_01ac5afa8acdcc0b`, `observation_c1eb6cfb82d8fc19`, `observation_01f675d910535fdb`, `prof_grade_880c3b754225d00c`, `observation_dcdf9808285fe705` ...
 - **Ground_Sand_Sound** — 3 entries: `professor_grade_07fdf2b5e86aa60f`, `promo:Ground_Sand_Sound:1`, `repstat:Ground_Sand_Sound`
-- **Ground_Sand_Surface** — 8 entries: `prof_grade_aeb4f8f54f636fdb`, `prof_grade_ab1739bd8cefcb3a`, `observation_9f0cdcfdc1c92f93`, `observation_17f31e2349d85e8a`, `observation_0cbedc2aa655ee37`, `observation_5b9bb3c07dfe4a33` ...
+- **Ground_Sand_Surface** — 9 entries: `prof_grade_aeb4f8f54f636fdb`, `prof_grade_ab1739bd8cefcb3a`, `observation_9f0cdcfdc1c92f93`, `observation_17f31e2349d85e8a`, `observation_0cbedc2aa655ee37`, `observation_5b9bb3c07dfe4a33` ...
 - **Groundskeeping_floor** — 1 entry: `observation_c29b810e69f7c7db`
 - **Loop_4_Tools_Expanded** — 1 entry: `professor_grade_9da1c1319e880576`
+- **Loop_Complete_Final** — 1 entry: `observation_31a79b33e5b797d8`
 - **MCP_Pathways** — 1 entry: `repstat:MCP_Pathways`
 - **Malcolm_Envelope** — 3 entries: `elim_58026efcf3adc442`, `promo:Malcolm_Envelope:2`, `repstat:Malcolm_Envelope`
+- **NPC_Basic_AI** — 1 entry: `observation_ace6ae4bff9a2fe1`
+- **NPC_Basic_Animation** — 1 entry: `observation_b32c4ddc1860da0e`
+- **NPC_Basic_Model** — 1 entry: `observation_8e458a665120c795`
 - **Pipeline_Gates** — 1 entry: `professor_grade_8fe800ca62b96505`
 - **Player_Character_Animation** — 2 entries: `professor_grade_0d659c2ad91db9c0`, `observation_b2e38b785162731b`
-- **Player_Character_Lighting** — 17 entries: `prof_grade_76ec897d5061a616`, `prof_grade_55783a2583f54dd8`, `prof_grade_9b000e15bf8b6d6a`, `prof_grade_0ccf095915f32920`, `prof_grade_7dfe00e4c944fd99`, `prof_grade_5c5143f0cf135bce` ...
+- **Player_Character_Lighting** — 18 entries: `prof_grade_76ec897d5061a616`, `prof_grade_55783a2583f54dd8`, `prof_grade_9b000e15bf8b6d6a`, `prof_grade_0ccf095915f32920`, `prof_grade_7dfe00e4c944fd99`, `prof_grade_5c5143f0cf135bce` ...
 - **Player_Character_Model** — 16 entries: `prof_grade_5b0c3fa2dca3572f`, `prof_grade_629a04ca3e067c51`, `prof_grade_2e63165139491b63`, `professor_grade_092f9a02863066b6`, `prof_grade_9ad8b9d5fff54539`, `prof_grade_e7237a099dc54076` ...
-- **Player_Character_Model_Visor_Apply** — 1 entry: `observation_b62aa5f1f36ce0a6`
-- **Player_Character_Suit** — 3 entries: `prof_grade_f38f94e79e174041`, `observation_d801087b243f5dbe`, `observation_f5ead6a385323c1e`
+- **Player_Character_Model_Visor_Apply** — 2 entries: `observation_b62aa5f1f36ce0a6`, `observation_0182044580c4ddae`
+- **Player_Character_Suit** — 4 entries: `prof_grade_f38f94e79e174041`, `observation_d801087b243f5dbe`, `observation_f5ead6a385323c1e`, `observation_b2b3a0a83707fc48`
 - **Player_Character_Suit_Visor** — 1 entry: `professor_grade_1bf1d076b6c54468`
 - **Regolith_Dust_Accumulation_Visual_Feedback** — 1 entry: `observation_44947b0e1ef55883`
-- **Shelter_Habitat_Geometry** — 1 entry: `observation_1a64d91760b71c72`
+- **Shelter_Habitat_Geometry** — 2 entries: `observation_1a64d91760b71c72`, `observation_0a712558ffb44f93`
 - **Shelter_Habitat_Lighting** — 2 entries: `observation_e5809b7506f928d1`, `repstat:Shelter_Habitat_Lighting`
-- **Shelter_Habitat_Materials** — 2 entries: `observation_f9f0c860d53c4d2a`, `repstat:Shelter_Habitat_Materials`
+- **Shelter_Habitat_Materials** — 3 entries: `observation_f9f0c860d53c4d2a`, `observation_0f060b99303b53a9`, `repstat:Shelter_Habitat_Materials`
+- **Shelter_Station_Exterior** — 1 entry: `observation_32312b3e6e283c42`
 - **Sky_Atmosphere_Scattering** — 3 entries: `observation_6df7bf32c69dc5ff`, `observation_d9772e6bb1395ac4`, `repstat:Sky_Atmosphere_Scattering`
 - **Sky_Earth_Material** — 1 entry: `observation_d98165bc5d378bc0`
 - **Sky_Earth_Model** — 1 entry: `observation_516b96cf549ce230`
@@ -1521,6 +1537,7 @@
 - **Sky_Sun_Lighting** — 1 entry: `observation_2906c8aa1adb1c23`
 - **Sleepwalker_Beats** — 2 entries: `promo:Sleepwalker_Beats:2`, `repstat:Sleepwalker_Beats`
 - **Sleepwalker_System** — 2 entries: `professor_grade_c672ff663bf3651b`, `observation_79bd753c166a2901`
+- **Social_Conflict** — 1 entry: `observation_9a3644f452d3c635`
 - **Social_Trade** — 3 entries: `observation_a54d668be0240c2b`, `observation_a02f3340f1bf3b5c`, `repstat:Social_Trade`
 - **Sprint_Input** — 1 entry: `dc_b1af6b6e2f33`
 - **Sprint_Input/binding** — 2 entries: `promo:Sprint_Input/binding:1`, `repstat:Sprint_Input/binding`
@@ -1533,27 +1550,38 @@
 - **System_DSL_Fidelity** — 4 entries: `elim_5db874e721a6c962`, `elim_fc1e3b5e9ce65fbe`, `observation_178caf29b500bc22`, `promo:System_DSL_Fidelity:1`
 - **System_Economy** — 8 entries: `professor_grade_7886af92f495ccd1`, `professor_grade_987966987f9c8be5`, `professor_grade_cbdfff41c119fe65`, `professor_grade_364a07e3116f20a6`, `professor_grade_bf25d5d3a1fc673f`, `professor_grade_c5197b91a28559eb` ...
 - **System_Factions** — 6 entries: `professor_grade_eed210f4ab52757d`, `professor_grade_490fe77b72f70388`, `professor_grade_b2bb156bf98b0f0a`, `professor_grade_2cef42bbe0482227`, `professor_grade_311a8a7ca7b93bff`, `observation_dd211c641ad2d9ae`
+- **System_Generation** — 1 entry: `observation_390faff2d9e36ec1`
 - **System_Missions** — 7 entries: `professor_grade_2a09ab2aa52757cf`, `professor_grade_f0b8a52f650f4cf9`, `professor_grade_a43257c7bf4c0783`, `professor_grade_df839bc8e137db81`, `professor_grade_8b0cf44f4627423c`, `professor_grade_cdfa82d2982b429b` ...
+- **System_Sacrifice** — 1 entry: `observation_95526a33052a538e`
 - **System_SaveGame** — 2 entries: `elim_8f4f3dbdf1bd7e24`, `promo:System_SaveGame:1`
 - **System_SaveLoad** — 7 entries: `professor_grade_48116037dcbb5a91`, `professor_grade_d3df7c53cd313883`, `professor_grade_38cb65693e29e58e`, `professor_grade_ef959c286f6fb9a6`, `professor_grade_4acb446775c3c0ba`, `professor_grade_10f28412a70cf5a4` ...
 - **Test_Feature** — 1 entry: `professor_grade_194f6be1dc1b74ec`
 - **The Erisaid Audio Attunement Minigame** — 1 entry: `observation_cae671193d829088`
 - **The_Erisaid_Audio_Attunement_Minigame** — 1 entry: `observation_0fb21208605b76f0`
 - **Titan_Run_Gravity_Shift_Mechanics** — 1 entry: `observation_93afffe7c4d6dcf2`
-- **Tool_Scanner_Material** — 1 entry: `observation_92639a8143037cac`
-- **Tool_Scanner_Model** — 1 entry: `observation_b1c08c983da0e237`
-- **Tool_Shovel_Model** — 1 entry: `professor_grade_ef64717b4d520850`
-- **Tool_Weapon_Model** — 2 entries: `observation_af7f40abe37d1f59`, `observation_c941ed7c5d84c89d`
+- **Tool_Scanner_Material** — 2 entries: `observation_92639a8143037cac`, `observation_8d7105b9cc6e3220`
+- **Tool_Scanner_Model** — 2 entries: `observation_b1c08c983da0e237`, `observation_a89558028e7f9fec`
+- **Tool_Shovel_Material** — 1 entry: `observation_debf94c901f4a1da`
+- **Tool_Shovel_Model** — 2 entries: `professor_grade_ef64717b4d520850`, `observation_aaf1522bff9e9898`
+- **Tool_Weapon_Material** — 1 entry: `observation_362ff3991fe6177f`
+- **Tool_Weapon_Model** — 3 entries: `observation_af7f40abe37d1f59`, `observation_c941ed7c5d84c89d`, `observation_9f3ebf16811675bd`
 - **Travel_Ship_Exterior** — 1 entry: `observation_b4e929ab127f9760`
 - **Travel_Vehicle_Basic** — 1 entry: `observation_a640c045d6ceaf69`
+- **Travel_Vehicle_Flight** — 1 entry: `observation_7263a3405c9cc71b`
 - **Travel_Walking** — 1 entry: `professor_grade_f4fa95fd0c69ab19`
+- **Truth_Sync_2026-07_18** — 1 entry: `observation_4eeed2e05267e8a8`
 - **UChimeraAttunementComponent** — 1 entry: `observation_455906b50c6a0a1a`
 - **UI_Suit_HUD** — 1 entry: `promo:UI_Suit_HUD:1`
-- **Verb_Bend** — 8 entries: `observation_44efdff7a36a3d5c`, `observation_f425fa8d8104e1ab`, `observation_895434ae9b085bf4`, `observation_4547f04de239b0c6`, `observation_4c8c2edcd5f7c90a`, `observation_7a2b4ea2a2acfeaa` ...
-- **Verb_Drop** — 7 entries: `observation_22aff4c35c846157`, `observation_837c826fac9186ed`, `observation_2d845fd5545f3279`, `observation_6bea305cf7f95767`, `observation_5820fdfd7a98a822`, `observation_de5cd62f1961749e` ...
-- **Verb_Look** — 6 entries: `prof_grade_6a97b22d6c0770cf`, `observation_4f5df1d23ee81c4b`, `observation_29973953faf496a2`, `observation_bdbc5d02c1f55134`, `observation_f2a158b150113299`, `observation_15a1c92436f8c2da`
-- **Verb_PickUp** — 10 entries: `observation_e9e42a55deceea63`, `observation_bbd3824598c5d283`, `observation_894b90c0c982fb7e`, `observation_ed0254872e5fb7b9`, `observation_b55ec24356ac6d0e`, `observation_9d3a133b4e663033` ...
-- **Verb_Shovel** — 7 entries: `prof_grade_dc971d60df30178e`, `observation_45b8b52d04bb680f`, `observation_bb1ac7c1c90f2343`, `observation_c1af4475a658d6b3`, `observation_d30ab5686b763ed3`, `observation_b4e171a33eea4038` ...
+- **Universe_Asteroid_Field** — 1 entry: `observation_5c24cd69ce4ae7ba`
+- **Universe_Debris_Field** — 1 entry: `observation_1beefab92b0d5c33`
+- **Universe_Moon_Generation** — 1 entry: `observation_155a9398bc0ff1a5`
+- **Universe_Planet_Generation** — 1 entry: `observation_773346ff80715c1c`
+- **Universe_Star_Memorial** — 1 entry: `observation_1a192f0cbb77fcaf`
+- **Verb_Bend** — 9 entries: `observation_44efdff7a36a3d5c`, `observation_f425fa8d8104e1ab`, `observation_895434ae9b085bf4`, `observation_4547f04de239b0c6`, `observation_4c8c2edcd5f7c90a`, `observation_7a2b4ea2a2acfeaa` ...
+- **Verb_Drop** — 9 entries: `observation_22aff4c35c846157`, `observation_837c826fac9186ed`, `observation_2d845fd5545f3279`, `observation_6bea305cf7f95767`, `observation_5820fdfd7a98a822`, `observation_de5cd62f1961749e` ...
+- **Verb_Look** — 7 entries: `prof_grade_6a97b22d6c0770cf`, `observation_4f5df1d23ee81c4b`, `observation_29973953faf496a2`, `observation_bdbc5d02c1f55134`, `observation_f2a158b150113299`, `observation_15a1c92436f8c2da` ...
+- **Verb_PickUp** — 12 entries: `observation_e9e42a55deceea63`, `observation_bbd3824598c5d283`, `observation_894b90c0c982fb7e`, `observation_ed0254872e5fb7b9`, `observation_b55ec24356ac6d0e`, `observation_9d3a133b4e663033` ...
+- **Verb_Shovel** — 9 entries: `prof_grade_dc971d60df30178e`, `observation_45b8b52d04bb680f`, `observation_bb1ac7c1c90f2343`, `observation_c1af4475a658d6b3`, `observation_d30ab5686b763ed3`, `observation_b4e171a33eea4038` ...
 - **Verb_Step** — 10 entries: `prof_grade_b95495e2f021ba8d`, `prof_grade_03b0a0ba4be20838`, `observation_f629252c5bdbcd07`, `observation_f165beba3aac9059`, `observation_07b6bd92e7707c41`, `observation_055f108c6b057f3f` ...
 - **Visual_Verification** — 41 entries: `professor_grade_d543406104bab7ca`, `professor_grade_4b3ac1a8094ad245`, `professor_grade_5c4febabf91f23f0`, `professor_grade_caf6e3de66d62355`, `professor_grade_146029f24a743a1c`, `professor_grade_7a0262bc83441f63` ...
 - **Will_Forewarning_Inheritance_UI** — 1 entry: `observation_8ce91d7d1a60ddfc`

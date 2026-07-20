@@ -1,76 +1,37 @@
 {
-  "name": "weather",
-  "author": "LLM, from a scenario. NOT hand-tuned numbers — a statement of what good means.",
-  "scenario": "The Yard's weather (UWeatherSubsystem, CHIMERA_VISION.py) is Law 4's memento mori made mechanical: a storm erases every sand/basin footprint, unconditionally, when it passes. That erasure must happen often enough to ACHE — footprints are not a permanent scrapbook, the world is not a diorama — and rarely enough that prints MATTER: a player who leaves a trail should realistically be able to walk away and come back to find it still there. Gusts should read as living, irregular weather, never a looping mechanical noise. The sky must never sit fully dead-calm, and a storm must never dominate play time — both are absolute rule violations, not matters of taste.",
+  "_provenance": "The UWeatherSubsystem storm/gust cadence as a trainable domain. The genome IS the WIND table; the objective binds the Law-4 tension: storms must erase often enough to ACHE and rarely enough that footprints MATTER. Both failure modes are measurable.",
+  "maximize": [
+    "storm_interval_days_mean",
+    "mean_footprint_lifetime_days",
+    "lifetime_period_ratio"
+  ],
+  "minimize": [
+    "dead_calm_fraction_worst",
+    "storm_time_fraction_worst",
+    "gust_interval_cv"
+  ],
   "constraints": [
-    {
-      "measure": "storm_time_fraction_worst",
-      "kind": "at_most",
-      "max": 0.12,
-      "weight": 3.0,
-      "hard": true,
-      "why": "NO PERMANENT STORM — an absolute gate, tested against the WORST of N restarts (not the mean), so one unlucky seed cannot hide a config where storms swallow play. At the seed this sits near 0.003 (35 storms x ~0.5h each against 250 27h-days) — enormous headroom before this bites, which is the point: it exists to catch a genuinely broken mutation (e.g. storm_duration_min drifting toward hours, or storm_period collapsing toward zero), not to shape the winner."
-    },
-    {
-      "measure": "dead_calm_fraction_worst",
-      "kind": "at_most",
-      "max": 0.55,
-      "weight": 3.0,
-      "hard": true,
-      "why": "NO DEAD CALM — the other absolute gate, also tested at the WORST restart. dead_calm_fraction is non-storm time that is both night (the calm baseline, IsNight()=40% of every day) AND between gust pulses; it rises if gusts space out far enough that the wind audibly goes silent for long stretches. A world that can sit fully still for more than half of all time is not weather, it is a diorama with a wind cue bolted on."
-    },
-    {
-      "measure": "storm_interval_days_mean",
-      "kind": "band",
-      "min": 3.0,
-      "max": 14.0,
-      "weight": 2.0,
-      "why": "Storms must arrive on a cadence a player actually experiences across sessions. Below 3 days storms crowd every play session and nothing has time to feel earned; above 14 days a storm becomes a once-in-a-blue-moon event a player may never see happen at all, and the memento mori stops being felt. The seed's own uniform(5,9) -> mean 7.0 sits centered in this band, not pinned against it."
-    },
-    {
-      "measure": "lifetime_period_ratio",
-      "kind": "band",
-      "min": 0.5,
-      "max": 0.999,
-      "weight": 2.5,
-      "why": "THE LAW-4 TENSION ITSELF, as a ratio so it cannot be gamed by scaling storm cadence alone: mean_footprint_lifetime_days / storm_interval_days_mean. A footprint's lifetime is bounded above by the gap it was born into (nothing can outlive the wipe at the next storm's end), so this ratio is naturally <1 — but it COLLAPSES toward 0 exactly when storms land close enough together, relative to how often the wanderer leaves a print, that a print barely has time to exist before it is gone (the concrete 'too often to matter' failure). The floor demands prints survive a substantial share of their own gap — they were there to be re-found — without requiring the trivial, unfalsifiable case of a ratio pinned at 1.0."
-    },
-    {
-      "measure": "longest_footprint_lifetime_days",
-      "kind": "at_most",
-      "max": 21.0,
-      "weight": 1.5,
-      "why": "Even the single luckiest footprint, across every restart, must not survive three weeks — a soft companion to the hard storm-time-fraction gate, catching the OPPOSITE failure: storms individually rare enough (not frequent enough) that a print quietly becomes permanent, which breaks the memento mori from the other direction."
-    },
-    {
-      "measure": "storm_duration_hours_max",
-      "kind": "at_most",
-      "max": 3.0,
-      "weight": 1.0,
-      "why": "No single storm, even the longest ever drawn across every restart, should run for hours — a storm is weather passing through, not a multi-hour lockdown. Secondary and soft: storm_time_fraction is the hard gate against storms DOMINATING time; this catches one individually overlong storm even if the overall time budget still reads fine."
-    },
-    {
-      "measure": "gust_interval_cv",
-      "kind": "band",
-      "min": 0.15,
-      "max": 0.65,
-      "weight": 1.5,
-      "why": "Gusts must read as irregular weather, not a metronome (cv too low — a fixed period is an audibly repeating loop, the exact cliche this system exists to avoid) or pure static (cv too high — gust timing so scattered across orders of magnitude it stops reading as a coherent phenomenon at all). The seed's uniform(8,30) -> cv 0.334 sits centered, not pinned."
-    },
-    {
-      "measure": "gust_interval_mean_s",
-      "kind": "band",
-      "min": 3.0,
-      "max": 120.0,
-      "weight": 0.75,
-      "why": "Keeps the gust cadence in a perceptible ambient-wind range — loose bounds (a gust every 3 seconds to 2 minutes) that mostly guard against the search finding a degenerate extreme (near-continuous gusting, or gusts so rare they may as well not exist) while leaving the interesting middle wide open."
-    },
-    {
-      "measure": "mean_footprint_lifetime_days",
-      "kind": "maximize",
-      "ref": 7.0,
-      "weight": 2.0,
-      "why": "THE CLIMBING TERM (TRAINING_PROTOCOL.md S3: 'a spec made only of walls gets you exactly the walls' — every constraint above is a wall or a band, and without this the optimiser would stop the moment it cleared them all). A footprint that persists longer is a footprint more likely to be re-found, which is the positive half of Law 4 that mere non-violation cannot express. ref=7.0 sets sat~=0.5 at the seed's own measured lifetime, so there is real room to climb — but only by pushing storms rarer/longer-gapped, which the storm_interval band, the lifetime_period_ratio ceiling, and the longest_footprint_lifetime_days gate all resist. The tension is real: this term wants footprints to last; five other terms above cap how far that can go."
-    }
-  ]
+    {"field": "storm_interval_days_min", "min": 1.0},
+    {"field": "storm_interval_days_mean", "min": 3.0, "max": 14.0},
+    {"field": "storm_duration_hours_mean", "min": 0.2, "max": 2.0},
+    {"field": "storm_duration_hours_max", "max": 8.0},
+    {"field": "sand_erasure_fraction_min", "min": 0.90},
+    {"field": "longest_footprint_lifetime_days", "min": 0.5},
+    {"field": "mean_footprint_lifetime_days", "min": 0.2},
+    {"field": "lifetime_period_ratio", "min": 0.01, "max": 0.25},
+    {"field": "dead_calm_fraction_worst", "max": 0.60},
+    {"field": "storm_time_fraction_worst", "max": 0.10},
+    {"field": "gust_interval_mean_s", "min": 5.0, "max": 120.0},
+    {"field": "gust_interval_cv", "max": 1.5},
+    {"field": "robustness", "min": 0.15}
+  ],
+  "walls": {
+    "storm_interval_days_min": "The shortest gap between storms MUST be at least 1 day. Below 1 day means storms chain-endlessly — the player never sees calm weather, and footprints never survive long enough to matter. The 'too often' failure mode of Law 4.",
+    "sand_erasure_fraction_min": "Every storm MUST erase sand footprints. The vision's mechanic is unconditional: 'every footprint whose surface is not METAL is wiped'. Below 0.90 means the simulated mechanic does not match the shipped one. This is expected to sit near 1.0 — it is an audit, not a tuned number.",
+    "longest_footprint_lifetime_days": "The longest-living footprint MUST survive at least half a day. Below 0.5 days means even the freshest track is gone by the next storm — the player can never return to their own path. The 'too rare' failure mode of Law 4.",
+    "lifetime_period_ratio": "Mean footprint lifetime MUST be between 1% and 25% of the mean storm interval. Below 1% means footprints are vaporized — they never accumulate. Above 25% means storms are so rare that the entire landscape is a permanent scrapbook. Both are the Law-4 tension collapsed to one side.",
+    "dead_calm_fraction_worst": "Dead calm MUST stay below 60% of non-storm time. Above 60% means the world is perceptually static — no breeze, no gust — for most of the player's experience. The weather system's job is to be FELT, not to be absent.",
+    "storm_time_fraction_worst": "Permanent storm MUST NOT exceed 10% of total time. Above 10% means the player spends more than 1 in 10 hours in a storm — the world is hostile by default, and the storm mechanic loses meaning.",
+    "robustness": "The shortest storm interval MUST be at least 15% of the mean. Below 0.15 means the cadence has a pathological outlier — one restart drew a 0.5-day gap while the mean is 7 days. The player does not experience the mean; they experience the worst draw."
+  }
 }

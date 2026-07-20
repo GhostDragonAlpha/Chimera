@@ -685,3 +685,12 @@ Wait, looking at the
 - sample: expected 'the dyad's instruction was executed' but 'Fractal zoom sweep test built and executed on a 157K-splat g'
 - sample: expected 'the dyad's instruction was executed' but 'Spatial LOD merger built and tested. Results on 157K-splat l'
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-20T22:07:21Z -->
+## H-65: sim_rejection: chimera_complete/generation_transition
+- status: pending
+- kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-20T20:39:53
+- proposed_organ: claude_md
+- evidence: simtest_9d46c02be04fed93, simtest_7e4fff8702385eef, simtest_dd356f6bd6db7922
+- sample: failed: [{"expect": {"log_contains": "Generation"}, "ok": false, "note": "log_hit=False"}]
+- draft_rule: Verify event logging and signal traces on success path.

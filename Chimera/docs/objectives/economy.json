@@ -1,59 +1,31 @@
 {
-  "name": "economy",
-  "author": "LLM, from a scenario. NOT hand-tuned numbers â€” a statement of what good means.",
-  "scenario": "A space trading economy where progression feels EARNED. The player should hunt for profitable routes and feel clever finding them â€” but no single route may trivialise the game, and no route may pay forever. Money should come from working the whole map across several commodities, not from one wiki-known loop. Affording the next ship should take a few sessions, not a few minutes.",
+  "_provenance": "Market physics: prices converge, arbitrage creates trade, elasticity matters. The genome IS the DSL numbers; the simulated player is a greedy arbitrageur who reads a wiki. The economy either survives that player or it does not.",
+  "maximize": [
+    "credits_per_hour",
+    "routes_used",
+    "commodities_used",
+    "stations_visited"
+  ],
+  "minimize": [
+    "top_route_share",
+    "rate_decay",
+    "hours_to_next_ship"
+  ],
   "constraints": [
-    {
-      "measure": "routes_used",
-      "kind": "maximize",
-      "ref": 3.0,
-      "weight": 2.5,
-      "why": "THE CLIMBING TERM — the one this file did not have (added 2026-07-16). economy.json was a PURE SATISFICER: six constraints, every one a floor, a ceiling or a band, and NOT ONE maximize. The optimiser cleared every wall and stopped, because nothing asked it to keep going. The fingerprint is exact: economy.trained.json scores 1.0 EXACTLY, and trainer.py implements maximize as x/(x+ref) which is strictly < 1.0 for every finite x — so a score of precisely 1.0 is arithmetic proof that no climbing term contributed. Both sibling objectives name THIS RUN as the lesson (walker.json: 'I have already been burned by a satisficer once today'; creature.json carries an explicit REPAIR term) and both were fixed. The patient was not. WHY THIS MEASURE: the scenario asks that money come from 'working the whole map across several commodities, not from one wiki-known loop' — so the thing that must never stop climbing is HOW MANY ROUTES ARE ACTUALLY WORTH RUNNING. routes_used was already measured (3.0) and bound by NOTHING — a dead measure sitting beside its own doctrine, exactly like brain_gpu's distance_worst. A hunt only rewards cleverness if there is more than one thing to find, and there is no natural ceiling on how rich that space is. Non-saturating: ref 3.0 scores 0.5 at today's winner, so there is always somewhere left to go."
-    },
-    {
-      "measure": "rate_decay",
-      "kind": "at_least",
-      "min": 0.35,
-      "weight": 3.0,
-      "hard": true,
-      "why": "THE GATE. A route must EXHAUST ITSELF as you work it. If the best route still pays the same at hour 60 as at hour 1, it is a riskless unbounded money printer and the whole progression is a formality. Note what this asks: it cannot be satisfied by ANY choice of prices, because with static prices the decay is exactly zero by construction. If the optimiser satisfies this, it did so STRUCTURALLY."
-    },
-    {
-      "measure": "hours_to_next_ship",
-      "kind": "band",
-      "min": 6.0,
-      "max": 25.0,
-      "weight": 2.0,
-      "why": "a few sessions of play. Under 6h the ship ladder is meaningless; over 25h it is a grind."
-    },
-    {
-      "measure": "top_route_share",
-      "kind": "at_most",
-      "max": 0.55,
-      "weight": 2.0,
-      "why": "if one route earns most of the money, the map collapses into a single loop and the other stations are scenery."
-    },
-    {
-      "measure": "commodities_used",
-      "kind": "at_least",
-      "min": 2.0,
-      "weight": 1.5,
-      "why": "more than one thing must be worth carrying, or the cargo hold is a formality."
-    },
-    {
-      "measure": "stations_visited",
-      "kind": "at_least",
-      "min": 3.0,
-      "weight": 1.5,
-      "why": "the whole map should be worth visiting."
-    },
-    {
-      "measure": "credits_per_hour",
-      "kind": "band",
-      "min": 40000.0,
-      "max": 400000.0,
-      "weight": 1.0,
-      "why": "an income that neither starves the player nor floods them."
-    }
-  ]
+    {"field": "credits_per_hour", "min": 1000.0},
+    {"field": "top_route_share", "max": 0.70},
+    {"field": "routes_used", "min": 3},
+    {"field": "commodities_used", "min": 2},
+    {"field": "stations_visited", "min": 3},
+    {"field": "rate_decay", "max": 0.50},
+    {"field": "elasticity", "min": 0.02}
+  ],
+  "walls": {
+    "top_route_share": "No single route MUST dominate the economy. Above 70% means every commodity and station exists but only one pair pays — the market is a corridor, not a network. The DSL's Titanium printer (Titan_Surface -> Orbital_Hub_7, +27/kg, riskless) currently owns the entire economy; this wall is why it is a problem.",
+    "routes_used": "At least 3 distinct commodity-route pairs MUST be profitable. Fewer than 3 means the greedy player starves on 2/3 of the station graph. The name is DeepSpaceTrader, not OneRouteHauler.",
+    "stations_visited": "All 3 stations MUST be reachable. Below 3 means some station has zero profitable routes in or out — half the market is a ghost town the player never visits, and the name 'Ares_Market_Central' is a lie.",
+    "rate_decay": "The best route MUST exhaust itself. rate_decay measures how much the early-game credit rate drops by end-game. Above 0.50 means the economy is a static money printer — the player does the same route forever and it never stops paying. Zero elasticity causes exactly this; the genome MUST discover it needs elasticity.",
+    "elasticity": "The genome MUST discover price elasticity. The DSL has NONE (elasticity=0.0) — that is precisely why the money printer exists. This wall requires the optimiser to walk away from zero, which is the whole point of making elasticity a reachable locus.",
+    "hours_to_next_ship": "A second ship MUST be reachable within the 60-hour window. 999.0 is the sentinel meaning it never happened; below that means the economy can eventually afford expansion. The goal is not infinite growth — it is that the economy has a trajectory that is NOT flat starvation."
+  }
 }

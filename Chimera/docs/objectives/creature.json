@@ -1,57 +1,27 @@
 {
-  "name": "creature",
-  "author": "LLM, from a scenario. Note what it does NOT say: it never mentions legs.",
-  "scenario": "A body that stands up under its own weight and stays standing when the ground shifts. It should hold itself clear of the ground rather than sprawl, survive a real tilt without toppling, and not be an implausible pile of matter. Nothing here asks for four legs — asking for legs would only rediscover my own assumption. Legs, if they appear, are the ANSWER.",
-
+  "_provenance": "A body that stands under its own weight. The genome is a skeleton; the measure reports structural facts about the grown body. It never mentions legs — legs, if they appear, are the ANSWER. Design Law 1: the simplest rules produce the richest order. Three degenerate optima (lollipop, blob-on-stilts, mast-with-outriggers) proved that static geometry can be gamed; the walker domain picks up where this ends.",
+  "maximize": [
+    "stands",
+    "tip_deg",
+    "height",
+    "symmetry"
+  ],
+  "minimize": [
+    "volume"
+  ],
   "constraints": [
-    {
-      "measure": "stands",
-      "kind": "at_least", "min": 1.0,
-      "weight": 3.0,
-      "hard": true,
-      "why": "THE GATE. The centre of gravity must project inside the support polygon. Otherwise it is not a creature, it is a thing lying down."
-    },
-    {
-      "measure": "tip_deg",
-      "kind": "at_least", "min": 22.0,
-      "weight": 3.0,
-      "why": "the tilt it can survive before toppling. This is the term that killed the LOLLIPOP: a boulder on a pole tips at 7.8 degrees, a quadruped at 26.6. It makes holding mass high COST you the robustness you need to keep it there — and the only way to buy both is to spread weight onto separated supports."
-    },
-    {
-      "measure": "height",
-      "kind": "at_least", "min": 0.22,
-      "weight": 2.0,
-      "why": "the body must be carried clear of the ground. Without this a pancake wins: perfectly stable, and useless."
-    },
-    {
-      "measure": "tip_deg",
-      "kind": "maximize", "ref": 45.0,
-      "weight": 2.5,
-      "why": "REPAIR (2026-07-14), and the machine found the bug, not me. With only bounds, every constraint saturates at sat=1.0, the score pins at 1.0000, and there is NO GRADIENT LEFT TO CLIMB — the optimiser stops dead at 'barely legal'. The first run rode tip_deg=22.04 against its min of 22 and height=0.2212 against its min of 0.22, and produced a minimally-compliant blob on stilts. A spec made only of walls gets you exactly the walls. This term keeps paying past the wall."
-    },
-    {
-      "measure": "height",
-      "kind": "maximize", "ref": 0.5,
-      "weight": 2.0,
-      "why": "the other half of the same repair: keep rewarding a body carried higher, not merely high enough."
-    },
-    {
-      "measure": "symmetry",
-      "kind": "at_least", "min": 0.65,
-      "weight": 1.0,
-      "why": "a soft PRIOR, not a law. Real development is symmetric because it is cheap, not because symmetry is fit."
-    },
-    {
-      "measure": "volume",
-      "kind": "at_most", "max": 0.010,
-      "weight": 1.5,
-      "why": "metabolic cost, charged by VOLUME not by bone count. Charging per bone was the other half of the lollipop: mass goes as r-squared, so one enormous bone was free."
-    },
-    {
-      "measure": "bones",
-      "kind": "band", "min": 12.0, "max": 44.0,
-      "weight": 1.0,
-      "why": "an animal, not a stick figure and not a hairball."
-    }
-  ]
+    {"field": "stands", "min": 1.0},
+    {"field": "tip_deg", "min": 22.0},
+    {"field": "height", "min": 0.22},
+    {"field": "symmetry", "min": 0.65},
+    {"field": "volume", "max": 0.010},
+    {"field": "bones", "min": 12, "max": 44}
+  ],
+  "walls": {
+    "stands": "The centre of gravity MUST project inside the support polygon. stands=0 means it is a thing lying down — not a creature. This is THE gate: every other measure is meaningless if the body cannot hold itself up.",
+    "tip_deg": "The body MUST survive a real tilt before toppling. Below 22 degrees means a small slope sends it over — the lollipop (boulder on a pole) tipped at 7.8 degrees. A quadruped starts at ~26.6. This is the term that makes carrying mass high COST you the robustness needed to keep it there.",
+    "height": "The body MUST be carried clear of the ground. Below 0.22 body lengths means the body is a pancake — perfectly stable, maximally useless. A pancake wins every structural check and cannot walk.",
+    "volume": "Volume MUST stay bounded. Above 0.01 means a single enormous bone dominates — the lollipop exploit: mass goes as r^2, so one bone free-rides. Charging per bone count lets one enormous bone escape; charging volume catches it.",
+    "symmetry": "The body SHOULD exhibit bilateral symmetry. Real development is symmetric because it is cheap, not because symmetry is fitness — but below 0.65 means the body is a random spray of limbs, and natural selection does not produce that."
+  }
 }
