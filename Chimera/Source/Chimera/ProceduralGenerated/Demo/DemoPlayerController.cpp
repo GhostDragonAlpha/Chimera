@@ -25,6 +25,8 @@
 
 #include "../Save/SacrificeLogComponent.h"
 #include "../AErisaid/AErisaidActor.h"
+#include "Engine/DirectionalLight.h"
+#include "Components/LightComponent.h"
 #include "Kismet/GameplayStatics.h"
 ADemoPlayerController::ADemoPlayerController()
 {
@@ -263,6 +265,7 @@ void ADemoPlayerController::Interact()
 
 void ADemoPlayerController::DropItem()
 {
+	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] CATALYST_DEBUG DropItem called"));
 	if (PickupInteraction && PickupInteraction->TryDrop())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Drop action triggered - item dropped"));
@@ -273,16 +276,29 @@ void ADemoPlayerController::DropItem()
 		{
 			AAErisaidActor* Erisaid = Cast<AAErisaidActor>(
 				UGameplayStatics::GetActorOfClass(GetWorld(), AAErisaidActor::StaticClass()));
-			if (Erisaid)
+			UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] CATALYST_DEBUG Erisaid=%s"), Erisaid ? TEXT("found") : TEXT("NULL"));
+				if (Erisaid)
 			{
 				float Dist = FVector::Dist(MyPawn->GetActorLocation(), Erisaid->GetActorLocation());
 				if (Dist < 2000.0f)
 				{
 					USacrificeLogComponent* SacLog = MyPawn->FindComponentByClass<USacrificeLogComponent>();
+					UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] CATALYST_DEBUG SacLog=%s"), SacLog ? TEXT("found") : TEXT("NULL"));
 					if (SacLog)
 					{
 						SacLog->Record(TEXT("GAVE_CARGO"), TEXT("Dropped item at Erisaid"), 1, 0);
 						UE_LOG(LogTemp, Display, TEXT("[Sacrifice] Recorded GAVE_CARGO at Erisaid (dist=%.0f)"), Dist);
+
+					// Environmental Catalyst: each sacrifice brightens the sun
+					int32 TotalSacrifices = SacLog->GetSacrificeCount();
+					ADirectionalLight* Sun = Cast<ADirectionalLight>(
+						UGameplayStatics::GetActorOfClass(GetWorld(), ADirectionalLight::StaticClass()));
+					if (Sun && Sun->GetLightComponent())
+					{
+						float NewIntensity = FMath::Min(20.0f, 10.0f + TotalSacrifices * 0.5f);
+						Sun->GetLightComponent()->SetIntensity(NewIntensity);
+						UE_LOG(LogTemp, Display, TEXT("[Catalyst] Sun intensity -> %.1f (%d sacrifices)"), NewIntensity, TotalSacrifices);
+					}
 					}
 				}
 			}
@@ -489,6 +505,7 @@ void ADemoPlayerController::TransitionGeneration()
 	if (Dist > 2000.0f) return; // Must be near the Erisaid
 
 	USacrificeLogComponent* SacLog = MyPawn->FindComponentByClass<USacrificeLogComponent>();
+					UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] CATALYST_DEBUG SacLog=%s"), SacLog ? TEXT("found") : TEXT("NULL"));
 	if (SacLog && SacLog->HasAnySacrifices())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[Generation] Transition triggered — %d sacrifices recorded"), SacLog->GetSacrificeCount());

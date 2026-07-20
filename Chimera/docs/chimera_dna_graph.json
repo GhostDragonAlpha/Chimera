@@ -92900,6 +92900,363 @@
       ],
       "recorded_by": "dream_loop.py",
       "run_id": "run_98d431cf2da2"
+    },
+    {
+      "id": "simtest_91d532d515b8b520",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:18:59.529035",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "catalyst_v1",
+      "demo": "generation_full",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "pickup_multitool",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "picked up"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        },
+        {
+          "beat": "sacrifice_and_transition",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop",
+            "System_Sacrifice",
+            "System_Generation"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "item dropped"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\catalyst_v1.json",
+      "temperature": "[SIM] 2/2 beats reached in 'generation_full'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'catalyst_v1': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_4e160e1488e2"
+    },
+    {
+      "id": "simtest_7ae0fb45a7db1c2a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:21:14.757795",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "catalyst_v2",
+      "demo": "generation_full",
+      "beats_total": 2,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "pickup_multitool",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "picked up"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        },
+        {
+          "beat": "sacrifice_and_transition",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop",
+            "System_Sacrifice",
+            "System_Generation"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "item dropped"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\catalyst_v2.json",
+      "temperature": "[SIM] 2/2 beats reached in 'generation_full'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'catalyst_v2': 2/2 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_45e9d4913f18"
+    },
+    {
+      "id": "simtest_70d181858a614c85",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:22:34.852670",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "catalyst_diag",
+      "demo": "catalyst_diag",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "drop_test",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "CATALYST_DEBUG"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\catalyst_diag.json",
+      "temperature": "[SIM] 1/1 beats reached in 'catalyst_diag'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'catalyst_diag': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_ef96a249cc0a"
+    },
+    {
+      "id": "simtest_478a6e78f7b588d9",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:24:17.790086",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "cat_diag2",
+      "demo": "catalyst_diag",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "drop_test",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "CATALYST_DEBUG"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\cat_diag2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'catalyst_diag'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'cat_diag2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_3ffbb83390f7"
+    },
+    {
+      "id": "simtest_399a468ed53f4e01",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:25:35.344531",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "cat_diag3",
+      "demo": "catalyst_diag",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "drop_test",
+          "outcome": "reached",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "CATALYST_DEBUG"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\cat_diag3.json",
+      "temperature": "[SIM] 1/1 beats reached in 'catalyst_diag'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'cat_diag3': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_caa5a22ad81b"
+    },
+    {
+      "id": "simtest_724ea6c66c5a520c",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:26:58.193483",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "cat_diag4",
+      "demo": "catalyst_diag",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "drop_test",
+          "outcome": "failed",
+          "features": [
+            "Verb_Drop"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "CATALYST_DEBUG"
+              },
+              "ok": false,
+              "note": "log_hit=False"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\cat_diag4.json",
+      "temperature": "[SIM] 0/1 beats reached in 'catalyst_diag'. Failures: drop_test (failed: expect {\"log_contains\": \"CATALYST_DEBUG\"} -> log_hit=False)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'cat_diag4': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8a7ea2d18f7f"
+    },
+    {
+      "id": "surprise_e00eee403c4fc005",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T22:26:58.541714",
+      "context": "Sleepwalker expected beat 'drop_test' to be reachable (catalyst_diag)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"log_contains\": \"CATALYST_DEBUG\"}, \"ok\": false, \"note\": \"log_hit=False\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"log_contains\": \"CATALYST_DEBUG\"}, \"ok\": false, \"note\": \"log'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_8a7ea2d18f7f"
     }
   ],
   "edges": [
