@@ -464,16 +464,13 @@ void ADemoPlayerController::SpawnDemoPickupIfNeeded(APawn* InPawn)
 		bDemoPickupSpawned = true;
 		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Demo pickup '%s' spawned at %s"), *DemoPickup->ItemName.ToString(), *PickupSpawnLocation.ToString());
 
-		// Educational pickups at specimen locations
-		TArray<TPair<FVector, const TCHAR*>> EduPickups;
-		EduPickups.Add(TPair<FVector, const TCHAR*>(PickupSpawnLocation + FVector(200, 50, 70), TEXT("Basalt_Specimen")));
-		EduPickups.Add(TPair<FVector, const TCHAR*>(PickupSpawnLocation + FVector(300, 480, 70), TEXT("Granite_Specimen")));
-		EduPickups.Add(TPair<FVector, const TCHAR*>(PickupSpawnLocation + FVector(-500, 600, 70), TEXT("Limestone_Specimen")));
-		for (const auto& EP : EduPickups)
-		{
-			APickupActor* EduPickup = World->SpawnActor<APickupActor>(APickupActor::StaticClass(), EP.Key, InPawn->GetActorRotation(), SpawnParams);
-			if (EduPickup) { EduPickup->ItemName = FText::FromString(EP.Value); }
-		}
+		const FVector PL = InPawn->GetActorLocation();
+		FActorSpawnParameters EduSP;
+		EduSP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		APickupActor* BP = World->SpawnActor<APickupActor>(APickupActor::StaticClass(), PL + FVector(500, 50, 130), InPawn->GetActorRotation(), EduSP);
+		if (BP) BP->ItemName = FText::FromString(TEXT("Basalt - Igneous volcanic rock"));
+		APickupActor* GP = World->SpawnActor<APickupActor>(APickupActor::StaticClass(), PL + FVector(600, 480, 130), InPawn->GetActorRotation(), EduSP);
+		if (GP) GP->ItemName = FText::FromString(TEXT("Granite - Intrusive igneous rock"));
 	}
 }
 

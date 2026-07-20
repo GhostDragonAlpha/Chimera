@@ -94299,6 +94299,112 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_8572abdab117"
+    },
+    {
+      "id": "simtest_cbda9590f7c48bb3",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T23:20:27.117654",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "edu_clean",
+      "demo": "edu_spawn",
+      "beats_total": 1,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "collect_basalt",
+          "outcome": "blocked",
+          "features": [
+            "Verb_PickUp",
+            "Ground_Geology_Education"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\edu_clean.json",
+      "temperature": "[SIM] 0/1 beats reached in 'edu_spawn'. Failures: collect_basalt (blocked: {\"error\": \"inspect.runtime_report: failed\"})",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'edu_clean': 0/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_d412df177151"
+    },
+    {
+      "id": "surprise_43d31a5704136b1b",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-20T23:20:27.527454",
+      "context": "Sleepwalker expected beat 'collect_basalt' to be reachable (edu_spawn)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_d412df177151"
+    },
+    {
+      "id": "simtest_1bfe3b3fd3159283",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T23:29:23.426270",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "edu_final2",
+      "demo": "edu_spawn",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "collect_basalt",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp",
+            "Ground_Geology_Education"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "LEARN"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\edu_final2.json",
+      "temperature": "[SIM] 1/1 beats reached in 'edu_spawn'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'edu_final2': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_faf0f6bcdad0"
     }
   ],
   "edges": [
