@@ -45,5 +45,5 @@ Target price: 9.99 USD (Early Access)
 ## Steam Page Assets
 
 - Capsule image: docs/steam_capsule.png (616x353)
-- Screenshots: docs/demo_images/slide_01.png through slide_10.png
+- Screenshots: docs/demo_images/slide_01.png through slide_15.png
 - HTML walkthrough: docs/DEMO_WALKTHROUGH.html

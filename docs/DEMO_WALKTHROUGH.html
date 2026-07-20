@@ -124,6 +124,51 @@
   </div>
 </div>
 
+
+<div id="slide11" class="slide">
+  <img src="demo_images/11_climate_change.png" alt="Climate change">
+  <div class="caption">
+    <h2>Climate Change Story</h2>
+    <div class="zone">Geology / Paleoclimate</div>
+    <div class="science">This canyon was once underwater. Sediments settled on the seafloor for millions of years. Then the water receded and wind took over. The rocks tell the story of a planet that changed.</div>
+  </div>
+</div>
+
+<div id="slide12" class="slide">
+  <img src="demo_images/12_iron_oxide.png" alt="Iron oxide">
+  <div class="caption">
+    <h2>The Oxygen Story</h2>
+    <div class="zone">Geology / Geochemistry</div>
+    <div class="science">Red rocks contain iron oxide - rust. This layer formed when oxygen first appeared in the atmosphere. The planet literally rusted. The rocks remember what the air forgets.</div>
+  </div>
+</div>
+
+<div id="slide13" class="slide">
+  <img src="demo_images/13_plate_tectonics.png" alt="Plate tectonics">
+  <div class="caption">
+    <h2>Plate Tectonics</h2>
+    <div class="zone">Geology</div>
+    <div class="science">These rocks were once at the bottom of an ocean. Plate tectonics pushed them upward to form mountains. The collision of continents is frozen in stone, visible in every canyon wall.</div>
+  </div>
+</div>
+
+<div id="slide14" class="slide">
+  <img src="demo_images/14_canyon_end.png" alt="Canyon end">
+  <div class="caption">
+    <h2>The End of the Canyon</h2>
+    <div class="zone">Conclusion</div>
+    <div class="science">You have walked through 500 million years of planetary history. The rocks remember what the air forgets. Every canyon tells a story - and now you can read it.</div>
+  </div>
+</div>
+
+<div id="slide15" class="slide">
+  <img src="demo_images/15_atmosphere.png" alt="Atmosphere">
+  <div class="caption">
+    <h2>The Atmosphere</h2>
+    <div class="zone">Meteorology</div>
+    <div class="science">The atmosphere is a thin layer of gas held by gravity. It protects the surface from radiation and traps heat. Without it, this canyon would be frozen solid.</div>
+  </div>
+</div>
 <div class="nav">
   <button onclick="prevSlide()">◀ Previous</button>
   <span class="counter" id="counter">1 / 10</span>
@@ -137,7 +182,7 @@
 
 <script>
 let current = 1;
-const total = 10;
+const total = 15;
 function showSlide(n) {
   document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
   document.getElementById('slide' + n).classList.add('active');
