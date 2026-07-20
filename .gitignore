@@ -147,3 +147,4 @@ Chimera/Content/Grown/
 nul
 Build/
 .pi-subagents/
+ProceduralGenerated/Assets/Textures/*.uasset
