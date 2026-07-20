@@ -2,7 +2,7 @@
 #include "DustAccumulationMaterial.h"
 
 UDustAccumulationMaterial::UDustAccumulationMaterial()
-	: AccumulationRate(0.5f), DecayRate(0.2f), NormalThreshold(0.7f), NoiseScale(1.0f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)
+	: AccumulationRate(0.5f), DecayRate(0.2f), NoiseScale(1.0f), NormalThreshold(0.7f), NoiseFrequency(3.0f), CurrentAccumulation(0.0f)
 {
 	// Dust tuning knobs (previously declared but unwired): neutral strength, no
 	// angle bias, and a dusty-tan tint by default — all assignable in BP.
