@@ -147,11 +147,15 @@ def mutate(genome: dict, rng: random.Random | None = None) -> dict:
     g["zone_near"] = max(1.0, min(90.0, g["zone_near"]))
 
     # Zone ordering invariant: distant > approaching > near > touching (0)
-    # Sort descending then enforce minimum gaps so zones never collapse
+    # Sort descending, then only enforce minimum 3m gaps to keep zones spread out
     zones = sorted([g["zone_distant"], g["zone_approaching"], g["zone_near"]], reverse=True)
     g["zone_distant"] = zones[0]
-    g["zone_approaching"] = max(zones[0] - 2.0, zones[1])
-    g["zone_near"] = max(g["zone_approaching"] - 2.0, min(zones[2], g["zone_approaching"] - 1.0))
+    g["zone_approaching"] = zones[1]
+    g["zone_near"] = zones[2]
+    if g["zone_distant"] <= g["zone_approaching"] + 2.0:
+        g["zone_distant"] = g["zone_approaching"] + 2.0
+    if g["zone_approaching"] <= g["zone_near"] + 2.0:
+        g["zone_approaching"] = g["zone_near"] + 2.0
     if g["zone_near"] < 1.0:
         g["zone_near"] = 1.0
 
