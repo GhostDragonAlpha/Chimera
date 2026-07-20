@@ -120,7 +120,7 @@ void AAErisaidActor::TriggerInertialRepulsion(AActor* Player)
 	UE_LOG(LogTemp, Warning, TEXT("Inertial Repulsion triggered - pushed player %.1fm away"), InertialRepulsionPushbackMeters);
 
 	// Reset state after repulsion completes
-	GetWorldTimerManager().SetTimer(RepulsionResetTimer, this, &AAErisaidActor::OnRepulsionComplete, 2.0f);
+	GetWorldTimerManager().SetTimer(RepulsionResetTimer, this, &AAErisaidActor::OnRepulsionComplete, 2.0f, false);
 }
 
 void AAErisaidActor::OnRepulsionComplete()
@@ -148,7 +148,7 @@ void AAErisaidActor::OnSonicEmitterDetected(AActor* Emitter)
 	OnShellStateChanged(CurrentState);
 
 	// Reset after vibration completes
-	GetWorldTimerManager().SetTimer(SonicResetTimer, this, &AAErisaidActor::OnSonicComplete, 5.0f);
+	GetWorldTimerManager().SetTimer(RepulsionResetTimer, this, &AAErisaidActor::OnSonicComplete, 5.0f);
 }
 
 void AAErisaidActor::OnSonicComplete()
@@ -174,7 +174,7 @@ void AAErisaidActor::TriggerCaptiveBurst()
 	float RadiusSq = SporeCloudRadiusMeters * SporeCloudRadiusMeters * 100.0f;  // Convert m to cm, square
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
-		APlayerController* PC = *It;
+		APlayerController* PC = It->Get();
 		if (PC && PC->IsLocalPlayerController())
 		{
 			APawn* Pawn = PC->GetPawn();
@@ -213,7 +213,7 @@ void AAErisaidActor::StartContractionPhase()
 	OnRespirationPhaseChanged(ERespirationPhase::Contraction);
 
 	// Auto-reset to expansion after cycle period
-	GetWorldTimerManager().SetTimer(ContractionResetTimer, this, &AAErisaidActor::OnContractionComplete, RespirationCyclePeriodSec);
+	GetWorldTimerManager().SetTimer(RepulsionResetTimer, this, &AAErisaidActor::OnContractionComplete, RespirationCyclePeriodSec);
 }
 
 void AAErisaidActor::OnContractionComplete()

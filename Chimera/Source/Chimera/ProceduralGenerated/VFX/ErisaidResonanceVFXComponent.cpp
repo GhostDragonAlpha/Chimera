@@ -8,9 +8,9 @@ UErisaidResonanceVFXComponent::UErisaidResonanceVFXComponent(const FObjectInitia
 	  MinVisibilityThreshold(0.1f),
 	  bEnableStandingWaveEdges(true),
 	  bEnableInterferenceShimmer(true),
-	  bVisualsActive(false),
 	  ResonanceNiagaraComp(nullptr),
-	  ShimmerNiagaraComp(nullptr)
+	  ShimmerNiagaraComp(nullptr),
+	  bVisualsActive(false)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }

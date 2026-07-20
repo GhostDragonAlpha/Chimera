@@ -76,7 +76,7 @@ public:
 	float RespirationTimer;
 
 	/** Timer tracking repulsion reset cycle */
-	float RepulsionResetTimer;
+	FTimerHandle RepulsionResetTimer;
 
 	// Contraction radius from shell center
 	UPROPERTY(EditDefaultsOnly, Category = "Respiration")
@@ -175,6 +175,12 @@ public:
 
 	UFUNCTION()
 	void OnRepulsionComplete();
+
+	UFUNCTION()
+	void OnSonicComplete();
+
+	UFUNCTION()
+	void OnContractionComplete();
 
 };
 

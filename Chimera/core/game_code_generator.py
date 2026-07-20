@@ -9310,7 +9310,7 @@ void ASatelliteSpecBindingsActor::BeginPlay()
         source_content += "\tUE_LOG(LogTemp, Warning, TEXT(\"Inertial Repulsion triggered - pushed player %.1fm away\"), InertialRepulsionPushbackMeters);\n\n"
         
         source_content += "\t// Reset state after repulsion completes\n"
-        source_content += "\tGetWorldTimerManager().SetTimer(RepulsionResetTimer, this, &A" + class_name + "::OnRepulsionComplete, 2.0f);\n"
+        source_content += "\tGetWorldTimerManager().SetTimer(RepulsionResetTimer, this, &A" + class_name + "::OnRepulsionComplete, 2.0f, false);\n"
         source_content += "}\n\n"
         
         # OnRepulsionComplete (helper)
@@ -9338,7 +9338,7 @@ void ASatelliteSpecBindingsActor::BeginPlay()
         source_content += "\tOnShellStateChanged(CurrentState);\n\n"
         
         source_content += "\t// Reset after vibration completes\n"
-        source_content += "\tGetWorldTimerManager().SetTimer(SonicResetTimer, this, &A" + class_name + "::OnSonicComplete, 5.0f);\n"
+        source_content += "\tGetWorldTimerManager().SetTimer(SonicResetTimer, this, &A" + class_name + "::OnSonicComplete, 5.0f, false);\n"
         source_content += "}\n\n"
         
         # OnSonicComplete (helper)
@@ -9366,7 +9366,7 @@ void ASatelliteSpecBindingsActor::BeginPlay()
         source_content += f"\tfloat RadiusSq = SporeCloudRadiusMeters * SporeCloudRadiusMeters * 100.0f;  // Convert m to cm, square\n"
         source_content += "\tfor (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)\n"
         source_content += "\t{\n"
-        source_content += "\t\tAPlayerController* PC = *It;\n"
+        source_content += "\t\tAPlayerController* PC = It->Get();\n"
         source_content += "\t\tif (PC && PC->IsLocalPlayerController())\n"
         source_content += "\t\t{\n"
         source_content += "\t\t\tAPawn* Pawn = PC->GetPawn();\n"
@@ -9406,7 +9406,7 @@ void ASatelliteSpecBindingsActor::BeginPlay()
         source_content += "\tOnRespirationPhaseChanged(ERespirationPhase::Contraction);\n\n"
         
         source_content += "\t// Auto-reset to expansion after cycle period\n"
-        source_content += "\tGetWorldTimerManager().SetTimer(ContractionResetTimer, this, &A" + class_name + "::OnContractionComplete, RespirationCyclePeriodSec);\n"
+        source_content += "\tGetWorldTimerManager().SetTimer(ContractionResetTimer, this, &A" + class_name + "::OnContractionComplete, RespirationCyclePeriodSec, false);\n"
         source_content += "}\n\n"
         
         # OnContractionComplete (helper)
