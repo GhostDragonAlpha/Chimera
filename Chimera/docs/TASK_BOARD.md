@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-20T07:18:17+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-20T16:29:26+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -18,7 +18,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0216 | open | 0.6 | Pain verdict: ChimeraMovementComponent.cpp's footstep 'sync  | docs/research/** |  |
 | tb-0217 | open | 0.6 | Pain verdict: A separate concurrent session (shared task lis | docs/research/** |  |
 | tb-0218 | open | 0.6 | Pain verdict: Material PBR wiring on MAT_Ship_Hull_Aluminum  | docs/research/** |  |
-| tb-0219 | open | 0.6 | Pain verdict: control_actor set_material reports success:tru | docs/research/** |  |
 | tb-0220 | open | 0.6 | Pain verdict: Live concurrent-agent interference (PIE toggli | docs/research/** |  |
 | tb-0221 | open | 0.6 | Pain verdict: MAT_WeaponBody (the name Loop4_Tools_Complete. | docs/research/** |  |
 | tb-0222 | open | 0.6 | Pain verdict: manage_geometry create_box/create_cylinder/cre | docs/research/** |  |
@@ -210,6 +209,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0176 | done | 0.6 | Pain verdict: This session's evidence is compile-time only ( | docs/research/** | Pain verdict CONFIRMED via postflight (phase_2f2d78e48da8f35 |
 | tb-0177 | done | 0.6 | Pain verdict: Whether create_niagara_system's authored syste | docs/research/** | Pain verdict: Whether create_niagara_system's authored syste |
 | tb-0178 | done | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** | REFUTED: No DREAM_ROSTER.md or MCP_PATHWAYS.md edits are cur |
+| tb-0219 | done | 0.6 | Pain verdict: control_actor set_material reports success:tru | docs/research/** | auto-closed: pain phase_6041c8fbac2001fa:P2 already disposit |
 | tb-0003 | done | 0.4 | Verb_Shovel | Source/Chimera/ProceduralGenerated/Interactions/**, Source/Chimera/ProceduralGenerated/Tools/**; editor:open; excl:pie | Verb_Shovel: Implemented ATool_Shovel::Dig() (was rejected e |
 | tb-0114 | done | 0.1 | Pain verdict: FIXTURE for tb-0109 reconciler proof (should a | docs/research/** | auto-closed: pain phase_2f2d78e48da8f355:P2 already disposit |
 | tb-0012 | done | 0.01 | Gauntlet sandbox: fable-5 | docs/gauntlet/fable-5/** | wrote docs/gauntlet/fable-5/tunnel_note.md per recipe: one p |

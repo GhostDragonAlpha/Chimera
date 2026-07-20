@@ -1,0 +1,151 @@
+{
+  "demo": "beat_generator_trained",
+  "loop": 0,
+  "settle_s": 17.282915988381987,
+  "beats": [
+    {
+      "name": "trained_beat_0",
+      "features": [
+        "Verb_Look"
+      ],
+      "actions": [
+        {
+          "reset_position": {
+            "x": 200,
+            "y": 0,
+            "z": 130
+          }
+        },
+        {
+          "interact": true,
+          "hold_s": 1.0
+        },
+        {
+          "wait": 0.5
+        },
+        {
+          "wait": 0.5
+        },
+        {
+          "drop": true,
+          "hold_s": 1.0
+        }
+      ],
+      "expects": [
+        {
+          "log_contains": "GAMEMODE"
+        },
+        {
+          "actor_exists": "Player_Astronaut"
+        }
+      ]
+    },
+    {
+      "name": "trained_beat_1",
+      "features": [
+        "Verb_PickUp",
+        "Tool_Weapon_Model"
+      ],
+      "actions": [
+        {
+          "wait": 0.5
+        },
+        {
+          "drop": true,
+          "hold_s": 1.0
+        },
+        {
+          "interact": true,
+          "hold_s": 1.0
+        },
+        {
+          "wait": 0.5
+        },
+        {
+          "screenshot": "beat_1"
+        },
+        {
+          "wait": 0.5
+        },
+        {
+          "reset_position": {
+            "x": 400,
+            "y": 0,
+            "z": 130
+          }
+        }
+      ],
+      "expects": []
+    },
+    {
+      "name": "trained_beat_2",
+      "features": [
+        "Verb_Shovel"
+      ],
+      "actions": [
+        {
+          "drop": true,
+          "hold_s": 1.0
+        },
+        {
+          "reset_position": {
+            "x": 600,
+            "y": 0,
+            "z": 130
+          }
+        },
+        {
+          "interact": true,
+          "hold_s": 1.0
+        },
+        {
+          "wait": 0.5
+        },
+        {
+          "wait": 0.5
+        },
+        {
+          "wait": 0.5
+        }
+      ],
+      "expects": [
+        {
+          "log_contains": "GAMEMODE"
+        },
+        {
+          "is_pie": true
+        }
+      ]
+    },
+    {
+      "name": "trained_beat_3",
+      "features": [
+        "System_Sacrifice",
+        "Tool_Weapon_Model"
+      ],
+      "actions": [
+        {
+          "wait": 0.5
+        },
+        {
+          "wait": 0.5
+        },
+        {
+          "wait": 0.5
+        },
+        {
+          "reset_position": {
+            "x": 800,
+            "y": 0,
+            "z": 130
+          }
+        },
+        {
+          "interact": true,
+          "hold_s": 1.0
+        }
+      ],
+      "expects": []
+    }
+  ]
+}

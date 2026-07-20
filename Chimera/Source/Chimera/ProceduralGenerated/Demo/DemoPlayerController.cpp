@@ -1,3 +1,5 @@
+#include "../Save/StarMemorialComponent.h"
+#include "../Subsystems/GenerationSubsystem.h"
 #include "DemoPlayerController.h"
 #pragma warning(disable: 4996)
 #pragma warning(disable: 5038)
@@ -21,6 +23,9 @@
 #include "UObject/ConstructorHelpers.h"
 #include "../UI/GestureWheel.h"
 
+#include "../Save/SacrificeLogComponent.h"
+#include "../AErisaid/AErisaidActor.h"
+#include "Kismet/GameplayStatics.h"
 ADemoPlayerController::ADemoPlayerController()
 {
 	// CreateDefaultSubobject already owns the component's registration lifecycle
@@ -66,7 +71,8 @@ void ADemoPlayerController::SetupInputComponent()
 	// binding a bare key name ("Tab") maps to NO action (simtest_457320c3449e9c1f).
 	InputComponent->BindAction(TEXT("DemoGestureWheel"), IE_Pressed, this, &ADemoPlayerController::OnTabPressed);
 	InputComponent->BindAction(TEXT("DemoGestureWheel"), IE_Released, this, &ADemoPlayerController::OnTabReleased);
-	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] DemoPlayerController input bound (WASD/mouse/space/C/interact/drop/TAB-gesture-wheel)"));
+	InputComponent->BindAction(TEXT("DemoTransition"), IE_Pressed, this, &ADemoPlayerController::TransitionGeneration);
+	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] DemoPlayerController input bound (WASD/mouse/space/C/interact/drop/TAB-gesture-wheel/K-transition)"));
 }
 
 void ADemoPlayerController::OnTabPressed()
@@ -260,6 +266,27 @@ void ADemoPlayerController::DropItem()
 	if (PickupInteraction && PickupInteraction->TryDrop())
 	{
 		UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] Drop action triggered - item dropped"));
+
+		// Sacrifice detection: if player drops near the Erisaid, record it
+		APawn* MyPawn = GetPawn();
+		if (MyPawn)
+		{
+			AAErisaidActor* Erisaid = Cast<AAErisaidActor>(
+				UGameplayStatics::GetActorOfClass(GetWorld(), AAErisaidActor::StaticClass()));
+			if (Erisaid)
+			{
+				float Dist = FVector::Dist(MyPawn->GetActorLocation(), Erisaid->GetActorLocation());
+				if (Dist < 2000.0f)
+				{
+					USacrificeLogComponent* SacLog = MyPawn->FindComponentByClass<USacrificeLogComponent>();
+					if (SacLog)
+					{
+						SacLog->Record(TEXT("GAVE_CARGO"), TEXT("Dropped item at Erisaid"), 1, 0);
+						UE_LOG(LogTemp, Display, TEXT("[Sacrifice] Recorded GAVE_CARGO at Erisaid (dist=%.0f)"), Dist);
+					}
+				}
+			}
+		}
 	}
 	else
 	{
@@ -444,5 +471,37 @@ void ADemoPlayerController::SpawnDemoHabitatIfNeeded(APawn* InPawn)
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("[HABITAT] Failed to create ShelterHabitatComponent"));
+	}
+}
+
+void ADemoPlayerController::TransitionGeneration()
+{
+	UE_LOG(LogTemp, Display, TEXT("[DEMOBEAT] K key pressed - TransitionGeneration called"));
+	APawn* MyPawn = GetPawn();
+	if (!MyPawn) return;
+
+	// Find the Erisaid
+	AAErisaidActor* Erisaid = Cast<AAErisaidActor>(
+		UGameplayStatics::GetActorOfClass(GetWorld(), AAErisaidActor::StaticClass()));
+	if (!Erisaid) return;
+
+	float Dist = FVector::Dist(MyPawn->GetActorLocation(), Erisaid->GetActorLocation());
+	if (Dist > 2000.0f) return; // Must be near the Erisaid
+
+	USacrificeLogComponent* SacLog = MyPawn->FindComponentByClass<USacrificeLogComponent>();
+	if (SacLog && SacLog->HasAnySacrifices())
+	{
+		UE_LOG(LogTemp, Display, TEXT("[Generation] Transition triggered — %d sacrifices recorded"), SacLog->GetSacrificeCount());
+		// Signal the generation subsystem
+		UGenerationSubsystem* GenSub = GetGameInstance()->GetSubsystem<UGenerationSubsystem>();
+		if (GenSub)
+		{
+			UStarMemorialComponent* StarMemorial = MyPawn->FindComponentByClass<UStarMemorialComponent>();
+			GenSub->OnPlayerDeath(MyPawn, SacLog, StarMemorial);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("[Generation] No sacrifices — costless life, mirror shows nothing"));
 	}
 }

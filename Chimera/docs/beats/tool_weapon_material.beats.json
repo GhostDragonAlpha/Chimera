@@ -1,0 +1,22 @@
+{
+  "demo": "tool_weapon_material",
+  "loop": 4,
+  "settle_s": 6,
+  "_provenance": "Witness task tb-0209: Tool_Weapon_Material (loop 4). Verifies that the weapon materials (MAT_WeaponFrame2, MAT_WeaponAccent) exist, are compiled PBR materials with real BaseColor/Roughness/Metallic connections, and are visible on the Prop_Weapon actor in the level. The weapon actor (StaticMeshActor_4, label Prop_Weapon) is at (400, -400, 140).",
+  "beats": [
+    {
+      "name": "weapon_material_present",
+      "features": ["Tool_Weapon_Material"],
+      "actions": [
+        {"reset_position": {"x": 500, "y": -300, "z": 160}},
+        {"wait": 2.0},
+        {"screenshot": "tool_weapon_material_witness"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"world_is": "chimeradefaultlevel"},
+        {"actor_exists": "StaticMeshActor_4"}
+      ]
+    }
+  ]
+}

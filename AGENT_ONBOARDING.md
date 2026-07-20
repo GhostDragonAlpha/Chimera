@@ -1,67 +1,141 @@
-# CHIMERA — AGENT ONBOARDING
+# Chimera Agent Onboarding Prompt
 
-> Paste this as an agent's first instruction, **or** just tell the agent:
-> "Read `E:\PythonChimera\AGENT_ONBOARDING.md` and follow it." (lowest context cost.)
+> Paste this into a new agent session. It gets you into the rhythm in under 2 minutes.
 
-**TL;DR if you read nothing else:** `cd E:\PythonChimera\Chimera` → `python -m core.preflight` → `python -m core.helm targets` → `python -m core.task_board claim --agent <your-handle>`. The claim **prints your task packet — that packet is your instructions.** Do the work, prove it with real evidence (a compile is not proof), close with `task_board done` + `postflight`, prepend a note to `task_progress.md`. Don't explore the tree; the tools tell you what to do.
+## THE RHYTHM
 
----
+This is not a task-list project. It is a continuous question loop:
 
-You're joining **Chimera**: an autonomous studio that generates a AAA-quality Unreal Engine 5.8 game from a formal seed (`CHIMERA_VISION.py`) through a hard-gated pipeline. Your job: advance the game toward that seed by completing **one well-scoped lane of work**, proving it, recording it, and handing off cleanly. **The system tells you what to do — you run its tools and follow their output.**
+**ask → answer → ask → answer → ask**
 
-## 0. Which agent are you? (pick your authority, ignore the other)
-- **Capable / confident model** → skim `E:\PythonChimera\CLAUDE.md` ("NEW AGENT? START HERE" + "Key Paths") and think.
-- **Smaller model, or unsure** → open `E:\PythonChimera\SUCCESSOR_RUNBOOK.md` and follow it **EXACTLY. Improvise nothing.** Every recipe there was paid for in failures.
+1. Ask a concrete question about the current state
+2. Answer it with evidence (read code, run beats, query MCP, spawn actors)
+3. Ask the NEXT question based on what you learned
+4. Repeat until the human stops you — never stop yourself
 
-The boot, laws, and exit below are **universal** — do them regardless.
+A task is one answer, not the destination. The session ends when the human ends it.
 
-## 1. Boot (run from `E:\PythonChimera\Chimera`, in order — each prints what you need)
+## FIRST ACTIONS (every session)
+
 ```powershell
 cd E:\PythonChimera\Chimera
-python -m core.preflight       # live state: health, GPA, loop board, last run, + [4.5] prior Will & open pains
-python -m core.helm            # recommended FOCUS: Contain / Fix / Graduate / Build / Verify / Polish / Consolidate
-python -m core.helm targets    # the ranked gap between the seed and the live project
-python -m core.capcom brief    # OPERATOR CHANNEL (agent-agnostic): unread signals from subsystems + your OPERATOR_INBOX notes. Leave the operator a note: python -m core.capcom tell "..."
+python -m core.preflight          # Live state: GPA, loops, CAPCOM, Will, pains
+python -m core.capcom brief       # Operator signals
+python -m core.helm targets       # Seed-vs-reality gaps
 ```
-Then read the **top** of `E:\PythonChimera\task_progress.md` — the last agent's handoff and NEXT items. (Read the top few blocks, not the whole file.)
 
-## 2. Claim your lane — this IS your assignment (don't hand-pick work by searching)
-```powershell
-python -m core.task_board list                          # see the board
-python -m core.task_board claim --agent <your-handle>   # add --capable ONLY if you earned it (see Gauntlet)
-```
-- Use a **unique handle** so you don't collide with other agents: e.g. `opus-47`, `haiku-k9`, `sonnet-3b`.
-- `claim` opens your tunnel, reserves your editor mode, and **prints your WORK PACKET: recipe, matching H-heuristics, study guide, open pains. The packet is your instructions — follow it.**
-- The board only grants lanes whose files **don't collide** with other active agents. **Stay inside your footprint** (the files/systems your packet names). Don't wander.
-- `capable_only` lane? Earn the credential first: `python -m core.gauntlet enter --agent <handle>` (`docs/GAUNTLET.md`).
-- Long task? Keep your claim + editor alive: `python -m core.agent_tunnel heartbeat --agent <handle>`.
+Read `task_progress.md` for the handoff from the last session.
 
-## 3. Work (the Contract)
-- **Flow top-down:** game *content* → the DSL spec (`tests/dsl_grammar/deep_space_trader.chimera`); code *shape* → the generator (`core/game_code_generator.py`); the pipeline regenerates the C++.
-- **Never hand-edit generated code** under `Source/Chimera/ProceduralGenerated/` that a template owns (Flight, Ship, GameMode, Economy, Combat, Missions, Save, Docking, Factions, Weapons… — CLAUDE.md lists them). Fix the **generator template** instead; hand-edits are clobbered on the next pipeline run. **Unsure whether a file is generator-owned? Treat it as owned** — fix the generator, or don't fix it.
-- **Build must return 0** (record success AND failure to the graph):
+## YOUR TOOLS (in order of power)
+
+1. **Sleepwalker beats** — verify ANYTHING. Create a beat, run it, record evidence.
+   ```powershell
+   python -m core.beat_lint --beats docs/beats/<file>.beats.json  # lint first
+   python -m core.sleepwalker --beats docs/beats/<file>.beats.json --session <name>
+   ```
+
+2. **MCP bridge** — query/spawn/move/screenshot in UE5:
+   ```python
+   from core.telemetry_probe import MCPStdioClient
+   c = MCPStdioClient()
+   c.call('control_actor', {'action': 'find_by_name', 'name': 'Player'})
+   ```
+
+3. **DNA graph** — query feature state, record observations:
+   ```powershell
+   python -m core.graphify_record observe --feature X --verdict accepted --derived-from <simtest_id> --tacit --loop N
+   ```
+
+4. **Council** — two-model dialectical design (needs LM Studio with model loaded):
+   ```powershell
+   python -m core.council "<design problem>" --rounds 2 --record
+   ```
+
+5. **Foundry pipeline** — council → bridge → forge → proving ground:
+   ```powershell
+   cd E:\PythonChimera\worker_bridge
+   python run.py --topic "<problem>" --turns 2
+   ```
+
+6. **Training loop** — train any domain with automatic model audit:
+   ```powershell
+   python -m core.train_loop erisaid_mirror       # train + audit any domain
+   python -m core.train_loop npc_behavior
+   python -m core.train_loop economy_engine
+   ```
+
+7. **Element catalog** — 69,718 trainable variables from UE5.8:
+   ```powershell
+   python core/element_catalog.py                  # rebuild/expand the catalog
+   python -c "import json; c=json.load(open('docs/element_catalog.json')); print(c['total_elements'])"
+   ```
+
+8. **Decoder** — convert trained genomes to game artifacts:
+   ```python
+   from core.decoder import apply_genome, decode_to_beat
+   result = apply_genome(trained_genome, 'erisaid_mirror')  # genome -> MCP commands
+   beat = decode_to_beat(trained_genome, 'erisaid_mirror')   # genome -> beat script
+   ```
+
+## NEVER DO
+
+- **Never edit** `Source/Chimera/ProceduralGenerated/` — fix the generator instead (but DemoPlayerController.cpp is the pragmatic exception)
+- **Never trust `success: true`** — read the value back. No read-back = not done.
+- **Never take screenshots without foregrounding the editor first**:
   ```powershell
-  & "C:/Program Files/Epic Games/UE_5.8/Engine/Build/BatchFiles/Build.bat" ChimeraEditor Win64 Development "E:\PythonChimera\Chimera\Chimera.uproject" -waitmutex
+  powershell -NoProfile -Command '$ws = New-Object -ComObject WScript.Shell; $p = Get-Process UnrealEditor | Where-Object {$_.MainWindowTitle} | Select-Object -First 1; if ($p) { $ws.AppActivate($p.Id) | Out-Null }'
   ```
-- **Record only through typed helpers:** `python -m core.graphify_record <feature|grade|surprise|...>` or the `record_*` functions. **Never hand-write graph mutation dicts** — wrong keys silently poison the graph.
-- **Unknown blocker?** Never write a bare "blocked." Run `python -m core.solver --blocker "<one line>" --context "<verbatim error>"` — its output is a concrete fix plan.
+- **Never use W-key walks in beats** — `simulate_input` doesn't drive axis bindings in PIE. Use `reset_position` to place the pawn directly.
+- **Never use `_C` suffix for Blueprint paths** — use asset form: `/Game/X/BP_Y.BP_Y`
+- **Never fabricate simtest IDs** — real IDs are `<type>_<sha256[:16]>`, minted by sleepwalker/record helpers
+- **Never stop at "task done"** — ask the next question
 
-## 4. The Laws (breaking these destroys paid-for work)
-1. **Verify, don't assert.** A compile is not a behavior; an event firing is not a state change; `success: true` is not proof. **Read the result back** (engine query, telemetry run foregrounded, a passing test). If you can't read it back, it's NOT done — say so plainly.
-2. **`verified` is AUTOMATED-ONLY.** Only sleepwalker/telemetry/result-grading observation collapses a feature to `verified`. Your built + compiled + unit-tested work is `implemented`, never `verified`.
-3. **Answer the Frame Audit before "done"** (`docs/RESULT_GRADING_RUBRIC.md`): Are you optimizing the *target* or a *proxy*? Judging the *result* or your own *effort/artifact*? Grade the result.
-4. **No fallback ladders, no silent continuation.** A failed gate = stop and fix. Exit code 1 halts the pipeline on purpose — don't route around it.
-5. **Multi-agent hygiene.** Work only inside your footprint. **Never `git add -A`** — you'll commit other agents' in-flight files. Stage **your own files by path**, commit, push. Never touch another agent's files or `Chimera/Config/DefaultEngine.ini` unless it is explicitly your lane.
+## CURRENT GAME STATE (2026-07-20)
 
-## 5. Exit (always, before you finish)
-```powershell
-python -m core.task_board done --agent <handle> --id <tb-N> --result "<verbatim evidence>"
-python -m core.postflight --phase "<what you did>" --result "<UBT / command output, verbatim>" `
-  --inheritance "<=3 sentences: what this session learned>" `
-  --phantom-pain "<a specific failure the next agent should confirm or refute>"
+- **Player**: BP_Astronaut_Character with 6 working verbs (look, crouch, pickup, drop, shovel, interact)
+- **NPCs**: 8 in the yard (Trader, Pirate, Stranger, Drifter, Merchant, Quiet, Wanderer, Seeker) with Tab-gesture interaction
+- **Erisaid**: AErisaidActor at center (0,0,150) — the moral core
+- **Core loop**: Excavate → Collect → Sacrifice at Erisaid — verified 4/4
+- **Sacrifice**: USacrificeLogComponent records GAVE_CARGO on drop near Erisaid (2000uu radius)
+- **Generation**: CostlessLifeEndingDiagnostic + StarMemorialComponent wired, awaits death trigger
+- **Level**: 103 actors saved in chimeradefaultlevel.umap
+- **Loops done**: 0 (Player), 1 (Ground), 2 (Verbs), 3 (Sky), 5 (Dots), 9 (Universe)
+- **Loops open**: 4 (Tools: Scanner needs_refinement), 6 (Shelter: 1/7), 7 (Travel: 2/7)
+- **C++ spawnability**: AErisaidActor spawns. AStationActor, AShip_Trader_Vessel_Alpha, ACostlessLifeEndingDiagnostic need RootComponent in constructor (generator fix)
+
+## QUICK VERIFICATION
+
+Before claiming anything works, run a beat:
+```json
+{
+  "demo": "my_test", "loop": 0, "settle_s": 4,
+  "beats": [{
+    "name": "test", "features": ["Feature_X"],
+    "actions": [{"reset_position": {"x": 0, "y": 0, "z": 130}}, {"wait": 1.0}],
+    "expects": [{"is_pie": true}, {"actor_exists": "ActorName"}]
+  }]
+}
 ```
-(If you must stop without finishing: `task_board block --agent <handle> --id <tb-N> --reason "<why + next step>"` — a bare "blocked" is forbidden.)
-Then **prepend** a short block to `task_progress.md`: *what you did · the evidence · the NEXT step.* If you used git, commit **only your files** and push.
 
-## Stuck? The answer is in ONE of these — not the whole tree:
-`preflight` output · your **task packet** · CLAUDE.md **"Key Paths"** table · `SUCCESSOR_RUNBOOK.md` · `docs/MCP_PATHWAYS.md` (proven MCP calls + traps).
+Record evidence: `python -m core.graphify_record observe --feature X --verdict accepted --derived-from <simtest_id> --tacit --loop N`
+
+Level must be saved after spawning: `c.call('manage_level', {'action': 'save'})`
+
+## DOCS TO KNOW
+
+| File | What it is |
+|---|---|
+| `CLAUDE.md` | Constitution, gates, all systems |
+| `SUCCESSOR_RUNBOOK.md` | Recipes, traps, proven commands |
+| `WORKFLOW.md` | Foundry design methodology + rhythm |
+| `CHIMERA_VISION.py` | The seed — 4560 lines, complete game architecture |
+| `task_progress.md` | Session handoff log |
+| `docs/FARMING_SEASONS.md` | Seasons workflow — discrete batch processes any agent can run |
+| `docs/THE_STATE_MACHINE_PHYSICS.md` | Elements + principles + AI trainer framework |
+| `docs/THE_EVOLUTION_ENGINE.md` | The trainer: 30,000 evals/sec, proven at every scale |
+
+## THE ULTIMATE GOAL
+
+The most famous educational RPG on Steam. Deep Space Trader. Every finished life becomes a star whose brightness equals what that life sacrificed. The bad ending is not death — it is a costless life. The Erisaid mirror shows your desire, and an empty life reflects nothing.
+
+Build toward this. Ask questions. Never stop.

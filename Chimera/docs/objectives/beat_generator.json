@@ -1,0 +1,18 @@
+{
+  "_provenance": "Optimal sleepwalker beat configuration. Maximize coverage, minimize time.",
+  "maximize": [
+    "pass_rate",
+    "feature_coverage"
+  ],
+  "minimize": [
+    "total_test_time"
+  ],
+  "constraints": [
+    {"field": "feature_coverage", "min": 0.8},
+    {"field": "pass_rate", "min": 0.5}
+  ],
+  "walls": {
+    "feature_coverage": "Beats must cover features. 100% coverage means every feature is tested.",
+    "pass_rate": "Beats must pass. Below 50% means beats are too complex or broken."
+  }
+}

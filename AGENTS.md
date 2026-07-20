@@ -20,12 +20,14 @@
 
 ## READ THESE, IN THIS ORDER
 
+**New agent? Paste `AGENT_ONBOARDING.md` into your session.** It gets you into the rhythm in under 2 minutes.
+
 | # | Doc | What it OWNS |
 |---|---|---|
-| 1 | **`WORKFLOW.md`** | **THE WORKFLOW.** The 7-gate internal council, tool hierarchy, execution steps. Read this first every session. |
-| 2 | **`CLAUDE.md`** | **THE CONSTITUTION.** The Contract, the gates, Key Paths, conventions, troubleshooting. If a rule is anywhere, it is here. |
-| 3 | **`SUCCESSOR_RUNBOOK.md`** | **RECIPES, not principles.** Copy-paste exactly. Read this instead of improvising if you are a less capable model or unsure. |
-| 4 | **`Chimera/docs/THE_COMPLETE_CHIMERA_DEVELOPMENT_CYCLE.md`** | **INTENT ONLY** — the Spiral, the Pillars, the Voice. No state, no procedure. |
+| 1 | **`CLAUDE.md`** | **THE CONSTITUTION.** The Contract, the gates, Key Paths, conventions, troubleshooting, the full operational infrastructure (task board, sleepwalker, trainer, automation). If a rule is anywhere, it is here. **Read this first every session.** |
+| 2 | **`SUCCESSOR_RUNBOOK.md`** | **RECIPES, not principles.** Copy-paste exactly. Read this instead of improvising if you are a less capable model or unsure. |
+| 3 | **`WORKFLOW.md`** | **THE FOUNDRY — the dialectical design engine.** The 7-gate internal council, question categories, DESIGN→BUILD cycle, MCP construction. This is HOW you design a feature from scratch when the helm says "build toward the seed." It operates WITHIN the infrastructure described by CLAUDE.md. |
+| 5 | **`docs/FARMING_SEASONS.md`** | **THE FARM.** Spring (design) → Summer (build) → Fall (verify) → Winter (reflect). Discrete, repeatable batch processes. Any agent can run any batch. |
 
 **The live state is in none of them.** It is printed by code that reads the actual store:
 
@@ -47,11 +49,16 @@ python -m core.task_board claim --agent <your-id>       # THE single entry. Prin
 # ... do the ONE thing it gave you, inside the footprint it declared ...
 python -m core.task_board done --agent <id> --id tb-N --result "<verbatim evidence>"
 python -m core.postflight --phase "..." --result "<UBT verbatim>" --researched "..."
+# Update task_progress.md with session block + NEXT list before committing
 ```
 
 `task_board done` and `postflight` both REFUSE things. **That is the system working, not
 breaking.** What each refusal wants is in `CLAUDE.md`; what to DO about it is in
 `SUCCESSOR_RUNBOOK.md`.
+
+**The handoff log is `task_progress.md`** — always read it after preflight and write your
+session block + NEXT list before committing. The NEXT list invariant: exact commands or a
+named feature node + skip-condition per item. An item without a recipe is a wish.
 
 ---
 

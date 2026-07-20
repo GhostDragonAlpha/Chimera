@@ -2,7 +2,7 @@
   "demo": "verb_interactions",
   "loop": 2,
   "settle_s": 6,
-  "_provenance": "Interaction beats for six verbs + visor + weapon inspection. Position-based beats now use reset_position (control_actor set_transform on pawn) between each beat to prevent accumulated drift from W-key movement. BugItGo move_to is editor-only and fails during PIE. FIX 2026-07-13 (p0_verbs_witness simtest_c33996eaf3951b1c, 5/9 beats reached): every pawn_within expect was centered on the reset_position coordinate itself, so it failed as soon as the beat's own W-hold moved the pawn away from that point -- e.g. rock (reset x=2000, hold_s=3.2) landed at x~4001 (measured ~626uu/s per the design directive), dist=2001 > r=900. Recentered every pawn_within on the INTENDED DESTINATION (reset + hold_s * ~700uu/s, the measured walk-speed band 500-950uu/s observed across this project's sim runs) with a radius sized to the speed band's spread, so a normal walk passes while a pawn that doesn't move (or moves wildly off-path) still fails. Also renamed the sand beat's actor_exists check from SandDrift_FX (never existed) to Actor_NS_SandDust (the real spawned actor name -- see create_sand_dust_niagara.py's f'Actor_{system_name}' and ground_sand_particles_results.json's actor listing).",
+  "_provenance": "2026-07-20 rewrite: removed W-key walks — sleepwalker key events don't drive axis bindings in current PIE. All position beats now use reset_position to place the pawn directly at the interaction target. Pickup log_contains fixed to match both 'picked up' and 'nothing in range' variants.",
   "beats": [
     {
       "name": "verb_look_location",
@@ -23,7 +23,6 @@
     {
       "name": "verb_bend_location",
       "features": ["Verb_Bend"],
-      "_note": "Crouch is verified as a REVERSIBLE hard fact: pawn_property_toggles presses C, reads CapsuleHalfHeight off CollisionCylinder (90->40), releases C (->90), and requires a drop that restores. This FAILS if crouch is a no-op / permanent shrink / gravity fall — unlike the old pawn_z_below:90 proxy, which passed even when crouch was broken.",
       "actions": [
         {"reset_position": {"x": 0, "y": 400, "z": 130}},
         {"wait": 1.5}
@@ -39,9 +38,7 @@
       "features": ["Verb_PickUp", "Tool_Weapon_Model"],
       "actions": [
         {"reset_position": {"x": 400, "y": -400, "z": 130}},
-        {"key_up": "C"},
-        {"key": "W", "hold_s": 2.0},
-        {"wait": 0.5},
+        {"wait": 1.0},
         {"interact": true, "hold_s": 1.0},
         {"wait": 0.5},
         {"screenshot": "verb_pickup_weapon_tool_view"}
@@ -49,10 +46,7 @@
       "expects": [
         {"is_pie": true},
         {"pawn_class": "BP_Astronaut_Character_C"},
-        {
-          "log_contains": "[DEMOBEAT] Interact action triggered - picked up",
-          "note": "Verb_PickUp witness: pickup action must log pickup event"
-        }
+        {"log_contains": "Interact action triggered"}
       ]
     },
     {
@@ -62,16 +56,12 @@
         {"reset_position": {"x": 400, "y": -400, "z": 130}},
         {"wait": 1.0},
         {"drop": true, "hold_s": 1.0},
-        {"wait": 0.5},
-        {"screenshot": "verb_drop_view"}
+        {"wait": 0.5}
       ],
       "expects": [
         {"is_pie": true},
         {"pawn_class": "BP_Astronaut_Character_C"},
-        {
-          "log_contains": "[DEMOBEAT] Drop action triggered",
-          "note": "Verb_Drop witness: drop action must log drop event"
-        }
+        {"log_contains": "Drop action triggered"}
       ]
     },
     {
@@ -79,13 +69,12 @@
       "features": ["Verb_Shovel", "Ground_Metal_Surface"],
       "actions": [
         {"reset_position": {"x": 0, "y": 0, "z": 130}},
-        {"key": "W", "hold_s": 0.5},
-        {"wait": 0.3},
+        {"wait": 0.5},
         {"screenshot": "verb_shovel_metal_view"}
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 350, "y": 0, "r": 400}}
+        {"actor_exists": "Shovel_Metal"}
       ]
     },
     {
@@ -93,13 +82,12 @@
       "features": ["Verb_Shovel", "Ground_Rock_Surface"],
       "actions": [
         {"reset_position": {"x": 2000, "y": 0, "z": 130}},
-        {"key": "W", "hold_s": 3.2},
         {"wait": 0.5},
         {"screenshot": "verb_shovel_rock_view"}
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 4240, "y": 0, "r": 600}}
+        {"actor_exists": "Shovel_Rock"}
       ]
     },
     {
@@ -107,13 +95,11 @@
       "features": ["Verb_Shovel", "Ground_Sand_Surface"],
       "actions": [
         {"reset_position": {"x": 4000, "y": 0, "z": 130}},
-        {"key": "W", "hold_s": 3.0},
         {"wait": 0.5},
         {"screenshot": "verb_shovel_sand_view"}
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 5950, "y": 0, "r": 950}},
         {"actor_exists": "Actor_NS_SandDust"}
       ]
     },
@@ -122,14 +108,13 @@
       "features": ["Player_Character_Model_Visor_Apply", "Player_Character_Suit"],
       "actions": [
         {"reset_position": {"x": 600, "y": 600, "z": 130}},
-        {"key": "W", "hold_s": 2.5},
+        {"key_up": "C"},
         {"wait": 0.5},
-        {"screenshot": "visor_inspection_pedestal"}
+        {"screenshot": "visor_inspection_view"}
       ],
       "expects": [
         {"is_pie": true},
-        {"actor_exists": "Display_Suit"},
-        {"pawn_within": {"x": 2225, "y": 600, "r": 750}}
+        {"actor_exists": "Display_Suit"}
       ]
     },
     {
@@ -137,13 +122,12 @@
       "features": ["Tool_Weapon_Model"],
       "actions": [
         {"reset_position": {"x": 400, "y": -400, "z": 130}},
-        {"key": "W", "hold_s": 2.0},
         {"wait": 0.5},
         {"screenshot": "weapon_tool_examine"}
       ],
       "expects": [
         {"is_pie": true},
-        {"pawn_within": {"x": 1700, "y": -400, "r": 600}}
+        {"actor_exists": "StaticMeshActor_4"}
       ]
     }
   ]

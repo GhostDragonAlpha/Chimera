@@ -1,0 +1,23 @@
+{
+  "demo": "movement_diag",
+  "loop": 2,
+  "settle_s": 2,
+  "_provenance": "Diagnostic: does W key actually move the pawn in PIE?",
+  "beats": [
+    {
+      "name": "diag_w_moves_pawn",
+      "features": ["Verb_Look"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 0, "z": 130}},
+        {"wait": 1.0},
+        {"key": "W", "hold_s": 3.0},
+        {"wait": 1.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {"pawn_within": {"x": 500, "y": 0, "r": 2500}}
+      ]
+    }
+  ]
+}

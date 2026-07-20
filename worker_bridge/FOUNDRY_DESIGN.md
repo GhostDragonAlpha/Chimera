@@ -44,7 +44,7 @@ has pre-existing issues in generated code that are addressed separately.
 
 FastAPI server wrapping `pi --mode rpc`. REST + WebSocket endpoints.
 
-Port 8895 by default. See README.md for full API reference.
+Port 8888 by default. See README.md for full API reference.
 
 ## Cleanup
 

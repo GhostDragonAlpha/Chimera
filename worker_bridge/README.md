@@ -41,7 +41,7 @@ via the Workshop (forge.py), results reported to the human.
 cd E:\PythonChimera\worker_bridge
 
 # Start the bridge
-python -m uvicorn main:app --host 127.0.0.1 --port 8895
+python -m uvicorn main:app --host 127.0.0.1 --port 8888
 
 # Or with a visible window
 .\run_bridge_visible.bat
@@ -49,7 +49,7 @@ python -m uvicorn main:app --host 127.0.0.1 --port 8895
 # Send a design brief and run the forge:
 python -c "
 from worker_client import PiWorker
-w = PiWorker('http://127.0.0.1:8895')
+w = PiWorker('http://127.0.0.1:8888')
 w.prompt('Design an educational mechanic...')
 "
 ```

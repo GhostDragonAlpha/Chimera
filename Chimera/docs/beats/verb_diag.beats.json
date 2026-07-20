@@ -1,0 +1,34 @@
+{
+  "demo": "verb_diag",
+  "loop": 2,
+  "settle_s": 4,
+  "_provenance": "Minimal diagnostic: does PIE spawn the right controller, can we log, does interact fire?",
+  "beats": [
+    {
+      "name": "diag_controller_alive",
+      "features": ["Verb_PickUp"],
+      "actions": [
+        {"wait": 2.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {"log_contains": "[DEMOBEAT] DemoPlayerController input bound"}
+      ]
+    },
+    {
+      "name": "diag_interact_e_press",
+      "features": ["Verb_PickUp"],
+      "actions": [
+        {"reset_position": {"x": 400, "y": -400, "z": 130}},
+        {"wait": 1.0},
+        {"key": "E", "hold_s": 0.5},
+        {"wait": 1.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"log_contains": "Interact action triggered"}
+      ]
+    }
+  ]
+}

@@ -3989,6 +3989,55 @@
       "line": 257,
       "quote": "class AVolumetricCloud : public AInfo",
       "at": "2026-07-19T21:28:19.662Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Kismet\\GameplayStatics.h",
+      "line": 89,
+      "quote": "static ENGINE_API class AActor* GetActorOfClass(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass);",
+      "at": "2026-07-20T16:45:54.564Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameplayStatics.cpp",
+      "line": 1077,
+      "quote": "AActor* UGameplayStatics::GetActorOfClass(const UObject* WorldContextObject, TSubclassOf<AActor> ActorClass)",
+      "at": "2026-07-20T16:45:54.564Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationInvokerComponent.h",
+      "line": 22,
+      "quote": "UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Navigation, meta = (ClampMin = \"0.1\", ClampMax = \"6400000\", UIMin = \"0.1\", UIMax = \"6400000\"))",
+      "at": "2026-07-20T18:28:56.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationInvokerComponent.h",
+      "line": 27,
+      "quote": "UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Navigation, meta = (ClampMin = \"0.1\", ClampMax = \"6400000\", UIMin = \"0.1\", UIMax = \"6400000\"))",
+      "at": "2026-07-20T18:28:56.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationInvokerComponent.h",
+      "line": 31,
+      "quote": "UPROPERTY(EditAnywhere, Category = Navigation)",
+      "at": "2026-07-20T18:28:56.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationInvokerComponent.h",
+      "line": 35,
+      "quote": "UPROPERTY(EditAnywhere, Category = Navigation)",
+      "at": "2026-07-20T18:28:56.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavigationData.h",
+      "line": 552,
+      "quote": "UPROPERTY(Transient, EditAnywhere, Category=Display)",
+      "at": "2026-07-20T18:28:56.660Z"
     }
   ]
 }

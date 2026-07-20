@@ -43,6 +43,7 @@ private:
 	void StopCrouch();
 	void Interact();
 	void DropItem();
+	void TransitionGeneration();
 
 	/** TAB input binding callbacks for GestureWheel */
 	void OnTabPressed();

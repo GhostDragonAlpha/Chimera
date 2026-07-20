@@ -1,6 +1,30 @@
 # GAUSSIAN FOUNDRY — AGENT WORKFLOW
 
-This is the master workflow. Everything else is reference.
+> **THE FOUNDRY is the dialectical design engine.** When you need to design a feature from
+> scratch — saturate it with questions, run the internal council, debate every angle — this
+> is the method. It operates WITHIN the broader operational infrastructure (task board,
+> sleepwalker, trainer, automation) described in `CLAUDE.md`. The Foundry designs; the
+> Spiral executes, verifies, and trains.
+>
+> **Relationship**: the helm (`core/helm.py`) reads the seed and decides WHAT to build.
+> The Foundry (this file) describes HOW to think through a design. The Spiral
+> (`CLAUDE.md` + `task_board`) provides the operational machinery that claims, tunnels,
+> witnesses, and collapses the result. The Foundry council is a tool you reach for inside
+> a task-board tunnel when the work packet says "design X."
+>
+> **THE RHYTHM (proven 2026-07-20 — 25+ features observed in one session):**
+> The Foundry is not a checklist. It is a continuous question loop:
+>
+>   1. **Ask** a concrete question about the current state
+>   2. **Answer** it with evidence — read code, run beats, query MCP, spawn actors
+>   3. **Ask** the next question based on what you learned
+>   4. **Repeat** until the human stops you
+>
+> Never stop at "task done." A task is just one answer — the session ends when the
+> human stops you, not when you've checked a box. Record evidence immediately.
+> Verify everything with sleepwalker beats. Use the council for design decisions
+> you cannot answer from the graph or code alone. The rhythm:
+> **ask → answer → ask → answer → ask** until the ultimate goal is reached.
 
 ## PHASES
 
@@ -98,21 +122,16 @@ depth, breadth, parent, priority, dependency
 
 | File | Purpose |
 |------|---------|
-| `ONBOARDING.md` | Lead agent onboarding — read first every session |
-| `WORKFLOW.md` | THIS FILE — detailed workflow |
-| `CLAUDE.md` | Project constitution, gates, conventions |
+| `WORKFLOW.md` | THIS FILE — the Foundry design workflow |
+| `CLAUDE.md` | Project constitution, gates, operational infrastructure |
+| `SUCCESSOR_RUNBOOK.md` | Recipes for the full system (Foundry + Spiral) |
+| `ONBOARDING.md` | Quick-reference Foundry onboarding (superseded by this file + CLAUDE.md for procedure) |
 | `Chimera/core/feature_graph.py` | Feature graph management (create, ask, answer) |
+| `worker_bridge/main.py` | FastAPI bridge to pi --mode rpc (port 8888) |
 | `worker_bridge/mcp_builder.py` | MCP client for UE5 construction |
 | `worker_bridge/worker_client.py` | Worker bridge SDK |
+| `worker_bridge/forge.py` | Writer→Builder→Reviewer→Beats pipeline |
 | `Chimera/docs/features/*.json` | All features as graph nodes |
-| `Chimera/core/geology.py` | Rock type / strata system |
-| `Chimera/core/env_education.py` | Environmental education prompts |
-| `Chimera/core/cloud_education.py` | Cloud type education |
-| `Chimera/core/cloud_weather.py` | Weather state machine |
-| `Chimera/core/celestial_rotation.py` | Day/night cycle |
-| `Chimera/core/env_temperature.py` | Temperature simulation |
-| `Chimera/core/night_visibility.py` | Night gameplay |
-| `Chimera/core/day_night_orchestrator.py` | Day/night orchestrator |
 
 ## COMMON GOTCHAS
 

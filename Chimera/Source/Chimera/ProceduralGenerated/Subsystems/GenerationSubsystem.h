@@ -25,6 +25,7 @@ class CHIMERA_API UGenerationSubsystem : public UGameInstanceSubsystem
 
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override { return true; }
 	virtual void Deinitialize() override;
 
 	/** Handle player death — close the generation loop */

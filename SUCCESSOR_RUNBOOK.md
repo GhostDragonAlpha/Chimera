@@ -58,24 +58,25 @@ For autonomous design discussion + implementation via the Gaussian Foundry:
 ```powershell
 # 1. Ensure the worker bridge is running (new terminal)
 cd E:\PythonChimera\worker_bridge
-python -m uvicorn main:app --host 127.0.0.1 --port 8891
+python -m uvicorn main:app --host 127.0.0.1 --port 8888
 
-# 2. Run the full pipeline (Council + Bridge + Workshop)
-python run.py --turns 2
+# 2. Run the full pipeline (Council → Bridge → Workshop → Proving Ground)
+cd E:\PythonChimera\worker_bridge
+python run.py --topic "<your design topic>" --turns 2
 
-# Or individual stages:
-python run.py --council-only --turns 2   # Q&A debate only
-python run.py --bridge-only               # extract spec from chronicle
-python run.py --forge-only specs/spec.json # implement from spec
+# Or run individual stages:
+python run.py --council-only --topic "<topic>" --turns 2  # Q&A only
+python run.py --forge-only specs/spec_file.json             # Workshop only
 
 # 3. Results go to:
-ls chronicle/    # Q&A turns + forge logs
-ls specs/        # generated implementation specs
+ls chronicle/    # council transcripts + forge logs
+ls specs/        # generated spec manifests
 ```
 
-The Council runs 2 simulated roles (Worker asks, Main answers; Main asks, Worker
-answers) — 40 questions per full cycle. Results feed the Workshop which writes,
-builds, reviews, and tests the proposed changes.
+**`run.py` chains four stages:** Council (two-model Q&A) → Bridge (spec extraction) →
+Workshop (Writer → Builder → Reviewer → Beats) → Proving Ground (status + diff summary).
+Requires the worker bridge running (`python -m uvicorn main:app --host 127.0.0.1 --port 8888`)
+and LM Studio with at least one model resident.
 
 ## YOUR TASKS (in order — stop at the first one that applies)
 
@@ -115,6 +116,59 @@ feature node + skip-condition per item. An item without a recipe is a wish; do n
 write wishes.
 
 ## PROVEN RECIPES (copy exactly)
+
+- **The Rhythm — continuous question loop (proven 2026-07-20, 25+ features/1 session):**
+  Do not work from the task list alone. Ask → answer → ask:
+  1. **Ask** a concrete question: "What does the game look like right now?" "Do the
+     verbs actually work?" "What's the biggest gap between seed and reality?"
+  2. **Answer** with evidence: read code, run sleepwalker beats, query MCP, spawn
+     actors, check the DNA graph. Never guess.
+  3. **Ask** the NEXT question based on what you learned.
+  4. **Repeat.** A task is one answer, not the destination. The session ends when
+     the human stops you — never stop yourself at "task done."
+  5. Record evidence immediately (graphify_record observe). Verify everything with
+     sleepwalker beats. Use `python -m core.council "<topic>" --rounds 2 --record` for
+     design decisions you can't answer from graph/code alone.
+
+- **The Training Loop (proven 2026-07-20, all domains):**
+  ```powershell
+  cd E:\PythonChimera\Chimera
+  python -m core.train_loop <domain>      # train + audit in one command
+  # Output: best score, final measurements, stuck metrics, model bug diagnosis
+  # Available: erisaid_mirror, npc_behavior, economy_engine, beat_generator
+  ```
+  After training, the auditor tells you whether to fix the MODEL or train harder.
+  Stuck metrics = model bug. Moving metrics = train more.
+
+- **Audit a domain without training (quick model check):**
+  ```python
+  from core.model_auditor import audit_run
+  from core.trainables.erisaid_mirror import seed, mutate, measure
+  # Run 15 gens, check for stuck metrics
+  ```
+  Stuck at zero? Add a baseline parameter. Stuck at ceiling? Add a cost or spread metric.
+  Unresponsive? Check that mutate() perturbs the parameters driving that metric.
+
+- **Decode a trained genome to a beat and verify:**
+  ```python
+  from core.decoder import decode_to_beat
+  beat = decode_to_beat(trained_genome, 'erisaid_mirror')
+  # Write beat to docs/beats/, run sleepwalker, record evidence
+  ```
+  Proven: genome → decode → beat → sleepwalker → simtest (1/1 clean walk).
+
+- **Train a new domain (proven 2026-07-20, erisaid_mirror):**
+  ```powershell
+  # 1. Catalog elements + principles -> domain (core/trainables/<name>.py)
+  #    seed() -> genome, mutate(genome, rng) -> variant, measure(genome) -> FACTS
+  # 2. Write the objective in physics (docs/objectives/<name>.json)
+  #    maximize/minimize fields, constraints, named walls
+  # 3. Train
+  cd E:\PythonChimera\Chimera
+  python -m core.trainer --domain core.trainables.erisaid_mirror --objective docs/objectives/erisaid_mirror.json --pop 100 --gens 100
+  # 4. Read PINNED walls -> fix objective -> retrain. Iterate the objective, never the artifact.
+  ```
+  Full framework: docs/THE_STATE_MACHINE_PHYSICS.md
 
 - **Postflight refused you with `!! WHY GATE`** — it means the claim has no evidence
   chain that reaches PHYSICS or THE HUMAN. It is NOT saying your work is bad. Do this,

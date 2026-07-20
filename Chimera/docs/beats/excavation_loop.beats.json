@@ -1,0 +1,53 @@
+{
+  "demo": "excavation_loop",
+  "loop": 4,
+  "settle_s": 4,
+  "_provenance": "Core RPG loop: walk to dig site, collect geology specimen, bring to Erisaid. Tests shovel, pickup, and movement.",
+  "beats": [
+    {
+      "name": "excavate_basalt",
+      "features": ["Verb_Shovel", "Verb_PickUp"],
+      "actions": [
+        {"reset_position": {"x": 200, "y": 0, "z": 130}},
+        {"wait": 1.0},
+        {"screenshot": "excavate_basalt_site"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"actor_exists": "Shovel_Metal"}
+      ]
+    },
+    {
+      "name": "collect_basalt_specimen",
+      "features": ["Verb_PickUp"],
+      "actions": [
+        {"reset_position": {"x": 300, "y": 80, "z": 130}},
+        {"wait": 0.5},
+        {"interact": true, "hold_s": 1.0},
+        {"wait": 0.5},
+        {"screenshot": "collect_basalt"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"log_contains": "Interact action triggered"},
+        {"actor_exists": "Geo_Basalt"}
+      ]
+    },
+    {
+      "name": "deliver_to_erisaid",
+      "features": ["Verb_Drop"],
+      "actions": [
+        {"reset_position": {"x": 100, "y": 0, "z": 130}},
+        {"wait": 1.0},
+        {"drop": true, "hold_s": 1.0},
+        {"wait": 0.5},
+        {"screenshot": "erisaid_sacrifice"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"log_contains": "Drop action triggered"},
+        {"actor_exists": "Erisaid_Core"}
+      ]
+    }
+  ]
+}
