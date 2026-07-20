@@ -93695,6 +93695,68 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_d87709cb28fd"
+    },
+    {
+      "id": "simtest_f7bb7dd542bb1b6f",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T22:40:10.441874",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "pop_final",
+      "demo": "pop_check",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "npcs_abundant",
+          "outcome": "reached",
+          "features": [
+            "NPC_Basic_Model"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "NPC_Scholar"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "NPC_Healer"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "actor_exists": "NPC_Elder"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\pop_final.json",
+      "temperature": "[SIM] 1/1 beats reached in 'pop_check'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'pop_final': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2fa6e9be0135"
     }
   ],
   "edges": [
