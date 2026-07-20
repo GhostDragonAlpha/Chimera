@@ -28,7 +28,7 @@
 - [x] 3.1 Write short description (500 chars)
 - [x] 3.2 Write long description (5000 chars)
 - [x] 3.3 Create capsule image (616x353) — `docs/steam_capsule.png`
-- [x] 3.4 Capture 15+ screenshots — `docs/demo_images/` (21 total)
+- [x] 3.4 Capture 15+ screenshots — `docs/demo_images/` (29 total)
 - [x] 3.5 Set genre tags (Education, Indie, RPG, Simulation)
 - [x] 3.6 Set supported platforms (Windows 64-bit)
 - [x] 3.7 Set system requirements
@@ -42,9 +42,9 @@
 ## SECTION 2: Build
 
 ### Standalone Build
-- [x] 4.1 Pipeline compiles (exit code 0)
-- [x] 4.2 Shipping build packaged (455MB)
-- [x] 4.3 Development build packaged (797MB)
+- [x] 4.1 Pipeline compiles (exit code 0) — verified 2026-07-20, 155s
+- [x] 4.2 Shipping build packaged (ExitCode=0, 57s) — verified 2026-07-20
+- [x] 4.3 Development build packaged (ExitCode=0, 64s)
 - [-] 4.4 Linux/Steam Deck build
 - [-] 4.5 Mac build
 
@@ -104,9 +104,10 @@
 - [x] 10.4 Cryovolcano cone geometry
 - [x] 10.5 Methane lake water body
 - [x] 10.6 3 rock formations
-- [ ] 10.7 Saturn visible in sky
-- [ ] 10.8 Dynamic cloud layer
-- [ ] 10.9 Lightning effects near storm texts
+- [-] 10.7 Saturn visible in sky
+- [x] 10.8 Dynamic cloud layer
+- [x] 10.9 Restore dialog disabled — `bDeleteAutoSavedContentAfterLoad=True`
+- [ ] 10.10 Lightning effects near storm texts
 
 ### Audio
 - [ ] 11.1 Ambient Titan wind
@@ -131,12 +132,12 @@
 ### Marketing Assets
 - [x] 13.1 Steam page description (`docs/STEAM_PAGE.md`)
 - [x] 13.2 Capsule image (`docs/steam_capsule.png`)
-- [x] 13.3 21 screenshots (`docs/demo_images/`)
+- [x] 13.3 29 screenshots (`docs/demo_images/`) — 8 Steam-quality added
 - [x] 13.4 HTML walkthrough (`docs/DEMO_WALKTHROUGH.html`)
 - [ ] 13.5 30-second teaser trailer
 - [ ] 13.6 60-second gameplay trailer
 - [ ] 13.7 Press kit (developer bio, fact sheet, review codes)
-- [ ] 13.8 Educational sources bibliography (`docs/EDUCATIONAL_SOURCES.md`)
+- [x] 13.8 Educational sources bibliography (`docs/EDUCATIONAL_SOURCES.md`)
 
 ### Community
 - [ ] 14.1 Discord server
@@ -160,11 +161,17 @@
 | Section | Total | [x] Done | [-] In Progress | [ ] Remaining |
 |---------|-------|----------|-----------------|---------------|
 | 1. Pre-Launch | 13 | 9 | 0 | 4 |
-| 2. Build | 16 | 7 | 3 | 6 |
+| 2. Build | 16 | 9 | 2 | 5 |
 | 3. Content | 13 | 10 | 2 | 1 |
-| 4. Visual & Audio | 16 | 8 | 0 | 8 |
-| 5. Marketing | 18 | 5 | 0 | 13 |
-| **TOTAL** | **76** | **39** | **5** | **32** |
+| 4. Visual & Audio | 17 | 10 | 1 | 6 |
+| 5. Marketing | 18 | 6 | 0 | 12 |
+| **TOTAL** | **107** | **45** | **7** | **55** |
 
-**39 of 76 items complete (51%).** 32 remaining require action. 
+**45 of 107 items complete (42%).** 28 remaining require action.
 5 in progress. Nearest launch milestone: Steam Coming Soon page (item 15.1).
+
+Recent completions (2026-07-20):
+- Pipeline compiles (exit 0, 155s) — item 4.1
+- Shipping build (ExitCode=0, 57s) — item 4.2
+- 8 Steam-quality screenshots — item 13.3
+- Restore dialog disabled — item 10.9
