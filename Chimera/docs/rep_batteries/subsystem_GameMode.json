@@ -1,5 +1,19 @@
 [
  {
+  "id": "atom_4a078c8a1a4e",
+  "feature": "subsystem/GameMode",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bUniverseGen\\b"
+  },
+  "desc": "UPROPERTY UniverseGen (DeepSpaceTraderGameMode.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:DeepSpaceTraderGameMode.h"
+ },
+ {
   "id": "atom_bdd96a6b8405",
   "feature": "subsystem/GameMode",
   "tier": 1,

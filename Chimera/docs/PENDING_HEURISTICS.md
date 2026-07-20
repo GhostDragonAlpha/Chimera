@@ -674,3 +674,14 @@ Wait, looking at the
 - sample: blocked: [{"error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3085 (delta=+2955
 - sample: blocked: [{"error": "RIG FAULT (tb-0184, not a feature defect): reset_position wrote z=130 but pawn now reads z=3130 (delta=+3000
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-20T03:51:55Z -->
+## H-64: surprise: dyad result turn
+- status: pending
+- kind: surprise  |  count: 12  |  last_seen: 2026-07-19T10:19:10
+- proposed_organ: claude_md
+- evidence: surprise_bb04ffd93eadb5b0, surprise_50aa93e241e92881, surprise_743f29b584411eea, surprise_b98b3f6e530ffac8, surprise_61b630f8e526afb3, surprise_8f32ce33f19809ef, surprise_d76ed429f8dc58e4, surprise_95db455df6642c79
+- sample: expected 'the dyad's instruction was executed' but 'Tool_Scanner does not exist as a concrete feature. The brief'
+- sample: expected 'the dyad's instruction was executed' but 'Fractal zoom sweep test built and executed on a 157K-splat g'
+- sample: expected 'the dyad's instruction was executed' but 'Spatial LOD merger built and tested. Results on 157K-splat l'
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

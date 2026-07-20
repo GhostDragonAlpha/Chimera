@@ -5,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1440 entries** across 8 chapters.
+**1565 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -343,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*519 entries; showing 40.*
+*538 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -667,7 +667,7 @@
 
 ## IV. Verdicts & Grades
 
-*355 entries; showing 40.*
+*459 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -986,7 +986,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*401 entries; showing 40.*
+*403 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1423,22 +1423,22 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                         254 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                         266 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          44 reps  100%  streak  8  battery   2 (0 pie)  tier 0/0
+> AErisaidActor                          56 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     24 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     36 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    228 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    234 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1472,7 +1472,7 @@
 - **AErisaidActor** — 1 entry: `repstat:AErisaidActor`
 - **Any** — 1 entry: `repstat:Any`
 - **Beat_Scripts_Tautology_Fix** — 1 entry: `repstat:Beat_Scripts_Tautology_Fix`
-- **Build_Pipeline** — 65 entries: `professor_grade_1a92c9ff41eb66f4`, `professor_grade_8f4a03f041187ce9`, `professor_grade_0f7ad1992f6d1372`, `professor_grade_3b51652770d01ac1`, `professor_grade_828db6a52893ed78`, `professor_grade_9892b433ad232f61` ...
+- **Build_Pipeline** — 169 entries: `professor_grade_1a92c9ff41eb66f4`, `professor_grade_8f4a03f041187ce9`, `professor_grade_0f7ad1992f6d1372`, `professor_grade_3b51652770d01ac1`, `professor_grade_828db6a52893ed78`, `professor_grade_9892b433ad232f61` ...
 - **CLI_Test** — 1 entry: `professor_grade_2e8f98354014d117`
 - **Competitive_Feature_Design_Patterns_Research** — 2 entries: `observation_4e4ccc9b30b5f883`, `observation_e5af82bfa4350985`
 - **Competitive_Feature_Design_Patterns_Research_Summary** — 1 entry: `observation_0efae6fbbe195f0b`
