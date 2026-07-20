@@ -141,9 +141,28 @@ def mutate(genome: dict, rng: random.Random | None = None) -> dict:
     g["n_sacrifices"] = min(MAX_REFLECTIONS // 2, max(1, g["n_sacrifices"]))
     g["n_calls"] = min(MAX_REFLECTIONS // 2, max(0, g["n_calls"]))
 
-    # Zone ordering invariant: distant > approaching > near > touching
-    g["zone_distant"] = max(g["zone_distant"], g["zone_approaching"] + 1.0)
-    g["zone_approaching"] = max(g["zone_approaching"], g["zone_near"] + 1.0)
+    # Clamp zone values so multiplicative mutation doesn't explode them
+    g["zone_distant"] = max(5.0, min(100.0, g["zone_distant"]))
+    g["zone_approaching"] = max(3.0, min(95.0, g["zone_approaching"]))
+    g["zone_near"] = max(1.0, min(90.0, g["zone_near"]))
+
+    # Zone ordering invariant: distant > approaching > near > touching (0)
+    # Sort descending then enforce minimum gaps so zones never collapse
+    zones = sorted([g["zone_distant"], g["zone_approaching"], g["zone_near"]], reverse=True)
+    g["zone_distant"] = zones[0]
+    g["zone_approaching"] = max(zones[0] - 2.0, zones[1])
+    g["zone_near"] = max(g["zone_approaching"] - 2.0, min(zones[2], g["zone_approaching"] - 1.0))
+    if g["zone_near"] < 1.0:
+        g["zone_near"] = 1.0
+
+    # Clamp dwell params to [0, 1] so they stay valid probabilities
+    g["dwell_browsing"] = max(0.0, min(1.0, g["dwell_browsing"]))
+    g["dwell_focused"] = max(0.0, min(1.0, g["dwell_focused"]))
+
+    # Clamp selection probs to [0, 1]
+    g["selection_prob_approach"] = max(0.01, min(1.0, g["selection_prob_approach"]))
+    g["selection_prob_browse"] = max(0.01, min(1.0, g["selection_prob_browse"]))
+    g["selection_prob_focus"] = max(0.01, min(1.0, g["selection_prob_focus"]))
 
     return g
 
@@ -238,23 +257,26 @@ def _step_player(player: _Player, g: dict) -> None:
         if player.rng.random() > 1.0 / max(1.0, cost):
             proposed = player.state
 
-    # Dwell inertia: linger in BROWSING/FOCUSED — skip movement, stay put
+    # Dwell inertia: once IN a dwell state, resist leaving it
     dw_browse = g.get("dwell_browsing", 0.3)
     dw_focus = g.get("dwell_focused", 0.5)
 
-    if proposed == "BROWSING" and player.rng.random() < dw_browse:
-        proposed = player.state  # stay in current state
-    elif proposed == "FOCUSED" and player.rng.random() < dw_focus:
-        proposed = player.state
+    if player.state == "BROWSING" and proposed != "BROWSING" and player.rng.random() < dw_browse:
+        proposed = player.state  # linger — resist transition out of BROWSING
+    elif player.state == "FOCUSED" and proposed != "FOCUSED" and player.rng.random() < dw_focus:
+        proposed = player.state  # linger — resist transition out of FOCUSED
 
     player.state = proposed
 
-    # Move toward mirror: dwell params reduce step size (linger = slower approach)
-    step_penalty = 1.0
-    if player.state in ("BROWSING", "FOCUSED"):
-        dw = dw_browse if player.state == "BROWSING" else dw_focus
-        step_penalty = max(0.2, 1.0 - dw)  # high dwell = tiny steps
-    step = abs(player.rng.gauss(3.0 * step_penalty, 1.5))
+    # Move toward mirror: dwell params reduce step size per zone
+    # High dwell_browsing = slower movement in near zone = longer BROWSING dwell
+    # High dwell_focused = slower movement in touching zone = longer FOCUSED dwell
+    step_mult = 1.0
+    if z == "near":
+        step_mult = max(0.15, 1.0 - g.get("dwell_browsing", 0.3))
+    elif z == "touching":
+        step_mult = max(0.15, 1.0 - g.get("dwell_focused", 0.5))
+    step = abs(player.rng.gauss(3.0 * step_mult, 1.5))
     old_pos = player.position
     player.position = max(0.5, player.position - step)
     player.distance_traveled += abs(player.position - old_pos)
