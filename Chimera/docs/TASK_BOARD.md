@@ -1,15 +1,15 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-19T07:15:10+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-20T04:27:23+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 1 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0214 | open | 1 | Truth-sync: master prompt + all docs updated to the new syst | CLAUDE.md, docs/**… |  |
-| tb-0209 | open | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie |  |
+| tb-0209 | claimed | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie | lead |
+| tb-0219 | claimed | 0.6 | Pain verdict: control_actor set_material reports success:tru | docs/research/** | opencode |
 | tb-0210 | open | 0.75 | Build toward the seed: UCostlessLifeEndingDiagnostic | core/game_code_generator.py; excl:generator |  |
 | tb-0211 | open | 0.75 | Build toward the seed: TitanRunTrack | core/game_code_generator.py; excl:generator |  |
 | tb-0212 | open | 0.72 | Build toward the seed: FStationMarket | core/game_code_generator.py; excl:generator |  |
@@ -18,8 +18,13 @@ so claimed tasks are safe to run in parallel.
 | tb-0216 | open | 0.6 | Pain verdict: ChimeraMovementComponent.cpp's footstep 'sync  | docs/research/** |  |
 | tb-0217 | open | 0.6 | Pain verdict: A separate concurrent session (shared task lis | docs/research/** |  |
 | tb-0218 | open | 0.6 | Pain verdict: Material PBR wiring on MAT_Ship_Hull_Aluminum  | docs/research/** |  |
-| tb-0219 | open | 0.6 | Pain verdict: control_actor set_material reports success:tru | docs/research/** |  |
 | tb-0220 | open | 0.6 | Pain verdict: Live concurrent-agent interference (PIE toggli | docs/research/** |  |
+| tb-0221 | open | 0.6 | Pain verdict: MAT_WeaponBody (the name Loop4_Tools_Complete. | docs/research/** |  |
+| tb-0222 | open | 0.6 | Pain verdict: manage_geometry create_box/create_cylinder/cre | docs/research/** |  |
+| tb-0223 | open | 0.6 | Pain verdict: get_actor_bounds on a DynamicMeshComponent cac | docs/research/** |  |
+| tb-0224 | open | 0.6 | Pain verdict: P1: BS_Idle_Walk_Run's sample grid/notify-trig | docs/research/** |  |
+| tb-0225 | open | 0.6 | Pain verdict: P2: manage_blueprint (Blueprint graph tool) ha | docs/research/** |  |
+| tb-0226 | open | 0.6 | Pain verdict: P3: This editor session had at least 2 other c | docs/research/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
@@ -68,6 +73,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0196 | done | 1 | Levitator golden reproducer: sleepwalker PIE converges pawn  | core/sleepwalker.py, core/witness.py…; editor:open | THE LEVITATOR IS KILLED, MECHANISM NAMED, FIX DURABLE, STAND |
 | tb-0198 | done | 1 | Materialization THE RIGHT WAY: generator-owned runtime subsy | core/game_code_generator.py, Source/Chimera/ProceduralGenerated/Materialization/*…; editor:open; excl:build | THE MATERIALIZATION BUBBLE, THE RIGHT WAY, RUNS IN THE GAME. |
 | tb-0201 | done | 1 | Collapse: Shelter_Habitat_Materials | editor:open; excl:pie | Shelter_Habitat_Materials collapse: sleepwalker reached 1/1  |
+| tb-0214 | done | 1 | Truth-sync: master prompt + all docs updated to the new syst | CLAUDE.md, docs/**… | CODE_AUDIT_2026-07-18.md updated with verified findings: (1) |
 | tb-0080 | done | 0.95 | Build toward the seed: UChimeraAttunementComponent | Source/Chimera/ProceduralGenerated/UI/** | Created core/audio_attunement.py with UChimeraAttunementComp |
 | tb-0081 | done | 0.95 | Build toward the seed: ADotCharacter | Source/Chimera/ProceduralGenerated/UI/** | Added generate_adot_character_files() to core/game_code_gene |
 | tb-0131 | done | 0.95 | Fix TAB wire: DemoGestureWheel action mapping + template bin | Config/DefaultInput.ini, core/game_code_generator.py…; editor:open; excl:generator,pie | UE_LOG witness markers verified present in NPCTradeComponent |

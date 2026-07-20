@@ -1,8 +1,8 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-19T07:15:01Z
+consolidated: 2026-07-20T04:24:07Z
 
 ## Awaiting your approval
-8 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
+9 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
 - H-48: human_rejection: Tool_Scanner_Model
 - H-49: human_rejection: Tool_Scanner_Material
 - H-50: grade_CF: X
@@ -13,12 +13,12 @@ consolidated: 2026-07-19T07:15:01Z
 - H-63: sim_rejection: solar_system_stand/stand_on_grown_ocean_world
 
 ## Open phantom pains
-- phase_4d2da4e032a4aa07:P1 [12d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
-- phase_1b01fac303f3c24e:P1 [12d] The verb TARGETS (BP_Verb_* actors) may be as hollow as the walking was - built via bridge, never human-triggered; expect pick-up/drop/shovel interactions to no-op in Session A retry; if so route Verb_PickUp/Drop/Shovel rejections and pull BP-interaction wiring into the capable Phase 2 build
-- phase_3414a5cc1ff49e30:P1 [12d] Phase 2 dependencies may still block Phase 3 wiring
-- phase_33cc2d55125bc551:P1 [12d] sleepwalker may still attempt PIE if runtime_report is not checked properly
-- phase_a06bc8140bd62718:P1 [12d] phase_da55128aec6d109a:P1
-- phase_ef0be888042d96ff:P1 [12d] The pipeline's visual stage used pyautogui desktop capture again (forbidden); the prohibition constants say use MCP screenshot mode=editor_viewport but the pipeline code still calls the old path.
+- phase_4d2da4e032a4aa07:P1 [13d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
+- phase_1b01fac303f3c24e:P1 [13d] The verb TARGETS (BP_Verb_* actors) may be as hollow as the walking was - built via bridge, never human-triggered; expect pick-up/drop/shovel interactions to no-op in Session A retry; if so route Verb_PickUp/Drop/Shovel rejections and pull BP-interaction wiring into the capable Phase 2 build
+- phase_3414a5cc1ff49e30:P1 [13d] Phase 2 dependencies may still block Phase 3 wiring
+- phase_33cc2d55125bc551:P1 [13d] sleepwalker may still attempt PIE if runtime_report is not checked properly
+- phase_a06bc8140bd62718:P1 [13d] phase_da55128aec6d109a:P1
+- phase_ef0be888042d96ff:P1 [13d] The pipeline's visual stage used pyautogui desktop capture again (forbidden); the prohibition constants say use MCP screenshot mode=editor_viewport but the pipeline code still calls the old path.
 
 ## Observation queue — the true collapse awaits your eyes
 - Loop 7 **Travel_Vehicle_Flight** (system-verified 2026-07-14T14:46:42)
@@ -34,19 +34,19 @@ consolidated: 2026-07-19T07:15:01Z
 Record verdicts: `python -m core.graphify_record observe --feature X --verdict accepted|rejected --notes "..." --loop N`
 
 ## Gardener tend (delegated authority — veto any line by editing its status)
-`needs_draft:8; untouched:55 | provisional-collapse: 0 collapsed, 9 awaiting evidence`
+`needs_draft:9; untouched:55 | provisional-collapse: 0 collapsed, 9 awaiting evidence`
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 80 batteries, 899 atoms, 873 reps this pass (12 failing), 28 PIE atoms exported
+[rep] 81 batteries, 902 atoms, 876 reps this pass (13 failing), 28 PIE atoms exported
 [rep] failing: subsystem_AErisaid (4 atoms red)
-[rep] failing: Game_Feel (2 atoms red)
+[rep] failing: Game_Feel (3 atoms red)
 [rep] failing: Any_position-dependent_beat_against_chimeradefault (1 atoms red)
 ```
 
 ## Tonight's distillation
 ```
-clusters >= 3: 68  |  suppressed (covered/pending): 68  |  staged: 0
+clusters >= 3: 69  |  suppressed (covered/pending): 69  |  staged: 0
   covered   [  5x] human_rejection: Verb_Shovel  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Look  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Bend  <- PENDING_HEURISTICS.md
@@ -88,16 +88,17 @@ clusters >= 3: 68  |  suppressed (covered/pending): 68  |  staged: 0
   covered   [  4x] sim_rejection: solar_system_stand/stand_on_grown_ocean_world  <- PENDING_HEURISTICS.md
   covered   [  3x] sim_rejection: verb_interactions/verb_drop_location  <- PENDING_HEURISTICS.md
   covered   [223x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
-  covered   [ 65x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
+  covered   [169x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
+  covered   [131x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 36x] pathway: sleepwalker.beat_run -> partial  <- PENDING_HEURISTICS.md
   covered   [ 33x] surprise: correction feature finalized frame  <- PENDING_HEURISTICS.md
-  covered   [ 27x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 26x] verification_not_verified  <- PENDING_HEURISTICS.md
   covered   [ 26x] surprise: audio_visual_sync beat discovered expected  <- PENDING_HEURISTICS.md
   covered   [ 18x] pathway: build_orchestrator.ue_shutdown -> success_intended_kill  <- PENDING_HEURISTICS.md
   covered   [ 17x] pathway: build_orchestrator.ue_shutdown -> killed_for_build  <- PENDING_HEURISTICS.md
   covered   [ 12x] grade_CF: Player_Character_Lighting  <- PENDING_HEURISTICS.md
+  covered   [ 12x] surprise: dyad result turn  <- PENDING_HEURISTICS.md
   covered   [ 11x] grade_CF: X  <- already pending
   covered   [  7x] surprise: research shelter_habitat_lighting waived witness  <- PENDING_HEURISTICS.md
   covered   [  6x] surprise: aerisaidactor candidate expectation score  <- PENDING_HEURISTICS.md
@@ -120,7 +121,7 @@ nothing new to stage — the constitution already covers today's lessons
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 2921  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 3351  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 

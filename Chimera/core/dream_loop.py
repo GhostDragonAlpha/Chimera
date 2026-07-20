@@ -198,11 +198,37 @@ def main():
         try:
             from core import lm_gateway, expectation_violator
             if lm_gateway.loaded_models():
-                kept = expectation_violator.run(n_systems=4, per=2, deep=False, echo=False)
-                print(f"[dream] expectation-violator: {len(kept)} candidate(s) kept "
-                      f"-> docs/EXPECTATION_VIOLATIONS.md")
+                # The violator drives the LM gateway. A degraded model-swap
+                # (e.g. _ensure_model evicting all models before loading, or
+                # an unrecognized ':N' suffix) can leave it queued forever,
+                # which wedged the entire night (circadian never marked).
+                # Run it in a guarded thread so the night can NEVER hang on
+                # the LM step - it skips-with-warning after the budget and
+                # the rest of consolidation proceeds model-free.
+                import threading
+                _result = {}
+
+                def _violate():
+                    try:
+                        _result["kept"] = expectation_violator.run(
+                            n_systems=4, per=2, deep=False, echo=False)
+                    except Exception as ex:  # guard the night
+                        _result["err"] = ex
+
+                _t = threading.Thread(target=_violate, daemon=True)
+                _t.start()
+                _t.join(timeout=180)
+                if _t.is_alive():
+                    print("[dream] expectation-violator skipped: timed out after 180s "
+                          "(LM gateway still queued - night proceeds model-free)")
+                elif "err" in _result:
+                    print(f"[dream] expectation-violator skipped: {_result['err']}")
+                else:
+                    kept = _result.get("kept", [])
+                    print(f"[dream] expectation-violator: {len(kept)} candidate(s) kept "
+                          f"-> docs/EXPECTATION_VIOLATIONS.md")
             else:
-                print("[dream] expectation-violator: skipped (no model loaded — loop stays model-free)")
+                print("[dream] expectation-violator: skipped (no model loaded - loop stays model-free)")
         except Exception as ex:
             print(f"[dream] expectation-violator skipped: {ex}")
 

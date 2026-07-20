@@ -146,3 +146,4 @@ MUJOCO_LOG.TXT
 Chimera/Content/Grown/
 nul
 Build/
+.pi-subagents/

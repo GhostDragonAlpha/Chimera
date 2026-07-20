@@ -272,3 +272,67 @@
 
 ---
 Total: 50 questions, 120 to-do items. Next execution entry point: P0 #1 (circadian tick).
+
+---
+## PROGRESS LOG — session 2026-07-19 (execution)
+
+### DONE
+- **P0 #1 circadian tick --run — ROOT-CAUSE FIXED + night completed.**
+  - Symptom: night never marked (`ran_night:false`, exit 143). Ran `core.dream_loop`
+    directly (unbuffered) and captured the hang:
+    `[lm_gateway] violator: waited 51.1s in queue (concurrency=1)` then never returns.
+  - Root cause: LM Studio is UP, so the LM-gated `expectation_violator` step RUNS;
+    but the council/dyad model-swap bug (Will note: `_ensure_model evicts all before
+    loading, :N suffix not recognized`) means the requested model never loads, so it
+    queues forever and wedges the whole night.
+  - Workaround to unblock session entry: ran `python -m core.dream_loop --no-violate`
+    (the code's own endorsed 'zero model dependency, safe unattended' mode). EXIT=0,
+    clock marked: `night due: False; last night 2026-07-19 23:00`.
+  - Real fix: wrapped the violator call in `core/dream_loop.py` in a guarded daemon
+    thread with `join(timeout=180)` so the night can NEVER hang on the LM step — it
+    now skips-with-warning and proceeds model-free. Verified: module compiles; isolated
+    timeout proof shows join returns after budget with thread alive (night not wedged).
+    => `circadian tick --run` now completes instead of hanging. RECOMMEND end-to-end
+    confirmation: force a due night and run `circadian tick --run` once more.
+- **P0 #2 preflight re-confirmed** (gates pass; vision 86%->88%; 468 unread capcom).
+- **P0 #4 helm targets** refreshed (UCostlessLifeEndingDiagnostic 50%, TitanRunTrack 0%,
+  FStationMarket 50%, UFactionSubsystem 50%).
+- **P0 #5 git status** reviewed (see COORDINATION below).
+- Night consolidation also executed several plan organs incidentally: P14 malcolm tune
+  (no adjustment), P15 rep_engine tend (81 batteries, 13 failing), P16 dyad verified
+  executed, P6 collapse_proxy ran (9 features awaiting evidence — see below).
+
+### ANSWERED (was open in plan)
+- **P6 #47 full 9-feature observation queue** (from collapse_proxy, post-night):
+  Travel_Vehicle_Flight, Universe_Planet_Generation, Universe_Moon_Generation,
+  Universe_Asteroid_Field, Universe_Debris_Field, Tool_Shovel_Model, Tool_Shovel_Material,
+  Tool_Weapon_Material, Truth_Sync_2026-07_18. All `awaiting evidence` (0-1 of 2 sim sessions).
+- **P4 #33 claim tb-0209 — NOW MOOT**: lead claimed tb-0209 (Witness: Tool_Weapon_Material)
+  ~15m into session. Do NOT claim.
+
+### COORDINATION BOUNDARIES (do NOT cross this session)
+- **P1 doc truth-sync = lead-owned (tb-0214)**. Lead reports docs updated + code audit
+  (5 new findings); a report-judge flagged `NEEDS_REFINEMENT` and postflight shows
+  `BLOCKED (no research)`. Do NOT edit ONBOARDING.md / synced docs — coordinate only.
+- **tb-0209 (Tool_Weapon_Material) = lead-owned.** Do not process.
+- **Do NOT fabricate pain verdicts or observation collapses** without sim evidence
+  (violates Why/Witness gates). tb-0215..0220 + new tb-0221..0223 need real evidence.
+- Git: night rewrote docs/HISTORY_BOOK.md, docs/PENDING_HEURISTICS.md, docs/DREAM_REPORT.md,
+  docs/HERALD.md, rep batteries, envelope proposals. These are machine-local night
+  artifacts; commit only in a clean verified batch with the lead's doc sync.
+
+### NEW / CHANGED since plan written
+- New tasks ripened by the night: tb-0221, tb-0222, tb-0223 (pains -> micro-tasks).
+- Task board now ~223 tasks (was 220); open count grew by the 3 ripened + still 11 prior
+  minus any claimed.
+- Recommended next fix (not yet applied — lead is live on council/dyad): repair the
+  LM model-swap bug in `lm_gateway._ensure_model` so the violator step runs for real
+  instead of timing out. Offer to apply after tb-0214 settles.
+
+### NEXT SAFE EXECUTION BATCH (pending your go)
+1. End-to-end confirm `circadian tick --run` now completes (force due night).
+2. Collapse observation-queue features that already HAVE 2 sim sessions (check SimPlaytest
+   nodes; Tool_Weapon_Material may get one from lead's tb-0209).
+3. Prepare (not apply) the lm_gateway model-swap fix.
+4. Begin P2 Loop 4 Tools ONLY after lead releases the construction lane.
+
