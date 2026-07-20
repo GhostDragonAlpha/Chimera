@@ -97,6 +97,17 @@ Read `task_progress.md` for the handoff from the last session.
   # Never assume. Always verify.
   ```
 - **Never run MCP without the editor running.** If you just built, relaunch: `chimera_unblock(ensure="editor")`
+- **After editor crash/restart, always verify MCP is responsive before running sleepwalker:**
+  ```python
+  from core.telemetry_probe import MCPStdioClient; c = MCPStdioClient()
+  c.call('inspect', {'action': 'get_scene_stats'})  # must return True
+  ```
+- **Check for editor crash reports after every build/restart.**
+  ```powershell
+  dir "C:\Program Files\Epic Games\UE_5.8\Engine\Saved\Crashes\" | Sort-Object LastWriteTime -Descending | Select-Object -First 5
+  ```
+  If the editor crashed during your session, the MCP bridge may be in a bad state.
+  Kill the editor, restart, and verify before proceeding.
 - **Never take screenshots without foregrounding the editor first**:
   ```powershell
   powershell -NoProfile -Command '$ws = New-Object -ComObject WScript.Shell; $p = Get-Process UnrealEditor | Where-Object {$_.MainWindowTitle} | Select-Object -First 1; if ($p) { $ws.AppActivate($p.Id) | Out-Null }'
