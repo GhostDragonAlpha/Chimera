@@ -94696,6 +94696,94 @@
       },
       "recorded_by": "postflight.py",
       "run_id": "run_d026441413f2"
+    },
+    {
+      "id": "rollout_8921ed1d7258d91b",
+      "type": "SimulationRollout",
+      "timestamp": "2026-07-21T03:15:27.662813",
+      "chosen": "Ground_Sand_Sound_unblock",
+      "candidates": [
+        {
+          "name": "Ground_Sand_Sound_unblock",
+          "score": 0.876,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first"
+        },
+        {
+          "name": "Pipeline_health_check",
+          "score": 0.536,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "full pipeline verification \u2014 DEAD WORK within 12h of a passing build unless code changed"
+        },
+        {
+          "name": "Sleepwalker_M4_nightly_rhythm",
+          "score": 0.272,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ARMED 2026-07-07 (ChimeraUnblock 00:45, ChimeraSleepwalk 01:00, ChimeraDream 02:15) \u2014 verify-only now"
+        },
+        {
+          "name": "Costless Life Bad Ending Trigger",
+          "score": 0.018,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Will & Forewarning Inheritance UI",
+          "score": 0.016,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=encoded) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Demo_Phase2_DemoTerminal",
+          "score": 0.016,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Groundskeeping_floor",
+          "score": 0.013,
+          "p_success": 0.6,
+          "cost": 1.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "The Erisaid Audio Attunement Minigame",
+          "score": 0.012,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Titan Run Gravity Shift Mechanics",
+          "score": 0.01,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        },
+        {
+          "name": "Regolith Dust Accumulation Visual Feedback",
+          "score": 0.009,
+          "p_success": 0.6,
+          "cost": 2.0,
+          "why": "ALREADY-DONE DEMOTED (ledger status=observed) \u2014 pick unfinished work instead"
+        }
+      ],
+      "rationale": "value 0.8 x p 0.6 / cost 1.0 + explore 0.25; evidence ['no history (exploration)']",
+      "vetoed": false,
+      "error_signature": "success_no_error",
+      "template_file": "rehearsal/decision",
+      "error_category": "none",
+      "fix_description": "Rehearsal chose next move: Ground_Sand_Sound_unblock",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "rehearsal.py",
+      "run_id": "run_41015b71a628"
     }
   ],
   "edges": [

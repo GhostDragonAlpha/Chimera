@@ -5,11 +5,11 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1638 entries** across 8 chapters.
+**1661 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
-*81 entries; showing 40.*
+*82 entries; showing 40.*
 
 ### H-1
 <sub>`claude:H-1`</sub>
@@ -343,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*559 entries; showing 40.*
+*576 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -667,7 +667,7 @@
 
 ## IV. Verdicts & Grades
 
-*507 entries; showing 40.*
+*510 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -986,7 +986,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*407 entries; showing 40.*
+*409 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1423,22 +1423,22 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                         284 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                         288 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          74 reps  100%  streak  8  battery   2 (0 pie)  READY
+> AErisaidActor                          78 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     54 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     58 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    243 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    245 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1496,10 +1496,11 @@
 - **FStar** — 1 entry: `repstat:FStar`
 - **Game_Feel** — 2 entries: `promo:Game_Feel:3`, `repstat:Game_Feel`
 - **Generation_Transition** — 1 entry: `observation_442228555cf2b93e`
+- **Generational_Loop_Complete** — 1 entry: `observation_706c1623cb76b4b5`
 - **Ground_Atmosphere_Data** — 1 entry: `observation_1874dc0fef9ae18e`
 - **Ground_Celestial_Data** — 1 entry: `observation_4d46f191c8f9f90f`
 - **Ground_Geology_Collection** — 1 entry: `observation_fcfb58b3cc54dc10`
-- **Ground_Geology_Education** — 1 entry: `observation_5f262fdb1f4a2758`
+- **Ground_Geology_Education** — 2 entries: `observation_5f262fdb1f4a2758`, `observation_67c622fbb462a047`
 - **Ground_Geology_Surface** — 1 entry: `observation_fef55f2886ec4a05`
 - **Ground_Metal_Surface** — 9 entries: `prof_grade_73b132f72683a4d3`, `prof_grade_6f1def660833e414`, `prof_grade_69ce58e03c7f5ac8`, `observation_b64690eb06c29e34`, `observation_620b633919bd58de`, `observation_72620c81985763fc` ...
 - **Ground_Rock_Surface** — 7 entries: `prof_grade_bec71f9e63043118`, `observation_8650722006d93846`, `observation_cf32cafa76fd3b40`, `observation_4041b18f4f89b640`, `observation_49ecad284084ddab`, `observation_1bc2480d62a36f98` ...
@@ -1563,7 +1564,7 @@
 - **Tool_Scanner_Model** — 2 entries: `observation_b1c08c983da0e237`, `observation_a89558028e7f9fec`
 - **Tool_Shovel_Material** — 1 entry: `observation_debf94c901f4a1da`
 - **Tool_Shovel_Model** — 2 entries: `professor_grade_ef64717b4d520850`, `observation_aaf1522bff9e9898`
-- **Tool_Weapon_Material** — 1 entry: `observation_362ff3991fe6177f`
+- **Tool_Weapon_Material** — 2 entries: `observation_362ff3991fe6177f`, `observation_755743529189f949`
 - **Tool_Weapon_Model** — 3 entries: `observation_af7f40abe37d1f59`, `observation_c941ed7c5d84c89d`, `observation_9f3ebf16811675bd`
 - **Travel_Ship_Exterior** — 1 entry: `observation_b4e929ab127f9760`
 - **Travel_Vehicle_Basic** — 1 entry: `observation_a640c045d6ceaf69`

@@ -34,6 +34,20 @@
   "provenance": "reflection:UCLASS:ShelterHabitatComponent.h"
  },
  {
+  "id": "atom_16724edfcec2",
+  "feature": "subsystem/Shelter",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbLastFramePlayerInside\\b"
+  },
+  "desc": "UPROPERTY bLastFramePlayerInside (ShelterHabitatComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShelterHabitatComponent.h"
+ },
+ {
   "id": "atom_6e1cb5adccdd",
   "feature": "subsystem/Shelter",
   "tier": 1,

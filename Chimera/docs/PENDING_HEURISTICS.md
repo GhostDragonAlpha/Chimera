@@ -694,3 +694,23 @@ Wait, looking at the
 - evidence: simtest_9d46c02be04fed93, simtest_7e4fff8702385eef, simtest_dd356f6bd6db7922
 - sample: failed: [{"expect": {"log_contains": "Generation"}, "ok": false, "note": "log_hit=False"}]
 - draft_rule: Verify event logging and signal traces on success path.
+
+<!-- distilled 2026-07-21T03:15:33Z -->
+## H-66: sim_rejection: edu_spawn/collect_basalt
+- status: pending
+- kind: sim_rejection  |  count: 6  |  last_seen: 2026-07-20T23:20:27
+- proposed_organ: claude_md
+- evidence: simtest_05a96cc543e6043a, simtest_c139965ec7ef5bb6, simtest_b1ae25ecb20b0b9c, simtest_1b320af1b5dbdea7, simtest_389e4bb9d076f794, simtest_cbda9590f7c48bb3
+- sample: failed: [{"expect": {"log_contains": "LEARN"}, "ok": false, "note": "log_hit=False"}]
+- sample: blocked: [{"error": "inspect.runtime_report: failed"}]
+- draft_rule: Verify event logging and signal traces on success path.
+
+## H-67: surprise: beat collect_basalt discovered edu_spawn
+- status: pending
+- kind: surprise  |  count: 6  |  last_seen: 2026-07-20T23:20:27
+- proposed_organ: claude_md
+- evidence: surprise_cc736cb01c0f6d7e, surprise_88c4b8cbabfde265, surprise_6e6a54a107c68d50, surprise_00176d3091bb0704, surprise_90801c95182e56ba, surprise_43d31a5704136b1b
+- sample: expected '' but 'failed: {"expect": {"log_contains": "LEARN"}, "ok": false, "'
+- sample: expected '' but 'blocked: {"error": "inspect.runtime_report: failed"}'
+- possible_conflict_with: heuristic_393319affe39ee06 (Investigate correction feature; verify test harness and beat); heuristic_c4ab980eb2ceee7d (Investigate actors bp_verb_; verify test harness and beat re); heuristic_96e67135d9845f6a (Investigate bad costless; verify test harness and beat regis); heuristic_009462cbb6e7e534 (Investigate blocker draft; verify test harness and beat regi)  (Gardener: reconcile)
+- draft_rule: Verify event logging and signal traces on success path.

@@ -1,3 +1,13 @@
+# Rehearsal decision 2026-07-21 03:15Z — next move: Ground_Sand_Sound_unblock
+
+Chosen by core.rehearsal (score 0.876, p_success 0.6, evidence: no history (exploration)). Human may veto with one sentence.
+
+## NEXT (rehearsal-chosen; recipe per handoff invariant)
+1. **Ground_Sand_Sound_unblock** — BLOCKED-ON-ASSETS: Content/Audio empty; the human must import a CC0 footstep pack first. Recipe: Skip-condition: Content/Audio still empty -> untouched (human task). If assets present: wire per feature node study guide.
+   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.
+
+---
+
 # Session 2026-07-21 (design) — Constraint-first workflow established; emergence roadmap; sub-feature decision rule
 
 - **Constraint-first workflow**: New formula for every TODO item: CONSTRAINT → MEASURE → EXISTING → WORK → VERIFY.
