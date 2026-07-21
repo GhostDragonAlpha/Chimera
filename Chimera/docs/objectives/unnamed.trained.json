@@ -1,23 +1,14 @@
 {
   "objective": "unnamed",
-  "score": 0.7726898390116982,
+  "score": 1.0,
   "measures": {
-    "n_grains": 500000,
-    "coarse_frac": 0.5,
-    "fitted_exp": 2.847508470768636,
-    "packing_density": 0.28204821905608957,
-    "has_segregation": 1,
-    "repose_angle_estimate": 38.92869878500218
+    "wall_0_npc_spawns_avoid_pla": true,
+    "wall_1_npc_density_higher_n": true,
+    "wall_2_maximum_10_npcs_visi": true
   },
   "genome": {
-    "grain_count": 500000,
-    "coarse_frac": 0.40888697093030163,
-    "coarse_radius": 0.3752444273961046,
-    "fine_radius": 0.15987897782044647,
-    "power_law_exp": -3.3747849288885488,
-    "packing_density": 0.5410766250808847,
-    "cohesion_energy": 0.6978815272656296,
-    "friction_angle": 38.92869878500218,
-    "sweeps": 90
+    "wall_0_npc_spawns_avoid_pla": true,
+    "wall_1_npc_density_higher_n": true,
+    "wall_2_maximum_10_npcs_visi": true
   }
 }

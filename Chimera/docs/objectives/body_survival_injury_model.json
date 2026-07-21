@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for body_survival_injury_model",
+  "scenario": "Train body_survival_injury_model sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_fall_damage_scales_w",
+      "min": 1,
+      "hard": true,
+      "wall": "Fall damage scales with height"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_suit_breach_causes_r",
+      "min": 1,
+      "hard": true,
+      "wall": "Suit breach causes rapid O2 loss"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_minor_injuries_heal_",
+      "min": 1,
+      "hard": true,
+      "wall": "Minor injuries heal over time in shelter"
+    }
+  ]
+}

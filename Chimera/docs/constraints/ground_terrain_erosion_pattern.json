@@ -1,0 +1,23 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of ground_terrain. Cluster: erosion_pattern",
+  "name": "ground_terrain_erosion_pattern",
+  "parent_rung": "ground_terrain",
+  "walls": [
+    "Erosion patterns follow wind direction",
+    "Soft materials erode faster",
+    "Erosion reveals underlying layers"
+  ],
+  "element_query": {
+    "categories": [
+      "Erosion",
+      "Weathering",
+      "Wear",
+      "Pattern"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of body_survival. Cluster: o2_consumption",
+  "name": "body_survival_o2_consumption",
+  "parent_rung": "body_survival",
+  "walls": [
+    "O2 consumption scales with exertion",
+    "Sprint burns 2x walk rate",
+    "Idle drain is nonzero"
+  ],
+  "element_query": {
+    "categories": [
+      "Oxygen",
+      "Respiration",
+      "Metabolic",
+      "Consumption"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}

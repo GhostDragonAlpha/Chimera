@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for npc_social_need_generation",
+  "scenario": "Train npc_social_need_generation sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_npc_needs_vary_by_ty",
+      "min": 1,
+      "hard": true,
+      "wall": "NPC needs vary by type"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_needs_become_urgent_",
+      "min": 1,
+      "hard": true,
+      "wall": "Needs become urgent over time"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_needs_are_visible_th",
+      "min": 1,
+      "hard": true,
+      "wall": "Needs are visible through posture"
+    }
+  ]
+}

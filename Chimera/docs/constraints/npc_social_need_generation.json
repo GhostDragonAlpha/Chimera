@@ -1,0 +1,23 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of npc_social. Cluster: need_generation",
+  "name": "npc_social_need_generation",
+  "parent_rung": "npc_social",
+  "walls": [
+    "NPC needs vary by type",
+    "Needs become urgent over time",
+    "Needs are visible through posture"
+  ],
+  "element_query": {
+    "categories": [
+      "Need",
+      "Desire",
+      "Requirement",
+      "Urgency"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}

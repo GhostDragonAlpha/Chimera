@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for body_survival_o2_consumption",
+  "scenario": "Train body_survival_o2_consumption sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_o2_consumption_scale",
+      "min": 1,
+      "hard": true,
+      "wall": "O2 consumption scales with exertion"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_sprint_burns_2x_walk",
+      "min": 1,
+      "hard": true,
+      "wall": "Sprint burns 2x walk rate"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_idle_drain_is_nonzer",
+      "min": 1,
+      "hard": true,
+      "wall": "Idle drain is nonzero"
+    }
+  ]
+}
