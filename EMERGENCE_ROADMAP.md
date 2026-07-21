@@ -277,16 +277,34 @@ JUDGE:      A human plays to the ending. A costless playthrough — does the dim
             a connection, not a reward bar filling up?
 ```
 
-## The ladder as one picture
+## The full ladder — 10 rungs
+
+The roadmap items (1-7) start at the body. They rest on three rungs that are already
+trained, compiled, and real. The player stands on the output of those rungs right now.
 
 ```
-body rung      → biome rung    → shelter rung  → form rung     → social rung   → economy rung  → narrative rung
-(O2 drains)      (resources)      (threshold)     (geometry)      (NPC needs)     (fabricator)    (beacon)
-     |                |               |               |               |               |               |
-     | survival       | resource      | functional    | decoded       | blueprint     | component    | ending
-     | range          | types         | definition    | form          | unlocks       | builds       | question
-     v                v               v               v               v               v               v
+cosmic rung  ─── planetary rung ─── ground rung ─── body rung ─── biome rung ─── shelter rung
+(big bang)      (climate)          (40° sand)      (O2 drains)    (resources)    (threshold)
+     │               │                  │               │              │              │
+     │ tb-0193       │ tb-0194          │ tb-0192+0198  │ Item 1       │ Item 2       │ Items 3+4
+     │ trained+      │ trained+         │ trained+      │              │              │
+     │ compiled      │ compiled         │ compiled      │              │              │
+     ▼               ▼                  ▼               ▼              ▼              ▼
+
+                         form rung ─── social rung ─── economy rung ─── narrative rung
+                         (geometry)     (NPC needs)     (fabricator)     (beacon)
+                            │               │               │               │
+                            │ Item 4        │ Item 5        │ Item 6        │ Item 7
+                            ▼               ▼               ▼               ▼
 ```
+
+**The foundation is already real.** The cosmic, planetary, and ground rungs were
+trained across tb-0192 through tb-0198. They compile. They run. The materialization
+subsystem (tb-0198) forms terrain under the player's boots in PIE. The 40° sand is
+grown, not placed. The planet's climate determined the sand's composition.
+
+**What the roadmap actually builds is the chain from body to meaning.**
+The ground exists. The player can stand on it. The roadmap makes that standing matter.
 
 ## The beacon as quality target
 
