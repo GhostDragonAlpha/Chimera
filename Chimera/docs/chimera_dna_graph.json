@@ -96208,6 +96208,221 @@
       "links": [],
       "recorded_by": "forty_questions.py",
       "run_id": "run_0e452b9824d2"
+    },
+    {
+      "id": "simtest_26952ede18597de8",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-21T06:00:16.139345",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "failed",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": false,
+              "note": "world=emergent_world"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": false,
+              "note": "pawn_class="
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": false,
+              "note": "dist=1414213562uu (loc x=None, y=None)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "blocked",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 0/5 beats reached in 'regolith_yard'. Failures: spawn_on_metal_pad (failed: expect {\"world_is\": \"chimeradefaultlevel\"} -> world=emergent_world); walk_metal_to_rock (blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}); walk_rock_to_sand_basin (blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}); sand_basin_dwell_and_frame",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 0/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_58e682958875"
+    },
+    {
+      "id": "surprise_b08cd4b664eb7590",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:00:16.918886",
+      "context": "Sleepwalker expected beat 'spawn_on_metal_pad' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 0, \"y\": 0, \"r\": 600}}, \"ok\": false, \"note\": \"dist=1414213562uu (loc x=None, y=None)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 0, \"y\": 0, \"r\": 600}}, \"ok\": false, \"no'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_58e682958875"
+    },
+    {
+      "id": "surprise_799e0687e8260323",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:00:17.604202",
+      "context": "Sleepwalker expected beat 'walk_metal_to_rock' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_58e682958875"
+    },
+    {
+      "id": "surprise_c6e6df2fe9c55aa5",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:00:18.351170",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_58e682958875"
+    },
+    {
+      "id": "surprise_20390e27b9414387",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:00:19.009601",
+      "context": "Sleepwalker expected beat 'sand_basin_dwell_and_frame' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_58e682958875"
+    },
+    {
+      "id": "surprise_c89957fe954b0b41",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:00:19.757655",
+      "context": "Sleepwalker expected beat 'jump_probe' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_58e682958875"
     }
   ],
   "edges": [

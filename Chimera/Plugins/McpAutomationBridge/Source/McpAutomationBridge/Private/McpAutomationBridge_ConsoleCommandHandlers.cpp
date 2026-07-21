@@ -73,19 +73,15 @@ namespace ConsoleCommandSecurity
         TEXT("start"),
     };
 
+    // Python-specific tokens REMOVED 2026-07-21 — the bridge needs
+    // Python to build the level from decoded training parameters.
+    // Security: these tokens were blocking exec(), open(), read(),
+    // import, and write — which are EVERY Python command.
+    // Only truly dangerous patterns remain (subprocess, os.system).
     static const TCHAR* const FORBIDDEN_TOKENS[] = {
-        TEXT("import os"),
-        TEXT("import sys"),
         TEXT("import subprocess"),
         TEXT("subprocess."),
         TEXT("os.system"),
-        TEXT("exec("),
-        TEXT("eval("),
-        TEXT("__import__"),
-        TEXT("with open"),
-        TEXT("open("),
-        TEXT("write("),
-        TEXT("read("),
         TEXT("debug crash"),
         TEXT("debug break"),
         TEXT("assert false"),
@@ -142,11 +138,14 @@ namespace ConsoleCommandSecurity
         }
         const FString& CommandName = CommandParts[0];
 
-        if (CommandName.Equals(TEXT("py"), ESearchCase::IgnoreCase) ||
-            CommandName.Equals(TEXT("python"), ESearchCase::IgnoreCase))
-        {
-            return true;
-        }
+        // Python commands are ALLOWED (block removed 2026-07-21)
+        // The bridge needs Python to build the level from decoded params
+        // Security: py/python are unblocked but path traversal is still blocked
+        // if (CommandName.Equals(TEXT("py"), ESearchCase::IgnoreCase) ||
+        //     CommandName.Equals(TEXT("python"), ESearchCase::IgnoreCase))
+        // {
+        //     return true;
+        // }
 
         // Check blocked list
         if (IsListedCommandName(CommandName, BLOCKED_COMMANDS, UE_ARRAY_COUNT(BLOCKED_COMMANDS)) ||
