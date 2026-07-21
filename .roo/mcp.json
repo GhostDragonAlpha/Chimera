@@ -6,8 +6,8 @@
 				"unreal-engine-mcp-server"
 			],
 			"env": {
-				"UE_PROJECT_PATH": "E:/PythonChimera/Chimera",
-				"MCP_AUTOMATION_PORT": "8091"
+				"UE_PROJECT_PATH": "E:/PythonChimera/Chimera/Chimera.uproject",
+				"MCP_AUTOMATION_PORT": "8090"
 			},
 			"alwaysAllow": [
 				"inspect",
@@ -25,6 +25,9 @@
 				"E:/ChiR24-Unreal_mcp-test/dist/cli.js"
 			],
 			"cwd": "E:/ChiR24-Unreal_mcp-test",
+			"env": {
+				"UE_PROJECT_PATH": "E:/PythonChimera/Chimera/Chimera.uproject"
+			},
 			"alwaysAllow": [
 				"manage_asset",
 				"inspect",
