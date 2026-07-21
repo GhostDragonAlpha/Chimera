@@ -2,11 +2,13 @@
   "objective": "unnamed",
   "score": 1.0,
   "measures": {
-    "wall_0_shelterhabitatcompon": true,
-    "wall_1_satisfies_shelter_th": true
+    "wall_0_biomes_distributed_b": true,
+    "wall_1_transition_zones_bet": true,
+    "wall_2_at_least_3_distinct_": true
   },
   "genome": {
-    "wall_0_shelterhabitatcompon": true,
-    "wall_1_satisfies_shelter_th": true
+    "wall_0_biomes_distributed_b": true,
+    "wall_1_transition_zones_bet": true,
+    "wall_2_at_least_3_distinct_": true
   }
 }

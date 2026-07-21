@@ -54,6 +54,18 @@ def find_related_clusters(parent_name, n_clusters=4):
             {'name': 'dust_clogging', 'keywords': ['Dust', 'Clog', 'Filter', 'Particulate'], 'walls': ['Dust accumulates faster on sandy surfaces', 'Filter scrub rate lower than clog rate', 'High clog reduces O2 flow']},
             {'name': 'injury_model', 'keywords': ['Injury', 'Damage', 'Fall', 'Crash'], 'walls': ['Fall damage scales with height', 'Suit breach causes rapid O2 loss', 'Minor injuries heal over time in shelter']},
         ],
+        'solar_system': [
+            {'name': 'stellar_classification', 'keywords': ['Star', 'Spectral', 'Luminosity', 'Temperature'], 'walls': ['Star color varies with surface temperature', 'Spectral class determines light output', 'Multiple star types must be distinguishable']},
+            {'name': 'orbital_mechanics', 'keywords': ['Orbit', 'Kepler', 'Gravity', 'Trajectory'], 'walls': ['Orbital period follows Kepler third law', 'Eccentricity varies by planet', 'Inclination relative to ecliptic plane']},
+            {'name': 'planetary_formation', 'keywords': ['Accretion', 'Protoplanet', 'Disk', 'Formation'], 'walls': ['Inner planets form rockier than outer planets', 'Gas giants require beyond frost line', 'System age affects planet composition']},
+            {'name': 'habitable_zone', 'keywords': ['Habitable', 'Zone', 'Goldilocks', 'Temperature'], 'walls': ['Habitable zone radius depends on star luminosity', 'At least one planet must be in habitable zone', 'Atmospheric retention requires sufficient gravity']},
+        ],
+        'planet_surface': [
+            {'name': 'atmosphere_composition', 'keywords': ['Atmosphere', 'Gas', 'Pressure', 'Composition'], 'walls': ['Atmospheric pressure varies with planet mass', 'Breathable requires O2-N2 mix', 'Greenhouse effect raises surface temperature']},
+            {'name': 'surface_geology', 'keywords': ['Geology', 'Crust', 'Tectonic', 'Volcanic'], 'walls': ['Tectonic activity depends on planet size', 'Volcanism releases atmosphere gases', 'Crust composition varies by planetary history']},
+            {'name': 'climate_zones', 'keywords': ['Climate', 'Latitude', 'Temperature', 'Precipitation'], 'walls': ['Equator hotter than poles', 'Atmospheric circulation creates climate bands', 'Axial tilt creates seasons']},
+            {'name': 'biome_generation', 'keywords': ['Biome', 'Ecosystem', 'Habitat', 'Region'], 'walls': ['Biomes distributed by temperature and precipitation', 'Transition zones between adjacent biomes', 'At least 3 distinct biomes per habitable planet']},
+        ],
         'npc_social': [
             {'name': 'need_generation', 'keywords': ['Need', 'Desire', 'Requirement', 'Urgency'], 'walls': ['NPC needs vary by type', 'Needs become urgent over time', 'Needs are visible through posture']},
             {'name': 'gesture_set', 'keywords': ['Gesture', 'Pose', 'Animation', 'Signal'], 'walls': ['At least 3 gesture states per NPC', 'Gestures readable from 50m', 'No text required for communication']},
@@ -89,7 +101,9 @@ def _graph_feature_exists(name):
     try:
         from core.graphify_interface import graphify_query
         results = graphify_query('feature', name)
-        return len(results) > 0
+        # Filter out 'not found' messages
+        real = [r for r in results if 'not found' not in str(r).lower() and r.get('feature')]
+        return len(real) > 0
     except:
         return False
 

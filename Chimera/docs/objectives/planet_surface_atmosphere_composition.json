@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for planet_surface_atmosphere_composition",
+  "scenario": "Train planet_surface_atmosphere_composition sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_atmospheric_pressure",
+      "min": 1,
+      "hard": true,
+      "wall": "Atmospheric pressure varies with planet mass"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_breathable_requires_",
+      "min": 1,
+      "hard": true,
+      "wall": "Breathable requires O2-N2 mix"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_greenhouse_effect_ra",
+      "min": 1,
+      "hard": true,
+      "wall": "Greenhouse effect raises surface temperature"
+    }
+  ]
+}

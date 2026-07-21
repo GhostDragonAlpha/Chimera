@@ -1,0 +1,23 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of planet_surface. Cluster: atmosphere_composition",
+  "name": "planet_surface_atmosphere_composition",
+  "parent_rung": "planet_surface",
+  "walls": [
+    "Atmospheric pressure varies with planet mass",
+    "Breathable requires O2-N2 mix",
+    "Greenhouse effect raises surface temperature"
+  ],
+  "element_query": {
+    "categories": [
+      "Atmosphere",
+      "Gas",
+      "Pressure",
+      "Composition"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}
