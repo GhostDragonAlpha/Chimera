@@ -96643,6 +96643,358 @@
       "links": [],
       "recorded_by": "forty_questions.py",
       "run_id": "run_9bdced1e6150"
+    },
+    {
+      "id": "simtest_3942662b652eddc5",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-21T06:58:27.656924",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "proceed_verification",
+      "demo": "full_game_loop",
+      "beats_total": 4,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "explore_and_crouch",
+          "outcome": "failed",
+          "features": [
+            "Verb_Look",
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": false,
+              "note": "pawn_class="
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.0
+                }
+              },
+              "ok": false,
+              "note": "pawn_property_toggles: no possessed pawn"
+            }
+          ]
+        },
+        {
+          "beat": "meet_trader",
+          "outcome": "blocked",
+          "features": [
+            "NPC_Basic_Model"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        },
+        {
+          "beat": "dig_and_collect",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Shovel",
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        },
+        {
+          "beat": "sacrifice_at_erisaid_core",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Drop",
+            "System_Sacrifice"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\proceed_verification.json",
+      "temperature": "[SIM] 0/4 beats reached in 'full_game_loop'. Failures: explore_and_crouch (failed: expect {\"pawn_class\": \"BP_Astronaut_Character_C\"} -> pawn_class=); meet_trader (blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}); dig_and_collect (blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}); sacrifice_at_erisaid_core (blocked: {\"erro",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'proceed_verification': 0/4 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a88ce1381a82"
+    },
+    {
+      "id": "surprise_3cc1cf249505ca5f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:58:28.078430",
+      "context": "Sleepwalker expected beat 'explore_and_crouch' to be reachable (full_game_loop)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"CollisionCylinder\", \"property\": \"CapsuleHalfHeight\", \"min_drop\": 20, \"settle_s\": 1.0}}, \"ok\": fa",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"Collisio'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a88ce1381a82"
+    },
+    {
+      "id": "surprise_9f0c701483235e0f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:58:28.445613",
+      "context": "Sleepwalker expected beat 'meet_trader' to be reachable (full_game_loop)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a88ce1381a82"
+    },
+    {
+      "id": "surprise_41a66a8d635afec3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:58:28.864186",
+      "context": "Sleepwalker expected beat 'dig_and_collect' to be reachable (full_game_loop)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a88ce1381a82"
+    },
+    {
+      "id": "surprise_8d503f9305f682f2",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:58:29.226654",
+      "context": "Sleepwalker expected beat 'sacrifice_at_erisaid_core' to be reachable (full_game_loop)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_a88ce1381a82"
+    },
+    {
+      "id": "simtest_704b42e289e77101",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-21T06:59:25.681164",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "proceed_verification_2",
+      "demo": "full_game_loop",
+      "beats_total": 4,
+      "beats_reached": 0,
+      "outcomes": [
+        {
+          "beat": "explore_and_crouch",
+          "outcome": "failed",
+          "features": [
+            "Verb_Look",
+            "Verb_Bend"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": false,
+              "note": "pawn_class="
+            },
+            {
+              "expect": {
+                "pawn_property_toggles": {
+                  "key": "C",
+                  "component": "CollisionCylinder",
+                  "property": "CapsuleHalfHeight",
+                  "min_drop": 20,
+                  "settle_s": 1.0
+                }
+              },
+              "ok": false,
+              "note": "pawn_property_toggles: no possessed pawn"
+            }
+          ]
+        },
+        {
+          "beat": "meet_trader",
+          "outcome": "blocked",
+          "features": [
+            "NPC_Basic_Model"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        },
+        {
+          "beat": "dig_and_collect",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Shovel",
+            "Verb_PickUp"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        },
+        {
+          "beat": "sacrifice_at_erisaid_core",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Drop",
+            "System_Sacrifice"
+          ],
+          "evidence": [
+            {
+              "error": "reset_position failed: no possessed pawn found in runtime_report"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\proceed_verification_2.json",
+      "temperature": "[SIM] 0/4 beats reached in 'full_game_loop'. Failures: explore_and_crouch (failed: expect {\"pawn_class\": \"BP_Astronaut_Character_C\"} -> pawn_class=); meet_trader (blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}); dig_and_collect (blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}); sacrifice_at_erisaid_core (blocked: {\"erro",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'proceed_verification_2': 0/4 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_678a5ac65df3"
+    },
+    {
+      "id": "surprise_37a9112047b534ab",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:59:26.057612",
+      "context": "Sleepwalker expected beat 'explore_and_crouch' to be reachable (full_game_loop)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"CollisionCylinder\", \"property\": \"CapsuleHalfHeight\", \"min_drop\": 20, \"settle_s\": 1.0}}, \"ok\": fa",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_property_toggles\": {\"key\": \"C\", \"component\": \"Collisio'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_678a5ac65df3"
+    },
+    {
+      "id": "surprise_2a672773f9387e86",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:59:26.476462",
+      "context": "Sleepwalker expected beat 'meet_trader' to be reachable (full_game_loop)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_678a5ac65df3"
+    },
+    {
+      "id": "surprise_8958d6bfb3101a93",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:59:26.842416",
+      "context": "Sleepwalker expected beat 'dig_and_collect' to be reachable (full_game_loop)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_678a5ac65df3"
+    },
+    {
+      "id": "surprise_23611e03af3f1066",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T06:59:27.263999",
+      "context": "Sleepwalker expected beat 'sacrifice_at_erisaid_core' to be reachable (full_game_loop)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_report\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"reset_position failed: no possessed pawn found in runtime_re'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_678a5ac65df3"
     }
   ],
   "edges": [
