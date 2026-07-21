@@ -1,0 +1,252 @@
+{
+  "_meta": {
+    "feature": "npc_social",
+    "parent": "root",
+    "created": "chat_typed",
+    "n_total": 40,
+    "n_answered": 40,
+    "depth_verdict": "deep"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature?",
+      "a": "NPCs with visible needs. Giving the right resource unlocks a blueprint. No immediate reward.",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system?",
+      "a": "Social rung \u2014 the mechanical heart of the Mirror of Erised.",
+      "answered": true
+    },
+    {
+      "id": 3,
+      "q": "What breaks without it?",
+      "a": "No NPCs. No one to give to. The Mirror has no mechanical expression.",
+      "answered": true
+    },
+    {
+      "id": 4,
+      "q": "What existing feature does this resemble?",
+      "a": "SacrificeLogComponent. GestureWheel communicates intent.",
+      "answered": true
+    },
+    {
+      "id": 5,
+      "q": "Rung or sub-rung?",
+      "a": "Parent rung. Sub-rungs: need_generation, gesture_set, reciprocity, population_density.",
+      "answered": true
+    },
+    {
+      "id": 6,
+      "q": "Physical constraint?",
+      "a": "NPC NEEDING state. Player gives correct resource. NPC SATISFIED. Blueprint flag set.",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "ONE measurement?",
+      "a": "Giving player sees blueprint at fabricator. Non-giving player does not.",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "Wall it must never violate?",
+      "a": "No immediate UI reward. No text. NPC communicates need without words.",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "Degenerate winner?",
+      "a": "All blueprints unlocked at session start. NPCs have no visible need states.",
+      "answered": true
+    },
+    {
+      "id": 10,
+      "q": "Constraint too loose?",
+      "a": "Player unlocks all blueprints without giving any resources.",
+      "answered": true
+    },
+    {
+      "id": 11,
+      "q": "At what scale?",
+      "a": "Encounter scale. 30 seconds to 2 minutes per NPC interaction.",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "Right definition level?",
+      "a": "One boolean flag per blueprint. NEEDING and SATISFIED per NPC. No dialogue tree.",
+      "answered": true
+    },
+    {
+      "id": 13,
+      "q": "Decompose further?",
+      "a": "Need detection, transfer animation, unlock propagation.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "Pattern emergence?",
+      "a": "After one successful give and check at the fabricator.",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "Deep enough?",
+      "a": "Player sees NPC posture, understands need, gives, walks away. Unlock discovered later.",
+      "answered": true
+    },
+    {
+      "id": 16,
+      "q": "Catalog variables?",
+      "a": "SacrificeLogComponent Record(), InventoryTradeComponent, GestureWheel.",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "Relevant elements?",
+      "a": "~126 social, ~13221 economy.",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Enough to train?",
+      "a": "Yes but sparse. Give-to-unlock connection is a single boolean.",
+      "answered": true
+    },
+    {
+      "id": 19,
+      "q": "MISSING variables?",
+      "a": "NPC need indicator. Catalog has trade data but no social need-state machine.",
+      "answered": true
+    },
+    {
+      "id": 20,
+      "q": "Need GPU?",
+      "a": "No. Boolean flag setting.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Connect to Mirror?",
+      "a": "DIRECTLY. This IS the Mirror. Giving to those who cannot pay is the only unlock.",
+      "answered": true
+    },
+    {
+      "id": 22,
+      "q": "How directly?",
+      "a": "Direct. The sub-rungs ARE the cost-meaning link.",
+      "answered": true
+    },
+    {
+      "id": 23,
+      "q": "Costless life meaningful without this?",
+      "a": "No. No way to express generosity. The Mirror is abstract.",
+      "answered": true
+    },
+    {
+      "id": 24,
+      "q": "Can this be gamed?",
+      "a": "Yes if same resource given to multiple NPCs. Wall: each resource type consumed on give.",
+      "answered": true
+    },
+    {
+      "id": 25,
+      "q": "Perfect Mirror service?",
+      "a": "Player approaches. NPC posture shows need. Player gives. Hours later: Oxygen Recycler blueprint.",
+      "answered": true
+    },
+    {
+      "id": 26,
+      "q": "Compose with what?",
+      "a": "fabricator_economy (check unlock), inventory (deduct), beacon_narrative (count help).",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What breaks at the seam?",
+      "a": "Unlock flag name mismatch. Blueprint stays locked after give.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Need decoder?",
+      "a": "NPC positions decoded. Need type and unlock table set by decoder.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "Failed composition?",
+      "a": "Player gives. NPC walks away. Nothing unlocks. Player feels cheated.",
+      "answered": true
+    },
+    {
+      "id": 30,
+      "q": "Need human judgment?",
+      "a": "System verifies flag. Human judges whether moment feels meaningful without UI.",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "Generations to converge?",
+      "a": "5-10 per sub-rung. Small boolean space.",
+      "answered": true
+    },
+    {
+      "id": 32,
+      "q": "Population size?",
+      "a": "32.",
+      "answered": true
+    },
+    {
+      "id": 33,
+      "q": "Risk of overfitting?",
+      "a": "Low. Binary flag.",
+      "answered": true
+    },
+    {
+      "id": 34,
+      "q": "Risk of underfitting?",
+      "a": "None. Flag is either set or not.",
+      "answered": true
+    },
+    {
+      "id": 35,
+      "q": "Trainer support?",
+      "a": "Yes. Each sub-rung is a simple domain.",
+      "answered": true
+    },
+    {
+      "id": 36,
+      "q": "Deep enough?",
+      "a": "At flag level yes. At experience level no. Needs gesture animation and sound.",
+      "answered": true
+    },
+    {
+      "id": 37,
+      "q": "Next decomposition level?",
+      "a": "Give animation, NPC satisfaction VFX, sound design for transfer.",
+      "answered": true
+    },
+    {
+      "id": 38,
+      "q": "Game feel complete without deeper?",
+      "a": "Loop works but feels empty. Needs next depth pass.",
+      "answered": true
+    },
+    {
+      "id": 39,
+      "q": "Expected emotional response?",
+      "a": "I sacrificed something real. It mattered. I discovered it later.",
+      "answered": true
+    },
+    {
+      "id": 40,
+      "q": "Mirror demands this?",
+      "a": "Absolutely. The Mirror is meaningless without this rung.",
+      "answered": true
+    }
+  ]
+}
