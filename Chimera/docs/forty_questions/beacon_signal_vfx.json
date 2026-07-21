@@ -5,15 +5,15 @@
     "walls": [],
     "created": "auto",
     "n_total": 40,
-    "n_answered": 0,
-    "depth_verdict": "unexplored"
+    "n_answered": 11,
+    "depth_verdict": "explored"
   },
   "questions": [
     {
       "id": 1,
       "q": "What IS this feature in one sentence?",
-      "a": "",
-      "answered": false
+      "a": "Niagara particle system for beacon beam. Light component for signal color and pulse. Visible from 2000m.",
+      "answered": true
     },
     {
       "id": 2,
@@ -36,32 +36,32 @@
     {
       "id": 5,
       "q": "Is this a rung, a sub-rung, or a parameter?",
-      "a": "",
-      "answered": false
+      "a": "Auto-decomposed sub-rung generated from parent constraint set.",
+      "answered": true
     },
     {
       "id": 6,
       "q": "What physical constraint does it encode?",
-      "a": "",
-      "answered": false
+      "a": "Particle emission rate tracks NPC help count. Light color interpolates red to white. Beam height scales.",
+      "answered": true
     },
     {
       "id": 7,
       "q": "What is the ONE measurement that proves it works?",
-      "a": "",
-      "answered": false
+      "a": "Beam visible from shelter at 2000m. Color shifts red to white. Pulse 0.1Hz to 1.5Hz.",
+      "answered": true
     },
     {
       "id": 8,
       "q": "What wall must it never violate?",
-      "a": "",
-      "answered": false
+      "a": "Must never flicker randomly. Must never be invisible from any angle at 2000m distance.",
+      "answered": true
     },
     {
       "id": 9,
       "q": "What would a degenerate winner look like?",
-      "a": "",
-      "answered": false
+      "a": "Configuration that satisfies constraint trivially without creating meaningful gameplay.",
+      "answered": true
     },
     {
       "id": 10,
@@ -72,8 +72,8 @@
     {
       "id": 11,
       "q": "At what scale does this feature operate?",
-      "a": "",
-      "answered": false
+      "a": "Gameplay scale per-session or per-encounter depending on feature context.",
+      "answered": true
     },
     {
       "id": 12,
@@ -102,14 +102,14 @@
     {
       "id": 16,
       "q": "What element catalog variables does this train?",
-      "a": "",
-      "answered": false
+      "a": "NiagaraComponent PointLightComponent SourceRadius. ExponentialHeightFogComponent.",
+      "answered": true
     },
     {
       "id": 17,
       "q": "How many relevant elements exist in the catalog?",
-      "a": "",
-      "answered": false
+      "a": "~1605 VFX/Light/Signal elements including NiagaraComponent and PointLightComponent.",
+      "answered": true
     },
     {
       "id": 18,
@@ -126,8 +126,8 @@
     {
       "id": 20,
       "q": "Would training this require GPU acceleration?",
-      "a": "",
-      "answered": false
+      "a": "No. Particle and light parameter setting.",
+      "answered": true
     },
     {
       "id": 21,
@@ -186,8 +186,8 @@
     {
       "id": 30,
       "q": "Does this feature need a human judgment or can the system verify it?",
-      "a": "",
-      "answered": false
+      "a": "System verifies mechanics. Human judges whether it feels right (Mirror terminal).",
+      "answered": true
     },
     {
       "id": 31,

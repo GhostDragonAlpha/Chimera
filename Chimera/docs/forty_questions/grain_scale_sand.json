@@ -5,7 +5,7 @@
     "walls": [],
     "created": "auto",
     "n_total": 40,
-    "n_answered": 0,
+    "n_answered": 8,
     "depth_verdict": "unexplored"
   },
   "questions": [
@@ -36,20 +36,20 @@
     {
       "id": 5,
       "q": "Is this a rung, a sub-rung, or a parameter?",
-      "a": "",
-      "answered": false
+      "a": "Auto-decomposed sub-rung generated from parent constraint set.",
+      "answered": true
     },
     {
       "id": 6,
       "q": "What physical constraint does it encode?",
-      "a": "",
-      "answered": false
+      "a": "Grain size distribution follows power law with exponent alpha between 2.5 and 3.0 (research-backed).",
+      "answered": true
     },
     {
       "id": 7,
       "q": "What is the ONE measurement that proves it works?",
-      "a": "",
-      "answered": false
+      "a": "Measured repose angle of settled pile is 30-40 degrees (matches lunar regolith research).",
+      "answered": true
     },
     {
       "id": 8,
@@ -72,8 +72,8 @@
     {
       "id": 11,
       "q": "At what scale does this feature operate?",
-      "a": "",
-      "answered": false
+      "a": "Sub-millimeter grain scale. Millions of particles per square meter.",
+      "answered": true
     },
     {
       "id": 12,
@@ -102,8 +102,8 @@
     {
       "id": 16,
       "q": "What element catalog variables does this train?",
-      "a": "",
-      "answered": false
+      "a": "NiagaraEmitter, NiagaraComponent, PhysicalMaterial roughness, grain distribution parameters.",
+      "answered": true
     },
     {
       "id": 17,
@@ -126,8 +126,8 @@
     {
       "id": 20,
       "q": "Would training this require GPU acceleration?",
-      "a": "",
-      "answered": false
+      "a": "Depends on variable count. Under 1000 vars: CPU. Over 1000: GPU via matter_gpu.",
+      "answered": true
     },
     {
       "id": 21,
@@ -162,8 +162,8 @@
     {
       "id": 26,
       "q": "What other features does this compose with?",
-      "a": "",
-      "answered": false
+      "a": "ground_terrain parent rung. footstep_response for displacement. dust_vfx for particle effects.",
+      "answered": true
     },
     {
       "id": 27,
@@ -186,8 +186,8 @@
     {
       "id": 30,
       "q": "Does this feature need a human judgment or can the system verify it?",
-      "a": "",
-      "answered": false
+      "a": "System verifies mechanics. Human judges whether it feels right (Mirror terminal).",
+      "answered": true
     },
     {
       "id": 31,

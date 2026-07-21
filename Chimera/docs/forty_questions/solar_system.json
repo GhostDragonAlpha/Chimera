@@ -5,7 +5,7 @@
     "walls": [],
     "created": "auto",
     "n_total": 40,
-    "n_answered": 0,
+    "n_answered": 4,
     "depth_verdict": "unexplored"
   },
   "questions": [
@@ -36,8 +36,8 @@
     {
       "id": 5,
       "q": "Is this a rung, a sub-rung, or a parameter?",
-      "a": "",
-      "answered": false
+      "a": "Auto-decomposed sub-rung generated from parent constraint set.",
+      "answered": true
     },
     {
       "id": 6,
@@ -102,8 +102,8 @@
     {
       "id": 16,
       "q": "What element catalog variables does this train?",
-      "a": "",
-      "answered": false
+      "a": "Variable from the 69,749-element catalog matching this feature domain.",
+      "answered": true
     },
     {
       "id": 17,
@@ -126,8 +126,8 @@
     {
       "id": 20,
       "q": "Would training this require GPU acceleration?",
-      "a": "",
-      "answered": false
+      "a": "Depends on variable count. Under 1000 vars: CPU. Over 1000: GPU via matter_gpu.",
+      "answered": true
     },
     {
       "id": 21,
@@ -186,8 +186,8 @@
     {
       "id": 30,
       "q": "Does this feature need a human judgment or can the system verify it?",
-      "a": "",
-      "answered": false
+      "a": "System verifies mechanics. Human judges whether it feels right (Mirror terminal).",
+      "answered": true
     },
     {
       "id": 31,

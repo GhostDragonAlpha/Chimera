@@ -5,15 +5,15 @@
     "walls": [],
     "created": "auto",
     "n_total": 40,
-    "n_answered": 0,
-    "depth_verdict": "unexplored"
+    "n_answered": 11,
+    "depth_verdict": "explored"
   },
   "questions": [
     {
       "id": 1,
       "q": "What IS this feature in one sentence?",
-      "a": "",
-      "answered": false
+      "a": "Footstep audio per surface type. Sand rock and metal each have distinct frequency profiles.",
+      "answered": true
     },
     {
       "id": 2,
@@ -36,32 +36,32 @@
     {
       "id": 5,
       "q": "Is this a rung, a sub-rung, or a parameter?",
-      "a": "",
-      "answered": false
+      "a": "Auto-decomposed sub-rung generated from parent constraint set.",
+      "answered": true
     },
     {
       "id": 6,
       "q": "What physical constraint does it encode?",
-      "a": "",
-      "answered": false
+      "a": "Sand footstep peaks at 200-800Hz. Rock at 800-2000Hz. Metal at 2000-5000Hz. Amplitude scales with player velocity.",
+      "answered": true
     },
     {
       "id": 7,
       "q": "What is the ONE measurement that proves it works?",
-      "a": "",
-      "answered": false
+      "a": "A player walking on sand produces a 200-800Hz sound. A player walking on metal produces a 2000-5000Hz sound.",
+      "answered": true
     },
     {
       "id": 8,
       "q": "What wall must it never violate?",
-      "a": "",
-      "answered": false
+      "a": "Must produce consistent verifiable results. Must not crash.",
+      "answered": true
     },
     {
       "id": 9,
       "q": "What would a degenerate winner look like?",
-      "a": "",
-      "answered": false
+      "a": "Configuration that satisfies constraint trivially without creating meaningful gameplay.",
+      "answered": true
     },
     {
       "id": 10,
@@ -72,8 +72,8 @@
     {
       "id": 11,
       "q": "At what scale does this feature operate?",
-      "a": "",
-      "answered": false
+      "a": "Gameplay scale per-session or per-encounter depending on feature context.",
+      "answered": true
     },
     {
       "id": 12,
@@ -102,14 +102,14 @@
     {
       "id": 16,
       "q": "What element catalog variables does this train?",
-      "a": "",
-      "answered": false
+      "a": "ChimeraMovementComponent SandFootstepSound MetalFootstepSound RockFootstepSound AudioComponent.",
+      "answered": true
     },
     {
       "id": 17,
       "q": "How many relevant elements exist in the catalog?",
-      "a": "",
-      "answered": false
+      "a": "~1948 audio-related elements including 5 footstep sound properties and AudioComponent.",
+      "answered": true
     },
     {
       "id": 18,
@@ -126,8 +126,8 @@
     {
       "id": 20,
       "q": "Would training this require GPU acceleration?",
-      "a": "",
-      "answered": false
+      "a": "Depends on variable count. Under 1000 vars: CPU. Over 1000: GPU via matter_gpu.",
+      "answered": true
     },
     {
       "id": 21,
@@ -186,8 +186,8 @@
     {
       "id": 30,
       "q": "Does this feature need a human judgment or can the system verify it?",
-      "a": "",
-      "answered": false
+      "a": "System verifies mechanics. Human judges whether it feels right (Mirror terminal).",
+      "answered": true
     },
     {
       "id": 31,
