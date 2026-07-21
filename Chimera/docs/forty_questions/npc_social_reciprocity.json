@@ -1,0 +1,252 @@
+{
+  "_meta": {
+    "feature": "npc_social_reciprocity",
+    "parent": "npc_social",
+    "created": "chat_typed",
+    "n_total": 40,
+    "n_answered": 40,
+    "depth_verdict": "deep"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature in one sentence?",
+      "a": "When a player gives a resource to an NPC who cannot pay, the NPC unlocks a blueprint. No immediate reward.",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system does it belong to?",
+      "a": "npc_social \u2014 the mechanical heart of the Mirror of Erised.",
+      "answered": true
+    },
+    {
+      "id": 3,
+      "q": "What would break if this feature did not exist?",
+      "a": "The Mirror would have no mechanical expression. Giving would have no consequence.",
+      "answered": true
+    },
+    {
+      "id": 4,
+      "q": "What existing feature does this most resemble?",
+      "a": "SacrificeLogComponent and StarMemorialComponent.",
+      "answered": true
+    },
+    {
+      "id": 5,
+      "q": "Is this a rung, a sub-rung, or a parameter?",
+      "a": "Sub-rung of npc_social.",
+      "answered": true
+    },
+    {
+      "id": 6,
+      "q": "What physical constraint does it encode?",
+      "a": "Giving consumes resource from inventory. NPC need transitions NEEDING to SATISFIED. Blueprint flag set.",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "What is the ONE measurement that proves it works?",
+      "a": "Giving player has blueprint unlock that non-giving player does not.",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "What wall must it never violate?",
+      "a": "No immediate UI reward. No XP, no currency, no notification.",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "What would a degenerate winner look like?",
+      "a": "All blueprints unlocked on session start, bypassing giving mechanic.",
+      "answered": true
+    },
+    {
+      "id": 10,
+      "q": "How would we know if the constraint is too loose?",
+      "a": "Players unlock blueprints without giving, or giving has no effect.",
+      "answered": true
+    },
+    {
+      "id": 11,
+      "q": "At what scale does this feature operate?",
+      "a": "Individual encounter. One player, one NPC, one resource, one unlock.",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "What is the right definition level for this scale?",
+      "a": "Single boolean flag per blueprint per playthrough. Not a skill tree.",
+      "answered": true
+    },
+    {
+      "id": 13,
+      "q": "Could this be decomposed further? Into what?",
+      "a": "Yes: need detection, transfer animation, unlock propagation.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "At what resolution does the pattern emerge?",
+      "a": "After exactly one successful give and check cycle.",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "What would deep enough look like for this feature?",
+      "a": "Player identifies need, gives resource, verifies unlock at fabricator, beacon changes. No UI text.",
+      "answered": true
+    },
+    {
+      "id": 16,
+      "q": "What element catalog variables does this train?",
+      "a": "SacrificeLogComponent entries, InventoryTradeComponent unlock flags, blueprint DataTable.",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "How many relevant elements exist in the catalog?",
+      "a": "~126 social, ~474 narrative, ~13221 economy.",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Are there enough variables to train meaningfully?",
+      "a": "Yes but sparse. Key variables are boolean flags.",
+      "answered": true
+    },
+    {
+      "id": 19,
+      "q": "What variables are MISSING from the catalog?",
+      "a": "Blueprint unlocked via NPC help flag type. Trade commodities exist but not social unlock flags.",
+      "answered": true
+    },
+    {
+      "id": 20,
+      "q": "Would training this require GPU acceleration?",
+      "a": "No. Boolean flag manipulation, not physics simulation.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Does this feature connect to the Mirror of Erised?",
+      "a": "DIRECTLY. This IS the mechanical heart. Giving to one who cannot pay is the only unlock.",
+      "answered": true
+    },
+    {
+      "id": 22,
+      "q": "How directly does it serve the Mirror?",
+      "a": "Direct. This sub-rung IS the cost-meaning link.",
+      "answered": true
+    },
+    {
+      "id": 23,
+      "q": "Would a costless life still be meaningful without this feature?",
+      "a": "No. No mechanical difference between generous and costless. Mirror becomes words, not physics.",
+      "answered": true
+    },
+    {
+      "id": 24,
+      "q": "Could this feature be gamed to fake a generous life?",
+      "a": "Yes if same resource given multiple times with no deduction. Wall: one unlock per resource type per playthrough.",
+      "answered": true
+    },
+    {
+      "id": 25,
+      "q": "What would this feature look like if it perfectly served the Mirror?",
+      "a": "Player gives last oxygen can. Hours later at fabricator: Oxygen Recycler blueprint. Recognized without being told.",
+      "answered": true
+    },
+    {
+      "id": 26,
+      "q": "What other features does this compose with?",
+      "a": "SacrificeLog, fabricator_economy, beacon_narrative, inventory.",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What could break at the seam?",
+      "a": "Fabricator checks wrong flag name. Blueprint stays locked even after giving.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Does this need a decoder step?",
+      "a": "No. NPCs are already placed. Decoder sets need state and unlock table.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "What would a failed composition look like?",
+      "a": "Player gives, NPC satisfied, fabricator has nothing. Player feels cheated.",
+      "answered": true
+    },
+    {
+      "id": 30,
+      "q": "Does this need human judgment?",
+      "a": "System verifies mechanical loop. Human judges whether it feels meaningful.",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "How many generations to converge?",
+      "a": "5-10. Small boolean parameter space.",
+      "answered": true
+    },
+    {
+      "id": 32,
+      "q": "What population size?",
+      "a": "32.",
+      "answered": true
+    },
+    {
+      "id": 33,
+      "q": "Risk of overfitting?",
+      "a": "Low. Wall is a simple boolean check.",
+      "answered": true
+    },
+    {
+      "id": 34,
+      "q": "Risk of underfitting?",
+      "a": "None. Wall is binary: flag set or not.",
+      "answered": true
+    },
+    {
+      "id": 35,
+      "q": "Does the trainer support this?",
+      "a": "Yes but domain needs hand-authoring. Measure function needs MCP calls for give\u2192unlock test.",
+      "answered": true
+    },
+    {
+      "id": 36,
+      "q": "Have we gone deep enough?",
+      "a": "At flag level yes. Depth is in FEEL, which is human-judged.",
+      "answered": true
+    },
+    {
+      "id": 37,
+      "q": "What is the next decomposition level?",
+      "a": "Animation states, particle effects, sound design for the give moment.",
+      "answered": true
+    },
+    {
+      "id": 38,
+      "q": "If we stopped here, would the game feel complete?",
+      "a": "Loop works but feels empty. Needs animation/audio/VFX to land.",
+      "answered": true
+    },
+    {
+      "id": 39,
+      "q": "What is the expected emotional response?",
+      "a": "I sacrificed something real and it mattered. I discovered it later, not told.",
+      "answered": true
+    },
+    {
+      "id": 40,
+      "q": "Does this exist because the Mirror demands it?",
+      "a": "Absolutely. Without it the game has no soul.",
+      "answered": true
+    }
+  ]
+}
