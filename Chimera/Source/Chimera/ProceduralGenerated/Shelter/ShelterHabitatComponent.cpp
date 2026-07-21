@@ -67,7 +67,7 @@ void UShelterHabitatComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	// Proximity check: every tick, measure distance from this shelter's owner
 	// to the player pawn. If within ShelterRadius, set refill flags.
 	// Uses direct distance calculation — reliable regardless of collision config.
-	if (bShelterActive && GetOwner())
+	// Resource collection: detect tagged actors near the player and allow E-key pickup.
 	{
 		UWorld* World = GetWorld();
 		if (World)
