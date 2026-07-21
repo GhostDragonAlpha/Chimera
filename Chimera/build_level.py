@@ -61,20 +61,26 @@ def spawn_static_mesh(name, mesh_path, location, scale=(1,1,1), rotation=(0,0,0)
 
 
 def spawn_blueprint(name, bp_path, location, scale=(1,1,1), rotation=(0,0,0)):
-    """Spawn a Blueprint actor."""
+    """Spawn a Blueprint actor. Tries multiple load strategies."""
     actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     actor_loc = unreal.Vector(location[0], location[1], location[2])
     actor_rot = unreal.Rotator(rotation[0], rotation[1], rotation[2])
     actor_scale = unreal.Vector(scale[0], scale[1], scale[2])
     
-    bp = unreal.load_asset(name=bp_path)
-    if bp is None:
-        print(f"  [ERR] Cannot load Blueprint: {bp_path}")
-        return None
+    actor = None
+    for path in [bp_path, bp_path + "_C"]:
+        try:
+            obj = unreal.load_asset(name=path)
+            if obj is not None:
+                actor = actor_subsystem.spawn_actor_from_object(obj, actor_loc, actor_rot)
+                if actor is not None:
+                    break
+        except:
+            pass
     
-    actor = actor_subsystem.spawn_actor_from_object(bp, actor_loc, actor_rot)
     if actor is None:
-        print(f"  [ERR] Cannot spawn Blueprint actor: {name}")
+        print(f"  [ERR] Cannot spawn Blueprint: {name} at {bp_path}")
+        print(f"  Place this Blueprint manually from the Place Actors panel.")
         return None
     
     actor.set_actor_label(name)
@@ -130,10 +136,14 @@ def build_sky():
     """Add sky sphere, atmospheric fog, and height fog."""
     print("\n=== Building Sky ===")
     
-    # Sky sphere
-    spawn_static_mesh("SkySphere", 
+    # Sky sphere (may fail - place manually from Place Actors panel)
+    spawn_blueprint("SkySphere", 
         "/Engine/Blueprints/Sky/BP_SkySphere.BP_SkySphere",
-        (0, 0, 0), scale=(100, 100, 100))
+        (0, 0, 0))
+    
+    # Sky light for ambient
+    spawn_light("SkyLight", "SkyLight", (0, 0, 0), 
+                color=(0.6, 0.7, 1.0), intensity=0.5)
     
     # Exponential height fog
     fog = spawn_light("AtmosphereFog", "ExponentialHeightFog", (0, 0, 0),
