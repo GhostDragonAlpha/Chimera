@@ -1,0 +1,11 @@
+{
+  "_provenance": "Planet surface rung. Mirror of Erised: at least one habitable planet must exist.",
+  "scenario": "Consume solar system planet triples (mass, a, e). Train planet surface properties: temperature, atmosphere, biomes. At least one planet must be habitable.",
+  "constraints": [
+    {"kind": "at_least", "measure": "n_habitable", "min": 1, "hard": true, "wall": "Mirror of Erised: at least one planet must be habitable"},
+    {"kind": "at_least", "measure": "n_planets", "min": 3, "hard": true, "wall": "At least 3 planets must exist"},
+    {"kind": "at_least", "measure": "n_unique_biomes", "min": 2, "wall": "At least 2 unique biomes across the system"},
+    {"kind": "at_most", "measure": "n_gas", "max": 3, "wall": "No more than 3 gas giants"},
+    {"kind": "at_most", "measure": "n_icy", "max": 3, "wall": "No more than 3 icy bodies"}
+  ]
+}
