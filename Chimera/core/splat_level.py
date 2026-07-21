@@ -149,29 +149,38 @@ def emit_splat_cloud(pos, material, count=1, spread=1.0, seed=42,
     return out
 
 
-def build_ground_terrain(decoded, extent=2000, density=5000):
-    """Build the ground entirely from splats."""
-    print('  Building ground terrain...')
+def build_ground_terrain(decoded, extent=2000, density=50000):
+    """Build the ground entirely from splats at high density."""
+    print(f'  Building ground terrain ({density:,} splats)...')
     gt = decoded.get('ground_terrain', {})
     origin = gt.get('origin', (0, 0, -50)) if isinstance(gt, dict) else (0, 0, -50)
     
-    # Grid of splats across the ground plane
+    rng = np.random.RandomState(0)
+    
+    # Jittered grid for better ground coverage
     side = int(math.sqrt(density))
-    xs = np.linspace(-extent/2, extent/2, side)
-    ys = np.linspace(-extent/2, extent/2, side)
+    spacing = extent / side
+    xs = np.linspace(-extent/2 + spacing/2, extent/2 - spacing/2, side)
+    ys = np.linspace(-extent/2 + spacing/2, extent/2 - spacing/2, side)
     xx, yy = np.meshgrid(xs, ys)
     
-    positions = np.stack([xx.ravel(), yy.ravel(), np.full(side*side, origin[2])], axis=1)
+    # Add jitter
+    xx += rng.uniform(-spacing*0.3, spacing*0.3, size=xx.shape)
+    yy += rng.uniform(-spacing*0.3, spacing*0.3, size=yy.shape)
     
-    # Mix sand and rock
+    positions = np.stack([xx.ravel(), yy.ravel(), np.full(side*side, origin[2])], axis=1)
     n = len(positions)
-    mat = np.random.RandomState(0).choice(['sand', 'rock', 'ground'], size=n, p=[0.4, 0.3, 0.3])
+    
+    # Layer materials: sand (base), rock (clusters), ground (sandy mix)
+    mat = rng.choice(['sand', 'rock', 'ground'], size=n, p=[0.5, 0.2, 0.3])
     
     all_splats = []
     for m in set(mat):
         mask = mat == m
         pts = positions[mask]
-        chunk = emit_splat_cloud(pts.mean(axis=0), m, count=len(pts), spread=extent/side*0.6)
+        # Each splat covers a small area
+        spread_val = spacing * 0.45
+        chunk = emit_splat_cloud(pts.mean(axis=0), m, count=len(pts), spread=spread_val, seed=int(rng.randint(0,1000)))
         all_splats.append(chunk)
     
     return _merge(all_splats)
