@@ -72,87 +72,144 @@ def mutate(genome: np.ndarray, rate: float = 0.3, rng=None):
     return g
 
 
-def measure(material_name: str, genome: np.ndarray) -> dict:
-    """Measure how well a splat composition matches a material's optical targets.
+def _load_40q(material_name: str) -> dict:
+    """Load the 40Q document for a material and extract wall constraints."""
+    path = ROOT / 'docs' / 'forty_questions' / f'{material_name}.json'
+    if not path.exists():
+        return {}
+    with open(path) as f:
+        doc = json.load(f)
     
-    Renders the splat cloud and compares against the library's albedo,
-    roughness, subsurface, and alpha targets.
+    # Extract constraints from 40Q answers
+    constraints = {}
+    for q in doc['questions']:
+        if not q.get('answered') or not q.get('a'):
+            continue
+        text = q['q'].lower() + ' ' + q['a'].lower()
+        
+        # Detect splat type mentions
+        for st in ['surface', 'fiber', 'point', 'shell', 'beam', 'cloud', 'glow']:
+            if st in text:
+                constraints[f'uses_{st}'] = constraints.get(f'uses_{st}', 0) + 1
+        
+        # Detect scale/roughness mentions
+        if 'grain' in text or 'rough' in text or 'granular' in text:
+            constraints['rough'] = constraints.get('rough', 0) + 1
+            constraints['uses_point'] = constraints.get('uses_point', 0) + 1
+        if 'smooth' in text or 'uniform' in text or 'clean' in text:
+            constraints['smooth'] = constraints.get('smooth', 0) + 1
+        if 'fiber' in text or 'streak' in text or 'brush' in text or 'striation' in text:
+            constraints['uses_fiber'] = constraints.get('uses_fiber', 0) + 2
+        if 'subsurface' in text or 'translucen' in text or 'scatter' in text:
+            constraints['subsurface'] = constraints.get('subsurface', 0) + 1
+            constraints['uses_shell'] = constraints.get('uses_shell', 0) + 1
+        if 'porous' in text or 'trabecular' in text:
+            constraints['porous'] = constraints.get('porous', 0) + 1
+            constraints['uses_point'] = constraints.get('uses_point', 0) + 1
+        if 'fracture' in text or 'sharp' in text or 'broken' in text:
+            constraints['fracture'] = constraints.get('fracture', 0) + 1
+            constraints['uses_shell'] = constraints.get('uses_shell', 0) + 1
+        if 'transparent' in text or 'clear' in text or 'ice' in text:
+            constraints['transparent'] = constraints.get('transparent', 0) + 1
+    
+    return constraints
+
+
+def measure(material_name: str, genome: np.ndarray) -> dict:
+    """Measure how well a splat composition matches a material's 40Q walls.
+    
+    Instead of optimizing against the library's own numbers (circular),
+    this reads the 40Q document and checks how well the composition
+    satisfies the RESEARCHED constraints.
     """
     mat = MATTER_LIB['materials'].get(material_name)
     if mat is None:
         return {}
     
+    constraints = _load_40q(material_name)
     app = mat.get('appearance', {})
     target_albedo = np.array(app.get('albedo_mean_rgb', [0.5, 0.5, 0.5]))
     target_roughness = app.get('roughness_mean', 0.5)
     target_subsurface = app.get('subsurface_strength', 0.0)
     target_alpha = app.get('alpha', 1.0)
-    target_metallic = app.get('metallic', 0.0)
     
     n = len(genome) // 2
     weights = genome[:n]
     scales = genome[n:]
     
-    # Which splat types are active
     active = weights > 0.05
     if not active.any():
         return {'n_active': 0}
     
-    # Normalize weights
     w = weights / weights.sum()
+    active_types = [SPLAT_NAMES[i] for i in range(N_TYPES) if active[i]]
     
-    # Estimate the effective optical properties of this composition
-    # Surface/Fiber/Shell splats contribute the albedo directly
-    # Point/Beam/Cloud/Glow splats scatter light and reduce effective coverage
+    # --- Satisfy 40Q constraints ---
+    constraint_score = 0.0
+    max_score = 0.0
     
-    surface_frac = w[0] + w[1] + w[3]  # surface + fiber + shell = structured
-    point_frac = w[2] + w[4] + w[5] + w[6]  # point + beam + cloud + glow = scattered
+    for constraint, strength in constraints.items():
+        max_score += strength
+        
+        if constraint == 'uses_surface' and w[0] > 0.1:
+            constraint_score += strength
+        elif constraint == 'uses_fiber' and w[1] > 0.1:
+            constraint_score += strength
+        elif constraint == 'uses_point' and w[2] > 0.05:
+            constraint_score += strength
+        elif constraint == 'uses_shell' and w[3] > 0.1:
+            constraint_score += strength
+        elif constraint == 'uses_beam' and w[4] > 0.05:
+            constraint_score += strength
+        elif constraint == 'uses_cloud' and w[5] > 0.05:
+            constraint_score += strength
+        elif constraint == 'uses_glow' and w[6] > 0.05:
+            constraint_score += strength
+        elif constraint == 'smooth' and w[0] + w[1] + w[3] > 0.7:
+            constraint_score += strength * 0.5  # smooth = structured, not rough
+        elif constraint == 'rough' and w[2] > 0.05:
+            constraint_score += strength  # rough = has point splats
+        elif constraint == 'subsurface' and w[3] > 0.2:
+            constraint_score += strength  # subsurface = shell splats
+        elif constraint == 'porous' and w[2] > 0.1:
+            constraint_score += strength  # porous = point splats
     
-    # Effective albedo: structured splats show the material color,
-    # scattered splats dilute it toward gray
-    eff_albedo = surface_frac * target_albedo + point_frac * np.array([0.5, 0.5, 0.5])
+    constraint_fraction = constraint_score / max(max_score, 1)
     
-    # Effective roughness: larger scales = rougher
+    # --- Optical match (from library, but weighted lower) ---
+    surface_frac = w[0] + w[1] + w[3]
+    point_frac = w[2] + w[4] + w[5] + w[6]
+    eff_albedo = surface_frac * np.array(target_albedo) + point_frac * np.array([0.5, 0.5, 0.5])
     active_scales = scales[active]
     eff_roughness = np.clip(np.mean(active_scales) * 0.3, 0.1, 1.0)
-    
-    # Effective subsurface: shell and surface splats with thin normal = more subsurface
-    eff_subsurface = target_subsurface * surface_frac
-    
-    # Effective alpha: composition of transparent vs opaque splats
+    eff_subsurface = target_subsurface * w[3]  # shell splats carry subsurface
     eff_alpha = target_alpha * surface_frac + 0.5 * point_frac
     
-    # Error metrics (lower is better)
     albedo_error = float(np.mean(np.abs(eff_albedo - target_albedo)))
     roughness_error = float(abs(eff_roughness - target_roughness))
-    subsurface_error = float(abs(eff_subsurface - target_subsurface))
-    alpha_error = float(abs(eff_alpha - target_alpha))
     
-    total_error = albedo_error + roughness_error + subsurface_error + alpha_error
+    # Total: 70% constraint satisfaction, 30% optical match
+    total_error = (1.0 - constraint_fraction) * 0.7 + (albedo_error + roughness_error) * 0.3
     
-    # Penalize too few or too many active types
-    type_penalty = 0.0
+    # Type penalty
     n_active = int(active.sum())
+    type_penalty = 0.0
     if n_active < 2:
-        type_penalty = 1.0  # need at least 2 types
+        type_penalty = 0.2
     if n_active > 5:
-        type_penalty = 0.5 * (n_active - 5)  # penalize excessive complexity
-    
+        type_penalty = 0.1 * (n_active - 5)
     total_error += type_penalty
     
     return {
         'n_active': n_active,
+        'constraint_fraction': constraint_fraction,
         'albedo_error': albedo_error,
         'roughness_error': roughness_error,
-        'subsurface_error': subsurface_error,
-        'alpha_error': alpha_error,
         'type_penalty': type_penalty,
         'total_error': total_error,
         'surface_frac': float(surface_frac),
         'point_frac': float(point_frac),
-        'active_types': [SPLAT_NAMES[i] for i in range(N_TYPES) if active[i]],
-        'eff_albedo': eff_albedo.tolist(),
-        'eff_roughness': eff_roughness,
+        'active_types': active_types,
     }
 
 

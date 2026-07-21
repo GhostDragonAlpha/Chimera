@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "feature": "skin",
+    "parent": "matter_library",
+    "walls": [],
+    "created": "auto",
+    "n_total": 40,
+    "n_answered": 6,
+    "depth_verdict": "unexplored"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature in one sentence?",
+      "a": "Soft tissue. Density 1090 kg/m3 (ICRP 110). Subsurface strength 0.55",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system does it belong to?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 3,
+      "q": "What would break if this feature didn't exist?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 4,
+      "q": "What existing feature does this most resemble?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 5,
+      "q": "Is this a rung, a sub-rung, or a parameter?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 6,
+      "q": "What physical constraint does it encode?",
+      "a": "NPC body surface. Splat: surface (main) + shell (subsurface) + point (pore detail)",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "What is the ONE measurement that proves it works?",
+      "a": "Close range on NPCs. Subsurface creates soft translucency",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "What wall must it never violate?",
+      "a": "Must show subsurface scattering. Must never appear hard/plastic",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "What would a degenerate winner look like?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 10,
+      "q": "How would we know if the constraint is too loose?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 11,
+      "q": "At what scale does this feature operate?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 12,
+      "q": "What is the right definition level for this scale?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 13,
+      "q": "Could this be decomposed further? Into what?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 14,
+      "q": "At what resolution does the pattern emerge?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 15,
+      "q": "What would 'deep enough' look like for this feature?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 16,
+      "q": "What element catalog variables does this train?",
+      "a": "surface + shell + point splat types",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "How many relevant elements exist in the catalog?",
+      "a": "fiber=22%, shell=78% (trained)",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Are there enough variables to train meaningfully?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 19,
+      "q": "What variables are MISSING from the catalog?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 20,
+      "q": "Would training this require GPU acceleration?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 21,
+      "q": "Does this feature connect to the Mirror of Erised?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 22,
+      "q": "How directly does it serve the Mirror? (direct/enabling/orthogonal)",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 23,
+      "q": "Would a costless life still be meaningful without this feature?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 24,
+      "q": "Could this feature be gamed to fake a generous life?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 25,
+      "q": "What would this feature look like if it perfectly served the Mirror?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 26,
+      "q": "What other features does this compose with?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 27,
+      "q": "What could break at the seam between this and its neighbors?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 28,
+      "q": "Does this need a decoder step to place in the level?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 29,
+      "q": "What would a failed composition look like?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 30,
+      "q": "Does this feature need a human judgment or can the system verify it?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 31,
+      "q": "How many generations to converge?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 32,
+      "q": "What population size is appropriate?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 33,
+      "q": "What's the risk of overfitting?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 34,
+      "q": "What's the risk of underfitting?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 35,
+      "q": "Does the existing trainer support this domain type?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 36,
+      "q": "Have we gone deep enough on this feature?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 37,
+      "q": "What would the NEXT level of decomposition look like?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 38,
+      "q": "If we stopped here, would the game feel complete?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 39,
+      "q": "What is the human's expected emotional response to this feature?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 40,
+      "q": "Does this feature exist because the Mirror demands it, or because it's technically interesting?",
+      "a": "",
+      "answered": false
+    }
+  ]
+}
