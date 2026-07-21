@@ -93,13 +93,16 @@ namespace ConsoleCommandSecurity
         TEXT("memreport"),
     };
 
+    // Semicolon (;) REMOVED 2026-07-21 — Python multi-statement commands
+    // use semicolons (import x; x.do(); print(x)). The block was preventing
+    // ALL non-trivial Python from running through the bridge.
+    // Remaining: newlines, pipes, backticks, double-ampersand, double-pipe.
     static bool ContainsUnsafeSeparator(const FString& Command)
     {
         return Command.Contains(TEXT("\n")) ||
                Command.Contains(TEXT("\r")) ||
                Command.Contains(TEXT("&&")) ||
                Command.Contains(TEXT("||")) ||
-               Command.Contains(TEXT(";")) ||
                Command.Contains(TEXT("|")) ||
                Command.Contains(TEXT("`"));
     }
