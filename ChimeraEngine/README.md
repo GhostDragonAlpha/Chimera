@@ -1,10 +1,12 @@
 # Chimera Engine
 
-**Standalone GPU particle physics + Gaussian splat rendering engine.**  
-Zero external engine dependencies. Python for design, CUDA for runtime.
+**GPU particle physics + Gaussian splat rendering + ML world model.**
 
 ```
-200K splats @ 139 FPS  |  5 particle types  |  Full 3DGS projection
+python -m ParticleEngine.oak_demo        # Procedural oak tree
+python -m ParticleEngine.debug_viewer    # Object debug viewer  
+python -m ParticleEngine.viewer          # Fly through particle world
+python -m ChimeraEngine fullcycle        # Council → Beats → Helm
 ```
 
 ---
@@ -12,23 +14,19 @@ Zero external engine dependencies. Python for design, CUDA for runtime.
 ## Quickstart
 
 ```bash
-# Interactive object viewer (rainbow sphere, ring, wireframe)
-python -m ParticleEngine.debug_viewer
+# Viewers
+python -m ParticleEngine.debug_viewer     # Rainbow sphere + ring + cube
+python -m ParticleEngine.oak_demo         # Physics-informed oak tree
+python -m ParticleEngine.viewer           # WASD flythrough
 
-# Fly through a particle world (WASD + mouse)
-python -m ParticleEngine.viewer --particles 15000
+# Development workflow
+python -m ChimeraEngine fullcycle         # Full verify cycle (3/3 beats passing)
+python -m ChimeraEngine witness --beats <path> --record
+python -m ChimeraEngine analyze           # Council design questions
+python -m ChimeraEngine helm              # Gap analysis
 
-# Full development cycle (Council → Beats → Helm)
-python -m ChimeraEngine fullcycle
-
-# Run beat scripts through verification gates
-python -m ChimeraEngine witness --beats ChimeraEngine/beats/chimera_survival.beats.json --record
-
-# Analyze simulation state, surface design questions
-python -m ChimeraEngine analyze
-
-# Gap analysis between design intent and reality
-python -m ChimeraEngine helm
+# ML pipeline (requires PyTorch + CUDA + Warp)
+python WorldModel/warp_train.py 500       # GPU: generate 500 trees, train VAE, sample
 ```
 
 ---
@@ -36,108 +34,72 @@ python -m ChimeraEngine helm
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                  Chimera Engine                      │
-├─────────────────────┬───────────────────────────────┤
-│  ChimeraEngine/      │  ParticleEngine/              │
-│  (workflow layer)    │  (GPU runtime)                │
-├─────────────────────┼───────────────────────────────┤
-│  cli.py              │  gpu_pipeline.py  13 kernels  │
-│  beats.py            │  viewer.py        flythrough  │
-│  gates.py            │  debug_viewer.py  object view │
-│  helm.py             │  camera.py        3DGS proj   │
-│  council.py          │  splat.py         p→s convert │
-│  world.py            │  reflect.py       physics     │
-│  beats/              │  control_vars.py  DSL         │
-└─────────────────────┴───────────────────────────────┘
+ChimeraEngine/          Workflow layer (beats, gates, helm, council)
+ParticleEngine/         GPU runtime (13 CUDA kernels, 200K @ 139 FPS)
+WorldModel/             ML training + Nanite LOD + infinite worlds
+  ├── warp_train.py     GPU data generation (Warp) + VAE training (PyTorch)
+  ├── physics_tree.py   Physics-informed tree generator
+  ├── nanite.py         Hierarchical cluster LOD tree
+  ├── infinite.py       Spatial hashing + region streaming
+  ├── splat_io.py       .ply file I/O (standard 3DGS format)
+  ├── model.py          SplatVAE architecture
+  └── universe.py       Modular physical laws
 ```
 
 ### GPU Pipeline (13 CUDA Kernels)
 
 ```
-Upload particles ─→ _sim_gravity ─→ _sim_wind ─→ _sim_boundary
-(N×28 float32)     _sim_accumulate ─→ _sim_attract ─→ _sim_integrate
-                                         │
-                   _p2s (particle→splat)  │
-                   _project (3DGS Jacobian)
-                   _cull ─→ _inv_radii ─→ _compact
-                   _gather ─→ _tiles_count ─→ _tile_offsets
-                   _tiles_write ─→ _composite ─→ Download image
+Upload → gravity → wind → boundary → accumulate → attract → integrate
+   │
+   ├→ particle→splat → project (3DGS Jacobian) → cull → inv_radii
+   └→ compact → gather → tiles_count → tile_offsets → tiles_write → composite
+                                                                        │
+                                                                   Download image
 ```
-
-### Particle Types
-
-| Type | ID | Behavior |
-|------|----|----------|
-| `dust` | 0 | Gravity, accumulation on surfaces |
-| `sand` | 1 | Anisotropic splats, wind drift |
-| `atmosphere` | 5 | Large low-opacity volumetric haze |
-| `social` | 3 | Flows toward NPC attractors |
-| `resource` | 4 | Flows toward trade post attractors |
-| `water` | 2 | Reserved |
-| `shellmite` | 6 | Reserved for specimens |
-| `weapon_glint` | 7 | Reserved for tools |
-
-### Control Variables
-
-Named, typed, bounded parameters govern all behavior. Beat scripts and
-the dialectical design engine tune these to observe emergent behavior.
-
-| Variable | Type | Default | Range |
-|----------|------|---------|-------|
-| `gravity` | vec3 | (0,0,-981) | ±5000 |
-| `wind_vector` | vec3 | (0,0,0) | ±10000 |
-| `wind_strength` | float | 1.0 | 0-10 |
-| `boundary_min` | vec3 | (-5000,-5000,-1000) | — |
-| `boundary_max` | vec3 | (5000,5000,5000) | — |
-| `boundary_restitution` | float | 0.4 | 0-1 |
-| `restitution` | float | 0.3 | 0-1 |
-| `accumulation_threshold` | float | 5.0 | 0-100 |
-| `accumulation_rate` | float | 0.05 | 0-1 |
-| `ambient_temperature` | float | 20.0 | -273–10000 |
 
 ---
 
-## Dialectical Workflow
+## Getting Real 3DGS Training Data
 
-The Chimera methodology ported from Unreal Engine to the particle engine:
+To get photorealistic results, download real 3D Gaussian splat captures:
 
+### 1. Inria 3DGS Scenes (650MB — contains garden, treehill with real trees)
 ```
-Council Q&A  →  Beat Scripts  →  GPU Simulation  →  Gates  →  Helm
-(design)         (spec)           (runtime)          (verify)   (steer)
-```
-
-### Commands
-
-```bash
-python -m ChimeraEngine fullcycle     # Council → Beats → Helm in one pass
-python -m ChimeraEngine witness ...   # Run beats, record evidence
-python -m ChimeraEngine verify ...    # Witness + Verify gates
-python -m ChimeraEngine analyze       # Council surfaces design questions
-python -m ChimeraEngine helm          # Gap analysis
+https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/
+→ Click "Scenes" → Download → Extract .ply files
 ```
 
-### Beat Script Format
+### 2. Polycam Free Captures (individual tree .ply files)
+```
+https://poly.cam/explore
+→ Search "tree", "oak", "forest" → Download as .ply
+```
 
-```json
-{
-  "demo": "test_name",
-  "loop": 0,
-  "settle_s": 3,
-  "beats": [{
-    "name": "beat_name",
-    "features": ["Feature_Name"],
-    "actions": [
-      {"set_var": {"gravity": [0, 0, -981]}},
-      {"wait": 2.0}
-    ],
-    "expects": [
-      {"particle_count": {"type": "dust", "min": 500}},
-      {"prop_gt": {"type": "dust", "prop": 0, "value": 0.05}},
-      {"speed_mean": {"type": "sand", "max_mag": 50}}
-    ]
-  }]
-}
+### 3. Sketchfab 3DGS Models
+```
+https://sketchfab.com/search?q=gaussian+splat+tree&type=models
+→ Filter by downloadable → Download .ply
+```
+
+### 4. Box.com Free CC0 Dataset (real 3DGS captures, no restrictions)
+```
+https://app.box.com/s/itozvq23jh4av2a5hg08d7qevdbi93ii
+→ Download individual .ply files
+```
+
+### 5. Capture Your Own
+- Install **Postshot** (free) or **Polycam** (phone app)
+- Take 50-100 photos of a real tree from all angles
+- Process → export as .ply
+- Feed into `WorldModel/splat_io.load_ply()`
+
+### Using the data
+```python
+from WorldModel.splat_io import load_ply, normalize_cloud, save_ply
+
+cloud = load_ply("real_oak.ply")           # Load real capture
+cloud = normalize_cloud(cloud)              # Center and scale
+# Train VAE on multiple real tree clouds...
 ```
 
 ---
@@ -152,63 +114,36 @@ python -m ChimeraEngine helm          # Gap analysis
 | 200K | 139 | 40 |
 | 500K | 77 | 27 |
 
-NVIDIA GPU required. Tested on consumer hardware.
+NVIDIA RTX 4090, CUDA 12.9. Numba CUDA + Warp + PyTorch.
 
 ---
 
-## Project Structure
+## Particle Types
 
-```
-E:\PythonChimera\
-├── ChimeraEngine/          Workflow layer (beats, gates, helm, council)
-│   ├── cli.py              Unified command line
-│   ├── beats.py            Beat script executor
-│   ├── gates.py            Witness + Verify gates
-│   ├── helm.py             Gap analysis
-│   ├── council.py          Dialectical Q&A
-│   ├── world.py            World config (spawn zones, attractors)
-│   ├── render_scene.py     Cinematic scene renderer
-│   └── beats/              .beats.json specs (3 files, all passing)
-├── ParticleEngine/         GPU runtime (13 CUDA kernels)
-│   ├── gpu_pipeline.py     Full GPU pipeline (sim → splat → project → composite)
-│   ├── viewer.py           Interactive flythrough (matplotlib)
-│   ├── debug_viewer.py     Object debug viewer (camera locked on target)
-│   ├── camera.py           First-person camera + 3DGS projection
-│   ├── splat.py            Particle → Gaussian splat converter
-│   ├── reflect.py          Reflection physics + Gaussian scatter
-│   ├── control_vars.py     Named/bounded variable DSL
-│   ├── core.py             CPU particle simulator (reference)
-│   ├── publisher.py        Python → JIT-native compiler
-│   ├── rasterizer_gpu.py   GPU rasterizer (Numba CUDA)
-│   ├── rasterizer.py       CPU rasterizer (reference)
-│   ├── standalone.py       Batch render demo
-│   ├── kernels/standard.py Physics kernels
-│   ├── bridge/             Unreal Engine bridge (reference only)
-│   └── output/             Rendered frames
-└── Chimera/                Original Unreal Engine project (archived)
-```
+| Type | Behavior |
+|------|----------|
+| `dust` (0) | Gravity, surface accumulation |
+| `sand` (1) | Anisotropic splats, wind drift |
+| `atmosphere` (5) | Large low-opacity volumetric haze |
+| `social` (3) | Flows toward NPC attractors |
+| `resource` (4) | Flows toward trade post attractors |
 
----
+## Control Variables
 
-## Key Heuristics (from original Chimera methodology)
-
-- **H-14**: Verified-by-injection is not playable. Real input drives verification.
-- **H-21**: A verb needs behavior, not metadata. Assert world-state changes.
-- **H-29**: Attribute rejection to the failing expect's subsystem.
-- **H-2**: Capture from actual render pipeline, not desktop screenshots.
-- **H-32**: When telemetry returns defaults, check backend attachment first.
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `gravity` | vec3 | (0,0,-981) | Gravity vector (cm/s²) |
+| `wind_vector` | vec3 | (0,0,0) | Wind direction/magnitude |
+| `wind_strength` | float | 1.0 | Wind force multiplier |
+| `boundary_restitution` | float | 0.4 | Bounce energy retention |
+| `accumulation_rate` | float | 0.05 | Dust/sand settling rate |
+| `ambient_temperature` | float | 20.0 | Thermal equilibrium |
 
 ---
 
 ## Requirements
 
-- Python 3.14+
-- NumPy, Numba (CUDA), Matplotlib
-- NVIDIA GPU with CUDA toolkit
-- Pillow (for image save)
-
----
-
-## License
-
-Proprietary — GhostDragonAlpha/Chimera
+- Python 3.14+, NumPy, Numba (CUDA), Matplotlib, Pillow
+- PyTorch 2.13+ with CUDA (for ML training)
+- Warp 1.15+ (NVIDIA GPU compute)
+- NVIDIA GPU with CUDA 12.9+ (RTX 4090 tested)

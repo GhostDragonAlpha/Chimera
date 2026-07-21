@@ -151,3 +151,4 @@ Chimera/Content/ProceduralGenerated/Assets/Textures/*.uasset
 Chimera/Content/ProceduralGenerated/Assets/Textures/Biomes/*.uasset
 ParticleEngine/output/
 ParticleEngine/output/
+WorldModel/training_data/
