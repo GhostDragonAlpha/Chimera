@@ -1,0 +1,28 @@
+{
+  "_provenance": "Audio response sub-rung. Surface-specific footstep audio.",
+  "name": "audio_response",
+  "parent_rung": "footstep_response",
+  "walls": [
+    "Footstep frequency spectrum must peak at 200-800Hz on sand",
+    "Footstep frequency spectrum must peak at 800-2000Hz on rock",
+    "Footstep frequency spectrum must peak at 2000-5000Hz on metal",
+    "Amplitude must scale with player velocity (faster = louder)",
+    "Left and right footstep sounds must alternate (no stomp)",
+    "Audio must not clip (peak amplitude < 0.95)"
+  ],
+  "element_query": {
+    "categories": [
+      "Audio",
+      "Sound"
+    ],
+    "classes": [
+      "AudioComponent",
+      "SoundWave",
+      "PhysicalMaterial"
+    ]
+  },
+  "output": {
+    "next_rung": "biome_visuals",
+    "format": "frequency spectrum per surface, amplitude curve"
+  }
+}
