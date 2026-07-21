@@ -15,17 +15,37 @@ This is not a task-list project. It is a continuous question loop:
 
 A task is one answer, not the destination. The session ends when the human ends it.
 
+## THE CORE INSIGHT — no scales
+
+Every metric gets cheated. The sandpile found 40.03° but was wrong-scale voxels.
+The periodicity 0.78 gait was a lottery ticket that happened to converge.
+The maximize/minimize framework optimizes for the number you gave it,
+not the pattern you wanted. The answer was correct. The question was wrong.
+
+**The fix: walls only. No maximize, no minimize. No scales.**
+
+A constraint set says what a thing MUST NOT be. Everything within the walls
+is valid. The survivors are candidates. The human judges whether the pattern
+emerged. The cheats ARE the product — they tell you where the walls are
+missing or mis-specified.
+
+**The definition level problem:** Sand is not a voxel with sand properties.
+Sand is random particles arranged by rules that produce a pattern. The
+constraint must name the right level — not too high (just repose angle)
+and not too low (every molecule). The right level is where the pattern
+emerges under human observation.
+
 ## THE FORMULA — every item, always
 
-The old way (place a cube, verify it exists) is muscle memory. It creeps back when tooling gets hard.
+The old way (place a cube, measure it) is muscle memory. It creeps back when tooling gets hard.
 **The formula is the crutch while the new muscle grows.** Every item on your TODO list follows this:
 
 ```
-CONSTRAINT: <what must be true, stated as physics — never the form>
-MEASURE:    <one number that proves the constraint holds>
+CONSTRAINT: <what must be true, stated as physics — at the right definition level>
 EXISTING:   <what's already compiled/wired that serves this>
-WORK:       <train / wire / decode — never author a form>
-VERIFY:     <the beat that tests the rule, not the thing>
+WALLS:      <must not violate X, Y, Z — the constraint set, never a scale>
+WORK:       <train / wire / decode — never place>
+JUDGE:      <a human looks at the survivors and says whether the pattern emerged>
 ```
 
 **Examples:**
@@ -34,10 +54,16 @@ VERIFY:     <the beat that tests the rule, not the thing>
 |---|---|
 | "Place a habitat at 0,-800,0" | "A player must be able to refill O2 by returning to shelter within 5 minutes" |
 | "Spawn a resource pickup" | "Different biomes contain different collectible resources. 8 inventory slots force choice." |
-| "Create NPC trader" | "At least 3 NPCs must have a visible resource need. Giving the right resource unlocks a blueprint." |
+| "Train sand repose angle" | "Sand must look, feel, and behave like sand at the scale a player experiences it." |
 
-**Test the rule, never the object.** A beat that checks "does Habitat exist?" tests nothing about survival.
-A beat that checks "does O2 refill when the player returns?" tests the constraint.
+**The JUDGE is always a human.** Not an LM giving a percentile. Not a composite score.
+A human says "yes, that's sand" or "no, it's still voxels." The system's job is to produce
+candidates narrow enough that the human's yes/no costs seconds, not hours.
+
+**The audit backlog:** Every feature previously built with the old method carries a defect.
+The backlog triggers when a feature fails a human judgment. Never proactively retrain —
+wait for the judgment. The sandpile was judged "still voxels" — retrain it with walls-only
+constraints at the right definition level.
 
 ## THE SUB-FEATURE DECISION RULE
 
@@ -156,7 +182,10 @@ Read `EMERGENCE_ROADMAP.md` for the current build sequence (7 items, in order).
 - **Never edit** `Source/Chimera/ProceduralGenerated/` — fix the generator instead (but DemoPlayerController.cpp is the pragmatic exception)
 - **Never trust `success: true`** — read the value back. No read-back = not done.
 - **Never place a cube.** If you find yourself authoring a form (mesh, actor, level placement) instead of writing a constraint, stop. You are doing the old way. The form should emerge from a trained constraint, not your MCP call.
-- **Never skip the formula.** Every item gets CONSTRAINT → MEASURE → EXISTING → WORK → VERIFY. Items without a constraint are wishes.
+- **Never trust a scale.** Every metric gets cheated. There is no maximize/minimize — only walls. If you find yourself writing a score, a grade, or a percentile, stop. Write a wall instead.
+- **Never skip the formula.** Every item gets CONSTRAINT → EXISTING → WALLS → WORK → JUDGE. Items without walls are wishes.
+- **Never use an LM as the judge.** The JUDGE is always a human. An LM can propose candidates. Only a human can say whether the pattern emerged.
+- **Never retrain proactively.** The audit backlog triggers when a feature fails a human judgment. Wait for the judgment.
 - **Never decompose in advance.** Sub-features emerge when a season fails. Pre-splitting is guessing.
 - **Never declare something "MCP can't do" without FIRST checking available actions.**
   ```python
@@ -238,10 +267,38 @@ Level must be saved after spawning: `c.call('manage_level', {'action': 'save'})`
 
 ## THE ULTIMATE GOAL
 
-A space survival game where the mechanics produce the meaning.
+Exceed the quality of Star Citizen using none of its methods.
 
-You are an astronaut on an alien world. Your suit has O2, battery, and dust filters. All of them drain. You must leave the habitat to find resources. Different biomes contain different resources. You can help other stranded astronauts by giving them resources from your inventory. They have nothing to give in return — but helping them unlocks blueprints you cannot get any other way.
+Star Citizen ships are authored. Ours are trained. Star Citizen's economy is a spreadsheet.
+Ours is a genome that discovered equilibrium. Star Citizen's surfaces are painted.
+Ours emerged from the sandpile finding 40° repose. Star Citizen hires thousands of artists.
+We have one — the human who says yes or no.
 
-The beacon on the highest peak needs components from those blueprints. A costless playthrough produces a dim signal. A generous one produces a strong signal.
+**Star Citizen quality means:** every system is a real object the player interacts with
+physically. Components have real failure states. The economy runs whether you participate
+or not. The world has its own logic. The player is one agent in it.
 
-**Build toward this. Test the rule, never the object. Never place a cube.**
+**This game's equivalent:**
+- Ship power plant → suit O₂ tank, battery, dust filter — trained survival curves, not authored
+- Cargo grid with physical crates → inventory with physical objects in the world
+- Quantum travel → walking between biomes across terrain formed by the trained sandpile
+- Stations with shops → habitat fabricator with blueprint unlocking
+- NPCs with schedules → NPCs with real O₂ that drains, real needs from simulation state
+- Mining / salvage / trade → collect resources / craft / give — giving is the only unlock
+
+**The exceed part:** Star Citizen's systems are authored. Ours are trained.
+Star Citizen's NPCs follow waypoints. Ours have real simulation state.
+Star Citizen's economy is a spreadsheet. Ours is a genome.
+
+**The concrete game:**
+
+You are an astronaut on an alien world. Your suit has O2, battery, and dust filters.
+All of them drain. You must leave the habitat to find resources. Different biomes
+contain different resources. You can help other stranded astronauts by giving them
+resources from your inventory. They have nothing to give in return — but helping them
+unlocks blueprints you cannot get any other way.
+
+The beacon on the highest peak needs components from those blueprints. A costless
+playthrough produces a dim signal. A generous one produces a strong signal.
+
+**Build toward this. No scales. Walls only. The human judges.**
