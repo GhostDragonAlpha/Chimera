@@ -95372,6 +95372,28 @@
       "links": [],
       "recorded_by": "auto_decomposer.py",
       "run_id": "run_502ea349beb9"
+    },
+    {
+      "id": "feature_024f1243fbd2c2cd",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-21T04:23:38.970320",
+      "feature_name": "40q_ground_terrain_grain_scale",
+      "loop": 0,
+      "status": "unexplored",
+      "parameters": {
+        "n_answered": 0,
+        "n_total": 40,
+        "parent": "ground_terrain",
+        "type": "forty_questions"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_0/40q_ground_terrain_grain_scale",
+      "error_category": "none",
+      "fix_description": "Feature '40q_ground_terrain_grain_scale' (Loop 0) recorded as 'unexplored'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "forty_questions.py",
+      "run_id": "run_3b34e289dbda"
     }
   ],
   "edges": [
