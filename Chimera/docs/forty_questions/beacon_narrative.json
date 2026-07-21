@@ -1,0 +1,252 @@
+{
+  "_meta": {
+    "feature": "beacon_narrative",
+    "parent": "root",
+    "created": "chat_typed",
+    "n_total": 40,
+    "n_answered": 40,
+    "depth_verdict": "deep"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature in one sentence?",
+      "a": "Tower at the highest peak. Three components. Signal strength equals NPCs helped.",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system does it belong to?",
+      "a": "Terminal rung of the compositional ladder. Nothing comes after this.",
+      "answered": true
+    },
+    {
+      "id": 3,
+      "q": "What would break without it?",
+      "a": "No ending. Player builds everything, activates nothing. No closure.",
+      "answered": true
+    },
+    {
+      "id": 4,
+      "q": "What existing feature does this most resemble?",
+      "a": "StarMemorialComponent brightness curve.",
+      "answered": true
+    },
+    {
+      "id": 5,
+      "q": "Is this a rung, a sub-rung, or a parameter?",
+      "a": "Parent rung. Sub-rungs: signal, pixelstreaming, signalflow, animnode.",
+      "answered": true
+    },
+    {
+      "id": 6,
+      "q": "What physical constraint does it encode?",
+      "a": "Beacon signal = f(NPCs helped). 0 helps = dim, 3+ helps = bright.",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "ONE measurement that proves it works?",
+      "a": "3-help player sees qualitatively different ending than 0-help player.",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "What wall must it never violate?",
+      "a": "Must not be completable without all three components. Signal must differ by help count.",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "Degenerate winner?",
+      "a": "Signal always max. Components skippable. Ending plays regardless.",
+      "answered": true
+    },
+    {
+      "id": 10,
+      "q": "Constraint too loose?",
+      "a": "Player reaches ending without building the beacon.",
+      "answered": true
+    },
+    {
+      "id": 11,
+      "q": "At what scale?",
+      "a": "Whole playthrough. 30-60 minutes leading to one moment.",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "Right definition level?",
+      "a": "Three discrete signal bands. Three required components.",
+      "answered": true
+    },
+    {
+      "id": 13,
+      "q": "Decompose further?",
+      "a": "Signal VFX, component crafting, tower geometry, ending sequence.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "Pattern emergence resolution?",
+      "a": "When the player sees the sky change and understands what it means.",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "Deep enough?",
+      "a": "Player reaches tower, inserts components, watches signal rise. Recognized without text.",
+      "answered": true
+    },
+    {
+      "id": 16,
+      "q": "Catalog variables?",
+      "a": "SacrificeLogComponent, StarMemorialComponent, CostlessLifeEndingDiagnostic.",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "Relevant elements?",
+      "a": "~474 narrative elements.",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Enough to train?",
+      "a": "Yes. Components are DataTable entries. Signal is light color.",
+      "answered": true
+    },
+    {
+      "id": 19,
+      "q": "MISSING variables?",
+      "a": "Ending triggered event type. Catalog has sacrifice tracking but no ending-state machine.",
+      "answered": true
+    },
+    {
+      "id": 20,
+      "q": "Need GPU?",
+      "a": "No. Parameter setting and DataTable references.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Connect to Mirror?",
+      "a": "DIRECTLY. This IS the Mirrors final reflection.",
+      "answered": true
+    },
+    {
+      "id": 22,
+      "q": "How directly?",
+      "a": "Direct. The beacon IS the ending. The signal IS the judgment.",
+      "answered": true
+    },
+    {
+      "id": 23,
+      "q": "Costless life meaningful without this?",
+      "a": "No. No ending. No culminating consequence for help.",
+      "answered": true
+    },
+    {
+      "id": 24,
+      "q": "Can this be gamed?",
+      "a": "Only if SacrificeLog count increments without helping. Wall: help requires resource transfer.",
+      "answered": true
+    },
+    {
+      "id": 25,
+      "q": "Perfect Mirror service?",
+      "a": "Player stands at tower. Sky parts. Signal pulses. They remember. No text.",
+      "answered": true
+    },
+    {
+      "id": 26,
+      "q": "Compose with what?",
+      "a": "npc_social (help count), fabricator_economy (components), decoder (tower placement).",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What breaks at the seam?",
+      "a": "Help count does not propagate. Components stay locked. Signal stays default.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Need decoder?",
+      "a": "Yes. Tower mesh, position, component sockets decoded to level.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "Failed composition?",
+      "a": "Player builds everything. Tower does not react. Ending never triggers.",
+      "answered": true
+    },
+    {
+      "id": 30,
+      "q": "Need human judgment?",
+      "a": "System verifies mechanics. Human judges whether the moment lands.",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "Generations to converge?",
+      "a": "10-20.",
+      "answered": true
+    },
+    {
+      "id": 32,
+      "q": "Population size?",
+      "a": "64.",
+      "answered": true
+    },
+    {
+      "id": 33,
+      "q": "Risk of overfitting?",
+      "a": "Low. Three required components prevent degenerate completion.",
+      "answered": true
+    },
+    {
+      "id": 34,
+      "q": "Risk of underfitting?",
+      "a": "None. Walls are binary: components exist, signal differs.",
+      "answered": true
+    },
+    {
+      "id": 35,
+      "q": "Trainer support?",
+      "a": "Yes. DataTable domain with boolean gates.",
+      "answered": true
+    },
+    {
+      "id": 36,
+      "q": "Deep enough?",
+      "a": "Mechanically yes. Emotionally no. The feel of the ending is everything.",
+      "answered": true
+    },
+    {
+      "id": 37,
+      "q": "Next decomposition level?",
+      "a": "Ending VFX, camera pullback, sound design, post-credits state.",
+      "answered": true
+    },
+    {
+      "id": 38,
+      "q": "Game feel complete without deeper?",
+      "a": "Mechanically yes. Emotionally no. Needs weight.",
+      "answered": true
+    },
+    {
+      "id": 39,
+      "q": "Expected emotional response?",
+      "a": "Recognition. Closure. Choices mattered.",
+      "answered": true
+    },
+    {
+      "id": 40,
+      "q": "Mirror demands this?",
+      "a": "Absolutely. The beacon IS the Mirror. Without it the game has no point.",
+      "answered": true
+    }
+  ]
+}
