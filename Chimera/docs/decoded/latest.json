@@ -1,0 +1,20 @@
+{
+  "genome": {
+    "pulse_rate_0": 0.18497998719421244,
+    "pulse_rate_3": 1.5543235946262963,
+    "color_red_r": 0.9907172773771944,
+    "color_red_g": 0.2369913688589945,
+    "color_red_b": 0.17422433126589482,
+    "color_white_r": 1.0,
+    "color_white_g": 0.9198870286973533,
+    "color_white_b": 0.9766877825942126,
+    "n_bands": 4
+  },
+  "measures": {
+    "rate_ratio": 8.402658137252413,
+    "color_dist": 1.053745814645598,
+    "red_dominance": 2.3520426163684056,
+    "n_bands": 4,
+    "signal_differs": 1
+  }
+}
