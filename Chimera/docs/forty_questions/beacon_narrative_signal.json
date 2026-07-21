@@ -2,252 +2,251 @@
   "_meta": {
     "feature": "beacon_narrative_signal",
     "parent": "beacon_narrative",
-    "walls": [],
-    "created": "auto",
+    "created": "chat_typed",
     "n_total": 40,
-    "n_answered": 3,
-    "depth_verdict": "unexplored"
+    "n_answered": 40,
+    "depth_verdict": "deep"
   },
   "questions": [
     {
       "id": 1,
       "q": "What IS this feature in one sentence?",
-      "a": "Signal VFX for the beacon tower. Pulse frequency and color gradient based on NPCs helped.",
+      "a": "The beacon tower emits a pulse visible from the shelter. Frequency and color encode how many NPCs the player helped.",
       "answered": true
     },
     {
       "id": 2,
       "q": "What wider system does it belong to?",
-      "a": "",
-      "answered": false
+      "a": "beacon_narrative \u2014 the terminal rung of the compositional ladder.",
+      "answered": true
     },
     {
       "id": 3,
-      "q": "What would break if this feature didn't exist?",
-      "a": "",
-      "answered": false
+      "q": "What would break if this feature did not exist?",
+      "a": "The ending would have no visual feedback. Player activates the tower and nothing communicates the outcome.",
+      "answered": true
     },
     {
       "id": 4,
       "q": "What existing feature does this most resemble?",
-      "a": "",
-      "answered": false
+      "a": "StarMemorialComponent brightness curve \u2014 both encode lifetime choices as visible light.",
+      "answered": true
     },
     {
       "id": 5,
       "q": "Is this a rung, a sub-rung, or a parameter?",
-      "a": "",
-      "answered": false
+      "a": "Sub-rung of beacon_narrative.",
+      "answered": true
     },
     {
       "id": 6,
       "q": "What physical constraint does it encode?",
-      "a": "",
-      "answered": false
+      "a": "Pulse frequency = 0.1 + 0.3 * N_helped Hz. Color transitions red (0) to yellow (1-2) to white (3+).",
+      "answered": true
     },
     {
       "id": 7,
       "q": "What is the ONE measurement that proves it works?",
-      "a": "Pulse frequency = 0.1 + 0.3 * N_helped Hz. Color transitions from red (0 helps) through yellow to white (3+).",
+      "a": "A player who helped 3 NPCs sees a qualitatively different signal than a player who helped 0.",
       "answered": true
     },
     {
       "id": 8,
       "q": "What wall must it never violate?",
-      "a": "",
-      "answered": false
+      "a": "No UI text. No notification. The signal communicates entirely through color and rhythm.",
+      "answered": true
     },
     {
       "id": 9,
       "q": "What would a degenerate winner look like?",
-      "a": "",
-      "answered": false
+      "a": "Signal is always maximum regardless of help count. Player cannot distinguish outcomes.",
+      "answered": true
     },
     {
       "id": 10,
       "q": "How would we know if the constraint is too loose?",
-      "a": "",
-      "answered": false
+      "a": "If 0 helps produces a signal that appears acceptable, the player has no motivation to help others.",
+      "answered": true
     },
     {
       "id": 11,
       "q": "At what scale does this feature operate?",
-      "a": "",
-      "answered": false
+      "a": "Ending sequence scale. One moment of recognition after hours of play.",
+      "answered": true
     },
     {
       "id": 12,
       "q": "What is the right definition level for this scale?",
-      "a": "",
-      "answered": false
+      "a": "Three discrete bands: dim red (0 helps), pulsing yellow (1-2), steady white (3+). Not a continuous slider.",
+      "answered": true
     },
     {
       "id": 13,
       "q": "Could this be decomposed further? Into what?",
-      "a": "",
-      "answered": false
+      "a": "Beam VFX, signal light color curve, sound hum frequency per pulse rate.",
+      "answered": true
     },
     {
       "id": 14,
       "q": "At what resolution does the pattern emerge?",
-      "a": "",
-      "answered": false
+      "a": "The moment the beacon activates and the player sees the sky change.",
+      "answered": true
     },
     {
       "id": 15,
-      "q": "What would 'deep enough' look like for this feature?",
-      "a": "",
-      "answered": false
+      "q": "What would deep enough look like?",
+      "a": "Player sees the signal and understands what it means without text. Remembers who they helped.",
+      "answered": true
     },
     {
       "id": 16,
       "q": "What element catalog variables does this train?",
-      "a": "",
-      "answered": false
+      "a": "PointLightComponent color and intensity, NiagaraSystem parameters, SkyAtmosphereComponent.",
+      "answered": true
     },
     {
       "id": 17,
-      "q": "How many relevant elements exist in the catalog?",
-      "a": "",
-      "answered": false
+      "q": "How many relevant elements exist?",
+      "a": "About 1605 VFX/Light/Signal elements in the catalog.",
+      "answered": true
     },
     {
       "id": 18,
       "q": "Are there enough variables to train meaningfully?",
-      "a": "",
-      "answered": false
+      "a": "Yes. Light color, pulse frequency, beam height are all trainable parameters.",
+      "answered": true
     },
     {
       "id": 19,
-      "q": "What variables are MISSING from the catalog?",
-      "a": "",
-      "answered": false
+      "q": "What variables are MISSING?",
+      "a": "A pulse frequency curve tied to NPC help count. Catalog has light properties but not curve-over-time.",
+      "answered": true
     },
     {
       "id": 20,
-      "q": "Would training this require GPU acceleration?",
-      "a": "",
-      "answered": false
+      "q": "Would training this require GPU?",
+      "a": "No. Parameter setting, not physics simulation.",
+      "answered": true
     },
     {
       "id": 21,
-      "q": "Does this feature connect to the Mirror of Erised?",
-      "a": "Yes \u2014 this IS the Mirror visualization. The signal is the only feedback the player gets about their choices.",
+      "q": "Does this connect to the Mirror of Erised?",
+      "a": "DIRECTLY. This is what the player sees at the end. The signal IS the Mirror reflecting.",
       "answered": true
     },
     {
       "id": 22,
-      "q": "How directly does it serve the Mirror? (direct/enabling/orthogonal)",
-      "a": "",
-      "answered": false
+      "q": "How directly does it serve the Mirror?",
+      "a": "Direct. The signal IS the final judgment. Costless life = dim signal. Generous life = bright signal.",
+      "answered": true
     },
     {
       "id": 23,
-      "q": "Would a costless life still be meaningful without this feature?",
-      "a": "",
-      "answered": false
+      "q": "Would a costless life be meaningful without this?",
+      "a": "No. Without the signal there is no ending. The player presses the button and nothing happens.",
+      "answered": true
     },
     {
       "id": 24,
-      "q": "Could this feature be gamed to fake a generous life?",
-      "a": "",
-      "answered": false
+      "q": "Could this be gamed?",
+      "a": "Only if NPC help count can be incremented without helping. Wall: count must match SacrificeLog entries.",
+      "answered": true
     },
     {
       "id": 25,
-      "q": "What would this feature look like if it perfectly served the Mirror?",
-      "a": "",
-      "answered": false
+      "q": "What would perfect service to the Mirror look like?",
+      "a": "Player stands at the tower. Sky shifts. Warm white pulse. They know. No text needed.",
+      "answered": true
     },
     {
       "id": 26,
       "q": "What other features does this compose with?",
-      "a": "",
-      "answered": false
+      "a": "npc_social (help count), fabricator_economy (beacon components), decoder (tower placement).",
+      "answered": true
     },
     {
       "id": 27,
-      "q": "What could break at the seam between this and its neighbors?",
-      "a": "",
-      "answered": false
+      "q": "What could break at the seam?",
+      "a": "Help count from SacrificeLog does not propagate to beacon color. Signal stays default.",
+      "answered": true
     },
     {
       "id": 28,
-      "q": "Does this need a decoder step to place in the level?",
-      "a": "",
-      "answered": false
+      "q": "Does this need a decoder step?",
+      "a": "Tower mesh and position are decoded. Signal logic is a C++ or Blueprint component on the tower.",
+      "answered": true
     },
     {
       "id": 29,
       "q": "What would a failed composition look like?",
-      "a": "",
-      "answered": false
+      "a": "Tower placed. Player activates it. Nothing visible happens. Player reloads wondering if it worked.",
+      "answered": true
     },
     {
       "id": 30,
-      "q": "Does this feature need a human judgment or can the system verify it?",
-      "a": "",
-      "answered": false
+      "q": "Does this need human judgment?",
+      "a": "Yes. Only the human can say whether dim vs bright signal feels like a bad vs good ending.",
+      "answered": true
     },
     {
       "id": 31,
       "q": "How many generations to converge?",
-      "a": "",
-      "answered": false
+      "a": "5-10. Simple parameter space of three discrete bands.",
+      "answered": true
     },
     {
       "id": 32,
-      "q": "What population size is appropriate?",
-      "a": "",
-      "answered": false
+      "q": "What population size?",
+      "a": "32.",
+      "answered": true
     },
     {
       "id": 33,
-      "q": "What's the risk of overfitting?",
-      "a": "",
-      "answered": false
+      "q": "Risk of overfitting?",
+      "a": "Low. Three discrete bands cannot overfit.",
+      "answered": true
     },
     {
       "id": 34,
-      "q": "What's the risk of underfitting?",
-      "a": "",
-      "answered": false
+      "q": "Risk of underfitting?",
+      "a": "None. The wall is binary: signal differs measurably between 0 and 3+ helps.",
+      "answered": true
     },
     {
       "id": 35,
-      "q": "Does the existing trainer support this domain type?",
-      "a": "",
-      "answered": false
+      "q": "Does the trainer support this?",
+      "a": "Yes. Domain can be pure data with no MCP calls needed for training.",
+      "answered": true
     },
     {
       "id": 36,
-      "q": "Have we gone deep enough on this feature?",
-      "a": "",
-      "answered": false
+      "q": "Have we gone deep enough?",
+      "a": "At the parameter level yes. At the experience level no \u2014 the feel of the moment is everything.",
+      "answered": true
     },
     {
       "id": 37,
-      "q": "What would the NEXT level of decomposition look like?",
-      "a": "",
-      "answered": false
+      "q": "What is the next decomposition level?",
+      "a": "Beam VFX, sound design, camera pullback on activation.",
+      "answered": true
     },
     {
       "id": 38,
       "q": "If we stopped here, would the game feel complete?",
-      "a": "",
-      "answered": false
+      "a": "Mechanically yes. Emotionally no. The ending needs weight.",
+      "answered": true
     },
     {
       "id": 39,
-      "q": "What is the human's expected emotional response to this feature?",
-      "a": "",
-      "answered": false
+      "q": "What is the expected emotional response?",
+      "a": "Recognition. The player sees the sky and knows: what I did mattered.",
+      "answered": true
     },
     {
       "id": 40,
-      "q": "Does this feature exist because the Mirror demands it, or because it's technically interesting?",
-      "a": "",
-      "answered": false
+      "q": "Does this exist because the Mirror demands it?",
+      "a": "Absolutely. The beacon IS the Mirror at the end of the game.",
+      "answered": true
     }
   ]
 }
