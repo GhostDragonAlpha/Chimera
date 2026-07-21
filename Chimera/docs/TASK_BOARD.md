@@ -1,22 +1,20 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-20T22:12:33+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-21T01:09:42+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
-**Parallel frontier right now: 4 task(s) can proceed simultaneously.**
+**Parallel frontier right now: 3 task(s) can proceed simultaneously.**
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
-| tb-0209 | open | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie |  |
+| tb-0209 | claimed | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie | lead |
 | tb-0210 | open | 0.75 | Build toward the seed: UCostlessLifeEndingDiagnostic | core/game_code_generator.py; excl:generator |  |
 | tb-0211 | open | 0.75 | Build toward the seed: TitanRunTrack | core/game_code_generator.py; excl:generator |  |
 | tb-0227 | open | 0.75 | Fix confirmed pain: control_actor set_material reports succe | Source/Chimera/** |  |
+| tb-0234 | open | 0.75 | Fix confirmed pain: The pipeline's visual stage used pyautog | Source/Chimera/** |  |
 | tb-0212 | open | 0.72 | Build toward the seed: FStationMarket | core/game_code_generator.py; excl:generator |  |
 | tb-0213 | open | 0.72 | Build toward the seed: UFactionSubsystem | core/game_code_generator.py; excl:generator |  |
-| tb-0215 | open | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
-| tb-0216 | open | 0.6 | Pain verdict: ChimeraMovementComponent.cpp's footstep 'sync  | docs/research/** |  |
-| tb-0217 | open | 0.6 | Pain verdict: A separate concurrent session (shared task lis | docs/research/** |  |
 | tb-0218 | open | 0.6 | Pain verdict: Material PBR wiring on MAT_Ship_Hull_Aluminum  | docs/research/** |  |
 | tb-0220 | open | 0.6 | Pain verdict: Live concurrent-agent interference (PIE toggli | docs/research/** |  |
 | tb-0221 | open | 0.6 | Pain verdict: MAT_WeaponBody (the name Loop4_Tools_Complete. | docs/research/** |  |
@@ -242,3 +240,6 @@ so claimed tasks are safe to run in parallel.
 | tb-0162 | abandoned | 0.6 | Pain verdict: The perpetual orchestrator may again silently  | docs/research/** |  |
 | tb-0163 | abandoned | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
 | tb-0164 | abandoned | 0.6 | Pain verdict: ChimeraMovementComponent.cpp's footstep 'sync  | docs/research/** |  |
+| tb-0215 | abandoned | 0.6 | Pain verdict: No proven MCP pathway exists for setting a nes | docs/research/** |  |
+| tb-0216 | abandoned | 0.6 | Pain verdict: ChimeraMovementComponent.cpp's footstep 'sync  | docs/research/** |  |
+| tb-0217 | abandoned | 0.6 | Pain verdict: A separate concurrent session (shared task lis | docs/research/** |  |

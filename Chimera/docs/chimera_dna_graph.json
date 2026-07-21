@@ -94405,6 +94405,297 @@
       "links": [],
       "recorded_by": "sleepwalker.py",
       "run_id": "run_faf0f6bcdad0"
+    },
+    {
+      "id": "simtest_807cf7262a1d400a",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-20T23:30:53.753466",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "fall_edu",
+      "demo": "edu_spawn",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "collect_basalt",
+          "outcome": "reached",
+          "features": [
+            "Verb_PickUp",
+            "Ground_Geology_Education"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "log_contains": "LEARN"
+              },
+              "ok": true,
+              "note": "log_hit=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\fall_edu.json",
+      "temperature": "[SIM] 1/1 beats reached in 'edu_spawn'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'fall_edu': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_e8ff10e70256"
+    },
+    {
+      "id": "observation_67c622fbb462a047",
+      "type": "Observation",
+      "timestamp": "2026-07-20T23:31:00.375571",
+      "feature_name": "Ground_Geology_Education",
+      "verdict": "accepted",
+      "notes": "Educational pickups verified: Basalt and Granite specimens spawn at BeginPlay, LEARN message confirmed",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_807cf7262a1d400a",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Ground_Geology_Education",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Ground_Geology_Education': accepted \u2014 Educational pickups verified: Basalt and Granite specimens spawn at BeginPlay, LEARN message confirmed",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_807cf7262a1d400a"
+      ],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f3c434f42aa7"
+    },
+    {
+      "id": "feature_8ef57e41d5cf18a4",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-20T23:31:00.787015",
+      "feature_name": "Ground_Geology_Education",
+      "loop": 1,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "human_notes": "Educational pickups verified: Basalt and Granite specimens spawn at BeginPlay, LEARN message confirmed",
+        "attribution": "derived from simtest_807cf7262a1d400a | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_1/Ground_Geology_Education",
+      "error_category": "none",
+      "fix_description": "Feature 'Ground_Geology_Education' (Loop 1) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f3c434f42aa7"
+    },
+    {
+      "id": "simtest_eb3d8b19d1cf54dc",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-21T00:54:51.099135",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "obs_Tool_Weapon_Material",
+      "demo": "tool_weapon_material",
+      "beats_total": 1,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "weapon_material_present",
+          "outcome": "reached",
+          "features": [
+            "Tool_Weapon_Material"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "actor_exists": "StaticMeshActor_4"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\obs_Tool_Weapon_Material.json",
+      "temperature": "[SIM] 1/1 beats reached in 'tool_weapon_material'. Clean walk.",
+      "error_signature": "success_no_error",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "none",
+      "fix_description": "Sleepwalk 'obs_Tool_Weapon_Material': 1/1 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_58da6add39b0"
+    },
+    {
+      "id": "observation_755743529189f949",
+      "type": "Observation",
+      "timestamp": "2026-07-21T00:57:00.447436",
+      "feature_name": "Tool_Weapon_Material",
+      "verdict": "accepted",
+      "notes": "",
+      "observer": "human-via-attribution",
+      "derived_from": "simtest_eb3d8b19d1cf54dc",
+      "quote": "",
+      "tacit": true,
+      "error_signature": "success_no_error",
+      "template_file": "observation/Tool_Weapon_Material",
+      "error_category": "none",
+      "fix_description": "Human observation of 'Tool_Weapon_Material': accepted",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_eb3d8b19d1cf54dc"
+      ],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2a867181b3ee"
+    },
+    {
+      "id": "feature_dd84faf8e4fe7bb9",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-21T00:57:00.797627",
+      "feature_name": "Tool_Weapon_Material",
+      "loop": 4,
+      "status": "observed",
+      "parameters": {
+        "human_verdict": "accepted",
+        "attribution": "derived from simtest_eb3d8b19d1cf54dc | tacit (exercised, unmentioned)"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Tool_Weapon_Material",
+      "error_category": "none",
+      "fix_description": "Feature 'Tool_Weapon_Material' (Loop 4) recorded as 'observed'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2a867181b3ee"
+    },
+    {
+      "id": "discovery_01c0d85b6aa1b8b4",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-21T01:05:30.096165",
+      "feature": "Witness: Tool_Weapon_Material",
+      "campus_sources": [],
+      "web_sources": [
+        "docs/beats/tool_weapon_material.beats.json, witness_runner.py"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "error_signature": "success_no_error",
+      "template_file": "research_discovery/Witness: Tool_Weapon_Material",
+      "error_category": "none",
+      "fix_description": "Research discovery for 'Witness: Tool_Weapon_Material': 1 sources consulted, 0 criteria, confidence=medium",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_ce6c0f7d2d36"
+    },
+    {
+      "id": "phase_da51ec2cce60b834",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-21T01:05:30.584012",
+      "phase": "Witness: Tool_Weapon_Material",
+      "result": "[SIM] 1/1 beats reached in 'tool_weapon_material'. Clean walk. simtest_node: simtest_eb3d8b19d1cf54dc",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/Witness: Tool_Weapon_Material",
+      "error_category": "none",
+      "fix_description": "Phase 'Witness: Tool_Weapon_Material' complete: [SIM] 1/1 beats reached in 'tool_weapon_material'. Clean walk. simtest_node: simtest_eb3d8b19d1cf54dc",
+      "compilation_result": "pass",
+      "links": [],
+      "inheritance": "Tool_Weapon_Material witnessed with clean walk.",
+      "recorded_by": "postflight.py",
+      "run_id": "run_ce6c0f7d2d36"
+    },
+    {
+      "id": "surprise_c99422eed2292d4a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T01:09:36.732799",
+      "context": "postflight refused by research gate: design: constraint-first workflow + emergence roadmap",
+      "expectation": "Research Depth Protocol requires research (incl. technical/infra) before shipping",
+      "reality": "no research recorded this session; postflight blocked",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'Research Depth Protocol requires research (incl. technical/infra) before shippin' but 'no research recorded this session; postflight blocked'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_ce9c064a1be3"
+    },
+    {
+      "id": "surprise_01f4016ca0b2d365",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-21T01:09:41.905137",
+      "context": "research waived: design: constraint-first workflow + emergence roadmap",
+      "expectation": "research per Research Depth Protocol",
+      "reality": "No external research needed \u2014 this session established workflow patterns (constraint-first formula, sub-feature decision rule, farming method integration) derived from existing docs (FARMING_SEASONS.m",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected 'research per Research Depth Protocol' but 'No external research needed \u2014 this session established workflow patterns (constr'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "postflight.py",
+      "run_id": "run_d026441413f2"
+    },
+    {
+      "id": "phase_5a16a66ad6f2efa6",
+      "type": "PhaseComplete",
+      "timestamp": "2026-07-21T01:09:42.501981",
+      "phase": "design: constraint-first workflow + emergence roadmap",
+      "result": "EMERGENCE_ROADMAP.md written. Constraint-first formula defined. Sub-feature decision rule defined.",
+      "notes": "",
+      "error_signature": "success_no_error",
+      "template_file": "phase_complete/design: constraint-first workflow + emergence roadmap",
+      "error_category": "none",
+      "fix_description": "Phase 'design: constraint-first workflow + emergence roadmap' complete: EMERGENCE_ROADMAP.md written. Constraint-first formula defined. Sub-feature decision rule defined.",
+      "compilation_result": "pass",
+      "links": [],
+      "phantom_pains": [
+        "The old way will keep creeping back when tooling is hard. Every time constraint-first hits a wall (UE Python crash, MCP CLASS_NOT_FOUND), temptation is to reach for a cube."
+      ],
+      "inheritance": "Constraint-first formula governs all builds. Item 1 survival loop compiled and verified. Gap: shelter in level. Old way creeps back.",
+      "pain_verdicts": {
+        "phase_ef0be888042d96ff:P1": "confirmed"
+      },
+      "recorded_by": "postflight.py",
+      "run_id": "run_d026441413f2"
     }
   ],
   "edges": [
@@ -107185,6 +107476,30 @@
       "type": "because",
       "derived": true,
       "derived_how": "feature_name match \u2014 record_feature() never cited evidence"
+    },
+    {
+      "src": "observation_67c622fbb462a047",
+      "dst": "simtest_807cf7262a1d400a",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-20T23:31:00.375815",
+      "asked_by": "graphify_record.py",
+      "source": "observation_67c622fbb462a047",
+      "target": "simtest_807cf7262a1d400a",
+      "type": "because"
+    },
+    {
+      "src": "observation_755743529189f949",
+      "dst": "simtest_eb3d8b19d1cf54dc",
+      "rel": "because",
+      "question": "WHY is this observation held?",
+      "proves": "MEASURED",
+      "asked_at": "2026-07-21T00:57:00.447640",
+      "asked_by": "graphify_record.py",
+      "source": "observation_755743529189f949",
+      "target": "simtest_eb3d8b19d1cf54dc",
+      "type": "because"
     }
   ]
 }

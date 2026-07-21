@@ -4038,6 +4038,237 @@
       "line": 552,
       "quote": "UPROPERTY(Transient, EditAnywhere, Category=Display)",
       "at": "2026-07-20T18:28:56.660Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\PhysicsEngine\\EnvironmentalCollisions.cpp",
+      "line": 50,
+      "quote": "SceneComponent->GetWorld()->OverlapMultiByObjectType(Overlaps, PaddedBounds.Origin, FQuat::Identity, ObjectParams, FCollisionShape::MakeBox(PaddedBounds.BoxExtent), Params);",
+      "at": "2026-07-21T01:45:57.175Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\PhysicsEngine\\RadialForceComponent.cpp",
+      "line": 58,
+      "quote": "GetWorld()->OverlapMultiByObjectType(Overlaps, Origin, FQuat::Identity, CollisionObjectQueryParams, FCollisionShape::MakeSphere(Radius), Params);",
+      "at": "2026-07-21T01:45:57.175Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\PhysicsEngine\\RadialForceComponent.cpp",
+      "line": 126,
+      "quote": "GetWorld()->OverlapMultiByObjectType(Overlaps, Origin, FQuat::Identity, CollisionObjectQueryParams, FCollisionShape::MakeSphere(Radius), Params);",
+      "at": "2026-07-21T01:45:57.175Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\KismetSystemLibrary.cpp",
+      "line": 1705,
+      "quote": "World->OverlapMultiByObjectType(Overlaps, SpherePos, FQuat::Identity, ObjectParams, FCollisionShape::MakeSphere(SphereRadius), Params);",
+      "at": "2026-07-21T01:45:57.175Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Pawn.cpp",
+      "line": 286,
+      "quote": "bool APawn::IsPlayerControlled() const",
+      "at": "2026-07-21T01:45:57.441Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\GameFramework\\RootMotionSource.cpp",
+      "line": 34,
+      "quote": "if (InCharacter.IsPlayerControlled())",
+      "at": "2026-07-21T01:45:57.441Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\CharacterMovementComponent.cpp",
+      "line": 846,
+      "quote": "if (CharacterOwner && CharacterOwner->IsPlayerControlled())",
+      "at": "2026-07-21T01:45:57.441Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\GameFramework\\Pawn.h",
+      "line": 254,
+      "quote": "UE_DEPRECATED(4.24, \"IsControlled is deprecated. To check if this pawn is controlled by anything, then call IsPawnControlled. To check if this pawn is controlled only by the player then call IsPlayerControlled\")",
+      "at": "2026-07-21T01:45:57.441Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavLinkCustomComponent.cpp",
+      "line": 459,
+      "quote": "TArray<FOverlapResult> OverlapsL, OverlapsR;",
+      "at": "2026-07-21T01:45:57.703Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Collision\\WorldCollisionAsync.cpp",
+      "line": 683,
+      "quote": "void UWorld::AddOverlapData(const FTraceHandle& Handle, const TArray<FOverlapResult>& Results)",
+      "at": "2026-07-21T01:45:57.703Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\InstancedMeshComponentBodies.h",
+      "line": 18,
+      "quote": "struct FOverlapResult;",
+      "at": "2026-07-21T01:45:57.703Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\InstancedMeshComponentBodies.h",
+      "line": 78,
+      "quote": "bool OverlapMulti(TArray<FOverlapResult>& OutOverlaps, const FVector& Pos, const FQuat& Rot,",
+      "at": "2026-07-21T01:45:57.703Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavLinkCustomComponent.cpp",
+      "line": 467,
+      "quote": "GetWorld()->OverlapMultiByChannel(OverlapsL, LocationL, FQuat::Identity, BroadcastChannel, FCollisionShape::MakeSphere(BroadcastRadius), Params);",
+      "at": "2026-07-21T01:45:57.957Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavLinkCustomComponent.cpp",
+      "line": 468,
+      "quote": "GetWorld()->OverlapMultiByChannel(OverlapsR, LocationR, FQuat::Identity, BroadcastChannel, FCollisionShape::MakeSphere(BroadcastRadius), Params);",
+      "at": "2026-07-21T01:45:57.957Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Private\\NavLinkCustomComponent.cpp",
+      "line": 473,
+      "quote": "GetWorld()->OverlapMultiByChannel(OverlapsL, MidPoint, FQuat::Identity, BroadcastChannel, FCollisionShape::MakeSphere(BroadcastRadius), Params);",
+      "at": "2026-07-21T01:45:57.957Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CharacterMovementComponentAsync.h",
+      "line": 363,
+      "quote": "FCollisionShape CollisionShape;",
+      "at": "2026-07-21T01:45:57.957Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CharacterMovementComponentAsync.h",
+      "line": 483,
+      "quote": "FCollisionQueryParams CapsuleParams;",
+      "at": "2026-07-21T01:45:58.207Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CharacterMovementComponentAsync.h",
+      "line": 545,
+      "quote": "ENGINE_API virtual bool FloorSweepTest(struct FHitResult& OutHit, const FVector& Start, const FVector& End, ECollisionChannel TraceChannel, const struct FCollisionShape& CollisionShape, const struct FCollisionQueryParams& Params, const struct FCollisionResponseParams& ResponseParam, FCharacterMovementComponentAsyncOutput& Output) const;",
+      "at": "2026-07-21T01:45:58.207Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CollisionQueryParams.h",
+      "line": 42,
+      "quote": "struct FCollisionQueryParams",
+      "at": "2026-07-21T01:45:58.207Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CollisionQueryParams.h",
+      "line": 210,
+      "quote": "FCollisionQueryParams()",
+      "at": "2026-07-21T01:45:58.207Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CollisionQueryParams.h",
+      "line": 453,
+      "quote": "struct FCollisionObjectQueryParams",
+      "at": "2026-07-21T01:45:58.457Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CollisionQueryParams.h",
+      "line": 497,
+      "quote": "FCollisionObjectQueryParams(const FCollisionObjectQueryParams&) = default;",
+      "at": "2026-07-21T01:45:58.457Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CollisionQueryParams.h",
+      "line": 498,
+      "quote": "FCollisionObjectQueryParams(FCollisionObjectQueryParams&&) = default;",
+      "at": "2026-07-21T01:45:58.457Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Public\\CollisionQueryParams.h",
+      "line": 499,
+      "quote": "FCollisionObjectQueryParams& operator=(const FCollisionObjectQueryParams&) = default;",
+      "at": "2026-07-21T01:45:58.457Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\NavigationSystem\\Public\\NavLinkCustomComponent.h",
+      "line": 91,
+      "quote": "NAVIGATIONSYSTEM_API void SetBroadcastData(float Radius, ECollisionChannel TraceChannel = ECC_Pawn, float Interval = 0.0f);",
+      "at": "2026-07-21T01:45:58.707Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\StaticMeshSceneProxy.cpp",
+      "line": 1635,
+      "quote": "bool bHasResponse = EngineShowFlags.CollisionPawn && CollisionResponse.GetResponse(ECC_Pawn) != ECR_Ignore;",
+      "at": "2026-07-21T01:45:58.707Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\StaticMeshActor.cpp",
+      "line": 188,
+      "quote": "GetWorld()->OverlapMultiByChannel(Overlaps, GetActorLocation(), FQuat::Identity, ECC_Pawn, FCollisionShape::MakeSphere(1.f), SphereParams);",
+      "at": "2026-07-21T01:45:58.707Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\NaniteResources.cpp",
+      "line": 2503,
+      "quote": "bool bHasResponse = EngineShowFlags.CollisionPawn && CollisionResponse.GetResponse(ECC_Pawn) != ECR_Ignore;",
+      "at": "2026-07-21T01:45:58.707Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\SphereComponent.cpp",
+      "line": 204,
+      "quote": "return FCollisionShape::MakeSphere(Radius).Inflate(Inflation);",
+      "at": "2026-07-21T01:45:58.961Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\IntPoint.h",
+      "line": 380,
+      "quote": "return IntType(FMath::Sqrt(double(LocalX64 * LocalX64 + LocalY64 * LocalY64)));",
+      "at": "2026-07-21T01:51:02.446Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\IntVector.h",
+      "line": 513,
+      "quote": "return IntType(FMath::Sqrt(double(LocalX64 * LocalX64 + LocalY64 * LocalY64 + LocalZ64 * LocalZ64)));",
+      "at": "2026-07-21T01:51:02.446Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\PolynomialRootSolver.h",
+      "line": 90,
+      "quote": "RealType RootDiscrim = FMath::Sqrt(Discrim);",
+      "at": "2026-07-21T01:51:02.446Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\Quat.h",
+      "line": 1162,
+      "quote": "return FMath::Sqrt(X * X + Y * Y + Z * Z + W * W);",
+      "at": "2026-07-21T01:51:02.446Z"
     }
   ]
 }

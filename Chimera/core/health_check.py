@@ -35,8 +35,9 @@ def check_mcp_bridge() -> bool:
         from core.telemetry_probe import MCPStdioClient
         c = MCPStdioClient()
         r = c.call('inspect', {'action': 'get_scene_stats'})
-        return r.get('result',{}).get('structuredContent',{}).get('success', False)
-    except:
+        sc = r.get('result',{}).get('structuredContent',{})
+        return sc.get('success', False) or r.get('result',{}).get('success', False)
+    except Exception as e:
         return False
 
 def check_recent_crashes() -> list:
