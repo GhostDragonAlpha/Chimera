@@ -1,0 +1,20 @@
+{
+  "_provenance": "beacon_narrative rung",
+  "scenario": "Train beacon_narrative parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "signal_levels",
+      "min": 3,
+      "hard": true,
+      "wall": "3 distinct signal levels"
+    },
+    {
+      "kind": "at_most",
+      "measure": "min_signal",
+      "max": 0.3,
+      "hard": true,
+      "wall": "0 helps = dim signal"
+    }
+  ]
+}

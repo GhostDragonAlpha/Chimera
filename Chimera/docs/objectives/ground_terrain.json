@@ -1,0 +1,20 @@
+{
+  "_provenance": "ground_terrain rung",
+  "scenario": "Train ground_terrain parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "n_materials",
+      "min": 2,
+      "hard": true,
+      "wall": "At least 2 material types must form"
+    },
+    {
+      "kind": "at_least",
+      "measure": "repose_angle",
+      "min": 30,
+      "max": 45,
+      "wall": "angle of repose 30-45"
+    }
+  ]
+}

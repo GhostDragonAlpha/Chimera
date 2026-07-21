@@ -1,0 +1,13 @@
+{
+  "_provenance": "body_survival rung",
+  "scenario": "Train body_survival parameters",
+  "constraints": [
+    {
+      "kind": "target",
+      "measure": "o2_drain_time",
+      "value": 360,
+      "tol": 60,
+      "wall": "O2 drains in 5-7 min walking"
+    }
+  ]
+}
