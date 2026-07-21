@@ -191,6 +191,7 @@ Read `task_progress.md` for the handoff. Read `EMERGENCE_ROADMAP.md` for the bui
 | `EMERGENT_WORKFLOW.md` | The emergent pipeline |
 | `EMERGENCE_ROADMAP.md` | The 9-rung compositional ladder |
 | `docs/THOUGHT_CHAIN.md` | Complete reasoning, next steps A-G |
+| `docs/CAVEATS.md` | Things that broke and why — read before building |
 | `core/auto_decomposer.py` | Automatic sub-rung decomposition + training |
 | `core/forty_questions.py` | 40-question engine — every feature's spec |
 | `core/decoder.py` | Generic decoder — reads ANY trained genome |
