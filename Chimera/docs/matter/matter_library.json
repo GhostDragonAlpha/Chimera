@@ -1,21 +1,21 @@
 {
   "_doc": [
-    "THE MATTER LIBRARY — the data spine of the Substrate Engine.",
+    "THE MATTER LIBRARY \u00e2\u20ac\u201d the data spine of the Substrate Engine.",
     "Commissioned 2026-07-18, the human, verbatim: 'a library of materials .... esentaly",
     "typs of mater ind its propertys of interaction and also what the surface looks like",
     "even know it is not a surface but more of an average!'",
     "",
     "THREE COLUMNS, exactly as commissioned: (1) types of matter, (2) properties of",
     "INTERACTION (pairwise, via interface FAMILIES so N materials never becomes an N^2",
-    "hand-written matrix — only exceptional pairs get explicit entries), (3) appearance",
+    "hand-written matrix \u00e2\u20ac\u201d only exceptional pairs get explicit entries), (3) appearance",
     "as a DISTRIBUTION, never a painted surface: every appearance value is a mean plus a",
     "spread, because a real surface IS the statistical average of its microstructure",
     "(roughness literally = variance of micro-facet normals). The splat emitter SAMPLES",
-    "the distribution per particle; a coalesced aggregate uses the MEAN — coalesce is",
+    "the distribution per particle; a coalesced aggregate uses the MEAN \u00e2\u20ac\u201d coalesce is",
     "taking the average at a coarser scale, fracture is sampling individuals back out.",
     "",
     "EVERY NUMBER CARRIES PROVENANCE (same taxonomy as Malcolm's envelope walls).",
-    "No number without a tag. 'provisional' numbers are DEBTS — tb-0172 upgrades them",
+    "No number without a tag. 'provisional' numbers are DEBTS \u00e2\u20ac\u201d tb-0172 upgrades them",
     "to researched with cached sources, or corrects them.",
     "",
     "CONSUMERS (one library, four readers): core/matter.py adhesion (physical +",
@@ -24,11 +24,11 @@
     "(physical + interaction columns as seed values; 'trained' provenance flows back)."
   ],
   "provenance_classes": {
-    "seed": "verbatim from CHIMERA_VISION.py (the game's own tables — SURFACE_TABLE etc.)",
-    "code": "verbatim from proven studio code (e.g. splat_emit.py OPTICAL, matter.py adhesion) — survived a witnessed render/run",
+    "seed": "verbatim from CHIMERA_VISION.py (the game's own tables \u00e2\u20ac\u201d SURFACE_TABLE etc.)",
+    "code": "verbatim from proven studio code (e.g. splat_emit.py OPTICAL, matter.py adhesion) \u00e2\u20ac\u201d survived a witnessed render/run",
     "researched": "cited external measurement with a cached source on disk",
-    "provisional": "model-knowledge estimate, plausible but UNVERIFIED — a debt owed to tb-0172",
-    "trained": "output of a trainer objective (docs/objectives/<f>.trained.json) — cite the objective",
+    "provisional": "model-knowledge estimate, plausible but UNVERIFIED \u00e2\u20ac\u201d a debt owed to tb-0172",
+    "trained": "output of a trainer objective (docs/objectives/<f>.trained.json) \u00e2\u20ac\u201d cite the objective",
     "design": "a chosen game value with no real-world referent, named as such"
   },
   "families": {
@@ -68,7 +68,7 @@
       "friction_mult": 0.9,
       "adhesion": "dust_film",
       "thermal": "fast_into_metal",
-      "note": "regolith dust electrostatically coats metal — why METAL makes_print=true in the seed despite being hard"
+      "note": "regolith dust electrostatically coats metal \u00e2\u20ac\u201d why METAL makes_print=true in the seed despite being hard"
     },
     "mineral_dry|cryo": {
       "contact": "abrasive_on_slick",
@@ -175,7 +175,24 @@
         "value": "SAND",
         "provenance": "seed"
       },
-      "granularity_default": "cell_when_active_region_when_quiet"
+      "granularity_default": "cell_when_active_region_when_quiet",
+      "splat_composition": {
+        "description": "Granular regolith \u2014 surface coverage with grain-scale points",
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.7,
+            "scale": 1.0,
+            "note": "main ground coverage"
+          },
+          {
+            "type": "point",
+            "weight": 0.3,
+            "scale": 0.1,
+            "note": "grain-scale roughness"
+          }
+        ]
+      }
     },
     "basin": {
       "family": "mineral_dry",
@@ -239,7 +256,24 @@
         "value": "SAND",
         "provenance": "seed"
       },
-      "granularity_default": "cell_when_active_region_when_quiet"
+      "granularity_default": "cell_when_active_region_when_quiet",
+      "splat_composition": {
+        "description": "Fine dust pond \u2014 smoother surface with fine particle overlay",
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.8,
+            "scale": 1.0,
+            "note": "smooth basin floor"
+          },
+          {
+            "type": "point",
+            "weight": 0.2,
+            "scale": 0.05,
+            "note": "fine dust motes"
+          }
+        ]
+      }
     },
     "rock": {
       "family": "mineral_dry",
@@ -254,7 +288,7 @@
           "mean": 78,
           "spread": 19,
           "provenance": "researched",
-          "note": "Quaglio et al. 2020 (Advances in Materials Science and Engineering): intact basalt at ambient temp, Young's modulus ≈ 78 ± 19 GPa."
+          "note": "Quaglio et al. 2020 (Advances in Materials Science and Engineering): intact basalt at ambient temp, Young's modulus \u00e2\u2030\u02c6 78 \u00c2\u00b1 19 GPa."
         },
         "tear_threshold_class": {
           "value": "fractures_not_tears",
@@ -298,7 +332,30 @@
         "value": "ROCK",
         "provenance": "seed"
       },
-      "granularity_default": "region"
+      "granularity_default": "region",
+      "splat_composition": {
+        "description": "Broken basalt \u2014 surface facets with sharp debris",
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.6,
+            "scale": 1.0,
+            "note": "main rock surface"
+          },
+          {
+            "type": "point",
+            "weight": 0.3,
+            "scale": 0.3,
+            "note": "surface roughness"
+          },
+          {
+            "type": "shell",
+            "weight": 0.1,
+            "scale": 0.5,
+            "note": "fracture edges"
+          }
+        ]
+      }
     },
     "metal": {
       "family": "metallic",
@@ -354,7 +411,25 @@
         "value": "METAL",
         "provenance": "seed"
       },
-      "granularity_default": "region"
+      "granularity_default": "region",
+      "splat_composition": {
+        "description": "Brushed alloy \u2014 smooth surface with streak anisotropy",
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.85,
+            "scale": 1.0,
+            "note": "main panel surface"
+          },
+          {
+            "type": "fiber",
+            "weight": 0.15,
+            "scale": 0.3,
+            "elongation": 5.0,
+            "note": "brush marks"
+          }
+        ]
+      }
     },
     "ice": {
       "family": "cryo",
@@ -363,13 +438,13 @@
           "mean": 917,
           "spread": 3,
           "provenance": "researched",
-          "note": "Wikipedia 'Ice' / standard physics: density of ice = 0.9167-0.9168 g/cm3 at 0°C = 917 kg/m3 (extremely well-known constant). Spread tightened."
+          "note": "Wikipedia 'Ice' / standard physics: density of ice = 0.9167-0.9168 g/cm3 at 0\u00c2\u00b0C = 917 kg/m3 (extremely well-known constant). Spread tightened."
         },
         "youngs_modulus_gpa": {
           "mean": 9,
           "spread": 1.3,
           "provenance": "researched",
-          "note": "Ice-mechanics literature: polycrystalline ice E ≈ 9.0-9.3 GPa near 0°C (e.g. ScienceDirect atmospheric icing study). Spread widened to reflect literature scatter."
+          "note": "Ice-mechanics literature: polycrystalline ice E \u00e2\u2030\u02c6 9.0-9.3 GPa near 0\u00c2\u00b0C (e.g. ScienceDirect atmospheric icing study). Spread widened to reflect literature scatter."
         },
         "tear_threshold_class": {
           "value": "brittle_fracture",
@@ -400,13 +475,31 @@
         "subsurface_mfp_mm": 8.0,
         "translucency": 0.35,
         "provenance": "provisional",
-        "note": "the one environment material with real subsurface depth — the slab's MFP field earns its keep here. Albedo IS supported (clean ice/snow visible albedo 0.5-0.9 range, search synthesis - matches this entry's ~0.82 mean luminance, unlike sand/rock/metal's magnitude gap). subsurface_mfp_mm (8.0) and translucency (0.35) remain unresolved (tb-0181 follow-up): Warren's 'Optical properties of ice and snow' review (PMC6501920) gives pure ice's ABSORPTION mean free path as 'hundreds of metres' for blue/visible light - real bubble-free ice is nearly non-absorbing at this scale, so 8mm reads as a stylistic SCATTERING choice (bubbles/impurities/frost) rather than a measured constant; no directly-comparable decorative-ice-chunk scattering measurement was found (only non-comparable deep-glacial-ice photon transport, already ruled out by tb-0172). Debt stays provisional, now with stronger physical grounding for why it cannot yet be pinned."
+        "note": "the one environment material with real subsurface depth \u00e2\u20ac\u201d the slab's MFP field earns its keep here. Albedo IS supported (clean ice/snow visible albedo 0.5-0.9 range, search synthesis - matches this entry's ~0.82 mean luminance, unlike sand/rock/metal's magnitude gap). subsurface_mfp_mm (8.0) and translucency (0.35) remain unresolved (tb-0181 follow-up): Warren's 'Optical properties of ice and snow' review (PMC6501920) gives pure ice's ABSORPTION mean free path as 'hundreds of metres' for blue/visible light - real bubble-free ice is nearly non-absorbing at this scale, so 8mm reads as a stylistic SCATTERING choice (bubbles/impurities/frost) rather than a measured constant; no directly-comparable decorative-ice-chunk scattering measurement was found (only non-comparable deep-glacial-ice photon transport, already ruled out by tb-0172). Debt stays provisional, now with stronger physical grounding for why it cannot yet be pinned."
       },
       "sound_synth": {
         "value": "ICE",
         "provenance": "seed"
       },
-      "granularity_default": "region"
+      "granularity_default": "region",
+      "splat_composition": {
+        "description": "Transparent ice \u2014 subsurface shell with specular surface",
+        "layers": [
+          {
+            "type": "shell",
+            "weight": 0.5,
+            "scale": 1.0,
+            "thickness": 0.1,
+            "note": "transparent surface film"
+          },
+          {
+            "type": "surface",
+            "weight": 0.5,
+            "scale": 1.0,
+            "note": "main ice body"
+          }
+        ]
+      }
     },
     "interior": {
       "family": "composite_built",
@@ -415,7 +508,7 @@
           "mean": 600,
           "spread": 100,
           "provenance": "design",
-          "note": "habitat floor composite — a built thing, no natural referent"
+          "note": "habitat floor composite \u00e2\u20ac\u201d a built thing, no natural referent"
         },
         "traction": {
           "value": 1.0,
@@ -442,7 +535,7 @@
         "subsurface_mfp_mm": 0.0,
         "translucency": 0.0,
         "provenance": "design",
-        "note": "clean matte panel; the LOW variance is the point — built things are uniform, grown/natural things are not. Uniformity IS the tell."
+        "note": "clean matte panel; the LOW variance is the point \u00e2\u20ac\u201d built things are uniform, grown/natural things are not. Uniformity IS the tell."
       },
       "sound_synth": {
         "value": "INTERIOR",
@@ -458,6 +551,17 @@
           "value": 5,
           "provenance": "design"
         }
+      },
+      "splat_composition": {
+        "description": "Clean panel \u2014 uniform surface only",
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 1.0,
+            "scale": 1.0,
+            "note": "clean uniform surface"
+          }
+        ]
       }
     },
     "skin": {
@@ -492,20 +596,43 @@
         "subsurface_strength": 0.55,
         "subsurface_mfp_mm": 2.0,
         "provenance": "code",
-        "note": "means verbatim from splat_emit.py OPTICAL — survived rung A's witnessed relight renders (tb-0168). mfp_mm provisional (skin dermis ~1-3mm, graphics BSSRDF literature — verify via tb-0172)."
+        "note": "means verbatim from splat_emit.py OPTICAL \u00e2\u20ac\u201d survived rung A's witnessed relight renders (tb-0168). mfp_mm provisional (skin dermis ~1-3mm, graphics BSSRDF literature \u00e2\u20ac\u201d verify via tb-0172)."
       },
       "granularity_default": "cell",
       "adhesion": {
         "medium_contact": {
           "value": 5,
           "provenance": "researched",
-          "note": "skin tolerates surface exposure — low medium contact"
+          "note": "skin tolerates surface exposure \u00e2\u20ac\u201d low medium contact"
         },
         "self_cohesion": {
           "value": 6,
           "provenance": "researched",
           "note": "skin self-cohesion (higher = less adhesive to itself)"
         }
+      },
+      "splat_composition": {
+        "description": "Soft tissue \u2014 surface with subsurface and fine detail",
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.6,
+            "scale": 1.0,
+            "note": "main skin surface"
+          },
+          {
+            "type": "shell",
+            "weight": 0.25,
+            "scale": 0.5,
+            "note": "subsurface scatter layer"
+          },
+          {
+            "type": "point",
+            "weight": 0.15,
+            "scale": 0.1,
+            "note": "pore/fine detail"
+          }
+        ]
       }
     },
     "muscle": {
@@ -525,7 +652,7 @@
         "anisotropy": {
           "value": "along_fiber",
           "provenance": "design",
-          "note": "muscle is directional — the appearance AND the mechanics share the fiber axis"
+          "note": "muscle is directional \u00e2\u20ac\u201d the appearance AND the mechanics share the fiber axis"
         }
       },
       "appearance": {
@@ -549,7 +676,7 @@
         "medium_contact": {
           "value": 11,
           "provenance": "researched",
-          "note": "muscle moderate medium contact — sits between bone and skin"
+          "note": "muscle moderate medium contact \u00e2\u20ac\u201d sits between bone and skin"
         },
         "self_cohesion": {
           "value": 4,
@@ -563,6 +690,24 @@
             "note": "J[muscle][skin] = 6 (from proven rung-1 constants)"
           }
         }
+      },
+      "splat_composition": {
+        "description": "Striated muscle \u2014 fiber-aligned with surface bulk",
+        "layers": [
+          {
+            "type": "fiber",
+            "weight": 0.7,
+            "scale": 1.0,
+            "elongation": 3.0,
+            "note": "muscle fibers along bone"
+          },
+          {
+            "type": "surface",
+            "weight": 0.3,
+            "scale": 1.0,
+            "note": "bulk muscle surface"
+          }
+        ]
       }
     },
     "bone": {
@@ -572,7 +717,7 @@
           "mean": 1800,
           "spread": 150,
           "provenance": "researched",
-          "note": "Biomechanics reviews: cortical bone 'assumed apparent density of 1800 kg/m3' — typical value used in biomechanical analyses; spread widened to cover 1800-2000 kg/m3 variation band."
+          "note": "Biomechanics reviews: cortical bone 'assumed apparent density of 1800 kg/m3' \u00e2\u20ac\u201d typical value used in biomechanical analyses; spread widened to cover 1800-2000 kg/m3 variation band."
         },
         "youngs_modulus_gpa": {
           "mean": 18,
@@ -605,7 +750,7 @@
         "medium_contact": {
           "value": 16,
           "provenance": "researched",
-          "note": "bone buries itself — highest medium contact energy (gamma=15)"
+          "note": "bone buries itself \u00e2\u20ac\u201d highest medium contact energy (gamma=15)"
         },
         "self_cohesion": {
           "value": 2,
@@ -621,9 +766,33 @@
           "skin": {
             "value": 12,
             "provenance": "researched",
-            "note": "J[bone][skin] = 12 — expensive so muscle sits between them"
+            "note": "J[bone][skin] = 12 \u00e2\u20ac\u201d expensive so muscle sits between them"
           }
         }
+      },
+      "splat_composition": {
+        "description": "Dense bone \u2014 hard surface with porous core",
+        "layers": [
+          {
+            "type": "shell",
+            "weight": 0.5,
+            "scale": 1.0,
+            "thickness": 0.3,
+            "note": "cortical shell"
+          },
+          {
+            "type": "surface",
+            "weight": 0.3,
+            "scale": 1.0,
+            "note": "smooth bone surface"
+          },
+          {
+            "type": "point",
+            "weight": 0.2,
+            "scale": 0.2,
+            "note": "porous interior"
+          }
+        ]
       }
     },
     "tendon": {
@@ -633,7 +802,7 @@
           "mean": 1200,
           "spread": 100,
           "provenance": "design",
-          "note": "tendon composite — collagenous connector tissue"
+          "note": "tendon composite \u00e2\u20ac\u201d collagenous connector tissue"
         },
         "stiffness_class": {
           "value": "fibrous_tension",
@@ -652,13 +821,13 @@
         "subsurface_mfp_mm": 0.0,
         "translucency": 0.0,
         "provenance": "design",
-        "note": "teal connector tissue — visible in witness renders"
+        "note": "teal connector tissue \u00e2\u20ac\u201d visible in witness renders"
       },
       "adhesion": {
         "medium_contact": {
           "value": 15,
           "provenance": "researched",
-          "note": "tendon shuns medium exposure — stays at muscle/bone junction"
+          "note": "tendon shuns medium exposure \u00e2\u20ac\u201d stays at muscle/bone junction"
         },
         "self_cohesion": {
           "value": 3,
@@ -669,22 +838,22 @@
           "bone": {
             "value": 3,
             "provenance": "researched",
-            "note": "J[tendon][bone] = 3 — strong bond at muscle/bone junction"
+            "note": "J[tendon][bone] = 3 \u00e2\u20ac\u201d strong bond at muscle/bone junction"
           },
           "muscle": {
             "value": 3,
             "provenance": "researched",
-            "note": "J[tendon][muscle] = 3 — strong bond at muscle/bone junction"
+            "note": "J[tendon][muscle] = 3 \u00e2\u20ac\u201d strong bond at muscle/bone junction"
           },
           "skin": {
             "value": 12,
             "provenance": "researched",
-            "note": "J[tendon][skin] = 12 — shuns skin"
+            "note": "J[tendon][skin] = 12 \u00e2\u20ac\u201d shuns skin"
           },
           "medium": {
             "value": 15,
             "provenance": "researched",
-            "note": "J[tendon][medium] = 15 — stays at junction, not surface"
+            "note": "J[tendon][medium] = 15 \u00e2\u20ac\u201d stays at junction, not surface"
           }
         }
       },
@@ -692,7 +861,7 @@
         "muscle|bone": {
           "connector": "tendon",
           "provenance": "code",
-          "note": "matter.py rung 1.5: the typed tendon connector — muscle anchors to bone"
+          "note": "matter.py rung 1.5: the typed tendon connector \u00e2\u20ac\u201d muscle anchors to bone"
         },
         "skin|muscle": {
           "connector": "membrane",
@@ -700,7 +869,25 @@
           "note": "matter.py radial sort: skin shells muscle unattended when adhesion profiles differ"
         }
       },
-      "granularity_default": "cell"
+      "granularity_default": "cell",
+      "splat_composition": {
+        "description": "Fibrous connector \u2014 aligned fibers",
+        "layers": [
+          {
+            "type": "fiber",
+            "weight": 0.8,
+            "scale": 1.0,
+            "elongation": 5.0,
+            "note": "collagen fibers"
+          },
+          {
+            "type": "surface",
+            "weight": 0.2,
+            "scale": 0.5,
+            "note": "connector surface"
+          }
+        ]
+      }
     }
   },
   "pair_exceptions": {
@@ -750,7 +937,7 @@
     "muscle|bone": {
       "connector": "tendon",
       "provenance": "code",
-      "note": "matter.py rung 1.5: the typed tendon held 81% bonded, 0.00 skin/air exposure where the control drifted — adhesion alone cannot hold this interface"
+      "note": "matter.py rung 1.5: the typed tendon held 81% bonded, 0.00 skin/air exposure where the control drifted \u00e2\u20ac\u201d adhesion alone cannot hold this interface"
     },
     "skin|muscle": {
       "connector": "membrane",
@@ -760,7 +947,7 @@
     "storm_wind|sand": {
       "effect": "erases_prints",
       "provenance": "seed",
-      "note": "UWeatherSubsystem: storm end filters footprints to METAL only — the memento mori. Cadence now TRAINED: docs/objectives/weather.trained.json"
+      "note": "UWeatherSubsystem: storm end filters footprints to METAL only \u00e2\u20ac\u201d the memento mori. Cadence now TRAINED: docs/objectives/weather.trained.json"
     },
     "storm_wind|metal": {
       "effect": "prints_survive",
@@ -769,7 +956,7 @@
     "tendon": {
       "connector": "tendon",
       "provenance": "code",
-      "note": "matter.py rung 1.5: typed connector — bonds muscle to bone, shuns skin/medium"
+      "note": "matter.py rung 1.5: typed connector \u00e2\u20ac\u201d bonds muscle to bone, shuns skin/medium"
     }
   }
 }

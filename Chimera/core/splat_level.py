@@ -30,54 +30,123 @@ ROOT = Path(__file__).resolve().parents[1]
 DECODED_DIR = ROOT / 'docs/decoded'
 OUT_DIR = ROOT / 'Saved' / 'SplatEmit'
 
-# Tissue/color map for every game element
-MATERIALS = {
-    'ground':  {'albedo': (0.55, 0.47, 0.38), 'roughness': 0.95, 'alpha': 1.0, 'subsurface': 0.0},
-    'sand':    {'albedo': (0.65, 0.57, 0.40), 'roughness': 0.90, 'alpha': 1.0, 'subsurface': 0.0},
-    'rock':    {'albedo': (0.32, 0.30, 0.28), 'roughness': 0.85, 'alpha': 1.0, 'subsurface': 0.0},
-    'resource':{'albedo': (0.40, 0.60, 0.30), 'roughness': 0.70, 'alpha': 1.0, 'subsurface': 0.1},
-    'metal':   {'albedo': (0.56, 0.57, 0.58), 'roughness': 0.35, 'alpha': 1.0, 'subsurface': 0.0},
-    'shelter': {'albedo': (0.50, 0.55, 0.65), 'roughness': 0.60, 'alpha': 1.0, 'subsurface': 0.0},
-    'npc':     {'albedo': (0.80, 0.62, 0.47), 'roughness': 0.70, 'alpha': 0.88, 'subsurface': 0.55},
-    'beacon':  {'albedo': (0.99, 0.20, 0.10), 'roughness': 0.50, 'alpha': 1.0, 'subsurface': 0.0},
-    'sun':     {'albedo': (1.00, 0.85, 0.50), 'roughness': 0.20, 'alpha': 1.0, 'subsurface': 0.0},
-}
+# Splat type constructors (from splat_types)
+from core.splat_types import (
+    SPLAT_TYPES,
+    emit_surface, emit_fiber, emit_point,
+    emit_beam, emit_cloud, emit_glow, emit_shell
+)
+
+# Load material splat compositions from the library
+with open(ROOT / 'docs/matter/matter_library.json') as f:
+    _MATTER_LIB = json.load(f)
 
 
-def emit_splat_cloud(pos, material, count=1, spread=1.0, seed=42):
-    """Emit a cloud of Gaussian splats at position with material properties.
-    Returns a splat dict compatible with splat_gpu.rasterize() and splat_to_ue5."""
+def _get_optical(material_name):
+    """Get optical properties for a material from the library."""
+    mat = _MATTER_LIB['materials'].get(material_name)
+    if mat is None:
+        return {'albedo': (0.5, 0.5, 0.5), 'roughness': 0.5, 'alpha': 1.0, 'subsurface': 0.0}
+    app = mat.get('appearance', {})
+    alb = app.get('albedo_mean_rgb', [0.5, 0.5, 0.5])
+    if isinstance(alb, list):
+        alb = tuple(alb)
+    return {
+        'albedo': alb,
+        'roughness': app.get('roughness_mean', 0.5),
+        'alpha': app.get('alpha', 1.0),
+        'subsurface': app.get('subsurface_strength', 0.0),
+        'metallic': app.get('metallic', 0.0),
+    }
+
+
+def _get_composition(material_name):
+    """Get splat composition layers for a material."""
+    mat = _MATTER_LIB['materials'].get(material_name)
+    if mat is None:
+        return [{'type': 'surface', 'weight': 1.0, 'scale': 1.0}]
+    comp = mat.get('splat_composition', {})
+    return comp.get('layers', [{'type': 'surface', 'weight': 1.0, 'scale': 1.0}])
+
+
+def emit_splat_cloud(pos, material, count=1, spread=1.0, seed=42,
+                      fiber_dir=None):
+    """Emit Gaussian splats using the material's splat composition.
+    
+    Reads the material's splat_composition from the matter library
+    and emits the correct combination of splat types (surface, fiber,
+    point, shell, etc.) with correct weights.
+    """
     rng = np.random.RandomState(seed)
-    mat = MATERIALS[material]
+    optical = _get_optical(material)
+    layers = _get_composition(material)
     
     n = max(count, 1)
-    pos_arr = np.tile(pos, (n, 1)) + rng.randn(n, 3) * spread
-    norm = np.zeros((n, 3))
-    norm[:, 2] = 1.0  # upward
     
-    # Random orientation in tangent plane
-    t1 = np.zeros((n, 3))
-    t1[:, 0] = 1.0
-    t2 = np.zeros((n, 3))
-    t2[:, 1] = 1.0
+    # Distribute splats across layers by weight
+    total_weight = sum(l['weight'] for l in layers)
     
-    # Covariance: isotropic disk
-    scale = spread * 0.5
-    cov = np.zeros((n, 3, 3))
-    cov[:, 0, 0] = scale ** 2
-    cov[:, 1, 1] = scale ** 2
-    cov[:, 2, 2] = (scale * 0.3) ** 2
+    all_splats = []
+    for layer in layers:
+        layer_n = max(1, int(n * layer['weight'] / total_weight))
+        if layer_n == 0:
+            continue
+        
+        # Positions: jittered around center
+        lpos = np.tile(pos, (layer_n, 1)) + rng.randn(layer_n, 3) * spread * layer.get('scale', 1.0)
+        
+        # Normals: upward by default
+        norm = np.zeros((layer_n, 3))
+        norm[:, 2] = 1.0
+        
+        # Build covariance for this layer's splat type
+        stype = layer['type']
+        if stype == 'surface':
+            cov = emit_surface(norm, tangent_scale=spread * layer.get('scale', 1.0) * 0.5,
+                               normal_scale=spread * 0.15)
+        elif stype == 'fiber':
+            fd = fiber_dir if fiber_dir is not None else norm
+            if len(fd.shape) == 1:
+                fd = np.tile(fd, (layer_n, 1))
+            cov = emit_fiber(norm, tangent_scale=spread * 0.5,
+                             normal_scale=spread * 0.15,
+                             fiber_dir=fd, elongation=layer.get('elongation', 3.0))
+        elif stype == 'point':
+            cov = emit_point(lpos, radius=spread * layer.get('scale', 0.3))
+        elif stype == 'shell':
+            cov = emit_shell(lpos, norm, thickness=layer.get('thickness', 0.2),
+                             spread=spread * layer.get('scale', 1.0) * 0.5)
+        elif stype == 'beam':
+            fd = fiber_dir if fiber_dir is not None else norm
+            if len(fd.shape) == 1:
+                fd = np.tile(fd, (layer_n, 1))
+            cov = emit_beam(fd, length=layer.get('length', spread * 2),
+                           thickness=layer.get('thickness', spread * 0.1))
+        elif stype == 'cloud':
+            cov = emit_cloud(lpos, radius=spread * layer.get('scale', 2.0))
+        elif stype == 'glow':
+            cov = emit_glow(lpos, radius=spread * layer.get('scale', 0.5))
+        else:
+            # Fallback: isotropic
+            cov = emit_point(lpos, radius=spread * 0.3)
+        
+        all_splats.append({
+            'pos': lpos.astype(np.float64),
+            'normal': norm.astype(np.float64),
+            'cov': cov.astype(np.float64) if isinstance(cov, np.ndarray) else cov,
+            'albedo': np.tile(optical['albedo'], (layer_n, 1)).astype(np.float64),
+            'roughness': np.full(layer_n, optical['roughness'], dtype=np.float64),
+            'alpha': np.full(layer_n, optical['alpha'], dtype=np.float64),
+            'subsurface': np.full(layer_n, optical['subsurface'], dtype=np.float64),
+            'metallic': np.full(layer_n, optical.get('metallic', 0.0), dtype=np.float64),
+        })
     
-    return {
-        'pos': pos_arr.astype(np.float64),
-        'normal': norm.astype(np.float64),
-        'cov': cov.astype(np.float64),
-        'albedo': np.tile(mat['albedo'], (n, 1)).astype(np.float64),
-        'roughness': np.full(n, mat['roughness'], dtype=np.float64),
-        'alpha': np.full(n, mat['alpha'], dtype=np.float64),
-        'subsurface': np.full(n, mat['subsurface'], dtype=np.float64),
-        'metallic': np.zeros(n, dtype=np.float64),
-    }
+    # Merge layers
+    out = {}
+    for k in ['pos', 'normal', 'cov', 'albedo', 'roughness', 'alpha', 'subsurface', 'metallic']:
+        arrays = [s[k] for s in all_splats if s is not None]
+        out[k] = np.concatenate(arrays, axis=0) if arrays else np.zeros((0, 3) if k in ('pos','normal','cov','albedo') else 0)
+    return out
 
 
 def build_ground_terrain(decoded, extent=2000, density=5000):
