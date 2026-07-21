@@ -1,0 +1,99 @@
+# Decision Method — The agent drives itself
+
+> No questions. No reports. The method is the lever.
+> When in doubt, run the decision tree. When the tree terminates, the session ends.
+
+## The Decision Tree
+
+This is a hard fallthrough. Start at 1. If it produces work, execute it. If it doesn't, fall through to the next. If all fall through, the session is complete.
+
+### 1. Read the roadmap
+
+Open EMERGENCE_ROADMAP.md. Find the first item whose status is not DONE and not BLOCKED.
+
+- **DONE** → mark it, move to the next.
+- **BLOCKED** → note the blocker, move to the next.
+- **Not started or in progress** → execute it using the formula (CONSTRAINT → EXISTING → WALLS → WORK → JUDGE).
+- **No items found** → fall through to 2.
+
+### 2. Re-approach blocked items
+
+For each blocked item, try ONE alternative approach to satisfy the same CONSTRAINT. The formula says test the rule, not the object. If the object can't be MCP-spawned, test the rule a different way.
+
+- If the constraint is "player can collect resources" and APickupActor can't be spawned, implement proximity-based collection in C++ (like the shelter fix).
+- If the constraint is "shelter refills O2" and the collision trigger doesn't work, implement distance-based checking in Tick (already done).
+- Each item gets ONE alternative attempt. If that also fails, mark it BLOCKED and fall through.
+
+### 3. Move to the next ladder rung
+
+Items are ordered by the compositional ladder. If Item N is blocked, work Item N+1. The ladder is:
+
+```
+body (survival) → biome (resources) → shelter (threshold) → form (geometry)
+→ social (NPC needs) → economy (fabricator) → narrative (beacon)
+```
+
+- Each item that is not blocked gets one full formula pass.
+- After the pass, re-check Item N to see if the blocker has resolved.
+- If no items are available (all blocked or done), fall through to 4.
+
+### 4. Work the audit backlog
+
+Open EMERGENCE_ROADMAP.md's audit backlog section. Every feature previously built with the old method (maximize/minimize, authored forms, placed objects) that has a recorded human judgment of failure:
+
+- Pick the oldest unaddressed audit item.
+- Apply the formula: retrain with walls-only constraints at the right definition level.
+- Record the new result. Mark the audit item as addressed.
+- If no audit items remain, fall through to 5.
+
+### 5. Train the next untrained rung
+
+The compositional ladder has rungs that are not yet in EMERGENCE_ROADMAP.md. Check what's been trained vs what's pending:
+
+- Check core/trainables/ for existing domains.
+- Check docs/objectives/ for existing objectives.
+- If a domain exists but was trained with maximize/minimize (old method), it's an audit item (go to 4).
+- If a domain has never been trained (e.g., habitat_form, npc_needs, economy_exchange), train it:
+  1. Write the domain (seed/mutate/measure) with walls-only constraints
+  2. Write the objective (no maximize/minimize — only walls)
+  3. Train
+  4. Decode to game artifact
+  5. Write beat to verify
+- If no untrained rungs remain, fall through to 6.
+
+### 6. Run the rehearsal engine
+
+```powershell
+python -m core.rehearsal --candidates-file docs/rehearsal_candidates.json --decide
+```
+
+- Execute the decision it produces.
+- If rehearsal produces nothing or only `capable_only` items, fall through to 7.
+
+### 7. The season is complete
+
+- Run `python -m core.dream_loop` to distill lessons.
+- Run `python -m core.history_book search --query "<anything>"` to update the book.
+- Commit everything.
+- The session ends. No questions. No reports. The user sees the commit log and the updated roadmap.
+
+---
+
+## The Fallthrough Invariant
+
+The decision tree ALWAYS terminates. Every branch either produces work or falls through.
+When all branches have fallen through, there is nothing left to do in this session.
+The session ends. No questions.
+
+---
+
+## Ties and Ambiguity
+
+When the tree could send you to multiple equal branches:
+
+- **Item vs item** → lower rung wins (closer to the body).
+- **Fix blocker vs train new** → fix blocker wins (completes work already started).
+- **Audit vs train** → audit wins (fixes old method before building new).
+- **Rehearsal vs anything** → rehearsal wins (it's the widest look at the graph).
+- **Same priority** → alphabetical by feature name.
+- **Cannot decide** → pick the one with the shortest expected work time. If still tied, pick the first in the file.
