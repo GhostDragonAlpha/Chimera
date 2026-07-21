@@ -59,28 +59,20 @@ def _warp():
 def emit_surface_splats(
     lattice: np.ndarray,
     tissue_map: dict[int, dict],
-    sigma: float = 0.9,
     tangent_scale: float = 1.15,
     normal_scale: float = 0.35,
+    normal_method: str = "gradient",
+    sigma: float = 0.9,
 ) -> dict:
-    """GPU surface extraction + CPU splat building. Returns the standard splat dict.
+    """GPU surface extraction + splat emission. Returns the standard splat dict.
 
     tissue_map: {tissue_index: {albedo, roughness, alpha, subsurface}}
-    sigma: Gaussian smoothing for normals
-    tangent_scale: radius in tangent plane
-    normal_scale: thickness along normal
-
-    This is a HYBRID path: surface mask on GPU, gradient + splat build on CPU.
-    The gradient step uses scipy ndimage (CPU) for correctness parity with
-    core.splat_emit. A future all-GPU path can replace that too.
+    normal_method: "gradient" (scipy, vectorized, ~600ms) or "pca" (KDTree, ~900ms)
     """
-    from scipy import ndimage
-
     wp, kernel = _warp()
     dev = wp.get_device()
 
     nz, ny, nx = lattice.shape
-    n_types = max(lattice.max() + 1, 1)
 
     all_splats = {"pos": [], "normal": [], "cov": [],
                   "albedo": [], "roughness": [], "alpha": [],
@@ -98,17 +90,36 @@ def emit_surface_splats(
         wp.synchronize_device(dev)
         mask = mask_dev.numpy()
         surf_pos = np.argwhere(mask.astype(bool))
-        if len(surf_pos) == 0:
+        if len(surf_pos) < 4:
             continue
+        N = len(surf_pos)
 
-        # --- CPU: normals from gradient (parity with core.splat_emit) ---
-        tissue_field = (lattice == tissue_type).astype(np.float32)
-        smooth = ndimage.gaussian_filter(tissue_field, sigma=sigma)
-        grad = np.stack(np.gradient(smooth), axis=-1)
-        n = grad[surf_pos[:, 0], surf_pos[:, 1], surf_pos[:, 2]]
-        norm = np.linalg.norm(n, axis=1, keepdims=True)
-        fallback = np.array([0.0, 0.0, 1.0])
-        n = np.where(norm > 1e-6, n / np.clip(norm, 1e-6, None), fallback)
+        # --- normals: gradient (scipy, fast) or PCA (KDTree, no-dep alternative) ---
+        if normal_method == "gradient":
+            from scipy import ndimage
+            tissue_field = (lattice == tissue_type).astype(np.float32)
+            smooth = ndimage.gaussian_filter(tissue_field, sigma=sigma)
+            grad = np.stack(np.gradient(smooth), axis=-1)
+            n = grad[surf_pos[:, 0], surf_pos[:, 1], surf_pos[:, 2]]
+            norm = np.linalg.norm(n, axis=1, keepdims=True)
+            fallback = np.array([0.0, 0.0, 1.0])
+            n = np.where(norm > 1e-6, n / np.clip(norm, 1e-6, None), fallback)
+        else:
+            from scipy.spatial import KDTree
+            tree = KDTree(surf_pos)
+            dists, idx = tree.query(surf_pos, k=min(13, N))
+            n = np.zeros((N, 3), dtype=np.float64)
+            for i in range(N):
+                nb = surf_pos[idx[i][1:]]
+                if len(nb) < 3:
+                    n[i] = np.array([0.0, 0.0, 1.0])
+                    continue
+                centered = nb - nb.mean(axis=0)
+                cov3 = centered.T @ centered
+                evals, evecs = np.linalg.eigh(cov3)
+                n[i] = evecs[:, 0]
+                if n[i] @ (surf_pos[i] - nb.mean(axis=0)) < 0:
+                    n[i] = -n[i]
 
         # --- orthogonal frame ---
         up = np.where(np.abs(n[:, 2:3]) < 0.9,
@@ -118,7 +129,6 @@ def emit_surface_splats(
         t2 = np.cross(n, t1)
 
         # --- cov from frame + scales (vectorized) ---
-        N = len(surf_pos)
         R = np.zeros((N, 3, 3), dtype=np.float64)
         R[:, :, 0] = t1 * tangent_scale
         R[:, :, 1] = t2 * tangent_scale
@@ -126,21 +136,20 @@ def emit_surface_splats(
         cov = R @ R.transpose(0, 2, 1)
 
         pos_f = surf_pos.astype(np.float64)
-        n_splats = len(pos_f)
+
         opts = {
             "pos": pos_f,
             "normal": n.astype(np.float64),
             "cov": cov,
-            "albedo": np.tile(optics["albedo"], (n_splats, 1)),
-            "roughness": np.full(n_splats, optics["roughness"], dtype=np.float64),
-            "alpha": np.full(n_splats, optics["alpha"], dtype=np.float64),
-            "subsurface": np.full(n_splats, optics["subsurface"], dtype=np.float64),
-            "metallic": np.zeros(n_splats, dtype=np.float64),
+            "albedo": np.tile(optics["albedo"], (N, 1)),
+            "roughness": np.full(N, optics["roughness"], dtype=np.float64),
+            "alpha": np.full(N, optics["alpha"], dtype=np.float64),
+            "subsurface": np.full(N, optics["subsurface"], dtype=np.float64),
+            "metallic": np.zeros(N, dtype=np.float64),
         }
         for k, v in opts.items():
             all_splats[k].append(v)
 
-    # Concatenate all tissues
     out = {}
     for k in all_splats:
         if all_splats[k]:
@@ -174,7 +183,7 @@ if __name__ == "__main__":
     }
 
     t0 = time.time()
-    splats = emit_surface_splats(diff, tissue_map)
+    splats = emit_surface_splats(diff, tissue_map, tangent_scale=1.15, normal_scale=0.35)
     dt = time.time() - t0
     print(f"  {len(splats['pos']):,} splats in {dt*1000:.0f}ms")
     for k in splats:

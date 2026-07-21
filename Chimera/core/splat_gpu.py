@@ -290,7 +290,8 @@ def _tile_bins(sx: np.ndarray, sy: np.ndarray, rad2: np.ndarray, order: np.ndarr
 
 def rasterize_tiled(splats: dict, center: np.ndarray, radius: float,
                     azim: float, elev: float, light_azim: float, light_elev: float,
-                    w: int = 340, h: int = 340, tile: int = 16) -> np.ndarray:
+                    w: int = 340, h: int = 340, tile: int = 16,
+                    visibility_modifier: float = 1.0) -> np.ndarray:
     """THE 3DGS TILE PIPELINE (tb-0179): project -> bin 16x16 tiles -> per-tile depth
     order -> composite. Drop-in for rasterize() — same signature, same projection/
     shading math (_project_and_shade), so parity between the two is a clean test of
