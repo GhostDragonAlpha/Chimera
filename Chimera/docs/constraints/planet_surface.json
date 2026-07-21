@@ -1,0 +1,21 @@
+{
+  "name": "planet_surface",
+  "description": "Planet surface rung — consumes solar system output (mass, a, e) and trains planet surface properties: temperature, atmosphere, terrain type, biomes.",
+  "input": "docs/objectives/bigbang.systems.json — planet triples (m_rel, a, e)",
+  "walls": [
+    "Planet must have a surface temperature compatible with its orbital distance (T_eq from stellar flux)",
+    "Inner planets must be rocky (high density, solid surface, thin or no atmosphere)",
+    "Outer planets must be gaseous or icy (low density, thick atmosphere, no solid surface)",
+    "At least one planet must have a breathable atmosphere (CelestialBodySpecComponent.HasBreathableProxy)",
+    "Planets must have distinct surface biomes based on temperature bands",
+    "Surface gravity must be consistent with planet mass and radius (g = GM/r² within 30% of expected)"
+  ],
+  "element_query": {
+    "categories": ["Spec", "Planet", "Atmosphere", "Temperature", "Biome"],
+    "classes": ["CelestialBodySpecComponent", "PlanetGenerationSpecComponent", "SkyAtmosphereComponent", "ExponentialHeightFogComponent"]
+  },
+  "output": {
+    "format": "Per-planet: radius, atmosphere density, temperature range, biome distribution",
+    "next_rung": "ground_terrain"
+  }
+}
