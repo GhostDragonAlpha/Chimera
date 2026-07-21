@@ -4374,6 +4374,62 @@
       "line": 154,
       "quote": "NumToDrainPerFrame = FGlobalDynamicMeshPoolPolicy::NumToDrainPerFrame,",
       "at": "2026-07-21T04:29:06.970Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Components\\LocalLightComponent.h",
+      "line": 53,
+      "quote": "ENGINE_API void SetAttenuationRadius(float NewRadius);",
+      "at": "2026-07-21T07:14:11.416Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\LocalLightComponent.cpp",
+      "line": 20,
+      "quote": "void ULocalLightComponent::SetAttenuationRadius(float NewRadius)",
+      "at": "2026-07-21T07:14:11.416Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Light.cpp",
+      "line": 331,
+      "quote": "PointLightComponent->SetAttenuationRadius(NewRadius);",
+      "at": "2026-07-21T07:14:11.416Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Particles\\ParticleModules.cpp",
+      "line": 3217,
+      "quote": "PointLightComponent->SetAttenuationRadius(Radius);",
+      "at": "2026-07-21T07:14:11.416Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\LightComponent.cpp",
+      "line": 79,
+      "quote": "void ULightComponentBase::SetCastShadows(bool bNewValue)",
+      "at": "2026-07-21T07:14:11.570Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Light.cpp",
+      "line": 164,
+      "quote": "void ALight::SetCastShadows(bool bNewValue)",
+      "at": "2026-07-21T07:14:11.570Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Light.cpp",
+      "line": 166,
+      "quote": "LightComponent->SetCastShadows(bNewValue);",
+      "at": "2026-07-21T07:14:11.570Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Particles\\ParticleModules.cpp",
+      "line": 3158,
+      "quote": "PointLightComponent->SetCastShadows(bShadowCastingLights);",
+      "at": "2026-07-21T07:14:11.570Z"
     }
   ]
 }

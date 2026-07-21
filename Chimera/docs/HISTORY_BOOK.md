@@ -1,7 +1,3 @@
-> **DEPRECATED** — This document describes the old approach.
-> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
-> The thought chain is at `docs/THOUGHT_CHAIN.md`.
-
 # THE HISTORY BOOK
 
 > Everything the studio has learned, written down. Regenerated nightly
@@ -9,7 +5,7 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1661 entries** across 8 chapters.
+**1696 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
@@ -347,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*576 entries; showing 40.*
+*589 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -990,7 +986,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*409 entries; showing 40.*
+*431 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1427,22 +1423,22 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                         288 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                         290 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          78 reps  100%  streak  8  battery   2 (0 pie)  READY
+> AErisaidActor                          80 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     58 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     60 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    245 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    246 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 

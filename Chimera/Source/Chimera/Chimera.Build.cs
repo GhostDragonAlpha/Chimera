@@ -26,6 +26,8 @@ public class Chimera : ModuleRules
 		});
 
 		PrivateIncludePaths.AddRange(new string[] {
+			"Chimera/ProceduralGenerated",
+			"Chimera/ProceduralGenerated/Beacon",
 			"Chimera/ProceduralGenerated/Combat",
 			"Chimera/ProceduralGenerated/AI",
 			"Chimera/ProceduralGenerated/Flight",

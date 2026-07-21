@@ -718,3 +718,14 @@ Wait, looking at the
 - sample: expected '' but 'blocked: {"error": "inspect.runtime_report: failed"}'
 - possible_conflict_with: heuristic_393319affe39ee06 (Investigate correction feature; verify test harness and beat); heuristic_c4ab980eb2ceee7d (Investigate actors bp_verb_; verify test harness and beat re); heuristic_96e67135d9845f6a (Investigate bad costless; verify test harness and beat regis); heuristic_009462cbb6e7e534 (Investigate blocker draft; verify test harness and beat regi)  (Gardener: reconcile)
 - draft_rule: Verify event logging and signal traces on success path.
+
+<!-- distilled 2026-07-21T07:15:01Z -->
+## H-68: sim_rejection: regolith_yard/spawn_on_metal_pad
+- status: pending
+- kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-21T06:00:16
+- proposed_organ: claude_md
+- evidence: simtest_9cd9a1ac25867a73, simtest_b9c246f4cef92293, simtest_26952ede18597de8
+- sample: failed: [{"expect": {"pawn_within": {"x": 0, "y": 0, "r": 600}}, "ok": false, "note": "dist=3225uu (loc x=3200, y=400)"}]
+- sample: failed: [{"expect": {"pawn_within": {"x": 0, "y": 0, "r": 600}}, "ok": false, "note": "dist=1414213562uu (loc x=None, y=None)"}]
+- possible_conflict_with: heuristic_52e2728aa88ab00a (Probe jumps by timed pawn_z read-back, not log_contains — an); heuristic_66e973934c7b5322 (Compound beats fail for shifting root causes (frozen input, ); heuristic_040256f8f18a3de0 (Verify beat spawn location distances and pawn navigation con); H-28  (Gardener: reconcile)
+- draft_rule: Verify beat spawn location distances and pawn navigation constraints.
