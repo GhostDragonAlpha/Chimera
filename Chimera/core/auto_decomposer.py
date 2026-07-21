@@ -108,26 +108,13 @@ def _graph_record_feature(name, status, parent):
 
 
 def generate_sub_rung(parent_name, cluster, index):
-    """Generate a sub-rung constraint file, domain, and objective. Skips if already in graph.
-    Every new sub-rung goes through 40-question interrogation before generation."""
+    """Generate a sub-rung constraint file, domain, and objective. Skips if already in graph."""
     name = f'{parent_name}_{cluster["name"]}'
     
     # Skip if feature already exists in the DNA graph
     if _graph_feature_exists(name):
         print(f'  {name}: already in graph, skipping')
         return None
-    
-    # Interrogate via 40 questions before generating
-    try:
-        from core.forty_questions import interrogate
-        answers = interrogate(name, parent_name)
-        # Check the answers for show-stoppers
-        for q, a in answers.items():
-            if 'already exists' in a.lower() and 'true' in a.lower().split('?')[1:]:
-                print(f'  {name}: 40Q says already exists, skipping')
-                return None
-    except Exception as e:
-        print(f'  {name}: 40Q error (non-fatal): {e}')
     
     # Constraint file
     constraint = {
@@ -199,24 +186,78 @@ def train_all(names):
         print(f'  {name}: {status}')
 
 
+# Mirror keywords — features whose names match these are prioritized
+MIRROR_KEYWORDS = ['sacrifice', 'beacon', 'signal', 'npc', 'social', 'need', 'give',
+                   'help', 'cost', 'debt', 'life', 'death', 'star', 'memorial',
+                   'gesture', 'trade', 'unlock', 'blueprint', 'ending', 'narrative']
+
+
+def _mirror_weight(name):
+    """Score 0-1 for how directly a feature serves the Mirror of Erised.
+    1.0 = directly implements giving/sacrifice/signal
+    0.5 = enables the conditions for meaningful giving (survival, scarcity)
+    0.0 = cosmetic or orthogonal
+    """
+    name_lower = name.lower()
+    direct = ['sacrifice', 'beacon', 'signal', 'give', 'costless', 'mirror']
+    enabling = ['survival', 'o2', 'oxygen', 'battery', 'shelter', 'npc', 'social',
+                'trade', 'unlock', 'blueprint', 'gesture', 'inventory']
+    
+    if any(k in name_lower for k in direct):
+        return 1.0
+    if any(k in name_lower for k in enabling):
+        return 0.5
+    return 0.0
+
+
 def snapshot():
-    """Print a system snapshot from the DNA graph and return gap count."""
+    """Print a system snapshot from the DNA graph, ordered by Mirror weight."""
     try:
         from core.graphify_interface import graphify_query
         health = graphify_query('health')
         features = graphify_query('feature', '')
         gaps = [f for f in features if f.get('status') in ('not_started', 'needs_refinement')]
         mirror = [f for f in features if 'mirror' in str(f).lower()]
+        
+        # Score gaps by Mirror weight
+        scored = [(f, _mirror_weight(f.get('feature', ''))) for f in gaps]
+        scored.sort(key=lambda x: -x[1])
+        high_priority = [f for f, w in scored if w >= 0.5][:5]
+        
         print(f'=== SNAPSHOT: {health["total_nodes"]} nodes, {health["features"]} features, '
               f'{len(mirror)} mirror, {len(gaps)} gaps ===')
+        print(f'Mirror-weighted priorities ({len(high_priority)} high):')
+        for f in high_priority:
+            print(f'  [{_mirror_weight(f.get("feature","")):.1f}] {f.get("feature","?"):40s} {f.get("status","?")}')
         return len(gaps)
     except:
         return 0
 
 
-def decompose(parent_name, n_clusters=4):
-    """Full auto-decomposition cycle: snapshot, find clusters, generate, train."""
-    snapshot()
+def decompose(parent_name=None, n_clusters=4):
+    """Full auto-decomposition cycle: snapshot, find highest-Mirror parent, generate, train.
+    If no parent specified, picks the highest-Mirror-weighted gap from the graph."""
+    n_gaps = snapshot()
+    
+    if not parent_name:
+        # Auto-select: find the highest-Mirror-weighted gap from the graph
+        try:
+            from core.graphify_interface import graphify_query
+            features = graphify_query('feature', '')
+            gaps = [(f, _mirror_weight(f.get('feature', '')))
+                    for f in features if f.get('status') in ('not_started', 'needs_refinement')]
+            gaps.sort(key=lambda x: -x[1])
+            if gaps:
+                parent_name = gaps[0][0].get('feature', '')
+                mirror = gaps[0][1]
+                print(f'Mirror-steered: picked "{parent_name}" (weight {mirror})')
+        except:
+            pass
+    
+    if not parent_name:
+        print('No parent rung to decompose. All features filled.')
+        return []
+    
     print(f'Auto-decomposing {parent_name} into {n_clusters} sub-rungs...')
     clusters = find_related_clusters(parent_name, n_clusters)
     if not clusters:
