@@ -41,7 +41,13 @@ void UBeaconPulseComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
             USacrificeLogComponent* SacLog = PC->GetPawn()->FindComponentByClass<USacrificeLogComponent>();
             if (SacLog)
             {
-                HelpCount = SacLog->GetSacrificeCount();
+                int32 NewCount = SacLog->GetSacrificeCount();
+                if (NewCount != HelpCount)
+                {
+                    HelpCount = NewCount;
+                    UE_LOG(LogTemp, Display, TEXT("[MIRROR] Beacon help count = %d — pulse rate = %.2f Hz"),
+                        HelpCount, FMath::Lerp(PulseRate0Helps, PulseRate3Helps, FMath::Min((float)HelpCount / 3.0f, 1.0f)));
+                }
             }
         }
     }
