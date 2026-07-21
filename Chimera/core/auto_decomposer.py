@@ -108,13 +108,22 @@ def _graph_record_feature(name, status, parent):
 
 
 def generate_sub_rung(parent_name, cluster, index):
-    """Generate a sub-rung constraint file, domain, and objective. Skips if already in graph."""
+    """Generate a sub-rung constraint file, domain, objective, and 40-question document.
+    The 40 questions persist with the feature forever — they define its scope and depth."""
     name = f'{parent_name}_{cluster["name"]}'
     
     # Skip if feature already exists in the DNA graph
     if _graph_feature_exists(name):
         print(f'  {name}: already in graph, skipping')
         return None
+    
+    # Generate 40-question document for this feature (persists forever)
+    try:
+        sys.path.insert(0, str(Path(__file__).parent.parent))
+        from core.forty_questions import generate as gen_40q
+        gen_40q(name, parent_name, cluster.get('walls', []))
+    except Exception as e:
+        print(f'  {name}: 40Q doc generation error (non-fatal): {e}')
     
     # Constraint file
     constraint = {
