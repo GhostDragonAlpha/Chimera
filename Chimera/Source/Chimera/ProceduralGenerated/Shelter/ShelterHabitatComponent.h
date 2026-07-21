@@ -49,6 +49,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shelter|Habitat")
 	bool bShelterActive;
 
+	/** Last frame's proximity state — used for edge detection (enter/leave). */
+	UPROPERTY()
+	bool bLastFramePlayerInside;
+
 private:
 	bool bGeometryInitialized;
 	bool bMaterialsApplied;

@@ -1,3 +1,34 @@
+# Session 2026-07-21 (design) — Constraint-first workflow established; emergence roadmap; sub-feature decision rule
+
+- **Constraint-first workflow**: New formula for every TODO item: CONSTRAINT → MEASURE → EXISTING → WORK → VERIFY.
+  The old way (place a cube, test existence) was caught and corrected. The new way: test the rule, not the object.
+- **Sub-feature decision rule**: A feature needs sub-features when its constraint contains "AND" between independent
+  systems, when its verify beat needs multiple independent assertions, or when a season fails at the feature level.
+  Decomposition is NOT pre-planned — it emerges when an item hits a season boundary and can't pass.
+- **Farming method**: every item runs through SPRING (design) → SUMMER (build) → FALL (verify) → WINTER (reflect).
+  Each season is a discrete batch. Any agent can run any batch. Nothing lives in memory.
+- **EMERGENCE_ROADMAP.md**: 7 items constraining the concrete game. Item 1 (survival pressure) is closest —
+  compiled code satisfies the constraint (O₂ drains at exertion rates, refills when bAtOxygenGarden is set).
+  The gap is placing the shelter trigger in the level to fire the refill flags.
+- **Proof of survival loop**: Player_Astronaut has SuitLifeSupportComponent ticking. O₂ read at 99.7% at PIE start,
+  dropped to 85.7% over ~30s of idle time. bInShelter and bAtOxygenGarden control refill. The constraint is
+  satisfied in compiled code. Verified via MCP get_component_property read-back.
+- **Hard-won lesson**: The old way (MCP → place cube → verify existence) keeps creeping back. The checklist
+  is the crutch while the new muscle grows. The formula was written specifically to catch this.
+- **Commit 32646b8**: EMERGENCE_ROADMAP.md added. Pushed to master.
+
+## NEXT
+1. **Item 1: Survival pressure** — SPRING is done (constraint exists). Enter SUMMER: create BP_Habitat Blueprint
+   (to work around MCP CLASS_NOT_FOUND for C++ classes), place in level, run beat to verify O₂ drain+refill.
+   Or verify via the decompiled approach: set bAtOxygenGarden=true via MCP set_component_property (proven working),
+   walk player via simulate_input, verify O₂ drain while away, set flag again, verify O₂ refill.
+2. **Item 2: Resources** — SPRING: verify what the 66 BP_Verb_PickUp actors contain. If they're all test items,
+   retheme as resources. The pickup system (APickupActor + UPickupInteractionComponent) is already compiled.
+3. **Write the checklist pattern into the workflow** — the formula should be part of SUCCESSOR_RUNBOOK.md
+   and AGENT_ONBOARDING.md so every agent inherits it.
+
+---
+
 # Session 2026-07-20 (lead, COMPLETE) — Farm operational: 4 seasons, 3 sub-agent waves, 229 actors, generational loop verified
 
 - **Farming seasons**: SPRING (design) → SUMMER (build) → FALL (verify) → WINTER (reflect).

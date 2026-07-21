@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Components/SphereComponent.h"
 #include "../Suit/SuitLifeSupportComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UShelterHabitatComponent::UShelterHabitatComponent()
 {
@@ -18,6 +19,7 @@ UShelterHabitatComponent::UShelterHabitatComponent()
 	bMaterialsApplied = false;
 	bLightingSetup = false;
 	ShelterTrigger = nullptr;
+	bLastFramePlayerInside = false;
 }
 
 void UShelterHabitatComponent::BeginPlay()
@@ -28,6 +30,10 @@ void UShelterHabitatComponent::BeginPlay()
 	SetupHabitatLighting();
 	SetupShelterTrigger();
 	bShelterActive = true;
+	bLastFramePlayerInside = false;
+
+	// Force-enable tick. Blueprint SCS components may not auto-enable.
+	SetComponentTickEnabled(true);
 }
 
 void UShelterHabitatComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -44,9 +50,6 @@ void UShelterHabitatComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			{
 				if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
 				{
-					// P1: the habitat is the O2/battery refuge too — clear those flags
-					// alongside bInShelter so a destroyed shelter can't leave a pawn
-					// stuck mid-refill.
 					Suit->bInShelter = false;
 					Suit->bAtOxygenGarden = false;
 					Suit->bAtBatteryBank = false;
@@ -60,7 +63,49 @@ void UShelterHabitatComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void UShelterHabitatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	// Life support and habitat maintenance logic
+
+	// Proximity check: every tick, measure distance from this shelter's owner
+	// to the player pawn. If within ShelterRadius, set refill flags.
+	// Uses direct distance calculation — reliable regardless of collision config.
+	if (bShelterActive && GetOwner())
+	{
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+			APawn* PlayerPawn = PC ? PC->GetPawn() : nullptr;
+
+			if (PlayerPawn)
+			{
+				const float DistSq = FVector::DistSquared(GetOwner()->GetActorLocation(), PlayerPawn->GetActorLocation());
+				const bool bPlayerInside = (DistSq <= ShelterRadius * ShelterRadius);
+
+				if (bPlayerInside != bLastFramePlayerInside)
+				{
+					bLastFramePlayerInside = bPlayerInside;
+
+					if (USuitLifeSupportComponent* Suit = PlayerPawn->FindComponentByClass<USuitLifeSupportComponent>())
+					{
+						if (bPlayerInside)
+						{
+							Suit->bInShelter = true;
+							Suit->bAtOxygenGarden = true;
+							Suit->bAtBatteryBank = true;
+							UE_LOG(LogTemp, Display, TEXT("[Materialize] Shelter proximity: Player ENTERED shelter (dist=%.1f, radius=%.1f)"),
+								FMath::Sqrt(DistSq), ShelterRadius);
+						}
+						else
+						{
+							Suit->bInShelter = false;
+							Suit->bAtOxygenGarden = false;
+							Suit->bAtBatteryBank = false;
+							UE_LOG(LogTemp, Display, TEXT("[Materialize] Shelter proximity: Player LEFT shelter"));
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void UShelterHabitatComponent::InitializeHabitatGeometry()
@@ -92,7 +137,6 @@ void UShelterHabitatComponent::SetupHabitatLighting()
 
 void UShelterHabitatComponent::SetupShelterTrigger()
 {
-	// Create a sphere collision component to detect when pawns enter/exit the shelter
 	if (!ShelterTrigger)
 	{
 		AActor* Owner = GetOwner();
@@ -105,20 +149,16 @@ void UShelterHabitatComponent::SetupShelterTrigger()
 		ShelterTrigger = NewObject<USphereComponent>(Owner);
 		if (ShelterTrigger)
 		{
-			// Set up as trigger-only (query collisions, no physics)
 			ShelterTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 			ShelterTrigger->SetCollisionObjectType(ECC_WorldStatic);
 			ShelterTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 			ShelterTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
 			ShelterTrigger->SetSphereRadius(ShelterRadius);
 			ShelterTrigger->SetGenerateOverlapEvents(true);
 
-			// Bind overlap events
 			ShelterTrigger->OnComponentBeginOverlap.AddDynamic(this, &UShelterHabitatComponent::OnShelterBeginOverlap);
 			ShelterTrigger->OnComponentEndOverlap.AddDynamic(this, &UShelterHabitatComponent::OnShelterEndOverlap);
 
-			// Register and attach to owner
 			ShelterTrigger->RegisterComponent();
 			ShelterTrigger->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
@@ -135,16 +175,10 @@ void UShelterHabitatComponent::OnShelterBeginOverlap(UPrimitiveComponent* Overla
 		return;
 	}
 
-	// Cast to Pawn and find suit component
 	if (APawn* Pawn = Cast<APawn>(OtherActor))
 	{
 		if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
 		{
-			// P1 (design directive Section 3): the habitat IS the oxygen source +
-			// battery bank the suit's environment flags describe (this class's own
-			// bShelterActive comment already promised "O2 regen" -- this wires it for
-			// real). Closes the survival loop: drain out in the field -> race back ->
-			// refill here.
 			Suit->bInShelter = true;
 			Suit->bAtOxygenGarden = true;
 			Suit->bAtBatteryBank = true;
@@ -161,7 +195,6 @@ void UShelterHabitatComponent::OnShelterEndOverlap(UPrimitiveComponent* Overlapp
 		return;
 	}
 
-	// Cast to Pawn and find suit component
 	if (APawn* Pawn = Cast<APawn>(OtherActor))
 	{
 		if (USuitLifeSupportComponent* Suit = Pawn->FindComponentByClass<USuitLifeSupportComponent>())
