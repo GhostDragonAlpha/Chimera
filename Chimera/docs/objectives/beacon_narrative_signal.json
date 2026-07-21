@@ -1,0 +1,10 @@
+{
+  "_provenance": "Beacon signal. Pulse frequency and color encode NPC help count.",
+  "scenario": "Signal at 0 helps must be qualitatively different from 3+ helps. Red to white transition.",
+  "constraints": [
+    {"kind": "at_least", "measure": "signal_differs", "min": 1, "hard": true, "wall": "Zero-help signal must differ from three-help signal"},
+    {"kind": "at_least", "measure": "rate_ratio", "min": 2.0, "hard": true, "wall": "3-help pulse must be faster than 0-help pulse"},
+    {"kind": "at_least", "measure": "color_dist", "min": 0.3, "wall": "Red to white color transition must be visible"},
+    {"kind": "at_least", "measure": "red_dominance", "min": 2.0, "wall": "Red must dominate at 0 helps"}
+  ]
+}

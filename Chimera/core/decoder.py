@@ -223,6 +223,19 @@ def decode_npc_social_reciprocity(c):
     })
 
 
+def decode_beacon_narrative_signal(c):
+    trained = _load_trained('beacon_narrative_signal')
+    if trained:
+        g = trained.get('genome', {})
+        print(f'  Beacon signal: rate_0={g.get("pulse_rate_0",0.1):.3f}Hz, rate_3={g.get("pulse_rate_3",0.8):.3f}Hz')
+        _save_decoded('beacon_narrative_signal', {
+            'pulse_rate_0': g.get('pulse_rate_0', 0.1),
+            'pulse_rate_3': g.get('pulse_rate_3', 0.8),
+            'color_red': [g.get('color_red_r',1), g.get('color_red_g',0), g.get('color_red_b',0)],
+            'color_white': [g.get('color_white_r',1), g.get('color_white_g',1), g.get('color_white_b',1)],
+        })
+
+
 def decode_beacon_narrative(c):
     """Place beacon at the highest point."""
     c.call('control_actor', {
@@ -256,6 +269,7 @@ def decode_all():
     decode_npc_social_reciprocity(c)
     decode_npc_social(c)
     decode_fabricator_economy(c)
+    decode_beacon_narrative_signal(c)
     decode_beacon_narrative(c)
     
     c.call('manage_level', {'action': 'save'})
