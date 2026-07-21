@@ -92,7 +92,26 @@ def generate(feature_name, parent_rung=None, walls=None):
     with open(path, 'w') as f:
         json.dump(doc, f, indent=2)
     
-    print(f'40 questions saved to {path}')
+    # Record to DNA graph for queryable access
+    try:
+        sys.path.insert(0, str(Path(__file__).parent.parent))
+        from core.graphify_interface import graphify_mutate
+        # Store as feature_complete (queryable) and phase_complete (structured)
+        graphify_mutate('feature_complete', details={
+            'feature': f'40q_{feature_name}',
+            'status': doc['_meta']['depth_verdict'],
+            'loop': 0,
+            'parameters': {
+                'n_answered': doc['_meta']['n_answered'],
+                'n_total': doc['_meta']['n_total'],
+                'parent': parent_rung,
+                'type': 'forty_questions'
+            }
+        })
+    except Exception as e:
+        print(f'  Graph recording error (non-fatal): {e}')
+    
+    print(f'40 questions saved to {path} and recorded to DNA graph')
     print(f'  Answered: {doc["_meta"]["n_answered"]}/{doc["_meta"]["n_total"]}')
     print(f'  Depth: {doc["_meta"]["depth_verdict"]}')
     return doc
@@ -128,6 +147,18 @@ def answer(feature_name, question_id, answer_text):
     
     with open(path, 'w') as f:
         json.dump(doc, f, indent=2)
+    
+    # Update graph with new depth
+    try:
+        from core.graphify_interface import graphify_mutate
+        graphify_mutate('phase_complete', details={
+            'phase': f'40q_{feature_name}',
+            'result': f'Q{question_id} answered. Depth: {doc["_meta"]["depth_verdict"]} ({n_answered}/40)',
+            'status': doc['_meta']['depth_verdict']
+        })
+    except:
+        pass
+    
     print(f'  Q{question_id} answered: {doc["_meta"]["depth_verdict"]} ({n_answered}/40)')
 
 
@@ -147,6 +178,37 @@ def check_depth(feature_name):
         'total': total,
         'verdict': doc.get('depth_verdict', 'unknown')
     }
+
+
+def graph_context():
+    """Return graph data usable by training domains.
+    Call this from measure() to inform training with graph state."""
+    try:
+        sys.path.insert(0, str(Path(__file__).parent.parent))
+        from core.graphify_interface import graphify_query
+        features = graphify_query('feature', '')
+        health = graphify_query('health')
+        
+        # Count by depth status
+        depth_counts = {'unexplored': 0, 'explored': 0, 'adequate': 0, 'deep': 0}
+        for f in features:
+            s = f.get('status', '')
+            if s in depth_counts:
+                depth_counts[s] += 1
+        
+        # Find Mirror-connected features
+        mirror_features = [f for f in features if 'mirror' in str(f).lower()]
+        
+        return {
+            'n_features': health.get('features', 0),
+            'n_nodes': health.get('total_nodes', 0),
+            'depth_counts': depth_counts,
+            'n_mirror': len(mirror_features),
+            'n_gaps': sum(1 for f in features if f.get('status') == 'unexplored'),
+            'all_features': [f.get('feature', '') for f in features if f.get('feature')][:200],
+        }
+    except Exception as e:
+        return {'error': str(e)}
 
 
 def show(feature_name):

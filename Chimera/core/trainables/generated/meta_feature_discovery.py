@@ -12,9 +12,20 @@ def _load_catalog():
     return data.get("elements", [])
 
 
-def seed(rng=None):
+def seed(rng=None, graph_data=None):
+    """Seed from graph context if available, otherwise from catalog."""
     if rng is None:
         rng = random.Random()
+    
+    # Query graph for existing features
+    if graph_data is None:
+        try:
+            from core.forty_questions import graph_context
+            graph_data = graph_context()
+        except:
+            graph_data = {}
+    
+    existing_features = graph_data.get('all_features', []) if graph_data else []
     catalog = _load_catalog()
     genome = {}
     idx = 0
