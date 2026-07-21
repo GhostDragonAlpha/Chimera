@@ -1,0 +1,252 @@
+{
+  "_meta": {
+    "feature": "body_survival_injury_model",
+    "parent": "body_survival",
+    "created": "chat_typed",
+    "n_total": 40,
+    "n_answered": 40,
+    "depth_verdict": "deep"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature?",
+      "a": "Fall damage scales with height. Suit breach causes rapid O2 loss. Minor injuries heal in shelter.",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system?",
+      "a": "body_survival sub-rung. Adds terrain navigation cost.",
+      "answered": true
+    },
+    {
+      "id": 3,
+      "q": "What breaks without it?",
+      "a": "Player can fall from any height with no consequence.",
+      "answered": true
+    },
+    {
+      "id": 4,
+      "q": "Existing feature?",
+      "a": "CharacterMovementComponent fall damage parameters.",
+      "answered": true
+    },
+    {
+      "id": 5,
+      "q": "Rung or sub-rung?",
+      "a": "Sub-rung of body_survival.",
+      "answered": true
+    },
+    {
+      "id": 6,
+      "q": "Physical constraint?",
+      "a": "Fall damage scales with height. Suit breach causes O2 leak.",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "ONE measurement?",
+      "a": "Fall from 500 units: O2 drops by at least 10 percent. Fall from 50 units: no damage.",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "Wall?",
+      "a": "Must never be lethal from any height. Must not be zero from extreme height.",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "Degenerate winner?",
+      "a": "No fall damage at any height.",
+      "answered": true
+    },
+    {
+      "id": 10,
+      "q": "Too loose?",
+      "a": "Fall from 100 units deals 1 percent damage. Player ignores risk.",
+      "answered": true
+    },
+    {
+      "id": 11,
+      "q": "Scale?",
+      "a": "Per-fall event. Triggered on landing velocity.",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "Definition level?",
+      "a": "Velocity threshold. Damage scales with velocity squared.",
+      "answered": true
+    },
+    {
+      "id": 13,
+      "q": "Decompose further?",
+      "a": "Suit breach VFX, O2 leak audio, repair animation in shelter.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "Pattern emergence?",
+      "a": "Player falls, hears breach, watches O2 drain faster, heads for shelter.",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "Deep enough?",
+      "a": "Player chooses routes to avoid dangerous drops.",
+      "answered": true
+    },
+    {
+      "id": 16,
+      "q": "Catalog variables?",
+      "a": "CharacterMovementComponent MaxStepHeight. SuitLifeSupportComponent O2.",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "Relevant elements?",
+      "a": "~2075 physics elements.",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Enough to train?",
+      "a": "Yes. Fall damage directly settable.",
+      "answered": true
+    },
+    {
+      "id": 19,
+      "q": "MISSING variables?",
+      "a": "Suit breach state machine. Currently O2 just drains with no indicator.",
+      "answered": true
+    },
+    {
+      "id": 20,
+      "q": "Need GPU?",
+      "a": "No.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Connect to Mirror?",
+      "a": "Enabling. Navigation cost makes resource gathering a real choice.",
+      "answered": true
+    },
+    {
+      "id": 22,
+      "q": "How directly?",
+      "a": "Enabling.",
+      "answered": true
+    },
+    {
+      "id": 23,
+      "q": "Costless meaningful without?",
+      "a": "Player takes fastest route every time. No cost.",
+      "answered": true
+    },
+    {
+      "id": 24,
+      "q": "Can this be gamed?",
+      "a": "No. Fall damage is physics-authoritative.",
+      "answered": true
+    },
+    {
+      "id": 25,
+      "q": "Perfect Mirror?",
+      "a": "Player sees cliff, considers fall damage, chooses longer safe path.",
+      "answered": true
+    },
+    {
+      "id": 26,
+      "q": "Compose with?",
+      "a": "shelter (repair), HUD (breach indicator), terrain (cliff geometry).",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What breaks at seam?",
+      "a": "O2 leak from breach conflicts with O2 exertion drain. Stacking rates.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Need decoder?",
+      "a": "Fall damage parameters on CharacterMovementComponent.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "Failed composition?",
+      "a": "Player falls, O2 drains to 0 in 1 second. No time to react.",
+      "answered": true
+    },
+    {
+      "id": 30,
+      "q": "Need human judgment?",
+      "a": "System verifies curve. Human judges whether falls feel fair.",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "Generations to converge?",
+      "a": "10-20.",
+      "answered": true
+    },
+    {
+      "id": 32,
+      "q": "Population size?",
+      "a": "64.",
+      "answered": true
+    },
+    {
+      "id": 33,
+      "q": "Overfitting risk?",
+      "a": "Low.",
+      "answered": true
+    },
+    {
+      "id": 34,
+      "q": "Underfitting risk?",
+      "a": "None.",
+      "answered": true
+    },
+    {
+      "id": 35,
+      "q": "Trainer support?",
+      "a": "Yes.",
+      "answered": true
+    },
+    {
+      "id": 36,
+      "q": "Deep enough?",
+      "a": "At damage curve yes. At feedback level no.",
+      "answered": true
+    },
+    {
+      "id": 37,
+      "q": "Next level?",
+      "a": "Suit breach VFX, leak audio, repair animation in shelter.",
+      "answered": true
+    },
+    {
+      "id": 38,
+      "q": "Complete without deeper?",
+      "a": "Mechanically yes. Falls cause damage.",
+      "answered": true
+    },
+    {
+      "id": 39,
+      "q": "Emotional response?",
+      "a": "That was a bad drop. My suit is leaking. Get to shelter.",
+      "answered": true
+    },
+    {
+      "id": 40,
+      "q": "Mirror demands this?",
+      "a": "Yes. Navigation cost deepens the survival loop.",
+      "answered": true
+    }
+  ]
+}
