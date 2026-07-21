@@ -9,8 +9,7 @@ This domain exists to:
 """
 
 import sys, os, json
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from trainables.bigbang import seed, mutate, measure, N0, N_STEPS, DT, SOFT
+from ..bigbang import seed, mutate, measure
 
 
 def decode_to_ue5(genome: dict, results: dict, output_path: str = None):
