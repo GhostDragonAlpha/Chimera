@@ -15,7 +15,9 @@
       "type": "stdio",
       "command": "node",
       "args": ["E:/ChiR24-Unreal_mcp-test/dist/cli.js"],
-      "env": {}
+      "env": {
+        "UE_PROJECT_PATH": "E:/PythonChimera/Chimera/Chimera.uproject"
+      }
     },
     "playwright": {
       "type": "http",
