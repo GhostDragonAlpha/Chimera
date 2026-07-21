@@ -1,0 +1,19 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of shelter_form. Cluster: shelter_form_meshvertexat",
+  "name": "shelter_form_shelter_form_meshvertexat",
+  "parent_rung": "shelter_form",
+  "walls": [
+    "MeshVertexAttributePaintToolProperties property must be trainable",
+    "Satisfies shelter_form constraints in composition"
+  ],
+  "element_query": {
+    "categories": [
+      "MeshVertexAttributeP"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}

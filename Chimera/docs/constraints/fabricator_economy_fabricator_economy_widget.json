@@ -1,0 +1,19 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of fabricator_economy. Cluster: fabricator_economy_widget",
+  "name": "fabricator_economy_fabricator_economy_widget",
+  "parent_rung": "fabricator_economy",
+  "walls": [
+    "Widget property must be trainable",
+    "Satisfies fabricator_economy constraints in composition"
+  ],
+  "element_query": {
+    "categories": [
+      "Widget"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}

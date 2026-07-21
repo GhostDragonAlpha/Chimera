@@ -1,0 +1,20 @@
+{
+  "_provenance": "Auto-decomposed objective for fabricator_economy_fabricator_economy_widget",
+  "scenario": "Train fabricator_economy_fabricator_economy_widget sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_widget_property_must",
+      "min": 1,
+      "hard": true,
+      "wall": "Widget property must be trainable"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_satisfies_fabricator",
+      "min": 1,
+      "hard": true,
+      "wall": "Satisfies fabricator_economy constraints in composition"
+    }
+  ]
+}

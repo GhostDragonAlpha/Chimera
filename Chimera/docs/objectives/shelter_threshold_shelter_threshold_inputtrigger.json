@@ -1,0 +1,20 @@
+{
+  "_provenance": "Auto-decomposed objective for shelter_threshold_shelter_threshold_inputtrigger",
+  "scenario": "Train shelter_threshold_shelter_threshold_inputtrigger sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_inputtrigger_propert",
+      "min": 1,
+      "hard": true,
+      "wall": "InputTrigger property must be trainable"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_satisfies_shelter_th",
+      "min": 1,
+      "hard": true,
+      "wall": "Satisfies shelter_threshold constraints in composition"
+    }
+  ]
+}

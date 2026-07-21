@@ -1,0 +1,20 @@
+{
+  "_provenance": "Auto-decomposed objective for biome_resources_biome_resources_pcgmanagedre",
+  "scenario": "Train biome_resources_biome_resources_pcgmanagedre sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_pcgmanagedresource_p",
+      "min": 1,
+      "hard": true,
+      "wall": "PCGManagedResource property must be trainable"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_satisfies_biome_reso",
+      "min": 1,
+      "hard": true,
+      "wall": "Satisfies biome_resources constraints in composition"
+    }
+  ]
+}

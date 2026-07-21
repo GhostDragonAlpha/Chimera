@@ -2,13 +2,11 @@
   "objective": "unnamed",
   "score": 1.0,
   "measures": {
-    "wall_0_npc_spawns_avoid_pla": true,
-    "wall_1_npc_density_higher_n": true,
-    "wall_2_maximum_10_npcs_visi": true
+    "wall_0_shelterhabitatcompon": true,
+    "wall_1_satisfies_shelter_th": true
   },
   "genome": {
-    "wall_0_npc_spawns_avoid_pla": true,
-    "wall_1_npc_density_higher_n": true,
-    "wall_2_maximum_10_npcs_visi": true
+    "wall_0_shelterhabitatcompon": true,
+    "wall_1_satisfies_shelter_th": true
   }
 }

@@ -1,0 +1,20 @@
+{
+  "_provenance": "Auto-decomposed objective for beacon_narrative_beacon_narrative_uanimnode_de",
+  "scenario": "Train beacon_narrative_beacon_narrative_uanimnode_de sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_uanimnode_deadblendi",
+      "min": 1,
+      "hard": true,
+      "wall": "UAnimNode_DeadBlending property must be trainable"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_satisfies_beacon_nar",
+      "min": 1,
+      "hard": true,
+      "wall": "Satisfies beacon_narrative constraints in composition"
+    }
+  ]
+}

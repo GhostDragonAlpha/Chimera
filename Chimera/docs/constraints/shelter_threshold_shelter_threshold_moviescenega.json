@@ -1,0 +1,19 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of shelter_threshold. Cluster: shelter_threshold_moviescenega",
+  "name": "shelter_threshold_shelter_threshold_moviescenega",
+  "parent_rung": "shelter_threshold",
+  "walls": [
+    "MovieSceneGameplayCueTriggerSection property must be trainable",
+    "Satisfies shelter_threshold constraints in composition"
+  ],
+  "element_query": {
+    "categories": [
+      "MovieSceneGameplayCu"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}
