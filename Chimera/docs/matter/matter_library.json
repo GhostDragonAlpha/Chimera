@@ -175,24 +175,7 @@
         "value": "SAND",
         "provenance": "seed"
       },
-      "granularity_default": "cell_when_active_region_when_quiet",
-      "splat_composition": {
-        "description": "Granular regolith \u2014 surface coverage with grain-scale points",
-        "layers": [
-          {
-            "type": "surface",
-            "weight": 0.7,
-            "scale": 1.0,
-            "note": "main ground coverage"
-          },
-          {
-            "type": "point",
-            "weight": 0.3,
-            "scale": 0.1,
-            "note": "grain-scale roughness"
-          }
-        ]
-      }
+      "granularity_default": "cell_when_active_region_when_quiet"
     },
     "basin": {
       "family": "mineral_dry",
@@ -256,24 +239,7 @@
         "value": "SAND",
         "provenance": "seed"
       },
-      "granularity_default": "cell_when_active_region_when_quiet",
-      "splat_composition": {
-        "description": "Fine dust pond \u2014 smoother surface with fine particle overlay",
-        "layers": [
-          {
-            "type": "surface",
-            "weight": 0.8,
-            "scale": 1.0,
-            "note": "smooth basin floor"
-          },
-          {
-            "type": "point",
-            "weight": 0.2,
-            "scale": 0.05,
-            "note": "fine dust motes"
-          }
-        ]
-      }
+      "granularity_default": "cell_when_active_region_when_quiet"
     },
     "rock": {
       "family": "mineral_dry",
@@ -332,30 +298,7 @@
         "value": "ROCK",
         "provenance": "seed"
       },
-      "granularity_default": "region",
-      "splat_composition": {
-        "description": "Broken basalt \u2014 surface facets with sharp debris",
-        "layers": [
-          {
-            "type": "surface",
-            "weight": 0.6,
-            "scale": 1.0,
-            "note": "main rock surface"
-          },
-          {
-            "type": "point",
-            "weight": 0.3,
-            "scale": 0.3,
-            "note": "surface roughness"
-          },
-          {
-            "type": "shell",
-            "weight": 0.1,
-            "scale": 0.5,
-            "note": "fracture edges"
-          }
-        ]
-      }
+      "granularity_default": "region"
     },
     "metal": {
       "family": "metallic",
@@ -411,25 +354,7 @@
         "value": "METAL",
         "provenance": "seed"
       },
-      "granularity_default": "region",
-      "splat_composition": {
-        "description": "Brushed alloy \u2014 smooth surface with streak anisotropy",
-        "layers": [
-          {
-            "type": "surface",
-            "weight": 0.85,
-            "scale": 1.0,
-            "note": "main panel surface"
-          },
-          {
-            "type": "fiber",
-            "weight": 0.15,
-            "scale": 0.3,
-            "elongation": 5.0,
-            "note": "brush marks"
-          }
-        ]
-      }
+      "granularity_default": "region"
     },
     "ice": {
       "family": "cryo",
@@ -481,25 +406,7 @@
         "value": "ICE",
         "provenance": "seed"
       },
-      "granularity_default": "region",
-      "splat_composition": {
-        "description": "Transparent ice \u2014 subsurface shell with specular surface",
-        "layers": [
-          {
-            "type": "shell",
-            "weight": 0.5,
-            "scale": 1.0,
-            "thickness": 0.1,
-            "note": "transparent surface film"
-          },
-          {
-            "type": "surface",
-            "weight": 0.5,
-            "scale": 1.0,
-            "note": "main ice body"
-          }
-        ]
-      }
+      "granularity_default": "region"
     },
     "interior": {
       "family": "composite_built",
@@ -551,17 +458,6 @@
           "value": 5,
           "provenance": "design"
         }
-      },
-      "splat_composition": {
-        "description": "Clean panel \u2014 uniform surface only",
-        "layers": [
-          {
-            "type": "surface",
-            "weight": 1.0,
-            "scale": 1.0,
-            "note": "clean uniform surface"
-          }
-        ]
       }
     },
     "skin": {
@@ -610,29 +506,6 @@
           "provenance": "researched",
           "note": "skin self-cohesion (higher = less adhesive to itself)"
         }
-      },
-      "splat_composition": {
-        "description": "Soft tissue \u2014 surface with subsurface and fine detail",
-        "layers": [
-          {
-            "type": "surface",
-            "weight": 0.6,
-            "scale": 1.0,
-            "note": "main skin surface"
-          },
-          {
-            "type": "shell",
-            "weight": 0.25,
-            "scale": 0.5,
-            "note": "subsurface scatter layer"
-          },
-          {
-            "type": "point",
-            "weight": 0.15,
-            "scale": 0.1,
-            "note": "pore/fine detail"
-          }
-        ]
       }
     },
     "muscle": {
@@ -690,24 +563,6 @@
             "note": "J[muscle][skin] = 6 (from proven rung-1 constants)"
           }
         }
-      },
-      "splat_composition": {
-        "description": "Striated muscle \u2014 fiber-aligned with surface bulk",
-        "layers": [
-          {
-            "type": "fiber",
-            "weight": 0.7,
-            "scale": 1.0,
-            "elongation": 3.0,
-            "note": "muscle fibers along bone"
-          },
-          {
-            "type": "surface",
-            "weight": 0.3,
-            "scale": 1.0,
-            "note": "bulk muscle surface"
-          }
-        ]
       }
     },
     "bone": {
@@ -769,30 +624,6 @@
             "note": "J[bone][skin] = 12 \u00e2\u20ac\u201d expensive so muscle sits between them"
           }
         }
-      },
-      "splat_composition": {
-        "description": "Dense bone \u2014 hard surface with porous core",
-        "layers": [
-          {
-            "type": "shell",
-            "weight": 0.5,
-            "scale": 1.0,
-            "thickness": 0.3,
-            "note": "cortical shell"
-          },
-          {
-            "type": "surface",
-            "weight": 0.3,
-            "scale": 1.0,
-            "note": "smooth bone surface"
-          },
-          {
-            "type": "point",
-            "weight": 0.2,
-            "scale": 0.2,
-            "note": "porous interior"
-          }
-        ]
       }
     },
     "tendon": {
@@ -869,25 +700,7 @@
           "note": "matter.py radial sort: skin shells muscle unattended when adhesion profiles differ"
         }
       },
-      "granularity_default": "cell",
-      "splat_composition": {
-        "description": "Fibrous connector \u2014 aligned fibers",
-        "layers": [
-          {
-            "type": "fiber",
-            "weight": 0.8,
-            "scale": 1.0,
-            "elongation": 5.0,
-            "note": "collagen fibers"
-          },
-          {
-            "type": "surface",
-            "weight": 0.2,
-            "scale": 0.5,
-            "note": "connector surface"
-          }
-        ]
-      }
+      "granularity_default": "cell"
     }
   },
   "pair_exceptions": {
