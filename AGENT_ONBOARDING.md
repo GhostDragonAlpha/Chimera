@@ -35,6 +35,27 @@ constraint must name the right level — not too high (just repose angle)
 and not too low (every molecule). The right level is where the pattern
 emerges under human observation.
 
+## THE COMPOSITIONAL LADDER — the method
+
+Every system is trained at its own scale. Each rung passes averages to the next.
+Never skip a rung. Never conflate rungs.
+
+The big bang rung grew Kepler's law (star 98%, 3-4 planets at trained masses
+and orbits) and passed (mass, semi-major axis, eccentricity) to the planet rung.
+The planet rung consumed those triples and produced oceans, atmospheres,
+interior gradients — the habitable zone emerged, unplaced. The granular rung
+consumed the planet's climate and formed 40° sand as a fixed point.
+
+Each rung is one constraint at one scale. The big bang does not know about
+oceans. The planet does not know about footsteps. They do not need to —
+each rung's output is an average the next rung consumes as a settled fact.
+
+**Rung conflation is the named failure mode.** Five rounds failed to grow
+planets from pebbles WHILE settling a system. The fix: split into two rungs.
+
+The roadmap items follow this pattern. Each item names its scale, its
+inputs from the previous rung, and what it passes forward.
+
 ## THE FORMULA — every item, always
 
 The old way (place a cube, measure it) is muscle memory. It creeps back when tooling gets hard.

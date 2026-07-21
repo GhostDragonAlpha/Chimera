@@ -3,7 +3,34 @@
 > The game is a sequence of boxes. Each TODO item is one box.
 > The formula collapses it. No scales. No maximize/minimize. Walls only.
 > The human is the terminal for pattern quality.
-> Work in order. Never skip forward.
+> Work in order. Never skip forward. Never conflate rungs.
+
+## THE COMPOSITIONAL LADDER — the method
+
+Every system in the game follows this pattern. Train it at its own scale.
+Pass averages to the next rung. Never skip a rung. Never conflate rungs.
+
+A solar system is not built by placing planets. It is grown from an
+accretion disk simulation — the big bang rung. That rung passes
+(mass, semi-major axis, eccentricity) as averages to the planet rung.
+The planet rung consumes those triples and computes oceans, atmospheres,
+interior gradients. It passes (surface temperature, atmosphere pressure,
+ocean coverage) to the ground rung. The ground rung forms the terrain
+the player walks on.
+
+Each rung is one trained constraint at one scale. The big bang does not
+know about oceans. The planet does not know about footsteps. The sand
+does not know about the player. They do not need to — each rung's
+output is an average the next rung consumes as a settled fact.
+
+**Rung conflation is the named failure mode.** Five rounds of big bang
+training could not grow planets from pebbles WHILE settling a solar system.
+The fix was splitting into two rungs — star pre-formed, embryos seeded,
+and the regime unlocked on the untrained smoke. A system that tries to
+train two scales at once trains neither.
+
+**The roadmap below follows this pattern. Each item names its scale,
+its inputs from the previous rung, and what it passes forward.**
 
 ## THE CORE INSIGHT — no scales
 
@@ -103,9 +130,11 @@ rides the normal conveyor (claim → work → reps → beats → collapse).
 
 ---
 
-## Item 1: Survival pressure is real
+## Item 1: Survival pressure is real (body rung)
 
-The core clock of the game. Without this, nothing else matters.
+The core clock of the game. **Scale: the player's body.** Inputs: none (this is rung 0 —
+the first thing the player feels). Outputs to next rung: average survival time,
+average resource consumption rate, average distance-from-shelter-at-death.
 
 ```
 CONSTRAINT: O2, battery, and dust must drain at rates that force a player to return to shelter
@@ -122,11 +151,11 @@ JUDGE:      A human plays 5 minutes. Does returning to shelter feel like relief,
             If the answer is "I just watched numbers go down" → the walls are wrong.
 ```
 
-## Item 2: Resources exist to discover
+## Item 2: Resources exist to discover (biome rung)
 
-The reason to leave the habitat. The old way would author 6 resource types. The new way:
-the resource distribution is a trained constraint — where things are, what they are,
-and how they relate to the biomes they're found in.
+The reason to leave the habitat. **Scale: the biome.** Inputs from Item 1: how far the player
+can travel before needing to return. Outputs to Item 5: which resources exist and where,
+the average effort to find each.
 
 ```
 CONSTRAINT: Different biomes must contain different collectible resources. The player must
@@ -143,9 +172,12 @@ JUDGE:      A human walks to a biome they haven't visited. Do they find somethin
             Do they have to leave something behind because inventory is full?
 ```
 
-## Item 3: The habitat is real
+## Item 3: The habitat is real (shelter rung)
 
 Not a cube. A threshold between alive and dead. The form is trained, not placed.
+**Scale: the structure.** Inputs from Items 1+2: player survival range, resource
+collection radius. Outputs to Items 4+6: which forms are buildable, what materials
+they need, what volume they enclose.
 
 ```
 CONSTRAINT: The habitat must communicate shelter and safety through its form.
@@ -159,10 +191,11 @@ JUDGE:      A human walks toward it from 50m. Do they know it's shelter? Do they
             the threshold when they cross it? If the answer is "it's a box" → retrain.
 ```
 
-## Item 4: The habitat's form emerges (trainable)
+## Item 4: The habitat's form emerges (form rung)
 
-The shape of the habitat is a genome, not a mesh. The trainer discovers what geometry
-communicates "shelter" on this world.
+The shape of the habitat is a genome, not a mesh. **Scale: the form's parameters.**
+Inputs from Item 3: the functional definition of what a shelter must do. Outputs
+to Item 6: the decoded geometry blueprint (which vertices, which materials).
 
 ```
 CONSTRAINT: Habitat form must emerge from a trained genome — the answer to
@@ -179,10 +212,12 @@ JUDGE:      A human looks at the candidates. "Yes, that's a habitat" or "no, tha
             a shape with a hole in it." The walls narrow the field; the human picks.
 ```
 
-## Item 5: NPCs want what you have
+## Item 5: NPCs want what you have (social rung)
 
-The social economy. NPCs have real simulation state (O2, need, destination). Giving
-is the only unlock path. No authored dialogue — needs emerge from state.
+The social economy. **Scale: the encounter.** Inputs from Item 2: which resources
+are available to give. Inputs from Item 1: how much survival pressure the NPC
+feels (their O2 drains too). Outputs to Items 6+7: which blueprints are unlocked,
+how many NPCs were helped.
 
 ```
 CONSTRAINT: At least 3 NPCs must have visible, simulation-driven needs. Giving the
@@ -201,10 +236,10 @@ JUDGE:      A human encounters an NPC. Do they understand the need without text?
             Do they remember helping after they've moved on?
 ```
 
-## Item 6: The fabricator trades resources for progress
+## Item 6: The fabricator trades resources for progress (economy rung)
 
-The habitat terminal. Deposit resources → unlock blueprints. Advanced blueprints are
-locked behind NPC help.
+**Scale: the terminal exchange.** Inputs from Items 2+5: available resources and
+unlocked blueprints. Outputs to Item 7: which beacon components are buildable.
 
 ```
 CONSTRAINT: Players must convert collected resources into survival items and tools.
@@ -220,9 +255,11 @@ JUDGE:      A human has a full inventory. At the fabricator, do they have to cho
             what to build? Do they unlock something new on their second trip?
 ```
 
-## Item 7: The beacon ends the loop
+## Item 7: The beacon ends the loop (narrative rung)
 
-The tower. The signal. The only ending.
+**Scale: the whole playthrough — the widest rung.** Inputs from all previous items:
+survival pressure, resources collected, NPCs helped, blueprints built. Passes
+nothing forward — this is the terminal rung. It is one question, not a score.
 
 ```
 CONSTRAINT: The only way to reach a strong signal is to help people who cannot pay you.
@@ -238,6 +275,17 @@ WORK:       Tower actor + beacon visual. Wire signal intensity to sacrifice coun
 JUDGE:      A human plays to the ending. A costless playthrough — does the dim signal
             feel earned? A generous playthrough — does the strong signal feel like
             a connection, not a reward bar filling up?
+```
+
+## The ladder as one picture
+
+```
+body rung      → biome rung    → shelter rung  → form rung     → social rung   → economy rung  → narrative rung
+(O2 drains)      (resources)      (threshold)     (geometry)      (NPC needs)     (fabricator)    (beacon)
+     |                |               |               |               |               |               |
+     | survival       | resource      | functional    | decoded       | blueprint     | component    | ending
+     | range          | types         | definition    | form          | unlocks       | builds       | question
+     v                v               v               v               v               v               v
 ```
 
 ## The beacon as quality target
