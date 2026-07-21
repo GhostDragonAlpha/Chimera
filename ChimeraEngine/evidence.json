@@ -10,5 +10,29 @@
     },
     "note": "All 2 beats reached.",
     "timestamp": 1784647372.8125615
+  },
+  {
+    "gate": "witness",
+    "passed": true,
+    "evidence": {
+      "demo": "dust_settling_verification",
+      "beats_reached": "2/2",
+      "temperature": "[SIM] 2/2 beats reached in 'dust_settling_verification'.",
+      "walltime_s": 0.19548654556274414
+    },
+    "note": "All 2 beats reached.",
+    "timestamp": 1784648263.5387435
+  },
+  {
+    "gate": "witness",
+    "passed": true,
+    "evidence": {
+      "demo": "social_particle_emergence",
+      "beats_reached": "2/2",
+      "temperature": "[SIM] 2/2 beats reached in 'social_particle_emergence'.",
+      "walltime_s": 0.02225041389465332
+    },
+    "note": "All 2 beats reached.",
+    "timestamp": 1784648263.7319179
   }
 ]

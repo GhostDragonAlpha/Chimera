@@ -1,0 +1,33 @@
+{
+  "demo": "social_particle_emergence",
+  "loop": 0,
+  "settle_s": 1,
+  "_provenance": "Chimera Engine — spawns social intent particles and verifies they exist.",
+  "beats": [
+    {
+      "name": "social_particles_spawn",
+      "features": ["Social_Emergence"],
+      "actions": [
+        {"spawn": {"count": 500, "type": "social", "position": [0, 0, 200], "spread": 400,
+                   "mass": 0.1, "life": -1, "color": [0.3, 0.9, 0.3, 0.7], "size": 1.5}},
+        {"wait": 1.0}
+      ],
+      "expects": [
+        {"particle_count": {"type": "social", "min": 400}}
+      ]
+    },
+    {
+      "name": "social_particles_drift",
+      "features": ["Social_Emergence"],
+      "actions": [
+        {"set_var": {"wind_vector": [50, 20, 10]}},
+        {"set_var": {"wind_strength": 0.8}},
+        {"wait": 2.0}
+      ],
+      "expects": [
+        {"particle_count": {"type": "social", "min": 400}},
+        {"speed_mean": {"type": "social", "max_mag": 200}}
+      ]
+    }
+  ]
+}

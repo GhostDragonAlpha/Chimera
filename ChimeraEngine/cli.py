@@ -29,9 +29,13 @@ def cmd_witness(args):
     from ChimeraEngine.beats import BeatRunner
     from ChimeraEngine.gates import WitnessGate, VerifyGate
 
-    print(f"Witness Gate — {args.beats}")
+    bf = getattr(args, 'beats', None)
+    if not bf:
+        print("No beats specified.")
+        return 1
+    print(f"Witness Gate — {bf}")
     runner = BeatRunner(fps=60)
-    result = runner.run(args.beats)
+    result = runner.run(bf)
 
     gate = WitnessGate()
     gr = gate.check(result)
@@ -48,7 +52,7 @@ def cmd_witness(args):
                     if not e["passed"]:
                         print(f"    FAIL: {o.name} — {e['name']}: {e['detail']}")
 
-    if args.record:
+    if getattr(args, 'record', False):
         vg = VerifyGate()
         vr = vg.verify(gr)
         print(f"  {vr.gate}: {'PASS' if vr.passed else 'FAIL'} — {vr.note}")
@@ -89,7 +93,7 @@ def cmd_analyze(args):
     for i, q in enumerate(questions):
         print(f"  [{q.category}] {q.text}")
 
-    if args.ask_lm:
+    if getattr(args, 'ask_lm', False):
         for q in questions:
             answer = council.ask_lm(q)
             print(f"\n  LM: {answer[:300]}")
@@ -142,9 +146,13 @@ def cmd_verify(args):
     from ChimeraEngine.beats import BeatRunner
     from ChimeraEngine.gates import WitnessGate, VerifyGate
 
-    print(f"Verify Gate — {args.beats}")
+    bf = getattr(args, 'beats', None)
+    if not bf:
+        print("No beats specified.")
+        return 1
+    print(f"Verify Gate — {bf}")
     runner = BeatRunner()
-    result = runner.run(args.beats)
+    result = runner.run(bf)
 
     wg = WitnessGate()
     wr = wg.check(result)
@@ -154,7 +162,7 @@ def cmd_verify(args):
     vr = vg.verify(wr)
     print(f"  Verify:  {'PASS' if vr.passed else 'FAIL'} — {vr.note}")
 
-    if args.evidence:
+    if getattr(args, 'evidence', False):
         ledger = Path("ChimeraEngine/evidence.json")
         if ledger.exists():
             print(f"\n  Evidence ledger ({ledger.stat().st_size} bytes):")
@@ -163,6 +171,47 @@ def cmd_verify(args):
                 print(f"    {e['gate']}: {'PASS' if e['passed'] else 'FAIL'} — {e['note'][:80]}")
 
     return 0 if vr.passed else 1
+
+
+def cmd_fullcycle(args):
+    """Full development cycle: Council → Beats → Helm."""
+    from pathlib import Path
+
+    print("=" * 55)
+    print(" CHIMERA ENGINE — Full Development Cycle")
+    print("=" * 55)
+
+    # 1. Council
+    print("\n[1/3] COUNCIL — analyzing simulation state...")
+    rc = cmd_analyze(args)
+
+    # 2. Witness
+    beats_dir = Path(__file__).resolve().parent / "beats"
+    beat_files = sorted(beats_dir.glob("*.beats.json"))
+    print(f"\n[2/3] WITNESS — running {len(beat_files)} beat script(s)...")
+    total_pass = 0
+    for bf in beat_files:
+        from ChimeraEngine.beats import BeatRunner
+        from ChimeraEngine.gates import WitnessGate, VerifyGate
+        runner = BeatRunner(fps=60)
+        result = runner.run(str(bf))
+        gate = WitnessGate()
+        gr = gate.check(result)
+        vg = VerifyGate()
+        vr = vg.verify(gr)
+        status = "PASS" if gr.passed else "FAIL"
+        print(f"  {bf.name}: {status} ({result.beats_reached}/{result.beats_total})")
+        if gr.passed:
+            total_pass += 1
+
+    # 3. Helm
+    print(f"\n[3/3] HELM — gap analysis...")
+    rc2 = cmd_helm(args)
+
+    print(f"\n{'=' * 55}")
+    print(f" CYCLE COMPLETE — {total_pass}/{len(beat_files)} beat files passed")
+    print(f"{'=' * 55}")
+    return 0 if total_pass == len(beat_files) else 1
 
 
 def main():
@@ -185,6 +234,7 @@ def main():
 
     sub.add_parser("view", help="Launch interactive viewer")
     sub.add_parser("demo", help="Run batch render demo")
+    ful = sub.add_parser("fullcycle", help="Council -> Beats -> Helm in one pass")
 
     args = p.parse_args()
 
@@ -202,6 +252,8 @@ def main():
     elif args.command == "demo":
         from ParticleEngine.standalone import main as demo_main
         return demo_main()
+    elif args.command == "fullcycle":
+        return cmd_fullcycle(args)
     else:
         p.print_help()
         return 1
