@@ -149,7 +149,7 @@ def emit_splat_cloud(pos, material, count=1, spread=1.0, seed=42,
     return out
 
 
-def build_ground_terrain(decoded, extent=2000, density=50000):
+def build_ground_terrain(decoded, extent=2000, density=200000):
     """Build the ground entirely from splats at high density."""
     print(f'  Building ground terrain ({density:,} splats)...')
     gt = decoded.get('ground_terrain', {})
