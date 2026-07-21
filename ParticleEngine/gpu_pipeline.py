@@ -555,6 +555,65 @@ class FullGPUPipeline:
             self._sx, self._sy, self._sd, self._pc00, self._pc01, self._pc11, self._sv)
 
         return self._finish_render_path(n, params)
+
+    def _finish_render_path(self, n, params):
+        """Cull → inv → compact → gather → tiles → composite. Shared by render paths."""
+        g = (n + 255) // 256
+        _cull[g, (256,)](self._sd, self._sv, n, 100000.0)
+        _inv_radii[g, (256,)](self._pc00, self._pc01, self._pc11,
+            self._ic00, self._ic01, self._ic11, self._rad, n)
+
+        hv = self._sv.copy_to_host()[:n]
+        nv = int(hv.sum())
+        if nv == 0:
+            return (np.full((params.height, params.width, 3),
+                    [b*255 for b in self.bg], dtype=np.uint8))
+        self._pfx[:n] = cuda.to_device(np.cumsum(hv.astype(np.int32)) - 1)
+        _compact[(n + 255) // 256, (256,)](
+            self._sx, self._sy, self._sd, self._sv,
+            self._ic00, self._ic01, self._ic11,
+            self._scr, self._scg, self._scb, self._sopa, self._rad,
+            self._jx, self._jy, self._jd,
+            self._jic00, self._jic01, self._jic11,
+            self._jcr, self._jcg, self._jcb, self._jopa, self._jrad, self._pfx, n)
+
+        hd = self._jd.copy_to_host()[:nv]
+        sidx = np.argsort(-hd)
+        self._pfx[:nv] = cuda.to_device(sidx.astype(np.int32))
+        _gather[(nv + 255) // 256, (256,)](
+            self._jx, self._jy, self._jic00, self._jic01, self._jic11,
+            self._jcr, self._jcg, self._jcb, self._jopa, self._jrad,
+            self._kx, self._ky, self._kic00, self._kic01, self._kic11,
+            self._kcr, self._kcg, self._kcb, self._kopa, self._krad, self._pfx, nv)
+
+        tx = (params.width + TILE_SIZE - 1) // TILE_SIZE
+        ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
+        nt = tx * ty
+        self._tf[:nt] = cuda.to_device(np.zeros(nt, dtype=np.int32))
+        _tiles_count[(nv + 255) // 256, (256,)](
+            self._kx, self._ky, self._krad, self._tf, tx, ty, TILE_SIZE, nv)
+        _tile_offsets[(1,), (1,)](self._tf, self._to, nt, MAX_PER_TILE)
+        self._tf[:nt] = cuda.to_device(np.zeros(nt, dtype=np.int32))
+        _tiles_write[(nv + 255) // 256, (256,)](
+            self._kx, self._ky, self._krad, self._tids, self._to, self._tf,
+            tx, ty, TILE_SIZE, MAX_PER_TILE, nv)
+
+        cr = cuda.device_array((params.height, params.width), dtype=np.float32)
+        cg = cuda.device_array((params.height, params.width), dtype=np.float32)
+        cb = cuda.device_array((params.height, params.width), dtype=np.float32)
+        bk2 = (16, 16)
+        gk2 = ((params.width + 15) // 16, (params.height + 15) // 16)
+        _composite[gk2, bk2](self._kx, self._ky,
+            self._kic00, self._kic01, self._kic11,
+            self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
+            self._tids, self._to, cr, cg, cb,
+            params.width, params.height, tx, nt,
+            self.bg[0], self.bg[1], self.bg[2])
+        cuda.synchronize()
+        r = cr.copy_to_host(); g = cg.copy_to_host(); b = cb.copy_to_host()
+        canvas = np.stack([r, g, b], axis=2)
+        canvas = np.clip(canvas, 0, 1)
+        return (canvas * 255).astype(np.uint8)
         self.step_particles(dt, cvars)
         return self.render_from_gpu(camera, params)
 
