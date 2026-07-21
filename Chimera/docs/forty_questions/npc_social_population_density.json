@@ -1,0 +1,252 @@
+{
+  "_meta": {
+    "feature": "npc_social_population_density",
+    "parent": "npc_social",
+    "created": "chat_typed",
+    "n_total": 40,
+    "n_answered": 40,
+    "depth_verdict": "deep"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature?",
+      "a": "NPC spawn placement. Avoids player spawn. Higher density near resources. Max 10 visible.",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system?",
+      "a": "npc_social sub-rung. Controls where NPCs appear in the world.",
+      "answered": true
+    },
+    {
+      "id": 3,
+      "q": "What breaks without it?",
+      "a": "NPCs cluster at player spawn or are absent from resource areas.",
+      "answered": true
+    },
+    {
+      "id": 4,
+      "q": "Existing feature?",
+      "a": "BP_NPC_Basic placement in chimeradefaultlevel had 41 NPCs scattered across the yard.",
+      "answered": true
+    },
+    {
+      "id": 5,
+      "q": "Rung?",
+      "a": "Sub-rung of npc_social.",
+      "answered": true
+    },
+    {
+      "id": 6,
+      "q": "Physical constraint?",
+      "a": "NPCs spawn outside 500u of player spawn. Density inversely proportional to distance.",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "ONE measurement?",
+      "a": "Player spawn has 0 NPCs within 300u. Resource areas have at least 1 NPC within 200u.",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "Wall?",
+      "a": "Never spawn NPCs within render distance of each other (clustering). Maximum 10 active.",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "Degenerate winner?",
+      "a": "All NPCs at player spawn. Player helped instantly. No exploration needed.",
+      "answered": true
+    },
+    {
+      "id": 10,
+      "q": "Constraint too loose?",
+      "a": "NPCs are so rare player never encounters one.",
+      "answered": true
+    },
+    {
+      "id": 11,
+      "q": "Scale?",
+      "a": "Level layout scale. Spawn positions set at level load.",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "Definition level?",
+      "a": "Spawn region definitions. Not per-NPC placement.",
+      "answered": true
+    },
+    {
+      "id": 13,
+      "q": "Decompose further?",
+      "a": "Pathfinding between spawn and resource nodes. NPC patrol routes after help.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "Pattern emergence?",
+      "a": "Player leaves shelter, travels toward resource, encounters NPC along the way.",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "Deep enough?",
+      "a": "NPCs are encountered naturally during exploration without feeling placed.",
+      "answered": true
+    },
+    {
+      "id": 16,
+      "q": "Catalog variables?",
+      "a": "BP_NPC_Basic spawn transform. AIController patrol routes.",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "Relevant elements?",
+      "a": "~6400 AI and pathfinding elements.",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Enough to train?",
+      "a": "Yes. Spawn positions are coordinate pairs.",
+      "answered": true
+    },
+    {
+      "id": 19,
+      "q": "MISSING variables?",
+      "a": "Dynamic spawn system. Current placement is static per level load.",
+      "answered": true
+    },
+    {
+      "id": 20,
+      "q": "Need GPU?",
+      "a": "No. Coordinate assignment.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Connect to Mirror?",
+      "a": "Enabling. Without NPCs to encounter, the give mechanic never triggers.",
+      "answered": true
+    },
+    {
+      "id": 22,
+      "q": "How directly?",
+      "a": "Enabling. Creates the conditions for encounter.",
+      "answered": true
+    },
+    {
+      "id": 23,
+      "q": "Costless life meaningful without this?",
+      "a": "Player could still find NPCs if placed manually, but natural encounter is lost.",
+      "answered": true
+    },
+    {
+      "id": 24,
+      "q": "Can this be gamed?",
+      "a": "No. Static spawn positions.",
+      "answered": true
+    },
+    {
+      "id": 25,
+      "q": "Perfect Mirror service?",
+      "a": "Player walks toward distant resource. Encounters NPC on the way. Natural. Unforced.",
+      "answered": true
+    },
+    {
+      "id": 26,
+      "q": "Compose with?",
+      "a": "biome_resources (resource positions), need_generation (NPC needs at that location).",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What breaks at the seam?",
+      "a": "NPC spawns inside resource mesh. Unreachable.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Need decoder?",
+      "a": "Yes. NPC spawn positions written to level.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "Failed composition?",
+      "a": "Player walks to resource area. No NPC present. Misses help opportunity.",
+      "answered": true
+    },
+    {
+      "id": 30,
+      "q": "Need human judgment?",
+      "a": "System verifies distances. Human judges whether encounters feel natural.",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "Generations?",
+      "a": "5-10.",
+      "answered": true
+    },
+    {
+      "id": 32,
+      "q": "Population?",
+      "a": "32.",
+      "answered": true
+    },
+    {
+      "id": 33,
+      "q": "Overfitting?",
+      "a": "Low. Position constraints are geometric.",
+      "answered": true
+    },
+    {
+      "id": 34,
+      "q": "Underfitting?",
+      "a": "None. Positions are either valid or not.",
+      "answered": true
+    },
+    {
+      "id": 35,
+      "q": "Trainer support?",
+      "a": "Yes. Coordinate domain.",
+      "answered": true
+    },
+    {
+      "id": 36,
+      "q": "Deep enough?",
+      "a": "At position level yes. At behavior level no \u2014 NPC patrol after help is alpha.",
+      "answered": true
+    },
+    {
+      "id": 37,
+      "q": "Next level?",
+      "a": "NPC patrol routes to nearest resource after being helped.",
+      "answered": true
+    },
+    {
+      "id": 38,
+      "q": "Complete without deeper?",
+      "a": "Functionally yes. NPCs are present and encounterable.",
+      "answered": true
+    },
+    {
+      "id": 39,
+      "q": "Emotional response?",
+      "a": "A stranger. Out here. Maybe they need something.",
+      "answered": true
+    },
+    {
+      "id": 40,
+      "q": "Mirror demands this?",
+      "a": "Yes. Encounters must feel natural or the give mechanic is clearly fabricated.",
+      "answered": true
+    }
+  ]
+}
