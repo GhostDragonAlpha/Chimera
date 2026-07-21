@@ -100,6 +100,9 @@ Each rung trained independently. All 12 inter-rung seams verified by composition
 
 ## FIRST ACTIONS (every session)
 
+> **D3D12 will crash.** Launch the editor with `-d3d11` or it will
+> `EXCEPTION_PRIV_INSTRUCTION` in D3D12RHI (see CAVEATS.md §1).
+
 ```powershell
 cd E:\PythonChimera\Chimera
 python -m core.preflight              # Live state: GPA, loops, CAPCOM
@@ -107,6 +110,23 @@ python -m core.capcom brief            # Operator signals
 python -m core.helm targets            # Seed-vs-reality gaps
 python -m core.forty_questions show <name>  # Check a feature's 40Q depth
 ```
+
+Read `task_progress.md` for the handoff. Read `EMERGENCE_ROADMAP.md` for the build sequence.
+
+**Opening the game in UE5:**
+```powershell
+"/c/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe" ^
+  "E:/PythonChimera/Chimera/Chimera.uproject" -d3d11
+```
+Do NOT use `-ExecutePythonScript` — the editor will exit after the script runs.
+
+**Building the level from decoded parameters:**
+1. Open the editor (command above)
+2. Open Python Console: Window → Developer Tools → Python
+3. Run: `exec(open("E:/PythonChimera/Chimera/build_level.py").read())`
+4. The SkySphere may fail to spawn — place it manually from the Place Actors panel.
+
+For the full caveat list, read `docs/CAVEATS.md` first.
 
 Read `task_progress.md` for the handoff. Read `EMERGENCE_ROADMAP.md` for the build sequence.
 
@@ -158,6 +178,12 @@ Read `task_progress.md` for the handoff. Read `EMERGENCE_ROADMAP.md` for the bui
 
 ## NEVER DO
 
+> **D3D12 will crash the editor.** Always launch with `-d3d11`. Read `docs/CAVEATS.md` before any editor work.
+> **-ExecutePythonScript auto-exits the editor.** Use the Python Console instead.
+> **SkySphere fails from Python.** Place it manually via Place Actors panel.
+> **MCP bridge port 3000 is not auto-started.** Use the Python Console instead.
+> **The build script places placeholder geometry.** Spheres, cylinders, cubes — no game art.
+
 - **Never place a cube.** If you find yourself authoring a form, stop. The form emerges from training.
 - **Never trust a scale.** Every metric gets cheated. Walls only, no maximize/minimize.
 - **Never decompose in advance.** Sub-features emerge when a season fails. Pre-splitting is guessing.
@@ -169,18 +195,17 @@ Read `task_progress.md` for the handoff. Read `EMERGENCE_ROADMAP.md` for the bui
 
 ## CURRENT GAME STATE
 
-- **Level**: emergent_world.umap — bare level with PlayerStart + DirectionalLight + decoded content
-- **Solar system**: Grown_Star + 4 planets at trained orbital positions (Kepler slope 1.501)
-- **Terrain**: GPU-accelerated Cellular Potts, 3 materials, 37.6° repose
-- **Survival loop**: O2 drains, shelter refills, edge detection on enter/leave
-- **Resources**: 7 types in ring around origin, 8 inventory slots
-- **Shelter**: proximity trigger at (0, -800, 0)
-- **NPCs**: 3 with needs, 4 blueprints unlocked via help
-- **Fabricator**: 10 blueprints, 5 advanced (NPC-locked)
-- **Beacon**: tower at (2000, 0, 0), 3 signal levels
+- **Level**: emergent_world.umap (160KB) - PlayerStart + warm sun + fog + ground plane
+- **Sun**: Warm directional light at (0,0,2000), angled 330/-45
+- **Sky**: Atmospheric fog present. SkySphere NOT placed (Blueprint spawn fails - place manually)
+- **Terrain**: Large ground plane at origin
+- **Resources**: 7 spheres scattered on ring pattern
+- **Shelter**: Cylinder disk at (0,-800,0) with blue PointLight
+- **NPCs**: 3 cylinder markers around shelter
+- **Beacon**: Tower + red PointLight + sphere at (2000,0,50)
 - **Graph**: 3,660+ nodes, 392 features, 8 Mirror connections
 - **Domains**: 41+ generated, all trained, all passing
-- **Auto-decomposer**: decomposes parent rungs into sub-rungs, trains in parallel
+- **Auto-decomposer**: Decomposes parent rungs into sub-rungs, trains in parallel
 
 ## DOCS TO KNOW
 
