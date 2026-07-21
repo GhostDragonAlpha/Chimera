@@ -23,11 +23,11 @@ META-CONSTRAINT → CATALOG → DOMAIN → TRAIN → DECODE → LEVEL
 
 Every step is data. Nothing is hand-authored. The Mirror of Erised is a hard constraint at every level: a costless life produces a dim signal, a generous life produces a strong one.
 
-## THE 40-QUESTION DOCUMENT — every feature's specification
+## THE 40-QUESTION DOCUMENT — how the Mirror reflects
 
-Every feature and sub-feature created gets a 40-question document saved to `docs/forty_questions/<name>.json`. The questions define the feature's scope, depth, and Mirror connection. They persist forever, even before the feature exists.
+Every feature and sub-feature created gets a 40-question document. Generating it is not a command you run silently — you TYPE the 40 questions and their answers in chat first. The typing IS the reflection. It passes through you before it reaches the filesystem.
 
-Questions cover: identity, constraint, scale, catalog coverage, Mirror connection, composition, training, and depth. Answers are filled in over time as the feature is developed. The depth_verdict tells you whether to go deeper:
+The questions define the feature's scope, depth, and Mirror connection. They persist forever, even before the feature exists. Answers are filled in over time. The depth_verdict tells you whether to go deeper:
 
 | Answered | Verdict | Meaning |
 |----------|---------|---------|
@@ -40,9 +40,7 @@ The 40-question document lives in two places:
 1. `docs/forty_questions/<name>.json` — the full document
 2. The DNA graph (Graphify MCP server) — queryable via MCP tools
 
-To generate: `python -m core.forty_questions generate <name> [parent]`
-To answer: `python -m core.forty_questions answer <name> <qid> <answer>`
-To show: `python -m core.forty_questions show <name>`
+**The rule: type the 40 questions and answers in chat first. Save to file second. The chat IS the reflection.**
 
 ## THE MIRROR — the steering wheel
 
@@ -163,6 +161,7 @@ Read `task_progress.md` for the handoff. Read `EMERGENCE_ROADMAP.md` for the bui
 - **Never place a cube.** If you find yourself authoring a form, stop. The form emerges from training.
 - **Never trust a scale.** Every metric gets cheated. Walls only, no maximize/minimize.
 - **Never decompose in advance.** Sub-features emerge when a season fails. Pre-splitting is guessing.
+- **Never generate 40 questions silently.** Type them in chat first. The typing is the reflection. The file is the record.
 - **Never skip the 40 questions.** Every feature gets a 40Q document at creation. Answers fill over time.
 - **Never write to the level without the decoder.** The decoder reads trained winners. MCP spawn is only for the decoder.
 - **Never trust `success: true`** — read the value back.

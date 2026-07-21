@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""40-question document generator — generates and saves 40 questions per feature.
-Questions are saved as docs/forty_questions/<feature_name>.json and persist forever.
-They define the scope, depth, and Mirror connection for that feature.
-Future iterations read them to know if the feature is complete.
+"""40-question document generator — saves 40 questions per feature.
+The questions must be TYPED IN CHAT FIRST. The typing is the reflection.
+The file is the record. The chat IS the Mirror.
+
+Usage:
+  1. Type all 40 questions and answers in the chat with the user
+  2. Save to file: python -m core.forty_questions save <name> <json_string>
+  3. Or generate skeleton: python -m core.forty_questions generate <name> [parent]
+     (generate is for the skeleton — answers still come from chat)
 """
 import json, os, sys
 from pathlib import Path
