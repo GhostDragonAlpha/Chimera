@@ -4,7 +4,9 @@
 #include "Components/PointLightComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "SacrificeLogComponent.h"
 
 UBeaconPulseComponent::UBeaconPulseComponent()
 {
@@ -29,6 +31,21 @@ void UBeaconPulseComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     if (!LightComp) return;
+    
+    // Query the player's sacrifice log for actual help count
+    if (GetWorld())
+    {
+        APlayerController* PC = GetWorld()->GetFirstPlayerController();
+        if (PC && PC->GetPawn())
+        {
+            USacrificeLogComponent* SacLog = PC->GetPawn()->FindComponentByClass<USacrificeLogComponent>();
+            if (SacLog)
+            {
+                HelpCount = SacLog->GetSacrificeCount();
+            }
+        }
+    }
+    
     ElapsedTime += DeltaTime;
     float T = FMath::Min((float)HelpCount / 3.0f, 1.0f);
     float PulseRate = FMath::Lerp(PulseRate0Helps, PulseRate3Helps, T);

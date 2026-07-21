@@ -6,6 +6,7 @@
 #include "BeaconPulseComponent.generated.h"
 
 class UPointLightComponent;
+class USacrificeLogComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CHIMERA_API UBeaconPulseComponent : public UActorComponent
