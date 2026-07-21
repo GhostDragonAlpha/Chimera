@@ -4430,6 +4430,55 @@
       "line": 3158,
       "quote": "PointLightComponent->SetCastShadows(bShadowCastingLights);",
       "at": "2026-07-21T07:14:11.570Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Actor.cpp",
+      "line": 4978,
+      "quote": "bool AActor::SetActorRotation(FRotator NewRotation, ETeleportType Teleport)",
+      "at": "2026-07-21T07:40:41.450Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Actor.cpp",
+      "line": 4983,
+      "quote": "logOrEnsureNanError(TEXT(\"AActor::SetActorRotation found NaN in FRotator NewRotation\"));",
+      "at": "2026-07-21T07:40:41.450Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Actor.cpp",
+      "line": 4995,
+      "quote": "bool AActor::SetActorRotation(const FQuat& NewRotation, ETeleportType Teleport)",
+      "at": "2026-07-21T07:40:41.450Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\Actor.cpp",
+      "line": 5000,
+      "quote": "logOrEnsureNanError(TEXT(\"AActor::SetActorRotation found NaN in FQuat NewRotation\"));",
+      "at": "2026-07-21T07:40:41.451Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Math\\UnrealMathUtility.h",
+      "line": 1486,
+      "quote": "[[nodiscard]] static CORE_API FRotator RInterpTo( const FRotator& Current, const FRotator& Target, float DeltaTime, float InterpSpeed);",
+      "at": "2026-07-21T07:40:41.603Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\PlayerController.cpp",
+      "line": 752,
+      "quote": "BlendedTargetViewRotation = FMath::RInterpTo(BlendedTargetViewRotation, TargetViewRotation, DeltaSeconds, SmoothTargetViewRotationSpeed);",
+      "at": "2026-07-21T07:40:41.603Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Classes\\Kismet\\KismetMathLibrary.h",
+      "line": 4098,
+      "quote": "static UE_INL_API FRotator RInterpTo(FRotator Current, FRotator Target, float DeltaTime, float InterpSpeed);",
+      "at": "2026-07-21T07:40:41.603Z"
     }
   ]
 }
