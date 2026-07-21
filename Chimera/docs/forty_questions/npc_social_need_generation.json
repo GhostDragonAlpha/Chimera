@@ -1,0 +1,252 @@
+{
+  "_meta": {
+    "feature": "npc_social_need_generation",
+    "parent": "npc_social",
+    "created": "chat_typed",
+    "n_total": 40,
+    "n_answered": 40,
+    "depth_verdict": "deep"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature?",
+      "a": "Each NPC has a visible, simulation-driven need. Which NPC wants which resource.",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system?",
+      "a": "npc_social sub-rung. Determines what each NPC asks for.",
+      "answered": true
+    },
+    {
+      "id": 3,
+      "q": "What breaks without it?",
+      "a": "NPCs exist but have no reason to interact. Player cannot identify who needs what.",
+      "answered": true
+    },
+    {
+      "id": 4,
+      "q": "Existing feature?",
+      "a": "SacrificeLogComponent SACRIFICE_WEIGHTS table \u2014 eight trained kinds.",
+      "answered": true
+    },
+    {
+      "id": 5,
+      "q": "Rung?",
+      "a": "Sub-rung of npc_social.",
+      "answered": true
+    },
+    {
+      "id": 6,
+      "q": "Physical constraint?",
+      "a": "NPC need type is a trained genome. Each NPC maps to one resource type they will accept.",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "ONE measurement?",
+      "a": "Player can identify which resource each NPC needs without trial and error.",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "Wall?",
+      "a": "Needs must be readable without UI. Posture and gesture communicate the need.",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "Degenerate winner?",
+      "a": "All NPCs want the same resource. Player gives once and everyone is satisfied.",
+      "answered": true
+    },
+    {
+      "id": 10,
+      "q": "Constraint too loose?",
+      "a": "NPC needs change randomly. Player cannot plan which resources to collect.",
+      "answered": true
+    },
+    {
+      "id": 11,
+      "q": "Scale?",
+      "a": "Per-NPC assignment. One need per NPC, static per playthrough.",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "Definition level?",
+      "a": "A lookup table: NPC type -> resource type. Not a dynamic need system.",
+      "answered": true
+    },
+    {
+      "id": 13,
+      "q": "Decompose further?",
+      "a": "Need visual indicator, need discovery, need satisfaction animation.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "Pattern emergence?",
+      "a": "Player sees NPC, recognizes the posture, knows what to give. First try.",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "Deep enough?",
+      "a": "When the visual indicator clearly communicates the need without text.",
+      "answered": true
+    },
+    {
+      "id": 16,
+      "q": "Catalog variables?",
+      "a": "SacrificeLogComponent Entries array. NPC Animation Blueprint parameters.",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "Relevant elements?",
+      "a": "~126 social elements with gesture and NPC keywords.",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Enough to train?",
+      "a": "Yes. Static lookup table is easily trainable.",
+      "answered": true
+    },
+    {
+      "id": 19,
+      "q": "MISSING variables?",
+      "a": "NPC need visual indicator type. Not in catalog as a dedicated field.",
+      "answered": true
+    },
+    {
+      "id": 20,
+      "q": "Need GPU?",
+      "a": "No. Static assignment.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Connect to Mirror?",
+      "a": "Enabling. Makes the give mechanic navigable. Player knows what to do.",
+      "answered": true
+    },
+    {
+      "id": 22,
+      "q": "How directly?",
+      "a": "Enabling. Without this, giving is guesswork.",
+      "answered": true
+    },
+    {
+      "id": 23,
+      "q": "Costless life meaningful without this?",
+      "a": "Player could still give randomly, but the friction would discourage it.",
+      "answered": true
+    },
+    {
+      "id": 24,
+      "q": "Can this be gamed?",
+      "a": "No. Needs are static per playthrough.",
+      "answered": true
+    },
+    {
+      "id": 25,
+      "q": "Perfect Mirror service?",
+      "a": "Player walks into NPCs view. NPC shifts posture to show their need. Player reaches into inventory.",
+      "answered": true
+    },
+    {
+      "id": 26,
+      "q": "Compose with?",
+      "a": "SacrificeLog, fabricator_economy blueprint table, gesture_set.",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What breaks at the seam?",
+      "a": "NPC need type does not match any resource the player can find.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Need decoder?",
+      "a": "Yes. NPC need assignments written to a DataTable or component property.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "Failed composition?",
+      "a": "Player brings correct resource. NPC does not recognize it. No unlock.",
+      "answered": true
+    },
+    {
+      "id": 30,
+      "q": "Need human judgment?",
+      "a": "System verifies assignment works. Human judges if the visual indicator is readable.",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "Generations?",
+      "a": "5-10.",
+      "answered": true
+    },
+    {
+      "id": 32,
+      "q": "Population?",
+      "a": "32.",
+      "answered": true
+    },
+    {
+      "id": 33,
+      "q": "Overfitting?",
+      "a": "Low. Static lookup.",
+      "answered": true
+    },
+    {
+      "id": 34,
+      "q": "Underfitting?",
+      "a": "None. Assignment is either valid or not.",
+      "answered": true
+    },
+    {
+      "id": 35,
+      "q": "Trainer support?",
+      "a": "Yes. Simple lookup domain.",
+      "answered": true
+    },
+    {
+      "id": 36,
+      "q": "Deep enough?",
+      "a": "At assignment level yes. At communication level no \u2014 needs visual indicator work.",
+      "answered": true
+    },
+    {
+      "id": 37,
+      "q": "Next level?",
+      "a": "Need communication animation. Posture. Gesture. Color hint.",
+      "answered": true
+    },
+    {
+      "id": 38,
+      "q": "Complete without deeper?",
+      "a": "Assignment works. Visual communication is the depth pass.",
+      "answered": true
+    },
+    {
+      "id": 39,
+      "q": "Emotional response?",
+      "a": "I know what they need. I have it. I can help.",
+      "answered": true
+    },
+    {
+      "id": 40,
+      "q": "Mirror demands this?",
+      "a": "Yes. Giving must be navigable or players will not bother.",
+      "answered": true
+    }
+  ]
+}
