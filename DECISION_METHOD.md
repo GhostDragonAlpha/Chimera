@@ -7,6 +7,27 @@
 
 This is a hard fallthrough. Start at 1. If it produces work, execute it. If it doesn't, fall through to the next. If all fall through, the session is complete.
 
+### 0. Check the 40-question depth
+
+Before touching any feature, check its 40-question document:
+
+```
+python -m core.forty_questions show <feature_name>
+```
+
+- If **unexplored** (0-9 answered): the feature needs investigation. Run the 40 questions, fill answers, train.
+- If **explored** (10-19): basic understanding exists. Decide whether to go deeper or start building.
+- If **adequate** (20-29): well-understood. Decompose into sub-rungs if needed.
+- If **deep** (30-40): fully understood. Feature is complete. Do not retrain.
+- If **no document exists**: the feature hasn't been created yet. Generate one first.
+
+The 40-question document is stored in `docs/forty_questions/<name>.json` and the DNA graph. Query it:
+
+```python
+from core.forty_questions import check_depth
+depth = check_depth('feature_name')
+```
+
 ### 1. Read the roadmap
 
 Open EMERGENCE_ROADMAP.md. Find the first item whose status is not DONE and not BLOCKED.
@@ -15,6 +36,25 @@ Open EMERGENCE_ROADMAP.md. Find the first item whose status is not DONE and not 
 - **BLOCKED** → note the blocker, move to the next.
 - **Not started or in progress** → execute it using the formula (CONSTRAINT → EXISTING → WALLS → WORK → JUDGE).
 - **No items found** → fall through to 2.
+
+### 1.5 Query the graph for Mirror-weighted gaps
+
+Before starting new work, query the DNA graph for the highest-Mirror-weighted gap:
+
+```python
+from core.forty_questions import graph_context
+ctx = graph_context()
+print(f'{ctx["n_gaps"]} gaps, {ctx["n_mirror"]} Mirror connections')
+```
+
+Prioritize gaps by Mirror weight: direct Mirror features > enabling features > orthogonal features.
+
+The auto-decomposer can do this automatically:
+```
+python -m core.auto_decomposer
+```
+
+If the graph shows no gaps, the current rung is complete at its resolution level.
 
 ### 2. Re-approach blocked items
 
