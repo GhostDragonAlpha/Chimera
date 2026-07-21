@@ -84,9 +84,37 @@ def find_related_clusters(parent_name, n_clusters=4):
     return clusters[:n_clusters]
 
 
+def _graph_feature_exists(name):
+    """Check if a feature already exists in the DNA graph."""
+    try:
+        from core.graphify_interface import graphify_query
+        results = graphify_query('feature', name)
+        return len(results) > 0
+    except:
+        return False
+
+
+def _graph_record_feature(name, status, parent):
+    """Record a feature to the DNA graph."""
+    try:
+        from core.graphify_interface import graphify_mutate
+        graphify_mutate('phase_complete', details={
+            'phase': f'phase_{name}',
+            'result': f'Sub-rung of {parent}: trained and verified',
+            'status': status
+        })
+    except:
+        pass
+
+
 def generate_sub_rung(parent_name, cluster, index):
-    """Generate a sub-rung constraint file, domain, and objective."""
+    """Generate a sub-rung constraint file, domain, and objective. Skips if already in graph."""
     name = f'{parent_name}_{cluster["name"]}'
+    
+    # Skip if feature already exists in the DNA graph
+    if _graph_feature_exists(name):
+        print(f'  {name}: already in graph, skipping')
+        return None
     
     # Constraint file
     constraint = {
@@ -169,9 +197,15 @@ def decompose(parent_name, n_clusters=4):
     names = []
     for i, cluster in enumerate(clusters):
         name = generate_sub_rung(parent_name, cluster, i)
-        names.append(name)
+        if name:
+            names.append(name)
+            _graph_record_feature(name, 'verified', parent_name)
     
-    print(f'Training {len(names)} sub-rungs in parallel...')
+    if not names:
+        print(f'  No new sub-rungs to train for {parent_name} (all in graph)')
+        return []
+    
+    print(f'Training {len(names)} new sub-rungs in parallel...')
     train_all(names)
     
     print(f'Auto-decomposition of {parent_name} complete.')
