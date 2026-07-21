@@ -6,6 +6,7 @@ what forces govern them, and what emergent behaviors are possible.
 """
 
 import numpy as np
+from dataclasses import dataclass, field
 
 
 @dataclass

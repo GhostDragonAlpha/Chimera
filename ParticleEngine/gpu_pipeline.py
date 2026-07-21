@@ -394,9 +394,9 @@ class FullGPUPipeline:
         self._pfx = Ai()
         # Tile arrays: need n_tiles*MAX_PER_TILE entries. Allocate large enough.
         # Worst case: 1920x1080 = 8100 tiles @ 1024 = 8.3M. Cap at a reasonable size.
-        max_tile_entries = max(self._a * 4, 500000)
-        self._tf = Ai()  # tile_fill: n_tiles entries (reallocated per-frame from pool)
-        self._to = Ai()  # tile_offsets: n_tiles+1 entries
+        max_tile_entries = max(self._a * 16, 2000000)  # generous: 16× particle count for tile coverage
+        self._tf = cuda.device_array(max(20000, self._a), dtype=np.int32)  # n_tiles worst case
+        self._to = cuda.device_array(max(20000, self._a), dtype=np.int32)
         self._tids = cuda.device_array(max_tile_entries, dtype=np.int32)
 
     def upload(self, data):
