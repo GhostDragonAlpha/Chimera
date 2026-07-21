@@ -8,6 +8,29 @@ This is not a task-list project. It is a continuous question loop:
 
 **ask → answer → ask → answer → ask**
 
+A task is one answer, not the destination. The session ends when the human ends it.
+
+## THE MEMBRANE PRINCIPLE — how detailed we get
+
+A membrane separates inside from outside. The feature defines the shape of the
+membrane — what it must enclose to be real. The membrane decision IS the design
+decision. Every feature asks: what does this need to BE? The answer defines the
+constraint set. The constraint set is the membrane's walls. The trainer searches
+within them. The human judges whether the membrane enclosed the right thing.
+
+The sandpile's first membrane enclosed "repose angle measurement." Within that
+membrane 40.03° was correct. But the feature "sand the player experiences" needs
+membrane for grain size, footstep response, dust behavior, appearance under light.
+The old membrane was the wrong shape because the feature was named wrong.
+
+**The sub-feature rule is a membrane question.** Does this need a wider membrane
+or a separate one? If rock and sand are both in the world but one is about
+collecting and the other is about walking feel — separate membranes.
+
+**The audit backlog is a membrane failure.** A feature trained without a membrane
+(old method, maximize/minimize, no walls) leaks outside where it's supposed to
+work. Fix: expand the membrane, never retrain the artifact.
+
 1. Ask a concrete question about the current state
 2. Answer it with evidence (read code, run beats, query MCP, spawn actors)
 3. Ask the NEXT question based on what you learned

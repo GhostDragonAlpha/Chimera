@@ -3,7 +3,34 @@
 > The game is a sequence of boxes. Each TODO item is one box.
 > The formula collapses it. No scales. No maximize/minimize. Walls only.
 > The human is the terminal for pattern quality.
+> The features are the shape of the membrane.
 > Work in order. Never skip forward. Never conflate rungs.
+
+## THE MEMBRANE PRINCIPLE — how detailed we get
+
+A membrane separates inside from outside. The feature defines the shape of the
+membrane — what it must enclose to be real.
+
+The sandpile's first membrane enclosed "repose angle measurement." Within that
+membrane, 40.03° was correct. But the feature "sand the player experiences" needs
+a wider membrane — one that encloses grain size distribution, footstep response,
+dust behavior on kick, appearance under direct light. The old membrane was the
+wrong shape because the feature was named wrong.
+
+**The membrane decision is the design decision.** Every feature item asks:
+what does this feature need to BE? The answer defines the constraint set.
+The constraint set is the membrane's wall. The trainer searches within it.
+The human judges whether the membrane enclosed the right thing.
+
+**The sub-feature rule is a membrane question.** Does this feature need a wider
+membrane, or a separate one? If a rock and sand both need to be in the world,
+but one is about collecting and the other is about walking feel — separate
+membranes. They don't share a boundary.
+
+**The audit backlog is a membrane failure.** A feature that was trained without
+a membrane (old method, maximize/minimize, no walls) produced a result that
+leaks outside where it's supposed to work. The fix is not to retrain the
+artifact — it's to expand the membrane to include what was missing.
 
 ## THE COMPOSITIONAL LADDER — the method
 
