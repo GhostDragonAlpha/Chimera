@@ -3,6 +3,7 @@
 > This document records the full thought chain that produced this system.
 > It exists to be modified as the system evolves.
 > Every decision here can be revisited, reversed, or deepened.
+> **Next session: start at section 10. Execute in order. No questions.**
 
 ---
 
@@ -114,14 +115,66 @@ The decoder is the bridge between training and gameplay. Without it, the pipelin
 
 ---
 
-## 10. Next Steps
+## 10. Next Steps — Execute in Order, No Questions
 
-1. **Type 40 questions for remaining sub-rungs** (~30 sub-rungs without documents)
-2. **Wire the give→unlock loop** (npc_social_reciprocity as wired C++/Blueprint)
-3. **Wire the beacon signal** (beacon_narrative_signal as C++/Blueprint component)
-4. **Complete the decoder** (remaining 8 rungs need decode functions)
-5. **Run the composition pass** on the fully decoded level
-6. **Train at the next depth level** for each Mirror-critical rung
-7. **Human playtest** to judge whether the Mirror feels real
+### Session start (cold boot)
+```powershell
+cd E:\PythonChimera\Chimera
+python -m core.preflight
+python -m core.capcom brief
+python -m core.helm targets
+```
+Read this file. Read `AGENT_ONBOARDING.md`. Read `DECISION_METHOD.md`. Then execute the first uncompleted item below.
 
-The thought chain is not closed. Every addition, every correction, every reversal gets recorded here. The system evolves. The Mirror reflects. The holodeck resolves.
+### Immediate next actions:
+
+**Step A: Type 40 questions for remaining sub-rungs (~25 sub-rungs without documents)**
+- `python -m core.forty_questions show <name>` to check if any 40Q doc exists
+- For each sub-rung without a 40Q doc: type all 40 questions in chat, then save
+- Priority order by Mirror weight: npc_social > beacon_narrative > body_survival > rest
+- Key sub-rungs still missing 40Q docs: npc_social_need_generation, npc_social_gesture_set, npc_social_population_density, beacon_narrative_*, body_survival_*, biome_resources_*, shelter_*
+
+**Step B: Wire the give→unlock loop (npc_social_reciprocity)**
+- The 40 questions are typed and answered (depth: deep)
+- The loop: player gives resource → SacrificeLogComponent records → NPC satisfied → blueprint unlocked at fabricator
+- Existing pieces: SacrificeLogComponent (compiled), InventoryTradeComponent (compiled), fabricator_economy (trained)
+- Missing piece: the connection between SacrificeLog record and blueprint availability
+- This is a C++ component or Blueprint wiring — ONE hand-authored piece per Mirror-critical feature
+
+**Step C: Wire the beacon signal (beacon_narrative_signal)**
+- The 40 questions are typed and answered (depth: deep)
+- The loop: beacon activates → read SacrificeLog count → set pulse frequency and color
+- Existing pieces: StarMemorialComponent (compiled), beacon tower (decoded)
+- Missing piece: the color/pulse curve driven by NPC help count
+
+**Step D: Complete the decoder (remaining 8 rungs)**
+- Check `core/decoder.py` — which rungs have decode functions?
+- For each missing rung: write a decode function that reads the trained winner and MCP-spawns the artifacts
+- Rungs already decoded: solar_system, ground_terrain, biome_resources, shelter_threshold, npc_social, fabricator_economy, beacon_narrative
+- Rungs still needing decode: planet_surface, body_survival (rates as properties), shelter_form, plus all sub-rungs
+
+**Step E: Run the composition pass on fully decoded level**
+```powershell
+python -m core.trainer --domain core.trainables.generated.composition --objective docs/objectives/composition.json --pop 64 --gens 20
+```
+
+**Step F: Train at the next depth level for Mirror-critical rungs**
+- npc_social_reciprocity: train the unlocking parameters (which resources unlock which blueprints)
+- beacon_narrative_signal: train the color/pulse curve
+- body_survival_o2_consumption: train the drain rates against human feel data
+
+**Step G: Human playtest**
+- The human judges whether the Mirror feels real
+- If yes: document the feel, move to next rung
+- If no: identify which wall is wrong, fix constraint, retrain
+
+---
+
+## 11. Modification Record
+
+| Date | Change | Reason |
+|------|--------|--------|
+| 2026-07-21 | Initial thought chain created | Document the complete reasoning |
+| | | |
+
+Every addition, correction, or reversal gets recorded here. The thought chain is never closed — only updated. The system evolves. The Mirror reflects. The holodeck resolves.
