@@ -108,13 +108,26 @@ def _graph_record_feature(name, status, parent):
 
 
 def generate_sub_rung(parent_name, cluster, index):
-    """Generate a sub-rung constraint file, domain, and objective. Skips if already in graph."""
+    """Generate a sub-rung constraint file, domain, and objective. Skips if already in graph.
+    Every new sub-rung goes through 40-question interrogation before generation."""
     name = f'{parent_name}_{cluster["name"]}'
     
     # Skip if feature already exists in the DNA graph
     if _graph_feature_exists(name):
         print(f'  {name}: already in graph, skipping')
         return None
+    
+    # Interrogate via 40 questions before generating
+    try:
+        from core.forty_questions import interrogate
+        answers = interrogate(name, parent_name)
+        # Check the answers for show-stoppers
+        for q, a in answers.items():
+            if 'already exists' in a.lower() and 'true' in a.lower().split('?')[1:]:
+                print(f'  {name}: 40Q says already exists, skipping')
+                return None
+    except Exception as e:
+        print(f'  {name}: 40Q error (non-fatal): {e}')
     
     # Constraint file
     constraint = {
