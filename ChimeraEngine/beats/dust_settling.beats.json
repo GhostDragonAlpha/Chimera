@@ -1,0 +1,33 @@
+{
+  "demo": "dust_settling_verification",
+  "loop": 0,
+  "settle_s": 3,
+  "_provenance": "Chimera Engine — verifies that dust particles accumulate under gravity.",
+  "beats": [
+    {
+      "name": "dust_falls_and_accumulates",
+      "features": ["Dust_Accumulation"],
+      "actions": [
+        {"set_var": {"gravity": [0, 0, -981]}},
+        {"set_var": {"wind_strength": 0}},
+        {"wait": 3.0}
+      ],
+      "expects": [
+        {"particle_count": {"type": "dust", "min": 500}},
+        {"prop_gt": {"type": "dust", "prop": 0, "value": 0.01}},
+        {"position_mean_z": {"type": "dust", "max": 300}}
+      ]
+    },
+    {
+      "name": "sand_settles",
+      "features": ["Sand_Physics"],
+      "actions": [
+        {"wait": 2.0}
+      ],
+      "expects": [
+        {"particle_count": {"type": "sand", "min": 100}},
+        {"speed_mean": {"type": "sand", "max_mag": 200}}
+      ]
+    }
+  ]
+}

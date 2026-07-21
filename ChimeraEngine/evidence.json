@@ -1,0 +1,14 @@
+[
+  {
+    "gate": "witness",
+    "passed": true,
+    "evidence": {
+      "demo": "dust_settling_verification",
+      "beats_reached": "2/2",
+      "temperature": "[SIM] 2/2 beats reached in 'dust_settling_verification'.",
+      "walltime_s": 0.27586913108825684
+    },
+    "note": "All 2 beats reached.",
+    "timestamp": 1784647372.8125615
+  }
+]
