@@ -34,5 +34,41 @@
     },
     "note": "All 2 beats reached.",
     "timestamp": 1784648263.7319179
+  },
+  {
+    "gate": "witness",
+    "passed": true,
+    "evidence": {
+      "demo": "chimera_survival_world",
+      "beats_reached": "2/2",
+      "temperature": "[SIM] 2/2 beats reached in 'chimera_survival_world'.",
+      "walltime_s": 0.12025070190429688
+    },
+    "note": "All 2 beats reached.",
+    "timestamp": 1784649745.6411138
+  },
+  {
+    "gate": "witness",
+    "passed": true,
+    "evidence": {
+      "demo": "dust_settling_verification",
+      "beats_reached": "2/2",
+      "temperature": "[SIM] 2/2 beats reached in 'dust_settling_verification'.",
+      "walltime_s": 0.14960622787475586
+    },
+    "note": "All 2 beats reached.",
+    "timestamp": 1784649746.9099267
+  },
+  {
+    "gate": "witness",
+    "passed": true,
+    "evidence": {
+      "demo": "social_particle_emergence",
+      "beats_reached": "2/2",
+      "temperature": "[SIM] 2/2 beats reached in 'social_particle_emergence'.",
+      "walltime_s": 0.02300882339477539
+    },
+    "note": "All 2 beats reached.",
+    "timestamp": 1784649747.123378
   }
 ]

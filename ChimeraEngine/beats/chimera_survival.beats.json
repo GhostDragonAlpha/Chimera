@@ -1,0 +1,44 @@
+{
+  "demo": "chimera_survival_world",
+  "loop": 0,
+  "settle_s": 2,
+  "_provenance": "Chimera Engine — full survival world: dust, sand, atmosphere, social NPCs, trade resources.",
+  "beats": [
+    {
+      "name": "world_population",
+      "features": ["World_Initialization", "Particle_Diversity"],
+      "actions": [
+        {"spawn": {"count": 8000, "type": "dust", "position": [-400, -200, 400], "spread": 600,
+                   "mass": 0.005, "life": -1, "color": [0.75, 0.68, 0.55, 0.7], "size": 0.5}},
+        {"spawn": {"count": 5000, "type": "sand", "position": [200, 100, 500], "spread": 500,
+                   "mass": 0.02, "life": -1, "color": [0.9, 0.72, 0.35, 0.85], "size": 0.35}},
+        {"spawn": {"count": 3000, "type": "atmosphere", "position": [0, 0, 2000], "spread": 2000,
+                   "mass": 0.001, "life": -1, "color": [0.5, 0.6, 0.85, 0.06], "size": 15.0}},
+        {"spawn": {"count": 500, "type": "social", "position": [0, 0, 300], "spread": 600,
+                   "mass": 0.1, "life": -1, "color": [0.3, 0.9, 0.3, 0.7], "size": 1.0}},
+        {"spawn": {"count": 300, "type": "resource", "position": [-300, 200, 400], "spread": 400,
+                   "mass": 0.08, "life": -1, "color": [0.9, 0.8, 0.2, 0.8], "size": 0.8}},
+        {"set_var": {"gravity": [0, 0, -300]}},
+        {"set_var": {"wind_vector": [15, 8, 3]}},
+        {"wait": 1.0}
+      ],
+      "expects": [
+        {"particle_count": {"type": "dust", "min": 7000}},
+        {"particle_count": {"type": "sand", "min": 4000}},
+        {"particle_count": {"type": "atmosphere", "min": 2000}},
+        {"particle_count": {"type": "social", "min": 400}},
+        {"particle_count": {"type": "resource", "min": 200}}
+      ]
+    },
+    {
+      "name": "atmosphere_visible",
+      "features": ["Atmosphere_Rendering"],
+      "actions": [
+        {"wait": 1.0}
+      ],
+      "expects": [
+        {"particle_count": {"type": "atmosphere", "min": 2000}}
+      ]
+    }
+  ]
+}

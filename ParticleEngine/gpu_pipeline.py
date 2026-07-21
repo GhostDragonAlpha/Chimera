@@ -87,6 +87,29 @@ def _sim_integrate(dp, dt, n):
     if life >= 0: dp[o + LIFE] = life - dt
 
 
+@cuda.jit
+def _sim_attract(dp, ax, ay, az, strength, target_type, radius, n):
+    """Attract particles of target_type toward (ax, ay, az) with inverse-square force."""
+    i = cuda.grid(1)
+    if i >= n: return
+    o = i * NCOLS
+    t = int(dp[o + TYPE])
+    if t != target_type: return
+    dx = ax - dp[o + PX]
+    dy = ay - dp[o + PY]
+    dz = az - dp[o + PZ]
+    dist2 = dx*dx + dy*dy + dz*dz
+    r2 = radius * radius
+    if dist2 > r2 or dist2 < 1e-6: return
+    dist = math.sqrt(dist2)
+    # Inverse-square attraction, capped
+    force = strength / (dist2 + 10.0)
+    if force > 1000: force = 1000
+    dp[o + AX] += dx / dist * force
+    dp[o + AY] += dy / dist * force
+    dp[o + AZ] += dz / dist * force
+
+
 # ═══════════════════════════════════════════════════════════════════
 #  TYPE PROFILE
 # ═══════════════════════════════════════════════════════════════════
@@ -344,6 +367,7 @@ class FullGPUPipeline:
     def __init__(self, bg=(0.01, 0.01, 0.05), base_scale=0.5):
         self.bg = bg; self.base_scale = base_scale
         self._a = 0; self._n = 0
+        self.attractors: list = []  # [(x, y, z, strength, type_code, radius), ...]
 
     def _grow(self, n):
         if n <= self._a: return
@@ -396,6 +420,9 @@ class FullGPUPipeline:
         _sim_accumulate[g, (256,)](self._dp,
             cvars.get('accumulation_threshold', 5.0),
             cvars.get('accumulation_rate', 0.05), dt, n)
+        # Attractors: social+resource particles flow toward attractor points
+        for (ax, ay, az, strength, tcode, radius) in self.attractors:
+            _sim_attract[g, (256,)](self._dp, ax, ay, az, strength, tcode, radius, n)
         _sim_integrate[g, (256,)](self._dp, dt, n)
 
     def render_from_gpu(self, camera, params):
