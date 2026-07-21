@@ -1,0 +1,9 @@
+{
+  "score": 1.0,
+  "walls_satisfied": {
+    "wall_0_helped_npcs_provide_": true,
+    "wall_1_no_immediate_reward_": true,
+    "wall_2_blueprint_unlock_has": true
+  },
+  "message": "Give resource to NPC -> blueprint unlocked at fabricator. No immediate UI reward."
+}

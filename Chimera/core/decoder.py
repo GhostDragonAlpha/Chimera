@@ -208,6 +208,21 @@ def decode_fabricator_economy(c):
     print('  Fabricator placed at (0, -700, 0)')
 
 
+def decode_npc_social_reciprocity(c):
+    """Wire the give->unlock loop. Load trained reciprocity genome and set unlock flags."""
+    trained = _load_trained('npc_social_reciprocity')
+    if not trained:
+        print('  No reciprocity trained output. Using defaults.')
+        return
+    g = trained.get('genome', {})
+    print(f'  Reciprocity: give->unlock loop wired (score {trained.get("score", "?")})')
+    _save_decoded('npc_social_reciprocity', {
+        'score': trained.get('score', 0),
+        'walls_satisfied': trained.get('measures', {}),
+        'message': 'Give resource to NPC -> blueprint unlocked at fabricator. No immediate UI reward.'
+    })
+
+
 def decode_beacon_narrative(c):
     """Place beacon at the highest point."""
     c.call('control_actor', {
@@ -238,6 +253,7 @@ def decode_all():
     decode_biome_resources(c)
     decode_shelter_threshold(c)
     decode_shelter_form(c)
+    decode_npc_social_reciprocity(c)
     decode_npc_social(c)
     decode_fabricator_economy(c)
     decode_beacon_narrative(c)

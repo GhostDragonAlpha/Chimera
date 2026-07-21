@@ -2,13 +2,13 @@
   "objective": "unnamed",
   "score": 1.0,
   "measures": {
-    "wall_0_biomes_distributed_b": true,
-    "wall_1_transition_zones_bet": true,
-    "wall_2_at_least_3_distinct_": true
+    "wall_0_helped_npcs_provide_": true,
+    "wall_1_no_immediate_reward_": true,
+    "wall_2_blueprint_unlock_has": true
   },
   "genome": {
-    "wall_0_biomes_distributed_b": true,
-    "wall_1_transition_zones_bet": true,
-    "wall_2_at_least_3_distinct_": true
+    "wall_0_helped_npcs_provide_": true,
+    "wall_1_no_immediate_reward_": true,
+    "wall_2_blueprint_unlock_has": true
   }
 }
