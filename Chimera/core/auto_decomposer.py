@@ -186,8 +186,24 @@ def train_all(names):
         print(f'  {name}: {status}')
 
 
+def snapshot():
+    """Print a system snapshot from the DNA graph and return gap count."""
+    try:
+        from core.graphify_interface import graphify_query
+        health = graphify_query('health')
+        features = graphify_query('feature', '')
+        gaps = [f for f in features if f.get('status') in ('not_started', 'needs_refinement')]
+        mirror = [f for f in features if 'mirror' in str(f).lower()]
+        print(f'=== SNAPSHOT: {health["total_nodes"]} nodes, {health["features"]} features, '
+              f'{len(mirror)} mirror, {len(gaps)} gaps ===')
+        return len(gaps)
+    except:
+        return 0
+
+
 def decompose(parent_name, n_clusters=4):
-    """Full auto-decomposition cycle: find clusters, generate sub-rungs, train all."""
+    """Full auto-decomposition cycle: snapshot, find clusters, generate, train."""
+    snapshot()
     print(f'Auto-decomposing {parent_name} into {n_clusters} sub-rungs...')
     clusters = find_related_clusters(parent_name, n_clusters)
     if not clusters:
