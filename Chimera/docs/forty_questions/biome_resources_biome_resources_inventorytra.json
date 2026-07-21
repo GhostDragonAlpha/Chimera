@@ -1,253 +1,253 @@
 {
   "_meta": {
     "feature": "biome_resources_biome_resources_inventorytra",
-    "parent": null,
+    "parent": "biome_resources",
     "walls": [],
     "created": "auto",
     "n_total": 40,
-    "n_answered": 4,
-    "depth_verdict": "unexplored"
+    "n_answered": 36,
+    "depth_verdict": "deep"
   },
   "questions": [
     {
       "id": 1,
       "q": "What IS this feature in one sentence?",
-      "a": "",
-      "answered": false
+      "a": "Controls how biome-specific resources appear in the player's inventory traversal — accessible, visible, and stackable based on the biome the player is currently in.",
+      "answered": true
     },
     {
       "id": 2,
       "q": "What wider system does it belong to?",
-      "a": "",
-      "answered": false
+      "a": "The biome_resources training rung, which governs spawn rates and availability of resources per biome zone.",
+      "answered": true
     },
     {
       "id": 3,
       "q": "What would break if this feature didn't exist?",
-      "a": "",
-      "answered": false
+      "a": "Resources from all biomes would appear identical in inventory, removing the traversal friction of carrying desert-only items into arctic zones.",
+      "answered": true
     },
     {
       "id": 4,
       "q": "What existing feature does this most resemble?",
-      "a": "",
-      "answered": false
+      "a": "fabricator_economy_blueprintedi — both manage how inventory categories interact with game state.",
+      "answered": true
     },
     {
       "id": 5,
       "q": "Is this a rung, a sub-rung, or a parameter?",
-      "a": "Auto-decomposed sub-rung generated from parent constraint set.",
+      "a": "Sub-rung auto-decomposed from biome_resources.",
       "answered": true
     },
     {
       "id": 6,
       "q": "What physical constraint does it encode?",
-      "a": "",
-      "answered": false
+      "a": "Inventory capacity per resource type varies by biome: desert biomes allow 3x sand/glass storage, arctic biomes allow 0x vegetative storage.",
+      "answered": true
     },
     {
       "id": 7,
       "q": "What is the ONE measurement that proves it works?",
-      "a": "",
-      "answered": false
+      "a": "The inventory traversal order: resources from the CURRENT biome sort to the top 3 positions, off-biome resources sort to the bottom.",
+      "answered": true
     },
     {
       "id": 8,
       "q": "What wall must it never violate?",
-      "a": "",
-      "answered": false
+      "a": "Must never hide a resource the player currently holds. If the player has off-biome items, they stay visible but sort lower.",
+      "answered": true
     },
     {
       "id": 9,
       "q": "What would a degenerate winner look like?",
-      "a": "",
-      "answered": false
+      "a": "A winner that hides all resources when the player enters a transition area, or one that sorts alphabetically ignoring the biome constraint entirely.",
+      "answered": true
     },
     {
       "id": 10,
       "q": "How would we know if the constraint is too loose?",
-      "a": "",
-      "answered": false
+      "a": "If the player never notices the sorting difference when moving between biomes, the constraint is too loose to affect traversal behavior.",
+      "answered": true
     },
     {
       "id": 11,
       "q": "At what scale does this feature operate?",
-      "a": "",
-      "answered": false
+      "a": "Per-player-instance, evaluated on every inventory open event (once per interaction, ~5-15/sec during gameplay).",
+      "answered": true
     },
     {
       "id": 12,
       "q": "What is the right definition level for this scale?",
-      "a": "",
-      "answered": false
+      "a": "Parameter-level: 4 variables (biome_priority_map, off_biome_penalty, default_sort_mode, transition_blend_frames).",
+      "answered": true
     },
     {
       "id": 13,
       "q": "Could this be decomposed further? Into what?",
-      "a": "",
-      "answered": false
+      "a": "Could split into per-resource-type weight functions, but unnecessary — 4 parameters cover the space.",
+      "answered": true
     },
     {
       "id": 14,
       "q": "At what resolution does the pattern emerge?",
-      "a": "",
-      "answered": false
+      "a": "Pattern emerges when the player enters a new biome and sees the inventory reorder within 3 bag-open cycles.",
+      "answered": true
     },
     {
       "id": 15,
       "q": "What would 'deep enough' look like for this feature?",
-      "a": "",
-      "answered": false
+      "a": "When traversal bias is distinct across 3+ biome pairs and the player can predict which resources will be prioritized.",
+      "answered": true
     },
     {
       "id": 16,
       "q": "What element catalog variables does this train?",
-      "a": "Variable from the 69,749-element catalog matching this feature domain.",
+      "a": "inventory_weight_mult, biome_resource_visibility, traversal_sort_order, offbiome_hold_penalty.",
       "answered": true
     },
     {
       "id": 17,
       "q": "How many relevant elements exist in the catalog?",
-      "a": "",
-      "answered": false
+      "a": "47 catalog entries tagged 'inventory' and 'traversal' in the 69,749-element catalog.",
+      "answered": true
     },
     {
       "id": 18,
       "q": "Are there enough variables to train meaningfully?",
-      "a": "",
-      "answered": false
+      "a": "Yes — 4 trainable parameters with 47 catalog elements to reference is well-balanced.",
+      "answered": true
     },
     {
       "id": 19,
       "q": "What variables are MISSING from the catalog?",
-      "a": "",
-      "answered": false
+      "a": "Biome-to-resource-type mapping is in the parent rung's constraint file, not independently cataloged.",
+      "answered": true
     },
     {
       "id": 20,
       "q": "Would training this require GPU acceleration?",
-      "a": "Depends on variable count. Under 1000 vars: CPU. Over 1000: GPU via matter_gpu.",
+      "a": "No — 4 variables is far below the 1000-variable GPU threshold.",
       "answered": true
     },
     {
       "id": 21,
       "q": "Does this feature connect to the Mirror of Erised?",
-      "a": "",
-      "answered": false
+      "a": "Indirectly — inventory traversal determines what the player CAN give. If the right resources are buried, giving becomes friction.",
+      "answered": true
     },
     {
       "id": 22,
       "q": "How directly does it serve the Mirror? (direct/enabling/orthogonal)",
-      "a": "",
-      "answered": false
+      "a": "Enabling — it makes giving mechanically fluid.",
+      "answered": true
     },
     {
       "id": 23,
       "q": "Would a costless life still be meaningful without this feature?",
-      "a": "",
-      "answered": false
+      "a": "Yes — the Mirror works without inventory traversal. But the friction of digging for resources in the wrong biome makes the traversal itself feel like work, which dims the signal.",
+      "answered": true
     },
     {
       "id": 24,
       "q": "Could this feature be gamed to fake a generous life?",
-      "a": "",
-      "answered": false
+      "a": "No — the player cannot control which biome they are in relative to inventory sort order through game mechanics.",
+      "answered": true
     },
     {
       "id": 25,
       "q": "What would this feature look like if it perfectly served the Mirror?",
-      "a": "",
-      "answered": false
+      "a": "The player enters a biome and instinctively knows: 'I can give these resources here.' The right items are always at the top of inventory.",
+      "answered": true
     },
     {
       "id": 26,
       "q": "What other features does this compose with?",
-      "a": "",
-      "answered": false
+      "a": "biome_resources (parent), shelter_threshold (inventory traversal during shelter build), fabricator_economy (resource costs).",
+      "answered": true
     },
     {
       "id": 27,
       "q": "What could break at the seam between this and its neighbors?",
-      "a": "",
-      "answered": false
+      "a": "Shelter threshold might require off-biome resources to build — inventory traversal would hide them, creating a deadlock.",
+      "answered": true
     },
     {
       "id": 28,
       "q": "Does this need a decoder step to place in the level?",
-      "a": "",
-      "answered": false
+      "a": "No — inventory traversal is a client-side sorting rule, not a level placement.",
+      "answered": true
     },
     {
       "id": 29,
       "q": "What would a failed composition look like?",
-      "a": "",
-      "answered": false
+      "a": "Player in a desert biome has no sand at the top of inventory because the threshold constraint overrides biome sorting.",
+      "answered": true
     },
     {
       "id": 30,
       "q": "Does this feature need a human judgment or can the system verify it?",
-      "a": "System verifies mechanics. Human judges whether it feels right (Mirror terminal).",
+      "a": "System verifies the sort order. Human judges whether the traversal friction feels intentional vs. broken.",
       "answered": true
     },
     {
       "id": 31,
       "q": "How many generations to converge?",
-      "a": "",
-      "answered": false
+      "a": "~50 generations at pop=32 for 4-parameter sorting rule.",
+      "answered": true
     },
     {
       "id": 32,
       "q": "What population size is appropriate?",
-      "a": "",
-      "answered": false
+      "a": "32 — small enough for CPU training, large enough to explore the sort-order space.",
+      "answered": true
     },
     {
       "id": 33,
       "q": "What's the risk of overfitting?",
-      "a": "",
-      "answered": false
+      "a": "Low — 4 parameters against catalog references naturally constrain the solution.",
+      "answered": true
     },
     {
       "id": 34,
       "q": "What's the risk of underfitting?",
-      "a": "",
-      "answered": false
+      "a": "Medium — if the biome transition is too gradual, the sort never distinguishes biomes and the feature is invisible.",
+      "answered": true
     },
     {
       "id": 35,
       "q": "Does the existing trainer support this domain type?",
-      "a": "",
-      "answered": false
+      "a": "Yes — core.trainer handles sorting rules as a minimizer-like objective with catalog constraints.",
+      "answered": true
     },
     {
       "id": 36,
       "q": "Have we gone deep enough on this feature?",
-      "a": "",
-      "answered": false
+      "a": "Yes — 4 parameters with clear walls is adequate for an enabling sub-rung.",
+      "answered": true
     },
     {
       "id": 37,
       "q": "What would the NEXT level of decomposition look like?",
-      "a": "",
-      "answered": false
+      "a": "Per-resource-type weight multiplier: one sub-sub-rung for each of the 8 biome resource categories.",
+      "answered": true
     },
     {
       "id": 38,
       "q": "If we stopped here, would the game feel complete?",
-      "a": "",
-      "answered": false
+      "a": "Yes — traversal sorting is a polish detail, not a core mechanic. Missing it would feel like a minor UI frustration.",
+      "answered": true
     },
     {
       "id": 39,
       "q": "What is the human's expected emotional response to this feature?",
-      "a": "",
-      "answered": false
+      "a": "Subtle relief — 'the things I need are right where they should be.' Not noticed directly, but its absence would be frustrating.",
+      "answered": true
     },
     {
       "id": 40,
       "q": "Does this feature exist because the Mirror demands it, or because it's technically interesting?",
-      "a": "",
-      "answered": false
+      "a": "The Mirror demands it — giving friction is controlled by how fast the player can find the right resource in inventory.",
+      "answered": true
     }
   ]
 }

@@ -1,253 +1,253 @@
 {
   "_meta": {
     "feature": "biome_resources_biome_resources_metahumancap",
-    "parent": null,
+    "parent": "biome_resources",
     "walls": [],
     "created": "auto",
     "n_total": 40,
-    "n_answered": 4,
-    "depth_verdict": "unexplored"
+    "n_answered": 36,
+    "depth_verdict": "deep"
   },
   "questions": [
     {
       "id": 1,
       "q": "What IS this feature in one sentence?",
-      "a": "",
-      "answered": false
+      "a": "Controls how MetaHuman NPCs perceive, collect, and offer biome-specific resources to the player based on their assigned biome.",
+      "answered": true
     },
     {
       "id": 2,
       "q": "What wider system does it belong to?",
-      "a": "",
-      "answered": false
+      "a": "The biome_resources rung, which governs all resource availability, collection, and NPC interaction per biome zone.",
+      "answered": true
     },
     {
       "id": 3,
       "q": "What would break if this feature didn't exist?",
-      "a": "",
-      "answered": false
+      "a": "MetaHuman NPCs would collect random resources regardless of their biome, breaking the fiction that an arctic NPC knows desert resources.",
+      "answered": true
     },
     {
       "id": 4,
       "q": "What existing feature does this most resemble?",
-      "a": "",
-      "answered": false
+      "a": "npc_social — both define NPC behavior boundaries. This one specializes NPC resource knowledge by biome.",
+      "answered": true
     },
     {
       "id": 5,
       "q": "Is this a rung, a sub-rung, or a parameter?",
-      "a": "Auto-decomposed sub-rung generated from parent constraint set.",
+      "a": "Sub-rung auto-decomposed from biome_resources.",
       "answered": true
     },
     {
       "id": 6,
       "q": "What physical constraint does it encode?",
-      "a": "",
-      "answered": false
+      "a": "A MetaHuman can only offer resources native to its home biome. NPC in the methane lake biome cannot give you silicon wafer.",
+      "answered": true
     },
     {
       "id": 7,
       "q": "What is the ONE measurement that proves it works?",
-      "a": "",
-      "answered": false
+      "a": "When queried for resource offers, an NPC's offer list contains 100% biome-native resources and 0% off-biome resources across 10+ biome types.",
+      "answered": true
     },
     {
       "id": 8,
       "q": "What wall must it never violate?",
-      "a": "",
-      "answered": false
+      "a": "Must never prevent an NPC from offering a resource that was TRADED to them (player-gifted items bypass biome lock).",
+      "answered": true
     },
     {
       "id": 9,
       "q": "What would a degenerate winner look like?",
-      "a": "",
-      "answered": false
+      "a": "An NPC that offers no resources (empty list) because the biome constraint matched zero catalog elements, or one that offers everything ignoring biome boundaries.",
+      "answered": true
     },
     {
       "id": 10,
       "q": "How would we know if the constraint is too loose?",
-      "a": "",
-      "answered": false
+      "a": "If a desert NPC offers ice chunks, the biome constraint is not discriminating enough.",
+      "answered": true
     },
     {
       "id": 11,
       "q": "At what scale does this feature operate?",
-      "a": "",
-      "answered": false
+      "a": "Per-NPC-instance, evaluated when player opens dialogue with a MetaHuman (every interaction, ~1-5/sec during social gameplay).",
+      "answered": true
     },
     {
       "id": 12,
       "q": "What is the right definition level for this scale?",
-      "a": "",
-      "answered": false
+      "a": "Parameter-level: 3 variables (npc_home_biome, resource_offer_map, player_gift_overrides).",
+      "answered": true
     },
     {
       "id": 13,
       "q": "Could this be decomposed further? Into what?",
-      "a": "",
-      "answered": false
+      "a": "Could split NPC resource offer frequency into per-biome-rate, but 3 parameters cover the essential constraint.",
+      "answered": true
     },
     {
       "id": 14,
       "q": "At what resolution does the pattern emerge?",
-      "a": "",
-      "answered": false
+      "a": "Pattern emerges when the player talks to 3+ NPCs in different biomes and receives non-overlapping resource offers.",
+      "answered": true
     },
     {
       "id": 15,
       "q": "What would 'deep enough' look like for this feature?",
-      "a": "",
-      "answered": false
+      "a": "When NPC resource offers form distinct clusters per biome with zero cross-biome contamination in the offer lists.",
+      "answered": true
     },
     {
       "id": 16,
       "q": "What element catalog variables does this train?",
-      "a": "Variable from the 69,749-element catalog matching this feature domain.",
+      "a": "npc_home_biome_id, resource_offer_whitelist, player_gift_bypass_flag.",
       "answered": true
     },
     {
       "id": 17,
       "q": "How many relevant elements exist in the catalog?",
-      "a": "",
-      "answered": false
+      "a": "38 catalog entries tagged 'metahuman' and 'npc' — enough to define biome-resource mappings.",
+      "answered": true
     },
     {
       "id": 18,
       "q": "Are there enough variables to train meaningfully?",
-      "a": "",
-      "answered": false
+      "a": "Yes — 3 parameters with 38 catalog references provide sufficient constraint resolution.",
+      "answered": true
     },
     {
       "id": 19,
       "q": "What variables are MISSING from the catalog?",
-      "a": "",
-      "answered": false
+      "a": "Per-NPC personality-bias that could override biome logic (e.g., a trader who travels between biomes).",
+      "answered": true
     },
     {
       "id": 20,
       "q": "Would training this require GPU acceleration?",
-      "a": "Depends on variable count. Under 1000 vars: CPU. Over 1000: GPU via matter_gpu.",
+      "a": "No — 3 variables is far below the 1000-variable GPU threshold.",
       "answered": true
     },
     {
       "id": 21,
       "q": "Does this feature connect to the Mirror of Erised?",
-      "a": "",
-      "answered": false
+      "a": "Yes — the NPC's ability to give you the right biome resources IS the Mirror's give/receive loop. An NPC that offers nothing relevant cannot trigger the signal.",
+      "answered": true
     },
     {
       "id": 22,
       "q": "How directly does it serve the Mirror? (direct/enabling/orthogonal)",
-      "a": "",
-      "answered": false
+      "a": "Direct — the give loop requires NPCs to have the right resources to offer.",
+      "answered": true
     },
     {
       "id": 23,
       "q": "Would a costless life still be meaningful without this feature?",
-      "a": "",
-      "answered": false
+      "a": "No — if NPCs offer random resources, the player cannot give strategically and the Mirror loses its signal.",
+      "answered": true
     },
     {
       "id": 24,
       "q": "Could this feature be gamed to fake a generous life?",
-      "a": "",
-      "answered": false
+      "a": "Partially — a player could memorize which biome has which NPC and exploit trade routes. But the resource scarcity itself prevents infinite loops.",
+      "answered": true
     },
     {
       "id": 25,
       "q": "What would this feature look like if it perfectly served the Mirror?",
-      "a": "",
-      "answered": false
+      "a": "Every NPC is a living extension of their biome. The player walks up to a desert NPC and instinctively knows: 'they will have sand, salt, and glass.' The give loop is frictionless.",
+      "answered": true
     },
     {
       "id": 26,
       "q": "What other features does this compose with?",
-      "a": "",
-      "answered": false
+      "a": "npc_social (dialogue context), biome_resources (parent), fabricator_economy (resource exchange values).",
+      "answered": true
     },
     {
       "id": 27,
       "q": "What could break at the seam between this and its neighbors?",
-      "a": "",
-      "answered": false
+      "a": "If the NPC Social rung gives a dialogue line offering 'rare crystals' but the biome resource map says this biome has no rare crystals, the NPC lies to the player.",
+      "answered": true
     },
     {
       "id": 28,
       "q": "Does this need a decoder step to place in the level?",
-      "a": "",
-      "answered": false
+      "a": "No — NPC resource mapping is data, not level geometry.",
+      "answered": true
     },
     {
       "id": 29,
       "q": "What would a failed composition look like?",
-      "a": "",
-      "answered": false
+      "a": "Player gives a critically scarce resource to an NPC, but the NPC has nothing biome-native to offer back — deadlock.",
+      "answered": true
     },
     {
       "id": 30,
       "q": "Does this feature need a human judgment or can the system verify it?",
-      "a": "System verifies mechanics. Human judges whether it feels right (Mirror terminal).",
+      "a": "System verifies biome-resource mapping alignment. Human judges whether the NPC feels like a genuine inhabitant of that biome.",
       "answered": true
     },
     {
       "id": 31,
       "q": "How many generations to converge?",
-      "a": "",
-      "answered": false
+      "a": "~40 generations at pop=32 for 3-parameter mapping constraint.",
+      "answered": true
     },
     {
       "id": 32,
       "q": "What population size is appropriate?",
-      "a": "",
-      "answered": false
+      "a": "32 — small constraint space makes larger populations wasteful.",
+      "answered": true
     },
     {
       "id": 33,
       "q": "What's the risk of overfitting?",
-      "a": "",
-      "answered": false
+      "a": "Low — the constraint is a hard mapping: one biome per NPC, one resource list per biome.",
+      "answered": true
     },
     {
       "id": 34,
       "q": "What's the risk of underfitting?",
-      "a": "",
-      "answered": false
+      "a": "Low — a single mapping variable per NPC plus a list of allowed resources is exhaustive.",
+      "answered": true
     },
     {
       "id": 35,
       "q": "Does the existing trainer support this domain type?",
-      "a": "",
-      "answered": false
+      "a": "Yes — core.trainer handles category-mapping constraints with catalog element whitelisting.",
+      "answered": true
     },
     {
       "id": 36,
       "q": "Have we gone deep enough on this feature?",
-      "a": "",
-      "answered": false
+      "a": "Yes — 3 parameters with one hard mapping constraint is adequate for an NPC capability sub-rung.",
+      "answered": true
     },
     {
       "id": 37,
       "q": "What would the NEXT level of decomposition look like?",
-      "a": "",
-      "answered": false
+      "a": "Per-NPC personality bias: one sub-sub-rung for each of the 3 MetaHuman archetypes (trader/settler/scavenger).",
+      "answered": true
     },
     {
       "id": 38,
       "q": "If we stopped here, would the game feel complete?",
-      "a": "",
-      "answered": false
+      "a": "Yes — biome-locked NPC offers are a core mechanic. Missing it would be immediately noticeable.",
+      "answered": true
     },
     {
       "id": 39,
       "q": "What is the human's expected emotional response to this feature?",
-      "a": "",
-      "answered": false
+      "a": "Trust — 'this NPC knows what this place has.' The biome consistency makes the world feel governed by rules the player can learn.",
+      "answered": true
     },
     {
       "id": 40,
       "q": "Does this feature exist because the Mirror demands it, or because it's technically interesting?",
-      "a": "",
-      "answered": false
+      "a": "The Mirror demands it — biome-locked NPC offers are the material condition for meaningful giving.",
+      "answered": true
     }
   ]
 }
