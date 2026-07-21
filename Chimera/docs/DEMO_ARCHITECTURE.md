@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # Demo Architecture — Regolith Yard (Demo 1) + Titan Run (Demo 2)
 
 > **STATUS 2026-07-07**: Phase 1 EXECUTED (grade A 98.5) — the yard is built, saved

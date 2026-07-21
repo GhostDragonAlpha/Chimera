@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # Result Grading Rubric — Industry-Standard Criteria
 
 **Principle: research writes the exam; the built game takes it.** Research output = the

@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # Code Audit Findings — 2026-07-18 (tb-0214 truth-sync)
 
 **Status:** FINDINGS ONLY. No code changes applied per operator order. Documentation corrected to match reality where drift was confirmed.

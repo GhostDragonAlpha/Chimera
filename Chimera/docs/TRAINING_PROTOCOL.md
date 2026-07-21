@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # The Training Protocol — build features by evolving them, not by authoring them
 
 > **The LLM writes the CONSTRAINTS. The optimiser turns the crank. Neither is trusted.**

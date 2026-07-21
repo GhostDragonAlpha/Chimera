@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # Next Steps — Master To-Do List
 
 > Generated from 50 self-asked questions about next steps, answered against live

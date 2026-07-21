@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # PROPOSED FIX — `core/council.py::_ensure_model` (NOT APPLIED)
 
 > Status: **prepared only**. Do NOT apply while the lead is live on the council/dyad

@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # The Generation Protocol — Chimera's Circadian Development Rhythm
 
 > Adapted 2026-07-06 from the "Legacy Loop / sacrificial parent" and "Circadian

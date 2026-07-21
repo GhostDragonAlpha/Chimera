@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # SUBAGENT PROMPT — Chimera Focused Worker
 
 > The prompt the LEAD agent (`docs/LEAD_AGENT_PROMPT.md`) hands to each focused

@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # The Matter Model — a world built from living bricks
 
 > **STATUS: grown anatomy RENDERS IN UE5 and MOVES BY ITS BRAIN (rungs 0–2 + headless spine);

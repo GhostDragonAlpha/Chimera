@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
 Updated 2026-07-21T01:09:42+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only

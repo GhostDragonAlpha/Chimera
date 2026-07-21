@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # The Compositional World Model — everything specific, trained separately
 
 > **The human's thesis, 2026-07-17, verbatim intent:** *"Not a world model like they are

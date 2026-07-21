@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # I Built an AI Development System That Sleeps, Dreams, and Inherits. Yesterday It Read My Mind.
 
 *For Nate B Jones — you said cheap models can't compete. I want to show you what I watched happen on my machine yesterday, because I think you're measuring the waking mind.*

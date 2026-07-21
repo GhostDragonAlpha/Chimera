@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # The Sleepwalker System — AI playtester + rehearsal engine that advances the game
 
 > **IMPLEMENTED 2026-07-07** (grade A 98.5): M1+M2+M3 shipped — core/witness.py,

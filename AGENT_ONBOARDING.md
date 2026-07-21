@@ -186,21 +186,17 @@ Read `task_progress.md` for the handoff. Read `EMERGENCE_ROADMAP.md` for the bui
 
 | File | What it is |
 |---|---|
-| `CLAUDE.md` | Constitution, gates, all systems |
-| `SUCCESSOR_RUNBOOK.md` | Recipes, traps, proven commands |
-| `WORKFLOW.md` | Foundry design methodology |
+| **`AGENT_ONBOARDING.md`** | **THIS FILE — start here** |
 | `DECISION_METHOD.md` | 7-step fallthrough tree — never asks |
-| `EMERGENT_WORKFLOW.md` | 6-step pipeline: constraint → catalog → domain → train → decode → verify |
+| `EMERGENT_WORKFLOW.md` | The emergent pipeline |
 | `EMERGENCE_ROADMAP.md` | The 9-rung compositional ladder |
-| `AGENT_ONBOARDING.md` | THIS FILE |
+| `docs/THOUGHT_CHAIN.md` | Complete reasoning, next steps A-G |
+| `core/auto_decomposer.py` | Automatic sub-rung decomposition + training |
 | `core/forty_questions.py` | 40-question engine — every feature's spec |
-| `core/auto_decomposer.py` | Automatic sub-rung decomposition |
-| `core/decoder.py` | Places trained winners in the level |
+| `core/decoder.py` | Generic decoder — reads ANY trained genome |
 | `core/domain_generator.py` | Generates domains from constraints + catalog |
-| `CHIMERA_VISION.py` | The seed — complete game architecture |
-| `task_progress.md` | Session handoff log |
-| `docs/FARMING_SEASONS.md` | Seasons workflow — batch processes |
-| `docs/THE_STATE_MACHINE_PHYSICS.md` | Elements + principles + AI trainer framework |
-| `docs/THE_EVOLUTION_ENGINE.md` | The trainer: 30,000 evals/sec |
-| `docs/TRAINING_PROTOCOL.md` | Three-part split, honest evaluation |
-| `.mcp.json` | MCP server config (graphify, unreal-engine, playwright) |
+| `core/research_bridge.py` | Research fills 40Q knowledge gaps |
+| `CLAUDE.md` | Constitution, gates, core systems |
+| `.mcp.json` | MCP server config (graphify, unreal-engine) |
+
+All other `.md` files in `Chimera/docs/` are marked **DEPRECATED** — they describe the old approach. Do not read them.

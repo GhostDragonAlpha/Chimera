@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # UE 5.8 AAA Tech Roadmap — Deep Space Trader (Chimera)
 
 > Research date: 2026-07-11. Supersedes nothing; this maps UE 5.8 engine capabilities and the

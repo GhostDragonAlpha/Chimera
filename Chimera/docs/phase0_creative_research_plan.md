@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # PHASE 0: CREATIVE RESEARCH — DEEP SPACE TRADER
 
 Before building anything, study everything. This phase establishes the visual, emotional, and sensory foundation for the entire game. Do not skip. Do not rush. Understanding comes before creation.

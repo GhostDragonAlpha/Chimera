@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # Research Report: Loop 9 (The Universe) — Planet + Moon + Asteroid Generation Using PCG
 
 **Query:** "Loop 9 Planet Moon Asteroid generation PCG Unreal Engine"  

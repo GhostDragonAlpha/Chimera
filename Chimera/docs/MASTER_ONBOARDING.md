@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # CHIMERA — MASTER ONBOARDING PROMPT (compact)
 
 > ONE prompt for the LEAD and every SUBAGENT. The lead hands this WHOLE doc to each

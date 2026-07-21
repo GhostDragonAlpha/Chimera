@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # CHIMERA — DESIGN DIRECTIVE: The Ship Must Fly First
 
 > Owner's directive (verbatim intent): *"We've built a ship that flies good FIRST. How are we going to go into combat if the ship doesn't even fly?"*

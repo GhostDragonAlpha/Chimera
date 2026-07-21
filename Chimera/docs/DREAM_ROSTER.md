@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # The Dream Roster — a full studio's cast and crew as Chimera organs
 
 > Commissioned by the Gardener 2026-07-07: "we need the whole cast and crew of the company —

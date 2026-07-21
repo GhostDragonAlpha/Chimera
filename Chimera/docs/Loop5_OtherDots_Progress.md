@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # Loop 5 — Other Dots: Progress Report
 
 **Emotional Anchor:** Society — Connection ("Safe" emotion: 3200K, soft shadows, fabric/wood, contained space)

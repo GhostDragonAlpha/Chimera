@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # LEAD AGENT — Chimera Studio Orchestrator
 
 > The prompt Pi loads for the top-level agent. It ORCHESTRATES focused subagents

@@ -1,3 +1,7 @@
+> **DEPRECATED** — This document describes the old approach.
+> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
+> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+
 # The Terrarium — a growing organism, sealed in glass
 
 > **STATUS (2026-07-14): STAGES 0 AND 1 ARE BUILT, TESTED, AND PASSED.**

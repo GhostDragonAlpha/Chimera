@@ -4269,6 +4269,111 @@
       "line": 1162,
       "quote": "return FMath::Sqrt(X * X + Y * Y + Z * Z + W * W);",
       "at": "2026-07-21T01:51:02.446Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\UObject\\ObjectVersion.h",
+      "line": 288,
+      "quote": "// Moved SourceRadius to UPointLightComponent",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixPlatformRealTimeSignals.h",
+      "line": 11,
+      "quote": "// Used in UnixSignalGameHitchHeartBeat.cpp for a hitch signal handler",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixSignalHeartBeat.h",
+      "line": 9,
+      "quote": "class FUnixSignalGameHitchHeartBeat",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixSignalHeartBeat.h",
+      "line": 12,
+      "quote": "static CORE_API FUnixSignalGameHitchHeartBeat* Singleton;",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixSignalHeartBeat.h",
+      "line": 15,
+      "quote": "static CORE_API FUnixSignalGameHitchHeartBeat& Get();",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixSignalHeartBeat.h",
+      "line": 16,
+      "quote": "static CORE_API FUnixSignalGameHitchHeartBeat* GetNoInit();",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixSignalHeartBeat.h",
+      "line": 49,
+      "quote": "FUnixSignalGameHitchHeartBeat();",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixSignalHeartBeat.h",
+      "line": 50,
+      "quote": "~FUnixSignalGameHitchHeartBeat();",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixPlatformRunnableThread.h",
+      "line": 46,
+      "quote": "static void *MainThreadSignalHandlerStack;",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Unix\\UnixPlatformRunnableThread.h",
+      "line": 79,
+      "quote": "static bool SetupSignalHandlerStack(void* StackBuffer, const size_t StackBufferSize, void** OutStackGuardPageAddress);",
+      "at": "2026-07-21T04:28:51.069Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Experimental\\Containers\\FAAArrayQueue.h",
+      "line": 139,
+      "quote": "while (dequeue() != nullptr); // Drain the queue",
+      "at": "2026-07-21T04:29:06.970Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Core\\Public\\Async\\Fundamental\\Scheduler.h",
+      "line": 117,
+      "quote": "CORE_API void StopWorkers(bool DrainGlobalQueue = true);",
+      "at": "2026-07-21T04:29:06.970Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\DynamicMeshBuilder.cpp",
+      "line": 25,
+      "quote": "NumToDrainPerFrame = 100, /** Max. number of resources to cull in a single frame */",
+      "at": "2026-07-21T04:29:06.970Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\DynamicMeshBuilder.cpp",
+      "line": 93,
+      "quote": "NumToDrainPerFrame = FGlobalDynamicMeshPoolPolicy::NumToDrainPerFrame,",
+      "at": "2026-07-21T04:29:06.970Z"
+    },
+    {
+      "kind": "engine",
+      "locator": "C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Source\\Runtime\\Engine\\Private\\DynamicMeshBuilder.cpp",
+      "line": 154,
+      "quote": "NumToDrainPerFrame = FGlobalDynamicMeshPoolPolicy::NumToDrainPerFrame,",
+      "at": "2026-07-21T04:29:06.970Z"
     }
   ]
 }
