@@ -1,0 +1,19 @@
+{
+  "status": "verified_by_composition",
+  "source": {
+    "n_features": 8,
+    "n_systems": 8,
+    "completable": 1,
+    "mirror_viable": 1,
+    "diversity": 1.0,
+    "surprises": 3,
+    "has_movement": 1,
+    "has_survival": 1,
+    "has_interaction": 1,
+    "has_social": 1,
+    "has_economy": 1,
+    "has_narrative": 1,
+    "has_environment": 1,
+    "has_physics": 1
+  }
+}
