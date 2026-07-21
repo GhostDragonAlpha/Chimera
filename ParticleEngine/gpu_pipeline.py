@@ -518,7 +518,43 @@ class FullGPUPipeline:
         canvas = np.clip(canvas, 0, 1)
         return (canvas * 255).astype(np.uint8)
 
-    def step_and_render(self, dt, cvars, camera, params):
+    def render_splats(self, positions, covariances_3x3, colors, opacities, camera, params):
+        """Render pre-computed splats — used by Nanite cluster selection."""
+        n = len(positions)
+        if n == 0:
+            return (np.full((params.height, params.width, 3),
+                    [b*255 for b in self.bg], dtype=np.uint8))
+        self._grow(n)
+        g = (n + 255) // 256
+
+        # Fill splat arrays directly
+        self._spx[:n] = cuda.to_device(positions[:, 0].astype(np.float32))
+        self._spy[:n] = cuda.to_device(positions[:, 1].astype(np.float32))
+        self._spz[:n] = cuda.to_device(positions[:, 2].astype(np.float32))
+        self._sc00[:n] = cuda.to_device(covariances_3x3[:, 0, 0].astype(np.float32))
+        self._sc01[:n] = cuda.to_device(covariances_3x3[:, 0, 1].astype(np.float32))
+        self._sc02[:n] = cuda.to_device(covariances_3x3[:, 0, 2].astype(np.float32))
+        self._sc11[:n] = cuda.to_device(covariances_3x3[:, 1, 1].astype(np.float32))
+        self._sc12[:n] = cuda.to_device(covariances_3x3[:, 1, 2].astype(np.float32))
+        self._sc22[:n] = cuda.to_device(covariances_3x3[:, 2, 2].astype(np.float32))
+        self._scr[:n] = cuda.to_device(colors[:, 0].astype(np.float32))
+        self._scg[:n] = cuda.to_device(colors[:, 1].astype(np.float32))
+        self._scb[:n] = cuda.to_device(colors[:, 2].astype(np.float32))
+        self._sopa[:n] = cuda.to_device(opacities.astype(np.float32))
+        self._n = n
+
+        # Project
+        V = camera.view_matrix().astype(np.float32)
+        P = camera.projection_matrix(params.width, params.height).astype(np.float32)
+        fy = params.height / (2.0 * np.tan(camera.fov / 2.0))
+        _project[g, (256,)](self._spx, self._spy, self._spz,
+            self._sc00, self._sc01, self._sc02, self._sc11, self._sc12, self._sc22,
+            V[0,0],V[0,1],V[0,2],V[0,3],V[1,0],V[1,1],V[1,2],V[1,3],V[2,0],V[2,1],V[2,2],V[2,3],
+            P[0,0],P[1,1],P[2,2],P[2,3],P[3,2], fy, fy,
+            params.width, params.height, n,
+            self._sx, self._sy, self._sd, self._pc00, self._pc01, self._pc11, self._sv)
+
+        return self._finish_render_path(n, params)
         self.step_particles(dt, cvars)
         return self.render_from_gpu(camera, params)
 
