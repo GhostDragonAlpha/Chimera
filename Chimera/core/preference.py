@@ -143,10 +143,17 @@ class PreferenceModel:
         return self
 
     # -- predict / read out ---------------------------------------------------
+    def phi(self, measures):
+        """The standardised physics-feature vector for a design (numpy array) — the space
+        the weights live in. Public so an active selector can score a design under a
+        SAMPLED weight vector (Dueling Thompson Sampling), not just the MAP."""
+        self._require_fit()
+        return self._std(self._vec(measures))
+
     def utility(self, measures) -> float:
         """The taste score of a single design. Higher = more preferred."""
         self._require_fit()
-        return float(self._std(self._vec(measures)) @ self.w)
+        return float(self.phi(measures) @ self.w)
 
     def prob(self, a, b) -> float:
         """P(operator prefers design a over design b). Exactly 1 - prob(b, a)."""
