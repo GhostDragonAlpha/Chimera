@@ -150,6 +150,30 @@ morphometrics / TPS, 3DMM, SMPL/FLAME, CMR/Common3D), (4) *thickness & proportio
 
 ## Stage 0 — get the reference photo
 
+### Choosing the reference — the methodology (matters as much as the code)
+
+The template is built FROM the photo's silhouette (Stage 3), so **a clean subject
+IS a clean template**. Choose the reference by these rules, in order:
+
+- **Search `"<subject> on white background"`.** This returns the subject
+  pre-isolated on white (stock sites, cutouts). The white background is trivially
+  masked — the pipeline drops it — so there is **no sky and no clutter** to pollute
+  the mask or the patch library. This one trick fixes most reference problems.
+- **Whole subject in frame** — crown AND trunk, **not clipped**. A clipped crown
+  makes a clipped template (the gnarled oak that started this project was clipped
+  and cluttered, and it fought us for days — the anti-example).
+- **Highest resolution the source offers.** More pixels → more and finer patches →
+  more detail.
+- **A canonical form** for the morphology you want (round-crowned for a round tree;
+  name it via `MORPHOLOGY.md`).
+- **ALWAYS Read (look at) the download before using it.** Reject clipped, cluttered,
+  tiny, or wrong-subject images on sight — never run the pipeline on a bad photo.
+- **Watermarks / licensing:** a faint stock watermark is tolerable for a DEV test
+  (the patch library edge-rejects most of it). For anything shipped, use a
+  freely-licensed or your own photo — stock previews are copyrighted; keep them local.
+
+### Fetching it
+
 Screenshots need the Browser pane displayed; **downloading + Read does not**, so
 prefer this. Find an image URL in the Browser pane, then download WITH browser
 headers (Wikimedia and most hosts block bare `curl`):
@@ -199,10 +223,13 @@ python -m Construction.cross --photo <ABSOLUTE path> \
     --genome Chimera/docs/objectives/tree_appearance.trained.json \
     --out Construction/renders/oak_tree --lod 1.0
 ```
-Builds the template's 3D markers from the trained genome, colours each by sampling
-the photo at its front projection, matches each to the nearest-colour real photo
-patch, and stamps it. Front view ≈ the photo's texture; angle view = a complete,
-rotatable 3D tree. **Read both PNGs and judge by eye** (ground the verdict in what
+Builds the template's 3D markers **from the photo's own silhouette** (foliage fills
+the crown mask, the trunk fills the trunk mask, each lifted into 3D), colours each
+from **its own source pixel**, matches each to the nearest photo patch, and stamps
+it. **The template is MADE FROM the photo, not reused** — a marker only exists where
+the tree is, so sky/white can't enter and a trunk marker is bark by construction.
+The trained genome is now **optional** (it lightly scales crown depth). Front view ≈
+the photo's texture; angle view = a complete, rotatable 3D tree. **Read both PNGs and judge by eye** (ground the verdict in what
 you see, never in taste).
 
 ## The pieces (file map)

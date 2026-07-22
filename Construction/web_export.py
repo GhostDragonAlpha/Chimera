@@ -20,9 +20,9 @@ WEB = os.path.join(ROOT, "web")
 
 def export(photo_path, genome_path, lod=1.0, out=None):
     photo = np.asarray(Image.open(photo_path).convert("RGB")).astype(np.float32)/255.0
-    genome = json.load(open(genome_path))["genome"]
-    P, parts = cross.build_markers(genome, lod=lod)
-    colors, valid = cross.target_colors(P, parts, photo)
+    genome = json.load(open(genome_path))["genome"] if genome_path and os.path.exists(genome_path) else None
+    P, parts, src = cross.build_markers(photo, genome, lod=lod)
+    colors, valid = cross.marker_colors(photo, parts, src)
     markers = [{
         "p": [round(float(P[i, 0]), 1), round(float(P[i, 1]), 1), round(float(P[i, 2]), 1)],
         "s": round(float(P[i, 3]), 1),
