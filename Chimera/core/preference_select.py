@@ -160,3 +160,69 @@ def attune_and_surface(trainer_result, source="preference-loop", post=None, **kw
     out["ask_signal"] = (surface_ask(out.get("ask"), trainer_result.get("top_k") or [],
                                      source=source, post=post) if out.get("ask") else None)
     return out
+
+
+# ---------------------------------------------------------------------------
+# RUN ON ITS OWN — one autonomous turn of the whole loop, schedulable.
+# ---------------------------------------------------------------------------
+def run_cycle(domain, objective, pop=200, gens=40, seed=1, top_k=12,
+              will=None, chat=None, graph=None, min_pairs=5, decisive_margin=0.65,
+              source="preference-loop", post=None, rng=None, log=print):
+    """One turn: TRAIN `domain` against the physics `objective`, ATTUNE the feasible
+    shortlist to the operator's Will, and SURFACE any comparison it can't settle to CAPCOM.
+    Returns attune_and_surface's dict plus trained_score / n_feasible.
+
+    `objective` may be a trainer.Objective, a Schema-A spec dict, or a path to a Schema-A
+    objective JSON. Schedule this (cron / circadian tick) and the loop runs on its own — it
+    only ever ASKS via CAPCOM, so the operator stays the taste terminal.
+
+    NOTE: training real features needs a Schema-A objective the trainer can read; the current
+    docs/objectives/*.json are Schema-B (the drift flagged in the preference-loop plan), so
+    autonomous runs over real features wait on that fix. The mechanism itself is complete.
+    """
+    from core import trainer as _trainer
+    if isinstance(objective, _trainer.Objective):
+        obj = objective
+    elif isinstance(objective, dict):
+        obj = _trainer.Objective(objective)
+    else:
+        obj = _trainer.Objective.load(objective)
+    result = _trainer.train(domain, obj, pop=pop, gens=gens, seed=seed,
+                            workers=1, log=log, top_k=top_k)
+    out = attune_and_surface(result, source=source, post=post, will=will, chat=chat,
+                             graph=graph, min_pairs=min_pairs,
+                             decisive_margin=decisive_margin, rng=rng)
+    out["trained_score"] = result.get("score")
+    out["n_feasible"] = len(result.get("top_k") or [])
+    return out
+
+
+def _main(argv=None):
+    import argparse
+    p = argparse.ArgumentParser(prog="python -m core.preference_select",
+                                description="run the preference loop on its own")
+    sub = p.add_subparsers(dest="cmd", required=True)
+    r = sub.add_parser("run", help="TRAIN a feature, ATTUNE to the Will, SURFACE asks to CAPCOM")
+    r.add_argument("--domain", required=True, help="a trainable module, e.g. core.trainables.economy")
+    r.add_argument("--objective", required=True, help="a Schema-A objective JSON path")
+    r.add_argument("--pop", type=int, default=200)
+    r.add_argument("--gens", type=int, default=40)
+    r.add_argument("--seed", type=int, default=1)
+    a = p.parse_args(argv)
+    if a.cmd == "run":
+        out = run_cycle(a.domain, a.objective, pop=a.pop, gens=a.gens, seed=a.seed)
+        print(f"\ntrained score {out.get('trained_score')}, {out['n_feasible']} physics-feasible")
+        print(f"taste source={out['source']}  (fit from {out['n_preferences']} recorded comparisons)")
+        if out.get("chosen"):
+            print(f"chosen design: {out['chosen'].get('measures')}")
+        if out.get("ask"):
+            print(f"asked the operator via CAPCOM (signal {out.get('ask_signal')}): pair {out['ask']}")
+        else:
+            print("taste decided; nothing needed asking")
+        return 0
+    return 1
+
+
+if __name__ == "__main__":
+    import sys as _sys
+    _sys.exit(_main())
