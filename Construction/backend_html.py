@@ -36,6 +36,18 @@ def _bounds(trees):
     return xmin - pad_x, xmax + pad_x, zmin - 40, zmax + pad_z
 
 
+def _round(o, nd=2):
+    """Trim float precision so the exported HTML stays small (2dp is well under
+    a pixel at these scales)."""
+    if isinstance(o, float):
+        return round(o, nd)
+    if isinstance(o, list):
+        return [_round(x, nd) for x in o]
+    if isinstance(o, dict):
+        return {k: _round(v, nd) for k, v in o.items()}
+    return o
+
+
 def payload(scene_trees, anchors_lo, anchors_hi, max_depth, width=680, height=560):
     """Build the JSON-serializable payload the HTML consumes.
 
@@ -44,8 +56,9 @@ def payload(scene_trees, anchors_lo, anchors_hi, max_depth, width=680, height=56
     return {
         "anchors": {"lo": anchors_lo, "hi": anchors_hi},
         "max_depth": max_depth,
-        "trees": [{"origin": list(o), "skeleton": sk} for sk, o in scene_trees],
-        "view": {"xmin": xmin, "xmax": xmax, "zmin": zmin, "zmax": zmax,
+        "trees": [{"origin": _round(list(o)), "skeleton": _round(sk)} for sk, o in scene_trees],
+        "view": {"xmin": round(xmin, 1), "xmax": round(xmax, 1),
+                 "zmin": round(zmin, 1), "zmax": round(zmax, 1),
                  "w": width, "h": height},
     }
 
@@ -111,7 +124,7 @@ _FRAGMENT = r"""
   function pose(n, w, time, pbend, pend){
     const df = n.depth/Math.max(1,MAXD);
     const gust = 0.5 + 0.5*Math.sin(2*Math.PI*(w.gust_hz||0.6)*time + n.phase);
-    const local = (w.lean||0)*0.12*(0.4+df) + (w.sway||0)*gust*0.16*(0.3+df);
+    const local = (w.lean||0)*0.16*(0.4+df) + (w.sway||0)*gust*0.20*(0.3+df);
     const total = pbend + local;
     const start = pend || n.start.slice();
     const d = rotY(n.dir, total);

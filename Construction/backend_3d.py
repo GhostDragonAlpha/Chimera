@@ -84,10 +84,16 @@ def render(posed_trees, wind: dict, width: int = 680, height: int = 620,
     cov[:, 1, 1] = s2
     cov[:, 2, 2] = s2
 
+    # This renderer composites ADDITIVELY over the background (emissive splats:
+    # final = bg + Σ color·α·trans — the bg is never attenuated; measured).  So
+    # saturated colour needs a DARK sky: on a light sky every splat only pushes
+    # toward white and bark can never read dark.  A dusk palette lets bark read
+    # brown and leaves green; the sky still greys with wind.  (A daylight 'over'
+    # renderer is a separate backend concern — DESIGN §10.)
     sky = float(wind.get("sky", 0.0))
-    bg = (0.53 * (1 - sky) + 0.55 * sky,
-          0.71 * (1 - sky) + 0.57 * sky,
-          0.84 * (1 - sky) + 0.60 * sky)
+    bg = (0.16 * (1 - sky) + 0.22 * sky,
+          0.22 * (1 - sky) + 0.22 * sky,
+          0.32 * (1 - sky) + 0.24 * sky)
     pipe = FullGPUPipeline(bg=bg, base_scale=1.0)
 
     # auto-frame the whole grove from the splat bounds

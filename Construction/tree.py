@@ -83,8 +83,8 @@ def pose(node: dict, wind: dict, time: float, max_depth: int,
     the backends, not here."""
     df = node["depth"] / max(1, max_depth)
     gust = 0.5 + 0.5 * math.sin(2.0 * math.pi * wind.get("gust_hz", 0.6) * time + node["phase"])
-    local = (wind.get("lean", 0.0) * 0.12 * (0.4 + df)
-             + wind.get("sway", 0.0) * gust * 0.16 * (0.3 + df))
+    local = (wind.get("lean", 0.0) * 0.16 * (0.4 + df)
+             + wind.get("sway", 0.0) * gust * 0.20 * (0.3 + df))
     total = parent_bend + local
 
     start = list(node["start"]) if parent_end is None else parent_end
