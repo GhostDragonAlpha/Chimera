@@ -91,6 +91,53 @@ limb layout, the more believable the 3D shape — and that comes from **iteratin
 training objective** so the template's proportions match the photo. The AI shapes
 the template; training sharpens it; LOD scales it.
 
+## Morphology informs the template — name the form BEFORE you place a marker
+
+The template is not a fixed shape you reuse; it is the subject's **morphology**,
+authored fresh each time. This is a CONCEPT the agent is **told, never programmed**:
+you cannot hardcode a template for every species and object, but an agent that
+knows morphological principles can look at the photo, recognize the category, and
+author the right marker distribution from the rules. **Before you place a marker,
+name the subject's morphology and distribute the template by its growth / structural
+rules.**
+
+This is also what lets the template **complete the membrane honestly**: the
+crown-top and the back the photo never shows are not guessed — they *follow the
+morphology* (symmetry + growth rules). Morphology is the prior that completes what a
+single photo cannot see. (This is the AI-authored analog of ML "3D morphable models
+/ learned template + deformation field": the AI authors the category template, then
+training deforms its parameters.)
+
+Told, not programmed — but paired with **exemplars**, so a weaker agent *matches a
+pattern* instead of guessing. And the concept produces code: from the morphology you
+author a per-subject template generator (as `tree_appearance` is authored for the
+oak). The concept is the reusable part; the generator is its instantiation.
+
+### Exemplar catalog — match the subject to a morphological pattern
+
+Trees first (real, named science — ground the choice in it, never in taste):
+
+| If the photo shows… | morphology (the rule) | distribute markers as… | complete the unseen by… |
+|---|---|---|---|
+| broad spreading crown, stout low fork (oak, maple) | **decurrent** — apical dominance lost, repeated forking; Leonardo's/Murray's rule (branch cross-section conserved through a fork); beam-mechanics taper | a wide, slightly flat dome of clumps over a short stout trunk cylinder | radial symmetry of the dome; forks continue around the back |
+| tall narrow column (poplar, cypress) | **excurrent** — strong apical dominance, one dominant leader | a slim vertical spindle of clumps hugging a tall straight trunk | axial symmetry about the leader |
+| cone, tiered whorls (spruce, fir) | excurrent + whorled branching in phyllotactic tiers | stacked rings of clumps narrowing to a point | rotational symmetry of each whorl |
+| bare stalk topped by a rosette (palm, tree-fern) | monopodial column + apical crown of fronds | a bare trunk cylinder + a radial fan of frond-markers at the top ONLY | radial fan completes around the crown |
+| weeping form (willow) | decurrent + strong droop (raise `droop`) | a dome whose outer markers hang below the branch line | symmetry + gravity |
+
+Beyond trees (same principle, different rule set — hooks for later):
+- **Animals** — bilateral symmetry + a Hox/segmentation cascade (a body is a staged
+  program with positional identity; see `Chimera` `docs/TERRARIUM_DESIGN.md`, "a
+  creature is a cascade"). Distribute markers by body plan; complete the far side by
+  mirror.
+- **Artifacts / architecture** — structural symmetry and load paths. Distribute by
+  the object's construction logic; complete by its symmetry group.
+
+The tree table is the worked catalog; the two hooks mark where the concept extends.
+When a subject fits none of these, that is the signal to **research** its morphology
+(Hallé's architectural models for plants; Bauplan / body-plan references for
+animals) and **add a row** — grow the catalog, never the engine.
+
 ## Stage 0 — get the reference photo
 
 Screenshots need the Browser pane displayed; **downloading + Read does not**, so
