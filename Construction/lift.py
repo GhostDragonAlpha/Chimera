@@ -93,6 +93,54 @@ def lift(flat: dict, amount: float, start=None, parent_azi: float = 0.0) -> dict
     }
 
 
+def _renorm(v):
+    m = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) or 1e-9
+    return [v[0] / m, v[1] / m, v[2] / m]
+
+
+def _pitch_down(d, ang):
+    """Rotate direction d toward -Z by `ang` (down AND out), about the horizontal
+    axis perpendicular to d's compass azimuth.  Positive ang -> the branch arches
+    over like an oak limb."""
+    dx, dy, dz = d
+    phi = math.atan2(dy, dx)
+    ax = (-math.sin(phi), math.cos(phi), 0.0)          # horizontal rotation axis
+    c, s = math.cos(ang), math.sin(ang)
+    cx = ax[1] * dz - ax[2] * dy
+    cy = ax[2] * dx - ax[0] * dz
+    cz = ax[0] * dy - ax[1] * dx
+    return _renorm([dx * c + cx * s, dy * c + cy * s, dz * c + cz * s])
+
+
+def shape_crown(node: dict, droop: float = 0.0, spread: float = 0.0,
+                max_depth: int = 6, start=None) -> dict:
+    """CROWN VOCABULARY — the knobs physics_tree lacks (DESIGN: widen the noun).
+
+    Turns the generator's flat umbrella canopy into a real dome.  Applied to a
+    lifted 3D noun, per branch, growing with depth (df^2 so the trunk and inner
+    limbs stay put and only the outer tips move):
+
+      droop   arches limbs down-and-out (0 = umbrella, ~1.2 = drooping oak dome)
+      spread  pushes the horizontal reach outward (canopy width)
+
+    Deterministic: same (noun, droop, spread) -> same crown, forever."""
+    df = node["depth"] / max(1, max_depth)
+    d = list(node["dir"])
+    if spread:
+        sc = 1.0 + spread * df
+        d = _renorm([d[0] * sc, d[1] * sc, d[2]])
+    if droop:
+        d = _pitch_down(d, droop * df * df)
+    s = list(node["start"]) if start is None else start
+    L = node["length"]
+    e = [s[0] + d[0] * L, s[1] + d[1] * L, s[2] + d[2] * L]
+    return {
+        "start": s, "end": e, "dir": d, "length": L, "phase": node.get("phase", 0.0),
+        "radius": node["radius"], "depth": node["depth"], "is_leaf": node["is_leaf"],
+        "children": [shape_crown(c, droop, spread, max_depth, e) for c in node["children"]],
+    }
+
+
 def y_spread(node: dict) -> float:
     """Max |Y| anywhere in a lifted skeleton — 0 means still flat, >0 means depth
     was filled in.  A cheap witness that the construction actually did something."""
