@@ -216,6 +216,23 @@ you see, never in taste).
 | `Construction/cross.py` | 3 | THE SYNTHESIS: template markers × photo patches → textured 3D tree |
 | `Construction/gsplat_fit.py` | (refine) | differentiable per-splat fit to the pixels — finer pattern recognition, feeds future cross |
 | `Construction/DESIGN.md` | — | the architecture and why |
+| `Construction/MORPHOLOGY.md` | author | the cited concept catalog (author the template from it) |
+| `web/index.html` + `Construction/web_export.py` | dev | **run it in the BROWSER over HTTP** — the DOM dev backend |
+
+### Run it in the browser (the DOM dev backend, HTTP)
+
+The canvas renderer runs natively in a browser — the "develop in the DOM" surface.
+```bash
+python -m Construction.web_export        # markers + photo colours -> web/tree.json
+# then start the server + open the pane (do NOT use Bash to run servers):
+#   preview_start  name="construction-web"   ->  http://localhost:8017  (canvas orbit)
+```
+Iterate like web dev: edit `web/index.html` (or re-run `web_export` after retraining)
+and **reload** the tab. Verify without a screenshot when the pane isn't displayed:
+`read_page` (the HUD shows "&lt;N&gt; markers") and `read_console_messages` (errors).
+This renders the photo-*coloured* markers; the photo-*textured* patch pass and the
+GPU splat renderer are Python (stream their PNGs to a page, or port the patch
+composite to canvas, as the next step).
 
 ## Refinement — the dials, in order of value
 

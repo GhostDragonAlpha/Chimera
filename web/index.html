@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Construction — 3D tree (dev)</title>
+<style>
+  html,body{margin:0;height:100%;background:#0e1526;font-family:system-ui,sans-serif}
+  #wrap{display:flex;flex-direction:column;align-items:center;padding:10px}
+  canvas{border-radius:10px;cursor:grab;touch-action:none;max-width:100%;height:auto}
+  canvas:active{cursor:grabbing}
+  #hud{color:#8b949e;font:12px/1.5 ui-monospace,monospace;margin-top:8px}
+</style></head>
+<body><div id="wrap">
+  <canvas id="c"></canvas>
+  <div id="hud">loading tree.json …</div>
+</div>
+<script>
+// The DOM development backend: renders the SAME scene model (Construction markers,
+// colour-sampled from the reference photo) in the browser. Exported by
+// Construction/web_export.py -> web/tree.json. Reload to pick up a re-export.
+const cv=document.getElementById('c'), ctx=cv.getContext('2d'), hud=document.getElementById('hud');
+let M=[], V=null, yaw=-Math.PI/2, spin=true, drag=false, lastx=0;
+fetch('tree.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  M=d.markers; V=d.view; cv.width=V.W; cv.height=V.H;
+  hud.textContent = M.length+' markers · drag to orbit · reload to refresh';
+  requestAnimationFrame(loop);
+}).catch(e=>{hud.textContent='failed to load tree.json — run Construction/web_export.py ('+e+')';});
+function draw(){
+  const W=V.W,H=V.H,SC=V.SC,cx=V.cx,gy=V.groundY,c=Math.cos(yaw),s=Math.sin(yaw);
+  const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#132038'); g.addColorStop(1,'#25405f');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(66,84,58,.55)'; ctx.beginPath(); ctx.ellipse(cx,gy+16,230,26,0,0,6.3); ctx.fill();
+  const A=M.map(m=>{const x=m.p[0],y=m.p[1],z=m.p[2]; const xr=x*c-y*s, dep=x*s+y*c;
+    return {sx:cx+xr*SC, sy:gy-z*SC, dep, r:Math.max(2,m.s*1.35), col:m.c};});
+  A.sort((p,q)=>q.dep-p.dep);           // painter's: far first
+  ctx.globalAlpha=0.9;
+  for(const p of A){ ctx.fillStyle='rgb('+p.col[0]+','+p.col[1]+','+p.col[2]+')';
+    ctx.beginPath(); ctx.arc(p.sx,p.sy,p.r,0,6.283); ctx.fill(); }
+  ctx.globalAlpha=1;
+}
+function loop(){ if(spin) yaw+=0.004; draw(); requestAnimationFrame(loop); }
+cv.addEventListener('pointerdown',e=>{drag=true;spin=false;lastx=e.clientX;cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{ if(drag){ yaw+=(e.clientX-lastx)*0.01; lastx=e.clientX; }});
+cv.addEventListener('pointerup',()=>drag=false);
+</script></body></html>
