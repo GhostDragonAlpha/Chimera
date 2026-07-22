@@ -1,0 +1,11 @@
+{
+  "_GOVERNANCE": "HUMAN-ONLY. Copy this to taste.json and edit it to your taste. The AI may PROPOSE edits (staged to CAPCOM for your approval) but MUST NEVER write taste.json. This is your Will; the machine only attunes to it.",
+  "_how_to_read": "weight = how much this physics axis pulls the preference (standardised units; sign is direction). conviction = how firmly you hold it — higher resists comparisons and chat (~0.25 precision per comparison, so conviction 5 resists roughly 20 comparisons before it bends). scale = the axis's characteristic spread, used to put every axis on one comparable scale.",
+  "_axes_are": "the physics facts a domain's measure() reports, over which taste is expressed. These four are the attunement minigame's; a different feature declares its own.",
+  "axes": {
+    "skill_gap":      {"weight": 2.0,  "conviction": 1.0, "scale": 20.0},
+    "punishes_naive": {"weight": 1.0,  "conviction": 0.6, "scale": 1.5},
+    "learnability":   {"weight": 0.5,  "conviction": 0.4, "scale": 0.3},
+    "headroom":       {"weight": -0.8, "conviction": 0.8, "scale": 0.25}
+  }
+}

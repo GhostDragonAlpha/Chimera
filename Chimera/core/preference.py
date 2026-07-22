@@ -57,19 +57,32 @@ class PreferenceModel:
     was preferred.
     """
 
-    def __init__(self, features=None, alpha=1.0, newton_iters=50, tol=1e-9):
-        # features: explicit feature names to use; None -> inferred (keys common to every
-        #   design in the pairs). alpha: Gaussian prior precision (regularisation strength;
-        #   higher = more shrinkage toward "taste is flat"). The prior is what tames few
-        #   labels and separable data.
+    def __init__(self, features=None, alpha=1.0, newton_iters=50, tol=1e-9,
+                 prior_mean=None, prior_precision=None, center=None, scale=None):
+        # features: explicit feature names; None -> inferred from the pairs. alpha: default
+        #   Gaussian prior precision (regularisation; higher = more shrinkage toward flat).
+        #
+        # THE WILL enters as the PRIOR (all optional; default reproduces Stages 2-4 exactly):
+        #   prior_mean      dict {feature: w} — the human's authored taste weights, in the
+        #                   STANDARDISED space. Default: 0 (flat, learn from scratch).
+        #   prior_precision dict {feature: precision} or scalar — how FIRMLY each axis is
+        #                   held (conviction). High -> comparisons/chat can't move it. Default: alpha.
+        #   center, scale   dict {feature: value} — FIXED standardisation from the Will, so the
+        #                   feature space is defined by the human's reference, not the data;
+        #                   this is what lets a decision be made from the Will alone, zero
+        #                   comparisons. Default: derive from the pooled comparison designs.
         self.features = list(features) if features else None
         self.alpha = float(alpha)
         self.newton_iters = int(newton_iters)
         self.tol = float(tol)
+        self.prior_mean = dict(prior_mean) if prior_mean else None
+        self.prior_precision = prior_precision
+        self.center = dict(center) if center else None
+        self.scale = dict(scale) if scale else None
         self.w = None          # MAP weights in STANDARDISED space, shape (K,)
         self.cov = None        # Laplace posterior covariance, shape (K, K)
-        self.mu = None         # per-feature mean  (standardisation)
-        self.sd = None         # per-feature std   (standardisation)
+        self.mu = None         # per-feature centre (standardisation)
+        self.sd = None         # per-feature scale  (standardisation)
         self.n_pairs = 0
 
     # -- feature plumbing -----------------------------------------------------
@@ -106,25 +119,43 @@ class PreferenceModel:
         W = np.array([self._vec(w) for w, l in pairs]) if pairs else np.zeros((0, K))
         L = np.array([self._vec(l) for w, l in pairs]) if pairs else np.zeros((0, K))
 
-        # Standardise over the POOLED designs (winners and losers together) so a weight's
-        # magnitude is comparable across axes — "taste weights skill_gap more than headroom"
-        # only means something if both are on the same scale.
-        pool = np.vstack([W, L]) if pairs else np.zeros((1, K))
-        self.mu = pool.mean(axis=0)
-        self.sd = pool.std(axis=0)
-        self.sd[self.sd < 1e-9] = 1.0     # a constant axis carries no taste signal; centring zeroes it
+        # Standardisation: FIXED from the Will if given (so the space is the human's
+        # reference and a decision needs no data), else pooled from the comparison designs
+        # (Stages 2-4). A weight's magnitude is comparable across axes only on one scale.
+        if self.center is not None and self.scale is not None:
+            self.mu = np.array([float(self.center.get(f, 0.0)) for f in self.features])
+            self.sd = np.array([float(self.scale.get(f, 1.0)) for f in self.features])
+        elif pairs:
+            pool = np.vstack([W, L])
+            self.mu = pool.mean(axis=0)
+            self.sd = pool.std(axis=0)
+        else:
+            self.mu = np.zeros(K)               # no data and no Will scale: identity (prior-only)
+            self.sd = np.ones(K)
+        self.sd = np.where(self.sd < 1e-9, 1.0, self.sd)   # a constant axis carries no signal
 
         D = (self._std(W) - self._std(L)) if pairs else np.zeros((0, K))
 
-        # Newton's method on the (strongly, because alpha>0) convex negative log-posterior:
-        #   L(w) = -sum log sigmoid(w . d_i) + (alpha/2)||w||^2
-        w = np.zeros(K)
-        aI = self.alpha * np.eye(K)
+        # THE PRIOR = the WILL. w0 is the authored mean, Lam0 the per-axis conviction
+        # (precision). Default w0=0, Lam0=alpha*I reproduces the flat prior of Stages 2-4.
+        w0 = np.array([float((self.prior_mean or {}).get(f, 0.0)) for f in self.features])
+        if isinstance(self.prior_precision, dict):
+            lam = np.array([float(self.prior_precision.get(f, self.alpha)) for f in self.features])
+        elif self.prior_precision is not None:
+            lam = np.full(K, float(self.prior_precision))
+        else:
+            lam = np.full(K, self.alpha)
+        Lam0 = np.diag(lam)
+
+        # Newton on the convex negative log-posterior — the LIKELIHOOD (comparisons) refining
+        # the PRIOR (Will):   -sum log sigmoid(w.d_i) + 1/2 (w-w0)' Lam0 (w-w0)
+        # Start at the prior mean, so with zero comparisons the answer IS the Will.
+        w = w0.copy()
         for _ in range(self.newton_iters):
             p = _sigmoid(D @ w)                       # P(winner preferred) under current w
-            grad = -(D.T @ (1.0 - p)) + self.alpha * w
+            grad = -(D.T @ (1.0 - p)) + Lam0 @ (w - w0)
             s = p * (1.0 - p)
-            H = (D.T * s) @ D + aI                     # PD for alpha>0
+            H = (D.T * s) @ D + Lam0                   # PD (Lam0 diagonal, positive)
             try:
                 step = np.linalg.solve(H, grad)
             except np.linalg.LinAlgError:
@@ -134,11 +165,11 @@ class PreferenceModel:
                 break
         self.w = w
 
-        # Laplace: posterior ~ N(w_MAP, H^-1) at the MAP. The covariance is the uncertainty
-        # Stage 3 reads to decide which comparison is worth the operator's attention.
+        # Laplace: posterior ~ N(w_MAP, H^-1). The covariance is the uncertainty Stage 3
+        # spends the operator on — and now it also carries the Will's conviction through Lam0.
         p = _sigmoid(D @ w)
         s = p * (1.0 - p)
-        H = (D.T * s) @ D + aI
+        H = (D.T * s) @ D + Lam0
         self.cov = np.linalg.inv(H)
         return self
 
