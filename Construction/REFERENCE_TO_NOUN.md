@@ -138,6 +138,16 @@ When a subject fits none of these, that is the signal to **research** its morpho
 (Hallé's architectural models for plants; Bauplan / body-plan references for
 animals) and **add a row** — grow the catalog, never the engine.
 
+**The full concept catalog is [`Construction/MORPHOLOGY.md`](MORPHOLOGY.md)** — 19
+source-cited concepts organized by the **four jobs** a morphology concept does for a
+template: (1) *topology prior* (where parts go + complete the unseen half — symmetry
+class, Hallé models, Bauplan, reiteration, L-systems), (2) *surface-pattern /
+material* (positional information, Turing reaction-diffusion, differential adhesion),
+(3) *deform-a-mean-to-the-photo* (D'Arcy Thompson transformations, geometric
+morphometrics / TPS, 3DMM, SMPL/FLAME, CMR/Common3D), (4) *thickness & proportion*
+(pipe model, Corner's rules, medial axis, allometric scaling). Reach into it by
+**naming the job you need**, then pick the concept.
+
 ## Stage 0 — get the reference photo
 
 Screenshots need the Browser pane displayed; **downloading + Read does not**, so
