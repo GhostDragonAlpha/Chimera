@@ -41,17 +41,19 @@ def build_markers(photo, genome=None, lod=1.0, seed=7):
     tys, txs = np.where(green | bark)
     x0, x1, y0, y1 = txs.min(), txs.max(), tys.min(), tys.max()
     tcx = (x0 + x1) / 2.0; boty = float(y1); ws = WORLD_H / max(1, (y1 - y0))
-    gy, gx = np.where(green)
-    ccx, ccy = gx.mean(), gy.mean(); crx = (gx.max() - gx.min()) / 2.0; cry = (gy.max() - gy.min()) / 2.0
-    depth_k = crx * ws * (0.8 + 0.5 * (genome.get("flat", 0.4) if genome else 0.4))
     P, part, src = [], [], []
-    # foliage: fill the crown mask, lifted into a 3D volume (round from any angle)
-    nf = int(min(len(gx), 6500 * lod))
-    for i in rng.integers(0, len(gx), nf):
-        ix, iy = int(gx[i]), int(gy[i])
-        rr = min(1.0, math.hypot((ix - ccx) / (crx + 1), (iy - ccy) / (cry + 1)))
-        Y = rng.uniform(-1, 1) * depth_k * math.sqrt(max(0.0, 1 - rr * rr))
-        P.append(((ix - tcx) * ws, Y, (boty - iy) * ws, rng.uniform(6, 10))); part.append(0); src.append((ix, iy))
+    def to_img(X, Z):
+        return int(np.clip(tcx + X / ws, 0, Wp - 1)), int(np.clip(boty - Z / ws, 0, Hp - 1))
+    # crown MEMBRANE: an ellipsoid sized to the green silhouette (depth Ry = width Rx ->
+    # round from every horizontal angle); markers fill its surface SHELL, textured from
+    # their own front projection.
+    gy, gx = np.where(green); ccx, ccy = gx.mean(), gy.mean()
+    Rx = (gx.max() - gx.min()) / 2.0 * ws; Rz = (gy.max() - gy.min()) / 2.0 * ws; Ry = Rx
+    Cx = (ccx - tcx) * ws; Cz = (boty - ccy) * ws
+    for _ in range(int(11000 * lod)):
+        v = rng.normal(0, 1, 3); v /= np.linalg.norm(v) + 1e-9; r = rng.uniform(0.55, 1.0)
+        X = Cx + v[0] * Rx * r; Y = v[1] * Ry * r; Z = Cz + v[2] * Rz * r
+        P.append((X, Y, Z, rng.uniform(6, 10))); part.append(0); src.append(to_img(X, Z))
     # trunk: fill the trunk mask as a cylinder (front silhouette = the photo trunk)
     by, bx = np.where(bark)
     if len(bx):
@@ -59,12 +61,12 @@ def build_markers(photo, genome=None, lod=1.0, seed=7):
         keep = (np.abs(bx - tcx) < (x1 - x0) * 0.28)
         by, bx = by[keep], bx[keep]
     if len(bx):
-        tcx2 = (bx.min() + bx.max()) / 2.0; tw = max(6.0, (bx.max() - bx.min()) / 2.0)
-        nb = int(min(len(bx), 2600 * lod))
-        for i in rng.integers(0, len(bx), nb):
-            ix, iy = int(bx[i]), int(by[i])
-            dx = ix - tcx2; Y = float(rng.choice([-1, 1])) * math.sqrt(max(0.0, tw * tw - dx * dx)) * ws
-            P.append(((ix - tcx) * ws, Y, (boty - iy) * ws, rng.uniform(4, 7.5))); part.append(1); src.append((ix, iy))
+        tcx2 = (bx.min() + bx.max()) / 2.0; Rt = max(6.0, (bx.max() - bx.min()) / 2.0) * ws
+        Tx = (tcx2 - tcx) * ws; z0 = (boty - by.max()) * ws; z1 = (boty - by.min()) * ws
+        for _ in range(int(4800 * lod)):                      # trunk MEMBRANE: a filled cylinder
+            a = rng.uniform(0, 2 * math.pi); Z = rng.uniform(z0, z1); rr = math.sqrt(rng.uniform(0.25, 1.0))
+            X = Tx + math.cos(a) * Rt * rr; Y = math.sin(a) * Rt * rr
+            P.append((X, Y, Z, rng.uniform(4, 7.5))); part.append(1); src.append(to_img(X, Z))
     return np.array(P, np.float32), np.array(part), np.array(src)
 
 
