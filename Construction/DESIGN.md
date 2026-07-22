@@ -9,6 +9,17 @@
 
 ---
 
+## 0.5. REALIZED (2026-07-22) — photo → textured 3D tree
+
+The design below is realized end-to-end: a real photograph becomes a complete,
+orbitable 3D tree wearing the photo's own bark and foliage. The mechanism is the
+**CROSS** — template **markers** (complete 3D distribution) × real photo **patches**
+(recognized sub-patterns), stamped by nearest-colour match. **The recipe (run it,
+don't improvise) is `Construction/REFERENCE_TO_NOUN.md`; one command is
+`python Construction/photo_to_tree.py --photo <abs> --name oak`.** Pieces:
+`tree_appearance.py` (trained template), `cross.py` (the synthesis),
+`gsplat_fit.py` (per-splat pixel fit, for finer recognition).
+
 ## 0. The one sentence
 
 The AI authors in a **legible low dimension**; a **deterministic construction

@@ -189,6 +189,7 @@ DSL Spec → Parse → Asset Gen → Code Gen → Build → Playtest → Scene V
 | `docs/DREAM_REPORT.md` | Morning briefing (regenerated nightly) |
 | `docs/MCP_PATHWAYS.md` | Proven MCP pathways + TRAPS |
 | `Plugins/McpAutomationBridge/` | UE-side MCP plugin |
+| `../Construction/REFERENCE_TO_NOUN.md` | **Photo → textured 3D tree** — the RECIPE (run `python Construction/photo_to_tree.py --photo <abs> --name oak`; do NOT improvise the design). Real photo → complete orbitable 3D tree wearing the photo's own bark/foliage, via template **markers** × real photo **patches** (the CROSS). Pieces: `Construction/cross.py`, `Chimera/core/trainables/tree_appearance.py`, `Construction/gsplat_fit.py`. Discovered 2026-07-22. |
 
 ## Verification & Measurement (current regime — see docs/RESULT_GRADING_RUBRIC.md)
 

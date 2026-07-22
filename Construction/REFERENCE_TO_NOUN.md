@@ -1,29 +1,43 @@
-# Reference → Noun → Verb — the workflow
+# Photo → Textured 3D Tree — THE WORKFLOW (a recipe, follow it exactly)
 
-> How to turn **any reference photo** into a controllable 3D **noun**, by
-> CONSTRUCTION (not extraction), and give it a **verb**. A recipe, not a theory.
-> Companion to DESIGN.md. First recorded 2026-07-22 (the Baginton-oak run).
+> Turn a real photograph into a complete, orbitable 3D tree that wears the photo's
+> own bark and foliage. Discovered end-to-end 2026-07-22 (the Baginton-oak run).
+> **This is a RECIPE. The judgment is already in the code. Run the steps in order,
+> verify by eye, do not improvise the design.** (Successor-runbook rule.)
 
-## The principle (why this works)
+## TL;DR — one command
 
-The AI does **not** decode the photo into geometry (that is extraction — inverting
-pixels, brittle, and not what we want). The photo is a **reference**. The AI
-**authors a clean, decodable 2D seed that resembles it**, and a deterministic
-constructor lifts that seed into valid 3D. Construction, guided by a reference.
+You fetch the reference photo yourself (below), then:
 
-The two hard jobs are split so each goes to whoever is good at it:
-- **Validity** (is it a well-formed 3D noun?) — *guaranteed by the constructor*.
-  You cannot author an impossible tree; the decode only makes valid ones.
-- **Resemblance** (does it look like the photo?) — *the AI's job*: look at a
-  reference, emit a structured spec. The AI never has to be right about the
-  photo's true geometry — only author a seed that decodes to something that reads
-  like it. The gap is measurable by eye against the reference.
+```bash
+python Construction/photo_to_tree.py --photo <ABSOLUTE path to the photo> --name oak
+# -> Construction/renders/oak_tree_0.png (front)  +  _1.png (angle).  Read them.
+```
 
-## The loop (do this)
+That is the whole thing. It runs the three stages below in the one correct order.
+`--lod 1.5` raises template detail (more markers → finer). If you only want to
+re-render (template already trained), skip to stage 3.
 
-### 1. Get a reference photo
-Find an image URL in the browser, then download WITH browser headers (Wikimedia
-and most hosts block bare `curl`):
+## The idea in one paragraph (so you don't fight the recipe)
+
+A photo is a **clipped, single-view billboard** — fitting splats to its pixels
+just re-draws the photo, flat, with no back and a cut-off crown. A hand-built
+parametric tree is a **complete 3D shape but generically coloured**. Neither is
+the answer. The answer is to **CROSS** them: the template distributes **markers**
+in complete 3D (crown dome + trunk cylinder, no clipping, holds up when rotated);
+each marker, coloured by the photo, says *"put the photo pattern of this colour
+HERE"*; and a **pattern library of real textured patches cut from the photo** is
+matched to each marker and stamped in its vicinity. Markers = WHERE (distribution).
+Photo patches = WHAT (the recognized sub-patterns). Cross them and you get a
+complete 3D tree wearing the photo's real texture. Refinement dial = template
+**level of detail** (marker density).
+
+## Stage 0 — get the reference photo
+
+Screenshots need the Browser pane displayed; **downloading + Read does not**, so
+prefer this. Find an image URL in the Browser pane, then download WITH browser
+headers (Wikimedia and most hosts block bare `curl`):
+
 ```bash
 # in the Browser pane, list candidate images on a page:
 #   javascript_tool: JSON.stringify(Array.from(document.querySelectorAll('img'))
@@ -32,87 +46,89 @@ and most hosts block bare `curl`):
 curl -sL \
   -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
   -H "Referer: https://en.wikipedia.org/" \
-  -o Construction/renders/reference.jpg "<image-url>"
-file Construction/renders/reference.jpg   # confirm "JPEG image data", not HTML
+  -o Construction/renders/reference_oak.jpg "<image-url>"
+file Construction/renders/reference_oak.jpg     # MUST say "JPEG image data", not HTML
 ```
-Then **Read** the file to actually LOOK at it. (Screenshots need the Browser pane
-displayed; downloading + Read does not.)
+Then **Read** the file to actually look at it. A clean single tree, trunk + crown,
+works best. (`Construction/renders/` is gitignored — photos and PNGs stay local.)
 
-### 2. Author the seed — LOOK, then map to knobs
-Read the photo and set `Construction/noun.construct(...)` arguments:
+## The three stages (what the one command runs)
 
-| The photo shows… | knob |
-|---|---|
-| thick / stout trunk | `trunk_radius` ↑ (sapling ~12, old oak ~30) |
-| tall tree / high fork | `trunk_height` ↑ |
-| dense, full canopy | `max_depth` ↑ (5–6; 4 is sparse) |
-| deep rounded **dome** crown | `droop` ↑ (0 = flat umbrella, ~1.2 = oak dome) |
-| wide spreading crown | `spread` ↑ (0.3–0.6) |
-| leaning tree | the wind **verb** `lean` (not a noun knob) |
-| silhouette off in a way no knob fixes | change `seed` (new branch pattern) |
-
-`rule=golden_rule` is the default — it won the construction bake-off because
-137.5° phyllotaxis packs the canopy most evenly (physics, not taste).
-
-### 3. Construct the noun, give it a verb, render
-```python
-import sys; sys.path.insert(0, r"E:\PythonChimera")
-import math
-from Construction import noun as N, tree as T, backend_3d as B3
-from PIL import Image
-
-noun = N.construct(seed=42, trunk_height=330, trunk_radius=30,
-                   max_depth=6, droop=1.2, spread=0.55)      # author -> 3D noun
-CALM = {"flutter": 0.0, "sky": 0.0}
-# verb (optional): blown = T.pose(noun, wind_state, time, T.max_depth_of(noun))
-img = B3.render([(noun, (0,0,0))], CALM, width=520, height=680,
-                orbit_az=-math.pi/2, elev=0.04)             # front-on, eye-level
-Image.fromarray(img).save(r"Construction\renders\match.png")
+### 1. EXTRACT — the photo's descriptors  (statistics the template trains toward)
+```bash
+cd Chimera && PYTHONPATH=. python -m core.trainables.tree_appearance extract \
+    --photo <ABSOLUTE path>            # writes docs/tree_references/<name>.json
 ```
-Then **Read** `match.png`.
+Silhouette (aspect/fill/cy/cover/trunk_w/fork) + foliage colour moments
+(lum/lstd/grn) + a small foliage & bark palette. Committed, so training is
+reproducible without the photo.
 
-### 4. Compare by EYE, then refine
-Look at the render next to the photo and name the gap in physical terms
-(proportion, crown shape, density) — **ground the verdict in what the constructor
-can/can't express, never in taste** (the operator only trusts a science-grounded
-pick). Adjust the knobs and re-run. Stop when it reads right, OR when the knobs
-converge and it still doesn't — that convergence IS the constructor's ceiling,
-and it is the signal to widen the vocabulary or move to the learned map (below).
+### 2. TRAIN — the template's parameters, against the photo  (never renders; ~7000 evals/sec)
+```bash
+cd Chimera && PYTHONPATH=. CHIMERA_TREE_REF=<name> python -m core.trainer \
+    --domain core.trainables.tree_appearance \
+    --objective docs/objectives/tree_appearance.json \
+    --pop 200 --gens 60 --out docs/objectives/tree_appearance.trained.json
+```
+The genome is the template's render parameters (crown rx/rz/zc, droop, density,
+trunk hf/base_w, the shade curve, colour gain). The measure is **Julesz-descriptor
+distance to the photo** — no rendering in the loop, no taste. **Iterate the
+OBJECTIVE, never the artifact** (`docs/objectives/tree_appearance.json`): if the
+result is wrong, a descriptor is wrong. Confirm `fidelity` climbs and `nothing
+pinned`.
 
-### 5. Record
-Append the run to the worked-examples list at the bottom of this file: the
-reference, the final knobs, what each refine fixed, and where the ceiling showed.
+### 3. CROSS — markers × photo patches → the textured 3D tree  (the step that made it work)
+```bash
+python -m Construction.cross --photo <ABSOLUTE path> \
+    --genome Chimera/docs/objectives/tree_appearance.trained.json \
+    --out Construction/renders/oak_tree --lod 1.0
+```
+Builds the template's 3D markers from the trained genome, colours each by sampling
+the photo at its front projection, matches each to the nearest-colour real photo
+patch, and stamps it. Front view ≈ the photo's texture; angle view = a complete,
+rotatable 3D tree. **Read both PNGs and judge by eye** (ground the verdict in what
+you see, never in taste).
 
 ## The pieces (file map)
 
-| file | role |
-|---|---|
-| `Construction/noun.py` — `construct()` | author knobs → 3D noun (the whole decode) |
-| `Construction/tree.py` — `build_skeleton`, `pose` | the tree generator wrapper + the wind **verb** |
-| `Construction/lift.py` — `flatten`, `lift`, `shape_crown` | 2D picture, golden 3D lift, crown vocabulary |
-| `Construction/backend_3d.py` — `render` | noun → Gaussian splats → ParticleEngine (GPU) |
-| `Construction/viewer_nv.py` | interactive orbit + verb dial (dev surface) |
+| file | stage | role |
+|---|---|---|
+| `Construction/photo_to_tree.py` | all | the one-command orchestrator (runs 1→2→3) |
+| `Chimera/core/trainables/tree_appearance.py` | 1,2 | the trainable template: `descriptors_from_photo`, `seed/mutate/measure`, `render_tree` witness |
+| `Chimera/docs/objectives/tree_appearance.json` | 2 | the objective — match the photo's descriptors (edit THIS to iterate) |
+| `Chimera/docs/tree_references/<name>.json` | 1 | the committed descriptors + palette (the reference) |
+| `Construction/cross.py` | 3 | THE SYNTHESIS: template markers × photo patches → textured 3D tree |
+| `Construction/gsplat_fit.py` | (refine) | differentiable per-splat fit to the pixels — finer pattern recognition, feeds future cross |
+| `Construction/DESIGN.md` | — | the architecture and why |
 
-## Honest limits (know these before you judge)
+## Refinement — the dials, in order of value
 
-- **The renderer is additive/emissive** (ParticleEngine splats add light over the
-  background), so it needs a **dark sky** and produces soft glowing blobs with no
-  solid bark. A daylight photo will never match its palette — that is a renderer
-  choice, not a shape error. For a solid, daylight look use the opaque canvas
-  backend (`viewer_nv` / `backend_html`), not this one.
-- **The parametric constructor has a ceiling.** It makes one *family* of trees.
-  Widening the vocabulary (this run added `droop`/`spread`) moves the ceiling but
-  never removes it — a sprawling live oak, a palm, or a photoreal wall of leaves
-  is out of range. When refinement converges short of the photo, that is the cue
-  for the endgame: a **learned / holographic map** trained on real shapes, where
-  any crown is representable (DESIGN §F; the "generalize the noun" fork).
+1. **Template level of detail** (`--lod`): more markers → finer texture. The main
+   quality dial now.
+2. **Trim edge halos**: the outer canopy patches float as light cotton-puffs. In
+   `cross.pattern_library`, reject patches whose mean is sky-bright; in `render`,
+   drop markers whose sampled colour is background.
+3. **Iterate the objective** (stage 2): the trained crown is only as good as the
+   descriptors — the green mask catches background trees, so it trains tall. Tighten
+   the silhouette descriptor (exclude background) to fix proportion.
+4. **Finer recognition**: match markers to `gsplat_fit` splats (oriented, per-pixel)
+   instead of raw colour-nearest patches — sharper bark fissures.
 
-## Worked examples
+## Honest state (2026-07-22)
 
-- **Baginton oak** (2026-07-22, `reference_oak.jpg`, Wikimedia). Read as: stout
-  thick trunk, low fork, broad dense upright crown. Progression:
-  - v1 `trunk_radius 26, max_depth 5, droop 0` → thin stalk + **flat pancake** crown. Trunk too thin/long; canopy categorically flat (no vocabulary for depth).
-  - v2 `trunk_radius 42, trunk_height 190` → stout trunk fixed, crown still a flat disc → **exposed physics_tree's ceiling** (flat-umbrella canopy only).
-  - **Added the crown knobs** (`droop`, `spread` in `lift.shape_crown`).
-  - v3 `droop 1.2` → crown gained vertical depth, edges droop down (a dome, not a disc). Trunk over-corrected to a blob.
-  - v4a `trunk_radius 30, trunk_height 330, max_depth 6, droop 1.2, spread 0.55, seed 42` → **best parametric match**: broad drooping crown, thick tapering trunk. Residual gap is now renderer realism (additive soft blobs, dusk palette) + the parametric ceiling → next is the daylight backend and the learned map.
+Works: complete 3D tree, real photographic bark and foliage texture, holds up from
+multiple angles, a believable offspring of the specific tree. Not yet photoreal:
+fuzzy/haloed canopy edges, silhouette a touch soft, proportion driven by a crude
+mask. The mechanism is proven; the remaining distance is LOD + the refinements above.
+
+## Worked example — the Baginton oak (2026-07-22)
+
+`reference_oak.jpg` (Wikimedia). The journey, so you learn the dead ends:
+- Parametric-only construct → generic "ultra-stylized" tree (right shape, wrong,
+  invented appearance).
+- Nine-descriptor trainer → matched colour, still looked nothing like the photo
+  (you cannot rebuild a photo from nine numbers).
+- Per-splat 2D fit → reproduced the photo exactly = a flat billboard, and the clip
+  and empty back returned. "That's just the photo."
+- **CROSS (this recipe)** → template markers (complete 3D) × photo patches (real
+  texture) → a textured 3D oak that holds up rotated. This is the one that worked.
