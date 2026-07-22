@@ -19,16 +19,16 @@ try:
     from core.graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
         record_heuristic, record_surprise, record_observation, record_playtest,
-        record_simtest, record_rollout, record_research, record_elimination,
-        parse_pain_verdicts,
+        record_preference, record_simtest, record_rollout, record_research,
+        record_elimination, parse_pain_verdicts,
     )
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
     from graphify_interface import (
         record_feature, record_pathway, record_loop, record_phase, record_grade,
         record_heuristic, record_surprise, record_observation, record_playtest,
-        record_simtest, record_rollout, record_research, record_elimination,
-        parse_pain_verdicts,
+        record_preference, record_simtest, record_rollout, record_research,
+        record_elimination, parse_pain_verdicts,
     )
 
 
@@ -108,6 +108,16 @@ def main():
     p = sub.add_parser("playtest", help="Holistic temperature — verbatim, few tokens, whole build (automated sleepwalker/telemetry sweep; a human may still supply one)")
     p.add_argument("--notes", required=True, help="the observation, VERBATIM")
     p.add_argument("--build", default="", help="commit/build reference")
+
+    p = sub.add_parser("preference", help="Operator COMPARATIVE taste (A > B) — the HUMAN taste terminal; ordinal, not accept/reject. Human-only by construction")
+    p.add_argument("--winner", required=True, help="design id the operator preferred")
+    p.add_argument("--loser", required=True, help="design id it was preferred OVER")
+    p.add_argument("--seed", default=None, help="encounter seed the comparison was made on (for worst-casing)")
+    p.add_argument("--measures-winner", default="{}", dest="measures_winner",
+                   help="winner's physics fact-dict as JSON (from the domain's measure())")
+    p.add_argument("--measures-loser", default="{}", dest="measures_loser",
+                   help="loser's physics fact-dict as JSON")
+    p.add_argument("--notes", default="", help="operator's verbatim reason (dream fodder)")
 
     p = sub.add_parser("surprise", help="SurpriseMoment (Circadian dream fodder) — capture live")
     p.add_argument("--context", required=True, help="what was happening")
@@ -209,6 +219,13 @@ def main():
         node_id = record_rollout(args.chosen, json.loads(args.candidates_json), args.rationale)
     elif args.kind == "playtest":
         node_id = record_playtest(args.notes, args.build)
+    elif args.kind == "preference":
+        import json as _json
+        node_id = record_preference(
+            args.winner, args.loser, seed=args.seed,
+            measures_winner=_json.loads(args.measures_winner),
+            measures_loser=_json.loads(args.measures_loser),
+            notes=args.notes)
     elif args.kind == "research":
         node_id = record_research(args.feature, campus_sources=args.campus_sources,
                                  web_sources=args.web_sources, corpus_sources=args.corpus_sources,

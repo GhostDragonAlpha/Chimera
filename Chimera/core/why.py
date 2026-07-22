@@ -229,6 +229,9 @@ _EDGE_TERMINAL = {"MEASURED": "PHYSICS", "HUMAN": "THE HUMAN"}
 _CITED_PROVES = {
     "SimPlaytest":         "MEASURED",   # the engine ran; beats reached or not
     "PlaytestObservation": "HUMAN",      # a person played it — the taste terminal
+    "PreferenceObservation": "HUMAN",    # the operator's COMPARATIVE taste (A > B) —
+                                         # PlaytestObservation's ordinal sibling, human
+                                         # by construction. Citing it settles TASTE.
     "Elimination":         "MEASURED",   # a proven negative: a boundary that held
     "pathway_attempt":     "MEASURED",   # an MCP call; the editor answered or did not
     "Observation":         "RECORDED",   # a WRITTEN verdict. Its own derived_from

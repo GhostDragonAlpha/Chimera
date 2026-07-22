@@ -230,6 +230,9 @@ def graphify_mutate(mutate_type: str, result: str = None, details: dict = None):
     elif mutate_type == "playtest":
         return _mutate_playtest(details or {})
 
+    elif mutate_type == "preference":
+        return _mutate_preference(details or {})
+
     elif mutate_type == "simtest":
         return _mutate_simtest(details or {})
 
@@ -1708,6 +1711,77 @@ def record_playtest(notes: str, build_ref: str = "") -> str:
     return graphify_mutate("playtest", details={"notes": notes, "build_ref": build_ref})
 
 
+def _mutate_preference(details: dict) -> str:
+    """Records a PreferenceObservation: the operator's COMPARATIVE taste — 'design
+    `winner` is more fun than design `loser`', on one encounter `seed`.
+
+    This is the one shape every other verdict in this graph cannot express. Every
+    existing verdict is ABSOLUTE — Observation is accepted/rejected, ProfessorGrade
+    is A/B/C/F — and answers 'did this ONE thing pass?'. A preference is ORDINAL and
+    answers 'which of these TWO does the human want?'. That is the shape a preference
+    loop needs, and physics cannot supply it: which of two winnable, skillful designs
+    is more fun bottoms out in the human and nowhere else.
+
+    So this is a HUMAN taste terminal — the comparative sibling of PlaytestObservation
+    (core/why.py _CITED_PROVES: PreferenceObservation -> HUMAN -> "THE HUMAN"). Like
+    PlaytestObservation it is human BY CONSTRUCTION: `observer` is not a parameter, and
+    an agent-sim process may not mint one. A terminal an automated process could forge
+    is not a terminal (the same doctrine that downgrades an unwitnessed SimPlaytest).
+
+    The two designs' physics fact-dicts (from the domain's measure()) are stored ON the
+    node so the pair is self-contained training data for the model that will attune to
+    the operator's taste — the facts stay facts (measure() reported them, nobody's
+    opinion), the node records only which the human chose BETWEEN them."""
+    import os as _os
+    if _os.environ.get("CHIMERA_AGENT_SIM") == "1":
+        return ("rejected_preference: CHIMERA_AGENT_SIM=1 — an automated process may not "
+                "mint a human taste terminal. A preference the machine wrote proves "
+                "nothing about what the human wants; nothing recorded")
+
+    winner = str(details.get("winner") or "").strip()
+    loser = str(details.get("loser") or "").strip()
+    if not winner or not loser:
+        return ("rejected_preference: both 'winner' and 'loser' design ids are required "
+                "(a preference is a comparison; one side is not one); nothing recorded")
+    if winner == loser:
+        return ("rejected_preference: 'winner' and 'loser' are the same design — a "
+                "preference of a thing over itself settles nothing; nothing recorded")
+    measures_winner = details.get("measures_winner") or {}
+    measures_loser = details.get("measures_loser") or {}
+    if not isinstance(measures_winner, dict) or not isinstance(measures_loser, dict):
+        return ("rejected_preference: measures_winner/measures_loser must be dicts of "
+                "physics facts from measure() (or omitted); nothing recorded")
+    seed = details.get("seed")
+    notes = str(details.get("notes") or "").strip()
+
+    dna_graph = load_dna_graph()
+    nodes = dna_graph.get("nodes", [])
+    edges = dna_graph.get("edges", [])
+    node = {
+        "id": f"preference_{hashlib.sha256(f'preference_{winner}_{loser}_{datetime.utcnow().isoformat()}'.encode()).hexdigest()[:16]}",
+        "type": "PreferenceObservation",
+        "timestamp": datetime.utcnow().isoformat(),
+        "winner": winner,
+        "loser": loser,
+        "seed": seed,
+        "observer": "human",
+        "measures_winner": measures_winner,
+        "measures_loser": measures_loser,
+        "notes": notes,
+        "error_signature": "success_no_error",
+        "template_file": f"preference/{winner}_over_{loser}",
+        "error_category": "none",
+        "fix_description": (f"Operator prefers '{winner}' over '{loser}'"
+                            + (f" (seed {seed})" if seed is not None else "")
+                            + (f": {notes[:140]}" if notes else "")),
+        "compilation_result": "n/a",
+        "links": []
+    }
+    nodes.append(node)
+    save_dna_graph({"nodes": nodes, "edges": edges})
+    return node["id"]
+
+
 def _mutate_simtest(details: dict) -> str:
     """Records a Sleepwalker run (SimPlaytest node, observer='agent-sim').
 
@@ -2029,6 +2103,31 @@ def record_observation(feature: str, verdict: str, notes: str = "",
             "lesson_hint": "frame-level correction: what the machine measured is not what the human sees",
             "source": "human"})
     return node_id
+
+
+def record_preference(winner: str, loser: str, seed=None,
+                      measures_winner: dict = None, measures_loser: dict = None,
+                      notes: str = "") -> str:
+    """Record the operator's COMPARATIVE taste: `winner` is more fun than `loser`
+    (on encounter `seed`). The one primitive this graph lacked — every existing
+    verdict is absolute (accepted/rejected, A/B/C/F); this is ordinal (A > B), the
+    shape a preference loop needs and the one only a human can settle.
+
+    winner/loser are design ids (whatever your generator names a candidate).
+    measures_winner/measures_loser are the two designs' physics fact-dicts from the
+    domain's measure() — stored so the pair is self-contained training data for the
+    model that attunes to the operator's taste. `observer` is 'human' by construction:
+    this is the taste terminal, and no automated process may mint one.
+
+    To make a design-selection claim TERMINATE at THE HUMAN, cite the returned id:
+        pid = record_preference('design_A', 'design_B', seed=7, ...)
+        record_because(design_claim_id, pid,
+                       'which design does the operator prefer?', 'HUMAN')
+    The chain then walks claim --because(HUMAN)--> preference => THE HUMAN."""
+    return graphify_mutate("preference", details={
+        "winner": winner, "loser": loser, "seed": seed,
+        "measures_winner": measures_winner or {}, "measures_loser": measures_loser or {},
+        "notes": notes})
 
 
 def _mutate_heuristic(details: dict) -> str:
