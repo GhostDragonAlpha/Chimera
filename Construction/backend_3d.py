@@ -64,8 +64,11 @@ def _look_at(cam, target, orbit_az, elev, dist):
 
 
 def render(posed_trees, wind: dict, width: int = 680, height: int = 620,
-           seed: int = 7) -> np.ndarray:
+           seed: int = 7, orbit_az: float = -math.pi / 2, elev: float = 0.10) -> np.ndarray:
     """posed_trees: list of (posed_skeleton, origin).  Returns an RGB uint8 image.
+
+    orbit_az / elev orbit the camera around the grove — turning orbit_az reveals
+    depth (a flat sheet nearly vanishes edge-on; a 3D volume does not).
 
     The sky greys with wind 'sky' (blue -> overcast) — appearance derives from
     the same model state, no separate aesthetic pass (DESIGN §8)."""
@@ -103,6 +106,6 @@ def render(posed_trees, wind: dict, width: int = 680, height: int = 620,
     radius = float(np.linalg.norm(hi - lo)) / 2.0
     cam = FirstPersonCamera((0, -600, 0), fov=math.radians(52))
     dist = radius / math.tan(cam.fov / 2.0) * 1.15
-    _look_at(cam, (float(ctr[0]), float(ctr[1]), float(ctr[2])), -math.pi / 2, 0.10, dist)
+    _look_at(cam, (float(ctr[0]), float(ctr[1]), float(ctr[2])), orbit_az, elev, dist)
 
     return pipe.render_splats(P, cov, C, A, cam, cam.params(width, height))
