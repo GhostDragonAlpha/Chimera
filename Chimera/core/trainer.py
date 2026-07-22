@@ -234,10 +234,39 @@ def _eval(job: tuple) -> tuple:
     return sc, m, detail
 
 
+def _shortlist(eval_pop, eval_res, best, best_score, best_m, best_d, k):
+    """The top-k PHYSICS-FEASIBLE designs (score > 0 — every hard gate passed), best
+    first, deduped by genome. This is the shortlist a taste model re-ranks downstream
+    (core/preference_select.py): physics decides who is ELIGIBLE, taste decides which
+    eligible design is PREFERRED — never the other way round. score>0 is the ready-made
+    feasibility predicate, since Objective.score returns 0.0 the instant a hard gate
+    fails, so an infeasible genome can never enter this list."""
+    def _sig(g):
+        return json.dumps(g, sort_keys=True, default=str)
+
+    out, seen = [], set()
+    if best_score > 0.0:                      # the best-ever leads if it cleared the gates
+        out.append({"genome": best, "score": float(best_score),
+                    "measures": best_m, "detail": best_d})
+        seen.add(_sig(best))
+    order = sorted((i for i in range(len(eval_res)) if eval_res[i][0] > 0.0),
+                   key=lambda i: eval_res[i][0], reverse=True)
+    for i in order:
+        s = _sig(eval_pop[i])
+        if s in seen:
+            continue
+        seen.add(s)
+        out.append({"genome": eval_pop[i], "score": float(eval_res[i][0]),
+                    "measures": eval_res[i][1], "detail": eval_res[i][2]})
+        if len(out) >= k:
+            break
+    return out
+
+
 # --- the optimiser (a GA: no gradient exists through a grammar or a market) ----
 
 def train(domain: str, obj: Objective, pop: int, gens: int, seed: int,
-          workers: int, log=print) -> dict:
+          workers: int, log=print, top_k: int = 12) -> dict:
     """Two evaluation backends, chosen by what the domain offers.
 
     CPU:  `measure(g)` one genome at a time, fanned out over a process Pool. Right for
@@ -271,6 +300,7 @@ def train(domain: str, obj: Objective, pop: int, gens: int, seed: int,
     population = [g0] + [mod.mutate(g0, rng) for _ in range(pop - 1)]
     n_elite = max(1, pop // 10)
     best, best_score, best_m, best_d, evals = g0, -1.0, {}, [], 0
+    eval_pop, eval_res = population, []       # the final generation's evaluated pop + results
     t0 = time.time()
 
     poolp = None if batched else mp.Pool(workers, initializer=_init,
@@ -305,6 +335,7 @@ def train(domain: str, obj: Objective, pop: int, gens: int, seed: int,
                 a, b = rng.randrange(pop), rng.randrange(pop)
                 win = population[a] if res[a][0] >= res[b][0] else population[b]
                 nxt.append(mod.mutate(win, rng))
+            eval_pop, eval_res = population, res    # hold the evaluated gen before it is replaced
             population = nxt
     finally:
         if poolp is not None:
@@ -314,6 +345,7 @@ def train(domain: str, obj: Objective, pop: int, gens: int, seed: int,
     dt = time.time() - t0
     return {"genome": best, "score": best_score, "measures": best_m,
             "detail": best_d, "pinned": obj.pinned(best_m),
+            "top_k": _shortlist(eval_pop, eval_res, best, best_score, best_m, best_d, top_k),
             "evals": evals, "secs": dt, "rate": evals / max(dt, 1e-9)}
 
 
