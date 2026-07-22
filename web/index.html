@@ -28,10 +28,11 @@ function draw(){
   ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   ctx.fillStyle='rgba(66,84,58,.55)'; ctx.beginPath(); ctx.ellipse(cx,gy+16,230,26,0,0,6.3); ctx.fill();
   const A=M.map(m=>{const x=m.p[0],y=m.p[1],z=m.p[2]; const xr=x*c-y*s, dep=x*s+y*c;
-    return {sx:cx+xr*SC, sy:gy-z*SC, dep, r:Math.max(2,m.s*1.35), col:m.c};});
+    return {sx:cx+xr*SC, sy:gy-z*SC, dep, r:Math.max(2,m.s*1.35), col:m.c, b:m.b};});
   A.sort((p,q)=>q.dep-p.dep);           // painter's: far first
   ctx.globalAlpha=0.9;
-  for(const p of A){ ctx.fillStyle='rgb('+p.col[0]+','+p.col[1]+','+p.col[2]+')';
+  for(const p of A){ if(p.b && p.dep>0) continue;   // back-face cull the trunk cylinder
+    ctx.fillStyle='rgb('+p.col[0]+','+p.col[1]+','+p.col[2]+')';
     ctx.beginPath(); ctx.arc(p.sx,p.sy,p.r,0,6.283); ctx.fill(); }
   ctx.globalAlpha=1;
 }
