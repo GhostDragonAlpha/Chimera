@@ -1,42 +1,38 @@
 {
-  "_STATUS": "BLANK STARTER. The AI created this file ONCE, at your explicit request, with NO taste in it — every weight is 0.0, so it expresses nothing yet. It is a valid, empty Will you can edit. Set the weights and convictions to make it yours.",
-  "_GOVERNANCE": "HUMAN-ONLY from here. The running system NEVER writes this file (core/taste.py has no writer for it — a test enforces that). An AI may PROPOSE edits (staged to CAPCOM for your approval) but must never write it. The only thing an AI ever authored here was the empty structure at your request; no taste was chosen for you, and none ever will be.",
+  "_STATUS": "FILLED (a starting point). Adopted 2026-07-22 from a seed-AI draft the operator explicitly confirmed as their will ('make this the will ... it's a start'). The weights/convictions below are the OPERATOR'S confirmed numbers, transcribed verbatim; the AI injected none of its own. Imperfect by the operator's own framing — refine it by editing the numbers here, or let recorded comparisons bend it over time. NOTE: the draft was AI-INFERRED rather than fully interviewed (the seed-AI stopped and guessed some axes, and painted a persona — physics/piloting/DCS/organizations — that should be checked against what the operator actually said). The operator adopted it anyway as a first pass.",
+  "_GOVERNANCE": "HUMAN-ONLY. The running system NEVER writes this file (core/taste.py has no writer — enforced by test). An AI may PROPOSE edits (staged to CAPCOM for approval) but must never write it. The AI placed the operator's CONFIRMED values here at their explicit request; it did not choose any of them.",
   "_fields": {
-    "weight": "How much this property pulls the preference, and which way. Positive = more of it is preferred; negative = less is preferred; 0 = it does not affect the preference at all. Magnitude = strength: a weight of 2 pulls twice as hard as 1. Weights are on a standardized scale (see 'scale'), so a weight means the same thing across different properties and they are directly comparable.",
-    "conviction": "How firmly the weight is held — how much contrary evidence it takes to move it. Higher = more stubborn. As a rule of thumb, each recorded A-vs-B choice adds about 0.25 of evidence, so a conviction of 5 resists on the order of 20 contrary choices before it bends. Use high conviction for tastes you are sure of, low for hunches you want the data to shape. (Conviction only matters once 'weight' is non-zero.)",
-    "scale": "The characteristic spread of this property across real designs — the size of a 'normal' difference in it. It exists solely to put every property on one comparable footing so 'weight' is meaningful everywhere. Set it near the property's real range. It is a fact about the property, not a taste."
+    "weight": "How much this property pulls the preference, and which way. Positive = more is preferred; negative = less; 0 = no effect. Size = strength; weights are on the standardized 'scale' so they're comparable across properties.",
+    "conviction": "How firmly held — how much contrary evidence it takes to move it. ~0.25 evidence per recorded comparison, so conviction 5 resists ~20 contrary choices. Sure = high; hunch = low.",
+    "scale": "The property's normal spread across designs; puts every property on one comparable footing. A fact about the property, not a taste."
   },
-  "_what_the_axes_are": "Each entry under 'axes' is ONE measurable property of a design — something a system computes by observing the design, with no human judgment involved. Taste is expressed as weights OVER these facts; the facts themselves are never opinions. You may add, remove, or replace axes freely, but every axis MUST be something measurable with no observer. If a proposed axis could only be settled by someone's judgment, it does not belong here — the judgment belongs in the weights, or nowhere.",
-  "_how_to_use_this": "To express what you value, set each axis's weight (sign = direction, size = strength) and conviction (how sure you are); leave 'scale' near the property's real spread. NOTE: while every weight is 0, the loop has nothing to rank by and will defer to you (asking about each choice, or falling to the physics pick); the moment you set weights, it begins deciding for you within them. You are the only writer of this file.",
-  "_illustration": {
-    "_note": "A worked example of the MECHANICS ONLY. It expresses no taste you should adopt — it just shows how the three numbers read together.",
-    "some_property": { "weight": 1.5, "conviction": 3.0, "scale": 10.0 },
-    "_reads_as": "This person moderately prefers designs with MORE of 'some_property' (positive weight 1.5), is fairly sure of it (conviction 3 — it would take roughly a dozen contrary choices to soften), and a normal difference in this property is about 10 units (scale 10), which is what makes the weight of 1.5 comparable to weights on other properties."
-  },
+  "_what_the_axes_are": "Each axis is a MEASURABLE property (a fact computed with no observer). Taste lives only in the weights over them. Add/remove axes freely, but every axis must be measurable with no observer — a matter of judgment belongs in the weights, or nowhere.",
+  "_how_to_use_this": "Edit each axis's weight (sign=direction, size=strength) and conviction (how sure). Leave 'scale' near the property's real spread. You are the only writer of this file.",
   "axes": {
     "skill_gap": {
-      "_measures": "How much better a skilled attempt does than a random one — the room there is to be good. 1 means skill buys nothing (the outcome is luck); higher means more room for mastery.",
-      "weight": 0.0,
-      "conviction": 1.0,
+      "_measures": "How much better a skilled attempt does than a random one — the room to be good. 1 = skill buys nothing (luck); higher = more room for mastery.",
+      "weight": 1.8,
+      "conviction": 5.0,
       "scale": 20.0
     },
     "punishes_naive": {
-      "_measures": "How much the obvious-but-wrong strategy costs compared with doing nothing. 1 means the naive approach is harmless; above 1 means it actively backfires — there is a trap to learn to avoid.",
-      "weight": 0.0,
-      "conviction": 1.0,
+      "_measures": "How much the obvious-but-wrong approach costs vs doing nothing. 1 = harmless; above 1 = it backfires (a trap to learn around).",
+      "weight": 0.6,
+      "conviction": 2.0,
       "scale": 1.5
     },
     "learnability": {
-      "_measures": "How much an attempt improves by paying attention and adjusting, rather than staying flat. 0 means attention does not help; toward 1 means practice pays off strongly.",
-      "weight": 0.0,
-      "conviction": 1.0,
+      "_measures": "How much an attempt improves by paying attention and adjusting. 0 = attention doesn't help; toward 1 = practice pays off strongly.",
+      "weight": 1.5,
+      "conviction": 4.5,
       "scale": 0.3
     },
     "headroom": {
-      "_measures": "Where the best achievable attempt lands relative to trivial. Near 0 means the best is basically handed to you (too easy); near 1 means even the best barely makes a dent (too hard). It measures how much is left on the table at mastery.",
-      "weight": 0.0,
-      "conviction": 1.0,
+      "_measures": "Where the best possible attempt lands relative to trivial. Near 0 = too easy (handed to you); near 1 = too hard (even the best barely dents it). Measures how much is left at mastery.",
+      "weight": 1.3,
+      "conviction": 4.0,
       "scale": 0.25
     }
-  }
+  },
+  "_summary": "Prefers deep physics-based mastery, visible skill growth through practice, and an endless ceiling to climb. Enjoys structured social cooperation but bounces off abstract, spreadsheet-like gameplay. Naive punishments are tolerable learning tools, but not the primary draw."
 }
