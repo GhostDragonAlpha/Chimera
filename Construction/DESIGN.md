@@ -20,6 +20,16 @@ don't improvise) is `Construction/REFERENCE_TO_NOUN.md`; one command is
 `tree_appearance.py` (trained template), `cross.py` (the synthesis),
 `gsplat_fit.py` (per-splat pixel fit, for finer recognition).
 
+**CANONICAL for the *how* is `Construction/REFERENCE_TO_NOUN.md`** — the recipe,
+plus the two-engine split (AI authors + judges; training turns the crank) and the
+template's purpose and level-of-detail dial. **Sections 1–10 below are the DESIGN
+RATIONALE — the *why*, including the dead ends and the earlier parametric-only
+framing that the CROSS superseded.** Where the two differ, the recipe wins; read
+them as history-of-reasoning, not as current instructions. (The old "generalize
+the noun / VAE manifold" fork in §9–§10 was *realized differently*: the manifold's
+job — completing what the photo can't see — is done by the template markers, and
+the photo detail is supplied by the CROSS's patch library, not a learned latent.)
+
 ## 0. The one sentence
 
 The AI authors in a **legible low dimension**; a **deterministic construction

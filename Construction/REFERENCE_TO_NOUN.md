@@ -32,6 +32,65 @@ Photo patches = WHAT (the recognized sub-patterns). Cross them and you get a
 complete 3D tree wearing the photo's real texture. Refinement dial = template
 **level of detail** (marker density).
 
+## The two engines — AI and training — and how they interlock
+
+The workflow runs on two different engines, and keeping each in its lane is the
+whole reason it works. The studio's core rule: **the AI writes the constraints; it
+never turns the crank.**
+
+**The AI engine — judgment (the top and the bottom, never the middle).**
+- LOOKS at the photo (vision) and recognizes the pattern-groups: what bark is,
+  what foliage is, the tree's morphology.
+- AUTHORS the template: using its knowledge of how a tree is built, it decides the
+  3D distribution of markers and **completes the membrane** — the crown-top and the
+  back the photo never shows. No optimizer can do this from one clipped photo; it
+  needs a prior about what a whole tree *is*. This is the AI's real contribution.
+- JUDGES the result by eye and ITERATES THE OBJECTIVE when it is wrong.
+The AI chooses and sees. It does NOT place ten thousand splats by hand — it manages
+~20 edits an hour; that is not its job.
+
+**The training engine — the crank (turned by the machine).**
+- TRAINS the template's parameters against the photo's descriptors: ~7,000
+  evaluations/second, no taste, no rendering in the loop (statistics space). It
+  discovers the parameter values the AI cannot eyeball.
+- FITS per-splat Gaussians to the actual pixels by gradient descent
+  (`gsplat_fit`) — the finer recognition.
+Training turns fast. It has no idea what a tree is; it only reduces a distance.
+
+**How they interlock — the MARKERS are the handoff.** The AI authors WHERE patterns
+go (the marker distribution) and completes the form; training optimizes the numbers
+that shape that distribution to the photo; then the CROSS matches each marker to a
+recognized photo patch and stamps it. AI at the top (author + complete), training in
+the middle (optimize to the photo), AI at the bottom (judge + iterate). Put the AI
+in the middle — hand-tuning splats — and you get the confetti tree we threw away.
+Put training at the top — inventing the unseen crown from one photo — and you get a
+billboard. Each in its lane, and it works.
+
+## The template — what it is FOR, and why its detail sets the ceiling
+
+The template is the **complete 3D scaffold**: a marker for every place a patch of
+the tree should go, arranged into a whole form (crown dome + trunk cylinder). It
+exists to solve the two things a photo alone cannot:
+- **Completeness (the membrane).** A photo is clipped and single-view — no crown-
+  top, no back, no interior. The template supplies them, so the tree is whole and
+  survives rotation. The photo colours the markers it can see; markers beyond the
+  frame wear the nearest photo pattern.
+- **Distribution.** The template says WHERE each pattern belongs in 3D; the photo
+  says WHAT each looks like. The CROSS multiplies the two.
+
+**Level of detail is the primary quality dial (`--lod`).** Each marker places ONE
+patch, so the marker count is the resolution of the result:
+- too few → sparse, blobby, confetti at the edges;
+- more → denser coverage, finer texture, sharper bark and leaf detail;
+- you cannot show detail finer than your markers are dense — the template's LOD is
+  a hard ceiling on how much of the photograph can land.
+So "make the tree better" mostly means **raise the template's level of detail** —
+more markers, `--lod 1.5`, `--lod 2.0` (trading render time for detail). Structural
+detail matters too: the closer the marker distribution matches the real crown and
+limb layout, the more believable the 3D shape — and that comes from **iterating the
+training objective** so the template's proportions match the photo. The AI shapes
+the template; training sharpens it; LOD scales it.
+
 ## Stage 0 — get the reference photo
 
 Screenshots need the Browser pane displayed; **downloading + Read does not**, so
