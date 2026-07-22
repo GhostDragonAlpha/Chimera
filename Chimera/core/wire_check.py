@@ -82,7 +82,11 @@ def wire_objectives():
         if not os.path.exists(trained):
             continue
         produced = set(json.loads(io.open(trained, encoding="utf-8").read())["measures"])
-        spec = json.loads(io.open(path, encoding="utf-8").read())
+        try:
+            from core.trainer import normalize_objective
+        except ImportError:
+            from trainer import normalize_objective
+        spec = normalize_objective(json.loads(io.open(path, encoding="utf-8").read()))
         consumed = {c["measure"] for c in spec["constraints"]}
         climbing = sum(1 for c in spec["constraints"] if c["kind"] in ("maximize", "minimize"))
         rows.append({

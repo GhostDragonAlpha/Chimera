@@ -71,6 +71,11 @@ OBJ_DIR = ROOT / "docs" / "objectives"
 # kinds:  band {min,max} · at_most {max} · at_least {min} · target {value}
 #         maximize {ref} · minimize {ref}
 # hard:   true -> a GATE. Violating it scores ZERO, and the gate is named in the report.
+#
+# The declarative SCHEMA-B objective files (constraints keyed on `field` with bare
+# min/max, plus top-level maximize/minimize field-lists and a walls:{field: prose}
+# block) are ALSO accepted — normalize_objective() below translates them to the Schema A
+# above at load time. Neither schema needs rewriting; the trainer understands both.
 
 _KINDS = {"band", "at_most", "at_least", "target", "maximize", "minimize"}
 
@@ -119,10 +124,85 @@ def _satisfy(c: dict, x: float) -> float:
     raise ValueError(f"unknown constraint kind: {k}")
 
 
+def normalize_objective(spec: dict) -> dict:
+    """Accept the declarative SCHEMA-B objective files and translate them to the SCHEMA A
+    the scorer runs on. A Schema-A spec passes through UNCHANGED, so nothing already using
+    it is affected.
+
+      Schema A (executable): constraints:[{measure, kind, min/max/value/ref, weight, hard, why}]
+      Schema B (authored):   constraints:[{field, min?, max?}]  +  top-level
+                             maximize/minimize (field-name lists)  +  walls:{field: prose}
+
+    Translation is faithful to what the file states:
+      {field,min,max} -> band ; {field,max} -> at_most ; {field,min} -> at_least
+      maximize[f] / minimize[f] -> a maximize/minimize term. THESE ARE LOAD-BEARING: a band
+        alone is a satisficer (any in-range value scores 1.0, so there is no pressure to be
+        BETTER within it) — the climb terms are what the doctrine's "NEVER SATURATE" is about.
+      walls[f] -> that term's `why`   ;   _provenance -> scenario
+    Constraints are SOFT unless the file marks `hard` (Schema B has no gates today, which the
+    trainer's own doctrine prefers — see brain_gpu.json's `sleds` note). The maximize/minimize
+    `ref` is DERIVED from the field's own bound — the only scale the file provides — and may
+    need tuning; read pinned(), which flags an exhausted or mis-scaled ref."""
+    cons = spec.get("constraints", []) or []
+    is_schema_b = ("maximize" in spec or "minimize" in spec or "walls" in spec
+                   or any(("kind" not in c) or ("field" in c) for c in cons))
+    if not is_schema_b:
+        return spec
+
+    walls = spec.get("walls") or {}
+    bound, out = {}, []
+    for c in cons:
+        f = c.get("measure") or c.get("field")
+        if not f:
+            continue
+        if "kind" in c:                                    # already a Schema-A term — keep it
+            e = {k: v for k, v in c.items() if k != "field"}
+            e["measure"] = f
+            e.setdefault("weight", 1.0)
+            if walls.get(f) and "why" not in e:
+                e["why"] = walls[f]
+            bound[f] = (c.get("min"), c.get("max"))
+            out.append(e)
+            continue
+        lo, hi = c.get("min"), c.get("max")
+        e = {"measure": f, "weight": float(c.get("weight", 1.0))}
+        if c.get("hard") is not None:
+            e["hard"] = bool(c["hard"])
+        if lo is not None and hi is not None:
+            e.update(kind="band", min=lo, max=hi)
+        elif hi is not None:
+            e.update(kind="at_most", max=hi)
+        elif lo is not None:
+            e.update(kind="at_least", min=lo)
+        else:
+            continue                                       # no bound -> nothing to score
+        if walls.get(f):
+            e["why"] = walls[f]
+        bound[f] = (lo, hi)
+        out.append(e)
+
+    def _ref(f):
+        lo, hi = bound.get(f, (None, None))
+        for b in (hi, lo):                                 # prefer an upper bound as the scale
+            if b not in (None, 0):
+                return abs(float(b))
+        return 1.0                                         # file gives no scale -> tune via pinned()
+
+    for key in ("maximize", "minimize"):
+        for f in spec.get(key, []) or []:
+            out.append({"measure": f, "kind": key, "ref": _ref(f),
+                        "weight": 1.0, "why": walls.get(f, "")})
+
+    return {"name": spec.get("name", "unnamed"),
+            "scenario": spec.get("scenario") or spec.get("_provenance", ""),
+            "constraints": out}
+
+
 class Objective:
     """A declarative spec. The LLM's whole output surface."""
 
     def __init__(self, spec: dict):
+        spec = normalize_objective(spec)          # accept Schema B; Schema A passes through
         self.name = spec.get("name", "unnamed")
         self.scenario = spec.get("scenario", "")
         self.constraints = spec["constraints"]
@@ -132,7 +212,9 @@ class Objective:
 
     @staticmethod
     def load(path) -> "Objective":
-        return Objective(json.loads(Path(path).read_text(encoding="utf-8")))
+        spec = json.loads(Path(path).read_text(encoding="utf-8"))
+        spec.setdefault("name", Path(path).stem)          # Schema-B files carry no name
+        return Objective(spec)
 
     def score(self, m: dict) -> tuple:
         """(score, per-constraint detail). Weighted GEOMETRIC mean: one zero kills
