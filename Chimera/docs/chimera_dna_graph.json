@@ -97261,6 +97261,1660 @@
       "links": [],
       "recorded_by": "-c",
       "run_id": "run_b4eee59b9616"
+    },
+    {
+      "id": "feature_858c05c6b8038b09",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T00:52:10.472551",
+      "feature_name": "Hierarchical_Membrane_System",
+      "loop": 1,
+      "status": "verified",
+      "parameters": {
+        "notes": "Implements hierarchical membranes with parent-child relationships: Level 1 (Object/Scene), Level 2 (Major Component), Level 3 (Specific Pattern Membrane). Serial numbers MEM-000xxx format. Organized via graphify integration."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_1/Hierarchical_Membrane_System",
+      "error_category": "none",
+      "fix_description": "Feature 'Hierarchical_Membrane_System' (Loop 1) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_042e815b52fb"
+    },
+    {
+      "id": "feature_2e306d704431b1fe",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T00:52:13.025103",
+      "feature_name": "Biological_Specificity_Labeling",
+      "loop": 1,
+      "status": "verified",
+      "parameters": {
+        "notes": "Labels emerge from exact visual patterns of specific biological species (e.g., Quercus alba bark_quercus_alba_gray_scaly_fissures, Quercus rubra leaves_leaves_quercus_rubra_deciduous_pointed_bristle_tipped_lobes). No generic 'oak tree' labels. Organized via graphify integration."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_1/Biological_Specificity_Labeling",
+      "error_category": "none",
+      "fix_description": "Feature 'Biological_Specificity_Labeling' (Loop 1) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_43cc069fed8f"
+    },
+    {
+      "id": "feature_1848023160a475d8",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T00:54:32.540268",
+      "feature_name": "Bark_Quercus_alba_Gray_Scaly_Fissures",
+      "loop": 2,
+      "status": "verified",
+      "parameters": {
+        "notes": "Specific pattern membrane for Quercus alba (White Oak) bark: pale gray color, squarish fissures, slightly shaggy small plates, vertical longitudinal furrows. Verified via direct visual observation of Quercus_alba_white_oak_bark.jpg from Wikimedia Commons."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_2/Bark_Quercus_alba_Gray_Scaly_Fissures",
+      "error_category": "none",
+      "fix_description": "Feature 'Bark_Quercus_alba_Gray_Scaly_Fissures' (Loop 2) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_327ec8a4b556"
+    },
+    {
+      "id": "feature_560b3d957ead2eda",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T00:55:09.778701",
+      "feature_name": "Biological_Specificity_Quercus_alba_Bark_Pattern",
+      "loop": 3,
+      "status": "verified",
+      "parameters": {
+        "notes": "Direct visual observation of Quercus alba (White Oak) bark from Wikimedia Commons image: pale gray color, squarish fissures, slightly shaggy small plates, vertical longitudinal furrows. Pattern membrane: bark_quercus_alba_gray_scaly_fissures (MEM-000004). Recorded in knowledge graph via feature_1848023160a475d8 and hierarchical_membranes.py integration."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_3/Biological_Specificity_Quercus_alba_Bark_Pattern",
+      "error_category": "none",
+      "fix_description": "Feature 'Biological_Specificity_Quercus_alba_Bark_Pattern' (Loop 3) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f9e04a058d7f"
+    },
+    {
+      "id": "feature_593efb4a0359c6e3",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:01:55.592916",
+      "feature_name": "Astro_Spiral_Galaxy_Density_Wave_Pattern",
+      "loop": 4,
+      "status": "verified",
+      "parameters": {
+        "notes": "Spiral galaxy Messier 81 HST image: tilted oblique angle giving birds-eye view of spiral structure, similar to Milky Way. Pattern membrane: astro_spiral_arm_density_wave_logarithmic_spiral_pattern. Verified via direct visual observation of Messier_81_HST.jpg from Wikimedia Commons/NASA Hubble."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Astro_Spiral_Galaxy_Density_Wave_Pattern",
+      "error_category": "none",
+      "fix_description": "Feature 'Astro_Spiral_Galaxy_Density_Wave_Pattern' (Loop 4) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c9d84e90c607"
+    },
+    {
+      "id": "feature_2f15a9db91792bc5",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:02:01.659504",
+      "feature_name": "Astro_Ring_Particle_Cassini_Division_Gap",
+      "loop": 4,
+      "status": "verified",
+      "parameters": {
+        "notes": "Saturn's icy rings with Cassini division: natural color mosaic from Cassini spacecraft showing C ring, B ring, Cassini division, Huygens gap, A ring, Encke and Keeler gaps, F ring. Pattern membrane: astro_ring_particle_cassini_division_gap_density_wave. Verified via direct visual observation of Saturn_Rings_annotated.jpg from Wikimedia Commons/NASA JPL."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Astro_Ring_Particle_Cassini_Division_Gap",
+      "error_category": "none",
+      "fix_description": "Feature 'Astro_Ring_Particle_Cassini_Division_Gap' (Loop 4) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_b80f555be728"
+    },
+    {
+      "id": "feature_29ad1e6d5ebb4300",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:02:07.647975",
+      "feature_name": "Astro_Nebula_Emission_H_II_Region",
+      "loop": 4,
+      "status": "verified",
+      "parameters": {
+        "notes": "Orion Nebula Hubble 2006 mosaic: detailed astronomical image capturing unprecedented look at the Orion Nebula, covering approximately the apparent angular size of the full moon. Pattern membrane: astro_nebula_emission_h_ii_region_ionized_gas_distribution. Verified via direct visual observation of Orion_Nebula_-_Hubble_2006_mosaic.jpg from Wikimedia Commons/NASA Hubble Space Telescope."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_4/Astro_Nebula_Emission_H_II_Region",
+      "error_category": "none",
+      "fix_description": "Feature 'Astro_Nebula_Emission_H_II_Region' (Loop 4) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_aa5835bd988d"
+    },
+    {
+      "id": "feature_025b3f0a7338ba17",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:07:06.744021",
+      "feature_name": "Geology_Basalt_Hexagonal_Columnar_Jointing",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Basalt columns at Giant's Causeway: hexagonal columnar jointing tessellation, solidified lava cliffs 28m thick, tallest columns ~12m high. Pattern membrane: rock_basalt_hexagonal_columnar_jointing_tessellation. Verified via direct visual observation of Basalt_Columns_at_Giant's_Causeway image from Wikimedia Commons/Geograph project."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Geology_Basalt_Hexagonal_Columnar_Jointing",
+      "error_category": "none",
+      "fix_description": "Feature 'Geology_Basalt_Hexagonal_Columnar_Jointing' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_997de0abebd4"
+    },
+    {
+      "id": "feature_64e52188bd209514",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:12:42.617396",
+      "feature_name": "Geology_Quartz_Crystal_Cluster_Hexagonal",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Quartz crystal cluster (Rose Quartz) from Alto da Pitorra, Minas Gerais, Brazil. Crystalline lattice with hexagonal prismatic structure and translucent crystals. Pattern membrane: mineral_quartz_hexagonal_prismatic_with_rhombohedral_termination. Verified via direct visual observation of Quartz-197410.jpg from Wikimedia Commons/mindat.org."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Geology_Quartz_Crystal_Cluster_Hexagonal",
+      "error_category": "none",
+      "fix_description": "Feature 'Geology_Quartz_Crystal_Cluster_Hexagonal' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_52b2be13f490"
+    },
+    {
+      "id": "feature_f71cc32efc15a3b0",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:13:25.652662",
+      "feature_name": "Geology_Granite_Outcrop_Phaneritic_Interlocking",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Granite outcrop on Ben Avon (Scotland). Igneous grain structure with phaneritic interlocking feldspar/quartz/mica grains. 25 metres high tor/outcrop at Munro height. Pattern membrane: rock_granite_phaneritic_interlocking_feldspar_quartz_mica. Verified via direct visual observation of Granite_outcrop_on_Ben_Avon image from Wikimedia Commons/Geograph project."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Geology_Granite_Outcrop_Phaneritic_Interlocking",
+      "error_category": "none",
+      "fix_description": "Feature 'Geology_Granite_Outcrop_Phaneritic_Interlocking' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_d616eb2aecd6"
+    },
+    {
+      "id": "feature_ebc932a38e643a55",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:18:32.845263",
+      "feature_name": "Geology_Sandstone_Cross_Bedding_Stratification",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Sandstone cross-bedding in Aztec Sandstone, Muddy Mountains Wilderness, Southern Nevada. Sedimentary stratification layers with cross-bedding patterns formed by fossil sand dunes. Pattern membrane: rock_sandstone_cross_bedding_stratification_layers. Verified via direct visual observation of Cross_bedding_in_Aztec_Sandstone.jpg from Wikimedia Commons/BLM Nevada."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Geology_Sandstone_Cross_Bedding_Stratification",
+      "error_category": "none",
+      "fix_description": "Feature 'Geology_Sandstone_Cross_Bedding_Stratification' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8f2af378fd75"
+    },
+    {
+      "id": "feature_c71bde6b21a6a6ee",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:28:30.624621",
+      "feature_name": "Solar_Sun_Surface_Granulation_and_Activity",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Sun photographed at 304 angstroms by the Atmospheric Imaging Assembly (AIA 304) of NASA's Solar Dynamics Observatory (SDO). False-color image in extreme ultraviolet showing solar surface granulation and solar activity (bright flares/magnetic loop structures). Pattern membrane: astro_sun_solar_surface_granulation_convection_cells and astro_sun_solar_activity_sunspot_magnetic_loop_structures. Verified via direct visual observation of The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA's_Solar_Dynamics_Observatory_-_20100819.jpg from Wikimedia Commons/NASA SDO."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Solar_Sun_Surface_Granulation_and_Activity",
+      "error_category": "none",
+      "fix_description": "Feature 'Solar_Sun_Surface_Granulation_and_Activity' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_4578452f9ae8"
+    },
+    {
+      "id": "feature_041aac0e65a1cf41",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:29:33.894775",
+      "feature_name": "Earth_Orbital_View_Cloud_Pattern_and_Landmass_Division",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Earth taken from the EPIC instrument onboard the Deep Space Climate Observatory (DSCOVR), true-color image taken on February 11, 2022. Shows Earth cloud patterns with cyclonic storm systems and continental landmass/ocean basin division. Pattern membranes: earth_orbital_view_cloud_pattern_cyclonic_storm_systems and earth_orbital_view_continental_landmass_ocean_basin_division. Verified via direct visual observation of Blue_Marble_2022.jpg from Wikimedia Commons/NASA DSCOVR EPIC."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Earth_Orbital_View_Cloud_Pattern_and_Landmass_Division",
+      "error_category": "none",
+      "fix_description": "Feature 'Earth_Orbital_View_Cloud_Pattern_and_Landmass_Division' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_a816ce6e8dcd"
+    },
+    {
+      "id": "feature_fa378f536465d85c",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:30:32.714329",
+      "feature_name": "Moon_Lunar_Surface_Crater_Impact_Network_and_Maria_Highlands_Division",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Lunar surface photographed during Apollo 16 mission's trans-Earth coast, featuring Mare Fecunditatis (Sea of Fertility) in the foreground with twin craters Messier at lower right. Nearer horizon is Mare Nectaris (Sea of Nectar) with craters Goclenius and Gutenberg. Shows lunar surface crater impact network and maria/highlands division. Pattern membrane: moon_lunar_surface_crater_impact_network_maria_highlands_division. Verified via direct visual observation of Lunar_Surface_(AS16-121-19449).jpg from NASA Apollo 16 mission imagery."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Moon_Lunar_Surface_Crater_Impact_Network_and_Maria_Highlands_Division",
+      "error_category": "none",
+      "fix_description": "Feature 'Moon_Lunar_Surface_Crater_Impact_Network_and_Maria_Highlands_Division' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_7fd68c3968b1"
+    },
+    {
+      "id": "feature_534539e9b0810ad9",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:31:34.965115",
+      "feature_name": "Night_Sky_Stellar_Distribution_and_Milky_Way_Galactic_Center",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Milky Way galaxy and a meteor seen from Hawaii Volcanoes National Park, showing the galactic center of the Milky Way galaxy with dense stellar distribution and nebula dust lanes. Shows night sky star fields / constellation star field patterns and galactic arm density distribution. Pattern membrane: astro_night_sky_stellar_distribution_constellation_star_field_patterns and astro_milky_way_galactic_center_stellar_density_nebula_distribution. Verified via direct visual observation of Milky_Way_Galaxy_and_a_meteor.jpg from Wikimedia Commons (Brocken Inaglory)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Night_Sky_Stellar_Distribution_and_Milky_Way_Galactic_Center",
+      "error_category": "none",
+      "fix_description": "Feature 'Night_Sky_Stellar_Distribution_and_Milky_Way_Galactic_Center' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_5296cb4e816a"
+    },
+    {
+      "id": "feature_d08c4ddd4c6b9712",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:38:54.921251",
+      "feature_name": "Physical_Dynamics_River_Meander_Loops_Sinuous_Curvature",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "River meander patterns on Ucayali River (Amazon basin tributary). Shows river channel migration and sinuous curvature patterns formed by fluvial erosion and deposition. Pattern membrane: fluid_river_meander_loops_sinuous_curvature_patterns. Verified via direct visual observation of Meandering_on_Ucayali_River.gif from Wikimedia Commons (Lani Mac)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physical_Dynamics_River_Meander_Loops_Sinuous_Curvature",
+      "error_category": "none",
+      "fix_description": "Feature 'Physical_Dynamics_River_Meander_Loops_Sinuous_Curvature' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_aef2a3ff55d9"
+    },
+    {
+      "id": "feature_7ef7bfb6becbcb24",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:39:01.437761",
+      "feature_name": "Physical_Dynamics_Sand_Dune_Ripple_Transverse_Formations",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Sand dune patterns in Moon Valley, Atacama Desert Chile. Shows sediment dune ripple wavelength transverse formations and desert landscape patterns. Pattern membrane: sediment_dune_ripple_wavelength_transverse_formations. Verified via direct visual observation of Sand_Dune_In_Moon_Valley_Atacama_Desert_Chile.jpeg from Wikimedia Commons (Anna Fiofilova)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physical_Dynamics_Sand_Dune_Ripple_Transverse_Formations",
+      "error_category": "none",
+      "fix_description": "Feature 'Physical_Dynamics_Sand_Dune_Ripple_Transverse_Formations' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_b572571b1c27"
+    },
+    {
+      "id": "feature_02623c4c1e49cc5d",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:39:07.909949",
+      "feature_name": "Physical_Dynamics_Mud_Crack_Desiccation_Polygonal_Fractures",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Desiccation cracks on the surface of a bench dolomitized limestone, top of the lagoon \u00e9mersif cycle metric of the Liassic platform of the High Atlas, Morocco. Shows sediment mudcrack desiccation polygonal fractures pattern. Pattern membrane: sediment_mudcrack_desiccation_polygonal_fractures. Verified via direct visual observation of Desiccation_Rnim.jpg from Wikimedia Commons (Septfontaine)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physical_Dynamics_Mud_Crack_Desiccation_Polygonal_Fractures",
+      "error_category": "none",
+      "fix_description": "Feature 'Physical_Dynamics_Mud_Crack_Desiccation_Polygonal_Fractures' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_1c94cddf6dc4"
+    },
+    {
+      "id": "feature_2cadb66ae55936b3",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:39:13.902894",
+      "feature_name": "Physical_Dynamics_Sea_Ice_Frazil_Crystals_and_Nilas_Sheets",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Sea ice and icebergs off East Antarctica captured by NASA's Earth Observing-1 (EO-1) satellite on October 7, 2011. Shows various ice types including fast ice, pack ice, frazil crystals (tiny millimeter-scale ice crystals forming delicate swirls), and nilas sheets (thin sheets of newly formed sea ice that slide over each other). Pattern membrane: ice_crack_network_fractal_branching_fissures and fluid_sea_ice_frazil_nilas_translucent_sheets. Verified via direct visual observation of Sea_Ice_and_Icebergs_off_East_Antarctica_-_NASA_Earth_Observatory.jpg from NASA Earth Observatory / Wikimedia Commons."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physical_Dynamics_Sea_Ice_Frazil_Crystals_and_Nilas_Sheets",
+      "error_category": "none",
+      "fix_description": "Feature 'Physical_Dynamics_Sea_Ice_Frazil_Crystals_and_Nilas_Sheets' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_042427277ea6"
+    },
+    {
+      "id": "feature_b951b7940bdac1e1",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:46:19.810884",
+      "feature_name": "Spectral_Signature_Basalt_Silicate_Absorption_Bands",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "USGS Spectral Library reference for Basalt/Andesite (silicate rocks). Characteristic silicate absorption features at ~1.4\u00b5m, 1.9\u00b5m (hydration/hydroxyl), and ~2.2-2.3\u00b5m (Si-O stretching and Fe-Mg overtones). Links to visual feature feature_025b3f0a7338ba17 (rock_basalt_hexagonal_columnar_jointing_tessellation). Physics verification gate: material identity confirmed by atomic/molecular light absorption physics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Spectral_Signature_Basalt_Silicate_Absorption_Bands",
+      "error_category": "none",
+      "fix_description": "Feature 'Spectral_Signature_Basalt_Silicate_Absorption_Bands' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_3308a88e9866"
+    },
+    {
+      "id": "feature_b7c4787dea5ab470",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:46:23.864904",
+      "feature_name": "Spectral_Signature_Quartz_Silica_Absorption_Bands",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "USGS Spectral Library reference for Quartz. Strong silica reflection in visible to near-infrared, with specific absorption features at ~1.38\u00b5m and ~2.2\u00b5m due to Si-O molecular vibrations. Links to visual feature feature_64e52188bd209514 (mineral_quartz_hexagonal_prismatic_with_rhombohedral_termination). Physics verification gate: material identity confirmed by silicon-oxygen bond absorption physics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Spectral_Signature_Quartz_Silica_Absorption_Bands",
+      "error_category": "none",
+      "fix_description": "Feature 'Spectral_Signature_Quartz_Silica_Absorption_Bands' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_965f00244999"
+    },
+    {
+      "id": "feature_768ac4042421f137",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:46:27.122719",
+      "feature_name": "Spectral_Signature_Iron_Oxide_Hematite_Red_Reflectance",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "USGS Spectral Library reference for Hematite/Iron Oxide (Fe2O3). Strong red/orange visible reflection (600-700nm) with distinct near-infrared absorption features. Physical basis for reddish surface textures on Mars and terrestrial iron-rich rocks. Physics verification gate: material identity confirmed by iron electron transition light absorption physics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Spectral_Signature_Iron_Oxide_Hematite_Red_Reflectance",
+      "error_category": "none",
+      "fix_description": "Feature 'Spectral_Signature_Iron_Oxide_Hematite_Red_Reflectance' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f24a34282241"
+    },
+    {
+      "id": "feature_a994d72e6bceef75",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:46:30.409273",
+      "feature_name": "Spectral_Signature_Water_Ice_Hydration_Absorption_Bands",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "USGS/JPL ASTER Spectral Library reference for liquid water and crystalline ice. Strong molecular H-O-H vibration absorption bands at ~1.4\u00b5m, ~1.9\u00b5m, and ~3.0\u00b5m (ice has shifted crystalline bands at 1.65\u00b5m, 2.0\u00b5m, 3.1\u00b5m). Links to visual feature feature_2cadb66ae55936b3 (Physical_Dynamics_Sea_Ice_Frazil_Crystals_and_Nilas_Sheets). Physics verification gate: material identity confirmed by water molecule vibrational physics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Spectral_Signature_Water_Ice_Hydration_Absorption_Bands",
+      "error_category": "none",
+      "fix_description": "Feature 'Spectral_Signature_Water_Ice_Hydration_Absorption_Bands' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_1dceb2711d1a"
+    },
+    {
+      "id": "feature_75d0003c2192539b",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:46:40.674780",
+      "feature_name": "Spectral_Signature_Vegetation_Red_Edge_Chlorophyll",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "USGS/JPL Spectral Library reference for vegetation/chlorophyll. The famous \"Red Edge\" signature: strong absorption of red light (600-700nm) for photosynthesis via chlorophyll's magnesium porphyrin ring, followed by a sharp transition to high near-infrared reflection (700-1300nm). This is the primary spectral shortcut for identifying biological life and vegetation canopy patterns from satellite or hyperspectral data. Physics verification gate: biological identity confirmed by chlorophyll molecular light absorption physics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Spectral_Signature_Vegetation_Red_Edge_Chlorophyll",
+      "error_category": "none",
+      "fix_description": "Feature 'Spectral_Signature_Vegetation_Red_Edge_Chlorophyll' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_56104239e1a8"
+    },
+    {
+      "id": "feature_f409ea82c7a04b5c",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:47:27.600333",
+      "feature_name": "Biology_Mycelial_Network_Fungal_Hyphae_Branching_Web_Structure",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Mycelium of the fungus Rhizoctonia solani. Built of thick septate hyphae that branched perpendicular. Shows fungal hyphae branching web structure and nutrient distribution network patterns. Verified via direct visual observation of Mycelium_and_hyphae_of_the_fungus_Rhizoctonia_solani.jpg from Wikimedia Commons (Tashkoskip, European Science Photo Competition 2015). Multi-genre verification: Visual/Topological path confirms fractal branching web structures; Biological Efficiency path confirms Diffusion-Limited Aggregation (DLA) growth models and fungal hyphae branching efficiency."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Biology_Mycelial_Network_Fungal_Hyphae_Branching_Web_Structure",
+      "error_category": "none",
+      "fix_description": "Feature 'Biology_Mycelial_Network_Fungal_Hyphae_Branching_Web_Structure' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_50ce64cd2117"
+    },
+    {
+      "id": "feature_671e70847e5bb626",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:48:06.333015",
+      "feature_name": "Biology_Leaf_Venation_Reticulate_Campylodromous_Network",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Leaf morphology - campylodromous venation (Hickey 1973 classification). Shows reticulate venation pattern where secondary veins curve toward the leaf margin but do not reach it. Built of primary and secondary vein networks for optimal water transport and photosynthetic surface area optimization. Verified via direct visual observation of Leaf_morphology_-_venation_Hickey_1973_-_campylodromous.svg from Wikimedia Commons (RoRo, CC0 Public Domain). Multi-genre verification: Visual/Topological path confirms reticulate network patterns; Biological Efficiency path confirms optimal water transport fractal models and dicotyledonous leaf venation architecture."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Biology_Leaf_Venation_Reticulate_Campylodromous_Network",
+      "error_category": "none",
+      "fix_description": "Feature 'Biology_Leaf_Venation_Reticulate_Campylodromous_Network' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_0e455c947b76"
+    },
+    {
+      "id": "feature_dfb46d40c41a6a45",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:53:25.695797",
+      "feature_name": "Biology_Tree_Growth_Phyllotaxis_Fibonacci_Golden_Angle_Light_Interception",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Phyllotaxis: The mathematical arrangement of leaves on a plant stem to maximize light collection efficiency while allowing sunlight to fall through to lower leaves. Uses the Fibonacci sequence and the Golden Angle (~137.5 degrees). When a new leaf emerges at the apical meristem, it does so at 137.5 degrees from the previous leaf, ensuring no two leaves directly shadow each other. Multi-genre verification: Biological Efficiency path confirms optimal light interception models; Mathematical/Topology path confirms Fibonacci sequence and golden ratio fractal geometry."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Biology_Tree_Growth_Phyllotaxis_Fibonacci_Golden_Angle_Light_Interception",
+      "error_category": "none",
+      "fix_description": "Feature 'Biology_Tree_Growth_Phyllotaxis_Fibonacci_Golden_Angle_Light_Interception' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_cede8dd6711b"
+    },
+    {
+      "id": "feature_9ea1472316f4f628",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:54:26.994264",
+      "feature_name": "Biology_Tree_Branching_Fractal_Allometric_Scaling_Fluid_Transport",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Fractal branching and allometric scaling laws governing tree structure from trunk to twigs. Governed by the need to optimize fluid transport (xylem for water/minerals up, phloem for sugars down) while maintaining structural integrity against gravity and wind. Follows Murray's Law for fluid optimization, ensuring energy and matter flow efficiently from roots to canopy. Multi-genre verification: Biological Efficiency path confirms xylem/phloem transport models; Mathematical/Topology path confirms fractal branching and allometric scaling laws."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Biology_Tree_Branching_Fractal_Allometric_Scaling_Fluid_Transport",
+      "error_category": "none",
+      "fix_description": "Feature 'Biology_Tree_Branching_Fractal_Allometric_Scaling_Fluid_Transport' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2885c6e7f936"
+    },
+    {
+      "id": "feature_ca016149bc13adda",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T01:54:36.397990",
+      "feature_name": "Biology_Canopy_Light_Interception_Gap_Fraction_PAR_Distribution",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Canopy light interception models: Trees balance a dense upper canopy (to capture maximum energy/light) with strategic gaps (to allow light to reach lower leaves and the forest floor). Measured scientifically as Canopy Gap Fraction and Photosynthetically Active Radiation (PAR) distribution. The energy principle is competitive efficiency: the tree grows leaves where light is abundant, but optimizes the canopy's \"porosity\" so that sunlight filters through to the understory. Multi-genre verification: Biological Efficiency path confirms PAR distribution models; Physical/Spectral path confirms vegetation Red Edge spectral signature and light interception physics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Biology_Canopy_Light_Interception_Gap_Fraction_PAR_Distribution",
+      "error_category": "none",
+      "fix_description": "Feature 'Biology_Canopy_Light_Interception_Gap_Fraction_PAR_Distribution' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_82faadcc7720"
+    },
+    {
+      "id": "feature_15c8e53ff9a6fd39",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:01:37.411451",
+      "feature_name": "Physics_Control_Rigid_Body_Dynamics_Gravity_Friction_Collision",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Rigid Body Dynamics & Collision Physics module for ground movement and walking. Governed by gravity, friction, center of mass, and rigid body collision detection. Allows entities to interact with the ground/terrain (Level 2 Matter Source) via physical grip and balance. Multi-genre verification: Physics/Mechanics path confirms Newtonian rigid body laws; Engineering path confirms character controller physics principles taught in university-level mechanics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physics_Control_Rigid_Body_Dynamics_Gravity_Friction_Collision",
+      "error_category": "none",
+      "fix_description": "Feature 'Physics_Control_Rigid_Body_Dynamics_Gravity_Friction_Collision' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_95bf023a39c8"
+    },
+    {
+      "id": "feature_32f4de31863a8477",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:03:28.613765",
+      "feature_name": "Physics_Control_Fluid_Dynamics_Buoyancy_Hydrodynamics_Water_Displacement",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Fluid Dynamics & Buoyancy (Hydrodynamics) module for watercraft and boats. Governed by Archimedes' principle (buoyancy), fluid drag, wave interaction, and water displacement. Allows entities to interact with liquid environments (rivers, oceans) via physical support and hydrodynamic movement. Multi-genre verification: Physics/Fluid Dynamics path confirms Navier-Stokes principles for fluid flow; Engineering path confirms boat/hull design physics taught in university-level fluid mechanics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physics_Control_Fluid_Dynamics_Buoyancy_Hydrodynamics_Water_Displacement",
+      "error_category": "none",
+      "fix_description": "Feature 'Physics_Control_Fluid_Dynamics_Buoyancy_Hydrodynamics_Water_Displacement' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_e14a01b5b6ce"
+    },
+    {
+      "id": "feature_cbe0cf771406df71",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:04:02.748847",
+      "feature_name": "Physics_Control_Aerodynamics_Lift_Drag_Thrust_Weight_Airflow_Patterns",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Aerodynamic Forces & Flight Dynamics module for aircraft and airplanes. Governed by the four forces of flight: lift, drag, thrust, and weight. Includes airflow over surfaces (Bernoulli's principle and Newton's third law). Allows entities to interact with the atmosphere via aerodynamic control surfaces and engine propulsion. Multi-genre verification: Physics/Aerodynamics path confirms fluid dynamics of air flow; Engineering path confirms aircraft design and flight mechanics taught in university-level aerospace engineering."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physics_Control_Aerodynamics_Lift_Drag_Thrust_Weight_Airflow_Patterns",
+      "error_category": "none",
+      "fix_description": "Feature 'Physics_Control_Aerodynamics_Lift_Drag_Thrust_Weight_Airflow_Patterns' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_4164e808a93a"
+    },
+    {
+      "id": "feature_7567a2d34080f4bb",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:05:09.494201",
+      "feature_name": "Control_System_Modular_Assembly_Physics_Connection_Shapes_Energy_Matter_Flow",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Modular Physics Connection Interfaces / 'LEGO Puzzle' analogy: The 'connection shapes' are physics interfaces (Gravitational Anchor, Spectral/Energy Port, Hydrodynamic/Hydration Port, Aerodynamic/Atmospheric Port, Substrate/Geological Port). Just as in cellular biology where cells have specific receptors that only bind with compatible molecules, these physics modules have compatibility gates based on energy and matter flow. Multi-genre verification: Systems Engineering path confirms component-based architecture and entity-component compatibility; Biological path confirms extended cellular biology analogy for growing physical structures (buildings, trees, animals) via modular assembly."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Control_System_Modular_Assembly_Physics_Connection_Shapes_Energy_Matter_Flow",
+      "error_category": "none",
+      "fix_description": "Feature 'Control_System_Modular_Assembly_Physics_Connection_Shapes_Energy_Matter_Flow' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_4e1df2d0b0c2"
+    },
+    {
+      "id": "feature_e2c48d0ab925e44b",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:05:49.177338",
+      "feature_name": "Control_Interface_Character_Walking_Rigid_Body_Substrate_Connection",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Character Controller Module for walking/ground movement. Connects to Rigid Body Dynamics module via Substrate/Geological Port (soil minerals, topography, friction coefficients) and Gravitational Anchor (planet's gravity field). Allows player/entity to walk around the physical world by snapping feet/legs to the ground layer's physics interface. Multi-genre verification: Systems Engineering path confirms character controller component architecture; Physics/Mechanics path confirms rigid body collision and friction principles taught in university-level mechanics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Control_Interface_Character_Walking_Rigid_Body_Substrate_Connection",
+      "error_category": "none",
+      "fix_description": "Feature 'Control_Interface_Character_Walking_Rigid_Body_Substrate_Connection' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_593e9b22e3c9"
+    },
+    {
+      "id": "feature_91c4aeb3a0a01226",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:06:00.391745",
+      "feature_name": "Control_Interface_Vessel_Boating_Fluid_Dynamics_Hydrodynamic_Connection",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Vessel Control Module for driving boats/watercraft. Connects to Fluid Dynamics & Buoyancy module via Hydrodynamic/Hydration Port (buoyancy, fluid drag, water displacement) and Gravitational Anchor (planet's gravity field). Allows player/entity to drive boats by snapping the hull module to the river/ocean surface's physics interface. Multi-genre verification: Systems Engineering path confirms vessel control component architecture; Physics/Fluid Dynamics path confirms hydrodynamics and Archimedes' principle taught in university-level fluid mechanics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Control_Interface_Vessel_Boating_Fluid_Dynamics_Hydrodynamic_Connection",
+      "error_category": "none",
+      "fix_description": "Feature 'Control_Interface_Vessel_Boating_Fluid_Dynamics_Hydrodynamic_Connection' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_a8fc7ea7021b"
+    },
+    {
+      "id": "feature_738747d08d709061",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:06:08.143581",
+      "feature_name": "Control_Interface_Aircraft_Flying_Aerodynamics_Atmospheric_Connection",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Aircraft Control Module for flying airplanes/aircraft. Connects to Aerodynamic Forces & Flight Dynamics module via Aerodynamic/Atmospheric Port (lift, drag, thrust, weight, airflow patterns) and Gravitational Anchor (planet's gravity field). Allows player/entity to fly airplanes by snapping the wings/fuselage module to the atmosphere's physics interface. Multi-genre verification: Systems Engineering path confirms aircraft control component architecture; Physics/Aerodynamics path confirms flight mechanics and Bernoulli's principle taught in university-level aerospace engineering."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Control_Interface_Aircraft_Flying_Aerodynamics_Atmospheric_Connection",
+      "error_category": "none",
+      "fix_description": "Feature 'Control_Interface_Aircraft_Flying_Aerodynamics_Atmospheric_Connection' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_caaa82d88d54"
+    },
+    {
+      "id": "feature_175791fdbe7749ab",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:06:20.904343",
+      "feature_name": "Control_Interface_Spacecraft_Orbital_Mechanics_Gravitational_Connection",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Spacecraft Control Module for floating in space/orbital mechanics. Connects to Orbital Mechanics & Celestial Gravity module via Gravitational Anchor (Newtonian gravity, Kepler's laws, conservation of momentum) and Solar/Energy Port (solar radiation pressure, vacuum physics). Allows player/entity to float in space or achieve stable orbit by snapping the spacecraft module to the celestial body's gravitational physics interface. Multi-genre verification: Systems Engineering path confirms spacecraft control component architecture; Physics/Astrophysics path confirms orbital mechanics and Newtonian gravity taught in university-level astrophysics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Control_Interface_Spacecraft_Orbital_Mechanics_Gravitational_Connection",
+      "error_category": "none",
+      "fix_description": "Feature 'Control_Interface_Spacecraft_Orbital_Mechanics_Gravitational_Connection' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_6ce3502747fc"
+    },
+    {
+      "id": "feature_8ba426fca396af30",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:08:30.473738",
+      "feature_name": "Physics_Control_Thrust_Vector_Center_of_Gravity_Flight_Dynamics",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Flight Dynamics & Thrust Vectoring module for ships, aircraft, and spaceships. Governed by thrust vector directionality, center of gravity (CoG) vs. center of thrust (CoT) balance, and rotational inertia. Determines how ship construction/conconfiguration affects flight stability, pitch/yaw/roll based on where mass is concentrated versus where propulsion forces are applied. Multi-genre verification: Physics/Aerospace Engineering path confirms rigid body force application, torque calculation, and center of mass principles taught in university-level flight dynamics and spacecraft control systems."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physics_Control_Thrust_Vector_Center_of_Gravity_Flight_Dynamics",
+      "error_category": "none",
+      "fix_description": "Feature 'Physics_Control_Thrust_Vector_Center_of_Gravity_Flight_Dynamics' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c7612968d47a"
+    },
+    {
+      "id": "feature_fb9637f76932f22b",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:08:41.763162",
+      "feature_name": "Physics_Control_Environmental_Forces_Gravity_Wind_Aerodynamic_Drag",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Environmental Interaction module for flight and orbital mechanics. Integrates gravitational pull (Newtonian gravity), wind patterns (atmospheric fluid dynamics), and aerodynamic drag/lift forces. Determines how external environmental factors affect ship/aircraft trajectory, speed, and stability during flight or atmospheric entry. Multi-genre verification: Physics/Fluid Dynamics path confirms Navier-Stokes atmospheric flow and drag equations; Aerospace Engineering path confirms environmental force integration in flight simulation models taught in university-level aerospace engineering."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Physics_Control_Environmental_Forces_Gravity_Wind_Aerodynamic_Drag",
+      "error_category": "none",
+      "fix_description": "Feature 'Physics_Control_Environmental_Forces_Gravity_Wind_Aerodynamic_Drag' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_4956f5a9ae89"
+    },
+    {
+      "id": "feature_50537609b933ed14",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:09:54.963182",
+      "feature_name": "Verb_Apply_Thrust_Energy_Input_Control_Systems",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "The Verb of THRUST: Capturing the event of applying thrust via keyboard/input, mapping energy input to specific thruster ports and thrust vector directions. When a player applies thrust via keyboard, the engine captures this as an energy flow event, calculating how the thrust vector interacts with the ship's Center of Gravity (CoG) and Center of Thrust (CoT). Multi-genre verification: Systems Engineering path confirms event-driven input mapping to physics verbs; Physics/Rigid Body Dynamics path confirms force application and energy-to-motion conversion."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Verb_Apply_Thrust_Energy_Input_Control_Systems",
+      "error_category": "none",
+      "fix_description": "Feature 'Verb_Apply_Thrust_Energy_Input_Control_Systems' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_cbc9cf295ba1"
+    },
+    {
+      "id": "feature_092519ee887c5a55",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:10:04.327521",
+      "feature_name": "Verb_Balance_Center_of_Gravity_Torque_Stabilization_Flight_Dynamics",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "The Verb of BALANCE: The action of adjusting Center of Gravity (CoG) vs. Center of Thrust (CoT) alignment through thruster firing or mass distribution to stabilize pitch/yaw/roll torque. When a ship is misaligned, the player must execute the verb of balancing by firing counter-thrusters or shifting energy flow to achieve stable equilibrium. Multi-genre verification: Physics/Aerospace Engineering path confirms torque stabilization and center of mass balancing principles taught in university-level flight dynamics and spacecraft control systems."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Verb_Balance_Center_of_Gravity_Torque_Stabilization_Flight_Dynamics",
+      "error_category": "none",
+      "fix_description": "Feature 'Verb_Balance_Center_of_Gravity_Torque_Stabilization_Flight_Dynamics' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f0f518b9ccce"
+    },
+    {
+      "id": "feature_5e352bddd80d6f72",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:10:13.900455",
+      "feature_name": "Control_System_Input_Mapping_Keyboard_to_Physics_Verbs_Energy_Matter_Flow",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Input Control Mapping: The mapping of keyboard events to physics verbs (thrust, pitch, yaw, roll, balance). When a player presses a key on the keyboard, it triggers a verb event (e.g., 'apply_thrust_forward', 'stabilize_yaw') that is mapped to specific thruster ports or aerodynamic control surfaces. The engine captures these events and calculates how the energy input interacts with the entity's physics modules (CoG/CoT alignment, environmental forces). Multi-genre verification: Systems Engineering path confirms event-driven input mapping to physics verbs; Human-Computer Interaction path confirms keyboard-to-action mapping principles taught in university-level game design and control systems engineering."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Control_System_Input_Mapping_Keyboard_to_Physics_Verbs_Energy_Matter_Flow",
+      "error_category": "none",
+      "fix_description": "Feature 'Control_System_Input_Mapping_Keyboard_to_Physics_Verbs_Energy_Matter_Flow' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_9ed74a0893b5"
+    },
+    {
+      "id": "feature_8e4a6615622eb4f7",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:11:55.223925",
+      "feature_name": "Exploration_Product_Universal_Simulation_Educational_Verb_System",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "Educational and exploration product architecture: A universe simulator built on physics-based verb simulation (THRUST, BALANCE, GROW, CONNECT). Allows users to explore the universe from home via modular physics control systems (Rigid Body Dynamics, Fluid Dynamics, Aerodynamics, Orbital Mechanics) integrated with spectral/physical verification gates. Multi-genre verification: Educational Pedagogy path confirms experiential learning through simulation and verb-based interaction; Systems Engineering path confirms universal scale simulation architecture connecting player interface to celestial environments."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Exploration_Product_Universal_Simulation_Educational_Verb_System",
+      "error_category": "none",
+      "fix_description": "Feature 'Exploration_Product_Universal_Simulation_Educational_Verb_System' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_d97b22faa945"
+    },
+    {
+      "id": "feature_12361161a106f9f6",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:13:52.593968",
+      "feature_name": "Verb_Scan_Spectral_Signature_Hypersensor_Chemical_Analysis",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "The verb of SCAN: Using hyperspectral sensors to analyze the chemical composition of planets, stars, or surfaces. Maps to spectral/energy ports and USGS/JPL spectral library references (reflectance spectroscopy, wavelength absorption analysis). When a player activates a spectral scan, the engine captures this as an energy flow event, matching observed reflectance curves against known physical signatures (e.g., vegetation Red Edge, silicate bands, iron oxide features). Multi-genre verification: Physics/Spectroscopy path confirms reflectance spectroscopy and wavelength absorption analysis; Educational Pedagogy path confirms hands-on scientific instrument simulation taught in university-level remote sensing and planetary science."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Verb_Scan_Spectral_Signature_Hypersensor_Chemical_Analysis",
+      "error_category": "none",
+      "fix_description": "Feature 'Verb_Scan_Spectral_Signature_Hypersensor_Chemical_Analysis' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_705151a60954"
+    },
+    {
+      "id": "feature_10480e05125fe8a8",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:14:03.346162",
+      "feature_name": "Verb_Navigate_Orbital_Trajectory_Keplerian_Mechanics",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "The verb of NAVIGATE_ORBIT: Calculating and adjusting thrust to achieve stable orbit or transfer between celestial bodies. Maps to orbital mechanics module + Kepler's laws + conservation of momentum + Newtonian gravity. When a player executes orbital navigation, the engine captures thrust vector inputs and calculates gravitational pull from massive objects, orbital trajectories, and how thrusters change momentum in a vacuum. Multi-genre verification: Physics/Astrophysics path confirms orbital trajectory calculation and Hohmann transfer principles taught in university-level astrodynamics and celestial mechanics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Verb_Navigate_Orbital_Trajectory_Keplerian_Mechanics",
+      "error_category": "none",
+      "fix_description": "Feature 'Verb_Navigate_Orbital_Trajectory_Keplerian_Mechanics' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_6538e21daebb"
+    },
+    {
+      "id": "feature_a12ae6c57190cd9d",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:14:08.966440",
+      "feature_name": "Verb_Grow_Ecosystem_Biome_Assembly_Energy_Matter_Flow",
+      "loop": 5,
+      "status": "verified",
+      "parameters": {
+        "notes": "The verb of GROW_ECOSYSTEM: Planting seeds and watching biological networks (mycelial, canopy) grow based on environmental conditions (substrate, spectral energy input). Maps to spectral/energy port + substrate/geological port + phyllotaxis patterns + fractal branching rules. When a player executes ecosystem growth, the engine captures seed location, substrate type, and energy input level, then applies training patterns for procedural biological assembly. Multi-genre verification: Biology/Ecology path confirms biome assembly and ecological succession principles; Systems Engineering path confirms procedural growth simulation via training patterns and energy/matter flow."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_5/Verb_Grow_Ecosystem_Biome_Assembly_Energy_Matter_Flow",
+      "error_category": "none",
+      "fix_description": "Feature 'Verb_Grow_Ecosystem_Biome_Assembly_Energy_Matter_Flow' (Loop 5) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_8fb74b882d61"
+    },
+    {
+      "id": "feature_41aa9dd79bdd2655",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:25:44.777774",
+      "feature_name": "canopy_aerodynamics_leaf_flutter_dynamics",
+      "loop": 10,
+      "status": "researching",
+      "parameters": {
+        "notes": "Simulating wind blowing through tree canopies, capturing state transitions of flexibility and leaf flutter based on wind speed states. Procedural generation with different seeds creates unique trees, but simulation with different seeds reduces to certain physical states (attractors in phase space). Smooth, repeatable, semi-random loops for transition states between calm, breeze, wind, and gale conditions."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/canopy_aerodynamics_leaf_flutter_dynamics",
+      "error_category": "none",
+      "fix_description": "Feature 'canopy_aerodynamics_leaf_flutter_dynamics' (Loop 10) recorded as 'researching'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_398a117981b3"
+    },
+    {
+      "id": "feature_c8375addeac77a89",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:29:22.253243",
+      "feature_name": "scales_of_speed_patterns_verbs",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "All patterns and verbs have scales of speed - temporal dynamics or rates at which these patterns and verbs operate. This is the time-domain dimension of membrane programming. Includes PATTERNS_SCALES_OF_SPEED (phyllotaxis growth rate, fluid transport speeds, light distribution update rates, wind speed states, leaf flutter frequency, transition smoothness timescale) and VERBS_SCALES_OF_SPEED (THRUST acceleration scale, BALANCE stabilization rate, GROW growth timescale, CONNECT connection establishment time, SCAN scan frequency, NAVIGATE_ORBIT orbital period timescale, GROW_ECOSYSTEM ecosystem evolution rate)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/scales_of_speed_patterns_verbs",
+      "error_category": "none",
+      "fix_description": "Feature 'scales_of_speed_patterns_verbs' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_b3cff11cce76"
+    },
+    {
+      "id": "feature_d880e3def1814422",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:29:25.186041",
+      "feature_name": "character_movement_thumbstick_analog_control_scale_of_speed",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Controlling a character with a thumb stick is an example of verbs having scales of speed. Includes thumbstick deadzone radius (normalized 0 to 1 range excluding center stability zone), analog stick sensitivity scale (units per second per analog value), input smoothing rate hz (low pass filter frequency for thumbstick input), movement acceleration timescale (seconds to reach max speed from stationary), and movement deceleration timescale (seconds to stop when thumbstick returns to center)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/character_movement_thumbstick_analog_control_scale_of_speed",
+      "error_category": "none",
+      "fix_description": "Feature 'character_movement_thumbstick_analog_control_scale_of_speed' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_09736378d6e8"
+    },
+    {
+      "id": "feature_6ea80c0c87b369f3",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:35:46.849103",
+      "feature_name": "constraints_drive_emergence_membrane_programming",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "All patterns, verbs, connection shapes (LEGO puzzle), spectroscopy verification gates, and scales of speed are constraints that drive Emergence. In membrane programming, \"programming\" means defining the energy principles, mathematical constraints, and flow of matter/energy that govern how assets grow and connect in the scene hierarchy. Constraints include: energy principles, mathematical constraints, flow of matter/energy, physical laws (fluid dynamics, aerodynamics, gravity), temporal dynamics/scales of speed. Emergence arises from these constraints, not pre-scripted game mechanics. The constraint-first workflow: CONSTRAINT \u2192 MEASURE \u2192 EXISTING \u2192 WORK \u2192 VERIFY."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/constraints_drive_emergence_membrane_programming",
+      "error_category": "none",
+      "fix_description": "Feature 'constraints_drive_emergence_membrane_programming' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ef22d827eacf"
+    },
+    {
+      "id": "feature_5221a257052d1ecf",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:41:45.522019",
+      "feature_name": "generation_rating_vision_evaluation_screenshot_analysis",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Capability to rate each generation yourself by examining the screenshot of the render that you will take. Uses vision analysis and constraint-based evaluation to assess quality, adherence to constraints, and emergence patterns. Rating criteria include: 1) Constraint Adherence (energy principles, mathematical constraints, flow of matter/energy), 2) Emergence Patterns (phyllotaxis, fractal branching, canopy turbulence, leaf flutter), 3) Scales of Speed Alignment (wind speed states calm/breeze/wind/gale or growth phases), 4) Spectroscopic/Physical Accuracy (spectral signatures like Red Edge for vegetation, hydration bands, mineral absorption). Workflow: GENERATE -> RENDER/TAKE SCREENSHOT -> EXAMINE SCREENSHOT -> RATE GENERATION -> RECORD FEEDBACK."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/generation_rating_vision_evaluation_screenshot_analysis",
+      "error_category": "none",
+      "fix_description": "Feature 'generation_rating_vision_evaluation_screenshot_analysis' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_684552686de0"
+    },
+    {
+      "id": "feature_d93a987b1db49f2f",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:43:22.520376",
+      "feature_name": "verb_taxonomy_english_grammar_analogy_regular_irregular_neologisms",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "English verb taxonomy maps to the project's verb library and constraint system: Regular verbs (thousands, follow predictable grammatical rules) map to pattern-based constraints & scales of speed (GROW follows phyllotaxis/fractal branching rules, CONNECT follows connection shape snapping rules). Irregular verbs (~200, must be learned individually as they don't follow standard rules) map to unique verification gates & specific physical laws/spectral signatures (wind-state transitions calm/breeze/wind/gale, Red Edge vegetation signature, basalt columnar jointing, FSI leaf flutter dynamics). New verbs/neologisms (constantly created as language evolves) map to the Player Progression System & Modular Physics Control Architecture where players unlock new verbs/modules as they learn physics of energy and matter flow (NAVIGATE_ORBIT, GROW_ECOSYSTEM, etc.)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/verb_taxonomy_english_grammar_analogy_regular_irregular_neologisms",
+      "error_category": "none",
+      "fix_description": "Feature 'verb_taxonomy_english_grammar_analogy_regular_irregular_neologisms' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_98f56accdad9"
+    },
+    {
+      "id": "feature_c9a79dd138e5e4a7",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:46:14.029153",
+      "feature_name": "spectroscopic_exploration_tools_hyperspectral_sensors",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Spectroscopic Exploration Tools module defines how players use hyperspectral sensors to analyze the chemical composition of celestial bodies and environmental surfaces. The SCAN verb activates hyperspectral sensors that capture reflectance curves and absorption features, verifying visual patterns against spectral signatures via multi-genre verification gates. Spectral signatures detected include: Vegetation \"Red Edge\" (700-1300nm reflection increase), Water/Ice Hydration Bands (1.4\u00b5m, 1.9\u00b5m absorption features), Iron Oxide/Hematite (600-700nm red/orange reflection signature), Basalt/Silicate (1.4\u00b5m, 1.9\u00b5m, 2.2\u00b5m silicate absorption bands), Quartz/Silica (distinctive reflective properties in visible to near-infrared spectrum)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/spectroscopic_exploration_tools_hyperspectral_sensors",
+      "error_category": "none",
+      "fix_description": "Feature 'spectroscopic_exploration_tools_hyperspectral_sensors' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_9ce45c4934ef"
+    },
+    {
+      "id": "feature_81d0cf3bf7618d8f",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:46:42.958864",
+      "feature_name": "human_language_semantic_mapping_to_membrane_programming_concepts",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Mapping the entire human language to our concepts creates a Domain-Specific Language (DSL) or Semantic Programming Language where natural language words map directly to physics modules, membrane patterns, constraints, and emergent behaviors. Verbs map to THRUST/BALANCE/GROW/CONNECT/SCAN/NAVIGATE_ORBIT/GROW_ECOSYSTEM and their scales of speed. Nouns map to Hierarchy Levels (Level 1 Energy/Sky, Level 2 Matter/Ground, Level 3 Transformation/Biological Growth, Level 4 Observer/Camera). Adjectives/descriptors map to spectral signatures and physical states (calm/breeze/wind/gale, Red Edge, hydration bands). Prepositions/conjunctions map to LEGO puzzle connection shapes (Gravitational Anchor, Spectral/Energy Port, Hydrodynamic/Hydration Port, Aerodynamic/Atmospheric Port, Substrate/Geological Port). This allows players to \"program\" the simulation using natural language semantically mapped to physics and constraints."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/human_language_semantic_mapping_to_membrane_programming_concepts",
+      "error_category": "none",
+      "fix_description": "Feature 'human_language_semantic_mapping_to_membrane_programming_concepts' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_efa1609cfa40"
+    },
+    {
+      "id": "feature_aec11467a9281a9d",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:49:03.524779",
+      "feature_name": "player_progression_system_natural_language_semantic_programming_dsl",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Player Progression System defines how players unlock new verbs and modules as they learn the physics of energy and matter flow. Progression tiers: Tier 1 (Basic Verbs & Hierarchy Levels - GROW, CONNECT), Tier 2 (Spectroscopic Exploration & Physical States - SCAN), Tier 3 (Fluid Dynamics & Aerodynamic Control - THRUST, BALANCE), Tier 4 (Orbital Mechanics & Deep Space Navigation - NAVIGATE_ORBIT), Tier 5 (Natural Language Semantic Programming DSL - all verbs + custom neologisms). Natural Language DSL Mapper maps human language parts of speech to simulation concepts: Verbs -> THRUST/BALANCE/GROW/CONNECT/SCAN/NAVIGATE_ORBIT/GROW_ECOSYSTEM + scales of speed; Nouns -> Hierarchy Levels (Level 1-4) & Matter Sources; Adjectives -> Physical States & Spectral Signatures; Prepositions -> LEGO Puzzle Connection Shapes (Gravitational Anchor, Spectral/Energy Port, Hydrodynamic/Hydration Port, Aerodynamic/Atmospheric Port, Substrate/Geological Port)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/player_progression_system_natural_language_semantic_programming_dsl",
+      "error_category": "none",
+      "fix_description": "Feature 'player_progression_system_natural_language_semantic_programming_dsl' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_b6ac4c4660c0"
+    },
+    {
+      "id": "feature_8d86cda376da6b3c",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:53:21.782902",
+      "feature_name": "wind_through_tree_fsi_simulation_state_transitions_calm_breeze_wind_gale",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Wind-through-tree fluid structure interaction (FSI) simulation implemented in Python/physics pipeline. Connects canopy aerodynamics patterns with FSI and leaf flutter dynamics using the Aerodynamic/Atmospheric Port connection shape. Simulates state transitions across calm/breeze/wind/gale states with smooth, repeatable, semi-random transition loops. Procedural seed reduction ensures every generation makes the tree a little bit different, and simulation with different seeds reduces to certain physical states (attractors in phase space). FSI metrics include wind energy transfer, mechanical flexure score, aerodynamic flutter intensity, and canopy turbulence drag/lift forces."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/wind_through_tree_fsi_simulation_state_transitions_calm_breeze_wind_gale",
+      "error_category": "none",
+      "fix_description": "Feature 'wind_through_tree_fsi_simulation_state_transitions_calm_breeze_wind_gale' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_2050e3c7e39f"
+    },
+    {
+      "id": "feature_99c6338814504724",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:57:58.597006",
+      "feature_name": "semantic_programming_dsl_engine_natural_language_semantic_mapping_executor",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Semantic Programming DSL Engine implements the Natural Language Semantic Programming Domain-Specific Language (DSL) engine for the universal simulation. Translates natural language sentences into membrane programming constraints and executes corresponding physics simulations. Core philosophy: words transmit the imprint of intent as data\u2014a representation, a compression of reality. Intelligence is compression: the genome (or training patterns, membrane constraints, and natural language DSL) *is* the compressed world. The hardware (Python/physics simulation pipeline) sets the maximum fidelity, and physics acts as the decompressor. Constraints drive emergence: all patterns, verbs, connection shapes, spectroscopy verification gates, and scales of speed are constraints that drive Emergence. Workflow: PARSE NATURAL LANGUAGE -> MAP TO SIMULATION CONCEPTS -> VALIDATE CONSTRAINTS -> EXECUTE SIMULATION."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/semantic_programming_dsl_engine_natural_language_semantic_mapping_executor",
+      "error_category": "none",
+      "fix_description": "Feature 'semantic_programming_dsl_engine_natural_language_semantic_mapping_executor' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ce1bb31dc951"
+    },
+    {
+      "id": "feature_64e1248edacac129",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T02:59:53.037760",
+      "feature_name": "universal_simulation_dsl_physics_integration_pipeline",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Universal Simulation Pipeline integrates Natural Language Semantic Programming DSL Engine, Fluid Structure Interaction (FSI) simulations, Spectroscopic Exploration Tools, and Generation Rating concepts into a unified pipeline for the universal simulation. Workflow: INPUT natural language sentence -> PARSE & MAP to simulation concepts -> VALIDATE CONSTRAINTS -> EXECUTE SIMULATION (FSI or Spectroscopic) -> RATE/EVALUATE (readiness for generation rating engine). Core philosophy: words transmit the imprint of intent as data\u2014a representation, a compression of reality. Intelligence is compression: the genome (or training patterns, membrane constraints, and natural language DSL) *is* the compressed world. The hardware (Python/physics simulation pipeline) sets the maximum fidelity, and physics acts as the decompressor. Constraints drive emergence."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/universal_simulation_dsl_physics_integration_pipeline",
+      "error_category": "none",
+      "fix_description": "Feature 'universal_simulation_dsl_physics_integration_pipeline' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c6e784d66979"
+    },
+    {
+      "id": "feature_bd60ab665a6369f4",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:02:44.688641",
+      "feature_name": "semantic_programming_dsl_engine_spacy_pos_tagging_dependency_parsing_integration",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Semantic Programming DSL Engine enhanced with spaCy part-of-speech tagging and dependency parsing integration. Maps UPOS tags to DSL concepts: VERB\u2192verbs (THRUST, BALANCE, GROW, CONNECT, SCAN), NOUN/PROPN\u2192nouns (Hierarchy Levels, Matter Sources), ADJ\u2192adjectives (Physical States, Spectral Signatures), ADP\u2192prepositions (LEGO Puzzle Connection Shapes). Fallback to regex-based extraction when spaCy is not available. spaCy provides Token attributes: text, lemma_, pos_ (UPOS tag), tag_ (fine-grained POS), dep_ (syntactic dependency), shape_, is_alpha, is_stop. Statistical models enable predictions of which tag or label most likely applies in context."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/semantic_programming_dsl_engine_spacy_pos_tagging_dependency_parsing_integration",
+      "error_category": "none",
+      "fix_description": "Feature 'semantic_programming_dsl_engine_spacy_pos_tagging_dependency_parsing_integration' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_393e147ccaba"
+    },
+    {
+      "id": "feature_abe6fb1b752e56bd",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:05:50.066710",
+      "feature_name": "universal_simulation_pipeline_demo_execution_successful",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Universal Simulation Pipeline demo execution successful. Scenario 1 (Wind-Through-Tree Fluid Dynamics) processed natural language input \"Wind blows through the tree canopy, and the roots connect to the soil moisture while the leaves capture sunlight.\" Scenario 2 (Spectroscopic Exploration) processed \"Scan the earth surface for vegetation red edge and iron oxide hematite signatures.\" and successfully executed Hyperspectral_Sensor_Analysis simulation, detecting 'vegetation_red_edge' spectral signature. Pipeline workflow: INPUT natural language sentence -> PARSE & MAP to simulation concepts -> VALIDATE CONSTRAINTS -> EXECUTE SIMULATION (FSI or Spectroscopic) -> RATE/EVALUATE (readiness for generation rating engine)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/universal_simulation_pipeline_demo_execution_successful",
+      "error_category": "none",
+      "fix_description": "Feature 'universal_simulation_pipeline_demo_execution_successful' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_f391e2c397c7"
+    },
+    {
+      "id": "feature_fde0dadddd60f51b",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:11:12.404925",
+      "feature_name": "semantic_programming_dsl_engine_dependency_parsing_syntactic_relationship_mapping",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Semantic Programming DSL Engine enhanced with dependency parsing and syntactic relationship mapping using spaCy. Maps grammatical dependencies to simulation concepts: nsubj (nominal subject) -> Hierarchy Level / Matter Source, dobj (direct object) -> Transformation Engine / Target, prep/pobj (prepositional relationships) -> LEGO Puzzle Connection Shapes, amod (adjectival modifiers) -> Physical States / Spectral Signatures. Extracts dependency relationships (token, pos, dep, head, head_pos) and noun_chunks (text, root, pos). Root verb identification for action centering."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/semantic_programming_dsl_engine_dependency_parsing_syntactic_relationship_mapping",
+      "error_category": "none",
+      "fix_description": "Feature 'semantic_programming_dsl_engine_dependency_parsing_syntactic_relationship_mapping' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_0e2d6fdf68d8"
+    },
+    {
+      "id": "feature_bfeea5b2cf789f3a",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:15:34.967293",
+      "feature_name": "wind_state_transition_loop_phase_metrics_turbulence_flutter_instability_damping",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "WindStateTransitionLoop in wind_through_tree_fsi.py expanded with calculate_phase_transition_metrics method. Maps transition phases to specific metrics: phase_1_calm_to_breeze (turbulence_intensity: 0.15, flutter_instability: 0.20, damping_factor: 0.95), phase_2_breeze_to_wind (turbulence_intensity: 0.45, flutter_instability: 0.50, damping_factor: 0.85), phase_3_wind_to_gale (turbulence_intensity: 0.85, flutter_instability: 0.90, damping_factor: 0.60) for aerodynamic_instability_and_maximal_leaf_flutter, phase_4_gale_back_to_calm (turbulence_intensity: 0.30, flutter_instability: 0.25, damping_factor: 0.98) for damping_and_return_to_equilibrium_state."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/wind_state_transition_loop_phase_metrics_turbulence_flutter_instability_damping",
+      "error_category": "none",
+      "fix_description": "Feature 'wind_state_transition_loop_phase_metrics_turbulence_flutter_instability_damping' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_56d448c0200b"
+    },
+    {
+      "id": "feature_cd6ce4d5827c65c6",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:22:37.268200",
+      "feature_name": "fluid_dynamics_buoyancy_river_meander_loops_sand_dune_ripples",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Fluid Dynamics & Buoyancy simulation module implemented in Python/physics pipeline. Simulates river meander loops and sand dune ripples using simplified flow pattern algorithms. Maps to Hydrodynamic/Hydration Port connection shape, handling buoyancy, fluid drag, and water hydration absorption bands (1.4\u00b5m, 1.9\u00b5m). Metrics include flow_velocity, meander_wavelength, ripple_amplitude, buoyancy_factor, fluid_drag_coefficient."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/fluid_dynamics_buoyancy_river_meander_loops_sand_dune_ripples",
+      "error_category": "none",
+      "fix_description": "Feature 'fluid_dynamics_buoyancy_river_meander_loops_sand_dune_ripples' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c966fbf426d8"
+    },
+    {
+      "id": "feature_fb4836fc3c097ea9",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:22:41.788271",
+      "feature_name": "aerodynamics_flight_dynamics_thrust_vector_cog_environmental_forces",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Aerodynamics & Flight Dynamics simulation module implemented in Python/physics pipeline. Simulates airplane flight dynamics, thrust vector & CoG (Center of Gravity) flight dynamics, and environmental forces (gravity/wind/drag). Maps to Aerodynamic/Atmospheric Port and Gravitational Anchor connection shapes. Metrics include lift_coefficient, drag_coefficient, thrust_vector_x_y_z, center_of_gravity, center_of_thrust, torque stabilization metrics."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/aerodynamics_flight_dynamics_thrust_vector_cog_environmental_forces",
+      "error_category": "none",
+      "fix_description": "Feature 'aerodynamics_flight_dynamics_thrust_vector_cog_environmental_forces' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_45016c6969a8"
+    },
+    {
+      "id": "feature_bb6333b0765815be",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:22:47.235129",
+      "feature_name": "semantic_programming_dsl_engine_spacy_rule_based_matching_matcher_integration",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Semantic Programming DSL Engine enhanced with spaCy Rule-based Matching (Matcher) integration for specific verb-noun-preposition patterns triggering physics simulation modules. Patterns defined: FSI_TRIGGER_PATTERN (VERB 'blow/flow/move' -> NOUN -> ADP -> NOUN triggers Fluid_Structure_Interaction_FSI), SPECTRAL_TRIGGER_PATTERN (VERB 'scan/analyze/examine' -> NOUN -> ADP 'for/with' -> NOUN triggers Hyperspectral_Sensor_Analysis), ECOSYSTEM_TRIGGER_PATTERN (VERB 'grow/plant/nurture' -> NOUN -> ADP -> NOUN triggers GROW_ECOSYSTEM_Simulation)."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/semantic_programming_dsl_engine_spacy_rule_based_matching_matcher_integration",
+      "error_category": "none",
+      "fix_description": "Feature 'semantic_programming_dsl_engine_spacy_rule_based_matching_matcher_integration' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_3e86d0c998a0"
+    },
+    {
+      "id": "feature_449f62e2da046f1f",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:30:37.484280",
+      "feature_name": "cosmological_patterns_messier_81_spiral_galaxy_saturn_rings_cassini_division_orion_nebula_hubble_mosaic",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Verified cosmological pattern membranes recorded in knowledge graph: Messier 81 Spiral Galaxy (spiral galaxy arms stellar distribution, galactic core spiral structure), Saturn Rings with Cassini Division (saturnian ring system planetary science, cassini division saturn rings image), Orion Nebula Hubble Mosaic (nebulae hubble mosaic). Multi-genre verification gates applied: parallel extraction paths - Visual Path (geometric/topological patterns) and Spectral Path (reflectance curves/absorption features from USGS/JPL spectral libraries). Verified by PHYSICS when visual and spectral data align."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/cosmological_patterns_messier_81_spiral_galaxy_saturn_rings_cassini_division_orion_nebula_hubble_mosaic",
+      "error_category": "none",
+      "fix_description": "Feature 'cosmological_patterns_messier_81_spiral_galaxy_saturn_rings_cassini_division_orion_nebula_hubble_mosaic' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c3660529ec0c"
+    },
+    {
+      "id": "feature_cf9224266bc448e6",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:30:43.856960",
+      "feature_name": "geological_patterns_basalt_columns_columnar_jointing_granite_outcrop_phaneritic_interlocking_sandstone_cross_bedding_stratification",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Verified geological pattern membranes recorded in knowledge graph: Basalt Columns at Giant's Causeway (rock_basalt_hexagonal_columnar_jointing_tessellation), Granite Outcrop Ben Avon (rock_granite_phaneritic_interlocking_feldspar_quartz_mica), Sandstone Cross-bedding Aztec Sandstone (rock_sandstone_cross_bedding_stratification_layers). Multi-genre verification gates applied: parallel extraction paths - Visual Path (geometric/topological patterns like hexagonal columnar jointing) and Spectral Path (reflectance curves/absorption features from USGS/JPL spectral libraries). Verified by PHYSICS when visual and spectral data align."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/geological_patterns_basalt_columns_columnar_jointing_granite_outcrop_phaneritic_interlocking_sandstone_cross_bedding_stratification",
+      "error_category": "none",
+      "fix_description": "Feature 'geological_patterns_basalt_columns_columnar_jointing_granite_outcrop_phaneritic_interlocking_sandstone_cross_bedding_stratification' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_821c5decea18"
+    },
+    {
+      "id": "feature_eab706cce9533f1e",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:43:00.556709",
+      "feature_name": "semantic_programming_dsl_engine_spacy_matcher_complex_verb_noun_preposition_patterns_navigate_orbit_connect_triggers",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Implemented spaCy Rule-based Matcher integration for complex verb-noun-preposition patterns triggering physics simulation modules. Added NAVIGATE_ORBIT_TRIGGER_PATTERN (navigate/orbit/circumnavigate -> NOUN -> ADP around/with/near -> NOUN) and CONNECT_TRIGGER_PATTERN (connect/link/attach -> NOUN -> ADP to/with/via -> NOUN). Also implemented handle_ambiguous_polysemous_words method using context from dependency graph and noun chunks, and map_adjectives_multilingual method for French/Spanish/German adjective mappings to spectral signatures and physical states."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/semantic_programming_dsl_engine_spacy_matcher_complex_verb_noun_preposition_patterns_navigate_orbit_connect_triggers",
+      "error_category": "none",
+      "fix_description": "Feature 'semantic_programming_dsl_engine_spacy_matcher_complex_verb_noun_preposition_patterns_navigate_orbit_connect_triggers' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_1c34bec6f5c7"
+    },
+    {
+      "id": "feature_375875ffcc948950",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:43:40.121952",
+      "feature_name": "universal_simulation_pipeline_demo_execution_orbital_mechanics_grow_ecosystem_scenarios",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Updated Universal Simulation Pipeline demo to include Scenario 5 (Orbital Mechanics & Celestial Gravity - NAVIGATE_ORBIT with Keplerian mechanics, gravitational anchors, orbital period timescale, thrust adjustment frequency) and Scenario 6 (GROW_ECOSYSTEM - Mycelial Networks & Leaf Venation driven by soil moisture to Hydrodynamic/Hydration Port and light interception/PAR to Spectral/Energy Port with Red Edge signature). Demo successfully executed all 6 scenarios: FSI, Spectroscopic Exploration, Fluid Dynamics & Buoyancy, Aerodynamics & Flight Dynamics, Orbital Mechanics & Celestial Gravity, GROW_ECOSYSTEM."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/universal_simulation_pipeline_demo_execution_orbital_mechanics_grow_ecosystem_scenarios",
+      "error_category": "none",
+      "fix_description": "Feature 'universal_simulation_pipeline_demo_execution_orbital_mechanics_grow_ecosystem_scenarios' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_0763d456e5b4"
+    },
+    {
+      "id": "feature_15040afa5d986925",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-22T03:43:46.200744",
+      "feature_name": "player_progression_system_unlock_tier_method_enforcement_tier_3_grow_ecosystem_tier_4_orbital_mechanics",
+      "loop": 10,
+      "status": "verified",
+      "parameters": {
+        "notes": "Updated player progression system tier unlocking mechanics enforcement via the unlock_tier method for Tier 3 (GROW_ECOSYSTEM) with physics constraints: soil moisture mapping to Hydrodynamic/Hydration Port, light interception/PAR to Spectral/Energy Port with 'Red Edge' signature, growth_timescale for procedural generation to visual emergence. Also updated for Tier 4 (Orbital Mechanics & Celestial Gravity) with physics constraints: Keplerian mechanics, gravitational anchors, celestial gravity fields, orbital period timescale, thrust adjustment frequency_hz."
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_10/player_progression_system_unlock_tier_method_enforcement_tier_3_grow_ecosystem_tier_4_orbital_mechanics",
+      "error_category": "none",
+      "fix_description": "Feature 'player_progression_system_unlock_tier_method_enforcement_tier_3_grow_ecosystem_tier_4_orbital_mechanics' (Loop 10) recorded as 'verified'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_fafc43dde763"
+    },
+    {
+      "id": "simtest_a42bda41665433ab",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-22T06:00:37.794523",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=122uu (loc x=20.125, y=-120.12500762939453)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": false,
+              "note": "dist=2000uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": false,
+              "note": "dist=2000uu (loc x=2000, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": false,
+              "note": "z=130"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 2/5 beats reached in 'regolith_yard'. Failures: walk_metal_to_rock (failed: expect {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}} -> dist=2000uu (loc x=0, y=0)); walk_rock_to_sand_basin (failed: expect {\"pawn_within\": {\"x\": 4000, \"y\": 0, \"r\": 1100}} -> dist=2000uu (loc x=2000, y=0)); jump_probe (failed: expect {\"pawn_z_above\": 130} -> z=130)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 2/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2524405df2e9"
+    },
+    {
+      "id": "surprise_c72cd1882a57a5c2",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-22T06:00:38.205274",
+      "context": "Sleepwalker expected beat 'walk_metal_to_rock' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, \"note\": \"dist=2000uu (loc x=0, y=0)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2524405df2e9"
+    },
+    {
+      "id": "surprise_3379015240062df2",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-22T06:00:38.688575",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"Actor_NS_SandDust\"}, \"ok\": true, \"note\": \"present=True\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"Actor_NS_SandDust\"}, \"ok\": true, \"note\": \"p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2524405df2e9"
+    },
+    {
+      "id": "surprise_6da9782bbc987793",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-22T06:00:39.098647",
+      "context": "Sleepwalker expected beat 'jump_probe' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=130\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=130\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_2524405df2e9"
+    },
+    {
+      "id": "surprise_0c4bba56ff86a468",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-22T07:18:25.153066",
+      "context": "rep atom atom_1adb4b0c1ca8 (Game_Feel) flipped green->red",
+      "expectation": "the atom's constraint would keep holding",
+      "reality": "bloodhound bisect names the commit: 8b72208 Add ParticleEngine: standalone GPU particle-to-splat renderer",
+      "lesson_hint": "guilty commit identified mechanically; fix or revert with provenance",
+      "source": "engine",
+      "consolidated": false,
+      "error_signature": "surprise_engine",
+      "template_file": "surprise/engine",
+      "error_category": "surprise",
+      "fix_description": "Surprise (engine): expected 'the atom's constraint would keep holding' but 'bloodhound bisect names the commit: 8b72208 Add ParticleEngine: standalone GPU p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_3c67b7711bae"
+    },
+    {
+      "id": "heuristic_6a90ca4a35473901",
+      "type": "Heuristic",
+      "timestamp": "2026-07-22T07:18:26.510704",
+      "signature": "sim_rejection: edu_spawn/collect_basalt",
+      "rule": "Verify event logging and signal traces on success path.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "simtest_05a96cc543e6043a",
+        "simtest_c139965ec7ef5bb6",
+        "simtest_b1ae25ecb20b0b9c",
+        "simtest_1b320af1b5dbdea7",
+        "simtest_389e4bb9d076f794",
+        "simtest_cbda9590f7c48bb3"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/sim_rejection: edu_spawn/collect_basalt",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Verify event logging and signal traces on success path.",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_05a96cc543e6043a",
+        "simtest_c139965ec7ef5bb6",
+        "simtest_b1ae25ecb20b0b9c",
+        "simtest_1b320af1b5dbdea7",
+        "simtest_389e4bb9d076f794",
+        "simtest_cbda9590f7c48bb3"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_3c67b7711bae"
+    },
+    {
+      "id": "heuristic_4d77d682c0d62007",
+      "type": "Heuristic",
+      "timestamp": "2026-07-22T07:18:27.034288",
+      "signature": "surprise: beat collect_basalt discovered edu_spawn",
+      "rule": "Verify event logging and signal traces on success path.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "surprise_cc736cb01c0f6d7e",
+        "surprise_88c4b8cbabfde265",
+        "surprise_6e6a54a107c68d50",
+        "surprise_00176d3091bb0704",
+        "surprise_90801c95182e56ba",
+        "surprise_43d31a5704136b1b"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/surprise: beat collect_basalt discovered edu_spawn",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Verify event logging and signal traces on success path.",
+      "compilation_result": "pass",
+      "links": [
+        "surprise_cc736cb01c0f6d7e",
+        "surprise_88c4b8cbabfde265",
+        "surprise_6e6a54a107c68d50",
+        "surprise_00176d3091bb0704",
+        "surprise_90801c95182e56ba",
+        "surprise_43d31a5704136b1b"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_3c67b7711bae"
+    },
+    {
+      "id": "heuristic_bbb61c5351556f50",
+      "type": "Heuristic",
+      "timestamp": "2026-07-22T07:18:27.507431",
+      "signature": "sim_rejection: regolith_yard/spawn_on_metal_pad",
+      "rule": "Verify beat spawn location distances and pawn navigation constraints.",
+      "organ": "claude_md",
+      "evidence_ids": [
+        "simtest_9cd9a1ac25867a73",
+        "simtest_b9c246f4cef92293",
+        "simtest_26952ede18597de8"
+      ],
+      "approved_by": "human",
+      "error_signature": "success_no_error",
+      "template_file": "heuristic/claude_md/sim_rejection: regolith_yard/spawn_on_metal_pad",
+      "error_category": "none",
+      "fix_description": "Heuristic promoted to claude_md: Verify beat spawn location distances and pawn navigation constraints.",
+      "compilation_result": "pass",
+      "links": [
+        "simtest_9cd9a1ac25867a73",
+        "simtest_b9c246f4cef92293",
+        "simtest_26952ede18597de8"
+      ],
+      "recorded_by": "dream_loop.py",
+      "run_id": "run_3c67b7711bae"
     }
   ],
   "edges": [

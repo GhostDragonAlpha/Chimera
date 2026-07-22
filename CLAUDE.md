@@ -374,3 +374,44 @@ local neighborhood; UE5 World Partition is the spatial layer.
 
 Stored at: `C:\Users\allen\.claude\projects\E--PythonChimera\memory\`
 Indexed in `MEMORY.md` there.
+
+---
+
+## MEMBRANE PROGRAMMING AND UNIVERSAL SIMULATION ARCHITECTURE (2026-07-21)
+
+### The New Programming: Training Patterns & Scene Hierarchy Configuration
+Setting up the training patterns is the new computer programming. In traditional programming, you write explicit `if/else` statements and loops to tell a computer exactly what to do. In membrane programming, we don't write traditional code—we define the **training patterns**, the **energy principles**, and the **mathematical constraints** that govern how energy and matter flow through the system.
+
+### Multi-Genre Verification Gates (Spectroscopy & USGS/JPL Spectral Libraries)
+The pipeline runs two parallel extraction paths:
+- **The Visual Path:** Extracts geometric and topological patterns (hexagonal tessellation, sinuous curvature, fractal branching).
+- **The Spectral Path:** Extracts reflectance curves and absorption features from USGS/JPL spectral libraries (silicate absorption bands at 1.4µm, 1.9µm, 2.2µm; vegetation "Red Edge" at 700-1300nm; iron oxide red/orange reflection 600-700nm).
+
+When a potential membrane label is identified, it must be **cross-referenced and verified** by both the visual path and the spectral path. If the visual and spectral data align, the membrane is **verified by PHYSICS**, not just human visual interpretation.
+
+### Physics-Based Modular Control Systems ("LEGO Puzzle" Connection Shapes)
+The "connection shapes" are physics interfaces—the specific ways energy and matter flow between modules:
+- **Gravitational Anchor:** Newtonian gravity, mass attraction — *All modules* snap to the planet's gravity field.
+- **Spectral/Energy Port:** Light interception, "Red Edge" spectral signature, PAR distribution — *Biological modules* connect to the Sky/Sun energy source.
+- **Hydrodynamic/Hydration Port:** Buoyancy, fluid drag, water hydration absorption bands (1.4µm, 1.9µm) — *Watercraft modules* connect to River/Ocean surfaces; *Root systems* connect to soil moisture.
+- **Aerodynamic/Atmospheric Port:** Lift, drag, thrust, airflow patterns (Bernoulli's principle) — *Aircraft modules* connect to the atmosphere/sky layer.
+- **Substrate/Geological Port:** Mineral absorption, soil topography, friction coefficients — *Building foundations, Tree roots, Character controllers* connect to the Ground/Surface layer.
+
+### Verb Over Nouns Philosophy
+The core of the system is the **verb**, not the noun/item:
+- **THRUST:** applying energy to create motion (keyboard/input → thrust vector ports)
+- **BALANCE:** adjusting Center of Gravity vs. Center of Thrust to stabilize torque
+- **GROW:** following the flow of energy and matter from seed to canopy (phyllotaxis, fractal branching)
+- **CONNECT:** snapping physics modules together via compatible connection shapes
+- **SCAN:** using hyperspectral sensors to analyze chemical composition (spectral signatures)
+- **NAVIGATE_ORBIT:** calculating and adjusting thrust to achieve stable orbit (Keplerian mechanics)
+- **GROW_ECOSYSTEM:** planting seeds and watching biological networks grow based on environmental conditions
+
+### Exploration Product / Universal Simulation Architecture
+An educational exploration product — a universe simulator built on physics, not pre-scripted game mechanics. Players explore the universe from home by EXPERIENCING the flow of energy and matter through verbs.
+
+**Hierarchy:**
+- **Level 1 (Energy Source/Sky):** Solar granulation + Night sky stellar distribution → outputs photons and spectral environment.
+- **Level 2 (Matter Source/Ground):** Basalt, Quartz, Sand dunes, Mud cracks → outputs soil minerals, topography, and water availability.
+- **Level 3 (Transformation Engine/Biological Growth):** The seed-to-tree procedural growth → takes energy and matter from Levels 1 & 2, applies the training patterns, and outputs a procedurally grown tree structure with canopy.
+- **Level 4 (Observer/Camera View):** Director's camera perspective → places the camera by the tree to view the Earth's ground, sky, and moon cohesively.

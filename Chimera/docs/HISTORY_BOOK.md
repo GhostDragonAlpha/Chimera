@@ -5,11 +5,11 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1696 entries** across 8 chapters.
+**1705 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
-*82 entries; showing 40.*
+*85 entries; showing 40.*
 
 ### H-1
 <sub>`claude:H-1`</sub>
@@ -343,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*589 entries; showing 40.*
+*592 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -667,7 +667,7 @@
 
 ## IV. Verdicts & Grades
 
-*510 entries; showing 40.*
+*511 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -986,7 +986,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*431 entries; showing 40.*
+*433 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1423,22 +1423,22 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                         290 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                         294 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          80 reps  100%  streak  8  battery   2 (0 pie)  READY
+> AErisaidActor                          84 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     60 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     64 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    246 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    248 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1570,6 +1570,7 @@
 - **Travel_Vehicle_Basic** — 1 entry: `observation_a640c045d6ceaf69`
 - **Travel_Vehicle_Flight** — 1 entry: `observation_7263a3405c9cc71b`
 - **Travel_Walking** — 1 entry: `professor_grade_f4fa95fd0c69ab19`
+- **TreeOfLife_Graph** — 1 entry: `observation_e16e91713477f504`
 - **Truth_Sync_2026-07_18** — 1 entry: `observation_4eeed2e05267e8a8`
 - **UChimeraAttunementComponent** — 1 entry: `observation_455906b50c6a0a1a`
 - **UI_Suit_HUD** — 1 entry: `promo:UI_Suit_HUD:1`

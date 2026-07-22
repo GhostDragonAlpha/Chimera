@@ -701,7 +701,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-21T03:15:33Z -->
 ## H-66: sim_rejection: edu_spawn/collect_basalt
-- status: pending
+- status: promoted (auto 2026-07-22)
 - kind: sim_rejection  |  count: 6  |  last_seen: 2026-07-20T23:20:27
 - proposed_organ: claude_md
 - evidence: simtest_05a96cc543e6043a, simtest_c139965ec7ef5bb6, simtest_b1ae25ecb20b0b9c, simtest_1b320af1b5dbdea7, simtest_389e4bb9d076f794, simtest_cbda9590f7c48bb3
@@ -710,7 +710,7 @@ Wait, looking at the
 - draft_rule: Verify event logging and signal traces on success path.
 
 ## H-67: surprise: beat collect_basalt discovered edu_spawn
-- status: pending
+- status: promoted (auto 2026-07-22)
 - kind: surprise  |  count: 6  |  last_seen: 2026-07-20T23:20:27
 - proposed_organ: claude_md
 - evidence: surprise_cc736cb01c0f6d7e, surprise_88c4b8cbabfde265, surprise_6e6a54a107c68d50, surprise_00176d3091bb0704, surprise_90801c95182e56ba, surprise_43d31a5704136b1b
@@ -721,7 +721,7 @@ Wait, looking at the
 
 <!-- distilled 2026-07-21T07:15:01Z -->
 ## H-68: sim_rejection: regolith_yard/spawn_on_metal_pad
-- status: pending
+- status: promoted (auto 2026-07-22)
 - kind: sim_rejection  |  count: 3  |  last_seen: 2026-07-21T06:00:16
 - proposed_organ: claude_md
 - evidence: simtest_9cd9a1ac25867a73, simtest_b9c246f4cef92293, simtest_26952ede18597de8

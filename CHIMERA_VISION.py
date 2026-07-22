@@ -17,6 +17,35 @@ DESIGN LAWS
   5. The player is the trunk. Content generates outward along the
      golden-angle spiral, at every scale.
 
+MEMBRANE PROGRAMMING & HIERARCHICAL MEMBRANE SYSTEM:
+  - Training patterns are the new computer programming: defining energy principles,
+    mathematical constraints, and flow of matter/energy that govern how assets grow
+    and connect in the scene hierarchy.
+  - Multi-Genre Verification Gates: Spectroscopy (USGS/JPL spectral libraries),
+    fluid dynamics, topological analysis — labels emerge from direct physical
+    measurement of matter by light wavelength, not pre-assigned categories.
+  - Physics-Based Modular Control Systems ("LEGO puzzle" connection shapes):
+    * Gravitational Anchor: Newtonian gravity, mass attraction
+    * Spectral/Energy Port: Light interception, "Red Edge" spectral signature, PAR distribution
+    * Hydrodynamic/Hydration Port: Buoyancy, fluid drag, water hydration absorption bands (1.4µm, 1.9µm)
+    * Aerodynamic/Atmospheric Port: Lift, drag, thrust, airflow patterns (Bernoulli's principle)
+    * Substrate/Geological Port: Mineral absorption, soil topography, friction coefficients
+
+VERB OVER NOUNS PHILOSOPHY:
+  - The core of the system is the VERB, not the noun/item:
+    * THRUST: applying energy to create motion (keyboard/input → thrust vector ports)
+    * BALANCE: adjusting Center of Gravity vs. Center of Thrust to stabilize torque
+    * GROW: following the flow of energy and matter from seed to canopy (phyllotaxis, fractal branching)
+    * CONNECT: snapping physics modules together via compatible connection shapes
+    * SCAN: using hyperspectral sensors to analyze chemical composition (spectral signatures)
+    * NAVIGATE_ORBIT: calculating and adjusting thrust to achieve stable orbit (Keplerian mechanics)
+    * GROW_ECOSYSTEM: planting seeds and watching biological networks grow based on environmental conditions
+
+EXPLORATION PRODUCT / UNIVERSAL SIMULATION ARCHITECTURE:
+  - An educational exploration product — a universe simulator built on physics, not pre-scripted game mechanics.
+  - Players explore the universe from home by EXPERIENCING the flow of energy and matter through verbs.
+  - Hierarchy: Level 1 (Energy Source/Sky) → Level 2 (Matter Source/Ground) → Level 3 (Transformation Engine/Biological Growth) → Level 4 (Observer/Camera View).
+
 THIS IS NOT A GENERIC SIMULATION. Every class below maps to a REAL Unreal
 Engine 5.8 C++ construct — real macros (UCLASS/UPROPERTY/UFUNCTION/
 GENERATED_BODY), real subsystem names, real API shapes. Two corrections

@@ -4,8 +4,8 @@ import numpy as np
 from numba import cuda
 import math
 
-TILE_SIZE = 16
-MAX_PER_TILE = 1024
+TILE_SIZE = 32
+MAX_PER_TILE = 4096
 PX, PY, PZ = 0, 1, 2
 VX, VY, VZ = 3, 4, 5
 AX, AY, AZ = 6, 7, 8
@@ -240,7 +240,8 @@ def _inv_radii(pc00, pc01, pc11, ic00, ic01, ic11, rad, n):
     if c01 > 1e6: c01 = 1e6
     if c01 < -1e6: c01 = -1e6
     det = c00*c11 - c01*c01
-    if det < 1e-12: c00 += 5.0; c11 += 5.0; c01 = 0.0; det = c00*c11
+    if det < 1e-12:
+        c00 += 5.0; c11 += 5.0; c01 = 0.0; det = c00*c11
     idet = 1.0 / det
     v = c11*idet
     if v > 1e4: v = 1e4
@@ -331,7 +332,7 @@ def _tile_offsets(tile_fill, tile_offsets, n_tiles, max_pt):
 @cuda.jit
 def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
                tile_ids, tile_offsets, canvas_r, canvas_g, canvas_b,
-               w, h, tiles_x, n_tiles, bg_r, bg_g, bg_b):
+               w, h, tiles_x, n_tiles, bg_r, bg_g, bg_b, n_splats):
     ix = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
     iy = cuda.blockIdx.y * cuda.blockDim.y + cuda.threadIdx.y
     if ix >= w or iy >= h: return
@@ -342,7 +343,7 @@ def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
     start = tile_offsets[tid]; end = tile_offsets[tid + 1]
     for si in range(start, end):
         i = tile_ids[si]
-        if i < 0: break
+        if i < 0 or i >= n_splats: continue
         a = opa[i]
         if a < 0.0001: continue
         dx = float(ix) - px[i]; dy = float(iy) - py[i]
@@ -495,6 +496,8 @@ class FullGPUPipeline:
         _tile_offsets[(1,), (1,)](self._tf, self._to, nt, MAX_PER_TILE)
         # Reset fill counter for write pass
         self._tf[:nt] = cuda.to_device(np.zeros(nt, dtype=np.int32))
+        # Initialize tile_ids with -1 to mark unfilled slots
+        self._tids[:] = cuda.to_device(np.full(self._tids.shape[0], -1, dtype=np.int32))
         # Pass 2: write splat indices
         _tiles_write[(nv + 255) // 256, (256,)](
             self._kx, self._ky, self._krad, self._tids, self._to, self._tf,
@@ -511,7 +514,7 @@ class FullGPUPipeline:
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
             self._tids, self._to, cr, cg, cb,
             params.width, params.height, tx, nt,
-            self.bg[0], self.bg[1], self.bg[2])
+            self.bg[0], self.bg[1], self.bg[2], nv)
         cuda.synchronize()
         r = cr.copy_to_host(); g = cg.copy_to_host(); b = cb.copy_to_host()
         canvas = np.stack([r, g, b], axis=2)
@@ -594,6 +597,8 @@ class FullGPUPipeline:
             self._kx, self._ky, self._krad, self._tf, tx, ty, TILE_SIZE, nv)
         _tile_offsets[(1,), (1,)](self._tf, self._to, nt, MAX_PER_TILE)
         self._tf[:nt] = cuda.to_device(np.zeros(nt, dtype=np.int32))
+        # Initialize tile_ids with -1 to mark unfilled slots
+        self._tids[:] = cuda.to_device(np.full(self._tids.shape[0], -1, dtype=np.int32))
         _tiles_write[(nv + 255) // 256, (256,)](
             self._kx, self._ky, self._krad, self._tids, self._to, self._tf,
             tx, ty, TILE_SIZE, MAX_PER_TILE, nv)
@@ -608,7 +613,7 @@ class FullGPUPipeline:
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
             self._tids, self._to, cr, cg, cb,
             params.width, params.height, tx, nt,
-            self.bg[0], self.bg[1], self.bg[2])
+            self.bg[0], self.bg[1], self.bg[2], nv)
         cuda.synchronize()
         r = cr.copy_to_host(); g = cg.copy_to_host(); b = cb.copy_to_host()
         canvas = np.stack([r, g, b], axis=2)
