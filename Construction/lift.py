@@ -34,20 +34,37 @@ def _flat_dir(d):
     return [hs / m, 0.0, dz / m]
 
 
-def flatten(skeleton: dict) -> dict:
+# ── the construction rules to bake off (each assigns a branch its azimuth) ──
+# The rule IS the "dynamics" that fills the third dimension.  Try them all;
+# Construction/measure.py scores which reconstructs the best 3D noun.
+def golden_rule(idx, nsib, depth):  return GOLDEN * idx                 # phyllotaxis
+def radial_rule(idx, nsib, depth):  return 2.0 * math.pi * idx / max(1, nsib)  # even fan
+def mirror_rule(idx, nsib, depth):  return math.pi / 2 if idx % 2 == 0 else 3 * math.pi / 2  # bilateral ±Y
+def flat_rule(idx, nsib, depth):    return 0.0                          # no depth (control)
+def random_rule(idx, nsib, depth):                                      # scrambled (control)
+    h = ((idx * 73856093) ^ ((depth + 1) * 19349663)) & 0xFFFF
+    return (h / 0xFFFF) * 2.0 * math.pi
+
+RULES = {"flat": flat_rule, "mirror": mirror_rule, "radial": radial_rule,
+         "random": random_rule, "golden": golden_rule}
+
+
+def flatten(skeleton: dict, rule=golden_rule) -> dict:
     """Project a 3D skeleton onto the XZ plane -> a genuine 2D picture, and tag
-    each branch with a phyllotactic azimuth for the lift to use."""
-    def walk(n: dict, idx: int) -> dict:
+    each branch with an azimuth from `rule` for the lift to fill depth with."""
+    def walk(n: dict, idx: int, nsib: int) -> dict:
+        kids = n["children"]
         return {
             "len": n["length"],
             "radius": n["radius"],
             "depth": n["depth"],
             "is_leaf": n["is_leaf"],
+            "phase": n.get("phase", 0.0),
             "dir2": _flat_dir(n["dir"]),     # [signed_horizontal, 0, vertical], unit
-            "azi": GOLDEN * idx,             # sibling fan; accumulated down the tree in lift()
-            "children": [walk(c, i) for i, c in enumerate(n["children"])],
+            "azi": rule(idx, nsib, n["depth"]),   # sibling fan; accumulated in lift()
+            "children": [walk(c, i, len(kids)) for i, c in enumerate(kids)],
         }
-    flat = walk(skeleton, 0)
+    flat = walk(skeleton, 0, 1)
     flat["start2"] = [float(skeleton["start"][0]), 0.0, float(skeleton["start"][2])]
     return flat
 
@@ -70,7 +87,7 @@ def lift(flat: dict, amount: float, start=None, parent_azi: float = 0.0) -> dict
     e = [s[0] + d[0] * L, s[1] + d[1] * L, s[2] + d[2] * L]
 
     return {
-        "start": s, "end": e, "dir": d,
+        "start": s, "end": e, "dir": d, "length": L, "phase": flat.get("phase", 0.0),
         "radius": flat["radius"], "depth": flat["depth"], "is_leaf": flat["is_leaf"],
         "children": [lift(c, amount, e, azi) for c in flat["children"]],
     }
