@@ -335,9 +335,288 @@
           "std": 0.1253204643726349
         }
       }
+    },
+    "bonsai_vegetative": {
+      "n_specimens": 4,
+      "n_splats": 51504,
+      "features": {
+        "size": {
+          "mean": 0.026731829215198434,
+          "std": 0.03131879075651373,
+          "p10": -0.013406333018349571,
+          "p90": 0.06686999144874645,
+          "within_std": 0.030082929486856137,
+          "between_std": 0.008711142745881946,
+          "specimen_means": [
+            0.0205,
+            0.02197,
+            0.02818,
+            0.04434
+          ]
+        },
+        "aniso": {
+          "mean": 0.7386881085104011,
+          "std": 0.19157234743664053,
+          "p10": 0.4931689880356026,
+          "p90": 0.9842072289851996,
+          "within_std": 0.12401284134561057,
+          "between_std": 0.14601636717770147,
+          "specimen_means": [
+            0.8292,
+            0.83071,
+            0.44673,
+            0.72378
+          ]
+        },
+        "R": {
+          "mean": 0.20249530378368608,
+          "std": 0.28023609029421803,
+          "p10": -0.1566552695373838,
+          "p90": 0.5616458771047559,
+          "within_std": 0.11698842881418686,
+          "between_std": 0.2546487263407714,
+          "specimen_means": [
+            0.07846,
+            0.08766,
+            0.08152,
+            0.74388
+          ]
+        },
+        "G": {
+          "mean": 0.21500619293664153,
+          "std": 0.29778061710879933,
+          "p10": -0.16662944594999574,
+          "p90": 0.5966418318232788,
+          "within_std": 0.10066833730948782,
+          "between_std": 0.2802484287003953,
+          "specimen_means": [
+            0.07121,
+            0.08349,
+            0.10307,
+            0.81043
+          ]
+        },
+        "B": {
+          "mean": 0.2340802018421882,
+          "std": 0.3130107445701579,
+          "p10": -0.16707436839892614,
+          "p90": 0.6352347720833025,
+          "within_std": 0.10987136360855046,
+          "between_std": 0.29309385813278704,
+          "specimen_means": [
+            0.08266,
+            0.09415,
+            0.123,
+            0.85656
+          ]
+        },
+        "opacity": {
+          "mean": 0.8261406070472624,
+          "std": 0.13129312949495192,
+          "p10": 0.657875332286532,
+          "p90": 0.9944058818079928,
+          "within_std": 0.09085666226729862,
+          "between_std": 0.09477844045047511,
+          "specimen_means": [
+            0.88991,
+            0.89113,
+            0.78648,
+            0.64305
+          ]
+        }
+      },
+      "between_within_ratio": 1.689725434580794,
+      "_provenance": "CLASS genome merged from 4 specimens",
+      "_note": "between_std is the variation that makes siblings look like different individuals rather than rearrangements of one. A ratio near zero means the specimens were nearly identical and more varied samples are needed."
+    },
+    "stump_wood": {
+      "n_specimens": 4,
+      "n_splats": 55096,
+      "features": {
+        "size": {
+          "mean": 0.02749285921868907,
+          "std": 0.03190757147773396,
+          "p10": -0.01339988438717478,
+          "p90": 0.06838560282455292,
+          "within_std": 0.031410125698648754,
+          "between_std": 0.005612229610572512,
+          "specimen_means": [
+            0.02272,
+            0.02729,
+            0.02519,
+            0.04032
+          ]
+        },
+        "aniso": {
+          "mean": 0.8379218876123844,
+          "std": 0.1248676048502399,
+          "p10": 0.6778915652363169,
+          "p90": 0.9979522099884519,
+          "within_std": 0.11164651481711435,
+          "between_std": 0.05591935684740589,
+          "specimen_means": [
+            0.87252,
+            0.77712,
+            0.89362,
+            0.7675
+          ]
+        },
+        "R": {
+          "mean": 0.35368668877428927,
+          "std": 0.26218472560180084,
+          "p10": 0.017670744443021302,
+          "p90": 0.6897026331055572,
+          "within_std": 0.12173163223389159,
+          "between_std": 0.23221162772902687,
+          "specimen_means": [
+            0.30126,
+            0.26018,
+            0.22708,
+            0.9034
+          ]
+        },
+        "G": {
+          "mean": 0.340298225112228,
+          "std": 0.26172598470565966,
+          "p10": 0.0048702031134545964,
+          "p90": 0.6757262471110015,
+          "within_std": 0.11836494474326463,
+          "between_std": 0.23343142660334126,
+          "specimen_means": [
+            0.28243,
+            0.24948,
+            0.21354,
+            0.8934
+          ]
+        },
+        "B": {
+          "mean": 0.2290567265255792,
+          "std": 0.2661166267903048,
+          "p10": -0.11199834236887543,
+          "p90": 0.5701117954200339,
+          "within_std": 0.11085667924764055,
+          "between_std": 0.24192737695522618,
+          "specimen_means": [
+            0.15413,
+            0.13281,
+            0.10772,
+            0.80431
+          ]
+        },
+        "opacity": {
+          "mean": 0.7834386481289959,
+          "std": 0.17741327461691148,
+          "p10": 0.5560657953799621,
+          "p90": 1.0108115008780296,
+          "within_std": 0.07004996942061137,
+          "between_std": 0.162998379729576,
+          "specimen_means": [
+            0.6356,
+            0.61113,
+            0.96914,
+            0.87796
+          ]
+        }
+      },
+      "between_within_ratio": 1.5114117779077434,
+      "_provenance": "CLASS genome merged from 4 specimens",
+      "_note": "between_std is the variation that makes siblings look like different individuals rather than rearrangements of one. A ratio near zero means the specimens were nearly identical and more varied samples are needed."
+    },
+    "bicycle_metallic": {
+      "n_specimens": 4,
+      "n_splats": 62672,
+      "features": {
+        "size": {
+          "mean": 0.010207786137017737,
+          "std": 0.015823830159462638,
+          "p10": -0.01007203459534958,
+          "p90": 0.030487606869385054,
+          "within_std": 0.01573821893077576,
+          "between_std": 0.0016437961560031881,
+          "specimen_means": [
+            0.0117,
+            0.01027,
+            0.00996,
+            0.00696
+          ]
+        },
+        "aniso": {
+          "mean": 0.9323243444059343,
+          "std": 0.0755444863838909,
+          "p10": 0.8355065306563396,
+          "p90": 1.029142158155529,
+          "within_std": 0.07517579323561696,
+          "between_std": 0.007454497595522112,
+          "specimen_means": [
+            0.93255,
+            0.9225,
+            0.93243,
+            0.94588
+          ]
+        },
+        "R": {
+          "mean": 0.2190760501477566,
+          "std": 0.12792830129431063,
+          "p10": 0.05512313920896811,
+          "p90": 0.3830289610865451,
+          "within_std": 0.11459850216880695,
+          "between_std": 0.05685801238799913,
+          "specimen_means": [
+            0.1714,
+            0.19462,
+            0.25438,
+            0.32575
+          ]
+        },
+        "G": {
+          "mean": 0.22843715483011268,
+          "std": 0.12690558710004113,
+          "p10": 0.06579495440269995,
+          "p90": 0.3910793552575254,
+          "within_std": 0.11432904816456747,
+          "between_std": 0.05508082046402481,
+          "specimen_means": [
+            0.1829,
+            0.20264,
+            0.26494,
+            0.33086
+          ]
+        },
+        "B": {
+          "mean": 0.1300437596790875,
+          "std": 0.10423785153463991,
+          "p10": -0.0035474708477070127,
+          "p90": 0.263634990205882,
+          "within_std": 0.09605520408392614,
+          "between_std": 0.04048366906485787,
+          "specimen_means": [
+            0.12607,
+            0.07205,
+            0.18958,
+            0.15871
+          ]
+        },
+        "opacity": {
+          "mean": 0.8536572171052272,
+          "std": 0.173086391172503,
+          "p10": 0.6318296981785474,
+          "p90": 1.075484736031907,
+          "within_std": 0.06564684296562265,
+          "between_std": 0.16015427193105902,
+          "specimen_means": [
+            0.97586,
+            0.96848,
+            0.64347,
+            0.63395
+          ]
+        }
+      },
+      "between_within_ratio": 0.6737712855958075,
+      "_provenance": "CLASS genome merged from 4 specimens",
+      "_note": "between_std is the variation that makes siblings look like different individuals rather than rearrangements of one. A ratio near zero means the specimens were nearly identical and more varied samples are needed."
     }
   },
-  "_provenance": "MEASURED from a real scan by Construction/export_genome.py",
+  "_provenance": "Merged from real scans via genetics pipeline",
   "_features": [
     "size",
     "aniso",

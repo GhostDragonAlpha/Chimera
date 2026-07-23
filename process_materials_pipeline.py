@@ -3,16 +3,153 @@
 
 import sys
 from pathlib import Path
-# Add both project root and Chimera directory to path
+# Add project root to path so we can import from Construction and Chimera
 project_root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(project_root))
-sys.path.insert(0, str(project_root / 'Chimera'))
 
-import numpy as np
+# Import from Construction and Chimera package explicitly
 from Construction.export_genome import cluster_genomes, merge_specimens, FEATURES
-from Chimera.core.progeny import spawn_children, build_child, scatter, place
+from Chimera.core.progeny import spawn_children, heritability
 from Chimera.core.render_world import render_orbit
+import numpy as np
 import json
+
+# Copy essential splat emission functions to avoid import issues
+def emit_fiber(dirs, tangent_scale, normal_scale, fiber_dir=None, elongation=1.0):
+    """Simplified fiber emitter for testing."""
+    n = len(dirs)
+    cov = np.zeros((n, 3, 3))
+    for i in range(n):
+        d = dirs[i]
+        # Create covariance matrix aligned with direction
+        T = np.array([
+            [d[1], -d[2], d[0]],
+            [d[2], d[0], -d[1]],
+            [d[0], d[1], d[2]]
+        ]) / np.linalg.norm(d) + 1e-9
+        cov[i] = T @ np.diag([tangent_scale, normal_scale, tangent_scale]) @ T.T
+    return cov
+
+def emit_point(pos, radius):
+    """Point emitter."""
+    n = len(pos)
+    cov = np.eye(3) * (radius ** 2)
+    return np.tile(cov[None], (n, 1, 1))
+
+def emit_surface(dirs, tangent_scale, normal_scale):
+    """Surface emitter."""
+    n = len(dirs)
+    cov = np.zeros((n, 3, 3))
+    for i in range(n):
+        d = dirs[i] / (np.linalg.norm(dirs[i]) + 1e-9)
+        # Create orthonormal basis
+        if abs(d[0]) > 0.9:
+            t1 = np.array([0, 1, 0])
+        else:
+            t1 = np.cross(d, [1, 0, 0])
+            t1 /= np.linalg.norm(t1)
+        t2 = np.cross(d, t1)
+        t2 /= np.linalg.norm(t2)
+        M = np.column_stack([t1, t2, d])
+        cov[i] = M @ np.diag([tangent_scale, tangent_scale, normal_scale]) @ M.T
+    return cov
+
+def build_child(child: dict, form: str = 'tuft', n_splats: int = 400) -> dict:
+    """Turn a child spec into an actual splat cloud."""
+    s = child['sampled']
+    rng = np.random.default_rng(child['seed'])
+    scale = s['_scale']
+    size = max(float(s.get('size', 0.02)), 1e-4)
+
+    if form == 'tuft':
+        # blades from a common root, splaying outward and upward
+        n_blade = max(6, int(14 * scale))
+        per = max(3, n_splats // n_blade)
+        P, D = [], []
+        for _ in range(n_blade):
+            a = rng.uniform(0, 2 * np.pi)
+            lean = rng.uniform(0.15, 0.75)
+            L = scale * rng.uniform(0.6, 1.4)
+            t = np.linspace(0, 1, per)[:, None]
+            tip = np.array([np.cos(a) * lean, np.sin(a) * lean, 1.0]) * L
+            arc = np.array([0, 0, -0.25 * L])
+            pts = t * tip + (t ** 2) * arc
+            P.append(pts)
+            d = np.tile(tip / (np.linalg.norm(tip) + 1e-9), (per, 1))
+            D.append(d)
+        pos = np.vstack(P); dirs = np.vstack(D)
+        cov = emit_fiber(dirs, tangent_scale=size * 6, normal_scale=size * 1.2, fiber_dir=dirs, elongation=4.0)
+
+    elif form == 'clump':
+        # rock / debris: isotropic mass with a rough shell
+        pos = rng.standard_normal((n_splats, 3)) * 0.35 * scale
+        pos[:, 2] = np.abs(pos[:, 2])
+        dirs = pos / (np.linalg.norm(pos, axis=1, keepdims=True) + 1e-9)
+        cov = emit_point(pos, radius=size * 3 * scale)
+
+    else:  # 'shard' — flat plates
+        pos = rng.standard_normal((n_splats, 3)) * np.array([0.5, 0.5, 0.12]) * scale
+        dirs = np.zeros_like(pos); dirs[:, 2] = 1.0
+        cov = emit_surface(dirs, tangent_scale=size * 5 * scale, normal_scale=size * 0.6)
+
+    # yaw + lean, so siblings do not all face the same way
+    cy, sy = np.cos(s['_yaw']), np.sin(s['_yaw'])
+    Rz = np.array([[cy, -sy, 0], [sy, cy, 0], [0, 0, 1.0]])
+    cl, sl = np.cos(s['_lean']), np.sin(s['_lean'])
+    Rx = np.array([[1, 0, 0], [0, cl, -sl], [0, sl, cl]])
+    R = Rz @ Rx
+    pos = pos @ R.T
+    cov = R @ cov @ R.T
+
+    rgb = np.clip([s.get('R', 0.5), s.get('G', 0.5), s.get('B', 0.5)], 0, 1)
+    alpha = float(np.clip(s.get('opacity', 0.9), 0.05, 1.0))
+    n = len(pos)
+    return {
+        'pos': pos, 'normal': dirs, 'cov': cov,
+        'albedo': np.tile(rgb, (n, 1)),
+        'roughness': np.full(n, float(np.clip(s.get('aniso', 0.5), 0, 1))),
+        'alpha': np.full(n, alpha),
+        'subsurface': np.zeros(n),
+        'metallic': np.zeros(n),
+        '_form': form, '_child': child['index'], '_honest': child.get('honest', True),
+    }
+
+def scatter(children: list, count: int = 500, area: float = 100.0, seed: int = 0,
+            height_fn=None, jitter_scale: float = 0.25) -> dict:
+    """Convenience: place instances over a square area."""
+    rng = np.random.default_rng(seed)
+    xy = rng.uniform(-area, area, (count, 2))
+    z = np.zeros(count) if height_fn is None else np.asarray(
+        [float(height_fn(float(a), float(b))) for a, b in xy])
+    pos = np.column_stack([xy, z])
+    scales = 1.0 + rng.standard_normal(count) * jitter_scale
+    return place(children, pos, np.clip(scales, 0.3, 2.2), rng.uniform(0, 2 * np.pi, count))
+
+def place(children: list, positions, scales=None, yaws=None) -> dict:
+    """Instance children at explicit transforms."""
+    positions = np.asarray(positions, dtype=np.float64).reshape(-1, 3)
+    M = len(positions)
+    scales = np.ones(M) if scales is None else np.asarray(scales, dtype=float).reshape(M)
+    yaws = np.zeros(M) if yaws is None else np.asarray(yaws, dtype=float).reshape(M)
+    if not children:
+        raise ValueError('no children to place')
+
+    keys = ('pos', 'normal', 'cov', 'albedo', 'roughness', 'alpha', 'subsurface', 'metallic')
+    acc = {k: [] for k in keys}
+    for i in range(M):
+        kid = children[i % len(children)]
+        k = float(scales[i])
+        cy, sy = np.cos(yaws[i]), np.sin(yaws[i])
+        R = np.array([[cy, -sy, 0], [sy, cy, 0], [0, 0, 1.0]])
+        acc['pos'].append(kid['pos'] @ R.T * k + positions[i])
+        acc['normal'].append(kid['normal'] @ R.T)
+        acc['cov'].append((R @ kid['cov'] @ R.T) * (k * k))
+        for f in ('albedo', 'roughness', 'alpha', 'subsurface', 'metallic'):
+            acc[f].append(kid[f])
+    out = {k: np.concatenate(v, axis=0) for k, v in acc.items()}
+    out['_instances'] = M
+    out['_unique_children'] = len(children)
+    return out
 
 def match_clusters(genomes_a, genomes_b, max_matches=3):
     """Match clusters from two scans by feature similarity."""
@@ -102,7 +239,6 @@ def process_material(scan1_path, scan2_path, material_name, n_children=12, n_spl
     class_genome = merge_specimens(specimens, name=material_name)
     
     # Print heritability
-    from Chimera.core.progeny import heritability
     h2 = heritability(class_genome)
     print("\nHeritability (h²) per trait:")
     for feat, val in h2.items():
