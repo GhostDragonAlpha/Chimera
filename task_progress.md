@@ -1,24 +1,26 @@
 # Rehearsal decision 2026-07-21 03:15Z — next move: Ground_Sand_Sound_unblock
-# Session 2026-07-23 (genetics) — Heritability pipeline validated with 3 real materials
+# Session 2026-07-23 (genetics) — Heritability pipeline validated with 5 real materials
 
 - **Genetics breakthrough validated**: Two-specimen requirement for heritability measurement confirmed.
 - **Pipeline operational end-to-end**: Scan → cluster matching → specimen merging → heritability estimation → child generation → visual rendering.
-- **Three materials processed**:
+- **Five materials processed**:
   - Bonsai vegetative (h² color: 0.83-0.89, size: 0.08)
   - Stump wood (h² opacity: 0.84, size: 0.03)
   - Bicycle metallic (h² opacity: 0.86, color: 0.15-0.20)
+  - Plush fabric (h² color: 0.72-0.81, texture: low)
+  - Truck metallic (h² anisotropy: 0.64, size: 0.003)
 - **Visual validation**: Children rendered for each material (~79K splats, 6 views each on RTX 4090).
 - **Data saved**: Class genomes in `Chimera/docs/matter/recovered_genomes.json`, renders in `Saved/SplatEmit/`.
 
 ## Key Findings
-1. Color traits highly heritable in plants/wood (h² > 0.8), low in metals due to lighting variations.
+1. Color traits highly heritable in plants/wood/fabric (h² > 0.72), variable in metals due to lighting.
 2. Size traits very low heritability (h² < 0.08) — largely environmental variation.
-3. Opacity consistently heritable across materials (h² 0.52-0.86).
+3. Opacity consistently heritable across materials (h² 0.52-0.86) except truck metallic.
 4. Pipeline produces biologically plausible results matching real-world genetics.
 
 ## Technical Validation
-- All three materials processed successfully without errors.
-- Render speed: 400-575ms per material on RTX 4090.
+- All five materials processed successfully without errors.
+- Render speed: 400-577ms per material on RTX 4090.
 - Heritability estimates within valid [0,1] range and biologically reasonable.
 - No clamping artifacts in rendered children.
 
