@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-23 12:52:10.316524",
+  "timestamp": "2026-07-23 13:25:16.653105",
   "tests_run": 5,
   "passed": 2,
   "success_rate": 40.0,
@@ -7,17 +7,17 @@
     {
       "test": "bonsai_vegetative x stump_wood",
       "passed": false,
-      "timestamp": "2026-07-23 12:52:10.314912"
+      "timestamp": "2026-07-23 13:25:16.651265"
     },
     {
       "test": "bonsai_vegetative x bicycle_metallic",
       "passed": false,
-      "timestamp": "2026-07-23 12:52:10.315738"
+      "timestamp": "2026-07-23 13:25:16.652214"
     },
     {
       "test": "stump_wood x bicycle_metallic",
       "passed": false,
-      "timestamp": "2026-07-23 12:52:10.316491"
+      "timestamp": "2026-07-23 13:25:16.653073"
     },
     {
       "test": "linkage_groups",
