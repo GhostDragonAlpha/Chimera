@@ -30,6 +30,19 @@ the noun / VAE manifold" fork in §9–§10 was *realized differently*: the mani
 job — completing what the photo can't see — is done by the template markers, and
 the photo detail is supplied by the CROSS's patch library, not a learned latent.)
 
+## 0.6. SECOND REALIZED DIRECTION (2026-07-22) — 3DGS scan → object DNA
+
+Construction now also holds a **second pipeline, pointed the other way**. Instead of
+building a stylized object *from a 2D photo*, it decomposes a **real 3D Gaussian-splat
+scan** into material **genomes**. An object = **morphology-DNA** (shape) + **material-DNA**
+(the splat *configuration* — distributions of size / shape / angle / colour, a RANGE not a
+value); recognized genomes get **serial numbers** (a codebook) → compress / identify /
+regenerate. **Canonical doc: `Construction/SPLAT_DNA_WORKFLOW.md`** (honest status per stage,
+GPU-native — proven this session end to end: `.ksplat` decode → SAM2 lift → morphology &
+material DNA → codebook → 82.5% identify). The photo→tree work (§0.5) and this scan→DNA work
+are **siblings** that share the DNA / morphology / patch vocabulary; the photo pipeline's
+hand-cut **patches** are the un-measured cousin of this pipeline's **distributional genomes**.
+
 ## 0. The one sentence
 
 The AI authors in a **legible low dimension**; a **deterministic construction

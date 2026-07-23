@@ -4,6 +4,11 @@
 > own bark and foliage. Discovered end-to-end 2026-07-22 (the Baginton-oak run).
 > **This is a RECIPE. The judgment is already in the code. Run the steps in order,
 > verify by eye, do not improvise the design.** (Successor-runbook rule.)
+>
+> **Sibling pipeline — don't confuse them:** this recipe builds a stylized object *from a
+> 2D photo*. To instead decompose a *real 3D Gaussian-splat scan* into material genomes
+> (DNA), see **`Construction/SPLAT_DNA_WORKFLOW.md`**. Same DNA/patch vocabulary, different
+> input.
 
 ## TL;DR — one command
 

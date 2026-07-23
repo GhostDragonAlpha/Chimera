@@ -36,10 +36,12 @@ Recognized genomes get **serial numbers** — a **codebook**. The scene then com
 | Morphology signatures | 6/6 on synthetic trunk/post/bucket/foliage/wall/rock | `morphology_signatures.py` |
 | Material-DNA recovery (differentiable inverse rendering) | recovered known oak & copper {albedo,roughness,metal} to ~1%, incl. metal 0.04 vs 0.97 | `material_dna.py` |
 | Splat-configuration DNA | bark / moss / ground are distinguishable signatures; **wood grain measured as aligned splat long-axes** | `take_dna.py` |
+| Material-DNA as **full distributions** + identify | genome = mean + range; classify held-out splats at **82.5%** (chance 33%) — the range names it | `take_dna_full.py` |
+| Serial-number **codebook** | whole scene → **8 material genomes** with serial numbers; 3.06M splats → codebook + one serial# per splat | `codebook.py` |
 
 **DESIGNED — coherent, not yet built:**
-- The **serial-number codebook** (cluster regions → genomes → IDs → compress/identify/regenerate).
-- **Full distributions** (not means) for material-DNA — the "range, not a value."
+- **Spatial voting (membranes)** — smooth each splat's genome vote over its neighbourhood so identify sharpens past the per-splat 82.5% and regions come out clean, not confetti. *(next rung)*
+- **Regenerate** — sample a genome's distribution onto a fresh membrane.
 - **Re-composition** — placing extracted objects into a new scene (the game half; same pipeline reversed).
 
 **FRONTIER — genuinely hard / open:**
@@ -65,9 +67,10 @@ Recognized genomes get **serial numbers** — a **codebook**. The scene then com
 | 4 | Segment in 2D | **SAM 2** (Grounded-SAM for text) | `multiview_sam_lift.py` · PROVEN |
 | 5 | Lift to 3D (back-project + vote) | 2D-mask lifting; **Gaussian Grouping** (trained ver. blocked) | `multiview_sam_lift.py` · PROVEN (voting) |
 | 6 | Morphology-DNA (shape signature) | PCA descriptors + taper/fractal/aspect | `morphology_signatures.py` · PROVEN (synthetic) |
-| 7 | Material-DNA (splat-config signature) | splat-configuration distributions | `take_dna.py` · PROVEN (distinguishable) |
+| 7 | Material-DNA (splat-config signature, full distributions) | splat-configuration distributions | `take_dna.py`, `take_dna_full.py` · PROVEN (82.5% identify) |
 | 8 | Material recovery (from a known sample) | analysis-by-synthesis / inverse rendering | `material_dna.py` · PROVEN (synthetic GT) |
-| 9 | Serial-number codebook | vector quantization / texton dictionary | `codebook.py` · **BUILDING** |
+| 9 | Serial-number codebook | vector quantization / texton dictionary | `codebook.py` · PROVEN (8 genomes) |
+| 9.5 | Spatial voting (membranes) | neighbourhood label smoothing | · DESIGNED (next) |
 | 10 | Mesh for an engine | **SuGaR** / 2DGS | · DESIGNED |
 | 11 | Re-compose the game | 3DGS editing (Gaussian Grouping, 3DitScene, FreeInsert) | · DESIGNED |
 
@@ -99,4 +102,14 @@ Material genome = {albedo, roughness, metalness, normal} **+ the splat-configura
 
 ## 6. Next rung (proceed)
 
-**Build the codebook** (`codebook.py`): cluster the scene's splats into K material genomes by their configuration features, assign each a **serial number**, report each genome's coverage of the scene, and paint the scene by serial number. Then: full distributions (not means), then identify/regenerate, then re-compose.
+DONE this session: the **codebook** (`codebook.py` — 8 genomes, scene painted by serial#) and **full distributions + identify** (`take_dna_full.py` — genome = mean+range, 82.5% classification).
+
+**NEXT: spatial voting (membranes).** Per-splat identify is 82.5% because a lone splat ignores its neighbours; smooth each splat's genome vote over its spatial neighbourhood (that neighbourhood **is** the membrane) so identify sharpens and the material regions come out clean instead of confetti. Then **regenerate** (sample a genome's distribution onto a fresh membrane), then **re-compose** (the game half — same pipeline reversed).
+
+## 7. Sibling pipeline (alignment)
+
+Construction/ now holds **two** related pipelines; do not confuse them:
+- **Photo → textured 3D tree** — `REFERENCE_TO_NOUN.md` (build a stylized object *from a 2D photo* via the CROSS: markers × photo patches).
+- **3DGS scan → object DNA** — *this doc* (decompose a *real 3D scan* into material genomes).
+
+They share the DNA vocabulary: the photo pipeline's **patches** are a hand-cut appearance library; this pipeline's **serial-numbered genomes** are the *measured, distributional* version of the same idea. Morphology is shared by both (`MORPHOLOGY.md` = the told concepts; `morphology_signatures.py` = the measured shape-DNA).

@@ -6,6 +6,12 @@
 > per-subject template generator from them. **Grow this catalog; never grow the
 > engine.** Every entry is source-cited — ground the choice in it, never in taste.
 > Researched & verified 2026-07-22.
+>
+> **Told here, measured there — same morphology.** In the sibling scan→DNA pipeline
+> (`SPLAT_DNA_WORKFLOW.md`) these shape concepts are *computed* per element by
+> `morphology_signatures.py` (taper / radial symmetry / fractal dimension / aspect =
+> the measured shape-DNA). This catalog is the concepts a template is authored *from*;
+> that code is the concepts a real scan is measured *against*.
 
 A morphology concept does one of **four jobs** for a template. When authoring, name
 the job you need, then reach for the concept:
