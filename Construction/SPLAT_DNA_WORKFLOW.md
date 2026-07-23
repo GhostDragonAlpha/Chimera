@@ -126,6 +126,60 @@ They share the DNA vocabulary: the photo pipeline's **patches** are a hand-cut a
 
 ---
 
+## 7.5 FILE INVENTORY — every script, what it is, whether to use it
+
+> Added 2026-07-23 after an audit found working code with no doc entry. If you add a
+> script, add its row. **An undocumented script gets rewritten by the next agent.**
+
+### The DNA pipeline (this document)
+| File | Role | Status |
+|---|---|---|
+| `ksplat_io.py` | Decode `.ksplat` / `.splat` / `.ply`; `load_any()` dispatches | **PROVEN** |
+| `calibrate_formats.py` | Regression test: same model from two containers must agree | **PROVEN** — caught the SH-DC colour bug |
+| `gpu_render_torch.py` | Pure-torch CUDA splat rasteriser | **PROVEN** — 9 views / 120 ms |
+| `gpu_render.py` | Same job via `gsplat` | **SUPERSEDED — do not use.** `gsplat`'s CUDA kernels will not JIT here (no ninja + torch-2.13 API break). Kept only to document the attempt. |
+| `multiview_render.py` | Orbit-camera view generation | PROVEN |
+| `multiview_sam_lift.py` | SAM 2 segment → back-project → vote → 3D mask | **PROVEN** |
+| `lift.py` | 2D → 3D lift primitives shared by the above | PROVEN |
+| `morphology_signatures.py` | Shape-DNA: taper / aspect / radial symmetry / fractal dim | **PROVEN** — 6/6 synthetic |
+| **`decompose_scene.py`** | **Whole-scene decomposition by morphological signature.** Iterative RANSAC extracts planes (wall/ground/path — their signature is planarity); the remainder clusters into blobs; each element gets a PCA shape signature (linearity/planarity/scatter). | **PROVEN** — this is the scene-level entry point to everything else |
+| `material_dna.py` | GGX inverse rendering: recover albedo / roughness / metalness | **PROVEN** on known oak + copper |
+| `take_dna.py` | Splat-config DNA sampler (means) | PROVEN |
+| `take_dna_full.py` | Full distributions + identify | **PROVEN** — 82.5% vs 33% chance |
+| `codebook.py` | GPU k-means → material genomes with serial numbers | **PROVEN** — 8 genomes |
+| `space_materials.py` | Hull material library from the metal-bearing scans | **PROVEN** — 10 surface genomes |
+| `spatial_vote.py` | Neighbourhood smoothing of genome votes | **REFUTED** — 82.5% → 82.8%, flat. Kept as the record of a dead end (see §2). |
+| `objaverse_fetch.py` | Pull CC objects by LVIS category from Objaverse | PROVEN — 489 objects |
+| `gsplat_fit.py` | Splat fitting | PROVEN |
+| `export_web.py` | Honest probe: how much of a scan is actually plant? Isolates foliage by colour, traces the largest connected green mass | PROVEN — a *measurement*, not an exporter (despite the name) |
+| `web_export.py` | Writes `web/object.json` for the browser viewer | PROVEN |
+
+### The noun/verb construction pipeline (`DESIGN.md`, `REFERENCE_TO_NOUN.md`)
+Separate from DNA extraction: this *authors* geometry rather than recovering it.
+`DESIGN.md` explains the concepts; these are the files that implement them.
+
+| File | Role |
+|---|---|
+| `noun.py` | **The noun constructor** — photo-authorable 2D seed → 3D noun. `construct()` is the whole decode: skeleton → flatten → lift by the golden rule → shape the crown |
+| `scene.py` | Renderer-agnostic scene model + the anchor / axis / dial mechanism (`DESIGN` §3: *difference = dimension*) |
+| `tree.py` | Tree skeleton + `pose()` (the wind verb) |
+| `cross.py` | **The CROSS** — template markers × real photo patches |
+| `photo_to_tree.py` | The end-to-end recipe. **Run this; don't improvise** (`REFERENCE_TO_NOUN.md`) |
+| `backend_3d.py` | 3D backend (the product surface) → ParticleEngine on the GPU |
+| `backend_html.py` | HTML backend (the development surface) — same scene model, AI-legible, fast |
+| `viewer3d.py` | Orbitable perspective 3D dev viewer (drag to orbit) |
+| `viewer_nv.py` | Noun + verb viewer — fixed noun, wind verb applied live |
+| `demo_lift.py` | Demo: flat 2D picture → 3D, orbit stills proving real volume |
+| `demo_compose.py` | Demo: `blow(construct(picture))` — noun composed with verb |
+| `demo_tree_wind.py` | Walking skeleton: one scene model, one wind axis, both backends |
+
+**Two backends, one scene model, on purpose.** The HTML backend is the *development*
+surface (fast, legible, checkable); the 3D backend is the *product* surface. They read
+the same model and the same anchors, so a disagreement between them is a real bug, not a
+rendering difference.
+
+---
+
 ## 8. TWO INTAKE METHODS — measured vs authored (and "stylized")
 
 **A genome does not have to come from a scan.** The genome *format* is identical either way; only the source of the numbers differs — and **both land in the same codebook under the same serial numbers.**
