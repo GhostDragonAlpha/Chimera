@@ -1,6 +1,6 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
-Updated 2026-07-22T07:18:20+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+Updated 2026-07-23T07:15:31+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
@@ -31,6 +31,7 @@ so claimed tasks are safe to run in parallel.
 | tb-0238 | open | 0.6 | Pain verdict: Material PBR wiring on MAT_Ship_Hull_Aluminum  | docs/research/** |  |
 | tb-0239 | open | 0.6 | Pain verdict: Live concurrent-agent interference (PIE toggli | docs/research/** |  |
 | tb-0240 | open | 0.6 | Pain verdict: MAT_WeaponBody (the name Loop4_Tools_Complete. | docs/research/** |  |
+| tb-0241 | open | 0.6 | Pain verdict: manage_geometry create_box/create_cylinder/cre | docs/research/** |  |
 | tb-0005 | done | 1.5 | Hire_Audio_Sourcer (DREAM_ROSTER #7) `capable` | core/audio_sourcer.py, Content/Audio/**…; editor:open | core/audio_sourcer.py, docs/ASSET_LICENSES.md, pathway_attem |
 | tb-0092 | done | 1.5 | Fix Loop 3 Sky realization: wire orphaned setup into live le | Source/Chimera/ProceduralGenerated/Sky/** | WITNESS (live PIE, 2 clean reached sessions each): sky_starf |
 | tb-0099 | done | 1.5 | Realize remaining Loop 3 Sky (Earth/Moon/Sun) in live build | Source/Chimera/ProceduralGenerated/Sky/** | REALIZE REMAINING LOOP 3 SKY (Earth/Moon/Sun) tb-0099 sub-13 |
