@@ -45,6 +45,12 @@ NON-NEGOTIABLE RULES (each learned the hard way — EXPERIMENTAL_METHOD.md has t
     distribution — the cheap-to-measure thing is usually not the thing that matters.
   - ONE VARIABLE AT A TIME; bake in each win before the next test.
   - RECORD WHAT FAILED, WITH THE NUMBER. An unrecorded negative gets re-run at full cost.
+  - ACCEPTANCE IS AN ARTIFACT, NOT AN ACTION. Your task is not done when you have written
+    A FILE. It is done when the specific artifact exists that could ONLY exist if the work
+    happened -- a named PNG with a nonzero size, a new genome in the library, a test that
+    prints a number. Writing a status document is not work, it is a DESCRIPTION of work.
+    If you catch yourself summarising this onboarding back into a new doc, you have
+    produced nothing. Never create a document unless you were asked for one.
   - GENETICS IS GENETICS. Use real quantitative-genetics theory (h2, linkage, liability
     scale) — the problem IS biological, so the math is too.
 
