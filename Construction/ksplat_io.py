@@ -60,6 +60,39 @@ def load_ksplat(path, full=False):
     return pos.astype(np.float32), col
 
 
+def load_splat(path, full=False):
+    """antimatter15 `.splat`: 32 bytes/splat —
+       pos 3xfloat32 | scale 3xfloat32 (linear) | colour 4xuint8 RGBA | rot 4xuint8 quaternion."""
+    raw = np.fromfile(path, dtype=np.uint8)
+    n = len(raw) // 32
+    a = raw[:n * 32].reshape(n, 32)
+    pos = a[:, 0:12].copy().view(np.float32).reshape(n, 3)
+    scale = a[:, 12:24].copy().view(np.float32).reshape(n, 3)
+    rgba = a[:, 24:28].astype(np.float32) / 255.0
+    quat = (a[:, 28:32].astype(np.float32) - 128.0) / 128.0        # decode uint8 -> [-1,1]
+    if full:
+        return pos, rgba[:, :3], rgba[:, 3], scale, quat
+    return pos, rgba[:, :3]
+
+
+def load_any(path, full=False):
+    """Dispatch on extension: .ksplat | .splat | .ply (full-SH INRIA format)."""
+    p = str(path).lower()
+    if p.endswith(".ksplat"):
+        return load_ksplat(path, full=full)
+    if p.endswith(".splat"):
+        return load_splat(path, full=full)
+    if p.endswith(".ply"):
+        import sys as _s
+        _s.path.insert(0, "E:/PythonChimera")
+        from WorldModel.splat_io import load_ply
+        c = load_ply(path)
+        if full:
+            return c.positions, np.clip(np.nan_to_num(c.colors), 0, 1), np.nan_to_num(c.opacities), np.nan_to_num(c.scales), np.nan_to_num(c.rotations)
+        return c.positions, np.clip(np.nan_to_num(c.colors), 0, 1)
+    raise ValueError(f"unknown splat format: {path}")
+
+
 if __name__ == "__main__":
     import sys
     p = sys.argv[1] if len(sys.argv) > 1 else "E:/PythonChimera/WorldModel/training_data/real_data/stump/stump.ksplat"
