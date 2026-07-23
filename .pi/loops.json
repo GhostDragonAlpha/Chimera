@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-23T20:15:16.012Z",
+  "updatedAt": "2026-07-23T20:16:16.022Z",
   "loops": [
     {
       "id": "loop_mrxvjhlj_pxu428",
@@ -17,22 +17,6 @@
       "lastStatus": "success",
       "nextRun": "2026-07-23T20:00:00.000Z",
       "status": "active"
-    },
-    {
-      "id": "loop_mrxyajos_6ratt4",
-      "name": "workflow-completion-cycle",
-      "action": "notify",
-      "type": "once",
-      "schedule": "+1m",
-      "intervalMs": 60000,
-      "message": "Workflow cycle completed. Allowing agent to complete on its own time.",
-      "cwd": "E:\\PythonChimera",
-      "enabled": true,
-      "maxFires": 1,
-      "runCount": 0,
-      "createdAt": "2026-07-23T20:15:16.012Z",
-      "status": "active",
-      "nextRun": "2026-07-23T20:16:16.012Z"
     }
   ]
 }
