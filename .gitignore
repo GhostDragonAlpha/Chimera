@@ -153,3 +153,11 @@ ParticleEngine/output/
 ParticleEngine/output/
 WorldModel/training_data/
 WorldModel/training_data/images/
+
+# Session-generated / large artifacts (2026-07-22) — never commit
+/sam2_b.pt
+/*.pt
+/chat_session_full.txt
+/web/object.json
+/web/*.png
+/web/*.npz
