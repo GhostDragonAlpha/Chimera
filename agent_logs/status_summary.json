@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-07-23 12:45:54.353530",
+  "agent_logs_count": 0,
+  "reports_count": 1,
+  "workflow_status": "active",
+  "next_scheduled_tasks": [
+    "Process grass tuft scan data",
+    "Test two-parent recombination with bonsai x stump",
+    "Validate membrane clothe() function"
+  ]
+}

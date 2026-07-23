@@ -1,3 +1,48 @@
+# Session 2026-07-23 (automation) — Sequential agent workflow running continuously
+
+- **Orchestrator**: Continuous sequential pipeline - research → validation → recombination → integration → documentation
+- **Current status**: Agents executing in order, results logged to agent_logs/
+- **Next automated tasks**: See individual agent reports
+
+## NEXT
+1. **VISUAL VALIDATION** — Agent analyzing rendered images; human review at http://localhost:8080
+2. **PROCESS MORE MATERIALS** — Research agent searching for grass, rock, metal, ice scans
+3. **TEST TWO-PARENT RECOMBINATION** — Recombination agent testing with existing genomes
+4. **INTEGRATE WITH MEMBRANE SHAPES** — Integration agent validating clothe/displace/scatter
+5. **UPDATE DNA GRAPH** — Documentation agent recording feature nodes and observations
+
+---
+
+# Session 2026-07-23 (automation) — Sequential agent workflow running continuously
+
+- **Orchestrator**: Continuous sequential pipeline - research → validation → recombination → integration → documentation
+- **Current status**: Agents executing in order, results logged to agent_logs/
+- **Next automated tasks**: See individual agent reports
+
+## NEXT
+1. **VISUAL VALIDATION** — Agent analyzing rendered images; human review at http://localhost:8080
+2. **PROCESS MORE MATERIALS** — Research agent searching for grass, rock, metal, ice scans
+3. **TEST TWO-PARENT RECOMBINATION** — Recombination agent testing with existing genomes
+4. **INTEGRATE WITH MEMBRANE SHAPES** — Integration agent validating clothe/displace/scatter
+5. **UPDATE DNA GRAPH** — Documentation agent recording feature nodes and observations
+
+---
+
+# Session 2026-07-23 (automation) — Continuous agent workflow activated
+
+- **Agent orchestrator**: Automated continuous workflow using specialized sub-agents
+- **Current status**: Visual validation in progress, materials processing ongoing
+- **Next automated tasks**: Process remaining materials, test recombination, integrate membranes
+
+## NEXT
+1. **VISUAL VALIDATION** — Awaiting human review of rendered images at http://localhost:8080
+2. **PROCESS MORE MATERIALS** — Automated agent searching for grass, rock, metal, ice scans
+3. **TEST TWO-PARENT RECOMBINATION** — Agent running recombination tests with existing genomes
+4. **INTEGRATE WITH MEMBRANE SHAPES** — Agent testing clothe/displace/scatter functions
+5. **UPDATE DNA GRAPH** — Automated recording of feature nodes and observations
+
+---
+
 # Rehearsal decision 2026-07-21 03:15Z — next move: Ground_Sand_Sound_unblock
 # Session 2026-07-23 (automation) — Sequential continuous agent workflow activated
 
