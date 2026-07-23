@@ -153,7 +153,7 @@ end_header
 """
     with open(path, "wb") as f:
         f.write(header.encode())
-        # Convert back: sigmoid inverse for colors, log for scales
+        # Convert back: SH-DC inverse for colours, sigmoid inverse for opacity, log for scales
         colors = (np.clip(cloud.colors, 0.0, 1.0) - 0.5) / 0.28209479177387814   # inverse of the SH-DC decode
         opacities = inverse_sigmoid(np.clip(cloud.opacities, 0.001, 0.999))
         scales = np.log(np.maximum(cloud.scales, 1e-8))
