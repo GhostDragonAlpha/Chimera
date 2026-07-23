@@ -88,9 +88,9 @@
       ]
     }
   },
-  "defaultProvider": "colibri",
+  "defaultProvider": "lmstudio",
   "_defaultModel_note": "DEFAULT CHANGED 2026-07-22 to colibri/glm-5.2-colibri (local 744B 'smart brain'; MEASURED 2026-07-23 at ~0.26 tok/s - ONE AGENT TURN IS TENS OF MINUTES, see Chimera/docs/GLM_52_DEEP_MODEL.md; REQUIRES E:\\pi-servers\\START GLM-5.2.cmd running on :8080). pi now routes to colibri (:8080), NOT LM Studio, so the old JIT-load conflict below no longer applies while this is the default. REVERT for fast autonomous/worker_bridge studio work: defaultProvider 'lmstudio' + defaultModel to the LM Studio model you have loaded (previously 'qwen-agentworld-35b-a3b-mtp-apex'). Prior rationale kept for that case: pi NAMES a model per request, so a mismatch makes LM Studio JIT-load pi's model alongside yours (2026-07-14: 41.3GB resident, mutual eviction). Chimera itself adopts whatever is resident.",
-  "defaultModel": "glm-5.2-colibri",
+  "defaultModel": "qwen-agentworld-35b-a3b-mtp-apex",
   "environment": {
     "nodePath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64",
     "npmPath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64/npm.cmd",
