@@ -1,17 +1,30 @@
 # Task Board (generated — edit via `python -m core.task_board`, not by hand)
 
+<<<<<<< HEAD
 Updated 2026-07-23T09:55:46+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
 grants tasks whose resource footprint is disjoint from active claims,
 so claimed tasks are safe to run in parallel.
 
 **Parallel frontier right now: 1 task(s) can proceed simultaneously.**
+=======
+Updated 2026-07-23T09:45:50+00:00. Claim work with `python -m core.task_board claim --agent <your-id>`; the board only
+grants tasks whose resource footprint is disjoint from active claims,
+so claimed tasks are safe to run in parallel.
+
+**Parallel frontier right now: 2 task(s) can proceed simultaneously.**
+>>>>>>> parent of ca5bc6b (docs: retire the Unreal Engine era, realign the manual to the actual project)
 
 | id | status | pri | task | resources | agent / result |
 |---|---|---|---|---|---|
 | tb-0209 | claimed | 0.9 | Witness: Tool_Weapon_Material | editor:open; excl:pie | verification-agent-001 |
 | tb-0210 | claimed | 0.75 | Build toward the seed: UCostlessLifeEndingDiagnostic | core/game_code_generator.py; excl:generator | research-agent-002 |
+<<<<<<< HEAD
 | tb-0227 | claimed | 0.75 | Fix confirmed pain: control_actor set_material reports succe | Source/Chimera/** | pi |
 | tb-0211 | open | 0.75 | Build toward the seed: TitanRunTrack | core/game_code_generator.py; excl:generator |  |
+=======
+| tb-0211 | open | 0.75 | Build toward the seed: TitanRunTrack | core/game_code_generator.py; excl:generator |  |
+| tb-0227 | open | 0.75 | Fix confirmed pain: control_actor set_material reports succe | Source/Chimera/** |  |
+>>>>>>> parent of ca5bc6b (docs: retire the Unreal Engine era, realign the manual to the actual project)
 | tb-0234 | open | 0.75 | Fix confirmed pain: The pipeline's visual stage used pyautog | Source/Chimera/** |  |
 | tb-0212 | open | 0.72 | Build toward the seed: FStationMarket | core/game_code_generator.py; excl:generator |  |
 | tb-0213 | open | 0.72 | Build toward the seed: UFactionSubsystem | core/game_code_generator.py; excl:generator |  |
