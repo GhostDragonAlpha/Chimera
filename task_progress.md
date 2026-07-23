@@ -28,6 +28,36 @@
 
 ---
 
+# Session 2026-07-23 (automation) — Sequential agent workflow running continuously
+
+- **Orchestrator**: Continuous sequential pipeline - research → validation → recombination → integration → documentation
+- **Current status**: Agents executing in order, results logged to agent_logs/
+- **Next automated tasks**: See individual agent reports
+
+## NEXT
+1. **VISUAL VALIDATION** — Agent analyzing rendered images; human review at http://localhost:8080
+2. **PROCESS MORE MATERIALS** — Research agent searching for grass, rock, metal, ice scans
+3. **TEST TWO-PARENT RECOMBINATION** — Recombination agent testing with existing genomes
+4. **INTEGRATE WITH MEMBRANE SHAPES** — Integration agent validating clothe/displace/scatter
+5. **UPDATE DNA GRAPH** — Documentation agent recording feature nodes and observations
+
+---
+
+# Session 2026-07-23 (automation) — Sequential agent workflow running continuously
+
+- **Orchestrator**: Continuous sequential pipeline - research → validation → recombination → integration → documentation
+- **Current status**: Agents executing in order, results logged to agent_logs/
+- **Next automated tasks**: See individual agent reports
+
+## NEXT
+1. **VISUAL VALIDATION** — Agent analyzing rendered images; human review at http://localhost:8080
+2. **PROCESS MORE MATERIALS** — Research agent searching for grass, rock, metal, ice scans
+3. **TEST TWO-PARENT RECOMBINATION** — Recombination agent testing with existing genomes
+4. **INTEGRATE WITH MEMBRANE SHAPES** — Integration agent validating clothe/displace/scatter
+5. **UPDATE DNA GRAPH** — Documentation agent recording feature nodes and observations
+
+---
+
 # Session 2026-07-23 (automation) — Continuous agent workflow activated
 
 - **Agent orchestrator**: Automated continuous workflow using specialized sub-agents

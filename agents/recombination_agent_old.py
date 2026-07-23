@@ -5,7 +5,6 @@ import sys
 from pathlib import Path
 import numpy as np
 import json
-from datetime import datetime
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -53,8 +52,8 @@ def test_recombination(parent_a, parent_b):
     
     print(f"Child features: {child_vec}")
     
-    in_range = bool(np.all((child_vec >= 0) & (child_vec <= 1)))
-    between_parents = bool(np.all((child_vec >= np.minimum(vec_a, vec_b)) & (child_vec <= np.maximum(vec_a, vec_b))))
+    in_range = np.all((child_vec >= 0) & (child_vec <= 1))
+    between_parents = np.all((child_vec >= np.minimum(vec_a, vec_b)) & (child_vec <= np.maximum(vec_a, vec_b)))
     
     print("\nRecombination analysis:")
     print(f"  Values in valid range [0,1]: {in_range}")
@@ -109,25 +108,12 @@ def generate_recombination_report(test_results):
     print(f"Failed: {total - passed}")
     print(f"Success rate: {(passed/total)*100:.1f}%")
     
-    # Convert numpy types to Python native types for JSON serialization
-    clean_results = []
-    for r in test_results:
-        clean_r = {}
-        for k, v in r.items():
-            if isinstance(v, np.bool_):
-                clean_r[k] = bool(v)
-            elif isinstance(v, (np.integer, np.floating)):
-                clean_r[k] = float(v)
-            else:
-                clean_r[k] = v
-        clean_results.append(clean_r)
-    
     report = {
         "timestamp": str(datetime.now()),
         "tests_run": total,
         "passed": passed,
         "success_rate": (passed/total)*100 if total > 0 else 0,
-        "results": clean_results
+        "results": test_results
     }
     
     report_path = Path("agent_logs/recombination_report.json")
@@ -138,6 +124,8 @@ def generate_recombination_report(test_results):
     return passed > 0
 
 def main():
+    from datetime import datetime
+    
     print("Recombination Testing Agent")
     print("="*60)
     
@@ -159,15 +147,15 @@ def main():
                 passed = test_recombination(parent_a, parent_b)
                 results.append({
                     "test": f"{parent_a_name} x {parent_b_name}",
-                    "passed": bool(passed),
+                    "passed": passed,
                     "timestamp": str(datetime.now())
                 })
     
     linkage_passed = test_linkage_groups()
     pleiotropy_passed = test_pleiotropy()
     
-    results.append({"test": "linkage_groups", "passed": True})
-    results.append({"test": "pleiotropy", "passed": True})
+    results.append({"test": "linkage_groups", "passed": linkage_passed})
+    results.append({"test": "pleiotropy", "passed": pleiotropy_passed})
     
     success = generate_recombination_report(results)
     

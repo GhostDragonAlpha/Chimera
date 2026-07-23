@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-07-23 12:52:10.451806",
+  "tests_run": 3,
+  "passed": 2,
+  "success_rate": 66.66666666666666,
+  "results": [
+    {
+      "shape": "clothe_interface",
+      "passed": true
+    },
+    {
+      "shape": "displacement",
+      "passed": true
+    },
+    {
+      "shape": "scatter_placement",
+      "passed": false
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-07-23 12:52:10.316524",
+  "tests_run": 5,
+  "passed": 2,
+  "success_rate": 40.0,
+  "results": [
+    {
+      "test": "bonsai_vegetative x stump_wood",
+      "passed": false,
+      "timestamp": "2026-07-23 12:52:10.314912"
+    },
+    {
+      "test": "bonsai_vegetative x bicycle_metallic",
+      "passed": false,
+      "timestamp": "2026-07-23 12:52:10.315738"
+    },
+    {
+      "test": "stump_wood x bicycle_metallic",
+      "passed": false,
+      "timestamp": "2026-07-23 12:52:10.316491"
+    },
+    {
+      "test": "linkage_groups",
+      "passed": true
+    },
+    {
+      "test": "pleiotropy",
+      "passed": true
+    }
+  ]
+}

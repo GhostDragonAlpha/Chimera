@@ -4,8 +4,6 @@
 import sys
 from pathlib import Path
 import numpy as np
-import json
-from datetime import datetime
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -14,7 +12,11 @@ def test_membrane_clothe():
     print("Testing Membrane Integration")
     print("="*60)
     
-    # Try importing membrane shapes - may not be available yet
+    membrane_path = Path("Chimera/core/membrane_shapes.py")
+    if not membrane_path.exists():
+        print(f"Membrane shapes module not found at {membrane_path}")
+        return False
+    
     try:
         from Chimera.core.membrane_shapes import Sphere, Plane, Cylinder
         
@@ -48,10 +50,8 @@ def test_membrane_clothe():
         return all(r["passed"] for r in results)
         
     except ImportError as e:
-        print(f"Membrane shapes not available yet: {e}")
-        print("This is expected - membrane integration will be tested later")
-        return True  # Not a failure, just not ready
-        
+        print(f"Failed to import membrane shapes: {e}")
+        return False
     except Exception as e:
         print(f"Unexpected error during membrane testing: {e}")
         return False
@@ -84,9 +84,8 @@ def test_displacement():
             return False
             
     except ImportError as e:
-        print(f"Membrane shapes not available yet: {e}")
-        return True  # Not a failure, just not ready
-        
+        print(f"Failed to import membrane shapes: {e}")
+        return False
     except Exception as e:
         print(f"Unexpected error during displacement testing: {e}")
         return False
@@ -157,6 +156,8 @@ def generate_integration_report(test_results):
     return passed > 0
 
 def main():
+    from datetime import datetime
+    
     print("Membrane Integration Testing Agent")
     print("="*60)
     
