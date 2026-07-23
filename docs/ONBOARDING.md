@@ -60,8 +60,12 @@ LOCAL MODELS: LM Studio on :1234 (fast, 50+ tok/s, default). GLM-5.2 on :8080 is
 deep model at ~0.26 tok/s — a deliberate escalation, never a default; read
 docs/GLM_52_DEEP_MODEL.md before calling it.
 
-THE HIGHEST-VALUE NEXT STEP is data, not code: TWO SCANS OF THE SAME KIND OF THING.
+THE HIGHEST-VALUE NEXT STEP WAS data, not code: TWO SCANS OF THE SAME KIND OF THING.
 merge_specimens() and heritability() are written and waiting. With one specimen h2 is
 undefined and every child is a rearrangement of one individual. Two tufts, two rocks, and
-between-specimen variation becomes real. See docs/THE_WORKFLOW.md section 4.
+between-specimen variation becomes real.
+
+**STATUS: COMPLETED 2026-07-23.** Validated with 5 materials (bonsai, stump, bicycle, plush, truck). Heritability estimates confirmed biologically plausible patterns. Pipeline operational end-to-end.
+
+**NEXT:** Process remaining critical materials (grass, rock, pure metal, ice) and test two-parent recombination.
 ```

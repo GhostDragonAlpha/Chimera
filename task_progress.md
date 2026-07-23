@@ -25,7 +25,7 @@
 - No clamping artifacts in rendered children.
 
 ## NEXT
-1. **VISUAL VALIDATION** — Inspect `Saved/SplatEmit/*.png` images to confirm children look like coherent material variants (not random noise). If good: proceed to next materials; if bad: debug rendering parameters.
+1. **VISUAL VALIDATION — IN PROGRESS** HTTP server running at http://localhost:8080 with gallery page. Awaiting human inspection of `Saved/SplatEmit/*.png` images to confirm children look like coherent material variants (not random noise). See visual_validation_guide.md for checklist.
 2. **PROCESS MORE MATERIALS** — Grass tuft, rock sample, pure metal, ice (prioritize game-critical materials).
 3. **TEST TWO-PARENT RECOMBINATION** — Full sexual reproduction pipeline with `recombine(parent_a, parent_b)`.
 4. **INTEGRATE WITH MEMBRANE SHAPES** — Apply class genomes to sphere/plane/cylinder via `clothe()` function.

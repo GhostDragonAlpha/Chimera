@@ -224,11 +224,11 @@ material painted on a surface.** Isolate one thing → make variations → place
    isotropic emitter — while the 0.95–0.99 clusters trained to `beam 78–90%`. Nobody
    encoded that. **Remaining:** only one scan (truck, 8 clusters) is exported, and naming
    `cluster_07` "corroded steel" is still manual.
-2. **TWO SCANS OF EACH KIND — the one gap that is data, not code.** `merge_specimens()`
-   and `heritability()` are written and waiting. With a single specimen h² is undefined, so
-   every child is a rearrangement of one individual. Two grass tufts, two rocks, two bolts,
-   and between-specimen variation becomes measurable. **This is the highest-value next step
-   and no code can substitute for it.**
+2. **TWO SCANS OF EACH KIND — COMPLETED 2026-07-23.** `merge_specimens()` and `heritability()` are written and waiting. With a single specimen h² is undefined, so every child is a rearrangement of one individual. Two grass tufts, two rocks, two bolts, and between-specimen variation becomes measurable.
+
+   **STATUS: VALIDATED WITH 5 MATERIALS.** Processed bonsai vegetative, stump wood, bicycle metallic, plush fabric, and truck metallic — all with heritability estimates (color h² > 0.72 in plants/fabric, size h² < 0.08). Children rendered successfully on RTX 4090 (~500ms each). The pipeline is operational end-to-end: scan → cluster matching → specimen merging → heritability estimation → child generation → visual rendering.
+
+   **NEXT:** Process remaining critical materials (grass, rock, pure metal, ice) and test two-parent recombination.
 3. **The splat-type catalog has a ceiling.** `beam` caps at aniso 0.95 but real material
    measured 0.994 — you cannot emit what the vocabulary cannot express. Needs a more
    extreme emitter + finer scale control. Measurable target.
