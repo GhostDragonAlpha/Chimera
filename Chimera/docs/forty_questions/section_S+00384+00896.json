@@ -1,0 +1,78 @@
+{
+  "_meta": {
+    "feature": "section_S+00384+00896",
+    "serial": "S+00384+00896",
+    "origin_m": [
+      384.0,
+      896.0
+    ],
+    "span_m": 128.0,
+    "parent": "regolith_plain",
+    "inherits": "all questions not listed here are answered by 'regolith_plain'",
+    "tiles": "64 tiles from (24, 56) to (31, 63)",
+    "neighbours": {
+      "west": "S+00256+00896",
+      "east": "S+00512+00896",
+      "south": "S+00384+00768",
+      "north": "S+00384+01024"
+    },
+    "directions": {
+      "down": "open",
+      "forward": "open",
+      "up": "open",
+      "left": "open",
+      "right": "open",
+      "back": "open"
+    }
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this place in one sentence?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 3,
+      "q": "What would break if this place didn't exist?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 7,
+      "q": "What is the ONE measurement that proves this place works?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 11,
+      "q": "At what scale does this place operate?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 26,
+      "q": "What other places does this compose with?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 27,
+      "q": "What could break at the seam between this and its four neighbours?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 28,
+      "q": "Does this need a decoder step to place in the level?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 39,
+      "q": "What is the human's expected emotional response to standing here?",
+      "a": "",
+      "answered": false
+    }
+  ]
+}
