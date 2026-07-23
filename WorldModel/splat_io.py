@@ -97,8 +97,13 @@ def load_ply(path: str) -> SplatCloud:
 
     cr = get_col("f_dc_0"); cg = get_col("f_dc_1"); cb = get_col("f_dc_2")
     colors = np.stack([cr, cg, cb], axis=1)
-    # SH color is in 0-1 range but may be stored as raw; clip and scale
-    colors = sigmoid(colors)
+    # INRIA 3DGS stores colour as the spherical-harmonic DC coefficient:
+    #     rgb = 0.5 + C0 * f_dc      (C0 = 0.28209479177387814)   -- NOT sigmoid.
+    # Verified by loading the SAME model (bonsai@7k) as .ply and .splat and matching the
+    # colour distributions: sigmoid squashed the range (p10 0.143 vs the true 0.000).
+    # See Construction/calibrate_formats.py.
+    SH_C0 = 0.28209479177387814
+    colors = np.clip(0.5 + SH_C0 * colors, 0.0, 1.0)
 
     opacities = sigmoid(get_col("opacity"))
 
@@ -149,7 +154,7 @@ end_header
     with open(path, "wb") as f:
         f.write(header.encode())
         # Convert back: sigmoid inverse for colors, log for scales
-        colors = inverse_sigmoid(np.clip(cloud.colors, 0.001, 0.999))
+        colors = (np.clip(cloud.colors, 0.0, 1.0) - 0.5) / 0.28209479177387814   # inverse of the SH-DC decode
         opacities = inverse_sigmoid(np.clip(cloud.opacities, 0.001, 0.999))
         scales = np.log(np.maximum(cloud.scales, 1e-8))
 
