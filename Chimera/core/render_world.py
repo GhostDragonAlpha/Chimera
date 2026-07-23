@@ -124,15 +124,23 @@ def render_orbit(splats: dict, out_path='Saved/SplatEmit/world.png', n_views: in
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     K = int(np.ceil(3 * sigma))
 
-    pos = np.asarray(splats['pos'], dtype=np.float32)
-    n = len(pos)
+    # CAMERA-RELATIVE, and the order matters. Positions are read as float64 and the scene
+    # centre is subtracted BEFORE any cast to float32. Casting first -- which this did --
+    # destroys precision at planet scale: at Earth's radius float32 resolves 0.500 m
+    # (measured), so every position jitters by half a metre and geometry z-fights.
+    # After subtraction the numbers are small and float32 is exact enough for the GPU.
+    pos64 = np.asarray(splats['pos'], dtype=np.float64)
+    n = len(pos64)
     if n == 0:
         raise ValueError("no splats to render")
     if n > max_splats:                       # keep the scatter loop bounded
         sel = np.random.default_rng(0).choice(n, max_splats, replace=False)
-        pos = pos[sel]
+        pos64 = pos64[sel]
     else:
         sel = np.arange(n)
+
+    world_centre = pos64.mean(0)                          # float64
+    pos = (pos64 - world_centre).astype(np.float32)       # camera-relative, then cast
 
     rgb = np.asarray(splats.get('albedo', np.full((n, 3), 0.7)), dtype=np.float32)[sel]
     opac = np.asarray(splats.get('alpha', np.ones(n)), dtype=np.float32)[sel]
@@ -151,7 +159,7 @@ def render_orbit(splats: dict, out_path='Saved/SplatEmit/world.png', n_views: in
         nv = nv / (np.linalg.norm(nv, axis=1, keepdims=True) + 1e-9)
         nrm = torch.tensor(nv, device=dev)
 
-    ctr = pos.mean(0)
+    ctr = pos.mean(0)          # ~0 by construction: we are already camera-relative
     radius = float(np.linalg.norm(pos - ctr, axis=1).max()) * 2.2 + 1e-3
     up_hint = np.array([0.0, 0.0, 1.0], dtype=np.float32)
 

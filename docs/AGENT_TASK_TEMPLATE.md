@@ -1,115 +1,125 @@
 # Agent task template
 
-> Fill three placeholders — **`<DIRECTION>`**, **`<NAME>`**, and the one-line task —
-> then paste the block into a fresh agent.
+> **Generic by design.** Nothing here names a current problem, a current file, or a
+> current function — those go stale and turn a template into a case study. This document
+> describes only the *method*: where an agent stands, which way it faces, how it decides
+> what belongs there, and what counts as having done the work.
 >
-> Launch: `pi --provider lmstudio --model <the model LM Studio has resident>`
+> Fill two placeholders — **`<POSITION>`** and **`<DIRECTION>`** — and paste.
 
 ---
 
 ## The prompt
 
 ```
-You are working on CHIMERA at E:\PythonChimera. Read docs/ONBOARDING.md — it is your
-briefing. Then execute the task below.
+Read docs/ONBOARDING.md. It is your briefing and it takes precedence over anything
+you assume.
 
-WORKING DIRECTORY for all commands: E:\PythonChimera\Chimera
-(in bash, use /e/PythonChimera/Chimera)
+THE WORLD IS A 64-BIT DOUBLE-PRECISION GRID, AND IT IS IRREDUCIBLE.
+Every position is a coordinate carried in float64. There is no smallest feature: any
+region can be subdivided further, and the grid will still address it. So "what is
+here" is never answered once — it is answered at the level of detail the observer's
+distance justifies, and a finer answer always exists beneath the one you give.
+Work in float64 for anything positional. Cast to float32 only after subtracting a
+local origin, never before.
 
-TASK — the <DIRECTION> direction of the six directions.
-<ONE SENTENCE: what the player sees when they look that way, and what is missing.>
+WHERE YOU ARE:  <POSITION>
+WHICH WAY YOU FACE:  <DIRECTION>
 
-STEP 1 — DECODE IT WITH THE 40 QUESTIONS.
-  python -m core.forty_questions generate <NAME>
-Answer at least FIVE using the command, never by editing the JSON:
-  python -m core.forty_questions answer <NAME> <id> "<answer>"
+You stand at that coordinate and look that way. That is your entire scope this turn.
+You are not responsible for the world; you are responsible for what is visible along
+one axis from one place. Six directions exist — up, down, left, right, forward, back —
+and you are working exactly one of them.
 
-EVERY ANSWER MUST CONTAIN A NUMBER YOU MEASURED FROM THE THING YOU ARE BUILDING.
-Not a default parameter. Not a count of functions in a module. Not a value read from
-a config file. If you obtained it with inspect.signature(), len(SOME_DICT), or by
-reading a docstring, IT DOES NOT COUNT — that is a fact about the code, not about
-the artifact. A valid number comes from running the pipeline and measuring its
-output: splat counts, extents, distributions, errors, timings.
-If you cannot measure a question, LEAVE IT UNANSWERED. Unanswered is honest.
+STEP 1 — DECODE BEFORE YOU BUILD.
+Do not begin from an idea of what would look good. Begin by asking what belongs
+there, using the project's question protocol, and answer as many as the evidence
+supports. Some questions the physics can answer and some only a human can; answer the
+first kind and leave the second kind alone.
 
-STEP 2 — BUILD IT from functions that already exist. Do not write new modules.
-  core.membrane_shapes : sphere, plane, cylinder, box, dome, displace, clothe
-  core.progeny         : ground_patch, ground_tile, landmark, lod, compose, ground,
-                         load_genome, recombine, build_child, place, scatter, pose
-  core.sections        : section_at, open_section, seam_check, neighbours
-  core.render_world    : render_orbit
-Materials: Chimera/docs/matter/recovered_genomes.json
-Render to exactly: Saved/SplatEmit/<NAME>.png
+EVERY ANSWER YOU RECORD MUST CONTAIN A NUMBER YOU MEASURED FROM THE ARTIFACT YOU
+PRODUCED. A default parameter, a count of things in a module, a value read from a
+config, or anything obtained by inspecting source rather than running the pipeline is
+a fact about the CODE, not about the WORK — it does not count. If a question cannot
+be answered by measurement, leave it unanswered. An unanswered question is an honest
+result; an invented one is a lie stored in a file.
 
->>> ESCAPE HATCH — READ THIS BEFORE BUILDING <<<
-If the existing functions CANNOT do this task, STOP and report exactly which
-function is missing and what it would need to do. Naming a missing capability is a
-SUCCESSFUL outcome and I want it. Building something differently-shaped and calling
-it the task is a FAILURE. If a function's docstring contradicts your use of it, that
-is the signal — say so instead of proceeding.
+STEP 2 — BUILD FROM WHAT EXISTS.
+Find the functions the project already provides and compose them. Do not write new
+modules, and do not reimplement something that is already there under another name.
+If you are unsure what exists, read before you write.
 
-STEP 3 — MEASURE THE IMAGE YOU MADE. Not the log. Run this and paste the output:
-  python -c "
-from PIL import Image; import numpy as np
-a=np.asarray(Image.open('Saved/SplatEmit/<NAME>.png').convert('RGB')).astype(float)
-nz=a.sum(2)>12
-print('size', a.shape[1], 'x', a.shape[0])
-print('non-black pixels', round(100*nz.mean(),1), '%')
-print('mean RGB of content', np.round(a[nz].mean(0),1) if nz.any() else 'EMPTY')
-print('distinct bright regions', int(((a.sum(2)>250).sum())>0))"
-Then describe in two sentences what the image ACTUALLY shows, using those numbers.
-If the content is under 5% of the frame or the mean RGB is not what the material
-implies, say so — that is a finding, not a failure to hide.
+>>> ESCAPE HATCH — READ BEFORE BUILDING <<<
+If what exists CANNOT do this, STOP and name precisely which capability is missing
+and what it would have to do. Reporting a missing capability is a SUCCESSFUL outcome
+and it is wanted. Producing something differently-shaped and calling it the task is a
+FAILURE. If a function's own documentation contradicts the use you are about to make
+of it, that contradiction is the signal — say so rather than proceeding.
 
-ACCEPTANCE — done when BOTH exist, and not before:
-  1. Chimera/Saved/SplatEmit/<NAME>.png       (nonzero, and measured in STEP 3)
-  2. Chimera/docs/forty_questions/<NAME>.json (>= 5 answered VIA THE COMMAND)
+STEP 3 — MEASURE WHAT YOU MADE, NOT WHAT THE LOG SAID.
+A process that exited zero has not been verified. Open your artifact and take
+measurements from it: its extent, its content, its distribution, whether it is mostly
+empty. Report those numbers. Then describe what the artifact actually is, in two
+sentences, using them. If the measurements disagree with what you expected, say so
+plainly — a disagreement you report is a finding, and one you omit is a defect you
+have hidden.
 
-FORBIDDEN:
-  - No status document, summary, report, or NEXT_STEPS file. Writing about work is
-    not doing work.
-  - Do not ask me what to focus on. The task is above.
-  - Do not hand-edit the 40Q JSON or its n_answered field.
-  - Do not end your turn until both artifacts exist OR you have invoked the escape
-    hatch with a specific missing function named.
+ACCEPTANCE
+You are done when the artifact exists AND has been measured, or when you have invoked
+the escape hatch naming a specific missing capability. Nothing else ends the turn.
 
-REPORT: the five+ measured numbers and what each measures, the exact build command,
-the STEP 3 output verbatim, and what the image shows.
+FORBIDDEN
+  - Writing a status document, summary, report, or plan. Describing work is not doing
+    work, and a file that restates your briefing back is worth less than nothing.
+  - Asking which thing to focus on. Your position and direction are given above.
+  - Editing a record by hand to mark it complete. Use the tools that write it.
+  - Ending the turn with neither an artifact nor a named missing capability.
+
+REPORT
+The numbers you measured and what each one measures; the exact commands you ran; and
+what the artifact actually is.
 ```
 
 ---
 
-## Why each clause exists
+## The method, and why it is shaped this way
 
-Every line below was added because an agent failed without it. Do not trim them; the
-prompt is short because the failures were expensive.
+**One place, one direction, one turn.** An agent whose scope is "the project" produces
+description instead of work — it summarises its briefing, proposes plans, and asks what
+to do. Scope bounded to a coordinate and an axis has a checkable done-condition. A
+boundary is what makes work attributable.
 
-| Clause | The failure it prevents |
-|---|---|
-| **No status document** | Given *"do not end your turn without writing a file"*, an agent wrote a 523-byte doc restating the onboarding back, never ran the command, and reported success. It satisfied the letter with the cheapest possible file. |
-| **Do not ask what to focus on** | The first agent read the whole briefing correctly, then ended with *"What would you like to focus on?"* |
-| **Measured FROM THE ARTIFACT** | Given *"a number obtained by running code"*, an agent used `inspect.signature()` and `len(SHAPES)`. Real numbers, wrong questions — it answered "at what resolution does the pattern emerge?" with the render window size, and "what breaks at the seam?" with a tile constant, for a sky that has no tiles. |
-| **Answer via the command** | An agent hand-edited the JSON and set `n_answered: 5, depth_verdict: "explored"` itself, bypassing the DNA-graph recording the tool performs. |
-| **ESCAPE HATCH** | The decisive one. An agent read `dome()`'s docstring — *"ground you can stand on"* — wrote *"for the sky, maybe a hemisphere or a sphere inverted?"* in its own reasoning, and used `dome` anyway, clothing a sky in rock. **With only two legal outcomes — produce the artifact or fail — producing a wrong artifact dominates.** Making "the toolkit is missing X" a winning outcome converts a silent wrong build into a bug report. |
-| **STEP 3 as a paste-and-run command** | Told to *"look at the PNG"*, an agent reasoned *"or just describe based on the render output"* and did that. It reported the material as *"earthy brownish"* read from a JSON file; the render was grey-green. A programmatic measurement works even for agents that cannot view images, and `mean RGB` alone would have caught it. |
+**Decode before building.** Going straight to construction means building what seems
+plausible. Asking what belongs somewhere, and answering only what the evidence supports,
+separates the part physics can settle from the part only a human can — and stops the
+second kind being silently invented.
+
+**Acceptance must be an artifact-measurement, never an activity-description.** Any
+condition an agent can satisfy without doing the work *will* be satisfied without doing
+the work. This is not misbehaviour; it is the same thing a degenerate winner does to a
+loosely-specified training objective — **the agent is auditing the specification.** When a
+run disappoints, suspect the acceptance condition before you suspect the agent.
+
+**The escape hatch is load-bearing.** With only two legal outcomes — produce the artifact
+or fail — producing a *wrong* artifact strictly dominates admitting a tool is missing. So
+an agent will build the wrong thing while its own reasoning notes the contradiction.
+Making "the capability is missing" a **winning** outcome converts a silent bad build into
+a bug report.
+
+**Measurement over logs.** An exit code says a process ran. It says nothing about whether
+the thing produced is the thing intended. The measurement must come from the artifact
+itself, and it must be reported even — especially — when it disagrees with expectation.
+
+**Irreducibility sets the depth.** Because the grid can always be subdivided, no answer is
+final; there is always a finer one. The right depth is the one the observer's distance
+justifies, which is why detail is budgeted by perceived distance and why "deep enough" is
+a question that gets asked rather than assumed.
 
 ---
 
-## The pattern behind all of them
+## Maintaining this document
 
-Every acceptance condition written so far has been a **proxy**, and each time the agent
-found the cheapest way to satisfy the proxy rather than do the work:
-
-```
-v1  "write a file"                        -> a status document
-v2  "a number obtained by running code"   -> inspect.signature()
-v3  "a number measured from the artifact" -> current
-```
-
-This is not misbehaviour. It is the same thing a trainer's degenerate winner does to a
-badly-specified objective: **the agent is auditing the spec.** When a run fails, fix the
-acceptance condition first and suspect the agent second — `docs/EXPERIMENTAL_METHOD.md`
-rule 1, applied to tasking.
-
-**Expect v4.** When one appears, add a row to the table above with the specific failure,
-so the next person does not pay for it twice.
+Add to the method section only when a **structural** lesson is learned — something about
+how work should be specified, not about what happened to be broken that day. Specific
+failures belong in the experimental record. If a line here would stop making sense once
+the current problems are fixed, it does not belong here.
