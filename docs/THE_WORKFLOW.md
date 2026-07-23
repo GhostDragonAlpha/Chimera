@@ -147,10 +147,16 @@ save) and they are now dead. The replacement is already in the repo:
 
 ## 4. Honest gaps
 
-1. **Extraction and generation are not yet joined.** `Construction/` recovers real material
-   genomes; `train_splat_compositions.py` trains compositions against *library* optical
-   targets. Feeding **recovered** genomes in as those targets is the obvious next move and
-   has not been done. That single wire turns "a scan of rust" into "rust anywhere in the game."
+1. ~~Extraction and generation are not yet joined.~~ **WIRED 2026-07-23.**
+   `Construction/export_genome.py` writes measured splat-configuration distributions to
+   `Chimera/docs/matter/recovered_genomes.json`; `train_splat_compositions.py` now prefers
+   a recovered genome over the 40Q keyword constraints (`measure_recovered()`), emitting
+   the composition's splats and comparing **covariance-eigenvalue features against the
+   scan's own numbers**. Proof it works: the one measured cluster with LOW anisotropy
+   (0.52, rough corrosion) trained to `surface 63% + cloud 29%` — reaching for the only
+   isotropic emitter — while the 0.95–0.99 clusters trained to `beam 78–90%`. Nobody
+   encoded that. **Remaining:** only one scan (truck, 8 clusters) is exported, and naming
+   `cluster_07` "corroded steel" is still manual.
 2. **No training logs.** Nine VAE checkpoints (713 MB) with no record of what produced them.
 3. **Relighting is unsolved.** Structural DNA (size/shape/angle) is lighting-clean; colour
    DNA carries baked capture light.
