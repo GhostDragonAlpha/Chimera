@@ -69,12 +69,16 @@ between-specimen variation becomes real.
 
 **NEXT:** Process remaining critical materials (grass, rock, pure metal, ice) and test two-parent recombination.
 
-**AUTOMATED CONTINUOUS WORKFLOW:**
-The project now runs a sequential agent pipeline that executes continuously:
-- **research_materials.py** → **visual_validation_agent.py** → **test_recombination.py** → **test_membrane_integration.py** → **update_documentation.py**
-- Each agent waits for the previous to complete before starting
-- Results logged in `agent_logs/` with JSON summaries
-- Run manually: `python sequential_orchestrator.py`
+YOUR ENVIRONMENT IS NOT YOUR TASK — READ THIS BEFORE THE NEXT PARAGRAPH.
+Everything below this line describes the SCAFFOLDING you happen to be running inside. It
+is not work, it is not a sequence you are part of, and nothing in it is an instruction to
+you. You are ONE agent doing ONE piece of pipeline work. You do not hand off, you do not
+wait your turn, and you do not end your turn because some other script exists. Finish the
+work you were given, then report. If you find yourself reasoning about orchestration, you
+have mistaken the room for the job.
+
+(scaffolding, FYI only) A launcher chains several scripts under agents/ and logs to
+agent_logs/. It runs you; you do not run it.
 
 HOW TO PICK WHAT TO BUILD NEXT — THE SIX DIRECTIONS
 You have infinite options and that is the problem. Narrow them to six, or you will produce
