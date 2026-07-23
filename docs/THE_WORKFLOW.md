@@ -18,6 +18,7 @@ or from growing it under physics.**
 | **07-21** | **the splat world** | `splat_types.py`, `splat_level.py`, `train_splat_compositions.py`, `rebuild_world.py` + all of `WorldModel/` (SplatVAE, cellular, universe, infinite, nanite) |
 | **07-22** | **genomes from reality + taste** | all of `Construction/` (scan → genome) and `taste.py` / `preference*.py` |
 | **07-23** | consolidation | local-model docs, experimental method, this file |
+| **07-23** | **THE COMPOSITION SIDE** | `progeny.py` (children/placement/verbs), `membrane_shapes.py` (containers), `render_world.py` (GPU render), and the link that made trained compositions reach the world builder |
 
 **Read backwards from 07-22 and the system explains itself.** The last two days added the
 two ends the middle was missing: *where genomes come from* (measured reality) and *who
@@ -59,7 +60,32 @@ decides which of the physics-feasible ones is good* (the operator).
                           rebuild_world.py
                         ONE COMMAND, whole world
                                    ▼
-                             RENDER
+                          render_world.py
+              GPU rasteriser, anisotropic footprints + shading
+                                   ▼
+                             SEE IT
+```
+
+**And the object path, added 07-23** — because a game is instances, not surfaces:
+
+```
+   one isolated object  ──▶  GENOME (mean + p10..p90 = the variation space)
+                                   │
+                    ┌──────────────┴──────────────┐
+              spawn_children                  recombine(A, B)
+              asexual: clone+noise            sexual: 2 parents,
+              h² undefined                    independent assortment
+                                   ▼
+                          build_child(form=)
+             tuft / clump / shard  — HOW THE PIECES FIT, not what they are
+                                   ▼
+                    place(...)   or   scatter(height_fn=...)
+              explicit transforms      author any terrain, dress it
+                                   ▼
+                     pose(verb='wind'|'grow'|'settle')
+                 rooted: bases stay planted, tips move most
+                                   ▼
+                             render_world
 ```
 
 ---
@@ -127,10 +153,51 @@ the human-authored Will as the prior.
 GPU terrain growth (Cellular Potts at 256³) → matter shelter growth → splat emission for
 all elements → GLB export → render.
 
-**Its last two steps are the only Unreal left in the whole chain** (MCP import, level
-save) and they are now dead. The replacement is already in the repo:
-`Construction/gpu_render_torch.py` (pure-torch CUDA rasteriser, 9 views in 120 ms) and
-`web/view.html`. **This is the one real seam left to close.**
+Its last two steps used to import into UE5. That is **replaced** (07-23): `rebuild_world`
+now calls `render_world.show()`. The old `import_to_ue5()` built a UE Python script as a
+string, ran `telemetry_probe`, printed "command written", and executed nothing — it never
+worked.
+
+### Stage 7 — SEE IT (`render_world.py`, 07-23)
+
+`render_orbit(splats)` — the soft-Gaussian scatter rasteriser, made reusable from the
+hardcoded `Construction/gpu_render_torch.py`. Projects each splat's **3×3 covariance to a
+screen-space ellipse** (anisotropic footprints — before this every splat drew the same
+round dot, so `surface 63% + cloud 29% + beam 8%` rendered identically to `surface 100%`
+and the whole composition pipeline was invisible), applies **Lambert shading** from the
+splats' normals, orbits N cameras, writes a montage. 6 views of 118k splats in ~1.5 s on
+the 4090. **The operator must be able to see the output** (`EXPERIMENTAL_METHOD.md`).
+
+### Stage 8 — OBJECTS, not surfaces (`progeny.py` + `membrane_shapes.py`, 07-23)
+
+The correction that reframed the back half: **a game is instances of objects, not a
+material painted on a surface.** Isolate one thing → make variations → place them.
+
+- **`membrane_shapes.py`** — sphere / plane / cylinder / box / dome, `displace()` for
+  relief, `clothe()` to dress a shape in a material's trained composition. Built because
+  terrain had no CONTAINER: 300 random blobs left 22% of columns carrying matter across a
+  2,000-unit spread — the physics ran correctly and produced noise because the objective
+  was underdetermined. **A membrane is a boundary, and a boundary is what makes a result
+  attributable** (the Membrane Programming principle, applied to geometry).
+- **`progeny.py`** — the genetics. A genome is stored as mean + p10..p90; **that range is
+  the variation space children are sampled from.**
+  - `spawn_children(parent)` — asexual, clone + noise. h² undefined from one specimen.
+  - `recombine(A, B)` — sexual. Independent assortment per **linkage group**, **pleiotropy**
+    (R/G/B share one luminance factor — independent draws made rainbow confetti), **mutation**
+    as a separate low-rate process, and **liability-scale** sampling (logit/log) so bounded
+    traits never clip. Measured after: 0/10 saturated-white, 0/10 zero-size.
+  - `merge_specimens(...)` — combines N scans of one KIND into a class genome and computes
+    **heritability** h² = V_between / (V_between + V_within) by the law of total variance.
+    **This is why two scans of a thing is the minimum useful sample** — with one you cannot
+    separate "this individual is like this" from "the class varies like this".
+  - `build_child(form='tuft'|'clump'|'shard')` — the archetype is **how the pieces fit**,
+    not what they are made of.
+  - `place(children, positions)` — explicit hand placement. `scatter(height_fn=...)` — dress
+    an authored heightmap (the operator's own example: get grass working, then apply it to
+    any terrain).
+  - `pose(verb='wind'|'grow'|'settle')` — the VERB. Rooted, so bases stay planted and tips
+    move most. **Plasticity**: one genotype expressed differently by environment, not
+    inherited.
 
 ---
 
@@ -138,7 +205,7 @@ save) and they are now dead. The replacement is already in the repo:
 
 | Where | What | Status |
 |---|---|---|
-| `rebuild_world.py` steps 5–6 | MCP import → UE5, level save | **dead — swap for `gpu_render_torch` / `web/view.html`** |
+| `rebuild_world.py` steps 5–6 | MCP import → UE5, level save | **DONE (07-23)** — now calls `render_world.show()` |
 | `ParticleEngine/` | Python particle sim **plus** a UE render bridge | **DO NOT DELETE.** `Construction/backend_3d.py` and `WorldModel/train.py` both import it (`tree_trainer.TreeParams`). The simulation is current; only the bridge is dead. |
 | `core/bake_to_ue5.py`, `system_to_ue5.py` | UE staging | dead |
 | `Chimera/docs/THE_MATTER_MODEL.md` §5 | "what maps to which UE5 technology" | dead section, **the rest of the document is the live concept** |
@@ -157,10 +224,21 @@ save) and they are now dead. The replacement is already in the repo:
    isotropic emitter — while the 0.95–0.99 clusters trained to `beam 78–90%`. Nobody
    encoded that. **Remaining:** only one scan (truck, 8 clusters) is exported, and naming
    `cluster_07` "corroded steel" is still manual.
-2. **No training logs.** Nine VAE checkpoints (713 MB) with no record of what produced them.
-3. **Relighting is unsolved.** Structural DNA (size/shape/angle) is lighting-clean; colour
+2. **TWO SCANS OF EACH KIND — the one gap that is data, not code.** `merge_specimens()`
+   and `heritability()` are written and waiting. With a single specimen h² is undefined, so
+   every child is a rearrangement of one individual. Two grass tufts, two rocks, two bolts,
+   and between-specimen variation becomes measurable. **This is the highest-value next step
+   and no code can substitute for it.**
+3. **The splat-type catalog has a ceiling.** `beam` caps at aniso 0.95 but real material
+   measured 0.994 — you cannot emit what the vocabulary cannot express. Needs a more
+   extreme emitter + finer scale control. Measurable target.
+4. **Colour and opacity are recovered but unused in composition matching** — only
+   anisotropy and size-CV are compared. The RGB/opacity distributions sit in
+   `recovered_genomes.json` doing nothing.
+5. **No training logs.** Nine VAE checkpoints (713 MB) with no record of what produced them.
+6. **Relighting is unsolved.** Structural DNA (size/shape/angle) is lighting-clean; colour
    DNA carries baked capture light.
-4. **Patch encoding unimplemented** — caps SplatVAE at ~100K splats; real captures are millions.
+7. **Patch encoding unimplemented** — caps SplatVAE at ~100K splats; real captures are millions.
 
 ---
 
