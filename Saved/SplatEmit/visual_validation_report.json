@@ -1,0 +1,163 @@
+{
+  "timestamp": "2026-07-23T14:03:10.353630",
+  "directory": "E:\\PythonChimera\\Saved\\SplatEmit",
+  "total_images": 5,
+  "results": [
+    {
+      "filename": "bicycle_metallic_children.png",
+      "dimensions": "1536x1024",
+      "file_size_bytes": 222198,
+      "file_size_kb": 216.99,
+      "color_mean": {
+        "R": 0.026799999177455902,
+        "G": 0.028200000524520874,
+        "B": 0.016100000590085983
+      },
+      "color_std": {
+        "R": 0.08380000293254852,
+        "G": 0.08789999783039093,
+        "B": 0.050200000405311584
+      },
+      "clamping_artifacts": {
+        "high_clamp_R_pct": 0.0,
+        "high_clamp_G_pct": 0.0,
+        "high_clamp_B_pct": 0.0,
+        "black_clamp_R_pct": 89.04,
+        "black_clamp_G_pct": 89.09,
+        "black_clamp_B_pct": 89.34
+      },
+      "uniformity_score": 3.119999885559082,
+      "coherence_score": 0.0017000000225380063,
+      "size_rationality": false,
+      "background_ratio": 0.8942,
+      "timestamp": "2026-07-23T14:03:10.153283"
+    },
+    {
+      "filename": "bonsai_vegetative_children.png",
+      "dimensions": "1536x1024",
+      "file_size_bytes": 269076,
+      "file_size_kb": 262.77,
+      "color_mean": {
+        "R": 0.0348999984562397,
+        "G": 0.03849999979138374,
+        "B": 0.0414000004529953
+      },
+      "color_std": {
+        "R": 0.11739999800920486,
+        "G": 0.1281999945640564,
+        "B": 0.13619999587535858
+      },
+      "clamping_artifacts": {
+        "high_clamp_R_pct": 0.0,
+        "high_clamp_G_pct": 0.0,
+        "high_clamp_B_pct": 0.0,
+        "black_clamp_R_pct": 90.19,
+        "black_clamp_G_pct": 89.78,
+        "black_clamp_B_pct": 89.27
+      },
+      "uniformity_score": 3.327199935913086,
+      "coherence_score": 0.004800000227987766,
+      "size_rationality": false,
+      "background_ratio": 0.8947,
+      "timestamp": "2026-07-23T14:03:10.203927"
+    },
+    {
+      "filename": "plush_fabric_children.png",
+      "dimensions": "1536x1024",
+      "file_size_bytes": 272065,
+      "file_size_kb": 265.69,
+      "color_mean": {
+        "R": 0.05900000035762787,
+        "G": 0.05040000006556511,
+        "B": 0.03889999911189079
+      },
+      "color_std": {
+        "R": 0.17980000376701355,
+        "G": 0.15469999611377716,
+        "B": 0.11949999630451202
+      },
+      "clamping_artifacts": {
+        "high_clamp_R_pct": 0.0,
+        "high_clamp_G_pct": 0.0,
+        "high_clamp_B_pct": 0.0,
+        "black_clamp_R_pct": 89.03,
+        "black_clamp_G_pct": 89.03,
+        "black_clamp_B_pct": 89.25
+      },
+      "uniformity_score": 3.0645999908447266,
+      "coherence_score": 0.006800000090152025,
+      "size_rationality": false,
+      "background_ratio": 0.8903,
+      "timestamp": "2026-07-23T14:03:10.253097"
+    },
+    {
+      "filename": "stump_wood_children.png",
+      "dimensions": "1536x1024",
+      "file_size_bytes": 270434,
+      "file_size_kb": 264.1,
+      "color_mean": {
+        "R": 0.04879999905824661,
+        "G": 0.04859999939799309,
+        "B": 0.03269999846816063
+      },
+      "color_std": {
+        "R": 0.15559999644756317,
+        "G": 0.1550000011920929,
+        "B": 0.10360000282526016
+      },
+      "clamping_artifacts": {
+        "high_clamp_R_pct": 0.0,
+        "high_clamp_G_pct": 0.0,
+        "high_clamp_B_pct": 0.0,
+        "black_clamp_R_pct": 89.25,
+        "black_clamp_G_pct": 89.24,
+        "black_clamp_B_pct": 89.26
+      },
+      "uniformity_score": 3.1812000274658203,
+      "coherence_score": 0.00570000009611249,
+      "size_rationality": false,
+      "background_ratio": 0.8936,
+      "timestamp": "2026-07-23T14:03:10.303830"
+    },
+    {
+      "filename": "truck_metallic_children.png",
+      "dimensions": "1536x1024",
+      "file_size_bytes": 267299,
+      "file_size_kb": 261.03,
+      "color_mean": {
+        "R": 0.03790000081062317,
+        "G": 0.04179999977350235,
+        "B": 0.03999999910593033
+      },
+      "color_std": {
+        "R": 0.12210000306367874,
+        "G": 0.13379999995231628,
+        "B": 0.12690000236034393
+      },
+      "clamping_artifacts": {
+        "high_clamp_R_pct": 0.0,
+        "high_clamp_G_pct": 0.0,
+        "high_clamp_B_pct": 0.0,
+        "black_clamp_R_pct": 89.3,
+        "black_clamp_G_pct": 89.28,
+        "black_clamp_B_pct": 89.28
+      },
+      "uniformity_score": 3.199899911880493,
+      "coherence_score": 0.004800000227987766,
+      "size_rationality": false,
+      "background_ratio": 0.8943,
+      "timestamp": "2026-07-23T14:03:10.352700"
+    }
+  ],
+  "summary": {
+    "avg_file_size_bytes": 260214.4,
+    "avg_uniformity_score": 3.178579807281494,
+    "avg_coherence_score": 0.0047599999234080315,
+    "avg_clamp_artifacts_pct": 0.0,
+    "overall_color_tint": [
+      0.04147999733686447,
+      0.04150000214576721,
+      0.03381999582052231
+    ]
+  }
+}

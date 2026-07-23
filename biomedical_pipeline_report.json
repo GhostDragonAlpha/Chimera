@@ -1,0 +1,48 @@
+{
+  "pipeline": "biomedical_research_integration",
+  "start_time": "2026-07-23T14:14:14.639783",
+  "end_time": "2026-07-23T14:14:15.596974",
+  "total_duration_seconds": 0.957191,
+  "summary": {
+    "total_phases": 5,
+    "completed": 5,
+    "failed": 0,
+    "errors": 0,
+    "success_rate_percent": 100.0
+  },
+  "phases": {
+    "Research Agent": {
+      "status": "completed",
+      "duration_seconds": 0.128223,
+      "timestamp": "2026-07-23T14:14:14.768069",
+      "phase": 1
+    },
+    "Integration Agent": {
+      "status": "completed",
+      "duration_seconds": 0.224421,
+      "timestamp": "2026-07-23T14:14:14.993909",
+      "phase": 4,
+      "success": true
+    },
+    "Recombination Agent": {
+      "status": "completed",
+      "duration_seconds": 0.22662,
+      "timestamp": "2026-07-23T14:14:14.995831",
+      "phase": 3,
+      "success": true
+    },
+    "Validation Agent": {
+      "status": "completed",
+      "duration_seconds": 0.616764,
+      "timestamp": "2026-07-23T14:14:15.385754",
+      "phase": 2,
+      "success": true
+    },
+    "Documentation Agent": {
+      "status": "completed",
+      "duration_seconds": 0.210778,
+      "timestamp": "2026-07-23T14:14:15.596856",
+      "phase": 5
+    }
+  }
+}

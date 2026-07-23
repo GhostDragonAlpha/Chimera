@@ -1,0 +1,633 @@
+{
+  "bonsai_vegetative_x_stump_wood": {
+    "parent1": "bonsai_vegetative",
+    "parent2": "stump_wood",
+    "offspring_means": {
+      "R": 0.2780909962789877,
+      "G": 0.27765220902443477,
+      "B": 0.23156846418388372,
+      "size": 0.02711234421694375,
+      "aniso": 0.7883049980613928,
+      "opacity": 0.8047896275881292
+    },
+    "offspring_variance": {
+      "R": 0.11045482248171054,
+      "G": 0.11788034024688342,
+      "B": 0.12659533895296127,
+      "size": 0.001499219829042744,
+      "aniso": 0.039218912282565424,
+      "opacity": 0.036535016897155395
+    },
+    "heritability_estimates": {
+      "R": 0.6666666666666666,
+      "G": 0.6666666666666666,
+      "B": 0.6666666666666666,
+      "size": 0.6666666666666666,
+      "aniso": 0.6666666666666666,
+      "opacity": 0.6666666666666666
+    },
+    "linkage_analysis": {
+      "color": {
+        "traits": [
+          "R",
+          "G",
+          "B"
+        ],
+        "correlations": {
+          "R-G": 0.9999999999999982,
+          "R-B": 0.9999999999999889,
+          "G-B": 0.9999999999999907
+        },
+        "linkage_strength": 0.9999999999999926
+      },
+      "form": {
+        "traits": [
+          "size",
+          "aniso"
+        ],
+        "correlations": {
+          "size-aniso": 0.9999999999999948
+        },
+        "linkage_strength": 0.9999999999999948
+      },
+      "body": {
+        "traits": [
+          "opacity"
+        ],
+        "correlations": {},
+        "linkage_strength": 0
+      }
+    },
+    "pleiotropy_effects": {
+      "genetic_correlations": {
+        "R-G": 0.02374379123161284,
+        "R-B": 0.0025545204180090868,
+        "R-size": 0.011819100234207269,
+        "R-aniso": 0.14010536581083838,
+        "R-opacity": 0.042326394178039024,
+        "G-R": 0.09690221976698625,
+        "G-B": 0.03593407917668326,
+        "G-size": 0.06869197929943663,
+        "G-aniso": 0.0347007905411137,
+        "G-opacity": 0.05280453972772224,
+        "B-R": 0.04579877501018487,
+        "B-G": 0.03768885784384304,
+        "B-size": 0.0077771404174974985,
+        "B-aniso": 0.03473690324828843,
+        "B-opacity": 0.019640317819335427,
+        "size-R": 0.01520998726476334,
+        "size-G": 0.05153387574770455,
+        "size-B": 0.049561979509677175,
+        "size-aniso": 0.021528817909018463,
+        "size-opacity": 0.06311724194915465,
+        "aniso-R": 0.018008619409383655,
+        "aniso-G": 0.07495851289644893,
+        "aniso-B": 0.03102183677124989,
+        "aniso-size": 0.03174054641937586,
+        "aniso-opacity": 0.06758039294399845,
+        "opacity-R": 0.03285439044709725,
+        "opacity-G": 0.0009447145959146138,
+        "opacity-B": 0.0015354396727299744,
+        "opacity-size": 0.001330790003873641,
+        "opacity-aniso": 0.06944793538721267
+      },
+      "strong_pleiotropic_links": {}
+    },
+    "heritability_detailed": {
+      "R": {
+        "narrow_sense": 0.04801191509463218,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.005714708723844198,
+        "genetic_variance": 0.07935125704498455,
+        "environmental_variance": 0.039675628522492276,
+        "total_variance": 0.11902688556747683
+      },
+      "G": {
+        "narrow_sense": 0.031708931785582456,
+        "broad_sense": 0.6666666666666667,
+        "additive_variance": 0.00392452333167205,
+        "genetic_variance": 0.08251141682959433,
+        "environmental_variance": 0.041255708414797164,
+        "total_variance": 0.12376712524439148
+      },
+      "B": {
+        "narrow_sense": 4.9830859137353696e-05,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 6.3088260641449444e-06,
+        "genetic_variance": 0.08440320146137165,
+        "environmental_variance": 0.04220160073068582,
+        "total_variance": 0.12660480219205747
+      },
+      "size": {
+        "narrow_sense": 9.656402033284578e-05,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 1.447916665532387e-07,
+        "genetic_variance": 0.0009996246776950491,
+        "environmental_variance": 0.0004998123388475246,
+        "total_variance": 0.0014994370165425737
+      },
+      "aniso": {
+        "narrow_sense": 0.05736984753399951,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.0024618357287153033,
+        "genetic_variance": 0.028607777250425584,
+        "environmental_variance": 0.014303888625212792,
+        "total_variance": 0.042911665875638376
+      },
+      "opacity": {
+        "narrow_sense": 0.012248222939669007,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.0004558643238643312,
+        "genetic_variance": 0.02481254225530126,
+        "environmental_variance": 0.01240627112765063,
+        "total_variance": 0.03721881338295189
+      }
+    },
+    "mendelian_validation": {
+      "segregation": false,
+      "independent_assortment": false,
+      "dominance": false,
+      "additivity": true
+    }
+  },
+  "bicycle_metallic_x_truck_metallic": {
+    "parent1": "bicycle_metallic",
+    "parent2": "truck_metallic",
+    "offspring_means": {
+      "R": 0.2522996573580123,
+      "G": 0.2696487380251664,
+      "B": 0.21173761263682325,
+      "size": 0.011106746386516016,
+      "aniso": 0.9199486396460016,
+      "opacity": 0.9115874348271602
+    },
+    "offspring_variance": {
+      "R": 0.051636618005760894,
+      "G": 0.05587230837800197,
+      "B": 0.05352282963451395,
+      "size": 0.000660483495443163,
+      "aniso": 0.017671664167262992,
+      "opacity": 0.025271095184082406
+    },
+    "heritability_estimates": {
+      "R": 0.6666666666666666,
+      "G": 0.6666666666666666,
+      "B": 0.6666666666666666,
+      "size": 0.6666666666666666,
+      "aniso": 0.6666666666666666,
+      "opacity": 0.6666666666666666
+    },
+    "linkage_analysis": {
+      "color": {
+        "traits": [
+          "R",
+          "G",
+          "B"
+        ],
+        "correlations": {
+          "R-G": 1.0,
+          "R-B": 0.999999999999987,
+          "G-B": 0.9999999999999895
+        },
+        "linkage_strength": 0.9999999999999921
+      },
+      "form": {
+        "traits": [
+          "size",
+          "aniso"
+        ],
+        "correlations": {
+          "size-aniso": 1.0
+        },
+        "linkage_strength": 1.0
+      },
+      "body": {
+        "traits": [
+          "opacity"
+        ],
+        "correlations": {},
+        "linkage_strength": 0
+      }
+    },
+    "pleiotropy_effects": {
+      "genetic_correlations": {
+        "R-G": 0.0045178067388323,
+        "R-B": 0.05848406174102392,
+        "R-size": 0.021687195508092148,
+        "R-aniso": 0.08748115798683904,
+        "R-opacity": 0.1365336708150021,
+        "G-R": 0.08670833417245408,
+        "G-B": 0.11237820823143108,
+        "G-size": 0.007594908125426652,
+        "G-aniso": 0.038955893565133126,
+        "G-opacity": 0.25473789894775317,
+        "B-R": 0.035609431279321355,
+        "B-G": 0.09688503503816709,
+        "B-size": 0.007693291494502079,
+        "B-aniso": 0.05440474447224107,
+        "B-opacity": 0.46068840029871416,
+        "size-R": 0.059583793942613025,
+        "size-G": 0.06506169539599065,
+        "size-B": 0.0055334608600150405,
+        "size-aniso": 0.022670958245327152,
+        "size-opacity": 0.021979818255590085,
+        "aniso-R": 0.043693460807980575,
+        "aniso-G": 0.060722218070447385,
+        "aniso-B": 0.05859595822985561,
+        "aniso-size": 0.006517384569850698,
+        "aniso-opacity": 0.1007827560401702,
+        "opacity-R": 0.10208898780062724,
+        "opacity-G": 0.06873558275242948,
+        "opacity-B": 0.10076426483356585,
+        "opacity-size": 0.024176626452085657,
+        "opacity-aniso": 0.011265126801552235
+      },
+      "strong_pleiotropic_links": {
+        "B-opacity": 0.46068840029871416
+      }
+    },
+    "heritability_detailed": {
+      "R": {
+        "narrow_sense": 0.02071232527417966,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.0011038080760613557,
+        "genetic_variance": 0.03552822007990195,
+        "environmental_variance": 0.017764110039950976,
+        "total_variance": 0.05329233011985293
+      },
+      "G": {
+        "narrow_sense": 0.029072192554610528,
+        "broad_sense": 0.6666666666666667,
+        "additive_variance": 0.0016983945894428387,
+        "genetic_variance": 0.03894660017477749,
+        "environmental_variance": 0.019473300087388744,
+        "total_variance": 0.05841990026216623
+      },
+      "B": {
+        "narrow_sense": 0.10504488196962891,
+        "broad_sense": 0.6666666666666667,
+        "additive_variance": 0.006673885611080153,
+        "genetic_variance": 0.04235577203408945,
+        "environmental_variance": 0.021177886017044727,
+        "total_variance": 0.06353365805113417
+      },
+      "size": {
+        "narrow_sense": 0.0012213008830350143,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 8.081295301780075e-07,
+        "genetic_variance": 0.00044113045982562,
+        "environmental_variance": 0.00022056522991281,
+        "total_variance": 0.00066169568973843
+      },
+      "aniso": {
+        "narrow_sense": 0.008555646901456838,
+        "broad_sense": 0.6666666666666667,
+        "additive_variance": 0.0001531580683050199,
+        "genetic_variance": 0.011934267513147015,
+        "environmental_variance": 0.005967133756573507,
+        "total_variance": 0.01790140126972052
+      },
+      "opacity": {
+        "narrow_sense": 0.11073798098102372,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.003355910125310556,
+        "genetic_variance": 0.020203306914698828,
+        "environmental_variance": 0.010101653457349414,
+        "total_variance": 0.030304960372048242
+      }
+    },
+    "mendelian_validation": {
+      "segregation": false,
+      "independent_assortment": false,
+      "dominance": false,
+      "additivity": true
+    }
+  },
+  "cluster_00_x_cluster_01": {
+    "parent1": "cluster_00",
+    "parent2": "cluster_01",
+    "offspring_means": {
+      "R": 0.8042317926883698,
+      "G": 0.7936762869358063,
+      "B": 0.6585730463266373,
+      "size": 0.00575934280641377,
+      "aniso": 0.9391725063323975,
+      "opacity": 0.7916021347045898
+    },
+    "offspring_variance": {
+      "R": 0.015644090724094672,
+      "G": 0.015192552106348012,
+      "B": 0.028752942285554528,
+      "size": 0.00019804871320448493,
+      "aniso": 0.010098572230144584,
+      "opacity": 0.010980907099185505
+    },
+    "heritability_estimates": {
+      "R": 0.6666666666666666,
+      "G": 0.6666666666666666,
+      "B": 0.6666666666666666,
+      "size": 0.6666666666666666,
+      "aniso": 0.6666666666666666,
+      "opacity": 0.6666666666666666
+    },
+    "linkage_analysis": {
+      "color": {
+        "traits": [
+          "R",
+          "G",
+          "B"
+        ],
+        "correlations": {
+          "R-G": 0.999999999999995,
+          "R-B": 1.0,
+          "G-B": 0.9999999999999821
+        },
+        "linkage_strength": 0.9999999999999925
+      },
+      "form": {
+        "traits": [
+          "size",
+          "aniso"
+        ],
+        "correlations": {
+          "size-aniso": 0.9999999999999979
+        },
+        "linkage_strength": 0.9999999999999979
+      },
+      "body": {
+        "traits": [
+          "opacity"
+        ],
+        "correlations": {},
+        "linkage_strength": 0
+      }
+    },
+    "pleiotropy_effects": {
+      "genetic_correlations": {
+        "R-G": 0.6345188127731337,
+        "R-B": 0.629335627473984,
+        "R-size": 0.13633737135109722,
+        "R-aniso": 0.18142592564410967,
+        "R-opacity": 0.6526251133520045,
+        "G-R": 0.6322999960201588,
+        "G-B": 0.6287265403740556,
+        "G-size": 0.11344042868508486,
+        "G-aniso": 0.21762194610878888,
+        "G-opacity": 0.672454725661283,
+        "B-R": 0.6689994523557653,
+        "B-G": 0.6920064268553942,
+        "B-size": 0.22303638789419172,
+        "B-aniso": 0.1791698268292914,
+        "B-opacity": 0.7057435759591356,
+        "size-R": 0.5257781619590942,
+        "size-G": 0.5332399214521654,
+        "size-B": 0.4988702166100076,
+        "size-aniso": 0.15608651776376717,
+        "size-opacity": 0.5331237977846988,
+        "aniso-R": 0.44268127803654567,
+        "aniso-G": 0.4449369453703538,
+        "aniso-B": 0.42656803823315587,
+        "aniso-size": 0.06957235357781633,
+        "aniso-opacity": 0.40605719882274005,
+        "opacity-R": 0.7547231039456886,
+        "opacity-G": 0.7804810120697141,
+        "opacity-B": 0.7508126729620928,
+        "opacity-size": 0.16050393359499948,
+        "opacity-aniso": 0.26099444342451267
+      },
+      "strong_pleiotropic_links": {
+        "R-G": 0.6345188127731337,
+        "R-B": 0.629335627473984,
+        "R-opacity": 0.6526251133520045,
+        "G-R": 0.6322999960201588,
+        "G-B": 0.6287265403740556,
+        "G-opacity": 0.672454725661283,
+        "B-R": 0.6689994523557653,
+        "B-G": 0.6920064268553942,
+        "B-opacity": 0.7057435759591356,
+        "size-R": 0.5257781619590942,
+        "size-G": 0.5332399214521654,
+        "size-B": 0.4988702166100076,
+        "size-opacity": 0.5331237977846988,
+        "aniso-R": 0.44268127803654567,
+        "aniso-G": 0.4449369453703538,
+        "aniso-B": 0.42656803823315587,
+        "aniso-opacity": 0.40605719882274005,
+        "opacity-R": 0.7547231039456886,
+        "opacity-G": 0.7804810120697141,
+        "opacity-B": 0.7508126729620928
+      }
+    },
+    "heritability_detailed": {
+      "R": {
+        "narrow_sense": 0.4190036416528607,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.017644757383217247,
+        "genetic_variance": 0.02807415119928036,
+        "environmental_variance": 0.01403707559964018,
+        "total_variance": 0.04211122679892054
+      },
+      "G": {
+        "narrow_sense": 0.43828657640597496,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.01943745517092399,
+        "genetic_variance": 0.029565823241822664,
+        "environmental_variance": 0.014782911620911332,
+        "total_variance": 0.044348734862733996
+      },
+      "B": {
+        "narrow_sense": 0.4372967802047517,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.0365452480179107,
+        "genetic_variance": 0.05571387620828039,
+        "environmental_variance": 0.027856938104140194,
+        "total_variance": 0.08357081431242058
+      },
+      "size": {
+        "narrow_sense": 0.05083777014526911,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 1.0899515559520455e-05,
+        "genetic_variance": 0.00014293199102917707,
+        "environmental_variance": 7.146599551458854e-05,
+        "total_variance": 0.0002143979865437656
+      },
+      "aniso": {
+        "narrow_sense": 0.07791279937937033,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.0008909303484330167,
+        "genetic_variance": 0.007623311835196073,
+        "environmental_variance": 0.0038116559175980363,
+        "total_variance": 0.011434967752794109
+      },
+      "opacity": {
+        "narrow_sense": 0.5263373174939494,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.027457602277824122,
+        "genetic_variance": 0.03477820701061446,
+        "environmental_variance": 0.01738910350530723,
+        "total_variance": 0.05216731051592169
+      }
+    },
+    "mendelian_validation": {
+      "segregation": false,
+      "independent_assortment": false,
+      "dominance": false,
+      "additivity": true
+    }
+  },
+  "plush_fabric_x_bonsai_vegetative": {
+    "parent1": "plush_fabric",
+    "parent2": "bonsai_vegetative",
+    "offspring_means": {
+      "R": 0.3524441017661998,
+      "G": 0.3154032877916867,
+      "B": 0.27866348188434764,
+      "size": 0.015920927033045762,
+      "aniso": 0.8377571287707672,
+      "opacity": 0.8740406940522152
+    },
+    "offspring_variance": {
+      "R": 0.0989654720169222,
+      "G": 0.10954842160220177,
+      "B": 0.10552979202142801,
+      "size": 0.0007674945014596652,
+      "aniso": 0.030780714489945817,
+      "opacity": 0.024301005602704772
+    },
+    "heritability_estimates": {
+      "R": 0.6666666666666666,
+      "G": 0.6666666666666667,
+      "B": 0.6666666666666667,
+      "size": 0.6666666666666666,
+      "aniso": 0.6666666666666666,
+      "opacity": 0.6666666666666666
+    },
+    "linkage_analysis": {
+      "color": {
+        "traits": [
+          "R",
+          "G",
+          "B"
+        ],
+        "correlations": {
+          "R-G": 0.9999999999999862,
+          "R-B": 1.0,
+          "G-B": 1.0
+        },
+        "linkage_strength": 0.9999999999999954
+      },
+      "form": {
+        "traits": [
+          "size",
+          "aniso"
+        ],
+        "correlations": {
+          "size-aniso": 1.0
+        },
+        "linkage_strength": 1.0
+      },
+      "body": {
+        "traits": [
+          "opacity"
+        ],
+        "correlations": {},
+        "linkage_strength": 0
+      }
+    },
+    "pleiotropy_effects": {
+      "genetic_correlations": {
+        "R-G": 0.16719599388282674,
+        "R-B": 0.12364921652950693,
+        "R-size": 0.16090685882512698,
+        "R-aniso": 0.2669343062738707,
+        "R-opacity": 0.1573955811092652,
+        "G-R": 0.17397097448147206,
+        "G-B": 0.05471709879242772,
+        "G-size": 0.12281400117511597,
+        "G-aniso": 0.180821821290863,
+        "G-opacity": 0.11965579998364918,
+        "B-R": 0.036650327075913536,
+        "B-G": 0.06635455062413731,
+        "B-size": 0.08121540690915792,
+        "B-aniso": 0.12089429783400489,
+        "B-opacity": 0.0652428444031672,
+        "size-R": 0.4109006478244276,
+        "size-G": 0.25796557774985995,
+        "size-B": 0.11861876277257008,
+        "size-aniso": 0.39662702894871116,
+        "size-opacity": 0.24943578822933285,
+        "aniso-R": 0.36834716479293395,
+        "aniso-G": 0.28646791867571164,
+        "aniso-B": 0.09626128680165548,
+        "aniso-size": 0.244832786240443,
+        "aniso-opacity": 0.2888688693271798,
+        "opacity-R": 0.19357097631205436,
+        "opacity-G": 0.10113292221644404,
+        "opacity-B": 0.037789669228513505,
+        "opacity-size": 0.08842259855817854,
+        "opacity-aniso": 0.18246797108757387
+      },
+      "strong_pleiotropic_links": {
+        "size-R": 0.4109006478244276,
+        "size-aniso": 0.39662702894871116,
+        "aniso-R": 0.36834716479293395
+      }
+    },
+    "heritability_detailed": {
+      "R": {
+        "narrow_sense": 0.1694493134394935,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.022484642016400706,
+        "genetic_variance": 0.08846162336101551,
+        "environmental_variance": 0.044230811680507756,
+        "total_variance": 0.13269243504152328
+      },
+      "G": {
+        "narrow_sense": 0.08085149284690547,
+        "broad_sense": 0.6666666666666667,
+        "additive_variance": 0.01007957665533293,
+        "genetic_variance": 0.08311185772346745,
+        "environmental_variance": 0.041555928861733725,
+        "total_variance": 0.12466778658520117
+      },
+      "B": {
+        "narrow_sense": 0.018317621715156374,
+        "broad_sense": 0.6666666666666667,
+        "additive_variance": 0.0019876688593176103,
+        "genetic_variance": 0.07234086354026963,
+        "environmental_variance": 0.03617043177013481,
+        "total_variance": 0.10851129531040443
+      },
+      "size": {
+        "narrow_sense": 0.1239654490558578,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.00011687560599207345,
+        "genetic_variance": 0.0006285386069651836,
+        "environmental_variance": 0.0003142693034825918,
+        "total_variance": 0.0009428079104477755
+      },
+      "aniso": {
+        "narrow_sense": 0.21569415266839503,
+        "broad_sense": 0.6666666666666666,
+        "additive_variance": 0.009814670775348845,
+        "genetic_variance": 0.03033514710197939,
+        "environmental_variance": 0.015167573550989695,
+        "total_variance": 0.045502720652969085
+      },
+      "opacity": {
+        "narrow_sense": 0.08270369745982803,
+        "broad_sense": 0.6666666666666667,
+        "additive_variance": 0.0022944183350820423,
+        "genetic_variance": 0.018495088736885223,
+        "environmental_variance": 0.009247544368442611,
+        "total_variance": 0.027742633105327832
+      }
+    },
+    "mendelian_validation": {
+      "segregation": false,
+      "independent_assortment": false,
+      "dominance": false,
+      "additivity": true
+    }
+  }
+}

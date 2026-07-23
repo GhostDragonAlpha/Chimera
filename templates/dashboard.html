@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chimera Development Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #e4e4e4;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #2d2d44;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid #4a4a6a;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a4a6a;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-running { background: #10b981; animation: pulse 2s infinite; }
+        .status-stopped { background: #ef4444; }
+        .status-paused { background: #f59e0b; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .metric-item {
+            background: #3d3d5c;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #a0a0b0;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            background: #3d3d5c;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .log-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .log-item {
+            padding: 8px;
+            border-bottom: 1px solid #3d3d5c;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .log-item:hover {
+            background: #3d3d5c;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #a0a0b0;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+
+        .biomedical-section {
+            margin-top: 15px;
+        }
+
+        .pipeline-phase {
+            background: #3d3d5c;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .phase-status {
+            font-weight: bold;
+        }
+
+        .phase-success { color: #10b981; }
+        .phase-failed { color: #ef4444; }
+        .phase-pending { color: #f59e0b; }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧬 CHIMERA DEVELOPMENT DASHBOARD</h1>
+            <p class="subtitle">Biomedical Research Pipeline & Project Monitoring System</p>
+        </header>
+
+        <button class="btn refresh-btn" onclick="refreshDashboard()">🔄 Refresh Data</button>
+
+        <div class="dashboard-grid">
+            <!-- Overall Status Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">System Overview</span>
+                    <span id="orchestrator-status">
+                        <span class="status-indicator" id="status-dot"></span>
+                        <span id="status-text">Loading...</span>
+                    </span>
+                </div>
+                
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-value" id="task-completion-rate">0%</div>
+                        <div class="metric-label">Task Completion Rate</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="total-tasks">0</div>
+                        <div class="metric-label">Total Tasks</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="completed-tasks">0</div>
+                        <div class="metric-label">Completed</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="pending-tasks">0</div>
+                        <div class="metric-label">Pending</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h4 style="color: #667eea; margin-bottom: 10px;">Task Progress</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="task-progress-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="control-buttons">
+                    <button class="btn" onclick="sendOrchestratorCommand('resume')">▶ Resume</button>
+                    <button class="btn" onclick="sendOrchestratorCommand('pause')">⏸ Pause</button>
+                    <button class="btn btn-danger" onclick="sendOrchestratorCommand('stop')">⏹ Stop</button>
+                </div>
+            </div>
+
+            <!-- Biomedical Pipeline Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🧪 Biomedical Research Pipeline</span>
+                </div>
+                
+                <div id="biomedical-content" style="display: none;">
+                    <div class="biomedical-section">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">Pipeline Phases</h4>
+                        
+                        <div class="pipeline-phase">
+                            <span>Phase 1: Research Materials</span>
+                            <span class="phase-status" id="phase-1-status">Loading...</span>
+                        </div>
+                        
+                        <div class="pipeline-phase">
+                            <span>Phase 2: Visual Validation</span>
+                            <span class="phase-status" id="phase-2-status">Loading...</span>
+                        </div>
+                        
+                        <div class="pipeline-phase">
+                            <span>Phase 3: Recombination Testing</span>
+                            <span class="phase-status" id="phase-3-status">Loading...</span>
+                        </div>
+                        
+                        <div class="pipeline-phase">
+                            <span>Phase 4: Membrane Integration</span>
+                            <span class="phase-status" id="phase-4-status">Loading...</span>
+                        </div>
+                        
+                        <div class="pipeline-phase">
+                            <span>Phase 5: Documentation Update</span>
+                            <span class="phase-status" id="phase-5-status">Loading...</span>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <h4 style="color: #667eea; margin-bottom: 10px;">Pipeline Metrics</h4>
+                            <div class="metric-grid">
+                                <div class="metric-item">
+                                    <div class="metric-value" id="pipeline-success-rate">0%</div>
+                                    <div class="metric-label">Success Rate</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-value" id="pipeline-duration">0s</div>
+                                    <div class="metric-label">Duration</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="biomedical-loading" style="text-align: center; padding: 40px; color: #a0a0b0;">
+                    No biomedical pipeline data available
+                </div>
+            </div>
+
+            <!-- Recent Activity Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📊 Recent Agent Activity</span>
+                </div>
+                
+                <div id="agent-activity-content" style="display: none;">
+                    <h4 style="color: #667eea; margin-bottom: 10px;">Recent Log Files</h4>
+                    <div class="log-list" id="log-files-list">
+                        <!-- Log files will be loaded here -->
+                    </div>
+
+                    <h4 style="color: #667eea; margin-top: 20px; margin-bottom: 10px;">Recent Reports</h4>
+                    <div class="log-list" id="report-files-list">
+                        <!-- Report files will be loaded here -->
+                    </div>
+                </div>
+
+                <div id="activity-loading" style="text-align: center; padding: 40px; color: #a0a0b0;">
+                    Loading activity data...
+                </div>
+            </div>
+
+            <!-- Task Board Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📋 Active Tasks</span>
+                </div>
+                
+                <div id="task-board-content" style="display: none;">
+                    <div class="log-list" id="tasks-list">
+                        <!-- Tasks will be loaded here -->
+                    </div>
+                </div>
+
+                <div id="tasks-loading" style="text-align: center; padding: 40px; color: #a0a0b0;">
+                    Loading task board...
+                </div>
+            </div>
+        </div>
+
+        <div class="last-updated">
+            Last updated: <span id="last-update-time">Never</span> | 
+            Auto-refresh every 30 seconds
+        </div>
+    </div>
+
+    <script>
+        // Dashboard state
+        let refreshInterval;
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshDashboard();
+            refreshInterval = setInterval(refreshDashboard, 30000); // Auto-refresh every 30 seconds
+        });
+
+        async function refreshDashboard() {
+            try {
+                await Promise.all([
+                    loadSystemStatus(),
+                    loadBiomedicalReport(),
+                    loadAgentActivity(),
+                    loadTaskBoard()
+                ]);
+                
+                updateLastUpdateTime();
+            } catch (error) {
+                console.error('Dashboard refresh error:', error);
+            }
+        }
+
+        async function loadSystemStatus() {
+            const response = await fetch('/api/status');
+            const data = await response.json();
+            
+            // Update orchestrator status
+            updateOrchestratorStatus(data.orchestrator_running, data.orchestrator_paused);
+            
+            // Update task metrics
+            document.getElementById('total-tasks').textContent = data.task_board.total_tasks;
+            document.getElementById('completed-tasks').textContent = data.task_board.completed_tasks;
+            document.getElementById('pending-tasks').textContent = data.task_board.pending_tasks;
+            
+            const completionRate = data.task_board.completion_rate;
+            document.getElementById('task-completion-rate').textContent = `${completionRate.toFixed(1)}%`;
+            document.getElementById('task-progress-bar').style.width = `${completionRate}%`;
+        }
+
+        function updateOrchestratorStatus(running, paused) {
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            
+            if (running && !paused) {
+                statusDot.className = 'status-indicator status-running';
+                statusText.textContent = 'Running';
+            } else if (paused) {
+                statusDot.className = 'status-indicator status-paused';
+                statusText.textContent = 'Paused';
+            } else {
+                statusDot.className = 'status-indicator status-stopped';
+                statusText.textContent = 'Stopped';
+            }
+        }
+
+        async function loadBiomedicalReport() {
+            const response = await fetch('/api/biomedical');
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                document.getElementById('biomedical-content').style.display = 'block';
+                document.getElementById('biomedical-loading').style.display = 'none';
+                
+                // Update phase statuses
+                updatePhaseStatus(data.phases, 'phase-1-status', 'Research Agent');
+                updatePhaseStatus(data.phases, 'phase-2-status', 'Validation Agent');
+                updatePhaseStatus(data.phases, 'phase-3-status', 'Recombination Agent');
+                updatePhaseStatus(data.phases, 'phase-4-status', 'Integration Agent');
+                updatePhaseStatus(data.phases, 'phase-5-status', 'Documentation Agent');
+                
+                // Update pipeline metrics
+                const successRate = data.summary.success_rate_percent;
+                document.getElementById('pipeline-success-rate').textContent = `${successRate.toFixed(1)}%`;
+                document.getElementById('pipeline-duration').textContent = `${data.total_duration_seconds.toFixed(1)}s`;
+            } else {
+                document.getElementById('biomedical-loading').style.display = 'block';
+            }
+        }
+
+        function updatePhaseStatus(phases, elementId, agentName) {
+            const phase = phases.find(p => p[0] === agentName);
+            const element = document.getElementById(elementId);
+            
+            if (phase && phase.status === 'completed') {
+                element.className = 'phase-status phase-success';
+                element.textContent = '✅ Complete';
+            } else if (phase && phase.status === 'failed') {
+                element.className = 'phase-status phase-failed';
+                element.textContent = '❌ Failed';
+            } else if (phase) {
+                element.className = 'phase-status phase-pending';
+                element.textContent = '⏳ In Progress';
+            } else {
+                element.className = 'phase-status phase-pending';
+                element.textContent = '⚪ Not Started';
+            }
+        }
+
+        async function loadAgentActivity() {
+            const response = await fetch('/api/agents');
+            const data = await response.json();
+            
+            document.getElementById('agent-activity-content').style.display = 'block';
+            document.getElementById('activity-loading').style.display = 'none';
+            
+            // Load log files
+            const logList = document.getElementById('log-files-list');
+            logList.innerHTML = data.logs.map(log => 
+                `<div class="log-item" onclick="viewLog('${log}')">${log}</div>`
+            ).join('');
+            
+            // Load report files
+            const reportList = document.getElementById('report-files-list');
+            reportList.innerHTML = data.reports.map(report => 
+                `<div class="log-item" onclick="viewReport('${report}')">${report}</div>`
+            ).join('');
+        }
+
+        async function loadTaskBoard() {
+            const response = await fetch('/api/tasks');
+            const data = await response.json();
+            
+            document.getElementById('task-board-content').style.display = 'block';
+            document.getElementById('tasks-loading').style.display = 'none';
+            
+            // Show recent tasks (last 20)
+            const tasksList = document.getElementById('tasks-list');
+            const recentTasks = data.tasks.slice(-20).reverse();
+            
+            tasksList.innerHTML = recentTasks.map(task => {
+                const statusClass = task.status === 'done' ? 'phase-success' : 
+                                 task.status === 'blocked' ? 'phase-failed' : 'phase-pending';
+                
+                return `
+                    <div class="log-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong>${task.title}</strong>
+                            <span class="phase-status ${statusClass}">${task.status.toUpperCase()}</span>
+                        </div>
+                        <div style="font-size: 0.8em; color: #a0a0b0; margin-top: 5px;">
+                            ID: ${task.id} | Priority: ${task.priority}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function viewLog(filename) {
+            const response = await fetch(`/api/logs/${filename}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                alert('Error loading log file: ' + data.error);
+                return;
+            }
+            
+            // Open in new window with formatted content
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                    <head>
+                        <title>${data.filename} - Log Viewer</title>
+                        <style>
+                            body { font-family: monospace; background: #1a1a2e; color: #e4e4e4; padding: 20px; }
+                            pre { white-space: pre-wrap; word-wrap: break-word; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>${data.filename}</h2>
+                        <pre>${data.content}</pre>
+                    </body>
+                </html>
+            `);
+        }
+
+        async function viewReport(filename) {
+            const response = await fetch(`/api/logs/${filename}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                alert('Error loading report file: ' + data.error);
+                return;
+            }
+            
+            try {
+                const reportData = JSON.parse(data.content);
+                const win = window.open('', '_blank');
+                win.document.write(`
+                    <html>
+                        <head>
+                            <title>${data.filename} - Report Viewer</title>
+                            <style>
+                                body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #1a1a2e; color: #e4e4e4; padding: 20px; }
+                                pre { background: #2d2d44; padding: 15px; border-radius: 8px; overflow-x: auto; font-family: monospace; }
+                            </style>
+                        </head>
+                        <body>
+                            <h2>${data.filename}</h2>
+                            <pre>${JSON.stringify(reportData, null, 2)}</pre>
+                        </body>
+                    </html>
+                `);
+            } catch (e) {
+                alert('Error parsing JSON report');
+            }
+        }
+
+        async function sendOrchestratorCommand(command) {
+            try {
+                const response = await fetch(`/api/orchestrator/${command}`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message);
+                    refreshDashboard(); // Refresh to update status
+                } else {
+                    alert('Error sending command: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error sending command: ' + error.message);
+            }
+        }
+
+        function updateLastUpdateTime() {
+            document.getElementById('last-update-time').textContent = new Date().toLocaleString();
+        }
+
+        // Clear refresh interval when page unloads
+        window.addEventListener('beforeunload', function() {
+            clearInterval(refreshInterval);
+        });
+    </script>
+</body>
+</html>
