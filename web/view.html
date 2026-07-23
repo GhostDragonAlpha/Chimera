@@ -1,0 +1,43 @@
+<!doctype html><html><head><meta charset="utf-8"><title>isolated object — rotate it</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0e17;font-family:system-ui,sans-serif}
+  #bar{color:#cbd5e1;font:13px/1.6 ui-monospace,monospace;text-align:center;padding:8px}
+  #c{display:block;margin:0 auto;cursor:grab;background:#0a0e17}
+  #c:active{cursor:grabbing}
+  button{background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:6px;padding:3px 10px;font:12px monospace;cursor:pointer}
+</style></head>
+<body>
+<div id="bar">loading object.json …</div>
+<canvas id="c"></canvas>
+<script>
+const cv=document.getElementById('c'),g=cv.getContext('2d'),bar=document.getElementById('bar');
+cv.width=Math.min(960,innerWidth-16); cv.height=Math.min(680,innerHeight-70);
+let M=[],yaw=0.6,pitch=0.12,spin=true,drag=false,lx=0,ly=0,showSoil=true,SC=1,cx=0,cy=0,cz=0;
+fetch('object.json?t='+Date.now()).then(r=>r.json()).then(d=>{
+  M=d.pts; let sx=0,sy=0,sz=0,R=0;
+  for(const p of M){sx+=p.p[0];sy+=p.p[1];sz+=p.p[2];}
+  cx=sx/M.length;cy=sy/M.length;cz=sz/M.length;
+  for(const p of M){const a=p.p[0]-cx,b=p.p[1]-cy,e=p.p[2]-cz;R=Math.max(R,Math.hypot(a,b,e));}
+  SC=(Math.min(cv.width,cv.height)*0.44)/R;
+  bar.innerHTML=M.length+' points · drag to rotate · <button id="t">show/hide ground</button> &nbsp; object='+d.nobj+' soil='+d.nsoil;
+  document.getElementById('t').onclick=()=>{showSoil=!showSoil;};
+  requestAnimationFrame(loop);
+}).catch(e=>{bar.textContent='failed to load object.json: '+e;});
+function draw(){
+  const W=cv.width,H=cv.height,cy2=Math.cos(yaw),sy2=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  g.fillStyle='#0a0e17';g.fillRect(0,0,W,H);
+  const A=[];
+  for(const p of M){ if(!showSoil&&!p.o)continue;
+    let X=p.p[0]-cx,Y=p.p[1]-cy,Z=p.p[2]-cz;
+    let xr=X*cy2-Z*sy2, zr=X*sy2+Z*cy2;      // yaw about up-axis
+    let yr=Y*cp-zr*sp, zz=Y*sp+zr*cp;        // pitch
+    A.push({x:(W/2+xr*SC)|0, y:(H*0.62-yr*SC)|0, d:zz, c:p.c});
+  }
+  A.sort((a,b)=>b.d-a.d);
+  for(const p of A){ g.fillStyle='rgb('+p.c[0]+','+p.c[1]+','+p.c[2]+')'; g.fillRect(p.x,p.y,2,2); }
+}
+function loop(){ if(spin)yaw+=0.005; draw(); requestAnimationFrame(loop); }
+cv.onpointerdown=e=>{drag=true;spin=false;lx=e.clientX;ly=e.clientY;};
+cv.onpointermove=e=>{ if(drag){ yaw+=(e.clientX-lx)*0.01; pitch=Math.max(-1.2,Math.min(1.2,pitch+(e.clientY-ly)*0.01)); lx=e.clientX;ly=e.clientY; }};
+cv.onpointerup=()=>drag=false;
+</script></body></html>
