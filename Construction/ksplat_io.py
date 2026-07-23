@@ -53,9 +53,10 @@ def load_ksplat(path, full=False):
     pos = centers[bidx] + (sp["pos"].astype(np.float64) - compRange) * factor
     col = sp["col"][:, :3].astype(np.float32) / 255.0
     if full:
-        opacity = sp["col"][:, 3].astype(np.float32) / 255.0        # the alpha channel = per-splat opacity
-        scale = sp["scale"].view(np.float16).astype(np.float32)     # 3x half-float scales
-        return pos.astype(np.float32), col, opacity, scale
+        opacity = sp["col"][:, 3].astype(np.float32) / 255.0            # alpha channel = per-splat opacity
+        scale = sp["scale"].copy().view(np.float16).astype(np.float32)  # 3x half-float scales (linear)
+        quat = sp["rot"].copy().view(np.float16).astype(np.float32)     # 4x half-float rotation quaternion
+        return pos.astype(np.float32), col, opacity, scale, quat
     return pos.astype(np.float32), col
 
 
