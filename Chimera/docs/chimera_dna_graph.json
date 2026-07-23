@@ -99396,6 +99396,28 @@
       "links": [],
       "recorded_by": "forty_questions.py",
       "run_id": "run_d9e962c92c24"
+    },
+    {
+      "id": "feature_f0c1cf138ee7cc7e",
+      "type": "FeatureUpdate",
+      "timestamp": "2026-07-23T22:52:35.932980",
+      "feature_name": "40q_up_sky",
+      "loop": 0,
+      "status": "unexplored",
+      "parameters": {
+        "n_answered": 0,
+        "n_total": 40,
+        "parent": null,
+        "type": "forty_questions"
+      },
+      "error_signature": "success_no_error",
+      "template_file": "loop_0/40q_up_sky",
+      "error_category": "none",
+      "fix_description": "Feature '40q_up_sky' (Loop 0) recorded as 'unexplored'",
+      "compilation_result": "pass",
+      "links": [],
+      "recorded_by": "forty_questions.py",
+      "run_id": "run_82018008fbc1"
     }
   ],
   "edges": [
