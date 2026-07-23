@@ -432,9 +432,47 @@ def tile_seed(ix: int, iy: int, salt: int = 0) -> int:
     return int(h & 0x7FFFFFFF)
 
 
+# --- RELIEF ---------------------------------------------------------------
+# Flat tiles join trivially. Tiles with HEIGHT do not: displace each one with its own
+# random phases and neighbours disagree at the shared edge, leaving a ridge or a cliff at
+# every seam.
+#
+# The fix is to make height a pure function of ABSOLUTE WORLD POSITION rather than of
+# tile-local position. Then two adjacent tiles evaluating the shared edge are evaluating
+# the SAME function at the SAME coordinate, so they agree exactly -- by construction, not
+# by negotiation. All three tile properties survive:
+#     DETERMINISM  h(x,y) is pure; same coordinate, same height, forever.
+#     CONTINUITY   automatic at every edge, because both sides sample one function.
+#     BLINDNESS    still no neighbour consultation -- that is what makes it work.
+# This is also the allocentric half of the six-directions rule: the camera frame decides
+# WHERE YOU BUILD, world coordinates decide WHAT IS THERE.
+
+_RELIEF_PHASES = np.array([                       # fixed, never randomised per call
+    [0.000, 1.571, 0.785], [2.356, 0.393, 1.963],
+    [1.178, 2.749, 0.196], [0.589, 1.374, 2.552],
+], dtype=np.float64)
+
+
+def world_height(x, y, amplitude: float = 1.0, base_wavelength: float = 40.0,
+                 octaves: int = 4) -> np.ndarray:
+    """Continuous terrain height at absolute world (x, y). Seam-safe by construction."""
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    h = np.zeros(np.broadcast(x, y).shape)
+    amp, wl = 1.0, float(base_wavelength)
+    for o in range(min(octaves, len(_RELIEF_PHASES))):
+        px, py, pz = _RELIEF_PHASES[o]
+        k = 2.0 * np.pi / wl
+        h += amp * (np.sin(k * x + px) * np.cos(k * y + py)
+                    + 0.5 * np.sin(k * (x + y) * 0.7 + pz))
+        amp *= 0.5
+        wl *= 0.5
+    return h * (amplitude / 1.5)
+
+
 def ground_tile(ix: int, iy: int, material: str = 'sand', children: list | None = None,
                 size: float = TILE_SIZE, n_surface: int = 8000, n_objects: int = 120,
-                splat_scale: float = 0.25) -> dict:
+                splat_scale: float = 0.25, relief: float = 0.0) -> dict:
     """One patch of ground at tile coordinate (ix, iy), plus what sits on it.
 
     Objects are scattered strictly INSIDE this tile's half-open bounds [lo, hi), so a
@@ -446,13 +484,20 @@ def ground_tile(ix: int, iy: int, material: str = 'sand', children: list | None 
 
     surf = ground(material, size=size, n=n_surface, splat_scale=splat_scale, seed=seed)
     surf['pos'] = surf['pos'] + np.array([cx, cy, 0.0])
+    if relief:
+        # sample the height field at ABSOLUTE world position -> neighbours agree at the seam
+        surf['pos'][:, 2] += world_height(surf['pos'][:, 0], surf['pos'][:, 1],
+                                          amplitude=relief)
 
     layers = [surf]
     if children and n_objects:
         rng = np.random.default_rng(seed ^ 0xA5A5)
         # half-open [-size, +size): the upper edge belongs to the NEXT tile
         xy = rng.uniform(-size, size, (n_objects, 2)) * np.array([1.0, 1.0])
-        pos = np.column_stack([xy[:, 0] + cx, xy[:, 1] + cy, np.zeros(n_objects)])
+        wx, wy = xy[:, 0] + cx, xy[:, 1] + cy
+        # things SIT ON the ground, so they sample the same field the surface did
+        wz = world_height(wx, wy, amplitude=relief) if relief else np.zeros(n_objects)
+        pos = np.column_stack([wx, wy, wz])
         things = place(children, pos,
                        np.clip(1.0 + rng.standard_normal(n_objects) * 0.25, 0.3, 2.2),
                        rng.uniform(0, 2 * np.pi, n_objects))
