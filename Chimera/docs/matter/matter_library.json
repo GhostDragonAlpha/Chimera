@@ -175,7 +175,23 @@
         "value": "SAND",
         "provenance": "seed"
       },
-      "granularity_default": "cell_when_active_region_when_quiet"
+      "granularity_default": "cell_when_active_region_when_quiet",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.9294,
+            "scale": 2.9681
+          },
+          {
+            "type": "point",
+            "weight": 0.0664,
+            "scale": 3.3708
+          }
+        ],
+        "error": 0.0201,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
+      }
     },
     "basin": {
       "family": "mineral_dry",
@@ -239,7 +255,23 @@
         "value": "SAND",
         "provenance": "seed"
       },
-      "granularity_default": "cell_when_active_region_when_quiet"
+      "granularity_default": "cell_when_active_region_when_quiet",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.9226,
+            "scale": 3.1493
+          },
+          {
+            "type": "point",
+            "weight": 0.0675,
+            "scale": 3.3774
+          }
+        ],
+        "error": 0.0972,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
+      }
     },
     "rock": {
       "family": "mineral_dry",
@@ -298,7 +330,23 @@
         "value": "ROCK",
         "provenance": "seed"
       },
-      "granularity_default": "region"
+      "granularity_default": "region",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "shell",
+            "weight": 0.6924,
+            "scale": 2.7753
+          },
+          {
+            "type": "surface",
+            "weight": 0.2496,
+            "scale": 2.8988
+          }
+        ],
+        "error": 0.1132,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
+      }
     },
     "metal": {
       "family": "metallic",
@@ -354,7 +402,33 @@
         "value": "METAL",
         "provenance": "seed"
       },
-      "granularity_default": "region"
+      "granularity_default": "region",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "shell",
+            "weight": 0.5233,
+            "scale": 2.6052
+          },
+          {
+            "type": "surface",
+            "weight": 0.2474,
+            "scale": 0.2272
+          },
+          {
+            "type": "fiber",
+            "weight": 0.1675,
+            "scale": 0.1
+          },
+          {
+            "type": "point",
+            "weight": 0.0589,
+            "scale": 1.7408
+          }
+        ],
+        "error": 0.0014,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
+      }
     },
     "ice": {
       "family": "cryo",
@@ -406,7 +480,33 @@
         "value": "ICE",
         "provenance": "seed"
       },
-      "granularity_default": "region"
+      "granularity_default": "region",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "shell",
+            "weight": 0.4816,
+            "scale": 0.2068
+          },
+          {
+            "type": "surface",
+            "weight": 0.3005,
+            "scale": 0.2266
+          },
+          {
+            "type": "fiber",
+            "weight": 0.1678,
+            "scale": 1.0619
+          },
+          {
+            "type": "point",
+            "weight": 0.0501,
+            "scale": 0.5
+          }
+        ],
+        "error": 0.05,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
+      }
     },
     "interior": {
       "family": "composite_built",
@@ -458,6 +558,27 @@
           "value": 5,
           "provenance": "design"
         }
+      },
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.4031,
+            "scale": 0.9588
+          },
+          {
+            "type": "shell",
+            "weight": 0.3592,
+            "scale": 1.9433
+          },
+          {
+            "type": "fiber",
+            "weight": 0.2377,
+            "scale": 2.5974
+          }
+        ],
+        "error": 0.0921,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
       }
     },
     "skin": {
@@ -506,6 +627,37 @@
           "provenance": "researched",
           "note": "skin self-cohesion (higher = less adhesive to itself)"
         }
+      },
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "shell",
+            "weight": 0.4306,
+            "scale": 2.1272
+          },
+          {
+            "type": "surface",
+            "weight": 0.2736,
+            "scale": 3.2269
+          },
+          {
+            "type": "fiber",
+            "weight": 0.1238,
+            "scale": 0.979
+          },
+          {
+            "type": "cloud",
+            "weight": 0.1127,
+            "scale": 3.8588
+          },
+          {
+            "type": "point",
+            "weight": 0.0594,
+            "scale": 1.4385
+          }
+        ],
+        "error": 0.0084,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
       }
     },
     "muscle": {
@@ -563,6 +715,27 @@
             "note": "J[muscle][skin] = 6 (from proven rung-1 constants)"
           }
         }
+      },
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "fiber",
+            "weight": 0.4351,
+            "scale": 2.9244
+          },
+          {
+            "type": "shell",
+            "weight": 0.3424,
+            "scale": 1.2967
+          },
+          {
+            "type": "surface",
+            "weight": 0.2225,
+            "scale": 1.2806
+          }
+        ],
+        "error": 0.0,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
       }
     },
     "bone": {
@@ -624,6 +797,32 @@
             "note": "J[bone][skin] = 12 \u00e2\u20ac\u201d expensive so muscle sits between them"
           }
         }
+      },
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "shell",
+            "weight": 0.5055,
+            "scale": 2.3725
+          },
+          {
+            "type": "fiber",
+            "weight": 0.2579,
+            "scale": 1.3126
+          },
+          {
+            "type": "surface",
+            "weight": 0.1364,
+            "scale": 0.2561
+          },
+          {
+            "type": "point",
+            "weight": 0.1002,
+            "scale": 3.3699
+          }
+        ],
+        "error": 0.0121,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
       }
     },
     "tendon": {
@@ -700,7 +899,223 @@
           "note": "matter.py radial sort: skin shells muscle unattended when adhesion profiles differ"
         }
       },
-      "granularity_default": "cell"
+      "granularity_default": "cell",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "shell",
+            "weight": 0.4924,
+            "scale": 2.1646
+          },
+          {
+            "type": "fiber",
+            "weight": 0.2548,
+            "scale": 0.102
+          },
+          {
+            "type": "surface",
+            "weight": 0.2007,
+            "scale": 2.1775
+          },
+          {
+            "type": "point",
+            "weight": 0.0521,
+            "scale": 2.2261
+          }
+        ],
+        "error": 0.0034,
+        "provenance": "researched \u2014 scored against 40Q constraints (no scan available)"
+      }
+    },
+    "cluster_00": {
+      "family": "measured",
+      "_provenance": "RECOVERED from a real scan by Construction/export_genome.py",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "fiber",
+            "weight": 0.6675,
+            "scale": 0.1288
+          },
+          {
+            "type": "beam",
+            "weight": 0.2179,
+            "scale": 0.9297
+          },
+          {
+            "type": "shell",
+            "weight": 0.1146,
+            "scale": 3.0391
+          }
+        ],
+        "error": 0.0563,
+        "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      }
+    },
+    "cluster_01": {
+      "family": "measured",
+      "_provenance": "RECOVERED from a real scan by Construction/export_genome.py",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "beam",
+            "weight": 0.7848,
+            "scale": 0.2126
+          },
+          {
+            "type": "fiber",
+            "weight": 0.1756,
+            "scale": 1.495
+          },
+          {
+            "type": "surface",
+            "weight": 0.0396,
+            "scale": 0.8591
+          }
+        ],
+        "error": 0.0817,
+        "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      }
+    },
+    "cluster_02": {
+      "family": "measured",
+      "_provenance": "RECOVERED from a real scan by Construction/export_genome.py",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "beam",
+            "weight": 0.8751,
+            "scale": 0.2126
+          },
+          {
+            "type": "fiber",
+            "weight": 0.085,
+            "scale": 1.8011
+          }
+        ],
+        "error": 0.0589,
+        "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      }
+    },
+    "cluster_03": {
+      "family": "measured",
+      "_provenance": "RECOVERED from a real scan by Construction/export_genome.py",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "fiber",
+            "weight": 0.6892,
+            "scale": 0.1
+          },
+          {
+            "type": "beam",
+            "weight": 0.2075,
+            "scale": 0.5321
+          },
+          {
+            "type": "shell",
+            "weight": 0.1032,
+            "scale": 2.8807
+          }
+        ],
+        "error": 0.0527,
+        "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      }
+    },
+    "cluster_04": {
+      "family": "measured",
+      "_provenance": "RECOVERED from a real scan by Construction/export_genome.py",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "fiber",
+            "weight": 0.7282,
+            "scale": 0.116
+          },
+          {
+            "type": "beam",
+            "weight": 0.1609,
+            "scale": 0.571
+          },
+          {
+            "type": "shell",
+            "weight": 0.099,
+            "scale": 2.8894
+          }
+        ],
+        "error": 0.0624,
+        "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      }
+    },
+    "cluster_05": {
+      "family": "measured",
+      "_provenance": "RECOVERED from a real scan by Construction/export_genome.py",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "beam",
+            "weight": 0.8994,
+            "scale": 0.1015
+          },
+          {
+            "type": "shell",
+            "weight": 0.1006,
+            "scale": 1.2408
+          }
+        ],
+        "error": 0.0184,
+        "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      }
+    },
+    "cluster_06": {
+      "family": "measured",
+      "_provenance": "RECOVERED from a real scan by Construction/export_genome.py",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "beam",
+            "weight": 0.745,
+            "scale": 0.1015
+          },
+          {
+            "type": "shell",
+            "weight": 0.1838,
+            "scale": 2.036
+          },
+          {
+            "type": "fiber",
+            "weight": 0.0564,
+            "scale": 0.3019
+          }
+        ],
+        "error": 0.0348,
+        "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      }
+    },
+    "cluster_07": {
+      "family": "measured",
+      "_provenance": "RECOVERED from a real scan by Construction/export_genome.py",
+      "splat_composition": {
+        "layers": [
+          {
+            "type": "surface",
+            "weight": 0.6331,
+            "scale": 2.1663
+          },
+          {
+            "type": "cloud",
+            "weight": 0.2897,
+            "scale": 1.7243
+          },
+          {
+            "type": "beam",
+            "weight": 0.0772,
+            "scale": 0.6319
+          }
+        ],
+        "error": 0.1577,
+        "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      }
     }
   },
   "pair_exceptions": {

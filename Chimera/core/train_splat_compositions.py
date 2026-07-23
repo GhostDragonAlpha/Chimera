@@ -431,6 +431,59 @@ def main():
         json.dump({'compositions': results, '_provenance': 'trained splat type combinations'}, f, indent=2)
     print(f'\nSaved trained compositions to {out_path}')
 
+    write_to_library(results)
+
+
+def write_to_library(results: dict) -> None:
+    """Write trained compositions back into the matter library.
+
+    THIS IS THE LINK THAT WAS MISSING. splat_level.py builds the world by reading
+    `matter_library['materials'][name]['splat_composition']['layers']`, and before this
+    NO material had that field -- so every trained composition was written to
+    splat_compositions.trained.json and read by nothing. The trainer ran, produced good
+    numbers, and the world was emitted with the fallback
+    [{'type': 'surface', 'weight': 1.0}] every time.
+
+    Materials recovered from scans (cluster_*) are ADDED to the library as new entries so
+    a measured material becomes usable world-building matter, carrying its provenance.
+    """
+    with open(LIB_PATH) as f:
+        lib = json.load(f)
+
+    wrote, added = 0, 0
+    for name, res in results.items():
+        comp = res.get('composition') or {}
+        if not comp:
+            continue
+        layers = [{'type': t, 'weight': round(float(v['weight']), 4),
+                   'scale': round(float(v['scale']), 4)}
+                  for t, v in sorted(comp.items(), key=lambda kv: -kv[1]['weight'])]
+
+        measured = res.get('measures', {}).get('source') == 'recovered'
+        if name not in lib['materials']:
+            if not measured:
+                continue                      # never invent a library material from a fallback score
+            lib['materials'][name] = {
+                'family': 'measured',
+                '_provenance': 'RECOVERED from a real scan by Construction/export_genome.py',
+            }
+            added += 1
+
+        lib['materials'][name]['splat_composition'] = {
+            'layers': layers,
+            'error': round(float(res.get('error', 0.0)), 4),
+            'provenance': 'MEASURED — scored against a recovered splat-configuration '
+                          'distribution' if measured else
+                          'researched — scored against 40Q constraints (no scan available)',
+        }
+        wrote += 1
+
+    with open(LIB_PATH, 'w') as f:
+        json.dump(lib, f, indent=2)
+    print(f'Wrote splat_composition into {wrote} materials '
+          f'({added} newly added from scans) -> {LIB_PATH.name}')
+    print('  splat_level.py now emits trained compositions instead of the surface-only fallback.')
+
 
 if __name__ == '__main__':
     main()
