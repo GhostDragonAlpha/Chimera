@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-23T20:31:25.447Z",
+  "updatedAt": "2026-07-23T22:15:33.004Z",
   "loops": [
     {
       "id": "loop_mrxvjhlj_pxu428",
@@ -15,7 +15,7 @@
       "createdAt": "2026-07-23T18:58:14.359Z",
       "lastRun": "2026-07-23T20:30:00.004Z",
       "lastStatus": "success",
-      "nextRun": "2026-07-23T20:30:00.000Z",
+      "nextRun": "2026-07-23T22:20:00.000Z",
       "status": "active"
     }
   ]

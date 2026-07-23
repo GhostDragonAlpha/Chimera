@@ -1,0 +1,99 @@
+{
+  "shellPath": "C:/Users/allen/AppData/Local/Programs/PortableGit/bin/bash.exe",
+  "gitPath": "C:/Users/allen/AppData/Local/Programs/PortableGit/cmd/git.exe",
+  "extensions": [
+    ".pi/extensions/chimera-tools.ts",
+    ".pi/extensions/compaction-recovery.ts",
+    ".pi/extensions/mcp-bridge.ts",
+    ".pi/extensions/mcp-pathways-index.ts",
+    ".pi/extensions/web-browsing.ts",
+    ".pi/extensions/visual-dev.ts",
+    ".pi/extensions/proof-of-use.ts"
+  ],
+  "packages": [
+    "npm:@tintinweb/pi-subagents@^0.13.0",
+    "npm:pi-readseek",
+    "npm:pi-hermes-memory@^0.7.23"
+  ],
+  "_removed_pi-shazam": "Removed 2026-07-09: its synchronous before_agent_start scanProject() hangs 75s+ on this project (999 source files -> pathological parse/edge/PageRank build), freezing Pi at startup. Confirmed in isolation via scan-probe. It also bundles no C++ grammar, so it never indexed the main UE codebase anyway. pi-readseek covers code navigation. Re-add 'npm:pi-shazam' only if upstream fixes the large-project scan.",
+  "mcp": {
+    "enabled": true,
+    "servers": {
+      "unreal-engine": {
+        "url": "http://localhost:8091/mcp",
+        "tools": [
+          "control_editor",
+          "control_actor",
+          "manage_asset",
+          "manage_level"
+        ]
+      },
+      "graphify": {
+        "type": "stdio",
+        "command": "C:\\Users\\allen\\.local\\bin\\graphify-mcp.exe",
+        "args": [
+          "E:/PythonChimera/Chimera/docs/chimera_dna_graph.json"
+        ]
+      },
+      "chiR24-unreal-mcp": {
+        "type": "stdio",
+        "command": "node",
+        "args": [
+          "E:/ChiR24-Unreal_mcp-test/dist/cli.js"
+        ]
+      },
+      "playwright": {
+        "url": "http://localhost:8342/sse",
+        "tools": [
+          "browser_navigate",
+          "browser_snapshot",
+          "browser_screenshot",
+          "browser_click"
+        ]
+      }
+    },
+    "fallbackToDirect": false,
+    "alwaysUseMcpForDevelopment": true
+  },
+  "visual_dev": {
+    "enabled": true,
+    "mcp_server": "http://localhost:3000/mcp",
+    "images_dir": "E:/PythonChimera/Chimera/Saved/Images",
+    "tools": [
+      "write_solid_color_image",
+      "write_gradient_image",
+      "write_noise_texture",
+      "write_procedural_art",
+      "mcp_capture_viewport",
+      "mcp_create_material",
+      "mcp_create_geometry",
+      "mcp_setup_lighting",
+      "mcp_set_camera",
+      "mcp_spawn_actor",
+      "visual_dev_workflow_capture_and_analyze",
+      "visual_dev_material_preview"
+    ]
+  },
+  "research": {
+    "playwright": {
+      "enabled": true,
+      "browser": "chromium",
+      "headless": true,
+      "timeoutMs": 30000,
+      "tools": [
+        "web_browse",
+        "web_search_real",
+        "web_extract",
+        "web_screenshot"
+      ]
+    }
+  },
+  "defaultProvider": "lmstudio",
+  "_defaultModel_note": "DEFAULT CHANGED 2026-07-22 to colibri/glm-5.2-colibri (local 744B 'smart brain'; MEASURED 2026-07-23 at ~0.26 tok/s - ONE AGENT TURN IS TENS OF MINUTES, see Chimera/docs/GLM_52_DEEP_MODEL.md; REQUIRES E:\\pi-servers\\START GLM-5.2.cmd running on :8080). pi now routes to colibri (:8080), NOT LM Studio, so the old JIT-load conflict below no longer applies while this is the default. REVERT for fast autonomous/worker_bridge studio work: defaultProvider 'lmstudio' + defaultModel to the LM Studio model you have loaded (previously 'qwen-agentworld-35b-a3b-mtp-apex'). Prior rationale kept for that case: pi NAMES a model per request, so a mismatch makes LM Studio JIT-load pi's model alongside yours (2026-07-14: 41.3GB resident, mutual eviction). Chimera itself adopts whatever is resident.",
+  "defaultModel": "qwen-agentworld-35b-a3b-mtp-apex",
+  "environment": {
+    "nodePath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64",
+    "npmPath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64/npm.cmd",
+    "chimeraRoot": "E:/PythonChimera/Chimera"
+  }
+}
