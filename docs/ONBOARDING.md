@@ -45,6 +45,8 @@ NON-NEGOTIABLE RULES (each learned the hard way — EXPERIMENTAL_METHOD.md has t
     distribution — the cheap-to-measure thing is usually not the thing that matters.
   - ONE VARIABLE AT A TIME; bake in each win before the next test.
   - RECORD WHAT FAILED, WITH THE NUMBER. An unrecorded negative gets re-run at full cost.
+  - TASKING AN AGENT? Use docs/AGENT_TASK_TEMPLATE.md. Every clause in it exists
+    because an agent failed without it; the failure each one prevents is recorded.
   - ACCEPTANCE IS AN ARTIFACT, NOT AN ACTION. Your task is not done when you have written
     A FILE. It is done when the specific artifact exists that could ONLY exist if the work
     happened -- a named PNG with a nonzero size, a new genome in the library, a test that
