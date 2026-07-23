@@ -13,13 +13,15 @@
 
 ## NEW AGENT? START HERE
 
-1. `Construction/SPLAT_DNA_WORKFLOW.md` — scan → object genome. Status marked `PROVEN` /
+1. **`docs/THE_WORKFLOW.md`** — the whole system end to end, reconstructed from the git
+   chronology. Read this first; it tells you which of the other docs still matter.
+2. `Construction/SPLAT_DNA_WORKFLOW.md` — scan → object genome. Status marked `PROVEN` /
    `DESIGNED` / `FRONTIER` per stage, full file inventory in §7.5.
-2. `WorldModel/ML_PIPELINE.md` — the generative half. SplatVAE, three training paths,
+3. `WorldModel/ML_PIPELINE.md` — the generative half. SplatVAE, three training paths,
    hierarchical LOD, infinite world, cellular rules, physics universe.
-3. `docs/EXPERIMENTAL_METHOD.md` — ten rules for diagnosing a live system without fooling
+4. `docs/EXPERIMENTAL_METHOD.md` — ten rules for diagnosing a live system without fooling
    yourself. Read before debugging anything.
-4. **The GPU is mandatory** for rendering, segmentation, DNA recovery and training.
+5. **The GPU is mandatory** for rendering, segmentation, DNA recovery and training.
 
 ## How work gets done
 
