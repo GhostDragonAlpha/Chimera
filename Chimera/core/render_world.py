@@ -22,8 +22,15 @@ from pathlib import Path
 import numpy as np
 
 
-def _rasterize(means, col, op, eye, target, up_hint, W, H, sigma, K, dev, torch):
-    """Scatter soft Gaussian footprints for one camera. Normalized accumulation."""
+def _rasterize(means, col, op, cov, eye, target, up_hint, W, H, sigma, K, dev, torch):
+    """Scatter ANISOTROPIC Gaussian footprints for one camera. Normalized accumulation.
+
+    Each splat is projected to a 2D screen-space covariance and scattered as an oriented
+    ellipse. The earlier version used one circular kernel for every splat, which meant
+    `surface(63%) + cloud(29%) + beam(8%)` rendered identically to `surface(100%)` — the
+    entire trained-composition pipeline was invisible at the last step. Splat SHAPE is the
+    thing being trained, so the renderer has to draw it.
+    """
     fwd = target - eye
     fwd = fwd / (np.linalg.norm(fwd) + 1e-9)
     right = np.cross(fwd, up_hint)
@@ -48,20 +55,39 @@ def _rasterize(means, col, op, eye, target, up_hint, W, H, sigma, K, dev, torch)
     c = col[vis]
     a = op[vis]
 
+    if cov is not None:
+        # world covariance -> camera -> screen.  Sigma_cam = R Sigma_w R^T, then the 2x2
+        # image block scaled by (f/z)^2.  A small isotropic blur keeps thin splats from
+        # collapsing below one pixel and makes the inverse well-conditioned.
+        Sw = cov[vis]
+        Sc = torch.einsum('ij,njk,lk->nil', R, Sw, R)
+        s = (f / z[vis]) ** 2
+        a11 = Sc[:, 0, 0] * s + sigma ** 2
+        a12 = Sc[:, 0, 1] * s
+        a22 = Sc[:, 1, 1] * s + sigma ** 2
+        det = (a11 * a22 - a12 * a12).clamp(min=1e-9)
+        i11, i12, i22 = a22 / det, -a12 / det, a11 / det     # inverse 2x2
+    else:
+        i11 = i22 = torch.full_like(a, 1.0 / sigma ** 2)
+        i12 = torch.zeros_like(a)
+
     dxo, dyo = torch.meshgrid(torch.arange(-K, K + 1), torch.arange(-K, K + 1), indexing="ij")
     off = torch.stack([dxo.flatten(), dyo.flatten()], 1).to(dev)
-    gw = torch.exp(-(off[:, 0] ** 2 + off[:, 1] ** 2).float() / (2 * sigma ** 2))
 
     cbuf = torch.zeros(W * H, 3, device=dev)
     wbuf = torch.zeros(W * H, device=dev)
     for k in range(off.shape[0]):
+        dx = off[k, 0].float()
+        dy = off[k, 1].float()
+        # per-splat elliptical weight: exp(-0.5 * d^T Sigma^-1 d)
+        gw = torch.exp(-0.5 * (i11 * dx * dx + 2.0 * i12 * dx * dy + i22 * dy * dy))
         px = xi + off[k, 0]
         py = yi + off[k, 1]
-        ok = (px >= 0) & (px < W) & (py >= 0) & (py < H)
+        ok = (px >= 0) & (px < W) & (py >= 0) & (py < H) & (gw > 1e-4)
         if not bool(ok.any()):
             continue
         idx = (py[ok] * W + px[ok])
-        w = a[ok] * gw[k]
+        w = a[ok] * gw[ok]
         cbuf.index_add_(0, idx, c[ok] * w[:, None])
         wbuf.index_add_(0, idx, w)
 
@@ -100,6 +126,10 @@ def render_orbit(splats: dict, out_path='Saved/SplatEmit/world.png', n_views: in
     col = torch.tensor(np.clip(rgb, 0, 1), device=dev, dtype=torch.float32)
     op = torch.tensor(np.clip(opac, 0, 1), device=dev, dtype=torch.float32)
 
+    cov = splats.get('cov')
+    if cov is not None:
+        cov = torch.tensor(np.asarray(cov, dtype=np.float32)[sel], device=dev)
+
     ctr = pos.mean(0)
     radius = float(np.linalg.norm(pos - ctr, axis=1).max()) * 2.2 + 1e-3
     up_hint = np.array([0.0, 0.0, 1.0], dtype=np.float32)
@@ -114,8 +144,8 @@ def render_orbit(splats: dict, out_path='Saved/SplatEmit/world.png', n_views: in
         eye = ctr + radius * np.array([np.cos(th) * np.cos(el),
                                        np.sin(th) * np.cos(el),
                                        np.sin(el)], dtype=np.float32)
-        frames.append(_rasterize(means, col, op, eye.astype(np.float32), ctr.astype(np.float32),
-                                 up_hint, W, H, sigma, K, dev, torch))
+        frames.append(_rasterize(means, col, op, cov, eye.astype(np.float32),
+                                 ctr.astype(np.float32), up_hint, W, H, sigma, K, dev, torch))
     if dev == "cuda":
         torch.cuda.synchronize()
     dt = time.time() - t0

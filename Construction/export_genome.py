@@ -98,6 +98,61 @@ def cluster_genomes(path: str, k: int = 8, sample: int = 400_000, seed: int = 0)
     return genomes
 
 
+def merge_specimens(specimens: list, name: str) -> dict:
+    """Combine N scans of the SAME KIND of thing into one class genome.
+
+    THE POINT (operator, 2026-07-23): "we'll have to go out and get like two versions of
+    everything in order for variants to show up."
+
+    One specimen gives you WITHIN-object variation -- blade to blade on a single tuft.
+    What makes a class read as a class is BETWEEN-specimen variation: this tuft is taller,
+    that one yellower, this one sparser. With one scan you cannot separate "this
+    individual happens to be like this" from "members of this class differ like this",
+    so every child comes out a rearrangement of the same individual.
+
+    Total variance = within + between (law of total variance). We record both, so a child
+    can be drawn from the class rather than from one lucky specimen.
+    """
+    if len(specimens) < 2:
+        raise ValueError(f'{name}: need >= 2 specimens to measure between-specimen '
+                         f'variation, got {len(specimens)}')
+
+    feats = {}
+    for f in FEATURES:
+        means = np.array([s['features'][f]['mean'] for s in specimens], dtype=float)
+        within = np.array([s['features'][f]['std'] for s in specimens], dtype=float)
+        w = np.array([s['n_splats'] for s in specimens], dtype=float)
+        w = w / w.sum()
+
+        grand = float((means * w).sum())
+        between_var = float((w * (means - grand) ** 2).sum())
+        within_var = float((w * within ** 2).sum())
+        total_std = float(np.sqrt(within_var + between_var))
+
+        feats[f] = {
+            'mean': grand,
+            'std': total_std,
+            'p10': grand - 1.2816 * total_std,
+            'p90': grand + 1.2816 * total_std,
+            'within_std': float(np.sqrt(within_var)),
+            'between_std': float(np.sqrt(between_var)),
+            'specimen_means': [round(float(m), 5) for m in means],
+        }
+
+    ratio = np.mean([feats[f]['between_std'] / (feats[f]['within_std'] + 1e-9)
+                     for f in FEATURES])
+    return {
+        'n_specimens': len(specimens),
+        'n_splats': int(sum(s['n_splats'] for s in specimens)),
+        'features': feats,
+        'between_within_ratio': float(ratio),
+        '_provenance': f'CLASS genome merged from {len(specimens)} specimens',
+        '_note': ('between_std is the variation that makes siblings look like different '
+                  'individuals rather than rearrangements of one. A ratio near zero means '
+                  'the specimens were nearly identical and more varied samples are needed.'),
+    }
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("scan", help="path to a .splat / .ksplat / .ply scan")

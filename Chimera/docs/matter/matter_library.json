@@ -950,6 +950,17 @@
         ],
         "error": 0.0563,
         "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      },
+      "appearance": {
+        "albedo_mean_rgb": [
+          0.5003,
+          0.5747,
+          0.5693
+        ],
+        "alpha": 0.9673,
+        "roughness_mean": 0.949,
+        "subsurface_strength": 0.0,
+        "provenance": "MEASURED from a real scan"
       }
     },
     "cluster_01": {
@@ -975,6 +986,17 @@
         ],
         "error": 0.0817,
         "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      },
+      "appearance": {
+        "albedo_mean_rgb": [
+          0.8365,
+          0.8676,
+          0.8562
+        ],
+        "alpha": 0.9537,
+        "roughness_mean": 0.9941,
+        "subsurface_strength": 0.0,
+        "provenance": "MEASURED from a real scan"
       }
     },
     "cluster_02": {
@@ -995,6 +1017,17 @@
         ],
         "error": 0.0589,
         "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      },
+      "appearance": {
+        "albedo_mean_rgb": [
+          0.305,
+          0.3392,
+          0.3206
+        ],
+        "alpha": 0.9539,
+        "roughness_mean": 0.9889,
+        "subsurface_strength": 0.0,
+        "provenance": "MEASURED from a real scan"
       }
     },
     "cluster_03": {
@@ -1020,6 +1053,17 @@
         ],
         "error": 0.0527,
         "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      },
+      "appearance": {
+        "albedo_mean_rgb": [
+          0.916,
+          0.9472,
+          0.9259
+        ],
+        "alpha": 0.977,
+        "roughness_mean": 0.9406,
+        "subsurface_strength": 0.0,
+        "provenance": "MEASURED from a real scan"
       }
     },
     "cluster_04": {
@@ -1045,6 +1089,17 @@
         ],
         "error": 0.0624,
         "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      },
+      "appearance": {
+        "albedo_mean_rgb": [
+          0.7524,
+          0.8186,
+          0.8137
+        ],
+        "alpha": 0.637,
+        "roughness_mean": 0.9573,
+        "subsurface_strength": 0.0,
+        "provenance": "MEASURED from a real scan"
       }
     },
     "cluster_05": {
@@ -1065,6 +1120,17 @@
         ],
         "error": 0.0184,
         "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      },
+      "appearance": {
+        "albedo_mean_rgb": [
+          0.279,
+          0.32,
+          0.2873
+        ],
+        "alpha": 0.6405,
+        "roughness_mean": 0.9464,
+        "subsurface_strength": 0.0,
+        "provenance": "MEASURED from a real scan"
       }
     },
     "cluster_06": {
@@ -1090,6 +1156,17 @@
         ],
         "error": 0.0348,
         "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      },
+      "appearance": {
+        "albedo_mean_rgb": [
+          0.1572,
+          0.1828,
+          0.1562
+        ],
+        "alpha": 0.9754,
+        "roughness_mean": 0.929,
+        "subsurface_strength": 0.0,
+        "provenance": "MEASURED from a real scan"
       }
     },
     "cluster_07": {
@@ -1115,6 +1192,17 @@
         ],
         "error": 0.1577,
         "provenance": "MEASURED \u2014 scored against a recovered splat-configuration distribution"
+      },
+      "appearance": {
+        "albedo_mean_rgb": [
+          0.5734,
+          0.6162,
+          0.5676
+        ],
+        "alpha": 0.9265,
+        "roughness_mean": 0.5212,
+        "subsurface_strength": 0.0,
+        "provenance": "MEASURED from a real scan"
       }
     }
   },

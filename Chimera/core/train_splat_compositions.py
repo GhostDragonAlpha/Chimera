@@ -463,11 +463,38 @@ def write_to_library(results: dict) -> None:
         if name not in lib['materials']:
             if not measured:
                 continue                      # never invent a library material from a fallback score
+            # Carry the MEASURED optics across too. Without this the material lands in the
+            # library with no appearance block, _get_optical() falls through to default
+            # grey, and a scan-derived material renders as featureless putty -- the colour
+            # was measured and then thrown away one step before it was used.
+            feats = RECOVERED.get(name, {}).get('features', {})
+            appearance = {}
+            if feats:
+                appearance = {
+                    'albedo_mean_rgb': [round(feats[c]['mean'], 4) for c in ('R', 'G', 'B')],
+                    'albedo_p10_rgb': [round(feats[c]['p10'], 4) for c in ('R', 'G', 'B')],
+                    'albedo_p90_rgb': [round(feats[c]['p90'], 4) for c in ('R', 'G', 'B')],
+                    'alpha': round(feats['opacity']['mean'], 4),
+                    'roughness_mean': round(float(feats['aniso']['mean']), 4),
+                    'subsurface_strength': 0.0,
+                    'provenance': 'MEASURED from a real scan (mean + p10..p90 range)',
+                }
             lib['materials'][name] = {
                 'family': 'measured',
                 '_provenance': 'RECOVERED from a real scan by Construction/export_genome.py',
+                **({'appearance': appearance} if appearance else {}),
             }
             added += 1
+        elif measured and 'appearance' not in lib['materials'][name]:
+            feats = RECOVERED.get(name, {}).get('features', {})
+            if feats:
+                lib['materials'][name]['appearance'] = {
+                    'albedo_mean_rgb': [round(feats[c]['mean'], 4) for c in ('R', 'G', 'B')],
+                    'alpha': round(feats['opacity']['mean'], 4),
+                    'roughness_mean': round(float(feats['aniso']['mean']), 4),
+                    'subsurface_strength': 0.0,
+                    'provenance': 'MEASURED from a real scan',
+                }
 
         lib['materials'][name]['splat_composition'] = {
             'layers': layers,
