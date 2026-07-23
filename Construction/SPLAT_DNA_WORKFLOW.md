@@ -70,7 +70,8 @@ Recognized genomes get **serial numbers** — a **codebook**. The scene then com
 | 7 | Material-DNA (splat-config signature, full distributions) | splat-configuration distributions | `take_dna.py`, `take_dna_full.py` · PROVEN (82.5% identify) |
 | 8 | Material recovery (from a known sample) | analysis-by-synthesis / inverse rendering | `material_dna.py` · PROVEN (synthetic GT) |
 | 9 | Serial-number codebook | vector quantization / texton dictionary | `codebook.py` · PROVEN (8 genomes) |
-| 9.5 | Spatial voting (membranes) | neighbourhood label smoothing | · DESIGNED (next) |
+| 9.5 | Spatial voting (membranes) | neighbourhood label smoothing | `spatial_vote.py` · TRIED — flat (82.8%); bottleneck is feature overlap, not spatial noise |
+| 9.6 | Richer DNA features (grain/orientation) | add local orientation coherence | · DESIGNED (real next lever) |
 | 10 | Mesh for an engine | **SuGaR** / 2DGS | · DESIGNED |
 | 11 | Re-compose the game | 3DGS editing (Gaussian Grouping, 3DitScene, FreeInsert) | · DESIGNED |
 
@@ -104,7 +105,9 @@ Material genome = {albedo, roughness, metalness, normal} **+ the splat-configura
 
 DONE this session: the **codebook** (`codebook.py` — 8 genomes, scene painted by serial#) and **full distributions + identify** (`take_dna_full.py` — genome = mean+range, 82.5% classification).
 
-**NEXT: spatial voting (membranes).** Per-splat identify is 82.5% because a lone splat ignores its neighbours; smooth each splat's genome vote over its spatial neighbourhood (that neighbourhood **is** the membrane) so identify sharpens and the material regions come out clean instead of confetti. Then **regenerate** (sample a genome's distribution onto a fresh membrane), then **re-compose** (the game half — same pipeline reversed).
+**TRIED: spatial voting (`spatial_vote.py`) — it did NOT sharpen identify** (82.5% → 82.8%, flat). Honest diagnosis: it *helped* GROUND (92→95%) but *hurt* the sparse MOSS (99→92%), and left BARK stuck at 65%. The bottleneck is **not spatial noise** — BARK and GROUND have genuinely **overlapping material-DNA** (their distribution ranges overlap on nearly every feature), a *systematic* confusion label-smoothing cannot fix.
+
+**NEXT (the real lever, data-driven): richer DNA features.** The one feature that *did* separate bark from ground — **grain / orientation coherence** (bark 0.53 vs ground 0.39, measured in `take_dna.py`) — was left OUT of the classifier's vector (`take_dna_full.py` used only size/aniso/colour/opacity). Add **per-splat local orientation coherence** to the genome and re-test. (The irony: the *neighbourhood* does matter — but as a discriminating **feature** (local grain), not as label-voting.) Then **regenerate** → **re-compose** (the game half).
 
 ## 7. Sibling pipeline (alignment)
 
