@@ -347,6 +347,134 @@ def place(children: list, positions, scales=None, yaws=None) -> dict:
     return out
 
 
+SPLAT_KEYS = ('pos', 'normal', 'cov', 'albedo', 'roughness', 'alpha',
+              'subsurface', 'metallic')
+
+
+def compose(*scenes) -> dict:
+    """Merge several splat clouds into ONE scene.
+
+    THE GAP THIS FILLS (found 2026-07-23 by giving an agent the DOWN direction):
+    membrane_shapes.clothe() makes a SURFACE and progeny.scatter() makes THINGS, and
+    nothing joined them. Asking "what is the player standing on?" produced scattered
+    clumps floating over a void, because the ground itself was never emitted. A scene is
+    ground PLUS what sits on it; without a compose step you can only ever have one.
+
+    Scenes may carry different keys; anything missing is filled with a sane default so a
+    bare membrane and a full progeny cloud merge without special-casing.
+    """
+    scenes = [s for s in scenes if s is not None and len(s.get('pos', ())) > 0]
+    if not scenes:
+        raise ValueError('nothing to compose')
+
+    out = {}
+    for k in SPLAT_KEYS:
+        parts = []
+        for s in scenes:
+            n = len(s['pos'])
+            if k in s and s[k] is not None:
+                parts.append(np.asarray(s[k]))
+            elif k == 'normal':
+                d = np.zeros((n, 3)); d[:, 2] = 1.0; parts.append(d)
+            elif k == 'cov':
+                parts.append(np.tile(np.eye(3) * 1e-4, (n, 1, 1)))
+            elif k == 'albedo':
+                parts.append(np.full((n, 3), 0.5))
+            elif k == 'alpha':
+                parts.append(np.ones(n))
+            else:
+                parts.append(np.zeros(n))
+        out[k] = np.concatenate(parts, axis=0)
+    out['_layers'] = [s.get('_material') or s.get('_membrane') or s.get('_form') or '?'
+                      for s in scenes]
+    out['_counts'] = [len(s['pos']) for s in scenes]
+    return out
+
+
+def ground(material: str = 'sand', size: float = 8.0, n: int = 20000,
+           splat_scale: float = 0.25, amplitude: float = 0.0, seed: int = 0) -> dict:
+    """The surface the player stands on — a clothed plane membrane.
+
+    This is the answer to the DOWN direction. Pair it with scatter() through compose():
+
+        g = ground('sand', size=6)
+        things = scatter(kids, count=300, area=6)
+        render_orbit(compose(g, things))
+    """
+    from core.membrane_shapes import plane, displace, clothe
+    mem = plane(size=size, n=n)
+    if amplitude:
+        mem = displace(mem, amplitude=amplitude, seed=seed)
+    return clothe(mem, material=material, splat_scale=splat_scale, seed=seed)
+
+
+# ---------------------------------------------------------------------------
+# TILES — ground is made of PATCHES, and patches must JOIN
+#
+# Operator, 2026-07-23: "the ground is made up of pieces ... there's a little patchy
+# ground, eventually it'll join up with another patchy ground."
+#
+# So a patch is not judged as a finished scene. It is judged on whether it TILES:
+#   DETERMINISM  tile (ix,iy) has the same content forever -- "same seed, same world"
+#                (CLAUDE.md). The seed is DERIVED FROM THE COORDINATE, never counted up.
+#   CONTINUITY   no gap and no overlap at the shared edge; a thing straddling a border
+#                belongs to exactly one tile, so neighbours never double-place it.
+#   BLINDNESS    a tile is generated without consulting its neighbours, or the world
+#                cannot be built outward from the player (six directions, §6).
+# ---------------------------------------------------------------------------
+
+TILE_SIZE = 8.0
+
+
+def tile_seed(ix: int, iy: int, salt: int = 0) -> int:
+    """Deterministic per-coordinate seed. Same tile, same content, forever."""
+    h = (ix * 73856093) ^ (iy * 19349663) ^ (salt * 83492791)
+    return int(h & 0x7FFFFFFF)
+
+
+def ground_tile(ix: int, iy: int, material: str = 'sand', children: list | None = None,
+                size: float = TILE_SIZE, n_surface: int = 8000, n_objects: int = 120,
+                splat_scale: float = 0.25) -> dict:
+    """One patch of ground at tile coordinate (ix, iy), plus what sits on it.
+
+    Objects are scattered strictly INSIDE this tile's half-open bounds [lo, hi), so a
+    neighbour placing its own objects can never double-place at the shared edge. The
+    surface spans the full closed tile so the two surfaces meet with no gap.
+    """
+    seed = tile_seed(ix, iy)
+    cx, cy = ix * size * 2.0, iy * size * 2.0          # tile centres, size = half-extent
+
+    surf = ground(material, size=size, n=n_surface, splat_scale=splat_scale, seed=seed)
+    surf['pos'] = surf['pos'] + np.array([cx, cy, 0.0])
+
+    layers = [surf]
+    if children and n_objects:
+        rng = np.random.default_rng(seed ^ 0xA5A5)
+        # half-open [-size, +size): the upper edge belongs to the NEXT tile
+        xy = rng.uniform(-size, size, (n_objects, 2)) * np.array([1.0, 1.0])
+        pos = np.column_stack([xy[:, 0] + cx, xy[:, 1] + cy, np.zeros(n_objects)])
+        things = place(children, pos,
+                       np.clip(1.0 + rng.standard_normal(n_objects) * 0.25, 0.3, 2.2),
+                       rng.uniform(0, 2 * np.pi, n_objects))
+        layers.append(things)
+
+    out = compose(*layers)
+    out['_tile'] = (ix, iy)
+    return out
+
+
+def ground_patch(nx: int = 2, ny: int = 1, **kw) -> dict:
+    """nx x ny adjacent tiles composed into one scene — the seam test.
+
+    If patches tile correctly this reads as continuous ground; if they do not, the seam
+    is visible as a gap, a ridge, or a doubled band of objects.
+    """
+    tiles = [ground_tile(ix, iy, **kw) for ix in range(nx) for iy in range(ny)]
+    out = compose(*tiles)
+    out['_tiles'] = [t['_tile'] for t in tiles]
+    return out
+
+
 def scatter(children: list, count: int = 500, area: float = 100.0, seed: int = 0,
             height_fn=None, jitter_scale: float = 0.25) -> dict:
     """Convenience: place instances over a square area, optionally on a height field.
