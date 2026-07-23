@@ -93,6 +93,10 @@ literal question and build the answer:
     look LEFT/RIGHT/BACK -> what holds the world together around them?
 Work ONE direction at a time. Do not build anything no direction asked for.
 
+DISTANCE TRAVELLED IS NOT A CONSIDERATION. Work is ANCHOR-LOCAL. Never budget by how
+far the player moves; the space between anchors is not a development target. In a space
+game most of it is void and VOID IS CORRECT. Crossing a million km costs nothing to build.
+
 HOW MUCH TO BUILD — human spatial scale (proxemics, Hall 1966). People read distance in
 bands: arm's reach, personal, social, public/horizon. Detail belongs where attention is and
 falls off with distance. A thing at arm's reach must HOLD UP; a thing on the horizon must

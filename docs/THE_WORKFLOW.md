@@ -19,9 +19,8 @@ or from growing it under physics.**
 | **07-22** | **genomes from reality + taste** | all of `Construction/` (scan → genome) and `taste.py` / `preference*.py` |
 | **07-23** | consolidation | local-model docs, experimental method, this file |
 | **07-23** | **AUTOMATED WORKFLOW** | `sequential_orchestrator.py` - continuous sequential agent pipeline (research → validation → recombination → integration → documentation)
-| **07-23** | **AUTOMATED WORKFLOW** | `sequential_orchestrator.py` - continuous sequential agent pipeline (research → validation → recombination → integration → documentation)
 | **07-23** | **THE COMPOSITION SIDE** | `progeny.py` (children/placement/verbs), `membrane_shapes.py` (containers), `render_world.py` (GPU render), and the link that made trained compositions reach the world builder |
-| **07-23** | consolidation | local-model docs, experimental method, this file |
+
 **Read backwards from 07-22 and the system explains itself.** The last two days added the
 two ends the middle was missing: *where genomes come from* (measured reality) and *who
 decides which of the physics-feasible ones is good* (the operator).
@@ -254,3 +253,92 @@ material painted on a surface.** Isolate one thing → make variations → place
 - **The exploit is the product** — a degenerate winner is the optimiser auditing your spec.
   Iterate the objective, never the artifact.
 - **Measure the thing, not a proxy** (`docs/EXPERIMENTAL_METHOD.md`).
+- **Build in one of six directions, from the player outward** — §6 below. Without a
+  priority rule the pipeline yields unrelated assets instead of a place.
+
+
+---
+
+## 6. WHAT TO BUILD NEXT — the six directions
+
+Everything above says *how* the world gets made. This says **what to make next**, and it
+exists because the pipeline can make anything: without a priority rule an agent produces a
+pile of unrelated assets instead of a place. **Six directions is the constraint that
+focuses it.**
+
+### The anchor and the timeline
+
+Development follows the **player's timeline from t=0** — the first thing they ever see.
+There is **no main menu screen**; the menu is written into the environment, because the
+world can be the menu. From the player's position (**the anchor**) there are exactly six
+directions, and each is a work bucket:
+
+| Direction | The question it asks |
+|---|---|
+| **DOWN** | what are they standing on? |
+| **FORWARD** | what draws them onward? |
+| **UP** | sky, ceiling, the scale of the place |
+| **LEFT / RIGHT / BACK** | what holds the world together around them? |
+
+**Work one direction at a time. Build nothing that no direction asked for.** Each direction
+names concrete pipeline work — which genome to recover (Stage 1), which objects to breed
+(Stage 8), where to `place()` them, which `pose()` verb they carry. The six directions do
+not replace the stages; they aim them.
+
+### How far out — proxemics, not travel
+
+Detail is budgeted by **perceived** distance, in the bands humans actually read (Hall,
+1966): arm's reach, personal, social, horizon. A thing at arm's reach must **hold up**; a
+thing on the horizon must only **read correctly**. This is the LOD-of-meaning ladder
+already in `CLAUDE.md`, anchored to a body instead of a number.
+
+> **DISTANCE TRAVELLED IS NOT A CONSIDERATION.** Work is **anchor-local**. You never budget
+> by how far the player will move, and the space *between* anchors is not a development
+> target — in a space game most of it is void, and **void is correct**. Crossing a million
+> kilometres costs nothing to build.
+
+### When all six are filled: MIGRATE
+
+Move the anchor to new ground; six fresh directions open. The universe expands because the
+current one is **saturated**, not because someone decided to add more — an organism fills
+its niche and disperses. This is the same range-expansion logic as the genetics in Stage 8.
+
+### The frame, not the compass
+
+Four cardinal directions presuppose a horizon. **In space there is none**, so the player's
+own orientation is the only reference — you are not adding two directions to a plane, you
+are losing the plane. The machinery already exists: **`core/terrarium.py:264` is a 3D
+turtle** carrying `H, L, U` (heading/left/up), and its yaw/pitch/roll commands *are* the
+six. Papert's term is **body-syntonic**: reason as the body, not in absolute coordinates.
+
+### The rule that must not bend
+
+Six directions govern **traversal and authoring**. World state is stored in **absolute
+coordinates**. `CLAUDE.md` promises *same seed, same world, forever* — that holds only if
+the camera's frame never leaks into what is **saved**. Egocentric for attention and
+building; allocentric for persistence.
+
+### It transcends scales — and that is the payoff
+
+Because work is **anchor-local** and travel distance is never budgeted, **the rule is
+scale-invariant**. A frame does not care how large anything is. The same six questions are
+asked, unchanged, at every rung:
+
+| Anchor | DOWN | FORWARD | UP |
+|---|---|---|---|
+| standing on regolith | grain under the boot | the ridge line | sky, weather |
+| a ship's cockpit | the deck plate | the viewport | the overhead console |
+| orbit | the planet below | the terminator | the star field |
+| interstellar | the ecliptic | the next system | the galactic plane |
+
+This is the **compositional ladder** (`CLAUDE.md`) given a work order — sand → cloud → star
+→ system → planet → climate → matter under boots are *scales*, and the six directions apply
+identically at each. It is also why `core/terrarium.py`'s turtle is the right primitive:
+its yaw/pitch/roll commands are the same whether the step is a bark fibre or a light-year.
+**Same method, any magnitude. Migration between scales is just another anchor move.**
+
+### Why this produces emergence
+
+You are not designing a world from above. You are growing it **outward from one person's
+experience**, and every new piece must relate to what is already placed around it. The
+constraint is what makes the parts cohere into a place rather than a collection.
