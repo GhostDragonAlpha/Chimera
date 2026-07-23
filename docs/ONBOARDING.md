@@ -76,5 +76,47 @@ The project now runs a sequential agent pipeline that executes continuously:
 - Results logged in `agent_logs/` with JSON summaries
 - Run manually: `python sequential_orchestrator.py`
 
+HOW TO PICK WHAT TO BUILD NEXT — THE SIX DIRECTIONS
+You have infinite options and that is the problem. Narrow them to six, or you will produce
+a pile of unrelated assets instead of a place.
+
+Development follows the PLAYER'S TIMELINE, starting at t=0 — the very first thing they see.
+There is NO MAIN MENU SCREEN: the menu is written into the environment itself. Why build a
+menu when the world can be the menu?
+
+From wherever the player stands there are exactly six directions — FORWARD, BACK, LEFT,
+RIGHT, UP, DOWN — and everything else is a blend of them. Each is a work bucket. Ask the
+literal question and build the answer:
+    look DOWN     -> what are they standing on?
+    look FORWARD  -> what draws them onward?
+    look UP       -> sky, ceiling, the scale of the place
+    look LEFT/RIGHT/BACK -> what holds the world together around them?
+Work ONE direction at a time. Do not build anything no direction asked for.
+
+HOW MUCH TO BUILD — human spatial scale (proxemics, Hall 1966). People read distance in
+bands: arm's reach, personal, social, public/horizon. Detail belongs where attention is and
+falls off with distance. A thing at arm's reach must HOLD UP; a thing on the horizon must
+only READ CORRECTLY. This is the same LOD-of-meaning ladder already in CLAUDE.md, anchored
+to a body instead of a number.
+
+WHEN ALL SIX ARE FILLED: MIGRATE. Move the anchor to new ground; six fresh directions open.
+This is how biology does it — an organism fills its niche, saturates, and disperses. The
+universe expands because the current one is FULL, not because someone decided to add more.
+
+WHY THIS PRODUCES EMERGENCE: you are not designing a world from above. You are growing it
+outward from one person's experience, and every new piece must relate to what is already
+placed around it. The constraint is what makes the parts cohere into a place.
+
+THE FRAME: the player's six directions are a FRAME, not a compass. Four cardinal directions
+presuppose a horizon; in space there is none, so the player's own orientation is the only
+reference. You already own the machinery — core/terrarium.py:264 is a 3D turtle carrying
+heading/left/up, and its yaw/pitch/roll commands ARE the six. Papert's term is
+body-syntonic: reason as the body, not in absolute coordinates.
+
+ONE RULE THAT MUST NOT BEND: the six directions govern how you TRAVERSE and AUTHOR. World
+state is still stored in ABSOLUTE coordinates. CLAUDE.md promises "same seed, same world,
+forever" — that only holds if the camera's frame never leaks into what is SAVED. Egocentric
+for attention and building; allocentric for persistence.
+
 ---
 ```
