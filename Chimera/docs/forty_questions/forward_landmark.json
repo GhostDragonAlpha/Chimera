@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "feature": "forward_landmark",
+    "parent": null,
+    "walls": [],
+    "created": "auto",
+    "n_total": 40,
+    "n_answered": 9,
+    "depth_verdict": "unexplored"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature in one sentence?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 2,
+      "q": "What wider system does it belong to?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 3,
+      "q": "What would break if this feature didn't exist?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 4,
+      "q": "What existing feature does this most resemble?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 5,
+      "q": "Is this a rung, a sub-rung, or a parameter?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 6,
+      "q": "What physical constraint does it encode?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 7,
+      "q": "What is the ONE measurement that proves it works?",
+      "a": "Silhouette extent survives coalescing. MEASURED: near [16.75 16.36 28.57] vs far at 2% keep [13.61 15.03 27.85] -- height within 2.5% while splat count falls 48,870 -> 977 (50:1).",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "What wall must it never violate?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 9,
+      "q": "What would a degenerate winner look like?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 10,
+      "q": "How would we know if the constraint is too loose?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 11,
+      "q": "At what scale does this feature operate?",
+      "a": "Horizon scale: tens to hundreds of metres from the anchor. Landmark is 26 m tall and still reads at 200 m.",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "What is the right definition level for this scale?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 13,
+      "q": "Could this be decomposed further? Into what?",
+      "a": "Yes, and it already does: landmark -> 9 tiers -> placed children -> splats. Each tier is a ring of recombined children at decreasing radius.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "At what resolution does the pattern emerge?",
+      "a": "The silhouette stops reading below roughly 1,000 splats. MEASURED: 977 splats at 2% keep still holds shape; that is the floor of this rung.",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "What would 'deep enough' look like for this feature?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 16,
+      "q": "What element catalog variables does this train?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 17,
+      "q": "How many relevant elements exist in the catalog?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 18,
+      "q": "Are there enough variables to train meaningfully?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 19,
+      "q": "What variables are MISSING from the catalog?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 20,
+      "q": "Would training this require GPU acceleration?",
+      "a": "Yes. Rendering 105k+ splats per frame across tiles plus landmark is GPU-only; measured 442 ms for 6 tiles on the 4090.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Does this feature connect to the Mirror of Erised?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 22,
+      "q": "How directly does it serve the Mirror? (direct/enabling/orthogonal)",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 23,
+      "q": "Would a costless life still be meaningful without this feature?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 24,
+      "q": "Could this feature be gamed to fake a generous life?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 25,
+      "q": "What would this feature look like if it perfectly served the Mirror?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 26,
+      "q": "What other features does this compose with?",
+      "a": "Composes with DOWN (ground tiles) via compose(). Shares world_height() so the base sits on the terrain rather than floating.",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What could break at the seam between this and its neighbors?",
+      "a": "The base must sample the SAME world_height() as the tile it stands on, or it floats or sinks. Wired via the relief parameter. Second seam risk: LOD popping between discrete distance bands.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Does this need a decoder step to place in the level?",
+      "a": "Yes. Placed by absolute world coordinate, deterministic -- same place forever. That is the allocentric half of the six-directions rule.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "What would a failed composition look like?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 30,
+      "q": "Does this feature need a human judgment or can the system verify it?",
+      "a": "System-verifiable for silhouette preservation (extent comparison is a number). NOT system-verifiable for 'does it draw the player onward' -- that needs the human.",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "How many generations to converge?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 32,
+      "q": "What population size is appropriate?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 33,
+      "q": "What's the risk of overfitting?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 34,
+      "q": "What's the risk of underfitting?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 35,
+      "q": "Does the existing trainer support this domain type?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 36,
+      "q": "Have we gone deep enough on this feature?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 37,
+      "q": "What would the NEXT level of decomposition look like?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 38,
+      "q": "If we stopped here, would the game feel complete?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 39,
+      "q": "What is the human's expected emotional response to this feature?",
+      "a": "",
+      "answered": false
+    },
+    {
+      "id": 40,
+      "q": "Does this feature exist because the Mirror demands it, or because it's technically interesting?",
+      "a": "",
+      "answered": false
+    }
+  ]
+}

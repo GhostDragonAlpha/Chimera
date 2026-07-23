@@ -508,6 +508,89 @@ def ground_tile(ix: int, iy: int, material: str = 'sand', children: list | None 
     return out
 
 
+# ---------------------------------------------------------------------------
+# FORWARD — what draws the player onward
+#
+# The second of the six directions, and the first that is not about matter underfoot.
+# FORWARD is about ATTENTION AT DISTANCE: something on the skyline that creates the
+# intent to walk toward it.
+#
+# Proxemics (six-directions rule) decides the budget: a thing on the horizon must only
+# READ CORRECTLY, a thing at arm's reach must HOLD UP. So a landmark is not one object --
+# it is one object at several levels of resolution, and which level you get depends on how
+# far away you are. That is the LOD-OF-MEANING ladder in CLAUDE.md made operational:
+# each coarser level is the finer level's AVERAGE. Approaching decompresses; retreating
+# coalesces.
+# ---------------------------------------------------------------------------
+
+
+def landmark(children: list, world_xy=(0.0, 0.0), height: float = 26.0,
+             base_radius: float = 7.0, tiers: int = 9, per_tier: int = 90,
+             seed: int = 0, relief: float = 0.0) -> dict:
+    """A mass on the skyline, built from the same children as everything else.
+
+    Stacked tiers of decreasing radius give a silhouette that survives being reduced to a
+    few dozen splats — which is what makes it legible at horizon distance. It is placed by
+    ABSOLUTE world coordinate, so it is in the same place forever.
+    """
+    rng = np.random.default_rng(seed ^ 0x1A4D)
+    wx, wy = float(world_xy[0]), float(world_xy[1])
+    base_z = float(world_height(wx, wy, amplitude=relief)) if relief else 0.0
+
+    layers = []
+    for t in range(tiers):
+        f = t / max(tiers - 1, 1)                 # 0 at the base, 1 at the peak
+        r = base_radius * (1.0 - f) ** 0.72       # taper
+        z = base_z + height * f
+        n = max(6, int(per_tier * (1.0 - 0.65 * f)))
+        a = rng.uniform(0, 2 * np.pi, n)
+        rr = r * np.sqrt(rng.uniform(0.15, 1.0, n))
+        pos = np.column_stack([wx + rr * np.cos(a),
+                               wy + rr * np.sin(a),
+                               z + rng.uniform(-0.4, 0.4, n) * (1.0 + 2.0 * f)])
+        scales = np.clip(1.5 - 0.7 * f + rng.standard_normal(n) * 0.2, 0.4, 2.4)
+        layers.append(place(children, pos, scales, rng.uniform(0, 2 * np.pi, n)))
+
+    out = compose(*layers)
+    out['_landmark'] = {'xy': (wx, wy), 'height': height, 'tiers': tiers}
+    return out
+
+
+def lod(scene: dict, viewer, near: float = 12.0, far: float = 180.0,
+        min_keep: float = 0.02, seed: int = 0) -> dict:
+    """Coalesce a scene by viewing distance. COARSER LEVELS ARE THE FINER LEVEL'S AVERAGE.
+
+    Splats are dropped as distance grows, and the survivors are GROWN to cover the area
+    the dropped ones occupied — so the silhouette and the apparent density hold while the
+    cost collapses. Retreat coalesces, approach decompresses; nothing is authored twice.
+
+    Covariance scales by (1/keep)^(2/3): a factor-k reduction in count needs each survivor
+    to cover k times the volume, and covariance is a squared quantity over three axes.
+    """
+    pos = np.asarray(scene['pos'])
+    d = float(np.linalg.norm(np.asarray(viewer, dtype=float) - pos.mean(0)))
+    t = np.clip((d - near) / max(far - near, 1e-6), 0.0, 1.0)
+    keep = float(np.clip((1.0 - t) ** 2, min_keep, 1.0))
+    if keep >= 0.999:
+        return scene
+
+    n = len(pos)
+    k = max(8, int(n * keep))
+    idx = np.random.default_rng(seed).choice(n, k, replace=False)
+
+    out = {}
+    for key, v in scene.items():
+        if isinstance(v, np.ndarray) and len(v) == n:
+            out[key] = v[idx]
+        else:
+            out[key] = v
+    if 'cov' in out:
+        out['cov'] = out['cov'] * ((1.0 / keep) ** (2.0 / 3.0))
+    out['_lod'] = {'distance': round(d, 1), 'keep': round(keep, 4),
+                   'splats': f'{n:,} -> {k:,}'}
+    return out
+
+
 def ground_patch(nx: int = 2, ny: int = 1, **kw) -> dict:
     """nx x ny adjacent tiles composed into one scene — the seam test.
 
