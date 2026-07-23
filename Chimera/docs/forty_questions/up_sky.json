@@ -5,8 +5,8 @@
     "walls": [],
     "created": "auto",
     "n_total": 40,
-    "n_answered": 0,
-    "depth_verdict": "unexplored"
+    "n_answered": 5,
+    "depth_verdict": "explored"
   },
   "questions": [
     {
@@ -72,8 +72,8 @@
     {
       "id": 11,
       "q": "At what scale does this feature operate?",
-      "a": "",
-      "answered": false
+      "a": "The membrane shapes operate at n=20000 points per shape default, and render_orbit uses W=512, H=512 resolution pixels.",
+      "answered": true
     },
     {
       "id": 12,
@@ -84,14 +84,14 @@
     {
       "id": 13,
       "q": "Could this be decomposed further? Into what?",
-      "a": "",
-      "answered": false
+      "a": "Yes, into 5 primitive shapes: sphere, plane, cylinder, box, dome.",
+      "answered": true
     },
     {
       "id": 14,
       "q": "At what resolution does the pattern emerge?",
-      "a": "",
-      "answered": false
+      "a": "The render resolution is W=512, H=512 pixels.",
+      "answered": true
     },
     {
       "id": 15,
@@ -162,14 +162,14 @@
     {
       "id": 26,
       "q": "What other features does this compose with?",
-      "a": "",
-      "answered": false
+      "a": "It composes with splat emitters: surface, fiber, point, shell, beam, cloud, glow - that's 7 emitter types in clothe().",
+      "answered": true
     },
     {
       "id": 27,
       "q": "What could break at the seam between this and its neighbors?",
-      "a": "",
-      "answered": false
+      "a": "At tile seams, objects could double-place if not using half-open bounds [lo, hi); tile size is TILE_SIZE=8.0 units.",
+      "answered": true
     },
     {
       "id": 28,
