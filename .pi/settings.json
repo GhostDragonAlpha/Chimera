@@ -4,11 +4,8 @@
   "extensions": [
     ".pi/extensions/chimera-tools.ts",
     ".pi/extensions/compaction-recovery.ts",
-    ".pi/extensions/mcp-bridge.ts",
-    ".pi/extensions/mcp-pathways-index.ts",
     ".pi/extensions/web-browsing.ts",
-    ".pi/extensions/visual-dev.ts",
-    ".pi/extensions/proof-of-use.ts"
+    ".pi/extensions/visual-dev.ts"
   ],
   "packages": [
     "npm:@tintinweb/pi-subagents@^0.13.0",
@@ -95,5 +92,6 @@
     "nodePath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64",
     "npmPath": "C:/Users/allen/node-portable/node-v22.23.1-win-x64/npm.cmd",
     "chimeraRoot": "E:/PythonChimera/Chimera"
-  }
+  },
+  "_extensions_retired_20260723": "mcp-bridge / mcp-pathways-index loaded 8 Unreal editor tools into every agent while the prompt said UE is retired. proof-of-use BLOCKED writes unless Unreal API symbols were cited against UE_5.8 engine source -- it reported '0 citations' and left agents unable to act, so they ended their turns. Files moved to .pi/extensions-retired/; restore by moving back and re-adding here. graphify is UNAFFECTED (it lives in chimera-tools.ts and Chimera/core/graphify_record.py)."
 }
