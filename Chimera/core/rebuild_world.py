@@ -90,7 +90,7 @@ def grow_terrain() -> Path:
     glb = OUT_DIR / 'terrain.glb'
     write_splat_glb(world, scale=1.0, path=glb, soft_edge=False)
     print(f'  GLB: {glb}')
-    return glb
+    return glb, world
 
 
 def grow_shelter() -> Path:
@@ -109,38 +109,23 @@ def grow_shelter() -> Path:
     glb = OUT_DIR / 'shelter.glb'
     write_splat_glb(splats, scale=1.0, path=glb, soft_edge=False)
     print(f'  GLB: {glb}')
-    return glb
+    return glb, splats
 
 
-def import_to_ue5(glb_path, dest_folder, actor_label, location=(0,0,0), scale=(1,1,1)):
-    """Import a GLB into UE5 via MCP and spawn it."""
-    import subprocess, sys
-    name = Path(str(glb_path)).stem
-    script = f'''
-import unreal
-asub = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
-ls = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
-task = unreal.AssetImportTask()
-task.filename = r"{glb_path}"
-task.destination_path = "/Game/Grown/{dest_folder}"
-task.automated = True
-task.replace_existing = True
-task.save = True
-unreal.AssetToolsHelpers.get_asset_tools().import_asset_tasks([task])
-[asub.destroy_actor(a) for a in asub.get_all_level_actors() if "{actor_label}" in a.get_actor_label()]
-sm = unreal.load_asset(name="/Game/Grown/{dest_folder}/{name}/StaticMeshes/{name}")
-mat = unreal.load_asset(name="/Game/Materials/M_SplatVC_Lit.M_SplatVC_Lit")
-sm.set_material(0, mat)
-actor = asub.spawn_actor_from_object(sm, unreal.Vector{location}, unreal.Rotator(0,0,0))
-actor.set_actor_label("{actor_label}")
-actor.set_actor_scale3d(unreal.Vector{scale})
-ls.save_current_level()
-print("DONE")
-'''
-    # Write to temp file and execute via UE Python
-    import subprocess
-    p = subprocess.run([sys.executable, '-m', 'core.telemetry_probe'], capture_output=True, text=True, timeout=10)
-    print(f'  Import {actor_label}: command written')
+def show(splats, label, n_views=6):
+    """Render the grown splats so the operator can SEE them.
+
+    Replaces import_to_ue5(), which built a UE Python script as a string, ran
+    telemetry_probe, printed "command written", and executed nothing — it never worked,
+    and Unreal is retired regardless. This rasterizes on the GPU instead.
+    """
+    from core.render_world import render_orbit
+    out = OUT_DIR / f'{label.lower()}.png'
+    try:
+        return render_orbit(splats, out_path=out, n_views=n_views)
+    except Exception as exc:                      # a render failure must not lose the build
+        print(f'  render failed for {label}: {exc}')
+        return None
 
 
 def main():
@@ -154,15 +139,20 @@ def main():
     
     print('=== REBUILD WORLD ===')
     
+    rendered = []
     if args.terrain or not (args.terrain or args.shelter):
-        glb = grow_terrain()
-        import_to_ue5(glb, 'terrain', 'Terrain')
-    
+        glb, world = grow_terrain()
+        p = show(world, 'Terrain')
+        if p: rendered.append(p)
+
     if args.shelter or not (args.terrain or args.shelter):
-        glb = grow_shelter()
-        import_to_ue5(glb, 'shelter', 'Shelter', location=(0,-800,0), scale=(0.5,0.5,0.5))
-    
+        glb, splats = grow_shelter()
+        p = show(splats, 'Shelter')
+        if p: rendered.append(p)
+
     print('=== REBUILD COMPLETE ===')
+    for p in rendered:
+        print(f'  SEE IT: {p}')
 
 
 if __name__ == '__main__':
