@@ -23,12 +23,144 @@ from core.splat_types import (
 
 ROOT = Path(__file__).resolve().parents[1]
 LIB_PATH = ROOT / 'docs/matter/matter_library.json'
+RECOVERED_PATH = ROOT / 'docs/matter/recovered_genomes.json'
 SPLAT_NAMES = ['surface', 'fiber', 'point', 'shell', 'beam', 'cloud', 'glow']
 N_TYPES = len(SPLAT_NAMES)
 
 # Load the matter library
 with open(LIB_PATH) as f:
     MATTER_LIB = json.load(f)
+
+# ---------------------------------------------------------------------------
+# RECOVERED GENOMES — measured from real scans by Construction/export_genome.py
+#
+# Before this existed, measure() scored a composition by KEYWORD-MATCHING the English
+# text of a 40-questions document: if an answer contained the word "fiber", the
+# composition was rewarded for using fiber splats. That grades an adjective, which is
+# the studio's own named failure mode.
+#
+# A recovered genome is the measured splat-configuration DISTRIBUTION of real material
+# — size, anisotropy, colour, opacity, each as mean + p10..p90. When one exists for a
+# material we score against THAT instead: emit the composition's splats, compute the
+# same features from their covariance eigenvalues, and compare distributions.
+# ---------------------------------------------------------------------------
+RECOVERED = {}
+if RECOVERED_PATH.exists():
+    try:
+        RECOVERED = json.loads(RECOVERED_PATH.read_text()).get('genomes', {})
+    except Exception:
+        RECOVERED = {}
+
+
+def _emit_cov(type_idx: int, n: int, scale: float, rng) -> np.ndarray:
+    """Emit n covariance matrices of one splat type at a given spatial scale."""
+    if n <= 0:
+        return np.zeros((0, 3, 3))
+    normal = rng.standard_normal((n, 3))
+    normal /= np.clip(np.linalg.norm(normal, axis=1, keepdims=True), 1e-9, None)
+    pos = rng.standard_normal((n, 3))
+    name = SPLAT_NAMES[type_idx]
+    if name == 'surface':
+        return emit_surface(normal, tangent_scale=1.15 * scale, normal_scale=0.35 * scale)
+    if name == 'fiber':
+        # fiber_dir is REQUIRED for elongation — without it emit_fiber is byte-identical
+        # to emit_surface (both aniso 0.696), so the trainer could never tell them apart.
+        fd = rng.standard_normal((n, 3))
+        fd /= np.clip(np.linalg.norm(fd, axis=1, keepdims=True), 1e-9, None)
+        return emit_fiber(normal, tangent_scale=1.15 * scale, normal_scale=0.35 * scale,
+                          fiber_dir=fd)
+    if name == 'point':
+        return emit_point(pos, radius=scale)
+    if name == 'shell':
+        return emit_shell(pos, normal, thickness=0.2 * scale, spread=scale)
+    if name == 'beam':
+        return emit_beam(normal, length=10.0 * scale, thickness=0.5 * scale)
+    if name == 'cloud':
+        return emit_cloud(pos, radius=100.0 * scale, alpha=0.1)
+    return emit_glow(pos, radius=5.0 * scale)
+
+
+def emitted_features(genome: np.ndarray, n_total: int = 4000, seed: int = 0) -> dict:
+    """Emit the composition's splats and measure the SAME features the scan reports.
+
+    Covariance eigenvalues are the squared principal scales, so:
+        scales = sqrt(eigvals) -> sorted -> size = middle, aniso = 1 - min/max
+    which is exactly what Construction/take_dna_full.py computes from a real scan.
+    That identity is what makes the comparison meaningful rather than analogical.
+    """
+    rng = np.random.default_rng(seed)
+    n = len(genome) // 2
+    weights, scales = genome[:n], genome[n:]
+    active = weights > 0.05
+    if not active.any():
+        return {}
+    w = weights / weights.sum()
+
+    covs = [_emit_cov(i, int(round(w[i] * n_total)), float(scales[i]), rng)
+            for i in range(N_TYPES) if active[i]]
+    covs = [c for c in covs if len(c)]
+    if not covs:
+        return {}
+    C = np.concatenate(covs, 0)
+
+    eig = np.linalg.eigvalsh(C)                      # ascending, per splat
+    sc = np.sqrt(np.clip(eig, 1e-12, None))          # principal scales
+    return {
+        'size': sc[:, 1],                            # middle axis
+        'aniso': 1.0 - sc[:, 0] / (sc[:, 2] + 1e-9),  # 0 = blob, 1 = flat/elongated
+    }
+
+
+def measure_recovered(material_name: str, genome: np.ndarray) -> dict:
+    """Score a composition against a MEASURED genome instead of keyword constraints.
+
+    Distribution match, not mean match: a genome is a RANGE, so we compare mean AND
+    spread. Being right on average while having the wrong spread is still wrong.
+    """
+    rec = RECOVERED.get(material_name)
+    if rec is None:
+        return {}
+    feat = emitted_features(genome)
+    if not feat:
+        return {'n_active': 0, 'total_error': float('inf')}
+
+    target = rec['features']
+    errs = {}
+
+    # ANISOTROPY is a RATIO — scale-invariant, so it compares directly across a scan and
+    # an emitter that share no unit system. It also carries material identity most
+    # strongly: a smooth panel and rough corrosion differ in anisotropy at equal brightness.
+    a_got, a_want = feat['aniso'], target['aniso']
+    errs['aniso_mean_error'] = abs(float(np.mean(a_got)) - a_want['mean'])
+    got_spread = float(np.percentile(a_got, 90) - np.percentile(a_got, 10))
+    errs['aniso_spread_error'] = abs(got_spread - (a_want['p90'] - a_want['p10']))
+
+    # SIZE cannot be compared in absolute terms: a scan's world scale is arbitrary (the
+    # truck scan reports ~0.012 while the emitters work in units of ~1). What IS a
+    # material property is the SHAPE of the size distribution, so compare the coefficient
+    # of variation (std/mean), which is scale-invariant.
+    s_got = feat['size']
+    cv_got = float(np.std(s_got) / (np.mean(s_got) + 1e-9))
+    cv_want = target['size']['std'] / (abs(target['size']['mean']) + 1e-9)
+    errs['size_cv_error'] = abs(cv_got - cv_want)
+
+    n_active = int((genome[:len(genome) // 2] > 0.05).sum())
+    penalty = 0.2 if n_active < 2 else (0.1 * (n_active - 5) if n_active > 5 else 0.0)
+
+    total = (errs['aniso_mean_error'] * 1.0
+             + errs['aniso_spread_error'] * 0.5
+             + errs['size_cv_error'] * 0.4) + penalty
+
+    return {
+        'n_active': n_active,
+        'source': 'recovered',
+        'total_error': float(total),
+        **{k: float(v) for k, v in errs.items()},
+        'emitted_aniso_mean': float(np.mean(feat['aniso'])),
+        'target_aniso_mean': target['aniso']['mean'],
+        'emitted_size_cv': cv_got,
+        'target_size_cv': float(cv_want),
+    }
 
 
 def seed_genome(material_name: str, rng=None):
@@ -116,12 +248,19 @@ def _load_40q(material_name: str) -> dict:
 
 
 def measure(material_name: str, genome: np.ndarray) -> dict:
-    """Measure how well a splat composition matches a material's 40Q walls.
-    
-    Instead of optimizing against the library's own numbers (circular),
-    this reads the 40Q document and checks how well the composition
-    satisfies the RESEARCHED constraints.
+    """Measure how well a splat composition matches a material.
+
+    PREFERENCE ORDER:
+      1. a RECOVERED genome (measured from a real scan)  -- physics
+      2. the 40Q keyword constraints                      -- an adjective, fallback only
+
+    Rule 1 of docs/EXPERIMENTAL_METHOD.md: measure the thing, not a proxy. Keyword
+    matching on English answers is a proxy for material identity; the splat-configuration
+    distribution of the real material IS material identity.
     """
+    if material_name in RECOVERED:
+        return measure_recovered(material_name, genome)
+
     mat = MATTER_LIB['materials'].get(material_name)
     if mat is None:
         return {}
@@ -256,8 +395,15 @@ def main():
     print('=== Training Splat Compositions ===')
     print()
     
+    names = [n for n in MATTER_LIB['materials'] if not n.startswith('_')]
+    names += [n for n in RECOVERED if n not in names]   # measured materials train too
+    if RECOVERED:
+        print(f'  {len(RECOVERED)} RECOVERED genomes available '
+              f'(measured from real scans) — these score against physics, not keywords')
+        print()
+
     results = {}
-    for name in MATTER_LIB['materials']:
+    for name in names:
         if name.startswith('_'):
             continue
         print(f'  {name}...', end=' ', flush=True)
