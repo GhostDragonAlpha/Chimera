@@ -18,8 +18,10 @@ or from growing it under physics.**
 | **07-21** | **the splat world** | `splat_types.py`, `splat_level.py`, `train_splat_compositions.py`, `rebuild_world.py` + all of `WorldModel/` (SplatVAE, cellular, universe, infinite, nanite) |
 | **07-22** | **genomes from reality + taste** | all of `Construction/` (scan → genome) and `taste.py` / `preference*.py` |
 | **07-23** | consolidation | local-model docs, experimental method, this file |
+| **07-23** | **AUTOMATED WORKFLOW** | `sequential_orchestrator.py` - continuous sequential agent pipeline (research → validation → recombination → integration → documentation)
+| **07-23** | **AUTOMATED WORKFLOW** | `sequential_orchestrator.py` - continuous sequential agent pipeline (research → validation → recombination → integration → documentation)
 | **07-23** | **THE COMPOSITION SIDE** | `progeny.py` (children/placement/verbs), `membrane_shapes.py` (containers), `render_world.py` (GPU render), and the link that made trained compositions reach the world builder |
-
+| **07-23** | consolidation | local-model docs, experimental method, this file |
 **Read backwards from 07-22 and the system explains itself.** The last two days added the
 two ends the middle was missing: *where genomes come from* (measured reality) and *who
 decides which of the physics-feasible ones is good* (the operator).

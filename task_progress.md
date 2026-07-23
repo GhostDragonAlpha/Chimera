@@ -1,4 +1,14 @@
 # Rehearsal decision 2026-07-21 03:15Z — next move: Ground_Sand_Sound_unblock
+# Session 2026-07-23 (automation) — Sequential continuous agent workflow activated
+
+- **Sequential orchestrator**: Continuous pipeline running agents one at a time in order
+- **Agent sequence**: research → validation → recombination → integration → documentation
+- **Current status**: Workflow loop active, results logged in `agent_logs/`
+- **Manual start**: `python sequential_orchestrator.py`
+
+---
+
+# Session 2026-07-23 (genetics) — Heritability pipeline validated with 5 real materials
 # Session 2026-07-23 (genetics) — Heritability pipeline validated with 5 real materials
 
 - **Genetics breakthrough validated**: Two-specimen requirement for heritability measurement confirmed.
@@ -24,12 +34,14 @@
 - Heritability estimates within valid [0,1] range and biologically reasonable.
 - No clamping artifacts in rendered children.
 
-## NEXT
-1. **VISUAL VALIDATION — IN PROGRESS** HTTP server running at http://localhost:8080 with gallery page. Awaiting human inspection of `Saved/SplatEmit/*.png` images to confirm children look like coherent material variants (not random noise). See visual_validation_guide.md for checklist.
-2. **PROCESS MORE MATERIALS** — Grass tuft, rock sample, pure metal, ice (prioritize game-critical materials).
-3. **TEST TWO-PARENT RECOMBINATION** — Full sexual reproduction pipeline with `recombine(parent_a, parent_b)`.
-4. **INTEGRATE WITH MEMBRANE SHAPES** — Apply class genomes to sphere/plane/cylinder via `clothe()` function.
-5. **UPDATE DNA GRAPH** — Record feature nodes and heritability observations with evidence links.
+## NEXT (Automated Sequential Workflow)
+1. **VISUAL VALIDATION** — Agent running automated analysis; human review of `Saved/SplatEmit/*.png` still required at http://localhost:8080
+2. **PROCESS MORE MATERIALS** — Research agent searching for grass, rock, metal, ice scans continuously
+3. **TEST TWO-PARENT RECOMBINATION** — Recombination testing agent running with existing class genomes
+4. **INTEGRATE WITH MEMBRANE SHAPES** — Integration agent validating clothe/displace/scatter functions
+5. **UPDATE DNA GRAPH** — Documentation agent recording feature nodes and observations automatically
+
+**Workflow Status**: Sequential pipeline active - agents run one at a time in order, waiting for completion before next starts.
 
 ---
 

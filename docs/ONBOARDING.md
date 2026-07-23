@@ -68,4 +68,13 @@ between-specimen variation becomes real.
 **STATUS: COMPLETED 2026-07-23.** Validated with 5 materials (bonsai, stump, bicycle, plush, truck). Heritability estimates confirmed biologically plausible patterns. Pipeline operational end-to-end.
 
 **NEXT:** Process remaining critical materials (grass, rock, pure metal, ice) and test two-parent recombination.
+
+**AUTOMATED CONTINUOUS WORKFLOW:**
+The project now runs a sequential agent pipeline that executes continuously:
+- **research_materials.py** → **visual_validation_agent.py** → **test_recombination.py** → **test_membrane_integration.py** → **update_documentation.py**
+- Each agent waits for the previous to complete before starting
+- Results logged in `agent_logs/` with JSON summaries
+- Run manually: `python sequential_orchestrator.py`
+
+---
 ```
