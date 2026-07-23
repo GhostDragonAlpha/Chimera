@@ -414,6 +414,7 @@ def main() -> None:
     import argparse
     ap = argparse.ArgumentParser(description='Spawn children of an object and place them.')
     ap.add_argument('--genome', default='cluster_07')
+    ap.add_argument('--parent-b', default='', help='second parent -> sexual reproduction')
     ap.add_argument('--form', default='tuft', choices=['tuft', 'clump', 'shard'])
     ap.add_argument('--children', type=int, default=16)
     ap.add_argument('--instances', type=int, default=400)
@@ -426,7 +427,11 @@ def main() -> None:
     a = ap.parse_args()
 
     parent = load_genome(a.genome)
-    kids_spec = spawn_children(parent, n=a.children, spread=a.spread)
+    if a.parent_b:
+        kids_spec = recombine(parent, load_genome(a.parent_b), n=a.children)
+        print(f'sexual: {a.genome} x {a.parent_b}')
+    else:
+        kids_spec = spawn_children(parent, n=a.children, spread=a.spread)
     kids = [build_child(k, form=a.form, n_splats=a.splats) for k in kids_spec]
     print(f'parent {a.genome}: {a.children} children, form={a.form}, spread={a.spread}')
     sz = [k['sampled']['_scale'] for k in kids_spec]

@@ -21,8 +21,13 @@ from pathlib import Path
 
 import numpy as np
 
+# a single key light, slightly above and to the side; enough to read form
+_LIGHT_DIR = np.array([0.45, -0.35, 0.82], dtype=np.float32)
+_LIGHT_DIR = _LIGHT_DIR / np.linalg.norm(_LIGHT_DIR)
+_AMBIENT = 0.35
 
-def _rasterize(means, col, op, cov, eye, target, up_hint, W, H, sigma, K, dev, torch):
+
+def _rasterize(means, col, op, cov, nrm, eye, target, up_hint, W, H, sigma, K, dev, torch):
     """Scatter ANISOTROPIC Gaussian footprints for one camera. Normalized accumulation.
 
     Each splat is projected to a 2D screen-space covariance and scattered as an oriented
@@ -54,6 +59,16 @@ def _rasterize(means, col, op, cov, eye, target, up_hint, W, H, sigma, K, dev, t
     yi = y[vis].long()
     c = col[vis]
     a = op[vis]
+
+    # SHADING. The splats carry normals and the renderer was ignoring them, so every
+    # surface returned raw albedo and the geometry read as a flat swatch. A Lambert term
+    # plus a little ambient is enough to make form legible -- without N.L you cannot see
+    # which way anything faces, which defeats the point of training splat ORIENTATION.
+    if nrm is not None:
+        L = torch.tensor(_LIGHT_DIR, device=dev, dtype=torch.float32)
+        ndl = (nrm[vis] @ L).clamp(min=0.0)
+        shade = (_AMBIENT + (1.0 - _AMBIENT) * ndl).unsqueeze(1)
+        c = c * shade
 
     if cov is not None:
         # world covariance -> camera -> screen.  Sigma_cam = R Sigma_w R^T, then the 2x2
@@ -130,6 +145,12 @@ def render_orbit(splats: dict, out_path='Saved/SplatEmit/world.png', n_views: in
     if cov is not None:
         cov = torch.tensor(np.asarray(cov, dtype=np.float32)[sel], device=dev)
 
+    nrm = splats.get('normal')
+    if nrm is not None:
+        nv = np.asarray(nrm, dtype=np.float32)[sel]
+        nv = nv / (np.linalg.norm(nv, axis=1, keepdims=True) + 1e-9)
+        nrm = torch.tensor(nv, device=dev)
+
     ctr = pos.mean(0)
     radius = float(np.linalg.norm(pos - ctr, axis=1).max()) * 2.2 + 1e-3
     up_hint = np.array([0.0, 0.0, 1.0], dtype=np.float32)
@@ -144,7 +165,7 @@ def render_orbit(splats: dict, out_path='Saved/SplatEmit/world.png', n_views: in
         eye = ctr + radius * np.array([np.cos(th) * np.cos(el),
                                        np.sin(th) * np.cos(el),
                                        np.sin(el)], dtype=np.float32)
-        frames.append(_rasterize(means, col, op, cov, eye.astype(np.float32),
+        frames.append(_rasterize(means, col, op, cov, nrm, eye.astype(np.float32),
                                  ctr.astype(np.float32), up_hint, W, H, sigma, K, dev, torch))
     if dev == "cuda":
         torch.cuda.synchronize()
