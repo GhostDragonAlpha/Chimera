@@ -171,6 +171,15 @@
   ~99,520 m³, 10–58 m deep, 144×144 m span, traverse 4 chambers end to end, in 1.7 s. `from_break`
   wires a mining dig to the whole system. Verified by looking (network map: plan + section,
   discs=chambers by volume/depth, edges=passages, entry ringed). `8dfbe65`.
+- [x] **Populate the caves** ✅ BUILT — `core/cave_features.py`. Empty chambers filled from the
+  SAME physics that carved them (no aesthetic pass). WALL ORE: probe() the rock bordering the
+  void → veins EXPOSED, mineable in-situ. WATER: cells below the WATER TABLE flood; the table
+  follows terrain (vadose ~8 m coast, deeper under high ground) — the ocean's saturation rule
+  reused underground, so which caves flood is EMERGENT. DARKNESS: BFS light from the opening.
+  SPELEOTHEMS: karst dripstone. MEASURED: a high cave (surface 296 m) is dry/dark; a low coastal
+  cave (surface 12 m, water table 11 m) is 86% flooded — a 53,723 m³ lake — with iron+coal on its
+  walls. Pure function of position. Verified by looking (dry dark chamber | flooded lake + wall
+  iron). `c712958`.
 
 ## 🟢 T3 — THE -OLOGY BOARD (staff the two terminals; see TERMINOLOGY.md §11)
 
