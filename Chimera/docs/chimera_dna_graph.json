@@ -100062,6 +100062,42 @@
       "error_category": "",
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_f080205534e0d309",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "retire_sequential_automation",
+      "feature_type": "cleanup",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "122e5c7",
+        "files_deleted": 22,
+        "closes": "THE_ORDER 1,2,3,6"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_4846899ba911e7cc",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "investigating task_progress.md corruption (9 identical blocks)",
+      "expectation": "an append-safe log or the auto-flush daemon was to blame",
+      "reality": "documentation_agent.py::update_task_progress did new_block+content -- PREPENDED a fixed block every run, never truncating",
+      "lesson_hint": "read the code that writes a file before blaming the daemon that flushes it",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
@@ -113027,6 +113063,20 @@
       "target": "discovery_4365ffc5f8bf5ab1",
       "type": "because",
       "question": "why Feature 'perception': psychophysics: JND/Weber; fo?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_f080205534e0d309",
+      "dst": "surprise_4846899ba911e7cc",
+      "rel": "because",
+      "source": "feature_f080205534e0d309",
+      "target": "surprise_4846899ba911e7cc",
+      "type": "because",
+      "question": "why retire the sequential automation?",
       "proves": "RECORDED",
       "asked_at": "2026-07-24T00:00:00Z",
       "asked_by": "backfill",
