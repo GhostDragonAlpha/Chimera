@@ -100434,6 +100434,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_600b567b384a"
+    },
+    {
+      "id": "surprise_3ae14e4f1c1f2b1f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T21:49:28.500696",
+      "context": "Populating caves, expected to author cave contents (place lakes, scatter ore, set lighting) as new systems.",
+      "expectation": "",
+      "reality": "It was all REUSE of existing physics: wall ore = probe() aimed at the rock bordering the void; water = the ocean's below-saturation-surface flood rule reused with a terrain-following water table (high cave dry, low coastal cave 86% flooded, EMERGENT); darkness = BFS from the opening. Populating added almost no new physics -- it re-aimed physics already there. core/cave_features.py c712958.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'It was all REUSE of existing physics: wall ore = probe() aimed at the rock borde'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_ace16bce4cb5"
     }
   ],
   "edges": [
