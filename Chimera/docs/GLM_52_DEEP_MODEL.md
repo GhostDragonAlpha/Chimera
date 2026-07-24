@@ -143,7 +143,7 @@ COLI_MODEL=E:\glm52_i4              # primary copy (357 GB)
 COLI_MODEL_MIRROR=D:\glm52_i4       # second copy; both drives serve expert reads
 COLI_DISK_WEIGHTS=1047,515          # primary,mirror bandwidth ratio - DO NOT REMOVE
 PIN_GB=all                          # keep the whole expert set resident
---ctx 128000 --queue-timeout 3600 --gpu none
+--ctx 32000 --queue-timeout 3600 --gpu none
 ```
 
 **Why `COLI_DISK_WEIGHTS` is explicit:** colibrì's startup probe reads the mirror through
@@ -151,16 +151,24 @@ the OS page cache and reported **5.53 GB/s from a SATA SSD whose interface caps 
 MB/s**, then handed it 80% of the reads. That mis-split measured **7.50 s/layer**; the
 corrected 67/33 measured **4.50**. A 40% swing from one wrong number.
 
-**Why `--ctx 128000`:** context competes with the expert cache for RAM.
+**Why `--ctx 32000`** (changed from 128,000 on 2026-07-23, operator's call). Context
+competes with the expert cache for RAM:
 
 | ctx | experts pinned | decode |
 |---:|---:|---:|
-| 32,768 | 621 | 0.289 tok/s |
-| **128,000** | **621** | — |
+| **32,768** | **621** | **0.289 tok/s** ← the only fast decode ever measured |
+| 128,000 | 621 | never measured |
 | 262,144 | 387 | 0.168 tok/s |
 
 At 262,144 the KV reservation evicts a third of the experts and decode drops **42%**.
-128,000 keeps the full 621-expert hot set — it is the knee of the curve.
+128,000 was chosen because it also holds the full 621-expert set — but **32,768 holds that
+same set and is the only row with a measured decode, and it is the fastest one.** The table
+was already saying this; nobody read it that way.
+
+**And a big window is the wrong thing to want here anyway.** At 0.26 tok/s the cost that
+hurts is PREFILL: a 2,900-token prompt costs 6–18 minutes before the first token appears.
+A 32,000-token context you actually filled would take hours to read. The window is not the
+constraint — the prompt you choose to send is.
 
 **Tuning that helped prefill but NOT decode** (kept in the GPU script only): expert tier
 8→13 GB (7.50→5.63 s/layer), `COLI_CUDA_PIPE=2` (5.63→4.77), mirror (4.77→4.50).
@@ -171,6 +179,34 @@ MTP is multi-token speculation and it is *enabled* in single-client `coli chat` 
 the server. If decode speed ever becomes critical, that is the thread to pull.
 
 ---
+
+
+## HOW TO ACTUALLY USE IT (operator, 2026-07-23)
+
+*"It might be helpful to get an opinion on complex situations even if it's only a few
+tokens."* That is the whole use case, and it is a good one — this model is a **second
+opinion on a hard call**, not a worker.
+
+```
+ask a SHORT question about a decision you are stuck on
+cap max_tokens at 64-200        (64 tokens is ~4 minutes; 500 is half an hour)
+set the client timeout >= 1800 s
+keep the prompt under a few hundred tokens -- prefill is what you wait on
+then STOP THE SERVER
+```
+
+**Never** put it on a loop, a gate, a nightly job, or any per-file pass. It will not finish.
+And it is **not** `core.lm_gateway` — pointing gateway traffic at a 0.26 tok/s model behind
+a FIFO stalls every agent waiting in that queue.
+
+**STOP IT WHEN YOU ARE DONE.** Idle, it does not sleep — it **spin-waits one core at 101%**.
+Measured 2026-07-23: an instance nobody was using had burned **11.9 CPU-hours** doing
+nothing, which is what "my CPU is pegged but the machine is cold" looks like.
+
+**The STOP script used to lie** (fixed same day). `coli stop` fails on Windows — it reads
+`/proc`, which does not exist — and the script printed "server stopped" regardless. It now
+asks `coli` nicely, then **verifies**, then stops the process for real, and says so if it
+could not. A stop script that reports success without checking is worse than no stop script.
 
 ## 7. THE OTHER LOCAL MODELS
 

@@ -16,4 +16,4 @@ echo.
 echo Starting GLM-5.2 (colibri) on http://127.0.0.1:8080   [CPU mode - SLOW]
 echo KEEP THIS WINDOW OPEN = server is running.  Close it, or run "STOP GLM-5.2.cmd", to stop.
 echo.
-python "E:\colibri\c\coli" serve --host 127.0.0.1 --port 8080 --model-id glm-5.2-colibri --ctx 32768 --ngen 4096 --gpu none --queue-timeout 3600
+python "E:\colibri\c\coli" serve --host 127.0.0.1 --port 8080 --model-id glm-5.2-colibri --ctx 32000 --ngen 4096 --gpu none --queue-timeout 3600

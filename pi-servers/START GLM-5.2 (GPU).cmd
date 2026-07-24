@@ -23,4 +23,4 @@ echo.
 echo Starting GLM-5.2 (colibri) on http://127.0.0.1:8080   [GPU mode]
 echo KEEP THIS WINDOW OPEN = server is running.
 echo.
-python "E:\colibri\c\coli" serve --host 127.0.0.1 --port 8080 --model-id glm-5.2-colibri --ctx 128000 --ngen 4096 --queue-timeout 3600 --vram 13
+python "E:\colibri\c\coli" serve --host 127.0.0.1 --port 8080 --model-id glm-5.2-colibri --ctx 32000 --ngen 4096 --queue-timeout 3600 --vram 13
