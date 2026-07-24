@@ -226,6 +226,50 @@ class Membrane:
             node = node.parent
         return n
 
+    # --- density and the clock: everything here is RELATIVE -----------------
+    #
+    # The operator's identities, folded into one: "density and relative scale are the same
+    # term", "density is a compression of relative mass", "it's all relativity". Density is
+    # mass per volume -- mass RELATIVE to the space it fills -- and in a self-similar nesting
+    # that ratio IS the relative scale. So a membrane is never GIVEN a density; density exists
+    # only in RELATION to the parent, and you cannot read it from inside the membrane -- you
+    # have to look outside it. (The same reason a relative velocity, or love, is meaningless
+    # from one frame: it lives in the relationship, not the thing. You think outside yourself
+    # to see it.)
+    #
+    # The clock follows from the density. The dynamical / free-fall time of a gravitating system
+    # is t ~ 1/sqrt(G*rho), and the SIZE CANCELS (T = sqrt(3*pi / (G*rho)) has no radius in it).
+    # So the natural rate goes as sqrt(density): denser (finer) membranes tick faster, and two
+    # membranes of equal density tick alike whatever their size. This is the gravitational /
+    # self-similar clock; a real atom runs faster still on a stronger (electromagnetic, quantum)
+    # clock -- the forces take turns as you cross scales.
+
+    def density(self) -> float:
+        """Density = relative mass = relative scale: how much finer this membrane is than its
+        parent. RELATIONAL -- the root is 1, and a child has no density of its own; it only has
+        one relative to the parent it is nested in. One term, and it is read from OUTSIDE."""
+        if self.parent is None:
+            return 1.0
+        return float(self.parent.scale) / max(float(self.scale), 1e-30)
+
+    def clock_rate(self) -> float:
+        """How fast this membrane's dynamics tick, relative to its parent: sqrt(density), from
+        t ~ 1/sqrt(G*rho). The size drops out -- only the density (relative scale) sets it."""
+        return float(np.sqrt(self.density()))
+
+    def tick(self) -> float:
+        """The natural timestep relative to the parent -- 1/clock_rate. Finer = denser = shorter
+        step = faster. A planet-scale membrane crawls; an atom-scale one blurs."""
+        return 1.0 / self.clock_rate()
+
+    def clock_rate_from_root(self) -> float:
+        """Cumulative clock rate from the root down to here: sqrt(total refinement). Because
+        sqrt is multiplicative, this equals the product of clock_rate() at every level crossed."""
+        root = self
+        while root.parent is not None:
+            root = root.parent
+        return float(np.sqrt(float(root.scale) / max(float(self.scale), 1e-30)))
+
     # --- frame -------------------------------------------------------------
 
     def up_at(self, local_point=None) -> np.ndarray:
@@ -512,6 +556,23 @@ def main() -> None:
     p_local = np.array([0.05, 0.02, 0.01])
     print(f'  rock-local {p_local} -> world {rock.to_world(p_local)}')
     print(f'  largest number ever held inside a membrane: its own scale, never more')
+
+    print('\n=== density IS relative scale, and the clock follows sqrt(density) ===')
+    print('  (a membrane has no density of its own -- only relative to its parent: relativity)')
+    tower = Membrane('L0', scale=1.0e6)
+    node = tower
+    for k in range(1, 5):
+        node = node.add(Membrane(f'L{k}', scale=1.0e6 / (100 ** k)))     # each level 100x finer
+    for _, m in tower.walk():
+        print(f'  {m.name}  scale={m.scale:.2e} m  density(vs parent)={m.density():7.1f}  '
+              f'clock x{m.clock_rate_from_root():.2e} vs root')
+
+    print('\n=== size-independence: equal density -> equal clock, whatever the size ===')
+    ac = Membrane('a', scale=1000.0).add(Membrane('ac', scale=10.0))       # density 100
+    bc = Membrane('b', scale=2.0).add(Membrane('bc', scale=0.02))          # density 100
+    print(f'  a 100x-finer child of a 1 km membrane and of a 2 m membrane tick IDENTICALLY:')
+    print(f'  clock_rate {ac.clock_rate():.2f} vs {bc.clock_rate():.2f}  '
+          f'(density 100 both -> sqrt(100) = 10). The size cancels; density is the clock.')
 
 
 if __name__ == '__main__':
