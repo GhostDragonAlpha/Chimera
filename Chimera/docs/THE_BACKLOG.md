@@ -103,8 +103,13 @@
   (was 8.172). Over by 0.54 on a band now 5.3 wide. Confirmed a REAL property (grown matter
   clusters slightly more than the truck), not a measurement artifact. *Accept, or nudge down
   with a retrain — marginal either way.*
-- [ ] **Wire `grown_arrangement` into `build_child` / `bricks`** as a selectable form, so the
-  loop can place grown matter, not only computed matter.
+- [x] **Wire `grown_arrangement` into `build_child` / `bricks`** ✅ DONE — `build_child(form='grown')`
+  grows an irreducible Cellular-Potts lattice, extracts pos+dirs (local long axis, same ruler as
+  a real scan), and wears the material genome's splat shape. Deterministic per seed. A brick
+  carrying `form='grown'` flows through `to_splats`, so the loop places grown matter. Caveats:
+  ~23x slower than the parametric form (the grow cost; ~10ms warm/brick) and voxel-blocky; kept
+  OPT-IN, not the default. Realizes the session's biggest finding (grown hits reality's band 98%
+  vs the parametric 1%).
 - [ ] **Grow the OTHER rungs irreducibly** — the reducibility finding generalises: a
   parametric emitter can never surprise. The shaker, sandpile and GPU shaker already exist.
   *Candidates: terrain relief, vegetation, debris fields.*

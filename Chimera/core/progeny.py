@@ -289,6 +289,48 @@ def arrangement_for(seed: int, spread: float = 0.22) -> dict:
     return dict(base)                        # honest fallback: the proven genome
 
 
+_GROWN_GENOME = None
+
+
+def _grown_pos_dirs(seed: int, n_splats: int):
+    """Grow an arrangement lattice and return (positions, directions) for the emitter.
+
+    Positions are the occupied cells of the settled lattice, re-centred and unit-scaled;
+    directions are each cell's local long axis (the same definition arrangement_dna.py uses
+    on a real scan's splats), so grown, emitted and photographed matter share one ruler.
+    The grow is DETERMINISTIC in `seed` (the GPU kernel was fixed to be), so the same brick
+    is the same shape forever -- the "same seed, same world" the project is built on.
+    """
+    global _GROWN_GENOME
+    import json
+    from pathlib import Path
+    from core.trainables import grown_arrangement as G
+
+    if _GROWN_GENOME is None:
+        p = Path(__file__).resolve().parents[1] / 'docs/objectives/grown_arrangement.trained.json'
+        if not p.exists():
+            raise FileNotFoundError(
+                f"form='grown' needs the trained genome at {p}. Train it: python -m "
+                f"core.trainer --domain core.trainables.grown_arrangement --objective "
+                f"docs/objectives/grown_arrangement.json")
+        d = json.loads(p.read_text())
+        g = d.get('genome', d)
+        _GROWN_GENOME = g.get('genome', g)
+
+    grid = G.grow(_GROWN_GENOME, seed_i=seed)
+    if grid is None:
+        raise RuntimeError('grown_arrangement produced no matter for this genome')
+    grid = np.asarray(grid).reshape(G.SHAPE)
+    occ = np.argwhere((grid != G.MEDIUM) & (grid != G.FROZEN)).astype(np.float64)
+    rng = np.random.default_rng(seed)
+    if len(occ) > n_splats:
+        occ = occ[rng.choice(len(occ), n_splats, replace=False)]
+    pos = occ - occ.mean(0)
+    pos = pos / max(np.abs(pos).max(), 1e-9)            # unit box, so `scale` means the same
+    dirs = G._local_axes(pos)
+    return pos, dirs
+
+
 def build_child(child: dict, form: str = 'tuft', n_splats: int = 400,
                 material: str | None = None) -> dict:
     """Turn a child spec into an actual splat cloud.
@@ -341,6 +383,20 @@ def build_child(child: dict, form: str = 'tuft', n_splats: int = 400,
         from core.trainables.arrangement import emit as _emit_arrangement
         pos, dirs = _emit_arrangement(arrangement_for(child['seed']), n_splats,
                                      int(child['seed']))
+        pos = pos * scale
+        cov = emit_fiber(dirs, tangent_scale=size * 4 * scale,
+                         normal_scale=size * 1.0 * scale, fiber_dir=dirs,
+                         elongation=max(1.0, float(s.get('aniso', 2.0))))
+
+    elif form == 'grown':
+        # GROWN, NOT COMPUTED. The 'measured' form above is a parametric formula -- reducible,
+        # so it can only interpolate its ten genes and never surprises. This form GROWS the
+        # arrangement by irreducible Cellular Potts annealing (core/trainables/grown_arrangement),
+        # which is why untrained it lands in reality's clustering band 98% of the time against
+        # the parametric emitter's 1%: real matter is grown, so a growth process inherits the
+        # statistics of growth for free. Placement is the grown lattice; the splat SHAPE is
+        # still the material genome's -- same arrangement/material split as every other form.
+        pos, dirs = _grown_pos_dirs(int(child['seed']), n_splats)
         pos = pos * scale
         cov = emit_fiber(dirs, tangent_scale=size * 4 * scale,
                          normal_scale=size * 1.0 * scale, fiber_dir=dirs,
