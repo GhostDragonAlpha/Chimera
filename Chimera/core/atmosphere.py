@@ -169,3 +169,115 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
+
+# ===========================================================================
+# THE ATMOSPHERE GENOME (2026-07-24, backlog T4). The scattering coefficients above ARE an
+# atmosphere's DNA: change BETA and the scale heights and you change the planet's sky, and
+# nobody picks the colour -- it still falls out of beta ~ 1/lambda^4 and the geometry. Earth
+# is blue because its molecular scattering is blue-heavy; Mars is butterscotch because thin
+# air lets dust (Mie) dominate; Titan is orange under a thick methane haze. Same physics,
+# different genome.
+#
+# An atmosphere is NOT a placeable blob like matter/light/fluid -- it is the MEDIUM, the last
+# of the four port kinds. The operator's rule stands: "you don't make the sky, you make the
+# clouds." This does not build a dome; it drives the PHYSICAL sky_colour, and clouds remain
+# separate matter/fluid IN the medium. AUTHORED coefficients from planetary-atmosphere
+# literature (the legitimate second intake), same as emissive and fluid.
+# ===========================================================================
+
+import contextlib as _contextlib
+
+ATMOSPHERE_SCHEMA = {
+    'beta_r': (0.2, 40.0), 'beta_g': (0.2, 40.0), 'beta_b': (0.2, 40.0),  # 1e-6 /m, molecular
+    'beta_mie': (1.0, 80.0),        # aerosol/haze scattering, 1e-6 /m
+    'h_rayleigh': (4.0e3, 14.0e3),  # molecular scale height (thicker air = larger)
+    'h_mie': (0.5e3, 3.0e3),        # aerosol scale height
+    'density': (0.01, 3.0),         # overall thickness: 0.01 near-vacuum, 3 = Venus-thick
+}
+
+ATMOSPHERE_ARCHETYPES = {
+    'earth':  dict(beta_r=5.8,  beta_g=13.6, beta_b=33.1, beta_mie=21.0,
+                   h_rayleigh=8.0e3,  h_mie=1.2e3, density=1.0),
+    'mars':   dict(beta_r=19.9, beta_g=13.4, beta_b=8.6,  beta_mie=40.0,   # dust reddens it
+                   h_rayleigh=11.0e3, h_mie=1.0e3, density=0.10),
+    'titan':  dict(beta_r=16.0, beta_g=8.0,  beta_b=3.0,  beta_mie=60.0,   # thick methane haze
+                   h_rayleigh=20.0e3, h_mie=2.5e3, density=1.6),
+    'venus':  dict(beta_r=28.0, beta_g=26.0, beta_b=10.0, beta_mie=70.0,   # thick, yellow-white
+                   h_rayleigh=15.0e3, h_mie=2.0e3, density=3.0),
+    'thin':   dict(beta_r=5.8,  beta_g=13.6, beta_b=33.1, beta_mie=8.0,    # near-vacuum: dark sky
+                   h_rayleigh=8.0e3,  h_mie=1.2e3, density=0.02),
+}
+
+
+def atmosphere_seed(name: str = 'earth') -> dict:
+    if name not in ATMOSPHERE_ARCHETYPES:
+        raise KeyError(f'no atmosphere archetype {name!r}; have {sorted(ATMOSPHERE_ARCHETYPES)}')
+    return dict(ATMOSPHERE_ARCHETYPES[name])
+
+
+def atmosphere_recombine(a: dict, b: dict, t: float = 0.5) -> dict:
+    return {k: float(a[k] * (1 - t) + b[k] * t) for k in ATMOSPHERE_SCHEMA}
+
+
+@_contextlib.contextmanager
+def apply_atmosphere(genome: dict):
+    """Temporarily drive the module's scattering constants from a genome, then restore.
+
+    Swaps BETA and the scale heights (read at call time by sky_radiance/density), scaled by
+    `density`. MIE_G stays at its default -- _phase_mie binds it at definition, so it is not
+    genome-driven here; the visible planet-to-planet difference is the beta spectrum and the
+    thickness, which this does drive.
+    """
+    global BETA_RAYLEIGH, BETA_MIE, H_RAYLEIGH, H_MIE
+    saved = (BETA_RAYLEIGH.copy(), BETA_MIE.copy(), H_RAYLEIGH, H_MIE)
+    try:
+        d = float(genome['density'])
+        BETA_RAYLEIGH = np.array([genome['beta_r'], genome['beta_g'], genome['beta_b']]) * 1e-6 * d
+        BETA_MIE = np.full(3, genome['beta_mie'] * 1e-6 * d)
+        H_RAYLEIGH = float(genome['h_rayleigh'])
+        H_MIE = float(genome['h_mie'])
+        yield
+    finally:
+        BETA_RAYLEIGH, BETA_MIE, H_RAYLEIGH, H_MIE = saved
+
+
+def sky_swatch(genome: dict, sun_elev_deg: float = 20.0, n: int = 24) -> np.ndarray:
+    """Horizon->zenith sky colours for a genome, as an (n,3) array in 0..1. The proof: earth
+    comes out blue, mars butterscotch, titan orange, thin near-black -- none of it chosen."""
+    s = sun_elevation_dir(sun_elev_deg)
+    out = np.zeros((n, 3))
+    with apply_atmosphere(genome):
+        for i in range(n):
+            el = np.deg2rad(1.0 + (88.0) * i / (n - 1))       # horizon -> zenith
+            v = np.array([np.cos(el), 0.0, np.sin(el)])
+            out[i] = sky_colour(v, s)
+    return out
+
+
+def atmosphere_facts(genome: dict) -> dict:
+    """Measured facts of an atmosphere: its zenith and horizon colour, and which hue dominates."""
+    sw = sky_swatch(genome, 25.0, 12)
+    zenith, horizon = sw[-1], sw[0]
+    hue = ('blue' if zenith[2] >= max(zenith[0], zenith[1]) else
+           'red' if zenith[0] >= zenith[1] else 'green')
+    return {'zenith': [round(float(x), 3) for x in zenith],
+            'horizon': [round(float(x), 3) for x in horizon],
+            'zenith_hue': hue, 'brightness': round(float(sw.mean()), 3)}
+
+
+def atmosphere_propose(n: int = 8, seed: int = 0) -> list:
+    """N admissible atmospheres for an `atmospheric` stud, each measured, ranked, never chosen."""
+    names = list(ATMOSPHERE_ARCHETYPES)
+    rng = np.random.default_rng(seed)
+    out = []
+    for i in range(n):
+        a, b = (names[int(rng.integers(len(names)))] for _ in range(2))
+        t = float(rng.uniform(0, 1))
+        g = atmosphere_recombine(ATMOSPHERE_ARCHETYPES[a], ATMOSPHERE_ARCHETYPES[b], t)
+        f = atmosphere_facts(g)
+        out.append({'parents': (a, b), 'blend': round(t, 3),
+                    'zenith_hue': f['zenith_hue'], 'brightness': f['brightness'],
+                    'zenith': f['zenith'], 'genome': g, 'seed': seed + i})
+    out.sort(key=lambda c: -c['brightness'])           # clearer/brighter skies first
+    return out

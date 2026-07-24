@@ -51,7 +51,8 @@ KIND_ROLE = {
     'energy':     ('emissive',),   # the light family (core/emissive.py) now emits -- lasers,
                                    #   plasma, fire, engine glow. Served by propose()'s energy branch.
     'fluid':      ('liquid',),     # the liquid family (core/fluid.py): water, ocean, lava, mud.
-    'atmospheric': (),             # still an honest empty set: nothing yet flows as air/gas.
+    'atmospheric': ('atmosphere',),  # the medium family (core/atmosphere.py): earth/mars/titan
+                                     #   skies, physical scattering. All four port kinds now full.
 }
 
 
@@ -126,6 +127,12 @@ def propose(host: Membrane, port_name: str, n: int = 8, seed: int = 0) -> list:
     if p.kind == 'fluid':
         from core import fluid
         return fluid.propose(n=n, seed=seed)
+
+    # ATMOSPHERIC flows the MEDIUM -- the physical sky, not a placeable blob. Served by the
+    # atmosphere family, whose genome is the scattering coefficients (core/atmosphere.py).
+    if p.kind == 'atmospheric':
+        from core import atmosphere
+        return atmosphere.atmosphere_propose(n=n, seed=seed)
 
     genomes, lib = _library()
 

@@ -129,7 +129,7 @@
 - [ ] **evo-devo / phylogenetics (PHYSICS)** — which forms can exist at all; which ancestors
   a lineage must pass through. Named, not used.
 
-## 🔵 T4 — THE MISSING GENOMES (ports that return zero candidates today)
+## 🔵 T4 — THE MISSING GENOMES ✅ COMPLETE (every port kind now served)
 
 - [x] **Emissive genome** ✅ BUILT — `core/emissive.py`: the light family over {colour,
   intensity, falloff, elongation, core_gradient, lifetime}, four physics-grounded archetypes
@@ -144,8 +144,14 @@
   water = a flat translucent blue pool (you see through it), lava = a mounded opaque glowing
   orange one (molten fluids carry an emission, reusing the emissive render path). Authored, not
   measured; no refraction (a future upgrade). Uses the existing translucent-Lambert render.
-- [ ] **Atmospheric genome** — same. `core/atmosphere.py` exists (scattering) but is not a
-  placeable genome.
+- [x] **Atmospheric genome** ✅ BUILT — the atmosphere genome added to `core/atmosphere.py`:
+  the scattering coefficients ARE the DNA. Five archetypes (earth/mars/titan/venus/thin);
+  `apply_atmosphere` drives the physical `sky_colour` from a genome. Verified by looking:
+  Earth comes out blue, Mars butterscotch, thin near-black -- none of it chosen, it falls out
+  of beta ~ 1/lambda^4. The `atmospheric` port returns candidates. NOT a placeable blob -- the
+  medium ("you don't make the sky, you make the clouds"); it drives the sky, clouds stay
+  separate matter/fluid. **T4 COMPLETE: every port kind (structural/substrate/gravitational/
+  energy/fluid/atmospheric) is now served -- no empty sets left.**
 
 ## 🟣 T5 — SYNTHETIC DATA (the operator's "Holy Ghost" — knowledge from disagreement)
 
