@@ -344,6 +344,59 @@ attempt did 1,575 CPU↔GPU syncs per batch and ran **300× slower than the CPU*
 
 ---
 
+## 10. RULIOLOGY — borrowed vocabulary, and what it corrected here
+
+*(From Wolfram, "Games between Programs: The Ruliology of Competition", 2026-06-04. Adopted
+2026-07-23 because three of these named something this studio was already doing without a
+word for it, and two of them corrected a mistake.)*
+
+**ruliology** — systematically enumerating **all possible** simple programs of a type and
+observing what they do, instead of studying the ones somebody happened to write. The method
+this project already uses on genomes; now it has a name.
+
+**the Axelrod error** — drawing conclusions from the programs people happened to submit.
+Wolfram's example: the famous 1980 prisoner's-dilemma tournament crowned **tit-for-tat**,
+but enumerating all 22 distinct 2-state machines ranks it **far down** — the real winner is
+"grim trigger", which nobody submitted. **Our instance of the same error:** `tuft`, `clump`
+and `shard` were three arrangements a person authored, and measurement showed them landing
+inside **zero** of reality's four bands. Hand-authored vocabularies are not samples of the
+possible; they are samples of what somebody thought of.
+
+**computational irreducibility** — there is no shortcut: to know how something turns out you
+have to run it. Wolfram's conclusion about competition, and this studio's reason for the
+trainer — an LLM cannot reason its way to an answer at ~20 edits/hour that 30,000 evals/sec
+finds by running.
+
+**pocket of computational reducibility** — a region where behaviour *is* predictable, which
+is where systematic winners come from. **The sharper statement of what "trainable" means:**
+this project's DATA-vs-CODE split is a crude proxy for "does this feature have a pocket of
+reducibility?" A feature is trainable when a measurable objective has a searchable gradient
+into one.
+
+**capacity** — how much a program can express. Wolfram measured it: 2-state machines top out
+at 0.151 against each other, 3-state machines reach 0.593 against 2-state ones, and a
+10-state machine wins against **every** 2-state machine by holding a specialised sub-machine
+for each. **Measured here, and it did NOT transfer cleanly** — see the two entries below.
+
+**capacity is not monotone under sampling** — Wolfram got monotone gains by *exhaustively
+enumerating*; we sample. Adding dimensions to a sampled space dilutes it faster than it opens
+it. Measured on `arrangement`: lowering one gene's floor raised reachable clustering
+**4.736 → 6.588**, but adding two more capacity dimensions *lowered* it to 4.780 and 5.312.
+**Consequence for method:** a reachability probe by random sampling measures the PRIOR, not
+the reachable. The honest test of a capacity increase is to **train inside it**.
+
+**a pinned gene is not a binding constraint** — recorded because this studio asserted the
+opposite and was wrong. `cluster_tight` sat exactly on its 0.02 floor, which was read as
+"the vocabulary runs out". Widening the floor to 0.005 and retraining moved the score from
+**0.8238 to 0.8240** — nothing. The gene drifted off the floor to 0.0313 and clustering
+turned out to have the *largest* margin of any fact (0.722). The real limiter was
+`verticality` (margin 0.196, band width 0.176) and `alignment` (0.204, width 0.061) —
+narrow because they came from 5 regions of ONE scan. **The lever was more scans, not more
+capacity.** `pinned()` reports where a winner rests, which is not the same as where it is
+held back.
+
+---
+
 ## MAINTAINING THIS FILE
 
 Add a term when it becomes **load-bearing** — when getting it wrong would produce wrong

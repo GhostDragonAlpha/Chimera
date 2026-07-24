@@ -36,7 +36,9 @@ GENOME_SCHEMA = {
     'align':         (0.00, 1.00),   # 0 pieces point every way, 1 all parallel
     'align_up':      (0.00, 1.00),   # what they align TO: 0 = horizontal, 1 = vertical
     'clusters':      (1.00, 14.00),  # sub-groups (a tuft is blades; gravel is not)
-    'cluster_tight': (0.02, 0.60),   # how tight each sub-group is
+    'cluster_tight': (0.005, 0.60),   # floor widened 0.02->0.005 (2026-07-23): the
+    #   trained winner sat ON the old floor, so the SCHEMA capped clustering, not the search.
+    #   Wolfram's capacity result, measured here: reachable clustering 4.736 -> 6.588.   # how tight each sub-group is
     'droop':         (0.00, 1.00),   # gravity bending the far ends over
     'hollow':        (0.00, 1.00),   # 0 solid mass, 1 all mass in an outer shell
     'taper':         (0.00, 1.00),   # narrowing with height
