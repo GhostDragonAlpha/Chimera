@@ -156,6 +156,7 @@ class Membrane:
     properties: dict = field(default_factory=dict)  # PHYSICS the game reads: density, friction...
     ports: dict = field(default_factory=dict)      # name -> Port
     skin: float = 1e-3                             # thickness of "on the boundary", metres
+    attached_via: str = ''                         # the parent's port this mated onto
 
     # --- nesting -----------------------------------------------------------
 
@@ -309,6 +310,7 @@ class Membrane:
         self.add(other)
         other.origin = np.asarray(a.at, dtype=np.float64) - np.asarray(b.at, dtype=np.float64)
         other.normal = -a.facing
+        other.attached_via = port_name          # recorded, so occupancy is a fact
         return other
 
     def open_ports(self) -> list:
@@ -316,12 +318,13 @@ class Membrane:
 
         This is what makes a build enumerable: an unfilled port is a place the world is
         not finished, and the six directions are just the ports of a cell.
+
+        Occupancy is RECORDED by mate(), not inferred from geometry. It was inferred at
+        first -- by testing whether a child's origin equalled a port's position -- which
+        silently failed for every brick whose own stud was not at its centre, i.e. all of
+        them. State that can be recorded should never be reconstructed from coordinates.
         """
-        used = set()
-        for c in self.children:
-            for pn, p in self.ports.items():
-                if np.allclose(np.asarray(c.origin, float) + 0.0, p.at - 0.0, atol=1e-9):
-                    used.add(pn)
+        used = {c.attached_via for c in self.children if c.attached_via}
         return [p for n, p in self.ports.items() if n not in used]
 
     # --- reporting ----------------------------------------------------------
