@@ -100167,6 +100167,34 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_3bc9a57afab0b727",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "fluid_genome",
+      "feature_type": "trainable",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "2b4eeeb",
+        "archetypes": [
+          "water",
+          "ocean",
+          "lava",
+          "mud",
+          "coolant"
+        ],
+        "intake": "authored",
+        "port": "fluid",
+        "composes_with": "emissive (lava)"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
@@ -113160,6 +113188,20 @@
       "target": "feature_ffaba92fa20fb05b",
       "type": "because",
       "question": "why wire grown into the loop?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_3bc9a57afab0b727",
+      "dst": "feature_c3d42991fe0e6c96",
+      "rel": "because",
+      "source": "feature_3bc9a57afab0b727",
+      "target": "feature_c3d42991fe0e6c96",
+      "type": "because",
+      "question": "why does lava reuse the emissive path?",
       "proves": "RECORDED",
       "asked_at": "2026-07-24T00:00:00Z",
       "asked_by": "backfill",
