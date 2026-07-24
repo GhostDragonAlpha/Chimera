@@ -115,7 +115,19 @@
   vs the parametric 1%).
 - [ ] **Grow the OTHER rungs irreducibly** — the reducibility finding generalises: a
   parametric emitter can never surprise. The shaker, sandpile and GPU shaker already exist.
-  *Candidates: terrain relief, vegetation, debris fields.*
+  *Candidates: vegetation, debris fields.* (~~terrain relief~~ — REMOVED 2026-07-24: terrain
+  is NOT a patch-grown irreducible rung; the operator reframed it as the planet's whole-sphere
+  OUTER MEMBRANE, see below. A local erosion attempt was built and discarded as wrong-frame.)
+- [x] **Terrain as the planet's outer membrane (the onion)** ✅ BUILT — `core/planet_membrane.py`.
+  The operator's frame: terrain is the planet's OUTER MEMBRANE, produced ALL AT ONCE
+  (whole-sphere spherical-harmonic synthesis, 0.6s), and an ONION of height maps by depth
+  (surface→topsoil→…→core). THE LAW: "modify the base → all below transform; affect the parent,
+  don't break the child" — satisfied by storing every child layer RELATIVE to its parent.
+  WITNESSED: +8 km uplift → 0 nesting violations (relative) vs 64,800 broken cells (absolute
+  counterfactual). Earth-realistic by measured statistics (land fraction 0.291 = Earth,
+  bimodality 0.568 > 0.555 two-crust signature); a real DEM drops into the SAME representation
+  via `from_topo_grid`. Instances `core/membranes.py` (onion = addressable layers, LOD = depth);
+  adjust ops + connection-point sampler. Verified by looking (globe/map/onion renders). `61e9f66`.
 
 ## 🟢 T3 — THE -OLOGY BOARD (staff the two terminals; see TERMINOLOGY.md §11)
 
