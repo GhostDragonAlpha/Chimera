@@ -43,11 +43,14 @@ RESOURCES = [
     ('diamond',     900.0, 2),
 ]
 # (scoop_mass_kg per dig, dig_hours per dig, base cost to BUY this tool)
+# Costs calibrated (rule 1: probed) so a miner can progress through ALL THREE tiers within a
+# 60 h session -- otherwise the deep mine is unreachable and tier-2 resources are dead content.
 TOOLS = [
     dict(scoop_kg=1.0e3,  dig_h=0.05, cost=0.0),        # shovel: owned at start
-    dict(scoop_kg=2.0e4,  dig_h=0.5,  cost=5.0e3),      # excavator
-    dict(scoop_kg=3.0e6,  dig_h=6.0,  cost=4.0e5),      # deep mine
+    dict(scoop_kg=2.0e4,  dig_h=0.5,  cost=1.2e3),      # excavator
+    dict(scoop_kg=3.0e6,  dig_h=6.0,  cost=2.5e4),      # deep mine
 ]
+PROFIT_BAND = 0.55            # a rational miner mines everything within this frac of the best rate
 
 # --- TRAINED: the economy numbers, bounded near physical reality --------------
 # per resource: (abundance lo/hi, mineral_frac lo/hi, price lo/hi [cr/kg mineral])
@@ -120,12 +123,13 @@ def _simulate(g, richness) -> dict:
     credits = 0.0
     time_h = 0.0
     earned = {name: 0.0 for name, _, _ in RESOURCES}
+    earned_by_tier = {0: 0.0, 1: 0.0, 2: 0.0}
     hours_to_next_tool = 999.0
     rate_at_tier = {}
     dt = 0.5
 
     while time_h < T_HOURS:
-        # best reachable rate at the current tool, and everything within 70% of it
+        # best reachable rate at the current tool, and everything within PROFIT_BAND of it
         rates = {}
         for name, (depth, tier, r) in res.items():
             if tier <= owned_tier:
@@ -134,13 +138,14 @@ def _simulate(g, richness) -> dict:
             break
         best = max(rates.values())
         rate_at_tier[owned_tier] = max(rate_at_tier.get(owned_tier, 0.0), best)
-        active = {n: rt for n, rt in rates.items() if rt >= 0.70 * best and rt > 0}
+        active = {n: rt for n, rt in rates.items() if rt >= PROFIT_BAND * best and rt > 0}
         tot = sum(active.values())
         for n, rt in active.items():
             share = rt / tot
             gained = rt * dt * share            # time split by rate; credited by that resource
             credits += gained
             earned[n] += gained
+            earned_by_tier[res[n][1]] += gained
         time_h += dt
         # upgrade the instant it is affordable
         if owned_tier + 1 < len(TOOLS):
@@ -156,18 +161,22 @@ def _simulate(g, richness) -> dict:
     mined = [n for n, v in earned.items() if v > total * 0.02]     # >2% of income = actually used
     prog = (rate_at_tier.get(max(rate_at_tier), 0.0) / rate_at_tier.get(0, 1e-9)
             if rate_at_tier.get(0, 0) > 0 else 1.0)
+    top = max(shares.values())
     return {
         'credits_per_hour': total / T_HOURS,
         'resources_mined': len(mined),
-        'top_resource_share': max(shares.values()),
+        'top_resource_share': top,
+        'evenness': 1.0 - top,                                     # 0..0.8; more even = more diverse
         'idle_resources': sum(1 for v in shares.values() if v < 0.02),
+        'tiers_used': sum(1 for v in earned_by_tier.values() if v > total * 0.05),
         'progression_gain': prog,
         'hours_to_next_tool': hours_to_next_tool,
     }
 
 
 def measure(g) -> dict:
-    """Worst region wins (rule 7). Derived margins are the non-saturating maximize targets."""
+    """Worst region wins (rule 7). The maximize targets (evenness, resources_mined, tiers_used)
+    are naturally positive and O(1) -- no ref-scaling trap; the search gets real gradient."""
     rng = random.Random(4242)
     runs = []
     for _ in range(N_REGIONS):
@@ -177,20 +186,14 @@ def measure(g) -> dict:
         'credits_per_hour': min(r['credits_per_hour'] for r in runs),
         'resources_mined': min(r['resources_mined'] for r in runs),
         'top_resource_share': max(r['top_resource_share'] for r in runs),
+        'evenness': min(r['evenness'] for r in runs),
         'idle_resources': max(r['idle_resources'] for r in runs),
+        'tiers_used': min(r['tiers_used'] for r in runs),
         'progression_gain': min(r['progression_gain'] for r in runs),
         'hours_to_next_tool': max(r['hours_to_next_tool'] for r in runs),
     }
     # physical price ordering preserved (reality guard): diamond > copper > iron per kg
     pr = g['res']
-    order = (pr['diamond']['price'] > pr['copper_vein']['price'] >
-             pr['iron_ore']['price'])
-    worst['price_order'] = 1.0 if order else 0.0
-    # MARGINS -- non-saturating distances (rule 2/5), the honest maximize
-    worst['balance_margin'] = 0.60 - worst['top_resource_share']           # below the dominance cap
-    pg = worst['progression_gain']
-    worst['progression_margin'] = min(pg - 1.25, 12.0 - pg)                # inside the progression band
-    cph = max(worst['credits_per_hour'], 1.0)
-    worst['faucet_margin'] = min(math.log10(cph) - math.log10(800.0),
-                                 math.log10(25000.0) - math.log10(cph))    # inside the faucet band
+    worst['price_order'] = 1.0 if (pr['diamond']['price'] > pr['copper_vein']['price']
+                                   > pr['iron_ore']['price']) else 0.0
     return worst

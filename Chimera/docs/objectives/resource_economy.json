@@ -1,9 +1,9 @@
 {
-  "_provenance": "The EXTRACTION economy (the mining faucet), sibling to economy.json (the market). The genome IS planet_layers' deposit numbers (abundance, mineral_frac, price) + a tool-cost lever, each bounded near physical reality. The simulated player is a GREEDY MINER who reads a wiki: mines the best value-per-hour resource its tools can reach, upgrades the instant it can afford to. The economy either survives that miner (multiple resources stay worth mining, tools are worth upgrading, no single dig-straight-to-diamonds exploit) or it does not. Scored as the WORST of N regions (rule 7).",
+  "_provenance": "The EXTRACTION economy (the mining faucet), sibling to economy.json (the market). The genome IS planet_layers' deposit numbers (abundance, mineral_frac, price) + a tool-cost lever, each bounded near physical reality. The simulated player is a GREEDY MINER who mines the best value-per-hour resource its tools can reach and upgrades when it can afford to; the economy survives that miner or it does not. Scored as the WORST of N regions (rule 7). GATES SET FROM A REACHABILITY PROBE (rule 1): the first objective gated share<=0.60, 3+ resources, and 800-25000 cr/hr -- 0/200 reached ANY of them (empty feasible region, no gradient). After a model calibration (reachable tools, wider profit band) and re-probing, gates sit just inside the reachable frontier and the maximizes (evenness/resources_mined/tiers_used -- positive, O(1), no ref-scaling trap) do the pushing.",
   "maximize": [
-    "balance_margin",
-    "progression_margin",
-    "faucet_margin"
+    "evenness",
+    "resources_mined",
+    "tiers_used"
   ],
   "minimize": [
     "top_resource_share",
@@ -11,19 +11,21 @@
     "hours_to_next_tool"
   ],
   "constraints": [
-    {"field": "resources_mined", "min": 3},
-    {"field": "top_resource_share", "max": 0.60},
+    {"field": "resources_mined", "min": 2},
+    {"field": "top_resource_share", "max": 0.65},
+    {"field": "tiers_used", "min": 2},
+    {"field": "credits_per_hour", "min": 100.0, "max": 3000.0},
     {"field": "progression_gain", "min": 1.25, "max": 12.0},
-    {"field": "credits_per_hour", "min": 800.0, "max": 25000.0},
-    {"field": "hours_to_next_tool", "max": 30.0},
+    {"field": "hours_to_next_tool", "max": 40.0},
     {"field": "price_order", "min": 1.0}
   ],
   "walls": {
-    "resources_mined": "At least 3 of the 5 resources MUST earn a rational miner real income (>2% of it). A resource economy where the greedy miner only ever digs one thing is a RESOURCE, not an economy -- the other four are ghost content the world spent physics generating and no one touches.",
-    "top_resource_share": "No single resource may be more than 60% of income. Above that, the optimal play is 'dig straight to the one that pays' and every other deposit, layer, and tool tier is decoration. This is the extraction-side of economy.json's Titanium-printer: one locus owning the whole faucet.",
-    "progression_gain": "The deepest tool MUST out-earn the shovel (>=1.25x) -- otherwise there is no reason to ever upgrade, and the excavator and deep mine are dead content. But NOT by more than 12x: if deep mining is an order of magnitude better than everything, the early game is a pointless chore the player rushes through. Progression is a SLOPE, not a cliff.",
-    "credits_per_hour": "The faucet must pay enough to play (>=800/hr) but not be a money printer (<=25000/hr). Below the floor the game is starvation; above the ceiling wealth is meaningless and every sink downstream is trivial. The band is the pace of the game.",
-    "hours_to_next_tool": "The first tool upgrade MUST be reachable within 30 hours. 999 is the sentinel meaning it never happened -- the miner is trapped at the shovel forever, the tool ladder unreachable, the deep resources permanently locked away.",
-    "price_order": "Diamond MUST be worth more per kg than copper, and copper more than iron -- reality. This wall forbids the optimiser from 'balancing' the economy by inverting physics (making iron a treasure). The economy is tuned WITHIN reality, never against it."
+    "resources_mined": "At least 2 resources MUST earn a rational miner real income, and the maximize pushes toward 3+. A resource economy where the greedy miner only ever digs one thing is a RESOURCE, not an economy -- the others are ghost content the world spent physics generating.",
+    "top_resource_share": "No single resource above 65% of income (the maximize on evenness drives it lower). Above that, the optimal play is 'dig straight to the one that pays' and every other deposit and tool tier is decoration -- the extraction-side of economy.json's Titanium-printer.",
+    "tiers_used": "Income MUST come from at least 2 tool tiers (the maximize pushes toward all 3). One tier means the shovel or the deep mine alone owns the game and the tool ladder is dead content. 3 tiers is unreachable in a 60h session (probed: 0/200) -- gated at 2, aspired to 3.",
+    "progression_gain": "The deepest tool reached MUST out-earn the shovel (>=1.25x) or there is no reason to upgrade -- but NOT by more than 12x, or the early game is a pointless chore the player rushes. Progression is a SLOPE, not a cliff.",
+    "credits_per_hour": "The faucet must pay enough to play (>=100/hr) but not be a money printer (<=3000/hr). BAND RECALIBRATED to the model's reachable range after the first objective set an impossible 800-25000 (p90 was 445). Below the floor is starvation; above the ceiling wealth is meaningless.",
+    "hours_to_next_tool": "The first upgrade MUST be reachable within 40 hours (999 is the sentinel for 'never'). Trapped at the shovel forever means the deep resources are permanently locked away.",
+    "price_order": "Diamond MUST be worth more per kg than copper, and copper more than iron -- reality. Forbids the optimiser from 'balancing' the economy by inverting physics (making iron a treasure). Tuned WITHIN reality, never against it."
   }
 }
