@@ -190,6 +190,7 @@
   diagnose the tier first. Mismatch arc 0.655 (broken law) → 0.512 (law fixed) → 0.180 (trained).
   Verified by looking (map + globe: ice caps, equatorial forests, subtropical deserts). See
   memory `program-train-human-line`. `f8a58ae`.
+- [x] **Train the resource economy (crossed into the TRAIN phase)** ✅ DONE — `core/trainables/resource_economy.py` + `docs/objectives/resource_economy.json`. The extraction economy (mining faucet) trained by the real trainer against a physics objective: a greedy-miner sim, worst-of-N-regions, deposit abundance/frac/price bounded near reality. THE LOOP, in git: v1 objective was degenerate (score 0.069) — the trainer PINNED mis-scaled refs; rule 1 reachability probe found 0/200 reaching any gate (I set gates without probing — the exact mistake rule 1 catches). Iterated the model (reachable tools/band) + objective (probed gates, positive O(1) maximizes), retrained **0.069→0.736 at 5,155 evals/sec**: 3 resources mined, 0.44 top share, 2.45x progression, diamond>copper>iron preserved. `resource_economy.trained.json` is the result. Also wrote `docs/THE_LINE.md` (canonical PROGRAM|TRAIN|HUMAN doctrine). `36fd847`.
 
 ## 🟢 T3 — THE -OLOGY BOARD (staff the two terminals; see TERMINOLOGY.md §11)
 
