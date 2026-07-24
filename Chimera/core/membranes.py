@@ -96,9 +96,53 @@ class Verb:
 # --- the primitive ---------------------------------------------------------
 
 
+# --- ports: the studs -----------------------------------------------------
+#
+# A Lego brick is not just a shape. It is a shape with STUDS, and the studs decide what
+# can attach and where. The operator's "LEGO puzzle connection shapes" are physics
+# interfaces -- the specific ways matter and energy pass between modules -- so a port is
+# typed by WHAT FLOWS THROUGH IT, and two ports connect only if the same thing can flow.
+#
+# This is what makes composition checkable instead of hopeful: a fuel line does not
+# attach to a light socket, and the system can say so before anything is built.
+
+PORT_KINDS = {
+    'structural':   'load and rigid attachment — bolts, mounts, foundations, sockets',
+    'gravitational': 'mass coupling to a parent body — what makes a thing FALL toward it',
+    'energy':       'radiant transfer — sunlight in, engine glow out, heat',
+    'fluid':        'liquids — water uptake, coolant, hydraulics, buoyancy',
+    'atmospheric':  'gas — breathing, lift, drag, pressure',
+    'substrate':    'ground contact — friction, footing, root anchorage',
+}
+
+
+@dataclass
+class Port:
+    """A stud. Where a membrane can connect, facing which way, and what flows through."""
+    name: str
+    kind: str
+    at: np.ndarray                                 # position in membrane-local coords
+    facing: np.ndarray                             # outward normal — which way it points
+    size: float = 1.0                              # must match within tolerance to mate
+
+    def __post_init__(self):
+        if self.kind not in PORT_KINDS:
+            raise ValueError(f'unknown port kind {self.kind!r}; have {sorted(PORT_KINDS)}')
+        self.at = np.asarray(self.at, dtype=np.float64)
+        f = np.asarray(self.facing, dtype=np.float64)
+        self.facing = f / (np.linalg.norm(f) + 1e-12)
+
+
 @dataclass
 class Membrane:
-    """A boundary at a scale. Everything in the world is one of these."""
+    """A boundary at a scale. Everything in the world is one of these.
+
+    An animated Lego brick with physics properties:
+        the BRICK      the boundary itself, at its scale, nested in a parent
+        ANIMATED       states + verbs — two ends and a dial, never hand-authored motion
+        PHYSICS        `properties`, carrying only what the game actually reads
+        STUDS          `ports` — typed connection interfaces that decide what mates
+    """
     name: str
     scale: float                                   # extent in metres, in PARENT units
     serial: str = ''                               # identity; the codebook plugs in here
@@ -109,6 +153,8 @@ class Membrane:
     states: dict = field(default_factory=dict)     # name -> State
     verbs: dict = field(default_factory=dict)      # name -> Verb
     surface: object = None                         # callable(x,y)->height, or None if a shell
+    properties: dict = field(default_factory=dict)  # PHYSICS the game reads: density, friction...
+    ports: dict = field(default_factory=dict)      # name -> Port
 
     # --- nesting -----------------------------------------------------------
 
@@ -208,6 +254,70 @@ class Membrane:
     def apply(self, verb_name: str, t: float) -> dict:
         """The derived state at dial position t. Never hand-animated."""
         return self.verbs[verb_name].at(t)
+
+    # --- studs: physics properties and connection ---------------------------
+
+    def port(self, name: str, kind: str, at, facing, size: float = 1.0) -> Port:
+        p = Port(name, kind, at, facing, size)
+        self.ports[name] = p
+        return p
+
+    def prop(self, **physics) -> dict:
+        """Set the physics the game reads. A brick carries ONLY what is actually used —
+        density, friction, restitution. Not a full material simulation."""
+        self.properties.update(physics)
+        return self.properties
+
+    def can_mate(self, port_name: str, other: 'Membrane', other_port: str,
+                 tol: float = 0.15) -> tuple[bool, str]:
+        """Would these two studs connect? Returns (verdict, reason) — always a reason.
+
+        Three conditions, and all are physical rather than conventional:
+          SAME KIND     the same thing must be able to flow through both. A fuel line
+                        does not attach to a light socket.
+          OPPOSED       the ports must FACE each other. Two studs pointing the same way
+                        cannot mate, which is exactly true of real Lego.
+          MATCHED SIZE  the interface has a scale, and mismatched scales do not seat.
+        """
+        a, b = self.ports.get(port_name), other.ports.get(other_port)
+        if a is None or b is None:
+            return False, f'missing port ({port_name!r} / {other_port!r})'
+        if a.kind != b.kind:
+            return False, f'{a.kind} cannot carry {b.kind} — nothing flows through that joint'
+        dot = float(np.dot(a.facing, b.facing))
+        if dot > -0.5:
+            return False, f'ports do not face each other (facing dot {dot:+.2f}, need < -0.5)'
+        if abs(a.size - b.size) > tol * max(a.size, b.size):
+            return False, f'size mismatch {a.size:g} vs {b.size:g}'
+        return True, f'{a.kind} joint, facing dot {dot:+.2f}'
+
+    def mate(self, port_name: str, other: 'Membrane', other_port: str) -> 'Membrane':
+        """SNAP. Nest `other` and place it so the two studs meet.
+
+        A stud fixes both WHERE and WHICH WAY, so connecting is placement, not a hint.
+        """
+        ok, why = self.can_mate(port_name, other, other_port)
+        if not ok:
+            raise ValueError(f'cannot mate {self.name}.{port_name} -> '
+                             f'{other.name}.{other_port}: {why}')
+        a, b = self.ports[port_name], other.ports[other_port]
+        self.add(other)
+        other.origin = np.asarray(a.at, dtype=np.float64) - np.asarray(b.at, dtype=np.float64)
+        other.normal = -a.facing
+        return other
+
+    def open_ports(self) -> list:
+        """Studs with nothing on them — where this brick can still take something.
+
+        This is what makes a build enumerable: an unfilled port is a place the world is
+        not finished, and the six directions are just the ports of a cell.
+        """
+        used = set()
+        for c in self.children:
+            for pn, p in self.ports.items():
+                if np.allclose(np.asarray(c.origin, float) + 0.0, p.at - 0.0, atol=1e-9):
+                    used.add(pn)
+        return [p for n, p in self.ports.items() if n not in used]
 
     # --- reporting ----------------------------------------------------------
 
