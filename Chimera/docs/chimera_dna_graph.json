@@ -100358,6 +100358,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_132e954ee0ed"
+    },
+    {
+      "id": "surprise_3e90dfed74cb76d1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T20:25:57.851863",
+      "context": "Built resource/void layering for the planet onion. Rendered a shallow cross-section that LOOKED correct (ore in bedrock, caves).",
+      "expectation": "",
+      "reality": "The render hid a bug the numeric prospect scan exposed: interpolated value-noise clusters near 0.5, so a 'vein < 1-abundance' occurrence gate was unreachable for low-abundance deposits (diamond/copper/gold = 0.0%, never placed). A plausible render is NOT proof of a rate. Fixed by gating occurrence on the raw uniform cell-hash (exact abundance), smooth noise only for grade. After: all 5 deposits in their formation layers at abundance-matched rates, measured. core/planet_layers.py 3fbd239.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'The render hid a bug the numeric prospect scan exposed: interpolated value-noise'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_c8f792145d20"
     }
   ],
   "edges": [
