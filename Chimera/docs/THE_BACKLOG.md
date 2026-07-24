@@ -119,9 +119,13 @@
 > PHYSICS is fully staffed (8). THE SPAN and THE HUMAN are nearly empty. That imbalance is
 > why the vocabulary scored CUTSCENE against its own emotion test until sociology was hired.
 
-- [ ] **Sociology → taste as a class genome** — the machinery exists (`taste.py`,
-  `preference.py`, `preference_elicit.py`); the population-structure step (cultural vs
-  personal variance = the heritability formula) is not built. *The first real THE-HUMAN hire.*
+- [x] **Sociology → taste as a class genome** ✅ BUILT — `core/taste_population.py`: groups
+  = populations, individuals = specimens, taste axes = traits, so the SAME heritability formula
+  (V_between/V_within) splits taste into CULTURAL (a group sample predicts it) vs PERSONAL (ask
+  the individual). `fit_individual` uses the real `PreferenceModel`; `heritability_split` does
+  the split. Verified: on a synthetic 2-group demo built with a KNOWN split, it recovers it
+  (punishes_naive h2 0.998 CULTURAL, learnability 0.007 PERSONAL). The first THE-HUMAN hire.
+  Machinery real; group DATA synthetic until real preferences are elicited per market.
 - [ ] **Perceptual psychology (THE SPAN)** — attention, salience, what a player notices at all.
 - [ ] **Metaphysics (THE SPAN)** — observer boundedness; partially used, not formalised.
 - [ ] **Anthropology / psychology / linguistics (THE HUMAN)** — ritual & meaning, motivation

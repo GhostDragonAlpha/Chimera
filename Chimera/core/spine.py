@@ -847,7 +847,7 @@ OLOGIES = {
 
     # human-side: needs a person to be true
     'sociology':      (HUMAN, 'group preference structure; which parts of fun are cultural '
-                              'vs personal', 'FIRST HIRE, 2026-07-23'),
+                              'vs personal', 'recruited 2026-07-24, core/taste_population.py'),
     'anthropology':   (HUMAN, 'ritual, meaning, what a place signifies', 'NOT RECRUITED'),
     'psychology':     (HUMAN, 'motivation, flow, frustration tolerance', 'NOT RECRUITED'),
     'linguistics':    (HUMAN, 'naming, story grammar, what reads as a sentence', 'NOT RECRUITED'),
