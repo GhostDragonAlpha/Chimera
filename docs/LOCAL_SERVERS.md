@@ -50,7 +50,7 @@ are Windows itself and are normal. What matters is anything *you* started.
   That's LM Studio's own setting, not this project's, and it is changed in its Server tab
   ("Serve on Local Network" — turn it off). Worth doing: anything on your network can
   otherwise send prompts to your models and read the replies.
-- **GLM-5.2 / colibrì** correctly binds `127.0.0.1` already. It was never exposed.
+- **GLM-5.2 / colibrì** was removed entirely on 2026-07-23 (operator's call). It is gone.
 
 ## Windows Firewall
 

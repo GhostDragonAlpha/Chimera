@@ -4,6 +4,10 @@
 > Worked example throughout: the 2026-07-23 GLM-5.2 session, where **every single
 > conclusion I reached by reasoning was wrong, and every conclusion that held came
 > from a measurement.**
+>
+> *(The GLM-5.2 model itself was removed the same day as a liability — see
+> `pi-servers/README.md`. It is kept here only as a debugging example; the lesson is
+> about method, not about that model, and nothing here implies GLM is still available.)*
 
 This is the sibling of `docs/RESULT_GRADING_RUBRIC.md` (which grades *features*) and
 `core/why.py` (which asks whether a claim reaches a terminal). This document is about

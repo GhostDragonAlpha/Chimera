@@ -87,7 +87,7 @@ HARDWARE TRAPS (measured, do not re-derive):
 GIT: commit directly to master, never feature branches. State branch + SHA on every push.
 Large artifacts (weights, the corpus, web/*.npz) stay gitignored. Keep the tree clean.
 
-LOCAL MODELS: LM Studio on :1234 (fast, 50+ tok/s, default). GLM-5.2 on :8080 is a 744B
+LOCAL MODELS: LM Studio on :1234 (fast, 50+ tok/s) is the only local-LM tier.
 deep model at ~0.26 tok/s — a deliberate escalation, never a default; read
 docs/GLM_52_DEEP_MODEL.md before calling it.
 
