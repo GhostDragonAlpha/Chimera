@@ -43,17 +43,36 @@ GENOME_SCHEMA = {
 }
 
 
+def _gauss_fn(rng):
+    """The trainer hands domains a stdlib random.Random; bricks.py hands a numpy
+    Generator. A domain that assumes either one is unusable from the other caller, so
+    adapt rather than pick a side (granular.py uses the same pair)."""
+    if rng is None:
+        rng = np.random.default_rng()
+    return (lambda s: float(rng.normal(0.0, s))) if hasattr(rng, 'normal')         else (lambda s: rng.gauss(0.0, s))
+
+
+def _rand01_fn(rng):
+    if rng is None:
+        rng = np.random.default_rng()
+    return rng.random
+
+
 def seed(rng=None) -> dict:
+    gauss = _gauss_fn(rng)
+    rand01 = _rand01_fn(rng)
     rng = rng or np.random.default_rng()
     return {k: float(rng.uniform(lo, hi)) for k, (lo, hi) in GENOME_SCHEMA.items()}
 
 
 def mutate(genome: dict, rng=None) -> dict:
+    gauss = _gauss_fn(rng)
+    rand01 = _rand01_fn(rng)
     rng = rng or np.random.default_rng()
     g = dict(genome)
     for k, (lo, hi) in GENOME_SCHEMA.items():
         if rng.random() < 0.35:
-            g[k] = float(np.clip(g[k] + rng.normal(0, 0.12) * (hi - lo), lo, hi))
+            g[k] = float(np.clip(g[k] + gauss(0.12) * (hi - lo), lo, hi))
     return g
 
 
@@ -126,6 +145,45 @@ def _facts(pos, dirs) -> dict:
     }
 
 
+# --- the reference the objective scores against ----------------------------
+# THE DOMAIN SELF-LOADS ITS TARGET, LOUDLY. material_appearance once trained against
+# None for weeks because nothing checked; a domain with no reference silently optimises
+# nothing. If the measured targets are absent this raises rather than degrading.
+
+_TARGETS = None
+
+
+def targets() -> dict:
+    """Measured arrangement bands from real scans. Raises if they are missing."""
+    global _TARGETS
+    if _TARGETS is None:
+        import json
+        from pathlib import Path
+        p = Path(__file__).resolve().parents[2] / 'docs/matter/arrangement_targets.json'
+        if not p.exists():
+            raise FileNotFoundError(
+                f'arrangement has NO MEASURED TARGET at {p}. Run '
+                f'Construction/arrangement_dna.py on a scan first -- training against '
+                f'nothing is not training.')
+        regions = [r for t in json.loads(p.read_text())['targets'].values()
+                   for r in t.values()]
+        if not regions:
+            raise ValueError('arrangement_targets.json holds no regions')
+        _TARGETS = {k: (min(r[k] for r in regions), max(r[k] for r in regions))
+                    for k in ('aspect', 'verticality', 'alignment', 'clustering')}
+    return _TARGETS
+
+
+def _band_error(value: float, band: tuple) -> float:
+    """Distance OUTSIDE a measured band; zero inside it.
+
+    Distance to a BAND, not to a mean. Real material varies across regions, so demanding
+    one value would be fitting noise rather than matching matter.
+    """
+    lo, hi = band
+    return float(max(0.0, lo - value, value - hi))
+
+
 def measure(genome: dict) -> dict:
     """Facts only, worst-cased over restarts. Never an opinion about whether it is good.
 
@@ -139,6 +197,33 @@ def measure(genome: dict) -> dict:
     out['robustness'] = float(min(
         (min(r[k] for r in runs) + 1e-9) / (np.mean([r[k] for r in runs]) + 1e-9) for k in keys))
     out['n_active_clusters'] = float(max(1, round(genome['clusters'])))
+
+    t = targets()
+    for k in ('aspect', 'verticality', 'alignment', 'clustering'):
+        out[f'{k}_error'] = _band_error(out[k], t[k])
+    # clustering spans 4.679..8.172 while alignment spans 0.516..0.576 -- a raw distance
+    # would weight clustering ~13x for no physical reason. Normalise each error by its own
+    # band width so "outside by one band-width" costs the same in every dimension.
+    for k in ('aspect', 'verticality', 'alignment', 'clustering'):
+        lo, hi = t[k]
+        out[f'{k}_off'] = round(out[f'{k}_error'] / max(hi - lo, 1e-9), 4)
+    out['total_off'] = round(sum(out[f'{k}_off'] for k in
+                                 ('aspect', 'verticality', 'alignment', 'clustering')), 4)
+    out['in_all_bands'] = float(out['total_off'] == 0.0)
+
+    # BAND MARGIN -- how much room the genome has before it leaves reality.
+    # 1.0 = dead centre of every band, 0.0 = sitting on an edge. This exists because the
+    # first trained winner landed with verticality exactly ON the upper limit (0.476 vs a
+    # 0.476 ceiling): it satisfied every constraint and had NOWHERE to vary, so per-object
+    # jitter fell out of band 62% of the time even at 1% of range. Margin is physics, not
+    # taste: a genome with room on all sides produces CHILDREN that are still real material.
+    margins = []
+    for k in ('aspect', 'verticality', 'alignment', 'clustering'):
+        lo, hi = t[k]
+        half = max((hi - lo) * 0.5, 1e-9)
+        centre = 0.5 * (lo + hi)
+        margins.append(max(0.0, 1.0 - abs(out[k] - centre) / half))
+    out['band_margin'] = round(float(min(margins)), 4)
     return out
 
 

@@ -240,6 +240,55 @@ def spawn_children(parent: dict, n: int = 12, spread: float = 1.0, seed: int = 0
     return kids
 
 
+_TRAINED_ARRANGEMENT: dict | None = None
+
+
+def trained_arrangement() -> dict:
+    """The evolved arrangement genome. Raises if it has not been trained.
+
+    Loud rather than silent: a form that quietly fell back to a hand-written guess would
+    render plausibly and be indistinguishable from the trained one in a screenshot, which
+    is exactly the kind of substitution nobody catches.
+    """
+    global _TRAINED_ARRANGEMENT
+    if _TRAINED_ARRANGEMENT is None:
+        import json
+        from pathlib import Path
+        p = Path(__file__).resolve().parents[1] / 'docs/objectives/arrangement.trained.json'
+        if not p.exists():
+            raise FileNotFoundError(
+                f"form='measured' needs a trained arrangement at {p}. Run: python -m "
+                f"core.trainer --domain core.trainables.arrangement --objective "
+                f"docs/objectives/arrangement.json")
+        d = json.loads(p.read_text())
+        g = d.get('genome', d)
+        _TRAINED_ARRANGEMENT = g.get('genome', g)
+    return _TRAINED_ARRANGEMENT
+
+
+def arrangement_for(seed: int, spread: float = 0.22) -> dict:
+    """A per-object variant of the trained arrangement, still inside the measured bands.
+
+    Training one genome fixes REALISM but not MONOTONY -- 1,147 objects sharing one
+    arrangement is still one arrangement, which is the original complaint with a better
+    shape. Because the target is a measured BAND and not a point, a variant can be jittered
+    and then CHECKED: it is kept only if its own statistics still fall inside reality's
+    envelope. Variation that stays in band is diversity; variation that leaves it is noise.
+
+    Deterministic in `seed`, so the same object is the same shape forever.
+    """
+    from core.trainables.arrangement import GENOME_SCHEMA, measure
+
+    base = trained_arrangement()
+    rng = np.random.default_rng(int(seed) & 0x7FFFFFFF)
+    for _ in range(6):                       # a few tries, then fall back to the winner
+        g = {k: float(np.clip(base[k] + rng.normal(0, spread) * (hi - lo), lo, hi))
+             for k, (lo, hi) in GENOME_SCHEMA.items()}
+        if measure(g)['in_all_bands']:
+            return g
+    return dict(base)                        # honest fallback: the proven genome
+
+
 def build_child(child: dict, form: str = 'tuft', n_splats: int = 400,
                 material: str | None = None) -> dict:
     """Turn a child spec into an actual splat cloud.
@@ -282,6 +331,20 @@ def build_child(child: dict, form: str = 'tuft', n_splats: int = 400,
         pos[:, 2] = np.abs(pos[:, 2])
         dirs = pos / (np.linalg.norm(pos, axis=1, keepdims=True) + 1e-9)
         cov = emit_point(pos, radius=size * 3 * scale)
+
+    elif form == 'measured':
+        # THE TRAINED ARRANGEMENT. The three forms above are hand-written guesses; this one
+        # was evolved until its own statistics landed inside the bands measured off a real
+        # scan (Construction/arrangement_dna.py). Placement comes from the arrangement
+        # genome; the SPLAT SHAPE still comes from the material genome, because arrangement
+        # decides where the pieces go and the material decides what a piece looks like.
+        from core.trainables.arrangement import emit as _emit_arrangement
+        pos, dirs = _emit_arrangement(arrangement_for(child['seed']), n_splats,
+                                     int(child['seed']))
+        pos = pos * scale
+        cov = emit_fiber(dirs, tangent_scale=size * 4 * scale,
+                         normal_scale=size * 1.0 * scale, fiber_dir=dirs,
+                         elongation=max(1.0, float(s.get('aniso', 2.0))))
 
     else:  # 'shard' — flat plates, e.g. bark, panels, ice
         pos = rng.standard_normal((n_splats, 3)) * np.array([0.5, 0.5, 0.12]) * scale

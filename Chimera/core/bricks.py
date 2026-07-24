@@ -73,7 +73,7 @@ def admissible(kind: str, lib: dict, genomes: dict) -> list:
 
 
 def brick(genome_name: str, size: float = 0.5, kind: str = 'structural',
-          seed: int = 0, form: str = 'clump') -> Membrane:
+          seed: int = 0, form: str = 'measured') -> Membrane:
     """A genome, expressed as a Lego brick: a membrane with physics and a mating stud.
 
     The brick carries its genome's MEASURED properties, so what attaches to a wall is
@@ -272,7 +272,7 @@ def to_splats(root, n_splats: int = 60) -> dict:
                             'B': m.properties['albedo'][2],
                             'opacity': float(m.properties.get('opacity', 0.9)),
                             '_scale': max(float(m.scale), 0.05), '_yaw': 0.0, '_lean': 0.0}}
-        sp = build_child(spec, form=m.properties.get('form', 'clump'), n_splats=n_splats)
+        sp = build_child(spec, form=m.properties.get('form', 'measured'), n_splats=n_splats)
         sp['pos'] = sp['pos'] + m.to_world(np.zeros(3))
         layers.append(sp)
     return compose(*layers) if layers else {}

@@ -13,6 +13,11 @@
 
 ## NEW AGENT? START HERE
 
+0. **`python -m core.terms <word>`** — the TERMINOLOGY INDEX (73 terms, `docs/TERMINOLOGY.md`).
+   This project uses genetics, physics and cell-biology terms **literally, not as metaphor**:
+   read "recombination" or "membrane" or "heritability" as a figure of speech and you will
+   write the wrong code. Look a word up before assuming it means what it means elsewhere.
+   `--list` for all of them, `--search X` to find related ones.
 1. **`docs/THE_WORKFLOW.md`** — the whole system end to end, reconstructed from the git
    chronology. Read this first; it tells you which of the other docs still matter.
 2. `Construction/SPLAT_DNA_WORKFLOW.md` — scan → object genome. Status marked `PROVEN` /

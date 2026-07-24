@@ -159,3 +159,20 @@ for attention and building; allocentric for persistence.
 
 ---
 ```
+
+## LOOK UP THE WORDS FIRST
+
+This studio uses real scientific vocabulary **literally**. `recombination` is Mendelian
+independent assortment, not "mixing"; a `membrane` is a boundary that supplies a frame, a
+unit, an identity and a level of detail, not a wrapper class; `heritability` is
+`V_between/(V_between+V_within)` and is **undefined from one specimen**.
+
+```
+python -m core.terms membrane        # one definition, one line of context
+python -m core.terms --search band   # everything related
+python -m core.terms --list          # all 73, by section
+```
+
+Source of truth is `docs/TERMINOLOGY.md`. The terms are also a walkable graph
+(`docs/world/terminology.db`) so you can ask what a term RESTS ON, not just what it means.
+
