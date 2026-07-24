@@ -52,6 +52,20 @@ SHAPE = (N, N, N)
 MEDIUM, BONE, MUSCLE, SKIN = matter.MEDIUM, matter.BONE, matter.MUSCLE, matter.SKIN
 TISSUES = (BONE, MUSCLE, SKIN)
 
+# NEGATIVE SPACE. Type 4 is the environment: cells the shaker may never change and never
+# create, so matter has to grow AROUND them. The operator's principle, made literal --
+# "the regolith is negative space that the object must grow around."
+#
+# WHY THIS CLOSES THE ALIGNMENT GAP. Grown matter measured 0.26-0.37 against a real band of
+# 0.516-0.576: a self-sorting blob is ISOTROPIC because nothing in it prefers a direction.
+# Real material is not isotropic, and the reason is never internal -- sedimentary rock is
+# layered because it settled in layers, extruded metal has grain because it went through a
+# die, wood has grain because it grew along a gradient. THE ENVIRONMENT IS WHERE DIRECTION
+# COMES FROM. So the genome describes the negative space's structure and the alignment is
+# left to EMERGE from growing in what remains. Setting alignment directly would be
+# authoring the answer and calling it emergent.
+FROZEN = 4
+
 # THE GENOME IS THE RULE, NOT THE SHAPE. Six adhesion energies (the symmetric J matrix over
 # three tissues plus medium), the volume each tissue is trying to hold, the temperature that
 # sets how much the annealing explores, and how the seed is scattered. Nothing here says
@@ -68,6 +82,14 @@ GENOME_SCHEMA = {
     'temp':            (2.0, 22.0),
     'radius':          (0.22, 0.45),  # seed blob radius, as a fraction of the lattice
     'anisotropy':      (0.35, 2.60),  # how the seed is stretched along z before annealing
+
+    # --- the negative space: what the matter must grow AROUND ---------------------------
+    # None of these say anything about the matter. They describe the ENVIRONMENT, and the
+    # matter's grain is whatever growing in the gaps produces.
+    'neg_fill':        (0.00, 0.55),  # fraction of the blob volume that is environment
+    'neg_spacing':     (2.20, 14.0),  # lattice cells between frozen features
+    'neg_order':       (0.00, 1.00),  # 0 = features randomly oriented, 1 = all parallel
+    'neg_tilt':        (0.00, 1.57),  # the shared feature normal's angle from the z axis
 }
 
 N_RESTARTS = 3          # a grown form must repeat from a different scramble or it is luck
@@ -102,7 +124,7 @@ def mutate(genome: dict, rng) -> dict:
 def _J(g: dict) -> np.ndarray:
     """The adhesion matrix. Symmetric by construction -- an asymmetric one is not physics."""
     m = g['j_medium']
-    J = np.full((4, 4), m, dtype=np.float64)
+    J = np.full((5, 5), m, dtype=np.float64)   # 5th row/col is the frozen environment
     J[MEDIUM, MEDIUM] = 0.0
     J[BONE, BONE] = g['j_bone_bone']
     J[MUSCLE, MUSCLE] = g['j_muscle_muscle']
@@ -112,6 +134,15 @@ def _J(g: dict) -> np.ndarray:
     # bone-skin is NOT a free parameter: in real tissue they are separated by muscle, so
     # their contact energy is the sum of the two interfaces they would each have to cross.
     J[BONE, SKIN] = J[SKIN, BONE] = 0.5 * (g['j_bone_muscle'] + g['j_muscle_skin'])
+
+    # Contact with the environment costs what contact with the outside costs. This is NOT a
+    # free parameter: making it one would let the search discover that matter loves the
+    # walls, which is a preference the environment cannot have -- frozen cells do not
+    # negotiate, they only occupy.
+    J[FROZEN, :] = m
+    J[:, FROZEN] = m
+    J[FROZEN, FROZEN] = 0.0
+    J[FROZEN, MEDIUM] = J[MEDIUM, FROZEN] = 0.0
     return J
 
 
@@ -129,6 +160,48 @@ def _scramble(g: dict, seed_i: int):
     inside = r2 <= (g['radius'] * N) ** 2
 
     grid = np.full(SHAPE, MEDIUM, dtype=np.int16)
+
+    # THE NEGATIVE SPACE, laid down BEFORE any matter exists. Lamellae: planar features
+    # whose normals share a direction to the degree `neg_order` says. At order 1 they are
+    # parallel sheets and the matter can only grow in flat gaps; at order 0 they point
+    # every which way and leave a maze with no preferred direction. Nothing here mentions
+    # alignment -- it is the geometry of the leftovers.
+    if g['neg_fill'] > 0.01:
+        # CHANNELS, NOT LAYERS -- and the first attempt got this wrong, which is worth
+        # keeping. A single family of parallel lamellae confines matter to PLANES, and a
+        # cell in a flat sheet has a disc-shaped neighbourhood whose largest principal axis
+        # lies somewhere in that plane but points nowhere in particular. A plane has no
+        # unique long axis, so sheets produced flatness and no alignment at all: measured
+        # 0.414/0.398/0.352/0.344/0.401 as neg_order went 0 -> 1, i.e. no trend.
+        #
+        # Alignment needs ONE-DIMENSIONAL confinement. Two lamella families whose normals
+        # are both perpendicular to a shared axis leave COLUMNS along that axis, and matter
+        # grown in a column has a real long direction. This is also the physics: fibre grain
+        # comes from material forced along a line -- extrusion, drawn wire, xylem vessels --
+        # never from bedding planes.
+        tilt = g['neg_tilt']
+        axis = np.array([np.cos(tilt), np.sin(tilt) * 0.0, np.sin(tilt)])
+        axis = axis / max(np.linalg.norm(axis), 1e-9)
+        # two normals spanning the plane perpendicular to the channel axis
+        tmp = np.array([0.0, 1.0, 0.0]) if abs(axis[1]) < 0.9 else np.array([1.0, 0.0, 0.0])
+        n1 = np.cross(axis, tmp); n1 /= max(np.linalg.norm(n1), 1e-9)
+        n2 = np.cross(axis, n1);  n2 /= max(np.linalg.norm(n2), 1e-9)
+
+        acc = np.zeros(SHAPE, dtype=bool)
+        for nvec in (n1, n2):
+            # neg_order decides how faithfully each family holds its axis. At 1 the walls
+            # are true and the channels run straight; at 0 they wander and the leftover is
+            # a maze with no direction -- which is the honest control.
+            jitter = rng.normal(0, 1.2 * (1.0 - g['neg_order']), 3)
+            v = nvec + jitter
+            v /= max(np.linalg.norm(v), 1e-9)
+            phase = rng.uniform(0, 2 * np.pi)
+            proj = (zz - c) * v[0] + (yy - c) * v[1] + (xx - c) * v[2]
+            acc |= np.sin(2 * np.pi * proj / g['neg_spacing'] + phase) > (1.0 - 2.0 * g['neg_fill'])
+        frozen_mask = inside & acc
+        grid[frozen_mask] = FROZEN
+        inside = inside & ~frozen_mask
+
     n_in = int(inside.sum())
     if n_in < 64:
         return None, None
@@ -174,7 +247,8 @@ def grow(genome: dict, seed_i: int = 0, gpu: bool = True):
     if grid is None:
         return None
     J = _J(genome)
-    kw = dict(connectivity=18, sweeps=SWEEPS, temp=genome['temp'], lam=0.9, seed=seed_i)
+    kw = dict(connectivity=18, sweeps=SWEEPS, temp=genome['temp'], lam=0.9, seed=seed_i,
+              frozen_type=FROZEN)      # THE SEAM: the environment never changes or spawns
     if gpu:
         try:
             from core.matter_gpu import assemble_3d_gpu
@@ -189,7 +263,9 @@ def _facts_from_grid(settled, rng) -> dict | None:
     if settled is None:
         return None
     g = np.asarray(settled).reshape(SHAPE)
-    occ = np.argwhere(g != MEDIUM).astype(np.float64)
+    # Matter only. A frozen cell is the world, not the object, and counting it would let a
+    # genome score by describing its own scaffolding.
+    occ = np.argwhere((g != MEDIUM) & (g != FROZEN)).astype(np.float64)
     if len(occ) < 80:
         return None
     if len(occ) > SAMPLE:
@@ -216,7 +292,8 @@ def _facts_from_grid(settled, rng) -> dict | None:
         'verticality': float(np.abs(dirs[:, 0]).mean()),
         'alignment': float(np.linalg.norm(dirs.mean(0))),
         'clustering': float(mean_pair / max(nn.mean(), 1e-9)),
-        'occupancy': float(len(np.argwhere(g != MEDIUM)) / (N ** 3)),
+        'occupancy': float(len(np.argwhere((g != MEDIUM) & (g != FROZEN))) / (N ** 3)),
+        'neg_frac': float(len(np.argwhere(g == FROZEN)) / (N ** 3)),
     }
 
 
@@ -234,7 +311,7 @@ def measure(genome: dict) -> dict:
             runs.append(f)
     if not runs:
         return {k: 0.0 for k in ('aspect', 'verticality', 'alignment', 'clustering',
-                                 'occupancy', 'robustness', 'grew')}
+                                 'occupancy', 'neg_frac', 'robustness', 'grew')}
 
     keys = list(runs[0])
     mean = {k: float(np.mean([r[k] for r in runs])) for k in keys}
@@ -246,6 +323,23 @@ def measure(genome: dict) -> dict:
     out['robustness'] = float(np.mean(
         [worst[k] / max(abs(mean[k]), 1e-9) for k in ('clustering', 'aspect', 'alignment')]))
     out['grew'] = float(len(runs)) / N_RESTARTS
+
+    # TISSUE SURVIVAL. The previous winner came out 3,143 bone / 14 muscle / 543 skin: the
+    # volume constraint is soft (lam=0.9) so muscle drained below its own genome floor, and
+    # differential adhesion with one dominant tissue is not differential adhesion. Nothing
+    # in the objective had required three tissues to SURVIVE, so it got one. Reported as a
+    # fact here so an objective can require it.
+    mins = []
+    for i in range(N_RESTARTS):
+        s3 = grow(genome, seed_i=i)
+        if s3 is None:
+            continue
+        arr = np.asarray(s3).reshape(SHAPE)
+        tot = int(((arr != MEDIUM) & (arr != FROZEN)).sum())
+        if tot < 1:
+            continue
+        mins.append(min(float((arr == t).sum()) / tot for t in TISSUES))
+    out['min_tissue_frac'] = float(min(mins)) if mins else 0.0
 
     # band errors against the same measured scan targets, so a grown form and an emitted
     # one are scored on identical ground
