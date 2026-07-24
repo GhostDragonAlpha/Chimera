@@ -26,6 +26,21 @@ import numpy as np
 
 from core.membranes import Membrane, PORT_KINDS
 
+# The library is read once. propose() and brick() each re-read two JSON files per call,
+# which is 5.4 ms of file I/O for work that is pure arithmetic -- and a section is ~4,900
+# cells, so it compounds into minutes of doing nothing.
+_CACHE: dict = {}
+
+
+def _library() -> tuple[dict, dict]:
+    if 'lib' not in _CACHE:
+        import json
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1]
+        _CACHE['gen'] = json.loads((root / 'docs/matter/recovered_genomes.json').read_text())['genomes']
+        _CACHE['lib'] = json.loads((root / 'docs/matter/matter_library.json').read_text())
+    return _CACHE['gen'], _CACHE['lib']
+
 # Which genomes may serve which kind of stud. A port is typed by WHAT FLOWS, so this is
 # a physical claim, not a category: rock can bear load and take a footprint; it cannot
 # conduct a fluid or radiate. Anything absent from a list is not admissible there.
@@ -64,14 +79,9 @@ def brick(genome_name: str, size: float = 0.5, kind: str = 'structural',
     The brick carries its genome's MEASURED properties, so what attaches to a wall is
     matter with real density and roughness rather than a placeholder that looks right.
     """
-    import json
-    from pathlib import Path
-    from core.progeny import load_genome
-
-    g = load_genome(genome_name)
+    genomes, lib = _library()
+    g = genomes[genome_name]
     f = g['features']
-    lib_path = Path(__file__).resolve().parents[1] / 'docs/matter/matter_library.json'
-    lib = json.loads(lib_path.read_text()) if lib_path.exists() else {'materials': {}}
     mat = lib.get('materials', {}).get(genome_name, {})
 
     m = Membrane(genome_name, scale=size, serial=f'B-{genome_name}',
@@ -98,17 +108,13 @@ def propose(host: Membrane, port_name: str, n: int = 8, seed: int = 0) -> list:
     offered includes matter that does not exist yet but could -- which is the point of
     keeping genomes as distributions instead of values.
     """
-    import json
-    from pathlib import Path
-    from core.progeny import load_genome, recombine
+    from core.progeny import recombine
 
     p = host.ports.get(port_name)
     if p is None:
         raise KeyError(f'{host.name} has no port {port_name!r}; has {sorted(host.ports)}')
 
-    root = Path(__file__).resolve().parents[1]
-    genomes = json.loads((root / 'docs/matter/recovered_genomes.json').read_text())['genomes']
-    lib = json.loads((root / 'docs/matter/matter_library.json').read_text())
+    genomes, lib = _library()
 
     pool = admissible(p.kind, lib, genomes)
     if not pool:
@@ -118,7 +124,7 @@ def propose(host: Membrane, port_name: str, n: int = 8, seed: int = 0) -> list:
     out = []
     for i in range(n):
         a, b = (pool[int(rng.integers(len(pool)))] for _ in range(2))
-        child = recombine(load_genome(a), load_genome(b), n=1, seed=seed + i)[0]
+        child = recombine(genomes[a], genomes[b], n=1, seed=seed + i)[0]
         s = child['sampled']
         size = float(np.clip(p.size * (0.25 + 0.5 * s['_scale']), p.size * 0.15, p.size))
         out.append({
@@ -128,8 +134,7 @@ def propose(host: Membrane, port_name: str, n: int = 8, seed: int = 0) -> list:
             'aniso': round(float(s['aniso']), 4),
             'grain_m': round(float(s['size']), 6),
             'albedo': [round(float(s[c]), 3) for c in 'RGB'],
-            'heritable': bool(load_genome(a).get('n_specimens')
-                              and load_genome(b).get('n_specimens')),
+            'heritable': bool(genomes[a].get('n_specimens') and genomes[b].get('n_specimens')),
             'seed': child['seed'],
         })
     # ranked by MEASURABLE facts only: heritable first (it breeds true), then how well
@@ -201,3 +206,73 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
+
+
+# ---------------------------------------------------------------------------
+# DRIVING A WHOLE SECTION
+#
+# A section is 128 m and a cell is 1.83 m, so ~70x70 = 4,900 cells. Filling six studs on
+# every one would be wrong, not just slow: a landscape is mostly ground with air above it.
+# Occupancy is decided DETERMINISTICALLY from each cell's own coordinate seed, so the same
+# section holds the same content forever and neighbouring sections never have to agree
+# about anything -- the same property that made the terrain seams work.
+# ---------------------------------------------------------------------------
+
+
+def drive_section(ground, world_x: float, world_y: float,
+                  density: float = 0.12, max_per_cell: int = 3,
+                  seed: int = 0, verbose: bool = False) -> dict:
+    """Fill an entire section. Returns the section membrane and what happened."""
+    import time
+    from core.membranes import section, cell, HUMAN_CELL
+    from core.sections import SECTION_SPAN
+    from core.progeny import tile_seed
+
+    t0 = time.time()
+    sec = section(ground, world_x, world_y)
+    n_side = int(SECTION_SPAN / HUMAN_CELL)
+    ox, oy = sec.origin[0], sec.origin[1]
+
+    cells = occupied = placed = 0
+    for i in range(n_side):
+        for j in range(n_side):
+            cells += 1
+            gi, gj = int(ox / HUMAN_CELL) + i, int(oy / HUMAN_CELL) + j
+            s = tile_seed(gi, gj, salt=seed)
+            if (s % 10_000) / 10_000.0 >= density:
+                continue                                    # empty ground here
+            c = cell(sec, gi, gj, 0)
+            occupied += 1
+            n_studs = 1 + (s >> 7) % max_per_cell
+            for k, port in enumerate([p.name for p in c.open_ports()][:n_studs]):
+                cands = propose(c, port, n=3, seed=s + k)
+                if cands:
+                    place(c, port, cands[0])
+                    placed += 1
+
+    dt = time.time() - t0
+    return {'section': sec, 'serial': sec.serial, 'cells': cells,
+            'occupied': occupied, 'bricks': placed, 'seconds': round(dt, 2),
+            'coverage': round(100.0 * occupied / max(cells, 1), 1)}
+
+
+def to_splats(root, n_splats: int = 60) -> dict:
+    """Turn every placed brick in a tree into renderable splats, at its world position."""
+    from core.progeny import build_child, compose
+
+    layers = []
+    for _, m in root.walk():
+        if not m.properties.get('genome'):
+            continue
+        spec = {'index': 0, 'seed': int(m.properties.get('seed', 0)) or abs(hash(m.serial)) % (1 << 30),
+                'spread': 1.0, 'honest': True,
+                'sampled': {'size': float(m.properties['grain_m']),
+                            'aniso': float(m.properties['aniso']),
+                            'R': m.properties['albedo'][0], 'G': m.properties['albedo'][1],
+                            'B': m.properties['albedo'][2],
+                            'opacity': float(m.properties.get('opacity', 0.9)),
+                            '_scale': max(float(m.scale), 0.05), '_yaw': 0.0, '_lean': 0.0}}
+        sp = build_child(spec, form=m.properties.get('form', 'clump'), n_splats=n_splats)
+        sp['pos'] = sp['pos'] + m.to_world(np.zeros(3))
+        layers.append(sp)
+    return compose(*layers) if layers else {}
