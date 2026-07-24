@@ -188,6 +188,12 @@
 > **GLM-5.2/colibri REMOVED 2026-07-23** (operator: liability). 714.8 GB reclaimed. Do not
 > re-add — the local-LM tier is LM Studio only. See `pi-servers/README.md`.
 
+> **UE untangling — SCOPED 2026-07-24** (`docs/UE_UNTANGLING_SCOPE.md`). The "huge entangled
+> UE subsystem" is really a ~12k-LOC C++ **generation backend** that is nearly an island (helm/
+> rep_engine/trainer/matter do NOT import it). The game-spec DSL and the general guards stay.
+> One focused session removes the backend; the UE-string cleanup in current infra is a separate,
+> optional pass. Pre-delete gate: `python tools/ue_ring_check.py`. Not started -- scoped only.
+
 ## ⚪ T7 — THE LONG ARC (the game itself; each is a project, not a task)
 
 - [ ] **Close the extraction loop on REAL data** — `docs/matter/reference_scans/` is
