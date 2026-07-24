@@ -16,11 +16,13 @@ Everything it was for is covered without it:
 - **A fast/deep split** (what GLM's size was meant to provide) — `core/council.py` swaps
   between two LM Studio models on demand. No second engine, no 744 GB, no 0.26 tok/s.
 
-## DS4 (DeepSeek-V4 CPU brain) — superseded
+## DS4 (DeepSeek-V4 CPU brain) — REMOVED 2026-07-24
 
-`START DS4.cmd` / `STOP DS4.cmd` remain for reference only. **Superseded 2026-07-19** by the
-model-swapping Council (`core/council.py`). If the STOP script uses `coli stop` or reads
-`/proc`, it has the same Windows bug the GLM stop script did — verify before trusting it.
+Deleted with its launchers, its stub (`core/ds4_brain.py`), and its memory. It was the same
+kind of dead end as GLM-5.2: a separate slow local model server (~1.6 tok/s CPU, 80 GB RAM)
+that the model-swapping Council made pointless. **The "deep brain" concept is LM Studio now**
+— `core/council.py` swaps a fast MoE and a deep dense model on demand through `lm_gateway`.
+There is no separate deep-model server, and there does not need to be.
 
 ## The lesson worth keeping
 
