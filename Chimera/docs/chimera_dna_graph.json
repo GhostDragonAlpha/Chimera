@@ -100415,6 +100415,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_bc94b6bfad53"
+    },
+    {
+      "id": "surprise_dc14bb2beb5ce8d3",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T21:21:04.496827",
+      "context": "Building cave systems, expected to need explicit chamber/tunnel segmentation, a graph data structure, and passage-matching logic to link rooms.",
+      "expectation": "",
+      "reality": "The membrane's PORTS already were the graph. A cave's passages (faces the cavity reaches) ARE the leads; BFS over box-tiled space following them yields the network for free; an edge is just 'both cavities reach the shared face'. The studio's 'unfilled port = work queue' turned room-to-room exploration into a plain flood-fill. 6 chambers / 5 passages / 99,520 m^3 from one break-in. core/cave_system.py 8dfbe65.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'The membrane's PORTS already were the graph. A cave's passages (faces the cavity'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_600b567b384a"
     }
   ],
   "edges": [
