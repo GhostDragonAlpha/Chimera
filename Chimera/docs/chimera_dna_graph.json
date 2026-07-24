@@ -100266,6 +100266,44 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_a81643c81fd1aa98",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "ue_backend_removed",
+      "feature_type": "cleanup",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "1582a1f",
+        "modules": 12,
+        "loc": 12659,
+        "dsl": "kept",
+        "gate": "tools/ue_ring_check.py"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_f3d7074336ee3789",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "the scope RETAINED generator_guard as a general \"dont hand-edit generated files\" rule",
+      "expectation": "it guards the auto-decomposer generated domains too",
+      "reality": "it guarded Source/Chimera/ProceduralGenerated/ (the UE C++ output dir) specifically -- a no-op once the generator went; removed too",
+      "lesson_hint": "verify a module's actual scope during execution, not just at planning -- even a good scope can misjudge one module",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
@@ -113273,6 +113311,20 @@
       "target": "feature_c3d42991fe0e6c96",
       "type": "because",
       "question": "why does lava reuse the emissive path?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_a81643c81fd1aa98",
+      "dst": "surprise_f3d7074336ee3789",
+      "rel": "because",
+      "source": "feature_a81643c81fd1aa98",
+      "target": "surprise_f3d7074336ee3789",
+      "type": "because",
+      "question": "why was generator_guard removed too?",
       "proves": "RECORDED",
       "asked_at": "2026-07-24T00:00:00Z",
       "asked_by": "backfill",
