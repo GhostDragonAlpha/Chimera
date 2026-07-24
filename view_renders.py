@@ -18,7 +18,15 @@ def start_server():
     # Create handler
     Handler = http.server.SimpleHTTPRequestHandler
     
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    # BIND LOCALHOST ONLY (fixed 2026-07-23). ("", PORT) means EVERY network interface,
+    # so this was serving Saved/SplatEmit to anything on the LAN -- it was reachable at
+    # 192.168.3.169:8080. That is an accident of a copied idiom, not a decision: the print
+    # below has always said "localhost", which was the intent all along.
+    #
+    # Nothing is lost by this. The browser and the agent both run ON this machine, so
+    # 127.0.0.1 serves them exactly as well and serves nobody else. If you ever genuinely
+    # need another device to reach it, change it back deliberately and know that you did.
+    with socketserver.TCPServer(("127.0.0.1", PORT), Handler) as httpd:
         print(f"Serving images at http://localhost:{PORT}")
         print("Press Ctrl+C to stop")
         

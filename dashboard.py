@@ -153,7 +153,11 @@ def run_dashboard():
     print(f"Dashboard URL: http://localhost:5000")
     print("Press Ctrl+C to stop")
     
-    app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
+    # BIND LOCALHOST ONLY (fixed 2026-07-23). '0.0.0.0' means every network interface, so
+    # this dashboard was reachable from any machine on the LAN. Flask's own startup banner
+    # warns about this and it is easy to scroll past. The agent and the browser are both on
+    # this machine; 127.0.0.1 reaches them and nothing else.
+    app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False)
 
 if __name__ == '__main__':
     run_dashboard()
