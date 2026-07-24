@@ -694,6 +694,61 @@ SPINE: dict = {
         "0.7152 -> 0.9323 -> 0.9676, then flat for 200 generations.",
         'adaptive evolution finds a way', 'MEASURED'),
 
+    # --- OBSERVER THEORY (2026-07-23) --------------------------------------------------
+    # From Wolfram, "What Ultimately Is There? Metaphysics and the Ruliad" (2026-02-04) and
+    # "Foundations of Biological Evolution: More Results & More Surprises" (2024-12-05),
+    # both read at the operator's instruction. The first closes a loop on the psychophysics
+    # hire; the second produced a test that found a real limit in this studio's own emitter.
+
+    'computational boundedness': (
+        "an observer with limited computation perceives laws that an unlimited one would "
+        "not: the Second Law emerges because WE cannot decode the molecular motion, not "
+        "because the motion is truly random. So the laws you can attribute to a system "
+        "depend on the observer, which is the same finding psychophysics arrived at from "
+        "the other side -- alignment's band sits below the discrimination threshold, so for "
+        "a person that dimension has no law at all.",
+        'psychophysics', 'HUMAN'),
+
+    'the observer makes the law': (
+        "level of detail is not an approximation of the truth, it is the POCKET OF "
+        "REDUCIBILITY available to an observer at that distance. Which is why appearance "
+        "must derive from the matter model rather than from an aesthetic pass: the look at "
+        "a given range IS what a bounded observer can extract there.",
+        'computational boundedness', 'HUMAN'),
+
+    'an objective is a foliation': (
+        "a fitness function does not add anything to the space of possibilities; it imposes "
+        "an ORDER on the underlying mutation graph, the way a reference frame imposes "
+        "simultaneity surfaces on a causal graph. Change the objective and the same graph is "
+        "navigated differently -- and some phenotypes become unreachable, like events behind "
+        "an event horizon.",
+        'objective', ''),
+
+    'developmental constraint': (
+        "some phenotypes simply cannot exist, and some that exist cannot be REACHED by "
+        "mutation from where you started. Wolfram found a rule giving aspect ratio exactly 3 "
+        "that adaptive evolution can never arrive at. Measured here as the same thing under "
+        "another name: 0 of 140 random genomes reached clustering 4.5.",
+        'an objective is a foliation', 'MEASURED'),
+
+    'reducible development': (
+        "THE LIMIT FOUND IN OUR OWN EMITTER. Wolfram's phenotype is grown by an "
+        "irreducible computation, so its complexity comes from the DEVELOPMENT and surprises "
+        "him -- height-fitness and width-fitness give similarly elaborate forms. Ours is a "
+        "direct parametric formula from 10 genes to positions, so it is REDUCIBLE, and a "
+        "form can only ever be as rich as the objective that asked for it. PROVEN: a "
+        "deliberately unrelated objective produced a flat pancake against the band-trained "
+        "hollow cage, genome distance 1.372, every fact different. A parametric emitter "
+        "cannot surprise anyone; it can only interpolate its parameters.",
+        'computational irreducibility', 'MEASURED'),
+
+    'grow it, do not compute it': (
+        "the consequence, and it is actionable: to get forms nobody specified, the "
+        "DEVELOPMENT has to be irreducible. This studio already owns three such processes "
+        "-- the Cellular Potts shaker, the sandpile, the GPU shaker at 6.3B site-updates/sec "
+        "-- and the arrangement domain uses none of them.",
+        'reducible development', ''),
+
 }
 
 
@@ -768,9 +823,17 @@ OLOGIES = {
 
     # the span: a measurable gap that needs both a stimulus and an observer
     'psychophysics':  ('THE SPAN', 'just-noticeable-difference, Weber law; sets how precise '
-                                   'a band must actually be', 'NAMED, NOT YET USED'),
+                                   'a band must actually be', 'recruited 2026-07-23, '
+                                   'core/perception.py'),
     'perceptual psychology': ('THE SPAN', 'attention, salience, what a player notices at all',
                               'NOT RECRUITED'),
+
+    'metaphysics':    ('THE SPAN', 'what an observer can know given boundedness; why laws '
+                                   'look the way they do to us', 'NAMED, NOT YET USED'),
+    'evo-devo':       (PHYSICS, 'developmental constraints -- which forms can exist at all, '
+                                'independent of what is selected for', 'NAMED, NOT YET USED'),
+    'phylogenetics':  (PHYSICS, 'dominator trees; which ancestors a lineage must pass '
+                                'through to reach a target', 'NOT RECRUITED'),
 
     # human-side: needs a person to be true
     'sociology':      (HUMAN, 'group preference structure; which parts of fun are cultural '

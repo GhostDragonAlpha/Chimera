@@ -1,7 +1,7 @@
 {
   "source": "docs/TERMINOLOGY.md",
   "note": "GENERATED. Edit the markdown, then run: python -m core.terms --rebuild",
-  "count": 102,
+  "count": 108,
   "terms": {
     "splat": {
       "term": "splat",
@@ -748,7 +748,49 @@
       "term": "punctuated equilibrium",
       "aliases": [],
       "section": "ADAPTIVE-PROCESS THEORY \u2014 why evolution works at all",
-      "definition": "long plateaus broken by sudden jumps, emerging from plain hill-climbing with nothing put in to produce it. Visible in this studio's own fitness curves: `0.7152 \u2192 0.9323 \u2192 0.9676`, then flat for 200 generations. --- Every science this project recruits, what **number** it supplies, and whether it has actually been used. Machine-readable: `core/spine.py :: OLOGIES`, `staffing()`. **Read the gap, not the list.** One full column and two nearly empty ones is precisely why this vocabulary scored CUTSCENE against its own span test. An -ology is not decoration \u2014 it is where a terminal's numbers come from, and a terminal with no science behind it stays empty however much is built on the other side. ---",
+      "definition": "long plateaus broken by sudden jumps, emerging from plain hill-climbing with nothing put in to produce it. Visible in this studio's own fitness curves: `0.7152 \u2192 0.9323 \u2192 0.9676`, then flat for 200 generations. ---",
+      "code": []
+    },
+    "computational boundedness": {
+      "term": "computational boundedness",
+      "aliases": [],
+      "section": "OBSERVER THEORY \u2014 why the laws look the way they do to us",
+      "definition": "an observer with limited computation perceives laws an unlimited one would not. **The Second Law emerges because *we* cannot decode the molecular motion**, not because the motion is truly random. So the laws you can attribute to a system depend on the observer \u2014 which is what psychophysics found from the other side: `alignment`'s band sits below the discrimination threshold, so **for a person that dimension has no law at all.**",
+      "code": []
+    },
+    "the observer makes the law": {
+      "term": "the observer makes the law",
+      "aliases": [],
+      "section": "OBSERVER THEORY \u2014 why the laws look the way they do to us",
+      "definition": "level of detail is not an approximation of the truth, it is **the pocket of reducibility available to an observer at that distance.** This is the strongest grounding for *no aesthetic passes*: the look at a given range **is** what a bounded observer can extract there.",
+      "code": []
+    },
+    "an objective is a foliation": {
+      "term": "an objective is a foliation",
+      "aliases": [],
+      "section": "OBSERVER THEORY \u2014 why the laws look the way they do to us",
+      "definition": "a fitness function adds nothing to the space of possibilities; it imposes an **order** on the mutation graph, the way a reference frame imposes simultaneity surfaces on a causal graph. Change the objective and the same graph is navigated differently \u2014 and some phenotypes become unreachable, *\"in a rough analogy to the way some events become unreachable in the presence of an event horizon.\"*",
+      "code": []
+    },
+    "developmental constraint": {
+      "term": "developmental constraint",
+      "aliases": [],
+      "section": "OBSERVER THEORY \u2014 why the laws look the way they do to us",
+      "definition": "some phenotypes cannot exist, and some that exist cannot be **reached** by mutation from where you started. Wolfram found a rule giving aspect ratio exactly 3 that adaptive evolution can never arrive at. Measured here under another name: **0 of 140 random genomes reached clustering 4.5.**",
+      "code": []
+    },
+    "reducible development": {
+      "term": "reducible development",
+      "aliases": [],
+      "section": "OBSERVER THEORY \u2014 why the laws look the way they do to us",
+      "definition": "**the limit found in our own emitter.** Wolfram's phenotype is grown by an irreducible computation, so its complexity comes from the *development* and surprises him \u2014 height-fitness and width-fitness produce similarly elaborate forms. Ours is a direct parametric formula from 10 genes to positions, so it is **reducible**, and a form can only ever be as rich as the objective that asked for it. **Proven:** a deliberately unrelated objective produced a **flat pancake** against the band-trained **hollow cage** \u2014 genome distance 1.372, every fact different. A parametric emitter cannot surprise anyone; it can only interpolate its parameters.",
+      "code": []
+    },
+    "grow it, do not compute it": {
+      "term": "grow it, do not compute it",
+      "aliases": [],
+      "section": "OBSERVER THEORY \u2014 why the laws look the way they do to us",
+      "definition": "the actionable consequence. To get forms nobody specified, the **development** must be irreducible. This studio already owns three such processes \u2014 the Cellular Potts shaker, the sandpile, the GPU shaker at 6.3B site-updates/sec \u2014 and the arrangement domain uses **none** of them. --- Every science this project recruits, what **number** it supplies, and whether it has actually been used. Machine-readable: `core/spine.py :: OLOGIES`, `staffing()`. **Read the gap, not the list.** One full column and two nearly empty ones is precisely why this vocabulary scored CUTSCENE against its own span test. An -ology is not decoration \u2014 it is where a terminal's numbers come from, and a terminal with no science behind it stays empty however much is built on the other side. ---",
       "code": []
     }
   }
