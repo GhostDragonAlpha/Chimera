@@ -100119,6 +100119,27 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_8fd31d1d9e6bde7f",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "wire_grown_into_loop",
+      "feature_type": "trainable",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "26d5f35",
+        "form": "grown",
+        "deterministic": true,
+        "default": false
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
@@ -113098,6 +113119,20 @@
       "target": "surprise_4846899ba911e7cc",
       "type": "because",
       "question": "why retire the sequential automation?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_8fd31d1d9e6bde7f",
+      "dst": "feature_ffaba92fa20fb05b",
+      "rel": "because",
+      "source": "feature_8fd31d1d9e6bde7f",
+      "target": "feature_ffaba92fa20fb05b",
+      "type": "because",
+      "question": "why wire grown into the loop?",
       "proves": "RECORDED",
       "asked_at": "2026-07-24T00:00:00Z",
       "asked_by": "backfill",
