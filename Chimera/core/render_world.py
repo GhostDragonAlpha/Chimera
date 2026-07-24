@@ -27,7 +27,8 @@ _LIGHT_DIR = _LIGHT_DIR / np.linalg.norm(_LIGHT_DIR)
 _AMBIENT = 0.35
 
 
-def _rasterize(means, col, op, cov, nrm, eye, target, up_hint, W, H, sigma, K, dev, torch):
+def _rasterize(means, col, op, cov, nrm, eye, target, up_hint, W, H, sigma, K, dev, torch,
+               emission=None):
     """Scatter ANISOTROPIC Gaussian footprints for one camera. Normalized accumulation.
 
     Each splat is projected to a 2D screen-space covariance and scattered as an oriented
@@ -60,6 +61,12 @@ def _rasterize(means, col, op, cov, nrm, eye, target, up_hint, W, H, sigma, K, d
     c = col[vis]
     a = op[vis]
 
+    # EMISSIVE splats carry an emission > 0. Light does not REFLECT -- it IS the source --
+    # so those splats skip the Lambert term entirely (a Lambert shade would DARKEN a laser
+    # on its unlit side, which is physically backwards) and instead get brightened by their
+    # intensity toward their own hue, which reads as glow through the alpha compositing.
+    em = emission[vis] if emission is not None else None
+
     # SHADING. The splats carry normals and the renderer was ignoring them, so every
     # surface returned raw albedo and the geometry read as a flat swatch. A Lambert term
     # plus a little ambient is enough to make form legible -- without N.L you cannot see
@@ -68,7 +75,13 @@ def _rasterize(means, col, op, cov, nrm, eye, target, up_hint, W, H, sigma, K, d
         L = torch.tensor(_LIGHT_DIR, device=dev, dtype=torch.float32)
         ndl = (nrm[vis] @ L).clamp(min=0.0)
         shade = (_AMBIENT + (1.0 - _AMBIENT) * ndl).unsqueeze(1)
+        if em is not None:
+            lit = (em > 0).unsqueeze(1)             # emissive keeps full brightness
+            shade = torch.where(lit, torch.ones_like(shade), shade)
         c = c * shade
+    if em is not None:
+        boost = (1.0 + em.clamp(min=0.0)).unsqueeze(1)    # HDR-ish: intensity pushes toward its hue
+        c = torch.where((em > 0).unsqueeze(1), (c * boost).clamp(max=1.0), c)
 
     if cov is not None:
         # world covariance -> camera -> screen.  Sigma_cam = R Sigma_w R^T, then the 2x2
@@ -173,8 +186,11 @@ def render_orbit(splats: dict, out_path='Saved/SplatEmit/world.png', n_views: in
         eye = ctr + radius * np.array([np.cos(th) * np.cos(el),
                                        np.sin(th) * np.cos(el),
                                        np.sin(el)], dtype=np.float32)
+        em_t = (torch.tensor(np.asarray(splats['emission'], dtype=np.float32)[sel], device=dev)
+                if splats.get('emission') is not None else None)
         frames.append(_rasterize(means, col, op, cov, nrm, eye.astype(np.float32),
-                                 ctr.astype(np.float32), up_hint, W, H, sigma, K, dev, torch))
+                                 ctr.astype(np.float32), up_hint, W, H, sigma, K, dev, torch,
+                                 emission=em_t))
     if dev == "cuda":
         torch.cuda.synchronize()
     dt = time.time() - t0

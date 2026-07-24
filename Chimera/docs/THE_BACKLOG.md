@@ -131,9 +131,13 @@
 
 ## 🔵 T4 — THE MISSING GENOMES (ports that return zero candidates today)
 
-- [ ] **Emissive genome** — light is not matter: a laser/engine-glow EMITS, so
-  albedo/roughness/metalness are meaningless. `{colour, intensity, falloff, elongation, core
-  gradient, lifetime}`. `flame.splatv`/`sear.splatv` are real captured references.
+- [x] **Emissive genome** ✅ BUILT — `core/emissive.py`: the light family over {colour,
+  intensity, falloff, elongation, core_gradient, lifetime}, four physics-grounded archetypes
+  (laser, plasma_bolt, fire, engine_glow). The `energy` port returns candidates (was 0);
+  `render_world` gained an emissive path (skip Lambert, boost by intensity) so light GLOWS
+  instead of rendering as dull grey. Verified: laser = a bright bolt, fire = a white-hot-core
+  blob. AUTHORED from physics (the legitimate second intake); measured-from-.splatv is a
+  future upgrade (the 4D format is a 396KB-header parse).
 - [ ] **Fluid genome** — the `fluid` port is an honest empty set in `bricks.py`.
 - [ ] **Atmospheric genome** — same. `core/atmosphere.py` exists (scattering) but is not a
   placeable genome.

@@ -48,9 +48,10 @@ KIND_ROLE = {
     'structural': ('metallic', 'wood', 'measured', 'mineral_dry', 'rock'),
     'substrate':  ('mineral_dry', 'measured', 'rock', 'wood'),
     'gravitational': ('measured', 'mineral_dry', 'metallic', 'rock', 'wood'),
-    'energy':     (),        # nothing in the library emits yet -- an honest empty set
-    'fluid':      (),
-    'atmospheric': (),
+    'energy':     ('emissive',),   # the light family (core/emissive.py) now emits -- lasers,
+                                   #   plasma, fire, engine glow. Served by propose()'s energy branch.
+    'fluid':      (),              # still honest empty sets: the library cannot yet express
+    'atmospheric': (),             #   what flows through these interfaces.
 }
 
 
@@ -113,6 +114,12 @@ def propose(host: Membrane, port_name: str, n: int = 8, seed: int = 0) -> list:
     p = host.ports.get(port_name)
     if p is None:
         raise KeyError(f'{host.name} has no port {port_name!r}; has {sorted(host.ports)}')
+
+    # ENERGY flows light, not matter. It is served by the emissive family, not the material
+    # library, because light has no albedo/roughness/metalness to recombine (core/emissive.py).
+    if p.kind == 'energy':
+        from core import emissive
+        return emissive.propose(n=n, seed=seed)
 
     genomes, lib = _library()
 
