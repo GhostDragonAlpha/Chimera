@@ -25,7 +25,9 @@ soluble bedrock below the water table. Both are the negative space matter grows 
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import numpy as np
 
@@ -183,6 +185,53 @@ DEPOSITS = [
             abundance=0.015, cluster_km=8.0, value=500.0, salt=55,
             mineral_frac=6e-7, price=4.0e5, pipe_fed=True),
 ]
+
+
+# --- where the TRAIN tier meets the game: the trained economy overrides the placeholders -----
+#
+# The abundance/mineral_frac/price above are HAND-SET placeholders (the PROGRAM tier ships a
+# working default). The trainer (core.trainables.resource_economy) evolves those three numbers
+# against a physics objective (docs/objectives/resource_economy.json) and writes the winner to
+# resource_economy.trained.json. THIS seam loads it: if that file exists, its numbers replace
+# the placeholders -- the same way brain.trained.json or the biome thresholds load. Only the
+# three ECONOMY numbers move; the GEOLOGY (layer, formation window, clustering, pipes) is
+# PROGRAM-tier and never touched. Delete the file to fall back to the hand-set defaults.
+
+TRAINED_ECONOMY = Path(__file__).resolve().parents[1] / "docs" / "objectives" / "resource_economy.trained.json"
+ECONOMY_SOURCE = "hand-set"          # -> "trained" once a winner is applied
+_ECONOMY_KNOBS = ("abundance", "mineral_frac", "price")
+
+
+def load_trained_economy(path=None) -> dict:
+    """Override each deposit's abundance/mineral_frac/price with the trained winner. Returns the
+    {resource: {knob: (old, new)}} it changed (empty if there is no trained file). Idempotent;
+    call with an explicit path to load a different run, or after retraining to refresh."""
+    global ECONOMY_SOURCE
+    p = Path(path) if path else TRAINED_ECONOMY
+    if not p.exists():
+        return {}
+    genome = json.loads(p.read_text(encoding="utf-8")).get("genome") or {}
+    res = genome.get("res") or {}
+    by_name = {d.name: d for d in DEPOSITS}
+    applied = {}
+    for name, params in res.items():
+        d = by_name.get(name)
+        if d is None:
+            continue
+        changed = {}
+        for knob in _ECONOMY_KNOBS:
+            if knob in params:
+                changed[knob] = (getattr(d, knob), float(params[knob]))
+                setattr(d, knob, float(params[knob]))
+        if changed:
+            applied[name] = changed
+    if applied:
+        ECONOMY_SOURCE = "trained"
+    return applied
+
+
+# Use the search's numbers by default when a winner exists (the game runs the trained economy).
+load_trained_economy()
 
 
 def kimberlite_pipe(lat_deg: float, lon_deg: float) -> bool:
@@ -365,10 +414,11 @@ def _main() -> int:
 
     lp = LayeredPlanet.earthlike(seed=a.seed)
 
-    print("  === the deposit catalog (layer set by FORMATION conditions) ===")
+    print(f"  === the deposit catalog (economy: {ECONOMY_SOURCE.upper()}) ===")
+    print("      geology by FORMATION conditions (PROGRAM); abundance/frac/price are the numbers")
     for d in DEPOSITS:
-        print(f"    {d.name:13} layers={'/'.join(d.layers):20} value={d.value:5.0f} "
-              f"abundance={d.abundance:.3f} vein~{d.cluster_km}km")
+        print(f"    {d.name:13} layers={'/'.join(d.layers):20} "
+              f"abundance={d.abundance:.3f} frac={d.mineral_frac:.2e} price={d.price:.1f}")
 
     print("\n  === prospecting scan: deposits land in their FORMATION layer (measured) ===")
     for name, r in lp.prospect().items():
