@@ -746,3 +746,20 @@ Wait, looking at the
 - evidence: observation_c1eb6cfb82d8fc19
 - sample: Reopening the 2026-07-07T06:46:59 observed_provisional acceptance (simtest_0dec5fc92db45fee, 4 clean sessions). Mixed signal: walk_rock_to_sand_basin (the more 
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-24T07:15:02Z -->
+## H-71: human_rejection: Ground_Sand_Footprints
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-08T20:28:14
+- proposed_organ: claude_md
+- evidence: observation_e0159ce465c0a841
+- sample: Sleepwalk ground_sand_footprints_verify: beat walk_rock_to_sand_basin reached successfully (player walked from spawn to sand basin over ~2.6s). Visual inspectio
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-72: human_rejection: visual_validation_phenotypic_analysis
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-23T20:12:48
+- proposed_organ: claude_md
+- evidence: observation_3a35d3db21c10a8a
+- sample: High clamping detected, color distribution too uniform. Pass rate: 0.0%
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

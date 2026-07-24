@@ -1,8 +1,8 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-24T04:51:30Z
+consolidated: 2026-07-24T07:15:02Z
 
 ## Awaiting your approval
-11 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
+13 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
 - H-48: human_rejection: Tool_Scanner_Model
 - H-49: human_rejection: Tool_Scanner_Material
 - H-50: grade_CF: X
@@ -39,7 +39,7 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Rep ledger (resolution through repetition — the dog-sit threshold)
 ```
-[rep] 82 batteries, 914 atoms, 888 reps this pass (13 failing), 28 PIE atoms exported
+[rep] 82 batteries, 914 atoms, 889 reps this pass (13 failing), 28 PIE atoms exported
 [rep] failing: subsystem_AErisaid (4 atoms red)
 [rep] failing: Game_Feel (3 atoms red)
 [rep] failing: Any_position-dependent_beat_against_chimeradefault (1 atoms red)
@@ -47,16 +47,18 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Tonight's distillation
 ```
-clusters >= 3: 77  |  suppressed (covered/pending): 72  |  staged: 2  |  deferred by cap: 3
+clusters >= 3: 77  |  suppressed (covered/pending): 74  |  staged: 2  |  deferred by cap: 1
   covered   [  5x] human_rejection: Verb_Shovel  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Look  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Bend  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_PickUp  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Drop  <- PENDING_HEURISTICS.md
   covered   [  2x] human_rejection: Verb_Step  <- PENDING_HEURISTICS.md
+  covered   [  1x] human_rejection: Tool_Weapon_Model  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: Ground_Rock_Surface  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: Ground_Sand_Surface  <- PENDING_HEURISTICS.md
+  covered   [  1x] human_rejection: Ground_Sand_Particles  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: audio_visual_sync/telemetry_accessors  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: audio_visual_sync/report_telemetry  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: Sky_Starfield  <- PENDING_HEURISTICS.md
@@ -68,10 +70,10 @@ clusters >= 3: 77  |  suppressed (covered/pending): 72  |  staged: 2  |  deferre
   covered   [ 26x] sim_rejection: verb_interactions/verb_shovel_rock_surface_location  <- PENDING_HEURISTICS.md
   covered   [ 26x] sim_rejection: verb_interactions/verb_shovel_sand_surface_location  <- PENDING_HEURISTICS.md
   covered   [ 21x] sim_rejection: verb_interactions/verb_shovel_metal_surface_location  <- PENDING_HEURISTICS.md
-  covered   [ 19x] sim_rejection: regolith_yard/jump_probe  <- PENDING_HEURISTICS.md
-  covered   [ 13x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
+  covered   [ 20x] sim_rejection: regolith_yard/jump_probe  <- PENDING_HEURISTICS.md
+  covered   [ 14x] sim_rejection: regolith_yard/walk_rock_to_sand_basin  <- PENDING_HEURISTICS.md
   covered   [ 10x] sim_rejection: audio_visual_sync/walk_fast_on_sand  <- PENDING_HEURISTICS.md
-  covered   [  9x] sim_rejection: regolith_yard/walk_metal_to_rock  <- PENDING_HEURISTICS.md
+  covered   [ 10x] sim_rejection: regolith_yard/walk_metal_to_rock  <- PENDING_HEURISTICS.md
   covered   [  6x] sim_rejection: audio_visual_sync/walk_slow_on_sand  <- PENDING_HEURISTICS.md
   covered   [  6x] sim_rejection: travel_vehicle_basic/vehicle_component_initialized  <- PENDING_HEURISTICS.md
   covered   [  6x] sim_rejection: edu_spawn/collect_basalt  <- PENDING_HEURISTICS.md
@@ -88,7 +90,7 @@ clusters >= 3: 77  |  suppressed (covered/pending): 72  |  staged: 2  |  deferre
   covered   [  3x] sim_rejection: verb_interactions/verb_drop_location  <- PENDING_HEURISTICS.md
   covered   [  3x] sim_rejection: chimera_complete/generation_transition  <- PENDING_HEURISTICS.md
   covered   [  3x] sim_rejection: regolith_yard/spawn_on_metal_pad  <- PENDING_HEURISTICS.md
-  covered   [245x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
+  covered   [248x] surprise: beat discovered expected gap  <- PENDING_HEURISTICS.md
   covered   [169x] grade_CF: Build_Pipeline  <- PENDING_HEURISTICS.md
   covered   [131x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
@@ -120,10 +122,8 @@ clusters >= 3: 77  |  suppressed (covered/pending): 72  |  staged: 2  |  deferre
   covered   [  3x] surprise: fixes generationsubsystem pipeline research  <- PENDING_HEURISTICS.md
   covered   [  3x] surprise: gate postflight refused shelter_habitat_materials  <- PENDING_HEURISTICS.md
   covered   [  3x] surprise: atom beat_scripts_tautology_fix fix red  <- PENDING_HEURISTICS.md
-  CANDIDATE [  1x] human_rejection: Tool_Weapon_Model
-  CANDIDATE [  1x] human_rejection: Ground_Sand_Particles
-  deferred  [  1x] human_rejection: Ground_Sand_Footprints (cap; next night)
-  deferred  [  1x] human_rejection: visual_validation_phenotypic_analysis (cap; next night)
+  CANDIDATE [  1x] human_rejection: Ground_Sand_Footprints
+  CANDIDATE [  1x] human_rejection: visual_validation_phenotypic_analysis
   deferred  [  1x] human_rejection: recombination_genetic_inheritance (cap; next night)
 
 staged 2 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
@@ -132,7 +132,7 @@ next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 3857  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 3861  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 
