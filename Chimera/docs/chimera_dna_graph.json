@@ -100396,6 +100396,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_e77f615933cc"
+    },
+    {
+      "id": "surprise_ceb72abf5442041f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T21:12:50.506054",
+      "context": "Planned to make caves explorable but worried the void field (isolated open parcels at ~0.7% occurrence) would only yield scattered bubbles, not navigable space -- expecting to have to invent/grow caves beyond the geology.",
+      "expectation": "",
+      "reality": "The void field ALREADY makes connected chambers: flood-filling from a break-in point yields real caves (karst at (35,200) = 18,502 m^3, 1,060 m^2 floor, 27 m headroom, standable, with a passage leading on). No invention needed -- the existing negative-space DNA is the cave. A cave = the membrane primitive inside-out (air inside, rock outside); passages that exit the sampled box ARE the ports/work-queue. core/cave.py 6f0dc88.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'The void field ALREADY makes connected chambers: flood-filling from a break-in p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_bc94b6bfad53"
     }
   ],
   "edges": [
