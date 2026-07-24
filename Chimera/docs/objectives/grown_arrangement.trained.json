@@ -1,0 +1,37 @@
+{
+  "objective": "grown_arrangement",
+  "score": 0.5839291692090244,
+  "measures": {
+    "aspect": 0.5205873054698448,
+    "verticality": 0.5723961705414412,
+    "alignment": 0.4298360745850422,
+    "clustering": 8.214788408398329,
+    "occupancy": 0.060625000000000005,
+    "aspect_worst": 0.5076664070057264,
+    "verticality_worst": 0.5578205759121506,
+    "alignment_worst": 0.40801979297132307,
+    "clustering_worst": 8.126094535586432,
+    "occupancy_worst": 0.06028125,
+    "robustness": 0.9712094696629495,
+    "grew": 1.0,
+    "aspect_off": 0.0,
+    "verticality_off": 0.546,
+    "alignment_off": 1.4113,
+    "clustering_off": 0.0121,
+    "total_off": 1.9694,
+    "in_all_bands": 0.0
+  },
+  "genome": {
+    "j_bone_bone": 4.9486160722580355,
+    "j_muscle_muscle": 5.977158747667315,
+    "j_skin_skin": 16.0,
+    "j_bone_muscle": 10.76709113033802,
+    "j_muscle_skin": 13.100136102741166,
+    "j_medium": 18.988590993744204,
+    "frac_bone": 0.43661869823918453,
+    "frac_muscle": 0.15024721360790666,
+    "temp": 6.683213590931166,
+    "radius": 0.24072344360963005,
+    "anisotropy": 2.2111747190007476
+  }
+}

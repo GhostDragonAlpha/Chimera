@@ -1,0 +1,49 @@
+{
+  "_provenance": "Arrangement GROWN by Cellular Potts annealing instead of computed from a parametric formula. Same four measured bands from truck.splat, same measure keys, so a grown form and an emitted one are scored on identical ground.",
+
+  "_why_this_domain_exists": "A parametric emitter is computationally REDUCIBLE, so its output is never richer than the objective that asked for it -- proven by training the parametric domain against an unrelated objective and getting a completely different form (genome distance 1.372). Wolfram's minimal model gets its richness from an IRREDUCIBLE development. This domain's genome is the local adhesion rule; the shape has to be grown to be known.",
+
+  "_the_result_that_justified_it": "UNTRAINED random rule-genomes land inside reality's clustering band 39 times out of 40 (median 6.905, band 4.679..8.172). The parametric domain manages 1 in 120 (median 1.580). Real matter is grown, so a growth process inherits the statistics of growth for free.",
+
+  "maximize": ["robustness"],
+  "minimize": ["clustering_off", "aspect_off", "verticality_off", "alignment_off"],
+
+  "constraints": [
+    {
+      "field": "grew",
+      "min": 1.0,
+      "hard": true,
+      "why": "every restart must actually produce matter. A genome whose blob dissolves or never forms is not a slow answer, it is no answer -- and averaging over the runs that happened to survive would silently score it as if it had."
+    },
+    {
+      "field": "robustness",
+      "min": 0.60,
+      "hard": true,
+      "why": "the coin-toss gate, and it can be set far higher here than in the parametric domain (0.35) because growth REPEATS: untrained genomes already measure 0.95-0.98. A self-sorting process converges on its own attractor from different scrambles, which is exactly what a limit cycle was for the walker."
+    },
+    {
+      "field": "occupancy",
+      "min": 0.02,
+      "hard": true,
+      "why": "a lattice that is 1% full has no interior, so its layering is unmeasurable and every fact read off it is noise dressed as a number."
+    },
+    {
+      "field": "occupancy",
+      "max": 0.75,
+      "why": "past this the blob fills its own box and aspect stops describing the matter, only the lattice."
+    },
+    {
+      "field": "total_off",
+      "max": 0.50,
+      "why": "the target: inside reality's measured envelope on all four facts, each normalised by its own band width."
+    }
+  ],
+
+  "walls": {
+    "robustness": "The one maximize. Clustering is a BAND and maximizing it would drive the winner to reality's extreme rather than its typical; robustness never saturates and asks the only question that separates a rule from an accident -- does the same rule sort the same way from a different scramble?",
+    "alignment_off": "The fact this domain is WORST at. Grown matter measures 0.26-0.37 against a band of 0.516..0.576, so it is less coherently oriented than the truck scan. Worth knowing that psychophysics puts that band at 1.1 JNDs wide -- below the threshold of human vision -- so it is the least visible of the four and should not be bought at the expense of the others.",
+    "grew": "A HARD gate rather than a soft penalty on purpose. Partial failure here is invisible in an average: measure() would quietly report the mean of whichever restarts survived."
+  },
+
+  "_honest_limit": "40^3 lattice, 26 sweeps, 3 restarts. Bigger blobs need proportionally more sweeps to anneal, so a form that looks settled here may not be settled at scale. The GPU makes that affordable to check and it has not been checked."
+}
