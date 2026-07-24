@@ -140,6 +140,18 @@
   fixed (raw cell-hash gate). MEASURED: all 5 deposits in their formation layers at
   abundance-matched rates (iron 26.9% bedrock, diamond 1.3% mantle); both void types reachable.
   Verified by looking (shallow ore+caves, deep diamond lenses below 136 km). `3fbd239`.
+- [x] **Wire mining to the dig** ✅ BUILT — `core/mining.py`. Joins the two halves that never
+  met: `terrain_matter` (HOW ground comes loose — the seed's shovel, a real MuJoCo grain sim)
+  and `planet_layers` (WHAT is there by depth). An Excavation scoops with the shovel's own
+  footprint and `probe()` says what came up. A TOOL ladder at real reaches (shovel 2 m /
+  excavator 60 m / deep mine 4 km — you can't dig to the 150-km mantle). ORE ≠ MINERAL: a scoop
+  moves host rock; mineral won = grade × rock × mineral_frac (iron ~45%, diamond ~6e-7) × price.
+  Kimberlite pipes (`planet_layers.kimberlite_pipe`, ~0.4% of columns) make mantle diamond
+  mineable near-surface. `physical_scoop` runs the grain sim driven by the DUG material. MEASURED
+  hauls: iron 440 t / ~53 k cr, a whole diamond pipe 240 kg / ~96 M cr (was an absurd 33 Mt / 14 B
+  cr before the ore/mineral split). Two run-caught bugs fixed: cave-event spam (log transitions),
+  and a DETERMINISM break (rounding a validated coordinate moved it off a 1.2-km orebody).
+  Verified by looking (iron shaft | kimberlite pipe with cave/lava-tube voids). `1c461f8`.
 
 ## 🟢 T3 — THE -OLOGY BOARD (staff the two terminals; see TERMINOLOGY.md §11)
 
