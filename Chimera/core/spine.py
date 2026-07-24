@@ -281,6 +281,239 @@ SPINE: dict = {
         'law at r-squared 1.000 from grown orbits\' own periods.',
         'train, don\'t hand-tune', 'MEASURED'),
 
+
+    # --- CLOSING THE ASSERTIONS (2026-07-23, operator: "close the 42 assertions") -------
+    # Every term the audit named as having no reason. Authored, each citing something
+    # already in the spine or a terminal, each carrying its number where one exists. An
+    # audit that names gaps and is never acted on is just a longer way of ignoring them.
+
+    'splat': (
+        "it is simultaneously a RENDERING primitive and a STATISTICAL one, so the same "
+        "object can be drawn and measured without converting between two representations. "
+        "A triangle can be drawn but not distributed; a sample can be distributed but not "
+        "drawn.",
+        PHYSICS, ''),
+
+    'gaussian splatting / 3dgs': (
+        "fitting splats to photographs is how matter gets MEASURED from reality instead of "
+        "authored, which is the only way a genome can carry reality's own numbers.",
+        'splat', ''),
+
+    'anisotropy': (
+        "a splat's shape has to be ONE bounded, scale-free number (1 - min/max) or it "
+        "cannot be compared between scans taken at different sizes. Bounded [0,1] by "
+        "construction, which is exactly why it must be sampled on the liability scale.",
+        'splat', ''),
+
+    'feature': (
+        "one axis of a genome stored as mean plus p10..p90 IS the range -- the storage "
+        "shape is what makes it a distribution rather than a value.",
+        'material-DNA', ''),
+
+    'morphology-DNA': (
+        "shape and appearance are independently measurable, so they are independently "
+        "trainable. Fusing them would mean a change of colour could not be made without "
+        "redescribing the form.",
+        'genome', ''),
+
+    'genotype': (
+        "you must be able to name the stored description separately from the expressed "
+        "thing, or you cannot say what was INHERITED as opposed to what was grown.",
+        'genome', ''),
+
+    'plasticity': (
+        "the same genotype expressed differently by its environment is the VERB, and it is "
+        "not inherited -- which is why environment belongs in the membrane and never in "
+        "the genome.",
+        'genotype', ''),
+
+    'linkage group': (
+        "traits that covary in real material have to be inherited TOGETHER, or a child gets "
+        "a coherent value on one axis and a contradictory one on the next.",
+        'pleiotropy', ''),
+
+    'mutation': (
+        "a low-rate perturbation is a DIFFERENT process from parental variance, and "
+        "conflating the two is why sampling from one parent looked like noise instead of "
+        "like a family.",
+        'recombination', ''),
+
+    'progeny / children': (
+        "you do not paint a material onto a surface -- that is texturing, and it gives you "
+        "surfaces instead of game content. You isolate ONE object, vary it inside its "
+        "measured range, and place instances.",
+        'material-DNA', ''),
+
+    'serial number': (
+        "once a material is recognised you can store its index instead of its splats, which "
+        "is compression made literal -- the same reason a genome is worth recovering at all.",
+        'genome', ''),
+
+    'intake method': (
+        "a genome does not have to come from a scan: PBR maps are already light-separated, "
+        "so an authored asset is easier to read than a measured one. Both feed ONE codebook, "
+        "which is the whole reason calibration matters.",
+        'serial number', ''),
+
+    'format calibration': (
+        "because both intakes feed one codebook, an uncalibrated container FORKS the same "
+        "material into two serial numbers. Proven: applying sigmoid() where INRIA stores an "
+        "SH DC coefficient gave p10 0.143 against a true 0.000.",
+        'intake method', 'MEASURED'),
+
+    'brick': (
+        "a genome has to become something PLACEABLE or it stays a description. Attaching it "
+        "to a membrane with a mating stud is what turns a measurement into matter you can "
+        "build with -- 6,037 bricks/sec, deterministic.",
+        'genome', 'MEASURED'),
+
+    'mate': (
+        "occupancy has to be RECORDED, not inferred from geometry: open_ports() inferred it "
+        "and reported \"filled 0\" while six bricks were attached.",
+        'port / stud', 'MEASURED'),
+
+    'saturated': (
+        "a membrane with no open ports has nothing left to build, so it stops being work and "
+        "becomes something to move on from.",
+        'work queue', ''),
+
+    'negative space': (
+        "an object has to grow AROUND its environment, so the environment must enter the "
+        "growth as frozen cells rather than as a collision test applied afterwards. The "
+        "regolith is not the absence of the object; it is what the object must fit into.",
+        'membrane', ''),
+
+    'time as the outermost membrane': (
+        "anything with a beginning and an end is a boundary, so time is a membrane like any "
+        "other -- past inside, future outside, present the surface. The story is then just "
+        "the outermost dial, with gates on it.",
+        'membrane', ''),
+
+    'arrangement': (
+        "a material and its PLACEMENT are separately measurable, and placement is what makes "
+        "an object rather than a texture. What must be learned is how the pieces fit.",
+        'morphology-DNA', ''),
+
+    'clustering': (
+        "it is a RATIO (mean pairwise distance over nearest-neighbour distance), so it is "
+        "scale-free and comparable between a scan and an emitter of different sizes. It is "
+        "the fact that exposed the gap: real regions 4.679-8.172, hand-written forms "
+        "1.277-1.497.",
+        'arrangement', 'MEASURED'),
+
+    'verticality': (
+        "how much matter stands up versus lies flat is set by GRAVITY, which acts the same "
+        "on a scan and on an emitted arrangement -- so the number transfers between them.",
+        'arrangement', 'MEASURED'),
+
+    'alignment': (
+        "real material sits at PARTIAL coherence (0.516-0.576) -- neither combed nor random "
+        "-- so it discriminates real arrangement from both idealised failure modes at once.",
+        'arrangement', 'MEASURED'),
+
+    'aspect': (
+        "the overall proportion of an arrangement is scale-free, so it constrains the shape "
+        "of the whole without constraining its size.",
+        'arrangement', ''),
+
+    'band error': (
+        "distance to a band must be normalised by that band's own width, because clustering "
+        "spans 3.49 and alignment spans 0.06 -- a raw sum would weight clustering 58x for no "
+        "physical reason and the winner would match density while getting orientation wrong.",
+        'band', 'MEASURED'),
+
+    'form': (
+        "an arrangement has to be selectable by name at the emitter, or a trained genome "
+        "cannot replace a hand-written one without rewriting every caller.",
+        'arrangement', ''),
+
+    'domain': (
+        "the trainer has to stay generic -- it cannot know what an economy or a creature IS "
+        "-- so the facts come from a separate module that reports them and never judges them.",
+        "train, don't hand-tune", ''),
+
+    'measure': (
+        "the domain reports FACTS and the objective decides which are good. Mixing them puts "
+        "taste inside the crank, where nobody can see it and the optimiser cannot audit it.",
+        'domain', ''),
+
+    'self-loading reference': (
+        "a domain with no reference optimises nothing while looking identical to one that "
+        "works: material_appearance trained against None until somebody finally checked.",
+        'domain', 'MEASURED'),
+
+    'hard gate': (
+        "a constraint that scores ZERO removes the gradient wherever the population cannot "
+        "satisfy it, so it is only safe where nothing is near it yet -- an overshoot guard, "
+        "not a standard.",
+        'reachability probe', ''),
+
+    'the LLM sits at the top and the bottom, never the middle': (
+        "the LLM writes the constraints and reads the walls, because those are judgements; "
+        "it never turns the crank, because that is 20 edits an hour against 30,000 "
+        "evaluations a second.",
+        "train, don't hand-tune", 'MEASURED'),
+
+    'the GPU is mandatory': (
+        "scoring N randomised restarts and keeping the worst costs N times the compute, and "
+        "that honesty is unaffordable on a CPU: 2,358 evals/sec at 16,384 worlds against "
+        "pybullet's 70 with eight P-cores pinned at thermal limit.",
+        'robustness', 'MEASURED'),
+
+    'the one rule': (
+        "a read-back inside the rollout loop destroys the entire advantage: 1,575 CPU-GPU "
+        "syncs per batch ran 300x SLOWER than the CPU it was meant to replace.",
+        'the GPU is mandatory', 'MEASURED'),
+
+    'capacity': (
+        "how much a program can express caps what it can reach, independently of how well "
+        "you search: 2-state machines top out at 0.151 against each other, while 3-state "
+        "machines reach 0.593 against them.",
+        'ruliology', 'MEASURED'),
+
+    'pocket of computational reducibility': (
+        "if everything were irreducible nothing could be trained at all, so a trainable "
+        "feature is precisely one where a measurable objective has a searchable gradient "
+        "into a predictable region.",
+        'computational irreducibility', ''),
+
+    'rung': (
+        "each level's averages are the next level's data, so the levels must be settled "
+        "separately -- assembling one while settling another is the named failure mode.",
+        'LOD of meaning', ''),
+
+    'research gate': (
+        "a session that inherits its answer from nowhere is guessing, and a guess is "
+        "cheapest to catch before the work rather than after it.",
+        'witness gate', ''),
+
+    'visual gate': (
+        "a recorded number is not a look. Something has to have SEEN it, or \"verified\" "
+        "means the measurement ran and not that the thing appeared.",
+        'witness gate', ''),
+
+    'training gate': (
+        "verifying a piece that was never trained means it was never evaluated, only "
+        "observed once -- which is the coin-toss problem wearing a checkmark.",
+        'witness gate', ''),
+
+    'membrane vs Faraday cage': (
+        "the seal covers the filesystem and the studio's own state, NOT the network. Stating "
+        "the limit is what keeps the containment a measurement instead of a claim.",
+        'membrane (verification sense)', ''),
+
+    'A field can lie; an edge cannot': (
+        "a string field can name anything, including something that does not exist, but a "
+        "graph knows its own ids -- so the STORAGE SHAPE is the integrity check. Measured: "
+        "16 live references named nothing at all, two of them English sentences sitting in "
+        "an id field.",
+        PHYSICS, 'MEASURED'),
+
+    'why it is the primitive': (
+        "the same reason the membrane exists at all: attribution. Kept as its own term "
+        "because it is the sentence people quote, and a quoted sentence still needs a why.",
+        'membrane', ''),
+
     'rung conflation': (
         'settling a higher rung\'s dynamics while still assembling a lower rung\'s parts '
         'fails. Five trained rounds and a granularity probe all failed until the rungs were '
