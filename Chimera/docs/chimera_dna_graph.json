@@ -99651,7 +99651,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "arrangement made trainable; 4 objective-repair rounds; inside all four measured bands"
+      "note": "arrangement made trainable; 4 objective-repair rounds; inside all four measured bands",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_ffaba92fa20fb05b",
@@ -99670,7 +99671,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "arrangement GROWN by Cellular Potts (irreducible); untrained genomes hit reality band 98% vs parametric 1%"
+      "note": "arrangement GROWN by Cellular Potts (irreducible); untrained genomes hit reality band 98% vs parametric 1%",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_b2754ff357831fde",
@@ -99689,7 +99691,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "grain EMERGES from the environment: channels not layers; neg_order 0->1 gives alignment 0.36->0.65"
+      "note": "grain EMERGES from the environment: channels not layers; neg_order 0->1 gives alignment 0.36->0.65",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_f409040a96ad0c59",
@@ -99708,7 +99711,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "psychophysics: JND/Weber; found the objective was spending its budget on invisible precision"
+      "note": "psychophysics: JND/Weber; found the objective was spending its budget on invisible precision",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_aa1055156ed75792",
@@ -99727,7 +99731,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "range-debias the bands: 5-sample min/max is 1.69x too narrow; band_margin 0.15->0.58 with no retrain"
+      "note": "range-debias the bands: 5-sample min/max is 1.69x too narrow; band_margin 0.15->0.58 with no retrain",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_00f50baecf014256",
@@ -99746,7 +99751,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "because-chains under the vocabulary; every term reaches PHYSICS or THE HUMAN"
+      "note": "because-chains under the vocabulary; every term reaches PHYSICS or THE HUMAN",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_4226ad56372d0b74",
@@ -99765,7 +99771,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "queryable terminology index + graph (core.terms); 108 terms"
+      "note": "queryable terminology index + graph (core.terms); 108 terms",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_384bab3a5c011402",
@@ -99784,7 +99791,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "pre-commit gate: no server binds the LAN; found+fixed 3 exposed servers"
+      "note": "pre-commit gate: no server binds the LAN; found+fixed 3 exposed servers",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_b604a3243f7fe882",
@@ -99803,7 +99811,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "ENFORCES the objective-design method in the pre-commit hook; surfaced 47 satisficers"
+      "note": "ENFORCES the objective-design method in the pre-commit hook; surfaced 47 satisficers",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_e8b8611290091a43",
@@ -99822,7 +99831,8 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "fixed 2 GPU-shaker bugs; one silently broke the volume constraint every run; now bit-identical"
+      "note": "fixed 2 GPU-shaker bugs; one silently broke the volume constraint every run; now bit-identical",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "discovery_e314993af9a04e14",
@@ -99841,7 +99851,8 @@
       "failure_sources": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "the Axelrod error (hand-picked strategies mislead); capacity determines reachable performance; computational irreducibility"
+      "note": "the Axelrod error (hand-picked strategies mislead); capacity determines reachable performance; computational irreducibility",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "discovery_9beaf6cf36ae316c",
@@ -99860,7 +99871,8 @@
       "failure_sources": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "neutral mutations are the mechanism; noncoding genes; adaptive evolution finds a way; punctuated equilibrium"
+      "note": "neutral mutations are the mechanism; noncoding genes; adaptive evolution finds a way; punctuated equilibrium",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "discovery_5db1c370bac565bf",
@@ -99879,7 +99891,8 @@
       "failure_sources": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "an objective is a foliation on the mutation graph; developmental constraint; development dominates selection (refuted for our reducible emitter)"
+      "note": "an objective is a foliation on the mutation graph; developmental constraint; development dominates selection (refuted for our reducible emitter)",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "discovery_cc1953d545085f73",
@@ -99898,7 +99911,8 @@
       "failure_sources": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "computational boundedness: the laws you can attribute depend on the observer; LOD = pocket of reducibility"
+      "note": "computational boundedness: the laws you can attribute depend on the observer; LOD = pocket of reducibility",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "discovery_4365ffc5f8bf5ab1",
@@ -99917,7 +99931,8 @@
       "failure_sources": [],
       "backfilled": true,
       "session": "381e62e9",
-      "note": "Weber fraction numerosity ~0.15 (0.10-0.28); orientation discrimination ~5.12 deg; the JND constants"
+      "note": "Weber fraction numerosity ~0.15 (0.10-0.28); orientation discrimination ~5.12 deg; the JND constants",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_6189ea1b68a69fa6",
@@ -99933,7 +99948,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_9f229382c415ef47",
@@ -99949,7 +99965,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_4240afc467aa763f",
@@ -99965,7 +99982,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_746b9ea26ba791cd",
@@ -99981,7 +99999,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_3f4f1262fe46fb8e",
@@ -99997,7 +100016,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_5d21c54c73fc358d",
@@ -100013,7 +100033,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_69eda4cdce1cc60c",
@@ -100029,7 +100050,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_052e564d72ae5949",
@@ -100045,7 +100067,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_83cbcdc444a130f1",
@@ -100061,7 +100084,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_f080205534e0d309",
@@ -100081,7 +100105,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_4846899ba911e7cc",
@@ -100097,7 +100122,8 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_d9a3736db6519ad6",
@@ -100118,7 +100144,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_8fd31d1d9e6bde7f",
@@ -100139,7 +100166,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_c3d42991fe0e6c96",
@@ -100166,7 +100194,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_3bc9a57afab0b727",
@@ -100194,7 +100223,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_6128f2a1a4cb4c57",
@@ -100222,7 +100252,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_b7e57b615ddcbb77",
@@ -100244,7 +100275,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_99ced2ae26c8c3be",
@@ -100265,7 +100297,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "feature_a81643c81fd1aa98",
@@ -100287,7 +100320,8 @@
       },
       "iteration_history": [],
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
     },
     {
       "id": "surprise_f3d7074336ee3789",
@@ -100303,7 +100337,27 @@
       "template_file": "",
       "error_category": "",
       "backfilled": true,
-      "session": "381e62e9"
+      "session": "381e62e9",
+      "recorded_by": "legacy_pre_provenance"
+    },
+    {
+      "id": "surprise_2c843663c943619a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T19:56:40.526098",
+      "context": "Asked to 'grow terrain as a rung', I built local hydraulic+thermal erosion (a patch-by-patch rung like granular/bigbang). Assumed terrain is grown bottom-up from local rules.",
+      "expectation": "",
+      "reality": "Terrain is the planet's OUTER MEMBRANE: whole-sphere, produced all at once (spherical harmonics), and an ONION of height maps by depth (topsoil..core). Children stored RELATIVE to parent so editing the base carries them without breaking (witnessed: +8km uplift 0 violations relative vs 64800 absolute). Built core/planet_membrane.py; erosion removed. SH low-degree=continents/parent, high-degree=mountains/child IS the hierarchy.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Terrain is the planet's OUTER MEMBRANE: whole-sphere, produced all at once (sphe'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_132e954ee0ed"
     }
   ],
   "edges": [
