@@ -191,8 +191,10 @@
 > **UE untangling — SCOPED 2026-07-24** (`docs/UE_UNTANGLING_SCOPE.md`). The "huge entangled
 > UE subsystem" is really a ~12k-LOC C++ **generation backend** that is nearly an island (helm/
 > rep_engine/trainer/matter do NOT import it). The game-spec DSL and the general guards stay.
-> One focused session removes the backend; the UE-string cleanup in current infra is a separate,
-> optional pass. Pre-delete gate: `python tools/ue_ring_check.py`. Not started -- scoped only.
+> **BACKEND REMOVED 2026-07-24** — 12 modules, 12,659 LOC deleted, zero dangling imports, all
+> survivors import cleanly. `generator_guard` went too (it guarded the UE C++ output dir, a
+> no-op once the generator left). DSL kept. The UE-*string* cleanup in current infra remains a
+> separate optional pass. Gate: `python tools/ue_ring_check.py`.
 
 ## ⚪ T7 — THE LONG ARC (the game itself; each is a project, not a task)
 

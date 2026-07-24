@@ -1,4 +1,15 @@
-# UE untangling — SCOPE (not the work; the map before the work)
+# UE untangling — SCOPE + EXECUTION LOG
+
+> **BACKEND REMOVED 2026-07-24.** 12 modules, 12,659 LOC deleted; every survivor imports
+> cleanly; zero dangling imports (verified). What follows is the scope that guided it, kept
+> as the record. ONE scope correction, found during execution: `generator_guard` was NOT the
+> general guard the scope assumed — it guarded `Source/Chimera/ProceduralGenerated/` (the UE
+> C++ output dir) specifically, so with the generator gone it was a no-op. It was removed too,
+> and preflight/postflight de-referenced (their generator-guard blocks were fail-safe
+> try/except, excised cleanly). The DSL was KEPT (operator's call), as recommended.
+
+---
+
 
 > Scoped 2026-07-24. The backlog carried "remove the UE-era subsystem" as a large, scary
 > item. Before touching it, this maps what is actually there. The headline: **it is far
@@ -46,7 +57,7 @@ Plus the demos/utilities that exist only to drive them (die with the ring):
 | module | why it stays |
 |---|---|
 | `core/dsl_game_parser.py` (967) + `dsl_grammar_validator.py`, `dsl_mcp_bridge.py` | the DSL is the **game-spec language** (narrative/gameplay/world/ui/audio) — a concept, not an engine. Its UE-C++ *backend* goes; the spec parser is reusable for any backend (including the matter/genome pipeline). **Decision needed:** keep the DSL as the spec front-end, or retire it too? |
-| `core/generator_guard.py` (277) | "never hand-edit generator-owned files" is a **general** rule — it still guards the auto-decomposer's generated domains. Generalize it away from C++ specifics; do not delete. |
+| ~~`core/generator_guard.py`~~ | **CORRECTED + REMOVED.** On inspection it guarded `Source/Chimera/ProceduralGenerated/` (UE C++ output) specifically, not generated files in general — a no-op once the generator went. Deleted; preflight/postflight de-referenced. |
 
 ### RETAIN — current infra that merely *references* UE (a SEPARATE, later pass)
 `graphify_interface`, `rep_engine`, `helm`, `wellspring`, `preflight`, `postflight`, the gates,

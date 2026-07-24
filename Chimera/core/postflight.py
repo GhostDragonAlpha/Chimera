@@ -183,54 +183,10 @@ def main():
     except Exception as _rg_e:            # BROKEN: it raised. That is not a pass.
         _gate_broken("Research Gate", _rg_e)
 
-    # Generator Guard — refuse to record a session that hand-edited generator-owned
-    # C++ (it'll be silently clobbered on the next pipeline run) unless explicitly
-    # waived. LM-judged (may take a minute on the local model — only fires when
-    # generated files are dirty and the generator itself wasn't changed).
-    try:
-        from core.generator_guard import (check as _gg_check, enforced as _gg_enforced,
-                                           format_violations as _gg_fmt)
-        _gg_viol = _gg_check()
-        if _gg_viol:
-            print(f"\n!! GENERATOR GUARD - {len(_gg_viol)} hand-edit(s) to generator-owned "
-                  f"C++ (clobbered on the next pipeline run):")
-            print(_gg_fmt(_gg_viol))
-            _gg_waiver = (getattr(args, "generator_waiver", "") or "").strip()
-            if _gg_enforced() and not _gg_waiver:
-                print("Fix the generator template in core/game_code_generator.py, not the C++. "
-                      "If intentional (e.g. migrating a file to generator ownership), pass "
-                      "--generator-waiver \"<reason>\".")
-                try:
-                    from core.graphify_interface import record_surprise as _gg_rs
-                    _gg_rs(context=f"postflight refused by generator guard: {args.phase[:70]}",
-                           reality=f"{len(_gg_viol)} hand-edit(s) to generator-owned C++: "
-                                   + ", ".join(v['path'].split('/')[-1] for v in _gg_viol[:6]),
-                           expectation="fix the generator template, never the generated C++",
-                           source="agent")
-                except Exception:
-                    pass
-                try:
-                    from core.capcom import post_safe as _gg_ps
-                    _gg_ps("generator-guard", f"postflight BLOCKED: {len(_gg_viol)} hand-edit(s) "
-                           f"to generator-owned C++ ({args.phase[:44]})",
-                           level="warn", source="generator-guard")
-                except Exception:
-                    pass
-                raise SystemExit(1)
-            if _gg_waiver:
-                print(f"[Generator Guard] WAIVED: {_gg_waiver[:100]}")
-                try:
-                    from core.capcom import post_safe as _gg_ps
-                    _gg_ps("generator-guard", f"generator hand-edit WAIVED: {_gg_waiver[:60]}",
-                           level="note", source="generator-guard")
-                except Exception:
-                    pass
-    except SystemExit:
-        raise
-    except ImportError as _gg_e:          # ABSENT: the module is not here
-        print(f"[Generator Guard] not installed ({_gg_e}) — passing open")
-    except Exception as _gg_e:            # BROKEN: it raised. That is not a pass.
-        _gate_broken("Generator Guard", _gg_e)
+    # (The Generator Guard was removed 2026-07-24 with the UE C++ generation backend it
+    # protected — it refused hand-edits to Source/Chimera/ProceduralGenerated/, which nothing
+    # generates anymore. Its `--generator-waiver` arg is now inert. See
+    # docs/UE_UNTANGLING_SCOPE.md.)
 
     # ---------------------------------------------------------------------------
     # THE GATE STACK WAS OPT-IN, AND NOBODY OPTED IN (fixed 2026-07-17).
