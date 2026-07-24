@@ -100140,6 +100140,33 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_c3d42991fe0e6c96",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "emissive_genome",
+      "feature_type": "trainable",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "925100f",
+        "archetypes": [
+          "laser",
+          "plasma_bolt",
+          "fire",
+          "engine_glow"
+        ],
+        "intake": "authored",
+        "port": "energy",
+        "closes": "backlog T4 emissive"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
