@@ -180,6 +180,16 @@
   cave (surface 12 m, water table 11 m) is 86% flooded — a 53,723 m³ lake — with iron+coal on its
   walls. Pure function of position. Verified by looking (dry dark chamber | flooded lake + wall
   iron). `c712958`.
+- [x] **Biomes over the surface (ON the PROGRAM|TRAIN|HUMAN line)** ✅ BUILT — `core/biomes.py`.
+  The operator asked where "train everything" meets "actually program". Biomes is the worked
+  answer, split into three tiers: PROGRAM the rules (temperature ~cos(lat) + lapse; precip =
+  Hadley belts + continentality; the Whittaker temp×precip structure), TRAIN the numbers
+  (THRESHOLDS, with measure() = biome-area fractions vs Earth; `train_thresholds` searched
+  0.542→0.180), HUMAN the taste (PALETTE). A LAW bug the measure surfaced (lat^1.15 froze
+  mid-latitudes) was fixed by reprogramming the law (→cos), NOT by training thresholds —
+  diagnose the tier first. Mismatch arc 0.655 (broken law) → 0.512 (law fixed) → 0.180 (trained).
+  Verified by looking (map + globe: ice caps, equatorial forests, subtropical deserts). See
+  memory `program-train-human-line`. `f8a58ae`.
 
 ## 🟢 T3 — THE -OLOGY BOARD (staff the two terminals; see TERMINOLOGY.md §11)
 
