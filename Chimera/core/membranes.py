@@ -155,6 +155,7 @@ class Membrane:
     surface: object = None                         # callable(x,y)->height, or None if a shell
     properties: dict = field(default_factory=dict)  # PHYSICS the game reads: density, friction...
     ports: dict = field(default_factory=dict)      # name -> Port
+    skin: float = 1e-3                             # thickness of "on the boundary", metres
 
     # --- nesting -----------------------------------------------------------
 
@@ -226,8 +227,12 @@ class Membrane:
             d = float(p[2]) - h
         else:                                              # a shell of radius `scale`
             d = float(np.linalg.norm(p)) - self.scale
-        tol = 1e-6 * max(self.scale, 1.0)
-        return 'on' if abs(d) <= tol else ('outside' if d > 0 else 'inside')
+        # A BOUNDARY IS THIN, and its thickness is its own, not its parent's. This was
+        # 1e-6 * scale, so a ground membrane on a 6371 km planet called anything within
+        # +/-6.4 m "on the surface" -- a man standing up and a man buried both read as
+        # touching it. `skin` is absolute (default 1 mm) because a surface does not get
+        # thicker just because the world it wraps is large.
+        return 'on' if abs(d) <= self.skin else ('outside' if d > 0 else 'inside')
 
     def contains(self, local_point) -> bool:
         return self.side(local_point) in ('inside', 'on')
@@ -330,6 +335,90 @@ class Membrane:
         yield _d, self
         for c in self.children:
             yield from c.walk(_d + 1)
+
+
+# ---------------------------------------------------------------------------
+# THE WORLD AS MEMBRANES
+#
+# core/sections.py, progeny's tiles and membrane_shapes were three parallel systems
+# doing what one construct does. These constructors express them AS membranes without
+# touching their internals -- the verified seam, tiling and render behaviour keeps
+# running underneath, and the duplication becomes a single hierarchy above it.
+#
+# THE SIX DIRECTIONS ARE THE SIX PORTS OF A CELL. That is not an analogy: a direction
+# is a face you can attach through, an unfilled port is somewhere the world is not
+# finished, and open_ports() is therefore the work queue. Fill six, migrate.
+# ---------------------------------------------------------------------------
+
+SIX = (('down', (0., 0., -1.)), ('up', (0., 0., 1.)),
+       ('north', (0., 1., 0.)), ('south', (0., -1., 0.)),
+       ('east', (1., 0., 0.)), ('west', (-1., 0., 0.)))
+
+HUMAN_CELL = 1.83          # 6 ft: a person and their arm span
+
+
+def universe(name: str = 'universe', extent: float = 9.46e15) -> Membrane:
+    """The root. Everything else nests inside it."""
+    return Membrane(name, scale=extent, serial='U')
+
+
+def planet(parent: Membrane, name: str, radius: float = 6.371e6,
+           origin=(0., 0., 0.), relief: float = 1.5) -> Membrane:
+    """A planet, whose GROUND MEMBRANE is the height field.
+
+    The heightmap is not terrain-as-a-thing. It is the boundary that decides inside
+    (soil, roots, caves) from outside (air, things resting on the surface), which is why
+    a tree can span it.
+    """
+    from core.progeny import world_height
+    p = parent.add(Membrane(name, scale=radius, serial=f'P-{name}',
+                            origin=np.asarray(origin, dtype=np.float64)))
+    p.prop(radius_m=radius, gravity_m_s2=9.81)
+    ground = p.add(Membrane('ground', scale=radius, serial='G',
+                            surface=lambda x, y: float(world_height(x, y, amplitude=relief))))
+    ground.prop(relief_amplitude=relief)
+    ground.port('surface', 'substrate', at=[0., 0., 0.], facing=[0., 0., 1.], size=radius)
+    return ground
+
+
+def section(ground: Membrane, world_x: float, world_y: float) -> Membrane:
+    """A section — one session's worth of work — with its four lateral neighbours as ports."""
+    from core.sections import section_at, SECTION_SPAN
+    s = section_at(world_x, world_y)
+    ox, oy = s['origin']
+    m = ground.add(Membrane('section', scale=SECTION_SPAN, serial=s['serial'],
+                            origin=np.array([ox, oy, 0.0], dtype=np.float64)))
+    h = SECTION_SPAN * 0.5
+    for nm, d in (('east', (1., 0., 0.)), ('west', (-1., 0., 0.)),
+                  ('north', (0., 1., 0.)), ('south', (0., -1., 0.))):
+        m.port(nm, 'structural', at=np.asarray(d) * h, facing=d, size=SECTION_SPAN)
+    return m
+
+
+def cell(parent: Membrane, i: int, j: int, k: int = 0,
+         size: float = HUMAN_CELL) -> Membrane:
+    """A human-scale cell — the placement slot — with the SIX DIRECTIONS as its ports.
+
+    Six studs, one per direction. Filling one attaches a membrane through that face;
+    when none remain open the cell is saturated and you migrate. The work queue is not
+    a list someone maintains — it is the set of unfilled studs.
+    """
+    from core.progeny import tile_seed
+    c = parent.add(Membrane(f'cell', scale=size, serial=f'C{i:+06d}{j:+06d}{k:+04d}',
+                            origin=np.array([i * size, j * size, k * size], dtype=np.float64)))
+    c.prop(seed=tile_seed(i, j, salt=k))
+    for nm, d in SIX:
+        c.port(nm, 'structural', at=np.asarray(d) * (size * 0.5), facing=d, size=size)
+    return c
+
+
+def work_queue(root: Membrane) -> list:
+    """Every unfilled stud in the tree — the world's to-do list, enumerated not authored."""
+    out = []
+    for _, m in root.walk():
+        for p in m.open_ports():
+            out.append((m.path(), p.name, p.kind))
+    return out
 
 
 def main() -> None:
