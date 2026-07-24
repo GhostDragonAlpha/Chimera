@@ -100098,6 +100098,27 @@
       "error_category": "",
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_d9a3736db6519ad6",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "library_one_writer",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "0bcfad0",
+        "owner": "export_genome.save_library",
+        "guard": "core/library_guard.py",
+        "closes": "THE_ORDER 4,9"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
