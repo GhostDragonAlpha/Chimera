@@ -29,6 +29,11 @@
   precision. (`33c5f91`)
 - **Security: two commit gates** — `core/bind_guard.py` (no server binds the LAN) +
   attribution (every commit says who wrote it). Three exposed servers fixed. (`6c96a0b`)
+- **T1 #4 (genome-library integrity) — SOLVED & ENFORCED** — recovered_genomes.json now has
+  ONE atomic writer (`export_genome.save_library`: tmp+os.replace, merge, lockfile). The
+  three writers left after the T0 deletions (export_genome + 2 processors) route through it;
+  `core/library_guard.py` in the pre-commit hook refuses any new direct writer. The two
+  schemas (#9) are documented at the owner. (this session)
 - **T0 (Broken Now) — CLOSED: the dead sequential-automation layer retired** — 22 files
   deleted (launchers pointing at deleted files, 9 orphan agents incl. the _old/_fixed
   triplicates, the doc-agent that corrupted task_progress.md). task_progress.md truncated
@@ -55,9 +60,10 @@
 
 ## 🟠 T1 — INTEGRITY (nothing breaks today, but the ground is soft)
 
-- [ ] **Seven writers to `recovered_genomes.json`** (THE_ORDER #4) — no locking, no owner.
-  One bad concurrent write corrupts the library everything depends on.
-  *Fix: `export_genome.py` owns it; the other six become readers or die.*
+- [x] **Seven writers to `recovered_genomes.json`** (THE_ORDER #4) ✅ SOLVED — 3 were deleted
+  in the T0 retirement; the rest route through the single atomic owner `save_library`, and
+  `library_guard` (pre-commit) refuses new direct writers. Atomic (tmp+os.replace) + merge +
+  lock, so a crash or a concurrent write can no longer corrupt or silently truncate the library.
 - [ ] **~1,067 lines of root-level duplicate processors** (THE_ORDER #5) —
   `process_materials_pipeline.py`, `process_more_materials.py`,
   `phase3_recombination_testing.py`, all doing step 2's job three different ways.
@@ -67,8 +73,9 @@
   {,_fixed,_old}`, `research_agent`, `validation_agent`).
 - [ ] **Split brain** (THE_ORDER #8) — the pipeline lives in `Construction/` + `WorldModel/`
   at the repo root AND `core/` under `Chimera/`, imports crossing both ways. *Choose one home.*
-- [ ] **Two undocumented genome schemas** (THE_ORDER #9) — single-specimen vs class coexist
-  in one file; a reader cannot tell which it has. *Document both in SPLAT_DNA_WORKFLOW §7.5.*
+- [x] **Two undocumented genome schemas** (THE_ORDER #9) ✅ DOCUMENTED at the owner
+  (`export_genome.save_library`): single-specimen (mean+p10..p90) vs class (adds
+  between_std/within_std); a reader distinguishes by the presence of `between_std`.
 - [ ] **47 objectives are satisficers** (surfaced by `objective_lint --all`) — bounds only,
   no maximize/minimize/target, so the trainer stops at the first feasible point. ~36 are
   auto-generated scenario forks (likely obsolete — triage for deletion); ~11 are base

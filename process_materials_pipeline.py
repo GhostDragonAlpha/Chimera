@@ -262,20 +262,11 @@ def process_material(scan1_path, scan2_path, material_name, n_children=12, n_spl
     print(f"\nRendering to {out_path}...")
     render_orbit(scene, out_path=str(out_path), n_views=6, elev_deg=12.0)
     
-    # Save class genome
-    genomes_file = Path('Chimera/docs/matter/recovered_genomes.json')
-    if genomes_file.exists():
-        with open(genomes_file, 'r') as f:
-            payload = json.load(f)
-    else:
-        payload = {}
-    
-    payload.setdefault("genomes", {}).update({material_name: class_genome})
-    payload["_provenance"] = "Merged from real scans via genetics pipeline"
-    
-    with open(genomes_file, 'w') as f:
-        json.dump(payload, f, indent=2)
-    print(f"\nSaved class genome to {genomes_file}")
+    # Save class genome THROUGH THE ONE ATOMIC WRITER (THE_ORDER #4). This used to do its
+    # own non-atomic load-merge-dump, racing every other writer of the same file.
+    from Construction.export_genome import save_library
+    n = save_library({material_name: class_genome})
+    print(f"\nSaved class genome via export_genome.save_library ({n} genomes in library)")
     
     return {
         'material': material_name,

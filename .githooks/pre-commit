@@ -32,6 +32,15 @@ if command -v python >/dev/null 2>&1 && [ -d Chimera/core ]; then
   fi
 fi
 
+# --- one-writer rule for the genome library (THE_ORDER #4) -----------------
+# recovered_genomes.json has ONE atomic owner (export_genome.save_library). Refuse a
+# staged file that writes it directly and would race the owner.
+if command -v python >/dev/null 2>&1 && [ -d Chimera/core ]; then
+  if ! ( cd Chimera && python -m core.library_guard --staged ); then
+    fail=1
+  fi
+fi
+
 # --- delegate to shazam ----------------------------------------------------
 if [ -x .git/hooks/pre-commit ] && [ "${CHIMERA_SKIP_SHAZAM:-}" != "1" ]; then
   .git/hooks/pre-commit "$@" || fail=1
