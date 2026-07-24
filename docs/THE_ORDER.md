@@ -69,12 +69,12 @@ helper or a duplicate.
 
 | # | Finding | Severity |
 |---|---|---|
-| 1 | **`run_sequential.py` is dead.** It launches 5 scripts by their old root-level names; all 5 were renamed into `agents/`. Every target is MISSING. | **breaks on run** |
-| 2 | **`sequential_orchestrator.py` does not exist** — but `ONBOARDING.md` and `THE_WORKFLOW.md` both instruct agents to run it. | **breaks on run** |
-| 3 | **Triplicate agents.** `integration_agent{,_fixed,_old}.py` and `recombination_agent{,_fixed,_old}.py`. They **differ** (2 and 34 diff lines), so nothing identifies the canonical one. | **high** |
+| 1 | ~~CLOSED 2026-07-24~~ — **`run_sequential.py` retired** with the whole dead sequential-automation layer (orchestrator already deleted, nothing imported it). | ~~breaks on run~~ |
+| 2 | ~~CLOSED 2026-07-24~~ — **`sequential_orchestrator.py` layer retired**; the docs no longer point at it (canonical list: `THE_BACKLOG.md`). | ~~breaks on run~~ |
+| 3 | ~~CLOSED 2026-07-24~~ — **triplicate agents deleted** with the retired layer (`integration_agent{,_fixed,_old}`, `recombination_agent{,_fixed,_old}`). | ~~high~~ |
 | 4 | **Seven writers to `recovered_genomes.json`** — 3 recombination agents, `train_splat_compositions`, `export_genome`, `phase3_recombination_testing`, `process_materials_pipeline`, `process_more_materials`. No locking, no ownership. | **high — data integrity** |
 | 5 | **~1,067 lines of root-level duplicates** doing step 2's job: `process_materials_pipeline.py` (340), `process_more_materials.py` (302), `phase3_recombination_testing.py` (425). | **high** |
-| 6 | **Two agents touch no pipeline at all** — `research_agent.py` and `validation_agent.py` import nothing from `core/` or `Construction/`. | medium |
+| 6 | ~~CLOSED 2026-07-24~~ — **`research_agent.py`/`validation_agent.py` deleted** with the retired layer (they imported no pipeline because the layer was abandoned). | ~~medium~~ |
 | 7 | ~~CLOSED 2026-07-23~~ — **Every Pi agent was handed 8 Unreal editor tools** (`.pi/extensions/mcp-bridge.ts`, `mcp-pathways-index.ts`) while its prompt says UE is retired. | medium |
 | 8 | **Split brain.** The pipeline lives in **two homes** — `Construction/` + `WorldModel/` at the repo root, `core/` under `Chimera/`. Imports cross both ways. | medium |
 | 9 | **Two schemas coexist** in the genome file (single-specimen vs class). Benign — class is a superset — but undocumented, so a reader cannot tell which it has. | low |

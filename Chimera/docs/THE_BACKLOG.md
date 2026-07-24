@@ -29,6 +29,10 @@
   precision. (`33c5f91`)
 - **Security: two commit gates** — `core/bind_guard.py` (no server binds the LAN) +
   attribution (every commit says who wrote it). Three exposed servers fixed. (`6c96a0b`)
+- **T0 (Broken Now) — CLOSED: the dead sequential-automation layer retired** — 22 files
+  deleted (launchers pointing at deleted files, 9 orphan agents incl. the _old/_fixed
+  triplicates, the doc-agent that corrupted task_progress.md). task_progress.md truncated
+  9-copies -> a 10-line pointer to this backlog. Closed THE_ORDER findings 1, 2, 3, 6. (this session)
 - **Objective design — SOLVED & ENFORCED** — the complete 7-rule method for a trainer
   objective the optimiser won't exploit (`docs/OBJECTIVE_DESIGN.md`), enforced by
   `core/objective_lint.py` in the pre-commit hook. Each rule proved by a worked failure.
@@ -39,14 +43,15 @@
 
 ## 🔴 T0 — BROKEN NOW (a fresh agent hits these on day one)
 
-- [ ] **`task_progress.md` is corrupted** — 9 identical copies of one automation block, the
-  auto-flush daemon appending forever. It is the first thing an agent reads and it is noise.
-  *Fix: truncate to one block, or point the daemon at an append-safe log.*
-- [ ] **`run_sequential.py` is dead** (THE_ORDER #1) — launches 5 scripts by their old
-  root-level names; all were moved into `agents/`. Every target is missing.
-  *Fix: repoint at `agents/*.py`, or delete it and keep one launcher.*
-- [ ] **`sequential_orchestrator.py` does not exist** (THE_ORDER #2) — but `ONBOARDING.md`
-  and `THE_WORKFLOW.md` both tell agents to run it. *Fix: correct the docs, or write the file.*
+- [x] **`task_progress.md` corruption** ✅ FIXED — root cause was `documentation_agent.py`
+  prepending a fixed block every run, never truncating. That agent is deleted; the file is
+  now a 10-line pointer to this backlog.
+- [x] **`run_sequential.py` dead** ✅ FIXED — deleted with the retired layer (it launched 5
+  deleted files and nothing ran it).
+- [x] **`sequential_orchestrator.py` references** ✅ FIXED — the layer is retired and the docs
+  (THE_WORKFLOW.md) no longer point at it.
+
+> **T0 is now EMPTY** — a fresh agent no longer trips on broken entry points on day one.
 
 ## 🟠 T1 — INTEGRITY (nothing breaks today, but the ground is soft)
 
@@ -57,8 +62,9 @@
   `process_materials_pipeline.py`, `process_more_materials.py`,
   `phase3_recombination_testing.py`, all doing step 2's job three different ways.
   *Fix: fold any unique behaviour into `export_genome.py`, delete the rest.*
-- [ ] **Two agents touch no pipeline** (THE_ORDER #6) — `research_agent.py`,
-  `validation_agent.py` import nothing from `core/` or `Construction/`. *Wire or delete.*
+- [x] **Triplicate agents + pipeline-less agents** (THE_ORDER #3, #6) ✅ DELETED with the
+  retired sequential-automation layer (`integration_agent{,_fixed,_old}`, `recombination_agent
+  {,_fixed,_old}`, `research_agent`, `validation_agent`).
 - [ ] **Split brain** (THE_ORDER #8) — the pipeline lives in `Construction/` + `WorldModel/`
   at the repo root AND `core/` under `Chimera/`, imports crossing both ways. *Choose one home.*
 - [ ] **Two undocumented genome schemas** (THE_ORDER #9) — single-specimen vs class coexist
