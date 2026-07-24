@@ -128,6 +128,18 @@
   bimodality 0.568 > 0.555 two-crust signature); a real DEM drops into the SAME representation
   via `from_topo_grid`. Instances `core/membranes.py` (onion = addressable layers, LOD = depth);
   adjust ops + connection-point sampler. Verified by looking (globe/map/onion renders). `61e9f66`.
+- [x] **Within & under the onion: resources + voids** ✅ BUILT — `core/planet_layers.py`. The
+  operator's next three: layer OVER (the surface stud — done above), WITHIN (ore/gems for mining),
+  UNDER (caves, lava tubes). A resource's LAYER derives from FORMATION physics (pressure ρgh +
+  geotherm): diamonds in the mantle (>4 GPa ⇒ >136 km), placer gold in shallow soil (land-only),
+  banded iron/coal in bedrock, copper veins in crust. Deterministic pure-function-of-position
+  (no storage, infinite world), keyed to DEPTH-BELOW-SURFACE so veins ride uplift (onion
+  invariant). Voids layer-typed by genesis: karst caves (soluble bedrock), lava tubes (volcanic
+  crust). `probe`/`borehole`/`prospect`/`to_membranes`. A render-hidden bug (interpolated noise
+  ≠ uniform ⇒ low-abundance gems never placed) was caught by the numeric `prospect` scan and
+  fixed (raw cell-hash gate). MEASURED: all 5 deposits in their formation layers at
+  abundance-matched rates (iron 26.9% bedrock, diamond 1.3% mantle); both void types reachable.
+  Verified by looking (shallow ore+caves, deep diamond lenses below 136 km). `3fbd239`.
 
 ## 🟢 T3 — THE -OLOGY BOARD (staff the two terminals; see TERMINOLOGY.md §11)
 
