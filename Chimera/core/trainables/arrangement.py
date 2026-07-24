@@ -226,6 +226,22 @@ def measure(genome: dict) -> dict:
         centre = 0.5 * (lo + hi)
         margins.append(max(0.0, 1.0 - abs(out[k] - centre) / half))
     out['band_margin'] = round(float(min(margins)), 4)
+
+    # PERCEPTUAL MARGIN (2026-07-23, psychophysics hired). band_margin is the MIN over the
+    # four facts, so for a full day it was pinned at 0.196 by verticality (2.1 JNDs wide)
+    # and alignment (1.1 -- BELOW the discrimination threshold, its two ends look identical)
+    # while aspect, 27.2 JNDs wide and plainly visible, was never the constraint. The
+    # optimiser was spending its whole budget on precision nobody can see.
+    #
+    # The fix is NOT to drop the invisible facts -- they still constrain what the matter
+    # physically IS, and total_off holds all four inside reality as a hard requirement.
+    # It is to weight WHERE THE EFFORT GOES by how much of each fact reaches a person.
+    from core.perception import perceptual_weights
+    w = perceptual_weights({k: t[k] for k in
+                            ('aspect', 'verticality', 'alignment', 'clustering')})
+    keys = ('aspect', 'verticality', 'alignment', 'clustering')
+    out['seen_margin'] = round(float(sum(
+        w[k] * m for k, m in zip(keys, margins))), 4)
     return out
 
 
