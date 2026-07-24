@@ -100453,6 +100453,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_ace16bce4cb5"
+    },
+    {
+      "id": "surprise_9f4e10e4fe30fd50",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T22:24:28.454400",
+      "context": "Operator: 'I said I wanted everything trained but there's a line where we have to actually use programming -- help me find it.' Building biomes, the measure() flagged 47% ice+tundra; the reflex was to TRAIN the temperature thresholds to fix it.",
+      "expectation": "",
+      "reality": "The line has THREE tiers: PROGRAM the rules (laws/algorithms/representations/invariants), TRAIN the numbers (free values with a physics-checkable measure), HUMAN the taste. Test: write the measure() first. Training runs ON programmed physics. AND: diagnose the TIER before fixing -- the 'too cold' was a LAW bug (lat^1.15 curve), fixed by reprogramming (cos law) NOT by training thresholds; training a threshold to hide a broken law is training luck. Mismatch 0.655 (broken law) -> 0.512 (law fixed) -> 0.180 (residual trained, 220 evals). core/biomes.py f8a58ae.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'The line has THREE tiers: PROGRAM the rules (laws/algorithms/representations/inv'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_eee6a75ead18"
     }
   ],
   "edges": [
