@@ -138,7 +138,12 @@
   instead of rendering as dull grey. Verified: laser = a bright bolt, fire = a white-hot-core
   blob. AUTHORED from physics (the legitimate second intake); measured-from-.splatv is a
   future upgrade (the 4D format is a 396KB-header parse).
-- [ ] **Fluid genome** — the `fluid` port is an honest empty set in `bricks.py`.
+- [x] **Fluid genome** ✅ BUILT — `core/fluid.py`: the liquid family over {colour,
+  transparency, depth_tint, surface_gloss, flow, viscosity, emission}, five archetypes (water,
+  ocean, lava, mud, coolant). The `fluid` port returns candidates (was 0). Renders correctly:
+  water = a flat translucent blue pool (you see through it), lava = a mounded opaque glowing
+  orange one (molten fluids carry an emission, reusing the emissive render path). Authored, not
+  measured; no refraction (a future upgrade). Uses the existing translucent-Lambert render.
 - [ ] **Atmospheric genome** — same. `core/atmosphere.py` exists (scattering) but is not a
   placeable genome.
 

@@ -50,8 +50,8 @@ KIND_ROLE = {
     'gravitational': ('measured', 'mineral_dry', 'metallic', 'rock', 'wood'),
     'energy':     ('emissive',),   # the light family (core/emissive.py) now emits -- lasers,
                                    #   plasma, fire, engine glow. Served by propose()'s energy branch.
-    'fluid':      (),              # still honest empty sets: the library cannot yet express
-    'atmospheric': (),             #   what flows through these interfaces.
+    'fluid':      ('liquid',),     # the liquid family (core/fluid.py): water, ocean, lava, mud.
+    'atmospheric': (),             # still an honest empty set: nothing yet flows as air/gas.
 }
 
 
@@ -120,6 +120,12 @@ def propose(host: Membrane, port_name: str, n: int = 8, seed: int = 0) -> list:
     if p.kind == 'energy':
         from core import emissive
         return emissive.propose(n=n, seed=seed)
+
+    # FLUID flows liquid: translucent, tinted, pooling. Its own family for the same reason --
+    # a liquid is not an opaque material surface (core/fluid.py).
+    if p.kind == 'fluid':
+        from core import fluid
+        return fluid.propose(n=n, seed=seed)
 
     genomes, lib = _library()
 
