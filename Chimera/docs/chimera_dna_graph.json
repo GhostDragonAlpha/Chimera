@@ -100195,6 +100195,34 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_6128f2a1a4cb4c57",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "atmosphere_genome",
+      "feature_type": "trainable",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "5d211c8",
+        "archetypes": [
+          "earth",
+          "mars",
+          "titan",
+          "venus",
+          "thin"
+        ],
+        "intake": "authored",
+        "port": "atmospheric",
+        "milestone": "T4 complete, no empty port kinds"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
