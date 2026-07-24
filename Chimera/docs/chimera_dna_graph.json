@@ -100245,6 +100245,27 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_99ced2ae26c8c3be",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "disagreement",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "7580c7c",
+        "method": "concord over shared facts, keep divergence",
+        "result": "parametric aspect +54%, grown clustering +66%, alignment CONCORD",
+        "principle": "holy ghost"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
