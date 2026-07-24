@@ -53,5 +53,45 @@
     "grew": "A HARD gate rather than a soft penalty on purpose. Partial failure here is invisible in an average: measure() would quietly report the mean of whichever restarts survived."
   },
   "_honest_limit": "40^3 lattice, 26 sweeps, 3 restarts. Bigger blobs need proportionally more sweeps to anneal, so a form that looks settled here may not be settled at scale. The GPU makes that affordable to check and it has not been checked.",
-  "_round_2": "Negative space added. Alignment is no longer trained toward -- it is a consequence of the environment's coherence, which is the only place real grain comes from."
+  "_round_2": "Negative space added. Alignment is no longer trained toward -- it is a consequence of the environment's coherence, which is the only place real grain comes from.",
+  "_targets_from_scan": {
+    "source": "truck.splat, 5 regions, Construction/arrangement_dna.py",
+    "_NOTE": "Bands are RANGE-DEBIASED at load time -- see core/trainables/arrangement.py targets(). The raw min..max of 5 regions covers only ~67% of the population and is ~1.69x too narrow; targets() widens each to a 95% coverage band on the liability scale, keyed on the region count so a 2nd scan auto-shrinks the correction. Do not hardcode band numbers here -- they would drift from the code.",
+    "raw_bands_for_reference": {
+      "aspect": [
+        0.468,
+        1.763
+      ],
+      "verticality": [
+        0.301,
+        0.476
+      ],
+      "alignment": [
+        0.516,
+        0.576
+      ],
+      "clustering": [
+        4.679,
+        8.172
+      ]
+    },
+    "debiased_bands_at_n5": {
+      "aspect": [
+        0.325,
+        3.037
+      ],
+      "verticality": [
+        0.283,
+        0.584
+      ],
+      "alignment": [
+        0.497,
+        0.599
+      ],
+      "clustering": [
+        3.406,
+        8.719
+      ]
+    }
+  }
 }

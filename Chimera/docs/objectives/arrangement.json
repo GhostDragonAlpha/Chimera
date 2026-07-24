@@ -57,22 +57,43 @@
   },
   "_targets_from_scan": {
     "source": "truck.splat, 5 regions, Construction/arrangement_dna.py",
-    "aspect_band": [
-      0.468,
-      1.763
-    ],
-    "verticality_band": [
-      0.301,
-      0.476
-    ],
-    "alignment_band": [
-      0.516,
-      0.576
-    ],
-    "clustering_band": [
-      4.679,
-      8.172
-    ]
+    "_NOTE": "Bands are RANGE-DEBIASED at load time -- see core/trainables/arrangement.py targets(). The raw min..max of 5 regions covers only ~67% of the population and is ~1.69x too narrow; targets() widens each to a 95% coverage band on the liability scale, keyed on the region count so a 2nd scan auto-shrinks the correction. Do not hardcode band numbers here -- they would drift from the code.",
+    "raw_bands_for_reference": {
+      "aspect": [
+        0.468,
+        1.763
+      ],
+      "verticality": [
+        0.301,
+        0.476
+      ],
+      "alignment": [
+        0.516,
+        0.576
+      ],
+      "clustering": [
+        4.679,
+        8.172
+      ]
+    },
+    "debiased_bands_at_n5": {
+      "aspect": [
+        0.325,
+        3.037
+      ],
+      "verticality": [
+        0.283,
+        0.584
+      ],
+      "alignment": [
+        0.497,
+        0.599
+      ],
+      "clustering": [
+        3.406,
+        8.719
+      ]
+    }
   },
   "_honest_limit": "One scan, one material class. These targets describe truck-scan matter, not grass or bark or regolith. Each kind needs its own measured targets; training every form against this one would produce a world where everything is arranged like a truck.",
   "_round_2": "Round 1 scored 0.9680, landed total_off=0 inside all four bands, robustness 0.9096 -- and was UNUSABLE for variation because it sat on an edge. The objective was iterated, not the artifact.",

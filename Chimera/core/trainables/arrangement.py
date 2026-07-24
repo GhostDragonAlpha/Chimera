@@ -153,11 +153,84 @@ def _facts(pos, dirs) -> dict:
 # nothing. If the measured targets are absent this raises rather than degrading.
 
 _TARGETS = None
+_RAW_TARGETS = None
+
+# RANGE DEBIASING. The observed min..max of n samples is a BIASED estimate of a population's
+# spread -- badly at small n. The range of 5 samples covers only ~67% of the population and
+# spans ~2.33 sigma (the control-chart constant d2), while a 95% band spans 3.92 sigma. So
+# every band measured from 5 regions is ~1.69x too narrow, and the two narrowest ones
+# (verticality, alignment) were the binding constraint on band_margin all along. This is a
+# BIAS, not noise: averaging more regions the same way converges on the wrong narrow answer
+# more confidently. It is corrected here from data already on disk, no new scans.
+#
+# d2 = E[range]/sigma for n normal draws. Monte-Carlo verified: table 2.326 vs MC 2.328 at n=5.
+_D2 = {2: 1.128, 3: 1.693, 4: 2.059, 5: 2.326, 6: 2.534, 7: 2.704, 8: 2.847,
+       9: 2.970, 10: 3.078, 12: 3.258, 15: 3.472, 20: 3.735, 25: 3.931}
+COVERAGE_Z = 1.96          # 95% population coverage. A stated choice, not a default nobody saw.
+
+# The debiasing is done on the LIABILITY SCALE -- log for positive quantities, logit for
+# proportions -- exactly as core/progeny.py does, and for the same reason: a symmetric
+# widening of a bounded trait on its raw scale walks out of the physical domain (linear
+# debiasing sent aspect's floor to 0.024, a nonsensical ratio), while the inverse transform
+# CANNOT leave it, so no clamping is ever needed. It also treats a right-skewed quantity like
+# clustering multiplicatively, which is what a ratio is.
+_POSITIVE = {'aspect', 'clustering'}
+_PROPORTION = {'verticality', 'alignment'}
+
+
+def _to_liability(k: str, v: float) -> float:
+    if k in _PROPORTION:
+        p = min(max(float(v), 1e-4), 1 - 1e-4)
+        return float(np.log(p / (1 - p)))
+    return float(np.log(max(float(v), 1e-9)))
+
+
+def _from_liability(k: str, x: float) -> float:
+    if k in _PROPORTION:
+        return float(1.0 / (1.0 + np.exp(-x)))
+    return float(np.exp(x))
+
+
+def _d2(n: int) -> float:
+    if n in _D2:
+        return _D2[n]
+    if n < 2:
+        return 1.128
+    keys = sorted(_D2)
+    if n > keys[-1]:
+        return _D2[keys[-1]]                       # asymptote is slow; the last value is close
+    lo = max(k for k in keys if k <= n)
+    hi = min(k for k in keys if k >= n)
+    f = (n - lo) / (hi - lo)
+    return _D2[lo] + f * (_D2[hi] - _D2[lo])       # linear interpolation between table entries
+
+
+def _debias_band(values, k: str, n: int) -> tuple:
+    """Turn n measured values into a 95% coverage band, on the liability scale.
+
+    Center on the sample MEAN (uses all n values, not just the two extremes); estimate sigma
+    from the range via d2; widen to COVERAGE_Z. As n grows the band converges on the true
+    population range -- so a second scan automatically shrinks the correction rather than
+    needing this code changed.
+    """
+    lia = [_to_liability(k, v) for v in values]
+    centre = float(np.mean(lia))
+    sigma = (max(lia) - min(lia)) / _d2(n)
+    return (_from_liability(k, centre - COVERAGE_Z * sigma),
+            _from_liability(k, centre + COVERAGE_Z * sigma))
+
+
+def raw_targets() -> dict:
+    """The undebiased min..max, kept for provenance. NOT the training target."""
+    global _RAW_TARGETS
+    if _RAW_TARGETS is None:
+        targets()                                  # populates both
+    return _RAW_TARGETS
 
 
 def targets() -> dict:
-    """Measured arrangement bands from real scans. Raises if they are missing."""
-    global _TARGETS
+    """Debiased arrangement bands from real scans. Raises if the measurements are missing."""
+    global _TARGETS, _RAW_TARGETS
     if _TARGETS is None:
         import json
         from pathlib import Path
@@ -171,8 +244,10 @@ def targets() -> dict:
                    for r in t.values()]
         if not regions:
             raise ValueError('arrangement_targets.json holds no regions')
-        _TARGETS = {k: (min(r[k] for r in regions), max(r[k] for r in regions))
-                    for k in ('aspect', 'verticality', 'alignment', 'clustering')}
+        n = len(regions)
+        keys = ('aspect', 'verticality', 'alignment', 'clustering')
+        _RAW_TARGETS = {k: (min(r[k] for r in regions), max(r[k] for r in regions)) for k in keys}
+        _TARGETS = {k: _debias_band([r[k] for r in regions], k, n) for k in keys}
     return _TARGETS
 
 

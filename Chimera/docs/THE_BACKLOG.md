@@ -64,14 +64,17 @@
 
 ## 🟡 T2 — THE ARRANGEMENT THREAD (live work, closest to paying off)
 
-- [ ] **Range-debias the bands** — the observed min..max of 5 regions captures only 2.33σ of
-  the population; a real band is 3.92σ. **Every band we measured is ~1.69× too narrow.**
-  Free, from data already on disk, and it directly loosens the binding constraint. *Highest
-  value-per-hour item on the whole list.*
+- [x] **Range-debias the bands** ✅ DONE — `targets()` now widens each raw band to a 95%
+  coverage interval on the liability scale, keyed on the region count (auto-shrinks as scans
+  are added). Bands 1.5–2.1× wider. The parametric winner's `band_margin` went **0.15 → 0.584**
+  with no retraining — the binding constraint that limited the arrangement work all session
+  is gone. Monte-Carlo verified (d2 2.328 vs 2.326). Raw data untouched; correction is in code.
 - [ ] **Measure arrangement on a 2nd scan** — bicycle has 194 camera poses, the multi-view
   target. Widens the narrow verticality/alignment bands with real data instead of statistics.
-- [ ] **`grown_arrangement` clustering runs hot** — 9.255 vs the band ceiling 8.172. Retune
-  the objective or accept it (it is 31% of a 4-JND band). *Decide with the render, not the number.*
+- [ ] **`grown_arrangement` clustering runs hot** — 9.255 vs the *debiased* ceiling 8.719
+  (was 8.172). Over by 0.54 on a band now 5.3 wide. Confirmed a REAL property (grown matter
+  clusters slightly more than the truck), not a measurement artifact. *Accept, or nudge down
+  with a retrain — marginal either way.*
 - [ ] **Wire `grown_arrangement` into `build_child` / `bricks`** as a selectable form, so the
   loop can place grown matter, not only computed matter.
 - [ ] **Grow the OTHER rungs irreducibly** — the reducibility finding generalises: a
