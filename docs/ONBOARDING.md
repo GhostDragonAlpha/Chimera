@@ -37,6 +37,29 @@ on a surface:
   Try it:  python -m core.progeny --genome cluster_00 --parent-b cluster_03 --form tuft \
                                   --instances 400 --verb wind --t 1.0 --out Saved/SplatEmit/x.png
 
+
+HOW THE WORLD IS STRUCTURED — read this before you place anything.
+A MEMBRANE IS A BOUNDARY, AND A BOUNDARY IS A SCALE. The hierarchy is not a naming
+scheme, it is physical nesting: time contains the universe, which contains a planet,
+which contains its ground, which contains sections, cells, objects, materials. One
+construct at different sizes; crossing one inward is what "finer detail" means.
+Being a boundary supplies, at every level and for free:
+  a FRAME     up is that membrane's LOCAL normal — never a global axis
+  a UNIT      coordinates are local, so they never grow large and precision holds
+  an IDENTITY the serial attaches there; an address is the PATH of membranes crossed
+  INSIDE/OUT  and a thing may SPAN one
+  LOD         how many membranes deep you have resolved
+
+EVERYTHING IS TWO ENDS AND A DIAL. You never describe a change; you exhibit its two
+states and let something compute the position between them. Motion, growth, blending
+between two specimens, level of detail, and the story itself are all the same
+mechanism at different scales. A "verb" whose two ends do not differ is not a verb.
+
+A DIRECTION IS A PORT. Each cell has six, typed by what can flow through them, and an
+unfilled one is somewhere the world is not finished. The work queue is therefore
+enumerated from the structure, not written by anyone. Fill them; when none remain,
+move to the next place.
+
 NON-NEGOTIABLE RULES (each learned the hard way — EXPERIMENTAL_METHOD.md has the receipts):
   - THE GPU IS MANDATORY. Never render, segment, recover DNA, or train on CPU. RTX 4090.
   - YOU MUST BE ABLE TO SEE THE OUTPUT. A render to nothing is indistinguishable from a

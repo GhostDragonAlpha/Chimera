@@ -38,6 +38,13 @@ helper or a duplicate.
 
  5  SEE IT       Chimera/core/render_world.py :: render_orbit()
                  -> Chimera/Saved/SplatEmit/*.png       LOOK AT IT. Logs are not proof.
+
+ 6  THE LOOP     Chimera/core/membranes.py + core/bricks.py      [added 2026-07-23]
+                 address the world as nested membranes; a cell's six directions are
+                 its PORTS. work_queue() enumerates unfilled studs, propose() breeds
+                 admissible candidates, place() mates one, drive_section() runs the
+                 whole thing -- 6,037 bricks/sec, deterministic by coordinate.
+                 Full account: docs/THE_WORKFLOW.md section 7.
 ```
 
 **One writer rule:** step 2 owns `recovered_genomes.json`. Step 3 owns
@@ -68,7 +75,7 @@ helper or a duplicate.
 | 4 | **Seven writers to `recovered_genomes.json`** — 3 recombination agents, `train_splat_compositions`, `export_genome`, `phase3_recombination_testing`, `process_materials_pipeline`, `process_more_materials`. No locking, no ownership. | **high — data integrity** |
 | 5 | **~1,067 lines of root-level duplicates** doing step 2's job: `process_materials_pipeline.py` (340), `process_more_materials.py` (302), `phase3_recombination_testing.py` (425). | **high** |
 | 6 | **Two agents touch no pipeline at all** — `research_agent.py` and `validation_agent.py` import nothing from `core/` or `Construction/`. | medium |
-| 7 | **Every Pi agent is handed 8 Unreal editor tools** (`.pi/extensions/mcp-bridge.ts`, `mcp-pathways-index.ts`) while its prompt says UE is retired. | medium |
+| 7 | ~~CLOSED 2026-07-23~~ — **Every Pi agent was handed 8 Unreal editor tools** (`.pi/extensions/mcp-bridge.ts`, `mcp-pathways-index.ts`) while its prompt says UE is retired. | medium |
 | 8 | **Split brain.** The pipeline lives in **two homes** — `Construction/` + `WorldModel/` at the repo root, `core/` under `Chimera/`. Imports cross both ways. | medium |
 | 9 | **Two schemas coexist** in the genome file (single-specimen vs class). Benign — class is a superset — but undocumented, so a reader cannot tell which it has. | low |
 

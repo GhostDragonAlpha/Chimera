@@ -230,10 +230,23 @@ material painted on a surface.** Isolate one thing → make variations → place
    **STATUS: VALIDATED WITH 5 MATERIALS.** Processed bonsai vegetative, stump wood, bicycle metallic, plush fabric, and truck metallic — all with heritability estimates (color h² > 0.72 in plants/fabric, size h² < 0.08). Children rendered successfully on RTX 4090 (~500ms each). The pipeline is operational end-to-end: scan → cluster matching → specimen merging → heritability estimation → child generation → visual rendering.
 
    **NEXT:** Process remaining critical materials (grass, rock, pure metal, ice) and test two-parent recombination.
-3. **The splat-type catalog has a ceiling.** `beam` caps at aniso 0.95 but real material
+3. ~~The arrangement dimension has no search in it.~~ **CLOSED 2026-07-23.**
+   `build_child` had three hand-written branches, so a driven section returned
+   `{'clump': 1147}` — every object a clump, the section reading as gravel however varied
+   its genomes. `core/trainables/arrangement.py` is now a continuous 10-gene space with
+   the trainer's contract; tuft/clump/shard are POINTS in it, not branches.
+   `Construction/arrangement_dna.py` measures the same statistics from real scans so it
+   trains against measurement rather than taste. **Remaining: the objective JSON, and the
+   gap it must close — real material clusters at 4.7–8.2, the old forms reached only
+   1.3–1.5.**
+4. **The splat-type catalog has a ceiling.** `beam` caps at aniso 0.95 but real material
    measured 0.994 — you cannot emit what the vocabulary cannot express. Needs a more
    extreme emitter + finer scale control. Measurable target.
-4. **Colour and opacity are recovered but unused in composition matching** — only
+5. **No emissive, fluid or atmospheric genome.** `energy`, `fluid` and `atmospheric` ports
+   return **zero** admissible candidates — the library cannot express anything that flows
+   through those interfaces. Lasers, engine glow, water. Reported by the system itself
+   rather than remembered.
+6. **Colour and opacity are recovered but unused in composition matching** — only
    anisotropy and size-CV are compared. The RGB/opacity distributions sit in
    `recovered_genomes.json` doing nothing.
 5. **No training logs.** Nine VAE checkpoints (713 MB) with no record of what produced them.
@@ -342,3 +355,104 @@ its yaw/pitch/roll commands are the same whether the step is a bark fibre or a l
 You are not designing a world from above. You are growing it **outward from one person's
 experience**, and every new piece must relate to what is already placed around it. The
 constraint is what makes the parts cohere into a place rather than a collection.
+
+---
+
+## 7. THE ARCHITECTURE — one primitive, one motion, one address
+
+Everything below was worked out 2026-07-23 with the operator and then built. It replaces
+a set of separate systems with one construct seen at different sizes.
+
+### 7.1 A membrane is a boundary, and a boundary is a SCALE
+
+    time ⊃ universe ⊃ system ⊃ planet ⊃ ground ⊃ section ⊃ cell ⊃ object ⊃ material ⊃ …
+
+These are not different constructs. **The membrane IS the hierarchy** — each nested one is
+the next scale finer, and crossing one inward is exactly what "finer" means. Being a
+boundary supplies, for free, at every level:
+
+| | |
+|---|---|
+| **a frame** | up is the membrane's LOCAL NORMAL. A global +Z is wrong on a sphere, in a cave, on a hull. |
+| **a unit** | coordinates are LOCAL, so they can never exceed the membrane's own extent |
+| **an identity** | the serial attaches here — an address is the PATH of membranes crossed |
+| **inside / outside** | soil vs air, hull vs void. A thing may SPAN one — roots in, trunk out |
+| **LOD** | `depth()` IS the level of detail. Approach decompresses, retreat coalesces |
+
+**Precision stops being a problem rather than being managed.** A coordinate inside a
+membrane cannot exceed that membrane's extent, so there is no far-from-origin case at any
+scale, and the large number only appears if someone asks for world coordinates.
+Verified: rock-local `[0.05 0.02 0.01]` → world `[1.5e11, 0.22, 0.01]`.
+
+`core/membranes.py`. Not `core/membrane.py`, which seals a git worktree — same idea (no
+inside/outside means no individual, nothing for selection to act on) applied to space
+rather than to work.
+
+### 7.2 TIME is the outermost membrane
+
+The 4th dimension contains every spatial one. It passes the same tests: **past is inside**
+(settled, determinate), **future is outside** (unformed), **the present is the boundary
+surface**, and its normal is the arrow of time. Nothing contains it, and you cannot cross
+back out — which is what makes it *ultimate*.
+
+Consequences: temporal LOD is the same coalesce/fracture mechanism as spatial; *"same
+seed, same world, forever"* is a claim about time, so history is **derivable rather than
+stored**; and the address is 4D — `T+000123 / U / P-earth / G / S+00384+00896 / C…`.
+
+### 7.3 Everything is TWO ENDS AND A DIAL
+
+| | the two ends | the dial |
+|---|---|---|
+| a verb | at_rest → fully_bent | wind speed |
+| a morph | genome A → genome B | blend |
+| heritability | specimen A → specimen B | what varies between them |
+| LOD | near → far | distance |
+| growth | seed → mature | time |
+| **the story** | first frame → end state | progression |
+
+*You do not describe an axis; you exhibit its two ends* (`Construction/scene.py`, DESIGN §3).
+So **the game is not built with the mechanism — the game IS the mechanism**, and the story
+is simply the outermost dial. A verb whose two ends do not differ is refused at definition
+time: that is one state written twice.
+
+**GATES** are the only thing a story dial has that the others do not. A player is held at a
+checkpoint until something *measurable* is true, then released — open-world included, since
+grinding reputation to upgrade a gun is a 0..1 dial with a gate on it. The condition reads
+world state; it is never a flag someone sets, for the same reason acceptance conditions are
+not self-reported.
+
+### 7.4 The six directions are the PORTS of a cell
+
+Not an analogy. A direction is a face you can attach through; an unfilled port is somewhere
+the world is not finished; **`work_queue()` is therefore the world's to-do list, enumerated
+rather than authored.** Ports are typed by WHAT FLOWS — structural, gravitational, energy,
+fluid, atmospheric, substrate — so composition is checkable: *"structural cannot carry
+energy — nothing flows through that joint."* Three conditions to mate, all physical: same
+kind, ports FACING each other, matched size.
+
+A cell is human-scale (**1.83 m**, a person and their arm span). Earth's surface holds
+**1.52 × 10¹⁴** of them.
+
+### 7.5 The loop, closed
+
+    open stud  →  propose()  →  candidates, RECOMBINED not selected  →  place()  →  filled
+
+`core/bricks.py`. Candidates are **bred** from the library, so what is offered includes
+matter that does not exist yet but could — the reason genomes are stored as distributions.
+Ranked by measurable facts only (heritable first); **taste never enters here**, that is
+`preference_select`. An empty result is a RESULT: `energy`/`fluid`/`atmospheric` studs
+return zero candidates because nothing in the library flows through them, which is the
+vocabulary gap made visible instead of papered over.
+
+**Measured, driving a whole section:** 4,761 cells scanned, 581 occupied (12.2%), **1,147
+bricks in 0.19 s = 6,037 bricks/sec**, 57,350 splats. Same section twice → byte-identical
+geometry; the neighbour → different content. Content derives from coordinates, so a section
+is regenerated rather than stored.
+
+### 7.6 Development order = play order
+
+You build **along the story dial from t = 0**. First frame, first gate, next gate — and at
+each position ask the six directions. The world gets made in the order it is experienced,
+and **nothing gets made that no position asked for.** That is the answer to how one person
+builds a world: you don't. You build a corridor of experience and let the machine fill the
+six directions around each step of it.
