@@ -99418,6 +99418,650 @@
       "links": [],
       "recorded_by": "forty_questions.py",
       "run_id": "run_82018008fbc1"
+    },
+    {
+      "id": "simtest_6f3765b2b59c06cb",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-24T06:00:38.165080",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 2,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=122uu (loc x=20.125, y=-120.12500762939453)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": false,
+              "note": "dist=2000uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 4000,
+                  "y": 0,
+                  "r": 1100
+                }
+              },
+              "ok": false,
+              "note": "dist=2000uu (loc x=2000, y=0)"
+            },
+            {
+              "expect": {
+                "actor_exists": "Actor_NS_SandDust"
+              },
+              "ok": true,
+              "note": "present=True"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "reached",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "actor_exists": "Display_Suit"
+              },
+              "ok": true,
+              "note": "present=True"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_z_above": 130
+              },
+              "ok": false,
+              "note": "z=130"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 2/5 beats reached in 'regolith_yard'. Failures: walk_metal_to_rock (failed: expect {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}} -> dist=2000uu (loc x=0, y=0)); walk_rock_to_sand_basin (failed: expect {\"pawn_within\": {\"x\": 4000, \"y\": 0, \"r\": 1100}} -> dist=2000uu (loc x=2000, y=0)); jump_probe (failed: expect {\"pawn_z_above\": 130} -> z=130)",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 2/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_175686ea90a9"
+    },
+    {
+      "id": "surprise_9b58ce450860587c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T06:00:38.568029",
+      "context": "Sleepwalker expected beat 'walk_metal_to_rock' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, \"note\": \"dist=2000uu (loc x=0, y=0)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_175686ea90a9"
+    },
+    {
+      "id": "surprise_27fc042069b464c6",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T06:00:38.994175",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"actor_exists\": \"Actor_NS_SandDust\"}, \"ok\": true, \"note\": \"present=True\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"actor_exists\": \"Actor_NS_SandDust\"}, \"ok\": true, \"note\": \"p'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_175686ea90a9"
+    },
+    {
+      "id": "surprise_93fe99987eb9ce7a",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T06:00:39.381216",
+      "context": "Sleepwalker expected beat 'jump_probe' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=130\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_z_above\": 130}, \"ok\": false, \"note\": \"z=130\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_175686ea90a9"
+    },
+    {
+      "id": "feature_59e5d20da05ea1ab",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "arrangement",
+      "feature_type": "trainable",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "406e722"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "arrangement made trainable; 4 objective-repair rounds; inside all four measured bands"
+    },
+    {
+      "id": "feature_ffaba92fa20fb05b",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "grown_arrangement",
+      "feature_type": "trainable",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "5ea3693"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "arrangement GROWN by Cellular Potts (irreducible); untrained genomes hit reality band 98% vs parametric 1%"
+    },
+    {
+      "id": "feature_b2754ff357831fde",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "negative_space_seam",
+      "feature_type": "trainable",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "5ea3693"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "grain EMERGES from the environment: channels not layers; neg_order 0->1 gives alignment 0.36->0.65"
+    },
+    {
+      "id": "feature_f409040a96ad0c59",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "perception",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "33c5f91"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "psychophysics: JND/Weber; found the objective was spending its budget on invisible precision"
+    },
+    {
+      "id": "feature_aa1055156ed75792",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "range_debias",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "406e722"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "range-debias the bands: 5-sample min/max is 1.69x too narrow; band_margin 0.15->0.58 with no retrain"
+    },
+    {
+      "id": "feature_00f50baecf014256",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "spine",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "08806c6"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "because-chains under the vocabulary; every term reaches PHYSICS or THE HUMAN"
+    },
+    {
+      "id": "feature_4226ad56372d0b74",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "terminology",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "b119565"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "queryable terminology index + graph (core.terms); 108 terms"
+    },
+    {
+      "id": "feature_384bab3a5c011402",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "bind_guard",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "6c96a0b"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "pre-commit gate: no server binds the LAN; found+fixed 3 exposed servers"
+    },
+    {
+      "id": "feature_b604a3243f7fe882",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "objective_lint",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "788f97b"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "ENFORCES the objective-design method in the pre-commit hook; surfaced 47 satisficers"
+    },
+    {
+      "id": "feature_e8b8611290091a43",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "matter_gpu_determinism",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "c04f24c"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "fixed 2 GPU-shaker bugs; one silently broke the volume constraint every run; now bit-identical"
+    },
+    {
+      "id": "discovery_e314993af9a04e14",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "feature": "ruliology_competition",
+      "campus_sources": [],
+      "web_sources": [
+        "https://writings.stephenwolfram.com/2026/06/games-between-programs-the-ruliology-of-competition/"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "high",
+      "failure_sources": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "the Axelrod error (hand-picked strategies mislead); capacity determines reachable performance; computational irreducibility"
+    },
+    {
+      "id": "discovery_9beaf6cf36ae316c",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "feature": "adaptive_evolution",
+      "campus_sources": [],
+      "web_sources": [
+        "https://writings.stephenwolfram.com/2024/05/why-does-biological-evolution-work-a-minimal-model-for-biological-evolution-and-other-adaptive-processes/"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "high",
+      "failure_sources": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "neutral mutations are the mechanism; noncoding genes; adaptive evolution finds a way; punctuated equilibrium"
+    },
+    {
+      "id": "discovery_5db1c370bac565bf",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "feature": "adaptive_evolution",
+      "campus_sources": [],
+      "web_sources": [
+        "https://writings.stephenwolfram.com/2024/12/foundations-of-biological-evolution-more-results-more-surprises/"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "high",
+      "failure_sources": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "an objective is a foliation on the mutation graph; developmental constraint; development dominates selection (refuted for our reducible emitter)"
+    },
+    {
+      "id": "discovery_cc1953d545085f73",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "feature": "observer_theory",
+      "campus_sources": [],
+      "web_sources": [
+        "https://writings.stephenwolfram.com/2026/02/what-ultimately-is-there-metaphysics-and-the-ruliad/"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "high",
+      "failure_sources": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "computational boundedness: the laws you can attribute depend on the observer; LOD = pocket of reducibility"
+    },
+    {
+      "id": "discovery_4365ffc5f8bf5ab1",
+      "type": "ResearchDiscovery",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "feature": "perception",
+      "campus_sources": [],
+      "web_sources": [
+        "https://panamath.org/wiki/What_is_a_Weber_Fraction"
+      ],
+      "corpus_sources": [],
+      "sources_consulted": 1,
+      "parameters": {},
+      "acceptance_criteria": [],
+      "research_confidence": "medium",
+      "failure_sources": [],
+      "backfilled": true,
+      "session": "381e62e9",
+      "note": "Weber fraction numerosity ~0.15 (0.10-0.28); orientation discrimination ~5.12 deg; the JND constants"
+    },
+    {
+      "id": "surprise_6189ea1b68a69fa6",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "trained the parametric emitter against an unrelated objective to test Wolfram \"development dominates selection\"",
+      "expectation": "similar forms regardless of objective (as Wolfram found for irreducible CA)",
+      "reality": "a FLAT PANCAKE vs the band-trained hollow cage, genome distance 1.372 -- his result does NOT hold here",
+      "lesson_hint": "a parametric emitter is REDUCIBLE so it can only interpolate its parameters; grow it, do not compute it",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_9f229382c415ef47",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "trained grown_arrangement scored total_off 0.0155 but re-measured as 0.1676",
+      "expectation": "same seed same result (a load-bearing project principle)",
+      "reality": "the GPU shaker was NON-DETERMINISTIC: same genome+seed gave 1759/1734/1656 cells; two bugs, one broke the volume constraint every run",
+      "lesson_hint": "a contrast test cannot see a constant error present in both arms; validate numerical parity, not just contrast",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_4240afc467aa763f",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "writing arrangement objectives: the optimiser satisfied each spec by the cheapest path",
+      "expectation": "the objective trains what I meant",
+      "reality": "FOUR spec exploits in one session -- band edge, weighted-mean no floor, muscle evaporation, unreachable hard gate",
+      "lesson_hint": "a degenerate winner is the optimiser auditing your spec; iterate the objective never the artifact -> the objective-design method",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_746b9ea26ba791cd",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "measured UNTRAINED grown vs parametric genomes against reality clustering band",
+      "expectation": "both need training to reach the band",
+      "reality": "grown lands in the band 98% of the time untrained; parametric 1% -- real matter is grown, so growth inherits the statistics for free",
+      "lesson_hint": "the regime unlocks on the untrained smoke when the substrate matches reality",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_3f4f1262fe46fb8e",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "auditing local network exposure",
+      "expectation": "servers bind localhost",
+      "reality": "THREE of the project's own servers bound 0.0.0.0 (the whole LAN); none of it a decision -- copied idioms",
+      "lesson_hint": "the three servers were one missing check; enforce with a gate (bind_guard)",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_5d21c54c73fc358d",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "operator: CPU pegged but the machine is cold",
+      "expectation": "a stop script that prints success actually stopped the server",
+      "reality": "the GLM stop script LIED (reads /proc on Windows) and an idle colibri spin-waited a core, burning 11.9 CPU-hours",
+      "lesson_hint": "a stop script that reports success without verifying is worse than none",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_69eda4cdce1cc60c",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "operator asked if the graph interpretation is up to date",
+      "expectation": "recording is uniform across processes",
+      "reality": "the DNA graph was a full SESSION behind git -- this session's work was not in it (git complete, graph lagged)",
+      "lesson_hint": "the narrative record (git) and the structured record (graph) drift when the graph-write step is skipped",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_052e564d72ae5949",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "built the terminology as a dictionary of 81 terms",
+      "expectation": "a glossary is enough",
+      "reality": "operator: \"all these custom terms in itself must make a story\" -- a dictionary has no order, a story is a because-chain",
+      "lesson_hint": "a story is a because-chain; the graph was already designed to hold one -> the spine",
+      "source": "human",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
+    },
+    {
+      "id": "surprise_83cbcdc444a130f1",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "context": "the vocabulary scored CUTSCENE against its own emotion test (all chains reached PHYSICS, none THE HUMAN)",
+      "expectation": "physics-side sciences are enough",
+      "reality": "operator: \"we'll need all the ologies, this is one of them\" -- the -ologies are the staffing plan for the two terminals",
+      "lesson_hint": "sociology/psychophysics/etc. staff THE HUMAN and THE SPAN; taste is a class genome",
+      "source": "human",
+      "consolidated": false,
+      "error_signature": "",
+      "template_file": "",
+      "error_category": "",
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
@@ -112234,6 +112878,160 @@
       "source": "observation_e16e91713477f504",
       "target": "simtest_29904e2492f6e2ca",
       "type": "because"
+    },
+    {
+      "src": "feature_ffaba92fa20fb05b",
+      "dst": "surprise_6189ea1b68a69fa6",
+      "rel": "because",
+      "source": "feature_ffaba92fa20fb05b",
+      "target": "surprise_6189ea1b68a69fa6",
+      "type": "because",
+      "question": "why Feature 'grown_arrangement': arrangement GROWN by ?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_ffaba92fa20fb05b",
+      "dst": "surprise_746b9ea26ba791cd",
+      "rel": "because",
+      "source": "feature_ffaba92fa20fb05b",
+      "target": "surprise_746b9ea26ba791cd",
+      "type": "because",
+      "question": "why Feature 'grown_arrangement': arrangement GROWN by ?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_b2754ff357831fde",
+      "dst": "feature_ffaba92fa20fb05b",
+      "rel": "because",
+      "source": "feature_b2754ff357831fde",
+      "target": "feature_ffaba92fa20fb05b",
+      "type": "because",
+      "question": "why Feature 'negative_space_seam': grain EMERGES from ?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_e8b8611290091a43",
+      "dst": "surprise_9f229382c415ef47",
+      "rel": "because",
+      "source": "feature_e8b8611290091a43",
+      "target": "surprise_9f229382c415ef47",
+      "type": "because",
+      "question": "why Feature 'matter_gpu_determinism': fixed 2 GPU-shak?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_b604a3243f7fe882",
+      "dst": "surprise_4240afc467aa763f",
+      "rel": "because",
+      "source": "feature_b604a3243f7fe882",
+      "target": "surprise_4240afc467aa763f",
+      "type": "because",
+      "question": "why Feature 'objective_lint': ENFORCES the objective-d?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_384bab3a5c011402",
+      "dst": "surprise_3f4f1262fe46fb8e",
+      "rel": "because",
+      "source": "feature_384bab3a5c011402",
+      "target": "surprise_3f4f1262fe46fb8e",
+      "type": "because",
+      "question": "why Feature 'bind_guard': pre-commit gate: no server b?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_00f50baecf014256",
+      "dst": "surprise_052e564d72ae5949",
+      "rel": "because",
+      "source": "feature_00f50baecf014256",
+      "target": "surprise_052e564d72ae5949",
+      "type": "because",
+      "question": "why Feature 'spine': because-chains under the vocabula?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_f409040a96ad0c59",
+      "dst": "surprise_83cbcdc444a130f1",
+      "rel": "because",
+      "source": "feature_f409040a96ad0c59",
+      "target": "surprise_83cbcdc444a130f1",
+      "type": "because",
+      "question": "why Feature 'perception': psychophysics: JND/Weber; fo?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_aa1055156ed75792",
+      "dst": "feature_59e5d20da05ea1ab",
+      "rel": "because",
+      "source": "feature_aa1055156ed75792",
+      "target": "feature_59e5d20da05ea1ab",
+      "type": "because",
+      "question": "why Feature 'range_debias': range-debias the bands: 5-?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_ffaba92fa20fb05b",
+      "dst": "discovery_5db1c370bac565bf",
+      "rel": "because",
+      "source": "feature_ffaba92fa20fb05b",
+      "target": "discovery_5db1c370bac565bf",
+      "type": "because",
+      "question": "why Feature 'grown_arrangement': arrangement GROWN by ?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
+    },
+    {
+      "src": "feature_f409040a96ad0c59",
+      "dst": "discovery_4365ffc5f8bf5ab1",
+      "rel": "because",
+      "source": "feature_f409040a96ad0c59",
+      "target": "discovery_4365ffc5f8bf5ab1",
+      "type": "because",
+      "question": "why Feature 'perception': psychophysics: JND/Weber; fo?",
+      "proves": "RECORDED",
+      "asked_at": "2026-07-24T00:00:00Z",
+      "asked_by": "backfill",
+      "derived": true,
+      "backfilled": true
     }
   ]
 }
