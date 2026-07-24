@@ -749,6 +749,16 @@ SPINE: dict = {
         "-- and the arrangement domain uses none of them.",
         'reducible development', ''),
 
+    # --- A COMPLETELY SOLVED CATEGORY (2026-07-24) -------------------------------------
+    'the objective-design method': (
+        "the optimiser satisfies your spec by the CHEAPEST path, never the one you pictured, "
+        "so a degenerate winner is it auditing your spec -- and the seven rules that close the "
+        "holes were each paid for by a measured failure (0/140 reached a gate; children left "
+        "the band 62%; muscle drained to 0.4%). Documented in docs/OBJECTIVE_DESIGN.md and "
+        "ENFORCED by core/objective_lint.py, because a method in a document can be ignored and "
+        "a method in a gate cannot.",
+        'the exploit is the product', 'MEASURED'),
+
 }
 
 

@@ -29,6 +29,10 @@
   precision. (`33c5f91`)
 - **Security: two commit gates** — `core/bind_guard.py` (no server binds the LAN) +
   attribution (every commit says who wrote it). Three exposed servers fixed. (`6c96a0b`)
+- **Objective design — SOLVED & ENFORCED** — the complete 7-rule method for a trainer
+  objective the optimiser won't exploit (`docs/OBJECTIVE_DESIGN.md`), enforced by
+  `core/objective_lint.py` in the pre-commit hook. Each rule proved by a worked failure.
+  Surfaced 47 existing satisficers (below). (this session)
 - **GLM-5.2 REMOVED ENTIRELY** — a 744 GB, 0.26 tok/s, unauditable local liability that spin-waited a core unnoticed. 714.8 GB reclaimed (357×2 mirrors). Local-LM tier is now LM Studio only. (this commit)
 
 ---
@@ -59,6 +63,11 @@
   at the repo root AND `core/` under `Chimera/`, imports crossing both ways. *Choose one home.*
 - [ ] **Two undocumented genome schemas** (THE_ORDER #9) — single-specimen vs class coexist
   in one file; a reader cannot tell which it has. *Document both in SPLAT_DNA_WORKFLOW §7.5.*
+- [ ] **47 objectives are satisficers** (surfaced by `objective_lint --all`) — bounds only,
+  no maximize/minimize/target, so the trainer stops at the first feasible point. ~36 are
+  auto-generated scenario forks (likely obsolete — triage for deletion); ~11 are base
+  (`biome_resources`, `composition`, `npc_social`, `planet_surface`, `shelter_form`, …).
+  *Fix each with a maximize or a target, or delete the dead forks. Method: `docs/OBJECTIVE_DESIGN.md`.*
 - [ ] **The 4 UE-era `# TODO` stubs** — `asset_providers/*.py`, `game_code_generator.py`.
   UE is retired; these are dead intentions. *Decide keep-or-kill and record it.*
 

@@ -22,6 +22,16 @@ if command -v python >/dev/null 2>&1; then
   fi
 fi
 
+# --- objective design method (docs/OBJECTIVE_DESIGN.md) --------------------
+# A trainer objective the optimiser can exploit is a bug you find after a retrain cycle.
+# Enforce the mechanically-checkable rules on staged objectives. New work must comply;
+# the 47 pre-existing satisficers are only checked if you touch them.
+if command -v python >/dev/null 2>&1 && [ -d Chimera/core ]; then
+  if ! ( cd Chimera && python -m core.objective_lint --staged ); then
+    fail=1
+  fi
+fi
+
 # --- delegate to shazam ----------------------------------------------------
 if [ -x .git/hooks/pre-commit ] && [ "${CHIMERA_SKIP_SHAZAM:-}" != "1" ]; then
   .git/hooks/pre-commit "$@" || fail=1
