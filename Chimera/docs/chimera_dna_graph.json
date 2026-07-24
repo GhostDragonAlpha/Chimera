@@ -100377,6 +100377,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_c8f792145d20"
+    },
+    {
+      "id": "surprise_76f1e946ebdec872",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T20:48:50.063676",
+      "context": "find_deposit_site validated an ore site at the exact random (lat,lon), then returned it ROUNDED to 2 decimals for display niceness. Dug the rounded site.",
+      "expectation": "",
+      "reality": "Determinism break: rounding moved the coordinate ~1.1 km, off a 1.2-km iron orebody, so the returned 'iron site' was barren when re-probed. The diamond pipe (40 km wide) survived rounding; iron did not. Position must be a PURE key end-to-end -- never round a coordinate you validated at full precision. Fixed: return exact coord. core/mining.py 1c461f8.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'Determinism break: rounding moved the coordinate ~1.1 km, off a 1.2-km iron oreb'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_e77f615933cc"
     }
   ],
   "edges": [
