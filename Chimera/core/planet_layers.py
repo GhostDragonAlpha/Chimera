@@ -117,9 +117,13 @@ class Deposit:
     suitability: object               # callable(P_GPa, T_C, depth_m) -> 0..1 (formation window)
     abundance: float                  # base fraction of suitable parcels that bear it
     cluster_km: float                 # size of a vein/orebody (clustering scale)
-    value: float                      # relative worth (the economy hook)
+    value: float                      # rough relative worth (legacy indicator)
     salt: int = 0
     needs_land: bool = False          # placers are fluvial -> land only
+    # the economy split (DATA, trainable): ore is host rock; only a FRACTION is the mineral.
+    mineral_frac: float = 1.0         # kg of pure mineral per kg of ore at grade 1
+    price: float = 1.0                # credits per kg of the pure mineral
+    pipe_fed: bool = False            # also reachable shallow where a kimberlite pipe brings it up
 
     def grade_at(self, lat, lon, depth, P, T, surf: float = 1.0) -> float:
         """Ore grade in [0,1] at a parcel: formation window x clustered density x fine speckle.
@@ -154,27 +158,38 @@ def _window(lo, hi):
 
 
 DEPOSITS = [
-    # placer gold: erosion-concentrated in shallow soil, near sea level. Rare, patchy.
+    # placer gold: erosion-concentrated in shallow soil, near sea level. Rare, patchy. A few
+    # grams of gold per tonne of gravel, but gold is worth ~60 cr/g.
     Deposit('gold_placer', ('topsoil', 'subsoil'),
             lambda P, T, d: _window(0.0, 1.4)(d), abundance=0.06, cluster_km=0.4,
-            value=40.0, salt=11, needs_land=True),
-    # banded iron: sedimentary bedrock, layered, common.
+            value=40.0, salt=11, needs_land=True, mineral_frac=4e-6, price=62_000.0),
+    # banded iron: sedimentary bedrock, layered, common. ~45% iron, cheap per kg.
     Deposit('iron_ore', ('bedrock',),
             lambda P, T, d: _window(2.0, 61.0)(d), abundance=0.28, cluster_km=1.2,
-            value=3.0, salt=22),
-    # coal: sedimentary basins in bedrock, shallow, seams.
+            value=3.0, salt=22, mineral_frac=0.45, price=0.12),
+    # coal: sedimentary basins in bedrock, shallow, seams. Mostly carbon, cheap.
     Deposit('coal', ('bedrock',),
             lambda P, T, d: _window(5.0, 60.0)(d), abundance=0.16, cluster_km=2.5,
-            value=2.0, salt=33),
-    # copper: hydrothermal veins in the crust, moderate depth, strongly veined.
+            value=2.0, salt=33, mineral_frac=0.85, price=0.06),
+    # copper: hydrothermal veins in the crust, moderate depth, strongly veined. ~2% ore.
     Deposit('copper_vein', ('crust',),
             lambda P, T, d: _window(200.0, 6000.0)(d), abundance=0.10, cluster_km=3.0,
-            value=8.0, salt=44),
-    # diamond: needs >4 GPa (>~136 km) and 900-1400 C -> deep mantle, kimberlite-rare.
+            value=8.0, salt=44, mineral_frac=0.02, price=9.0),
+    # diamond: FORMS where >4 GPa (>~136 km) and 900-1400 C -> deep mantle. MINED only where a
+    # kimberlite pipe hauled it to the near-surface (pipe_fed). Carats per tonne: a tiny frac,
+    # enormous price.
     Deposit('diamond', ('mantle',),
             lambda P, T, d: 1.0 if (P > 4.0 and 850 < T < 1500) else 0.0,
-            abundance=0.015, cluster_km=8.0, value=500.0, salt=55),
+            abundance=0.015, cluster_km=8.0, value=500.0, salt=55,
+            mineral_frac=6e-7, price=4.0e5, pipe_fed=True),
 ]
+
+
+def kimberlite_pipe(lat_deg: float, lon_deg: float) -> bool:
+    """A rare vertical intrusion that carried deep-mantle diamond up to the near-surface. About
+    0.4% of coarse (~40 km) columns -- what makes diamond mineable at all, geologically."""
+    x, y, z = _parcel_xyz(lat_deg, lon_deg, 0.0, 40_000.0)
+    return _hash01(int(np.floor(x)), int(np.floor(y)), int(np.floor(z)), 606) < 0.004
 
 
 # --- voids: caves and lava tubes (the negative space) ----------------------
@@ -226,6 +241,14 @@ class LayeredPlanet:
             g = dep.grade_at(lat_deg, lon_deg, depth_m, P, T, surf)
             if g > best_g:
                 best, best_g = dep, g
+        # kimberlite pipes: mantle diamond hauled up, mineable at 40 m - 2 km in a pipe column.
+        if layer in ('bedrock', 'crust') and 40.0 < depth_m < 2000.0 \
+                and kimberlite_pipe(lat_deg, lon_deg):
+            dia = DEPOSITS[-1]
+            px, py, pz = _parcel_xyz(lat_deg, lon_deg, depth_m, dia.cluster_km * 200.0)
+            pg = _vnoise3(px, py, pz, dia.salt + 3)        # grade varies down the pipe
+            if pg > best_g:
+                best, best_g = dia, float(np.clip(pg, 0, 1))
         return {'layer': layer, 'state': 'solid', 'void': None,
                 'material': layer if best is None else best.name,
                 'deposit': None if best is None else best.name,
