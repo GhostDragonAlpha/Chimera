@@ -55,7 +55,8 @@ def _in_bounds(z: int, y: int, x: int, nz: int, ny: int, nx: int) -> bool:
 @wp.kernel
 def _potts_color_pass(
         lattice: wp.array3d(dtype=wp.int32),
-        area: wp.array(dtype=wp.int32),          # per-type live cell count
+        area_ro: wp.array(dtype=wp.int32),       # READ ONLY: pass-start counts, never written
+        area_delta: wp.array(dtype=wp.int32),    # WRITE ONLY: this pass's net change
         J: wp.array2d(dtype=wp.float32),
         offs: wp.array(dtype=wp.vec3i),
         targets: wp.array(dtype=wp.int32),
@@ -100,22 +101,41 @@ def _potts_color_pass(
         dH += J[new, nb] - J[old, nb]
 
     # lambda volume constraint (area held at pass-start value)
+    # Reads the FROZEN pass-start counts. Previously this read the same array the atomics
+    # below were writing, so a thread's dH depended on how many other threads had already
+    # flipped -- i.e. on GPU scheduling order. That was the nondeterminism: same genome,
+    # same seed, 1,759 / 1,734 / 1,656 occupied cells.
     if old != MEDIUM:
-        a = float(area[old])
+        a = float(area_ro[old])
         t = float(targets[old])
         dH += lam * ((a - 1.0 - t) * (a - 1.0 - t) - (a - t) * (a - t))
     if new != MEDIUM:
-        a = float(area[new])
+        a = float(area_ro[new])
         t = float(targets[new])
         dH += lam * ((a + 1.0 - t) * (a + 1.0 - t) - (a - t) * (a - t))
 
     u = wp.randf(state)
     if dH <= 0.0 or u < wp.exp(-dH / temp):
         lattice[z, y, x] = new
+        # Integer adds into a separate accumulator: commutative, so the TOTAL is
+        # order-independent even though the order itself is not.
         if old != MEDIUM:
-            wp.atomic_add(area, old, -1)
+            wp.atomic_add(area_delta, old, -1)
         if new != MEDIUM:
-            wp.atomic_add(area, new, 1)
+            wp.atomic_add(area_delta, new, 1)
+
+
+@wp.kernel
+def _fold_area(area_ro: wp.array(dtype=wp.int32), area_delta: wp.array(dtype=wp.int32)):
+    """Apply one pass's net change and clear the accumulator. n_types elements.
+
+    Done ON DEVICE on purpose. Folding on the host would need a sync per colour pass --
+    8 per sweep, 208 per growth -- and the one rule for this backend is that nothing reads
+    back from the GPU inside the loop.
+    """
+    i = wp.tid()
+    area_ro[i] = area_ro[i] + area_delta[i]
+    area_delta[i] = 0
 
 
 def assemble_3d_gpu(grid, shape, targets, J, connectivity=18, sweeps=90,
@@ -141,20 +161,26 @@ def assemble_3d_gpu(grid, shape, targets, J, connectivity=18, sweeps=90,
     aread = wp.array(area0, dtype=wp.int32, device=dev)
     frozen = frozen_type if frozen_type is not None else _FROZEN_NONE
 
+    # THE ACCUMULATOR, separate from the counts every thread reads. The previous version
+    # passed one array for both, which is why the volume constraint raced -- and why `aread`
+    # was never updated at all, so all 26 sweeps compared against the INITIAL counts. That
+    # second bug is why a tissue could drain away without the constraint ever objecting.
+    delta = wp.zeros(n_types, dtype=wp.int32, device=dev)
+
     colors = [wp.vec3i(cz, cy, cx)
               for cz in (0, 1) for cy in (0, 1) for cx in (0, 1)]
     for s in range(sweeps):
-        # Snapshot counts at the start of each color pass so the volume constraint
-        # reads deterministic pass-start values instead of racing mid-flip atomics.
-        wp.synchronize_device(dev)
-        area_snap = wp.array(aread.numpy(), dtype=wp.int32, device=dev)
-        tgt_snap = wp.array(tgtd.numpy(), dtype=wp.int32, device=dev)
         for ci, col in enumerate(colors):
             wp.launch(_potts_color_pass, dim=shape,
-                      inputs=[lat, area_snap, Jd, offs, tgt_snap, col,
+                      inputs=[lat, aread, delta, Jd, offs, tgtd, col,
                               float(temp), float(lam), int(frozen),
                               seed * 131 + s * 8 + ci, len(_OFF18)],
                       device=dev)
+            # Fold between colour passes, so the next colour sees counts that are current
+            # AND frozen for its own duration. No two same-colour cells are adjacent at
+            # 18-connectivity, so within a pass every thread's inputs are untouched by the
+            # others -- which is what makes the result independent of scheduling order.
+            wp.launch(_fold_area, dim=n_types, inputs=[aread, delta], device=dev)
     wp.synchronize_device(dev)
     return lat.numpy().astype(np.int16)
 
