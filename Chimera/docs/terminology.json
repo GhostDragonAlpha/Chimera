@@ -1,7 +1,7 @@
 {
   "source": "docs/TERMINOLOGY.md",
   "note": "GENERATED. Edit the markdown, then run: python -m core.terms --rebuild",
-  "count": 96,
+  "count": 102,
   "terms": {
     "splat": {
       "term": "splat",
@@ -706,7 +706,49 @@
       "term": "the human stands at the boundary",
       "aliases": [],
       "section": "TIMELINES \u2014 the mega membrane, and there is more than one",
-      "definition": "cultural time and development time are two membranes, and a person is the only thing that can look across the seam and decide what to build. **Not a management role \u2014 a port**: the one place those two membranes touch. Every science this project recruits, what **number** it supplies, and whether it has actually been used. Machine-readable: `core/spine.py :: OLOGIES`, `staffing()`. **Read the gap, not the list.** One full column and two nearly empty ones is precisely why this vocabulary scored CUTSCENE against its own span test. An -ology is not decoration \u2014 it is where a terminal's numbers come from, and a terminal with no science behind it stays empty however much is built on the other side. ---",
+      "definition": "cultural time and development time are two membranes, and a person is the only thing that can look across the seam and decide what to build. **Not a management role \u2014 a port**: the one place those two membranes touch.",
+      "code": []
+    },
+    "neutral mutation": {
+      "term": "neutral mutation",
+      "aliases": [],
+      "section": "ADAPTIVE-PROCESS THEORY \u2014 why evolution works at all",
+      "definition": "a mutation that changes nothing measurable. **Not waste**: it is what lets single point changes *accumulate* until together they unlock a jump no one of them could reach. Wolfram accepts any mutation that does not **decrease** fitness for exactly this reason.",
+      "code": []
+    },
+    "noncoding gene": {
+      "term": "noncoding gene",
+      "aliases": [],
+      "section": "ADAPTIVE-PROCESS THEORY \u2014 why evolution works at all",
+      "definition": "a part of the genome never expressed in the phenotype, so many genotypes give one result. Wolfram measured **18 of 26** rule cases sampled, leaving 6,561 genomes with identical behaviour. **Measured here:** sweeping `align_up` across its entire range moves the arrangement facts by **0.009**; `taper` by 0.056. Both are noncoding.",
+      "code": []
+    },
+    "the neutral network": {
+      "term": "the neutral network",
+      "aliases": [],
+      "section": "ADAPTIVE-PROCESS THEORY \u2014 why evolution works at all",
+      "definition": "a **continuous** weighted-sum fitness has almost no exact ties, so it has no plateaus to drift along. That makes a **noncoding gene the only genuinely neutral dimension such a search has.** `align_up` was about to be deleted as dead weight; it is in fact this domain's entire drift capacity, and is now kept deliberately.",
+      "code": []
+    },
+    "computational necessity": {
+      "term": "computational necessity",
+      "aliases": [],
+      "section": "ADAPTIVE-PROCESS THEORY \u2014 why evolution works at all",
+      "definition": "when an evolved answer looks ornate, the ornateness is usually **forced, not chosen**: exhaustive search showed the only rules reaching long lifetimes are elaborate ones. Weaker evidence of the same kind here \u2014 **five independent seeds converge to 0.9125\u20130.9152, a 0.3% spread** \u2014 so the trained arrangement is closer to what the four bands *require* than to what our search happened to find.",
+      "code": []
+    },
+    "adaptive evolution finds a way": {
+      "term": "adaptive evolution finds a way",
+      "aliases": [],
+      "section": "ADAPTIVE-PROCESS THEORY \u2014 why evolution works at all",
+      "definition": "the encouraging half of that result: these searches do not get stuck. Which means **a poor result is evidence about the objective, not about the optimiser having been unlucky.**",
+      "code": []
+    },
+    "punctuated equilibrium": {
+      "term": "punctuated equilibrium",
+      "aliases": [],
+      "section": "ADAPTIVE-PROCESS THEORY \u2014 why evolution works at all",
+      "definition": "long plateaus broken by sudden jumps, emerging from plain hill-climbing with nothing put in to produce it. Visible in this studio's own fitness curves: `0.7152 \u2192 0.9323 \u2192 0.9676`, then flat for 200 generations. --- Every science this project recruits, what **number** it supplies, and whether it has actually been used. Machine-readable: `core/spine.py :: OLOGIES`, `staffing()`. **Read the gap, not the list.** One full column and two nearly empty ones is precisely why this vocabulary scored CUTSCENE against its own span test. An -ology is not decoration \u2014 it is where a terminal's numbers come from, and a terminal with no science behind it stays empty however much is built on the other side. ---",
       "code": []
     }
   }

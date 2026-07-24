@@ -646,6 +646,54 @@ SPINE: dict = {
         "not a management role, it is a PORT -- the one place those two membranes touch.",
         'cultural time', 'HUMAN'),
 
+    # --- ADAPTIVE-PROCESS THEORY (2026-07-23) ------------------------------------------
+    # From Wolfram, "Why Does Biological Evolution Work? A Minimal Model for Biological
+    # Evolution and Other Adaptive Processes" (2024-05-03). Read at the operator's
+    # instruction. Three of its findings were TESTED against this studio's own trainer
+    # rather than admired, and one of them reversed a cleanup I was about to do.
+
+    'neutral mutation': (
+        "a mutation that changes nothing measurable is not waste -- it is what lets single "
+        "point changes ACCUMULATE until together they unlock a jump no one of them could "
+        "reach. Wolfram accepts any mutation that does not DECREASE fitness for exactly "
+        "this reason.",
+        'mutation', ''),
+
+    'noncoding gene': (
+        "part of a genome that is never expressed in the phenotype, so many genotypes give "
+        "one result -- Wolfram measured 18 of 26 rule cases sampled, leaving 6,561 genomes "
+        "with identical behaviour. MEASURED HERE: sweeping `align_up` across its whole range "
+        "moves the arrangement facts by 0.009, and `taper` by 0.056. They are noncoding.",
+        'neutral mutation', 'MEASURED'),
+
+    'the neutral network': (
+        "a continuous weighted-sum fitness has almost no exact ties, so it has no plateaus "
+        "to drift along -- which means a NONCODING gene is the only genuinely neutral "
+        "dimension such a search has. `align_up` was about to be deleted as dead weight; it "
+        "is in fact this domain's entire drift capacity.",
+        'noncoding gene', 'MEASURED'),
+
+    'computational necessity': (
+        "when an evolved answer looks ornate, the ornateness is usually FORCED rather than "
+        "chosen: exhaustive search showed the only rules reaching long lifetimes are the "
+        "elaborate ones. Weaker evidence of the same kind here -- five independent seeds "
+        "converge to 0.9125-0.9152, a 0.3% spread, so the trained arrangement is closer to "
+        "what the four bands REQUIRE than to what our search happened to find.",
+        'computational irreducibility', 'MEASURED'),
+
+    'adaptive evolution finds a way': (
+        "the encouraging half of the same result: these searches do not get stuck. Wolfram "
+        "found progress possible in almost all mutation sequences, and five seeds here land "
+        "within 0.3% of each other -- so a poor result is evidence about the OBJECTIVE, not "
+        "about the optimiser having been unlucky.",
+        'computational necessity', 'MEASURED'),
+
+    'punctuated equilibrium': (
+        "long plateaus broken by sudden jumps, emerging from plain hill-climbing with no "
+        "mechanism put in to produce it. Visible in this studio's own fitness curves: "
+        "0.7152 -> 0.9323 -> 0.9676, then flat for 200 generations.",
+        'adaptive evolution finds a way', 'MEASURED'),
+
 }
 
 

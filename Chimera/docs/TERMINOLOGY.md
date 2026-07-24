@@ -494,6 +494,52 @@ membranes, and a person is the only thing that can look across the seam and deci
 build. **Not a management role — a port**: the one place those two membranes touch.
 
 
+## 13. ADAPTIVE-PROCESS THEORY — why evolution works at all
+
+*(From Wolfram, ["Why Does Biological Evolution Work? A Minimal Model for Biological
+Evolution and Other Adaptive Processes"](https://writings.stephenwolfram.com/2024/05/why-does-biological-evolution-work-a-minimal-model-for-biological-evolution-and-other-adaptive-processes/),
+2024-05-03. Read 2026-07-23 at the operator's instruction. Three findings were **tested
+against this studio's own trainer** rather than admired, and one reversed a cleanup that
+was about to happen.)*
+
+**neutral mutation** — a mutation that changes nothing measurable. **Not waste**: it is
+what lets single point changes *accumulate* until together they unlock a jump no one of
+them could reach. Wolfram accepts any mutation that does not **decrease** fitness for
+exactly this reason.
+
+**noncoding gene** — a part of the genome never expressed in the phenotype, so many
+genotypes give one result. Wolfram measured **18 of 26** rule cases sampled, leaving 6,561
+genomes with identical behaviour. **Measured here:** sweeping `align_up` across its entire
+range moves the arrangement facts by **0.009**; `taper` by 0.056. Both are noncoding.
+
+**the neutral network** — a **continuous** weighted-sum fitness has almost no exact ties,
+so it has no plateaus to drift along. That makes a **noncoding gene the only genuinely
+neutral dimension such a search has.** `align_up` was about to be deleted as dead weight;
+it is in fact this domain's entire drift capacity, and is now kept deliberately.
+
+**computational necessity** — when an evolved answer looks ornate, the ornateness is
+usually **forced, not chosen**: exhaustive search showed the only rules reaching long
+lifetimes are elaborate ones. Weaker evidence of the same kind here — **five independent
+seeds converge to 0.9125–0.9152, a 0.3% spread** — so the trained arrangement is closer to
+what the four bands *require* than to what our search happened to find.
+
+**adaptive evolution finds a way** — the encouraging half of that result: these searches do
+not get stuck. Which means **a poor result is evidence about the objective, not about the
+optimiser having been unlucky.**
+
+**punctuated equilibrium** — long plateaus broken by sudden jumps, emerging from plain
+hill-climbing with nothing put in to produce it. Visible in this studio's own fitness
+curves: `0.7152 → 0.9323 → 0.9676`, then flat for 200 generations.
+
+> **The claim worth arguing with:** Wolfram holds that *computational irreducibility is a
+> fundamentally stronger force than natural selection*, and that biological complexity is
+> mostly of **computational origin** rather than sculpted by selection. If that is right,
+> then much of what this studio trains is not being *designed* by the objective so much as
+> *found* by it — which raises the value of a good objective and lowers the value of a
+> clever search.
+
+---
+
 ### The -ology board
 
 Every science this project recruits, what **number** it supplies, and whether it has
