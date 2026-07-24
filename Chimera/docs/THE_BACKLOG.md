@@ -159,9 +159,12 @@
 
 ## 🟣 T5 — SYNTHETIC DATA (the operator's "Holy Ghost" — knowledge from disagreement)
 
-- [ ] **Multi-source disagreement** — one ruler across the truck scan, the sandpile, the
-  shaker and the emitter. Where they *agree*, nothing learned; where they *disagree*, that
-  gap is real information neither held alone. *This is the daydream made concrete.*
+- [x] **Multi-source disagreement** ✅ BUILT — `core/disagreement.py`: puts the truck scan
+  (truth), the grown shaker, and the parametric emitter on ONE ruler, keeps the divergence
+  (does not average -- that hides the signal), and attributes each source's characteristic
+  bias. Real result: alignment is CONCORD (all agree, validated); the parametric emitter is
+  +54% too elongated on aspect; the grown shaker is +66% too clustered. Each bias is a lever.
+  The operator's "knowledge from disagreement" made concrete on real measurements.
 - [ ] **Empirical Bayes across the codebook** — 13 class genomes + 489 CC objects. A new
   material with n=1 borrows the typical band width from the population. Textbook-correct
   handling of one specimen, and we already own the corpus.
