@@ -100472,6 +100472,25 @@
       "links": [],
       "recorded_by": "graphify_record.py",
       "run_id": "run_eee6a75ead18"
+    },
+    {
+      "id": "surprise_c08eb34aa1b896bf",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-24T23:09:10.782788",
+      "context": "First resource-economy objective: I set hard gates (share<=0.60, 3+ resources, 800-25000 cr/hr) reasoned from what a good economy 'should' look like, then trained.",
+      "expectation": "",
+      "reality": "The trainer audited it and rule 1 caught the hole: 0/200 random economies reached ANY gate -- an empty feasible region, no gradient, degenerate winner (score 0.069). I set gates without probing reachability first, the exact mistake rule 1 exists to prevent. Fix (iterate the objective, never the artifact): recalibrated the model so diversity/progression are reachable, re-probed, set gates just inside the measured frontier, replaced mis-scaled margins with positive O(1) maximizes. Retrained 0.069->0.736 at 5155 evals/sec: 3 resources, 44% top share, 2.45x progression, physics-ordered prices. core/trainables/resource_economy.py + docs/objectives/resource_economy.json, 36fd847.",
+      "lesson_hint": "",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'The trainer audited it and rule 1 caught the hole: 0/200 random economies reache'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "graphify_record.py",
+      "run_id": "run_1f1cee15ee2a"
     }
   ],
   "edges": [
