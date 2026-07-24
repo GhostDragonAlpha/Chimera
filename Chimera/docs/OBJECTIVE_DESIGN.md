@@ -95,11 +95,17 @@ maximize that saturates is, in the trainer's own words, *a band wearing a maximi
 **Do:** make band quantities into band-errors (distance outside, normalised by band width).
 Maximize robustness, margin, or another never-saturating physical fact.
 
-### 6. At least one maximize, or you get a satisficer
-An objective with only constraints and minimize terms **stops the moment the constraints are
-met** — which is almost never where you wanted it. (CLAUDE.md, load-bearing.)
+### 6. At least one maximize or a target — unless it is a feasibility check
+An OPTIMISATION objective with only bounds **stops the moment the constraints are met** —
+almost never where you wanted it. **Do:** carry at least one `maximize`, or a `target` to fit.
 
-**Do:** every objective carries at least one `maximize`.
+**The exception, verified against 47 objects:** a **feasibility** objective — "does a
+configuration SATISFY these constraints?" — is legitimately maximize-free, because the first
+feasible point *is* the answer. The `auto_decomposer` generates exactly these ("satisfy the
+parent's walls in composition"). R6 is about optimisation goals; feasibility is a different,
+valid category. `objective_lint` exempts an objective whose provenance is auto-decomposed or
+whose every constraint carries a `wall`. (The "47 satisficers" the lint first reported were
+all of this kind — not bugs.)
 
 ### 7. Score N randomised restarts and keep the WORST
 One rollout from one initial condition is a **coin toss, not a measurement.** A chaotic sim

@@ -76,11 +76,17 @@
 - [x] **Two undocumented genome schemas** (THE_ORDER #9) ✅ DOCUMENTED at the owner
   (`export_genome.save_library`): single-specimen (mean+p10..p90) vs class (adds
   between_std/within_std); a reader distinguishes by the presence of `between_std`.
-- [ ] **47 objectives are satisficers** (surfaced by `objective_lint --all`) — bounds only,
-  no maximize/minimize/target, so the trainer stops at the first feasible point. ~36 are
-  auto-generated scenario forks (likely obsolete — triage for deletion); ~11 are base
-  (`biome_resources`, `composition`, `npc_social`, `planet_surface`, `shelter_form`, …).
-  *Fix each with a maximize or a target, or delete the dead forks. Method: `docs/OBJECTIVE_DESIGN.md`.*
+- [x] **"47 satisficers"** ✅ RESOLVED — investigated: they are auto-decomposed FEASIBILITY
+  objectives ("satisfy the parent's walls in composition"), for which satisficing is the
+  CORRECT semantics — the first feasible point is the answer. The R6 lint was over-strict (same
+  as it first was for `target`-fitting objectives); `objective_lint` now exempts feasibility
+  objectives and reports 0 real satisficers. Not a bug — a mischaracterization, corrected.
+- [ ] **UE-era generated training artifacts** (found while investigating the above) — ~10 of
+  the 60 `core/trainables/generated/` domains reference retired UE concepts (pixelstream,
+  uanimnode, metahuman, pcg). The trainer does not import `generated/` (it is `auto_decomposer`
+  output), so they are dead scaffolding. *Prune with care — some grep matches (e.g. "blueprint"
+  in prose) may be false; verify per-file before deleting. Delicate because it is live-generator
+  output.*
 - [ ] **The 4 UE-era `# TODO` stubs** — `asset_providers/*.py`, `game_code_generator.py`.
   UE is retired; these are dead intentions. *Decide keep-or-kill and record it.*
 

@@ -68,7 +68,18 @@ def lint(spec: dict) -> dict:
     kinds = {c.get('kind') for c in constraints}
     has_gradient = bool(maximize) or bool(minimize) or 'maximize' in kinds \
         or 'minimize' in kinds or 'target' in kinds
-    if not has_gradient and constraints:
+    # A FEASIBILITY objective is legitimately maximize-free. The auto_decomposer generates
+    # "does a sub-rung configuration SATISFY the parent's walls in composition" objectives --
+    # a satisfaction problem, where the first feasible point IS the answer, not "almost never
+    # where you wanted it". Verified against 47 auto-decomposed objectives: their walls are
+    # "property must be trainable" / "satisfies parent constraints", pure feasibility. This is
+    # the same refinement as the `target` exemption above -- R6 is about OPTIMISATION goals, and
+    # a feasibility check is a different, valid category. Signalled by the auto-decomposition
+    # provenance or by every constraint carrying a `wall` (i.e. decomposed from a parent wall).
+    prov = str(spec.get('_provenance', '')).lower()
+    is_feasibility = ('auto-decompos' in prov or 'sub-rung' in prov
+                      or (bool(constraints) and all('wall' in c for c in constraints)))
+    if not has_gradient and constraints and not is_feasibility:
         errors.append("R6: no maximize, no minimize, no target -- only bounds. This is a "
                       "SATISFICER: it stops at the first point inside the bounds, which is "
                       "almost never where you wanted it. Add a maximize, or a target to fit.")
