@@ -161,6 +161,16 @@
   person stand up?"; `enter()` returns a LOCAL frame (bounded coords). `from_break()` wires a
   mining void-hit straight to an enterable Cave. Deterministic. Verified by looking (section:
   rock|void|floor|break-in; plan: walkable floor by headroom + entry + passage). `6f0dc88`.
+- [x] **Cave systems (follow the passages)** ✅ BUILT — `core/cave_system.py`. One chamber
+  becomes a connected NETWORK. `explore()` BFS-walks the passages: carve the break-in chamber,
+  follow each lead (a face the cavity reaches) to the next box, carve, connect, repeat to a
+  budget. This IS the work-queue literally — an unfilled passage is "unexplored this way", the
+  frontier is the queue. Boxes tile on a fixed grid (carved once, dedup by integer coord,
+  deterministic); an edge is asserted only where BOTH chambers' voids reach the shared face
+  (walkable, not geometric). MEASURED from (35,200,10 m): 6 chambers, 5 verified passages,
+  ~99,520 m³, 10–58 m deep, 144×144 m span, traverse 4 chambers end to end, in 1.7 s. `from_break`
+  wires a mining dig to the whole system. Verified by looking (network map: plan + section,
+  discs=chambers by volume/depth, edges=passages, entry ringed). `8dfbe65`.
 
 ## 🟢 T3 — THE -OLOGY BOARD (staff the two terminals; see TERMINOLOGY.md §11)
 
