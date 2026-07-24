@@ -72,6 +72,24 @@ class State:
 
 
 @dataclass
+class Gate:
+    """A checkpoint on a dial: it cannot advance past `at` until `holds` is true.
+
+    This is the whole of game progression. A player does not slide smoothly from the
+    first frame to the end -- they are held at a point until something measurable is
+    true, and then released. Open-world included: grinding reputation to upgrade a gun
+    is a 0..1 dial with a gate on it. So progression is not a separate system, it is a
+    dial with conditions, and the condition is MEASURED rather than declared.
+    """
+    at: float
+    name: str
+    holds: object = None                 # callable(state)->bool; None means always open
+
+    def open_for(self, state) -> bool:
+        return True if self.holds is None else bool(self.holds(state))
+
+
+@dataclass
 class Verb:
     """Two states that DIFFER, plus the dial that walks between them.
 
@@ -81,9 +99,35 @@ class Verb:
     name: str
     lo: State
     hi: State
+    gates: list = field(default_factory=list)      # checkpoints, in dial order
 
     def at(self, t: float) -> dict:
         return self.lo.lerp(self.hi, float(t))
+
+    def gate(self, at: float, name: str, holds=None) -> 'Gate':
+        g = Gate(at, name, holds)
+        self.gates.append(g)
+        self.gates.sort(key=lambda x: x.at)
+        return g
+
+    def reachable(self, t: float, state=None) -> float:
+        """How far the dial may actually advance, given the gates.
+
+        Requested t is a WISH; this returns what the world permits. The first closed
+        gate below t is the wall, and the dial stops there.
+        """
+        t = float(t)
+        for g in self.gates:
+            if g.at <= t and not g.open_for(state):
+                return g.at
+        return t
+
+    def advance(self, t: float, state=None) -> tuple:
+        """(derived state, dial actually reached, name of the gate that stopped it)."""
+        r = self.reachable(t, state)
+        blocked = next((g.name for g in self.gates if abs(g.at - r) < 1e-12
+                        and not g.open_for(state)), None)
+        return self.at(r), r, blocked
 
     def differs_in(self) -> list[str]:
         """Which parameters this verb actually moves. A verb whose ends do not differ is
