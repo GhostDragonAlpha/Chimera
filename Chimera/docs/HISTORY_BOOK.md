@@ -5,181 +5,11 @@
 > chapters at 40 for readability):
 > `python -m core.history_book search --query <anything> [--chapter closed-doors]`
 
-**1709 entries** across 8 chapters.
+**1692 entries** across 8 chapters.
 
 ## I. The Constitution (promoted heuristics)
 
-*88 entries; showing 40.*
-
-### H-1
-<sub>`claude:H-1`</sub>
-
-> A C2039 missing-member error in ProceduralGenerated/ means template drift — emit the accessor in the same generator change that emits its test.
-
-### H-2
-<sub>`claude:H-2`</sub>
-
-> Never verify from desktop screenshots — capture via MCP control_editor screenshot mode=editor_viewport, which renders the viewport regardless of window focus, and (since the 2026-07-13 Slate-widget capture fix, McpAutomationBridge_ControlHandlers.cpp/McpAutomationBridge_UiHandlers.cpp) now also includes composited UMG/Slate HUDs during PIE, cropped to just the viewport — full_editor_window is only needed for whole-editor-chrome captures now, not to see a HUD (docs/MCP_PATHWAYS.md #32).
-
-### H-3
-<sub>`claude:H-3`</sub>
-
-> An LM response containing its own reasoning dump ("Here's a thinking process") is a RETRY with a larger token budget, never a verdict — schema-validate before consuming.
-
-### H-7
-<sub>`claude:H-7`</sub>
-
-> Record the MCP response's error field, never raw CLI stdout — a DynamicToolManager boot banner inside an "error" means the wrong stream was captured.
-
-### H-13
-<sub>`claude:H-13`</sub>
-
-> Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps; run telemetry foregrounded and test every declared criterion before grading System_Economy.
-
-### H-14
-<sub>`claude:H-14`</sub>
-
-> Verified-by-injection is not playable — never stage a feature for observation until real player input drives it end-to-end, read back in PIE.
-
-### H-17
-<sub>`claude:H-17`</sub>
-
-> Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
-
-### H-19
-<sub>`claude:H-19`</sub>
-
-> Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and re-verified since.
-
-### H-21
-<sub>`claude:H-21`</sub>
-
-> A verb needs behavior, not metadata: ATool_Shovel had DigRadius but no Dig() — beats must press the verb key and assert a world-state change.
-
-### H-22
-<sub>`claude:H-22`</sub>
-
-> Read back live-PIE pawn components before staging an interaction verb — PickUp's component was never attached, bound, or given a level actor to grab.
-
-### H-24
-<sub>`claude:H-24`</sub>
-
-> A feature tagged only by movement beats is hostage to rig health — zero-displacement failures (GameMode PlayerControllerClass unset) indict the rig, not the surface.
-
-### H-25
-<sub>`claude:H-25`</sub>
-
-> Position-expect beats must reset_position at beat start — W-drift accumulates across sequential beats and BugItGo is refused during PIE.
-
-### H-28
-<sub>`claude:H-28`</sub>
-
-> Probe jumps by timed pawn_z read-back, not log_contains — and reset_position first: z=-26947 shows the pawn had already drifted off the world.
-
-### H-29
-<sub>`claude:H-29`</sub>
-
-> Compound beats fail for shifting root causes (frozen input, then missing SandDrift_FX) — attribute rejection to the failing expect's subsystem, not every tagged feature.
-
-### H-30
-<sub>`claude:H-30`</sub>
-
-> Expects are schema-bound like actions — unknown expects (screenshot_taken, unreadable controller properties) fail beats at runtime; validate the expect vocabulary at dispatch.
-
-### H-31
-<sub>`claude:H-31`</sub>
-
-> Telemetry commands that fall back to hardcoded defaults indicate missing component integration at runtime (UComponent not attached, or not populating properties at BeginPlay) — verify component attachment in character blueprint and initialization order before blaming MCP action handlers.
-
-### H-32
-<sub>`claude:H-32`</sub>
-
-> When telemetry queries return hardcoded defaults (count=0, latency=999), the beat's expectations fail not because of beat schema but because the backend component isn't populating data — verify SandSoundComponent attachment and footstep event tracking at runtime before debugging beat expectations.
-
-### H-33
-<sub>`claude:H-33`</sub>
-
-> Investigate audio_visual_sync report_telemetry; verify test harness and beat reg
-
-### H-34
-<sub>`claude:H-34`</sub>
-
-> Verify required components and assets are spawned and registered.
-
-### H-35
-<sub>`claude:H-35`</sub>
-
-> Investigate elimination_audio_visual_sync telemetry_accessors; verify test harne
-
-### H-36
-<sub>`claude:H-36`</sub>
-
-> Implement missing input bindings and verify actor registration.
-
-### H-37
-<sub>`claude:H-37`</sub>
-
-> Verify beat spawn location distances and pawn navigation constraints.
-
-### H-38
-<sub>`claude:H-38`</sub>
-
-> Investigate correction feature; verify test harness and beat registration.
-
-### H-40
-<sub>`claude:H-40`</sub>
-
-> Investigate actors bp_verb_; verify test harness and beat registration.
-
-### H-41
-<sub>`claude:H-41`</sub>
-
-> Investigate bad costless; verify test harness and beat registration.
-
-### H-42
-<sub>`claude:H-42`</sub>
-
-> Investigate blocker draft; verify test harness and beat registration.
-
-### H-43
-<sub>`claude:H-43`</sub>
-
-> Investigate chaos chaos_organ; verify test harness and beat registration.
-
-### H-44
-<sub>`claude:H-44`</sub>
-
-> Investigate fixes generationsubsystem; verify test harness and beat registration
-
-### H-45
-<sub>`claude:H-45`</sub>
-
-> Investigate bridge dsl; verify test harness and beat registration.
-
-### H-46
-<sub>`claude:H-46`</sub>
-
-> Investigate human_rejection sky_starfield; verify test harness and beat registra
-
-### H-47
-<sub>`claude:H-47`</sub>
-
-> Investigate human_rejection sky_atmosphere_scattering; verify test harness and b
-
-### H-51
-<sub>`claude:H-51`</sub>
-
-> Implement screenshot action and state-capture in sleepwalker beat registry.
-
-### H-54
-<sub>`claude:H-54`</sub>
-
-> Verify event logging and signal traces on success path.
-
-### H-58
-<sub>`claude:H-58`</sub>
-
-> Verify correct pawn class and rig bindings on initialization.
+*54 entries; showing 40.*
 
 ### compilation_fail `2026-07-07T01:45`
 <sub>`heuristic_837905aa7e86de78`</sub>
@@ -210,6 +40,176 @@
 <sub>`heuristic_a205a08f1a755211`</sub>
 
 > Economy features repeatedly grade C/F on partial criteria coverage and unmeasured fps; run telemetry foregrounded and test every declared criterion before grading System_Economy.
+
+### human_rejection: Verb_Step `2026-07-07T01:45`
+<sub>`heuristic_495c8c49df214bdf`</sub>
+
+> Verified-by-injection is not playable — never stage a feature for human eyes until real player input drives it end-to-end, read back in PIE.
+
+### H-1 compilation_fail C2039 missing-member `2026-07-07T05:20`
+<sub>`heuristic_351b200ded96cdb0`</sub>
+
+> A C2039 missing-member error in ProceduralGenerated/ means template drift — emit the accessor in the same generator change that emits its test.
+
+### H-12 grade_CF Build_Pipeline `2026-07-07T05:20`
+<sub>`heuristic_7383762c5de528d3`</sub>
+
+> A build-failure grade must carry the failing file:line verbatim — 'no error text captured' makes the F untriageable and wastes the retry.
+
+### sim_rejection: verb_interactions/visor_inspection_pedestal `2026-07-07T15:07`
+<sub>`heuristic_5031dfdbe0e5667d`</sub>
+
+> Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
+
+### sim_rejection: verb_interactions/weapon_tool_examine `2026-07-07T15:07`
+<sub>`heuristic_2dfd6804008ee83d`</sub>
+
+> Beat scripts must declare only Sleepwalker-registered actions before playtest dispatch.
+
+### human_rejection: Verb_Look `2026-07-08T15:10`
+<sub>`heuristic_e3592474b39c1aca`</sub>
+
+> Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and re-verified since.
+
+### human_rejection: Verb_Shovel `2026-07-11T22:27`
+<sub>`heuristic_6ae2cc2dd417726f`</sub>
+
+> A verb needs behavior, not metadata: ATool_Shovel had DigRadius but no Dig() — beats must press the verb key and assert a world-state change.
+
+### human_rejection: Verb_PickUp `2026-07-11T22:27`
+<sub>`heuristic_da4a5a1dc07333b2`</sub>
+
+> Read back live-PIE pawn components before staging an interaction verb — PickUp's component was never attached, bound, or given a level actor to grab.
+
+### human_rejection: Ground_Rock_Surface `2026-07-11T22:27`
+<sub>`heuristic_929c0e5dd8c3c1f7`</sub>
+
+> A feature tagged only by movement beats is hostage to rig health — zero-displacement failures (GameMode PlayerControllerClass unset) indict the rig, not the surface.
+
+### sim_rejection: verb_interactions/verb_shovel_rock_surface_location `2026-07-11T22:27`
+<sub>`heuristic_c7175a86c82c29e9`</sub>
+
+> Position-expect beats must reset_position at beat start — W-drift accumulates across sequential beats and BugItGo is refused during PIE.
+
+### sim_rejection: regolith_yard/jump_probe `2026-07-11T22:27`
+<sub>`heuristic_52e2728aa88ab00a`</sub>
+
+> Probe jumps by timed pawn_z read-back, not log_contains — and reset_position first: z=-26947 shows the pawn had already drifted off the world.
+
+### sim_rejection: regolith_yard/walk_rock_to_sand_basin `2026-07-11T22:27`
+<sub>`heuristic_66e973934c7b5322`</sub>
+
+> Compound beats fail for shifting root causes (frozen input, then missing SandDrift_FX) — attribute rejection to the failing expect's subsystem, not every tagged feature.
+
+### sim_rejection: verb_interactions/verb_look_location `2026-07-11T22:27`
+<sub>`heuristic_1d155a205edbbd4b`</sub>
+
+> Expects are schema-bound like actions — unknown expects (screenshot_taken, unreadable controller properties) fail beats at runtime; validate the expect vocabulary at dispatch.
+
+### sim_rejection: audio_visual_sync/spawn_and_verify_audio_system `2026-07-11T22:27`
+<sub>`heuristic_fe52b1dc74838df6`</sub>
+
+> Investigate audio_visual_sync sim_rejection; verify test harness and beat regist
+
+### sim_rejection: audio_visual_sync/walk_slow_on_sand `2026-07-11T22:27`
+<sub>`heuristic_f3583c561cfd251c`</sub>
+
+> Investigate audio_visual_sync sim_rejection; verify test harness and beat regist
+
+### sim_rejection: audio_visual_sync/report_telemetry `2026-07-11T23:32`
+<sub>`heuristic_d79d01761718bc42`</sub>
+
+> Investigate audio_visual_sync report_telemetry; verify test harness and beat reg
+
+### human_rejection: audio_visual_sync/telemetry_accessors `2026-07-12T07:15`
+<sub>`heuristic_cf9f4e68af81e5ed`</sub>
+
+> Verify required components and assets are spawned and registered.
+
+### elimination_audio_visual_sync/telemetry_accessors `2026-07-12T22:19`
+<sub>`heuristic_02fe83a268f3891b`</sub>
+
+> Investigate elimination_audio_visual_sync telemetry_accessors; verify test harne
+
+### sim_rejection: audio_visual_sync/walk_fast_on_sand `2026-07-13T07:15`
+<sub>`heuristic_7c8e7fc912c4527d`</sub>
+
+> Implement missing input bindings and verify actor registration.
+
+### sim_rejection: regolith_yard/walk_metal_to_rock `2026-07-13T07:15`
+<sub>`heuristic_040256f8f18a3de0`</sub>
+
+> Verify beat spawn location distances and pawn navigation constraints.
+
+### surprise: correction feature finalized frame `2026-07-14T04:00`
+<sub>`heuristic_393319affe39ee06`</sub>
+
+> Investigate correction feature; verify test harness and beat registration.
+
+### pathway: animation_physics.add_anim_notify -> failed `2026-07-14T04:00`
+<sub>`heuristic_ab234892bdcf17ab`</sub>
+
+> Investigate add_anim_notify animation_physics; verify test harness and beat regi
+
+### surprise: actors bp_verb_ hollow may `2026-07-15T04:32`
+<sub>`heuristic_c4ab980eb2ceee7d`</sub>
+
+> Investigate actors bp_verb_; verify test harness and beat registration.
+
+### surprise: bad costless creation ending `2026-07-15T04:32`
+<sub>`heuristic_96e67135d9845f6a`</sub>
+
+> Investigate bad costless; verify test harness and beat registration.
+
+### surprise: blocker draft dream endpoint `2026-07-15T07:15`
+<sub>`heuristic_009462cbb6e7e534`</sub>
+
+> Investigate blocker draft; verify test harness and beat registration.
+
+### surprise: chaos chaos_organ core created `2026-07-15T07:15`
+<sub>`heuristic_a214b34dbe7997af`</sub>
+
+> Investigate chaos chaos_organ; verify test harness and beat registration.
+
+### surprise: fixes generationsubsystem pipeline research `2026-07-15T08:46`
+<sub>`heuristic_29d3294b7875942a`</sub>
+
+> Investigate fixes generationsubsystem; verify test harness and beat registration
+
+### surprise: actors bp_verb_ hollow may `2026-07-15T09:13`
+<sub>`heuristic_35e1db24e702b181`</sub>
+
+> covered by PENDING_HEURISTICS.md consolidation
+
+### surprise: bad costless creation ending `2026-07-15T09:13`
+<sub>`heuristic_bc5d10fcf229ea76`</sub>
+
+> covered by PENDING_HEURISTICS.md consolidation
+
+### surprise: blocker draft dream endpoint `2026-07-15T09:13`
+<sub>`heuristic_40f1f2708359fd19`</sub>
+
+> covered by PENDING_HEURISTICS.md consolidation
+
+### surprise: bridge dsl fixes mapping `2026-07-15T12:18`
+<sub>`heuristic_e9065f07a42c00cd`</sub>
+
+> Investigate bridge dsl; verify test harness and beat registration.
+
+### human_rejection: Sky_Starfield `2026-07-16T07:22`
+<sub>`heuristic_8a94617065cc052e`</sub>
+
+> Investigate human_rejection sky_starfield; verify test harness and beat registra
+
+### human_rejection: Sky_Atmosphere_Scattering `2026-07-16T07:22`
+<sub>`heuristic_773534f609ba5793`</sub>
+
+> Investigate human_rejection sky_atmosphere_scattering; verify test harness and b
+
+### surprise: gate postflight refused shelter_habitat_materials `2026-07-17T04:37`
+<sub>`heuristic_490edae10b103943`</sub>
+
+> Implement screenshot action and state-capture in sleepwalker beat registry.
 
 ## II. Closed Doors (eliminations — proven negatives)
 
@@ -343,7 +343,7 @@
 
 ## III. Surprises (expectation vs reality)
 
-*593 entries; showing 40.*
+*598 entries; showing 40.*
 
 ### First live spiral_forks run on Ground_Sand_Particles `2026-07-06T15:42`
 <sub>`surprise_204ae52a13d1dea9`</sub>
@@ -667,7 +667,7 @@
 
 ## IV. Verdicts & Grades
 
-*511 entries; showing 40.*
+*514 entries; showing 40.*
 
 ### Test_Feature: grade A `2026-07-03T22:01`
 <sub>`professor_grade_194f6be1dc1b74ec`</sub>
@@ -986,7 +986,7 @@
 
 ## V. Wills & Pains (generational inheritance)
 
-*433 entries; showing 40.*
+*442 entries; showing 40.*
 
 ### Loop 8 System_Economy defect fixes + workflow hardening `2026-07-05T21:49`
 <sub>`phase_4fdbf6143a64e0e1`</sub>
@@ -1423,22 +1423,22 @@
 ### ADotCharacter — ledger standing
 <sub>`repstat:ADotCharacter`</sub>
 
-> ADotCharacter                         296 reps  100%  streak  8  battery   2 (0 pie)  READY
+> ADotCharacter                         298 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### AErisaidActor — ledger standing
 <sub>`repstat:AErisaidActor`</sub>
 
-> AErisaidActor                          86 reps  100%  streak  8  battery   2 (0 pie)  READY
+> AErisaidActor                          88 reps  100%  streak  8  battery   2 (0 pie)  READY
 
 ### Any — ledger standing
 <sub>`repstat:Any`</sub>
 
-> Any position-dependent beat agains     66 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
+> Any position-dependent beat agains     68 reps   50%  streak  0  battery   2 (0 pie)  tier 0/0
 
 ### audio_visual_sync/report_telemetry — ledger standing
 <sub>`repstat:audio_visual_sync/report_telemetry`</sub>
 
-> audio_visual_sync/report_telemetry    249 reps  100%  streak  8  battery   1 (0 pie)  READY
+> audio_visual_sync/report_telemetry    250 reps  100%  streak  8  battery   1 (0 pie)  READY
 
 ## VII. The Drift Ledger (spec promises vs kept)
 
@@ -1597,7 +1597,9 @@
 - **granular_matter** — 1 entry: `repstat:granular_matter`
 - **materialization** — 1 entry: `repstat:materialization`
 - **matter_library** — 1 entry: `repstat:matter_library`
+- **membrane_cellular_integration** — 1 entry: `observation_dd1dc83d4c129329`
 - **planet_averages** — 1 entry: `repstat:planet_averages`
+- **recombination_genetic_inheritance** — 1 entry: `observation_8a8bfdb0aa23971b`
 - **solar_accretion** — 1 entry: `repstat:solar_accretion`
 - **subsystem/AI** — 1 entry: `promo:subsystem/AI:1`
 - **subsystem/Characters** — 1 entry: `promo:subsystem/Characters:1`
@@ -1620,4 +1622,5 @@
 - **subsystem/Travel** — 1 entry: `promo:subsystem/Travel:1`
 - **subsystem/VFX** — 1 entry: `promo:subsystem/VFX:1`
 - **subsystem/root** — 1 entry: `promo:subsystem/root:1`
+- **visual_validation_phenotypic_analysis** — 1 entry: `observation_3a35d3db21c10a8a`
 - **witness_rig** — 1 entry: `elim_41064db78ef9a045`

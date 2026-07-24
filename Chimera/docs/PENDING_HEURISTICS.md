@@ -729,3 +729,20 @@ Wait, looking at the
 - sample: failed: [{"expect": {"pawn_within": {"x": 0, "y": 0, "r": 600}}, "ok": false, "note": "dist=1414213562uu (loc x=None, y=None)"}]
 - possible_conflict_with: heuristic_52e2728aa88ab00a (Probe jumps by timed pawn_z read-back, not log_contains — an); heuristic_66e973934c7b5322 (Compound beats fail for shifting root causes (frozen input, ); heuristic_040256f8f18a3de0 (Verify beat spawn location distances and pawn navigation con); H-28  (Gardener: reconcile)
 - draft_rule: Verify beat spawn location distances and pawn navigation constraints.
+
+<!-- distilled 2026-07-24T04:51:30Z -->
+## H-69: human_rejection: Tool_Weapon_Model
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-08T00:26:29
+- proposed_organ: claude_md
+- evidence: observation_af7f40abe37d1f59
+- sample: automated rejection sweep: simulation evidence indicts this feature (2 failing outcome(s)) in simtest_fbd1071132dfb65a
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+## H-70: human_rejection: Ground_Sand_Particles
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-08T04:18:59
+- proposed_organ: claude_md
+- evidence: observation_c1eb6cfb82d8fc19
+- sample: Reopening the 2026-07-07T06:46:59 observed_provisional acceptance (simtest_0dec5fc92db45fee, 4 clean sessions). Mixed signal: walk_rock_to_sand_basin (the more 
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)

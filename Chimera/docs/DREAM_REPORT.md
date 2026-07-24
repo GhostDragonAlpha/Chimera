@@ -1,8 +1,8 @@
 # DREAM REPORT — morning briefing for the Gardener
-consolidated: 2026-07-23T07:15:02Z
+consolidated: 2026-07-24T04:51:30Z
 
 ## Awaiting your approval
-9 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
+11 pending heuristic(s) in docs/PENDING_HEURISTICS.md:
 - H-48: human_rejection: Tool_Scanner_Model
 - H-49: human_rejection: Tool_Scanner_Material
 - H-50: grade_CF: X
@@ -13,12 +13,12 @@ consolidated: 2026-07-23T07:15:02Z
 - H-63: sim_rejection: solar_system_stand/stand_on_grown_ocean_world
 
 ## Open phantom pains
-- phase_4d2da4e032a4aa07:P1 [16d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
-- phase_3414a5cc1ff49e30:P1 [16d] Phase 2 dependencies may still block Phase 3 wiring
-- phase_33cc2d55125bc551:P1 [16d] sleepwalker may still attempt PIE if runtime_report is not checked properly
-- phase_a06bc8140bd62718:P1 [16d] phase_da55128aec6d109a:P1
-- phase_0ddffb52d2d75240:P1 [16d] The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge
-- phase_3baeff0ccd0f4556:P1 [16d] phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3
+- phase_4d2da4e032a4aa07:P1 [17d] Tri-pad materials will read uniformly dark/indistinct at walk height (viewport shot shows a near-black strip); expect the temperature to flag ground look - route to Ground_* features, lighting/material-instance work, not placement
+- phase_3414a5cc1ff49e30:P1 [17d] Phase 2 dependencies may still block Phase 3 wiring
+- phase_33cc2d55125bc551:P1 [17d] sleepwalker may still attempt PIE if runtime_report is not checked properly
+- phase_a06bc8140bd62718:P1 [17d] phase_da55128aec6d109a:P1
+- phase_0ddffb52d2d75240:P1 [17d] The bridge's NOT_IMPLEMENTED on add_anim_notify will re-block every feature needing anim events until a capable session patches Plugins/McpAutomationBridge
+- phase_3baeff0ccd0f4556:P1 [17d] phase_da55128aec6d109a:P1, phase_762486f41e1aeafb:P1, phase_762486f41e1aeafb:P3, phase_fda9e71b0c0841b4:P3
 
 ## Observation queue — the true collapse awaits your eyes
 - Loop 1 **Hierarchical_Membrane_System** (system-verified 2026-07-22T00:52:10)
@@ -47,19 +47,16 @@ Record verdicts: `python -m core.graphify_record observe --feature X --verdict a
 
 ## Tonight's distillation
 ```
-clusters >= 3: 75  |  suppressed (covered/pending): 75  |  staged: 0
+clusters >= 3: 77  |  suppressed (covered/pending): 72  |  staged: 2  |  deferred by cap: 3
   covered   [  5x] human_rejection: Verb_Shovel  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Look  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Bend  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_PickUp  <- PENDING_HEURISTICS.md
   covered   [  4x] human_rejection: Verb_Drop  <- PENDING_HEURISTICS.md
   covered   [  2x] human_rejection: Verb_Step  <- PENDING_HEURISTICS.md
-  covered   [  1x] human_rejection: Tool_Weapon_Model  <- MCP_PATHWAYS.md
   covered   [  1x] human_rejection: Ground_Metal_Surface  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: Ground_Rock_Surface  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: Ground_Sand_Surface  <- PENDING_HEURISTICS.md
-  covered   [  1x] human_rejection: Ground_Sand_Particles  <- MCP_PATHWAYS.md
-  covered   [  1x] human_rejection: Ground_Sand_Footprints  <- MCP_PATHWAYS.md
   covered   [  1x] human_rejection: audio_visual_sync/telemetry_accessors  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: audio_visual_sync/report_telemetry  <- PENDING_HEURISTICS.md
   covered   [  1x] human_rejection: Sky_Starfield  <- PENDING_HEURISTICS.md
@@ -96,7 +93,7 @@ clusters >= 3: 75  |  suppressed (covered/pending): 75  |  staged: 0
   covered   [131x] compilation_fail  <- PENDING_HEURISTICS.md
   covered   [ 41x] grade_CF: Visual_Verification  <- PENDING_HEURISTICS.md
   covered   [ 36x] pathway: sleepwalker.beat_run -> partial  <- PENDING_HEURISTICS.md
-  covered   [ 33x] surprise: correction feature finalized frame  <- PENDING_HEURISTICS.md
+  covered   [ 35x] surprise: correction feature finalized frame  <- PENDING_HEURISTICS.md
   covered   [ 26x] verification_not_verified  <- PENDING_HEURISTICS.md
   covered   [ 26x] surprise: audio_visual_sync beat discovered expected  <- PENDING_HEURISTICS.md
   covered   [ 18x] pathway: build_orchestrator.ue_shutdown -> success_intended_kill  <- PENDING_HEURISTICS.md
@@ -123,12 +120,19 @@ clusters >= 3: 75  |  suppressed (covered/pending): 75  |  staged: 0
   covered   [  3x] surprise: fixes generationsubsystem pipeline research  <- PENDING_HEURISTICS.md
   covered   [  3x] surprise: gate postflight refused shelter_habitat_materials  <- PENDING_HEURISTICS.md
   covered   [  3x] surprise: atom beat_scripts_tautology_fix fix red  <- PENDING_HEURISTICS.md
-nothing new to stage — the constitution already covers today's lessons
+  CANDIDATE [  1x] human_rejection: Tool_Weapon_Model
+  CANDIDATE [  1x] human_rejection: Ground_Sand_Particles
+  deferred  [  1x] human_rejection: Ground_Sand_Footprints (cap; next night)
+  deferred  [  1x] human_rejection: visual_validation_phenotypic_analysis (cap; next night)
+  deferred  [  1x] human_rejection: recombination_genetic_inheritance (cap; next night)
+
+staged 2 candidate(s) -> E:\PythonChimera\Chimera\docs\PENDING_HEURISTICS.md
+next: dream_loop --tend auto-rules the queue (doc-organ rules self-promote; gate-organ rules queue for a capable cycle); optional human veto-after.
 ```
 
 ## Compaction preview (dry-run — apply is always manual)
 ```
-live nodes: 3830  |  archivable (>30d, superseded, unreferenced): 0
+live nodes: 3857  |  archivable (>30d, superseded, unreferenced): 0
 dry-run: nothing moved. Re-run with --apply to archive.
 ```
 
