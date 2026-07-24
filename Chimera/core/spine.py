@@ -519,6 +519,133 @@ SPINE: dict = {
         'fails. Five trained rounds and a granularity probe all failed until the rungs were '
         'split; then the UNTRAINED smoke test succeeded.',
         'LOD of meaning', 'MEASURED'),
+    # --- THE HUMAN TERMINAL (2026-07-23) -----------------------------------------------
+    # The closed spine reported all 80 chains landing on PHYSICS and none on THE HUMAN,
+    # and run through its own span test the vocabulary scored CUTSCENE. The cause was not
+    # an oversight: every -ology recruited so far (physics, geology, astronomy,
+    # climatology, optics, genetics, statistics, ruliology) is a physics-side science.
+    # The operator's correction -- "we'll need all the ologies, well this is one of them"
+    # -- names the fix: sociology is the first hire on the other side.
+    #
+    # THE RULE THAT KEEPS THE COLUMNS HONEST: does it hold with NOBODY THERE?
+    # Gravity does -> PHYSICS. A just-noticeable-difference does not, and neither does a
+    # group's preference -> THE HUMAN, even though both are rigorously measured. Without
+    # this rule "we measured it" launders every human fact into the physics column and the
+    # terminal stays empty while looking full.
+
+    'the column rule': (
+        "without it, 'we measured it' absorbs every human fact into the physics column and "
+        "the human terminal stays empty while looking full -- a JND and a group's preference "
+        "are both rigorously measured and neither holds with nobody there.",
+        'taste', ''),
+
+    'taste': (
+        "no measurement can settle whether a thing is worth WANTING. You can measure what "
+        "something is and what it does; whether it should exist bottoms out in a person, "
+        "and there is nowhere further to go.",
+        HUMAN, 'HUMAN'),
+
+    'the physics measure vector': (
+        "taste is learned over a handful of honest physical axes rather than over pixels, "
+        "which is what makes it cheap: a reward model over raw artifacts needs thousands of "
+        "labels, and ~6 interpretable axes need a DOZEN comparisons.",
+        'measure', 'MEASURED'),
+
+    'the preference loop': (
+        "taste has to be ELICITED as comparisons rather than declared as numbers, because a "
+        "person can reliably say which of two things they prefer and cannot reliably say "
+        "what weight they put on an axis.",
+        'taste', 'HUMAN'),
+
+    'fun': (
+        "it is subjective for one person and STRUCTURED across a group, so it is measurable "
+        "as a distribution even though it is not measurable as a value -- the same reason a "
+        "material is stored as a range and not an average. This is the operator's point, and "
+        "it is what makes the human terminal reachable at all.",
+        'taste', 'HUMAN'),
+
+    'cultural heritability': (
+        "the heritability formula applies literally with cultures in place of specimens: "
+        "V_between / (V_between + V_within) says which parts of fun are REGIONAL (predictable "
+        "from where a person is) and which are PERSONAL (varying as much inside a country as "
+        "between countries, so no amount of sociology will predict them and you must ask the "
+        "individual). Most arguments about what players want are that distinction, unmade.",
+        'fun', 'HUMAN'),
+
+    'psychophysics': (
+        "the span between a physical stimulus and a human sensation is itself measurable -- "
+        "just-noticeable-difference, Weber's law, measured since the 1860s -- so 'how precise "
+        "does this have to be' has an answer instead of an opinion: whatever a person can "
+        "actually tell apart at that distance.",
+        HUMAN, 'HUMAN'),
+
+    'the player is the second terminal': (
+        "in development THE HUMAN is the operator's taste and in the shipped game it is the "
+        "player. It is the same slot, not an analogy -- which is why the rule that keeps the "
+        "engineering honest (nothing may be its own reason) is the rule that makes a story "
+        "feel real.",
+        'taste', 'HUMAN'),
+
+    'a choice that costs something': (
+        "a choice with no cost is a menu, not a choice. The cost is what makes the player the "
+        "CAUSE of what follows rather than the witness of it, and only a cause can be a "
+        "terminal.",
+        'the player is the second terminal', 'HUMAN'),
+
+    'the span': (
+        "emotion is neither terminal but the DISTANCE between them: a real law reaching a "
+        "real person. Physics alone is a cutscene (lawful, nothing felt); the human alone is "
+        "asserted (no physics under it, and it reads as manipulation). Only a chain that "
+        "spans both was actually felt.",
+        'psychophysics', 'HUMAN'),
+
+    # --- TIMELINES ARE MEMBRANES (2026-07-23) ------------------------------------------
+    # Operator: "timelines control everything, they are the mega membrane", and the
+    # demographic target "is another timeline that controls everything".
+    #
+    # Time being the outermost membrane does NOT mean there is one clock. It means
+    # anything with a beginning and an end is a boundary -- so every timeline is a
+    # membrane at its own scale, nesting exactly like universe > planet > section > cell.
+    # The correction that matters: a demographic is a TRAJECTORY, not a snapshot, which is
+    # the same error as storing a material as an average instead of a range.
+
+    'timeline': (
+        "anything with a beginning and an end is a boundary, so a timeline is a membrane "
+        "like any other -- and there is no single clock, only nested ones: cultural time "
+        "contains development time contains story time contains a session contains a beat.",
+        'time as the outermost membrane', ''),
+
+    'cultural time': (
+        "a demographic is a TRAJECTORY and not a snapshot: what is fun in a place in 2026 "
+        "is not what was fun there in 2016. Treating an audience as fixed is the same "
+        "mistake as storing a material as an average instead of a range. It cites the human "
+        "terminal and not `timeline`: that a timeline is a membrane is structurally true but "
+        "it is not WHY this one matters, and citing it routed the branch back into physics.",
+        HUMAN, 'HUMAN'),
+
+    'development time': (
+        "the project's own history is a boundary with an inside and an outside, which is "
+        "why THE_WORKFLOW.md could only be written by reading the git chronology IN ORDER "
+        "-- the sequence is the structure, not a presentation choice.",
+        'timeline', ''),
+
+    'story time': (
+        "the player's journey is the dial between two states of the world, so the story is "
+        "just the outermost dial the player can actually reach, with gates along it.",
+        'timeline', ''),
+
+    'a release is a gate': (
+        "a gate is a dial held until a MEASURED condition holds, and a release condition is "
+        "measured on the CULTURAL timeline -- so when to ship stops being a calendar guess "
+        "and becomes a reading of whether the audience's trajectory has crossed the bar.",
+        'cultural time', 'HUMAN'),
+
+    'the human stands at the boundary': (
+        "cultural time and development time are two membranes, and a person is the only "
+        "thing that can look across the seam between them and decide what to build. That is "
+        "not a management role, it is a PORT -- the one place those two membranes touch.",
+        'cultural time', 'HUMAN'),
+
 }
 
 
@@ -527,6 +654,93 @@ SPINE: dict = {
 # an honest-looking "this is an ASSERTION" for a term that had a perfectly good because.
 SPINE = {k.lower(): v for k, v in SPINE.items()}
 
+
+
+
+# ---------------------------------------------------------------------------
+# THE TIMELINE LADDER
+#
+# Outermost first. Each contains the next, and each GATES the one inside it: a condition
+# measured on the outer timeline is what releases the inner one's dial. This is the same
+# containment as universe > planet > section > cell -- a timeline is not a special kind of
+# thing, it is a membrane whose axis happens to be time.
+#
+# The operator sits on the seam between CULTURAL and DEVELOPMENT: the only port where a
+# person can read one membrane and act on the other.
+# ---------------------------------------------------------------------------
+
+TIMELINES = [
+    ('cultural',    'a demographic\'s own trajectory; generations', HUMAN),
+    ('development', 'this project\'s history, recorded in the git chronology', ''),
+    ('story',       'the player\'s journey through the world, 0 -> 1', ''),
+    ('session',     'one sitting at the game', ''),
+    ('beat',        'one moment, where a span is either felt or not', HUMAN),
+]
+
+
+def gates(inner: str) -> str | None:
+    """Which timeline gates this one -- the membrane immediately outside it."""
+    names = [t[0] for t in TIMELINES]
+    if inner not in names:
+        raise KeyError(f'no timeline {inner!r}; have {names}')
+    i = names.index(inner)
+    return names[i - 1] if i else None
+
+
+def ladder() -> str:
+    out = []
+    for d, (name, what, term) in enumerate(TIMELINES):
+        tag = f'   -> {term}' if term else ''
+        out.append('  ' * d + f'{name}{tag}')
+        out.append('  ' * d + f'    {what}')
+    return '\n'.join(out)
+
+# ---------------------------------------------------------------------------
+# THE -OLOGIES (operator: "we'll need all the ologies")
+#
+# Not a slogan -- the STAFFING PLAN for the two terminals. Each science is where one
+# terminal's numbers come from, and a terminal with no science behind it stays empty no
+# matter how much is built on the other side. The vocabulary scoring CUTSCENE against its
+# own span test was this table having one column filled and two blank.
+#
+# COLUMN RULE: does the fact hold with NOBODY THERE?
+#   yes -> PHYSICS       no -> THE HUMAN       the measurable gap between -> THE SPAN
+# ---------------------------------------------------------------------------
+
+OLOGIES = {
+    # physics-side: true in an empty universe
+    'physics':        (PHYSICS, 'gravity, contact, torque limits', 'recruited'),
+    'astronomy':      (PHYSICS, 'N-body accretion, Kepler slope 1.50 at r2 1.000', 'recruited'),
+    'geology':        (PHYSICS, 'regolith repose 40.03 deg, mineral spectra', 'recruited'),
+    'climatology':    (PHYSICS, 'moist-greenhouse limit, Jeans escape', 'recruited'),
+    'optics':         (PHYSICS, 'Rayleigh/Mie scattering, SH coefficients', 'recruited'),
+    'genetics':       (PHYSICS, 'heritability, linkage, liability scale', 'recruited'),
+    'statistics':     (PHYSICS, 'bands, range-bias d2 constants, Bradley-Terry', 'recruited'),
+    'ruliology':      (PHYSICS, 'irreducibility, capacity, the Axelrod error', 'recruited'),
+
+    # the span: a measurable gap that needs both a stimulus and an observer
+    'psychophysics':  ('THE SPAN', 'just-noticeable-difference, Weber law; sets how precise '
+                                   'a band must actually be', 'NAMED, NOT YET USED'),
+    'perceptual psychology': ('THE SPAN', 'attention, salience, what a player notices at all',
+                              'NOT RECRUITED'),
+
+    # human-side: needs a person to be true
+    'sociology':      (HUMAN, 'group preference structure; which parts of fun are cultural '
+                              'vs personal', 'FIRST HIRE, 2026-07-23'),
+    'anthropology':   (HUMAN, 'ritual, meaning, what a place signifies', 'NOT RECRUITED'),
+    'psychology':     (HUMAN, 'motivation, flow, frustration tolerance', 'NOT RECRUITED'),
+    'linguistics':    (HUMAN, 'naming, story grammar, what reads as a sentence', 'NOT RECRUITED'),
+}
+
+
+def staffing() -> dict:
+    """Which terminals have a science behind them, and which are still empty."""
+    out = {}
+    for name, (col, supplies, status) in OLOGIES.items():
+        out.setdefault(col, {'recruited': [], 'open': []})
+        key = 'recruited' if status.startswith(('recruited', 'FIRST')) else 'open'
+        out[col][key].append(name)
+    return out
 
 # The player is the second terminal. Stated here because it is a DESIGN LAW, not a remark:
 # during development THE HUMAN is the operator's taste; in the shipped game it is the
@@ -599,6 +813,10 @@ def audit() -> dict:
     terms = load()
     spined = set(SPINE)
     missing = sorted(t['term'] for k, t in terms.items() if k not in spined)
+    # BOTH directions. The first version only asked "does every term have a because?" and
+    # happily printed "95 of 80" once the spine grew past the doc -- a term that exists as
+    # a reason but was never written down is just as unfindable as one with no reason.
+    undocumented = sorted(k for k in spined if k not in terms)
     dead = []
     for k in spined:
         try:
@@ -606,8 +824,18 @@ def audit() -> dict:
                 dead.append(k)
         except KeyError:
             dead.append(k)
+    # A `proves` class and a citation can DISAGREE, and nothing noticed until the human
+    # branch was labelled HUMAN throughout and still terminated at PHYSICS. An edge that
+    # claims to rest on a person must actually reach one.
+    mislabelled = []
+    for k, (_, _, proves) in SPINE.items():
+        if proves == 'HUMAN' and terminal_of(k) != HUMAN:
+            mislabelled.append(k)
+
     return {'terms': len(terms), 'with_because': len(spined),
-            'without_because': missing, 'dead_ends': sorted(dead)}
+            'without_because': missing, 'undocumented': undocumented,
+            'dead_ends': sorted(dead),
+            'mislabelled': sorted(mislabelled)}
 
 
 def tell(root: str = 'membrane') -> str:
@@ -713,7 +941,13 @@ def _main() -> int:
 
     if a.audit:
         r = audit()
-        print(f'  {r["with_because"]} of {r["terms"]} terms have a recorded because')
+        print(f'  {r["terms"]} terms documented, {r["with_because"]} reasons recorded')
+        if r.get('undocumented'):
+            print(f'  IN THE SPINE BUT NOT IN THE DOC ({len(r["undocumented"])}): '
+                  + ', '.join(r['undocumented']))
+        if r.get('mislabelled'):
+            print(f'  CLAIMS HUMAN BUT REACHES PHYSICS ({len(r["mislabelled"])}): '
+                  + ', '.join(r['mislabelled']))
         if r['dead_ends']:
             print(f'  DEAD ENDS ({len(r["dead_ends"])}): ' + ', '.join(r['dead_ends']))
         print(f'  no because yet ({len(r["without_because"])}): '

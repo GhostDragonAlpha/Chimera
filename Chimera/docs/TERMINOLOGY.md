@@ -397,6 +397,132 @@ held back.
 
 ---
 
+## 11. THE HUMAN TERMINAL — and the -ologies that staff it
+
+*(Added 2026-07-23, after the finished because-chain reported all 80 terms terminating at
+PHYSICS and none at THE HUMAN. Run through its own span test the vocabulary scored
+**CUTSCENE**. The cause was not an oversight: every science recruited to that point —
+physics, geology, astronomy, climatology, optics, genetics, statistics, ruliology — is a
+physics-side one. The operator's correction: "we'll need all the ologies, well this is one
+of them.")*
+
+**the column rule** — does the fact hold with **nobody there**? Gravity does → PHYSICS. A
+just-noticeable-difference does not, and neither does a group's preference → THE HUMAN,
+**even though both are rigorously measured**. Without this rule, "we measured it" launders
+every human fact into the physics column and the terminal stays empty while looking full.
+
+**taste** — no measurement can settle whether a thing is worth **wanting**. You can measure
+what something is and what it does; whether it should exist bottoms out in a person, and
+there is nowhere further to go. → `core/taste.py` (human-writable only)
+
+**the physics measure vector** — the ~6 honest physical axes taste is learned *over*
+(`skill_gap`, `punishes_naive`, `learnability`, `headroom`, …). **This one terminates at
+PHYSICS, correctly:** the axes are physics; only the *weights* on them are taste. A reward
+model over raw artifacts needs thousands of labels; six interpretable axes need a dozen
+comparisons. → `core/preference.py`
+
+**the preference loop** — taste elicited as **comparisons**, never declared as numbers,
+because a person can reliably say which of two things they prefer and cannot reliably say
+what weight they put on an axis. → `core/preference_elicit.py`
+
+**fun** — subjective for one person and **structured across a group**, so it is measurable
+as a *distribution* even though it is not measurable as a *value* — the same reason a
+material is stored as a range and not an average. This is what makes the human terminal
+reachable at all.
+
+**cultural heritability** — the heritability formula with **cultures in place of
+specimens**: `V_between / (V_between + V_within)` says which parts of fun are **regional**
+(predictable from where a person is) and which are **personal** (varying as much inside a
+country as between countries, so no amount of sociology will predict them — you must ask
+the individual). Most arguments about "what players want" are that distinction, unmade.
+
+**psychophysics** — the science of the **span** between a physical stimulus and a human
+sensation (just-noticeable-difference, Weber's law, measured since the 1860s). It answers
+"how precise does this have to be" with *whatever a person can actually tell apart at that
+distance*, instead of with an opinion.
+
+**the span** — emotion is neither terminal but the **distance between them**: a real law
+reaching a real person. Physics alone is a **cutscene** (lawful, nothing felt); the human
+alone is **asserted** (no physics under it — the taste of a bad game). Only a chain
+spanning both was actually felt. → `core/spine.py :: span()`
+
+**the player is the second terminal** — in development THE HUMAN is the operator's taste;
+in the shipped game it is the player. **The same slot, not an analogy** — which is why the
+rule that keeps the engineering honest (nothing may be its own reason) is the rule that
+makes a story feel real.
+
+**a choice that costs something** — a choice with no cost is a **menu**. The cost is what
+makes the player the *cause* of what follows rather than the witness of it, and only a
+cause can be a terminal.
+
+---
+
+## 12. TIMELINES — the mega membrane, and there is more than one
+
+*(Operator, 2026-07-23: "timelines control everything, they are the mega membrane", and the
+demographic target "is another timeline that controls everything.")*
+
+**timeline** — anything with a beginning and an end is a boundary, so a timeline is a
+membrane like any other. **There is no single clock** — only nested ones, containing each
+other exactly as `universe ⊃ planet ⊃ section ⊃ cell` does:
+
+```
+cultural  →  development  →  story  →  session  →  beat
+```
+
+Each **gates** the one inside it: a condition measured on the outer timeline is what
+releases the inner one's dial. → `core/spine.py :: TIMELINES, gates()`
+
+**cultural time** — a demographic is a **trajectory, not a snapshot**. What is fun in a
+place in 2026 is not what was fun there in 2016. Treating an audience as fixed is the same
+mistake as storing a material as an average instead of a range.
+
+**development time** — this project's own history is a boundary with an inside and an
+outside, which is why `THE_WORKFLOW.md` could only be written by reading the git chronology
+**in order**. The sequence is the structure, not a presentation choice.
+
+**story time** — the player's journey is the dial between two states of the world, so the
+story is the outermost dial the player can actually reach, with **gates** along it.
+
+**a release is a gate** — a gate is a dial held until a *measured* condition holds, and a
+release condition is measured on the **cultural** timeline. So "when do we ship" stops
+being a calendar guess and becomes a reading of whether the audience's trajectory has
+crossed the bar.
+
+**the human stands at the boundary** — cultural time and development time are two
+membranes, and a person is the only thing that can look across the seam and decide what to
+build. **Not a management role — a port**: the one place those two membranes touch.
+
+
+### The -ology board
+
+Every science this project recruits, what **number** it supplies, and whether it has
+actually been used. Machine-readable: `core/spine.py :: OLOGIES`, `staffing()`.
+
+| -ology | feeds | supplies | status |
+|---|---|---|---|
+| physics | PHYSICS | gravity, contact, torque limits | recruited |
+| astronomy | PHYSICS | N-body accretion; Kepler slope 1.50 at r² 1.000 | recruited |
+| geology | PHYSICS | regolith repose 40.03°, mineral spectra | recruited |
+| climatology | PHYSICS | moist-greenhouse limit, Jeans escape | recruited |
+| optics | PHYSICS | Rayleigh/Mie scattering, SH coefficients | recruited |
+| genetics | PHYSICS | heritability, linkage, liability scale | recruited |
+| statistics | PHYSICS | bands, range-bias d₂ constants, Bradley-Terry | recruited |
+| ruliology | PHYSICS | irreducibility, capacity, the Axelrod error | recruited |
+| **psychophysics** | **THE SPAN** | JND, Weber's law — how precise a band must actually be | **named, not yet used** |
+| perceptual psychology | THE SPAN | attention, salience, what a player notices at all | not recruited |
+| **sociology** | **THE HUMAN** | group preference structure; cultural vs personal | **first hire, 2026-07-23** |
+| anthropology | THE HUMAN | ritual, meaning, what a place signifies | not recruited |
+| psychology | THE HUMAN | motivation, flow, frustration tolerance | not recruited |
+| linguistics | THE HUMAN | naming, story grammar | not recruited |
+
+**Read the gap, not the list.** One full column and two nearly empty ones is precisely why
+this vocabulary scored CUTSCENE against its own span test. An -ology is not decoration —
+it is where a terminal's numbers come from, and a terminal with no science behind it stays
+empty however much is built on the other side.
+
+---
+
 ## MAINTAINING THIS FILE
 
 Add a term when it becomes **load-bearing** — when getting it wrong would produce wrong

@@ -1,7 +1,7 @@
 {
   "source": "docs/TERMINOLOGY.md",
   "note": "GENERATED. Edit the markdown, then run: python -m core.terms --rebuild",
-  "count": 80,
+  "count": 96,
   "terms": {
     "splat": {
       "term": "splat",
@@ -595,6 +595,118 @@
       "aliases": [],
       "section": "RULIOLOGY \u2014 borrowed vocabulary, and what it corrected here",
       "definition": "recorded because this studio asserted the opposite and was wrong. `cluster_tight` sat exactly on its 0.02 floor, which was read as \"the vocabulary runs out\". Widening the floor to 0.005 and retraining moved the score from **0.8238 to 0.8240** \u2014 nothing. The gene drifted off the floor to 0.0313 and clustering turned out to have the *largest* margin of any fact (0.722). The real limiter was `verticality` (margin 0.196, band width 0.176) and `alignment` (0.204, width 0.061) \u2014 narrow because they came from 5 regions of ONE scan. **The lever was more scans, not more capacity.** `pinned()` reports where a winner rests, which is not the same as where it is held back. ---",
+      "code": []
+    },
+    "the column rule": {
+      "term": "the column rule",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "does the fact hold with **nobody there**? Gravity does \u2192 PHYSICS. A just-noticeable-difference does not, and neither does a group's preference \u2192 THE HUMAN, **even though both are rigorously measured**. Without this rule, \"we measured it\" launders every human fact into the physics column and the terminal stays empty while looking full.",
+      "code": []
+    },
+    "taste": {
+      "term": "taste",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "no measurement can settle whether a thing is worth **wanting**. You can measure what something is and what it does; whether it should exist bottoms out in a person, and there is nowhere further to go. \u2192 `core/taste.py` (human-writable only)",
+      "code": []
+    },
+    "the physics measure vector": {
+      "term": "the physics measure vector",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "the ~6 honest physical axes taste is learned *over* (`skill_gap`, `punishes_naive`, `learnability`, `headroom`, \u2026). **This one terminates at PHYSICS, correctly:** the axes are physics; only the *weights* on them are taste. A reward model over raw artifacts needs thousands of labels; six interpretable axes need a dozen comparisons. \u2192 `core/preference.py`",
+      "code": []
+    },
+    "the preference loop": {
+      "term": "the preference loop",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "taste elicited as **comparisons**, never declared as numbers, because a person can reliably say which of two things they prefer and cannot reliably say what weight they put on an axis. \u2192 `core/preference_elicit.py`",
+      "code": []
+    },
+    "fun": {
+      "term": "fun",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "subjective for one person and **structured across a group**, so it is measurable as a *distribution* even though it is not measurable as a *value* \u2014 the same reason a material is stored as a range and not an average. This is what makes the human terminal reachable at all.",
+      "code": []
+    },
+    "cultural heritability": {
+      "term": "cultural heritability",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "the heritability formula with **cultures in place of specimens**: `V_between / (V_between + V_within)` says which parts of fun are **regional** (predictable from where a person is) and which are **personal** (varying as much inside a country as between countries, so no amount of sociology will predict them \u2014 you must ask the individual). Most arguments about \"what players want\" are that distinction, unmade.",
+      "code": []
+    },
+    "psychophysics": {
+      "term": "psychophysics",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "the science of the **span** between a physical stimulus and a human sensation (just-noticeable-difference, Weber's law, measured since the 1860s). It answers \"how precise does this have to be\" with *whatever a person can actually tell apart at that distance*, instead of with an opinion.",
+      "code": []
+    },
+    "the span": {
+      "term": "the span",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "emotion is neither terminal but the **distance between them**: a real law reaching a real person. Physics alone is a **cutscene** (lawful, nothing felt); the human alone is **asserted** (no physics under it \u2014 the taste of a bad game). Only a chain spanning both was actually felt. \u2192 `core/spine.py :: span()`",
+      "code": []
+    },
+    "the player is the second terminal": {
+      "term": "the player is the second terminal",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "in development THE HUMAN is the operator's taste; in the shipped game it is the player. **The same slot, not an analogy** \u2014 which is why the rule that keeps the engineering honest (nothing may be its own reason) is the rule that makes a story feel real.",
+      "code": []
+    },
+    "a choice that costs something": {
+      "term": "a choice that costs something",
+      "aliases": [],
+      "section": "THE HUMAN TERMINAL \u2014 and the -ologies that staff it",
+      "definition": "a choice with no cost is a **menu**. The cost is what makes the player the *cause* of what follows rather than the witness of it, and only a cause can be a terminal. ---",
+      "code": []
+    },
+    "timeline": {
+      "term": "timeline",
+      "aliases": [],
+      "section": "TIMELINES \u2014 the mega membrane, and there is more than one",
+      "definition": "anything with a beginning and an end is a boundary, so a timeline is a membrane like any other. **There is no single clock** \u2014 only nested ones, containing each other exactly as `universe \u2283 planet \u2283 section \u2283 cell` does: ``` cultural \u2192 development \u2192 story \u2192 session \u2192 beat ``` Each **gates** the one inside it: a condition measured on the outer timeline is what releases the inner one's dial. \u2192 `core/spine.py :: TIMELINES, gates()`",
+      "code": []
+    },
+    "cultural time": {
+      "term": "cultural time",
+      "aliases": [],
+      "section": "TIMELINES \u2014 the mega membrane, and there is more than one",
+      "definition": "a demographic is a **trajectory, not a snapshot**. What is fun in a place in 2026 is not what was fun there in 2016. Treating an audience as fixed is the same mistake as storing a material as an average instead of a range.",
+      "code": []
+    },
+    "development time": {
+      "term": "development time",
+      "aliases": [],
+      "section": "TIMELINES \u2014 the mega membrane, and there is more than one",
+      "definition": "this project's own history is a boundary with an inside and an outside, which is why `THE_WORKFLOW.md` could only be written by reading the git chronology **in order**. The sequence is the structure, not a presentation choice.",
+      "code": []
+    },
+    "story time": {
+      "term": "story time",
+      "aliases": [],
+      "section": "TIMELINES \u2014 the mega membrane, and there is more than one",
+      "definition": "the player's journey is the dial between two states of the world, so the story is the outermost dial the player can actually reach, with **gates** along it.",
+      "code": []
+    },
+    "a release is a gate": {
+      "term": "a release is a gate",
+      "aliases": [],
+      "section": "TIMELINES \u2014 the mega membrane, and there is more than one",
+      "definition": "a gate is a dial held until a *measured* condition holds, and a release condition is measured on the **cultural** timeline. So \"when do we ship\" stops being a calendar guess and becomes a reading of whether the audience's trajectory has crossed the bar.",
+      "code": []
+    },
+    "the human stands at the boundary": {
+      "term": "the human stands at the boundary",
+      "aliases": [],
+      "section": "TIMELINES \u2014 the mega membrane, and there is more than one",
+      "definition": "cultural time and development time are two membranes, and a person is the only thing that can look across the seam and decide what to build. **Not a management role \u2014 a port**: the one place those two membranes touch. Every science this project recruits, what **number** it supplies, and whether it has actually been used. Machine-readable: `core/spine.py :: OLOGIES`, `staffing()`. **Read the gap, not the list.** One full column and two nearly empty ones is precisely why this vocabulary scored CUTSCENE against its own span test. An -ology is not decoration \u2014 it is where a terminal's numbers come from, and a terminal with no science behind it stays empty however much is built on the other side. ---",
       "code": []
     }
   }
