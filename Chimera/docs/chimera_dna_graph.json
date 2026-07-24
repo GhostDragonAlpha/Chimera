@@ -100223,6 +100223,28 @@
       "iteration_history": [],
       "backfilled": true,
       "session": "381e62e9"
+    },
+    {
+      "id": "feature_b7e57b615ddcbb77",
+      "type": "Feature",
+      "timestamp": "2026-07-24T00:00:00Z",
+      "name": "taste_population",
+      "feature_type": "infrastructure",
+      "spiral_loop": 0,
+      "status": "observed",
+      "education_links": [],
+      "reference_links": [],
+      "pattern_links": [],
+      "parameter_values": {
+        "commit": "1d6c669",
+        "terminal": "THE HUMAN",
+        "ology": "sociology",
+        "method": "V_between/V_within on taste axes",
+        "demo": "synthetic, recovers known split"
+      },
+      "iteration_history": [],
+      "backfilled": true,
+      "session": "381e62e9"
     }
   ],
   "edges": [
