@@ -387,8 +387,8 @@ the reachable. The honest test of a capacity increase is to **train inside it**.
 
 **a pinned gene is not a binding constraint** — recorded because this studio asserted the
 opposite and was wrong. `cluster_tight` sat exactly on its 0.02 floor, which was read as
-"the vocabulary runs out". Widening the floor to 0.005 and retraining moved the score from
-**0.8238 to 0.8240** — nothing. The gene drifted off the floor to 0.0313 and clustering
+"the vocabulary runs out". Widening the floor to 0.005 and retraining moved the
+score from **0.8238 to 0.8240** — nothing. The gene drifted off the floor to 0.0313 and clustering
 turned out to have the *largest* margin of any fact (0.722). The real limiter was
 `verticality` (margin 0.196, band width 0.176) and `alignment` (0.204, width 0.061) —
 narrow because they came from 5 regions of ONE scan. **The lever was more scans, not more
