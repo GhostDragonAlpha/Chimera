@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Chimera pre-commit — the project's own gates, then shazam's.
+#
+# WHY THIS LIVES IN THE REPO. `.git/hooks/pre-commit` is owned and rewritten by shazam,
+# so a check added there disappears the next time shazam reinstalls. This file is tracked
+# in git, survives that, travels to any clone, and DELEGATES to shazam so nothing is lost.
+#
+# Enabled by:  git config core.hooksPath .githooks
+# Bypass:      git commit --no-verify   (and then you own what you shipped)
+
+set -u
+root="$(git rev-parse --show-toplevel)"
+cd "$root" || exit 1
+fail=0
+
+# --- network exposure ------------------------------------------------------
+# Three of this project's servers were found answering the whole LAN, none of it a
+# decision. See core/bind_guard.py and docs/LOCAL_SERVERS.md.
+if command -v python >/dev/null 2>&1; then
+  if ! python -m core.bind_guard --staged; then
+    fail=1
+  fi
+fi
+
+# --- delegate to shazam ----------------------------------------------------
+if [ -x .git/hooks/pre-commit ] && [ "${CHIMERA_SKIP_SHAZAM:-}" != "1" ]; then
+  .git/hooks/pre-commit "$@" || fail=1
+fi
+
+exit $fail

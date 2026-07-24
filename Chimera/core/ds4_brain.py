@@ -28,6 +28,11 @@ _THREADS = os.environ.get("CHIMERA_DS4_THREADS", "24")
 # argv contains "ds4-server") and kill itself before the server starts.
 _START = (f"pkill -x ds4-server 2>/dev/null; sleep 1; cd ~/ds4 && "
           f"./ds4-server --cpu --threads {_THREADS} --ctx {_CTX} "
+          # bind-public: this runs INSIDE WSL2, which has its own network namespace, so
+          # 0.0.0.0 is how the Windows side reaches it at all. The exposure is bounded by
+          # WSL2's virtual switch rather than by the LAN. Flagged rather than silently
+          # allowed, per core/bind_guard.py -- and note this whole module is SUPERSEDED by
+          # core/council.py and kept only as a backwards-compatible stub.
           f"--host 0.0.0.0 --port 8000 --kv-disk-dir /tmp/ds4-kv "
           f"> ~/ds4-server.log 2>&1")
 

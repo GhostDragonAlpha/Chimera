@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Chimera commit-msg — record WHICH agent wrote this.
+#
+# WHY. Two servers were found exposing this machine to the network, and the obvious
+# question -- "which AI did that, so I can avoid it?" -- turned out to be UNANSWERABLE.
+# Every agent commits as the same git identity, and only Claude Code was adding a trailer.
+# The history could say what changed and never who changed it.
+#
+# So: one trailer, on every commit that a person or an agent authors.
+#
+#     Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+#   or
+#     Agent: pi-haiku-fleet   (any name that identifies the writer)
+#
+# Bypass:  git commit --no-verify
+
+set -u
+msg_file="$1"
+msg="$(cat "$msg_file")"
+
+# Automated commits that no agent authored. Exempt, but ANNOUNCED -- a silent exemption
+# is how the gap reappears.
+if printf '%s' "$msg" | grep -qiE '^(Merge |Revert |fixup!|squash!|chore: auto-flush)'; then
+  echo "[attribution] exempt (automated commit) — no author recorded for this one"
+  exit 0
+fi
+
+if printf '%s' "$msg" | grep -qiE '^(Co-Authored-By|Agent|Authored-By):'; then
+  exit 0
+fi
+
+cat >&2 <<'MSG'
+
+[attribution] REFUSED: this commit does not say who wrote it.
+
+  Every agent here commits under the same git identity, so without a trailer the
+  history cannot answer "which AI made this change?" — a question that came up the
+  day two servers were found exposed and nobody could tell which agent bound them.
+
+  Add ONE line at the end of the message:
+
+      Co-Authored-By: <model name> <noreply@anthropic.com>
+    or
+      Agent: <whatever identifies the writer>
+
+  Bypass with --no-verify if this really is an unauthored mechanical commit.
+
+MSG
+exit 1

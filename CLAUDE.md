@@ -130,6 +130,12 @@ pawn stands on formed ground, witnessed by CONTACT)
 - **Git: commit directly to `master`, never feature branches.** State branch + SHA on every
   push. Keep the tree clean, push without asking; surface only destructive actions.
 - **Large artifacts stay gitignored** — model weights, the corpus, `web/*.npz`.
+- **Never bind a server to `0.0.0.0`** — `127.0.0.1` reaches the agent and the browser and
+  nobody else. Enforced by `.githooks/pre-commit` (`core/bind_guard.py`); genuine exposure
+  needs a `# bind-public: <reason>` marker. Plain-language account: `docs/LOCAL_SERVERS.md`.
+- **Every commit states who wrote it** — `Co-Authored-By:` or `Agent:`. Enforced by
+  `.githooks/commit-msg`. Without it the history cannot answer "which AI made this change",
+  which is exactly the question that came up when exposed servers were found.
 - **Show real output.** Renders the operator cannot see do not count.
 - **Opinions must be science-grounded** — a judgement is trusted when a physical constraint
   forces it. Render the evidence, look at it, name the physics.

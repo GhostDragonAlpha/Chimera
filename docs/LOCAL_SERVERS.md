@@ -57,3 +57,64 @@ are Windows itself and are normal. What matters is anything *you* started.
 All three profiles are enabled and default to blocking unsolicited inbound, which is a
 real second layer. But apps commonly add their own "allow" rule the first time they bind —
 so the firewall is a backstop, not a reason to bind `0.0.0.0`.
+
+---
+
+## It is now enforced, not just documented
+
+A doc nobody re-reads stops working the day it is written. Two gates run on every commit:
+
+```
+git config core.hooksPath .githooks    # already set here
+```
+
+**`.githooks/pre-commit`** runs `python -m core.bind_guard --staged` and then hands off to
+shazam's own hook. A staged file that binds the whole network is **refused**, with the file,
+the line, and what to write instead.
+
+**Why it lives in `.githooks/` and not `.git/hooks/`:** `.git/hooks/pre-commit` is owned and
+rewritten by shazam, so a check added there vanishes on the next reinstall. `.githooks/` is
+tracked in git, survives that, travels to any clone, and *delegates* to shazam so nothing is
+lost.
+
+**The escape hatch.** Exposure is allowed — it just has to be a sentence somebody wrote:
+
+```python
+app.run(host='0.0.0.0')   # bind-public: staging box, firewalled, ticket CH-402
+```
+
+The marker covers **one statement**, on its own line or in the comment block above it. It
+does not silence a file.
+
+Run it yourself any time:
+
+```bash
+python -m core.bind_guard
+```
+
+## And every commit now says who wrote it
+
+**`.githooks/commit-msg`** requires one trailer:
+
+```
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+    or
+Agent: pi-haiku-fleet
+```
+
+**Why:** when two exposed servers turned up, the obvious question — *"which AI did that, so
+I can avoid it?"* — was **unanswerable**. Every agent commits under the same git identity and
+only Claude Code was adding a trailer, so the history could say what changed and never who
+changed it.
+
+Genuinely automated commits (`Merge`, `Revert`, `fixup!`, `chore: auto-flush`) are exempt —
+but the hook **announces** the exemption rather than passing silently, because a quiet
+exemption is how the gap comes back.
+
+## What the guard found that four manual sweeps did not
+
+`core/ds4_brain.py:36` — a DS4 server launched with `--host 0.0.0.0` inside an f-string.
+Greps missed it; the guard caught it on its first run. It is a legitimate case (the server
+runs inside WSL2, which has its own network namespace) so it now carries a `bind-public`
+marker **with the reason** — which is the whole point: the exposure is now something someone
+decided, not something nobody saw.
