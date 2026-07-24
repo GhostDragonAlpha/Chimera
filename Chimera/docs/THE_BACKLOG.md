@@ -71,8 +71,11 @@
 - [x] **Triplicate agents + pipeline-less agents** (THE_ORDER #3, #6) ✅ DELETED with the
   retired sequential-automation layer (`integration_agent{,_fixed,_old}`, `recombination_agent
   {,_fixed,_old}`, `research_agent`, `validation_agent`).
-- [ ] **Split brain** (THE_ORDER #8) — the pipeline lives in `Construction/` + `WorldModel/`
-  at the repo root AND `core/` under `Chimera/`, imports crossing both ways. *Choose one home.*
+- [x] **Split brain** (THE_ORDER #8) ✅ INVESTIGATED — the "imports cross both ways" premise
+  was FALSE. The graph is acyclic (Chimera/core imports nothing upward). The one real defect:
+  13 files hardcoded `sys.path.insert(0, "E:/PythonChimera")` (only ran on this machine) --
+  now file-relative (`parents[1]`), portable to any clone. Two homes with a clean one-way
+  dependency is normal layering; no migration and no guard needed. *Verified, not gold-plated.*
 - [x] **Two undocumented genome schemas** (THE_ORDER #9) ✅ DOCUMENTED at the owner
   (`export_genome.save_library`): single-specimen (mean+p10..p90) vs class (adds
   between_std/within_std); a reader distinguishes by the presence of `between_std`.

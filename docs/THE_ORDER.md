@@ -76,7 +76,7 @@ helper or a duplicate.
 | 5 | **~1,067 lines of root-level duplicates** doing step 2's job: `process_materials_pipeline.py` (340), `process_more_materials.py` (302), `phase3_recombination_testing.py` (425). | **high** |
 | 6 | ~~CLOSED 2026-07-24~~ — **`research_agent.py`/`validation_agent.py` deleted** with the retired layer (they imported no pipeline because the layer was abandoned). | ~~medium~~ |
 | 7 | ~~CLOSED 2026-07-23~~ — **Every Pi agent was handed 8 Unreal editor tools** (`.pi/extensions/mcp-bridge.ts`, `mcp-pathways-index.ts`) while its prompt says UE is retired. | medium |
-| 8 | **Split brain.** The pipeline lives in **two homes** — `Construction/` + `WorldModel/` at the repo root, `core/` under `Chimera/`. Imports cross both ways. | medium |
+| 8 | ~~CLOSED 2026-07-24~~ — **"both ways" was FALSE.** The import graph is ACYCLIC: Chimera/core imports nothing upward. The one real defect was 13 files with a hardcoded `sys.path.insert(0, "E:/PythonChimera")` (machine-specific, breaks on clone) -- now file-relative. Two homes with a clean one-way dependency is normal layering, not a tangle; no migration or guard needed. | ~~medium~~ |
 | 9 | **Two schemas coexist** in the genome file (single-specimen vs class). Benign — class is a superset — but undocumented, so a reader cannot tell which it has. | low |
 
 ---
