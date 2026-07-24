@@ -152,6 +152,15 @@
   cr before the ore/mineral split). Two run-caught bugs fixed: cave-event spam (log transitions),
   and a DETERMINISM break (rounding a validated coordinate moved it off a 1.2-km orebody).
   Verified by looking (iron shaft | kimberlite pipe with cave/lava-tube voids). `1c461f8`.
+- [x] **The cave becomes space** ✅ BUILT — `core/cave.py`. A void you break into is now
+  somewhere you can GO. `carve()` flood-fills the connected void (`planet_layers.void_at`) into
+  a navigable cavity: the karst cave at (35,200) is 18,502 m³, a 1,060 m² floor, ≤27 m headroom.
+  A cave is the membrane primitive INSIDE-OUT (air inside, rock outside — the negative space the
+  studio already treats as first-class); `to_membrane()` nests it with PORTS = the passages that
+  lead on (unfilled = "unexplored this way"). `floor_map()` gives the floor you stand on + "can a
+  person stand up?"; `enter()` returns a LOCAL frame (bounded coords). `from_break()` wires a
+  mining void-hit straight to an enterable Cave. Deterministic. Verified by looking (section:
+  rock|void|floor|break-in; plan: walkable floor by headroom + entry + passage). `6f0dc88`.
 
 ## 🟢 T3 — THE -OLOGY BOARD (staff the two terminals; see TERMINOLOGY.md §11)
 
