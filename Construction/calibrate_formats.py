@@ -3,7 +3,8 @@ compare the DNA feature distributions. They must match — any systematic gap is
 conversion bug (scale log-vs-linear, colour activation, opacity logit) that would poison the
 material library by making the genome depend on the FILE FORMAT instead of the material."""
 import sys, numpy as np
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_any
 
 D = "E:/PythonChimera/WorldModel/training_data/downloads/dyl"

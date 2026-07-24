@@ -4,8 +4,9 @@ writes an ID BUFFER (pixel -> 3D splat index) so any 2D label back-projects exac
 3D. The montage is for segmenting all views at once; the per-view maps do the lifting.
 """
 import sys, numpy as np
+from pathlib import Path
 from PIL import Image, ImageDraw
-sys.path.insert(0, "E:/PythonChimera")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_ksplat
 
 VIEWS, IMG = 9, 240                       # 9 views -> 3x3 montage, 240px each

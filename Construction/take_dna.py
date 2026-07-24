@@ -3,7 +3,8 @@
 (how aligned the splats are), opacity, and colour. If bark / moss / ground come out as
 different signatures, the material DNA is in the splat configuration."""
 import sys, numpy as np
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_ksplat
 
 pos, rgb, opac, scale, quat = load_ksplat("E:/PythonChimera/WorldModel/training_data/real_data/stump/stump.ksplat", full=True)

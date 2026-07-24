@@ -5,7 +5,8 @@
      orientation-to-gravity, size, colour, height. A label is read from the signature.
 Output: the scene painted by element, so you can SEE it decomposed. Legend printed."""
 import sys, json, numpy as np
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from WorldModel.splat_io import load_ply
 from scipy import ndimage
 

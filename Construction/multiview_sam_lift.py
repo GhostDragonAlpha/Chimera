@@ -4,7 +4,8 @@ buffer = nearest 3D splat per pixel), prompts SAM2 at the projected centre, back
 the mask through the ID buffer, and VOTES across views. Result is cached; the export shows
 the lifted object in TRUE COLOUR against the removed candidate splats dimmed to gray."""
 import sys, os, json, numpy as np, torch
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_ksplat
 
 dev = "cuda"; NV = 10; W = H = 600

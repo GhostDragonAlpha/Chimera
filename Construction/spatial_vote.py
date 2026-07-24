@@ -2,7 +2,8 @@
 splat sits IN a neighbourhood of the same material, so smooth its label over its k nearest
 spatial neighbours' predictions. That neighbourhood IS the membrane. Does identify sharpen?"""
 import sys, numpy as np
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_ksplat
 from scipy.spatial import cKDTree
 

@@ -2,8 +2,9 @@
 orients, crops the locked sphere, and rasterizes N orbit views on the 4090 by scattering
 soft Gaussian footprints (normalized accumulation). All rasterization runs on the GPU."""
 import sys, time, numpy as np, torch
+from pathlib import Path
 from PIL import Image
-sys.path.insert(0, "E:/PythonChimera")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_ksplat
 
 dev = "cuda"; sigma = float(sys.argv[1]) if len(sys.argv) > 1 else 1.2; K = int(np.ceil(3 * sigma))

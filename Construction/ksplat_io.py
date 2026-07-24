@@ -84,7 +84,8 @@ def load_any(path, full=False):
         return load_splat(path, full=full)
     if p.endswith(".ply"):
         import sys as _s
-        _s.path.insert(0, "E:/PythonChimera")
+        from pathlib import Path as _P
+        _s.path.insert(0, str(_P(__file__).resolve().parents[1]))   # portable: repo root
         from WorldModel.splat_io import load_ply
         c = load_ply(path)
         if full:

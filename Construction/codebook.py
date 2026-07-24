@@ -3,7 +3,8 @@
 each a serial number, report how much of the scene each covers, and paint the scene by
 serial number. Scene now = {K genome centroids} + {per-splat serial} -> compress/identify."""
 import sys, json, numpy as np, torch
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_ksplat
 
 dev = "cuda"; K = 8

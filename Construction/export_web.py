@@ -2,7 +2,8 @@
 splats by color, trace the largest connected green mass, and report its size + shape
 so we can SEE whether there's a real tree in this file."""
 import sys, json, numpy as np
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from WorldModel.splat_io import load_ply
 from scipy import ndimage
 

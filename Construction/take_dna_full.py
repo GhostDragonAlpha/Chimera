@@ -3,7 +3,8 @@ configuration feature as mean + [p10..p90] RANGE, then prove the distribution id
 the material: fit a Gaussian genome (mean + covariance = the range) per region and classify
 held-out splats by which distribution they fall inside."""
 import sys, numpy as np
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_ksplat
 
 pos, rgb, opac, scale, quat = load_ksplat("E:/PythonChimera/WorldModel/training_data/real_data/stump/stump.ksplat", full=True)

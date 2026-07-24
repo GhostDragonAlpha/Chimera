@@ -3,7 +3,8 @@ truck / train / bicycle are painted steel, chrome, rust, rubber and glass -- the
 vocabulary a spaceship hull needs. Joint codebook across all three so one genome ID means
 the same material regardless of which scan it came from."""
 import sys, numpy as np, torch
-sys.path.insert(0, "E:/PythonChimera")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from Construction.ksplat_io import load_any
 
 dev = "cuda"; K = 10; PER = 400_000
