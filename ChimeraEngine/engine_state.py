@@ -283,14 +283,14 @@ class Engine:
             self.state["codebook"].append(name)
         self._save()
         if t["crossed_boundary"]:
-            head = (f"PROVEN & BOUNDARY CROSSED: `{name}` -- proven in BOTH systems (the measured "
-                    f"PHYSICS/APPEARANCE membrane AND the engine system itself, through the MCP tool). "
-                    f"The two systems agree. Written to the codebook.")
+            head = (f"PROVEN -- dyadAnalysis COMPLETE: `{name}` -- the dyad agrees across the boundary "
+                    f"(both systems: the measured PHYSICS/APPEARANCE membrane AND the engine system "
+                    f"itself, through the MCP tool). Written to the codebook.")
         else:
-            head = (f"PROVEN (your own system only): `{name}` -- every gate passes, BUT this call came "
-                    f"via the API (a driver holding the Engine), not through the engine system. It has "
-                    f"NOT crossed the boundary. Re-run `prove` through the MCP tool for it to count as "
-                    f"proven in BOTH systems -- a proof measured only by your own system is not proof.")
+            head = (f"PROVEN (a MONAD -- dyadAnalysis INCOMPLETE): `{name}` -- every gate passes, BUT "
+                    f"this came via the API (a driver holding the Engine), not through the engine "
+                    f"system: one half of the dyad measuring itself. Re-run `prove` through the MCP "
+                    f"tool to complete the dyadAnalysis -- a monad is not proof.")
         return f"{head}\n{report}"
 
     def orient(self) -> str:
@@ -303,8 +303,8 @@ class Engine:
                 L.append(f"    [{'x' if ok else ' '}] {g}")
         L.append("")
         L.append("HIERARCHY (setting-first from the seed):")
-        L.append("  ([x] proven in BOTH systems · [~] proven in your system only, boundary NOT crossed"
-                 " · [HUMAN] decided)")
+        L.append("  ([x] dyadAnalysis complete (both systems) · [~] a monad -- your system only,"
+                 " boundary NOT crossed · [HUMAN] decided)")
         for n, v in self.state["hierarchy"].items():
             crossed = self.state["terms"].get(n, {}).get("crossed_boundary", False)
             mark = {"proven": "[x]", "decided": "[HUMAN]"}.get(v["status"], "[ ]")

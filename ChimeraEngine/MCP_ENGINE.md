@@ -24,21 +24,25 @@ tools can touch files, but a term cannot **count** as proven without `prove()`. 
 the workflow instead of asking for it — the same way an actor exists in Unreal only if the bridge
 spawned it, never because a file claims so.
 
-## Two systems — "proven" means CROSSED THE BOUNDARY
+## dyadAnalysis — "proven" means the DYAD crossed the boundary
 
-Owning "proven" is not enough; the proof must be made in the RIGHT system. There are two:
+Owning "proven" is not enough; the proof must be made in the RIGHT system. A valid proof is a
+**dyadAnalysis** — an analysis performed by a **dyad** (a pair interacting as a unit; Greek *dyás*
+"two" + *-ad*, the unit-of-N suffix as in *monad*/*triad*), never by a monad measuring itself. Here
+the dyad's two halves are two systems:
 
 - **your own system** — a driver/script that imports the `Engine` class and calls `.prove()`
   directly. You control the whole flow. This is *measuring the engine with a copy of yourself.*
 - **the engine system** — the MCP tool surface (`mcp__chimera-engine__*`), an INDEPENDENT system you
   reach across a boundary (a separate server process, invoked through the sanctioned interface).
 
-A term counts as proven only when it has **crossed the boundary** — been proven through the engine
-system, not merely in your own. This is the two-messenger law at the process scale: the prover and
-the engine are two systems, and *you cannot measure a system with itself.* `prove(via='mcp')` (the
-MCP tool) crosses it; `prove(via='api')` (a driver) does not — it returns "PROVEN (your own system
-only)" and `orient` marks the term `[~]`, not `[x]`. Proving via a driver and declaring it done is
-the exact failure this engine exists to prevent, wearing a lab coat.
+A term counts as proven only when the **dyadAnalysis is complete** — it has crossed the boundary,
+been proven through the engine system, not merely in your own. This is the two-messenger law at the
+process scale: the prover and the engine are the dyad, and *you cannot measure a system with
+itself.* `prove(via='mcp')` (the MCP tool) completes the dyadAnalysis; `prove(via='api')` (a driver)
+is a monad — it returns "PROVEN (your own system only)" and `orient` marks the term `[~]`, not
+`[x]`. Proving via a driver and declaring it done is the exact failure this engine exists to
+prevent, wearing a lab coat.
 
 ## Architecture
 
