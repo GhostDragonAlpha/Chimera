@@ -49,8 +49,9 @@ prevent, wearing a lab coat.
 | File | Role |
 |---|---|
 | `engine_state.py` | the owned state + the gates — the source of truth (`Engine` class) |
-| `appearance.py` | the APPEARANCE MESSENGER — projects each term's physics into a light-view |
-| `convergence.py` | the MEASURED CONVERGENCE — predicts a feature from the physics law, measures it from the rendered pixels, checks they agree |
+| `human_messenger.py` | **the HUMAN side of the dyad** — a vision LLM reads the render (a TERM), cross-referenced to the physics number (0→1 alignment); no-model FAIL + CAPCOM summon + operator override |
+| `appearance.py` · `convergence.py` | PLACEHOLDER matplotlib projectors + a self-measured pixel convergence (a **monad**) — being replaced by the splat-movie render (`ParticleEngine`) + the human dyad |
+| `gallery.py` | the shared HTTP view (127.0.0.1) so the physics (agent) and the human (operator + vision model) see the same render |
 | `mcp_server.py` | 8 bounded FastMCP tools over that state |
 | `.mcp.json` (repo root) | registers the server for Claude Code |
 | `engine_state.json` | the runtime ledger: hierarchy · per-term records · codebook (gitignored) |
@@ -91,33 +92,44 @@ orient → next → frame → question × N (until saturated) → classify → r
 (a projection of the physics that MEASURABLY CONVERGES with it) · `S5 WHY-TERMINAL` (PHYSICS or THE
 HUMAN). **`prove` refuses until all six pass**, and names the first that fails.
 
-**Two messengers (the proof model).** The gates are two independent readings of one membrane: the
-**physics messenger** — the measured interior (frame · provenance · saturation · classify · why) —
-and the **appearance messenger** — the emitted surface (`render` projects it from the physics via
-`appearance.py`). Gravity and light are one thing measured by two systems; a term is proven when
-both agree. The engine *generates* the appearance so it can't be a faked or unrelated picture:
-appearance derives from the matter model, never beside it (no aesthetic passes). **The convergence
-is MEASURED** (`convergence.py`): the engine reads a feature back out of the rendered pixels — the
-star's glow chromaticity, the system's bright centroid, the garden's vegetation cover — and checks
-it against what the physics law predicts (Planck's law → the Sun's true color; the barycenter;
-chlorophyll). A star recolored blue leaves the Planck locus and is REFUSED. The residual, not a
-vibe, decides — and you fix the projector, never the tolerance.
+**The dyadAnalysis (the proof model — CORRECTED 2026-07-25).** A proof is a **dyad**: two DIFFERENT
+kinds of output, from two independent systems, that must AGREE.
+- **PHYSICS (the agent) → a NUMBER** — from the law (the star's blackbody temperature; a world's
+  ocean/land fractions). This is *your* side; rendering is physics, so the render is yours too.
+- **HUMAN (the operator + LM Studio's vision model) → a TERM** — a separate vision model LOOKS at the
+  render, BLIND to the number, and says what it sees; a cross-reference scores their ALIGNMENT 0→1
+  (`ChimeraEngine/human_messenger.py`).
+
+The earlier `convergence.py` (predict a feature from the law, MEASURE the same feature back out of the
+pixels, compare) is **NOT** this dyad — it is physics measuring its OWN pixels, a **monad**. The tell:
+run it in two places and it returns the byte-identical number, because it is one system twice.
+Identical outputs are the signature of a false dyad. The real second messenger is a MIND (the vision
+model + the operator) producing a TERM, not a second machine producing the same number.
+
+Hard rules (operator): no vision model = **FAIL** (the operator is summoned via CAPCOM); the human
+disagreeing means the **physics is wrong — start over**; only the operator's own analysis overrides a
+dark eye. And the render the human judges is the **Gaussian-splat engine** movie (`ParticleEngine`,
+beginning→end frames as a timeline slice unfolds), NOT a matplotlib diagram — those were placeholders.
 
 ## Honest scope (V1 — what forces now, what's next)
 
 **Forces now:** `prove` cannot be faked — the engine owns "proven" at the state layer; real
-saturation; an appearance the engine projects from the physics AND measurably converges with it
-(residual < tolerance, or DIVERGENT); the hierarchy advances itself.
+saturation; the hierarchy advances itself. (The appearance gate currently runs the self-measured
+`convergence.py` **monad** — see "still to build" #1; the real human dyad is built but not yet wired
+as the gate.)
 
 **Still to build:**
-1. **A projector + convergence law for every term.** Only `theStar`, `theSolarSystem`, `theGarden`,
-   `aPlanet` have a light-view today (`appearance.py`/`convergence.py`); a term with none cannot be
-   proven by two messengers until one is built. Each new term owes its projected, converging surface.
-2. The **pure form** — run the working agent with *only* these tools (Bash/Write removed), so choices
-   genuinely *are* the tool list.
-3. **Auto-fire** — a pre-commit hook that refuses a "done" claim which didn't go through the engine.
-4. A `PHYSICS` terminal that requires a **measurement record**, not just a label.
-5. **The story as a filesystem** (next phase) — the term hierarchy becomes a real directory tree
+1. **Wire the human dyad into `render`/`prove`.** `human_messenger.py` (vision proxy + cross-reference
+   + summon + override) is BUILT and runs, but `prove` still gates on the self-measured `convergence.py`
+   monad. The gate must become: the render's human ALIGNMENT ≥ threshold.
+2. **Rewire the appearance to the splat MOVIE.** Replace the matplotlib `appearance.py` projectors with
+   the Gaussian-splat engine (`ParticleEngine`) rendering each term as a beginning→end movie — the
+   mandatory visual test.
+3. The **pure form** — run the agent with *only* these tools (Bash/Write removed), so choices genuinely
+   *are* the tool list.
+4. **Auto-fire** — a pre-commit hook that refuses a "done" claim which didn't go through the engine.
+5. A `PHYSICS` terminal that requires a **measurement record**, not just a label.
+6. **The story as a filesystem** (next phase) — the term hierarchy becomes a real directory tree
    under `story/` (folder = term, **path = serial**, proof-files inside), replacing `engine_state.json`
    + the DNA graph. The filesystem hierarchy IS the term hierarchy IS the story, readable top-to-bottom
    by a human *and* an AI, no query engine. Build → prove → migrate → retire the graph (never rip out
