@@ -84,10 +84,40 @@ class Engine:
         self.state = self._load()
 
     def _load(self) -> dict:
-        if self.path.exists():
-            return json.loads(self.path.read_text(encoding="utf-8"))
-        return {"seed": "theStory", "hierarchy": copy.deepcopy(_SEED_HIERARCHY),
-                "current": "theSolarSystem", "terms": {}, "codebook": ["theStory"]}
+        if not self.path.exists():
+            return {"seed": "theStory", "hierarchy": copy.deepcopy(_SEED_HIERARCHY),
+                    "current": "theSolarSystem", "terms": {}, "codebook": ["theStory"]}
+        return self._reconcile(json.loads(self.path.read_text(encoding="utf-8")))
+
+    def _reconcile(self, state: dict) -> dict:
+        """Fold the CURRENT story into a saved ledger without losing a single proof.
+
+        THE STORY IS THE SOURCE OF THE HIERARCHY'S SHAPE (which membranes exist, nested how); the saved
+        ledger is the source of PROGRESS (what is proven/decided, plus every term's records). So when the
+        operator adds detail under a membrane -- edits THE_STORY.md's decomposition block and re-runs
+        gen_decl.py -- the new terms must appear in the LIVE tree while everything already proven stays
+        proven. Before this, `_load` returned the saved ledger verbatim and only ever built the tree from
+        the story on FIRST creation, so a saved ledger FROZE the old hierarchy and 'just change the story'
+        silently did nothing. Fix: rebuild the shape from the story, carry the saved status onto every term
+        that still exists, and leave terms/codebook/records untouched. Idempotent -- an unchanged story
+        reconciles to itself."""
+        saved_h = state.get("hierarchy", {})
+        tree = copy.deepcopy(_SEED_HIERARCHY)                     # the shape, straight from the story
+        for name, node in tree.items():                          # carry PROGRESS onto the new shape
+            if saved_h.get(name, {}).get("status") in ("proven", "decided"):
+                node["status"] = saved_h[name]["status"]
+        dropped = [n for n, nd in saved_h.items()
+                   if n not in tree and nd.get("status") in ("proven", "decided")]
+        if dropped:                                              # a proven term the story dropped -- loud, never silent
+            print(f"[engine] the story no longer declares proven term(s) {dropped}; their records are "
+                  f"kept in `terms`, but they have left the hierarchy")
+        state["hierarchy"] = tree
+        state["seed"] = "theStory"
+        state.setdefault("terms", {})
+        state.setdefault("codebook", ["theStory"])
+        if state.get("current") not in tree:
+            state["current"] = "theSolarSystem"
+        return state
 
     def _save(self) -> None:
         self.path.write_text(json.dumps(self.state, indent=2), encoding="utf-8")
