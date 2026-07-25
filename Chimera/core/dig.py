@@ -40,6 +40,14 @@ MATERIAL_DENSITY = {
 REF_DENSITY = MATERIAL_DENSITY[REF_MATERIAL]
 SCOOP_SECONDS = 1.5             # baseline time to dig one scoop of the reference material at power 1
 
+# Repose angle of the LOOSENED material (degrees): soil slumps low, rock rubble stands steep.
+# This is the friction the freed grains settle under once a scoop fractures.
+REPOSE_ANGLE = {
+    'air': 0.0, 'ocean': 0.0, 'topsoil': 32.0, 'subsoil': 34.0, 'bedrock': 40.0, 'crust': 41.0,
+    'mantle': 42.0, 'core': 43.0, 'gold_placer': 33.0, 'iron_ore': 38.0, 'coal': 35.0,
+    'copper_vein': 39.0, 'diamond': 40.0,
+}
+
 
 def relative_density(material: str) -> float:
     """The material's density as a RATIO to the reference (topsoil = 1). Denser rock > 1."""
@@ -86,6 +94,56 @@ def hold(material: str, seconds: float, power: float = 1.0) -> dict:
     }
 
 
+def fracture_scoop(material: str, seed: int = 11) -> dict:
+    """When a scoop COMPLETES, the loosened material fractures into free grains and falls --
+    terrain_matter's real MuJoCo grain sim, driven by THIS material's density and repose (not
+    hardcoded sand). Denser material -> denser grains that carry more momentum and settle
+    harder. The dig verb's 'loosened' dimension, made physical. Returns grain facts + the arrays
+    a render needs. Imports terrain_matter lazily so the verb/clock need no MuJoCo."""
+    import math
+
+    import core.terrain_matter as tm
+    density = MATERIAL_DENSITY.get(material, REF_DENSITY)
+    mu = math.tan(math.radians(REPOSE_ANGLE.get(material, 34.0)))
+    heights = np.full((tm.N_SIDE, tm.N_SIDE), tm.H0, dtype=np.float64)
+    live = np.zeros((tm.N_SIDE, tm.N_SIDE), dtype=bool)
+    rng = np.random.default_rng(seed)
+    cyc = tm.run_dig_cycle(heights, live, (2, 2), density, mu, rng)
+    grain_mass = density * (4.0 / 3.0 * math.pi * tm.GRAIN_RADIUS ** 3)
+    n_exit = tm.recoalesce(heights, live, cyc['freed_idx'], cyc['final_positions'],
+                           grain_mass, density)
+    seam = tm.seam_integrity(heights, cyc['mask'])
+    return {
+        'material': material, 'density': density, 'repose_deg': REPOSE_ANGLE.get(material, 34.0),
+        'grains_freed': cyc['k_freed'], 'settled': cyc['settled_at'] is not None,
+        'grains_exited': int(n_exit), 'seam_max_m': round(seam['max_discontinuity_m'], 3),
+        'mass_moved_kg': round(cyc['k_freed'] * grain_mass, 1),
+        '_mask': cyc['mask'], '_mid': cyc['mid_positions'], '_heights_after': heights,
+    }
+
+
+def fracture_strip(fr: dict, path: str = 'Saved/SplatEmit/dig_fracture.png'):
+    """before | during (grains flying) | after (recoalesced) -- SEE the material come loose.
+    Reuses terrain_matter's own splat render; optics are sand as a stand-in (the MOTION is the
+    proof, and it is material-agnostic)."""
+    import core.terrain_matter as tm
+    from core.matter_items import load_library, register_material
+    from core.splat_emit import hstack_strip
+    from pathlib import Path
+    lib = load_library(); ext = register_material(lib, 'sand')
+    rng = np.random.default_rng(11)
+    flat = np.full((tm.N_SIDE, tm.N_SIDE), tm.H0, dtype=np.float64)
+    zero = np.zeros((tm.N_SIDE, tm.N_SIDE), dtype=bool)
+    b, _ = tm.render_snapshot(flat, zero, None, ext, rng, 'before')
+    d, _ = tm.render_snapshot(flat, fr['_mask'], fr['_mid'], ext, rng, 'during')
+    a, _ = tm.render_snapshot(fr['_heights_after'], zero, None, ext, rng, 'after')
+    strip = hstack_strip([b, d, a], ['intact', f"fracture ({fr['material']}, n={fr['grains_freed']})",
+                                     'settled'])
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    strip.save(path)
+    return path
+
+
 def dig_at(planet, lat_deg: float, lon_deg: float, depth_m: float, seconds: float,
            power: float = 1.0) -> dict:
     """Dig at a real point on a LayeredPlanet: probe what is there, dig it at the density clock,
@@ -117,6 +175,7 @@ def _main() -> int:
     ap = argparse.ArgumentParser(description='the dig verb with its density-scaled clock')
     ap.add_argument('--seconds', type=float, default=3.0)
     ap.add_argument('--seed', type=int, default=3)
+    ap.add_argument('--render', action='store_true', help='render the fracture strip')
     a = ap.parse_args()
 
     print("  === the dig verb: two states + a dial (membranes.Verb) ===")
@@ -149,6 +208,23 @@ def _main() -> int:
               f"(TRAINED price)")
     else:
         print(f"    (barren rock this scoop -- overburden)")
+
+    print("\n  === and the scoop FRACTURES: real grain physics, driven by the material density ===")
+    for mat in ('topsoil', 'bedrock'):
+        fr = fracture_scoop(mat, seed=11)
+        print(f"    {mat:9} (rho {fr['density']:.0f}, repose {fr['repose_deg']:.0f} deg): "
+              f"{fr['grains_freed']} grains freed, settled={fr['settled']}, "
+              f"exited={fr['grains_exited']}, {fr['mass_moved_kg']:,.0f} kg moved, "
+              f"seam {fr['seam_max_m']:.2f} m")
+    print("    ^ same verb, same clock -- denser rock throws denser, heavier grains")
+
+    if d['state'] != 'void' and d['scoops_completed'] >= 1:
+        fr = fracture_scoop(d['material'], seed=a.seed)
+        print(f"\n    the iron dig's scoop fractured: {fr['grains_freed']} grains of "
+              f"{fr['material']} (rho {fr['density']:.0f}) came loose and fell")
+        if a.render:
+            path = fracture_strip(fr)
+            print(f"    wrote {path} (intact | fracture | settled)")
     return 0
 
 
