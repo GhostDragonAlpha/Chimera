@@ -288,6 +288,50 @@ def project_movie(term: str, out_dir) -> dict | None:
     return {"begin": str(begin_png), "end": str(end_png)}
 
 
+def scene_terms() -> list:
+    """The terms that have a splat scene (what the live viewer can show)."""
+    return list(SCENES)
+
+
+def scene_cam_distance(term: str) -> float:
+    """How far the live viewer should orbit this term (from its still-camera distance)."""
+    import numpy as np
+    spec = SCENES.get(term)
+    return float(np.linalg.norm(spec["cam"])) if spec else 300.0
+
+
+def scene_buffer(term: str):
+    """The term's SETTLED 3D scene as a particle buffer (N,28) -- the real volume the live viewer orbits.
+
+    The still `project_movie` renders two frames; the live viewer needs the settled body itself so it can
+    turn it in real time (the time axis) and let the operator orbit it (verify it is a true 3D volume, not
+    a flat disk). Solid scenes hand back their END buffer directly; a collapse scene is settled once here
+    (spawn -> attractor -> 90 steps) and its particles returned."""
+    spec = SCENES.get(term)
+    if not spec:
+        return None
+    _BUILDERS = {"planet": _planet_buffers, "row": _row_buffers, "system": _system_buffers}
+    builder = _BUILDERS.get(spec.get("kind"))
+    if builder:
+        return builder(spec, term)[0]                            # the settled END buffer
+    # collapse: settle the body once and return its particles
+    from ParticleEngine.core import ParticleSimulator, PARTICLE_TYPES
+    from ParticleEngine.gpu_pipeline import FullGPUPipeline
+    from ParticleEngine.control_vars import default_physics_registry
+    sim = ParticleSimulator(spec["count"] + 64)
+    sim.spawn(spec["count"], spec["type"], position=(0, 0, 0), spread=float(spec["spread"]),
+              color=spec["color"], size=float(spec["size"]), life=-1.0)
+    pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
+    pipe.upload(sim._data[:sim._count])
+    pipe.attractors.append((0.0, 0.0, 0.0, float(spec["pull"]), PARTICLE_TYPES[spec["type"]], 500.0))
+    reg = default_physics_registry()
+    reg.set("gravity", (0.0, 0.0, 0.0)); reg.set("wind_vector", (0.0, 0.0, 0.0))
+    cvars = reg.snapshot()
+    for _ in range(90):
+        pipe.step_particles(1 / 60, cvars)
+    return pipe.download_particles()
+
+
 if __name__ == "__main__":
     term = sys.argv[1] if len(sys.argv) > 1 else "theStar"
     import numpy as np

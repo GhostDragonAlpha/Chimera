@@ -19,15 +19,20 @@ try:
     from human_messenger import PHYSICS_READING
 except Exception:
     PHYSICS_READING = {}
+try:
+    import live_viewer                                             # the LIVE interactive viewer (mounted below)
+except Exception as _e:
+    live_viewer = None
+    print(f"[gallery] live viewer unavailable: {_e}")
 
 
 def _index() -> bytes:
     figs = []
-    for p in sorted(OUT.glob("appear_*.png")):
-        term = p.stem.replace("appear_", "")
+    for p in sorted(OUT.glob("movie_*_end.png")):                 # the settled splat stills (begin/end movies)
+        term = p.stem.replace("movie_", "").replace("_end", "")
         phys = PHYSICS_READING.get(term, "")
         figs.append(
-            f'<figure><img src="/{p.name}?v={p.stat().st_mtime_ns}" alt="{term}">'
+            f'<figure><a href="/live"><img src="/{p.name}?v={p.stat().st_mtime_ns}" alt="{term}"></a>'
             f'<figcaption><b>{term}</b>'
             + (f'<br><span>physics expects: {phys}</span>' if phys else '')
             + '</figcaption></figure>')
@@ -36,16 +41,22 @@ def _index() -> bytes:
         "<!doctype html><meta charset=utf-8><title>Chimera renders</title>"
         "<meta http-equiv=refresh content=5>"                      # auto-refresh: re-rendered images update live
         "<style>body{background:#0b0d12;color:#cfe0ff;font-family:system-ui,-apple-system,sans-serif;margin:24px}"
-        "h1{font-weight:600;font-size:20px} figure{display:inline-block;vertical-align:top;margin:14px;width:440px;text-align:center}"
+        "h1{font-weight:600;font-size:20px} a.live{display:inline-block;margin:0 0 8px;padding:9px 16px;"
+        "background:#24406e;color:#fff;border:1px solid #4a74c0;border-radius:9px;text-decoration:none;font-size:15px}"
+        "figure{display:inline-block;vertical-align:top;margin:14px;width:440px;text-align:center}"
         "img{width:440px;background:#04050b;border:1px solid #2a3350;border-radius:10px}"
         "figcaption{margin-top:8px} figcaption b{color:#ffe9a8;font-size:15px}"
         "figcaption span{color:#8892b0;font-size:12px;display:block;margin-top:3px}</style>"
-        f"<h1>Chimera dyadAnalysis renders &mdash; the shared view (physics &harr; human)</h1>{body}"
+        "<h1>Chimera dyadAnalysis renders &mdash; the shared view (physics &harr; human)</h1>"
+        '<a class="live" href="/live">&#9654; open the LIVE interactive viewer</a><br>'
+        f"{body}"
     ).encode("utf-8")
 
 
 class _Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
+        if live_viewer and live_viewer.handle(self):              # /live /stream /input /scene /terms
+            return
         if self.path.split("?")[0] in ("/", "/index.html"):
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
