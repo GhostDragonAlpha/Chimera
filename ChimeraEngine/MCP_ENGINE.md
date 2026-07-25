@@ -90,11 +90,18 @@ saturation; an appearance the engine projects from the physics AND measurably co
 (residual < tolerance, or DIVERGENT); the hierarchy advances itself.
 
 **Still to build:**
-1. `render` should **produce** the image via `renderers/gpu_rasterizer.py`, not just record a path.
+1. **A projector + convergence law for every term.** Only `theStar`, `theSolarSystem`, `theGarden`,
+   `aPlanet` have a light-view today (`appearance.py`/`convergence.py`); a term with none cannot be
+   proven by two messengers until one is built. Each new term owes its projected, converging surface.
 2. The **pure form** — run the working agent with *only* these tools (Bash/Write removed), so choices
    genuinely *are* the tool list.
 3. **Auto-fire** — a pre-commit hook that refuses a "done" claim which didn't go through the engine.
 4. A `PHYSICS` terminal that requires a **measurement record**, not just a label.
+5. **The story as a filesystem** (next phase) — the term hierarchy becomes a real directory tree
+   under `story/` (folder = term, **path = serial**, proof-files inside), replacing `engine_state.json`
+   + the DNA graph. The filesystem hierarchy IS the term hierarchy IS the story, readable top-to-bottom
+   by a human *and* an AI, no query engine. Build → prove → migrate → retire the graph (never rip out
+   the load-bearing thing first).
 
 ## The method it enforces
 

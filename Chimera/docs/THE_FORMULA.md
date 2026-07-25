@@ -142,7 +142,7 @@ the parts actually make the whole.
 | **S2a PROVENANCE** | every variable was **born of a question** | **`core/saturation.py`** — by construction (a var with no round can't be in the curve) |
 | **S2b SATURATION** | the discovery curve is **measured saturated** (Chao2 completeness + dry tail) | **`core/saturation.py`** — proven every run, with the curve |
 | **S3 CLASSIFY** | you can **write its `measure()`** (or it's taste) | `THE_LINE` — "write measure() first" |
-| **S4 PROVE·each** | researched · trained-not-tuned · witnessed · looked | `research_gate · training_gate · witness_gate · visual_gate` |
+| **S4 PROVE·each** | researched · trained-not-tuned · witnessed · **the two messengers CONVERGE** (the term's appearance measurably agrees with its physics) | `research_gate · training_gate · witness_gate` + **ChimeraEngine `appearance.py`/`convergence.py`** (the measured convergence — the rigorous form of the old `visual_gate`'s "looked") |
 | **S5 CHAIN** | why-chain hits a terminal; the coin's two faces agree | `why_gate · coin_verifier` |
 | **S6 DECIDE** | the operator ruled | THE HUMAN terminal |
 | **S7 RECOMPOSE** | the proven parts **reconstitute X**; saturation re-checked | **`core/saturation.py`** + operator ENOUGH |
@@ -157,6 +157,28 @@ are now the **measured saturation gate** (`core/saturation.py`), not a critic's 
 > **Chao2 completeness** ≥ threshold (the unseen-variable estimate has collapsed to ~0). The gate
 > renders the accumulation curve on every run: *DRY is a witnessed measurement, never a claim.* A
 > hand-declared set (3 knobs, one question, no tail) scores completeness 0.50, dry tail 0 — refused.
+
+---
+
+## The second messenger — S4's "looked" made a MEASURED gate (2026-07-25)
+
+The formula sealed with `∧ looked(V)` — the visual conjunct of S4, enforced loosely (did the model
+glance at a render?). The ChimeraEngine hardened it into the **two-messenger proof**, and this is now
+the honest form of that checkpoint:
+
+> **A membrane is real only where its inside and its outside agree.** Gravity (the interior — the
+> measured physics) and light (the surface — the emitted appearance) are one thing measured by two
+> independent systems. *You cannot measure a system with itself*, so a term needs a second messenger:
+> its **appearance**, PROJECTED from its physics (never hand-supplied), then measured back out of the
+> pixels and checked against what the physics predicts. Proof is the **residual landing under
+> tolerance** — the star's rendered glow `== blackbody(5778 K)`, the system's brightest point at the
+> barycenter, the garden green. A star recolored blue leaves the Planck locus and is **REFUSED**. No
+> aesthetic pass — the look is a measurement of the physics or it is a lie. (`ChimeraEngine/
+> appearance.py` + `convergence.py`; multi-messenger astronomy is the precedent — GW170817 was a
+> detection because its gravitational-wave and electromagnetic messengers AGREED.)
+
+So the engine's live gate sequence is `S0 FRAME → S2a PROVENANCE → S2b SATURATION → S3 CLASSIFY →
+**S4 APPEARANCE-CONVERGES** → S5 WHY-TERMINAL`, and `prove()` refuses at the first that fails.
 
 ---
 

@@ -157,6 +157,12 @@ floor: PHYSICS (a fact) or THE HUMAN (taste) — an LLM is never one.
 The three gates that were only prose until 2026-07-24 — **S2a** (provenance), **S2b** (saturation),
 **S7** (recompose) — are exactly the three that catch *"the agent declared its own variables."*
 
+**The second messenger (2026-07-25):** S4's `looked` is now a MEASURED gate. A term's **appearance**
+must be PROJECTED from its physics and *measurably converge* with it — the star's rendered color
+`== blackbody(T)`, not merely glanced at. Gravity (interior) and light (surface) are one membrane
+measured two ways; agreement is proof, so no look can drift from the model (no aesthetic pass).
+→ `THE_FORMULA.md` §"The second messenger"; `ChimeraEngine/appearance.py` + `convergence.py`.
+
 → **`docs/THE_FORMULA.md`** (the full equation, the gate table, the two worked failures, and the
 black-hole structure).
 
@@ -223,7 +229,7 @@ The method is not trusted because it is written down — it is trusted because i
 |---|---|---|
 | research | a research-less session with no cited sources/waiver | `core/research_gate.py` |
 | witness | `verified`/`observed` with no observation node | `core/witness_gate.py` |
-| visual | a visual claim the model never looked at | `core/visual_gate.py` |
+| visual → **appearance** | a visual claim the model never looked at — now hardened to the **two-messenger proof**: an appearance that doesn't **measurably converge** with its physics | `core/visual_gate.py` → **ChimeraEngine `appearance.py`/`convergence.py`** |
 | training | closing a game task with the subject un-trained | `core/training_gate.py` |
 | why | a claim whose *because*-chain never reaches a terminal | `core/why_gate.py` |
 | coin | a claim and its evidence that don't agree both ways | `core/coin_verifier.py` |
