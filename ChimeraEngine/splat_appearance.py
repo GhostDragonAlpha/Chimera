@@ -36,10 +36,14 @@ SCENES = {
     "theStar":        {"kind": "collapse", "type": "atmosphere", "count": 7000, "spread": 55, "size": 3.4,
                        "color": (1.0, 0.93, 0.82, 1.0), "pull": 1.4, "cam": (0.0, -210.0, 26.0)},
     "aPlanet":        {"kind": "planet", "radius": 88.0, "ocean": 0.66, "cam": (0.0, -250.0, 40.0)},
-    "thePlanets":     {"kind": "collapse", "type": "dust", "count": 6000, "spread": 120, "size": 2.6,
-                       "color": (0.85, 0.55, 0.40, 1.0), "pull": 0.5, "cam": (0.0, -330.0, 60.0)},
-    "theSolarSystem": {"kind": "collapse", "type": "atmosphere", "count": 6000, "spread": 140, "size": 2.6,
-                       "color": (1.0, 0.9, 0.75, 1.0), "pull": 0.8, "cam": (0.0, -360.0, 70.0)},
+    "thePlanets":     {"kind": "row", "span": 500.0, "cam": (0.0, -520.0, 55.0),
+                       "planets": [((1.00, 0.28, 0.12), 30.0),   # molten red   (hottest)
+                                   ((1.00, 0.52, 0.16), 30.0),   # orange
+                                   ((0.92, 0.80, 0.42), 30.0),   # warm tan
+                                   ((0.32, 0.60, 0.52), 30.0),   # temperate blue-green
+                                   ((0.24, 0.42, 0.85), 30.0),   # cold blue
+                                   ((0.90, 0.95, 1.00), 30.0)]},  # frozen white (coldest)
+    "theSolarSystem": {"kind": "system", "cam": (0.0, -400.0, 230.0)},
 }
 
 # ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
@@ -47,6 +51,17 @@ NCOLS = 28
 PX, PY, PZ = 0, 1, 2
 TYPE = 11
 CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
+
+# ── ONE calibration, shared by every solid-sphere scene ──
+# A dense splat shell over-accumulates ~2x: overlapping Gaussian tails sum before the opacity
+# saturates (MEASURED -- a uniform (0.05,0.15,0.45) navy sphere rendered (0.20,0.58,0.95) cyan-white).
+# The transfer is ~proportional per channel, so we invert it: pre-multiply surface colours by the gain
+# so the render lands on the intended palette. Keeping GRAIN size/alpha/DENSITY constant across scenes
+# keeps the over-accumulation factor constant, so the ONE measured gain holds for every world.
+_SURFACE_GAIN = 0.45      # invert the measured ~2x over-accumulation
+_GRAIN_SIZE = 5.0         # per-grain render size (world units)
+_GRAIN_ALPHA = 0.5        # per-grain opacity
+_GRAIN_DENSITY = 0.185    # grains per unit sphere AREA (= aPlanet's 18000 / 4pi*88^2)
 
 
 def _seed(term: str) -> int:
@@ -118,13 +133,7 @@ def _planet_buffers(spec: dict, term: str):
     # ice: near-white with a cold blue tint
     surf[is_ice, CR] = 0.90; surf[is_ice, CG] = 0.93; surf[is_ice, CB] = 0.97
 
-    # CALIBRATION: a dense shell over-accumulates ~2x (many overlapping Gaussian tails sum before the
-    # opacity saturates -- MEASURED: a uniform (0.05,0.15,0.45) sphere rendered (0.20,0.58,0.95)). The
-    # transfer is ~proportional per channel, so we invert it here: pre-divide the surface colours so the
-    # render lands on the intended palette instead of blowing out to cyan-white. (Same idea as format
-    # calibration: measure the container's transfer function, invert it -- don't hand-wave the colours.)
-    _SURFACE_GAIN = 0.45
-    surf[:, CR:CB + 1] *= _SURFACE_GAIN
+    surf[:, CR:CB + 1] *= _SURFACE_GAIN                            # invert the measured over-accumulation (see module head)
 
     # ── ATMOSPHERE: a faint pale-blue halo -- thin enough to glow at the LIMB without hazing the disk ──
     n_a = 1800
@@ -144,6 +153,87 @@ def _planet_buffers(spec: dict, term: str):
     tang = rng.normal(0.0, R * 0.5, (len(begin), 3))             # + tangential scatter -> a cloud
     ndir = end[:, PX:PZ + 1] / (np.linalg.norm(end[:, PX:PZ + 1], axis=1, keepdims=True) + 1e-9)
     begin[:, PX:PZ + 1] = ndir * spread[:, None] + tang
+    return end, begin
+
+
+def _solid_sphere(center, radius, color, rng, gain: float = _SURFACE_GAIN):
+    """A solid opaque sphere of one colour at `center` -- the reusable body (calibrated over-accumulation)."""
+    import numpy as np
+    n = max(500, int(_GRAIN_DENSITY * 4.0 * np.pi * radius * radius))
+    dirs = _fibonacci_sphere(n)
+    b = np.zeros((n, NCOLS), dtype=np.float32)
+    jit = 1.0 + rng.normal(0.0, 0.006, n)
+    b[:, PX:PZ + 1] = np.asarray(center, np.float32) + dirs * (radius * jit[:, None])
+    b[:, TYPE] = 3.0
+    b[:, ALPHA] = _GRAIN_ALPHA
+    b[:, SIZE] = _GRAIN_SIZE
+    b[:, CR] = color[0] * gain; b[:, CG] = color[1] * gain; b[:, CB] = color[2] * gain
+    return b
+
+
+def _halo(center, radius, color, rng, alpha: float = 0.09, size: float = 1.8, n: int | None = None):
+    """A faint soft glow shell (atmosphere type = big soft blobs) -- a limb/atmosphere/star glow."""
+    import numpy as np
+    if n is None:
+        n = max(300, int(0.06 * 4.0 * np.pi * radius * radius))
+    dirs = _fibonacci_sphere(n)
+    b = np.zeros((n, NCOLS), dtype=np.float32)
+    b[:, PX:PZ + 1] = np.asarray(center, np.float32) + dirs * radius
+    b[:, TYPE] = 5.0                                               # atmosphere: sm=6.0 -> big soft blobs
+    b[:, CR] = color[0]; b[:, CG] = color[1]; b[:, CB] = color[2]
+    b[:, ALPHA] = alpha; b[:, SIZE] = size
+    return b
+
+
+def _orbit_ring(radius, rng, color=(0.42, 0.42, 0.48), n: int = 900):
+    """A thin ring of dust in the z=0 orbital plane -- an ORBIT drawn as splats."""
+    import numpy as np
+    th = np.linspace(0.0, 2.0 * np.pi, n, endpoint=False)
+    b = np.zeros((n, NCOLS), dtype=np.float32)
+    b[:, PX] = radius * np.cos(th)
+    b[:, PY] = radius * np.sin(th)
+    b[:, PZ] = rng.normal(0.0, 1.5, n)                            # a thin band, not a wire
+    b[:, TYPE] = 3.0
+    b[:, CR] = color[0]; b[:, CG] = color[1]; b[:, CB] = color[2]
+    b[:, ALPHA] = 0.5; b[:, SIZE] = 2.4
+    return b
+
+
+def _row_buffers(spec: dict, term: str):
+    """thePlanets: a ROW of solid worlds, hot colours on one side -> cold on the other (a temperature gradient)."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    planets = spec["planets"]                                     # [(color, radius), ...] hot -> cold
+    span = float(spec.get("span", 500.0))
+    xs = np.linspace(-span / 2.0, span / 2.0, len(planets))
+    parts = []
+    for (color, radius), x in zip(planets, xs):
+        parts.append(_solid_sphere((x, 0.0, 0.0), radius, color, rng))
+        if color[0] > 0.75 and color[2] < 0.4:                   # a HOT world -> a molten glow so it reads as hot
+            parts.append(_halo((x, 0.0, 0.0), radius * 1.18, (0.95, 0.35, 0.12), rng, alpha=0.11, size=1.7))
+    end = np.concatenate(parts, axis=0)
+    begin = end.copy()
+    begin[:, PX:PZ + 1] += rng.normal(0.0, 55.0, (len(begin), 3))  # dispersed dust -> the worlds condense
+    return end, begin
+
+
+def _system_buffers(spec: dict, term: str):
+    """theSolarSystem: the brightest thing (the STAR) at the centre, with planets on ORBIT rings around it."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    parts = [
+        _solid_sphere((0.0, 0.0, 0.0), 34.0, (1.0, 0.93, 0.78), rng, gain=0.85),  # the star: brightest, central
+        _halo((0.0, 0.0, 0.0), 48.0, (1.0, 0.82, 0.5), rng, alpha=0.11, size=2.4),
+    ]
+    rings = [(85.0, (0.62, 0.45, 0.34)), (150.0, (0.34, 0.55, 0.82)),
+             (215.0, (0.70, 0.62, 0.42)), (280.0, (0.78, 0.86, 0.95))]           # a planet's colour per orbit
+    angles = [0.7, 2.3, 3.9, 5.3]
+    for (r, pcolor), a in zip(rings, angles):
+        parts.append(_orbit_ring(r, rng))
+        parts.append(_solid_sphere((r * np.cos(a), r * np.sin(a), 0.0), 12.0, pcolor, rng))
+    end = np.concatenate(parts, axis=0)
+    begin = end.copy()
+    begin[:, PX:PZ + 1] += rng.normal(0.0, 80.0, (len(begin), 3))  # a protoplanetary cloud -> star + orbits
     return end, begin
 
 
@@ -168,9 +258,11 @@ def project_movie(term: str, out_dir) -> dict | None:
     begin_png = out / f"movie_{term}_begin.png"
     end_png = out / f"movie_{term}_end.png"
 
-    if spec.get("kind") == "planet":
-        # Two hand-built states, uploaded directly -- no physics kernel needed (a world is already settled).
-        end_buf, begin_buf = _planet_buffers(spec, term)
+    _BUILDERS = {"planet": _planet_buffers, "row": _row_buffers, "system": _system_buffers}
+    builder = _BUILDERS.get(spec.get("kind"))
+    if builder:
+        # Two hand-built states, uploaded directly -- no physics kernel needed (these bodies are already settled).
+        end_buf, begin_buf = builder(spec, term)
         pipe.upload(begin_buf)
         Image.fromarray(pipe.render_from_gpu(cam, p)).save(begin_png)
         pipe.upload(end_buf)
