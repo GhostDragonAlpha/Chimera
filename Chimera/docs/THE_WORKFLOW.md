@@ -249,7 +249,9 @@ not a witness).
 |---|---|---|
 | **`THE_WORKFLOW.md`** (this) | the whole method as one map | first |
 | `THE_METHOD.md` | the engine: question-tree, terminals, lenses, Stage 0 demographic | to understand *why* PROVE |
-| `THE_FORMULA.md` | the equation: S0–S7 gates, saturation, the black-hole shape | before proving anything |
+| `THE_FORMULA.md` | the equation: S0–S7 gates, saturation, the dyad, the black-hole shape | before proving anything |
+| **`ChimeraEngine/ONBOARDING.md`** | the ENGINE onboarding — you build THROUGH the engine (the physics/human split, the dyadAnalysis, the splat movie) | before touching a term |
+| `ChimeraEngine/MCP_ENGINE.md` | the engine reference — the tools, the gates, how `prove` forces the dyad | to work through the engine |
 | `THE_LINE.md` | program vs train vs decide; what is trainable | before authoring or training a feature |
 | `OBJECTIVE_DESIGN.md` | writing a trainer objective that isn't exploitable (7 rules) | before writing `docs/objectives/*.json` |
 | `TRAINING_PROTOCOL.md` | the training mechanics (domain / objective / trainer) | when you run `core/trainer.py` |
