@@ -1,8 +1,27 @@
-# Chimera Engine — agent onboarding (paste-in)
+# Chimera — agent onboarding (the ONE onboarding; paste-in)
 
-> Hand this to any agent (or your future self) developing Chimera. You build the game **through** the
-> Chimera Engine MCP server — it is your editor. Work through its tools; never around them.
-> Reference: `ChimeraEngine/MCP_ENGINE.md` (the engine) · `ChimeraEngine/README.md` (the folder map).
+> Hand this to any agent (or your future self) developing Chimera. It is the **single** onboarding:
+> the project, the method, and the engine you build THROUGH. Work through the engine's tools; never
+> around them. Reference: `ChimeraEngine/MCP_ENGINE.md` (the engine) · `ChimeraEngine/README.md` (the
+> folder map) · `Chimera/docs/THE_WORKFLOW.md` (the whole method).
+
+---
+
+## The project
+
+CHIMERA is a **space game**, funded by a pipeline that turns real 3D scans and authored assets into
+labeled, re-composable OBJECT GENOMES (shape + material, serial-numbered) so one person builds at
+studio scale. Everything in the world is a Gaussian splat; every material is a TRAINED composition of
+splat types; every genome comes from **measuring reality** (`Construction/`) or **growing it under
+physics** (`core/trainables/`) — one library seen from two directions.
+
+**The Unreal Engine pipeline is RETIRED (2026-07-23).** Do not start an editor, run preflight, or
+follow a task board. A stray "Unreal" keyword in an old doc is not a signal — read the file.
+
+**Read these, in order:** `Chimera/docs/THE_WORKFLOW.md` (the whole method) · `CLAUDE.md` (the manual:
+goal, key paths, hardware traps, conventions) · `Chimera/docs/THE_FORMULA.md` (the PROVE equation + the
+dyad + the grounding) · `Construction/SPLAT_DNA_WORKFLOW.md` (scan → genome) ·
+`Chimera/docs/EXPERIMENTAL_METHOD.md` (before debugging anything). Then the rest of THIS file.
 
 ---
 

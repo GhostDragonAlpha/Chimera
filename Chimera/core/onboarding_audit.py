@@ -1,7 +1,7 @@
 """
-onboarding_audit - score a session against the MASTER_ONBOARDING checkpoints.
+onboarding_audit - score a session against the onboarding checkpoints.
 
-WHY THIS EXISTS (2026-07-16): the operator tests `docs/MASTER_ONBOARDING.md` by
+WHY THIS EXISTS (2026-07-16): the operator tests `ChimeraEngine/ONBOARDING.md` by
 restarting a FRESH agent after every revision - one prompt version per clean agent.
 That only yields a real result if every revision is scored the SAME way. Hand-auditing
 drifts: you find what you went looking for, and you rationalise afterward. So the pass
@@ -320,7 +320,7 @@ def run(hours=6.0, since="", until="", as_json=False):
 
 def main(argv=None):
     p = argparse.ArgumentParser(prog="onboarding_audit",
-                                description="Score a session against the MASTER_ONBOARDING checkpoints (read-only).")
+                                description="Score a session against the onboarding checkpoints (read-only).")
     p.add_argument("--hours", type=float, default=6.0, help="window size back from --until (default 6)")
     p.add_argument("--since", default="", help="UTC ISO start instead of --hours")
     p.add_argument("--until", default="", help="UTC ISO end (default: now). Bound the window to "

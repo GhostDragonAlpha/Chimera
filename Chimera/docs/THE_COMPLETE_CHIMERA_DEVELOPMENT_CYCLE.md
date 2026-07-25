@@ -116,7 +116,7 @@ code is the spec; this table is a pointer, and a pointer cannot drift.
 | **FEATURE LEDGER (60+ features)**, hand-listed | The DNA graph — SQLite + FTS, `record_*` helpers only, never a hand-written dict. | `core/graphify_interface.py`, `core/dna_sqlite_backend.py` |
 | **PRE-FLIGHT: 6 × `g.query(...)`** | `python -m core.preflight` does all of it in one command (the `g.query` API is still live and still works — it is superseded, not dead). | `core/preflight.py` |
 | **POST-FLIGHT: report and record** | `python -m core.postflight` — and it now REFUSES: Research → Generator Guard → Witness → **Why** → Visual → Training → Coin → Council. | `core/postflight.py` |
-| **THE CONTRACT's rules** (duplicated here, in `AGENTS.md`, and in `CLAUDE.md`) | **`CLAUDE.md` owns them.** Three copies is why all three drifted; the copies are gone. | `CLAUDE.md`, `docs/MASTER_ONBOARDING.md` |
+| **THE CONTRACT's rules** (duplicated here, in `AGENTS.md`, and in `CLAUDE.md`) | **`CLAUDE.md` owns them.** Three copies is why all three drifted; the copies are gone. | `CLAUDE.md`, `ChimeraEngine/ONBOARDING.md` |
 | **MCP Pathway Query Rule** | Proven pathways + TRAPS, maintained as data. | `docs/MCP_PATHWAYS.md` |
 | **THE RALPH WIGGUM LOOP** | Real, and it runs. | `core/ralph_loop_harness.py` |
 | **EMOTION-TO-PARAMETER MAPPING** | Physicalized — emotion is measured through the body, not asserted in a table. | `core/attunement.py`, `core/trainables/attunement.py` |

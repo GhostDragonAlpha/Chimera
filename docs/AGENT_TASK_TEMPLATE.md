@@ -12,7 +12,7 @@
 ## The prompt
 
 ```
-Read docs/ONBOARDING.md. It is your briefing and it takes precedence over anything
+Read ChimeraEngine/ONBOARDING.md. It is your briefing and it takes precedence over anything
 you assume.
 
 THE WORLD IS A 64-BIT DOUBLE-PRECISION GRID, AND IT IS IRREDUCIBLE.

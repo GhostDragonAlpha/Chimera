@@ -543,7 +543,7 @@ def _ok(resp) -> tuple:
 
 
 def _foreground_editor() -> bool:
-    """Defeat the background-throttle trap (CLAUDE.md H-2 / MASTER_ONBOARDING 8c): a
+    """Defeat the background-throttle trap (CLAUDE.md H-2): a
     BACKGROUNDED UE5 editor ticks at ~3fps (FWaitForInteractiveFrameRate never
     releases) — every fps/frame-time reading taken like that is throttle noise, not a
     measurement of what the splat cloud actually costs. Win32 SetForegroundWindow by

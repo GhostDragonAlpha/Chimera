@@ -63,7 +63,7 @@ def _is_research(n: dict) -> bool:
     return str(n.get("template_file", "")).startswith(RESEARCH_TEMPLATE_PREFIXES)
 
 
-#: A task whose PREMISE is that the thing does not exist yet. MASTER_ONBOARDING rule 7:
+#: A task whose PREMISE is that the thing does not exist yet. the build-toward-seed rule:
 #: "A 'Build toward the seed' task's PREMISE is that the thing does NOT exist — absence
 #: is the WORK." These are minted by the helm/wellspring with this exact phrasing, so the
 #: match is on the string the machine writes, not on an agent's free prose.
@@ -181,7 +181,7 @@ def check(nodes, researched="", waiver="", hours=8, topic=""):
     if (waiver or "").strip():
         # A SEED-BUILD TASK CANNOT WAIVE RESEARCH (2026-07-16, the human's call).
         #
-        # MASTER_ONBOARDING rule 7 already states the premise: "A 'Build toward the
+        # the build-toward-seed rule already states the premise: "A 'Build toward the
         # seed' task's PREMISE is that the thing does NOT exist — absence is the WORK."
         # A task whose premise is that the thing does not exist is EXACTLY the task
         # that cannot inherit its answer from this repo. There is nothing here to copy;
@@ -203,8 +203,8 @@ def check(nodes, researched="", waiver="", hours=8, topic=""):
         if _SEED_BUILD.search(topic or ""):
             return "unwaivable", (
                 f"a seed-build task cannot waive research: {waiver.strip()[:120]!r}. "
-                f"This task's PREMISE is that the thing does NOT exist (MASTER_ONBOARDING "
-                f"rule 7: absence is the WORK) — so there is nothing in this repo to "
+                f"This task's PREMISE is that the thing does NOT exist (the build-toward-seed "
+                f"rule: absence is the WORK) — so there is nothing in this repo to "
                 f"inherit the answer from, which is exactly why the task exists. Cite "
                 f"real sources with --researched: UE5.8 documentation for the systems you "
                 f"are about to name, a shipped game that solved it, the DSL bible. "

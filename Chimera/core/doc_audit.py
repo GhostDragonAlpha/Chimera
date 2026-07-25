@@ -25,9 +25,11 @@ Measured the day check 5 was written, with 1-4 reporting only two trivial findin
     RESULT_GRADING_RUBRIC.md                     0
 
 Ten gates had shipped. Four of seven docs knew about none of them, including the
-Contract. MASTER_ONBOARDING is current for exactly one reason: THE HUMAN RE-TESTS IT
-every revision. It is the only doc that gets EXECUTED — and the only one that stayed
-true. The others are prose nothing runs, and prose nothing runs drifts to zero.
+Contract. MASTER_ONBOARDING was current for exactly one reason: THE HUMAN RE-TESTED IT
+every revision — the only doc that got EXECUTED, and the only one that stayed true. The
+others are prose nothing runs, and prose nothing runs drifts to zero.
+(Consolidated 2026-07-25: the ONE onboarding is now `ChimeraEngine/ONBOARDING.md`, which this
+audit checks in MASTER_ONBOARDING's place — the human re-tests THAT one now.)
 
 THE GATE LIST IS DERIVED FROM postflight, NEVER HAND-LISTED (beat_lint's lesson, and
 this file's own check 3 exists because a hand-maintained list drifted). postflight is
@@ -46,13 +48,11 @@ ROOT = Path(__file__).resolve().parent.parent
 WS = ROOT.parent
 DOCS = [WS / "CLAUDE.md", WS / "CYCLE_PROMPT.md", WS / "SUCCESSOR_RUNBOOK.md",
         WS / "AGENTS.md", WS / "README.md",
-        # MASTER_ONBOARDING was NOT in this list until 2026-07-16 — the single most
-        # important doc in the repo, the prompt handed to every LEAD and subagent, and
-        # NOTHING had ever checked that the commands and flags it orders an agent to run
-        # actually exist. It is current only because the human re-tests it by hand every
-        # revision; the machine had never looked at it once. The doc most likely to be
-        # OBEYED was the doc least likely to be AUDITED.
-        ROOT / "docs" / "MASTER_ONBOARDING.md", ROOT / "docs" / "THREAT_MODEL.md",
+        # The ONBOARDING is the single most important doc in the repo — the prompt handed to every
+        # agent — and NOTHING had ever checked that the commands/flags it orders an agent to run
+        # actually exist (the doc most likely to be OBEYED was the doc least likely to be AUDITED).
+        # Consolidated to ONE onboarding 2026-07-25: ChimeraEngine/ONBOARDING.md (was MASTER_ONBOARDING).
+        WS / "ChimeraEngine" / "ONBOARDING.md", ROOT / "docs" / "THREAT_MODEL.md",
         ROOT / "docs" / "GENERATION_PROTOCOL.md", ROOT / "docs" / "SLEEPWALKER_DESIGN.md",
         ROOT / "docs" / "DEMO_ARCHITECTURE.md", ROOT / "docs" / "MCP_PATHWAYS.md",
         WS / ".roo" / "rules" / "01-chimera.md", WS / ".roo" / "rules" / "02-traps.md",
@@ -133,7 +133,7 @@ def main():
         # Where a gate must be findable. Not every doc — the ones an agent is told to
         # read. A gate absent from ALL of them is undiscoverable.
         gate_docs = [WS / "CLAUDE.md", WS / "AGENTS.md", WS / "SUCCESSOR_RUNBOOK.md",
-                     ROOT / "docs" / "MASTER_ONBOARDING.md"]
+                     ROOT / "docs" / "THE_WORKFLOW.md"]
         # WHITESPACE-NORMALIZED: markdown wraps, and "Generator\n   Guard" is the same
         # gate as "Generator Guard". My first cut matched raw text and reported
         # generator_guard as undocumented because of a LINE BREAK.
@@ -144,7 +144,7 @@ def main():
                     r"\s+", " ", d.read_text(encoding="utf-8", errors="replace").lower())
         for gate in sorted(enforced):
             pretty = gate.replace("_", " ")            # why_gate -> "why gate"
-            # The STEM too: the postflight stack in MASTER_ONBOARDING names gates by
+            # The STEM too: the postflight stack in the workflow docs names gates by
             # their short name ("-> Witness (sim/telemetry node; --witnessed)"), never
             # "witness gate". That IS documentation — an agent reading it learns the
             # gate exists and what it wants — and my first cut called it undocumented.
