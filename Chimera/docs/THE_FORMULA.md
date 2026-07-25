@@ -1,0 +1,144 @@
+# THE FORMULA — the equation that IS the workflow
+
+> Proposed 2026-07-24, from the operator's correction: *"you failed the workflow because you
+> determined yourself these variables. If you proved it you would have gone through the entire
+> process of asking questions."* This document hardens the loose pseudocode in
+> [`THE_METHOD.md`](THE_METHOD.md) into an **ordered sequence of gates** where that failure —
+> declaring your own variables instead of discovering them — is a **thrown error**, not an
+> oversight. Companion to [`THE_LINE.md`](THE_LINE.md) (PROGRAM/TRAIN/HUMAN) and
+> [`OBJECTIVE_DESIGN.md`](OBJECTIVE_DESIGN.md).
+>
+> **Status: PROPOSED — awaiting the operator's ENOUGH.** By its own S6, a claim about taste or
+> completeness terminates at THE HUMAN; this formula is a claim about how we work, so *I cannot
+> declare it proven — the operator ratifies it.* Then it is encoded as a lint (a doc can be
+> ignored; a lint cannot).
+
+---
+
+## Why a formula at all
+
+`THE_METHOD` gave the **engine** (a question-tree that grows itself) and `THE_LINE` gave the
+**terminals** (PROGRAM/TRAIN, and the HUMAN). Neither bolted the engine to the driveshaft: there
+was no checkpoint on the moment a loose term becomes a hard variable. So the engine could
+*freewheel* — an agent could name its own variables and the tree spun disconnected. The formula
+is the two missing gates plus the order everything already agreed on.
+
+**The failure it exists to kill (measured, twice this session):**
+
+- Asked to PROVE "Eden is lush," the agent shattered "lush" into `{land_fraction, warmth,
+  wetness}` — three **climate drivers**, invented in one head — trained them, and declared it done.
+- Those three are not the **constituents** of a lush Eden. Where are trees-as-populations, the
+  understory, the canopy, fauna, birdsong, streams, fruit, flowers, loam, dappled light? A real
+  Eden is *dozens* of variables deep. Three knobs cannot make it; they can only make the *weather
+  over* it.
+- Root cause, in the operator's words: **the variables were DECLARED, not DISCOVERED.** The
+  question process that would have minted the real variable set was never run.
+
+---
+
+## A variable IS a membrane (why "three variables" can't reach Eden)
+
+In this studio's ontology ([`membranes.py`](../core/membranes.py)) a **boundary is a scale**, and
+X is an **onion of nested membranes**:
+
+```
+Eden ⊃ biome ⊃ forest ⊃ tree ⊃ leaf ⊃ cell ⊃ …
+```
+
+Each membrane is a **variable** of X. The question-tree is *how you descend the onion*: every
+"what must be true for X?" crosses **one membrane boundary inward**, and a branch stops when it
+hits a **terminal** — a measurable leaf (PHYSICS) or taste (THE HUMAN). Naming three top-level
+knobs is stopping at the **outermost membrane** and calling the onion peeled. The formula forces
+the descent to continue until **DRY**, and then checks you reached the **constituents**, not just
+the drivers. *That check is the gate I was missing.*
+
+---
+
+## THE FORMULA
+
+```
+PROVE(X) :=
+
+    S0  FRAME       X is exactly ONE claim; its demographic (whose human terminal) is named.
+                    ⊢ atomic(X)                         else  SPLIT and prove each part
+
+    S1  QUESTION    {V} ← QUESTION*(X)                  # ask "what must be true for X?" — recursively.
+                    # each question forks:  know it → answer · physical → RUN & measure · can't → RESEARCH (spawns more)
+                    # a variable is BORN as the subject of a question. loop until DRY (no question yields a new V).
+
+    S2  DECLARE     freeze {V}.  TWO gates — the two the old method lacked:
+                    ⊢ ∀V∈{V}:  born_of_question(V)      else  REJECT V  (you DECLARED it, not discovered it)
+                    ⊢ covers({V}, X)                    else  goto S1    (a constituent has no variable — incomplete)
+
+    S3  CLASSIFY    send each V to its terminal (THE_LINE):
+                    ⊢ measure_writable(V) → PHYSICS  |  taste(V) → THE HUMAN  |  neither → goto S1 (not ready)
+
+    S4  PROVE·each  ∀ physics V:   MEASURE( TRAIN( PROGRAM(V) ) )        # RECURSE: PROVE(V)
+                    ⊢ researched(V) ∧ trained_not_tuned(V) ∧ witnessed(V) ∧ looked(V)
+
+    S5  CHAIN       ⊢ ∀V:  why_chain(V) ↦ {PHYSICS, THE HUMAN}          # no LLM is ever a terminal
+                    ⊢ coin(V):  heads(claim) ⟺ tails(evidence)
+
+    S6  DECIDE      ∀ human V:  operator rules.                          # the only place MEANING closes
+
+    S7  RECOMPOSE   ⊢ recompose({V}) ⊨ X                 else  goto S1   # the parts reconstitute the whole
+                    critic hunts a missing V; found → S1; none → DRY; operator calls ENOUGH.
+
+    ∴  X  ⟺  (∀ physics V: measured)  ∧  (∀ human V: decided)  ∧  DRY
+
+    base case (the recursion floor — the ONLY two):
+        PROVE(v) = MEASURE(v)   if v is a physics leaf      (a fact, true in an empty universe)
+        PROVE(v) = DECIDE(v)    if v is taste               (the operator, THE HUMAN)
+```
+
+Every `⊢` line ("must hold") is a **mandatory checkpoint**. If it fails, it **throws you back** —
+usually to S1, to ask more. That is the whole equation: `PROVE` is `QUESTION` until DRY, gated so
+the questions are load-bearing, recursing on each variable to a terminal, and recomposed to prove
+the parts actually make the whole.
+
+---
+
+## The ordered gates, and who already enforces each
+
+| Stage | The mandatory checkpoint (throws if false) | Enforced by |
+|---|---|---|
+| **S0 FRAME** | X is one claim; the demographic is named | `THE_METHOD` Stage 0 |
+| **S1 QUESTION** | *(generative — ends at DRY, not a gate)* | `THE_METHOD` question-tree |
+| **S2a PROVENANCE** | every variable was **born of a question** | **← NEW — the gate I failed** |
+| **S2b COMPLETENESS** | the variable set **covers X** | **← NEW — the gate I failed** |
+| **S3 CLASSIFY** | you can **write its `measure()`** (or it's taste) | `THE_LINE` — "write measure() first" |
+| **S4 PROVE·each** | researched · trained-not-tuned · witnessed · looked | `research_gate · training_gate · witness_gate · visual_gate` |
+| **S5 CHAIN** | why-chain hits a terminal; the coin's two faces agree | `why_gate · coin_verifier` |
+| **S6 DECIDE** | the operator ruled | THE HUMAN terminal |
+| **S7 RECOMPOSE** | the proven parts **reconstitute X**; no missing variable | **← NEW** (completeness critic) + operator ENOUGH |
+
+The studio already had S3–S6 in code. **The three that were only prose — S2a, S2b, S7 — are
+exactly the three that would have caught both failures.** They are the driveshaft.
+
+---
+
+## The two failures, run through the formula
+
+**"Eden is lush"** — what actually happened vs. what the formula forces:
+
+| | what I did | what the formula requires |
+|---|---|---|
+| S1 QUESTION | *skipped* | ask "what makes a garden lush?" until DRY → *dozens* of V |
+| S2a PROVENANCE | `{land, warmth, wetness}` from my head | **THROW** — none was born of a question |
+| S2b COMPLETENESS | never checked | **THROW** — no tree-populations, fauna, streams, fruit, loam… |
+| S4 MEASURE | measured my three | *(never reached — S2 threw first)* |
+
+The formula does not merely *disapprove* of what I did — it makes it **unreachable**. You cannot
+get to S4 with a hand-made variable set, because S2a and S2b sit between S1 and S4 and neither
+passes.
+
+---
+
+## The honest bound (which belongs to the formula, not against it)
+
+`covers({V}, X)` (S2b) and `recompose({V}) ⊨ X` (S7) are **completeness** checks, and completeness
+is unprovable — you cannot see the lens you never ground (`THE_METHOD`'s honest bound). So these
+gates are run by the **completeness critic** (an adversary asking "what constituent has no
+variable?") and then **the operator calls ENOUGH.** The formula tightens *"did you ask?"* to a
+throwable gate; it cannot make *"did you ask everything?"* certain. That last call stays human —
+by design, it is one of the two levers the method leaves you.
