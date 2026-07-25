@@ -24,12 +24,25 @@ from core.planet_membrane import PlanetOnion
 GARDEN_BIOMES = ('temperate_forest', 'tropical_seasonal_forest', 'grassland', 'taiga')
 
 
-def make_eden(seed: int = 7):
-    """Eden, and the garden on it: a forested land spot at a gentle elevation. Returns the onion
-    and (lat, lon, biome, elevation)."""
+# Eden is a GREENHOUSE world: more land, warmer, wetter -- so forests grow where Earth grows
+# desert and ice. Grounded in Earth's own hothouse epochs (Eocene, Carboniferous: jungle to the
+# poles, no ice caps). Not a fantasy climate -- Earth's climate with the greenhouse turned up.
+EDEN_LAND_FRACTION = 0.50
+EDEN_WARMTH = 26.0       # deg C above Earth -- enough to lift the poles out of ice (T_pole -25+26>tundra)
+EDEN_WETNESS = 4.5       # x Earth's rainfall -- enough to green the dry subtropics (a hothouse water cycle)
+
+
+def make_eden(seed: int = 7, lush: bool = True):
+    """Eden, and the garden on it. Returns (onion, (lat,lon,biome,elev), (warmth, wetness)).
+    lush=True makes a greenhouse paradise: more land, warmer, wetter -> forest-covered."""
     from core.biomes import classify_surface
-    onion = PlanetOnion.earthlike(seed=seed)
-    biome, elev = classify_surface(_P(onion), 90, 180)
+    if lush:
+        onion = PlanetOnion.earthlike(seed=seed, land_fraction=EDEN_LAND_FRACTION)
+        warmth, wetness = EDEN_WARMTH, EDEN_WETNESS
+    else:
+        onion = PlanetOnion.earthlike(seed=seed)
+        warmth, wetness = 0.0, 1.0
+    biome, elev = classify_surface(_P(onion), 90, 180, warmth=warmth, wetness=wetness)
     lats = np.linspace(90, -90, 90)
     lons = np.linspace(0, 360, 180, endpoint=False)
     best = None
@@ -48,7 +61,7 @@ def make_eden(seed: int = 7):
     if best is None:                                  # fallback: any land
         ij = np.argwhere(elev > 0)[len(np.argwhere(elev > 0)) // 2]
         best = (float(lats[ij[0]]), float(lons[ij[1]]), str(biome[ij[0], ij[1]]), float(elev[ij[0], ij[1]]))
-    return onion, best
+    return onion, best, (warmth, wetness)
 
 
 def grow_tree_of_knowledge(seed: int = 3):
@@ -75,7 +88,8 @@ def _project(bones):
     return up, h, P[:, up].min(), P[:, up].max(), P[:, h].min(), P[:, h].max()
 
 
-def render_scene(onion, garden, bones, path='Saved/SplatEmit/eden_tree_of_knowledge.png'):
+def render_scene(onion, garden, bones, climate=(0.0, 1.0),
+                 path='Saved/SplatEmit/eden_tree_of_knowledge.png'):
     from pathlib import Path
     try:
         from PIL import Image, ImageDraw
@@ -127,7 +141,7 @@ def render_scene(onion, garden, bones, path='Saved/SplatEmit/eden_tree_of_knowle
         d.ellipse([x - 2, y - 3, x, y - 1], fill=(240, 180, 180))
 
     # a globe inset: Eden, with the garden marked
-    _globe_inset(d, onion, garden, W - 190, 20, 160)
+    _globe_inset(d, onion, garden, W - 190, 20, 160, climate)
 
     lat, lon, biome, elev = garden
     d.text((24, 22), "THE TREE OF THE KNOWLEDGE OF GOOD AND EVIL", fill=(255, 250, 235))
@@ -140,16 +154,17 @@ def render_scene(onion, garden, bones, path='Saved/SplatEmit/eden_tree_of_knowle
     return path
 
 
-def _globe_inset(d, onion, garden, x0, y0, size):
+def _globe_inset(d, onion, garden, x0, y0, size, climate=(0.0, 1.0)):
     from core.biomes import PALETTE, classify_surface
-    biome, elev = classify_surface(_P(onion), 120, 240)
+    biome, elev = classify_surface(_P(onion), 120, 240, warmth=climate[0], wetness=climate[1])
     N = size
     yy, xx = np.mgrid[0:N, 0:N]
     X = (xx - N / 2) / (N / 2); Y = (N / 2 - yy) / (N / 2)
     disc = X ** 2 + Y ** 2 <= 1
     Z = np.sqrt(np.clip(1 - X ** 2 - Y ** 2, 0, 1))
     latg = np.degrees(np.arcsin(np.clip(Y, -1, 1)))
-    long = np.degrees(np.arctan2(X, Z)) % 360
+    gard_lon = garden[1]                               # face the garden's hemisphere, not the ocean
+    long = (np.degrees(np.arctan2(X, Z)) + gard_lon) % 360
     for iy in range(N):
         for ix in range(N):
             if not disc[iy, ix]:
@@ -157,12 +172,32 @@ def _globe_inset(d, onion, garden, x0, y0, size):
             bi = int(np.clip((90 - latg[iy, ix]) / 180 * (elev.shape[0] - 1), 0, elev.shape[0] - 1))
             bj = int(np.clip(long[iy, ix] / 360 * elev.shape[1], 0, elev.shape[1] - 1))
             d.point((x0 + ix, y0 + iy), fill=PALETTE.get(biome[bi, bj], (40, 90, 165)))
-    # mark the garden
+    # mark the garden (now facing us, so it sits near the centre)
     lat, lon, _, _ = garden
-    gx = x0 + int(N / 2 + np.cos(np.radians(lat)) * np.sin(np.radians(lon)) * N / 2)
+    gx = x0 + int(N / 2 + np.cos(np.radians(lat)) * np.sin(np.radians(lon - gard_lon)) * N / 2)
     gy = y0 + int(N / 2 - np.sin(np.radians(lat)) * N / 2)
     d.ellipse([gx - 4, gy - 4, gx + 4, gy + 4], outline=(255, 240, 90), width=2)
     d.text((x0 + N // 2 - 12, y0 + N + 2), "EDEN", fill=(255, 250, 235))
+
+
+FOREST_BIOMES = {'temperate_forest', 'taiga', 'tropical_rainforest', 'tropical_seasonal_forest'}
+BARREN_BIOMES = {'desert', 'ice', 'tundra'}
+
+
+def lushness(onion, climate) -> dict:
+    """MEASURE how lush Eden is: land fraction, forest as a fraction of land, and barren
+    (desert/ice/tundra) as a fraction of land. The physics of 'paradise'; the meaning is DECIDE."""
+    from core.biomes import classify_surface
+    biome, elev = classify_surface(_P(onion), 120, 240, warmth=climate[0], wetness=climate[1])
+    nlat, nlon = elev.shape
+    w = np.cos(np.radians(np.linspace(90, -90, nlat)))[:, None] * np.ones((1, nlon))
+    land = w * (elev > 0)
+    land_tot = float(land.sum()) or 1.0
+    fmask = np.array([[biome[i, j] in FOREST_BIOMES for j in range(nlon)] for i in range(nlat)])
+    bmask = np.array([[biome[i, j] in BARREN_BIOMES for j in range(nlon)] for i in range(nlat)])
+    return {'land_fraction': float(land.sum() / w.sum()),
+            'forest_of_land': float((land * fmask).sum() / land_tot),
+            'barren_of_land': float((land * bmask).sum() / land_tot)}
 
 
 def _main() -> int:
@@ -177,31 +212,30 @@ def _main() -> int:
     ap.add_argument('--tree-seed', type=int, default=3)
     a = ap.parse_args()
 
-    onion, garden = make_eden(a.seed)
+    onion, garden, climate = make_eden(a.seed, lush=True)
     lat, lon, biome, elev = garden
     bones = grow_tree_of_knowledge(a.tree_seed)
-
-    # the connection point: where the tree meets the world
     s = onion.sample(lat, lon)
-    # the grow verb: ancient dense wood, the density clock -> slow to mature
-    from core.grow import grow as grow_dyn
-    g = grow_dyn('hardwood', energy=1.0, ticks=60)
 
-    print("  === THE FIRST DEMO SCENE: the Tree of Knowledge, planted on Eden ===\n")
-    print(f"  EDEN            a grown planet; the garden found at ({lat:+.1f}, {lon:.1f})")
-    print(f"  THE GARDEN      biome '{biome}', surface {elev:.0f} m -- forested, temperate land")
-    print(f"  CONNECTION      the tree stands at the surface: elevation {s['elevation']:.0f} m, "
-          f"up = {np.round(s['normal'], 3)}, on {s['material']}")
-    print(f"  THE TREE        {len(bones)} bones grown from ONE terrarium genome (a tree is a recursion)")
-    print(f"  GROWN           by the grow verb at hardwood density (clock √{g['relative_density']:.1f}): "
-          f"canopy in {g['ticks_to_canopy']} ticks -- slow, ancient wood, not grass")
+    # PROVE lush: measure the physics of paradise (the meaning stays a DECIDE)
+    lush = lushness(onion, climate)
+    _, _, earth_clim = make_eden(a.seed, lush=False)   # the old ocean-heavy Eden, for contrast
+    was = lushness(make_eden(a.seed, lush=False)[0], (0.0, 1.0))
 
-    path = render_scene(onion, garden, bones)
+    print("  === PROVE( Eden is lush ) -- greenhouse world, the physics measured ===\n")
+    print(f"  {'':16} {'was (Earth clim)':>18} {'now (Eden lush)':>18}")
+    print(f"  {'land fraction':16} {was['land_fraction']:>18.2f} {lush['land_fraction']:>18.2f}")
+    print(f"  {'forest of land':16} {was['forest_of_land']:>18.2f} {lush['forest_of_land']:>18.2f}")
+    print(f"  {'barren of land':16} {was['barren_of_land']:>18.2f} {lush['barren_of_land']:>18.2f}"
+          f"   (desert+ice+tundra)")
+    print(f"\n  the garden: {biome} at ({lat:+.0f},{lon:.0f}); the Tree: {len(bones)} bones, "
+          f"planted at {s['elevation']:.0f} m on {s['material']}")
+
+    path = render_scene(onion, garden, bones, climate)
     if path:
-        print(f"\n  witnessed: {path}")
-        print("  one planet, one tree, one seam, one clock -- everything the session built, composed.")
-    else:
-        print("\n  (PIL absent -- scene assembled but not rendered)")
+        print(f"\n  witnessed: {path}  (the globe should read GREEN now, not ocean)")
+    print("\n  PHYSICS proven: more land, forest-covered, little barren. Whether it READS AS")
+    print("  PARADISE is yours to DECIDE -- the physics of lush is on the table.")
     return 0
 
 

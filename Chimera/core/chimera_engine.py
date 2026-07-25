@@ -36,7 +36,7 @@ class ChimeraEngine:
         from core.controls import Controller
         from core.eden import make_eden
         from core.planet_layers import LayeredPlanet
-        self.onion, self.garden = make_eden(self.seed)     # Eden + the garden = the spawn point
+        self.onion, self.garden, _ = make_eden(self.seed)  # Eden + the garden = the spawn point
         self.world = LayeredPlanet(onion=self.onion)
         self.lat, self.lon = self.garden[0], self.garden[1]
         self.player = Controller(ship='freighter')

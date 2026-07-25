@@ -22,7 +22,7 @@ def prove(seed: int = 7, tree_seed: int = 3):
     def claim(name, terminal, ok, detail):
         ledger.append({'claim': name, 'terminal': terminal, 'ok': ok, 'detail': detail})
 
-    onion, garden = make_eden(seed)
+    onion, garden, _ = make_eden(seed)
     lat, lon, biome, elev = garden
 
     # ---------- PHYSICS: run the measurement, read the number ----------
@@ -31,7 +31,7 @@ def prove(seed: int = 7, tree_seed: int = 3):
           bool(g.shape == (180, 360) and np.isfinite(g).all()),
           f"whole-sphere surface {g.shape}, relief {g.max() - g.min():.0f} m")
 
-    onion2, _ = make_eden(seed)
+    onion2, _, _ = make_eden(seed)
     same = bool(np.allclose(g, onion2.elevation_grid(180, 360)))
     claim("Eden is reproducible (same seed -> same Eden)", "PHYSICS", same,
           "two independent builds are bit-identical" if same else "MISMATCH")

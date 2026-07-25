@@ -152,8 +152,11 @@ class PlanetOnion:
     # --- construction ------------------------------------------------------
 
     @classmethod
-    def earthlike(cls, seed: int = 0, lmax: int = 40) -> 'PlanetOnion':
-        """Seed an Earth-REALISTIC planet: two-crust bimodal hypsometry + red roughness."""
+    def earthlike(cls, seed: int = 0, lmax: int = 40,
+                  land_fraction: float = EARTH_LAND_FRACTION) -> 'PlanetOnion':
+        """Seed an Earth-REALISTIC planet: two-crust bimodal hypsometry + red roughness.
+        land_fraction tunes how much of the sphere is above sea level (raise it for a
+        land-rich, less ocean-dominated world)."""
         rng = np.random.default_rng(seed)
         self = cls(lmax=lmax)
         # continents: a few large highs/lows (low degree). Unit-ish variance.
@@ -161,7 +164,7 @@ class PlanetOnion:
         # roughness: red spectrum C_l ~ l^-2 across all degrees.
         self.rough_coeffs = _random_coeffs(lmax, lambda l: 1.0 / l**2, rng)
         self.thickness = {nm: d for nm, d in LAYERS if nm != 'surface'}
-        self._tune_sea_level(EARTH_LAND_FRACTION)
+        self._tune_sea_level(land_fraction)
         return self
 
     # --- the surface field -------------------------------------------------

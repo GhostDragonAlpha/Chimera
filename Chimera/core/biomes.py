@@ -42,29 +42,35 @@ T_EQUATOR_C = 28.0             # mean sea-level temperature at the equator
 T_POLE_C = -25.0               # ...and at the poles
 
 
-def temperature_C(lat_deg: float, elev_m: float) -> float:
+def temperature_C(lat_deg: float, elev_m: float, warmth: float = 0.0) -> float:
     """Surface temperature from latitude (insolation) and altitude (lapse rate). PROGRAM.
 
     Insolation falls with the COSINE of latitude (the sun's angle on the surface) -- so
     mid-latitudes stay mild (45 deg ~= 12 C, matching Earth's zonal mean), not frozen. The
     earlier latitude^1.15 curve dropped too fast and iced the mid-latitudes -- a LAW bug the
-    biome measure() surfaced, fixed here rather than papered over by moving thresholds."""
+    biome measure() surfaced, fixed here rather than papered over by moving thresholds.
+
+    `warmth` (deg C) shifts the whole climate up -- a GREENHOUSE world (Eocene/Carboniferous:
+    forests to the poles, no ice) is Earth's own climate with warmth added, not a fantasy."""
     base = T_POLE_C + (T_EQUATOR_C - T_POLE_C) * np.cos(np.radians(lat_deg))
-    return base - LAPSE_C_PER_M * max(elev_m, 0.0)
+    return base + warmth - LAPSE_C_PER_M * max(elev_m, 0.0)
 
 
-def precipitation_mm(lat_deg: float, ocean_prox: float) -> float:
+def precipitation_mm(lat_deg: float, ocean_prox: float, wetness: float = 1.0) -> float:
     """Annual precipitation from the Hadley circulation + continentality. PROGRAM.
 
     Wet equatorial belt (rising air, the ITCZ), dry subtropics near 30 deg (descending air --
     where Earth's deserts are), wet mid-latitudes (storm tracks), dry poles. Then scaled by how
-    much ocean moisture can reach the point (interiors are dry -- the Gobi, not the coast)."""
+    much ocean moisture can reach the point (interiors are dry -- the Gobi, not the coast).
+
+    `wetness` scales the whole hydrological cycle -- a warmer world holds more water vapour and
+    rains more (Clausius-Clapeyron), so a greenhouse Eden is wetter, not just hotter."""
     a = abs(lat_deg)
     itcz = 2400.0 * np.exp(-((a - 0.0) / 10.0) ** 2)        # equatorial rainbelt
     midlat = 850.0 * np.exp(-((a - 52.0) / 16.0) ** 2)      # mid-latitude storm track
     subtropical_dry = 0.30 + 0.70 * (1 - np.exp(-((a - 30.0) / 13.0) ** 2))  # 0.30 at 30 deg
     base = (140.0 + itcz + midlat) * subtropical_dry
-    return float(base * (0.45 + 0.90 * ocean_prox))         # continentality
+    return float(base * (0.45 + 0.90 * ocean_prox) * wetness)   # continentality x climate wetness
 
 
 # ============================ TRAIN (the numbers) ============================
@@ -142,9 +148,11 @@ def _distance_to_ocean_cells(elev: np.ndarray) -> np.ndarray:
     return dist
 
 
-def classify_surface(planet, nlat: int = 180, nlon: int = 360, th: dict = THRESHOLDS):
+def classify_surface(planet, nlat: int = 180, nlon: int = 360, th: dict = THRESHOLDS,
+                     warmth: float = 0.0, wetness: float = 1.0):
     """Assign a biome to every land cell of the whole-sphere surface. Returns (biome grid,
-    elevation grid). Ocean cells are 'ocean'."""
+    elevation grid). Ocean cells are 'ocean'. warmth/wetness shift the climate toward a
+    greenhouse (lush) world; defaults are Earth."""
     elev = planet.onion.elevation_grid(nlat, nlon)
     lats = np.linspace(90, -90, nlat)
     dist = _distance_to_ocean_cells(elev)
@@ -156,8 +164,8 @@ def classify_surface(planet, nlat: int = 180, nlon: int = 360, th: dict = THRESH
             if elev[i, j] <= 0:
                 biome[i, j] = 'ocean'
                 continue
-            T = temperature_C(lats[i], elev[i, j])
-            P = precipitation_mm(lats[i], float(prox[i, j]))
+            T = temperature_C(lats[i], elev[i, j], warmth)
+            P = precipitation_mm(lats[i], float(prox[i, j]), wetness)
             biome[i, j] = classify(T, P, th)
     return biome, elev
 
