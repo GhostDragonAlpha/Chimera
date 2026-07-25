@@ -65,7 +65,7 @@ def check_constraints(spec: dict, measures: dict):
     return passed, viols
 
 
-def grow_one(name: str, pop: int, gens: int, timeout: float = 240.0):
+def grow_one(name: str, pop: int, gens: int, timeout: float = 120.0):
     """Run the trainer over one seed (a subprocess -- clean isolation, writes its own winner).
     Returns (result_dict_or_None, status_or_None)."""
     obj = OBJ_DIR / f"{name}.json"
@@ -88,11 +88,11 @@ def grow_one(name: str, pop: int, gens: int, timeout: float = 240.0):
         return None, f"unreadable winner: {e}"
 
 
-def harvest(field: list, pop: int, gens: int) -> list:
+def harvest(field: list, pop: int, gens: int, timeout: float = 120.0) -> list:
     """Grow every seed and sort the field: ripe / needs-another-season / composted."""
     rows = []
     for name in field:
-        res, err = grow_one(name, pop, gens)
+        res, err = grow_one(name, pop, gens, timeout)
         if res is None:
             rows.append({"name": name, "status": "composted", "detail": err})
             continue
@@ -117,6 +117,7 @@ def _main() -> int:
     ap.add_argument("--all", action="store_true", help="grow every discoverable seed")
     ap.add_argument("--pop", type=int, default=80)
     ap.add_argument("--gens", type=int, default=25)
+    ap.add_argument("--timeout", type=float, default=120.0, help="per-seed timeout (s)")
     a = ap.parse_args()
 
     if a.all:
@@ -132,7 +133,7 @@ def _main() -> int:
     print("  each seed = a (domain, objective); the trainer grows it, the walls test it ripe\n")
     import time
     t0 = time.time()
-    rows = harvest(field, a.pop, a.gens)
+    rows = harvest(field, a.pop, a.gens, a.timeout)
     dt = time.time() - t0
 
     ripe = [r for r in rows if r["status"] == "ripe"]
