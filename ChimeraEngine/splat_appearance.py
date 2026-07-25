@@ -238,9 +238,13 @@ def _system_buffers(spec: dict, term: str):
 
 
 def project_movie(term: str, out_dir) -> dict | None:
-    """Render `term`'s splat movie -> {"begin": path, "end": path}, or None if it has no scene."""
+    """Render `term`'s splat movie -> {"begin": path, "end": path}, or None if it has no scene.
+
+    A term with a COMPOSITION renders from its PROVEN children (appearance from decomposition) -- that is
+    now the DEFAULT for composite terms; hand-authored SCENES are the fallback for leaf terms."""
+    comp = COMPOSITIONS.get(term)
     spec = SCENES.get(term)
-    if not spec:
+    if not comp and not spec:
         return None
     import numpy as np
     from PIL import Image
@@ -248,15 +252,25 @@ def project_movie(term: str, out_dir) -> dict | None:
     from ParticleEngine.camera import FirstPersonCamera
 
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
-    cx, cy, cz = spec["cam"]                                      # AIM at the body (origin): yaw=0 looks +X
+    cam_pos = comp["cam"] if comp else spec["cam"]               # composition owns its own camera
+    cx, cy, cz = cam_pos                                          # AIM at the body (origin): yaw=0 looks +X
     yaw = float(np.arctan2(-cy, -cx))
     pitch = float(np.arctan2(-cz, float(np.hypot(cx, cy))))
-    cam = FirstPersonCamera(spec["cam"], yaw=yaw, pitch=pitch)
+    cam = FirstPersonCamera(cam_pos, yaw=yaw, pitch=pitch)
     p = cam.params(720, 540)
     pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
 
     begin_png = out / f"movie_{term}_begin.png"
     end_png = out / f"movie_{term}_end.png"
+
+    if comp:                                                     # DEFAULT for composite terms: built from proven children
+        end_buf = compose_buffer(term)
+        begin_buf = _disperse(end_buf, term, 90.0)
+        pipe.upload(begin_buf)
+        Image.fromarray(pipe.render_from_gpu(cam, p)).save(begin_png)
+        pipe.upload(end_buf)
+        Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
+        return {"begin": str(begin_png), "end": str(end_png)}
 
     _BUILDERS = {"planet": _planet_buffers, "row": _row_buffers, "system": _system_buffers}
     builder = _BUILDERS.get(spec.get("kind"))
@@ -296,8 +310,8 @@ def scene_terms() -> list:
 def scene_cam_distance(term: str) -> float:
     """How far the live viewer should orbit this term (from its still-camera distance)."""
     import numpy as np
-    spec = SCENES.get(term)
-    return float(np.linalg.norm(spec["cam"])) if spec else 300.0
+    cam = (COMPOSITIONS.get(term) or SCENES.get(term) or {}).get("cam")
+    return float(np.linalg.norm(cam)) if cam else 300.0
 
 
 def scene_buffer(term: str):
@@ -307,6 +321,8 @@ def scene_buffer(term: str):
     turn it in real time (the time axis) and let the operator orbit it (verify it is a true 3D volume, not
     a flat disk). Solid scenes hand back their END buffer directly; a collapse scene is settled once here
     (spawn -> attractor -> 90 steps) and its particles returned."""
+    if term in COMPOSITIONS:                                     # DEFAULT for composite terms: built from proven children
+        return compose_buffer(term)
     spec = SCENES.get(term)
     if not spec:
         return None
@@ -356,6 +372,15 @@ def _place(buf, center, scale: float):
     b = np.array(buf, dtype=np.float32, copy=True)
     b[:, PX:PZ + 1] = b[:, PX:PZ + 1] * float(scale) + np.asarray(center, dtype=np.float32)
     b[:, SIZE] = b[:, SIZE] * float(scale)
+    return b
+
+
+def _disperse(buf, term: str, sigma: float):
+    """Scatter a settled buffer into a 'before' cloud -- the movie's begin frame (the system accreting)."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term) ^ 0x9E3779B9)
+    b = np.array(buf, dtype=np.float32, copy=True)
+    b[:, PX:PZ + 1] += rng.normal(0.0, sigma, (len(b), 3))
     return b
 
 
