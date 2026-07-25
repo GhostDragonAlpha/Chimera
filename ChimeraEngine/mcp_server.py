@@ -63,12 +63,12 @@ def classify(term: str, assignments: dict[str, str]) -> str:
 
 @mcp.tool()
 def render(term: str) -> str:
-    """Generate the APPEARANCE MESSENGER and MEASURE its convergence with the physics. The engine
-    PROJECTS the term's physics into a light-view (appearance.py), then reads a feature back out of
-    the pixels and checks it against what the physics law predicts (convergence.py) -- one membrane,
-    two messengers. No hand-supplied picture, no aesthetic drift: the appearance must measurably
-    CONVERGE (e.g. the star's glow color == blackbody(T)), or it DIVERGES and prove() refuses.
-    Refused outright if the term has no projector yet (no light-view to agree with)."""
+    """Render the term's appearance and let the HUMAN DYAD judge it. The engine renders a Gaussian-
+    splat MOVIE (beginning->end; splat_appearance.py, with matplotlib as a placeholder fallback), then
+    the HUMAN side -- a SEPARATE vision LLM + the operator -- reads it BLIND and cross-references to the
+    physics (human_messenger.py) -> an alignment 0-1. Physics is a NUMBER, the human is a TERM: two
+    different systems, never a monad. No vision model = FAIL and the operator is SUMMONED via CAPCOM;
+    the human disagreeing means the render is wrong -- start over. Only the operator's own reading overrides."""
     return ENG.render(term)
 
 

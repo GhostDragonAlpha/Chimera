@@ -66,8 +66,8 @@ GATE_FIX = {
     "S2a PROVENANCE":  "question(term, ...) -- discover variables by asking, never declare them",
     "S2b SATURATION":  "question(term, ...) -- keep asking until the discovery curve is over the hump",
     "S3 CLASSIFY":     "classify(term, {var: PHYSICS|THE HUMAN}) -- send each variable to a terminal",
-    "APPEARANCE MESSENGER": "render(term) -- project the physics into its light-view; it must "
-                            "measurably CONVERGE with the physics (fix the projector, never the tolerance)",
+    "APPEARANCE MESSENGER": "render(term) -- render its splat movie; the HUMAN DYAD must hold (a vision "
+                            "reading aligns with the physics). Disagreement = the render is wrong, redo it",
     "S5 WHY-TERMINAL": "classify each variable to a LEGAL terminal (PHYSICS or THE HUMAN)",
 }
 
@@ -95,7 +95,7 @@ class Engine:
     def _term(self, name: str) -> dict:
         return self.state["terms"].setdefault(name, {
             "status": "open", "claim": None, "rounds": [], "classification": {},
-            "visual": None, "convergence": None, "decided": None, "proven_at": None})
+            "visual": None, "movie": None, "dyad": None, "decided": None, "proven_at": None})
 
     def _vars(self, name: str) -> list:
         seen = []
@@ -169,19 +169,19 @@ class Engine:
         unclassified = [v for v in vs if v not in t["classification"]]
         out.append(("S3 CLASSIFY", bool(vs) and not unclassified,
                     "all variables classified" if vs and not unclassified else f"unclassified: {unclassified}"))
-        vis = t["visual"]
-        conv = t.get("convergence")
+        vis = t.get("visual")
+        dyad = t.get("dyad")
         vis_exists = bool(vis) and Path(vis).exists()
-        converged = bool(conv) and conv.get("converged") is True
+        dyad_pass = bool(dyad) and dyad.get("pass") is True
         if not vis_exists:
-            vis_detail = "no light-view yet -- call render to project the physics into a visual"
-        elif not conv or not conv.get("has_test"):
-            vis_detail = "rendered, but NO convergence law -- the appearance is unchecked (a picture is not proof)"
-        elif not converged:
-            vis_detail = f"the two messengers DIVERGE -- {conv.get('detail', '')}"
+            vis_detail = "no render yet -- call render to produce the appearance movie"
+        elif not dyad:
+            vis_detail = "rendered, but the human dyad has not judged it"
+        elif dyad_pass:
+            vis_detail = f"the DYAD HOLDS -- {dyad.get('detail', '')}"
         else:
-            vis_detail = f"the two messengers CONVERGE -- {conv.get('detail', '')}"
-        out.append(("APPEARANCE MESSENGER", vis_exists and converged, vis_detail))
+            vis_detail = f"the DYAD did not hold [{dyad.get('verdict')}] -- {dyad.get('detail', '')}"
+        out.append(("APPEARANCE MESSENGER", vis_exists and dyad_pass, vis_detail))
         why_ok = bool(vs) and all(term in ("PHYSICS", "THE HUMAN")
                                   for term in t["classification"].values())
         out.append(("S5 WHY-TERMINAL", why_ok,
@@ -225,30 +225,41 @@ class Engine:
         return f"S3 CLASSIFY: {assignments}.  Next: {self.next_action(name)}"
 
     def render(self, name: str) -> str:
-        """Generate the APPEARANCE MESSENGER and MEASURE its convergence with the physics. The engine
-        renders the term FROM its own world (appearance.py), then reads an observable feature back out
-        of the pixels and checks it against what the physics law predicts (convergence.py) -- one
-        membrane, two messengers. A picture is not enough: it must measurably carry the physics, or
-        the messengers DIVERGE and prove() refuses. No projector yet -> no appearance to agree with."""
-        import appearance
-        import convergence
-        p = appearance.project(name, _HERE / "output")
-        if not p:
-            return (f"REFUSED (APPEARANCE MESSENGER): `{name}` has no light-view yet -- no projector "
-                    f"in appearance.py. A term is proven only when its PHYSICS and its APPEARANCE "
-                    f"agree, and this membrane has no appearance to agree with. Build its projector.")
-        conv = convergence.converge(name, p)
-        t = self._term(name); t["visual"] = str(p); t["convergence"] = conv
+        """Produce the term's APPEARANCE and let the HUMAN DYAD judge it. Rendering is physics: the
+        engine renders the term as a Gaussian-splat MOVIE (beginning->end, `splat_appearance.py`; the
+        matplotlib `appearance.py` is a placeholder fallback). Then the HUMAN side reads it -- a vision
+        LLM looks at the settled frame BLIND and its reading is cross-referenced to the physics
+        (`human_messenger.py`) -> an alignment. The physics (a NUMBER) and the human (a TERM) are two
+        DIFFERENT systems; a monad (physics reading its own pixels) is not proof. No vision model = the
+        operator is summoned; the human disagreeing means the physics is wrong -- start over."""
+        import human_messenger
+        movie = self._appearance(name)
+        if not movie:
+            return (f"REFUSED (APPEARANCE): `{name}` has no scene yet -- no splat movie and no "
+                    f"placeholder projector. Rendering is physics; author its scene before proving.")
+        frame = movie["end"]                                # the human judges the SETTLED end state
+        dyad = human_messenger.dyad(name, frame)
+        t = self._term(name); t["visual"] = frame; t["movie"] = movie; t["dyad"] = dyad
         t["status"] = "rendered"; self._save()
-        if conv.get("has_test") and not conv["converged"]:
-            return (f"APPEARANCE MESSENGER generated for `{name}`, but the two messengers DIVERGE:\n"
-                    f"  {conv['detail']}\n"
-                    f"The appearance does NOT carry the physics (an aesthetic drift). prove() will "
-                    f"refuse until the projection converges -- fix the projector, not the tolerance.")
-        tail = conv["detail"] if conv.get("has_test") else "no convergence law yet (appearance UNCHECKED)"
-        return (f"APPEARANCE MESSENGER for `{name}` (projected from its physics): {p}\n"
-                f"  convergence: {tail}\n"
-                f"Next: {self.next_action(name)}")
+        if not dyad.get("pass"):
+            return (f"APPEARANCE for `{name}` rendered ({frame}), but the DYAD did not hold "
+                    f"[{dyad.get('verdict')}]:\n  {dyad.get('detail', '')}")
+        return (f"APPEARANCE for `{name}`: splat movie ({movie['begin']} -> {frame}); the DYAD HOLDS.\n"
+                f"  {dyad.get('detail', '')}\nNext: {self.next_action(name)}")
+
+    def _appearance(self, name: str):
+        """The term's appearance: a splat MOVIE (beginning->end) if it has a scene, else the matplotlib
+        placeholder. Returns {"begin": path, "end": path} or None. Rendering is physics -- owned here."""
+        try:
+            import splat_appearance
+            m = splat_appearance.project_movie(name, _HERE / "output")
+            if m:
+                return m
+        except Exception as e:
+            print(f"[engine] splat render failed for `{name}`: {e}")
+        import appearance
+        p = appearance.project(name, _HERE / "output")
+        return {"begin": p, "end": p} if p else None
 
     def decide(self, name: str, ruling: str) -> str:
         t = self._term(name); t["decided"] = ruling; t["status"] = "decided"

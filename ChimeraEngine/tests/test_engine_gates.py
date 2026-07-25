@@ -1,10 +1,11 @@
-"""The engine must FORCE the workflow: prove() refuses until BOTH messengers agree -- the measured
-PHYSICS interior (frame/provenance/saturation/classify/why) and the projected APPEARANCE surface,
-which must MEASURABLY CONVERGE with the physics (a rendered feature vs what the law predicts). A
-picture is not proof; an appearance that leaves the physics is refused. If any of these fail, the
-engine has rotted into a rubber stamp.
+"""The engine must FORCE the workflow: prove() refuses until the term's PHYSICS interior
+(frame/provenance/saturation/classify/why) AND the HUMAN DYAD agree. The dyad is a physics NUMBER and
+a human TERM (a vision reading of the render), cross-referenced -- two DIFFERENT systems, never a
+monad. A render the human rejects is refused. If any of these fail, the engine has rotted into a
+rubber stamp.
 
-Runs standalone: python ChimeraEngine/tests/test_engine_gates.py
+Runs standalone: python ChimeraEngine/tests/test_engine_gates.py  (no LM Studio / GPU needed here --
+the human side and the splat renderer are mocked; the real ones run through the MCP tools).
 """
 import sys
 from pathlib import Path
@@ -12,16 +13,33 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # ChimeraEngine/
 import engine_state
 import appearance
-import convergence
+import human_messenger
+import splat_appearance
 
 
 def _engine(tmp_path):
     return engine_state.Engine(path=Path(tmp_path) / "state.json")
 
 
+def _mock_dyad(term, frame, threshold=0.6, human_override=None):
+    """Stand in for the LM-Studio vision human side in tests. PASS if the render is green (the mock
+    'good' appearance), FAIL_RESTART if not (the 'lie' the human rejects)."""
+    from PIL import Image
+    import numpy as np
+    a = np.asarray(Image.open(frame).convert("RGB"), dtype=float)
+    r, g, b = a[..., 0].mean(), a[..., 1].mean(), a[..., 2].mean()
+    ok = g > r + 5 and g > b + 5
+    return {"pass": bool(ok), "verdict": "PASS" if ok else "FAIL_RESTART", "term": term,
+            "detail": f"[mock] mean g={g:.0f} vs r={r:.0f},b={b:.0f}"}
+
+
+human_messenger.dyad = _mock_dyad                          # no LM Studio in tests -- mock the human side
+splat_appearance.project_movie = lambda term, out: None    # no GPU in tests -- fall back to the matplotlib mock
+
+
 def _install_projector(term):
-    """Give `term` a fast mock light-view AND a convergence law it satisfies (real projectors are
-    slow). The mock renders solid green; the law asks for green dominance -> the messengers converge."""
+    """Give `term` a fast mock appearance (real splat renders are slow + need a GPU). The mock renders
+    solid green; the mocked human dyad reads green as PASS."""
     def _proj(out):
         from PIL import Image
         p = Path(out); p.mkdir(parents=True, exist_ok=True)
@@ -29,7 +47,6 @@ def _install_projector(term):
         Image.new("RGB", (8, 8), (0, 120, 0)).save(f)
         return str(f)
     appearance.PROJECTORS[term] = _proj
-    convergence.PHYSICS[term] = {"feature": "green_dominance", "floor": 0.1, "law": "test mock"}
 
 
 _SATURATING = [
@@ -75,28 +92,26 @@ def test_render_refuses_a_term_with_no_light_view(tmp_path):
     assert "REFUSED" in E.render("theLaws")
 
 
-def test_convergence_refuses_an_appearance_that_leaves_the_physics(tmp_path):
-    """THE TEETH: a term whose render measurably DIVERGES from its physics cannot be proven. Here a
-    G-star physics (a warm ~5778 K blackbody) is given a projector that paints the star BLUE -- an
-    aesthetic lie. The measured chromaticity leaves the Planck locus, so the two messengers disagree
-    and prove() refuses. This is what makes 'no aesthetic passes' a mechanism, not a slogan."""
+def test_dyad_refuses_a_render_the_human_rejects(tmp_path):
+    """THE TEETH: a render the HUMAN reads as wrong cannot be proven. The projector paints the term
+    BLUE; the (mocked) human dyad reads it as not-green and returns FAIL_RESTART, so prove() refuses at
+    the appearance gate. This is 'the human is the arbiter' as a mechanism -- disagreement blocks the proof."""
     E = _engine(tmp_path)
-    term = "theBlueStarLie"
-    convergence.PHYSICS[term] = {"feature": "glow_chromaticity", "T_eff": 5778, "law": "Planck (test)"}
+    term = "theBlueLie"
 
     def _blue(out):
         from PIL import Image
         p = Path(out); p.mkdir(parents=True, exist_ok=True)
         f = p / f"{term}.png"
-        Image.new("RGB", (64, 64), (40, 90, 255)).save(f)     # a star painted blue -- against its physics
+        Image.new("RGB", (64, 64), (40, 90, 255)).save(f)     # not green -> the human rejects it
         return str(f)
     appearance.PROJECTORS[term] = _blue
 
-    E.frame(term, "a Sol-like G-star")
+    E.frame(term, "a term whose render the human will reject")
     for i, vs in enumerate(_SATURATING):
         E.question(term, f"q{i}", vs)
     E.classify(term, {v: "PHYSICS" for v in E._vars(term)})
-    assert "DIVERGE" in E.render(term)                        # the two messengers disagree on the number
+    assert "DYAD did not hold" in E.render(term)              # the human rejected the render
     out = E.prove(term)
     assert "REFUSED" in out and "APPEARANCE MESSENGER" in out # so prove refuses at the appearance gate
     assert E.state["hierarchy"].get(term, {}).get("status") != "proven"
@@ -153,7 +168,7 @@ def test_measured_compression_beats_declared_order(tmp_path):
 def _run() -> int:
     import tempfile
     fns = [test_prove_refuses_until_both_messengers_agree, test_render_refuses_a_term_with_no_light_view,
-           test_convergence_refuses_an_appearance_that_leaves_the_physics,
+           test_dyad_refuses_a_render_the_human_rejects,
            test_prove_refuses_a_premature_saturation, test_frame_refuses_compound_claim,
            test_classify_refuses_illegal_terminal, test_next_starts_at_the_seed_in_story_order,
            test_next_descends_the_started_branch_first, test_measured_compression_beats_declared_order]
