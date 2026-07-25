@@ -1,34 +1,150 @@
 """splat_appearance.py -- THE APPEARANCE as a Gaussian-splat MOVIE (beginning -> end), via ParticleEngine.
 
 The mandatory visual test judges the REAL engine render, not a diagram; and a term is a SLICE of the
-timeline UNFOLDING, so the appearance is a MOVIE: a particle scene rendered at its BEGINNING (t=0,
-dispersed) and its END (settled -- a central attractor draws the body together). Two ends of the
-dial. The physics (the agent) owns this; the human side reads it.
+timeline UNFOLDING, so the appearance is a MOVIE: a scene rendered at its BEGINNING (t=0) and its END
+(settled). Two ends of the dial. The physics (the agent) owns this; the human side reads it.
+
+Two scene KINDS, because different matter renders differently (no aesthetic passes -- the look DERIVES
+from what the thing IS):
+
+  * "collapse" -- a diffuse body of one colour drawn together by a central attractor. Correct for a
+    STAR or a dust cloud: plasma and dust ARE diffuse. begin = dispersed, end = coalesced.
+  * "planet"   -- a SOLID world. Splats are placed ON a sphere shell (Fibonacci distribution) and
+    painted by surface type: deep OCEANS, continent-noise LAND, polar ICE caps, wrapped in a faint
+    ATMOSPHERE halo. Depth-sorted opaque compositing gives a crisp limb -- a world seen from space,
+    not a fog ball. begin = the world ACCRETING from its own colent-of-dust, end = the settled sphere.
 
 Terms with a scene render as splats; terms without one return None (the engine falls back to the
 matplotlib placeholder until their scene is authored). Needs the GPU (Numba CUDA) -- rendering is
-physics, so it belongs to the same hardware.
+physics, so it belongs to the same hardware. Deterministic: the RNG is seeded from the term name, so
+a term renders byte-identically every time (same seed, same world, forever).
 """
 from __future__ import annotations
 
 import sys
+import zlib
 from pathlib import Path
 
 _REPO = Path(__file__).resolve().parents[1]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-# term -> scene spec: a particle body of a colour, drawn together by a central attractor as it evolves.
+# term -> scene spec.
+#   collapse: a particle body of a colour, drawn together by a central attractor as it evolves.
+#   planet:   a solid habitable sphere (radius in world units; ocean = fraction of the surface that is sea).
 SCENES = {
-    "theStar":        {"type": "atmosphere", "count": 7000, "spread": 55, "size": 3.4,
+    "theStar":        {"kind": "collapse", "type": "atmosphere", "count": 7000, "spread": 55, "size": 3.4,
                        "color": (1.0, 0.93, 0.82, 1.0), "pull": 1.4, "cam": (0.0, -210.0, 26.0)},
-    "aPlanet":        {"type": "water", "count": 7000, "spread": 70, "size": 3.0,
-                       "color": (0.28, 0.52, 0.78, 1.0), "pull": 1.1, "cam": (0.0, -250.0, 34.0)},
-    "thePlanets":     {"type": "dust", "count": 6000, "spread": 120, "size": 2.6,
+    "aPlanet":        {"kind": "planet", "radius": 88.0, "ocean": 0.66, "cam": (0.0, -250.0, 40.0)},
+    "thePlanets":     {"kind": "collapse", "type": "dust", "count": 6000, "spread": 120, "size": 2.6,
                        "color": (0.85, 0.55, 0.40, 1.0), "pull": 0.5, "cam": (0.0, -330.0, 60.0)},
-    "theSolarSystem": {"type": "atmosphere", "count": 6000, "spread": 140, "size": 2.6,
+    "theSolarSystem": {"kind": "collapse", "type": "atmosphere", "count": 6000, "spread": 140, "size": 2.6,
                        "color": (1.0, 0.9, 0.75, 1.0), "pull": 0.8, "cam": (0.0, -360.0, 70.0)},
 }
+
+# ── the particle buffer layout the pipeline reads (ParticleEngine.core.COL) ──
+NCOLS = 28
+PX, PY, PZ = 0, 1, 2
+TYPE = 11
+CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
+
+
+def _seed(term: str) -> int:
+    """A stable per-term seed -- deterministic across processes (hash() is salted; zlib.crc32 is not)."""
+    return zlib.crc32(term.encode("utf-8")) & 0x7FFFFFFF
+
+
+def _fibonacci_sphere(n: int) -> "any":
+    """n unit vectors spread evenly over the sphere (the golden-angle spiral). Deterministic."""
+    import numpy as np
+    i = np.arange(n, dtype=np.float64)
+    z = 1.0 - 2.0 * (i + 0.5) / n                 # -1..1, even in area
+    r = np.sqrt(np.clip(1.0 - z * z, 0.0, 1.0))
+    theta = np.pi * (1.0 + 5.0 ** 0.5) * i        # golden angle
+    return np.stack([r * np.cos(theta), r * np.sin(theta), z], axis=1)
+
+
+def _fbm(dirs, rng, octaves: int = 4):
+    """Smooth blobby noise over unit directions -> continents, not speckle. Range ~ -1..1."""
+    import numpy as np
+    val = np.zeros(len(dirs)); total = 0.0; amp = 1.0
+    for o in range(octaves):
+        freq = 1.15 * (1.9 ** o)                  # low freqs first -> a few big land masses
+        for _ in range(2):                        # two waves/octave for isotropy
+            k = rng.normal(size=3); k /= (np.linalg.norm(k) + 1e-9)
+            phase = rng.uniform(0.0, 2.0 * np.pi)
+            val += amp * np.sin(freq * np.pi * (dirs @ k) + phase)
+            total += amp
+        amp *= 0.55
+    return val / max(total, 1e-9)
+
+
+def _planet_buffers(spec: dict, term: str):
+    """Build (end_buffer, begin_buffer) for a solid world: surface shell + atmosphere halo."""
+    import numpy as np
+    rng = np.random.default_rng(_seed(term))
+    R = float(spec["radius"])
+    ocean_frac = float(spec.get("ocean", 0.66))
+
+    # ── SURFACE: an even shell of opaque splats ──
+    n_s = 18000
+    dirs = _fibonacci_sphere(n_s)                                    # (n,3) unit
+    z = dirs[:, 2]                                                   # latitude sine
+    surf = np.zeros((n_s, NCOLS), dtype=np.float32)
+    jitter = 1.0 + rng.normal(0.0, 0.006, n_s)                      # a touch of shell thickness
+    surf[:, PX:PZ + 1] = dirs * (R * jitter[:, None])
+    surf[:, TYPE] = 3.0                                             # "social": sm=1.0, opaque, isotropic -> clean round grains
+    surf[:, ALPHA] = 0.5
+    surf[:, SIZE] = 5.0                                             # SIZE/alpha calibrated (below) for coverage w/o over-accumulation
+
+    # classify each grain: ICE at the poles, else LAND vs OCEAN by continent noise
+    land_noise = _fbm(dirs, rng)
+    thresh = np.quantile(land_noise, ocean_frac)                   # top (1-ocean) fraction becomes land
+    is_land = land_noise > thresh
+    is_ice = np.abs(z) > 0.88                                       # small polar caps override (lat > ~62 deg)
+    is_land &= ~is_ice
+    is_ocean = ~is_land & ~is_ice
+
+    # ocean: DEEP navy, a shade lighter/greener in the shallows (a second noise = depth)
+    depth = 0.5 + 0.5 * _fbm(dirs, rng)                            # 0..1
+    surf[is_ocean, CR] = 0.02 + 0.04 * depth[is_ocean]
+    surf[is_ocean, CG] = 0.08 + 0.12 * depth[is_ocean]
+    surf[is_ocean, CB] = 0.30 + 0.22 * depth[is_ocean]            # -> (0.02,0.08,0.30) abyss to (0.06,0.20,0.52) shelf (navy)
+    # land: vivid equatorial green -> mid-latitude arid tan (aridity from |lat| + noise)
+    aridity = np.clip(np.abs(z) * 0.9 + 0.30 * _fbm(dirs, rng), 0.0, 1.0)
+    surf[is_land, CR] = 0.13 + 0.34 * aridity[is_land]
+    surf[is_land, CG] = 0.44 - 0.12 * aridity[is_land]
+    surf[is_land, CB] = 0.12 + 0.05 * aridity[is_land]           # -> (0.13,0.44,0.12) jungle to (0.47,0.32,0.17) desert
+    # ice: near-white with a cold blue tint
+    surf[is_ice, CR] = 0.90; surf[is_ice, CG] = 0.93; surf[is_ice, CB] = 0.97
+
+    # CALIBRATION: a dense shell over-accumulates ~2x (many overlapping Gaussian tails sum before the
+    # opacity saturates -- MEASURED: a uniform (0.05,0.15,0.45) sphere rendered (0.20,0.58,0.95)). The
+    # transfer is ~proportional per channel, so we invert it here: pre-divide the surface colours so the
+    # render lands on the intended palette instead of blowing out to cyan-white. (Same idea as format
+    # calibration: measure the container's transfer function, invert it -- don't hand-wave the colours.)
+    _SURFACE_GAIN = 0.45
+    surf[:, CR:CB + 1] *= _SURFACE_GAIN
+
+    # ── ATMOSPHERE: a faint pale-blue halo -- thin enough to glow at the LIMB without hazing the disk ──
+    n_a = 1800
+    adirs = _fibonacci_sphere(n_a)
+    atm = np.zeros((n_a, NCOLS), dtype=np.float32)
+    atm[:, PX:PZ + 1] = adirs * (R * 1.05)
+    atm[:, TYPE] = 5.0                                             # "atmosphere": sm=6.0 -> big soft blobs
+    atm[:, CR] = 0.36; atm[:, CG] = 0.56; atm[:, CB] = 0.90
+    atm[:, ALPHA] = 0.05
+    atm[:, SIZE] = 1.2
+
+    end = np.concatenate([surf, atm], axis=0)
+
+    # ── BEGIN: the world ACCRETING -- its own grains flung out into a dust cloud that will condense ──
+    begin = end.copy()
+    spread = R * (1.4 + 2.2 * rng.random(len(begin)))             # push each grain radially outward
+    tang = rng.normal(0.0, R * 0.5, (len(begin), 3))             # + tangential scatter -> a cloud
+    ndir = end[:, PX:PZ + 1] / (np.linalg.norm(end[:, PX:PZ + 1], axis=1, keepdims=True) + 1e-9)
+    begin[:, PX:PZ + 1] = ndir * spread[:, None] + tang
+    return end, begin
 
 
 def project_movie(term: str, out_dir) -> dict | None:
@@ -38,37 +154,46 @@ def project_movie(term: str, out_dir) -> dict | None:
         return None
     import numpy as np
     from PIL import Image
-    from ParticleEngine.core import ParticleSimulator, PARTICLE_TYPES
     from ParticleEngine.gpu_pipeline import FullGPUPipeline
     from ParticleEngine.camera import FirstPersonCamera
-    from ParticleEngine.control_vars import default_physics_registry
 
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
-    sim = ParticleSimulator(spec["count"] + 64)
-    sim.spawn(spec["count"], spec["type"], position=(0, 0, 0), spread=float(spec["spread"]),
-              color=spec["color"], size=float(spec["size"]), life=-1.0)
-
-    pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
-    pipe.upload(sim._data[:sim._count])
-    # a central attractor draws the body together -- the timeline unfolding from cloud to form
-    pipe.attractors.append((0.0, 0.0, 0.0, float(spec["pull"]), PARTICLE_TYPES[spec["type"]], 500.0))
-    reg = default_physics_registry()
-    reg.set("gravity", (0.0, 0.0, 0.0))                  # SPACE: bodies float, they do not fall out of frame
-    reg.set("wind_vector", (0.0, 0.0, 0.0))
-    cvars = reg.snapshot()
-    cx, cy, cz = spec["cam"]                              # AIM at the body (origin): yaw=0 looks +X, so compute it
+    cx, cy, cz = spec["cam"]                                      # AIM at the body (origin): yaw=0 looks +X
     yaw = float(np.arctan2(-cy, -cx))
     pitch = float(np.arctan2(-cz, float(np.hypot(cx, cy))))
     cam = FirstPersonCamera(spec["cam"], yaw=yaw, pitch=pitch)
     p = cam.params(720, 540)
+    pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
 
-    begin = out / f"movie_{term}_begin.png"
-    Image.fromarray(pipe.render_from_gpu(cam, p)).save(begin)
-    for _ in range(90):                                  # evolve to the settled END state
+    begin_png = out / f"movie_{term}_begin.png"
+    end_png = out / f"movie_{term}_end.png"
+
+    if spec.get("kind") == "planet":
+        # Two hand-built states, uploaded directly -- no physics kernel needed (a world is already settled).
+        end_buf, begin_buf = _planet_buffers(spec, term)
+        pipe.upload(begin_buf)
+        Image.fromarray(pipe.render_from_gpu(cam, p)).save(begin_png)
+        pipe.upload(end_buf)
+        Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
+        return {"begin": str(begin_png), "end": str(end_png)}
+
+    # ── collapse kind: spawn a body, let a central attractor draw it together over the timeline ──
+    from ParticleEngine.core import ParticleSimulator, PARTICLE_TYPES
+    from ParticleEngine.control_vars import default_physics_registry
+    sim = ParticleSimulator(spec["count"] + 64)
+    sim.spawn(spec["count"], spec["type"], position=(0, 0, 0), spread=float(spec["spread"]),
+              color=spec["color"], size=float(spec["size"]), life=-1.0)
+    pipe.upload(sim._data[:sim._count])
+    pipe.attractors.append((0.0, 0.0, 0.0, float(spec["pull"]), PARTICLE_TYPES[spec["type"]], 500.0))
+    reg = default_physics_registry()
+    reg.set("gravity", (0.0, 0.0, 0.0))                          # SPACE: bodies float, they do not fall out of frame
+    reg.set("wind_vector", (0.0, 0.0, 0.0))
+    cvars = reg.snapshot()
+    Image.fromarray(pipe.render_from_gpu(cam, p)).save(begin_png)
+    for _ in range(90):                                          # evolve to the settled END state
         pipe.step_particles(1 / 60, cvars)
-    end = out / f"movie_{term}_end.png"
-    Image.fromarray(pipe.render_from_gpu(cam, p)).save(end)
-    return {"begin": str(begin), "end": str(end)}
+    Image.fromarray(pipe.render_from_gpu(cam, p)).save(end_png)
+    return {"begin": str(begin_png), "end": str(end_png)}
 
 
 if __name__ == "__main__":

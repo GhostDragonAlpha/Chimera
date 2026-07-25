@@ -251,7 +251,14 @@ class Engine:
         """The term's appearance: a splat MOVIE (beginning->end) if it has a scene, else the matplotlib
         placeholder. Returns {"begin": path, "end": path} or None. Rendering is physics -- owned here."""
         try:
+            import importlib
             import splat_appearance
+            # The MCP server is a long-lived process that imported this module at session start; a plain
+            # `import` hits the sys.modules cache, so edits to a term's SCENE would never render until a
+            # full server restart. Reload each time -- rendering is physics, and the physics must be the
+            # code on disk NOW, not whatever was loaded when the session opened. (This is the bug that
+            # made a re-authored aPlanet keep rendering as its old blob.)
+            importlib.reload(splat_appearance)
             m = splat_appearance.project_movie(name, _HERE / "output")
             if m:
                 return m
