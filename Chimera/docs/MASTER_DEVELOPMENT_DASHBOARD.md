@@ -1,7 +1,3 @@
-> **DEPRECATED** — This document describes the old approach.
-> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
-> The thought chain is at `docs/THOUGHT_CHAIN.md`.
-
 # Master Development Dashboard — TOMBSTONE (gutted 2026-07-16)
 
 > **This dashboard reported percentages against a benchmark that does not exist. It is

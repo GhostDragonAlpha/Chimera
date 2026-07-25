@@ -1,7 +1,3 @@
-> **DEPRECATED** — This document describes the old approach.
-> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
-> The thought chain is at `docs/THOUGHT_CHAIN.md`.
-
 # Chimera — Threat Model
 
 > **The reframe (the human, 2026-07-17): look at this as security.** The studio is an
