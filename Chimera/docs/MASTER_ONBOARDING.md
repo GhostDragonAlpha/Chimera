@@ -1,6 +1,8 @@
-> **DEPRECATED** — This document describes the old approach.
-> Read `AGENT_ONBOARDING.md`, `DECISION_METHOD.md`, and `EMERGENT_WORKFLOW.md` instead.
-> The thought chain is at `docs/THOUGHT_CHAIN.md`.
+> **DEPRECATED (2026-07-25)** — describes an old approach, and its former redirect targets
+> (`AGENT_ONBOARDING.md`, `EMERGENT_WORKFLOW.md`, `THOUGHT_CHAIN.md`) no longer exist.
+> **Current onboarding: `ChimeraEngine/ONBOARDING.md`** (the engine workflow — physics/human split,
+> the dyadAnalysis, the splat movie). The method: `Chimera/docs/THE_WORKFLOW.md`. This file is kept
+> only because `core/onboarding_audit.py` names it in a docstring; its content below is stale.
 
 # CHIMERA — MASTER ONBOARDING PROMPT (compact)
 
