@@ -9,6 +9,12 @@
 > re-litigate the method; *use* it to build the game. The next session begins the way it should —
 > the operator names one `camelCase` term, and the agent guides from the setting down.
 >
+> **The true root (found right after the seal, 2026-07-24) —** above the setting sits the **seed:
+> the STORY, the timeline** ([`THE_STORY.md`](THE_STORY.md)). A build begins by securing it, and its
+> **true measure is the human *seeing it unfold in play*, not reading it.** See §2b. (That this was
+> found *after* ENOUGH is the method being honest: you cannot see the lens you never ground until you
+> ground it — writing the actual story revealed the seed sits above the solar system.)
+>
 > **The whole method in one sentence:** the human names **one term at a time** and the agent
 > **guides them down a hierarchy of membranes**, proving each term against **PHYSICS or THE HUMAN**
 > until the game stands — assembled from proven bricks, none of them hand-waved.
@@ -85,6 +91,15 @@ and "does A compose with B?" is itself a one-term PROVE (that is S7, recompose).
 
 You do not have to hold the whole tree. **I hold it and lead you through it, one term at a time,**
 in the order a story is told: **the setting first.**
+
+But there is one membrane *above* the setting — **the seed: the STORY, the timeline** (the true root,
+[`THE_STORY.md`](THE_STORY.md)). Before the setting there is the frame that says what the whole thing
+is *for*, so a build begins by **securing the story** — the human's vision, written as an arc. And a
+story has **two measures**: the written text is the cheap up-front proxy (the human reads it and can
+redirect it before a line is built), but the **true** measure is the human **seeing it unfold as the
+game is played** — meaning is experienced, not described (the movie you didn't want to see and loved
+anyway). Provisionally secured on the page; **truly secured only when witnessed in play** — a visual
+WITNESS, not a read.
 
 - **The setting is the outermost membrane.** A space game you fly around a solar system → the root
   is `theSolarSystem`, established *before* anything inside it, because a station means nothing
@@ -235,16 +250,17 @@ Re-rooted at the setting. `✓` grown/measured · `~` built, not yet proven thro
 `○` open at the human terminal.
 
 ```
-theSolarSystem              ✓  bigbang grew one, Kepler emergent (slope 1.50, r² 1.000)
-├─ theStar                  ✓  formed (96% collapse)
-├─ thePlanets               ✓  3–4 worlds, orbits + climates; the habitable zone emerged
-│  └─ aPlanet (e.g. Eden)   ✓  the SH onion + biomes + underground (caves/mining/geology)
-│     └─ aScene (lushEden)  ~  physics measured, but its variables were declared, not questioned
-├─ theSpace  (the medium)   ~  orbital mechanics + the density clock for travel & scale
-├─ theLoop  (the engine)    ✓  world+player+input→verbs→state, witnessed running (6/6)
-│  └─ theVerbs              ~  dig · thrust · balance · grow, on one density clock
-├─ theStation               ○  opens its own bubble when named
-└─ theGoal                  ○  YOUR 40-question treatment → the training objective
+theStory  (the SEED / timeline)  ◐  written + ratified on the page; TRUE measure = seen unfolding in play
+└─ theSolarSystem              ✓  bigbang grew one, Kepler emergent (slope 1.50, r² 1.000)
+   ├─ theStar                  ✓  formed (96% collapse)
+   ├─ thePlanets               ✓  3–4 worlds, orbits + climates; the habitable zone emerged
+   │  └─ aPlanet (e.g. Eden)   ✓  the SH onion + biomes + underground (caves/mining/geology)
+   │     └─ aScene (lushEden)  ~  physics measured, but its variables were declared, not questioned
+   ├─ theSpace  (the medium)   ~  orbital mechanics + the density clock for travel & scale
+   ├─ theLoop  (the engine)    ✓  world+player+input→verbs→state, witnessed running (6/6)
+   │  └─ theVerbs              ~  dig · thrust · balance · grow, on one density clock
+   ├─ theStation               ○  opens its own bubble when named
+   └─ theGoal                  ○  YOUR 40-question treatment → the training objective
 ```
 
 Almost all the **substrate** is `✓`. We do not re-prove solid numbers. The next work is wherever
