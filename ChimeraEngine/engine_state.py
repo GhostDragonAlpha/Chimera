@@ -22,27 +22,52 @@ from core.saturation import measure as _measure   # noqa: E402
 
 STATE_PATH = _HERE / "engine_state.json"
 
-# The hierarchy, seeded setting-first from the seed (docs/THE_WORKFLOW.md 9), pinned to where we
-# actually are: theStory is DECIDED (ratified), everything under theSolarSystem is open. The engine
-# advances from here; its ledger reflects only what is proven THROUGH it, from now on.
-_SEED_HIERARCHY = {
-    "theStory":       {"parent": None,             "kind": "seed",     "status": "decided", "children": ["theSolarSystem"]},
-    "theSolarSystem": {"parent": "theStory",       "kind": "membrane", "status": "open",    "children": ["theStar", "thePlanets", "theSpace", "theLoop"]},
-    "theStar":        {"parent": "theSolarSystem", "kind": "membrane", "status": "open",    "children": []},
-    "thePlanets":     {"parent": "theSolarSystem", "kind": "membrane", "status": "open",    "children": ["aPlanet"]},
-    "aPlanet":        {"parent": "thePlanets",     "kind": "membrane", "status": "open",    "children": ["aScene"]},
-    "aScene":         {"parent": "aPlanet",        "kind": "membrane", "status": "open",    "children": []},
-    "theSpace":       {"parent": "theSolarSystem", "kind": "membrane", "status": "open",    "children": []},
-    "theLoop":        {"parent": "theSolarSystem", "kind": "membrane", "status": "open",    "children": ["theVerbs"]},
-    "theVerbs":       {"parent": "theLoop",        "kind": "membrane", "status": "open",    "children": []},
-}
+# THE DECLARATION -- the terms, named in STORY ORDER (docs/THE_STORY.md; distilled in
+# ChimeraEngine/THE_TERMS.md). Like a Python assignment: naming IS declaring, there is no separate
+# step -- and ORDER MATTERS, it is the depth-first proving order. This list changes as the story
+# changes, to make the whole read better than the sum of its parts. theStory (the seed/timeline) is
+# DECIDED; everything else is open until proven THROUGH the engine.
+_DECL = [
+    ("theStory", None),
+    ("theSeed", "theStory"),
+    ("theDeterminism", "theSeed"), ("theLaws", "theSeed"), ("theTruth", "theSeed"),
+    ("theSolarSystem", "theStory"),
+    ("theStar", "theSolarSystem"),
+    ("thePlanets", "theSolarSystem"),
+    ("aPlanet", "thePlanets"),
+    ("theTerrain", "aPlanet"), ("theAtmosphere", "aPlanet"), ("theOcean", "aPlanet"),
+    ("theBiomes", "aPlanet"), ("theGround", "aPlanet"), ("theInterior", "aPlanet"),
+    ("theGarden", "aPlanet"),
+    ("theEcosystem", "theGarden"),
+    ("theTree", "theGarden"),
+    ("theTreeForm", "theTree"), ("theFruit", "theTree"),
+    ("thePlanting", "theGarden"),
+    ("theSpace", "theSolarSystem"), ("theDensityClock", "theSolarSystem"),
+    ("theShip", "theStory"),
+    ("theDescent", "theStory"),
+    ("theStanding", "theDescent"), ("theBlackHole", "theDescent"),
+    ("theVerbs", "theStory"),
+    ("theThrust", "theVerbs"), ("theDig", "theVerbs"), ("theBalance", "theVerbs"),
+    ("theGrow", "theVerbs"), ("theScan", "theVerbs"), ("theNavigate", "theVerbs"),
+    ("theLoop", "theStory"),
+    ("thePlayer", "theLoop"), ("theInput", "theLoop"), ("theState", "theLoop"),
+    ("thePersistence", "theLoop"),
+    ("theMeaning", "theStory"),
+    ("theParadise", "theMeaning"), ("theChoice", "theMeaning"),
+    ("theWorthPlaying", "theMeaning"), ("theExperience", "theMeaning"),
+]
 
-# Source-weight: how source-like a term is -- how much of the rest DERIVES from it. A physical
-# fact, not taste: the star is a point source that radiates the light, warmth and habitable zone
-# the whole system inherits, so it is the most compressed (least data generating the most world).
-# This breaks ties BEFORE a term has a genome; once it does, the MEASURED compression leads.
-SOURCE_WEIGHT = {"theStar": 5, "thePlanets": 4, "theLoop": 3, "theVerbs": 3, "aPlanet": 3,
-                 "theSpace": 2, "aScene": 2}
+
+def _build_hierarchy():
+    h = {n: {"parent": p, "status": ("decided" if p is None else "open"), "children": []}
+         for n, p in _DECL}
+    for n, p in _DECL:
+        if p is not None:
+            h[p]["children"].append(n)          # children keep declaration order = traversal order
+    return h
+
+
+_SEED_HIERARCHY = _build_hierarchy()
 
 GATE_FIX = {
     "S0 FRAME":        "frame(term, claim)  -- state it as exactly one claim",
@@ -98,30 +123,30 @@ class Engine:
         blob = json.dumps({"claim": t["claim"], "rounds": t["rounds"]}, sort_keys=True).encode()
         return len(self._vars(name)) / max(len(zlib.compress(blob, 9)), 1)
 
-    def generativity(self, name: str) -> int:
-        return SOURCE_WEIGHT.get(name, 1)
-
-    # --- helm: the next move, most-compressed-first ------------------------------
+    # --- helm: the next move, DEPTH-FIRST down the declared story order ----------
     def next_term(self):
-        """The next term to prove: shallowest first (setting-first), then the MOST COMPRESSED --
-        measured meaning-density, then the source-weight prior while data is absent. Never the
-        alphabet: the smartest (most compressed) sibling wins."""
+        """The next term to prove, DEPTH-FIRST: continue a branch already started (a proven node)
+        to its bottom before opening a sibling; at a fork, take the MOST COMPRESSED (smartest) open
+        child, else the declared story order. Walk the path from the seed to the ground."""
         h = self.state["hierarchy"]
+        DONE = ("proven", "decided")
 
-        def depth(n):
-            d = 0
-            while h[n]["parent"] is not None:
-                n = h[n]["parent"]; d += 1
-            return d
+        def dfs(node):
+            kids = h[node]["children"]
+            for c in kids:                                   # depth: finish started branches first
+                if h[c]["status"] in DONE:
+                    r = dfs(c)
+                    if r:
+                        return r
+            for c in sorted(kids, key=lambda c: (-self.compression(c), kids.index(c))):
+                if h[c]["status"] not in DONE:               # then open the smartest/next child here
+                    return c
+            return None
 
-        def parent_ready(n):
-            p = h[n]["parent"]
-            return p is None or h[p]["status"] in ("proven", "decided")
-
-        ready = [n for n, v in h.items()
-                 if v["status"] not in ("proven", "decided") and parent_ready(n)]
-        ready.sort(key=lambda n: (depth(n), -self.compression(n), -self.generativity(n), n))
-        return ready[0] if ready else None
+        root = self.state["seed"]
+        if h[root]["status"] not in DONE:
+            return root
+        return dfs(root)
 
     def context(self, name: str) -> list:
         """The path from the seed to `name` -- the accumulated story you carry to work here."""
