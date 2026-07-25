@@ -66,7 +66,8 @@ GATE_FIX = {
     "S2a PROVENANCE":  "question(term, ...) -- discover variables by asking, never declare them",
     "S2b SATURATION":  "question(term, ...) -- keep asking until the discovery curve is over the hump",
     "S3 CLASSIFY":     "classify(term, {var: PHYSICS|THE HUMAN}) -- send each variable to a terminal",
-    "APPEARANCE MESSENGER": "render(term) -- project the physics into its light-view",
+    "APPEARANCE MESSENGER": "render(term) -- project the physics into its light-view; it must "
+                            "measurably CONVERGE with the physics (fix the projector, never the tolerance)",
     "S5 WHY-TERMINAL": "classify each variable to a LEGAL terminal (PHYSICS or THE HUMAN)",
 }
 
@@ -94,7 +95,7 @@ class Engine:
     def _term(self, name: str) -> dict:
         return self.state["terms"].setdefault(name, {
             "status": "open", "claim": None, "rounds": [], "classification": {},
-            "visual": None, "decided": None, "proven_at": None})
+            "visual": None, "convergence": None, "decided": None, "proven_at": None})
 
     def _vars(self, name: str) -> list:
         seen = []
@@ -169,10 +170,18 @@ class Engine:
         out.append(("S3 CLASSIFY", bool(vs) and not unclassified,
                     "all variables classified" if vs and not unclassified else f"unclassified: {unclassified}"))
         vis = t["visual"]
-        vis_ok = bool(vis) and Path(vis).exists()
-        out.append(("APPEARANCE MESSENGER", vis_ok,
-                    f"projected from physics -> {vis}" if vis_ok else
-                    "no light-view yet -- call render to project the physics into a visual"))
+        conv = t.get("convergence")
+        vis_exists = bool(vis) and Path(vis).exists()
+        converged = bool(conv) and conv.get("converged") is True
+        if not vis_exists:
+            vis_detail = "no light-view yet -- call render to project the physics into a visual"
+        elif not conv or not conv.get("has_test"):
+            vis_detail = "rendered, but NO convergence law -- the appearance is unchecked (a picture is not proof)"
+        elif not converged:
+            vis_detail = f"the two messengers DIVERGE -- {conv.get('detail', '')}"
+        else:
+            vis_detail = f"the two messengers CONVERGE -- {conv.get('detail', '')}"
+        out.append(("APPEARANCE MESSENGER", vis_exists and converged, vis_detail))
         why_ok = bool(vs) and all(term in ("PHYSICS", "THE HUMAN")
                                   for term in t["classification"].values())
         out.append(("S5 WHY-TERMINAL", why_ok,
@@ -216,18 +225,29 @@ class Engine:
         return f"S3 CLASSIFY: {assignments}.  Next: {self.next_action(name)}"
 
     def render(self, name: str) -> str:
-        """Generate the APPEARANCE MESSENGER: project the term's physics into its light-view. The
-        engine renders it FROM the term's own world (appearance.py) -- one membrane, two messengers
-        (the measured interior and the emitted surface) -- so it cannot be a faked or unrelated
-        picture. No projector yet -> no appearance -> the term cannot be proven by agreement."""
+        """Generate the APPEARANCE MESSENGER and MEASURE its convergence with the physics. The engine
+        renders the term FROM its own world (appearance.py), then reads an observable feature back out
+        of the pixels and checks it against what the physics law predicts (convergence.py) -- one
+        membrane, two messengers. A picture is not enough: it must measurably carry the physics, or
+        the messengers DIVERGE and prove() refuses. No projector yet -> no appearance to agree with."""
         import appearance
+        import convergence
         p = appearance.project(name, _HERE / "output")
         if not p:
             return (f"REFUSED (APPEARANCE MESSENGER): `{name}` has no light-view yet -- no projector "
                     f"in appearance.py. A term is proven only when its PHYSICS and its APPEARANCE "
                     f"agree, and this membrane has no appearance to agree with. Build its projector.")
-        t = self._term(name); t["visual"] = str(p); t["status"] = "rendered"; self._save()
-        return (f"APPEARANCE MESSENGER generated for `{name}` (projected from its physics): {p}\n"
+        conv = convergence.converge(name, p)
+        t = self._term(name); t["visual"] = str(p); t["convergence"] = conv
+        t["status"] = "rendered"; self._save()
+        if conv.get("has_test") and not conv["converged"]:
+            return (f"APPEARANCE MESSENGER generated for `{name}`, but the two messengers DIVERGE:\n"
+                    f"  {conv['detail']}\n"
+                    f"The appearance does NOT carry the physics (an aesthetic drift). prove() will "
+                    f"refuse until the projection converges -- fix the projector, not the tolerance.")
+        tail = conv["detail"] if conv.get("has_test") else "no convergence law yet (appearance UNCHECKED)"
+        return (f"APPEARANCE MESSENGER for `{name}` (projected from its physics): {p}\n"
+                f"  convergence: {tail}\n"
                 f"Next: {self.next_action(name)}")
 
     def decide(self, name: str, ruling: str) -> str:

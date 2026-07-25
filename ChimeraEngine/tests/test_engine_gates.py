@@ -1,6 +1,8 @@
 """The engine must FORCE the workflow: prove() refuses until BOTH messengers agree -- the measured
-PHYSICS interior (frame/provenance/saturation/classify/why) and the projected APPEARANCE surface
-(a rendered light-view). If any of these fail, the engine has rotted into a rubber stamp.
+PHYSICS interior (frame/provenance/saturation/classify/why) and the projected APPEARANCE surface,
+which must MEASURABLY CONVERGE with the physics (a rendered feature vs what the law predicts). A
+picture is not proof; an appearance that leaves the physics is refused. If any of these fail, the
+engine has rotted into a rubber stamp.
 
 Runs standalone: python ChimeraEngine/tests/test_engine_gates.py
 """
@@ -10,6 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # ChimeraEngine/
 import engine_state
 import appearance
+import convergence
 
 
 def _engine(tmp_path):
@@ -17,7 +20,8 @@ def _engine(tmp_path):
 
 
 def _install_projector(term):
-    """Give `term` a fast mock light-view so render() can project it (real projectors are slow)."""
+    """Give `term` a fast mock light-view AND a convergence law it satisfies (real projectors are
+    slow). The mock renders solid green; the law asks for green dominance -> the messengers converge."""
     def _proj(out):
         from PIL import Image
         p = Path(out); p.mkdir(parents=True, exist_ok=True)
@@ -25,6 +29,7 @@ def _install_projector(term):
         Image.new("RGB", (8, 8), (0, 120, 0)).save(f)
         return str(f)
     appearance.PROJECTORS[term] = _proj
+    convergence.PHYSICS[term] = {"feature": "green_dominance", "floor": 0.1, "law": "test mock"}
 
 
 _SATURATING = [
@@ -68,6 +73,33 @@ def test_render_refuses_a_term_with_no_light_view(tmp_path):
     E = _engine(tmp_path)
     # theLaws has no projector in appearance.PROJECTORS -> no appearance messenger -> refused
     assert "REFUSED" in E.render("theLaws")
+
+
+def test_convergence_refuses_an_appearance_that_leaves_the_physics(tmp_path):
+    """THE TEETH: a term whose render measurably DIVERGES from its physics cannot be proven. Here a
+    G-star physics (a warm ~5778 K blackbody) is given a projector that paints the star BLUE -- an
+    aesthetic lie. The measured chromaticity leaves the Planck locus, so the two messengers disagree
+    and prove() refuses. This is what makes 'no aesthetic passes' a mechanism, not a slogan."""
+    E = _engine(tmp_path)
+    term = "theBlueStarLie"
+    convergence.PHYSICS[term] = {"feature": "glow_chromaticity", "T_eff": 5778, "law": "Planck (test)"}
+
+    def _blue(out):
+        from PIL import Image
+        p = Path(out); p.mkdir(parents=True, exist_ok=True)
+        f = p / f"{term}.png"
+        Image.new("RGB", (64, 64), (40, 90, 255)).save(f)     # a star painted blue -- against its physics
+        return str(f)
+    appearance.PROJECTORS[term] = _blue
+
+    E.frame(term, "a Sol-like G-star")
+    for i, vs in enumerate(_SATURATING):
+        E.question(term, f"q{i}", vs)
+    E.classify(term, {v: "PHYSICS" for v in E._vars(term)})
+    assert "DIVERGE" in E.render(term)                        # the two messengers disagree on the number
+    out = E.prove(term)
+    assert "REFUSED" in out and "APPEARANCE MESSENGER" in out # so prove refuses at the appearance gate
+    assert E.state["hierarchy"].get(term, {}).get("status") != "proven"
 
 
 def _prove_ss(E):
@@ -121,6 +153,7 @@ def test_measured_compression_beats_declared_order(tmp_path):
 def _run() -> int:
     import tempfile
     fns = [test_prove_refuses_until_both_messengers_agree, test_render_refuses_a_term_with_no_light_view,
+           test_convergence_refuses_an_appearance_that_leaves_the_physics,
            test_prove_refuses_a_premature_saturation, test_frame_refuses_compound_claim,
            test_classify_refuses_illegal_terminal, test_next_starts_at_the_seed_in_story_order,
            test_next_descends_the_started_branch_first, test_measured_compression_beats_declared_order]

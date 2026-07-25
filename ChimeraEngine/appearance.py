@@ -30,16 +30,19 @@ def _star(out: Path) -> str:
                s=rng.uniform(.3, 2.2, 300), c="#c9d4ff", alpha=.35, lw=0)
     for r, a in [(.62, .10), (.5, .16)]:
         ax.add_patch(Circle((0, 0), r, fill=False, ec="#39c07a", lw=1, alpha=a, ls=(0, (5, 5))))
+    from convergence import blackbody_srgb
+    base = blackbody_srgb(5778)                         # THE PHYSICS: Planck's law -> the Sun's true color
+    def mix(t):                                         # blend toward white by t (a hot core saturates the sensor)
+        return tuple((base[i] + (255 - base[i]) * t) / 255 for i in range(3))
     for k in range(16):
         th = k * np.pi / 8
         ax.plot([.09 * np.cos(th), .46 * np.cos(th)], [.09 * np.sin(th), .46 * np.sin(th)],
-                color="#ffcf48", alpha=.12, lw=2)
-    for rr, c, a in [(.32, "#ffcf48", .09), (.22, "#ffd75e", .15), (.14, "#ffe07a", .28),
-                     (.09, "#fff0b0", .6), (.055, "#fffbe8", 1)]:
-        ax.add_patch(Circle((0, 0), rr, color=c, alpha=a, lw=0))
+                color=mix(0.0), alpha=.12, lw=2)
+    for rr, t, a in [(.34, .0, .10), (.24, .0, .22), (.15, .0, .60), (.11, .35, .92), (.06, .85, 1.0)]:
+        ax.add_patch(Circle((0, 0), rr, color=mix(t), alpha=a, lw=0))
     ax.set_xlim(-.85, .85); ax.set_ylim(-.85, .85); ax.set_aspect("equal"); ax.axis("off")
-    fig.text(.5, .95, "THE STAR", color="#ffe9a8", ha="center", fontsize=24, weight="bold")
-    fig.text(.5, .05, "G2V  ·  0.98 M(sun)  ·  ~1 L(sun)  ·  ~5800 K  ·  yellow-white",
+    fig.text(.5, .95, "THE STAR", color=mix(.5), ha="center", fontsize=24, weight="bold")
+    fig.text(.5, .05, f"G2V  ·  ~5778 K  ·  color COMPUTED from Planck's law -> sRGB {base}",
              color="#7e88ad", ha="center", fontsize=10)
     p = out / "appear_theStar.png"
     fig.savefig(p, dpi=110, facecolor=fig.get_facecolor()); plt.close(fig)
@@ -59,11 +62,14 @@ def _solarsystem(out: Path) -> str:
     for a, c in orbits:
         ax.add_patch(Circle((0, 0), a, fill=False, ec="#6f7fb0", lw=1, alpha=.5))
         th = np.random.default_rng(int(a * 1000)).uniform(0, 6.28)
-        ax.scatter([a * np.cos(th)], [a * np.sin(th)], s=90, c=c, edgecolors="white", lw=.5, zorder=5)
-    for rr, c in [(.09, "#ffcf48"), (.05, "#fff3c0"), (.028, "#ffffff")]:
-        ax.add_patch(Circle((0, 0), rr, color=c, zorder=4))
+        ax.scatter([a * np.cos(th)], [a * np.sin(th)], s=70, c=c, edgecolors=(.45, .5, .65), lw=.4, zorder=5)
+    from convergence import blackbody_srgb
+    sb = blackbody_srgb(5778)                           # the central star: its true blackbody color...
+    def smix(t): return tuple((sb[i] + (255 - sb[i]) * t) / 255 for i in range(3))
+    for rr, t, a in [(.20, .0, .10), (.13, .0, .30), (.08, .35, .70), (.05, .7, .95), (.03, 1., 1.)]:
+        ax.add_patch(Circle((0, 0), rr, color=smix(t), alpha=a, lw=0, zorder=4))  # ...brightest, at the barycenter
     ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5); ax.set_aspect("equal"); ax.axis("off")
-    fig.text(.5, .94, "THE SOLAR SYSTEM", color="#ffe9a8", ha="center", fontsize=20, weight="bold")
+    fig.text(.5, .94, "THE SOLAR SYSTEM", color="#6f6a44", ha="center", fontsize=20, weight="bold")
     fig.text(.5, .06, "a yellow G-star  ·  4 grown worlds  ·  habitable zone shaded",
              color="#7e88ad", ha="center", fontsize=10)
     p = out / "appear_theSolarSystem.png"

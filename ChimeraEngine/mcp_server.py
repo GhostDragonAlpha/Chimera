@@ -63,18 +63,21 @@ def classify(term: str, assignments: dict[str, str]) -> str:
 
 @mcp.tool()
 def render(term: str) -> str:
-    """Generate the APPEARANCE MESSENGER: the engine PROJECTS the term's physics into its light-view
-    (appearance.py) -- one membrane, two messengers (the measured interior and the emitted surface).
-    No hand-supplied picture: the appearance is derived from the physics, or refused if the term has
-    no projector yet (no light-view to agree with)."""
+    """Generate the APPEARANCE MESSENGER and MEASURE its convergence with the physics. The engine
+    PROJECTS the term's physics into a light-view (appearance.py), then reads a feature back out of
+    the pixels and checks it against what the physics law predicts (convergence.py) -- one membrane,
+    two messengers. No hand-supplied picture, no aesthetic drift: the appearance must measurably
+    CONVERGE (e.g. the star's glow color == blackbody(T)), or it DIVERGES and prove() refuses.
+    Refused outright if the term has no projector yet (no light-view to agree with)."""
     return ENG.render(term)
 
 
 @mcp.tool()
 def prove(term: str) -> str:
     """The one door. Attempts to record `term` as PROVEN. Runs every gate -- S0 frame, provenance,
-    measured saturation, classify, a real visual, a legal terminal -- and writes the codebook ONLY
-    if all pass. Refuses otherwise, naming the blocking gate. This is the tool that forces the work."""
+    measured saturation, classify, an appearance that CONVERGES with the physics, a legal terminal --
+    and writes the codebook ONLY if all pass. Refuses otherwise, naming the blocking gate. This is
+    the tool that forces the work."""
     return ENG.prove(term)
 
 
