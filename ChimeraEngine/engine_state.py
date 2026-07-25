@@ -22,59 +22,12 @@ from core.saturation import measure as _measure   # noqa: E402
 
 STATE_PATH = _HERE / "engine_state.json"
 
-# THE DECLARATION -- the SINGLE SOURCE. The terms, named in STORY ORDER (docs/THE_STORY.md), each
-# with its terminal ([P] physics measured / [H] the human decided) and a one-line note. Like a
-# Python assignment: naming IS declaring, there is no separate step; ORDER is the depth-first proving
-# order; and this ONE list is what BOTH the engine's hierarchy AND THE_TERMS.md are built from
-# (run gen_terms.py to regenerate the doc). Change the declaration, or the story, and it all
-# re-derives. This is the story decomposed into the game.
-#            name,             parent,           term, note
-_DECL = [
-    ("theStory",        None,             "H", "the seed / the timeline"),
-    ("theSeed",         "theStory",       "P", "the number + the laws that unfold the world"),
-    ("theDeterminism",  "theSeed",        "P", "same seed -> same world, bit-identical"),
-    ("theLaws",         "theSeed",        "P", "the trained physics the seed runs under"),
-    ("theTruth",        "theSeed",        "P", "every fact reaches physics; the world cannot lie"),
-    ("theSolarSystem",  "theStory",       "P", "the setting you fly"),
-    ("theStar",         "theSolarSystem", "P", "the yellow hearth"),
-    ("thePlanets",      "theSolarSystem", "P", "the worlds in orbit"),
-    ("aPlanet",         "thePlanets",     "P", "the world you fall toward"),
-    ("theTerrain",      "aPlanet",        "P", "the whole-sphere surface"),
-    ("theAtmosphere",   "aPlanet",        "P", "air, sky, weather"),
-    ("theOcean",        "aPlanet",        "P", "the water"),
-    ("theBiomes",       "aPlanet",        "P", "climate + life bands"),
-    ("theGround",       "aPlanet",        "P", "the surface underfoot (matter under boots)"),
-    ("theInterior",     "aPlanet",        "P", "layers, ore, caves"),
-    ("theGarden",       "aPlanet",        "P", "the lush living place (lushEden)"),
-    ("theEcosystem",    "theGarden",      "P", "life cascading from physics"),
-    ("theTree",         "theGarden",      "P", "the Tree of Knowledge"),
-    ("theTreeForm",     "theTree",        "P", "grown from one genome"),
-    ("theFruit",        "theTree",        "H", "knowledge of good and evil"),
-    ("thePlanting",     "theGarden",      "P", "the tree grows into the surface (the seam)"),
-    ("theSpace",        "theSolarSystem", "P", "the medium you fly (the dark, gravity, scale)"),
-    ("theDensityClock", "theSolarSystem", "P", "time leans with mass and speed"),
-    ("theShip",         "theStory",       "P", "the player's vessel; the cold start"),
-    ("theDescent",      "theStory",       "P", "traversing the scales (the membrane onion; LOD of meaning)"),
-    ("theStanding",     "theDescent",     "P", "you stand on real ground, witnessed by contact"),
-    ("theBlackHole",    "theDescent",     "P", "the density clock's ceiling; the hole you can't see into"),
-    ("theVerbs",        "theStory",       "P", "how you act -- verb over nouns"),
-    ("theThrust",       "theVerbs",       "P", "energy -> motion (the density clock)"),
-    ("theDig",          "theVerbs",       "P", "into the ground (grain physics)"),
-    ("theBalance",      "theVerbs",       "P", "center-of-mass vs center-of-thrust"),
-    ("theGrow",         "theVerbs",       "P", "life from energy (logistic)"),
-    ("theScan",         "theVerbs",       "P", "read composition (spectral)"),
-    ("theNavigate",     "theVerbs",       "P", "orbital mechanics, reach a target"),
-    ("theLoop",         "theStory",       "P", "world + player + input -> verbs -> state -> tick"),
-    ("thePlayer",       "theLoop",        "P", "the character; presence before action (the Dot)"),
-    ("theInput",        "theLoop",        "P", "keystrokes -> verb dials"),
-    ("theState",        "theLoop",        "P", "what ticks"),
-    ("thePersistence",  "theLoop",        "P", "same seed, same world, forever (save / return)"),
-    ("theMeaning",      "theStory",       "H", "deciding what things mean; the gift, your terminal"),
-    ("theParadise",     "theMeaning",     "H", "does Eden read as paradise"),
-    ("theChoice",       "theMeaning",     "H", "good and evil; the human decides"),
-    ("theWorthPlaying", "theMeaning",     "H", "is it a game worth playing"),
-    ("theExperience",   "theMeaning",     "H", "the felt whole; understood, not won"),
-]
+# THE DECLARATION -- loaded from terms_data.py, which gen_decl.py GENERATES from the story's
+# ```chimera-terms``` block (Chimera/docs/THE_STORY.md). The STORY is the single source: edit its
+# decomposition block, run `python ChimeraEngine/gen_decl.py`, and _DECL -- and the hierarchy and
+# THE_TERMS.md that derive from it -- all re-derive. Each entry is (name, parent, terminal, note).
+sys.path.insert(0, str(_HERE))
+from terms_data import TERMS as _DECL        # noqa: E402
 
 # Terms with substrate already built/measured elsewhere (the ~): prove THROUGH the engine, not from
 # scratch. Not part of the hierarchy shape -- a planning note for the generated doc.

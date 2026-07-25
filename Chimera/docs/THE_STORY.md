@@ -119,3 +119,60 @@ thing *grown from it*, and everything else is grown from there, down the hierarc
 term at a time. We prove **down** from the seed; and the whole, once built, is **truly measured** the
 only way meaning can be — by the human **watching it unfold.** Written here so the timeline is secured
 before we prove `theSolarSystem` inside it.
+
+---
+
+## The decomposition — the terms this story declares
+
+> This story, decomposed into the game: the terms to PROVE, in story order. It is the **single
+> source** — `ChimeraEngine/gen_decl.py` parses this block into the engine's declaration
+> (`terms_data.py` → `_DECL`), from which the hierarchy and `ChimeraEngine/THE_TERMS.md` both derive.
+> Indentation is parent nesting; each line is `name [P|H] note` (`[P]` physics, measured · `[H]` the
+> human, decided). **Change the story here, re-run `gen_decl.py`, and the whole game re-derives.**
+
+```chimera-terms
+theStory [H] the seed / the timeline
+  theSeed [P] the number + the laws that unfold the world
+    theDeterminism [P] same seed -> same world, bit-identical
+    theLaws [P] the trained physics the seed runs under
+    theTruth [P] every fact reaches physics; the world cannot lie
+  theSolarSystem [P] the setting you fly
+    theStar [P] the yellow hearth
+    thePlanets [P] the worlds in orbit
+      aPlanet [P] the world you fall toward
+        theTerrain [P] the whole-sphere surface
+        theAtmosphere [P] air, sky, weather
+        theOcean [P] the water
+        theBiomes [P] climate + life bands
+        theGround [P] the surface underfoot (matter under boots)
+        theInterior [P] layers, ore, caves
+        theGarden [P] the lush living place (lushEden)
+          theEcosystem [P] life cascading from physics
+          theTree [P] the Tree of Knowledge
+            theTreeForm [P] grown from one genome
+            theFruit [H] knowledge of good and evil
+          thePlanting [P] the tree grows into the surface (the seam)
+    theSpace [P] the medium you fly (the dark, gravity, scale)
+    theDensityClock [P] time leans with mass and speed
+  theShip [P] the player's vessel; the cold start
+  theDescent [P] traversing the scales (the membrane onion; LOD of meaning)
+    theStanding [P] you stand on real ground, witnessed by contact
+    theBlackHole [P] the density clock's ceiling; the hole you can't see into
+  theVerbs [P] how you act -- verb over nouns
+    theThrust [P] energy -> motion (the density clock)
+    theDig [P] into the ground (grain physics)
+    theBalance [P] center-of-mass vs center-of-thrust
+    theGrow [P] life from energy (logistic)
+    theScan [P] read composition (spectral)
+    theNavigate [P] orbital mechanics, reach a target
+  theLoop [P] world + player + input -> verbs -> state -> tick
+    thePlayer [P] the character; presence before action (the Dot)
+    theInput [P] keystrokes -> verb dials
+    theState [P] what ticks
+    thePersistence [P] same seed, same world, forever (save / return)
+  theMeaning [H] deciding what things mean; the gift, your terminal
+    theParadise [H] does Eden read as paradise
+    theChoice [H] good and evil; the human decides
+    theWorthPlaying [H] is it a game worth playing
+    theExperience [H] the felt whole; understood, not won
+```
