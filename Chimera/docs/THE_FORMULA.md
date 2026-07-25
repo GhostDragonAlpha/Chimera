@@ -13,6 +13,13 @@
 > proven** (`core/saturation.py`) and encoded as a lint (a doc can be ignored; a lint cannot). This
 > is settled doctrine — build the game with it, don't re-litigate it. (The ENOUGH now lives
 > per-PROVE: is *this term* deep enough — a measured saturation, not a hand-wave.)
+>
+> **Refined 2026-07-25 (the shape held; one gate made honest):** S4's second messenger was corrected
+> from the self-measured pixel convergence (a **MONAD** — physics reading its own pixels) to the
+> **human dyad** — the physics NUMBER against an independent mind's reading of the render (a TERM),
+> which must AGREE (§"The second messenger", §"Why a dyad at all"). The S0–S7 spine is unchanged; only
+> S4's *realization* changed. Wired into the engine (`ChimeraEngine/human_messenger.py`), and the
+> appearance is now the real Gaussian-splat render, not a diagram.
 
 ---
 
@@ -183,6 +190,38 @@ false dyad, not proof. The honest form:
 So the intended gate sequence is `S0 FRAME → S2a PROVENANCE → S2b SATURATION → S3 CLASSIFY → **S4
 DYAD-AGREES** (physics number ↔ human term) → S5 WHY-TERMINAL`. (The live engine still runs the older
 self-measured convergence at S4; the human dyad is built and being wired in — see `MCP_ENGINE.md`.)
+
+---
+
+## Why a dyad at all? Because that is how a MIND verifies itself (2026-07-25)
+
+The formula's whole spine is *two independent systems that must agree* — physics and human, number
+and term, prover and engine. Why is that the shape of proof? Because it is the shape of THOUGHT.
+
+**The brain is a dyad.** You answer your own questions constantly — which looks impossible under "you
+cannot measure a system with itself." The resolution: your head was never ONE system. It is two
+hemispheres, bouncing an idea across the corpus callosum until they agree. A **monad** cannot check
+itself; a **dyad** can. So the brain is the *minimum self-verifying unit* — which is exactly why it is
+the minimum unit of PROOF. Insight — the "click" of understanding — is not new information arriving; it
+is the moment the two systems CONVERGE.
+
+So the method is not an arbitrary discipline bolted onto the work. It is **cognition externalized**:
+the two hemispheres taken out of one skull and made explicit, where the agreement cannot be faked.
+Rubber-ducking, writing to think, saying it aloud — all the same move: force one system's content into
+a form a genuinely separate system must independently re-read. `dyadAnalysis` is the industrial version.
+
+**The failure mode has a name too: bimanual interference.** The two hands are controlled by opposite
+hemispheres, so doing *different* things with them is hard — the brain wants to COUPLE them. When two
+"independent" systems are secretly coupled, their agreement proves nothing (they moved together
+because they are one, not because they converged). That is a monad wearing a dyad's clothes — exactly
+what *"the numbers were the same, so it's a FAILURE"* caught. Every de-coupling seam in this engine —
+blind vision, a separate LM-Studio process, `via='mcp'`, "an LLM is never a terminal so the agent can't
+be the human" — exists to PREVENT bimanual interference, so that any agreement is genuine.
+
+*(Honest bound: the pop-sci "left = logic, right = art" split is overstated; real hemispheric
+specialization is gradient. The load-bearing claim needs none of it — cognition is distributed systems
+reaching consensus, and a dyad is the smallest thing that can verify itself, whether the two systems
+are two hemispheres, two models, or a physicist and a telescope.)*
 
 ---
 

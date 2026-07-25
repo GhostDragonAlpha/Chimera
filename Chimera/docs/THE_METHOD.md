@@ -101,6 +101,12 @@ that turns it into a checkable claim: *does the target demographic decode the me
 says so or shows a render (H-14: a render is not a witness). It is proven when it is run,
 observed, recorded, and the chain reaches a terminal. No render-and-declare.
 
+**This is the dyadAnalysis.** A render is not a witness *because it is one system showing itself its
+own work* — a monad. It becomes proof only when a SEPARATE system reads it: the physics (the agent)
+produces a NUMBER, and an independent mind — LM Studio's vision model plus the operator — reads the
+render BLIND and produces a TERM; proof is their measured AGREEMENT (`ChimeraEngine/human_messenger.py`).
+Two systems kept apart, converging — the shape of thought itself (`THE_FORMULA.md` §"Why a dyad at all").
+
 ---
 
 ## The honest bounds (which belong to the method, not against it)
