@@ -147,6 +147,7 @@ class PlanetOnion:
     # per-layer relative thickness fields, keyed by layer name -> ndarray(nlat,nlon) or scalar
     thickness: dict = field(default_factory=dict)
     _grid: tuple = None                   # (nlat, nlon, elevation_grid) cache
+    _dem: np.ndarray = None               # a loaded REAL heightmap; resampled, never synthesized over
 
     # --- construction ------------------------------------------------------
 
@@ -171,9 +172,15 @@ class PlanetOnion:
         return lat, lon
 
     def elevation_grid(self, nlat: int = 180, nlon: int = 360, force: bool = False):
-        """Synthesize the WHOLE surface at once -- the outer membrane. Cached."""
+        """Synthesize the WHOLE surface at once -- the outer membrane. Cached. If a REAL DEM was
+        loaded, RESAMPLE it to the requested resolution instead of synthesizing (so the real
+        Earth survives whatever resolution biomes/layers/render ask for)."""
         if self._grid and self._grid[0] == nlat and self._grid[1] == nlon and not force:
             return self._grid[2]
+        if self._dem is not None:
+            elev = _resample_grid(self._dem, nlat, nlon)
+            self._grid = (nlat, nlon, elev)
+            return elev
         lat, lon = self._grid_angles(nlat, nlon)
         pot = _synth(self.cont_coeffs, self.cont_lmax, lat, lon)
         pot = pot / (np.std(pot) + 1e-12)                    # normalize the potential
@@ -358,11 +365,56 @@ class PlanetOnion:
     # --- the real-data seam ------------------------------------------------
 
     def from_topo_grid(self, elev: np.ndarray):
-        """Load a REAL heightmap (equirectangular metres) as the surface, upgrading the seed
-        without changing the rung. Analysis for real SH coefficients can follow; the onion,
-        adjust ops, invariant, and samplers all work on the grid directly."""
-        self._grid = (elev.shape[0], elev.shape[1], np.asarray(elev, float))
+        """Load a REAL heightmap (equirectangular metres, lat 90..-90 top-to-bottom) as the
+        surface, upgrading the seed without changing the rung. Stored as the DEM and resampled
+        to any requested resolution; the onion, adjust ops, invariant, biomes, layers, mining
+        and the verbs all run on it because they read elevation_grid()."""
+        self._dem = np.asarray(elev, float)
+        self._grid = (self._dem.shape[0], self._dem.shape[1], self._dem)
         return self
+
+
+def _resample_grid(grid: np.ndarray, nlat: int, nlon: int) -> np.ndarray:
+    """Bilinear resample an equirectangular grid to (nlat, nlon) -- so a loaded DEM survives
+    whatever resolution the stack asks for."""
+    H, W = grid.shape
+    if (H, W) == (nlat, nlon):
+        return grid
+    yi = np.linspace(0, H - 1, nlat)
+    xi = np.linspace(0, W - 1, nlon)
+    y0 = np.floor(yi).astype(int); y1 = np.minimum(y0 + 1, H - 1)
+    x0 = np.floor(xi).astype(int); x1 = np.minimum(x0 + 1, W - 1)
+    fy = (yi - y0)[:, None]; fx = (xi - x0)[None, :]
+    top = grid[np.ix_(y0, x0)] * (1 - fx) + grid[np.ix_(y0, x1)] * fx
+    bot = grid[np.ix_(y1, x0)] * (1 - fx) + grid[np.ix_(y1, x1)] * fx
+    return top * (1 - fy) + bot * fy
+
+
+def load_dem(path, radius: float = R_EARTH, seed: int = 0) -> 'PlanetOnion':
+    """Load a REAL equirectangular elevation DEM (metres, lat 90..-90 top-to-bottom, lon 0..360)
+    as a planet. Accepts .npy / .npz (key 'elevation' or first array) / .txt / .csv. The WHOLE
+    stack -- biomes, layers, mining, the verbs -- then runs on the real planet, because
+    from_topo_grid feeds the same onion the synthesis did.
+
+    THIS is the seam the operator asked for: drop a real Earth DEM (GEBCO/ETOPO sub-sampled to an
+    equirectangular metres grid, saved as .npy) here and the game IS the actual Earth. A binary
+    DEM cannot be fetched from a headless session -- the file is the operator's to provide; the
+    load is one call and everything downstream is unchanged."""
+    from pathlib import Path
+    p = Path(path)
+    if p.suffix == '.npy':
+        elev = np.load(p)
+    elif p.suffix == '.npz':
+        z = np.load(p)
+        elev = z['elevation'] if 'elevation' in z.files else z[z.files[0]]
+    else:
+        elev = np.loadtxt(p, delimiter=',' if p.suffix == '.csv' else None)
+    elev = np.asarray(elev, float)
+    if elev.ndim != 2:
+        raise ValueError(f'DEM must be a 2-D equirectangular grid; got shape {elev.shape}')
+    onion = PlanetOnion.earthlike(seed=seed)         # a valid onion (layers, thicknesses)
+    onion.radius = radius
+    return onion.from_topo_grid(elev)
 
 
 def _hillshade(elev, mperdeg):
