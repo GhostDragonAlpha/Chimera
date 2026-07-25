@@ -45,6 +45,21 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
+# The system's speed of light: the ceiling on any membrane's clock. A membrane cannot tick
+# faster than light crosses it (rate <= C_LIGHT / scale). Where the density clock (sqrt(density))
+# would exceed that ceiling, the region can no longer talk to itself fast enough to hold together
+# as ONE object -- it TEARS into a black hole. This is the density clock meeting the light limit,
+# which is exactly the Schwarzschild condition (sqrt(G*rho) = c/R  <=>  R = GM/c^2). Set large so
+# ordinary membranes -- verbs, ships, tissue -- never approach it; only extreme density x size do.
+C_LIGHT = 1.0e4
+
+
+def schwarzschild_scale(mass: float) -> float:
+    """The scale below which a mass tears into a black hole: R_s = mass / C_LIGHT^2 (= GM/c^2 with
+    G folded into the units). Compress a mass past this and the density clock passes the light
+    ceiling -- the event horizon, out of the same clock the verbs run on."""
+    return mass / C_LIGHT ** 2
+
 
 # --- states and verbs ------------------------------------------------------
 
@@ -277,6 +292,25 @@ class Membrane:
         while root.parent is not None:
             root = root.parent
         return float(np.sqrt(float(root.scale) / max(float(self.scale), 1e-30)))
+
+    # --- the ceiling: where the clock meets light, matter tears (a black hole) ---
+
+    def light_ceiling_rate(self) -> float:
+        """The fastest this membrane can possibly tick: the light-crossing rate C_LIGHT / scale.
+        Nothing internal can cycle faster than light crosses the region."""
+        return C_LIGHT / max(float(self.scale), 1e-30)
+
+    def black_hole_ratio(self) -> float:
+        """How close to tearing: the density clock over the light ceiling = sqrt(density)*scale
+        / C_LIGHT. At 1.0 the dynamical clock equals the light-crossing rate -- the event
+        horizon. This is the Schwarzschild condition rho*R^2 ~ c^2/G, written in the clock."""
+        return self.clock_rate() * float(self.scale) / C_LIGHT
+
+    def tears(self) -> bool:
+        """True if the density clock would exceed the light ceiling -- the region cannot hold
+        together as one object and collapses. A BLACK HOLE, out of the same clock the verbs run
+        on. Everything below this membrane is causally sealed: this is why you cannot see in."""
+        return self.black_hole_ratio() >= 1.0
 
     # --- frame -------------------------------------------------------------
 
@@ -581,6 +615,22 @@ def main() -> None:
     print(f'  a 100x-finer child of a 1 km membrane and of a 2 m membrane tick IDENTICALLY:')
     print(f'  clock_rate {ac.clock_rate():.2f} vs {bc.clock_rate():.2f}  '
           f'(density 100 both -> sqrt(100) = 10). The size cancels; density is the clock.')
+
+    print('\n=== the clock has a CEILING: compress a mass and it TEARS into a black hole ===')
+    print(f'  no membrane can tick faster than light crosses it (C_LIGHT/scale). Where the')
+    print(f'  density clock would pass that, it tears -- the Schwarzschild condition.')
+    MASS = 1.0e10
+    print(f'  compress a fixed mass {MASS:.0e}; predicted event horizon R_s = mass/C_LIGHT^2 '
+          f'= {schwarzschild_scale(MASS):.0f}\n')
+    print(f'  {"scale R":>9} {"density":>12} {"clock":>10} {"ceiling c/R":>12} {"ratio":>7}   verdict')
+    for sc in (1000.0, 300.0, 100.0, 30.0):
+        bh = Membrane('m', scale=sc)
+        bh.prop(density=MASS / sc ** 3)                    # rho = M / R^3
+        verdict = 'TORN -> black hole' if bh.tears() else 'holds together'
+        print(f'  {sc:>9.0f} {bh.density():>12.0f} {bh.clock_rate():>10.0f} '
+              f'{bh.light_ceiling_rate():>12.0f} {bh.black_hole_ratio():>7.2f}   {verdict}')
+    print(f'\n  it tears at exactly R_s = {schwarzschild_scale(MASS):.0f}: the density clock meeting')
+    print(f'  the speed of light IS the event horizon (R ~ GM/c^2), out of the verbs own clock.')
 
 
 if __name__ == '__main__':
