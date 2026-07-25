@@ -15,6 +15,11 @@
 > found *after* ENOUGH is the method being honest: you cannot see the lens you never ground until you
 > ground it — writing the actual story revealed the seed sits above the solar system.)
 >
+> **ENFORCED (2026-07-25) by the Chimera Engine.** This workflow is no longer only a document. It is
+> an MCP server (`ChimeraEngine/`, docs `ChimeraEngine/MCP_ENGINE.md`) whose tools are the ONLY
+> sanctioned way to move a term to "proven": `prove` runs these gates and refuses until they pass. A
+> doc can be ignored; an engine that owns "proven" cannot. Onboarding: `ChimeraEngine/ONBOARDING.md`.
+>
 > **The whole method in one sentence:** the human names **one term at a time** and the agent
 > **guides them down a hierarchy of membranes**, proving each term against **PHYSICS or THE HUMAN**
 > until the game stands — assembled from proven bricks, none of them hand-waved.

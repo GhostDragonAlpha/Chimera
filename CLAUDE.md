@@ -21,7 +21,9 @@
 1. **`docs/THE_WORKFLOW.md`** — THE METHOD, end to end: the verb (PROVE), the protocol (one
    camelCase term at a time, guided setting-first down a hierarchy of membranes), the formula
    (S0–S7 gates + measured saturation), the LINE (program/train/decide), and the doc map. Read
-   this first; it points to every other doc that matters.
+   this first; it points to every other doc that matters. **The workflow is now ENFORCED as
+   tooling — the Chimera Engine MCP server (`ChimeraEngine/MCP_ENGINE.md`; agent onboarding
+   `ChimeraEngine/ONBOARDING.md`): `prove` runs the gates and refuses until they pass.**
 2. `Construction/SPLAT_DNA_WORKFLOW.md` — scan → object genome. Status marked `PROVEN` /
    `DESIGNED` / `FRONTIER` per stage, full file inventory in §7.5.
 3. `WorldModel/ML_PIPELINE.md` — the generative half. SplatVAE, three training paths,
