@@ -106,34 +106,67 @@ def align(expected: str, observed: str, timeout: int = 240):
         return None
 
 
-def dyad(term: str, png: str, threshold: float = 0.6) -> dict:
+def _notify_operator(term: str, png: str, reason: str) -> None:
+    """Guarantee the HUMAN's presence at the decision. When the vision proxy is dark, a silent FAIL
+    would let the proof stall unwitnessed -- so PUSH the reason to the operator channel (CAPCOM). A
+    human is summoned: they load a model so the proxy can read, or they judge the render themselves.
+    Either way a mind is present at the critical decision, which is the whole point of the human side."""
+    msg = (f"dyadAnalysis BLOCKED for `{term}`: {reason} The HUMAN is required at this decision -- load "
+           f"a vision-capable model in LM Studio so the proxy can read the render ({png}), or interpret "
+           f"it yourself. No proof completes until a human (proxy or you) judges it.")
+    try:
+        from core.capcom import post_safe
+        post_safe("human", msg, level="warn", source="dyadAnalysis")
+        print(f"[human_messenger] operator SUMMONED via CAPCOM -- `{term}` needs a human.")
+    except Exception as e:
+        print(f"[human_messenger] CAPCOM unreachable; surfacing for the operator here: {e}\n  {msg}")
+
+
+def dyad(term: str, png: str, threshold: float = 0.6, human_override: dict | None = None) -> dict:
     """Run the human side + cross-reference for `term`'s render. Verdicts (hard, per the operator):
       PASS         -- alignment >= threshold: the two systems agree, the dyad holds.
-      FAIL_RESTART -- human saw something that does NOT match the physics: ASSUME THE PHYSICS ARE
+      FAIL_RESTART -- the human saw something that does NOT match the physics: ASSUME THE PHYSICS ARE
                       WRONG, redo the render/physics, start over.
-      FAIL_NO_HUMAN-- no vision model / the eye is dark: a FAIL, never a skip. Load a vision model."""
+      FAIL_NO_HUMAN-- no vision model / the eye is dark: a FAIL, never a skip; the operator is SUMMONED.
+
+    THE OVERRIDE (the operator's rule): a dark eye can be overridden ONLY by the human providing the
+    analysis THEMSELVES instead of LM Studio -- pass human_override={"reading": "<what you see>",
+    "aligns": True|False (or a 0-1 number)}. The operator IS the human terminal, so their judgment is
+    authoritative and needs no LLM judge; taste terminates at the operator."""
     expected = PHYSICS_READING.get(term)
     if not expected:
         return {"verdict": "FAIL", "pass": False, "term": term,
                 "detail": f"no physics reading authored for `{term}` yet -- build it before proving"}
-    observed = see(png)
-    if not observed:
-        return {"verdict": "FAIL_NO_HUMAN", "pass": False, "term": term, "expected": expected,
-                "detail": "the human eye is DARK (no vision model in LM Studio). Per the rule this is a "
-                          "FAIL, not a skip -- load a vision-capable model and re-run."}
-    a = align(expected, observed)
-    if a is None:
-        return {"verdict": "FAIL_NO_HUMAN", "pass": False, "term": term, "expected": expected,
-                "observed": observed, "detail": "cross-reference could not score (no model / bad output) -- FAIL."}
+
+    if human_override is not None:                          # OVERRIDE: the operator supplies the human side
+        observed = str(human_override.get("reading", "")).strip()
+        aligns = human_override.get("aligns", True)
+        a = (1.0 if aligns else 0.0) if isinstance(aligns, bool) else max(0.0, min(1.0, float(aligns)))
+        source = "operator (direct -- overriding the proxy)"
+    else:                                                   # the vision proxy reads BLIND
+        source = "vision proxy (LM Studio)"
+        observed = see(png)
+        if not observed:
+            _notify_operator(term, png, "no vision model is resident (the eye is dark).")
+            return {"verdict": "FAIL_NO_HUMAN", "pass": False, "term": term, "expected": expected,
+                    "detail": "the human eye is DARK (no vision model in LM Studio). Per the rule this is "
+                              "a FAIL, not a skip -- the operator has been SUMMONED via CAPCOM. Load a "
+                              "vision model and re-run, or override with your own reading (human_override)."}
+        a = align(expected, observed)
+        if a is None:
+            _notify_operator(term, png, "the cross-reference could not score (no model / bad output).")
+            return {"verdict": "FAIL_NO_HUMAN", "pass": False, "term": term, "expected": expected,
+                    "observed": observed, "detail": "cross-reference could not score -- FAIL. Operator SUMMONED via CAPCOM."}
+
     if a >= threshold:
         return {"verdict": "PASS", "pass": True, "term": term, "expected": expected, "observed": observed,
-                "alignment": round(a, 3), "threshold": threshold,
-                "detail": f"human saw \"{observed}\"; alignment {a:.3f} >= {threshold} -- the dyad holds."}
+                "alignment": round(a, 3), "threshold": threshold, "source": source,
+                "detail": f"[{source}] saw \"{observed}\"; alignment {a:.3f} >= {threshold} -- the dyad holds."}
     return {"verdict": "FAIL_RESTART", "pass": False, "term": term, "expected": expected, "observed": observed,
-            "alignment": round(a, 3), "threshold": threshold,
-            "detail": (f"human saw \"{observed}\", which does NOT match the physics; alignment {a:.3f} < "
-                       f"{threshold}. ASSUME THE PHYSICS ARE WRONG -- redo the render/physics for "
-                       f"`{term}` and start the process over.")}
+            "alignment": round(a, 3), "threshold": threshold, "source": source,
+            "detail": (f"[{source}] saw \"{observed}\", which does NOT match the physics; alignment {a:.3f} "
+                       f"< {threshold}. ASSUME THE PHYSICS ARE WRONG -- redo the render/physics for "
+                       f"`{term}` and start over.")}
 
 
 if __name__ == "__main__":
