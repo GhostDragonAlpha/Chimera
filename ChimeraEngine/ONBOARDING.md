@@ -26,9 +26,12 @@ drift. Reference: `ChimeraEngine/MCP_ENGINE.md`.
    star's glow color must match `blackbody(T)`, the system's brightest point must sit at the
    barycenter, the garden must read green. DIVERGENT (residual ≥ tolerance) is refused — and you fix
    the **projector**, never the tolerance. No projector yet = no light-view = can't be proven.
-6. **`prove` is the only way to mark a term done.** It runs every gate and refuses until all pass,
-   naming the blocker. **Read the refusal; do exactly what it says.** Do NOT reach for raw Bash or
-   Write to fake progress on a game term — the engine owns "proven" and will not record it.
+6. **`prove` is the only way to mark a term done — and you must prove THROUGH this tool (the engine
+   system), never by scripting the `Engine` class in a driver.** A driver proof is *your own system
+   measuring itself*; it is recorded `[~]` (boundary NOT crossed) and does not count. Only a proof
+   through the MCP tool crosses into the engine system and counts in BOTH. It runs every gate and
+   refuses until all pass, naming the blocker. **Read the refusal; do exactly what it says.** Do NOT
+   reach for raw Bash/Write/a driver to fake progress — the engine owns "proven" and will not record it.
 7. **Taste terminates at the operator.** `decide` is theirs, never yours. Meaning is not yours to
    close.
 

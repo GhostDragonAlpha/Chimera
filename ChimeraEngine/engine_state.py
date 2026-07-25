@@ -259,7 +259,13 @@ class Engine:
         self._save()
         return f"THE HUMAN terminal: `{name}` DECIDED -- \"{ruling}\".  (The one terminal an LLM cannot stand in for.)"
 
-    def prove(self, name: str) -> str:
+    def prove(self, name: str, via: str = "api") -> str:
+        """Attempt to record `name` as proven. `via` names WHICH SYSTEM is proving: 'mcp' = the
+        engine system (this call came through the MCP tool surface, an independent system); 'api' =
+        the caller's own system (a driver/script holding the Engine class directly). A term counts as
+        proven only when it has CROSSED THE BOUNDARY -- been proven through the engine system -- not
+        merely in the prover's own system. (The two-messenger law at the process scale: the prover
+        and the engine are two systems, and you cannot measure a system with itself.)"""
         gs = self.gates(name)
         report = "\n".join(f"  [{'PASS' if ok else 'FAIL'}] {g}: {d}" for g, ok, d in gs)
         failing = [(g, d) for g, ok, d in gs if not ok]
@@ -269,13 +275,23 @@ class Engine:
                     f"The engine will NOT record `{name}` as proven until every gate passes.\n"
                     f"Do this next: {GATE_FIX.get(g, g)}")
         t = self._term(name); t["status"] = "proven"; t["proven_at"] = _now()
+        t["proven_via"] = via
+        t["crossed_boundary"] = (via == "mcp") or t.get("crossed_boundary", False)   # once crossed, stays crossed
         if name in self.state["hierarchy"]:
             self.state["hierarchy"][name]["status"] = "proven"
         if name not in self.state["codebook"]:
             self.state["codebook"].append(name)
         self._save()
-        return (f"PROVEN: `{name}` -- two messengers agree on one membrane (the measured PHYSICS "
-                f"interior and the projected APPEARANCE surface). Written to the codebook.\n{report}")
+        if t["crossed_boundary"]:
+            head = (f"PROVEN & BOUNDARY CROSSED: `{name}` -- proven in BOTH systems (the measured "
+                    f"PHYSICS/APPEARANCE membrane AND the engine system itself, through the MCP tool). "
+                    f"The two systems agree. Written to the codebook.")
+        else:
+            head = (f"PROVEN (your own system only): `{name}` -- every gate passes, BUT this call came "
+                    f"via the API (a driver holding the Engine), not through the engine system. It has "
+                    f"NOT crossed the boundary. Re-run `prove` through the MCP tool for it to count as "
+                    f"proven in BOTH systems -- a proof measured only by your own system is not proof.")
+        return f"{head}\n{report}"
 
     def orient(self) -> str:
         cur = self.state.get("current")
@@ -287,8 +303,13 @@ class Engine:
                 L.append(f"    [{'x' if ok else ' '}] {g}")
         L.append("")
         L.append("HIERARCHY (setting-first from the seed):")
+        L.append("  ([x] proven in BOTH systems · [~] proven in your system only, boundary NOT crossed"
+                 " · [HUMAN] decided)")
         for n, v in self.state["hierarchy"].items():
+            crossed = self.state["terms"].get(n, {}).get("crossed_boundary", False)
             mark = {"proven": "[x]", "decided": "[HUMAN]"}.get(v["status"], "[ ]")
+            if v["status"] == "proven" and not crossed:
+                mark = "[~]"                         # proven in the caller's own system, not through the engine
             depth = len(self.context(n)) - 1
             L.append(f"  {'  ' * depth}{mark} {n}")
         L.append("")

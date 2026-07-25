@@ -74,11 +74,13 @@ def render(term: str) -> str:
 
 @mcp.tool()
 def prove(term: str) -> str:
-    """The one door. Attempts to record `term` as PROVEN. Runs every gate -- S0 frame, provenance,
-    measured saturation, classify, an appearance that CONVERGES with the physics, a legal terminal --
-    and writes the codebook ONLY if all pass. Refuses otherwise, naming the blocking gate. This is
-    the tool that forces the work."""
-    return ENG.prove(term)
+    """The one door, AND the boundary crossing. Attempts to record `term` as PROVEN. Runs every gate
+    -- S0 frame, provenance, measured saturation, classify, an appearance that CONVERGES with the
+    physics, a legal terminal -- and writes the codebook ONLY if all pass. Because this call arrives
+    through the MCP tool surface, it proves in the ENGINE SYSTEM (via='mcp'): the term CROSSES THE
+    BOUNDARY and counts as proven in both systems. A driver holding the Engine directly cannot cross
+    it -- that is proving with your own system alone. Refuses otherwise, naming the blocking gate."""
+    return ENG.prove(term, via="mcp")
 
 
 @mcp.tool()
