@@ -8,6 +8,7 @@ just the door. That is what makes the workflow force the agent instead of ask it
 """
 from __future__ import annotations
 
+import copy
 import json
 import sys
 import time
@@ -59,7 +60,7 @@ class Engine:
     def _load(self) -> dict:
         if self.path.exists():
             return json.loads(self.path.read_text(encoding="utf-8"))
-        return {"seed": "theStory", "hierarchy": _SEED_HIERARCHY,
+        return {"seed": "theStory", "hierarchy": copy.deepcopy(_SEED_HIERARCHY),
                 "current": "theSolarSystem", "terms": {}, "codebook": ["theStory"]}
 
     def _save(self) -> None:
