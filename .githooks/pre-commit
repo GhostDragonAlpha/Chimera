@@ -41,6 +41,15 @@ if command -v python >/dev/null 2>&1 && [ -d Chimera/core ]; then
   fi
 fi
 
+# --- the completeness gate must not rot (docs/THE_FORMULA.md S2b/S7) --------
+# DRY is a MEASURED saturation (Chao2 completeness + dry tail), proven every run -- never an
+# assertion. If you touch the gate, it must still refuse an incomplete (hand-declared) set.
+if command -v python >/dev/null 2>&1 && [ -d Chimera/core ]; then
+  if ! ( cd Chimera && python -m core.saturation --staged ); then
+    fail=1
+  fi
+fi
+
 # --- delegate to shazam ----------------------------------------------------
 if [ -x .git/hooks/pre-commit ] && [ "${CHIMERA_SKIP_SHAZAM:-}" != "1" ]; then
   .git/hooks/pre-commit "$@" || fail=1

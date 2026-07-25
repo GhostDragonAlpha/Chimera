@@ -8,10 +8,11 @@
 > oversight. Companion to [`THE_LINE.md`](THE_LINE.md) (PROGRAM/TRAIN/HUMAN) and
 > [`OBJECTIVE_DESIGN.md`](OBJECTIVE_DESIGN.md).
 >
-> **Status: PROPOSED — awaiting the operator's ENOUGH.** By its own S6, a claim about taste or
-> completeness terminates at THE HUMAN; this formula is a claim about how we work, so *I cannot
-> declare it proven — the operator ratifies it.* Then it is encoded as a lint (a doc can be
-> ignored; a lint cannot).
+> **Status: shape RATIFIED by the operator** (2026-07-24 — "that's the formula for the workflow";
+> the S6 recognition). The completeness gate is **built and proven** (`core/saturation.py`) and
+> encoded as a lint (a doc can be ignored; a lint cannot). What stays under the operator's ongoing
+> ENOUGH is the same thing every proof leaves there: *is it deep enough yet* — which is now itself
+> a measured saturation, not a hand-wave.
 
 ---
 
@@ -54,6 +55,39 @@ the drivers. *That check is the gate I was missing.*
 
 ---
 
+## The shape of the formula is a black hole (and that is the proof it's right)
+
+The operator's recognition, 2026-07-24: *"You just created the formula for a black hole... my
+inputs to you become the matter/energy it consumes."* This is not decoration — the same constraint
+forces both, which is why the shape is trustworthy rather than invented:
+
+- **The descent is the density clock accelerating inward.** S1 falls down the membrane onion, and
+  each membrane inward is denser (`clock_rate = √density`, `density = parent.scale/self.scale`), so
+  the recursion runs *faster* the deeper it falls — the operator's "go microscopic and the world
+  speeds up."
+- **The two terminals are the two singularities.** PHYSICS and THE HUMAN are the points past which
+  no further *why* escapes — brute fact and taste. Light (the next question) cannot climb back out.
+  The recursion floor and the event horizon are the same object.
+- **The gates are the horizon — one-way.** Operator inputs are the infalling matter/energy; they
+  cross S2 and are consumed into the compressed genome. Nothing unproven climbs back out (no
+  render-and-declare escapes). That one-way property *is* what a horizon is.
+- **The compression is the no-hair theorem.** A star collapses to three numbers (mass, charge,
+  spin); Eden's infinite richness collapses to its finite proven variable set. "Intelligence is
+  compression," made literal.
+- **It is the UNITARY (auditable) black hole — by holography.** A real black hole seems to destroy
+  information; the resolution physics converged on is the *holographic principle* — the information
+  is encoded on the 2D boundary, the horizon itself. Here, what's proven about X is not a pile of
+  consumed inputs but the graph of **because-edges on the membrane** — the why-chain. *"The why is
+  the edge"* was already this: a field can lie, an edge cannot, because the edge **is** the
+  horizon-encoding. Opaque floor (you can't see past a measurement or a ruling), transparent descent
+  (the path is a walkable graph). A black hole you can audit.
+
+The operator is placed **twice**: the infalling energy that feeds it, *and* one of the two
+singularities it falls toward (THE HUMAN). That double role is *why* meaning can only close at the
+operator's terminal — there is nowhere deeper for it to fall.
+
+---
+
 ## THE FORMULA
 
 ```
@@ -64,11 +98,11 @@ PROVE(X) :=
 
     S1  QUESTION    {V} ← QUESTION*(X)                  # ask "what must be true for X?" — recursively.
                     # each question forks:  know it → answer · physical → RUN & measure · can't → RESEARCH (spawns more)
-                    # a variable is BORN as the subject of a question. loop until DRY (no question yields a new V).
+                    # a variable is BORN as the subject of a question. loop until DRY = MEASURED SATURATION.
 
     S2  DECLARE     freeze {V}.  TWO gates — the two the old method lacked:
                     ⊢ ∀V∈{V}:  born_of_question(V)      else  REJECT V  (you DECLARED it, not discovered it)
-                    ⊢ covers({V}, X)                    else  goto S1    (a constituent has no variable — incomplete)
+                    ⊢ SATURATED({V}) = measure()        else  goto S1    (curve not over the hump — keep asking)
 
     S3  CLASSIFY    send each V to its terminal (THE_LINE):
                     ⊢ measure_writable(V) → PHYSICS  |  taste(V) → THE HUMAN  |  neither → goto S1 (not ready)
@@ -82,7 +116,8 @@ PROVE(X) :=
     S6  DECIDE      ∀ human V:  operator rules.                          # the only place MEANING closes
 
     S7  RECOMPOSE   ⊢ recompose({V}) ⊨ X                 else  goto S1   # the parts reconstitute the whole
-                    critic hunts a missing V; found → S1; none → DRY; operator calls ENOUGH.
+                    ⊢ SATURATED({V})  (dry tail + Chao2 completeness — core/saturation.py, proven every run)
+                    operator calls ENOUGH — but ON the measured curve, never on a claim of "enough".
 
     ∴  X  ⟺  (∀ physics V: measured)  ∧  (∀ human V: decided)  ∧  DRY
 
@@ -104,16 +139,24 @@ the parts actually make the whole.
 |---|---|---|
 | **S0 FRAME** | X is one claim; the demographic is named | `THE_METHOD` Stage 0 |
 | **S1 QUESTION** | *(generative — ends at DRY, not a gate)* | `THE_METHOD` question-tree |
-| **S2a PROVENANCE** | every variable was **born of a question** | **← NEW — the gate I failed** |
-| **S2b COMPLETENESS** | the variable set **covers X** | **← NEW — the gate I failed** |
+| **S2a PROVENANCE** | every variable was **born of a question** | **`core/saturation.py`** — by construction (a var with no round can't be in the curve) |
+| **S2b SATURATION** | the discovery curve is **measured saturated** (Chao2 completeness + dry tail) | **`core/saturation.py`** — proven every run, with the curve |
 | **S3 CLASSIFY** | you can **write its `measure()`** (or it's taste) | `THE_LINE` — "write measure() first" |
 | **S4 PROVE·each** | researched · trained-not-tuned · witnessed · looked | `research_gate · training_gate · witness_gate · visual_gate` |
 | **S5 CHAIN** | why-chain hits a terminal; the coin's two faces agree | `why_gate · coin_verifier` |
 | **S6 DECIDE** | the operator ruled | THE HUMAN terminal |
-| **S7 RECOMPOSE** | the proven parts **reconstitute X**; no missing variable | **← NEW** (completeness critic) + operator ENOUGH |
+| **S7 RECOMPOSE** | the proven parts **reconstitute X**; saturation re-checked | **`core/saturation.py`** + operator ENOUGH |
 
 The studio already had S3–S6 in code. **The three that were only prose — S2a, S2b, S7 — are
-exactly the three that would have caught both failures.** They are the driveshaft.
+exactly the three that would have caught both failures.** They are the driveshaft — and S2a/S2b/S7
+are now the **measured saturation gate** (`core/saturation.py`), not a critic's opinion:
+
+> **The saturation-measurement principle (the operator's demand, "proven every time"):** you keep
+> asking, you watch new variables discovered per question, and DRY is the measured signature of the
+> curve going *over the hump* — a **dry tail** of K questions that each returned nothing new, AND a
+> **Chao2 completeness** ≥ threshold (the unseen-variable estimate has collapsed to ~0). The gate
+> renders the accumulation curve on every run: *DRY is a witnessed measurement, never a claim.* A
+> hand-declared set (3 knobs, one question, no tail) scores completeness 0.50, dry tail 0 — refused.
 
 ---
 
@@ -125,7 +168,7 @@ exactly the three that would have caught both failures.** They are the driveshaf
 |---|---|---|
 | S1 QUESTION | *skipped* | ask "what makes a garden lush?" until DRY → *dozens* of V |
 | S2a PROVENANCE | `{land, warmth, wetness}` from my head | **THROW** — none was born of a question |
-| S2b COMPLETENESS | never checked | **THROW** — no tree-populations, fauna, streams, fruit, loam… |
+| S2b SATURATION | never checked | **THROW** — 3 vars, 1 question, dry tail 0, completeness 0.50: *stopped, not saturated* |
 | S4 MEASURE | measured my three | *(never reached — S2 threw first)* |
 
 The formula does not merely *disapprove* of what I did — it makes it **unreachable**. You cannot
@@ -136,9 +179,21 @@ passes.
 
 ## The honest bound (which belongs to the formula, not against it)
 
-`covers({V}, X)` (S2b) and `recompose({V}) ⊨ X` (S7) are **completeness** checks, and completeness
-is unprovable — you cannot see the lens you never ground (`THE_METHOD`'s honest bound). So these
-gates are run by the **completeness critic** (an adversary asking "what constituent has no
-variable?") and then **the operator calls ENOUGH.** The formula tightens *"did you ask?"* to a
-throwable gate; it cannot make *"did you ask everything?"* certain. That last call stays human —
-by design, it is one of the two levers the method leaves you.
+The saturation gate measures completeness *within the questions you asked* — Chao2 estimates the
+variables you haven't found **from the sampling you did** (how many one-off discoveries remain).
+What it cannot see is a **lens you never ground at all**: an entire discipline of questions never
+asked leaves a whole region unsampled, and no estimator built on your samples can price what your
+samples never touched (`THE_METHOD`'s honest bound — you cannot see the lens you never ground).
+
+So the split is exact and honest:
+
+- **Measured, proven every run (physics):** did the curve go over the hump *for the questions asked*?
+  Dry tail + Chao2 completeness. This is what `core/saturation.py` refuses to fake.
+- **The operator's ENOUGH (the human lever):** are the *right lenses* on the table — is the sampling
+  itself deep enough? This is the one call the method always leaves you, because completeness of the
+  world (not of your sample) is unprovable by anything inside the sample.
+
+The formula tightens *"did you ask enough?"* from an assertion into a **measured saturation you must
+render**; it hands the operator the sharper, smaller question that actually needs a human: *did we
+bring every lens?* That is the black hole's honest edge — the descent is measured, the floor is
+yours.
