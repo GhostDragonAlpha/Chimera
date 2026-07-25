@@ -26,8 +26,8 @@ from pathlib import Path
 
 
 def cmd_witness(args):
-    from ChimeraEngine.beats import BeatRunner
-    from ChimeraEngine.gates import WitnessGate, VerifyGate
+    from ChimeraEngine.dialectic.beats import BeatRunner
+    from ChimeraEngine.dialectic.gates import WitnessGate, VerifyGate
 
     bf = getattr(args, 'beats', None)
     if not bf:
@@ -66,7 +66,7 @@ def cmd_analyze(args):
         gravity_kernel, wind_kernel, box_boundary_kernel, accumulation_kernel)
     from ParticleEngine.control_vars import default_physics_registry
     from ParticleEngine.gpu_pipeline import FullGPUPipeline
-    from ChimeraEngine.council import Council
+    from ChimeraEngine.dialectic.council import Council
 
     print("Council — analyzing simulation state...")
     sim = ParticleSimulator(20000)
@@ -107,7 +107,7 @@ def cmd_helm(args):
         gravity_kernel, wind_kernel, box_boundary_kernel, accumulation_kernel)
     from ParticleEngine.control_vars import default_physics_registry
     from ParticleEngine.gpu_pipeline import FullGPUPipeline
-    from ChimeraEngine.helm import default_helm
+    from ChimeraEngine.dialectic.helm import default_helm
 
     print("Helm — gap analysis...")
     sim = ParticleSimulator(20000)
@@ -143,8 +143,8 @@ def cmd_helm(args):
 
 
 def cmd_verify(args):
-    from ChimeraEngine.beats import BeatRunner
-    from ChimeraEngine.gates import WitnessGate, VerifyGate
+    from ChimeraEngine.dialectic.beats import BeatRunner
+    from ChimeraEngine.dialectic.gates import WitnessGate, VerifyGate
 
     bf = getattr(args, 'beats', None)
     if not bf:
@@ -191,8 +191,8 @@ def cmd_fullcycle(args):
     print(f"\n[2/3] WITNESS — running {len(beat_files)} beat script(s)...")
     total_pass = 0
     for bf in beat_files:
-        from ChimeraEngine.beats import BeatRunner
-        from ChimeraEngine.gates import WitnessGate, VerifyGate
+        from ChimeraEngine.dialectic.beats import BeatRunner
+        from ChimeraEngine.dialectic.gates import WitnessGate, VerifyGate
         runner = BeatRunner(fps=60)
         result = runner.run(str(bf))
         gate = WitnessGate()

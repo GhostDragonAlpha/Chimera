@@ -8,7 +8,7 @@ from ParticleEngine.kernels.standard import (
 from ParticleEngine.control_vars import default_physics_registry
 from ParticleEngine.gpu_pipeline import FullGPUPipeline
 from ParticleEngine.camera import FirstPersonCamera
-from ChimeraEngine.world import chimera_survival_world
+from ChimeraEngine.dialectic.world import chimera_survival_world
 
 w = chimera_survival_world()
 OUT = Path(__file__).resolve().parent.parent / "ParticleEngine" / "output"

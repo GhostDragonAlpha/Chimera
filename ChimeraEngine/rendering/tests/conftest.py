@@ -7,8 +7,8 @@ import numpy as np
 from pathlib import Path
 from typing import Optional
 
-from ChimeraEngine.core.gaussian_splat_cloud import GaussianSplatCloud
-from ChimeraEngine.loD.cluster_tree import build_cluster_tree
+from ChimeraEngine.rendering.core.gaussian_splat_cloud import GaussianSplatCloud
+from ChimeraEngine.rendering.loD.cluster_tree import build_cluster_tree
 
 
 @pytest.fixture(scope="session")
@@ -85,7 +85,7 @@ def _build_sample_covariances(scales: np.ndarray, rotations: np.ndarray) -> np.n
 def camera() -> 'Camera':
     """Create a sample camera for testing."""
     
-    from ChimeraEngine.core.gaussian_splat_cloud import Camera
+    from ChimeraEngine.rendering.core.gaussian_splat_cloud import Camera
     
     position = np.array([0.0, 0.0, 5.0], dtype=np.float32)
     target = np.array([0.0, 0.0, 0.0], dtype=np.float32)

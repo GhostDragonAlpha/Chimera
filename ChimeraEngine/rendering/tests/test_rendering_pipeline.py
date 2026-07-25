@@ -10,10 +10,10 @@ import numpy as np
 from pathlib import Path
 from typing import Optional
 
-from ChimeraEngine.gates.performance_gate import check_performance, GateResult
-from ChimeraEngine.gates.determinism_gate import check_determinism
-from ChimeraEngine.gates.golden_image_gate import check_golden_image
-from ChimeraEngine.gates.lod_conservative_gate import check_lod_conservation
+from ChimeraEngine.rendering.gates.performance_gate import check_performance, GateResult
+from ChimeraEngine.rendering.gates.determinism_gate import check_determinism
+from ChimeraEngine.rendering.gates.golden_image_gate import check_golden_image
+from ChimeraEngine.rendering.gates.lod_conservative_gate import check_lod_conservation
 
 
 class TestRenderingPipeline:

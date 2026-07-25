@@ -17,10 +17,10 @@ from pathlib import Path
 from typing import Optional
 
 # Import unified components
-from ChimeraEngine.core.gaussian_splat_cloud import GaussianSplatCloud, SplatPool, Camera
-from ChimeraEngine.loD.cluster_tree import build_cluster_tree
-from ChimeraEngine.loD.budgeted_cut import select_clusters_budgeted, create_default_frustum
-from ChimeraEngine.renderers.gpu_rasterizer import GPUSplatRasterizer, CameraParams
+from ChimeraEngine.rendering.core.gaussian_splat_cloud import GaussianSplatCloud, SplatPool, Camera
+from ChimeraEngine.rendering.loD.cluster_tree import build_cluster_tree
+from ChimeraEngine.rendering.loD.budgeted_cut import select_clusters_budgeted, create_default_frustum
+from ChimeraEngine.rendering.renderers.gpu_rasterizer import GPUSplatRasterizer, CameraParams
 
 
 def generate_sample_cloud(n_splats: int = 1000) -> GaussianSplatCloud:

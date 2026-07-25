@@ -14,9 +14,9 @@ import numpy as np
 from numba import cuda
 from typing import Tuple, Optional, List
 
-from ChimeraEngine.core.gaussian_splat_cloud import GaussianSplatCloud, SplatPool, Camera
-from ChimeraEngine.loD.cluster_tree import ClusterTree
-from ChimeraEngine.loD.budgeted_cut import select_clusters_budgeted
+from ChimeraEngine.rendering.core.gaussian_splat_cloud import GaussianSplatCloud, SplatPool, Camera
+from ChimeraEngine.rendering.loD.cluster_tree import ClusterTree
+from ChimeraEngine.rendering.loD.budgeted_cut import select_clusters_budgeted
 
 
 TILE_SIZE = 16

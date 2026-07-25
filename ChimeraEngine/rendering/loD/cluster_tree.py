@@ -8,7 +8,7 @@ LOD selection with a global pixel budget, giving hard frame-cost ceilings.
 import numpy as np
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple
-from ChimeraEngine.core.gaussian_splat_cloud import GaussianSplatCloud
+from ChimeraEngine.rendering.core.gaussian_splat_cloud import GaussianSplatCloud
 
 
 SPLATS_PER_CLUSTER = 1024

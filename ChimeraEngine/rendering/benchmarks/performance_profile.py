@@ -118,7 +118,7 @@ def profile_current_state() -> Dict[str, any]:
     # Normalize quaternions
     rotations /= np.linalg.norm(rotations, axis=1, keepdims=True) + 1e-12
     
-    from ChimeraEngine.core.gaussian_splat_cloud import GaussianSplatCloud
+    from ChimeraEngine.rendering.core.gaussian_splat_cloud import GaussianSplatCloud
     cloud = GaussianSplatCloud(
         positions=positions,
         colors=colors,

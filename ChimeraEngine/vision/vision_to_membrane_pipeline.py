@@ -14,7 +14,7 @@ import numpy as np
 import os
 from PIL import Image
 from typing import Dict, List, Tuple
-from ChimeraEngine.vision_pattern_labeler import VisionPatternLabeler
+from ChimeraEngine.vision.vision_pattern_labeler import VisionPatternLabeler
 
 class VisionToMembranePipeline:
     """

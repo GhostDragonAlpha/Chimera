@@ -12,7 +12,7 @@ each cluster, and selects clusters until the total budget is exhausted.
 
 import numpy as np
 from typing import List, Optional, Tuple
-from ChimeraEngine.core.gaussian_splat_cloud import ClusterTree, Cluster
+from ChimeraEngine.rendering.core.gaussian_splat_cloud import ClusterTree, Cluster
 
 
 def select_clusters_budgeted(clusters: ClusterTree, 
