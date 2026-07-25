@@ -30,6 +30,8 @@ PHYSICS = {
                        "law": "Planck's law + CIE 1931 -> the Sun's true blackbody color"},
     "theSolarSystem": {"feature": "bright_centroid",
                        "law": "the star holds ~99.9% of system mass -> it sits at the barycenter (center)"},
+    "thePlanets":     {"feature": "climate_gradient",
+                       "law": "T_eq ~ a^-0.5 (falls with distance) -> inner worlds hotter (warmer color) than outer; the habitable zone emerges between"},
     "theGarden":      {"feature": "green_dominance", "floor": 0.12,
                        "law": "chlorophyll reflectance -> a lush habitable surface is vegetation-dominated"},
     "aPlanet":        {"feature": "green_dominance", "floor": 0.12,
@@ -39,7 +41,7 @@ PHYSICS = {
 # convergence tolerances: the residual must be strictly BELOW these. Set with margin from the
 # measured real-render residual (rule 4), wide enough to survive honest render/blend error, tight
 # enough to reject an appearance that has left the physics (a blue star, an off-center barycenter).
-TOL = {"glow_chromaticity": 0.055, "bright_centroid": 0.14}
+TOL = {"glow_chromaticity": 0.055, "bright_centroid": 0.14, "climate_gradient": 15.0}
 
 
 # --- Planck's law x the CIE 1931 observer -> a blackbody's true sRGB color -----
@@ -130,6 +132,25 @@ def measure_bright_centroid(a):
     return math.hypot(xs.mean() / W - 0.5, ys.mean() / H - 0.5)
 
 
+def measure_climate_gradient(a):
+    """Inner-minus-outer warmth of the worlds. T_eq falls with orbital distance, so a family of
+    grown worlds must run warm (inner) -> cool (outer): the colored disks on the left half are
+    hotter-colored than those on the right. Returns (left_warmth - right_warmth); >0 = the physical
+    gradient is present, <=0 = uniform or reversed (an appearance that has left the physics)."""
+    import numpy as np
+    H, W = a.shape[:2]
+    r, b = a[..., 0], a[..., 2]
+    sat = a.max(-1) - a.min(-1)
+    colored = sat > 25                                       # the planet disks, not background/text/limb
+    cols = np.arange(W)[None, :]
+    left = colored & (cols < W / 2)
+    right = colored & (cols >= W / 2)
+    if left.sum() < 20 or right.sum() < 20:
+        return None
+    warmth = r - b                                           # red-minus-blue: hot worlds warm, frozen worlds cool
+    return float(warmth[left].mean() - warmth[right].mean())
+
+
 def measure_green_dominance(a):
     """Fraction of the frame where the green channel leads and is bright -- vegetation cover. A lush
     habitable surface (chlorophyll) is green-dominated; a desert or a gas world is not."""
@@ -171,6 +192,18 @@ def converge(term: str, png: str) -> dict:
                 "residual": round(off, 4), "tol": tol,
                 "detail": (f"brightest source at offset {off:.4f} from center; the barycenter predicts "
                            f"~0.000; {'<' if off < tol else '>='} tol {tol}")}
+
+    if feat == "climate_gradient":
+        grad = measure_climate_gradient(a)
+        if grad is None:
+            return {"has_test": True, "converged": False, "feature": feat,
+                    "detail": "no worlds found in the render -- nothing to measure a gradient across"}
+        tol = TOL[feat]
+        return {"has_test": True, "converged": grad > tol, "feature": feat, "law": spec["law"],
+                "predicted": f"inner warmer than outer (> {tol})", "measured": f"{grad:.1f}",
+                "residual": round(grad, 1), "tol": tol,
+                "detail": (f"inner-minus-outer warmth {grad:.1f} (red-minus-blue); T_eq ~ a^-0.5 predicts "
+                           f"inner hotter, so > {tol}; {'>' if grad > tol else '<='} tol")}
 
     if feat == "green_dominance":
         frac = measure_green_dominance(a); floor = spec["floor"]

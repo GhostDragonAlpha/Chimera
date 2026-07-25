@@ -19,7 +19,7 @@
 ## II. Arrival — *"the solar system is the first room (the Garden, Movement IV, grows deep inside it)"*
 - [x] **theSolarSystem** `[P]` — the setting you fly
   - [x] **theStar** `[P]` — the yellow hearth
-  - [ ] **thePlanets** `[P]` — the worlds in orbit
+  - [x] **thePlanets** `[P]` — the worlds in orbit
     - [~] **aPlanet** `[P]` — the world you fall toward
       - [~] **theTerrain** `[P]` — the whole-sphere surface
       - [ ] **theAtmosphere** `[P]` — air, sky, weather
@@ -68,6 +68,6 @@
   - [ ] **theExperience** `[H]` — the felt whole; understood, not won
 
 ## Counts
-- **44 terms** · 37 physics · 7 the-human · 2 proven through the engine · 21 with built substrate (`~`).
+- **44 terms** · 37 physics · 7 the-human · 3 proven through the engine · 21 with built substrate (`~`).
 
 *The declaration is the assignment; the engine and this doc both fall out of it. Change the story to change the game.*

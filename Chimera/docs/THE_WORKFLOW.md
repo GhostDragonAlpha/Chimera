@@ -274,6 +274,12 @@ theStory  (the SEED / timeline)  ◐  written + ratified on the page; TRUE measu
    └─ theGoal                  ○  YOUR 40-question treatment → the training objective
 ```
 
+**Proven through the ENGINE** (the formula's gates, via `prove`) is tracked live in
+`ChimeraEngine/THE_TERMS.md` (generated from the engine's codebook) — currently **`theSolarSystem ·
+theStar · thePlanets`**, each with both messengers agreeing (measured physics + a converging
+appearance). The `✓` above is *substrate grown/measured*; the engine codebook is the formal
+proof-of-passage through S0–S5. The two are aligned, not duplicated: `THE_TERMS.md` is authoritative.
+
 Almost all the **substrate** is `✓`. We do not re-prove solid numbers. The next work is wherever
 proof is weakest and value highest — and the recursion finds it: name a summit you care about, and
 S1's descent walks us to the unproven constituents on the way down.

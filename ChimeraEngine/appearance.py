@@ -77,6 +77,42 @@ def _solarsystem(out: Path) -> str:
     return str(p)
 
 
+def _planets(out: Path) -> str:
+    import matplotlib
+    matplotlib.use("Agg")
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Circle
+    fig, ax = plt.subplots(figsize=(11, 5))
+    fig.patch.set_facecolor("#04050b"); ax.set_facecolor("#04050b")
+    orbits = [0.45, 0.75, 1.05, 1.6, 2.6]                 # grown worlds, inner -> outer (AU)
+
+    def t_eq(a):                                          # equilibrium temperature, Sun-like, albedo folded in
+        return 278.0 * a ** -0.5
+
+    def climate(T):                                       # THE PHYSICS: color DERIVED from T_eq, not chosen
+        if T > 360:  return (0.86, 0.30, 0.18)           # hot rock (molten red)
+        if T > 300:  return (0.80, 0.46, 0.27)           # warm rock / desert (orange)
+        if T > 250:  return (0.20, 0.52, 0.62)           # temperate ocean (blue-green) -- the habitable band
+        if T > 205:  return (0.56, 0.71, 0.86)           # cold (pale blue)
+        return (0.86, 0.91, 0.97)                        # frozen (white)
+
+    xs = np.linspace(-0.82, 0.82, len(orbits))
+    radii = [0.11, 0.13, 0.14, 0.12, 0.10]
+    for a, x, r in zip(orbits, xs, radii):
+        T = t_eq(a); c = climate(T)
+        ax.add_patch(Circle((x, 0), r, color=c, lw=0))
+        ax.add_patch(Circle((x, 0), r, fill=False, ec=(1, 1, 1), lw=.5, alpha=.22))
+        ax.text(x, -0.34, f"{a:.2f} AU\n{T:.0f} K", color="#8892b0", ha="center", va="center", fontsize=9)
+    ax.set_xlim(-1, 1); ax.set_ylim(-0.6, 0.6); ax.set_aspect("equal"); ax.axis("off")
+    fig.text(.5, .93, "THE PLANETS", color="#cfe0ff", ha="center", fontsize=22, weight="bold")
+    fig.text(.5, .06, "grown worlds, inner -> outer  ·  T_eq ∝ a^-0.5  ·  hot rock -> ocean -> frozen",
+             color="#7e88ad", ha="center", fontsize=10)
+    p = out / "appear_thePlanets.png"
+    fig.savefig(p, dpi=110, facecolor=fig.get_facecolor()); plt.close(fig)
+    return str(p)
+
+
 def _garden(out: Path) -> str:
     from core.eden import grow_tree_of_knowledge, make_eden
     from core.scene3d import render
@@ -90,6 +126,7 @@ def _garden(out: Path) -> str:
 PROJECTORS = {
     "theStar": _star,
     "theSolarSystem": _solarsystem,
+    "thePlanets": _planets,      # the family of worlds, colored by their equilibrium temperature
     "theGarden": _garden,
     "aPlanet": _garden,          # a planet's light-view is its lush surface with the garden
 }
