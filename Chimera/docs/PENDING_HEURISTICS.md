@@ -763,3 +763,12 @@ Wait, looking at the
 - evidence: observation_3a35d3db21c10a8a
 - sample: High clamping detected, color distribution too uniform. Pass rate: 0.0%
 - draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
+
+<!-- distilled 2026-07-25T07:15:02Z -->
+## H-73: human_rejection: recombination_genetic_inheritance
+- status: pending
+- kind: human_rejection  |  count: 1  |  last_seen: 2026-07-23T20:13:24
+- proposed_organ: claude_md
+- evidence: observation_8a8bfdb0aa23971b
+- sample: Values between parents: False for all tested recombinations. Success rate: 40.0%
+- draft_rule: (agent: write ONE sentence from the evidence, <=25 words)
