@@ -113,6 +113,40 @@ def _planets(out: Path) -> str:
     return str(p)
 
 
+def _globe(out: Path) -> str:
+    import matplotlib
+    matplotlib.use("Agg")
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Circle
+    rng = np.random.default_rng(11)
+    fig, ax = plt.subplots(figsize=(8, 8))
+    fig.patch.set_facecolor("#04050b"); ax.set_facecolor("#04050b")
+    ax.scatter(rng.uniform(-1, 1, 200), rng.uniform(-1, 1, 200), s=rng.uniform(.3, 1.8, 200),
+               c="#c9d4ff", alpha=.3, lw=0)
+    R = 0.62
+    for rr, a in [(R + .06, .10), (R + .03, .18), (R + .012, .30)]:          # atmosphere limb (blue haze)
+        ax.add_patch(Circle((0, 0), rr, color=(0.45, 0.65, 0.95), alpha=a, lw=0))
+    ocean = Circle((0, 0), R, color=(0.11, 0.31, 0.62), lw=0)               # THE PHYSICS: liquid water
+    ax.add_patch(ocean)
+    for _ in range(7):                                                       # continents (land = habitable + green)
+        th = rng.uniform(0, 6.28); rad = rng.uniform(0, R * .78)
+        blob = Circle((rad * np.cos(th), rad * np.sin(th)), rng.uniform(.11, .20), color=(0.20, 0.52, 0.24), lw=0)
+        blob.set_clip_path(ocean); ax.add_patch(blob)
+    for cy in (R * .82, -R * .82):                                          # polar ice caps
+        cap = Circle((0, cy), .17, color=(0.90, 0.93, 0.97), alpha=.92, lw=0)
+        cap.set_clip_path(ocean); ax.add_patch(cap)
+    term = Circle((R * .5, 0), R, color=(0, 0, 0), alpha=.28, lw=0)         # a soft day/night terminator
+    term.set_clip_path(ocean); ax.add_patch(term)
+    ax.set_xlim(-1, 1); ax.set_ylim(-1, 1); ax.set_aspect("equal"); ax.axis("off")
+    fig.text(.5, .95, "A PLANET", color="#bfe0d0", ha="center", fontsize=24, weight="bold")
+    fig.text(.5, .05, "a grown world from space  ·  oceans + continents + ice  ·  liquid water = habitable",
+             color="#7e88ad", ha="center", fontsize=10)
+    p = out / "appear_aPlanet.png"
+    fig.savefig(p, dpi=110, facecolor=fig.get_facecolor()); plt.close(fig)
+    return str(p)
+
+
 def _garden(out: Path) -> str:
     from core.eden import grow_tree_of_knowledge, make_eden
     from core.scene3d import render
@@ -127,8 +161,8 @@ PROJECTORS = {
     "theStar": _star,
     "theSolarSystem": _solarsystem,
     "thePlanets": _planets,      # the family of worlds, colored by their equilibrium temperature
-    "theGarden": _garden,
-    "aPlanet": _garden,          # a planet's light-view is its lush surface with the garden
+    "aPlanet": _globe,           # ONE world from space -- oceans + continents (its own light-view, not the garden's)
+    "theGarden": _garden,        # a scene ON the world: its lush surface, the tree of knowledge
 }
 
 

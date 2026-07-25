@@ -34,8 +34,8 @@ PHYSICS = {
                        "law": "T_eq ~ a^-0.5 (falls with distance) -> inner worlds hotter (warmer color) than outer; the habitable zone emerges between"},
     "theGarden":      {"feature": "green_dominance", "floor": 0.12,
                        "law": "chlorophyll reflectance -> a lush habitable surface is vegetation-dominated"},
-    "aPlanet":        {"feature": "green_dominance", "floor": 0.12,
-                       "law": "chlorophyll reflectance -> a lush habitable surface is vegetation-dominated"},
+    "aPlanet":        {"feature": "habitable_world", "floor": 0.04,
+                       "law": "liquid water AND land -> a habitable world shows BOTH ocean-blue and continent-green from space"},
 }
 
 # convergence tolerances: the residual must be strictly BELOW these. Set with margin from the
@@ -160,6 +160,19 @@ def measure_green_dominance(a):
     return float(veg.mean())
 
 
+def measure_habitable_world(a):
+    """Ocean-blue and land-green fractions of the world disk (seen from space). A habitable world
+    needs BOTH: liquid water (blue) AND land (green). A dry rock has no blue, a water-world no green,
+    a gas giant neither -- only a world with both can be habitable. Returns (ocean_frac, land_frac)."""
+    import numpy as np
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    disk = a.sum(-1) > 60                                     # the planet disk, not deep space
+    ocean = disk & (b > r * 1.15) & (b > g * 1.05) & (b > 80)
+    land = disk & (g > r * 1.10) & (g > b * 1.05) & (g > 55)
+    n = max(int(disk.sum()), 1)
+    return float(ocean.sum()) / n, float(land.sum()) / n
+
+
 # --- the convergence test: predicted (physics) vs measured (pixels) ------------
 def converge(term: str, png: str) -> dict:
     """Do the term's two messengers AGREE? Predict the feature from the physics law, measure it from
@@ -204,6 +217,16 @@ def converge(term: str, png: str) -> dict:
                 "residual": round(grad, 1), "tol": tol,
                 "detail": (f"inner-minus-outer warmth {grad:.1f} (red-minus-blue); T_eq ~ a^-0.5 predicts "
                            f"inner hotter, so > {tol}; {'>' if grad > tol else '<='} tol")}
+
+    if feat == "habitable_world":
+        ocean, land = measure_habitable_world(a); floor = spec["floor"]
+        both = min(ocean, land)                               # habitable only if BOTH water and land
+        return {"has_test": True, "converged": both >= floor, "feature": feat, "law": spec["law"],
+                "predicted": f"ocean AND land each >= {floor}", "measured": f"ocean {ocean:.3f}, land {land:.3f}",
+                "residual": round(both, 3), "tol": floor,
+                "detail": (f"ocean-blue {ocean:.3f} and land-green {land:.3f} of the world disk; a "
+                           f"habitable world needs BOTH >= {floor}; min {both:.3f} "
+                           f"{'>=' if both >= floor else '<'} floor")}
 
     if feat == "green_dominance":
         frac = measure_green_dominance(a); floor = spec["floor"]

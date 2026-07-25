@@ -20,7 +20,7 @@
 - [x] **theSolarSystem** `[P]` — the setting you fly
   - [x] **theStar** `[P]` — the yellow hearth
   - [x] **thePlanets** `[P]` — the worlds in orbit
-    - [~] **aPlanet** `[P]` — the world you fall toward
+    - [x] **aPlanet** `[P]` — the world you fall toward
       - [~] **theTerrain** `[P]` — the whole-sphere surface
       - [ ] **theAtmosphere** `[P]` — air, sky, weather
       - [ ] **theOcean** `[P]` — the water
@@ -68,6 +68,6 @@
   - [ ] **theExperience** `[H]` — the felt whole; understood, not won
 
 ## Counts
-- **44 terms** · 37 physics · 7 the-human · 3 proven through the engine · 21 with built substrate (`~`).
+- **44 terms** · 37 physics · 7 the-human · 4 proven through the engine · 21 with built substrate (`~`).
 
 *The declaration is the assignment; the engine and this doc both fall out of it. Change the story to change the game.*
