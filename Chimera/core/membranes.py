@@ -247,7 +247,15 @@ class Membrane:
     def density(self) -> float:
         """Density = relative mass = relative scale: how much finer this membrane is than its
         parent. RELATIONAL -- the root is 1, and a child has no density of its own; it only has
-        one relative to the parent it is nested in. One term, and it is read from OUTSIDE."""
+        one relative to the parent it is nested in. One term, and it is read from OUTSIDE.
+
+        If the membrane is made of a KNOWN material it carries that material's density (a RATIO
+        to a reference material) in properties['density']; otherwise density DEFAULTS to the
+        relative scale -- the self-similar assumption that a child is as dense as it is small.
+        Either way it is a dimensionless ratio: relative mass and relative scale, one term."""
+        d = self.properties.get('density')
+        if d is not None:
+            return float(d)
         if self.parent is None:
             return 1.0
         return float(self.parent.scale) / max(float(self.scale), 1e-30)
