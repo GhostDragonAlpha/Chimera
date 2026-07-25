@@ -4,8 +4,8 @@
 > precise definition, written because if the operator can get confused about where training
 > stops and programming starts, so will every agent. It is not a softening of the vision — it
 > is the vision's architecture. Read it before deciding whether to *author* a feature or *train*
-> it. Companion to `docs/OBJECTIVE_DESIGN.md` (how to write the objective once you know a thing
-> is trainable) and `docs/TRAINING_PROTOCOL.md` (the mechanics).
+> it. Map / entry point: **`docs/THE_WORKFLOW.md`**. Companion to `docs/OBJECTIVE_DESIGN.md` (how to
+> write the objective once you know a thing is trainable) and `docs/TRAINING_PROTOCOL.md` (the mechanics).
 
 ---
 

@@ -3,6 +3,7 @@
 > The complete inquiry method, solidified 2026-07-24 from the conversation that built it.
 > Companion to `docs/THE_LINE.md` (PROGRAM/TRAIN/HUMAN) and `docs/OBJECTIVE_DESIGN.md`.
 > This is the one that governs *requests*: what to ask for, and what "done" means.
+> **Start with the map: `docs/THE_WORKFLOW.md`** — the whole method end to end; this is its engine.
 
 ---
 

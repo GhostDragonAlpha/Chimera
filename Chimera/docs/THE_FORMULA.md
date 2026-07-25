@@ -5,8 +5,8 @@
 > process of asking questions."* This document hardens the loose pseudocode in
 > [`THE_METHOD.md`](THE_METHOD.md) into an **ordered sequence of gates** where that failure —
 > declaring your own variables instead of discovering them — is a **thrown error**, not an
-> oversight. Companion to [`THE_LINE.md`](THE_LINE.md) (PROGRAM/TRAIN/HUMAN) and
-> [`OBJECTIVE_DESIGN.md`](OBJECTIVE_DESIGN.md).
+> oversight. Map / entry point: **[`THE_WORKFLOW.md`](THE_WORKFLOW.md)**. Companion to
+> [`THE_LINE.md`](THE_LINE.md) (PROGRAM/TRAIN/HUMAN) and [`OBJECTIVE_DESIGN.md`](OBJECTIVE_DESIGN.md).
 >
 > **Status: shape RATIFIED by the operator** (2026-07-24 — "that's the formula for the workflow";
 > the S6 recognition). The completeness gate is **built and proven** (`core/saturation.py`) and
