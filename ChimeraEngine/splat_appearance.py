@@ -12,7 +12,7 @@ from what the thing IS):
   * "planet"   -- a SOLID world. Splats are placed ON a sphere shell (Fibonacci distribution) and
     painted by surface type: deep OCEANS, continent-noise LAND, polar ICE caps, wrapped in a faint
     ATMOSPHERE halo. Depth-sorted opaque compositing gives a crisp limb -- a world seen from space,
-    not a fog ball. begin = the world ACCRETING from its own colent-of-dust, end = the settled sphere.
+    not a fog ball. begin = the world ACCRETING from its own cloud of dust, end = the settled sphere.
 
 Terms with a scene render as splats; terms without one return None (the engine falls back to the
 matplotlib placeholder until their scene is authored). Needs the GPU (Numba CUDA) -- rendering is
