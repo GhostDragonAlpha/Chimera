@@ -38,7 +38,8 @@ def _star(out: Path) -> str:
         th = k * np.pi / 8
         ax.plot([.09 * np.cos(th), .46 * np.cos(th)], [.09 * np.sin(th), .46 * np.sin(th)],
                 color=mix(0.0), alpha=.12, lw=2)
-    for rr, t, a in [(.34, .0, .10), (.24, .0, .22), (.15, .0, .60), (.11, .35, .92), (.06, .85, 1.0)]:
+    for rr, t, a in [(.46, .0, .14), (.36, .0, .32), (.27, .0, .58), (.19, .06, .82),
+                     (.13, .22, .96), (.085, .5, 1.), (.05, .82, 1.)]:      # bright warm-white bloom, not faint grey
         ax.add_patch(Circle((0, 0), rr, color=mix(t), alpha=a, lw=0))
     ax.set_xlim(-.85, .85); ax.set_ylim(-.85, .85); ax.set_aspect("equal"); ax.axis("off")
     fig.text(.5, .95, "THE STAR", color=mix(.5), ha="center", fontsize=24, weight="bold")

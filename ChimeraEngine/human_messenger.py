@@ -74,7 +74,7 @@ def see(png: str, timeout: int = 300) -> str | None:
         payload = {"messages": [{"role": "user", "content": [
             {"type": "text", "text": _SEE_PROMPT},
             {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}]}],
-            "temperature": 0.2, "max_tokens": 2048}    # reasoning models spend budget THINKING first (H-3)
+            "temperature": 0.2, "max_tokens": 4096}    # reasoning models THINK first (H-3); models here hold >=120k ctx
         return (_post(payload, timeout) or "").strip() or None
     except Exception as e:
         print(f"[human_messenger] vision read FAILED: {e}")
@@ -100,7 +100,7 @@ def align(expected: str, observed: str, timeout: int = 240):
               f"number from 0.0 (no alignment) to 1.0 (perfect alignment). Output ONLY the number.")
     try:
         return _parse_alignment(_post({"messages": [{"role": "user", "content": prompt}],
-                                       "temperature": 0.1, "max_tokens": 2048}, timeout))  # reasoning model: room to think, THEN the number
+                                       "temperature": 0.1, "max_tokens": 4096}, timeout))  # reasoning model: think, THEN the number
     except Exception as e:
         print(f"[human_messenger] cross-reference FAILED: {e}")
         return None
