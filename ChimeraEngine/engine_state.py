@@ -12,6 +12,7 @@ import copy
 import json
 import sys
 import time
+import zlib
 from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
@@ -35,6 +36,13 @@ _SEED_HIERARCHY = {
     "theLoop":        {"parent": "theSolarSystem", "kind": "membrane", "status": "open",    "children": ["theVerbs"]},
     "theVerbs":       {"parent": "theLoop",        "kind": "membrane", "status": "open",    "children": []},
 }
+
+# Source-weight: how source-like a term is -- how much of the rest DERIVES from it. A physical
+# fact, not taste: the star is a point source that radiates the light, warmth and habitable zone
+# the whole system inherits, so it is the most compressed (least data generating the most world).
+# This breaks ties BEFORE a term has a genome; once it does, the MEASURED compression leads.
+SOURCE_WEIGHT = {"theStar": 5, "thePlanets": 4, "theLoop": 3, "theVerbs": 3, "aPlanet": 3,
+                 "theSpace": 2, "aScene": 2}
 
 GATE_FIX = {
     "S0 FRAME":        "frame(term, claim)  -- state it as exactly one claim",
@@ -79,9 +87,25 @@ class Engine:
                     seen.append(v)
         return seen
 
-    # --- helm: the next move, setting-first --------------------------------------
+    def compression(self, name: str) -> float:
+        """MEASURED compression of the term's genome: distinct variables represented per compressed
+        byte -- meaning-density. Higher = more world in less data = the smarter, more compressed
+        term (compression IS intelligence). 0 while the term has no data. This is what ranks terms
+        that have been worked; SOURCE_WEIGHT only breaks ties among fresh ones."""
+        t = self.state["terms"].get(name)
+        if not t or not t["rounds"]:
+            return 0.0
+        blob = json.dumps({"claim": t["claim"], "rounds": t["rounds"]}, sort_keys=True).encode()
+        return len(self._vars(name)) / max(len(zlib.compress(blob, 9)), 1)
+
+    def generativity(self, name: str) -> int:
+        return SOURCE_WEIGHT.get(name, 1)
+
+    # --- helm: the next move, most-compressed-first ------------------------------
     def next_term(self):
-        """The shallowest node not yet proven/decided whose PARENT is proven/decided."""
+        """The next term to prove: shallowest first (setting-first), then the MOST COMPRESSED --
+        measured meaning-density, then the source-weight prior while data is absent. Never the
+        alphabet: the smartest (most compressed) sibling wins."""
         h = self.state["hierarchy"]
 
         def depth(n):
@@ -96,7 +120,7 @@ class Engine:
 
         ready = [n for n, v in h.items()
                  if v["status"] not in ("proven", "decided") and parent_ready(n)]
-        ready.sort(key=lambda n: (depth(n), n))
+        ready.sort(key=lambda n: (depth(n), -self.compression(n), -self.generativity(n), n))
         return ready[0] if ready else None
 
     def context(self, name: str) -> list:
