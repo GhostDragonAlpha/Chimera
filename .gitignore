@@ -164,3 +164,6 @@ WorldModel/training_data/images/
 
 # vision render workspace -- renders + experimental render scripts (captured in the artifact)
 Chimera/vision/
+
+# ChimeraEngine MCP runtime state (the owned proof-ledger; machine-local)
+ChimeraEngine/engine_state.json

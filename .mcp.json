@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "chimera-engine": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["ChimeraEngine/mcp_server.py"]
+    }
+  }
+}
