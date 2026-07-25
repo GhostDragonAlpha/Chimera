@@ -20,7 +20,7 @@
 
 ## READ THESE, IN THIS ORDER
 
-**New agent? Paste `AGENT_ONBOARDING.md` into your session.** It gets you into the rhythm in under 2 minutes.
+**New agent? Paste `ChimeraEngine/ONBOARDING.md` into your session.** It gets you into the rhythm: you are the PHYSICS (you own rendering + the workflow), the HUMAN side is the operator + LM Studio's vision, and a proof is a dyadAnalysis (a number and a term, aligned). You build THROUGH the engine.
 
 | # | Doc | What it OWNS |
 |---|---|---|

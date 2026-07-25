@@ -89,8 +89,8 @@ orient → next → frame → question × N (until saturated) → classify → r
 
 `S0 FRAME` (atomic claim) · `S2a PROVENANCE` (variables born of questions) · `S2b SATURATION`
 (measured — over the hump) · `S3 CLASSIFY` (every variable → a terminal) · `APPEARANCE MESSENGER`
-(a projection of the physics that MEASURABLY CONVERGES with it) · `S5 WHY-TERMINAL` (PHYSICS or THE
-HUMAN). **`prove` refuses until all six pass**, and names the first that fails.
+(the splat render + the human DYAD: a vision reading that aligns with the physics) · `S5 WHY-TERMINAL`
+(PHYSICS or THE HUMAN). **`prove` refuses until all six pass**, and names the first that fails.
 
 **The dyadAnalysis (the proof model — CORRECTED 2026-07-25).** A proof is a **dyad**: two DIFFERENT
 kinds of output, from two independent systems, that must AGREE.

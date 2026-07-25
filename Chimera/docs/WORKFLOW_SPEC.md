@@ -313,7 +313,7 @@ inbox). `brief` (unread + live git/board/phase/heading) · `tell` / edit inbox
 `ack`/`search`/`log`/`prune`. Posters: preflight (reads), postflight, task_board
 claim/done, training gate. Agent-agnostic (not Claude-Code-reliant).
 
-### 8.2 Pi orchestration model (`docs/LEAD_AGENT_PROMPT.md` / `SUBAGENT_PROMPT.md`)
+### 8.2 Pi orchestration model (the `LEAD_AGENT_PROMPT` / `SUBAGENT_PROMPT` docs were removed 2026-07-25; current onboarding: `ChimeraEngine/ONBOARDING.md`)
 Pi calls ONE **lead agent** = the CAPCOM operator. The lead dispatches **focused
 subagents** (one task = one trained piece), watches the lifecycle via CAPCOM
 (claim → training block/waiver → completion), VERIFIES each completion
