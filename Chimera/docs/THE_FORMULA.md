@@ -8,11 +8,11 @@
 > oversight. Map / entry point: **[`THE_WORKFLOW.md`](THE_WORKFLOW.md)**. Companion to
 > [`THE_LINE.md`](THE_LINE.md) (PROGRAM/TRAIN/HUMAN) and [`OBJECTIVE_DESIGN.md`](OBJECTIVE_DESIGN.md).
 >
-> **Status: shape RATIFIED by the operator** (2026-07-24 — "that's the formula for the workflow";
-> the S6 recognition). The completeness gate is **built and proven** (`core/saturation.py`) and
-> encoded as a lint (a doc can be ignored; a lint cannot). What stays under the operator's ongoing
-> ENOUGH is the same thing every proof leaves there: *is it deep enough yet* — which is now itself
-> a measured saturation, not a hand-wave.
+> **Status: SEALED** — the operator called ENOUGH on the method (2026-07-24). The shape was ratified
+> ("that's the formula for the workflow"; the S6 recognition), the completeness gate is **built and
+> proven** (`core/saturation.py`) and encoded as a lint (a doc can be ignored; a lint cannot). This
+> is settled doctrine — build the game with it, don't re-litigate it. (The ENOUGH now lives
+> per-PROVE: is *this term* deep enough — a measured saturation, not a hand-wave.)
 
 ---
 

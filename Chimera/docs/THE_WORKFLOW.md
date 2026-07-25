@@ -5,6 +5,10 @@
 > at which the *way of working* was declared complete ("the final piece"). If you read one doc
 > before touching this project, read this one.
 >
+> **SEALED 2026-07-24** — the operator called ENOUGH. This is settled doctrine: do not re-open or
+> re-litigate the method; *use* it to build the game. The next session begins the way it should —
+> the operator names one `camelCase` term, and the agent guides from the setting down.
+>
 > **The whole method in one sentence:** the human names **one term at a time** and the agent
 > **guides them down a hierarchy of membranes**, proving each term against **PHYSICS or THE HUMAN**
 > until the game stands — assembled from proven bricks, none of them hand-waved.
