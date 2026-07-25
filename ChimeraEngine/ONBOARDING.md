@@ -109,9 +109,11 @@ not a stop either — you decide, execute, and show the result for the human's j
 
 ---
 
-**Honest state (what is wired vs. in progress):** the human side (`human_messenger.py`: vision proxy
-+ cross-reference + summon + override) is BUILT and runs against a loaded LM Studio vision model. The
-splat renderer (`ParticleEngine`) is RECOVERED and renders. NOT yet wired: the engine's `render`/`prove`
-still runs the older self-measured pixel convergence (`appearance.py`/`convergence.py`, matplotlib),
-and the appearance is not yet the splat movie. The trajectory above is the target the engine is being
-moved onto, piece by piece — do not claim the splat-movie dyad is enforced by `prove` until it is.
+**Honest state (2026-07-25):** the splat-movie appearance + the human dyad ARE now wired into the
+engine — `render` produces a `ParticleEngine` splat movie (beginning→end) and `prove` gates on the
+APPEARANCE MESSENGER = `human_messenger`'s vision dyad holding. `appearance.py`/`convergence.py` remain
+only as a matplotlib FALLBACK for terms without a splat scene yet. Verified end-to-end: `theStar`'s
+dyad held at 0.900 (a vision model, blind, read the splat star as "a distant star"). STILL IN PROGRESS:
+a good splat scene per term (several are rough — the dyad loop drives their fixing), and the *pure
+form* (running with only the MCP tools removed of Bash/Write). A vision model MUST be loaded in LM
+Studio for the dyad to run; with none, `render`/`prove` FAIL and summon the operator (by design).
