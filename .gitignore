@@ -161,3 +161,6 @@ WorldModel/training_data/images/
 /web/object.json
 /web/*.png
 /web/*.npz
+
+# vision render workspace -- renders + experimental render scripts (captured in the artifact)
+Chimera/vision/
