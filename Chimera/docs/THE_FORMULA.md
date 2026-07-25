@@ -142,7 +142,7 @@ the parts actually make the whole.
 | **S2a PROVENANCE** | every variable was **born of a question** | **`core/saturation.py`** — by construction (a var with no round can't be in the curve) |
 | **S2b SATURATION** | the discovery curve is **measured saturated** (Chao2 completeness + dry tail) | **`core/saturation.py`** — proven every run, with the curve |
 | **S3 CLASSIFY** | you can **write its `measure()`** (or it's taste) | `THE_LINE` — "write measure() first" |
-| **S4 PROVE·each** | researched · trained-not-tuned · witnessed · **the two messengers CONVERGE** (the term's appearance measurably agrees with its physics) | `research_gate · training_gate · witness_gate` + **ChimeraEngine `appearance.py`/`convergence.py`** (the measured convergence — the rigorous form of the old `visual_gate`'s "looked") |
+| **S4 PROVE·each** | researched · trained-not-tuned · witnessed · **the DYAD agrees** (physics NUMBER ↔ human TERM aligned) | `research_gate · training_gate · witness_gate` + **ChimeraEngine `human_messenger.py`** (a vision LLM reads the render; the old `appearance.py`/`convergence.py` self-measurement was a monad) |
 | **S5 CHAIN** | why-chain hits a terminal; the coin's two faces agree | `why_gate · coin_verifier` |
 | **S6 DECIDE** | the operator ruled | THE HUMAN terminal |
 | **S7 RECOMPOSE** | the proven parts **reconstitute X**; saturation re-checked | **`core/saturation.py`** + operator ENOUGH |
@@ -160,25 +160,29 @@ are now the **measured saturation gate** (`core/saturation.py`), not a critic's 
 
 ---
 
-## The second messenger — S4's "looked" made a MEASURED gate (2026-07-25)
+## The second messenger — S4's "looked" is a HUMAN reading, not a self-measurement (corrected 2026-07-25)
 
-The formula sealed with `∧ looked(V)` — the visual conjunct of S4, enforced loosely (did the model
-glance at a render?). The ChimeraEngine hardened it into the **two-messenger proof**, and this is now
-the honest form of that checkpoint:
+The formula sealed with `∧ looked(V)`. The first attempt to harden it (`convergence.py`) had the
+engine PROJECT the appearance and then MEASURE a feature back out of its OWN pixels, comparing to what
+the physics predicted. That is a **monad**: physics measuring itself. The tell — run it twice and it
+returns the byte-identical number, because it is one system. Identical outputs are the signature of a
+false dyad, not proof. The honest form:
 
-> **A membrane is real only where its inside and its outside agree.** Gravity (the interior — the
-> measured physics) and light (the surface — the emitted appearance) are one thing measured by two
-> independent systems. *You cannot measure a system with itself*, so a term needs a second messenger:
-> its **appearance**, PROJECTED from its physics (never hand-supplied), then measured back out of the
-> pixels and checked against what the physics predicts. Proof is the **residual landing under
-> tolerance** — the star's rendered glow `== blackbody(5778 K)`, the system's brightest point at the
-> barycenter, the garden green. A star recolored blue leaves the Planck locus and is **REFUSED**. No
-> aesthetic pass — the look is a measurement of the physics or it is a lie. (`ChimeraEngine/
-> appearance.py` + `convergence.py`; multi-messenger astronomy is the precedent — GW170817 was a
-> detection because its gravitational-wave and electromagnetic messengers AGREED.)
+> **A membrane is real only where its inside and its outside agree — and the two must be measured by
+> DIFFERENT SYSTEMS.** *You cannot measure a system with itself.* So S4's second messenger is not the
+> physics re-reading its own render — it is a **HUMAN reading**: the operator + LM Studio's vision model
+> LOOK at the render (a **Gaussian-splat movie**, beginning→end) BLIND to the number, and say what they
+> SEE — a **TERM**. A cross-reference scores the ALIGNMENT (0→1) between the physics's NUMBER and the
+> human's TERM; two different KINDS of output are what make them independent. A star the human reads as
+> "cold blue" against a physics of 5778 K FAILS — and the human is the arbiter, so **the physics is
+> wrong: start over.** (`ChimeraEngine/human_messenger.py`; no vision model = FAIL and the operator is
+> summoned; only the operator's own analysis overrides.) Multi-messenger astronomy is the precedent —
+> GW170817 was a detection because two DIFFERENT instruments, a gravitational-wave detector and a
+> telescope, AGREED.
 
-So the engine's live gate sequence is `S0 FRAME → S2a PROVENANCE → S2b SATURATION → S3 CLASSIFY →
-**S4 APPEARANCE-CONVERGES** → S5 WHY-TERMINAL`, and `prove()` refuses at the first that fails.
+So the intended gate sequence is `S0 FRAME → S2a PROVENANCE → S2b SATURATION → S3 CLASSIFY → **S4
+DYAD-AGREES** (physics number ↔ human term) → S5 WHY-TERMINAL`. (The live engine still runs the older
+self-measured convergence at S4; the human dyad is built and being wired in — see `MCP_ENGINE.md`.)
 
 ---
 

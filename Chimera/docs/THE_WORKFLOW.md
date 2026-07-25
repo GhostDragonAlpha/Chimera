@@ -157,11 +157,13 @@ floor: PHYSICS (a fact) or THE HUMAN (taste) — an LLM is never one.
 The three gates that were only prose until 2026-07-24 — **S2a** (provenance), **S2b** (saturation),
 **S7** (recompose) — are exactly the three that catch *"the agent declared its own variables."*
 
-**The second messenger (2026-07-25):** S4's `looked` is now a MEASURED gate. A term's **appearance**
-must be PROJECTED from its physics and *measurably converge* with it — the star's rendered color
-`== blackbody(T)`, not merely glanced at. Gravity (interior) and light (surface) are one membrane
-measured two ways; agreement is proof, so no look can drift from the model (no aesthetic pass).
-→ `THE_FORMULA.md` §"The second messenger"; `ChimeraEngine/appearance.py` + `convergence.py`.
+**The second messenger (corrected 2026-07-25):** S4's `looked` is a HUMAN reading, not a
+self-measurement. The physics produces a NUMBER; a SEPARATE system — the operator + LM Studio's vision
+model — LOOKS at the render (a Gaussian-splat movie, beginning→end) BLIND to the number and produces a
+TERM; a cross-reference scores their ALIGNMENT. Two DIFFERENT kinds of output = two independent
+systems. The earlier `convergence.py` (physics measuring its own pixels → the same number twice) was a
+MONAD — identical outputs are the tell of a false dyad. The human is the arbiter: disagreement means
+the physics is wrong, start over. → `THE_FORMULA.md` §"The second messenger"; `ChimeraEngine/human_messenger.py`.
 
 → **`docs/THE_FORMULA.md`** (the full equation, the gate table, the two worked failures, and the
 black-hole structure).
@@ -229,7 +231,7 @@ The method is not trusted because it is written down — it is trusted because i
 |---|---|---|
 | research | a research-less session with no cited sources/waiver | `core/research_gate.py` |
 | witness | `verified`/`observed` with no observation node | `core/witness_gate.py` |
-| visual → **appearance** | a visual claim the model never looked at — now hardened to the **two-messenger proof**: an appearance that doesn't **measurably converge** with its physics | `core/visual_gate.py` → **ChimeraEngine `appearance.py`/`convergence.py`** |
+| visual → **the human dyad** | a render no independent mind judged — the **HUMAN** (operator + LM Studio vision) must read it (a TERM) and align with the physics NUMBER; disagreement ⇒ the render is wrong | `core/visual_gate.py` → **ChimeraEngine `human_messenger.py`** |
 | training | closing a game task with the subject un-trained | `core/training_gate.py` |
 | why | a claim whose *because*-chain never reaches a terminal | `core/why_gate.py` |
 | coin | a claim and its evidence that don't agree both ways | `core/coin_verifier.py` |
@@ -276,8 +278,8 @@ theStory  (the SEED / timeline)  ◐  written + ratified on the page; TRUE measu
 
 **Proven through the ENGINE** (the formula's gates, via `prove`) is tracked live in
 `ChimeraEngine/THE_TERMS.md` (generated from the engine's codebook) — currently **`theSolarSystem ·
-theStar · thePlanets`**, each with both messengers agreeing (measured physics + a converging
-appearance). The `✓` above is *substrate grown/measured*; the engine codebook is the formal
+theStar · thePlanets`**, each proven through the engine's gates (the human dyad — physics number + an independent reading — is
+being wired in). The `✓` above is *substrate grown/measured*; the engine codebook is the formal
 proof-of-passage through S0–S5. The two are aligned, not duplicated: `THE_TERMS.md` is authoritative.
 
 Almost all the **substrate** is `✓`. We do not re-prove solid numbers. The next work is wherever
