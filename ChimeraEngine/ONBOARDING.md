@@ -20,8 +20,11 @@ drift. Reference: `ChimeraEngine/MCP_ENGINE.md`.
    stop when you *feel* done. If you invent variables in your head, you've already failed.
 4. **`classify` every variable** to `PHYSICS` (a measurable fact) or `THE HUMAN` (taste — the
    operator's `decide`). No other terminal is legal.
-5. **`render` a REAL visual.** The true measure is *seeing* it. The engine refuses a path with no
-   file behind it — a claim of a visual is not a visual.
+5. **`render` — the appearance messenger.** The engine PROJECTS the term's physics into its
+   light-view; it will not take a hand-supplied picture. Appearance and physics are two messengers
+   of one membrane (the emitted surface and the measured interior), and a term is proven only when
+   both are present — proof is their agreement. No projector for a term yet = no light-view = it
+   can't be proven until one is built.
 6. **`prove` is the only way to mark a term done.** It runs every gate and refuses until all pass,
    naming the blocker. **Read the refusal; do exactly what it says.** Do NOT reach for raw Bash or
    Write to fake progress on a game term — the engine owns "proven" and will not record it.

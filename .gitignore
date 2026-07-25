@@ -168,5 +168,7 @@ Chimera/vision/
 # ChimeraEngine MCP runtime state (the owned proof-ledger; machine-local)
 ChimeraEngine/engine_state.json
 
-# recovered junk PNG (was clobbering ChimeraEngine/__init__.py); kept local, never re-commit
-ChimeraEngine/output/recovered_from_init.png
+# ChimeraEngine/output/ is ALL generated: projected appearance-messenger renders, test
+# mocks, and the recovered junk PNG that once clobbered __init__.py. Runtime artifacts,
+# never source -- ignore the whole directory so no future render/mock can slip into git.
+ChimeraEngine/output/

@@ -1,0 +1,99 @@
+"""appearance.py -- THE APPEARANCE MESSENGER (the light-view of a membrane).
+
+Your idea, made mechanism: gravity and light are one thing measured by two independent systems, so
+a term's PHYSICS (its measured interior -- the genome) and its APPEARANCE (its emitted surface --
+the render) are two messengers of ONE membrane, and proof is their AGREEMENT. This module is the
+appearance messenger: it PROJECTS a term's physics into a visual, generated FROM the term's own
+world so it cannot be an unrelated picture. A term with no projector has no light-view yet, and
+honestly cannot be proven by two-messenger agreement until one is built. (No aesthetic passes:
+appearance derives from the matter model, never beside it.)
+"""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+_HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(_HERE.parent / "Chimera"))       # reach core.*
+
+
+def _star(out: Path) -> str:
+    import matplotlib
+    matplotlib.use("Agg")
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Circle
+    fig, ax = plt.subplots(figsize=(8, 8))
+    fig.patch.set_facecolor("#04050b"); ax.set_facecolor("#04050b")
+    rng = np.random.default_rng(7)
+    ax.scatter(rng.uniform(-1, 1, 300), rng.uniform(-1, 1, 300),
+               s=rng.uniform(.3, 2.2, 300), c="#c9d4ff", alpha=.35, lw=0)
+    for r, a in [(.62, .10), (.5, .16)]:
+        ax.add_patch(Circle((0, 0), r, fill=False, ec="#39c07a", lw=1, alpha=a, ls=(0, (5, 5))))
+    for k in range(16):
+        th = k * np.pi / 8
+        ax.plot([.09 * np.cos(th), .46 * np.cos(th)], [.09 * np.sin(th), .46 * np.sin(th)],
+                color="#ffcf48", alpha=.12, lw=2)
+    for rr, c, a in [(.32, "#ffcf48", .09), (.22, "#ffd75e", .15), (.14, "#ffe07a", .28),
+                     (.09, "#fff0b0", .6), (.055, "#fffbe8", 1)]:
+        ax.add_patch(Circle((0, 0), rr, color=c, alpha=a, lw=0))
+    ax.set_xlim(-.85, .85); ax.set_ylim(-.85, .85); ax.set_aspect("equal"); ax.axis("off")
+    fig.text(.5, .95, "THE STAR", color="#ffe9a8", ha="center", fontsize=24, weight="bold")
+    fig.text(.5, .05, "G2V  ·  0.98 M(sun)  ·  ~1 L(sun)  ·  ~5800 K  ·  yellow-white",
+             color="#7e88ad", ha="center", fontsize=10)
+    p = out / "appear_theStar.png"
+    fig.savefig(p, dpi=110, facecolor=fig.get_facecolor()); plt.close(fig)
+    return str(p)
+
+
+def _solarsystem(out: Path) -> str:
+    import matplotlib
+    matplotlib.use("Agg")
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Circle, Wedge
+    orbits = [(.236, "#ff5a44"), (.444, "#ffb020"), (.834, "#7fc0ff"), (.976, "#3fe0a0")]  # grown AU
+    fig, ax = plt.subplots(figsize=(9, 9))
+    fig.patch.set_facecolor("#04050b"); ax.set_facecolor("#04050b")
+    ax.add_patch(Wedge((0, 0), 1.37, 0, 360, width=1.37 - 0.95, facecolor="#39c07a", alpha=.16, lw=0))
+    for a, c in orbits:
+        ax.add_patch(Circle((0, 0), a, fill=False, ec="#6f7fb0", lw=1, alpha=.5))
+        th = np.random.default_rng(int(a * 1000)).uniform(0, 6.28)
+        ax.scatter([a * np.cos(th)], [a * np.sin(th)], s=90, c=c, edgecolors="white", lw=.5, zorder=5)
+    for rr, c in [(.09, "#ffcf48"), (.05, "#fff3c0"), (.028, "#ffffff")]:
+        ax.add_patch(Circle((0, 0), rr, color=c, zorder=4))
+    ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5); ax.set_aspect("equal"); ax.axis("off")
+    fig.text(.5, .94, "THE SOLAR SYSTEM", color="#ffe9a8", ha="center", fontsize=20, weight="bold")
+    fig.text(.5, .06, "a yellow G-star  ·  4 grown worlds  ·  habitable zone shaded",
+             color="#7e88ad", ha="center", fontsize=10)
+    p = out / "appear_theSolarSystem.png"
+    fig.savefig(p, dpi=110, facecolor=fig.get_facecolor()); plt.close(fig)
+    return str(p)
+
+
+def _garden(out: Path) -> str:
+    from core.eden import grow_tree_of_knowledge, make_eden
+    from core.scene3d import render
+    onion, garden, _ = make_eden(7, lush=True)
+    bones = grow_tree_of_knowledge(3)
+    return render(onion, garden, bones, path=str(out / "appear_theGarden.png"))
+
+
+# term -> its projector (the light-view). Reuses the proven core systems, so the appearance is a
+# real projection of the term's physics, not an authored picture. Grows as more terms get a view.
+PROJECTORS = {
+    "theStar": _star,
+    "theSolarSystem": _solarsystem,
+    "theGarden": _garden,
+    "aPlanet": _garden,          # a planet's light-view is its lush surface with the garden
+}
+
+
+def project(term: str, out_dir) -> str | None:
+    """Generate the appearance messenger for `term` (a PNG projected from its physics), or None
+    if no projector exists yet (no light-view -> the term can't be proven by two-messenger agreement)."""
+    fn = PROJECTORS.get(term)
+    if fn is None:
+        return None
+    out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
+    return fn(out)

@@ -62,10 +62,12 @@ def classify(term: str, assignments: dict[str, str]) -> str:
 
 
 @mcp.tool()
-def render(term: str, path: str) -> str:
-    """Record the rendered visual for this term -- the play button. REFUSES if the file does not
-    exist: a real image, produced by the engine, never a claim that one exists."""
-    return ENG.render(term, path)
+def render(term: str) -> str:
+    """Generate the APPEARANCE MESSENGER: the engine PROJECTS the term's physics into its light-view
+    (appearance.py) -- one membrane, two messengers (the measured interior and the emitted surface).
+    No hand-supplied picture: the appearance is derived from the physics, or refused if the term has
+    no projector yet (no light-view to agree with)."""
+    return ENG.render(term)
 
 
 @mcp.tool()

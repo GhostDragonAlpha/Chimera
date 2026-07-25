@@ -1,28 +1,30 @@
-"""The engine must FORCE the workflow: prove() refuses until every gate passes, then records it.
-If any of these fail, the engine has rotted into a rubber stamp -- the failure it exists to prevent.
+"""The engine must FORCE the workflow: prove() refuses until BOTH messengers agree -- the measured
+PHYSICS interior (frame/provenance/saturation/classify/why) and the projected APPEARANCE surface
+(a rendered light-view). If any of these fail, the engine has rotted into a rubber stamp.
 
-Runs two ways:
-  python ChimeraEngine/tests/test_engine_gates.py          (standalone; the reliable way)
-  python -m pytest ... --import-mode=importlib              (pytest; --import-mode needed because the
-                                                             sibling ChimeraEngine/__init__.py is a
-                                                             corrupted 4.2 MB blob -- a pre-existing defect)
+Runs standalone: python ChimeraEngine/tests/test_engine_gates.py
 """
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # ChimeraEngine/ (skip the pkg __init__)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # ChimeraEngine/
 import engine_state
+import appearance
 
 
 def _engine(tmp_path):
     return engine_state.Engine(path=Path(tmp_path) / "state.json")
 
 
-def _tiny_png(tmp_path):
-    from PIL import Image
-    p = Path(tmp_path) / "vis.png"
-    Image.new("RGB", (8, 8), (0, 120, 0)).save(p)
-    return str(p)
+def _install_projector(term):
+    """Give `term` a fast mock light-view so render() can project it (real projectors are slow)."""
+    def _proj(out):
+        from PIL import Image
+        p = Path(out); p.mkdir(parents=True, exist_ok=True)
+        f = p / f"{term}_mock.png"
+        Image.new("RGB", (8, 8), (0, 120, 0)).save(f)
+        return str(f)
+    appearance.PROJECTORS[term] = _proj
 
 
 _SATURATING = [
@@ -39,32 +41,49 @@ _SATURATING = [
 ]
 
 
-def test_prove_refuses_until_every_gate_passes(tmp_path):
+def test_prove_refuses_until_both_messengers_agree(tmp_path):
     E = _engine(tmp_path)
     term = E.next_term()
     assert term is not None
     assert "REFUSED" in E.prove(term)                         # S0 not framed
     E.frame(term, "the term stated as one atomic claim")
-    assert "REFUSED" in E.prove(term)                         # no variables / not saturated
+    assert "REFUSED" in E.prove(term)                         # physics: not saturated
     r = None
     for i, vs in enumerate(_SATURATING):
         r = E.question(term, f"q{i}", vs)
-    assert r["saturated"] is True                             # over the hump
-    assert "REFUSED" in E.prove(term)                         # S3 CLASSIFY not done
+    assert r["saturated"] is True
+    assert "REFUSED" in E.prove(term)                         # physics: not classified
     E.classify(term, {v: "PHYSICS" for v in E._vars(term)})
-    assert "REFUSED" in E.prove(term)                         # VISUAL missing
-    assert "REFUSED" in E.render(term, str(Path(tmp_path) / "nope.png"))   # fake visual refused
-    E.render(term, _tiny_png(tmp_path))                       # real one accepted
-    out = E.prove(term)                                       # every gate passes
+    assert "REFUSED" in E.prove(term)                         # appearance messenger missing
+    assert "REFUSED" in E.render(term)                        # this term has no projector -> refused
+    _install_projector(term)                                  # give it a light-view
+    E.render(term)                                            # the engine PROJECTS the appearance
+    out = E.prove(term)                                       # now both messengers agree
     assert "PROVEN" in out and "REFUSED" not in out
     assert term in E.state["codebook"]
     assert E.state["hierarchy"][term]["status"] == "proven"
 
 
+def test_render_refuses_a_term_with_no_light_view(tmp_path):
+    E = _engine(tmp_path)
+    # theLaws has no projector in appearance.PROJECTORS -> no appearance messenger -> refused
+    assert "REFUSED" in E.render("theLaws")
+
+
+def _prove_ss(E):
+    _install_projector("theSolarSystem")
+    E.frame("theSolarSystem", "the setting")
+    for i, vs in enumerate(_SATURATING):
+        E.question("theSolarSystem", f"q{i}", vs)
+    E.classify("theSolarSystem", {v: "PHYSICS" for v in E._vars("theSolarSystem")})
+    E.render("theSolarSystem")
+    assert "PROVEN" in E.prove("theSolarSystem")
+
+
 def test_prove_refuses_a_premature_saturation(tmp_path):
     E = _engine(tmp_path)
     E.frame("x", "a claim")
-    E.question("x", "q", ["a", "b", "c"])                      # one round, no dry tail
+    E.question("x", "q", ["a", "b", "c"])
     report = E.prove("x")
     assert "REFUSED" in report and "SATURATION" in report
 
@@ -81,32 +100,18 @@ def test_classify_refuses_illegal_terminal(tmp_path):
 
 
 def test_next_starts_at_the_seed_in_story_order(tmp_path):
-    # theStory is decided; depth-first opens its first declared child -- theSeed (story Movement I)
     assert _engine(tmp_path).next_term() == "theSeed"
-
-
-def _prove_ss(E, tmp_path):
-    E.frame("theSolarSystem", "the setting")
-    for i, vs in enumerate(_SATURATING):
-        E.question("theSolarSystem", f"q{i}", vs)
-    E.classify("theSolarSystem", {v: "PHYSICS" for v in E._vars("theSolarSystem")})
-    E.render("theSolarSystem", _tiny_png(tmp_path))
-    assert "PROVEN" in E.prove("theSolarSystem")
 
 
 def test_next_descends_the_started_branch_first(tmp_path):
     E = _engine(tmp_path)
-    _prove_ss(E, tmp_path)
-    # theSolarSystem is proven, so depth-first CONTINUES it (not off to the sibling theSeed) and
-    # offers its first declared open child -- theStar
+    _prove_ss(E)
     assert E.next_term() == "theStar"
 
 
 def test_measured_compression_beats_declared_order(tmp_path):
     E = _engine(tmp_path)
-    _prove_ss(E, tmp_path)
-    # give theSpace (declared AFTER theStar) real data; its MEASURED compression must lift it above
-    # theStar (no data) -- the most-compressed DATA wins the fork, ahead of declaration order
+    _prove_ss(E)
     for i, vs in enumerate(_SATURATING):
         E.question("theSpace", f"q{i}", vs)
     assert E.compression("theSpace") > 0 and E.compression("theStar") == 0
@@ -115,10 +120,10 @@ def test_measured_compression_beats_declared_order(tmp_path):
 
 def _run() -> int:
     import tempfile
-    fns = [test_prove_refuses_until_every_gate_passes, test_prove_refuses_a_premature_saturation,
-           test_frame_refuses_compound_claim, test_classify_refuses_illegal_terminal,
-           test_next_starts_at_the_seed_in_story_order, test_next_descends_the_started_branch_first,
-           test_measured_compression_beats_declared_order]
+    fns = [test_prove_refuses_until_both_messengers_agree, test_render_refuses_a_term_with_no_light_view,
+           test_prove_refuses_a_premature_saturation, test_frame_refuses_compound_claim,
+           test_classify_refuses_illegal_terminal, test_next_starts_at_the_seed_in_story_order,
+           test_next_descends_the_started_branch_first, test_measured_compression_beats_declared_order]
     ok = 0
     with tempfile.TemporaryDirectory() as base:
         for i, fn in enumerate(fns):

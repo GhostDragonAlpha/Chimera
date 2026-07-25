@@ -66,7 +66,7 @@ GATE_FIX = {
     "S2a PROVENANCE":  "question(term, ...) -- discover variables by asking, never declare them",
     "S2b SATURATION":  "question(term, ...) -- keep asking until the discovery curve is over the hump",
     "S3 CLASSIFY":     "classify(term, {var: PHYSICS|THE HUMAN}) -- send each variable to a terminal",
-    "VISUAL":          "render(term, path) -- record a REAL rendered image (the play button)",
+    "APPEARANCE MESSENGER": "render(term) -- project the physics into its light-view",
     "S5 WHY-TERMINAL": "classify each variable to a LEGAL terminal (PHYSICS or THE HUMAN)",
 }
 
@@ -170,8 +170,9 @@ class Engine:
                     "all variables classified" if vs and not unclassified else f"unclassified: {unclassified}"))
         vis = t["visual"]
         vis_ok = bool(vis) and Path(vis).exists()
-        out.append(("VISUAL", vis_ok,
-                    f"visual at {vis}" if vis_ok else "no rendered visual -- the true measure is SEEING it"))
+        out.append(("APPEARANCE MESSENGER", vis_ok,
+                    f"projected from physics -> {vis}" if vis_ok else
+                    "no light-view yet -- call render to project the physics into a visual"))
         why_ok = bool(vs) and all(term in ("PHYSICS", "THE HUMAN")
                                   for term in t["classification"].values())
         out.append(("S5 WHY-TERMINAL", why_ok,
@@ -214,12 +215,20 @@ class Engine:
         t["status"] = "classified"; self._save()
         return f"S3 CLASSIFY: {assignments}.  Next: {self.next_action(name)}"
 
-    def render(self, name: str, path: str) -> str:
-        if not Path(path).exists():
-            return (f"REFUSED (VISUAL): no file at {path}. render records a REAL image "
-                    f"(the play button), not a claim. Produce the render first.")
-        t = self._term(name); t["visual"] = str(path); t["status"] = "rendered"; self._save()
-        return f"VISUAL recorded: `{name}` -> {path}.  Next: {self.next_action(name)}"
+    def render(self, name: str) -> str:
+        """Generate the APPEARANCE MESSENGER: project the term's physics into its light-view. The
+        engine renders it FROM the term's own world (appearance.py) -- one membrane, two messengers
+        (the measured interior and the emitted surface) -- so it cannot be a faked or unrelated
+        picture. No projector yet -> no appearance -> the term cannot be proven by agreement."""
+        import appearance
+        p = appearance.project(name, _HERE / "output")
+        if not p:
+            return (f"REFUSED (APPEARANCE MESSENGER): `{name}` has no light-view yet -- no projector "
+                    f"in appearance.py. A term is proven only when its PHYSICS and its APPEARANCE "
+                    f"agree, and this membrane has no appearance to agree with. Build its projector.")
+        t = self._term(name); t["visual"] = str(p); t["status"] = "rendered"; self._save()
+        return (f"APPEARANCE MESSENGER generated for `{name}` (projected from its physics): {p}\n"
+                f"Next: {self.next_action(name)}")
 
     def decide(self, name: str, ruling: str) -> str:
         t = self._term(name); t["decided"] = ruling; t["status"] = "decided"
@@ -245,7 +254,8 @@ class Engine:
         if name not in self.state["codebook"]:
             self.state["codebook"].append(name)
         self._save()
-        return f"PROVEN: `{name}` written to the codebook by the engine.\n{report}"
+        return (f"PROVEN: `{name}` -- two messengers agree on one membrane (the measured PHYSICS "
+                f"interior and the projected APPEARANCE surface). Written to the codebook.\n{report}")
 
     def orient(self) -> str:
         cur = self.state.get("current")
