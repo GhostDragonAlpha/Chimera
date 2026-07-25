@@ -332,6 +332,52 @@ def scene_buffer(term: str):
     return pipe.download_particles()
 
 
+# ═══════════════════════════════════════════════════════════════════════
+#  APPEARANCE FROM DECOMPOSITION -- a membrane's render built from its PROVEN children
+#  (the LOD-of-meaning principle: each level is composed of the rung below it, so adding detail to the
+#  STORY -- and proving it -- enriches the parent's render, no hand-authored scene. The child's own
+#  matter supplies its APPEARANCE; the parent's LAYOUT supplies only WHERE each child sits, which is
+#  structure -- a solar system's orbits -- not an aesthetic pass.)
+# ═══════════════════════════════════════════════════════════════════════
+COMPOSITIONS = {
+    "theSolarSystem": {
+        "cam": (0.0, -400.0, 230.0),
+        "rings": [85.0, 150.0, 215.0, 280.0],
+        # the REAL proven bodies, placed on the orbital plane (child, center, scale):
+        "place": [("theStar", (0.0, 0.0, 0.0), 0.45),
+                  ("aPlanet", (150.0, 0.0, 0.0), 0.13)],
+    },
+}
+
+
+def _place(buf, center, scale: float):
+    """Translate + scale a child's scene buffer into the parent's frame (positions AND grain size)."""
+    import numpy as np
+    b = np.array(buf, dtype=np.float32, copy=True)
+    b[:, PX:PZ + 1] = b[:, PX:PZ + 1] * float(scale) + np.asarray(center, dtype=np.float32)
+    b[:, SIZE] = b[:, SIZE] * float(scale)
+    return b
+
+
+def compose_buffer(term: str):
+    """Build `term`'s scene from its PROVEN children -- appearance derived from the decomposition.
+
+    Returns the composed (N,28) buffer, or None if the term has no layout. Each placed child is its OWN
+    `scene_buffer` (the real proven matter -- the actual blue marble, the actual star), so the parent is
+    literally made of its children. Rings are structure (the orbits), drawn as dust."""
+    import numpy as np
+    lay = COMPOSITIONS.get(term)
+    if not lay:
+        return None
+    rng = np.random.default_rng(_seed(term))
+    parts = [_orbit_ring(r, rng) for r in lay.get("rings", [])]
+    for child, center, scale in lay.get("place", []):
+        cb = scene_buffer(child)                                  # the child's own settled matter
+        if cb is not None:
+            parts.append(_place(cb, center, scale))
+    return np.concatenate(parts, axis=0) if parts else None
+
+
 if __name__ == "__main__":
     term = sys.argv[1] if len(sys.argv) > 1 else "theStar"
     import numpy as np
