@@ -11,7 +11,7 @@ from ParticleEngine.camera import FirstPersonCamera
 from ChimeraEngine.dialectic.world import chimera_survival_world
 
 w = chimera_survival_world()
-OUT = Path(__file__).resolve().parent.parent / "ParticleEngine" / "output"
+OUT = Path(__file__).resolve().parents[2] / "ParticleEngine" / "output"   # repo root (moved into rendering/ by the reorg)
 OUT.mkdir(exist_ok=True)
 
 print(f"Chimera: {w.name}")
