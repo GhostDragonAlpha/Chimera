@@ -2,7 +2,7 @@
 Witness Gate — no feature reaches 'verified'/'observed' on a compile alone.
 
 Why (2026-07-13, the human): the constitution says it in many places — "a compile
-is not proof" (AGENT_ONBOARDING), H-14 "verified-by-injection is not playable",
+is not proof" (the onboarding), H-14 "verified-by-injection is not playable",
 "report exact automation output verbatim BEFORE any feature is marked verified"
 (CHIMERA_PROGRESS_UPDATE) — yet `record_feature(status='verified')` accepts
 anything. So the proxy-vs-witness error (green unit tests read as "it flies") had
