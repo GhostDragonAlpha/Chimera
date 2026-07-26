@@ -57,6 +57,8 @@ fn setupDispatch() {
   let numWG = (n + WG - 1u) / WG;
   atomicStore(&counter[1], max(numWG, 1u));
   indirect[0] = max(numWG, 1u); indirect[1] = 1u; indirect[2] = 1u;
+  let nChunks = (RADIX * max(numWG, 1u) + WG - 1u) / WG;      // scanReduce / scanAdd workgroups
+  indirect[4] = max(nChunks, 1u); indirect[5] = 1u; indirect[6] = 1u;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -145,32 +147,73 @@ fn radixHistogram(@builtin(global_invocation_id) gid: vec3u,
   }
 }
 
-var<workgroup> digitTotal: array<u32, RADIX>;
-var<workgroup> digitBase: array<u32, RADIX>;
+var<workgroup> sScan: array<u32, WG>;
+var<workgroup> wNumWG: u32;
 
-@compute @workgroup_size(RADIX)
-fn radixScan(@builtin(local_invocation_id) lid: vec3u) {
-  let d = lid.x;
-  let numWG = atomicLoad(&counter[1]);
-  // exclusive scan across workgroups, for this digit
+// ── HIERARCHICAL SCAN (3 dispatches) ───────────────────────────────────────────────────────────
+// A single-workgroup scan is pinned to ONE SM: 118 chunks x 16 barriers ~= 1900 serialised barriers,
+// which is why the grid-stride version barely beat the 16-thread one. Split it so every SM works:
+//   scanReduce  -- every chunk scanned IN PARALLEL, chunk totals parked past the histogram
+//   scanChunks  -- one workgroup scans the (<=489) chunk totals
+//   scanAdd     -- every chunk adds its offset, in parallel
+// Chunk totals live in the tail of `hist` (it is sized for the worst case and mostly unused).
+fn scanTail() -> u32 { return RADIX * u32(U_.cfg2.y); }
+
+fn wgInclusiveScan(tid: u32) {                       // in-place Hillis-Steele over sScan[0..WG)
+  for (var off = 1u; off < WG; off = off << 1u) {
+    var add = 0u;
+    if (tid >= off) { add = sScan[tid - off]; }
+    workgroupBarrier();
+    if (tid >= off) { sScan[tid] = sScan[tid] + add; }
+    workgroupBarrier();
+  }
+}
+
+@compute @workgroup_size(256)
+fn scanReduce(@builtin(local_invocation_id) lid: vec3u, @builtin(workgroup_id) wid: vec3u) {
+  let tid = lid.x;
+  if (tid == 0u) { wNumWG = atomicLoad(&counter[1]); }
+  let total = RADIX * workgroupUniformLoad(&wNumWG);
+  let idx = wid.x * WG + tid;
+  let v = select(0u, atomicLoad(&hist[idx]), idx < total);
+  sScan[tid] = v;
+  workgroupBarrier();
+  wgInclusiveScan(tid);
+  if (idx < total) { atomicStore(&hist[idx], sScan[tid] - v); }          // chunk-local exclusive
+  if (tid == WG - 1u) { atomicStore(&hist[scanTail() + wid.x], sScan[tid]); }
+}
+
+@compute @workgroup_size(256)
+fn scanChunks(@builtin(local_invocation_id) lid: vec3u) {
+  let tid = lid.x;
+  if (tid == 0u) { wNumWG = atomicLoad(&counter[1]); }
+  let nChunks = (RADIX * workgroupUniformLoad(&wNumWG) + WG - 1u) / WG;
+  let tail = scanTail();
   var running = 0u;
-  for (var w = 0u; w < numWG; w = w + 1u) {
-    let idx = d * numWG + w;
-    let c = atomicLoad(&hist[idx]);
-    atomicStore(&hist[idx], running);
-    running = running + c;
+  var base = 0u;
+  loop {
+    if (base >= nChunks) { break; }
+    let i = base + tid;
+    let v = select(0u, atomicLoad(&hist[tail + i]), i < nChunks);
+    sScan[tid] = v;
+    workgroupBarrier();
+    wgInclusiveScan(tid);
+    if (i < nChunks) { atomicStore(&hist[tail + i], running + sScan[tid] - v); }
+    let ct = sScan[WG - 1u];
+    workgroupBarrier();
+    running = running + ct;
+    base = base + WG;
   }
-  digitTotal[d] = running;
-  workgroupBarrier();
-  if (d == 0u) {                                  // exclusive scan of digit totals -> global bases
-    var acc = 0u;
-    for (var j = 0u; j < RADIX; j = j + 1u) { digitBase[j] = acc; acc = acc + digitTotal[j]; }
-  }
-  workgroupBarrier();
-  let base = digitBase[d];
-  for (var w = 0u; w < numWG; w = w + 1u) {
-    let idx = d * numWG + w;
-    atomicStore(&hist[idx], atomicLoad(&hist[idx]) + base);
+}
+
+@compute @workgroup_size(256)
+fn scanAdd(@builtin(local_invocation_id) lid: vec3u, @builtin(workgroup_id) wid: vec3u) {
+  let tid = lid.x;
+  if (tid == 0u) { wNumWG = atomicLoad(&counter[1]); }
+  let total = RADIX * workgroupUniformLoad(&wNumWG);
+  let idx = wid.x * WG + tid;
+  if (idx < total) {
+    atomicStore(&hist[idx], atomicLoad(&hist[idx]) + atomicLoad(&hist[scanTail() + wid.x]));
   }
 }
 

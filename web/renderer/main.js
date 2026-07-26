@@ -25,8 +25,8 @@ async function main() {
   device.addEventListener('uncapturederror', (e) => { if (nerr++ < 6) log('GPU ERROR: ' + e.error.message); });
 
   const term = new URLSearchParams(location.search).get('term') || 'aPlanet';
-  const meta = await (await fetch(`data/${term}.json`)).json();
-  const raw = await (await fetch(`data/${term}.bin`)).arrayBuffer();
+  const meta = await (await fetch(`data/${term}.json?v=` + Date.now(), { cache: 'no-store' })).json();
+  const raw = await (await fetch(`data/${term}.bin?v=` + Date.now(), { cache: 'no-store' })).arrayBuffer();
   const N = meta.count;
   log(`${term}: ${N} splats, ${(raw.byteLength / 1e6).toFixed(2)} MB, radius ${meta.radius.toFixed(1)}`);
 
@@ -49,15 +49,15 @@ async function main() {
   const keysA = mk(MAX_PAIRS * 4, SB), valsA = mk(MAX_PAIRS * 4, SB);
   const keysB = mk(MAX_PAIRS * 4, SB), valsB = mk(MAX_PAIRS * 4, SB);
   const counter = mk(16, SB | CD | CS);
-  const hist = mk(16 * MAX_NUMWG * 4, SB);
+  const hist = mk((16 * MAX_NUMWG + 1024) * 4, SB);   // + tail for hierarchical-scan chunk sums
   const tileRange = mk(nTiles * 8, SB);
   // WebGPU forbids a buffer being BOTH writable-storage and an indirect source in one sync scope,
   // so the GPU writes dispatch args to a storage buffer and we copy them into the indirect buffer.
-  const dispatchArgs = mk(16, SB | CS);
-  const indirect = mk(16, GPUBufferUsage.INDIRECT | CD);
+  const dispatchArgs = mk(32, SB | CS);
+  const indirect = mk(32, GPUBufferUsage.INDIRECT | CD);
   const uni = mk(UNI_STRIDE * RADIX_PASSES, GPUBufferUsage.UNIFORM | CD);
 
-  const code = await (await fetch('splat.wgsl')).text();
+  const code = await (await fetch('splat.wgsl?v=' + Date.now(), { cache: 'no-store' })).text();
   const mod = device.createShaderModule({ code });
   const info = await mod.getCompilationInfo();
   const errs = info.messages.filter(m => m.type === 'error');
@@ -71,8 +71,9 @@ async function main() {
     { binding: 11, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
   ]});
   const pipeOf = {};
-  for (const ep of ['preprocess', 'setupDispatch', 'radixHistogram', 'radixScan', 'radixScatter',
-                    'tileRanges', 'clearTiles', 'clearHist', 'rasterize'])
+  for (const ep of ['preprocess', 'setupDispatch', 'radixHistogram', 'radixScatter',
+                    'tileRanges', 'clearTiles', 'clearHist', 'rasterize',
+                    'scanReduce', 'scanChunks', 'scanAdd'])
     pipeOf[ep] = device.createComputePipeline({
       layout: device.createPipelineLayout({ bindGroupLayouts: [layout] }),
       compute: { module: mod, entryPoint: ep } });
@@ -88,12 +89,12 @@ async function main() {
     { binding: 11, resource: { buffer: dispatchArgs } } ]});
 
   // ── timing ──
-  const NQ = 10;
+  const NQ = 16;
   const qset = canTime ? device.createQuerySet({ type: 'timestamp', count: NQ }) : null;
   const qbuf = canTime ? mk(NQ * 8, CS | GPUBufferUsage.QUERY_RESOLVE) : null;
   const readPool = [];
   const ts = (a, b) => canTime ? { querySet: qset, beginningOfPassWriteIndex: a, endOfPassWriteIndex: b } : undefined;
-  const PASSES = ['preprocess', 'sort', 'tiles', 'raster'];
+  const PASSES = ['preprocess', 'sort', 'tiles', 'raster', 'clr', 'hist', 'scan', 'scat'];
   let last = {}, frames = 0, tAcc = 0, tPrev = performance.now();
 
   // ── camera ──
@@ -148,17 +149,33 @@ async function main() {
     p = enc.beginComputePass();
     p.setPipeline(pipeOf.setupDispatch); p.setBindGroup(0, A, [0]); p.dispatchWorkgroups(1);
     p.end();
-    enc.copyBufferToBuffer(dispatchArgs, 0, indirect, 0, 16);   // storage -> indirect, outside any pass
+    enc.copyBufferToBuffer(dispatchArgs, 0, indirect, 0, 32);   // storage -> indirect, outside any pass
 
-    p = enc.beginComputePass({ timestampWrites: ts(2, 3) });   // radix sort, 8 x 4-bit passes
+    // sort: pass 0 is split into separately-TIMED sub-passes so we can see where the ms actually go
     for (let i = 0; i < RADIX_PASSES; i++) {
       const g = (i % 2 === 0) ? A : B, off = i * UNI_STRIDE;
-      p.setPipeline(pipeOf.clearHist); p.setBindGroup(0, g, [off]); p.dispatchWorkgroups(Math.ceil(16 * MAX_NUMWG / WG));
-      p.setPipeline(pipeOf.radixHistogram); p.setBindGroup(0, g, [off]); p.dispatchWorkgroupsIndirect(indirect, 0);
-      p.setPipeline(pipeOf.radixScan); p.setBindGroup(0, g, [off]); p.dispatchWorkgroups(1);
-      p.setPipeline(pipeOf.radixScatter); p.setBindGroup(0, g, [off]); p.dispatchWorkgroupsIndirect(indirect, 0);
+      if (i === 0) {
+        p = enc.beginComputePass({ timestampWrites: ts(8, 9) });
+        p.setPipeline(pipeOf.clearHist); p.setBindGroup(0, g, [off]); p.dispatchWorkgroups(Math.ceil(16 * MAX_NUMWG / WG)); p.end();
+        p = enc.beginComputePass({ timestampWrites: ts(10, 11) });
+        p.setPipeline(pipeOf.radixHistogram); p.setBindGroup(0, g, [off]); p.dispatchWorkgroupsIndirect(indirect, 0); p.end();
+        p = enc.beginComputePass({ timestampWrites: ts(12, 13) });
+        p.setPipeline(pipeOf.scanReduce); p.setBindGroup(0, g, [off]); p.dispatchWorkgroupsIndirect(indirect, 16);
+        p.setPipeline(pipeOf.scanChunks); p.dispatchWorkgroups(1);
+        p.setPipeline(pipeOf.scanAdd);    p.dispatchWorkgroupsIndirect(indirect, 16); p.end();
+        p = enc.beginComputePass({ timestampWrites: ts(14, 15) });
+        p.setPipeline(pipeOf.radixScatter); p.setBindGroup(0, g, [off]); p.dispatchWorkgroupsIndirect(indirect, 0); p.end();
+      } else {
+        p = enc.beginComputePass();
+        p.setPipeline(pipeOf.clearHist); p.setBindGroup(0, g, [off]); p.dispatchWorkgroups(Math.ceil(16 * MAX_NUMWG / WG));
+        p.setPipeline(pipeOf.radixHistogram); p.setBindGroup(0, g, [off]); p.dispatchWorkgroupsIndirect(indirect, 0);
+        p.setPipeline(pipeOf.scanReduce); p.setBindGroup(0, g, [off]); p.dispatchWorkgroupsIndirect(indirect, 16);
+        p.setPipeline(pipeOf.scanChunks); p.dispatchWorkgroups(1);
+        p.setPipeline(pipeOf.scanAdd);    p.dispatchWorkgroupsIndirect(indirect, 16);
+        p.setPipeline(pipeOf.radixScatter); p.setBindGroup(0, g, [off]); p.dispatchWorkgroupsIndirect(indirect, 0);
+        p.end();
+      }
     }
-    p.end();
 
     p = enc.beginComputePass({ timestampWrites: ts(4, 5) });   // tile ranges
     p.setPipeline(pipeOf.tileRanges); p.setBindGroup(0, A, [0]); p.dispatchWorkgroupsIndirect(indirect, 0);
@@ -184,7 +201,9 @@ async function main() {
       const t = new BigUint64Array(rb.getMappedRange()).slice();
       rb.unmap(); readPool.push(rb);
       const ms = (a, b) => Number(t[b] - t[a]) / 1e6;
-      last = { preprocess: ms(0, 1), sort: ms(2, 3), tiles: ms(4, 5), raster: ms(6, 7) };
+      last = { preprocess: ms(0, 1), tiles: ms(4, 5), raster: ms(6, 7),
+               clr: ms(8, 9), hist: ms(10, 11), scan: ms(12, 13), scat: ms(14, 15) };
+      last.sort = (last.clr + last.hist + last.scan + last.scat) * 8;   // pass 0 x 8 identical passes
       last.gpu = last.preprocess + last.sort + last.tiles + last.raster;
     }).catch(() => {});
 
