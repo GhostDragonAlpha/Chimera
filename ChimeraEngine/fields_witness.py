@@ -1,4 +1,11 @@
-"""fields_witness.py — WITNESS EM AND LIGHT (operator ruling: collision IS electromagnetism).
+"""fields_witness.py — WITNESS THE FIELDS: EM, light, thermal, radiative exchange, atmosphere.
+
+Every check below is measured against a PUBLISHED number -- the Moon's subsolar temperature, the
+Sun's effective temperature, Everest's pressure, a skydiver's terminal velocity, Apollo's reentry
+corridor, four planets' scale heights -- because a field that agrees with itself has proven
+nothing. Two messengers or it does not count.
+
+  EM (operator ruling: collision IS electromagnetism)
 
   E1  one curve, two lobes    repulsive when overlapping, attractive just outside, zero beyond reach
   E2  hardness IS stiffness   a load sinks by F/k -- steel, rock and rubber differ by that number
@@ -28,7 +35,8 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fields import (Coupling, EMField, Star, Occluder, LightField,          # noqa: E402
                     STEEL, ROCK, RUBBER, FLESH, TAPE, REGOLITH,
-                    Thermal, ThermalField, Column, LUNAR_REGOLITH, ROCK_T, OCEAN, HULL, RADIATOR, ICE)
+                    Thermal, ThermalField, Column, LUNAR_REGOLITH, ROCK_T, OCEAN, HULL, RADIATOR, ICE,
+                    Atmosphere, AtmosphereField, EARTH_AIR, MARS_AIR, VENUS_AIR, TITAN_AIR)
 from contact import Ground, ContactModel, Foot, step_body                    # noqa: E402
 from physics import Body, inertia_box                                        # noqa: E402
 
@@ -415,6 +423,131 @@ def main() -> int:
           abs(earth.view_factor(np.array([AU - Rp - Rp, 0, 0])) - 0.25) < 1e-9,
           "1.0000 on the surface -> 0.2500 at one radius up -> 0.0100 at nine -- the sphere's own "
           "geometry, and the same number that scales both the bounce and the glow")
+
+    # ══ ATMOSPHERIC ══════════════════════════════════════════════════════════════════════════
+    print("\nA1  SCALE HEIGHT from first principles -- four worlds, one formula")
+    published = {'Earth': 8.5, 'Mars': 11.1, 'Venus': 15.9, 'Titan': 21.0}
+    got = {}
+    for nm, air in (('Earth', EARTH_AIR), ('Mars', MARS_AIR), ('Venus', VENUS_AIR),
+                    ('Titan', TITAN_AIR)):
+        H = air.scale_height() / 1000.0
+        got[nm] = H
+        print(f"      {nm:6s} T {air.temperature:6.1f} K  M {air.molar_mass*1000:5.1f} g/mol  "
+              f"g {air.gravity:5.2f} -> H = {H:5.2f} km   (published {published[nm]:4.1f})")
+    worst = max(abs(got[k] - published[k]) / published[k] for k in published)
+    check("H = RT/(Mg) reproduces every published scale height", worst < 0.06,
+          f"worst error {100*worst:.1f}% across Earth/Mars/Venus/Titan -- thermal energy over "
+          "gravitational energy per molecule, nothing fitted")
+
+    print("\nA2  the PROFILE: where the air actually goes")
+    for nm, h in (('sea level', 0), ('Everest summit', 8849), ('airliner cruise', 11000),
+                  ('Armstrong limit', 19000), ('Karman line', 100000), ('ISS orbit', 408000)):
+        P = EARTH_AIR.pressure_at(h)
+        print(f"      {nm:16s} {h/1000:6.1f} km  P {P:10.1f} Pa ({P/101325:7.4f} atm)  "
+              f"rho {EARTH_AIR.density_at(h):.3e} kg/m^3")
+    p_ev = EARTH_AIR.pressure_at(8849) / 101325
+    check("Everest's pressure comes out right", 0.30 < p_ev < 0.36,
+          f"{p_ev:.3f} atm at the summit vs the measured ~0.33 -- one exponential, no table")
+
+    print("\nA3  DRAG: the field pushes back, and a parachute is just a bigger CdA")
+    m_sky = 80.0
+    for nm, cda in (('belly-to-earth', 0.46), ('head-down dive', 0.18), ('parachute open', 25.0)):
+        v = EARTH_AIR.terminal_speed(0.0, m_sky, cda)
+        print(f"      {nm:16s} CdA {cda:5.2f} m^2 -> terminal {v:6.1f} m/s ({v*3.6:6.1f} km/h)")
+    v_belly = EARTH_AIR.terminal_speed(0.0, m_sky, 0.46)
+    v_chute = EARTH_AIR.terminal_speed(0.0, m_sky, 25.0)
+    print(f"      published: belly ~53 m/s, head-down ~90, a round canopy ~5-7 m/s")
+    check("terminal velocities match the published figures",
+          48 < v_belly < 58 and 4.5 < v_chute < 8.0,
+          f"{v_belly:.1f} m/s belly-down and {v_chute:.1f} m/s under canopy -- the same equation, "
+          "and the only thing that changed is how much air you are holding")
+
+    print("\nA4  REENTRY: the heat peaks PARTWAY DOWN, and the ENTRY ANGLE moves the peak")
+    # An Apollo-class capsule: 5.5 t behind a 3.9 m heat shield (CdA ~ 15.5 m^2, ballistic
+    # coefficient ~355 kg/m^2), 4.7 m nose radius. My first version used -30 deg, which is a
+    # BALLISTIC MISSILE trajectory, not an orbital return -- it punched deep before slowing and
+    # peaked at 33 km. Orbital returns fly -1.5 to -7 deg, and the corridor is narrow for exactly
+    # the reason this sweep shows.
+    def entry(gamma_deg, h0=120e3, v0=7800.0, m=5500.0, cda=15.5, rn=4.7):
+        h, v, dt, bq, bh, bv = h0, v0, 0.05, 0.0, 0.0, 0.0
+        s = np.sin(np.radians(gamma_deg))
+        while h > 0 and v > 200:
+            q = EARTH_AIR.heat_flux(h, v, nose_radius=rn)
+            if q > bq:
+                bq, bh, bv = q, h, v
+            v = max(v + (-EARTH_AIR.drag(h, v, cda) / m + G * s) * dt, 0.0)
+            h -= v * s * dt
+        return bq, bh, bv
+    for g_ in (1.5, 3.0, 6.0, 15.0, 30.0):
+        bq, bh, bv = entry(g_)
+        tag = '  <-- orbital return corridor' if 1.5 <= g_ <= 7.0 else ''
+        print(f"      entry {g_:5.1f} deg -> peak {bq/1e6:5.2f} MW/m^2 at {bh/1000:5.1f} km, "
+              f"still doing {bv:5.0f} m/s{tag}")
+    q6, h6, v6 = entry(6.0)
+    print(f"      published: Apollo LEO-return peak heating ~0.3-0.5 MW/m^2 near 60 km")
+    print(f"      high up there is speed but no air; low down there is air but no speed. The peak")
+    print(f"      is where those two curves cross -- nobody picks the altitude, and steepening the")
+    print(f"      entry drives it DOWN and HOTTER, which is the whole reason the corridor is narrow")
+    check("a realistic orbital entry peaks in the published corridor", 50e3 < h6 < 80e3,
+          f"{h6/1000:.0f} km at {q6/1e6:.2f} MW/m^2 for a -6 deg entry, from integrating v^2 drag "
+          f"against v^3 heating; at -30 deg the same code says {entry(30.0)[1]/1000:.0f} km")
+
+    print("\nA5  WHY THE SKY IS BLUE AND THE SUNSET IS RED -- one exponent, 1/lambda^4")
+    for w in (440.0, 550.0, 680.0):
+        print(f"      {w:5.0f} nm  beta {EARTH_AIR.rayleigh_beta(w):.3e} /m   "
+              f"zenith transmittance {EARTH_AIR.transmittance(w, 1.0):.4f}   "
+              f"horizon {EARTH_AIR.transmittance(w, 38.0):.2e}")
+    r_z, g_z, b_z = EARTH_AIR.sky_colour(1.0)
+    r_h, g_h, b_h = EARTH_AIR.sky_colour(38.0)
+    sr, sg, sb = EARTH_AIR.scattered_colour(1.0)
+    print(f"      sun overhead  RGB ({r_z:.3f}, {g_z:.3f}, {b_z:.3f})  -- near white")
+    print(f"      sun at horizon RGB ({r_h:.3e}, {g_h:.3e}, {b_h:.3e})  -- red is "
+          f"{r_h/max(b_h,1e-30):.0f}x blue")
+    print(f"      the SKY (what got scattered out) RGB ({sr:.3f}, {sg:.3f}, {sb:.3f}) -- blue wins")
+    check("blue scatters ~6x harder than red, and it reddens the sun at the horizon",
+          sb > 2.5 * sr and (r_h / max(b_h, 1e-30)) > 100,
+          f"sky is {sb/sr:.1f}x bluer than red; at the horizon the direct sun is "
+          f"{r_h/max(b_h,1e-30):.0f}x redder -- sunset is not an effect, it is a path length")
+
+    print("\nA6  the AIR IS THERMAL MASS -- and that is why Earth is not the Moon")
+    c_air = EARTH_AIR.column_capacity()
+    c_rock_m = ROCK_T.volumetric_capacity()
+    print(f"      Earth's air column: P/g = {EARTH_AIR.surface_pressure/EARTH_AIR.gravity:.0f} "
+          f"kg/m^2 x c_p -> {c_air:.2e} J/m^2/K")
+    print(f"      equivalent to {c_air/c_rock_m:.2f} m of solid rock, or "
+          f"{c_air/LUNAR_REGOLITH.capacity:.0f}x the lunar skin's whole capacity")
+    print(f"      Mars: {MARS_AIR.column_capacity():.2e}  ({MARS_AIR.column_capacity()/c_air*100:.2f}% "
+          f"of Earth's -- which is why Mars swings ~80 K in a day)")
+    check("Earth's air alone outweighs the Moon's thermal skin by orders of magnitude",
+          c_air / LUNAR_REGOLITH.capacity > 100,
+          f"{c_air/LUNAR_REGOLITH.capacity:.0f}x -- computed from pressure and gravity ALONE, and "
+          "it drops straight into Thermal.capacity")
+
+    print("\nA7  CAN YOU BREATHE? partial pressure of oxygen with altitude")
+    for nm, h in (('sea level', 0), ('Denver', 1609), ('Everest base camp', 5364),
+                  ('Everest summit', 8849), ('Armstrong limit', 19000)):
+        pO2 = EARTH_AIR.oxygen_partial_pressure(h) / 1000.0
+        note = ('fine' if pO2 > 16 else 'hypoxia' if pO2 > 8 else
+                'death without oxygen' if pO2 > 6 else 'blood boils at body temperature')
+        print(f"      {nm:20s} {h/1000:5.1f} km -> pO2 {pO2:5.2f} kPa   {note}")
+    pO2_sum = EARTH_AIR.oxygen_partial_pressure(8849) / 1000.0
+    check("Everest's summit oxygen matches why it is the death zone", 6.0 < pO2_sum < 8.0,
+          f"{pO2_sum:.2f} kPa vs the measured ~7 -- a third of sea level, and it comes out of the "
+          "same exponential that set the drag")
+
+    print("\nA8  the ATMOSPHERE DIMS THE LIGHT FIELD -- the seam between the two")
+    afield = AtmosphereField(center=(AU, 0, 0), radius=Rp, air=EARTH_AIR)
+    ground = np.array([AU - Rp - 2.0, 0, 0])
+    top = np.array([AU - Rp - 1.0e5, 0, 0])
+    am_noon = afield.airmass(ground, np.array([-1.0, 0, 0]))
+    am_set = afield.airmass(np.array([AU - 2.0, Rp + 2.0, 0]), np.array([-1.0, 0, 0]))
+    print(f"      airmass overhead {am_noon:.3f}, at the horizon {am_set:.1f}")
+    print(f"      above the air {lf2.irradiance_at(top):.1f} W/m^2 -> at the ground "
+          f"{lf2.irradiance_at(ground)*EARTH_AIR.transmittance(550.0, am_noon):.1f} W/m^2")
+    check("airmass is 1 overhead and finite at the horizon", 0.99 < am_noon < 1.01 and
+          25 < am_set < 42,
+          f"{am_noon:.3f} overhead, {am_set:.1f} at the horizon -- 1/cos(z) would say INFINITY "
+          "there; the real answer is finite because the atmosphere curves with the planet")
 
     n_fail = sum(1 for _, ok in results if not ok)
     print("\n" + "=" * 68)

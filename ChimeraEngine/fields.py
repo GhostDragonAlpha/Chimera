@@ -510,6 +510,161 @@ class ThermalField:
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
+#  ATMOSPHERIC — the field that pushes back, keeps the heat, and colours the sky
+# ══════════════════════════════════════════════════════════════════════════════════════════════
+R_GAS = 8.314462618            # J/mol/K
+
+
+@dataclass
+class Atmosphere:
+    """Air as a field: pressure, density, drag, and colour, from four numbers and gravity.
+
+    THE SCALE HEIGHT IS THE WHOLE THING. H = RT/(Mg) -- the altitude over which pressure falls by
+    1/e. It is not a fitted profile, it is thermal energy divided by gravitational energy per
+    molecule: how far a molecule's own heat can lift it against the planet's pull. Hot, light gas
+    on a small world puffs out; cold, heavy gas on a big one hugs the ground. Four worlds, one
+    formula, and it reproduces all four published values (see A1).
+
+    Isothermal is the approximation here -- real atmospheres have a temperature profile. It is
+    excellent over the bottom scale height or two, which is where anything stands or flies.
+    """
+    surface_pressure: float = 101325.0        # Pa
+    temperature: float = 288.15               # K, isothermal approximation
+    molar_mass: float = 0.0289644             # kg/mol -- dry air
+    gravity: float = 9.80665                  # m/s^2 at the surface
+    specific_heat: float = 1004.0             # J/kg/K at constant pressure
+    o2_fraction: float = 0.2095               # what a lung actually cares about
+
+    def scale_height(self) -> float:
+        return R_GAS * self.temperature / (self.molar_mass * self.gravity)
+
+    def pressure_at(self, h: float) -> float:
+        return float(self.surface_pressure * np.exp(-max(h, 0.0) / self.scale_height()))
+
+    def density_at(self, h: float) -> float:
+        """rho = P M / (R T) -- the ideal gas law, which is what drag actually reads."""
+        return float(self.pressure_at(h) * self.molar_mass / (R_GAS * self.temperature))
+
+    def altitude_of_pressure(self, P: float) -> float:
+        return float(-self.scale_height() * np.log(max(P, 1e-12) / self.surface_pressure))
+
+    # ── the field pushes back ────────────────────────────────────────────────────────────────
+    def drag(self, h: float, speed: float, cd_area: float) -> float:
+        """F = 0.5 rho v^2 Cd A. `cd_area` is the drag coefficient TIMES frontal area, because
+        that product is what is actually measurable -- separating them invites two guesses."""
+        return float(0.5 * self.density_at(h) * speed * speed * cd_area)
+
+    def terminal_speed(self, h: float, mass: float, cd_area: float) -> float:
+        """Where drag equals weight and you stop accelerating. A parachute is just a bigger CdA."""
+        rho = self.density_at(h)
+        if rho <= 0 or cd_area <= 0:
+            return float('inf')
+        return float(np.sqrt(2.0 * mass * self.gravity / (rho * cd_area)))
+
+    def heat_flux(self, h: float, speed: float, nose_radius: float = 1.0) -> float:
+        """Sutton-Graves convective stagnation heating, W/m^2: q = k sqrt(rho/Rn) v^3.
+
+        The v^3 is why reentry is violent and why it PEAKS partway down rather than at the bottom:
+        high up there is speed but no air, low down there is air but no speed. The maximum is the
+        argument between them, and it is a real altitude you can fly to."""
+        return float(1.7415e-4 * np.sqrt(self.density_at(h) / nose_radius) * speed ** 3)
+
+    # ── the field keeps the heat ─────────────────────────────────────────────────────────────
+    def column_capacity(self) -> float:
+        """J/m^2/K of the whole air column: (P/g) is its MASS per square metre, times c_p.
+
+        This drops straight into Thermal.capacity, and it is half the answer to why Earth swings
+        ~10 K between day and night while the Moon swings 300."""
+        return float(self.surface_pressure / self.gravity * self.specific_heat)
+
+    # ── the field colours the sky ────────────────────────────────────────────────────────────
+    def rayleigh_beta(self, wavelength_nm: float) -> float:
+        """Scattering per metre at the surface. Anchored at 550 nm and scaled by 1/lambda^4 --
+        the whole of why the sky is blue, in one exponent."""
+        return float(1.35e-5 * (550.0 / wavelength_nm) ** 4)
+
+    def transmittance(self, wavelength_nm: float, airmass: float = 1.0) -> float:
+        """Fraction of DIRECT light that survives the column. Airmass 1 = straight up, ~38 at the
+        horizon, which is the entire explanation of a red sunset."""
+        return float(np.exp(-self.rayleigh_beta(wavelength_nm) * self.scale_height() * airmass))
+
+    def sky_colour(self, airmass: float = 1.0):
+        """(r, g, b) of the DIRECT disc through this much air -- the sun's own colour, which goes
+        white -> yellow -> orange -> red as the airmass climbs."""
+        return tuple(self.transmittance(w, airmass) for w in (680.0, 550.0, 440.0))
+
+    def scattered_colour(self, airmass: float = 1.0):
+        """(r, g, b) of the SKY -- what was scattered OUT of the beam, which is the complement.
+        Blue scatters most, so the sky is blue and the sun is not."""
+        return tuple(1.0 - self.transmittance(w, airmass) for w in (680.0, 550.0, 440.0))
+
+    # ── the field decides whether you can breathe ────────────────────────────────────────────
+    def oxygen_partial_pressure(self, h: float) -> float:
+        return float(self.pressure_at(h) * self.o2_fraction)
+
+
+EARTH_AIR = Atmosphere()
+MARS_AIR = Atmosphere(surface_pressure=610.0, temperature=210.0, molar_mass=0.04340,
+                      gravity=3.711, specific_heat=730.0, o2_fraction=0.0013)
+VENUS_AIR = Atmosphere(surface_pressure=9.2e6, temperature=737.0, molar_mass=0.04345,
+                       gravity=8.87, specific_heat=1180.0, o2_fraction=0.0)
+TITAN_AIR = Atmosphere(surface_pressure=1.467e5, temperature=94.0, molar_mass=0.02830,
+                       gravity=1.352, specific_heat=1040.0, o2_fraction=0.0)
+
+
+@dataclass
+class AtmosphereField:
+    """An Atmosphere wrapped around a body, so it answers in WORLD coordinates like the others.
+
+    This is the seam where the fields meet: altitude comes from the body (gravity's membrane), the
+    profile comes from the temperature (the thermal field), and the transmittance dims the
+    irradiance (the light field). One position in, every local condition out.
+    """
+    center: np.ndarray = dfield(default_factory=lambda: np.zeros(3))
+    radius: float = 6.371e6
+    air: Atmosphere = dfield(default_factory=Atmosphere)
+
+    def __post_init__(self):
+        self.center = np.asarray(self.center, float)
+
+    def altitude(self, p) -> float:
+        return float(np.linalg.norm(np.asarray(p, float) - self.center)) - self.radius
+
+    def pressure_at(self, p) -> float:
+        return self.air.pressure_at(self.altitude(p))
+
+    def density_at(self, p) -> float:
+        return self.air.density_at(self.altitude(p))
+
+    def drag_force(self, p, velocity, cd_area: float) -> np.ndarray:
+        """Vector drag: opposes motion, grows as v^2. Aerobraking, reentry and a parachute are all
+        this one line at different altitudes."""
+        v = np.asarray(velocity, float)
+        s = float(np.linalg.norm(v))
+        if s < 1e-9:
+            return np.zeros(3)
+        return -(0.5 * self.density_at(p) * s * s * cd_area) * (v / s)
+
+    def airmass(self, p, to_star) -> float:
+        """How many vertical columns of air a ray must cross -- 1 straight up, ~38 at the horizon.
+
+        Uses the Kasten-Young fit rather than 1/cos(z): the secant blows up to infinity at the
+        horizon, where the real answer is finite because the atmosphere CURVES with the planet."""
+        d = np.asarray(p, float) - self.center
+        r = float(np.linalg.norm(d))
+        if r < 1e-9:
+            return 1.0
+        up = d / r
+        L = np.asarray(to_star, float)
+        L = L / (np.linalg.norm(L) + 1e-15)
+        cz = float(np.clip(np.dot(up, L), -1.0, 1.0))
+        z = np.degrees(np.arccos(cz))
+        if cz <= 0.0:
+            return 40.0                                   # below the horizon: the whole limb
+        return float(1.0 / (cz + 0.50572 * (96.07995 - z) ** -1.6364))
+
+
+# ══════════════════════════════════════════════════════════════════════════════════════════════
 #  THE SENSED REGISTER — "what does a ship's computer track? what does a body sense?"
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 #
@@ -534,7 +689,7 @@ SENSED = [
     ('light',         'field',  'star tracker / cameras',  'eyes',                   'BUILT here'),
     ('thermal',       'field',  'hull + reactor temp',     'skin heat and cold',     'BUILT here'),
     ('acoustic',      'field',  'hull vibration',          'ears',                   'DESIGN (sound doc)'),
-    ('atmospheric',   'field',  'pressure / composition',  'breath, ear-popping',    'PLANNED'),
+    ('atmospheric',   'field',  'pressure / composition',  'breath, ear-popping',    'BUILT here'),
     ('fluid',         'field',  'drag / dynamic pressure', 'wind and water on skin', 'PLANNED'),
     ('radiation',     'field',  'dosimeter',               'none -- and that is WHY it is scary',
                                                                                      'PLANNED'),
