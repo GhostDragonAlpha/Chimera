@@ -375,34 +375,35 @@ def _sort_tiles(tile_ids, tile_offsets, n_tiles):
 
 @cuda.jit
 def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
-               tile_ids, tile_offsets, canvas_r, canvas_g, canvas_b,
+               tile_ids, tile_offsets, out,
                w, h, tiles_x, n_tiles, bg_r, bg_g, bg_b, n_splats):
+    # Writes directly to a uint8 (h, w, 3) image -- clip+scale happen IN-KERNEL, so the host does ONE
+    # download and no np.stack/np.clip/*255/astype on a 3MB float image every frame (~10ms of host work gone).
     ix = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
     iy = cuda.blockIdx.y * cuda.blockDim.y + cuda.threadIdx.y
     if ix >= w or iy >= h: return
     r, g, b = bg_r, bg_g, bg_b; trans = 1.0
     tid = (iy // TILE_SIZE) * tiles_x + (ix // TILE_SIZE)
-    if tid >= n_tiles:
-        canvas_r[iy, ix] = r; canvas_g[iy, ix] = g; canvas_b[iy, ix] = b; return
-    start = tile_offsets[tid]; end = tile_offsets[tid + 1]
-    for si in range(start, end):
-        i = tile_ids[si]
-        if i < 0 or i >= n_splats: continue
-        a = opa[i]
-        if a < 0.0001: continue
-        dx = float(ix) - px[i]; dy = float(iy) - py[i]
-        if dx*dx + dy*dy > rad[i]*rad[i] * 2.25: continue
-        ge = dx*dx*ic00[i] + 2.0*dx*dy*ic01[i] + dy*dy*ic11[i]
-        if ge > 20.0: continue
-        wgt = math.exp(-0.5 * ge)
-        if wgt < 0.001: continue
-        c = a * wgt * trans
-        r += cr[i]*c; g += cg[i]*c; b += cb[i]*c
-        trans *= (1.0 - c)
-        if trans < 0.01: break
-    canvas_r[iy, ix] = max(0.0, min(1.0, r))
-    canvas_g[iy, ix] = max(0.0, min(1.0, g))
-    canvas_b[iy, ix] = max(0.0, min(1.0, b))
+    if tid < n_tiles:
+        start = tile_offsets[tid]; end = tile_offsets[tid + 1]
+        for si in range(start, end):
+            i = tile_ids[si]
+            if i < 0 or i >= n_splats: continue
+            a = opa[i]
+            if a < 0.0001: continue
+            dx = float(ix) - px[i]; dy = float(iy) - py[i]
+            if dx*dx + dy*dy > rad[i]*rad[i] * 2.25: continue
+            ge = dx*dx*ic00[i] + 2.0*dx*dy*ic01[i] + dy*dy*ic11[i]
+            if ge > 20.0: continue
+            wgt = math.exp(-0.5 * ge)
+            if wgt < 0.001: continue
+            c = a * wgt * trans
+            r += cr[i]*c; g += cg[i]*c; b += cb[i]*c
+            trans *= (1.0 - c)
+            if trans < 0.01: break
+    out[iy, ix, 0] = int(max(0.0, min(1.0, r)) * 255.0)
+    out[iy, ix, 1] = int(max(0.0, min(1.0, g)) * 255.0)
+    out[iy, ix, 2] = int(max(0.0, min(1.0, b)) * 255.0)
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -623,22 +624,17 @@ class FullGPUPipeline:
             tids_dev, toff_dev, _own = self._tids, self._to, None
 
         # GPU composite
-        cr = cuda.device_array((params.height, params.width), dtype=np.float32)
-        cg = cuda.device_array((params.height, params.width), dtype=np.float32)
-        cb = cuda.device_array((params.height, params.width), dtype=np.float32)
+        out = cuda.device_array((params.height, params.width, 3), dtype=np.uint8)
         bk2 = (16, 16)
         gk2 = ((params.width + 15) // 16, (params.height + 15) // 16)
         _composite[gk2, bk2](self._kx, self._ky,
             self._kic00, self._kic01, self._kic11,
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
-            tids_dev, toff_dev, cr, cg, cb,
+            tids_dev, toff_dev, out,
             params.width, params.height, tx, nt,
             self.bg[0], self.bg[1], self.bg[2], nv)
         cuda.synchronize()
-        r = cr.copy_to_host(); g = cg.copy_to_host(); b = cb.copy_to_host()
-        canvas = np.stack([r, g, b], axis=2)
-        canvas = np.clip(canvas, 0, 1)
-        return (canvas * 255).astype(np.uint8)
+        return out.copy_to_host()
 
     def render_splats(self, positions, covariances_3x3, colors, opacities, camera, params):
         """Render pre-computed splats — used by Nanite cluster selection."""
@@ -722,22 +718,17 @@ class FullGPUPipeline:
             self._to[:nt + 1] = cuda.to_device(toff_h)
             tids_dev, toff_dev, _own = self._tids, self._to, None
 
-        cr = cuda.device_array((params.height, params.width), dtype=np.float32)
-        cg = cuda.device_array((params.height, params.width), dtype=np.float32)
-        cb = cuda.device_array((params.height, params.width), dtype=np.float32)
+        out = cuda.device_array((params.height, params.width, 3), dtype=np.uint8)
         bk2 = (16, 16)
         gk2 = ((params.width + 15) // 16, (params.height + 15) // 16)
         _composite[gk2, bk2](self._kx, self._ky,
             self._kic00, self._kic01, self._kic11,
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
-            tids_dev, toff_dev, cr, cg, cb,
+            tids_dev, toff_dev, out,
             params.width, params.height, tx, nt,
             self.bg[0], self.bg[1], self.bg[2], nv)
         cuda.synchronize()
-        r = cr.copy_to_host(); g = cg.copy_to_host(); b = cb.copy_to_host()
-        canvas = np.stack([r, g, b], axis=2)
-        canvas = np.clip(canvas, 0, 1)
-        return (canvas * 255).astype(np.uint8)
+        return out.copy_to_host()
         self.step_particles(dt, cvars)
         return self.render_from_gpu(camera, params)
 
