@@ -18,7 +18,8 @@
     {
       "name": "construction-web",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8017", "--directory", "E:/PythonChimera/web"],
+      "runtimeArgs": ["web/serve.py", "8017"],
+      "cwd": "E:/PythonChimera",
       "port": 8017
     }
   ]
