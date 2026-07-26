@@ -28,7 +28,8 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
-_W, _H = 1152, 864         # 2K-friendly (4:3), balanced against the depth-correct per-tile sort's cost.
+_W, _H = 1920, 1080        # 16:9 FHD -- sharp on a 2K monitor, ~36 fps after the GPU-binning + uint8 speedups.
+                           # (Native 2560x1440 renders ~24 fps if you want max sharpness over framerate.)
 _AUTO_SPIN = 0.35          # rad/sec -- the world turns on its own, so the movie PLAYS with no input (the time axis)
 
 
@@ -228,7 +229,7 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera live viewer</title>
  button{background:#111a2e;color:#cfe0ff;border:1px solid #2a3350;border-radius:8px;padding:6px 12px;
         font-size:13px;cursor:pointer}
  button.on{background:#24406e;border-color:#4a74c0;color:#fff}
- #stage{position:relative;width:1280px;max-width:94vw;aspect-ratio:4/3;background:#04050b;
+ #stage{position:relative;width:1600px;max-width:96vw;aspect-ratio:16/9;background:#04050b;
         border:1px solid #2a3350;border-radius:12px;overflow:hidden;touch-action:none;cursor:grab}
  #stage.drag{cursor:grabbing}
  #view{width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}

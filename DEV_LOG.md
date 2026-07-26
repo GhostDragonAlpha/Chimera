@@ -7,6 +7,46 @@
 
 ---
 
+## 2026-07-26 — the renderer, 22× faster (1.6 → 36 fps), profiled end to end
+
+**The through-line:** the operator's mandate was *"this has to render faster than anything else."* Attacked
+it the project way — MEASURE first, then cut the biggest number — through five measured levers, each verified
+(marker test for inside-out, dyad for appearance, pixel-diff for correctness). Baseline aPlanet @1152x864
+was **1.6 fps**; it is now **36 fps** (event-timed 43). The live viewer moved to **1920x1080** and streams a
+clean blue marble.
+
+### The five levers (each committed, each measured)
+1. **Small opaque grains** (`6106e94`, **VERIFIED** dyad 0.8) — the wall was OVERDRAW: aPlanet grains projected
+   to ~42px over 32px tiles => ~26 splats stacked per pixel (~400x the area needed for coverage). SIZE 9->3.5,
+   alpha 0.5->0.92, count 26k->40k. Overdraw ~8x down; colours recalibrated per-channel (err 0). 1.6 -> 6.6 fps.
+2. **GPU tile binning** (`e5e6fed`, **VERIFIED** pixel-diff 0) — the 41ms/frame CPU sort existed only because
+   numba-cuda has no GPU sort. Installed `cupy-cuda12x` (RTX 4090, CUDA 12.8); `_build_tiles_gpu` does the same
+   (tile,depth) radix sort on-device, wrapping numba arrays zero-copy via `__cuda_array_interface__`. Deletes
+   the sort AND 3 downloads + 2 uploads. 6.6 -> 11.9 fps.
+3. **Back-face culling** (`380f96f`, **VERIFIED** dyad 0.8) — the opaque surface still let its FAR side bleed
+   through (alpha 0.92 + Gaussian falloff never fully saturates), so **67% of grains were hidden geometry** the
+   pipeline still paid for (the operator's "light filtering through overlaps"). Grains carry an optional normal
+   (cols 21-23); `_project` culls any facing away BEFORE bin/gather/composite. Gain re-measured with culling on
+   (over-accum 3.0x->2.4x). 11.9 -> 14.1 fps.
+4. **Composite writes uint8 directly** (`dd0f0f8`, **VERIFIED** same colour mean) — the biggest surprise: event
+   timing said 18fps but wall-clock was 14. The gap was **~40ms/frame of NUMPY** — `np.stack`+`np.clip`+`*255`
+   +`astype` on a 3M-element float image + 3 separate downloads, every frame. Composite now clamps+scales
+   in-kernel and writes one uint8 (h,w,3) image; host does ONE `copy_to_host`. **14 -> 36 fps.** (Lesson: profile
+   the whole pipeline, not just the kernels — the host glue was the wall.)
+5. **Live viewer @ 1920x1080** (16:9, ~36 fps; native 2560x1440 available at ~24 fps). Verified end-to-end: the
+   render thread streams a clean blue marble (lit fraction 0.23).
+
+### The honest dead-ends (recorded, per the method)
+- **Shared-memory tiled composite** (the textbook 3DGS trick) and a **pre-gather packed composite** BOTH lost to
+  the simple kernel. The compositor is **warp-divergence-bound**, not coalescing-bound: once some pixels in a warp
+  hit the opaque early-out and others don't, the grain reads scatter and no prefetch/broadcast helps. Reverted.
+- Remaining bottleneck (event-timed @1152): composite ~16.7ms (71%), binning ~4.3ms, rest ~2.3ms. The next real
+  lever is fewer grains (LOD by distance) or attacking divergence — not more kernel cleverness.
+
+### Open blemish
+- A faint grain **lattice** shows in the ocean where the shell faces the camera dead-on (clean at the limb where
+  foreshortening overlaps grains). Subtle, dyad still passes; a small size/count bump closes it at minor speed cost.
+
 ## 2026-07-25 — the appearance dyad, the live viewer, and "the story is the single knob"
 
 **The through-line today:** make the visual proof loop real (a Gaussian-splat render judged by an
