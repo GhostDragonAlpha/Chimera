@@ -1,7 +1,7 @@
 // Chimera renderer v2 -- SPIKE host. Owns setup only; the frame loop is entirely GPU passes.
 // Measures each pass with timestamp-query (no host-side guessing), which is the point of the spike.
 
-const BUILD = 'v3.0-cleanlimb';
+const BUILD = 'v3.1-sunlit';
 const TILE = 16, WG = 256, RADIX_PASSES = 8, UNI_STRIDE = 256;
 const MAX_PAIRS = 2_000_000;
 const MAX_NUMWG = Math.ceil(MAX_PAIRS / WG);
@@ -103,7 +103,11 @@ async function main() {
   const fov = 1.0472;                                    // 60deg, matches FirstPersonCamera
   const focal = H / (2 * Math.tan(fov / 2));
   let azim = 0.6, elev = 0.25, radius = meta.cam_distance, spin = true, cullOn = true, scaleMul = 1.0, pan = 0.0, opaMul = 1.0, showAtm = true, forceIso = false, showSurf = true, flatMin = 0.22, backMargin = 0.30, normOn = true, depthEps = 3.0, covK = 1.0;   // measured: thicker discs halve the limb anomaly, at no fps cost
-  const uniData = new Float32Array(40);
+  // SUN: a world-space direction toward the star, plus an ambient floor. `sunOn=false` sends
+  // ambient < 0, which the shader reads as "unlit" -- so the default is byte-identical to before
+  // and lighting can be switched off to compare.
+  let sunOn = true, sunAzim = 0.9, sunElev = 0.15, ambient = 0.06;
+  const uniData = new Float32Array(44);
   function writeUniforms() {
     const ce = Math.cos(elev);
     const P = [radius * ce * Math.sin(azim), -radius * ce * Math.cos(azim), radius * Math.sin(elev)];
@@ -126,7 +130,9 @@ async function main() {
                  0.015, 0.015, 0.04, opaMul,
                  showAtm?1:0, forceIso?1:0, showSurf?1:0, flatMin,
                  backMargin, normOn?1:0, depthEps, 0,
-                 covK, 0, 0, 0]);
+                 covK, 0, 0, 0,
+                 Math.cos(sunElev)*Math.cos(sunAzim), Math.cos(sunElev)*Math.sin(sunAzim),
+                 Math.sin(sunElev), sunOn ? ambient : -1]);
     for (let p = 0; p < RADIX_PASSES; p++) {              // one slot per radix pass; only the shift differs
       uniData[22] = p * 4;
       device.queue.writeBuffer(uni, p * UNI_STRIDE, uniData);
@@ -359,6 +365,33 @@ async function main() {
   window.__surf = (v) => { showSurf = !!v; return showSurf; };
   window.__cull = (v) => { cullOn = !!v; return cullOn; };
   window.__spin = (v) => { spin = !!v; return spin; };
+  window.__sun = (v) => { sunOn = !!v; return sunOn; };
+  window.__sunazim = (v) => { sunAzim = v; return sunAzim; };
+  window.__sunelev = (v) => { sunElev = v; return sunElev; };
+  window.__ambient = (v) => { ambient = v; return ambient; };
+  // THE TERMINATOR PROBE -- the renderer's own answer to fields.py L3. Walks the lit disc and
+  // reports what fraction of the visible surface is above half brightness. L3 measures 50.2% of a
+  // SPHERE lit; the visible hemisphere of a sphere lit from the side is likewise half. Two
+  // messengers, one law -- if they disagree, one of them is wrong.
+  window.__terminator = async () => {
+    grabPending = true; await new Promise(r => setTimeout(r, 120)); grabPending = false;
+    await grabBuf.mapAsync(GPUMapMode.READ);
+    const d = new Uint8Array(grabBuf.getMappedRange()).slice(); grabBuf.unmap();
+    const bg = [d[0], d[1], d[2]];
+    let onDisc = 0, bright = 0, maxL = 0, cols = [];
+    for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) {
+      const i = (y * W + x) * 4;
+      const dev = Math.abs(d[i]-bg[0]) + Math.abs(d[i+1]-bg[1]) + Math.abs(d[i+2]-bg[2]);
+      if (dev < 12) continue;                       // background, not the body
+      const L = 0.114*d[i] + 0.587*d[i+1] + 0.299*d[i+2];   // bgra8
+      onDisc++; maxL = Math.max(maxL, L); cols.push([x, L]);
+    }
+    for (const [, L] of cols) if (L > maxL * 0.5) bright++;
+    return { onDisc, litFraction: onDisc ? +(bright / onDisc).toFixed(4) : 0,
+             maxLuma: +maxL.toFixed(1), sunOn, ambient,
+             sun: [+Math.cos(sunElev)*Math.cos(sunAzim), +Math.cos(sunElev)*Math.sin(sunAzim),
+                   +Math.sin(sunElev)].map(v => +v.toFixed(3)) };
+  };
   window.__grab = async () => {
     grabPending = true; await new Promise(r => setTimeout(r, 120)); grabPending = false;
     await grabBuf.mapAsync(GPUMapMode.READ);

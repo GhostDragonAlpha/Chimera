@@ -45,6 +45,7 @@ struct U {
   flags: vec4f,          // showAtmosphere, forceIsotropic, showSurface, thicknessFloor
   flags2: vec4f,         // backFaceMargin, normalizedSurface, depthEpsK, unused
   flags3: vec4f,         // coverageSharpness, unused x3
+  light: vec4f,          // xyz = world unit vector TOWARD the star, w = ambient (w < 0 => unlit)
 };
 
 @group(0) @binding(0) var<uniform> U_: U;
@@ -109,12 +110,13 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
   // measures the anomaly. Fading over a narrow angular band removes the pop and keeps the speed win
   // (anything well past the horizon is still discarded outright).
   var faceFade = 1.0;
+  var ndp = 0.0;
   if (isSurface) {
     let nvx = dot(U_.view0.xyz, nrm);
     let nvy = dot(U_.view1.xyz, nrm);
     let nvz = dot(U_.view2.xyz, nrm);
     let plen = max(sqrt(vx*vx + vy*vy + vz*vz), 1e-6);
-    let ndp = (nvx * vx + nvy * vy + nvz * vz) / plen;               // cos(angle) in [-1, 1]
+    ndp = (nvx * vx + nvy * vy + nvz * vz) / plen;                   // cos(angle) in [-1, 1]
     // Now that the DEPTH WINDOW provides real occlusion, back-face culling is only a PERFORMANCE
     // optimisation -- it no longer has to be geometrically tight, so be generous. Culling at the exact
     // silhouette discarded splats whose CENTRE is just past it while their gaussian still covered
@@ -123,6 +125,33 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
     // Keeping a margin past the horizon restores full coverage right up to the silhouette, and the
     // depth window still hides everything genuinely behind the surface.
     if (ndp > U_.flags2.x) { return; }                               // margin past the horizon (perf only)
+  }
+
+  // ── LIGHTING: N.L, read from the light field rather than invented ───────────────────────────
+  // ChimeraEngine/fields.py L3 measures this exact quantity on a sphere (50.2% of the surface lit
+  // over 40,000 samples, N.L 1.0000 sub-stellar -> 0.0000 at the terminator). The shader is the
+  // SECOND messenger for that same claim: same law, independent implementation, and if the
+  // terminator lands anywhere but halfway round, the two disagree and one of them is wrong.
+  var shade = 1.0;
+  if (U_.light.w >= 0.0) {
+    var nOut: vec3f;
+    if (isSurface) {
+      // USE THE BAKED NORMAL AS-IS. My first version "corrected" its sign geometrically, on the
+      // theory that a disc cannot know which of its faces is out. That theory is false HERE:
+      // bake_splats.py builds the frame from splat_appearance.py's outward radials and keeps the
+      // direction ("the rotation's third axis IS the surface normal"), so it is already oriented.
+      // Measured -- 100.00% of baked normals point outward; after my sign rule, 67.47%. The rule
+      // flipped every splat in the back-face margin band (0 < ndp < 0.30), which is exactly the
+      // LIMB, and would have banded the silhouette bright/dark. Locked by lighting_witness.py S1.
+      nOut = nrm;
+    } else {
+      // Atmosphere splats are ISOTROPIC: a sphere has no meaningful quaternion normal, so use the
+      // radial. This one DOES assume the model is centred on the origin -- true for this viewer
+      // (the camera targets the origin), and it is why the shell darkens with the ground beneath
+      // it instead of ringing a dark planet in daylight.
+      nOut = normalize(s.pos);
+    }
+    shade = U_.light.w + (1.0 - U_.light.w) * max(dot(nOut, U_.light.xyz), 0.0);
   }
 
   let focal = U_.cfg.x;
@@ -176,7 +205,10 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
   let opaF = min(s.opa * U_.bg.w * faceFade, 1.0);
   // SIGN ENCODES THE BLEND MODE: surface splats positive, volumetric (atmosphere) negative.
   let zsig = sqrt(max(dot(a2, a2), 1e-8));       // sigma along the view axis, in world units
-  proj[i] = Proj(vec2f(sx, sy), z, R, inv, select(-opaF, opaF, isSurface), s.col, zsig);
+  // Lighting multiplies the COLOUR, never the weight. In a normalized average the weight IS the
+  // coverage, so dimming it would eat the silhouette and show background through -- exactly the
+  // dark-rim bug the back-face fade caused. A dark surface must still be OPAQUE.
+  proj[i] = Proj(vec2f(sx, sy), z, R, inv, select(-opaF, opaF, isSurface), s.col * shade, zsig);
 
   let tilesX = u32(U_.screen.z); let tilesY = u32(U_.screen.w);
   let tx0 = u32(clamp(floor((sx - R) / f32(TILE)), 0.0, f32(tilesX - 1u)));
