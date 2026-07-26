@@ -100,8 +100,8 @@ async function main() {
   // ── camera ──
   const fov = 1.0472;                                    // 60deg, matches FirstPersonCamera
   const focal = H / (2 * Math.tan(fov / 2));
-  let azim = 0.6, elev = 0.25, radius = meta.cam_distance, spin = true, cullOn = true, scaleMul = 1.0, pan = 0.0;
-  const uniData = new Float32Array(28);
+  let azim = 0.6, elev = 0.25, radius = meta.cam_distance, spin = true, cullOn = true, scaleMul = 1.0, pan = 0.0, opaMul = 1.0, showAtm = true, forceIso = false, showSurf = true, flatMin = 0.70, fadeBand = 0.30;   // measured: thicker discs halve the limb anomaly, at no fps cost
+  const uniData = new Float32Array(36);
   function writeUniforms() {
     const ce = Math.cos(elev);
     const P = [radius * ce * Math.sin(azim), -radius * ce * Math.cos(azim), radius * Math.sin(elev)];
@@ -121,7 +121,9 @@ async function main() {
                  W, H, tilesX, tilesY,
                  focal, 1.0, radius * 6, N,
                  MAX_PAIRS, MAX_NUMWG, 0, scaleMul,
-                 0.015, 0.015, 0.04, cullOn ? 1 : 0]);
+                 0.015, 0.015, 0.04, opaMul,
+                 showAtm?1:0, forceIso?1:0, showSurf?1:0, flatMin,
+                 fadeBand, 0, 0, 0]);
     for (let p = 0; p < RADIX_PASSES; p++) {              // one slot per radix pass; only the shift differs
       uniData[22] = p * 4;
       device.queue.writeBuffer(uni, p * UNI_STRIDE, uniData);
@@ -244,8 +246,83 @@ async function main() {
     rb.unmap(); pb.unmap();
     return { pairs: c[0], numWG: c[1], proj0: Array.from(pr.slice(0, 12)).map(v => +v.toFixed(2)) };
   };
+  // magnified view of a region, drawn into a visible 2D canvas so the artifact can be SEEN
+  window.__zoomView = async (half = 70, factor = 5, offx = 0, offy = 0) => {
+    grabPending = true; await new Promise(r => setTimeout(r, 120)); grabPending = false;
+    await grabBuf.mapAsync(GPUMapMode.READ);
+    const d = new Uint8Array(grabBuf.getMappedRange()).slice(); grabBuf.unmap();
+    let z = document.getElementById('zoomcv');
+    if (!z) { z = document.createElement('canvas'); z.id = 'zoomcv';
+              z.style.cssText = 'display:block;margin:10px 14px;border:1px solid #2c3850;border-radius:8px;image-rendering:pixelated';
+              document.getElementById('wrap').appendChild(z); }
+    z.width = half * 2 * factor; z.height = half * 2 * factor;
+    const g2 = z.getContext('2d');
+    const img = g2.createImageData(half * 2, half * 2);
+    for (let y = 0; y < half * 2; y++) for (let x = 0; x < half * 2; x++) {
+      const sxp = (W / 2 + offx - half + x) | 0, syp = (H / 2 + offy - half + y) | 0;
+      const i = (syp * W + sxp) * 4, o = (y * half * 2 + x) * 4;
+      img.data[o] = d[i + 2]; img.data[o + 1] = d[i + 1]; img.data[o + 2] = d[i]; img.data[o + 3] = 255;
+    }
+    const t = document.createElement('canvas'); t.width = half * 2; t.height = half * 2;
+    t.getContext('2d').putImageData(img, 0, 0);
+    g2.imageSmoothingEnabled = false; g2.drawImage(t, 0, 0, z.width, z.height);
+    return { shown: `${half*2}x${half*2}px at ${factor}x around screen centre` };
+  };
+  // TEMPORAL probe -- the artifact is on the SPINNING object, so a still frame cannot show it.
+  // Accumulates per-pixel mean/variance over K frames WHILE SPINNING (Welford-style sums, O(1) memory),
+  // then reports where the temporal variance is anomalous versus its own neighbourhood.
+  window.__temporal = async (K = 12, half = 620) => {
+    const w = half * 2, n = w * w;
+    const sum = new Float64Array(n), sq = new Float64Array(n);
+    const wasSpin = spin; spin = true;
+    for (let k = 0; k < K; k++) {
+      grabPending = true; await new Promise(r => setTimeout(r, 70)); grabPending = false;
+      await grabBuf.mapAsync(GPUMapMode.READ);
+      const d = new Uint8Array(grabBuf.getMappedRange());
+      for (let y = 0; y < w; y++) {
+        const sy2 = (H / 2 - half + y) | 0;
+        for (let x = 0; x < w; x++) {
+          const i = (sy2 * W + ((W / 2 - half + x) | 0)) * 4;
+          const v = d[i] + d[i + 1] + d[i + 2];
+          const o = y * w + x; sum[o] += v; sq[o] += v * v;
+        }
+      }
+      grabBuf.unmap();
+      await new Promise(r => setTimeout(r, 30));
+    }
+    spin = wasSpin;
+    const sd = new Float32Array(n);
+    for (let o = 0; o < n; o++) { const m = sum[o] / K; sd[o] = Math.sqrt(Math.max(0, sq[o] / K - m * m)); }
+    // anomaly = temporal sd minus the median sd of a ring 24px out
+    const hits = [];
+    for (let y = 30; y < w - 30; y += 3) for (let x = 30; x < w - 30; x += 3) {
+      const c = sd[y * w + x];
+      const ring = [sd[y*w+x-24], sd[y*w+x+24], sd[(y-24)*w+x], sd[(y+24)*w+x],
+                    sd[(y-17)*w+x-17], sd[(y+17)*w+x+17], sd[(y-17)*w+x+17], sd[(y+17)*w+x-17]]
+                    .sort((a,b)=>a-b);
+      const med = (ring[3] + ring[4]) / 2;
+      const dev = c - med;
+      if (Math.abs(dev) > 6) {
+        const gx = x - half, gy = y - half;
+        let f = hits.find(h => Math.abs(h.gx-gx) < 50 && Math.abs(h.gy-gy) < 50);
+        if (f) { f.n++; if (Math.abs(dev) > Math.abs(f.dev)) { f.gx=gx; f.gy=gy; f.dev=+dev.toFixed(1); f.sd=+c.toFixed(1); f.ring=+med.toFixed(1); } }
+        else hits.push({ gx, gy, n:1, dev:+dev.toFixed(1), sd:+c.toFixed(1), ring:+med.toFixed(1) });
+      }
+    }
+    hits.sort((a,b) => Math.abs(b.dev) - Math.abs(a.dev));
+    let mx = 0, mo = 0; for (let o = 0; o < n; o++) if (sd[o] > mx) { mx = sd[o]; mo = o; }
+    return { frames: K, region: `${w}x${w} around screen centre`,
+             maxTemporalSd: +mx.toFixed(1), maxAt: { gx: (mo % w) - half, gy: ((mo / w) | 0) - half },
+             nHits: hits.length, top: hits.slice(0, 6) };
+  };
   window.__pan = (v) => { pan = v; return pan; };
   window.__scale = (v) => { scaleMul = v; return scaleMul; };
+  window.__opa = (v) => { opaMul = v; return opaMul; };
+  window.__fade = (v) => { fadeBand = v; return fadeBand; };
+  window.__flat = (v) => { flatMin = v; return flatMin; };
+  window.__atm = (v) => { showAtm = !!v; return showAtm; };
+  window.__iso = (v) => { forceIso = !!v; return forceIso; };
+  window.__surf = (v) => { showSurf = !!v; return showSurf; };
   window.__cull = (v) => { cullOn = !!v; return cullOn; };
   window.__spin = (v) => { spin = !!v; return spin; };
   window.__grab = async () => {
@@ -272,17 +349,24 @@ async function main() {
     // horizontal scanline across the disk centre
     const scan = [];
     for (let k = -10; k <= 10; k++) scan.push({ f: +(k/10).toFixed(1), rgb: px(cx + k*rx/10.5, cy) });
-    // LOCAL-CONTRAST dark spots: much darker than the median of a ring 12px away
+    // Strongest LOCAL ANOMALY anywhere on the disk (brighter OR darker than a ring 20px out).
+    // A "lens"/colour-dominance blob shows up here even when the centre-only probe reads flat.
     const spots = [];
-    for (let y = Math.round(cy-ry*0.8); y < cy+ry*0.8; y += 2)
-      for (let x = Math.round(cx-rx*0.8); x < cx+rx*0.8; x += 2) {
-        const nx=(x-cx)/rx, ny=(y-cy)/ry; if (nx*nx+ny*ny > 0.64) continue;
+    for (let y = Math.round(cy-ry*0.85); y < cy+ry*0.85; y += 3)
+      for (let x = Math.round(cx-rx*0.85); x < cx+rx*0.85; x += 3) {
+        const nx=(x-cx)/rx, ny=(y-cy)/ry; const rr = nx*nx+ny*ny; if (rr > 0.72) continue;
         const c = px(x,y), cs = c[0]+c[1]+c[2];
-        const ring = [px(x-14,y),px(x+14,y),px(x,y-14),px(x,y+14)].map(p=>p[0]+p[1]+p[2]).sort((a,b)=>a-b)[2];
-        if (ring - cs > 60) {
-          let f = spots.find(s => Math.abs(s.x-x)<40 && Math.abs(s.y-y)<40);
-          if (f) { f.n++; if (cs < f.cs) { f.x=x; f.y=y; f.cs=cs; f.rgb=c; f.ring=ring; } }
-          else spots.push({ x, y, n:1, cs, rgb:c, ring, rNorm:+Math.sqrt(nx*nx+ny*ny).toFixed(2) });
+        const ringv = [px(x-20,y),px(x+20,y),px(x,y-20),px(x,y+20),
+                       px(x-14,y-14),px(x+14,y+14),px(x-14,y+14),px(x+14,y-14)]
+                       .map(p=>p[0]+p[1]+p[2]).sort((a,b)=>a-b);
+        const ring = (ringv[3]+ringv[4])/2;                       // median of the 8-ring
+        const dev = cs - ring;
+        if (Math.abs(dev) > 25) {
+          let f = spots.find(s => Math.abs(s.x-x)<45 && Math.abs(s.y-y)<45);
+          if (f) { f.n++; if (Math.abs(dev) > Math.abs(f.dev)) { f.x=x; f.y=y; f.dev=Math.round(dev); f.rgb=c; } }
+          else spots.push({ x, y, n:1, dev:Math.round(dev), rgb:c,
+                            dxFromCentre:x-Math.round(cx), dyFromCentre:y-Math.round(cy),
+                            rNorm:+Math.sqrt(rr).toFixed(2) });
         }
       }
     // brightness map around the SCREEN centre (a 16px tile corner) -- 40x40 px, sampled every 2
@@ -292,7 +376,22 @@ async function main() {
       for (let x = W/2 - 20; x < W/2 + 20; x += 2) { const c = px(x,y); row += String(Math.round((c[0]+c[1]+c[2])/3)).padStart(4); }
       map.push(row);
     }
-    return { disk:{cx,cy,rx:Math.round(rx),ry:Math.round(ry)},
+    // GRAININESS vs radius: high-frequency energy in a 48px window (pixel minus 5x5 local mean).
+    // If individual splats are resolvable somewhere, that is where this spikes.
+    const grain = [];
+    for (const f of [0.0, 0.2, 0.4, 0.6, 0.8]) {
+      const ox = Math.round(cx + f * rx * 0.7), oy = Math.round(cy + f * ry * 0.7);
+      let n = 0, s2 = 0, mean = 0;
+      const vals = [];
+      for (let y = oy - 24; y < oy + 24; y++) for (let x = ox - 24; x < ox + 24; x++) {
+        let acc = 0; for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) { const q = px(x+i, y+j); acc += q[0]+q[1]+q[2]; }
+        const c = px(x,y); const hp = (c[0]+c[1]+c[2]) - acc/25;
+        vals.push(hp); mean += hp; n++;
+      }
+      mean /= n; for (const v of vals) s2 += (v-mean)*(v-mean);
+      grain.push({ r: f, rms: +Math.sqrt(s2/n).toFixed(2) });
+    }
+    return { disk:{cx,cy,rx:Math.round(rx),ry:Math.round(ry)}, grain,
              centre: px(cx,cy), screenCentre: px(W/2, H/2), map, scan,
              nSpots: spots.length, spots: spots.sort((a,b)=>(b.ring-b.cs)-(a.ring-a.cs)).slice(0,6) };
   };

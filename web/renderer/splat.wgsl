@@ -9,11 +9,19 @@ const WG: u32 = 256u;          // radix workgroup = 1 item per thread
 const RADIX: u32 = 16u;        // 4-bit digit -> 8 passes
 const DEPTH_BITS: u32 = 18u;
 const DEPTH_MAX: f32 = 262143.0;
+const GCUT: f32 = 0.011109;      // exp(-4.5): the value the truncated gaussian jumps from
+const GNORM: f32 = 1.011234;     // 1/(1-GCUT), so the window still peaks at 1.0
 
+// ANISOTROPIC, surface-aligned: a splat is an ellipsoid (scale along 3 local axes + rotation), the
+// standard 3DGS parameterisation. The rotation's THIRD axis is the surface normal, so back-face culling
+// comes free. A sphere splat projects to a circle at every angle, but splat SPACING on a curved surface
+// foreshortens by cos(phi) -- so spheres overlap least exactly where the surface faces the camera (a
+// visible spot). A tangent DISC foreshortens with the spacing, keeping screen overlap uniform.
 struct Splat {
-  pos: vec3f, scale: f32,
-  col: vec3f, opa: f32,
-  nrm: vec3f, _pad: f32,
+  pos: vec3f, opa: f32,
+  col: vec3f, _p0: f32,
+  scale: vec3f, _p1: f32,
+  quat: vec4f,        // (x, y, z, w)
 };
 
 struct Proj {
@@ -32,8 +40,10 @@ struct U {
   view2: vec4f,
   screen: vec4f,         // w, h, tilesX, tilesY
   cfg: vec4f,            // focal, near, far, nSplats
-  cfg2: vec4f,           // maxPairs, numWG_radix, radixPassShift, nPairs(unused on gpu)
-  bg: vec4f,
+  cfg2: vec4f,           // maxPairs, maxNumWG, radixPassShift, scaleMul
+  bg: vec4f,             // bg.rgb, opacity multiplier
+  flags: vec4f,          // showAtmosphere, forceIsotropic, showSurface, thicknessFloor
+  flags2: vec4f,         // backFaceFadeBand (0 = hard cull), unused x3
 };
 
 @group(0) @binding(0) var<uniform> U_: U;
@@ -78,25 +88,86 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
   let z = -vz;
   if (z < U_.cfg.y || z > U_.cfg.z) { return; }
 
-  // BACK-FACE CULL: a normal facing away is occluded by the near surface (v1's proven win)
-  if (U_.bg.w > 0.5 && any(s.nrm != vec3f(0.0, 0.0, 0.0))) {
-    let nx = dot(U_.view0.xyz, s.nrm);
-    let ny = dot(U_.view1.xyz, s.nrm);
-    let nz = dot(U_.view2.xyz, s.nrm);
-    if (nx * vx + ny * vy + nz * vz > 0.0) { return; }
+  let isSurface = s.scale.z < s.scale.x * 0.9;              // flat disc => surface; sphere => atmosphere
+  if (isSurface && U_.flags.z < 0.5) { return; }
+  if (!isSurface && U_.flags.x < 0.5) { return; }
+
+  // rotation matrix from the quaternion; its 3rd column is the local Z axis = the SURFACE NORMAL
+  let q = s.quat;
+  let xx = q.x*q.x; let yy = q.y*q.y; let zz = q.z*q.z;
+  let xy = q.x*q.y; let xz = q.x*q.z; let yz = q.y*q.z;
+  let wx = q.w*q.x; let wy = q.w*q.y; let wz = q.w*q.z;
+  let r0 = vec3f(1.0-2.0*(yy+zz), 2.0*(xy-wz),     2.0*(xz+wy));      // rows of R
+  let r1 = vec3f(2.0*(xy+wz),     1.0-2.0*(xx+zz), 2.0*(yz-wx));
+  let r2 = vec3f(2.0*(xz-wy),     2.0*(yz+wx),     1.0-2.0*(xx+yy));
+  let nrm = vec3f(r0.z, r1.z, r2.z);                                   // 3rd COLUMN
+
+  // BACK-FACE FADE (not a hard cull). Culling on sign(dot(n, p)) is a BINARY test, so as the world
+  // spins every splat crossing the silhouette POPS from full opacity to nothing -- ~250 splats are on
+  // the limb at any moment, which is temporal flicker exactly in the r=380..480 band where the probe
+  // measures the anomaly. Fading over a narrow angular band removes the pop and keeps the speed win
+  // (anything well past the horizon is still discarded outright).
+  var faceFade = 1.0;
+  if (isSurface) {
+    let nvx = dot(U_.view0.xyz, nrm);
+    let nvy = dot(U_.view1.xyz, nrm);
+    let nvz = dot(U_.view2.xyz, nrm);
+    let plen = max(sqrt(vx*vx + vy*vy + vz*vz), 1e-6);
+    let ndp = (nvx * vx + nvy * vy + nvz * vz) / plen;               // cos(angle) in [-1, 1]
+    if (ndp > 0.10) { return; }                                      // safely past the horizon
+    let band = max(U_.flags2.x, 1e-4);                               // 0 => hard cull (the old behaviour)
+    faceFade = clamp((0.10 - ndp) / band, 0.0, 1.0);
   }
 
   let focal = U_.cfg.x;
   let W = U_.screen.x; let H = U_.screen.y;
   let sx = W * 0.5 + focal * vx / z;
   let sy = H * 0.5 - focal * vy / z;
-  let sigma = focal * s.scale * U_.cfg2.w / z; // isotropic screen-space sigma (cfg2.w = live scale knob)
-  if (sigma < 0.05) { return; }
-  let R = 3.0 * sigma;                        // 3-sigma cutoff (exp(-4.5) ~ 1%)
+
+  // ── EWA: 3D covariance -> 2D screen covariance ──────────────────────────────────────────────
+  // Sigma3 = R S S^T R^T ; project with the view rotation W and the perspective Jacobian J:
+  //   Sigma2 = J (W Sigma3 W^T) J^T .  A tangent disc therefore foreshortens by exactly the same
+  //   cos(phi) as the spacing between splats does -- so screen-space overlap stays UNIFORM, and the
+  //   "spot" where the surface faces the camera (the isotropic-sphere extremum) disappears.
+  var sc = s.scale * U_.cfg2.w;                                        // cfg2.w = live scale knob
+  if (U_.flags.y > 0.5) { sc = vec3f(max(sc.x, sc.z)); }               // force ISOTROPIC (the v1 shape)
+  // THICKNESS FLOOR. A perfectly flat disc seen EDGE-ON (at the silhouette) projects to a LINE, so
+  // det(Sigma2) -> 0 and conic = inverse(Sigma2) BLOWS UP -- a real singularity that gets stronger the
+  // closer to edge-on, which is the "magnifying glass" at the limb (and the vertical line down a
+  // rotating tree trunk: a cylinder's edge-on locus is a line). Giving the disc real thickness bounds
+  // the projected aspect ratio and removes the singularity at its source.
+  sc.z = max(sc.z, sc.x * U_.flags.w);
+  let m0 = r0 * sc; let m1 = r1 * sc; let m2 = r2 * sc;                 // M = R*S (rows), Sigma3 = M M^T
+  // rotate into view space: A = Wv * M   (m0,m1,m2 are the ROWS of M; w0,w1,w2 the view rotation rows)
+  // Row i of (Wv*M) is the LINEAR COMBINATION w_i.x*m0 + w_i.y*m1 + w_i.z*m2. Writing it as
+  // vec3(dot(w_i,m0), dot(w_i,m1), dot(w_i,m2)) silently computes Wv*M^T instead -- a TRANSPOSE, which
+  // gives Wv M^T M Wv^T rather than Wv M M^T Wv^T. Same thing only if M were symmetric; it never is.
+  let w0 = U_.view0.xyz; let w1 = U_.view1.xyz; let w2 = U_.view2.xyz;
+  let a0 = w0.x * m0 + w0.y * m1 + w0.z * m2;
+  let a1 = w1.x * m0 + w1.y * m1 + w1.z * m2;
+  let a2 = w2.x * m0 + w2.y * m1 + w2.z * m2;
+  // perspective Jacobian at this point (view looks down -z, so d(screen)/d(view))
+  let jz = 1.0 / z;
+  let j00 = focal * jz;  let j02 =  focal * vx * jz * jz;
+  let j11 = -focal * jz; let j12 = -focal * vy * jz * jz;   // sy uses -vy, so row 1 is negated
+  // B = J * A  (2x3), then Sigma2 = B B^T
+  let b0 = j00 * a0 + j02 * a2;
+  let b1 = j11 * a1 + j12 * a2;
+  var c00 = dot(b0, b0); var c01 = dot(b0, b1); var c11 = dot(b1, b1);
+  c00 = c00 + 0.3; c11 = c11 + 0.3;                 // Mip-Splatting 2D filter: a >=~0.55px screen floor,
+                                                     // so a splat can never shrink below a pixel and alias
+  let det = c00 * c11 - c01 * c01;
+  if (det <= 1e-9) { return; }
+  // 3-sigma cutoff radius from the larger eigenvalue
+  let mid = 0.5 * (c00 + c11);
+  let disc = sqrt(max(mid * mid - det, 0.0));
+  let lam = mid + disc;
+  let R = 3.0 * sqrt(max(lam, 1e-6));
+  if (R < 0.6) { return; }
   if (sx + R < 0.0 || sx - R > W || sy + R < 0.0 || sy - R > H) { return; }
 
-  let inv = 1.0 / (sigma * sigma);
-  proj[i] = Proj(vec2f(sx, sy), z, R, vec3f(inv, 0.0, inv), s.opa, s.col, 0.0);
+  let inv = vec3f(c11 / det, -c01 / det, c00 / det);    // conic = inverse(Sigma2)
+  proj[i] = Proj(vec2f(sx, sy), z, R, inv, min(s.opa * U_.bg.w * faceFade, 1.0), s.col, 0.0);
 
   let tilesX = u32(U_.screen.z); let tilesY = u32(U_.screen.w);
   let tx0 = u32(clamp(floor((sx - R) / f32(TILE)), 0.0, f32(tilesX - 1u)));
@@ -328,7 +399,11 @@ fn rasterize(@builtin(workgroup_id) wid: vec3u,
         let c = bConicOpa[j];
         let g = d.x * d.x * c.x + 2.0 * d.x * d.y * c.y + d.y * d.y * c.z;
         if (g > 9.0) { continue; }
-        let a = exp(-0.5 * g) * c.w;                    // the splat's OWN alpha = opacity * gaussian
+        // PEDESTAL-SUBTRACTED gaussian. Truncating exp(-g/2) at g=9 leaves a 1.1% STEP at every splat's
+        // cutoff circle; with opaque splats that is ~3/255 -- a faint ring per splat, and where splats
+        // are largest and least overlapped you see those rings as overlapping circles. Rescaling so the
+        // window reaches exactly 0 at the cutoff removes the discontinuity entirely.
+        let a = (exp(-0.5 * g) - GCUT) * GNORM * c.w;   // the splat's OWN alpha = opacity * gaussian
         if (a < 0.004) { continue; }
         col = col + bCol[j].rgb * (a * T);              // contribution weighted by transmittance so far
         T = T * (1.0 - a);                              // decay by the splat's OWN alpha, NOT by a*T.

@@ -1,9 +1,9 @@
 {
   "term": "theSolarSystem",
   "count": 10856,
-  "stride": 48,
+  "stride": 64,
   "radius": 280.0372009277344,
   "cam_distance": 461.41087980237313,
-  "opaque": 7256,
-  "bytes": 521088
+  "surface_aligned": 256,
+  "bytes": 694784
 }

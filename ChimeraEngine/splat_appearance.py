@@ -148,13 +148,25 @@ def _planet_buffers(spec: dict, term: str):
     surf[:, CR:CB + 1] *= _PLANET_GAIN                             # opaque surface => ~no over-accumulation, so show TRUE colors (gain~1)
 
     # ── ATMOSPHERE: a faint pale-blue halo -- thin enough to glow at the LIMB without hazing the disk ──
+    # AN ATMOSPHERE IS A VOLUME, NOT A SHELL. A thin shell of ISOTROPIC splats has a
+    # surface-perpendicular locus (the sub-camera point) where screen-space overlap is at its MINIMUM
+    # -- sphere splats overlap as sigma/s tangentially but sigma/(s*cos phi) radially, so phi=0 is a
+    # unique extremum and reads as a "spot". (The same geometry put a LINE down a rotating tree trunk:
+    # a cylinder's perpendicular locus is a line, a sphere's is a point.) The surface shell solves this
+    # by using tangent DISCS, whose projection foreshortens with the spacing. The atmosphere cannot --
+    # it is genuinely volumetric -- so instead we give it real THICKNESS: scattered through R*1.00-1.12
+    # there is no single perpendicular locus left to see.
     n_a = 1800
     adirs = _fibonacci_sphere(n_a)
+    arad = R * (1.0 + 0.12 * rng.random(n_a) ** 0.6)               # thickness, denser toward the surface
     atm = np.zeros((n_a, NCOLS), dtype=np.float32)
-    atm[:, PX:PZ + 1] = adirs * (R * 1.05)
+    atm[:, PX:PZ + 1] = adirs * arad[:, None]
     atm[:, TYPE] = 5.0                                             # "atmosphere": sm=6.0 -> big soft blobs
     atm[:, CR] = 0.36; atm[:, CG] = 0.56; atm[:, CB] = 0.90
-    atm[:, ALPHA] = 0.05
+    atm[:, ALPHA] = 0.05 * 1800.0 / n_a                            # n * alpha held constant -> same haze
+                                                                    # (count kept at 1800: raising it made the
+                                                                    # operator's artifact LARGER, so density is
+                                                                    # not the cause -- thickness is the real fix)
     atm[:, SIZE] = 1.2
 
     end = np.concatenate([surf, atm], axis=0)
