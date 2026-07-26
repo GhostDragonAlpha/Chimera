@@ -69,6 +69,10 @@ The gap is a single missing connection, and both ends already exist.
 - **A3. Shading.** The star as a real light: `N·L` terminator, day/night, specular on water.
   Currently every splat is flat-lit, which is most of why it looks like a painted ball.
 
+> **Framing note (added 2026-07-26):** see `THE_RELATIVE_ENGINE.md`. Track B is not camera code with
+> a speed slider -- membrane depth already unifies LOD, local up, precision, camera speed AND clock
+> rate into one number. Build B on the membrane clock, not beside it. It also adds a track:
+
 ### TRACK B — **Navigation** (what you asked for, and what makes it usable)
 - **B1. Scale-relative flight.** 6-DoF fly camera where **speed = k · (distance to the nearest
   membrane surface)**, so it is automatically slow near a rock and fast between planets. No slider.
@@ -99,6 +103,16 @@ The gap is a single missing connection, and both ends already exist.
   is the same coalesce/fracture the design has always called for.
 - **D3. Streaming budget.** A fixed splat budget per frame; patches generated asynchronously and
   cached by membrane path.
+
+### TRACK T — **Time is relative too** (nearly free; `membranes.py` already has the law)
+- **T1. Per-membrane tick.** Advance each membrane at its own `tick()` rate: the planet underfoot at
+  full rate, the outer system in coarse steps. **LOD of TIME** -- how a whole solar system stays
+  simulated without costing everything. A handful of lines; the function exists.
+- **T2. Derive camera speed from the clock.** `k · C_LIGHT / scale` -- deletes the speed slider (B1).
+- **T3. Show it, then witness it.** Clock rate in the HUD beside the membrane path; then two clocks
+  at different depths run N steps and the divergence REPORTED AS A NUMBER, per the project's rule.
+- **T4. (Optional, gameplay) Time dilation as a mechanic.** Return from a deep gravity well and the
+  world has moved on. Falls out of T1; no new physics.
 
 ### TRACK E — **Standing on it** (the north star)
 - **E1. Ground query.** `height_at(lat, lon)` from the onion — cheap, exact, no rendering involved.
