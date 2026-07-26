@@ -190,6 +190,24 @@ class Tree:
         R, o, _, _ = self.fk()
         return o[link] + R[link] @ np.asarray(p_local, float)
 
+    def point_velocity(self, link: int, p_local) -> np.ndarray:
+        """World velocity of a point fixed in a link -- what contact damping and friction need.
+        Built by walking the chain: each link inherits its parent's motion and adds its own hinge."""
+        if link < 0:
+            return np.zeros(3)
+        R, o, _, z = self.fk()
+        w = [np.zeros(3)] * self.n
+        vo = [np.zeros(3)] * self.n
+        for i, L in enumerate(self.links):
+            p = L.parent
+            wp = np.zeros(3) if p < 0 else w[p]
+            vop = np.zeros(3) if p < 0 else vo[p]
+            op = self.base_pos if p < 0 else o[p]
+            vo[i] = vop + np.cross(wp, o[i] - op)
+            w[i] = wp + z[i] * self.qd[i]
+        pw = o[link] + R[link] @ np.asarray(p_local, float)
+        return vo[link] + np.cross(w[link], pw - o[link])
+
     def _subtree(self) -> list[set]:
         """Which links lie below each joint -- a force only torques the joints it hangs from."""
         below = [set([i]) for i in range(self.n)]
