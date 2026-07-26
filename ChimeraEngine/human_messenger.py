@@ -51,11 +51,26 @@ _SEE_PROMPT = ("Look at this image and describe what you actually see in one or 
                "the main colors, the shapes, and what it appears to depict. Describe ONLY what is "
                "visually present. Do NOT mention numbers, temperatures, kelvin, or measurements.")
 
+_WATCH_PROMPT = ("These images are frames from a short video, in order (first to last). Describe what you "
+                 "see across the sequence in one or two short sentences: the main colors, the shapes, what "
+                 "it depicts, and how it changes from first frame to last. Describe ONLY what is visually "
+                 "present. Do NOT mention numbers, temperatures, or measurements.")
+
 
 def see(png: str, timeout: int = 300) -> str | None:
-    """The human messenger: the Omni EYE reads the render BLIND (no physics context) -> a term. Returns
-    None if the eye is dark (senses server down) or errors -- the caller treats None as a FAIL."""
+    """The human messenger: the Omni EYE reads one render frame BLIND -> a term. None if the eye is dark."""
     return senses.see(png, _SEE_PROMPT, timeout)
+
+
+def watch(frames: list[str], timeout: int = 360) -> str | None:
+    """The Omni eye reads the MOVIE (ordered frames) BLIND -> a term describing the unfolding. None if dark.
+    This is the operator's insight made real: the dyad judges the movie, not just the settled end still."""
+    return senses.watch(frames, _WATCH_PROMPT, timeout)
+
+
+def _read(png, timeout: int = 300) -> str | None:
+    """Read a render: a MOVIE if given a list of frames (watch), else a single still (see)."""
+    return watch(png, timeout) if isinstance(png, (list, tuple)) else see(png, timeout)
 
 
 def align(expected: str, observed: str, timeout: int = 240):
@@ -103,8 +118,8 @@ def dyad(term: str, png: str, threshold: float = 0.6, human_override: dict | Non
         a = (1.0 if aligns else 0.0) if isinstance(aligns, bool) else max(0.0, min(1.0, float(aligns)))
         source = "operator (direct -- overriding the proxy)"
     else:                                                   # the vision proxy reads BLIND
-        source = "vision proxy (LM Studio)"
-        observed = see(png)
+        source = "vision proxy (omni movie)" if isinstance(png, (list, tuple)) else "vision proxy (omni)"
+        observed = _read(png)
         if not observed:
             _notify_operator(term, png, "no vision model is resident (the eye is dark).")
             return {"verdict": "FAIL_NO_HUMAN", "pass": False, "term": term, "expected": expected,

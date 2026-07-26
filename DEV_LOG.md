@@ -25,7 +25,11 @@ the STORY* — on both the declaration layer and the render layer.
   sonification — which is measured **100% below 170 Hz, centroid 30 Hz** (a pure rumble), 3× identically. So
   the AI ear can't be a verdict gate → the **OPERATOR is the primary/authoritative ear**, the AI a logged
   second opinion. `SOUND_DESIGN.md` §2 amended. (Vision is fine; the weakness is llama.cpp's experimental audio.)
-- **Deferred:** `Engine.hear` + the operator-primary `AUDITORY MESSENGER` gate (new engine code → needs a restart).
+- **Built (activates on next restart):** (a) the eye now WATCHES the MOVIE — `human_messenger.watch` via
+  `senses.watch`; the engine judges `[begin, end]` as an ordered sequence (tested PASS 0.8, the eye read the
+  unfolding). (b) `Engine.hear` + the `hear` MCP tool wire the sound dyad in, OPERATOR-primary: `hear(term,
+  reading, aligns)` is authoritative (tested → PASS 1.0); bare `hear(term)` runs the AI ear but logs it as
+  untrusted (tested → the hallucination, clearly flagged, never a gate). Sound is ADDITIVE — it does not block `prove`.
 
 ### AI ear + Omni "all senses" proven via llama-server; `sonify.py` built · `eac95fc` · **VERIFIED**
 - The audio dyad's ear works — but through **llama-server direct, not LM Studio**. Chased it down: qwen2-audio

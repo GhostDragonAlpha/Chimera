@@ -91,6 +91,16 @@ def decide(term: str, ruling: str) -> str:
 
 
 @mcp.tool()
+def hear(term: str, reading: str = "", aligns: str = "") -> str:
+    """THE SOUND DYAD -- judge a term by EAR (its matter as PRESSURE: sonify.py -> a WAV). The render's twin.
+    The OPERATOR is the primary, authoritative ear; the Omni AI ear is a logged, MEASURED-UNRELIABLE second
+    opinion and can NEVER gate a proof alone. To rule authoritatively, pass your own `reading` (what YOU
+    hear) + `aligns` ('yes'/'no' or 0-1). With no reading it runs the advisory AI ear and records it (not a
+    proof). Sound is ADDITIVE -- it deepens a term, it does not block `prove`. The WAV path is returned to play."""
+    return ENG.hear(term, reading=reading, aligns=aligns)
+
+
+@mcp.tool()
 def reload() -> str:
     """OPEN THE LEVEL. Hot-reload the world into the running engine instead of restarting the session:
     re-read the story (new terms from THE_STORY.md via gen_decl.py -> terms_data.py), rebuild the

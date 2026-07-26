@@ -297,8 +297,8 @@ class Engine:
         if not movie:
             return (f"REFUSED (APPEARANCE): `{name}` has no scene yet -- no splat movie and no "
                     f"placeholder projector. Rendering is physics; author its scene before proving.")
-        frame = movie["end"]                                # the human judges the SETTLED end state
-        dyad = human_messenger.dyad(name, frame)
+        frame = movie["end"]                                # the SETTLED end state (the record + the gallery still)
+        dyad = human_messenger.dyad(name, [movie["begin"], frame])   # judge the MOVIE (the unfolding), not just the still
         t = self._term(name); t["visual"] = frame; t["movie"] = movie; t["dyad"] = dyad
         t["status"] = "rendered"; self._save()
         if not dyad.get("pass"):
@@ -306,6 +306,33 @@ class Engine:
                     f"[{dyad.get('verdict')}]:\n  {dyad.get('detail', '')}")
         return (f"APPEARANCE for `{name}`: splat movie ({movie['begin']} -> {frame}); the DYAD HOLDS.\n"
                 f"  {dyad.get('detail', '')}\nNext: {self.next_action(name)}")
+
+    def hear(self, name: str, reading: str = "", aligns: str = "") -> str:
+        """THE SOUND DYAD -- judge a term by EAR (its matter projected into PRESSURE, sonify.py).
+
+        The OPERATOR is the primary, authoritative ear; the AI ear (Omni via senses) is a logged, MEASURED-
+        UNRELIABLE second opinion (it hallucinated highs in a pure-bass rumble), so it can never gate a proof
+        on its own. To RULE: pass your own `reading` (what YOU hear) and `aligns` ('yes'/'no', or a 0-1
+        number) -- that is authoritative. With no reading, it runs the AI advisory ear and records it, but
+        that is NOT a proof. Sound is ADDITIVE (it deepens a term; it does not block `prove`)."""
+        import importlib
+        import sound_messenger
+        importlib.reload(sound_messenger)                   # pick up sonify/senses edits live
+        override = None
+        if str(reading).strip():
+            a = str(aligns).strip().lower()
+            val = True if a in ("", "yes", "y", "true", "1") else (False if a in ("no", "n", "false", "0") else a)
+            override = {"reading": reading.strip(), "aligns": val}
+        sd = sound_messenger.dyad(name, _HERE / "output", human_override=override)
+        t = self._term(name); t["sound_dyad"] = sd; self._save()
+        if sd.get("verdict") == "FAIL":
+            return f"SOUND for `{name}`: {sd.get('detail')}"
+        who = "OPERATOR (authoritative ear)" if override else "AI ear (ADVISORY -- untrusted; YOU are the real ear)"
+        tail = ("" if override else
+                "\n  To rule authoritatively: hear(term, reading='<what YOU hear>', aligns='yes'|'no'). "
+                "The AI ear is measured-unreliable; your ear is the terminal.")
+        return (f"SOUND for `{name}` [{who}] -> {sd.get('verdict')} (align {sd.get('alignment')}).\n"
+                f"  heard: \"{sd.get('observed', '')}\"\n  wav: {sd.get('wav')}\n  {sd.get('detail', '')}{tail}")
 
     def _appearance(self, name: str):
         """The term's appearance: a splat MOVIE (beginning->end) if it has a scene, else the matplotlib
