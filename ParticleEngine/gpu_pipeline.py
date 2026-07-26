@@ -19,6 +19,7 @@ MASS, LIFE, TYPE = 9, 10, 11
 PROP0, PROP1, PROP2, PROP3 = 12, 13, 14, 15
 CR, CG, CB = 16, 17, 18
 ALPHA, SIZE = 19, 20
+NX, NY, NZ = 21, 22, 23     # optional per-grain surface normal (0,0,0 => no back-face cull)
 NCOLS = 28
 
 
@@ -188,7 +189,16 @@ def _p2s(dp, base_scale, spx, spy, spz, sc00, sc01, sc02, sc11, sc12, sc22, scr,
 #  PROJECTION
 # ═══════════════════════════════════════════════════════════════════
 @cuda.jit
-def _project(wx, wy, wz, cw00, cw01, cw02, cw11, cw12, cw22,
+def _clear_normals(dp, n):
+    """Zero the normal columns so the back-face cull is a no-op (for paths that fill splats directly, not via _p2s)."""
+    i = cuda.grid(1)
+    if i >= n: return
+    o = i * NCOLS
+    dp[o + NX] = 0.0; dp[o + NY] = 0.0; dp[o + NZ] = 0.0
+
+
+@cuda.jit
+def _project(dp, wx, wy, wz, cw00, cw01, cw02, cw11, cw12, cw22,
              v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23,
              p00, p11, p22, p23, p32, fx, fy, width, height, n,
              sx, sy, sd, pc00, pc01, pc11, valid):
@@ -201,6 +211,17 @@ def _project(wx, wy, wz, cw00, cw01, cw02, cw11, cw12, cw22,
     if vz >= 0: valid[i] = False; return
     cw = -vz
     if cw <= 0: valid[i] = False; return
+    # BACK-FACE CULL: if the grain carries a surface normal, drop it when it faces away from the camera.
+    # The far hemisphere of an opaque world is occluded by the near side, so this is pixel-identical but
+    # removes ~half the grains BEFORE projection/binning/gather/composite. (0,0,0 normal => never culled.)
+    o = i * NCOLS
+    nnx = dp[o + NX]; nny = dp[o + NY]; nnz = dp[o + NZ]
+    if nnx != 0.0 or nny != 0.0 or nnz != 0.0:
+        vnx = v00*nnx + v01*nny + v02*nnz          # rotate normal into view space (rigid view matrix)
+        vny = v10*nnx + v11*nny + v12*nnz
+        vnz = v20*nnx + v21*nny + v22*nnz
+        if vnx*vx + vny*vy + vnz*vz > 0.0:         # normal points away from the camera => hidden
+            valid[i] = False; return
     sx[i] = ((p00*vx)/cw * 0.5 + 0.5) * width
     sy[i] = (1.0 - ((p11*vy)/cw * 0.5 + 0.5)) * height
     sd[i] = -vz; valid[i] = True
@@ -546,7 +567,7 @@ class FullGPUPipeline:
         V = camera.view_matrix().astype(np.float32)
         P = camera.projection_matrix(params.width, params.height).astype(np.float32)
         fy = params.height / (2.0 * np.tan(camera.fov / 2.0))
-        _project[g, (256,)](self._spx, self._spy, self._spz,
+        _project[g, (256,)](self._dp, self._spx, self._spy, self._spz,
             self._sc00, self._sc01, self._sc02, self._sc11, self._sc12, self._sc22,
             V[0, 0], V[0, 1], V[0, 2], V[0, 3], V[1, 0], V[1, 1], V[1, 2], V[1, 3],
             V[2, 0], V[2, 1], V[2, 2], V[2, 3],
@@ -643,12 +664,13 @@ class FullGPUPipeline:
         self._scb[:n] = cuda.to_device(colors[:, 2].astype(np.float32))
         self._sopa[:n] = cuda.to_device(opacities.astype(np.float32))
         self._n = n
+        _clear_normals[g, (256,)](self._dp, n)   # this path fills splats directly -> no valid normals -> no cull
 
         # Project
         V = camera.view_matrix().astype(np.float32)
         P = camera.projection_matrix(params.width, params.height).astype(np.float32)
         fy = params.height / (2.0 * np.tan(camera.fov / 2.0))
-        _project[g, (256,)](self._spx, self._spy, self._spz,
+        _project[g, (256,)](self._dp, self._spx, self._spy, self._spz,
             self._sc00, self._sc01, self._sc02, self._sc11, self._sc12, self._sc22,
             V[0,0],V[0,1],V[0,2],V[0,3],V[1,0],V[1,1],V[1,2],V[1,3],V[2,0],V[2,1],V[2,2],V[2,3],
             P[0,0],P[1,1],P[2,2],P[2,3],P[3,2], fy, fy,

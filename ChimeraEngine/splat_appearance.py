@@ -51,6 +51,7 @@ NCOLS = 28
 PX, PY, PZ = 0, 1, 2
 TYPE = 11
 CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
+NX, NY, NZ = 21, 22, 23     # OPTIONAL surface normal -> the pipeline back-face-culls occluded grains (0,0,0 = no cull)
 
 # ── ONE calibration, shared by every solid-sphere scene ──
 # A dense splat shell over-accumulates ~2x: overlapping Gaussian tails sum before the opacity
@@ -59,9 +60,9 @@ CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
 # so the render lands on the intended palette. Keeping GRAIN size/alpha/DENSITY constant across scenes
 # keeps the over-accumulation factor constant, so the ONE measured gain holds for every world.
 _SURFACE_GAIN = 0.45      # invert the measured ~2x over-accumulation (translucent shells: _solid_sphere/theStar)
-_PLANET_GAIN = (0.337, 0.328, 0.325)   # aPlanet surface: OPAQUE (alpha 0.92) + SMALL grains (SIZE 3.5) => ~3x residual
-                          # over-accumulation, MEASURED per-channel against a uniform navy sphere (err 0,0,0 on target).
-                          # Small grains cut overdraw ~8x vs SIZE 9 -> the real speed win; this gain restores true colour.
+_PLANET_GAIN = (0.420, 0.409, 0.405)   # aPlanet surface: OPAQUE (alpha 0.92) + SMALL grains (3.5) + BACK-FACE CULL.
+                          # Culling the far hemisphere removes its bleed-through, so over-accumulation drops ~3.0x -> ~2.4x;
+                          # re-MEASURED per-channel against a uniform navy sphere WITH culling active (err 0,0,0 on target).
 _GRAIN_SIZE = 5.0         # per-grain render size (world units)
 _GRAIN_ALPHA = 0.5        # per-grain opacity
 _GRAIN_DENSITY = 0.185    # grains per unit sphere AREA (= aPlanet's 18000 / 4pi*88^2)
@@ -112,6 +113,7 @@ def _planet_buffers(spec: dict, term: str):
     surf = np.zeros((n_s, NCOLS), dtype=np.float32)
     jitter = 1.0 + rng.normal(0.0, 0.006, n_s)                      # a touch of shell thickness
     surf[:, PX:PZ + 1] = dirs * (R * jitter[:, None])
+    surf[:, NX:NZ + 1] = dirs                                       # outward normal = the shell direction -> back-face cull the far side
     surf[:, TYPE] = 3.0                                             # "social": sm=1.0, opaque, isotropic -> clean round grains
     surf[:, ALPHA] = 0.92                                           # OPAQUE surface: line-of-sight stops here (Nanite-style). The
                                                                      # front-to-back early-out (trans<0.01) now fires after ~2 grains,
