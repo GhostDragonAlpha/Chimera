@@ -172,3 +172,6 @@ ChimeraEngine/engine_state.json
 # mocks, and the recovered junk PNG that once clobbered __init__.py. Runtime artifacts,
 # never source -- ignore the whole directory so no future render/mock can slip into git.
 ChimeraEngine/output/
+
+# baked splat buffers -- regenerate with: python ChimeraEngine/bake_splats.py <term>
+web/renderer/data/*.bin
