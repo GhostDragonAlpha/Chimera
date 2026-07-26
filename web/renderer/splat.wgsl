@@ -31,7 +31,7 @@ struct Proj {
   conic: vec3f,
   opa: f32,
   col: vec3f,
-  _p: f32,
+  zsig: f32,        // view-space depth sigma -> sets the depth-window epsilon (scale-correct)
 };
 
 struct U {
@@ -43,7 +43,8 @@ struct U {
   cfg2: vec4f,           // maxPairs, maxNumWG, radixPassShift, scaleMul
   bg: vec4f,             // bg.rgb, opacity multiplier
   flags: vec4f,          // showAtmosphere, forceIsotropic, showSurface, thicknessFloor
-  flags2: vec4f,         // backFaceFadeBand (0 = hard cull), normalizedSurface, unused x2
+  flags2: vec4f,         // backFaceMargin, normalizedSurface, depthEpsK, unused
+  flags3: vec4f,         // coverageSharpness, unused x3
 };
 
 @group(0) @binding(0) var<uniform> U_: U;
@@ -114,9 +115,14 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
     let nvz = dot(U_.view2.xyz, nrm);
     let plen = max(sqrt(vx*vx + vy*vy + vz*vz), 1e-6);
     let ndp = (nvx * vx + nvy * vy + nvz * vz) / plen;               // cos(angle) in [-1, 1]
-    if (ndp > 0.10) { return; }                                      // safely past the horizon
-    let band = max(U_.flags2.x, 1e-4);                               // 0 => hard cull (the old behaviour)
-    faceFade = clamp((0.10 - ndp) / band, 0.0, 1.0);
+    // Now that the DEPTH WINDOW provides real occlusion, back-face culling is only a PERFORMANCE
+    // optimisation -- it no longer has to be geometrically tight, so be generous. Culling at the exact
+    // silhouette discarded splats whose CENTRE is just past it while their gaussian still covered
+    // pixels inside, thinning coverage at the edge; and any fade multiplied the WEIGHT, which in a
+    // normalized average IS the coverage -- so the background showed through as a DARK RIM.
+    // Keeping a margin past the horizon restores full coverage right up to the silhouette, and the
+    // depth window still hides everything genuinely behind the surface.
+    if (ndp > U_.flags2.x) { return; }                               // margin past the horizon (perf only)
   }
 
   let focal = U_.cfg.x;
@@ -169,7 +175,8 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
   let inv = vec3f(c11 / det, -c01 / det, c00 / det);    // conic = inverse(Sigma2)
   let opaF = min(s.opa * U_.bg.w * faceFade, 1.0);
   // SIGN ENCODES THE BLEND MODE: surface splats positive, volumetric (atmosphere) negative.
-  proj[i] = Proj(vec2f(sx, sy), z, R, inv, select(-opaF, opaF, isSurface), s.col, 0.0);
+  let zsig = sqrt(max(dot(a2, a2), 1e-8));       // sigma along the view axis, in world units
+  proj[i] = Proj(vec2f(sx, sy), z, R, inv, select(-opaF, opaF, isSurface), s.col, zsig);
 
   let tilesX = u32(U_.screen.z); let tilesY = u32(U_.screen.w);
   let tx0 = u32(clamp(floor((sx - R) / f32(TILE)), 0.0, f32(tilesX - 1u)));
@@ -355,6 +362,7 @@ fn clearHist(@builtin(global_invocation_id) gid: vec3u) {
 var<workgroup> bXY: array<vec2f, WG>;
 var<workgroup> bConicOpa: array<vec4f, WG>;
 var<workgroup> bCol: array<vec4f, WG>;
+var<workgroup> bZ: array<vec2f, WG>;      // (view depth, depth sigma)
 var<workgroup> nDone: atomic<u32>;
 var<workgroup> wRange: vec2u;      // broadcast so the loop bound is PROVABLY uniform (barriers need that)
 var<workgroup> wAllDone: u32;
@@ -382,12 +390,21 @@ fn rasterize(@builtin(workgroup_id) wid: vec3u,
   // (the dancing). Averaging surface splats by their gaussian weights is ORDER-INDEPENDENT: no
   // winner, no flip, and the same math fixes the line down a rotating tree trunk (a cylinder's
   // nearest-locus is a line). The thin atmosphere still alpha-blends over the result.
+  // DEPTH WINDOW -- what makes the order-independent average OPAQUE.
+  // A normalized average is order-independent, which also means DEPTH-independent: on its own it has
+  // no occlusion at all, so the far side of a body shows through (the "transparent Earth"). Because
+  // the splats arrive front-to-back, the FIRST contributing surface splat defines the visible surface
+  // depth z0; everything past z0 + eps is behind it and is skipped (and, being sorted, we can stop).
+  // eps comes from the splat's OWN view-space depth sigma, so it is correct at every scale -- a planet
+  // close up and the same planet shrunk to 20px in the solar-system view both work with no tuning.
   var atmC = vec3f(0.0);
   var T = 1.0;
   var sumW = 0.0;
   var sumC = vec3f(0.0);
+  var z0 = 1e30;
   var done = !inb;
   let normOn = U_.flags2.y > 0.5;
+  let epsK = max(U_.flags2.z, 0.5);
   let fx = f32(px) + 0.5; let fy = f32(py) + 0.5;
 
   var i = range.x;
@@ -401,11 +418,13 @@ fn rasterize(@builtin(workgroup_id) wid: vec3u,
       bXY[li] = p.xy;
       bConicOpa[li] = vec4f(p.conic, p.opa);
       bCol[li] = vec4f(p.col, p.radius);
+      bZ[li] = vec2f(p.depth, p.zsig);
     }
     workgroupBarrier();
 
     if (!done) {
       for (var j = 0u; j < batch; j = j + 1u) {
+        if (bZ[j].x > z0) { done = true; break; }        // sorted: past the visible surface => occluded
         let d = vec2f(fx, fy) - bXY[j];
         let R = bCol[j].w;
         if (dot(d, d) > R * R) { continue; }
@@ -420,6 +439,7 @@ fn rasterize(@builtin(workgroup_id) wid: vec3u,
         let wgt = (exp(-0.5 * g) - GCUT) * GNORM * abs(op);
         if (wgt < 0.004) { continue; }
         if (op >= 0.0 && normOn) {
+          if (z0 > 1e29) { z0 = bZ[j].x + epsK * bZ[j].y; }   // first surface splat sets the window
           sumW = sumW + wgt;                            // surface: order-independent weighted average
           sumC = sumC + bCol[j].rgb * wgt;
           if (sumW > 12.0) { done = true; break; }      // ratio frozen; deeper (occluded) work skipped
@@ -441,7 +461,7 @@ fn rasterize(@builtin(workgroup_id) wid: vec3u,
   }
 
   if (inb) {
-    let A = 1.0 - exp(-sumW);                           // surface coverage: ~w when sparse, ->1 solid
+    let A = 1.0 - exp(-sumW * U_.flags3.x);             // coverage; higher k = tighter silhouette
     let surf = sumC / max(sumW, 1e-4);
     let base = mix(U_.bg.rgb, surf, A);
     let outc = atmC + T * base;                         // thin atmosphere over the averaged surface

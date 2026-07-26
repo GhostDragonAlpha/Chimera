@@ -1,7 +1,7 @@
 // Chimera renderer v2 -- SPIKE host. Owns setup only; the frame loop is entirely GPU passes.
 // Measures each pass with timestamp-query (no host-side guessing), which is the point of the spike.
 
-const BUILD = 'v2.8-normalized';
+const BUILD = 'v3.0-cleanlimb';
 const TILE = 16, WG = 256, RADIX_PASSES = 8, UNI_STRIDE = 256;
 const MAX_PAIRS = 2_000_000;
 const MAX_NUMWG = Math.ceil(MAX_PAIRS / WG);
@@ -102,8 +102,8 @@ async function main() {
   // ── camera ──
   const fov = 1.0472;                                    // 60deg, matches FirstPersonCamera
   const focal = H / (2 * Math.tan(fov / 2));
-  let azim = 0.6, elev = 0.25, radius = meta.cam_distance, spin = true, cullOn = true, scaleMul = 1.0, pan = 0.0, opaMul = 1.0, showAtm = true, forceIso = false, showSurf = true, flatMin = 0.22, fadeBand = 0.30, normOn = true;   // measured: thicker discs halve the limb anomaly, at no fps cost
-  const uniData = new Float32Array(36);
+  let azim = 0.6, elev = 0.25, radius = meta.cam_distance, spin = true, cullOn = true, scaleMul = 1.0, pan = 0.0, opaMul = 1.0, showAtm = true, forceIso = false, showSurf = true, flatMin = 0.22, backMargin = 0.30, normOn = true, depthEps = 3.0, covK = 1.0;   // measured: thicker discs halve the limb anomaly, at no fps cost
+  const uniData = new Float32Array(40);
   function writeUniforms() {
     const ce = Math.cos(elev);
     const P = [radius * ce * Math.sin(azim), -radius * ce * Math.cos(azim), radius * Math.sin(elev)];
@@ -125,7 +125,8 @@ async function main() {
                  MAX_PAIRS, MAX_NUMWG, 0, scaleMul,
                  0.015, 0.015, 0.04, opaMul,
                  showAtm?1:0, forceIso?1:0, showSurf?1:0, flatMin,
-                 fadeBand, normOn?1:0, 0, 0]);
+                 backMargin, normOn?1:0, depthEps, 0,
+                 covK, 0, 0, 0]);
     for (let p = 0; p < RADIX_PASSES; p++) {              // one slot per radix pass; only the shift differs
       uniData[22] = p * 4;
       device.queue.writeBuffer(uni, p * UNI_STRIDE, uniData);
@@ -317,12 +318,41 @@ async function main() {
              maxTemporalSd: +mx.toFixed(1), maxAt: { gx: (mo % w) - half, gy: ((mo / w) | 0) - half },
              nHits: hits.length, top: hits.slice(0, 6) };
   };
+  // RADIAL PROFILE -- averages brightness in rings around the disk centre. A dark rim shows as a
+  // dip BELOW the interior level before the fall-off to background, so it is unambiguous in numbers.
+  window.__radial = async () => {
+    grabPending = true; await new Promise(r => setTimeout(r, 120)); grabPending = false;
+    await grabBuf.mapAsync(GPUMapMode.READ);
+    const d = new Uint8Array(grabBuf.getMappedRange()).slice(); grabBuf.unmap();
+    let minX=W,maxX=0,minY=H,maxY=0;
+    for (let y=0;y<H;y+=2) for (let x=0;x<W;x+=2){const i=(y*W+x)*4;
+      if (d[i]+d[i+1]+d[i+2] > 60){ if(x<minX)minX=x; if(x>maxX)maxX=x; if(y<minY)minY=y; if(y>maxY)maxY=y; } }
+    const cx=(minX+maxX)/2, cy=(minY+maxY)/2, R=Math.min((maxX-minX),(maxY-minY))/2;
+    const NB = 40, sum = new Float64Array(NB), cnt = new Float64Array(NB);
+    for (let y=Math.max(0,cy-R*1.15|0); y<Math.min(H,cy+R*1.15); y++)
+      for (let x=Math.max(0,cx-R*1.15|0); x<Math.min(W,cx+R*1.15); x++) {
+        const rr = Math.hypot(x-cx, y-cy)/R; if (rr >= 1.14) continue;
+        const b = Math.floor(rr/1.14*NB); const i=(y*W+x)*4;
+        sum[b] += d[i]+d[i+1]+d[i+2]; cnt[b]++;
+      }
+    const prof = []; for (let b=0;b<NB;b++) prof.push(+(sum[b]/Math.max(1,cnt[b])).toFixed(1));
+    // interior reference = median of bins 10..28 ; find the deepest dip in the limb bins 28..37
+    const interior = [...prof.slice(10,29)].sort((a,b)=>a-b)[9];
+    let dip = 0, dipAt = 0;
+    for (let b=28;b<38;b++){ const above = Math.max(prof[b-1], prof[b+1]||0);
+      if (prof[b] < prof[b-1] && above - prof[b] > dip) { dip = above - prof[b]; dipAt = b; } }
+    return { diskR: Math.round(R), interior: +interior.toFixed(1),
+             rimDip: +dip.toFixed(1), rimDipAtRadius: +(dipAt/NB*1.14).toFixed(2),
+             profileFromR070: prof.slice(24,38) };
+  };
   window.__pan = (v) => { pan = v; return pan; };
   window.__scale = (v) => { scaleMul = v; return scaleMul; };
   window.__opa = (v) => { opaMul = v; return opaMul; };
+  window.__eps = (v) => { depthEps = v; return depthEps; };
   window.__norm = (v) => { normOn = !!v; return normOn; };
   window.__elev = (v) => { elev = v; return elev; };
-  window.__fade = (v) => { fadeBand = v; return fadeBand; };
+  window.__margin = (v) => { backMargin = v; return backMargin; };
+  window.__cov = (v) => { covK = v; return covK; };
   window.__flat = (v) => { flatMin = v; return flatMin; };
   window.__atm = (v) => { showAtm = !!v; return showAtm; };
   window.__iso = (v) => { forceIso = !!v; return forceIso; };
