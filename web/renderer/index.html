@@ -38,6 +38,7 @@
     <label><input type="checkbox" id="cSurf" checked> surface</label>
     <label><input type="checkbox" id="cAtm" checked> atmosphere</label>
     <label><input type="checkbox" id="cIso"> force isotropic (v1 shape)</label>
+    <label><input type="checkbox" id="cNorm" checked> normalized surface</label>
     <label>size <input type="range" id="cScale" min="0.4" max="2.5" step="0.05" value="1"><span id="vScale">1.00</span></label>
     <label>opacity <input type="range" id="cOpa" min="0.1" max="1" step="0.05" value="1"><span id="vOpa">1.00</span></label>
     <label>thickness <input type="range" id="cFlat" min="0.05" max="1" step="0.05" value="0.7"><span id="vFlat">0.70</span></label>
@@ -52,7 +53,7 @@
   const wire = () => {
     if (!window.__atm) return setTimeout(wire, 200);
     const b = (id, fn) => document.getElementById(id).onchange = e => fn(e.target.checked);
-    b('cSurf', window.__surf); b('cAtm', window.__atm); b('cIso', window.__iso);
+    b('cSurf', window.__surf); b('cAtm', window.__atm); b('cIso', window.__iso); b('cNorm', window.__norm);
     const r = (id, out, fn) => { const el = document.getElementById(id);
       el.oninput = e => { const v = parseFloat(e.target.value); fn(v); document.getElementById(out).textContent = v.toFixed(2); }; };
     r('cScale', 'vScale', window.__scale); r('cOpa', 'vOpa', window.__opa);

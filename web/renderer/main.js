@@ -1,6 +1,7 @@
 // Chimera renderer v2 -- SPIKE host. Owns setup only; the frame loop is entirely GPU passes.
 // Measures each pass with timestamp-query (no host-side guessing), which is the point of the spike.
 
+const BUILD = 'v2.8-normalized';
 const TILE = 16, WG = 256, RADIX_PASSES = 8, UNI_STRIDE = 256;
 const MAX_PAIRS = 2_000_000;
 const MAX_NUMWG = Math.ceil(MAX_PAIRS / WG);
@@ -19,6 +20,7 @@ async function main() {
     maxStorageBufferBindingSize: Math.min(268435456, adapter.limits.maxStorageBufferBindingSize),
   }});
   const canTime = want.includes('timestamp-query');
+  log(`build ${BUILD}`);
   log(`adapter: ${adapter.info?.vendor ?? '?'} / ${adapter.info?.architecture ?? '?'}  features: ${want.join(', ')}`);
   // WebGPU validation errors do NOT reach console.log -- surface them or debug blind
   let nerr = 0;
@@ -100,7 +102,7 @@ async function main() {
   // ── camera ──
   const fov = 1.0472;                                    // 60deg, matches FirstPersonCamera
   const focal = H / (2 * Math.tan(fov / 2));
-  let azim = 0.6, elev = 0.25, radius = meta.cam_distance, spin = true, cullOn = true, scaleMul = 1.0, pan = 0.0, opaMul = 1.0, showAtm = true, forceIso = false, showSurf = true, flatMin = 0.70, fadeBand = 0.30;   // measured: thicker discs halve the limb anomaly, at no fps cost
+  let azim = 0.6, elev = 0.25, radius = meta.cam_distance, spin = true, cullOn = true, scaleMul = 1.0, pan = 0.0, opaMul = 1.0, showAtm = true, forceIso = false, showSurf = true, flatMin = 0.22, fadeBand = 0.30, normOn = true;   // measured: thicker discs halve the limb anomaly, at no fps cost
   const uniData = new Float32Array(36);
   function writeUniforms() {
     const ce = Math.cos(elev);
@@ -123,7 +125,7 @@ async function main() {
                  MAX_PAIRS, MAX_NUMWG, 0, scaleMul,
                  0.015, 0.015, 0.04, opaMul,
                  showAtm?1:0, forceIso?1:0, showSurf?1:0, flatMin,
-                 fadeBand, 0, 0, 0]);
+                 fadeBand, normOn?1:0, 0, 0]);
     for (let p = 0; p < RADIX_PASSES; p++) {              // one slot per radix pass; only the shift differs
       uniData[22] = p * 4;
       device.queue.writeBuffer(uni, p * UNI_STRIDE, uniData);
@@ -218,7 +220,7 @@ async function main() {
       $('hud').innerHTML =
         `<b>${fps.toFixed(1)} fps</b> &nbsp; frame ${(tAcc / frames).toFixed(2)} ms &nbsp;` +
         `<span class="${(last.gpu ?? 99) <= budget ? 'ok' : 'no'}">GPU ${(last.gpu ?? 0).toFixed(2)} ms ` +
-        `(120fps budget ${budget.toFixed(2)})</span><br><span class="d">${parts} &nbsp; ${W}x${H} &nbsp; ${N} splats</span>`;
+        `(120fps budget ${budget.toFixed(2)})</span> <span class="d">${BUILD}</span><br><span class="d">${parts} &nbsp; ${W}x${H} &nbsp; ${N} splats</span>`;
       frames = 0; tAcc = 0;
     }
     requestAnimationFrame(frame);
@@ -318,6 +320,8 @@ async function main() {
   window.__pan = (v) => { pan = v; return pan; };
   window.__scale = (v) => { scaleMul = v; return scaleMul; };
   window.__opa = (v) => { opaMul = v; return opaMul; };
+  window.__norm = (v) => { normOn = !!v; return normOn; };
+  window.__elev = (v) => { elev = v; return elev; };
   window.__fade = (v) => { fadeBand = v; return fadeBand; };
   window.__flat = (v) => { flatMin = v; return flatMin; };
   window.__atm = (v) => { showAtm = !!v; return showAtm; };

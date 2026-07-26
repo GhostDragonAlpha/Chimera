@@ -43,7 +43,7 @@ struct U {
   cfg2: vec4f,           // maxPairs, maxNumWG, radixPassShift, scaleMul
   bg: vec4f,             // bg.rgb, opacity multiplier
   flags: vec4f,          // showAtmosphere, forceIsotropic, showSurface, thicknessFloor
-  flags2: vec4f,         // backFaceFadeBand (0 = hard cull), unused x3
+  flags2: vec4f,         // backFaceFadeBand (0 = hard cull), normalizedSurface, unused x2
 };
 
 @group(0) @binding(0) var<uniform> U_: U;
@@ -167,7 +167,9 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
   if (sx + R < 0.0 || sx - R > W || sy + R < 0.0 || sy - R > H) { return; }
 
   let inv = vec3f(c11 / det, -c01 / det, c00 / det);    // conic = inverse(Sigma2)
-  proj[i] = Proj(vec2f(sx, sy), z, R, inv, min(s.opa * U_.bg.w * faceFade, 1.0), s.col, 0.0);
+  let opaF = min(s.opa * U_.bg.w * faceFade, 1.0);
+  // SIGN ENCODES THE BLEND MODE: surface splats positive, volumetric (atmosphere) negative.
+  proj[i] = Proj(vec2f(sx, sy), z, R, inv, select(-opaF, opaF, isSurface), s.col, 0.0);
 
   let tilesX = u32(U_.screen.z); let tilesY = u32(U_.screen.w);
   let tx0 = u32(clamp(floor((sx - R) / f32(TILE)), 0.0, f32(tilesX - 1u)));
@@ -372,9 +374,20 @@ fn rasterize(@builtin(workgroup_id) wid: vec3u,
   if (li == 0u) { wRange = tileRange[tile]; wAllDone = 0u; }
   let range = workgroupUniformLoad(&wRange);
 
-  var col = U_.bg.rgb;
+  // THE SURFACE IS A WEIGHTED AVERAGE, NOT A CARD STACK (EWA surface splatting).
+  // At the depth field's STATIONARY POINT (the surface point nearest the camera -- derivative zero,
+  // the operator's "singularity"), neighbouring splats have equal depth to within nothing, so
+  // depth-ordered over-compositing with opaque splats picks an ARBITRARY winner whose FULL footprint
+  // then dominates ("card stacking" / the one-splat magnifier), and the winner flips as it spins
+  // (the dancing). Averaging surface splats by their gaussian weights is ORDER-INDEPENDENT: no
+  // winner, no flip, and the same math fixes the line down a rotating tree trunk (a cylinder's
+  // nearest-locus is a line). The thin atmosphere still alpha-blends over the result.
+  var atmC = vec3f(0.0);
   var T = 1.0;
+  var sumW = 0.0;
+  var sumC = vec3f(0.0);
   var done = !inb;
+  let normOn = U_.flags2.y > 0.5;
   let fx = f32(px) + 0.5; let fy = f32(py) + 0.5;
 
   var i = range.x;
@@ -403,11 +416,18 @@ fn rasterize(@builtin(workgroup_id) wid: vec3u,
         // cutoff circle; with opaque splats that is ~3/255 -- a faint ring per splat, and where splats
         // are largest and least overlapped you see those rings as overlapping circles. Rescaling so the
         // window reaches exactly 0 at the cutoff removes the discontinuity entirely.
-        let a = (exp(-0.5 * g) - GCUT) * GNORM * c.w;   // the splat's OWN alpha = opacity * gaussian
-        if (a < 0.004) { continue; }
-        col = col + bCol[j].rgb * (a * T);              // contribution weighted by transmittance so far
-        T = T * (1.0 - a);                              // decay by the splat's OWN alpha, NOT by a*T.
-        if (T < 0.01) { done = true; break; }           // opaque: line of sight stops here
+        let op = c.w;                                   // sign = blend mode (surface + / volume -)
+        let wgt = (exp(-0.5 * g) - GCUT) * GNORM * abs(op);
+        if (wgt < 0.004) { continue; }
+        if (op >= 0.0 && normOn) {
+          sumW = sumW + wgt;                            // surface: order-independent weighted average
+          sumC = sumC + bCol[j].rgb * wgt;
+          if (sumW > 12.0) { done = true; break; }      // ratio frozen; deeper (occluded) work skipped
+        } else {
+          atmC = atmC + bCol[j].rgb * (wgt * T);        // volume (or normalization off): correct "over"
+          T = T * (1.0 - wgt);
+          if (T < 0.01) { done = true; break; }
+        }
       }
     }
     i = i + batch;
@@ -421,6 +441,10 @@ fn rasterize(@builtin(workgroup_id) wid: vec3u,
   }
 
   if (inb) {
-    textureStore(outTex, vec2i(i32(px), i32(py)), vec4f(clamp(col, vec3f(0.0), vec3f(1.0)), 1.0));
+    let A = 1.0 - exp(-sumW);                           // surface coverage: ~w when sparse, ->1 solid
+    let surf = sumC / max(sumW, 1e-4);
+    let base = mix(U_.bg.rgb, surf, A);
+    let outc = atmC + T * base;                         // thin atmosphere over the averaged surface
+    textureStore(outTex, vec2i(i32(px), i32(py)), vec4f(clamp(outc, vec3f(0.0), vec3f(1.0)), 1.0));
   }
 }
