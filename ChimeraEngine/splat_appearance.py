@@ -385,6 +385,35 @@ def _place(buf, center, scale: float):
     return b
 
 
+_LOD_MIPS: dict = {}   # child term -> (mips, radius_world); built once, reused across composes
+
+
+def _planet_lod_mips(child: str):
+    """Cached LOD mip pyramid for a PLANET child, built from its OPAQUE surface grains (the faint atmosphere
+    halo is dropped -- it's a close-up detail, and at system scale it only adds over-accumulation)."""
+    if child not in _LOD_MIPS:
+        import numpy as np, lod as _lod
+        cb = scene_buffer(child)
+        surf = np.ascontiguousarray(cb[cb[:, ALPHA] > 0.5])          # opaque surface, no atmosphere
+        R = float(SCENES.get(child, {}).get("radius", _lod.body_radius(surf)))
+        _LOD_MIPS[child] = (_lod.build_mips(surf, R), R)
+    return _LOD_MIPS[child]
+
+
+def _place_planet_lod(child, center, scale, cam, height=1080, fov=None):
+    """Place a planet child at the LOD level its ON-SCREEN size warrants -- the pixel-budget law. A planet
+    that shrinks to a few px in the solar-system view is rendered with a handful of averaged-colour grains
+    (a clean tiny marble), not all 40k (which over-accumulates to a white dot)."""
+    import numpy as np, lod as _lod
+    mips, R = _planet_lod_mips(child)
+    if fov is None:
+        from ParticleEngine.camera import FirstPersonCamera
+        fov = FirstPersonCamera((0.0, 0.0, 0.0)).fov
+    dist = float(np.linalg.norm(np.asarray(cam, np.float32) - np.asarray(center, np.float32)))
+    r_px = _lod.projected_radius_px(R * float(scale), dist, height, fov)
+    return _place(_lod.select(mips, r_px), center, scale)
+
+
 def _disperse(buf, term: str, sigma: float):
     """Scatter a settled buffer into a 'before' cloud -- the movie's begin frame (the system accreting)."""
     import numpy as np
@@ -406,10 +435,14 @@ def compose_buffer(term: str):
         return None
     rng = np.random.default_rng(_seed(term))
     parts = [_orbit_ring(r, rng) for r in lay.get("rings", [])]
+    cam = lay.get("cam", (0.0, 0.0, 0.0))
     for child, center, scale in lay.get("place", []):
-        cb = scene_buffer(child)                                  # the child's own settled matter
-        if cb is not None:
-            parts.append(_place(cb, center, scale))
+        if SCENES.get(child, {}).get("kind") == "planet":        # LOD planets by their on-screen size (pixel budget)
+            parts.append(_place_planet_lod(child, center, scale, cam))
+        else:
+            cb = scene_buffer(child)                              # the child's own settled matter (star, etc.)
+            if cb is not None:
+                parts.append(_place(cb, center, scale))
     return np.concatenate(parts, axis=0) if parts else None
 
 

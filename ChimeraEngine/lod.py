@@ -64,7 +64,7 @@ def build_mips(base: np.ndarray, radius_world: float, p: dict | None = None) -> 
             break
         idx = np.linspace(0, n_base - 1, N).astype(np.int64)
         lvl = base[idx].copy()
-        if N <= 4096:                                     # spatial colour average (mipmap): assign each base grain to
+        if N <= 1024:                                     # spatial colour average (mipmap): assign each base grain to
             reps = dirs[idx]                              # its nearest representative, average the colours per cell
             nearest = np.argmax(dirs @ reps.T, axis=1)    # (n_base,) -> which representative
             for c in (16, 17, 18):                        # CR, CG, CB
