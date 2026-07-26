@@ -114,6 +114,18 @@ The gap is a single missing connection, and both ends already exist.
 - **T4. (Optional, gameplay) Time dilation as a mechanic.** Return from a deep gravity well and the
   world has moved on. Falls out of T1; no new physics.
 
+### TRACK S — **The actuated membrane** (see `THE_ACTUATED_MEMBRANE.md`)
+Matter that DOES something: an actuator attains a STATE and pushes at its PORT, in the frame of
+whatever it is attached to. A thruster and a leg muscle are THE SAME OBJECT -- if they end up as
+two systems the architecture was got wrong. Nothing is animated; a stumble is what happens when
+the forces do not work out. Most of this exists already (Port, Verb/State, rig.py's one skeleton
+for physics+flesh+render, mjcf.py's actuators, the trained brain, the gait witness); the gap is a
+RUNTIME physics loop and expressing actuators through Membrane+Port.
+- **S1-S3. Thruster first** -- free body, actuator at a port, then WITNESS BALANCE: fire off-axis
+  and measure that angular acceleration matches tau = r x F (Centre of Thrust vs Centre of Gravity).
+- **S4-S5. Joints, then muscle** -- the same Verb, producing torque about the joint it spans.
+- **S6-S7. Nervous system in the loop, then terrain contact** -- stumble and recovery, unauthored.
+
 ### TRACK E — **Standing on it** (the north star)
 - **E1. Ground query.** `height_at(lat, lon)` from the onion — cheap, exact, no rendering involved.
 - **E2. Character controller.** Gravity toward the membrane centre, up = local normal, walk on the
