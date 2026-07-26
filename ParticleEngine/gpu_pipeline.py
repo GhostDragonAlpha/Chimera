@@ -292,8 +292,8 @@ def _tiles_count(pos_x, pos_y, radii, tile_fill, tiles_x, tiles_y, tile_sz, n):
     """First pass: atomically count splats per tile."""
     i = cuda.grid(1)
     if i >= n: return
-    px = int(pos_x[i]); py = int(pos_y[i]); r = int(radii[i])
-    if r < 1: r = 1
+    px = int(pos_x[i]); py = int(pos_y[i]); r = int(radii[i] * 1.5) + 1   # cover the splat's FULL footprint: the
+    if r < 1: r = 1                                                        # compositor reaches 1.5*rad -> else a tile-edge GRID
     tx0 = max(0, (px - r) // tile_sz); ty0 = max(0, (py - r) // tile_sz)
     tx1 = min(tiles_x - 1, (px + r) // tile_sz); ty1 = min(tiles_y - 1, (py + r) // tile_sz)
     for ty in range(ty0, ty1 + 1):
@@ -306,8 +306,8 @@ def _tiles_write(pos_x, pos_y, radii, tile_ids, tile_offsets, tile_fill, tiles_x
     """Second pass: write splat indices to tiles using computed offsets."""
     i = cuda.grid(1)
     if i >= n: return
-    px = int(pos_x[i]); py = int(pos_y[i]); r = int(radii[i])
-    if r < 1: r = 1
+    px = int(pos_x[i]); py = int(pos_y[i]); r = int(radii[i] * 1.5) + 1   # cover the splat's FULL footprint: the
+    if r < 1: r = 1                                                        # compositor reaches 1.5*rad -> else a tile-edge GRID
     tx0 = max(0, (px - r) // tile_sz); ty0 = max(0, (py - r) // tile_sz)
     tx1 = min(tiles_x - 1, (px + r) // tile_sz); ty1 = min(tiles_y - 1, (py + r) // tile_sz)
     for ty in range(ty0, ty1 + 1):

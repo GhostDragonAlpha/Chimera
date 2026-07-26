@@ -28,7 +28,7 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
-_W, _H = 720, 540
+_W, _H = 1440, 1080        # 2K-friendly (4:3). Calibration is scale-invariant -- grains-per-pixel is unchanged.
 _AUTO_SPIN = 0.35          # rad/sec -- the world turns on its own, so the movie PLAYS with no input (the time axis)
 
 
@@ -228,7 +228,7 @@ _PAGE = """<!doctype html><meta charset=utf-8><title>Chimera live viewer</title>
  button{background:#111a2e;color:#cfe0ff;border:1px solid #2a3350;border-radius:8px;padding:6px 12px;
         font-size:13px;cursor:pointer}
  button.on{background:#24406e;border-color:#4a74c0;color:#fff}
- #stage{position:relative;width:720px;max-width:96vw;aspect-ratio:720/540;background:#04050b;
+ #stage{position:relative;width:1280px;max-width:94vw;aspect-ratio:4/3;background:#04050b;
         border:1px solid #2a3350;border-radius:12px;overflow:hidden;touch-action:none;cursor:grab}
  #stage.drag{cursor:grabbing}
  #view{width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
