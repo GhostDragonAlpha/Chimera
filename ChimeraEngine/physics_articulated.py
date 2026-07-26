@@ -88,9 +88,32 @@ class Muscle:
     max_tension: float = 1.0
     dial: float = 0.0
     param: str = 'activation'
+    rest_length: float = 0.0        # optimal length; 0 disables the force-length curve
+    width: float = 0.55             # how broad the curve is (fraction of rest length)
 
-    def tension(self) -> float:
-        return float(self.verb.at(self.dial).get(self.param, 0.0)) * self.max_tension
+    def force_length(self, length: float) -> float:
+        """The Hill force-length curve: a muscle pulls hardest near its optimal length, and the
+        further it is stretched or shortened the less it can give.
+
+        THIS IS WHAT MAKES A MUSCLE A SPRING. With constant tension, co-contracting a pair does not
+        stiffen a joint at all -- it only supplies the destabilising half (as the joint deviates the
+        two moment arms stop being equal, and near-max tensions then drive it further). With the
+        curve, a stretched muscle pulls HARDER and its shortened antagonist pulls LESS, which is a
+        restoring torque. Bracing works in a real body for this reason and no other.
+        """
+        if self.rest_length <= 0.0:
+            return 1.0
+        e = (length / self.rest_length - 1.0) / max(self.width, 1e-6)
+        return float(np.exp(-e * e))
+
+    def tension(self, length: float = 0.0) -> float:
+        """A MUSCLE CAN ONLY PULL. Tension is clamped at zero: a negative activation must not turn
+        the muscle into a strut that pushes. This is not a detail -- it is WHY nature builds
+        ANTAGONISTIC PAIRS. One muscle can drive a joint one way and then only go slack; to drive
+        it back you need a second muscle on the other side. Every limb therefore needs at least two
+        actuators per degree of freedom, and the nervous system's job is choosing between them."""
+        a = max(0.0, float(self.verb.at(self.dial).get(self.param, 0.0)))
+        return a * self.max_tension * (self.force_length(length) if length > 0.0 else 1.0)
 
 
 def make_muscle(name: str, origin_link: int, origin, insert_link: int, insert,
@@ -119,6 +142,18 @@ class Tree:
         for L in links:                                    # ports live on the membrane
             for pn, p in L.ports.items():
                 self.membrane.ports[f'{L.name}.{pn}'] = p
+
+    def muscle_length(self, m: Muscle) -> float:
+        Ra, oa = self.frame_of(m.origin_link)
+        Rb, ob = self.frame_of(m.insert_link)
+        return float(np.linalg.norm((ob + Rb @ m.insert) - (oa + Ra @ m.origin)))
+
+    def set_rest_lengths(self, width: float = 0.55) -> None:
+        """Take each muscle's optimal length to be its length in the CURRENT pose -- i.e. the body
+        is strongest around the posture it is built for, which is what an organism's geometry does."""
+        for m in self.muscles:
+            m.rest_length = self.muscle_length(m)
+            m.width = width
 
     def add_muscle(self, m: Muscle) -> Muscle:
         self.muscles.append(m)
@@ -194,7 +229,7 @@ class Tree:
             if L < 1e-12:
                 continue
             u = d / L
-            T = m.tension()
+            T = m.tension(L)
             out.append((m.insert_link, pb, -u * T))         # insertion pulled toward the origin
             out.append((m.origin_link, pa, u * T))          # equal and opposite
         return out
