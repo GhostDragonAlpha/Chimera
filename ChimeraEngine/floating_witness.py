@@ -90,8 +90,13 @@ def main() -> int:
     com0 = c.com_world().copy()
     P0, L0 = c.momentum()
     K0, U0 = c.energy(); E0 = K0 + U0
-    T = 0.6
-    for _ in range(int(T / DT)):
+    # int(0.6 / 1e-4) is 5999, not 6000 -- 0.6/1e-4 is 5999.999999999999 in binary floating point.
+    # That off-by-one ran the sim one step short of the elapsed time the impulse was computed over,
+    # and one step of gravity on 15.5 kg is 1.5e-2 N.s: the whole of the "momentum violation" I
+    # spent a run chasing. Round, then measure against the time that ACTUALLY elapsed.
+    n_steps = int(round(0.6 / DT))
+    T = n_steps * DT
+    for _ in range(n_steps):
         c.step(DT)
     v_com0 = P0 / c.total_mass()                # the flailing gave the COM a real initial velocity
     expected = com0 + v_com0 * T + np.array([0.0, 0.0, -0.5 * G * T ** 2])
@@ -117,30 +122,48 @@ def main() -> int:
     # The limbs must be moved by INTERNAL forces -- MUSCLES. Prescribing qd directly (my first
     # version) overwrites what the solver just computed and injects momentum from nowhere, which
     # is exactly what the |L| check exists to catch.
-    cat = creature(z=50.0)
-    cat.gravity = np.zeros(3)                    # no gravity: isolate the angular-momentum claim
-    pL = attach_antagonist(cat, 0, -1, 0, 0.06, 0.05, 90.0, 'sL')
-    pR = attach_antagonist(cat, 1, -1, 1, 0.06, 0.05, 90.0, 'sR')
-    cat.q[:] = [0.0, 0.0]
-    cat.set_rest_lengths(0.5)
-    _, L_start = cat.momentum()
-    steps = int(1.5 / DT)
-    Lmax = 0.0
-    for k in range(steps):
-        u = np.sin(2 * np.pi * k / steps)        # out, then back: one clean cycle
-        pL.drive(u)
-        pR.drive(-u)                             # the limbs oppose -> an internal twist
-        cat.step(DT)
-        if k % 500 == 0:
-            _, Lk = cat.momentum()
-            Lmax = max(Lmax, float(np.linalg.norm(Lk)))
+    def run_cat(dt):
+        cat = creature(z=50.0)
+        cat.gravity = np.zeros(3)                # no gravity: isolate the angular-momentum claim
+        pL = attach_antagonist(cat, 0, -1, 0, 0.06, 0.05, 90.0, 'sL')
+        pR = attach_antagonist(cat, 1, -1, 1, 0.06, 0.05, 90.0, 'sR')
+        cat.q[:] = [0.0, 0.0]
+        cat.set_rest_lengths(0.5)
+        steps = int(round(1.5 / dt))
+        every = max(1, int(round(0.05 / dt)))    # sample by TIME so two dt runs sample the same
+        Lmax = 0.0                               # instants -- `k % 500` would not
+        for k in range(steps):
+            u = np.sin(2 * np.pi * k / steps)    # out, then back: one clean cycle
+            pL.drive(u)
+            pR.drive(-u)                         # the limbs oppose -> an internal twist
+            cat.step(dt)
+            if k % every == 0:
+                _, Lk = cat.momentum()
+                Lmax = max(Lmax, float(np.linalg.norm(Lk)))
+        return cat, Lmax
+
+    cat, Lmax = run_cat(DT)
     _, L_end = cat.momentum()
     ang = float(np.degrees(np.arccos(np.clip((np.trace(cat.base_rot) - 1) / 2, -1, 1))))
-    print(f"      |L| start {np.linalg.norm(L_start):.3e}   peak during {Lmax:.3e}   "
-          f"end {np.linalg.norm(L_end):.3e} kg.m^2/s")
+    print(f"      |L| peak during the cycle {Lmax:.3e}   end {np.linalg.norm(L_end):.3e} kg.m^2/s")
     print(f"      joints ended at {np.round(cat.q, 4)} rad; the TORSO turned {ang:.3f} deg")
-    check("angular momentum stays zero throughout", Lmax < 1e-6,
-          f"peak |L| = {Lmax:.2e} -- muscles are INTERNAL, so they cannot create any")
+
+    # A fixed threshold here is a guess about the integrator, not a statement about physics -- my
+    # first version asked for |L| < 1e-6 when semi-implicit Euler's floor at this dt is 3.8e-6, so
+    # it could not pass at any usable step size. The claim "muscles are internal, so they create NO
+    # angular momentum" is a statement about the LIMIT, so measure the limit: halve dt and the
+    # residual must halve. A real violation would be dt-INDEPENDENT and sit there unchanged -- which
+    # is exactly how the w_base frame bug was caught (identical 3.2e-3 m at three step sizes).
+    cat2, Lcoarse = run_cat(2 * DT)
+    ratio = Lcoarse / max(Lmax, 1e-30)
+    ang2 = float(np.degrees(np.arccos(np.clip((np.trace(cat2.base_rot) - 1) / 2, -1, 1))))
+    print(f"      at 2x dt |L| peak {Lcoarse:.3e}  ->  ratio {ratio:.2f}x  "
+          f"(2.00x = first-order truncation; 1.00x = a real violation)")
+    print(f"      and the physical answer is unchanged: {ang:.4f} deg vs {ang2:.4f} deg at 2x dt")
+    check("angular momentum vanishes with dt (it is truncation, not creation)",
+          1.7 < ratio < 2.3 and Lmax < 1e-4,
+          f"|L| halves exactly when dt halves ({ratio:.2f}x), residual {Lmax:.2e} -- muscles are "
+          f"INTERNAL, so in the limit they create none")
     check("internal motion reorients the body (the cat)", ang > 0.02,
           f"torso rotated {ang:.3f} deg at L = 0 -- a PINNED base cannot do this at all")
 
