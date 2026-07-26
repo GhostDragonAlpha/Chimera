@@ -17,22 +17,21 @@ THE OPERATOR'S RULES (2026-07-25), and they are hard:
      human -- you ASSUME THE PHYSICS ARE WRONG and START THE PROCESS OVER (redo the render/physics).
      The render must be legible to a mind as the thing it claims to be, or the thing is wrong.
 
-Transport: OpenAI-compatible /v1/chat/completions with a base64 image_url, through core.lm_gateway's
-queue + resident-model adoption (never pin, never gate on vision flags -- the operator owns what is
-loaded; if it can't see, that is a FAIL, which is the honest outcome).
+Transport: the shared `senses` layer -- ONE Omni model (qwen2.5-omni) on a dedicated llama-server that
+sees, hears, and watches movies, so the operator's LM Studio is left free for their own dev agent. If the
+senses server is down the eye is DARK -- a FAIL, the honest outcome (start it: ChimeraEngine/serve_senses).
 """
 from __future__ import annotations
 
-import base64
 import json
-import re
 import sys
-import urllib.request
 from pathlib import Path
 
-_CHIMERA = Path(__file__).resolve().parent.parent / "Chimera"
-if str(_CHIMERA) not in sys.path:
-    sys.path.insert(0, str(_CHIMERA))
+_HERE = Path(__file__).resolve().parent
+for _p in (_HERE, _HERE.parent / "Chimera"):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
+import senses                                                  # the unified Omni perception (eye/ear/movie)
 
 # The physics's EXPECTED reading, in words -- derived from each term's LAW (deterministic, never from
 # the pixels). The cross-reference aligns THIS against the vision LLM's blind reading of the render.
@@ -53,57 +52,17 @@ _SEE_PROMPT = ("Look at this image and describe what you actually see in one or 
                "visually present. Do NOT mention numbers, temperatures, kelvin, or measurements.")
 
 
-def _post(payload: dict, timeout: int):
-    """POST an OpenAI-compatible chat request through the gateway (queue + adopt resident model).
-    Raises on no-model (resolve_model) or transport error -- callers turn that into a FAIL."""
-    from core.lm_gateway import lm_urlopen, resolve_model, LM_BASE
-    payload["model"] = resolve_model()                      # adopt whatever is loaded; raises if none
-    req = urllib.request.Request(f"{LM_BASE}/v1/chat/completions",
-                                 data=json.dumps(payload).encode("utf-8"),
-                                 headers={"Content-Type": "application/json"})
-    with lm_urlopen(req, timeout=timeout, agent="human_messenger") as r:
-        return json.load(r)["choices"][0]["message"]["content"]
-
-
 def see(png: str, timeout: int = 300) -> str | None:
-    """The human messenger: a vision LLM reads the render BLIND (no physics context) -> a term.
-    Returns None if the eye is dark (no model) or errors -- the caller treats None as a FAIL."""
-    try:
-        with open(png, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode()
-        payload = {"messages": [{"role": "user", "content": [
-            {"type": "text", "text": _SEE_PROMPT},
-            {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}]}],
-            "temperature": 0.2, "max_tokens": 4096}    # reasoning models THINK first (H-3); models here hold >=120k ctx
-        return (_post(payload, timeout) or "").strip() or None
-    except Exception as e:
-        print(f"[human_messenger] vision read FAILED: {e}")
-        return None
-
-
-def _parse_alignment(text: str):
-    for tok in re.findall(r"\d+(?:\.\d+)?", text or ""):
-        v = float(tok)
-        if 0.0 <= v <= 1.0:
-            return v
-    return None
+    """The human messenger: the Omni EYE reads the render BLIND (no physics context) -> a term. Returns
+    None if the eye is dark (senses server down) or errors -- the caller treats None as a FAIL."""
+    return senses.see(png, _SEE_PROMPT, timeout)
 
 
 def align(expected: str, observed: str, timeout: int = 240):
     """The cross-reference: score how well the human's observed reading matches the physics's expected
-    reading, 0.0 (no alignment) -> 1.0 (perfect). Neither makes the number nor the term -- it is only
-    the needle where they land. Returns None on model/parse failure (-> FAIL)."""
-    prompt = (f"A physics model predicts an image should show:\n  \"{expected}\"\n\n"
-              f"An independent viewer, who did NOT see that prediction, described the same image as:\n"
-              f"  \"{observed}\"\n\n"
-              f"Rate how well the viewer's description ALIGNS with the physics prediction, as a single "
-              f"number from 0.0 (no alignment) to 1.0 (perfect alignment). Output ONLY the number.")
-    try:
-        return _parse_alignment(_post({"messages": [{"role": "user", "content": prompt}],
-                                       "temperature": 0.1, "max_tokens": 4096}, timeout))  # reasoning model: think, THEN the number
-    except Exception as e:
-        print(f"[human_messenger] cross-reference FAILED: {e}")
-        return None
+    reading, 0.0 -> 1.0 -- the needle where the two independent readings land. Delegates to the shared
+    senses layer (the same Omni model). Returns None on failure (-> FAIL)."""
+    return senses.align(expected, observed, timeout)
 
 
 def _notify_operator(term: str, png: str, reason: str) -> None:
@@ -111,9 +70,9 @@ def _notify_operator(term: str, png: str, reason: str) -> None:
     would let the proof stall unwitnessed -- so PUSH the reason to the operator channel (CAPCOM). A
     human is summoned: they load a model so the proxy can read, or they judge the render themselves.
     Either way a mind is present at the critical decision, which is the whole point of the human side."""
-    msg = (f"dyadAnalysis BLOCKED for `{term}`: {reason} The HUMAN is required at this decision -- load "
-           f"a vision-capable model in LM Studio so the proxy can read the render ({png}), or interpret "
-           f"it yourself. No proof completes until a human (proxy or you) judges it.")
+    msg = (f"dyadAnalysis BLOCKED for `{term}`: {reason} The HUMAN is required at this decision -- start the "
+           f"senses server (the Omni model on llama-server: ChimeraEngine/serve_senses) so the proxy can read "
+           f"the render ({png}), or interpret it yourself. No proof completes until a human (proxy or you) judges it.")
     try:
         from core.capcom import post_safe
         post_safe("human", msg, level="warn", source="dyadAnalysis")
@@ -149,9 +108,9 @@ def dyad(term: str, png: str, threshold: float = 0.6, human_override: dict | Non
         if not observed:
             _notify_operator(term, png, "no vision model is resident (the eye is dark).")
             return {"verdict": "FAIL_NO_HUMAN", "pass": False, "term": term, "expected": expected,
-                    "detail": "the human eye is DARK (no vision model in LM Studio). Per the rule this is "
-                              "a FAIL, not a skip -- the operator has been SUMMONED via CAPCOM. Load a "
-                              "vision model and re-run, or override with your own reading (human_override)."}
+                    "detail": "the human eye is DARK (the senses server is not running). Per the rule this is "
+                              "a FAIL, not a skip -- the operator has been SUMMONED via CAPCOM. Start the senses "
+                              "server (serve_senses) and re-run, or override with your own reading (human_override)."}
         a = align(expected, observed)
         if a is None:
             _notify_operator(term, png, "the cross-reference could not score (no model / bad output).")

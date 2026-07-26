@@ -13,7 +13,21 @@
 independent vision model), then make the operator's theory true — *to add game detail, you change only
 the STORY* — on both the declaration layer and the render layer.
 
-### AI ear + Omni "all senses" proven via llama-server; `sonify.py` built · *pending commit* · **VERIFIED**
+### Senses unified on the omni server; sound dyad built; AI ear MEASURED unreliable · *pending commit* · **VERIFIED**
+- **#3 unify the senses:** `senses.py` — one Omni model on llama-server is the dyad's eye + ear + movie.
+  `human_messenger` repointed from LM Studio to `senses` (omni); the appearance dyad is consistent at ~0.8
+  over 4 runs (one 0.5 outlier). LM Studio is freed for the operator's dev agent. `serve_senses.py` launches
+  it; the `reload` tool now refreshes the perception + sound modules live (no restart).
+- **#1 the sound dyad:** `sound_messenger.py` (the ear twin of human_messenger) — sonify → hear → align →
+  verdict; operator `human_override` authoritative. The redo-loop fired for real: theStar's first synthesis
+  leaked a hiss; fixed with a 170 Hz low-pass.
+- **AI ear MEASURED unreliable (the honest result):** the ear hallucinated a "high-pitched hum" in theStar's
+  sonification — which is measured **100% below 170 Hz, centroid 30 Hz** (a pure rumble), 3× identically. So
+  the AI ear can't be a verdict gate → the **OPERATOR is the primary/authoritative ear**, the AI a logged
+  second opinion. `SOUND_DESIGN.md` §2 amended. (Vision is fine; the weakness is llama.cpp's experimental audio.)
+- **Deferred:** `Engine.hear` + the operator-primary `AUDITORY MESSENGER` gate (new engine code → needs a restart).
+
+### AI ear + Omni "all senses" proven via llama-server; `sonify.py` built · `eac95fc` · **VERIFIED**
 - The audio dyad's ear works — but through **llama-server direct, not LM Studio**. Chased it down: qwen2-audio
   had no audio encoder downloaded at all (deaf, hallucinated from the prompt); qwen2.5-omni's `mmproj-F32`
   HAS the audio tower (`clip.has_audio_encoder`); but LM Studio loads it for VISION only (never wires audio —

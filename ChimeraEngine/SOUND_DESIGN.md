@@ -14,7 +14,16 @@
 > dyad needs: **eye** (nailed the marble), **ear** (the star rumble), **movie** (understood an ordered
 > frame sequence as video → the appearance dyad can judge the MOVIE, not just the end still). Serving: a
 > dedicated `llama-server` (omni GGUF + `mmproj-F32`; model on GPU, 5.3 GB projector on CPU) on
-> `127.0.0.1:1235`. `sonify.py` is built (`theStar` passes the ear; `aPlanet` wind/water needs tuning).
+> `127.0.0.1:1235`. `senses.py` + `sonify.py` + `sound_messenger.py` are built, and `human_messenger` now
+> perceives via omni (appearance dyad ~0.8, consistent over 4 runs).
+>
+> **UPDATE 2 — the ear is HUMAN-PRIMARY, not just advisory (MEASURED).** The AI ear hallucinated a
+> "high-pitched hum" in `theStar`'s sonification — which is measured **100% of its energy below 170 Hz,
+> spectral centroid 30 Hz** (a pure deep rumble, 0.00% above 1 kHz), three times identically. So the AI ear
+> is unreliable enough to FAIL a correct sound; it cannot be trusted for a verdict. The **operator is the
+> primary, authoritative ear**; the AI ear is a *logged second opinion*, never a gate on its own. Vision is
+> fine (it read the marble, scored the dyad ~0.8) — the weakness is specifically llama.cpp's experimental
+> audio. The `AUDITORY MESSENGER` gate must therefore require the operator's `human_override`, not the AI pass.
 
 ## The principle — light and pressure are the same matter, projected twice
 

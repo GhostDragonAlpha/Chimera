@@ -25,6 +25,22 @@ def _norm(x):
     return x / m if m > 1e-9 else x
 
 
+def _lowpass(x, cutoff_hz, sr: int = SR):
+    """Brick-wall low-pass (FFT): keep only energy below cutoff -- e.g. a star is a PURE low rumble, no hiss."""
+    import numpy as np
+    X = np.fft.rfft(x)
+    X[np.fft.rfftfreq(len(x), 1.0 / sr) > cutoff_hz] = 0.0
+    return np.fft.irfft(X, n=len(x))
+
+
+def _bandpass(x, lo_hz, hi_hz, sr: int = SR):
+    """Keep energy between lo and hi -- e.g. wind lives in the mid/high band, not the sub-bass."""
+    import numpy as np
+    X = np.fft.rfft(x); f = np.fft.rfftfreq(len(x), 1.0 / sr)
+    X[(f < lo_hz) | (f > hi_hz)] = 0.0
+    return np.fft.irfft(X, n=len(x))
+
+
 def _write_wav(path, sig, sr: int = SR):
     import numpy as np
     s = (np.clip(sig, -1.0, 1.0) * 32767).astype(np.int16)
@@ -34,25 +50,26 @@ def _write_wav(path, sig, sr: int = SR):
 
 # ── the synthesis LAWS: a term's physics -> its sound ───────────────────────────────────────────
 def _theStar(dur, seed):
-    """A warm G-star: granulation (turbulence) as a low RUMBLE + a convective HUM, slowly churning."""
+    """A warm G-star: granulation (turbulence) as a low RUMBLE + a convective HUM, slowly churning.
+    LOW-PASSED to a pure deep rumble -- a warm star is not shrill (the ear caught a hiss; this removes it)."""
     import numpy as np
     rng = np.random.default_rng(seed); n = int(SR * dur); t = np.arange(n) / SR
     brown = np.cumsum(rng.standard_normal(n)); brown = _norm(brown - brown.mean())   # integrated white = low rumble
     hum = 0.45 * np.sin(2 * np.pi * 55 * t) + 0.25 * np.sin(2 * np.pi * 82 * t)       # convective furnace tone
     churn = 0.7 + 0.3 * np.sin(2 * np.pi * 0.3 * t + rng.uniform(0, 6))               # slow convection swell
-    return _norm((0.85 * brown + 0.5 * hum) * churn) * 0.9
+    return _norm(_lowpass((0.85 * brown + 0.5 * hum) * churn, 170.0)) * 0.9           # <170 Hz only -> warm, not shrill
 
 
 def _aPlanet(dur, seed):
-    """A habitable world: WIND (gusting high noise) + OCEAN (low swell) + a faint rotational sub-bass."""
+    """A habitable world: WIND (airy BAND-limited hiss, gusting) + OCEAN (low swell) + a faint rotational sub-bass."""
     import numpy as np
     rng = np.random.default_rng(seed); n = int(SR * dur); t = np.arange(n) / SR
     white = rng.standard_normal(n)
-    wind = _norm(white - np.convolve(white, np.ones(80) / 80, mode="same"))          # high-pass = airy hiss
-    gust = 0.45 + 0.55 * np.abs(np.sin(2 * np.pi * 0.2 * t + rng.uniform(0, 6)))      # gusts
-    swell = _norm(np.cumsum(white) - np.cumsum(white).mean())                        # low ocean swell
-    subbass = 0.15 * np.sin(2 * np.pi * 30 * t)                                       # slow rotation
-    return _norm(0.5 * wind * gust + 0.5 * swell + subbass) * 0.85
+    wind = _norm(_bandpass(white, 300.0, 3000.0))                                    # airy breath -- not shrill, not sub-bass
+    gust = 0.4 + 0.6 * np.abs(np.sin(2 * np.pi * 0.18 * t + rng.uniform(0, 6)))       # slow gusts
+    swell = _norm(_lowpass(np.cumsum(white), 120.0))                                 # low ocean swell
+    subbass = 0.12 * np.sin(2 * np.pi * 30 * t)                                       # slow rotation
+    return _norm(0.55 * wind * gust + 0.45 * swell + subbass) * 0.85
 
 
 _LAWS = {"theStar": _theStar, "aPlanet": _aPlanet}

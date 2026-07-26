@@ -140,11 +140,11 @@ class Engine:
         _SEED_HIERARCHY = _build_hierarchy()                     # the new world shape
         self.state = self._reconcile(self.state)                # fold it in; proofs preserved
         self._save()
-        try:
-            import splat_appearance
-            importlib.reload(splat_appearance)                  # the scenes, too
-        except Exception as e:
-            print(f"[engine] scene reload skipped: {e}")
+        for _mod in ("senses", "sonify", "splat_appearance", "human_messenger", "sound_messenger"):
+            try:                                                # scenes, sounds, and the perception layer, too
+                importlib.reload(importlib.import_module(_mod))
+            except Exception as e:
+                print(f"[engine] reload {_mod} skipped: {e}")
         added = sorted(set(_SEED_HIERARCHY) - before)
         proven = sorted(n for n, v in self.state["hierarchy"].items()
                         if v.get("status") in ("proven", "decided"))
