@@ -102,7 +102,7 @@ def _planet_buffers(spec: dict, term: str):
     ocean_frac = float(spec.get("ocean", 0.66))
 
     # ── SURFACE: an even shell of opaque splats ──
-    n_s = 18000
+    n_s = 26000                                                     # denser + larger grains below -> they MERGE (no lattice)
     dirs = _fibonacci_sphere(n_s)                                    # (n,3) unit
     z = dirs[:, 2]                                                   # latitude sine
     surf = np.zeros((n_s, NCOLS), dtype=np.float32)
@@ -110,7 +110,7 @@ def _planet_buffers(spec: dict, term: str):
     surf[:, PX:PZ + 1] = dirs * (R * jitter[:, None])
     surf[:, TYPE] = 3.0                                             # "social": sm=1.0, opaque, isotropic -> clean round grains
     surf[:, ALPHA] = 0.5
-    surf[:, SIZE] = 5.0                                             # SIZE/alpha calibrated (below) for coverage w/o over-accumulation
+    surf[:, SIZE] = 9.0                                             # larger grains overlap + MERGE -> no surface lattice (measured std 1.4->0.6)
 
     # classify each grain: ICE at the poles, else LAND vs OCEAN by continent noise
     land_noise = _fbm(dirs, rng)
