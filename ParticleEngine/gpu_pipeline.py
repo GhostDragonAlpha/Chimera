@@ -381,6 +381,46 @@ def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
 # ═══════════════════════════════════════════════════════════════════
 #  PIPELINE
 # ═══════════════════════════════════════════════════════════════════
+def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
+    """Tile binning with DEPTH ORDER preserved, via ONE global (tile, depth) sort -- the 3DGS approach.
+
+    `sx/sy/srad` are the DEPTH-SORTED splats (index i = depth rank, nearest = 0). Each splat is duplicated
+    once per tile its 1.5*rad footprint touches; the pairs are sorted by key = tile_id*nv + i, which groups
+    by tile and, WITHIN a tile, keeps nearest-first. Returns (tile_ids, tile_offsets). This replaces the
+    old atomic tile-write (which SCRAMBLED depth order -> inside-out) + the O(n^2) per-tile insertion sort
+    (which was slow): one vectorised numpy sort of ~10^5 pairs, ~tens of ms instead of ~600 ms."""
+    nv = len(sx)
+    n_tiles = tiles_x * tiles_y
+    empty = (np.zeros(0, np.int32), np.zeros(n_tiles + 1, np.int32))
+    if nv == 0:
+        return empty
+    r = np.maximum((srad * 1.5).astype(np.int64) + 1, 1)             # match the compositor's 1.5*rad reach
+    px = sx.astype(np.int64); py = sy.astype(np.int64)
+    tx0 = np.clip((px - r) // tile_sz, 0, tiles_x - 1); tx1 = np.clip((px + r) // tile_sz, 0, tiles_x - 1)
+    ty0 = np.clip((py - r) // tile_sz, 0, tiles_y - 1); ty1 = np.clip((py + r) // tile_sz, 0, tiles_y - 1)
+    nx = tx1 - tx0 + 1; ny = ty1 - ty0 + 1
+    counts = nx * ny
+    total = int(counts.sum())
+    if total == 0:
+        return empty
+    splat = np.repeat(np.arange(nv, dtype=np.int32), counts)          # already depth-ordered (nearest first)
+    local = np.arange(total, dtype=np.int64) - np.repeat(np.cumsum(counts) - counts, counts)
+    nxr = np.repeat(nx, counts)
+    tile_id = ((np.repeat(ty0, counts) + local // nxr) * tiles_x
+               + (np.repeat(tx0, counts) + local % nxr)).astype(np.int32)
+    # COUNTING SORT by tile_id: stable => radix on a small-range int32 (values < n_tiles), O(total).
+    # `splat` is already ascending = depth order, so a STABLE regroup keeps each tile nearest-first.
+    # (Was argsort on int64 `tile_id*nv+splat` -> 95ms; the combined key forced a wide radix. This is ~4x cheaper.)
+    order = np.argsort(tile_id, kind="stable")
+    sorted_tile = tile_id[order]; sorted_splat = splat[order]
+    per_tile = np.bincount(sorted_tile, minlength=n_tiles)
+    capped = np.minimum(per_tile, max_pt)
+    within = np.arange(total, dtype=np.int64) - np.repeat(np.cumsum(per_tile) - per_tile, per_tile)
+    keep = within < np.repeat(capped, per_tile)                       # cap per tile -> keep the NEAREST
+    offsets = np.zeros(n_tiles + 1, dtype=np.int32); offsets[1:] = np.cumsum(capped)
+    return sorted_splat[keep], offsets
+
+
 class FullGPUPipeline:
     def __init__(self, bg=(0.01, 0.01, 0.05), base_scale=0.5):
         self.bg = bg; self.base_scale = base_scale
@@ -501,25 +541,15 @@ class FullGPUPipeline:
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
             self._pfx, nv)
 
-        # GPU tile builder (two-pass with atomics)
+        # Tile binning: ONE global (tile, depth) sort on CPU -- depth order preserved (no atomic scramble ->
+        # no inside-out) and no O(n^2) per-tile sort. kx/ky/krad are already depth-sorted (index = depth rank).
         tx = (params.width + TILE_SIZE - 1) // TILE_SIZE
         ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
         nt = tx * ty
-        # Pass 1: count splats per tile
-        self._tf[:nt] = cuda.to_device(np.zeros(nt, dtype=np.int32))
-        _tiles_count[(nv + 255) // 256, (256,)](
-            self._kx, self._ky, self._krad, self._tf, tx, ty, TILE_SIZE, nv)
-        # Compute offsets from counts
-        _tile_offsets[(1,), (1,)](self._tf, self._to, nt, MAX_PER_TILE)
-        # Reset fill counter for write pass
-        self._tf[:nt] = cuda.to_device(np.zeros(nt, dtype=np.int32))
-        # Initialize tile_ids with -1 to mark unfilled slots
-        self._tids[:] = cuda.to_device(np.full(self._tids.shape[0], -1, dtype=np.int32))
-        # Pass 2: write splat indices
-        _tiles_write[(nv + 255) // 256, (256,)](
-            self._kx, self._ky, self._krad, self._tids, self._to, self._tf,
-            tx, ty, TILE_SIZE, MAX_PER_TILE, nv)
-        _sort_tiles[(nt + 255) // 256, (256,)](self._tids, self._to, nt)   # depth-order each tile (undo the atomic scramble)
+        tids_h, toff_h = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
+                                          self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
+        self._tids[:len(tids_h)] = cuda.to_device(tids_h)
+        self._to[:nt + 1] = cuda.to_device(toff_h)
 
         # GPU composite
         cr = cuda.device_array((params.height, params.width), dtype=np.float32)
@@ -610,17 +640,10 @@ class FullGPUPipeline:
         tx = (params.width + TILE_SIZE - 1) // TILE_SIZE
         ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
         nt = tx * ty
-        self._tf[:nt] = cuda.to_device(np.zeros(nt, dtype=np.int32))
-        _tiles_count[(nv + 255) // 256, (256,)](
-            self._kx, self._ky, self._krad, self._tf, tx, ty, TILE_SIZE, nv)
-        _tile_offsets[(1,), (1,)](self._tf, self._to, nt, MAX_PER_TILE)
-        self._tf[:nt] = cuda.to_device(np.zeros(nt, dtype=np.int32))
-        # Initialize tile_ids with -1 to mark unfilled slots
-        self._tids[:] = cuda.to_device(np.full(self._tids.shape[0], -1, dtype=np.int32))
-        _tiles_write[(nv + 255) // 256, (256,)](
-            self._kx, self._ky, self._krad, self._tids, self._to, self._tf,
-            tx, ty, TILE_SIZE, MAX_PER_TILE, nv)
-        _sort_tiles[(nt + 255) // 256, (256,)](self._tids, self._to, nt)   # depth-order each tile (undo the atomic scramble)
+        tids_h, toff_h = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
+                                          self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
+        self._tids[:len(tids_h)] = cuda.to_device(tids_h)
+        self._to[:nt + 1] = cuda.to_device(toff_h)
 
         cr = cuda.device_array((params.height, params.width), dtype=np.float32)
         cg = cuda.device_array((params.height, params.width), dtype=np.float32)

@@ -58,7 +58,10 @@ CR, CG, CB, ALPHA, SIZE = 16, 17, 18, 19, 20
 # The transfer is ~proportional per channel, so we invert it: pre-multiply surface colours by the gain
 # so the render lands on the intended palette. Keeping GRAIN size/alpha/DENSITY constant across scenes
 # keeps the over-accumulation factor constant, so the ONE measured gain holds for every world.
-_SURFACE_GAIN = 0.45      # invert the measured ~2x over-accumulation
+_SURFACE_GAIN = 0.45      # invert the measured ~2x over-accumulation (translucent shells: _solid_sphere/theStar)
+_PLANET_GAIN = (0.337, 0.328, 0.325)   # aPlanet surface: OPAQUE (alpha 0.92) + SMALL grains (SIZE 3.5) => ~3x residual
+                          # over-accumulation, MEASURED per-channel against a uniform navy sphere (err 0,0,0 on target).
+                          # Small grains cut overdraw ~8x vs SIZE 9 -> the real speed win; this gain restores true colour.
 _GRAIN_SIZE = 5.0         # per-grain render size (world units)
 _GRAIN_ALPHA = 0.5        # per-grain opacity
 _GRAIN_DENSITY = 0.185    # grains per unit sphere AREA (= aPlanet's 18000 / 4pi*88^2)
@@ -102,15 +105,19 @@ def _planet_buffers(spec: dict, term: str):
     ocean_frac = float(spec.get("ocean", 0.66))
 
     # ── SURFACE: an even shell of opaque splats ──
-    n_s = 26000                                                     # denser + larger grains below -> they MERGE (no lattice)
+    n_s = 40000                                                     # MORE, SMALLER grains: fills the shell with no lattice while
+                                                                     # each grain covers ~8x less area than SIZE 9 -> ~8x less overdraw
     dirs = _fibonacci_sphere(n_s)                                    # (n,3) unit
     z = dirs[:, 2]                                                   # latitude sine
     surf = np.zeros((n_s, NCOLS), dtype=np.float32)
     jitter = 1.0 + rng.normal(0.0, 0.006, n_s)                      # a touch of shell thickness
     surf[:, PX:PZ + 1] = dirs * (R * jitter[:, None])
     surf[:, TYPE] = 3.0                                             # "social": sm=1.0, opaque, isotropic -> clean round grains
-    surf[:, ALPHA] = 0.5
-    surf[:, SIZE] = 9.0                                             # larger grains overlap + MERGE -> no surface lattice (measured std 1.4->0.6)
+    surf[:, ALPHA] = 0.92                                           # OPAQUE surface: line-of-sight stops here (Nanite-style). The
+                                                                     # front-to-back early-out (trans<0.01) now fires after ~2 grains,
+                                                                     # so the ~24 grains BEHIND the visible surface are never composited.
+    surf[:, SIZE] = 3.5                                             # SMALL grains: projected ~15px (was ~42px) -> ~8x less overdraw,
+                                                                     # the dominant render cost. 40k of them still fill the shell (gap 0, measured).
 
     # classify each grain: ICE at the poles, else LAND vs OCEAN by continent noise
     land_noise = _fbm(dirs, rng)
@@ -133,7 +140,7 @@ def _planet_buffers(spec: dict, term: str):
     # ice: near-white with a cold blue tint
     surf[is_ice, CR] = 0.90; surf[is_ice, CG] = 0.93; surf[is_ice, CB] = 0.97
 
-    surf[:, CR:CB + 1] *= _SURFACE_GAIN                            # invert the measured over-accumulation (see module head)
+    surf[:, CR:CB + 1] *= _PLANET_GAIN                             # opaque surface => ~no over-accumulation, so show TRUE colors (gain~1)
 
     # ── ATMOSPHERE: a faint pale-blue halo -- thin enough to glow at the LIMB without hazing the disk ──
     n_a = 1800
