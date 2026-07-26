@@ -90,5 +90,15 @@ def decide(term: str, ruling: str) -> str:
     return ENG.decide(term, ruling)
 
 
+@mcp.tool()
+def reload() -> str:
+    """OPEN THE LEVEL. Hot-reload the world into the running engine instead of restarting the session:
+    re-read the story (new terms from THE_STORY.md via gen_decl.py -> terms_data.py), rebuild the
+    hierarchy, reconcile the ledger (every proof kept), and reload the scene renderer. Call this after
+    changing the story or a scene. (Changes to the engine's OWN logic -- engine_state.py, this file --
+    still need a one-time session restart; you cannot hot-swap the running class, only its world.)"""
+    return ENG.reload_world()
+
+
 if __name__ == "__main__":
     mcp.run()

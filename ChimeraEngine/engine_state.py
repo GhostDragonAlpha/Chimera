@@ -122,6 +122,36 @@ class Engine:
     def _save(self) -> None:
         self.path.write_text(json.dumps(self.state, indent=2), encoding="utf-8")
 
+    def reload_world(self) -> str:
+        """OPEN THE LEVEL -- reload the story + scenes into the RUNNING engine, no session restart.
+
+        The MCP server holds ONE Engine built at startup, so a changed story (new terms in THE_STORY.md ->
+        gen_decl.py -> terms_data.py) or a changed scene would otherwise wait for a full session restart.
+        This is our `OpenLevel`: re-read the declaration, rebuild the seed hierarchy, reconcile the live
+        ledger (every proof kept), and reload the scene renderer. NOTE: changes to the engine's OWN logic
+        (this file) still need a session restart -- you cannot hot-swap the running class, only its data
+        and the modules it calls out to."""
+        import importlib
+        global _DECL, _SEED_HIERARCHY
+        import terms_data as _td
+        importlib.reload(_td)                                    # the story, recompiled by gen_decl.py
+        before = set(_SEED_HIERARCHY)
+        _DECL = _td.TERMS
+        _SEED_HIERARCHY = _build_hierarchy()                     # the new world shape
+        self.state = self._reconcile(self.state)                # fold it in; proofs preserved
+        self._save()
+        try:
+            import splat_appearance
+            importlib.reload(splat_appearance)                  # the scenes, too
+        except Exception as e:
+            print(f"[engine] scene reload skipped: {e}")
+        added = sorted(set(_SEED_HIERARCHY) - before)
+        proven = sorted(n for n, v in self.state["hierarchy"].items()
+                        if v.get("status") in ("proven", "decided"))
+        return (f"WORLD RELOADED from the story: {len(_SEED_HIERARCHY)} terms"
+                + (f"; {len(added)} NEW -> {added}" if added else "; no new terms")
+                + f". Proofs preserved: {proven}. Next: {self.next_action(self.state.get('current') or 'theSolarSystem')}")
+
     def _term(self, name: str) -> dict:
         return self.state["terms"].setdefault(name, {
             "status": "open", "claim": None, "rounds": [], "classification": {},

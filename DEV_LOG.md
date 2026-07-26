@@ -13,7 +13,21 @@
 independent vision model), then make the operator's theory true — *to add game detail, you change only
 the STORY* — on both the declaration layer and the render layer.
 
-### THE_STORY.md grown to the full feature spec — mining, farming, controls, archive · *pending commit* · **DONE**
+### OpenLevel — hot-reload the world into the running engine (`reload` tool) · *pending commit* · **DONE (activates after one restart)**
+- The MCP server holds ONE `Engine` built at session start, so a changed *story* (new terms) and the
+  engine's own code do not hot-load — only scenes do (they `importlib.reload` per render). The operator
+  named this exactly: it is Unreal's `OpenLevel`, and we're building the equivalent.
+- `Engine.reload_world()` + the `reload` MCP tool: re-read the story (`terms_data`), rebuild the seed
+  hierarchy, reconcile the ledger (proofs kept), reload the scene renderer. *Verified:* reloads to 59
+  terms, all 5 proofs preserved, the 15 new terms live.
+- **Limit (honest):** changes to the engine's OWN logic (`engine_state.py`) still need one session
+  restart — you cannot hot-swap the running class. So ONE more manual restart activates all of today's
+  engine code (incl. `reload` itself); after that, story/scene changes load via `reload`, no restart.
+- I cannot restart the server from inside the session (Claude Code launches it from `.mcp.json`) — that
+  one restart is the operator's. Then re-prove the terms via the MCP tools (refreshes the stale ledger
+  dyads — e.g. aPlanet's record is still the old-blob 0.100 FAIL until re-rendered through the engine).
+
+### THE_STORY.md grown to the full feature spec — mining, farming, controls, archive · `670905f` · **DONE**
 - Added 15 terms to the decomposition (`gen_decl.py`: 44 → 59): `theMining` (planetary excavation, under
   `theInterior`), `theFarming` → `thePlanetaryFarm`/`theLunarFarm`/`theOrbitalFarm` (under `theGarden`),
   seven `theShip` systems (`theFlight`/`theShipPower`/`theShipCombat`/`theShields`/`theWarpDrive`/
@@ -65,8 +79,21 @@ the STORY* — on both the declaration layer and the render layer.
   wired"; corrected — it was wired in `f2b0c88`.
 
 ### Open threads
-- **Reload the `chimera-engine` MCP server** — all of today's engine/scene code is on disk but the running
-  server holds pre-edit code; a session reload makes it live in the MCP tools, then re-`prove` the terms.
-- **Sound** — design pending: a `sonify(term)` twin of `splat_appearance` (matter → pressure); dyad is
-  HUMAN-ONLY (no audio-recognition AI). Generation unbuilt; do not improvise.
+- **One session restart, then re-prove** — activates all of today's engine code (incl. the `reload`
+  tool). Operator's action (I can't restart the server). After it: re-render + `prove` the terms via MCP
+  (refreshes stale ledger dyads, crosses the boundary). Terms are ready — dyads this session: theStar 0.9,
+  thePlanets / theSolarSystem / aPlanet 1.0.
 - **Scale-dependent calibration** — composed children (e.g. a shrunk star) over/under-accumulate; tune.
+
+### Discussion queue (operator-raised, deferred — "let's discuss after")
+- **Sound = same methodology as appearance.** A `sonify(term)` twin of `splat_appearance`: matter →
+  pressure, on the SAME timeline structure so it "sits right in." Dyad is HUMAN-ONLY (no audio-recognition
+  model — the operator is the sole ear). Generation unbuilt; do NOT improvise — design together.
+- **Film-grammar for detail.** Research/contemplate movie-editing & script-editing concepts (timelines,
+  scenes, cuts, shot lists, script beats) as a way to author game detail — a natural fit with the
+  splat-MOVIE + the story-as-timeline model.
+- **Movie generation as synthetic data.** Actual video/movie generation could produce artificial training
+  data. Constraint the operator set: EVERY model must be able to use the system — it should NOT require
+  specializing in movie generation (though some specialization may prove unavoidable — open question).
+- **"OpenLevel" is the frame.** We are building the equivalent of an engine loading a new level/world;
+  today's `reload` is the first piece. Keep designing toward a clean load-the-world operation.
