@@ -4,6 +4,12 @@ import numpy as np
 from numba import cuda
 import math
 
+try:
+    import cupy as cp                       # GPU radix sort => tile binning stays on-device (no 41ms host round-trip)
+    _HAS_CUPY = True
+except Exception:                            # pragma: no cover - CPU fallback path
+    _HAS_CUPY = False
+
 TILE_SIZE = 32
 MAX_PER_TILE = 4096
 PX, PY, PZ = 0, 1, 2
@@ -421,6 +427,45 @@ def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
     return sorted_splat[keep], offsets
 
 
+def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
+    """Same (tile, depth) binning as _build_tiles_cpu, but ON THE GPU via CuPy -- no host round-trip.
+
+    `kx/ky/krad` are numba device arrays (the DEPTH-SORTED projected splats). We wrap them zero-copy as
+    CuPy arrays (shared __cuda_array_interface__), do the expand + radix sort + bincount on-device, and
+    return numba-array VIEWS of the result (kept alive by the caller). This deletes the 41ms CPU binning
+    AND its 3 host downloads + 2 uploads -- the whole tile stage becomes a sub-ms GPU op."""
+    n_tiles = tiles_x * tiles_y
+    sx = cp.asarray(kx)[:nv]; sy = cp.asarray(ky)[:nv]; srad = cp.asarray(krad)[:nv]
+    r = cp.maximum((srad * 1.5).astype(cp.int64) + 1, 1)
+    px = sx.astype(cp.int64); py = sy.astype(cp.int64)
+    tx0 = cp.clip((px - r) // tile_sz, 0, tiles_x - 1); tx1 = cp.clip((px + r) // tile_sz, 0, tiles_x - 1)
+    ty0 = cp.clip((py - r) // tile_sz, 0, tiles_y - 1); ty1 = cp.clip((py + r) // tile_sz, 0, tiles_y - 1)
+    nx = tx1 - tx0 + 1; ny = ty1 - ty0 + 1
+    counts = (nx * ny).astype(cp.int64)
+    total = int(counts.sum())
+    if nv == 0 or total == 0:
+        z = cp.zeros(0, cp.int32); o = cp.zeros(n_tiles + 1, cp.int32)
+        return cuda.as_cuda_array(z), cuda.as_cuda_array(o), (z, o)
+    splat = cp.repeat(cp.arange(nv, dtype=cp.int64), counts)          # depth rank (nearest first)
+    local = cp.arange(total, dtype=cp.int64) - cp.repeat(cp.cumsum(counts) - counts, counts)
+    nxr = cp.repeat(nx, counts)
+    tile_id = ((cp.repeat(ty0, counts) + local // nxr) * tiles_x
+               + (cp.repeat(tx0, counts) + local % nxr))
+    # ONE radix sort by the combined key (tile-major, nearest-first within tile). Thrust radix on int64 is
+    # ~sub-ms for 10^5-10^6 keys; the unique key means non-stable sort is fine (no tie-break needed).
+    order = cp.argsort(tile_id * nv + splat)
+    sorted_tile = tile_id[order].astype(cp.int32)
+    sorted_splat = splat[order].astype(cp.int32)
+    per_tile = cp.bincount(sorted_tile, minlength=n_tiles)[:n_tiles]
+    capped = cp.minimum(per_tile, max_pt)
+    within = cp.arange(total, dtype=cp.int64) - cp.repeat(cp.cumsum(per_tile) - per_tile, per_tile)
+    keep = within < cp.repeat(capped, per_tile)
+    offsets = cp.zeros(n_tiles + 1, dtype=cp.int32); offsets[1:] = cp.cumsum(capped).astype(cp.int32)
+    tids = cp.ascontiguousarray(sorted_splat[keep])
+    # return numba views + the owning CuPy arrays (caller must hold them so the memory isn't freed)
+    return cuda.as_cuda_array(tids), cuda.as_cuda_array(offsets), (tids, offsets)
+
+
 class FullGPUPipeline:
     def __init__(self, bg=(0.01, 0.01, 0.05), base_scale=0.5):
         self.bg = bg; self.base_scale = base_scale
@@ -546,10 +591,15 @@ class FullGPUPipeline:
         tx = (params.width + TILE_SIZE - 1) // TILE_SIZE
         ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
         nt = tx * ty
-        tids_h, toff_h = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
-                                          self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
-        self._tids[:len(tids_h)] = cuda.to_device(tids_h)
-        self._to[:nt + 1] = cuda.to_device(toff_h)
+        if _HAS_CUPY:
+            tids_dev, toff_dev, _own = _build_tiles_gpu(self._kx, self._ky, self._krad, nv,
+                                                        tx, ty, TILE_SIZE, MAX_PER_TILE)  # _own kept alive below
+        else:
+            tids_h, toff_h = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
+                                              self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
+            self._tids[:len(tids_h)] = cuda.to_device(tids_h)
+            self._to[:nt + 1] = cuda.to_device(toff_h)
+            tids_dev, toff_dev, _own = self._tids, self._to, None
 
         # GPU composite
         cr = cuda.device_array((params.height, params.width), dtype=np.float32)
@@ -560,7 +610,7 @@ class FullGPUPipeline:
         _composite[gk2, bk2](self._kx, self._ky,
             self._kic00, self._kic01, self._kic11,
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
-            self._tids, self._to, cr, cg, cb,
+            tids_dev, toff_dev, cr, cg, cb,
             params.width, params.height, tx, nt,
             self.bg[0], self.bg[1], self.bg[2], nv)
         cuda.synchronize()
@@ -640,10 +690,15 @@ class FullGPUPipeline:
         tx = (params.width + TILE_SIZE - 1) // TILE_SIZE
         ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
         nt = tx * ty
-        tids_h, toff_h = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
-                                          self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
-        self._tids[:len(tids_h)] = cuda.to_device(tids_h)
-        self._to[:nt + 1] = cuda.to_device(toff_h)
+        if _HAS_CUPY:
+            tids_dev, toff_dev, _own = _build_tiles_gpu(self._kx, self._ky, self._krad, nv,
+                                                        tx, ty, TILE_SIZE, MAX_PER_TILE)  # _own kept alive below
+        else:
+            tids_h, toff_h = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
+                                              self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
+            self._tids[:len(tids_h)] = cuda.to_device(tids_h)
+            self._to[:nt + 1] = cuda.to_device(toff_h)
+            tids_dev, toff_dev, _own = self._tids, self._to, None
 
         cr = cuda.device_array((params.height, params.width), dtype=np.float32)
         cg = cuda.device_array((params.height, params.width), dtype=np.float32)
@@ -653,7 +708,7 @@ class FullGPUPipeline:
         _composite[gk2, bk2](self._kx, self._ky,
             self._kic00, self._kic01, self._kic11,
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
-            self._tids, self._to, cr, cg, cb,
+            tids_dev, toff_dev, cr, cg, cb,
             params.width, params.height, tx, nt,
             self.bg[0], self.bg[1], self.bg[2], nv)
         cuda.synchronize()
