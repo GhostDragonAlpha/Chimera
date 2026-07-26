@@ -146,16 +146,77 @@ class Star:
         r = float(np.linalg.norm(np.asarray(p, float) - self.center))
         return self.luminosity / (4.0 * np.pi * max(r, self.radius) ** 2)
 
+    def surface_temperature(self) -> float:
+        """The star's own surface temperature, from L = 4 pi R^2 sigma T^4.
+
+        THE UNIFICATION, in one line: a star is not a special kind of object, it is a body at a
+        temperature. Run the Sun's luminosity and radius through the SAME Stefan-Boltzmann law that
+        settles a patch of regolith and you get 5772 K -- its measured effective temperature. Star
+        and dirt are the same equation at different arguments."""
+        return float((self.luminosity / (4.0 * np.pi * self.radius ** 2 * SIGMA)) ** 0.25)
+
 
 @dataclass
 class Occluder:
-    """A body that casts a shadow. A planet eclipsing its own night side is the same object as a
-    moon eclipsing a planet -- day/night and eclipse are ONE mechanism, not two."""
+    """A body that casts a shadow -- and REFLECTS, and GLOWS.
+
+    A planet eclipsing its own night side is the same object as a moon eclipsing a planet:
+    day/night and eclipse are ONE mechanism. And the same body is also a light SOURCE twice over:
+
+      REFLECTED   the `albedo` fraction of starlight it bounces back out. My first version threw
+                  this away -- `absorbed = S (1-albedo)` used the absorbed part and let the
+                  reflected part vanish. It does not vanish. It lands on you. (Operator, 2026-07-26:
+                  "light reflecting off an object has property of thermal".)
+      EMITTED     everything above 0 K radiates at sigma T^4. That IS light -- just further down
+                  the spectrum. A star is a body at 5772 K; regolith at noon is a body at 390 K;
+                  the law does not care which.
+
+    So `temperature` is not bookkeeping here, it is what makes the body shine.
+    """
     center: np.ndarray = dfield(default_factory=lambda: np.zeros(3))
     radius: float = 1.0
+    albedo: float = 0.0                # 0 => a black body that only blocks (the old behaviour)
+    temperature: float = 0.0           # K; 0 => emits nothing
+    emissivity: float = 0.95
 
     def __post_init__(self):
         self.center = np.asarray(self.center, float)
+
+    def view_factor(self, p) -> float:
+        """How much of your sky this body FILLS, from a point facing it.
+
+        For a flat element facing a sphere's centre this is exactly (R/r)^2 -- the sphere subtends
+        a half-angle with sin(theta) = R/r, and the view factor is sin^2(theta). It goes to 1 on
+        the surface (lying on the ground, the ground is your whole sky) and falls off with altitude,
+        which is why a low orbit is thermally a completely different place from a high one.
+        """
+        r = float(np.linalg.norm(np.asarray(p, float) - self.center))
+        if r <= self.radius:
+            return 1.0
+        return float((self.radius / r) ** 2)
+
+    def emitted_flux_at(self, p) -> float:
+        """W/m^2 of the body's OWN thermal radiation arriving at p. Never zero on the night side --
+        which is exactly why it is the term you cannot hide from."""
+        if self.temperature <= 0.0:
+            return 0.0
+        return float(self.emissivity * SIGMA * self.temperature ** 4 * self.view_factor(p))
+
+    def reflected_flux_at(self, p, star) -> float:
+        """W/m^2 of STARLIGHT this body bounces up at p. Zero over the night side, peak over the
+        sub-stellar point -- planetshine, and a real term in every spacecraft's heat budget."""
+        if self.albedo <= 0.0:
+            return 0.0
+        d = np.asarray(p, float) - self.center
+        r = float(np.linalg.norm(d))
+        if r < 1e-9:
+            return 0.0
+        to_star = star.center - self.center
+        n = float(np.linalg.norm(to_star))
+        if n < 1e-9:
+            return 0.0
+        lit = max(0.0, float(np.dot(d / r, to_star / n)))       # 1 sub-stellar, 0 at the terminator
+        return float(self.albedo * star.irradiance_at(self.center) * lit * self.view_factor(p))
 
     def blocks(self, p, light_center) -> bool:
         """Does the segment from p to the light pass through this sphere?"""
@@ -217,6 +278,37 @@ class LightField:
         if L is None:
             return 0.0
         return max(0.0, float(np.dot(np.asarray(normal, float), L)))
+
+    def budget_at(self, p, facing_body=True) -> dict:
+        """THE FULL RADIATIVE BUDGET at a point -- every watt arriving, and where it came from.
+
+        Three terms, and a real spacecraft's thermal design is the argument between them:
+            direct    starlight, if you can see the star
+            albedo    starlight the body below bounced up at you. Dies on the night side.
+            planetary the body's OWN glow at sigma T^4. Does NOT die on the night side, which is
+                      why you can never fully cool by hiding -- you have to point AWAY.
+
+        `facing_body=False` is a surface pointed at deep space instead of down: it drops both
+        surface terms, which is exactly what a radiator is for and why they are mounted where they
+        are. Deep space is 2.7 K -- effectively a perfect heat sink, and the only one there is.
+
+        DO NOT feed this to a Column for the ground it is standing on. This is what arrives at a
+        body ABOVE a surface -- a suit, a rover, a ship. A patch of ground would be counting its
+        own glow as incoming and heating itself forever.
+        """
+        direct = self.irradiance_at(p)
+        alb = ir = 0.0
+        if facing_body:
+            for o in self.occluders:
+                ir += o.emitted_flux_at(p)
+                for s in self.stars:
+                    if not any(q.blocks(o.center, s.center) for q in self.occluders if q is not o):
+                        alb += o.reflected_flux_at(p, s)
+        return {'direct': float(direct), 'albedo': float(alb), 'planetary': float(ir),
+                'total': float(direct + alb + ir)}
+
+    def total_irradiance_at(self, p, facing_body=True) -> float:
+        return self.budget_at(p, facing_body)['total']
 
     def power_on(self, p, normal, area: float, efficiency: float = 1.0) -> float:
         """Watts collected by a panel of `area` facing `normal`. Solar power, exactly."""

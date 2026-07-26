@@ -342,6 +342,80 @@ def main() -> int:
           f"{k_deep*grad*1000:.1f} vs {col.geothermal*1000:.0f} mW/m^2 -- Fourier's law read back "
           "out of a profile that was never told it")
 
+    # ══ REFLECTED AND RE-EMITTED LIGHT ═══════════════════════════════════════════════════════
+    # Operator, 2026-07-26: "light also has heat elements to it -- light reflecting off an object
+    # has property of thermal". Correct, and it was a real hole: absorbed = S(1-albedo) used the
+    # absorbed part and let the REFLECTED part vanish. It does not vanish, it lands on you.
+    print("\nR1  ONE LAW, star to dirt: the Sun's own surface temperature from Stefan-Boltzmann")
+    T_sun = sun.surface_temperature()
+    print(f"      L = {sun.luminosity:.3e} W over R = {sun.radius:.3e} m -> T = {T_sun:.1f} K")
+    print(f"      the Sun's measured effective temperature: 5772 K")
+    check("a star is just a body at a temperature", abs(T_sun - 5772.0) < 30.0,
+          f"{T_sun:.0f} K from the SAME sigma T^4 that settles a patch of regolith -- star and dirt "
+          "are one equation at different arguments")
+
+    print("\nR2  THE SPACECRAFT BUDGET in low orbit -- three terms, not one")
+    earth = Occluder(center=(AU, 0, 0), radius=Rp, albedo=0.30, temperature=255.0, emissivity=1.0)
+    lf_e = LightField(stars=[sun], occluders=[earth])
+    for alt_km in (0, 400, 2000, 35786):
+        p_o = np.array([AU - Rp - alt_km * 1000.0, 0, 0])       # over the sub-solar point
+        b = lf_e.budget_at(p_o)
+        print(f"      {alt_km:6d} km  direct {b['direct']:7.1f}  albedo {b['albedo']:6.1f}  "
+              f"planetary {b['planetary']:6.1f}  =  {b['total']:7.1f} W/m^2  "
+              f"(view factor {earth.view_factor(p_o):.3f})")
+    leo = lf_e.budget_at(np.array([AU - Rp - 4.0e5, 0, 0]))
+    print(f"      published LEO design values: solar ~1361, albedo ~400 peak, Earth IR ~230-240")
+    check("the LEO budget matches published spacecraft numbers",
+          abs(leo['albedo'] - 361) < 60 and abs(leo['planetary'] - 212) < 35,
+          f"albedo {leo['albedo']:.0f} and Earth IR {leo['planetary']:.0f} W/m^2 at 400 km -- these "
+          "are the numbers a real thermal budget is built from, and they fell out of (R/r)^2")
+
+    print("\nR3  STANDING ON THE MOON AT NOON: the GROUND is a second sun")
+    moon_hot = Occluder(center=(AU, 0, 0), radius=1.737e6, albedo=0.11, temperature=387.0)
+    lf_m = LightField(stars=[sun], occluders=[moon_hot])
+    boots = np.array([AU - 1.737e6 - 1.0, 0, 0])                # a metre above the regolith
+    bm = lf_m.budget_at(boots)
+    print(f"      direct sun    {bm['direct']:7.1f} W/m^2")
+    print(f"      ground glow   {bm['planetary']:7.1f} W/m^2   (regolith at 387 K, radiating AT you)")
+    print(f"      ground bounce {bm['albedo']:7.1f} W/m^2")
+    print(f"      TOTAL         {bm['total']:7.1f} W/m^2 on a suit -- {bm['total']/1361:.2f}x the sun alone")
+    check("the ground radiates nearly as hard as the sun", bm['planetary'] > 1000.0,
+          f"{bm['planetary']:.0f} W/m^2 from the regolith alone -- this is why lunar EVA is a "
+          "COOLING problem, and it is a term my first model deleted entirely")
+
+    print("\nR4  the night side: albedo dies, the glow does NOT")
+    night = np.array([AU + Rp + 4.0e5, 0, 0])
+    bn = lf_e.budget_at(night)
+    print(f"      direct {bn['direct']:6.1f}   albedo {bn['albedo']:6.1f}   "
+          f"planetary {bn['planetary']:6.1f} W/m^2")
+    check("planetary IR survives the terminator", bn['direct'] == 0.0 and bn['albedo'] == 0.0
+          and bn['planetary'] > 100.0,
+          f"sun 0, bounce 0, but {bn['planetary']:.0f} W/m^2 still arriving -- you cannot hide from "
+          "a warm planet, you can only point away from it")
+
+    print("\nR5  POINT AWAY: what a radiator is actually for")
+    p_leo = np.array([AU - Rp - 4.0e5, 0, 0])
+    down = lf_e.budget_at(p_leo, facing_body=True)['total'] - leo['direct']
+    space = lf_e.budget_at(p_leo, facing_body=False)['total'] - leo['direct']
+    A_down = ThermalField.radiator_area(5000.0, 300.0)
+    print(f"      facing the planet: {down:7.1f} W/m^2 of backload   facing deep space: {space:.1f}")
+    print(f"      a 5 kW radiator at 300 K sheds {1.0/ThermalField.radiator_area(1.0,300.0):.0f} W/m^2;")
+    print(f"      pointed down it is fighting {down:.0f} of that back -- {100*down/(1.0/ThermalField.radiator_area(1.0,300.0)):.0f}% of its capacity gone")
+    check("deep space is the only real heat sink", space == 0.0 and down > 400.0,
+          f"{down:.0f} W/m^2 backload facing the planet vs {space:.0f} facing away -- the reason "
+          "radiators are mounted where they are, falling out of the same view factor")
+
+    print("\nR6  the view factor is geometry, not a fudge: (R/r)^2")
+    for h in (0.0, Rp * 0.5, Rp, Rp * 9.0):
+        pv = np.array([AU - Rp - h, 0, 0])
+        f_meas = earth.view_factor(pv)
+        f_pred = (Rp / (Rp + h)) ** 2
+        print(f"      altitude {h/1000:9.0f} km -> view factor {f_meas:.4f}  (sin^2 theta = {f_pred:.4f})")
+    check("view factor is exactly sin^2 of the half-angle subtended",
+          abs(earth.view_factor(np.array([AU - Rp - Rp, 0, 0])) - 0.25) < 1e-9,
+          "1.0000 on the surface -> 0.2500 at one radius up -> 0.0100 at nine -- the sphere's own "
+          "geometry, and the same number that scales both the bounce and the glow")
+
     n_fail = sum(1 for _, ok in results if not ok)
     print("\n" + "=" * 68)
     print(f"{len(results) - n_fail}/{len(results)} checks passed")
