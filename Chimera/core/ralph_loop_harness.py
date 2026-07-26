@@ -1783,19 +1783,11 @@ class RalphLoopHarness:
 
     @staticmethod
     def _launch_ue5_editor() -> bool:
-        """Launch UnrealEditor.exe in the background. Returns True if spawned."""
-        editor_exe = r"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe"
-        project_path = r"E:\PythonChimera\Chimera\Chimera.uproject"
-        try:
-            subprocess.Popen(
-                ["cmd", "/c", "start", "", editor_exe, project_path],
-                shell=False,
-            )
-            logger.info(f"[Launch] Spawned UnrealEditor.exe")
-            return True
-        except Exception as e:
-            logger.error(f"[Launch] Failed to spawn UE5: {e}")
-            return False
+        """DISABLED 2026-07-26 (operator request): the UE5 pipeline is retired -- rendering is the Chimera
+        engine, not Unreal. This used to Popen UnrealEditor.exe, which was auto-starting the editor. It is
+        now a no-op so this harness can never launch UE. (Restore from git if UE ever returns.)"""
+        logger.info("[Launch] UE5 launch DISABLED (retired pipeline) -- not spawning UnrealEditor.exe")
+        return False
 
     def preflight_services(self) -> None:
         """Check all services at startup. Launch any that aren't running."""

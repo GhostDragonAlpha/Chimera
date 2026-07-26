@@ -202,6 +202,11 @@ class PlaytestRunner:
         if not self.ue_root:
             return {}
 
+        # DISABLED 2026-07-26 (operator request): the UE5 pipeline is retired -- we do not launch
+        # UnrealEditor(-Cmd).exe. Return empty (tests treated as SKIPPED, as the docstring's fallback
+        # already allows) so this runner can never auto-start UE. Restore from git if UE ever returns.
+        return {}
+
         project_name = self.project_path.stem
 
         # Strategy 1: Editor-Cmd.exe with various render modes

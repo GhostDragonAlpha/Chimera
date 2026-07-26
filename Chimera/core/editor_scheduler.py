@@ -129,19 +129,11 @@ def _ensure_editor_closed():
 
 
 def _ensure_editor_open():
-    try:
-        out = subprocess.run(["tasklist", "/FI", "IMAGENAME eq UnrealEditor.exe"],
-                             capture_output=True, text=True, timeout=10).stdout
-        if "UnrealEditor.exe" in out:
-            return  # already running
-        editor_path = r"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe"
-        uproject = str(HERE.parent / "Chimera.uproject")
-        if os.path.exists(editor_path) and os.path.exists(uproject):
-            subprocess.Popen([editor_path, uproject], stdout=subprocess.DEVNULL,
-                             stderr=subprocess.DEVNULL,
-                             creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
-    except Exception:
-        pass
+    # DISABLED 2026-07-26 (operator request): the UE5 pipeline is retired -- we render with the Chimera engine
+    # (ParticleEngine/ChimeraEngine), NOT Unreal. This used to Popen UnrealEditor.exe, which was auto-starting
+    # the editor. It is now a no-op so nothing in the retired tree can launch UE. (Restore from git if UE ever
+    # returns.) _kill_ue_processes / _ensure_editor_closed are kept -- shutting UE down stays safe.
+    return
 
 
 def _ensure_mode(mode):

@@ -1,43 +1,5 @@
 {
 	"mcpServers": {
-		"unreal-engine": {
-			"command": "npx",
-			"args": [
-				"unreal-engine-mcp-server"
-			],
-			"env": {
-				"UE_PROJECT_PATH": "E:/PythonChimera/Chimera/Chimera.uproject",
-				"MCP_AUTOMATION_PORT": "8090"
-			},
-			"alwaysAllow": [
-				"inspect",
-				"manage_level",
-				"manage_asset",
-				"control_editor",
-				"control_actor",
-				"manage_effect",
-				"manage_geometry"
-			]
-		},
-		"chiR24-unreal-mcp": {
-			"command": "node",
-			"args": [
-				"E:/ChiR24-Unreal_mcp-test/dist/cli.js"
-			],
-			"cwd": "E:/ChiR24-Unreal_mcp-test",
-			"env": {
-				"UE_PROJECT_PATH": "E:/PythonChimera/Chimera/Chimera.uproject"
-			},
-			"alwaysAllow": [
-				"manage_asset",
-				"inspect",
-				"control_actor",
-				"manage_tools",
-				"manage_effect",
-				"control_editor",
-				"system_control"
-			]
-		},
 		"playwright": {
 			"command": "npx",
 			"args": [
