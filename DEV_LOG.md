@@ -13,7 +13,20 @@
 independent vision model), then make the operator's theory true — *to add game detail, you change only
 the STORY* — on both the declaration layer and the render layer.
 
-### Sound system DESIGNED — matter's second projection · *pending commit* · **DESIGN**
+### AI ear + Omni "all senses" proven via llama-server; `sonify.py` built · *pending commit* · **VERIFIED**
+- The audio dyad's ear works — but through **llama-server direct, not LM Studio**. Chased it down: qwen2-audio
+  had no audio encoder downloaded at all (deaf, hallucinated from the prompt); qwen2.5-omni's `mmproj-F32`
+  HAS the audio tower (`clip.has_audio_encoder`); but LM Studio loads it for VISION only (never wires audio —
+  a known llama.cpp manual-load gap). `llama-server --mmproj --no-mmproj-offload` runs `init_audio` and hears.
+- **ONE Omni model = eye + ear + movie:** nailed the marble (vision), heard `theStar`'s sonification as
+  *"a deep, rumbling bass"* (audio, matches the physics), and read an ordered 2-frame sequence as video with a
+  transition (→ the appearance dyad can judge the MOVIE, not just the end still). Quality is "experimental" →
+  **HYBRID** design confirmed (AI advisory ear/eye, operator authoritative).
+- `sonify.py` built (twin of `splat_appearance`): matter→pressure, deterministic, CPU. `theStar` (rumble +
+  convective hum) passes the ear; `aPlanet` (wind + ocean) needs synthesis tuning — the redo-loop, for sound.
+- Serving: a dedicated `llama-server` on `127.0.0.1:1235` (omni GGUF on GPU, 5.3 GB projector on CPU).
+
+### Sound system DESIGNED — matter's second projection · `1ca2166` · **DESIGN**
 - `ChimeraEngine/SOUND_DESIGN.md`: the full architecture, mirroring the appearance system so it "sits right
   in" — `sonify(term)` (matter→pressure, the twin of `splat_appearance`; deterministic; CPU, no GPU; on the
   same movie timeline), a HUMAN-ONLY dyad (`sound_messenger`; no audio-recognition AI, so the operator is the

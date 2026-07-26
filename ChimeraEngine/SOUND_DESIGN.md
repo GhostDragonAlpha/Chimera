@@ -4,6 +4,17 @@
 > to sit into the exact same machinery. Nothing here is built yet — it is the plan we build against. The
 > operator asked for sound "with the same setup, timelines and everything, so they sit right in," and to
 > DESIGN it before improvising. This is that design.
+>
+> **UPDATE 2026-07-25 — the AI ear EXISTS (revises §2 to HYBRID).** Tested empirically: `qwen2.5-omni-7b`
+> DOES hear — via **llama-server direct**, NOT LM Studio (LM Studio loads the mmproj for vision only and
+> never wires the audio tower; llama-server's `init_audio` does). Quality is "experimental": right on
+> broad features (heard `theStar`'s real sonification as *"a deep, rumbling bass"* — matches the physics),
+> imperfect on fine detail. So the sound dyad is **not human-ONLY, it is HYBRID**: the Omni model is an
+> *advisory* ear, the operator stays authoritative. Bonus — ONE Omni model served all three senses the
+> dyad needs: **eye** (nailed the marble), **ear** (the star rumble), **movie** (understood an ordered
+> frame sequence as video → the appearance dyad can judge the MOVIE, not just the end still). Serving: a
+> dedicated `llama-server` (omni GGUF + `mmproj-F32`; model on GPU, 5.3 GB projector on CPU) on
+> `127.0.0.1:1235`. `sonify.py` is built (`theStar` passes the ear; `aPlanet` wind/water needs tuning).
 
 ## The principle — light and pressure are the same matter, projected twice
 
