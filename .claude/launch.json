@@ -5,14 +5,15 @@
       "name": "perpetual-orchestrator",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "core.perpetual_orchestrator"],
-      "cwd": "E:\PythonChimera\Chimera",
+      "cwd": "E:/PythonChimera/Chimera",
       "port": null
     },
     {
-      "name": "dev-server",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "name": "gallery",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["ChimeraEngine/gallery.py", "8765"],
+      "cwd": "E:/PythonChimera",
+      "port": 8765
     },
     {
       "name": "construction-web",
