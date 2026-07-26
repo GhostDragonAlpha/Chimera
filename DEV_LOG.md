@@ -13,6 +13,14 @@
 independent vision model), then make the operator's theory true — *to add game detail, you change only
 the STORY* — on both the declaration layer and the render layer.
 
+### Sound system DESIGNED — matter's second projection · *pending commit* · **DESIGN**
+- `ChimeraEngine/SOUND_DESIGN.md`: the full architecture, mirroring the appearance system so it "sits right
+  in" — `sonify(term)` (matter→pressure, the twin of `splat_appearance`; deterministic; CPU, no GPU; on the
+  same movie timeline), a HUMAN-ONLY dyad (`sound_messenger`; no audio-recognition AI, so the operator is the
+  sole ear — the permanent `human_override`), an `AUDITORY MESSENGER` gate, `compose_sound` (the music of the
+  spheres from proven children's orbital periods), and an audio channel in the live viewer.
+- Not built. First PoC proposed: sonify `theStar` → serve to `/live` → the operator hears + rules.
+
 ### Session restarted → engine at 59 terms, four terms re-proven through the boundary · **VERIFIED**
 - The operator restarted the session; the fresh `chimera-engine` server loaded today's code (the `reload`
   tool is present, `_reconcile` grew the LIVE tree to 59 terms, all five proofs preserved — the reconcile
@@ -95,9 +103,8 @@ the STORY* — on both the declaration layer and the render layer.
 - **Scale-dependent calibration** — composed children (e.g. a shrunk star) over/under-accumulate; tune.
 
 ### Discussion queue (operator-raised, deferred — "let's discuss after")
-- **Sound = same methodology as appearance.** A `sonify(term)` twin of `splat_appearance`: matter →
-  pressure, on the SAME timeline structure so it "sits right in." Dyad is HUMAN-ONLY (no audio-recognition
-  model — the operator is the sole ear). Generation unbuilt; do NOT improvise — design together.
+- **Sound — DESIGNED** (`ChimeraEngine/SOUND_DESIGN.md`). Matter's second projection; `sonify` twin;
+  HUMAN-ONLY dyad; music-of-the-spheres composition. Next: build the theStar PoC + the operator listens.
 - **Film-grammar for detail.** Research/contemplate movie-editing & script-editing concepts (timelines,
   scenes, cuts, shot lists, script beats) as a way to author game detail — a natural fit with the
   splat-MOVIE + the story-as-timeline model.
