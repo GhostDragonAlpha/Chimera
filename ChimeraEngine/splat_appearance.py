@@ -60,9 +60,9 @@ NX, NY, NZ = 21, 22, 23     # OPTIONAL surface normal -> the pipeline back-face-
 # so the render lands on the intended palette. Keeping GRAIN size/alpha/DENSITY constant across scenes
 # keeps the over-accumulation factor constant, so the ONE measured gain holds for every world.
 _SURFACE_GAIN = 0.45      # invert the measured ~2x over-accumulation (translucent shells: _solid_sphere/theStar)
-_PLANET_GAIN = (0.420, 0.409, 0.405)   # aPlanet surface: OPAQUE (alpha 0.92) + SMALL grains (3.5) + BACK-FACE CULL.
-                          # Culling the far hemisphere removes its bleed-through, so over-accumulation drops ~3.0x -> ~2.4x;
-                          # re-MEASURED per-channel against a uniform navy sphere WITH culling active (err 0,0,0 on target).
+_PLANET_GAIN = (0.402, 0.394, 0.391)   # aPlanet surface: FULLY OPAQUE (alpha 1.0) + clean shell (no radial jitter) +
+                          # BACK-FACE CULL. Over-accumulation ~2.5x; re-MEASURED per-channel against a uniform navy sphere
+                          # in this exact config (err ~0 on target). The opaque clean shell also killed the lattice dots.
 _GRAIN_SIZE = 5.0         # per-grain render size (world units)
 _GRAIN_ALPHA = 0.5        # per-grain opacity
 _GRAIN_DENSITY = 0.185    # grains per unit sphere AREA (= aPlanet's 18000 / 4pi*88^2)
@@ -111,13 +111,14 @@ def _planet_buffers(spec: dict, term: str):
     dirs = _fibonacci_sphere(n_s)                                    # (n,3) unit
     z = dirs[:, 2]                                                   # latitude sine
     surf = np.zeros((n_s, NCOLS), dtype=np.float32)
-    jitter = 1.0 + rng.normal(0.0, 0.006, n_s)                      # a touch of shell thickness
-    surf[:, PX:PZ + 1] = dirs * (R * jitter[:, None])
+    surf[:, PX:PZ + 1] = dirs * R                                   # a CLEAN shell (no radial jitter). Radial jitter scattered grains
+                                                                     # in depth and -- with semi-transparent grains -- let the black
+                                                                     # background SPECKLE through between them (the "lattice dots").
     surf[:, NX:NZ + 1] = dirs                                       # outward normal = the shell direction -> back-face cull the far side
     surf[:, TYPE] = 3.0                                             # "social": sm=1.0, opaque, isotropic -> clean round grains
-    surf[:, ALPHA] = 0.92                                           # OPAQUE surface: line-of-sight stops here (Nanite-style). The
-                                                                     # front-to-back early-out (trans<0.01) now fires after ~2 grains,
-                                                                     # so the ~24 grains BEHIND the visible surface are never composited.
+    surf[:, ALPHA] = 1.0                                            # FULLY OPAQUE: each grain covers its core solid (no background
+                                                                     # bleed in the gaps) AND the front-to-back early-out fires after
+                                                                     # ~1 grain -> line-of-sight stops at the surface, composite is cheaper.
     surf[:, SIZE] = 3.5                                             # SMALL grains: projected ~15px (was ~42px) -> ~8x less overdraw,
                                                                      # the dominant render cost. 40k of them still fill the shell (gap 0, measured).
 

@@ -100725,6 +100725,210 @@
       "links": [],
       "recorded_by": "dream_loop.py",
       "run_id": "run_0d35478a6b99"
+    },
+    {
+      "id": "simtest_1d75735165b76345",
+      "type": "SimPlaytest",
+      "timestamp": "2026-07-26T06:01:09.192108",
+      "observer": "agent-sim",
+      "witnessed_by_engine": true,
+      "chronicle_present": true,
+      "witness_authentic": true,
+      "session": "nightly",
+      "demo": "regolith_yard",
+      "beats_total": 5,
+      "beats_reached": 1,
+      "outcomes": [
+        {
+          "beat": "spawn_on_metal_pad",
+          "outcome": "reached",
+          "features": [
+            "Player_Character_Model",
+            "Player_Character_Lighting"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "world_is": "chimeradefaultlevel"
+              },
+              "ok": true,
+              "note": "world=chimeradefaultlevel"
+            },
+            {
+              "expect": {
+                "is_pie": true
+              },
+              "ok": true,
+              "note": "isPIE=True"
+            },
+            {
+              "expect": {
+                "pawn_class": "BP_Astronaut_Character_C"
+              },
+              "ok": true,
+              "note": "pawn_class=BP_Astronaut_Character_C"
+            },
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 0,
+                  "y": 0,
+                  "r": 600
+                }
+              },
+              "ok": true,
+              "note": "dist=122uu (loc x=20.125, y=-120.12500762939453)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_metal_to_rock",
+          "outcome": "failed",
+          "features": [
+            "Verb_Step",
+            "Ground_Metal_Surface",
+            "Ground_Rock_Surface"
+          ],
+          "evidence": [
+            {
+              "expect": {
+                "pawn_within": {
+                  "x": 2000,
+                  "y": 0,
+                  "r": 900
+                }
+              },
+              "ok": false,
+              "note": "dist=2000uu (loc x=0, y=0)"
+            }
+          ]
+        },
+        {
+          "beat": "walk_rock_to_sand_basin",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Step",
+            "Ground_Sand_Surface",
+            "Ground_Sand_Particles"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: Failed to execute inspect: Connection lost"
+            }
+          ]
+        },
+        {
+          "beat": "sand_basin_dwell_and_frame",
+          "outcome": "blocked",
+          "features": [
+            "Ground_Sand_Particles",
+            "Player_Character_Suit"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        },
+        {
+          "beat": "jump_probe",
+          "outcome": "blocked",
+          "features": [
+            "Verb_Step"
+          ],
+          "evidence": [
+            {
+              "error": "inspect.runtime_report: failed"
+            }
+          ]
+        }
+      ],
+      "timeline_path": "E:\\PythonChimera\\Chimera\\Saved\\SessionChronicles\\nightly.json",
+      "temperature": "[SIM] 1/5 beats reached in 'regolith_yard'. Failures: walk_metal_to_rock (failed: expect {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}} -> dist=2000uu (loc x=0, y=0)); walk_rock_to_sand_basin (blocked: {\"error\": \"inspect.runtime_report: Failed to execute inspect: Connection lost\"}); sand_basin_dwell_and_frame (blocked: {\"error\": \"inspect.runtime_report: failed\"}); jump_probe (blocked: {\"error\": \"i",
+      "error_signature": "sim_beats_failed",
+      "template_file": "sleepwalker/beat_run",
+      "error_category": "sim_rejection",
+      "fix_description": "Sleepwalk 'nightly': 1/5 beats reached",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_dc31e67907c0"
+    },
+    {
+      "id": "surprise_204ef09b34897eb9",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-26T06:01:09.897731",
+      "context": "Sleepwalker expected beat 'walk_metal_to_rock' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, \"note\": \"dist=2000uu (loc x=0, y=0)\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'failed: {\"expect\": {\"pawn_within\": {\"x\": 2000, \"y\": 0, \"r\": 900}}, \"ok\": false, '",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_dc31e67907c0"
+    },
+    {
+      "id": "surprise_ba3bffda56792d10",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-26T06:01:10.352949",
+      "context": "Sleepwalker expected beat 'walk_rock_to_sand_basin' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: Failed to execute inspect: Connection lost\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: Failed to execute inspect: Connectio'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_dc31e67907c0"
+    },
+    {
+      "id": "surprise_36e7405dfb4a9123",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-26T06:01:10.940807",
+      "context": "Sleepwalker expected beat 'sand_basin_dwell_and_frame' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_dc31e67907c0"
+    },
+    {
+      "id": "surprise_96164af25bf278ee",
+      "type": "SurpriseMoment",
+      "timestamp": "2026-07-26T06:01:11.347036",
+      "context": "Sleepwalker expected beat 'jump_probe' to be reachable (regolith_yard)",
+      "expectation": "",
+      "reality": "blocked: {\"error\": \"inspect.runtime_report: failed\"}",
+      "lesson_hint": "sim-discovered gap; verify before human session",
+      "source": "agent",
+      "consolidated": false,
+      "error_signature": "surprise_agent",
+      "template_file": "surprise/agent",
+      "error_category": "surprise",
+      "fix_description": "Surprise (agent): expected '' but 'blocked: {\"error\": \"inspect.runtime_report: failed\"}'",
+      "compilation_result": "n/a",
+      "links": [],
+      "recorded_by": "sleepwalker.py",
+      "run_id": "run_dc31e67907c0"
     }
   ],
   "edges": [

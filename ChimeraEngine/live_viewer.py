@@ -28,9 +28,13 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
-_W, _H = 1920, 1080        # 16:9 FHD -- sharp on a 2K monitor, ~36 fps after the GPU-binning + uint8 speedups.
-                           # (Native 2560x1440 renders ~24 fps if you want max sharpness over framerate.)
-_AUTO_SPIN = 0.35          # rad/sec -- the world turns on its own, so the movie PLAYS with no input (the time axis)
+# DYNAMIC-RESOLUTION LOD. The composite is per-pixel, so pixel count IS the cost. While the view is MOVING
+# we render small and let the browser upscale -- fast + smooth, and the bigger effective splats keep the
+# coverage gaps sub-pixel so they stop crawling ("migrating dots"). When the view settles we render full-res
+# for sharpness. (LOD = level of detail = level of resolution; don't draw more pixels than the motion warrants.)
+_W, _H = 1920, 1080        # IDLE/settled internal res (sharp on a 2K monitor)
+_LO_W, _LO_H = 1152, 648   # MOVING internal res (upscaled) -- ~2x fewer pixels => ~2x the fps while you drag/spin
+_AUTO_SPIN = 0.12          # rad/sec -- a GENTLE drift so the movie plays without making the surface crawl
 
 
 def _blank_jpeg() -> bytes:
@@ -57,6 +61,7 @@ class LiveViewer:
         self._radius = splat_appearance.scene_cam_distance(term)
         self._radius0 = self._radius
         self._in = {"dazim": 0.0, "delev": 0.0, "zoom": 0.0}
+        self._last_input = 0.0     # wall-time of the last drag/zoom -> drives the moving-vs-settled LOD
         self._clients = 0                                          # active /stream connections
         self._running = True
         self._err = None
@@ -72,7 +77,8 @@ class LiveViewer:
             from PIL import Image
             pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
             cam = FirstPersonCamera((0.0, -self._radius, 0.0))
-            params = cam.params(_W, _H)
+            params_hi = cam.params(_W, _H)        # settled: full res, sharp
+            params_lo = cam.params(_LO_W, _LO_H)  # moving: fewer pixels, smooth (camera is unchanged; only the raster size)
             last = time.time()
             while self._running:
                 now = time.time(); dt = min(0.1, now - last); last = now
@@ -101,11 +107,13 @@ class LiveViewer:
                 cam.pitch = math.atan2(fz, math.hypot(fx, fy))
                 if self._loaded is None:
                     time.sleep(0.05); continue
+                moving = (now - self._last_input) < 0.30               # dragging/zooming in the last 0.3s
+                params = params_lo if moving else params_hi           # LOD: small while moving, full when settled
                 img = pipe.render_from_gpu(cam, params)
-                buf = io.BytesIO(); Image.fromarray(img).save(buf, "JPEG", quality=82)
+                buf = io.BytesIO(); Image.fromarray(img).save(buf, "JPEG", quality=(72 if moving else 85))
                 with self._lock:
                     self._latest = buf.getvalue()
-                time.sleep(max(0.0, 1 / 30 - (time.time() - now)))
+                time.sleep(max(0.0, 1 / 60 - (time.time() - now)))    # cap 60fps so the fast (moving) LOD stays smooth
         except Exception as e:                                          # a dead render thread must be visible, not silent
             import traceback
             self._err = f"{e}\n{traceback.format_exc()}"
@@ -119,6 +127,8 @@ class LiveViewer:
     def input(self, dazim=0.0, delev=0.0, zoom=0.0):
         with self._lock:
             self._in["dazim"] += dazim; self._in["delev"] += delev; self._in["zoom"] += zoom
+            if dazim or delev or zoom:
+                self._last_input = time.time()   # mark "moving" -> the render thread drops to the fast LOD
 
     def set_scene(self, term: str):
         if term in self._sa.SCENES:
