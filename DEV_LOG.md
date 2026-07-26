@@ -13,7 +13,17 @@
 independent vision model), then make the operator's theory true — *to add game detail, you change only
 the STORY* — on both the declaration layer and the render layer.
 
-### OpenLevel — hot-reload the world into the running engine (`reload` tool) · *pending commit* · **DONE (activates after one restart)**
+### Session restarted → engine at 59 terms, four terms re-proven through the boundary · **VERIFIED**
+- The operator restarted the session; the fresh `chimera-engine` server loaded today's code (the `reload`
+  tool is present, `_reconcile` grew the LIVE tree to 59 terms, all five proofs preserved — the reconcile
+  survived a real restart, not just a test).
+- Re-rendered + re-`prove`d all four through the MCP tools — boundary crossed, each dyad on its current
+  (good / composed) render: **aPlanet 0.950, theStar 0.850, thePlanets 1.000, theSolarSystem 1.000
+  (composed — the vision model saw the real marble on an orbit)**. The ledger is now honest (aPlanet's
+  stale 0.100 blob record is gone; theSolarSystem now records the composed render, not the old hand-drawn).
+- Engine NEXT: `theTerrain` (setting-first under aPlanet); the 15 new terms await proving.
+
+### OpenLevel — hot-reload the world into the running engine (`reload` tool) · `539aa0e` · **DONE / ACTIVE**
 - The MCP server holds ONE `Engine` built at session start, so a changed *story* (new terms) and the
   engine's own code do not hot-load — only scenes do (they `importlib.reload` per render). The operator
   named this exactly: it is Unreal's `OpenLevel`, and we're building the equivalent.
@@ -79,10 +89,9 @@ the STORY* — on both the declaration layer and the render layer.
   wired"; corrected — it was wired in `f2b0c88`.
 
 ### Open threads
-- **One session restart, then re-prove** — activates all of today's engine code (incl. the `reload`
-  tool). Operator's action (I can't restart the server). After it: re-render + `prove` the terms via MCP
-  (refreshes stale ledger dyads, crosses the boundary). Terms are ready — dyads this session: theStar 0.9,
-  thePlanets / theSolarSystem / aPlanet 1.0.
+- **Prove the 15 new terms** — theMining, theFarming (+3 farms), the 7 theShip systems, theShoot/theMelee/
+  theEVA. Engine NEXT points at `theTerrain` (setting-first). Each is a full frame→question→classify→
+  render→prove cycle; many need a scene authored in `splat_appearance` (or composition from children).
 - **Scale-dependent calibration** — composed children (e.g. a shrunk star) over/under-accumulate; tune.
 
 ### Discussion queue (operator-raised, deferred — "let's discuss after")
