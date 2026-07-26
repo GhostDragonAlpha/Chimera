@@ -330,6 +330,23 @@ def _tile_offsets(tile_fill, tile_offsets, n_tiles, max_pt):
     tile_offsets[n_tiles] = acc
 
 @cuda.jit
+def _sort_tiles(tile_ids, tile_offsets, n_tiles):
+    """Restore DEPTH ORDER inside each tile. `_tiles_write` fills slots via atomic.add, whose retirement
+    order is nondeterministic -- so the CPU depth-sort was being scrambled and closed surfaces rendered
+    INSIDE-OUT. The stored ids are the gathered indices, which ARE depth rank (argsort(hd), nearest = 0),
+    so sorting each tile's segment ASCENDING puts it nearest-first for the front-to-back compositor.
+    Insertion sort: tile lists are short, and a correct order lets the compositor's opaque early-out fire."""
+    tid = cuda.grid(1)
+    if tid >= n_tiles: return
+    start = tile_offsets[tid]; end = tile_offsets[tid + 1]
+    for a in range(start + 1, end):
+        key = tile_ids[a]; b = a - 1
+        while b >= start and tile_ids[b] > key:
+            tile_ids[b + 1] = tile_ids[b]; b -= 1
+        tile_ids[b + 1] = key
+
+
+@cuda.jit
 def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
                tile_ids, tile_offsets, canvas_r, canvas_g, canvas_b,
                w, h, tiles_x, n_tiles, bg_r, bg_g, bg_b, n_splats):
@@ -475,7 +492,7 @@ class FullGPUPipeline:
 
         # Sort on CPU, gather on GPU (saves 10 downloads + 10 uploads)
         hd = self._jd.copy_to_host()[:nv]
-        sidx = np.argsort(-hd)
+        sidx = np.argsort(hd)   # NEAREST first: front-to-back over-compositing. `-hd` (farthest first) rendered every closed surface INSIDE-OUT.
         self._pfx[:nv] = cuda.to_device(sidx.astype(np.int32))
         _gather[(nv + 255) // 256, (256,)](
             self._jx, self._jy, self._jic00, self._jic01, self._jic11,
@@ -502,6 +519,7 @@ class FullGPUPipeline:
         _tiles_write[(nv + 255) // 256, (256,)](
             self._kx, self._ky, self._krad, self._tids, self._to, self._tf,
             tx, ty, TILE_SIZE, MAX_PER_TILE, nv)
+        _sort_tiles[(nt + 255) // 256, (256,)](self._tids, self._to, nt)   # depth-order each tile (undo the atomic scramble)
 
         # GPU composite
         cr = cuda.device_array((params.height, params.width), dtype=np.float32)
@@ -581,7 +599,7 @@ class FullGPUPipeline:
             self._jcr, self._jcg, self._jcb, self._jopa, self._jrad, self._pfx, n)
 
         hd = self._jd.copy_to_host()[:nv]
-        sidx = np.argsort(-hd)
+        sidx = np.argsort(hd)   # NEAREST first: front-to-back over-compositing. `-hd` (farthest first) rendered every closed surface INSIDE-OUT.
         self._pfx[:nv] = cuda.to_device(sidx.astype(np.int32))
         _gather[(nv + 255) // 256, (256,)](
             self._jx, self._jy, self._jic00, self._jic01, self._jic11,
@@ -602,6 +620,7 @@ class FullGPUPipeline:
         _tiles_write[(nv + 255) // 256, (256,)](
             self._kx, self._ky, self._krad, self._tids, self._to, self._tf,
             tx, ty, TILE_SIZE, MAX_PER_TILE, nv)
+        _sort_tiles[(nt + 255) // 256, (256,)](self._tids, self._to, nt)   # depth-order each tile (undo the atomic scramble)
 
         cr = cuda.device_array((params.height, params.width), dtype=np.float32)
         cg = cuda.device_array((params.height, params.width), dtype=np.float32)

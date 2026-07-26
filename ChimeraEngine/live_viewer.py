@@ -28,7 +28,7 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
-_W, _H = 1440, 1080        # 2K-friendly (4:3). Calibration is scale-invariant -- grains-per-pixel is unchanged.
+_W, _H = 1152, 864         # 2K-friendly (4:3), balanced against the depth-correct per-tile sort's cost.
 _AUTO_SPIN = 0.35          # rad/sec -- the world turns on its own, so the movie PLAYS with no input (the time axis)
 
 
