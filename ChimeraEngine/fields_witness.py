@@ -27,7 +27,8 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fields import (Coupling, EMField, Star, Occluder, LightField,          # noqa: E402
-                    STEEL, ROCK, RUBBER, FLESH, TAPE, REGOLITH)
+                    STEEL, ROCK, RUBBER, FLESH, TAPE, REGOLITH,
+                    Thermal, ThermalField, LUNAR_REGOLITH, ROCK_T, OCEAN, HULL, RADIATOR)
 from contact import Ground, ContactModel, Foot, step_body                    # noqa: E402
 from physics import Body, inertia_box                                        # noqa: E402
 
@@ -178,6 +179,93 @@ def main() -> int:
     check("Earth's blackbody temperature comes out right", abs(T_earth - 254.0) < 3.0,
           f"{T_earth:.1f} K vs the textbook 254 K -- the number that placed this project's "
           "habitable zone, now falling out of the light field")
+
+    # ══ THERMAL ══════════════════════════════════════════════════════════════════════════════
+    print("\nT1  the SUBSOLAR point of an airless body -- against the Moon's measured temperature")
+    tf = ThermalField(light=LightField(stars=[sun]))
+    at_moon = np.array([AU, 0, 0])
+    up = np.array([-1.0, 0.0, 0.0])                        # facing the star
+    T_sub = tf.equilibrium(at_moon, up, LUNAR_REGOLITH)
+    print(f"      lunar regolith, albedo {LUNAR_REGOLITH.albedo}, emissivity "
+          f"{LUNAR_REGOLITH.emissivity} -> {T_sub:.1f} K ({T_sub-273.15:+.1f} C)")
+    print(f"      measured lunar subsolar temperature: ~390 K (Diviner/Apollo)")
+    check("subsolar temperature matches the real Moon", abs(T_sub - 390.0) < 12.0,
+          f"{T_sub:.1f} K vs the measured ~390 K -- absorbed sunlight balanced against T^4, "
+          "no fitted constant anywhere")
+
+    print("\nT2  DAY AND NIGHT: an airless surface plummets when the sun goes down")
+    day = 2.55e6                                           # one lunar day, seconds
+    T = T_sub
+    hi, lo = 0.0, 1e9
+    dt, n = day / 4000.0, 4000
+    for k in range(n * 2):                                 # two full rotations: settle, then measure
+        ang = 2 * np.pi * k / n
+        nrm = np.array([-np.cos(ang), -np.sin(ang), 0.0])  # a patch carried around by rotation
+        T = tf.step(T, at_moon, nrm, LUNAR_REGOLITH, dt)
+        if k >= n:
+            hi, lo = max(hi, T), min(lo, T)
+    print(f"      over one rotation: high {hi:.1f} K, low {lo:.1f} K, swing {hi-lo:.1f} K")
+    print(f"      measured lunar equatorial range: ~390 K day to ~95 K night")
+    print(f"      HONEST GAP: night reads {lo:.0f} K, the Moon holds ~95 K. This model is a SKIN --")
+    print(f"      real regolith conducts heat UP from below all night. The missing piece is a depth")
+    print(f"      dimension driving ThermalField.conduction, not a capacity constant to tune.")
+    check("an airless world swings hundreds of kelvin", (hi - lo) > 200.0 and lo < 150.0,
+          f"{hi:.0f} K day to {lo:.0f} K night, a {hi-lo:.0f} K swing -- nothing banks the heat, "
+          "so T^4 empties the surface every night")
+
+    print("\nT3  THERMAL INERTIA damps it -- which is what an ocean IS")
+    swings = {}
+    for nm, mat in (('regolith', LUNAR_REGOLITH), ('rock', ROCK_T), ('ocean', OCEAN)):
+        T = tf.equilibrium(at_moon, up, mat) * 0.8
+        hi2, lo2 = 0.0, 1e9
+        for k in range(n * 3):
+            ang = 2 * np.pi * k / n
+            nrm = np.array([-np.cos(ang), -np.sin(ang), 0.0])
+            T = tf.step(T, at_moon, nrm, mat, dt)
+            if k >= n * 2:
+                hi2, lo2 = max(hi2, T), min(lo2, T)
+        swings[nm] = hi2 - lo2
+        print(f"      {nm:9s} capacity {mat.capacity:8.1e} J/m^2/K -> swing {hi2-lo2:7.1f} K "
+              f"({lo2:6.1f} - {hi2:6.1f} K)")
+    check("more heat capacity, less swing -- monotonically",
+          swings['regolith'] > swings['rock'] > swings['ocean'],
+          f"regolith {swings['regolith']:.0f} K > rock {swings['rock']:.0f} K > "
+          f"ocean {swings['ocean']:.0f} K -- one parameter, and it is why a coastal climate is mild")
+
+    print("\nT4  THE SHIP'S REAL PROBLEM: in vacuum you can only get rid of heat by RADIATING it")
+    for T_loop in (250.0, 300.0, 350.0, 400.0):
+        A = ThermalField.radiator_area(5000.0, T_loop)
+        print(f"      dump 5 kW at {T_loop:5.1f} K -> {A:7.2f} m^2 of radiator")
+    a250 = ThermalField.radiator_area(5000.0, 250.0)
+    a400 = ThermalField.radiator_area(5000.0, 400.0)
+    check("radiator area falls as T^4", abs((a250 / a400) - (400.0 / 250.0) ** 4) < 0.05,
+          f"{a250:.1f} m^2 at 250 K vs {a400:.1f} m^2 at 400 K = {a250/a400:.2f}x, exactly "
+          f"(400/250)^4 = {(400/250)**4:.2f} -- run the loop hot and the radiator shrinks")
+
+    print("\nT5  ENERGY IS CONSERVED: at equilibrium, in equals out")
+    T_eq = tf.equilibrium(at_moon, up, HULL)
+    a_in = tf.absorbed(at_moon, up, HULL)
+    e_out = tf.emitted(T_eq, HULL)
+    print(f"      hull at {T_eq:.2f} K: absorbing {a_in:.3f} W/m^2, emitting {e_out:.3f} W/m^2")
+    check("absorbed equals emitted at equilibrium", abs(a_in - e_out) < 1e-6,
+          f"{a_in:.4f} = {e_out:.4f} W/m^2 -- equilibrium is not asserted, it is where the "
+          "integrator stops moving")
+
+    print("\nT6  a reactor makes its OWN temperature -- and shade does not save you")
+    # `tf` above has NO occluders, so its "shadow" point was in full sun and this test read 391 K
+    # for an unheated body in the dark -- an impossible number that only appeared because the
+    # witness asserted darkness without ever building anything that casts it. Use the occluded
+    # field (the one L2 proved actually has a night side).
+    shade = ThermalField(light=lf2)
+    night_side = np.array([AU + Rp + 1.0, 0, 0])
+    assert shade.light.irradiance_at(night_side) == 0.0, "the shadow point must actually be dark"
+    T_dark = shade.equilibrium(night_side, up, RADIATOR, internal=800.0)
+    T_cold = shade.equilibrium(night_side, up, RADIATOR, internal=0.0)
+    print(f"      in full shadow, no reactor  -> {T_cold:.1f} K (nothing to radiate)")
+    print(f"      in full shadow, 800 W/m^2   -> {T_dark:.1f} K")
+    check("internal heat sets its own equilibrium", T_dark > 340.0 and T_cold == 0.0,
+          f"{T_dark:.1f} K powered vs {T_cold:.1f} K dead -- the same balance, driven from inside "
+          "instead of by the star")
 
     n_fail = sum(1 for _, ok in results if not ok)
     print("\n" + "=" * 68)

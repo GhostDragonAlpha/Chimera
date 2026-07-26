@@ -231,6 +231,77 @@ class LightField:
 
 
 # ══════════════════════════════════════════════════════════════════════════════════════════════
+#  THERMAL — light that has been absorbed and not yet re-emitted
+# ══════════════════════════════════════════════════════════════════════════════════════════════
+SIGMA = 5.670374419e-8                     # Stefan-Boltzmann
+
+
+@dataclass
+class Thermal:
+    """A material's thermal character. Four numbers, and they settle every temperature question.
+
+    `capacity` is the one that surprises people: it is heat capacity PER SQUARE METRE of surface
+    (J/m^2/K), because what matters for a day/night swing is how much heat the skin can bank before
+    the sun goes down. It is why the Moon drops ~300 K at nightfall and the ocean drops almost none.
+    """
+    albedo: float = 0.3               # fraction of light reflected, never absorbed
+    emissivity: float = 0.95          # how well it radiates -- near 1 for rock, low for polished metal
+    capacity: float = 3.2e4           # J/m^2/K -- thermal inertia of the skin
+    conductivity: float = 1.0         # W/m/K -- how fast heat moves INWARD
+
+
+LUNAR_REGOLITH = Thermal(albedo=0.11, emissivity=0.95, capacity=3.2e4, conductivity=0.01)
+ROCK_T = Thermal(albedo=0.25, emissivity=0.95, capacity=2.0e6, conductivity=2.5)
+OCEAN = Thermal(albedo=0.06, emissivity=0.99, capacity=1.0e8, conductivity=0.6)
+HULL = Thermal(albedo=0.20, emissivity=0.85, capacity=4.0e4, conductivity=200.0)
+RADIATOR = Thermal(albedo=0.10, emissivity=0.92, capacity=1.0e4, conductivity=200.0)
+
+
+@dataclass
+class ThermalField:
+    """Temperature, derived from the light field rather than authored.
+
+    THE RULE, and it is the whole of spacecraft thermal engineering: in vacuum there is no
+    convection and no conduction to anywhere. A body can shed heat ONLY by radiating it. That is
+    why a spaceship's hardest problem is not staying warm -- it is getting RID of heat, and why
+    radiators are the biggest surfaces on a real spacecraft.
+    """
+    light: LightField = dfield(default_factory=LightField)
+
+    def absorbed(self, p, normal, mat: Thermal) -> float:
+        """W/m^2 taken in from the star at this point, facing this way."""
+        return self.light.irradiance_at(p) * self.light.lit_fraction(p, normal) * (1.0 - mat.albedo)
+
+    def emitted(self, T: float, mat: Thermal) -> float:
+        """W/m^2 radiated away at temperature T. The T^4 is the strongest lever in the game."""
+        return mat.emissivity * SIGMA * max(T, 0.0) ** 4
+
+    def equilibrium(self, p, normal, mat: Thermal, internal: float = 0.0) -> float:
+        """The temperature where absorbed == emitted. Where a surface ENDS UP if you wait."""
+        S = self.absorbed(p, normal, mat) + internal
+        return float((S / (mat.emissivity * SIGMA)) ** 0.25) if S > 0 else 0.0
+
+    def step(self, T: float, p, normal, mat: Thermal, dt: float, internal: float = 0.0) -> float:
+        """One tick of C dT/dt = absorbed - emitted + internal. This is the DAY/NIGHT SWING: at
+        night `absorbed` goes to zero, T^4 keeps radiating, and the surface plummets."""
+        net = self.absorbed(p, normal, mat) + internal - self.emitted(T, mat)
+        return float(T + net * dt / mat.capacity)
+
+    # --- the numbers a ship's computer actually needs ---
+    @staticmethod
+    def radiator_area(power_W: float, T: float, emissivity: float = 0.92) -> float:
+        """How much radiator to dump `power_W` at temperature T. Grows as 1/T^4 -- run the loop
+        HOT and the radiator shrinks dramatically, which is why they glow."""
+        return float(power_W / (emissivity * SIGMA * T ** 4))
+
+    @staticmethod
+    def conduction(mat: Thermal, dT: float, dx: float) -> float:
+        """Fourier's law: W/m^2 flowing down a temperature gradient. This is the planet interior
+        gradient, and it is also why a metal hull equalises and regolith does not."""
+        return float(-mat.conductivity * dT / dx)
+
+
+# ══════════════════════════════════════════════════════════════════════════════════════════════
 #  THE SENSED REGISTER — "what does a ship's computer track? what does a body sense?"
 # ══════════════════════════════════════════════════════════════════════════════════════════════
 #
@@ -253,7 +324,7 @@ SENSED = [
     ('gravity',       'field',  'accelerometer / down',    'inner ear (otolith)',    'BUILT gravity.py'),
     ('contact',       'field',  'hull strain / docking',   'touch, pressure, pain',  'BUILT contact.py+here'),
     ('light',         'field',  'star tracker / cameras',  'eyes',                   'BUILT here'),
-    ('thermal',       'field',  'hull + reactor temp',     'skin heat and cold',     'NEXT (L6 gives T)'),
+    ('thermal',       'field',  'hull + reactor temp',     'skin heat and cold',     'BUILT here'),
     ('acoustic',      'field',  'hull vibration',          'ears',                   'DESIGN (sound doc)'),
     ('atmospheric',   'field',  'pressure / composition',  'breath, ear-popping',    'PLANNED'),
     ('fluid',         'field',  'drag / dynamic pressure', 'wind and water on skin', 'PLANNED'),
