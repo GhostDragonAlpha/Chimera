@@ -52,6 +52,29 @@ class Ground:
     def angle(self) -> float:
         return float(np.arctan(self.slope))
 
+    def surface(self, p):
+        """(gap above the surface, outward normal) at a world point. The general interface --
+        a height field answers it one way, a planet another, and contact does not care which."""
+        n = self.normal(p[0], p[1])
+        return float(np.dot(p - np.array([p[0], p[1], self.height(p[0], p[1])]), n)), n
+
+
+@dataclass
+class SphereGround(Ground):
+    """A PLANET as ground. Same interface, no special cases -- which is the whole point of asking
+    for a gap and a normal instead of a height: 'down' is toward the centre, everywhere."""
+    center: np.ndarray = None
+    radius: float = 1.0
+
+    def __post_init__(self):
+        self.center = np.zeros(3) if self.center is None else np.asarray(self.center, float)
+
+    def surface(self, p):
+        d = np.asarray(p, float) - self.center
+        r = float(np.linalg.norm(d))
+        n = d / (r + 1e-15)
+        return r - self.radius, n
+
 
 @dataclass
 class ContactModel:
@@ -72,8 +95,7 @@ class ContactModel:
     def force(self, p: np.ndarray, v: np.ndarray, radius: float, ground: Ground):
         """Force on a contact sphere of `radius` centred at world point `p` moving at `v`.
         Returns (force, penetration, is_touching)."""
-        n = ground.normal(p[0], p[1])
-        gap = float(np.dot(p - np.array([p[0], p[1], ground.height(p[0], p[1])]), n))
+        gap, n = ground.surface(p)
         pen = radius - gap
         if pen <= 0.0:
             return np.zeros(3), 0.0, False
@@ -110,7 +132,7 @@ def tree_contacts(tree, feet: list[Foot], ground: Ground, model: ContactModel):
         v = tree.point_velocity(f.link, f.at)
         F, pen, touching = model.force(p, v, f.radius, ground)
         info.append({'name': f.name, 'p': p, 'pen': pen, 'touching': touching,
-                     'Fn': float(np.dot(F, ground.normal(p[0], p[1])))})
+                     'Fn': float(np.dot(F, ground.surface(p)[1]))})
         if touching:
             out.append((f.link, p, F))
     return out, info
@@ -127,7 +149,7 @@ def body_contacts(body, feet: list[Foot], ground: Ground, model: ContactModel):
         v = body.v + np.cross(R @ body.w, r)             # body-frame omega -> world
         F, pen, touching = model.force(p, v, f.radius, ground)
         info.append({'name': f.name, 'p': p, 'pen': pen, 'touching': touching,
-                     'Fn': float(np.dot(F, ground.normal(p[0], p[1])))})
+                     'Fn': float(np.dot(F, ground.surface(p)[1]))})
         if touching:
             out.append((p, F))
     return out, info

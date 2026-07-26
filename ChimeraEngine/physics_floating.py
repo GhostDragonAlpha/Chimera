@@ -37,6 +37,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from physics_articulated import Tree, Link, Muscle, _rot          # noqa: E402
 from physics import quat_to_mat, quat_mul, quat_identity          # noqa: E402
+from gravity import as_field, Field, local_frame                # noqa: E402
 
 
 class FloatingTree(Tree):
@@ -61,6 +62,18 @@ class FloatingTree(Tree):
         self.nv = 6 + self.n
 
     # ── kinematics of the base body ──────────────────────────────────────────────────────────
+    def up(self) -> np.ndarray:
+        """Which way is UP for this body -- straight away from the pull where it currently is.
+        Never stored, always asked: walk over a horizon and it rotates with you."""
+        return self.gfield.up_at(self.base_com_world())
+
+    def tilt_deg(self) -> float:
+        """How far the body's own +Z leans from the LOCAL up. On a sphere this is the only
+        meaningful 'am I upright', because a global +Z is wrong everywhere but one point."""
+        own_up = self.base_rot @ np.array([0.0, 0.0, 1.0])
+        c = float(np.clip(np.dot(own_up, self.up()), -1.0, 1.0))
+        return float(np.degrees(np.arccos(c)))
+
     def base_com_world(self) -> np.ndarray:
         return self.base_pos + self.base_rot @ self.base_com
 
@@ -91,13 +104,13 @@ class FloatingTree(Tree):
         w_b = self.w_base if w_base is None else w_base
         R, o, c, z = self.fk()
         n = self.n
-        g = self.gravity if use_gravity else np.zeros(3)
+        g_at = (lambda q: self.gfield.at(q)) if use_gravity else (lambda q: np.zeros(3))
 
         # --- the base body itself ---
         r_bc = self.base_rot @ self.base_com
         a_bc = a_base + np.cross(alpha_base, r_bc) + np.cross(w_b, np.cross(w_b, r_bc))
         Iw_b = self.base_inertia_world()
-        f_b = self.base_mass * (a_bc - g)
+        f_b = self.base_mass * (a_bc - g_at(self.base_com_world()))
         t_b = Iw_b @ alpha_base + np.cross(w_b, Iw_b @ w_b)
         F_base = f_b.copy()
         T_base = t_b + np.cross(r_bc, f_b)
@@ -124,7 +137,7 @@ class FloatingTree(Tree):
         for i in range(n - 1, -1, -1):
             L = self.links[i]
             Iw = R[i] @ L.inertia @ R[i].T
-            f = L.mass * (ac[i] - g)
+            f = L.mass * (ac[i] - g_at(c[i]))
             t = Iw @ al[i] + np.cross(w[i], Iw @ w[i])
             Fi = f.copy()
             Ti = t + np.cross(c[i] - o[i], f)
@@ -242,7 +255,8 @@ class FloatingTree(Tree):
         vbc = self.v_base + np.cross(self.w_base, self.base_rot @ self.base_com)
         K = 0.5 * self.base_mass * float(vbc @ vbc) \
             + 0.5 * float(self.w_base @ self.base_inertia_world() @ self.w_base)
-        U = -self.base_mass * float(self.gravity @ self.base_com_world())
+        bc = self.base_com_world()
+        U = -self.base_mass * float(self.gfield.at(bc) @ bc)
         for i, Lk in enumerate(self.links):
             p = Lk.parent
             wp = self.w_base if p < 0 else w[p]
@@ -253,7 +267,7 @@ class FloatingTree(Tree):
             vc = vo[i] + np.cross(w[i], c[i] - o[i])
             Iw = R[i] @ Lk.inertia @ R[i].T
             K += 0.5 * Lk.mass * float(vc @ vc) + 0.5 * float(w[i] @ Iw @ w[i])
-            U += -Lk.mass * float(self.gravity @ c[i])
+            U += -Lk.mass * float(self.gfield.at(c[i]) @ c[i])
         return K, U
 
     def point_velocity(self, link: int, p_local) -> np.ndarray:

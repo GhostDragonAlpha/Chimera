@@ -36,6 +36,7 @@ for _p in (str(_REPO), str(_REPO / "Chimera")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 from core.membranes import Membrane, Port, State, Verb          # noqa: E402
+from gravity import as_field, Field                             # noqa: E402
 
 
 def _rot(axis: np.ndarray, ang: float) -> np.ndarray:
@@ -134,7 +135,10 @@ class Tree:
         self.n = len(links)
         self.q = np.zeros(self.n)
         self.qd = np.zeros(self.n)
-        self.gravity = np.asarray(gravity, float)
+        # A FIELD, not a constant: asked per body, at that body's own position, so 'up'
+        # is wherever the pull says -- and a long structure feels a real tidal gradient.
+        self.gfield = as_field(gravity)
+        self.gravity = np.asarray(self.gfield.at(np.asarray(base_pos, float)), float)
         self.base_pos = np.asarray(base_pos, float)
         self.base_rot = np.eye(3) if base_rot is None else np.asarray(base_rot, float)
         self.muscles: list[Muscle] = []
@@ -162,7 +166,18 @@ class Tree:
 
     # ── kinematics ───────────────────────────────────────────────────────────────────────────
     def fk(self, q=None):
-        """World rotation R_i, joint anchor o_i, COM c_i, and world hinge axis z_i per link."""
+        """World rotation R_i, joint anchor o_i, COM c_i, and world hinge axis z_i per link.
+
+        CACHED on the pose. This is called ~20x per step -- mass_matrix builds one column per DOF
+        and each column is an RNEA sweep, frame_of() calls it twice per muscle, point_velocity()
+        again -- and every one of those saw the SAME q. Keying on the raw bytes of the pose is far
+        cheaper than redoing the rotations, and it is safe against callers writing q in place
+        (t.q[:] = ...), which a dirty-flag would silently miss."""
+        if q is None:
+            key = (self.q.tobytes(), self.base_pos.tobytes(), self.base_rot.tobytes())
+            hit = getattr(self, '_fk_key', None)
+            if hit is not None and hit == key:
+                return self._fk_val
         q = self.q if q is None else q
         R = [None] * self.n
         o = [None] * self.n
@@ -175,7 +190,11 @@ class Tree:
             o[i] = op + Rp @ L.anchor                       # the pivot, in the world
             R[i] = Rp @ _rot(L.axis, q[i])                  # child frame = parent, then the hinge
             c[i] = o[i] + R[i] @ L.com
-        return R, o, c, z
+        out = (R, o, c, z)
+        if q is self.q:
+            self._fk_key = (self.q.tobytes(), self.base_pos.tobytes(), self.base_rot.tobytes())
+            self._fk_val = out
+        return out
 
     def frame_of(self, link: int):
         """(R, origin) for a link, or the BASE when link < 0. Without this, an index of -1 would
@@ -291,7 +310,7 @@ class Tree:
         for i in range(n - 1, -1, -1):                      # tip -> base
             L = self.links[i]
             Iw = R[i] @ L.inertia @ R[i].T                  # inertia, rotated into the world
-            g = self.gravity if use_gravity else np.zeros(3)
+            g = self.gfield.at(c[i]) if use_gravity else np.zeros(3)
             f = L.mass * (ac[i] - g)
             t = Iw @ al[i] + np.cross(w[i], Iw @ w[i])
             Fi = f.copy()
@@ -347,7 +366,7 @@ class Tree:
             vc = vo[i] + np.cross(w[i], c[i] - o[i])
             Iw = R[i] @ L.inertia @ R[i].T
             K += 0.5 * L.mass * float(vc @ vc) + 0.5 * float(w[i] @ Iw @ w[i])
-            U += -L.mass * float(self.gravity @ c[i])
+            U += -L.mass * float(self.gfield.at(c[i]) @ c[i])
         return K, U
 
 
