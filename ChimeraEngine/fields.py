@@ -238,23 +238,139 @@ SIGMA = 5.670374419e-8                     # Stefan-Boltzmann
 
 @dataclass
 class Thermal:
-    """A material's thermal character. Four numbers, and they settle every temperature question.
+    """A material's thermal character.
 
-    `capacity` is the one that surprises people: it is heat capacity PER SQUARE METRE of surface
-    (J/m^2/K), because what matters for a day/night swing is how much heat the skin can bank before
-    the sun goes down. It is why the Moon drops ~300 K at nightfall and the ocean drops almost none.
+    `capacity` (J/m^2/K) is the SKIN model: how much heat one square metre of surface can bank
+    before the sun goes down. It is enough for a hull or a radiator, and it is what T2/T3 use.
+
+    `density` / `specific_heat` / `conductivity` are the DEPTH model: with those three a material
+    stops being a surface and becomes a COLUMN, heat diffuses down and comes back, and the night
+    side stops being wrong. See `Column` below for why that matters.
+
+    `radiative_chi` is the piece that makes regolith regolith: in a vacuum, powder conducts partly
+    by INFRARED EXCHANGE ACROSS THE PORES between grains, which scales as T^3. So lunar soil
+    conducts several times better at noon than at midnight -- k(T) = k_c * (1 + chi (T/350)^3),
+    the Diviner/Hayne form. Set it to 0 for a solid.
     """
     albedo: float = 0.3               # fraction of light reflected, never absorbed
     emissivity: float = 0.95          # how well it radiates -- near 1 for rock, low for polished metal
-    capacity: float = 3.2e4           # J/m^2/K -- thermal inertia of the skin
-    conductivity: float = 1.0         # W/m/K -- how fast heat moves INWARD
+    capacity: float = 3.2e4           # J/m^2/K -- skin model only
+    conductivity: float = 1.0         # W/m/K  -- k_c, the CONTACT conductivity at 350 K
+    density: float = 1500.0           # kg/m^3
+    specific_heat: float = 600.0      # J/kg/K
+    radiative_chi: float = 0.0        # T^3 pore-radiation term; ~2.7 for lunar regolith
+
+    def volumetric_capacity(self) -> float:
+        return self.density * self.specific_heat            # J/m^3/K
+
+    def conductivity_at(self, T):
+        """k(T). Constant for a solid; strongly temperature-dependent for a vacuum powder."""
+        if self.radiative_chi == 0.0:
+            return self.conductivity
+        return self.conductivity * (1.0 + self.radiative_chi * (np.asarray(T) / 350.0) ** 3)
+
+    def diffusivity(self, T: float = 250.0) -> float:
+        """alpha = k / (rho c), m^2/s. How fast a temperature CHANGE travels, not how much heat."""
+        return float(np.mean(self.conductivity_at(T))) / self.volumetric_capacity()
+
+    def skin_depth(self, period: float, T: float = 250.0) -> float:
+        """delta = sqrt(alpha P / pi) -- the depth where the daily swing has fallen to 1/e.
+
+        THE NUMBER A GAME WANTS. Below a few of these the temperature simply stops changing, which
+        is why you bury a habitat, why lunar cold traps hold ice, and why 'dig down' is a real
+        strategy rather than a flavour text."""
+        return float(np.sqrt(self.diffusivity(T) * period / np.pi))
+
+    def inertia(self, T: float = 250.0) -> float:
+        """I = sqrt(k rho c) -- the standard thermophysical measure, J m^-2 K^-1 s^-1/2. It is what
+        remote sensing actually retrieves, and it sorts every surface in the solar system."""
+        return float(np.sqrt(np.mean(self.conductivity_at(T)) * self.volumetric_capacity()))
 
 
-LUNAR_REGOLITH = Thermal(albedo=0.11, emissivity=0.95, capacity=3.2e4, conductivity=0.01)
-ROCK_T = Thermal(albedo=0.25, emissivity=0.95, capacity=2.0e6, conductivity=2.5)
-OCEAN = Thermal(albedo=0.06, emissivity=0.99, capacity=1.0e8, conductivity=0.6)
-HULL = Thermal(albedo=0.20, emissivity=0.85, capacity=4.0e4, conductivity=200.0)
-RADIATOR = Thermal(albedo=0.10, emissivity=0.92, capacity=1.0e4, conductivity=200.0)
+# k_c, rho, c, chi for regolith follow Hayne et al. 2017 (Diviner) to within the single-layer
+# approximation this makes -- the real Moon's density and conductivity both rise with depth.
+LUNAR_REGOLITH = Thermal(albedo=0.11, emissivity=0.95, capacity=3.2e4,
+                         conductivity=7.4e-4, density=1300.0, specific_heat=600.0,
+                         radiative_chi=2.7)
+ROCK_T = Thermal(albedo=0.25, emissivity=0.95, capacity=2.0e6,
+                 conductivity=2.5, density=2700.0, specific_heat=800.0)
+OCEAN = Thermal(albedo=0.06, emissivity=0.99, capacity=1.0e8,
+                conductivity=0.6, density=1000.0, specific_heat=4184.0)
+HULL = Thermal(albedo=0.20, emissivity=0.85, capacity=4.0e4,
+               conductivity=200.0, density=2700.0, specific_heat=900.0)
+RADIATOR = Thermal(albedo=0.10, emissivity=0.92, capacity=1.0e4,
+                   conductivity=200.0, density=2700.0, specific_heat=900.0)
+ICE = Thermal(albedo=0.60, emissivity=0.97, capacity=1.0e6,
+              conductivity=2.2, density=920.0, specific_heat=2050.0)
+
+
+@dataclass
+class Column:
+    """A stack of layers under one square metre of ground -- the DEPTH DIMENSION.
+
+    The skin model gets the day side right and the night side badly wrong, because it lets the
+    surface radiate into space with nothing underneath to resupply it. Real ground has a reservoir:
+    heat soaks DOWN through the day and comes back UP all night. That is the whole difference, and
+    it is why the Moon holds ~95 K at midnight instead of collapsing toward zero.
+
+    Layers grow geometrically -- fine at the top where the gradient is steep, coarse below where
+    nothing happens. That is not an optimisation, it is the only way to resolve a 2 mm skin and a
+    2 m reservoir in the same array.
+    """
+    mat: Thermal
+    dz: np.ndarray                      # layer thicknesses, m (top first)
+    T: np.ndarray                       # layer temperatures, K
+    geothermal: float = 0.018           # W/m^2 from below. The Moon's own, measured by the Apollo
+                                        # 15/17 heat flow experiments (~16-21 mW/m^2).
+
+    @classmethod
+    def build(cls, mat: Thermal, n: int = 24, dz0: float = 0.002, growth: float = 1.25,
+              T0: float = 250.0, geothermal: float = 0.018) -> 'Column':
+        """`T0` is the MEAN SURFACE temperature; the deep layers start on the steady-state
+        geothermal gradient rather than uniform.
+
+        That is not a nicety. Heat from below takes L^2/alpha to establish its gradient -- through
+        2.6 m of regolith that is about 117 YEARS, so a column started uniform still has its
+        initial condition sitting in the deep layers after any simulation you would actually run,
+        and Fourier's law cannot be read out of it. Real ground has had four billion years.
+        """
+        dz = dz0 * growth ** np.arange(n)
+        T = np.full(n, float(T0))
+        for i in range(1, n):
+            k_i = float(np.mean(np.atleast_1d(mat.conductivity_at(T[i - 1]))))
+            T[i] = T[i - 1] + geothermal * 0.5 * (dz[i - 1] + dz[i]) / k_i
+        return cls(mat=mat, dz=dz, T=T, geothermal=geothermal)
+
+    def depth(self) -> float:
+        return float(self.dz.sum())
+
+    def depths(self) -> np.ndarray:
+        """Depth of each layer's CENTRE, m."""
+        return np.cumsum(self.dz) - self.dz * 0.5
+
+    def max_dt(self) -> float:
+        """The explicit-diffusion stability limit, dz^2 / (2 alpha), on the THINNEST layer. Exceed
+        it and the column oscillates and blows up -- silently, and looking like weather."""
+        a = float(np.max(self.mat.conductivity_at(self.T))) / self.mat.volumetric_capacity()
+        return float(self.dz[0] ** 2 / (2.0 * a))
+
+    def step(self, dt: float, absorbed: float, internal: float = 0.0) -> float:
+        """Advance one tick. `absorbed` is W/m^2 arriving at the surface. Returns surface T."""
+        k = np.atleast_1d(self.mat.conductivity_at(self.T))
+        if k.size == 1:
+            k = np.full(self.T.shape, float(k))
+        # Conductance across each interface: harmonic mean over the two half-thicknesses. The
+        # harmonic mean is not fussiness -- an arithmetic one lets a thin conductive layer
+        # short-circuit a thick insulating one, which is exactly backwards.
+        h = 2.0 * k[:-1] * k[1:] / (k[:-1] * self.dz[1:] + k[1:] * self.dz[:-1])
+        q = h * (self.T[:-1] - self.T[1:])                  # W/m^2, positive = flowing DOWN
+        net = np.empty_like(self.T)
+        surf_out = self.mat.emissivity * SIGMA * max(self.T[0], 0.0) ** 4
+        net[0] = absorbed + internal - surf_out - q[0]
+        net[1:-1] = q[:-1] - q[1:]
+        net[-1] = q[-1] + self.geothermal                   # the deep boundary is a FLUX, not a
+        self.T = self.T + net * dt / (self.mat.volumetric_capacity() * self.dz)   # pinned value
+        return float(self.T[0])
 
 
 @dataclass

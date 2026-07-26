@@ -1,7 +1,7 @@
 // Chimera renderer v2 -- SPIKE host. Owns setup only; the frame loop is entirely GPU passes.
 // Measures each pass with timestamp-query (no host-side guessing), which is the point of the spike.
 
-const BUILD = 'v3.1-sunlit';
+const BUILD = 'v3.2-sun-controls';
 const TILE = 16, WG = 256, RADIX_PASSES = 8, UNI_STRIDE = 256;
 const MAX_PAIRS = 2_000_000;
 const MAX_NUMWG = Math.ceil(MAX_PAIRS / WG);
@@ -106,7 +106,7 @@ async function main() {
   // SUN: a world-space direction toward the star, plus an ambient floor. `sunOn=false` sends
   // ambient < 0, which the shader reads as "unlit" -- so the default is byte-identical to before
   // and lighting can be switched off to compare.
-  let sunOn = true, sunAzim = 0.9, sunElev = 0.15, ambient = 0.06;
+  let sunOn = true, sunAzim = 0.9, sunElev = 0.15, ambient = 0.06, sunSpin = false;
   const uniData = new Float32Array(44);
   function writeUniforms() {
     const ce = Math.cos(elev);
@@ -142,6 +142,9 @@ async function main() {
   let grabBuf = null, grabPending = false;
   function frame() {
     if (spin) azim += 0.004;
+    // The sun orbiting is not the camera orbiting: this walks the TERMINATOR across the surface
+    // while the body stays put, which is the only way to see day break on a fixed feature.
+    if (sunSpin) { sunAzim += 0.006; if (sunAzim > 6.283) sunAzim -= 6.283; }
     writeUniforms();
     const tex = ctx.getCurrentTexture();
     const view = tex.createView();
@@ -366,6 +369,8 @@ async function main() {
   window.__cull = (v) => { cullOn = !!v; return cullOn; };
   window.__spin = (v) => { spin = !!v; return spin; };
   window.__sun = (v) => { sunOn = !!v; return sunOn; };
+  window.__sunspin = (v) => { sunSpin = !!v; return sunSpin; };
+  window.__sunstate = () => ({ on: sunOn, spin: sunSpin, azim: sunAzim, elev: sunElev, ambient });
   window.__sunazim = (v) => { sunAzim = v; return sunAzim; };
   window.__sunelev = (v) => { sunElev = v; return sunElev; };
   window.__ambient = (v) => { ambient = v; return ambient; };

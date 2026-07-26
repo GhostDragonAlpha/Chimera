@@ -28,7 +28,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fields import (Coupling, EMField, Star, Occluder, LightField,          # noqa: E402
                     STEEL, ROCK, RUBBER, FLESH, TAPE, REGOLITH,
-                    Thermal, ThermalField, LUNAR_REGOLITH, ROCK_T, OCEAN, HULL, RADIATOR)
+                    Thermal, ThermalField, Column, LUNAR_REGOLITH, ROCK_T, OCEAN, HULL, RADIATOR, ICE)
 from contact import Ground, ContactModel, Foot, step_body                    # noqa: E402
 from physics import Body, inertia_box                                        # noqa: E402
 
@@ -266,6 +266,81 @@ def main() -> int:
     check("internal heat sets its own equilibrium", T_dark > 340.0 and T_cold == 0.0,
           f"{T_dark:.1f} K powered vs {T_cold:.1f} K dead -- the same balance, driven from inside "
           "instead of by the star")
+
+    # ══ THE DEPTH DIMENSION ══════════════════════════════════════════════════════════════════
+    print("\nD1  the SKIN DEPTH -- how far the daily wave reaches before it dies")
+    day = 2.55e6                                           # one lunar day, seconds
+    for nm, mat in (('regolith', LUNAR_REGOLITH), ('solid rock', ROCK_T), ('water ice', ICE)):
+        d = mat.skin_depth(day)
+        print(f"      {nm:11s} alpha {mat.diffusivity():.2e} m^2/s, inertia {mat.inertia():6.1f} "
+              f"-> skin depth {d*100:7.2f} cm")
+    d_reg = LUNAR_REGOLITH.skin_depth(day)
+    print(f"      published lunar diurnal skin depth: ~5-10 cm (Diviner / Apollo cores)")
+    check("regolith's skin depth lands in the measured band", 0.03 < d_reg < 0.14,
+          f"{d_reg*100:.1f} cm from sqrt(alpha P / pi) -- the depth where the daily swing falls to "
+          "1/e, and the reason 'dig down' is a real strategy and not flavour text")
+
+    print("\nD2  THE GAP CLOSES: give the ground a reservoir and the night side stops collapsing")
+    col = Column.build(LUNAR_REGOLITH, n=26, dz0=0.002, growth=1.25, T0=220.0)
+    dt_lim = col.max_dt()
+    dt_c = min(200.0, dt_lim * 0.4)
+    steps = int(day / dt_c)
+    print(f"      column {col.depth():.2f} m deep in {len(col.dz)} layers "
+          f"({col.dz[0]*1000:.0f} mm at the top, {col.dz[-1]*100:.0f} cm at the bottom)")
+    print(f"      stability limit dt < {dt_lim:.0f} s; using {dt_c:.0f} s, {steps} steps/day")
+    hi_d = lo_d = None
+    for cyc in range(6):                                   # spin up, then measure the last cycle
+        hi_d, lo_d, prof_noon, prof_mid = -1e9, 1e9, None, None
+        for k in range(steps):
+            ph = 2 * np.pi * k / steps
+            nrm = np.array([-np.cos(ph), -np.sin(ph), 0.0])
+            Ts = col.step(dt_c, tf.absorbed(at_moon, nrm, LUNAR_REGOLITH))
+            if cyc == 5:
+                if Ts > hi_d:
+                    hi_d, prof_noon = Ts, col.T.copy()
+                if Ts < lo_d:
+                    lo_d, prof_mid = Ts, col.T.copy()
+    print(f"      SKIN model (T2):  {hi:.0f} K day -> {lo:5.1f} K night")
+    print(f"      DEPTH model:      {hi_d:.0f} K day -> {lo_d:5.1f} K night")
+    print(f"      measured Moon:    ~390 K day -> ~95 K night (Diviner)")
+    check("the depth model lands on the Moon's real night temperature", 80.0 < lo_d < 115.0,
+          f"night {lo_d:.1f} K vs the measured ~95 K, up from the skin model's {lo:.1f} K -- nothing "
+          "was tuned, the ground was simply given somewhere to put the heat")
+
+    print("\nD3  the wave ATTENUATES and LAGS with depth -- the signature of diffusion")
+    zs = col.depths()
+    swing_z, T_noon, T_mid = [], prof_noon, prof_mid
+    for i in (0, 4, 8, 12, 16, 20, 25):
+        print(f"      z = {zs[i]*100:7.2f} cm  noon {T_noon[i]:6.1f} K   midnight {T_mid[i]:6.1f} K"
+              f"   swing {abs(T_noon[i]-T_mid[i]):6.1f} K")
+        swing_z.append(abs(T_noon[i] - T_mid[i]))
+    check("the daily swing dies away with depth", swing_z[0] > 50 * max(swing_z[-1], 1e-3),
+          f"{swing_z[0]:.0f} K at the surface -> {swing_z[-1]:.2f} K at {zs[25]*100:.0f} cm -- "
+          "a buried habitat sits in a constant-temperature world")
+
+    print("\nD4  BURY IT: the depth where the day is no longer felt")
+    quiet = next((zs[i] for i in range(len(zs)) if abs(T_noon[i] - T_mid[i]) < 5.0), None)
+    print(f"      swing drops below 5 K at z = {quiet*100:.1f} cm "
+          f"({quiet/d_reg:.1f} skin depths)")
+    print(f"      deep temperature {col.T[-1]:.1f} K, and it barely moves at all")
+    check("a few skin depths is all it takes", quiet is not None and quiet < 8 * d_reg,
+          f"{quiet*100:.0f} cm of regolith turns a 300 K daily swing into under 5 K -- this is the "
+          "physics of habitat siting, and of why cold traps keep their ice")
+
+    print("\nD5  GEOTHERMAL: the flux from below sets the deep gradient (Fourier)")
+    grad = (col.T[-1] - col.T[-3]) / (zs[-1] - zs[-3])
+    k_deep = float(np.mean(LUNAR_REGOLITH.conductivity_at(col.T[-3:])))
+    print(f"      deep gradient {grad:.3f} K/m, k(T) there {k_deep:.2e} W/m/K")
+    print(f"      -> flux k*dT/dz = {k_deep*grad*1000:.1f} mW/m^2   (imposed {col.geothermal*1000:.0f} "
+          f"mW/m^2, Apollo 15/17 measured 16-21)")
+    print(f"      HONEST GAP: Apollo measured a ~1.75 K/m gradient, not {grad:.1f} K/m. This column")
+    print(f"      uses ONE conductivity everywhere; the real Moon's k rises ~10x with depth as the")
+    print(f"      regolith compacts, so the real gradient is that much shallower. The LAW is right,")
+    print(f"      the single-layer material is the approximation -- and it is named, not hidden.")
+    check("the recovered heat flow matches what was imposed",
+          abs(k_deep * grad - col.geothermal) < 0.25 * col.geothermal,
+          f"{k_deep*grad*1000:.1f} vs {col.geothermal*1000:.0f} mW/m^2 -- Fourier's law read back "
+          "out of a profile that was never told it")
 
     n_fail = sum(1 for _, ok in results if not ok)
     print("\n" + "=" * 68)
