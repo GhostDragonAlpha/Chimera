@@ -397,9 +397,16 @@ def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
             if ge > 20.0: continue
             wgt = math.exp(-0.5 * ge)
             if wgt < 0.001: continue
-            c = a * wgt * trans
+            # CORRECT front-to-back "over": the splat's OWN alpha is (opacity * gaussian). Its colour is
+            # weighted by the transmittance so far, and transmittance decays by that own alpha -- NOT by
+            # the already-weighted contribution. `trans *= (1 - a*wgt*trans)` decayed T far too slowly,
+            # so ~35 splats accumulated instead of ~2 (total alpha 2.1 instead of 1.0). THAT was the
+            # ~2.5x over-accumulation every hand-calibrated _PLANET_GAIN/_SURFACE_GAIN was compensating,
+            # and the source of the dark "dancing dots" and the white blow-out at small scales.
+            al = a * wgt
+            c = al * trans
             r += cr[i]*c; g += cg[i]*c; b += cb[i]*c
-            trans *= (1.0 - c)
+            trans *= (1.0 - al)
             if trans < 0.01: break
     out[iy, ix, 0] = int(max(0.0, min(1.0, r)) * 255.0)
     out[iy, ix, 1] = int(max(0.0, min(1.0, g)) * 255.0)

@@ -60,9 +60,11 @@ NX, NY, NZ = 21, 22, 23     # OPTIONAL surface normal -> the pipeline back-face-
 # so the render lands on the intended palette. Keeping GRAIN size/alpha/DENSITY constant across scenes
 # keeps the over-accumulation factor constant, so the ONE measured gain holds for every world.
 _SURFACE_GAIN = 0.45      # invert the measured ~2x over-accumulation (translucent shells: _solid_sphere/theStar)
-_PLANET_GAIN = (0.402, 0.394, 0.391)   # aPlanet surface: FULLY OPAQUE (alpha 1.0) + clean shell (no radial jitter) +
-                          # BACK-FACE CULL. Over-accumulation ~2.5x; re-MEASURED per-channel against a uniform navy sphere
-                          # in this exact config (err ~0 on target). The opaque clean shell also killed the lattice dots.
+_PLANET_GAIN = (1.0, 1.0, 1.0)   # NO gain. The ~2.5x "over-accumulation" these constants existed to invert was never
+                          # physical -- it was a COMPOSITING BUG: `trans *= (1 - a*wgt*trans)` instead of `(1 - a*wgt)`,
+                          # which decayed transmittance far too slowly so ~35 splats accumulated instead of ~2 (total
+                          # alpha 2.1 instead of 1.0). Fixed 2026-07-26 in gpu_pipeline._composite and the v2 WGSL.
+                          # With correct front-to-back "over", an opaque surface renders its TRUE colour: gain = 1.
 _GRAIN_SIZE = 5.0         # per-grain render size (world units)
 _GRAIN_ALPHA = 0.5        # per-grain opacity
 _GRAIN_DENSITY = 0.185    # grains per unit sphere AREA (= aPlanet's 18000 / 4pi*88^2)

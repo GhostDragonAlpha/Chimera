@@ -1,0 +1,20 @@
+[
+  {
+    "term": "aPlanet",
+    "count": 41800,
+    "stride": 48,
+    "radius": 92.40000915527344,
+    "cam_distance": 253.17977802344325,
+    "opaque": 40000,
+    "bytes": 2006400
+  },
+  {
+    "term": "theSolarSystem",
+    "count": 10856,
+    "stride": 48,
+    "radius": 280.0372009277344,
+    "cam_distance": 461.41087980237313,
+    "opaque": 7256,
+    "bytes": 521088
+  }
+]

@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Chimera renderer v2 — spike</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #06070d; color: #c8d0e0;
+         font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  header { padding: 10px 14px; border-bottom: 1px solid #1d2434; }
+  h1 { font: 600 14px/1.4 inherit; margin: 0 0 6px; color: #e6ecf7; letter-spacing: .02em; }
+  #hud { font-size: 13px; }
+  #hud b { color: #fff; font-size: 15px; }
+  .ok { color: #5fd08a; } .no { color: #ff8b6b; } .d { color: #7d89a3; }
+  #wrap { padding: 12px 14px; }
+  canvas { width: 100%; max-width: 1600px; aspect-ratio: 16/9; display: block;
+           border: 1px solid #222a3c; border-radius: 10px; background: #04050b;
+           cursor: grab; touch-action: none; }
+  canvas:active { cursor: grabbing; }
+  #log { white-space: pre-wrap; color: #7d89a3; padding: 8px 14px; font-size: 12px; }
+  button { background: #182238; color: #c8d0e0; border: 1px solid #2c3850;
+           border-radius: 6px; padding: 4px 10px; font: inherit; cursor: pointer; }
+  button:hover { background: #24304a; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Chimera renderer v2 — spike · preprocess → GPU radix sort → tile raster, no host in the frame loop</h1>
+  <div id="hud">starting…</div>
+</header>
+<div id="wrap">
+  <canvas id="cv"></canvas>
+  <p><button id="spin">toggle spin</button> &nbsp;<span class="d">drag to orbit · wheel to zoom · rendering at 2560×1440</span></p>
+</div>
+<pre id="log"></pre>
+<script type="module" src="main.js"></script>
+</body>
+</html>
