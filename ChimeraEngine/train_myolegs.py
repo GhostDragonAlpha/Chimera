@@ -188,6 +188,10 @@ def main() -> int:
         surv = 100.0 * alive_b[-1].mean().item()
         print(f'  {it:4d}{rew_b.mean().item():12.4f}{h.mean().item():8.3f}{upr.mean().item():8.3f}'
               f'{surv:7.1f}{time.perf_counter()-ti:7.1f}')
+        # CHECKPOINT every 8 iters so the idle CPU can render progress WHILE the GPU keeps training
+        if not smoke and (it + 1) % 8 == 0:
+            torch.save(ac.state_dict(), HERE / 'myolegs_policy.pt')
+            np.save(HERE / 'myolegs_meta.npy', dict(OBS=OBS, HID=HID, ACT=ACT, STAND_Z=STAND_Z))
 
     print('\n  ' + '-' * 48)
     print(f'  total {time.perf_counter()-t_all:.0f}s')
