@@ -377,3 +377,63 @@ of §4.6 arriving by construction rather than by retrofit.
 **The rule that survives all of it:** one rollout is a coin toss. It cost this project a celebrated
 walker that turned out to be noise, and it will cost a celebrated get-up the same way if the
 scoring is not honest.
+
+---
+
+## 7. THE MUSCLE PATHS ARE A DOWNLOAD, NOT A DERIVATION (2026-07-26)
+
+> **The operator:** *"the muscle transmission is decided by nature so we have to find actual
+> biological data that's been recorded."*
+
+Right, and two things were settled by acting on it.
+
+### 7.1 I was WRONG that MuJoCo has no primitive for this
+MuJoCo has `<tendon><spatial>` that **wraps around geoms** — which is a pulley — and
+`<actuator><muscle>` with force-length and force-velocity built in. It derives the moment arm
+**from the path**. Measured on a toy elbow with a 30 mm wrapping cylinder:
+
+```
+angle    tendon len    moment arm MuJoCo computes
+   0     0.31085 m     30.00 mm    <- CONSTANT while the tendon hugs the pulley
+  30     0.32161 m     30.00 mm       (r = the pulley radius, exactly)
+  60     0.30591 m     30.00 mm
+  90     0.28460 m     50.60 mm    <- lifts off; bowstringing begins
+ 120     0.25452 m     62.36 mm
+```
+
+So the pulley is not an approximation of the mechanism, it **is** the mechanism, and MuJoCo already
+models it. What MuJoCo lacks is only a way to TYPE IN `r(q) = r0 + r1 cos(q - q_peak)` as a formula
+— which it does not need, because the geometry generates the curve. **The actuation seam is not a
+blocker.**
+
+### 7.2 The download: MyoSuite `myo_sim`, Apache-2.0
+`external/myo_sim` (gitignored). `leg/myolegs.xml` alone carries **80 muscles, 324 wrap objects,
+382 sites** — cadaver dissection, MRI and ultrasound already encoded as geometry.
+
+Checked against the papers this project pulled separately, which is a `dyadAnalysis`: two
+independent routes to the same measured truth.
+
+| | MyoSuite | published | verdict |
+|---|---|---|---|
+| glute max at hip 0° → 90° | 62.2 → 23.5 mm | 79 mm at 0°, decreasing | **shape agrees**, magnitude within a compartment-averaging difference |
+| plantarflexors, dorsi → plantar | 38.6 → 44.0 mm | 34.6 → 36.9 mm peak | **agrees** |
+| knee extensors | 3.2 mm | ~46 mm | **my measurement is invalid** — see below |
+
+### 7.3 The knee number is MY bug, and it is worth keeping
+The OpenSim knee is a **coupled** joint: `knee_angle_r` drives `knee_angle_r_translation1/2` and
+`knee_angle_r_rotation2/3` through equality constraints (this model has 14). Writing `qpos` and
+calling `mj_forward` does **not** enforce them, so the patellofemoral mechanism never moves and the
+quadriceps path barely changes — hence 3.2 mm instead of 46.
+
+That is the whole reason the knee's moment arm is large and flat in the first place: **the patella
+is a pulley that holds the quadriceps tendon away from the joint centre.** Miss the coupling and
+you delete the patella. Reading it correctly needs the constraint solver run, not a forward pass.
+
+Two earlier lookups in this session failed the same way and silently: `mj_name2id` returns **-1**
+for a name that does not exist, and `ten_length[-1]` is a valid index — so a wrong name reads the
+LAST tendon instead of raising. Assert `>= 0` on every id.
+
+### 7.4 What this changes
+Muscle geometry stops being authored and becomes **transferred**: place tendon sites and wrapping
+surfaces so the resulting `r(q)` reproduces the published curve, on our joints. The 6 joints still
+marked ASSUMED in `body.MOMENT_ARM` have a source now.

@@ -175,3 +175,6 @@ ChimeraEngine/output/
 
 # baked splat buffers -- regenerate with: python ChimeraEngine/bake_splats.py <term>
 web/renderer/data/*.bin
+
+# Downloaded reference corpora -- large, and not ours to redistribute
+external/
