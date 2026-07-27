@@ -117,7 +117,7 @@ def main() -> int:
     qpos = wp.to_torch(d.qpos); qvel = wp.to_torch(d.qvel); ctrl = wp.to_torch(d.ctrl)
     tb = muscle_tables(h, dev, torch)
 
-    OBS = 3 + 1 + 3 + n * 2 + 3
+    OBS = 3 + 1 + 3 + n * 2 + 3 + 3   # + tip velocity toward target (the braking signal)
     P = OBS * HID + HID + HID * ACT_DIM + ACT_DIM
     B_SWING = mujoco.mj_name2id(mjm, mujoco.mjtObj.mjOBJ_BODY, SWING)
     B_PELVIS = mujoco.mj_name2id(mjm, mujoco.mjtObj.mjOBJ_BODY, 'pelvis')
@@ -163,9 +163,13 @@ def main() -> int:
             # world-fixed point measures gravity, not control.
             tip = xpos[:, B_SWING] - xpos[:, B_PELVIS]
             err = tgt - tip
+            if k == 0:
+                prev_tip = tip.clone()
+            tipvel = (tip - prev_tip) / (DT * CONTROL_EVERY)   # THE ARRESTING SIGNAL: how fast the
+            prev_tip = tip.clone()                             # limb is moving, so it can brake
             ob = torch.nan_to_num(torch.cat([torch.zeros(W, 3, device=dev),
                             torch.full((W, 1), 9.8, device=dev),
-                            qvel[:, 3:6], q, qd, err], 1)).clamp(-50, 50)
+                            qvel[:, 3:6], q, qd, err, tipvel], 1)).clamp(-50, 50)
             a = 0.5 * (torch.tanh(torch.bmm(torch.tanh(torch.bmm(ob.unsqueeze(1), W1) + b1.unsqueeze(1)),
                                             W2) + b2.unsqueeze(1)).squeeze(1) + 1.0)
             ctrl[:] = torch.nan_to_num(muscle_torque_gpu(tb, q, qd, a, torch)).clamp(-400, 400)
@@ -193,7 +197,7 @@ def main() -> int:
     print('\n  ' + '-' * 48)
     print(f'  total {time.perf_counter()-t_all:.0f}s   best {best_ever:.3f}')
     if best_theta is not None:
-        np.save(Path(__file__).resolve().parent / 'transition_policy_gpu.npy', best_theta)
+        np.save(Path(__file__).resolve().parent / 'transition_policy_vel.npy', best_theta)
         print('  saved transition_policy_gpu.npy')
     return 0
 

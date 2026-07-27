@@ -43,8 +43,8 @@ def main() -> int:
     B = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, SWING)
     P = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, 'pelvis')
 
-    theta = np.load(HERE / 'transition_policy_gpu.npy')
-    OBS = 3 + 1 + 3 + n * 2 + 3
+    theta = np.load(HERE / 'transition_policy_vel.npy')
+    OBS = 3 + 1 + 3 + n * 2 + 3 + 3
     i = 0
     W1 = theta[i:i + OBS * HID].reshape(OBS, HID); i += OBS * HID
     b1 = theta[i:i + HID]; i += HID
@@ -71,7 +71,10 @@ def main() -> int:
         q, qd = d.qpos[7:].copy(), d.qvel[6:].copy()
         tip = d.xpos[B] - d.xpos[P]
         err = tgt - tip
-        ob = np.concatenate([np.zeros(3), [9.8], d.qvel[3:6], q, qd, err])
+        if k == 0:
+            prev_tip = tip.copy()
+        tipvel = (tip - prev_tip) / (DT * CONTROL_EVERY); prev_tip = tip.copy()
+        ob = np.concatenate([np.zeros(3), [9.8], d.qvel[3:6], q, qd, err, tipvel])
         a = 0.5 * (np.tanh(np.tanh(ob @ W1 + b1) @ W2 + b2) + 1.0)
         for j, pr in enumerate(h.pairs.values()):
             pr.drive(2.0 * a[2 * j] - 1.0, co_contract=a[2 * j + 1] * 0.5)
