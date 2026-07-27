@@ -1,0 +1,26 @@
+{
+  "demo": "sacrifice_record",
+  "loop": 8,
+  "settle_s": 4,
+  "_provenance": "Verify sacrifice recording works when dropping near Erisaid.",
+  "beats": [
+    {
+      "name": "sacrifice_at_erisaid",
+      "features": ["System_Sacrifice"],
+      "actions": [
+        {"reset_position": {"x": 300, "y": 80, "z": 130}},
+        {"wait": 0.5},
+        {"interact": true, "hold_s": 1.0},
+        {"wait": 0.5},
+        {"reset_position": {"x": 100, "y": 0, "z": 130}},
+        {"wait": 0.5},
+        {"drop": true, "hold_s": 1.0},
+        {"wait": 1.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"log_contains": "[Sacrifice] Recorded GAVE_CARGO at Erisaid"}
+      ]
+    }
+  ]
+}

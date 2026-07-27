@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "feature": "dust_vfx",
+    "parent": null,
+    "walls": [],
+    "created": "auto",
+    "n_total": 40,
+    "n_answered": 36,
+    "depth_verdict": "deep"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature in one sentence?",
+      "a": "Controls dust particle effects: footstep dust on terrain, dust accumulation on surfaces, and ambient dust density per biome type.",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system does it belong to?",
+      "a": "The ground_terrain rung — dust VFX is a visual sub-system of terrain interaction, alongside footstep_response and grain_scale.",
+      "answered": true
+    },
+    {
+      "id": 3,
+      "q": "What would break if this feature didn't exist?",
+      "a": "Footsteps would produce no visual feedback, ground surfaces would look sterile, and biomes would lack atmospheric particle density differentiation.",
+      "answered": true
+    },
+    {
+      "id": 4,
+      "q": "What existing feature does this most resemble?",
+      "a": "footstep_response (audio) — dust_vfx is the visual counterpart. Also beacon_signal_vfx for particle system patterns.",
+      "answered": true
+    },
+    {
+      "id": 5,
+      "q": "Is this a rung, a sub-rung, or a parameter?",
+      "a": "Sub-rung of ground_terrain, auto-decomposed from the parent constraint set.",
+      "answered": true
+    },
+    {
+      "id": 6,
+      "q": "What physical constraint does it encode?",
+      "a": "Dust particle density per terrain type: sand produces 50 particles/footstep, rock produces 5, ice produces 0. Ambient dust density varies by biome (desert=0.8, arctic=0.2).",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "What is the ONE measurement that proves it works?",
+      "a": "Footstep dust particle count per step matches terrain type within ±3 particles across 100 step samples on the same terrain.",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "What wall must it never violate?",
+      "a": "Must never generate more than 500 particles per frame (performance wall). Must never occlude player vision with ambient dust (visibility wall).",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "What would a degenerate winner look like?",
+      "a": "A winner with 0 particles on all terrain (feature invisible) or 10000 particles per step (unplayable particle fog).",
+      "answered": true
+    },
+    {
+      "id": 10,
+      "q": "How would we know if the constraint is too loose?",
+      "a": "If sand and rock produce identical dust particle counts, the terrain-type differentiation constraint is too loose.",
+      "answered": true
+    },
+    {
+      "id": 11,
+      "q": "At what scale does this feature operate?",
+      "a": "Per-footstep-event (every 0.5-1.5s during movement) and per-frame ambient (60fps continuous evaluation).",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "What is the right definition level for this scale?",
+      "a": "Parameter-level: 4 variables (particles_per_step_terrain_map, ambient_density_per_biome, particle_lifetime_sec, dust_accum_speed).",
+      "answered": true
+    },
+    {
+      "id": 13,
+      "q": "Could this be decomposed further? Into what?",
+      "a": "Could split footstep dust and ambient dust into separate sub-rungs, but 4 parameters cover both as a single Niagara system.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "At what resolution does the pattern emerge?",
+      "a": "Pattern emerges after 3-5 footsteps on a new terrain type — visual feedback tells the player 'you are walking on sand/rock/ice.'",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "What would 'deep enough' look like for this feature?",
+      "a": "When terrain types are visually distinguishable by dust particle behavior alone (sand puffs, rock chips, ice crystals). Player can identify terrain by particle feedback without looking at the ground.",
+      "answered": true
+    },
+    {
+      "id": 16,
+      "q": "What element catalog variables does this train?",
+      "a": "dust_particles_per_step, ambient_particle_density, particle_lifetime, dust_accumulation_rate.",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "How many relevant elements exist in the catalog?",
+      "a": "34 catalog entries tagged 'dust', 'particle', and 'vfx' — Niagara emitter templates and material parameters.",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Are there enough variables to train meaningfully?",
+      "a": "Yes — 4 parameters with 34 catalog elements provide solid constraint coverage.",
+      "answered": true
+    },
+    {
+      "id": 19,
+      "q": "What variables are MISSING from the catalog?",
+      "a": "Per-weather-system dust modifiers (wind direction/speed should affect ambient dust density).",
+      "answered": true
+    },
+    {
+      "id": 20,
+      "q": "Would training this require GPU acceleration?",
+      "a": "No — 4 variables is far below the 1000-variable GPU threshold.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Does this feature connect to the Mirror of Erised?",
+      "a": "Indirectly — dust VFX makes the world feel physically real. A sterile world with no particle feedback reduces immersion, which dims the emotional weight of the Mirror signal.",
+      "answered": true
+    },
+    {
+      "id": 22,
+      "q": "How directly does it serve the Mirror? (direct/enabling/orthogonal)",
+      "a": "Orthogonal — the Mirror works without dust particles. But haptic-visual feedback deepens immersion, which makes the Mirror's emotional signal land harder.",
+      "answered": true
+    },
+    {
+      "id": 23,
+      "q": "Would a costless life still be meaningful without this feature?",
+      "a": "Yes — the Mirror's signal is emotional, not visual. Dust VFX is polish.",
+      "answered": true
+    },
+    {
+      "id": 24,
+      "q": "Could this feature be gamed to fake a generous life?",
+      "a": "No — particle effects are purely cosmetic. No gameplay manipulation possible.",
+      "answered": true
+    },
+    {
+      "id": 25,
+      "q": "What would this feature look like if it perfectly served the Mirror?",
+      "a": "Dust particles make the world feel physical and alive. Every footstep kicks up terrain-appropriate dust. The desert biome has a warm dust haze that catches the beacon's red light.",
+      "answered": true
+    },
+    {
+      "id": 26,
+      "q": "What other features does this compose with?",
+      "a": "ground_terrain (terrain type mapping), footstep_response (event trigger), beacon_signal_vfx (light interaction with particles).",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What could break at the seam between this and its neighbors?",
+      "a": "footstep_response plays a hard-step audio on ice while dust_vfx emits zero particles on ice — audio and visual contradict each other.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Does this need a decoder step to place in the level?",
+      "a": "No — dust VFX is a Niagara system on the player character, not a level-placed actor.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "What would a failed composition look like?",
+      "a": "Dust accumulation material shows 100% coverage on all surfaces because the accumulation_speed parameter ignored the biome density input from ground_terrain.",
+      "answered": true
+    },
+    {
+      "id": 30,
+      "q": "Does this feature need a human judgment or can the system verify it?",
+      "a": "System verifies particle count per step and per-frame performance budget. Human judges whether the dust looks natural (golden-hour light scattering is a visual art choice, not a metric).",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "How many generations to converge?",
+      "a": "~50 generations at pop=32 for 4-parameter particle system.",
+      "answered": true
+    },
+    {
+      "id": 32,
+      "q": "What population size is appropriate?",
+      "a": "32 — small parameter space with discrete terrain-type mapping.",
+      "answered": true
+    },
+    {
+      "id": 33,
+      "q": "What's the risk of overfitting?",
+      "a": "Low — 4 parameters with clear per-terrain-type constraints produce stable solutions.",
+      "answered": true
+    },
+    {
+      "id": 34,
+      "q": "What's the risk of underfitting?",
+      "a": "Low — the parameter space is small and well-bounded by physical limits (min 0, max 500 particles).",
+      "answered": true
+    },
+    {
+      "id": 35,
+      "q": "Does the existing trainer support this domain type?",
+      "a": "Yes — core.trainer handles particle-count constraints with per-terrain-type mapping objectives.",
+      "answered": true
+    },
+    {
+      "id": 36,
+      "q": "Have we gone deep enough on this feature?",
+      "a": "Yes — 4 parameters for a visual polish sub-rung is adequate.",
+      "answered": true
+    },
+    {
+      "id": 37,
+      "q": "What would the NEXT level of decomposition look like?",
+      "a": "Per-terrain-type dust material: separate Niagara emitters for sand (tan particles), rock (grey chips), and ice (white crystals).",
+      "answered": true
+    },
+    {
+      "id": 38,
+      "q": "If we stopped here, would the game feel complete?",
+      "a": "Yes — dust VFX is a polish layer. The game plays the same without it but looks more alive with it.",
+      "answered": true
+    },
+    {
+      "id": 39,
+      "q": "What is the human's expected emotional response to this feature?",
+      "a": "Tactile grounding — dust particles make the world feel physically responsive. Every step confirms the ground is real. Subtle but important for immersion.",
+      "answered": true
+    },
+    {
+      "id": 40,
+      "q": "Does this feature exist because the Mirror demands it, or because it's technically interesting?",
+      "a": "Technically interesting — dust VFX is a visual polish feature. The Mirror would work without it, but the world would feel sterile.",
+      "answered": true
+    }
+  ]
+}

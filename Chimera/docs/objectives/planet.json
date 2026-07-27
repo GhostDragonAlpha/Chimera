@@ -1,0 +1,32 @@
+{
+  "_provenance": "The habitable zone as an EMERGENT climate architecture. The genome sets nebular delivery fractions and shortcut parameters; the objective verifies that the grown climate system produces oceans, atmospheres, interior gradients, and diversity — not by taste, by researched planetary-science anchors.",
+  "maximize": [
+    "has_ocean_worst",
+    "n_ocean_mean",
+    "climate_classes_worst",
+    "gradient_frac_worst",
+    "habitable_frac_worst"
+  ],
+  "minimize": [
+    "runaway_frac_mean"
+  ],
+  "constraints": [
+    {"field": "has_ocean_worst", "min": 1},
+    {"field": "climate_classes_worst", "min": 3},
+    {"field": "gradient_frac_worst", "min": 0.50},
+    {"field": "atmo_frac_mean", "min": 0.20},
+    {"field": "ocean_temp_mean", "min": 275.0, "max": 370.0},
+    {"field": "ocean_greenhouse_mean", "min": 15.0, "max": 80.0},
+    {"field": "ocean_t_center_mean", "min": 3000.0},
+    {"field": "runaway_frac_mean", "max": 0.30},
+    {"field": "habitable_frac_worst", "min": 0.05}
+  ],
+  "walls": {
+    "has_ocean_worst": "Every catalog system MUST have at least one ocean world. This is the human's bar: 'We know it works when oceans form.' Zero ocean worlds means the climate rung failed across the entire catalog.",
+    "climate_classes_worst": "The WORST system MUST span at least 3 distinct climate classes. The real solar system spans 6 (airless, frozen, ocean, hot-rock, runaway, giant); a catalog where every system is all-oceans or all-airless has no architecture — it found one number and copied it. 3 is the floor for 'diversity exists.'",
+    "gradient_frac_worst": "At least half of rocky planets must have an interior gradient above 500 K. A planet with no thermal gradient has no core — it is a dead rock, not a differentiated world. The human's third bar: 'a temperature gradient in the planet interior.'",
+    "ocean_temp_mean": "Ocean-world surface temperature MUST sit inside liquid water's window. Below 275 K the ocean freezes (it is ice, not ocean); above 370 K crosses the moist-greenhouse limit — stratospheric water photolyzes and hydrogen escapes. Venus is NOT an ocean world, and calling it one is wrong by physics, not by opinion.",
+    "ocean_greenhouse_mean": "The greenhouse effect on ocean worlds MUST be Earth-like. Below 15 K is a naked rock (like Mars today — no greenhouse to speak of); above 80 K is Venus territory. Earth's +33 K at 1 bar is the anchor; the band is wide because the catalog spans different stellar fluxes.",
+    "runaway_frac_mean": "Runaway-greenhouse planets MUST be a minority. Above 30% means the genome is cooking every atmosphere — the moist_limit is too permissive. A habitable zone dominated by steam pressure-cookers is not habitable."
+  }
+}

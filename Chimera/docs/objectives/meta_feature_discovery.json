@@ -1,0 +1,11 @@
+{
+  "_provenance": "Meta-feature discovery. The feature list emerges from the catalog, not from authoring.",
+  "scenario": "Search the element catalog's 69,749 variables. Discover which combinations satisfy the meta-constraint: completable game + Mirror holds.",
+  "constraints": [
+    {"kind": "at_least", "measure": "completable", "min": 1, "hard": true, "wall": "Game must be completable (movement + survival + interaction + narrative)"},
+    {"kind": "at_least", "measure": "mirror_viable", "min": 1, "hard": true, "wall": "Mirror must be viable (social + economy + narrative) — Mirror of Erised"},
+    {"kind": "at_least", "measure": "n_systems", "min": 3, "hard": true, "wall": "At least 3 distinct game systems"},
+    {"kind": "at_least", "measure": "n_features", "min": 5, "wall": "At least 5 features"},
+    {"kind": "at_least", "measure": "surprises", "min": 1, "wall": "At least 1 surprising feature combination"}
+  ]
+}

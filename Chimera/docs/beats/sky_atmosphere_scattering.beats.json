@@ -1,0 +1,22 @@
+{
+  "demo": "sky_atmosphere_scattering",
+  "loop": 3,
+  "settle_s": 6,
+  "_provenance": "Witness & collapse task tb-0073 (sub-11), copying the proven tb-0072 pattern. Sky_Atmosphere_Scattering (loop 3) is in the OBSERVATION QUEUE at evidence 0/2 awaiting automated collapse. Read-only inspection (pre-fetch from tb-0072 + this run): the live level's runtime actor scan during tb-0072 showed only 'SkyAtmosphere_0 label=SkyAtmosphere' — NOT a labeled 'SkyAtmosphere_Lunar'. There is NO Python/setup_sky_atmosphere.py anywhere in the repo, and Python/setup_starfield.py (the sibling) is orphaned (never invoked by Python/startup.py) — the whole Sky loop's runtime setup appears to be a hollow/orphaned-setup set, not wired into the live level. The feature's params expect an actor with label 'SkyAtmosphere_Lunar' (class /Script/Engine.SkyAtmosphere) carrying the lunar-vacuum scattering material. So this beat genuinely exercises the realization: it asserts the labeled actor Sky_Atmosphere_Scattering was built to produce actually EXISTS in the live PIE world. actor_exists 'SkyAtmosphere_Lunar' is the honest gate -- if it is missing, the atmosphere is hollow (the engine-default SkyAtmosphere dome only) and the beat MUST FAIL rather than pass by silence. Two independent live-PIE SimPlaytest sessions exercise it; a rejection sweep then indicts the feature with real provenance.",
+  "beats": [
+    {
+      "name": "sky_atmosphere_lunar_present",
+      "features": ["Sky_Atmosphere_Scattering"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 0, "z": 130}},
+        {"wait": 2.0},
+        {"screenshot": "sky_atmosphere_view"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"world_is": "chimeradefaultlevel"},
+        {"actor_exists": "SkyAtmosphere_Lunar"}
+      ]
+    }
+  ]
+}

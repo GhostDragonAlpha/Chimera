@@ -1,0 +1,105 @@
+{
+    "material_name": "MI_EarthLandscapeWPO",
+    "type": "MaterialInstanceConstant",
+    "parent_material": "LandscapeBaseMaterial",
+    "parameters": {
+        "MorphFactor": {
+            "type": "ScalarParameter",
+            "default_value": 0.0,
+            "range": [
+                0.0,
+                1.0
+            ],
+            "description": "Controls flat-to-sphere morph intensity (0 = flat, 1 = fully spherical)"
+        },
+        "PlanetCenter": {
+            "type": "VectorParameter",
+            "default_value": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "description": "World space position of the planet center"
+        },
+        "PlayerAltitude": {
+            "type": "VectorParameter",
+            "default_value": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "description": "Player altitude above surface (Z component used for morph factor)"
+        },
+        "ActualRadius": {
+            "type": "ScalarParameter",
+            "default_value": 6371000.0,
+            "description": "Planet actual radius in world units (Earth = 6371000m)"
+        }
+    },
+    "wpo_formula": {
+        "vertex_shader_math": "(PlayerAltitude.Z / Distance) * MorphFactor",
+        "inverse_square_law": "apparent_radius = ActualRadius / (Distance^2)",
+        "final_wpo": "WPO = ((PlayerAltitude.Z / Distance) * MorphFactor) + (ActualRadius / Distance^2)"
+    },
+    "node_graph": [
+        {
+            "node": "World Position",
+            "type": "Input",
+            "description": "Vertex world position"
+        },
+        {
+            "node": "Distance",
+            "inputs": [
+                "World Position",
+                "PlanetCenter"
+            ],
+            "type": "Math",
+            "description": "Distance from vertex to planet center"
+        },
+        {
+            "node": "Divide",
+            "inputs": [
+                "PlayerAltitude.Z",
+                "Distance"
+            ],
+            "type": "Math",
+            "description": "Altitude / Distance ratio"
+        },
+        {
+            "node": "Multiply",
+            "inputs": [
+                "Divide result",
+                "MorphFactor"
+            ],
+            "type": "Math",
+            "description": "Apply morph factor to altitude ratio"
+        },
+        {
+            "node": "Power",
+            "inputs": [
+                "Distance",
+                2.0
+            ],
+            "type": "Math",
+            "description": "Distance squared for inverse-square law"
+        },
+        {
+            "node": "Divide",
+            "inputs": [
+                "ActualRadius",
+                "Power result"
+            ],
+            "type": "Math",
+            "description": "apparent_radius = actual_radius / distance^2"
+        },
+        {
+            "node": "World Position Offset",
+            "inputs": [
+                "Multiply result",
+                "Divide result"
+            ],
+            "type": "Output",
+            "description": "Final WPO displacement"
+        }
+    ]
+}

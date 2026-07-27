@@ -1,0 +1,374 @@
+{
+  "name": "Tool_Durability_Maintenance",
+  "description": "Tool degradation over use, material-dependent wear rates, repair mechanics with tools and workstations, and maintenance as a gameplay loop.",
+  "created": "2026-07-19T17:35:28.716698",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does tool durability teach real material science principles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Different materials wear at different rates: stone chips quickly, iron lasts longer, steel longest. Player learns material choice affects lifespan -- a real engineering principle."
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Does tool degradation create compelling emergent gameplay moments?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A tool breaking at a critical moment creates emergent tension and memorable stories. Multi-stage degradation (pristine/worn/damaged/broken) is deeper than binary durability in competitors."
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Does tool wear feel physically grounded by material interaction?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Tools degrade based on target: scanning hard rock wears lens faster than soft soil; digging frozen ground wears shovel faster than loam. Wear reflects real physics."
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can durability be prototyped in one sprint using existing patterns?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Durability counter + wear-on-use + visual states + basic field repair can be prototyped in 3-5 days. Uses UE5 health/damage pattern."
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Is durability system data-driven and extendable?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Material wear rates, repair costs, degradation thresholds, and visual condition mappings are DataTable-driven. Designer tunes by editing data."
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Does durability work in UE5.8 without hacks?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. UHealthComponent pattern, surface material system, mesh material swapping -- all standard UE5.8. No engine modifications."
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Does durability tracking impact performance on RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No. Durability is integer arithmetic per use (negligible). Visual degradation is pre-baked material parameter swap. No runtime cost."
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Can a colorblind or hearing-impaired player perceive tool condition?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Visual degradation states use distinct mesh changes (cracks, dents, missing parts), not color alone. Text durability readout when inspecting tool."
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Does durability have distinctive sound feedback?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "v1: wear sounds per use (scratches, creaks), break sound (snap/crackle), repair sounds (hammer clink, file scrape). Achievable with synthetic audio."
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Does durability syncing work in multiplayer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "v1 is single-player. Multiplayer needs per-player tool state replication. Each player's tool durability is persisted independently."
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can community create custom durability behaviors?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Wear rate tables, repair recipes, and degradation visual sets are data-driven. Modders define unique durability curves for custom tools."
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Can durability system be localized?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Condition names, repair instructions, and descriptions use FText. Numerical values (durability %, repair cost) are locale-formatted."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does Tool_Durability_Maintenance depend on Tool_Systems parent?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Tools must exist before they can degrade. Tool_Systems provides the tool framework and slot system. Durability applies to any tool type."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does durability prove that material science can be a compelling game mechanic?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Material-dependent wear rates and repair requirements prove real science principles create engaging gameplay, not just educational overhead."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was Tool_Durability_Maintenance derived from Tool_Systems Q10 (degradation)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Tool_Systems Q10 asked 'Do tools degrade or need maintenance?' and answered yes. This sub-feature materializes that answer as a concrete durability and repair system."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does durability conflict with accessible gameplay?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No. Durability adds depth without tedium. Auto-repair at stations is available. Player chooses engagement level."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What UE5 knowledge is required for durability system?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "UHealthComponent pattern, surface material system, mesh component state management. Low-medium difficulty. 3-5 days for core loop."
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does this need sub-features?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not at this level. Future sub-features: Tool_Condition_Visuals, Tool_Repair_Recipes, Workstation_Repair_System."
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are siblings missing at this level?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No. Scanner (discovery), Durability (lifecycle), Crafting (creation) form the complete tool system."
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is Tool_Systems complete enough for this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Tool_Systems confirmed tool degradation, maintenance, and material interactions at DESIGNED status."
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should Tool_Durability_Maintenance be built before or after siblings?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build second, after Scanner_Tool_Implementation. Scanner gives a concrete tool to test durability on."
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "What does durability block?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Blocks crafting system (crafting produces tools that need durability). Does not block scanner."
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does durability system serve the educational RPG goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Durability teaches material science, entropy, and preventative maintenance. Every broken and repaired tool is a lesson in real materials behavior."
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What is sacrificed by building durability now?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Durability adds complexity to every tool interaction. Risk mitigated by: auto-repair stations, clear visual feedback, and educational framing."
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows durability systems improve games?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Zelda: Breath of the Wild's weapon durability proved breakable tools create emergent gameplay. Minecraft's tool durability is a core engagement loop."
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does durability chain reach a human learning something real?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Player learns: wear rates depend on material hardness vs. target, preventative maintenance is more efficient than reactive repair."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How does tool degradation create recurring demand for repair materials, forming a secondary maintenance economy that affects long-term tool total cost of ownership?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Durability shapes the tool market. A stone pick lasts 10 hours (free to craft but replacement every 2 sessions). An iron pick lasts 50 hours (50 credits, replacement every 10 sessions). Steel lasts 200 hours (300 credits, every 40 sessions). Total cost of ownership favors steel at 4 credits/hour vs. stone at 5. Players who repair at 80% wear spend 60% less on replacement than those who use tools to destruction."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does tool wear and maintenance tell the story of equipment with a history \u2014 scratches on the scanner from a fall, patched hull plates, a favorite tool repaired so many times it has become unique?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "A worn tool tells a story of use: the cracked screen is from that crash, the dented casing is from that creature, the replaced handle is from that long trek \u2014 every repair is a scar with a memory."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does the player receive clear, non-intrusive warnings before a tool breaks, and is repair accessible enough that maintenance feels like planning rather than punishment?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Tool durability shows as a segmented bar (5 segments). At 1 segment remaining: subtle pulsing red icon. Breaking: screen-edge crack effect + sound. Repair requires same material as tool + a workbench within 50m. Repair cost = 30% of craft cost."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does each tool's current durability, quality modifiers, and repair history need to persist?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Each tool item stores: current durability (float 0-100), max durability (float, affected by material quality), repair count (integer, each repair slightly reduces max durability), and quality modifiers. Written on tool use or repair. Frequent writes during gameplay."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "Does tool wear model real material fatigue (stress cycles, work hardening, crack propagation) or is it a linear degradation curve?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Linear degradation per use with a quality multiplier. No material fatigue simulation. Higher-quality tools degrade slower (lower linear rate) and can be repaired more times. The educational connection is explained textually rather than simulated."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

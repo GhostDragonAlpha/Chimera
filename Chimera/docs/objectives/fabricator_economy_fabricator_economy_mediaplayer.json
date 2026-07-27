@@ -1,0 +1,20 @@
+{
+  "_provenance": "Auto-decomposed objective for fabricator_economy_fabricator_economy_mediaplayer",
+  "scenario": "Train fabricator_economy_fabricator_economy_mediaplayer sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_mediaplayer_property",
+      "min": 1,
+      "hard": true,
+      "wall": "MediaPlayer property must be trainable"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_satisfies_fabricator",
+      "min": 1,
+      "hard": true,
+      "wall": "Satisfies fabricator_economy constraints in composition"
+    }
+  ]
+}

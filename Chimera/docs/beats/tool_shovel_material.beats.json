@@ -1,0 +1,20 @@
+{
+  "feature": "Tool_Shovel_Material",
+  "slug": "Tool_Shovel_Material",
+  "description": "Witness beats for Tool_Shovel_Material - requires Unreal Editor",
+  "beats": [
+    {
+      "id": "beat_01_tb-0149",
+      "name": "Tool_Shovel_Material witness verification",
+      "expected": "Tool_Shovel_Material functions correctly in-editor",
+      "steps": [
+        "Spawn Tool_Shovel_Material actor/component in level",
+        "Verify visual appearance and behavior",
+        "Run sleepwalker beats if available",
+        "Record simtest node ID"
+      ]
+    }
+  ],
+  "requires_editor": true,
+  "created_at": "2026-07-19T02:30:00+00:00"
+}

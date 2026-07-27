@@ -1,0 +1,170 @@
+[
+ {
+  "id": "atom_308984a7ecdc",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnGestureCommitted\\b"
+  },
+  "desc": "UPROPERTY OnGestureCommitted (GestureWheel.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GestureWheel.h"
+ },
+ {
+  "id": "atom_3353bede1ff1",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bO2ProgressBar\\b"
+  },
+  "desc": "UPROPERTY O2ProgressBar (WID_O2HUD.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_33939be10881",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAlertText\\b"
+  },
+  "desc": "UPROPERTY AlertText (WID_O2HUD.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_3f085e3620f2",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bGesture\\b"
+  },
+  "desc": "UPROPERTY Gesture (GestureWheel.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GestureWheel.h"
+ },
+ {
+  "id": "atom_3f3c0370cd08",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBatteryPercentText\\b"
+  },
+  "desc": "UPROPERTY BatteryPercentText (WID_O2HUD.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_42a3bd3a5c2d",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnWheelVisibilityChanged\\b"
+  },
+  "desc": "UPROPERTY OnWheelVisibilityChanged (GestureWheel.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GestureWheel.h"
+ },
+ {
+  "id": "atom_4fe6afad2a4f",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bO2PercentText\\b"
+  },
+  "desc": "UPROPERTY O2PercentText (WID_O2HUD.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_7f4d6b230f18",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustClogProgressBar\\b"
+  },
+  "desc": "UPROPERTY DustClogProgressBar (WID_O2HUD.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_9cc255eb529c",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSuitComponent\\b"
+  },
+  "desc": "UPROPERTY SuitComponent (WID_O2HUD.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_a226fc77c0f3",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustClogPercentText\\b"
+  },
+  "desc": "UPROPERTY DustClogPercentText (WID_O2HUD.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ },
+ {
+  "id": "atom_f08977b637d0",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bFrom\\b"
+  },
+  "desc": "UPROPERTY From (GestureWheel.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:GestureWheel.h"
+ },
+ {
+  "id": "atom_fceaf9ac799e",
+  "feature": "UI_Suit_HUD",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBatteryProgressBar\\b"
+  },
+  "desc": "UPROPERTY BatteryProgressBar (WID_O2HUD.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:WID_O2HUD.h"
+ }
+]

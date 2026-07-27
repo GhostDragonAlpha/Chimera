@@ -1,0 +1,55 @@
+game "QuantumTravelTestGame" {
+    engine_version = "5.8";
+    target_platforms = ["PC"];
+}
+
+technical {
+    network_model = "client_server";
+    performance { target_fps=60, LOD_strategy="standard" };
+    module_dependencies = ["PCG", "Niagara", "LevelSequence", "NetCore"];
+}
+
+quantum_travel_systems {
+    quantum_anchor "aegis_station_prime" {
+        location_coordinates = [45.2, -12.8, 103.5];
+        anchor_strength = 100;
+        max_concurrent_jumps = 50;
+        recharge_rate_per_second = 2;
+        supports_ship_classes = ["MoleHauler", "Carrack", "CutlassRed"];
+    }
+
+    quantum_anchor "crocus_outpost" {
+        location_coordinates = [78.1, 34.5, -67.2];
+        anchor_strength = 75;
+        max_concurrent_jumps = 20;
+        recharge_rate_per_second = 1.5;
+        supports_ship_classes = ["Carrack", "CutlassRed"];
+    }
+
+    quantum_jump_path "aegis_to_crocus" {
+        origin_anchor = "aegis_station_prime";
+        destination_anchor = "crocus_outpost";
+        distance_light_years = 12.5;
+        travel_time_seconds = 30;
+        energy_cost_megajoules = 5000;
+        requires_favorable_nimbus_conditions = false;
+    }
+
+    quantum_jump_path "aegis_to_phobos" {
+        origin_anchor = "aegis_station_prime";
+        destination_anchor = null;
+        distance_light_years = 25.8;
+        travel_time_seconds = 60;
+        energy_cost_megajoules = 8000;
+        requires_favorable_nimbus_conditions = true;
+        nimbus_condition_threshold = 0.8;
+    }
+
+    quantum_weather_system {
+        phenomenon = "quantum_nimbus_storm";
+        affects_jump_safety = true;
+        safety_reduction_percentage = 40;
+        duration_variation_minutes = [15, 120];
+        affected_radius_light_years = 5.0;
+    }
+}

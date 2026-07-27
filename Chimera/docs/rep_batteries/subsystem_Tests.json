@@ -1,0 +1,78 @@
+[
+ {
+  "id": "atom_17cd8dcb8b42",
+  "feature": "subsystem/Tests",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UTestHarnessSpecComponent\\b|UTestHarnessSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UTestHarnessSpecComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:TestHarnessSpecComponent.h"
+ },
+ {
+  "id": "atom_97d11f324239",
+  "feature": "subsystem/Tests",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UTestHarnessSpecComponent\\b|UTestHarnessSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UTestHarnessSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:TestHarnessSpecComponent.h"
+ },
+ {
+  "id": "atom_674ee5421b21",
+  "feature": "subsystem/Tests",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbAbilityActivated\\b"
+  },
+  "desc": "UPROPERTY bAbilityActivated (TestHarnessSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TestHarnessSpecComponent.h"
+ },
+ {
+  "id": "atom_74c1d9766925",
+  "feature": "subsystem/Tests",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bActivation\\b"
+  },
+  "desc": "UPROPERTY Activation (TestHarnessSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TestHarnessSpecComponent.h"
+ },
+ {
+  "id": "atom_eb232715a79a",
+  "feature": "subsystem/Tests",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bIterations\\b"
+  },
+  "desc": "UPROPERTY Iterations (TestHarnessSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:TestHarnessSpecComponent.h"
+ }
+]

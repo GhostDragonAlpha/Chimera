@@ -1,0 +1,14 @@
+{
+  "_provenance": "Rung 6 — shelter geometry. The form of the habitat emerges from constraints.",
+  "name": "shelter_form",
+  "mirror_wall": "Shelter must communicate safety through form alone. A box with a trigger fails the Mirror.",
+  "input": "rung 5: trigger radius defines the minimum interior volume",
+  "walls": [
+    "Must have an identifiable entrance from any approach angle",
+    "Must enclose a volume the player can stand inside (>= 300x300x200 units)",
+    "Must be visibly distinct from natural terrain at 100 units",
+    "Must be buildable from available materials (no floating geometry)"
+  ],
+  "element_query": {"categories": ["Geometry", "Mesh", "Structure", "Architecture"], "classes": ["StaticMeshComponent", "DynamicMeshComponent", "HierarchicalInstancedStaticMeshComponent"]},
+  "output": {"next_rung": "npc_social", "format": "parametric geometry genome (height, radius, curvature, entrance width)"}
+}

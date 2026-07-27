@@ -1,0 +1,20 @@
+{
+  "_provenance": "Auto-decomposed objective for shelter_form_shelter_form_staticmesh",
+  "scenario": "Train shelter_form_shelter_form_staticmesh sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_staticmesh_property_",
+      "min": 1,
+      "hard": true,
+      "wall": "StaticMesh property must be trainable"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_satisfies_shelter_fo",
+      "min": 1,
+      "hard": true,
+      "wall": "Satisfies shelter_form constraints in composition"
+    }
+  ]
+}

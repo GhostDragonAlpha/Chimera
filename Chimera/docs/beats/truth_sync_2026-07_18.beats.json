@@ -1,0 +1,19 @@
+{
+  "feature": "Truth_Sync_2026-07_18",
+  "slug": "Truth_Sync_2026-07_18",
+  "description": "Witness beats for Truth_Sync_2026-07_18 - code audit verification",
+  "beats": [
+    {
+      "id": "beat_01_truth_sync",
+      "name": "Truth_Sync_2026-07_18 audit verification",
+      "expected": "CODE_AUDIT_2026-07-18.md exists and findings are recorded",
+      "steps": [
+        "Verify docs/CODE_AUDIT_2026-07-18.md exists",
+        "Confirm 5 audit categories documented",
+        "Record simtest node ID"
+      ]
+    }
+  ],
+  "requires_editor": false,
+  "created_at": "2026-07-20T17:10:00+00:00"
+}

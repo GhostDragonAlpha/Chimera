@@ -1,0 +1,19 @@
+{
+  "demo": "sacrifice_diag",
+  "loop": 8,
+  "settle_s": 4,
+  "_provenance": "Verify SacrificeLogComponent exists on player at runtime.",
+  "beats": [
+    {
+      "name": "sacrifice_log_present",
+      "features": ["System_Sacrifice"],
+      "actions": [
+        {"wait": 2.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"log_contains": "ChimeraMovementComponent: runtime-attached USacrificeLogComponent"}
+      ]
+    }
+  ]
+}

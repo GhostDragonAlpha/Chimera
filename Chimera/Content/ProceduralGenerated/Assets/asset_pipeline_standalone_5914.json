@@ -1,0 +1,195 @@
+{
+  "import_dir": "E:\\Assets",
+  "generated_materials": [
+    {
+      "material_name": "MI_SurfaceConcrete",
+      "type": "PhysicalMaterial",
+      "parameters": {
+        "base_color": {
+          "r": 0.6,
+          "g": 0.55,
+          "b": 0.5
+        },
+        "roughness": 0.5671913455793289,
+        "metallic": 0.29993676838382216
+      },
+      "shader_graph": [
+        {
+          "name": "BaseColor",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Roughness",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Metallic",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "MaterialOutput",
+          "type": "Output"
+        }
+      ]
+    },
+    {
+      "material_name": "MI_SurfaceMetal",
+      "type": "PhysicalMaterial",
+      "parameters": {
+        "base_color": {
+          "r": 0.3,
+          "g": 0.3,
+          "b": 0.35
+        },
+        "roughness": 0.7008090981943251,
+        "metallic": 0.35528094931647886
+      },
+      "shader_graph": [
+        {
+          "name": "BaseColor",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Roughness",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Metallic",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "MaterialOutput",
+          "type": "Output"
+        }
+      ]
+    },
+    {
+      "material_name": "MI_SurfaceWood",
+      "type": "PhysicalMaterial",
+      "parameters": {
+        "base_color": {
+          "r": 0.45,
+          "g": 0.3,
+          "b": 0.15
+        },
+        "roughness": 0.46876088862609905,
+        "metallic": 0.485497337260013
+      },
+      "shader_graph": [
+        {
+          "name": "BaseColor",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Roughness",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "Metallic",
+          "type": "ScalarParameter"
+        },
+        {
+          "name": "MaterialOutput",
+          "type": "Output"
+        }
+      ]
+    }
+  ],
+  "generated_textures": [
+    {
+      "texture_name": "T_NormalConcrete",
+      "dimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "format": "NormalMap",
+      "channels": 3,
+      "mip_levels": 8,
+      "generation_seed": 44118
+    },
+    {
+      "texture_name": "T_AlbedoWood",
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "format": "Color",
+      "channels": 4,
+      "mip_levels": 16,
+      "generation_seed": 65621
+    }
+  ],
+  "blueprint_instances": [
+    {
+      "blueprint_id": "BP_BP_Wall_288",
+      "template_source": "BP_Wall",
+      "parent_class": "/Game/Blueprints/BP_BaseStaticMesh",
+      "components": [
+        "StaticMeshComponent"
+      ],
+      "properties": {
+        "cast_shadow": true,
+        "receive_shadow": true
+      },
+      "export_path": "/Game/Blueprints/BP_BP_Wall_288"
+    },
+    {
+      "blueprint_id": "BP_BP_Floor_488",
+      "template_source": "BP_Floor",
+      "parent_class": "/Game/Blueprints/BP_BaseStaticMesh",
+      "components": [
+        "StaticMeshComponent"
+      ],
+      "properties": {
+        "cast_shadow": false,
+        "receive_shadow": true
+      },
+      "export_path": "/Game/Blueprints/BP_BP_Floor_488"
+    },
+    {
+      "blueprint_id": "BP_BP_PropGeneric_914",
+      "template_source": "BP_PropGeneric",
+      "parent_class": "/Game/Blueprints/BP_BaseActor",
+      "components": [
+        "SceneComponent",
+        "StaticMeshComponent"
+      ],
+      "properties": {
+        "auto_destroy": false,
+        "b_collidable": true
+      },
+      "export_path": "/Game/Blueprints/BP_BP_PropGeneric_914"
+    }
+  ],
+  "dependency_analysis": {
+    "dependency_graph": {
+      "edges": [],
+      "total_edges": 0
+    },
+    "blueprint_dependencies": [
+      {
+        "blueprint": "BP_BP_Wall_288",
+        "parent_class": "/Game/Blueprints/BP_BaseStaticMesh",
+        "component_count": 1
+      },
+      {
+        "blueprint": "BP_BP_Floor_488",
+        "parent_class": "/Game/Blueprints/BP_BaseStaticMesh",
+        "component_count": 1
+      },
+      {
+        "blueprint": "BP_BP_PropGeneric_914",
+        "parent_class": "/Game/Blueprints/BP_BaseActor",
+        "component_count": 2
+      }
+    ],
+    "orphaned_assets": [],
+    "stats": {
+      "total_assets": 0,
+      "total_materials": 3,
+      "total_blueprints": 3,
+      "dependency_edges": 0,
+      "orphan_count": 0
+    }
+  }
+}

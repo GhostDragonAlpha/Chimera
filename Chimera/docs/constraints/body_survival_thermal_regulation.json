@@ -1,0 +1,23 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of body_survival. Cluster: thermal_regulation",
+  "name": "body_survival_thermal_regulation",
+  "parent_rung": "body_survival",
+  "walls": [
+    "Night temperature drops below suit tolerance",
+    "Suit heater drains battery",
+    "Shelter restores temperature"
+  ],
+  "element_query": {
+    "categories": [
+      "Temperature",
+      "Thermal",
+      "Heat",
+      "Cold"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}

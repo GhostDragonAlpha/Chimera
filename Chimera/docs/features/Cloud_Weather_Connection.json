@@ -1,0 +1,743 @@
+{
+  "name": "Cloud_Weather_Connection",
+  "description": "Sub-feature of Demo_Volumetric_Clouds: Connect cloud visual states to the weather system \u2014 cloud type drives precipitation, wind speed, and storm severity, making cloud reading a core survival skill.",
+  "created": "2026-07-19T17:28:54.399019",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the player learn that dark, low clouds mean imminent rain?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the player learn that towering cumulonimbus means seek shelter now?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does the player learn that clearing cirrus after rain means improving weather?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does the player learn to predict weather 5-10 minutes ahead from cloud trends?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What screenshot of a player sheltering from a storm they predicted makes a Steam shopper wishlist?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How does cloud-driven weather compare to 'storm comes at random' in other survival games?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could the cloud\u2192rain\u2192shelter gameplay loop be distilled into a 15-second Steam trailer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What mechanic would a journalist call innovative: weather you can read and predict?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Does rain intensity visually match cloud darkness and altitude?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does wind speed visually match cloud movement speed across the sky?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Can the player see approaching rain curtains under cumulonimbus clouds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does the weather transition (clear\u2192cloudy\u2192rain\u2192clearing) feel gradual, not binary?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can cloud-weather connection ship as pure Blueprint logic (no C++) on top of existing VolumetricCloud?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What is the minimum UE5 setup: weather state machine + cloud material parameter driver?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does cloud-driven weather run at 30fps during rain+storm particle effects?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can cloud-weather intensity be scaled down for low-end hardware without breaking the educational loop?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Are MCP tools reliable enough to set weather state (clear/rain/storm) and verify cloud changes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the worker bridge handle updating cloud materials + weather actor in one transaction?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can Sleepwalker verify rain starts when cloud type transitions to nimbostratus?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What graph query finds all cloud-type and weather-state nodes to validate they are linked?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 21,
+      "category": "platform",
+      "question": "Does UE5.8's weather system (if any) support cloud-state-driven precipitation without hacks?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 22,
+      "category": "platform",
+      "question": "Can UE5.8 Niagara particle systems for rain be toggled by cloud type via Blueprint?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 23,
+      "category": "platform",
+      "question": "Does UE5.8's audio engine support wind intensity driven by cloud state?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 24,
+      "category": "platform",
+      "question": "Are there UE5.8 bugs where volumetric clouds and weather particles desync?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 25,
+      "category": "performance",
+      "question": "Does transitioning from clear to storm cause a hitch from spawning rain particles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 26,
+      "category": "performance",
+      "question": "Can rain+wind+thunder effects run at 30+ fps alongside volumetric clouds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 27,
+      "category": "performance",
+      "question": "What is the performance delta between clear-clouds and storm-clouds states?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 28,
+      "category": "performance",
+      "question": "Does cloud-driven weather add measurable CPU overhead from the weather state machine tick?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 29,
+      "category": "accessibility",
+      "question": "Can a colorblind player distinguish 'about to rain' clouds (dark) from 'clearing' clouds (light)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Text-based output is screen-reader friendly. Color-coded states need pattern fallback."
+    },
+    {
+      "id": 30,
+      "category": "accessibility",
+      "question": "Does weather state have UI indicators (not just visual cloud cues) for hearing-impaired players?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Text-based output is screen-reader friendly. Color-coded states need pattern fallback."
+    },
+    {
+      "id": 31,
+      "category": "accessibility",
+      "question": "Can a player with motion sickness disable cloud movement while keeping weather prediction?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Text-based output is screen-reader friendly. Color-coded states need pattern fallback."
+    },
+    {
+      "id": 32,
+      "category": "accessibility",
+      "question": "Is the connection between cloud state and weather outcome explained in text, not just observed?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Text-based output is screen-reader friendly. Color-coded states need pattern fallback."
+    },
+    {
+      "id": 33,
+      "category": "audio",
+      "question": "Does wind audio intensity ramp as clouds thicken and darken?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio design deferred to v2. v1 uses text-only feedback."
+    },
+    {
+      "id": 34,
+      "category": "audio",
+      "question": "Does rain audio fade in naturally as nimbostratus clouds cover the sky?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio design deferred to v2. v1 uses text-only feedback."
+    },
+    {
+      "id": 35,
+      "category": "audio",
+      "question": "Does thunder audio have a variable delay matching lightning-to-observer distance?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio design deferred to v2. v1 uses text-only feedback."
+    },
+    {
+      "id": 36,
+      "category": "audio",
+      "question": "Does audio mix duck appropriately during heavy storm vs light rain transitions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio design deferred to v2. v1 uses text-only feedback."
+    },
+    {
+      "id": 37,
+      "category": "multiplayer",
+      "question": "Does weather state replicate in multiplayer \u2014 all players experience the same storm?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Single-player only. Multiplayer is future scope."
+    },
+    {
+      "id": 38,
+      "category": "multiplayer",
+      "question": "Can one player warn another 'storm coming' based on cloud reading?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Single-player only. Multiplayer is future scope."
+    },
+    {
+      "id": 39,
+      "category": "multiplayer",
+      "question": "Does weather-driven rain affect all players equally regardless of position?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Single-player only. Multiplayer is future scope."
+    },
+    {
+      "id": 40,
+      "category": "multiplayer",
+      "question": "Does cloud-weather sync add network overhead in a 4-player co-op session?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Single-player only. Multiplayer is future scope."
+    },
+    {
+      "id": 41,
+      "category": "modding",
+      "question": "Can modders add new weather states (e.g., hail, fog) and link them to cloud types?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Data-driven design allows community extension via JSON and Blueprints."
+    },
+    {
+      "id": 42,
+      "category": "modding",
+      "question": "Is the cloud-type-to-weather mapping stored in a config file modders can edit?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Data-driven design allows community extension via JSON and Blueprints."
+    },
+    {
+      "id": 43,
+      "category": "modding",
+      "question": "Can community-created rain/storm particle effects be swapped in without recompiling?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Data-driven design allows community extension via JSON and Blueprints."
+    },
+    {
+      "id": 44,
+      "category": "modding",
+      "question": "Does the weather state machine support custom modded transition rules?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Data-driven design allows community extension via JSON and Blueprints."
+    },
+    {
+      "id": 45,
+      "category": "localization",
+      "question": "Are all weather state names, warnings, and educational texts in a single loc table?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "All text strings are extractable to JSON for translation."
+    },
+    {
+      "id": 46,
+      "category": "localization",
+      "question": "Does the weather warning widget support text expansion for verbose languages?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "All text strings are extractable to JSON for translation."
+    },
+    {
+      "id": 47,
+      "category": "localization",
+      "question": "Can weather state audio (thunder, rain) be replaced per locale?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "All text strings are extractable to JSON for translation."
+    },
+    {
+      "id": 48,
+      "category": "localization",
+      "question": "Do weather visual cues work without any text dependency?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "All text strings are extractable to JSON for translation."
+    },
+    {
+      "id": 49,
+      "category": "depends_on",
+      "question": "Does this depend on the VolumetricCloud actor being in the level?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 50,
+      "category": "depends_on",
+      "question": "Does this depend on a weather system (rain, wind, thunder) existing in the project?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 51,
+      "category": "depends_on",
+      "question": "Does this depend on Cloud_Types_Educational providing named cloud states?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 52,
+      "category": "proves",
+      "question": "Does this prove that cloud states can be the primary weather driver in a survival game?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 53,
+      "category": "proves",
+      "question": "Does this prove that cloud-reading-as-mechanic reduces reliance on random weather timers?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 54,
+      "category": "derived_from",
+      "question": "Was this derived from Demo_Volumetric_Clouds Q10 (wind matching cloud movement) and Q2 (weather prediction)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 55,
+      "category": "conflicts",
+      "question": "Does cloud-driven weather conflict with a pre-existing random-weather timer system?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 56,
+      "category": "requires",
+      "question": "What weather system knowledge (Niagara rain, wind direction, storm blueprint) is needed?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 57,
+      "category": "requires",
+      "question": "What material-parameter-binding knowledge is needed to drive cloud appearance from weather state?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 58,
+      "category": "vision",
+      "question": "Does cloud-driven weather prediction make the game more famous as a thinking-player's survival game?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 59,
+      "category": "tradeoff",
+      "question": "What other visual features (sun shafts, god rays, aurora) are sacrificed by dedicating GPU time to cloud/weather coupling?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building this defers other features. Worth the tradeoff for educational value."
+    },
+    {
+      "id": 60,
+      "category": "evidence",
+      "question": "What evidence exists that predictable weather systems increase player engagement vs random weather?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 61,
+      "category": "terminal",
+      "question": "Does this chain reach a human player who now makes life-or-death decisions based on sky reading, or does it satisfy a design document?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 62,
+      "category": "depth",
+      "question": "Is Cloud_Weather_Connection detailed enough, or does it need sub-features for each weather state (rain, storm, clearing)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 63,
+      "category": "breadth",
+      "question": "Are sibling features missing \u2014 e.g., 'Wind Direction Indicator', 'Barometric Pressure HUD'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 64,
+      "category": "parent",
+      "question": "Is Demo_Volumetric_Clouds designed enough to support this weather-system zoom?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 65,
+      "category": "priority",
+      "question": "Should Cloud_Weather_Connection be built after Cloud_Types_Educational, or can they be parallel?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 66,
+      "category": "dependency",
+      "question": "Does Cloud_Weather_Connection block other features like 'Canyon Flash Flood Event'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 67,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Weather state machine can be driven by cloud material parameters. No native UE5 ...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Weather state machine can be driven by cloud material parameters. No native UE5 weather system needed for v1."
+    },
+    {
+      "id": 68,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 69,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 70,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 71,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 72,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 73,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 74,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 75,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 76,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 77,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 78,
+      "category": "economy",
+      "question": "How does the cloud-to-weather pipeline (cloud type driving precipitation, wind, storm severity) create a risk-assessment economy where accurate prediction determines safe windows for extraction, travel, and construction?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The cloud-weather connection is the backbone of environmental risk economics. A player who reads altocumulus castellanus knows to wrap up extraction by noon before thunderstorms develop. Forecast ability controls expedition duration, whether to bring storm-proof shelters (extra weight = cost), and whether to deploy delicate scanning equipment. Poor forecast = lost equipment = direct economic penalty."
+    },
+    {
+      "id": 79,
+      "category": "narrative",
+      "question": "Does the causal chain from cloud formation to rain to fog to clearing tell a continuous weather story that the player experiences as a journey through a living atmosphere?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The cloud-weather connection creates a narrative arc: the player watches a system develop from high cirrus to thickening deck to rain to clearing \u2014 every weather cycle tells the story of an atmospheric front passing through."
+    },
+    {
+      "id": 80,
+      "category": "UX",
+      "question": "Does the player intuitively understand that cloud changes predict incoming weather, enabling anticipatory gameplay decisions like seeking shelter before a storm?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Cloud-to-weather transitions have visual lead time: darkening bases signal rain 30s before precipitation, anvil spreading signals storm 60s ahead. The player learns to read clouds as warnings."
+    },
+    {
+      "id": 81,
+      "category": "save_load",
+      "question": "Do weather state parameters (current weather pattern, storm progression, cloud-to-weather mapping) need to persist and resume on load?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Weather state (current pattern, intensity, remaining duration) must save. Multiple float/integer values representing the weather system state machine. Written on manual save or weather transition."
+    },
+    {
+      "id": 82,
+      "category": "physics",
+      "question": "Does the weather system model real atmospheric physics (pressure gradients, humidity, adiabatic cooling, condensation) or is it a state machine with visual states?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "State machine with visual states, informed by real meteorology. The system cycles through weather patterns (clear, building clouds, storm, clearing) in a physically plausible order, but does not simulate air pressure or humidity numerically."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

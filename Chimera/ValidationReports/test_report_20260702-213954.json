@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-07-02T21:39:54.675106Z",
+  "project": "UnknownProject",
+  "summary": {
+    "total_tests": 3,
+    "passed": 0,
+    "failed": 3,
+    "skipped": 0,
+    "pass_rate": 0.0
+  },
+  "tests": [
+    {
+      "name": "BuyTitaniumReducesCreditsAndAddsToCargo",
+      "type": "unit",
+      "dsl_block": "tests.BuyTitaniumReducesCreditsAndAddsToCargo",
+      "status": "FAILED",
+      "duration_ms": 0,
+      "suggestion": "Test execution did not produce explicit result for BuyTitaniumReducesCreditsAndAddsToCargo. Check UE automation logs in Saved/Logs directory."
+    },
+    {
+      "name": "QuantumTravelConsumesFuel",
+      "type": "integration",
+      "dsl_block": "tests.QuantumTravelConsumesFuel",
+      "status": "FAILED",
+      "duration_ms": 0,
+      "suggestion": "Test execution did not produce explicit result for QuantumTravelConsumesFuel. Check UE automation logs in Saved/Logs directory."
+    },
+    {
+      "name": "MissionDeliveryRewardOnCompletion",
+      "type": "integration",
+      "dsl_block": "tests.MissionDeliveryRewardOnCompletion",
+      "status": "FAILED",
+      "duration_ms": 0,
+      "suggestion": "Test execution did not produce explicit result for MissionDeliveryRewardOnCompletion. Check UE automation logs in Saved/Logs directory."
+    }
+  ],
+  "regression_check": {
+    "previous_pass_rate": 1.0,
+    "current_pass_rate": 0.0,
+    "new_failures": [
+      "BuyTitaniumReducesCreditsAndAddsToCargo",
+      "QuantumTravelConsumesFuel",
+      "MissionDeliveryRewardOnCompletion"
+    ],
+    "resolved_failures": []
+  }
+}

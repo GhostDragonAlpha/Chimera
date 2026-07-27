@@ -1,0 +1,374 @@
+{
+  "name": "Scanner_UI_Display",
+  "description": "How scan results visually appear to the player: HUD overlay, world-space text, icons, scan progress indicator, targeting reticle, and knowledge-log integration.",
+  "created": "2026-07-19T17:30:05.013518",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the UI present science as a natural readout (diegetic) rather than a textbook popup?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Can a 10-second GIF of the UI (crosshair on rock -> science panel) sell the game on Steam?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Does the scan result feel like an in-world instrument readout, not a menu screen?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can the UI be built with existing UMG TextBlock + Image widgets without custom rendering?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Does the UI depend on any new widget framework or engine plugin?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Does the HUD approach work in UE5.8 without hacks (no Slate custom panels needed)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Does the UI add measurable frame time (UMG text updates are near-free; what about scan-line overlay effects)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Is the scan result readable for low-vision players (font size, contrast, screen-reader compat)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Text-based output is screen-reader friendly. Color-coded states need pattern fallback."
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Does the UI have audio accompaniment (scanning ping crescendo, result chime) synced to text reveal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio design deferred to v2. v1 uses text-only feedback."
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "In co-op, can each player see their own scan results without cluttering the shared HUD?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Single-player only. Multiplayer is future scope."
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can modders customize the scan result panel layout, fonts, and colors through data files?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Data-driven design allows community extension via JSON and Blueprints."
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Is the UI layout flexible enough to accommodate text expansion (e.g., German noun-compounds)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "All text strings are extractable to JSON for translation."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does this depend on the main Educational_Scanner Scan() output being wired to HUD?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does this prove that diegetic tool UIs are viable in UE5.8 without engine modifications?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was this derived from Educational_Scanner Q10 (no visual/audio feedback yet) as the gap it fills?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does the scanner panel conflict with the Verb_Look description overlay (both claim the same HUD region)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What Blueprint/UMG skills are required to build the scan result panel and targeting reticle?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does this need sub-sub-features (panel layout, reticle design, knowledge-log integration) or is 26 Qs enough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are sibling UI features missing (e.g., Scanner_Scan_Progress, Scanner_History_Log)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is the parent Educational_Scanner designed enough to finalize UI questions (Scan() API stable)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should the UI panel be built before or after Scanner_Audio_Feedback (visual is primary channel)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does the UI block other scanner sub-features, or do other sub-features block it?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does a beautiful, readable scan panel directly serve 'most famous educational RPG on Steam'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What development time is sacrificed to polish UI animations vs shipping a simpler text panel?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building this defers other features. Worth the tradeoff for educational value."
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows that diegetic HUD (Dead Space, Metroid Prime) drives more engagement than menu-based info?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does the UI chain reach PLAYER LEARNING (the terminal) or is it just cosmetic decoration?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How does scan-result presentation affect the perceived and actual value of scan data as a tradeable commodity, with premium UI features increasing data valuation?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "UI quality is a value signal in the information market. A result with mineral icons, grade percentages, and estimated volume (professional UI) is 'verified survey-grade data' commanding a higher price than a text-only dump (basic UI). The UI tier certifies data reliability: buyers pay more for machine-verified data than raw telemetry needing interpretation."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does the scanner's UI tell a visual story \u2014 data readouts that look like real scientific instruments, holographic projections that reveal hidden layers, and annotations that feel like a researcher's field notes?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The scanner UI tells a story through its visual language: clean scientific readouts say 'real instrument,' spectral graphs say 'real data,' hand-annotated overlays say 'someone was here before you, studying the same thing.'"
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does the scan result UI clearly distinguish between different scan types (geology, meteorology, astronomy, biology) at a glance using color, iconography, and layout -- without requiring the player to read text to identify the category?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Each category uses a unique accent color (geology=amber, meteorology=cyan, astronomy=purple, biology=green) and icon. Result card layout is consistent but category header fills the top band. Category is recognizable from peripheral vision."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the scanner UI layout customization (element positions, visible panels, transparency, scale) need to persist?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. UI layout preferences (element positions, visible panels, scale, opacity) should persist. Written when player customizes the HUD layout."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "What physical principles apply to a scanner UI display system?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "No physics relevance. UI display is 2D screen-space rendering with no physics simulation."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

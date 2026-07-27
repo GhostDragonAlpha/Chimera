@@ -1,0 +1,42 @@
+[
+ {
+  "id": "atom_74fb37bdbed5",
+  "feature": "subsystem/Characters",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/subsystem__Characters/transcript.json"
+  },
+  "desc": "'subsystem/Characters' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
+ },
+ {
+  "id": "atom_0e95bd77f49a",
+  "feature": "subsystem/Characters",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRepresentationRoot\\b"
+  },
+  "desc": "UPROPERTY RepresentationRoot (ADotCharacter.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ADotCharacter.h"
+ },
+ {
+  "id": "atom_9d2790366746",
+  "feature": "subsystem/Characters",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCrowdRoot\\b"
+  },
+  "desc": "UPROPERTY CrowdRoot (ADotCharacter.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ADotCharacter.h"
+ }
+]

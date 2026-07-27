@@ -1,0 +1,16 @@
+[
+ {
+  "id": "atom_f7c449dd9ed4",
+  "feature": "Sprint_Input/state",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "SprintMultiplier|bSprinting"
+  },
+  "desc": "part 'state' of Sprint_Input: movement state: verb flag changes the simulation",
+  "provenance": "decomposition:dc_b1af6b6e2f33"
+ }
+]

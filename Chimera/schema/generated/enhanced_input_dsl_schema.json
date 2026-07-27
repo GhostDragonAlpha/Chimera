@@ -1,0 +1,2120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "DSL Schema - Enhanced Input",
+  "description": "Auto-generated DSL schema for Enhanced Input from UE5 API extraction.",
+  "generated_at": "2026-07-01T23:50:58.291628",
+  "properties": {
+    "enums": {
+      "type": "object",
+      "description": "UE Enumerations (20 types)",
+      "properties": {
+        "ControllerHand": {
+          "type": "string",
+          "enum": [
+            "Left",
+            "Right",
+            "AnyHand",
+            "Pad",
+            "ExternalCamera",
+            "Gun",
+            "HMD",
+            "Chest",
+            "LeftShoulder",
+            "RightShoulder",
+            "LeftElbow",
+            "RightElbow",
+            "Waist",
+            "LeftKnee",
+            "RightKnee",
+            "LeftFoot",
+            "RightFoot",
+            "Special",
+            "ControllerHand_Count UMETA"
+          ],
+          "description": "UE Enum: EControllerHand"
+        },
+        "DeadZoneType": {
+          "type": "string",
+          "enum": [
+            "Axial",
+            "Radial UMETA",
+            "UnscaledRadial"
+          ],
+          "description": "UE Enum: EDeadZoneType"
+        },
+        "FOVScalingType": {
+          "type": "string",
+          "enum": [
+            "Standard",
+            "UE4_BackCompat"
+          ],
+          "description": "UE Enum: EFOVScalingType"
+        },
+        "InputActionAccumulationBehavior": {
+          "type": "string",
+          "enum": [
+            "TakeHighestAbsoluteValue",
+            "Cumulative"
+          ],
+          "description": "UE Enum: EInputActionAccumulationBehavior"
+        },
+        "InputActionValueType": {
+          "type": "string",
+          "enum": [
+            "Boolean\t\t\t\tUMETA",
+            "Axis1D\t\t\t\tUMETA",
+            "Axis2D\t\t\t\tUMETA",
+            "Axis3D\t\t\t\tUMETA"
+          ],
+          "description": "UE Enum: EInputActionValueType"
+        },
+        "InputAxisSwizzle": {
+          "type": "string",
+          "enum": [
+            "YXZ",
+            "ZYX",
+            "XZY",
+            "YZX",
+            "ZXY"
+          ],
+          "description": "UE Enum: EInputAxisSwizzle"
+        },
+        "InputMappingRebuildType": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Rebuild",
+            "RebuildWithFlush"
+          ],
+          "description": "UE Enum: EInputMappingRebuildType"
+        },
+        "MappingContextInputModeFilterOptions": {
+          "type": "string",
+          "enum": [
+            "UseProjectDefaultQuery",
+            "UseCustomQuery",
+            "DoNotFilter"
+          ],
+          "description": "UE Enum: EMappingContextInputModeFilterOptions"
+        },
+        "MappingContextRegistrationTrackingMode": {
+          "type": "string",
+          "enum": [
+            "Untracked",
+            "CountRegistrations"
+          ],
+          "description": "UE Enum: EMappingContextRegistrationTrackingMode"
+        },
+        "MappingQueryIssue": {
+          "type": "string",
+          "enum": [
+            "NoIssue",
+            "ReservedByAction",
+            "HidesExistingMapping",
+            "HiddenByExistingMapping",
+            "CollisionWithMappingInSameContext",
+            "ForcesTypePromotion",
+            "ForcesTypeDemotion"
+          ],
+          "description": "UE Enum: EMappingQueryIssue (Bitflags)"
+        },
+        "MappingQueryResult": {
+          "type": "string",
+          "enum": [
+            "Error_EnhancedInputNotEnabled",
+            "Error_InputContextNotInActiveContexts",
+            "Error_InvalidAction",
+            "NotMappable",
+            "MappingAvailable"
+          ],
+          "description": "UE Enum: EMappingQueryResult"
+        },
+        "NormalizeInputSmoothingType": {
+          "type": "string",
+          "enum": [
+            "None UMETA",
+            "Lerp",
+            "Interp_To",
+            "Interp_Constant_To",
+            "Interp_Circular_In",
+            "Interp_Circular_Out",
+            "Interp_Circular_In_Out",
+            "Interp_Ease_In",
+            "Interp_Ease_Out",
+            "Interp_Ease_In_Out",
+            "Interp_Expo_In",
+            "Interp_Expo_Out",
+            "Interp_Expo_In_Out",
+            "Interp_Sin_In",
+            "Interp_Sin_Out",
+            "Interp_Sin_In_Out"
+          ],
+          "description": "UE Enum: ENormalizeInputSmoothingType"
+        },
+        "PlayerMappableKeySettingBehaviors": {
+          "type": "string",
+          "enum": [
+            "InheritSettingsFromAction",
+            "OverrideSettings",
+            "IgnoreSettings"
+          ],
+          "description": "UE Enum: EPlayerMappableKeySettingBehaviors"
+        },
+        "PlayerMappableKeySlot": {
+          "type": "string",
+          "enum": [
+            "First",
+            "Second",
+            "Third",
+            "Fourth",
+            "Fifth",
+            "Sixth",
+            "Seventh",
+            "Unspecified",
+            "Max"
+          ],
+          "description": "UE Enum: EPlayerMappableKeySlot"
+        },
+        "TriggerEvent": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Triggered",
+            "Started",
+            "Ongoing",
+            "Canceled",
+            "Completed"
+          ],
+          "description": "UE Enum: ETriggerEvent (Bitflags)"
+        },
+        "TriggerEventsSupported": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Instant",
+            "Uninterruptible",
+            "Ongoing",
+            "All"
+          ],
+          "description": "UE Enum: ETriggerEventsSupported"
+        },
+        "TriggerState": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Ongoing",
+            "Triggered"
+          ],
+          "description": "UE Enum: ETriggerState"
+        },
+        "TriggerType": {
+          "type": "string",
+          "enum": [
+            "Explicit",
+            "Implicit",
+            "Blocker"
+          ],
+          "description": "UE Enum: ETriggerType"
+        },
+        "Type": {
+          "type": "string",
+          "enum": [
+            "Began",
+            "Moved",
+            "Stationary",
+            "ForceChanged",
+            "FirstMove",
+            "Ended",
+            "NumTypes"
+          ],
+          "description": "UE Enum: Type"
+        }
+      },
+      "additionalProperties": false
+    },
+    "structs": {
+      "type": "object",
+      "description": "UE Structs (20 types, 16 with properties)",
+      "properties": {
+        "AppliedInputContextData": {
+          "type": "object",
+          "description": "UE Struct: FAppliedInputContextData",
+          "properties": {
+            "priority": {
+              "type": "integer"
+            },
+            "registrationCount": {
+              "type": "integer"
+            }
+          }
+        },
+        "BlueprintEnhancedInputActionBinding": {
+          "type": "object",
+          "description": "UE Struct: FBlueprintEnhancedInputActionBinding",
+          "properties": {
+            "inputAction": {
+              "type": "string"
+            },
+            "triggerEvent": {
+              "$ref": "#/properties/TriggerEvent"
+            },
+            "functionNameToBind": {
+              "type": "string"
+            }
+          }
+        },
+        "BlueprintInputDebugKeyDelegateBinding": {
+          "type": "object",
+          "description": "UE Struct: FBlueprintInputDebugKeyDelegateBinding",
+          "properties": {
+            "inputChord": {
+              "type": "string",
+              "description": "Ref<InputChord>"
+            },
+            "inputKeyEvent": {
+              "type": "string"
+            },
+            "functionNameToBind": {
+              "type": "string"
+            },
+            "executeWhenPaused": {
+              "type": "boolean"
+            }
+          }
+        },
+        "DefaultContextSetting": {
+          "type": "object",
+          "description": "UE Struct: FDefaultContextSetting",
+          "properties": {
+            "inputMappingContext": {
+              "type": "string",
+              "description": "UPROPERTY(Config, EditAnywhere) | Reference to const UInputMappingContext"
+            },
+            "priority": {
+              "type": "integer",
+              "description": "UPROPERTY(Config, EditAnywhere)"
+            },
+            "addImmediately": {
+              "type": "boolean",
+              "description": "UPROPERTY(Config, EditAnywhere)"
+            },
+            "registerWithUserSettings": {
+              "type": "boolean",
+              "description": "UPROPERTY(Config, EditAnywhere)"
+            }
+          }
+        },
+        "EnhancedActionKeyMapping": {
+          "type": "object",
+          "description": "UE Struct: FEnhancedActionKeyMapping",
+          "properties": {
+            "action": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "key": {
+              "$ref": "#/properties/Key",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "settingBehavior": {
+              "$ref": "#/properties/PlayerMappableKeySettingBehaviors",
+              "description": "UPROPERTY(EditAnywhere)"
+            },
+            "playerMappableKeySettings": {
+              "type": "string",
+              "description": "UPROPERTY(EditAnywhere) | Ref<PlayerMappableKeySettings>"
+            }
+          }
+        },
+        "InjectedInputArray": {
+          "type": "object",
+          "description": "UE Struct: FInjectedInputArray",
+          "properties": {
+            "injected": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/InjectedInput"
+              },
+              "description": "UPROPERTY(Transient)"
+            }
+          }
+        },
+        "InputActionInstance": {
+          "type": "object",
+          "description": "UE Struct: FInputActionInstance",
+          "properties": {
+            "sourceAction": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly)"
+            },
+            "triggerEvent": {
+              "$ref": "#/properties/TriggerEvent",
+              "description": "UPROPERTY(BlueprintReadOnly, Transient)"
+            },
+            "lastTriggeredWorldTime": {
+              "type": "number",
+              "description": "UPROPERTY(BlueprintReadOnly, Transient)"
+            },
+            "elapsedProcessedTime": {
+              "type": "number",
+              "description": "UPROPERTY(BlueprintReadOnly)"
+            },
+            "elapsedTriggeredTime": {
+              "type": "number",
+              "description": "UPROPERTY(BlueprintReadOnly)"
+            }
+          }
+        },
+        "InputMappingContextMappingData": {
+          "type": "object",
+          "description": "UE Struct: FInputMappingContextMappingData",
+          "properties": {
+            "mappings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/EnhancedActionKeyMapping"
+              },
+              "description": "UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            }
+          }
+        },
+        "Key": {
+          "type": "object",
+          "description": "UE Struct: FKey",
+          "properties": {
+            "keyName": {
+              "type": "string",
+              "description": "UPROPERTY(EditAnywhere)"
+            }
+          }
+        },
+        "KeyMappingRow": {
+          "type": "object",
+          "description": "UE Struct: FKeyMappingRow",
+          "properties": {
+            "mappings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/PlayerKeyMapping"
+              },
+              "description": "UPROPERTY(BlueprintReadOnly, VisibleAnywhere)"
+            }
+          }
+        },
+        "MapPlayerKeyArgs": {
+          "type": "object",
+          "description": "UE Struct: FMapPlayerKeyArgs",
+          "properties": {
+            "mappingName": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "slot": {
+              "$ref": "#/properties/PlayerMappableKeySlot",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "newKey": {
+              "$ref": "#/properties/Key",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "hardwareDeviceId": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "profileId": {
+              "type": "string",
+              "description": "Ref<GameplayTag>"
+            },
+            "profileIdString": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            }
+          }
+        },
+        "MappingQueryIssue": {
+          "type": "object",
+          "description": "UE Struct: FMappingQueryIssue",
+          "properties": {
+            "issue": {
+              "$ref": "#/properties/MappingQueryIssue",
+              "description": "UPROPERTY(BlueprintReadOnly)"
+            },
+            "blockingContext": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly)"
+            },
+            "blockingAction": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly)"
+            }
+          }
+        },
+        "PlayerKeyMapping": {
+          "type": "object",
+          "description": "UE Struct: FPlayerKeyMapping",
+          "properties": {
+            "mappingName": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly, VisibleAnywhere)"
+            },
+            "displayName": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly, Transient, VisibleAnywhere)"
+            },
+            "displayCategory": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly, Transient, VisibleAnywhere)"
+            },
+            "slot": {
+              "$ref": "#/properties/PlayerMappableKeySlot",
+              "description": "UPROPERTY(BlueprintReadOnly, VisibleAnywhere)"
+            },
+            "defaultKey": {
+              "$ref": "#/properties/Key",
+              "description": "UPROPERTY(BlueprintReadOnly, Transient, VisibleAnywhere)"
+            },
+            "currentKey": {
+              "$ref": "#/properties/Key",
+              "description": "UPROPERTY(BlueprintReadOnly, VisibleAnywhere)"
+            },
+            "hardwareDeviceId": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly, VisibleAnywhere) | Ref<HardwareDeviceIdentifier>"
+            },
+            "associatedInputAction": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly, Transient, VisibleAnywhere)"
+            },
+            "associatedInputActionSoft": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly, Transient, VisibleAnywhere) | Reference to const UInputAction"
+            }
+          }
+        },
+        "PlayerMappableKeyProfileCreationArgs": {
+          "type": "object",
+          "description": "UE Struct: FPlayerMappableKeyProfileCreationArgs",
+          "properties": {
+            "profileType": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere) | TSubclassOf<UEnhancedPlayerMappableKeyProfile>"
+            },
+            "profileIdentifier": {
+              "type": "string",
+              "description": "Ref<GameplayTag>"
+            },
+            "profileStringIdentifier": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "userId": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere) | Ref<PlatformUserId>"
+            },
+            "displayName": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            }
+          }
+        },
+        "PlayerMappableKeyQueryOptions": {
+          "type": "object",
+          "description": "UE Struct: FPlayerMappableKeyQueryOptions",
+          "properties": {
+            "mappingName": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "keyToMatch": {
+              "$ref": "#/properties/Key",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "slotToMatch": {
+              "$ref": "#/properties/PlayerMappableKeySlot",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "requiredDeviceType": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere) | Ref<HardwareDevicePrimaryType>"
+            },
+            "requiredDeviceFlags": {
+              "type": "integer",
+              "description": "UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            }
+          }
+        },
+        "TouchId": {
+          "type": "object",
+          "description": "UE Struct: FTouchId",
+          "properties": {
+            "deviceId": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly) | Ref<InputDeviceId>"
+            },
+            "touchIndex": {
+              "type": "string",
+              "description": "UPROPERTY(BlueprintReadOnly)"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "classes": {
+      "type": "object",
+      "description": "UE Classes (48 types, 39 with properties/methods)",
+      "properties": {
+        "EnhancedInputActionDelegateBinding": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputActionDelegateBinding",
+          "properties": {
+            "inputActionDelegateBindings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/BlueprintEnhancedInputActionBinding"
+              }
+            }
+          },
+          "required": [
+            "inputActionDelegateBindings"
+          ]
+        },
+        "EnhancedInputActionValueBinding": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputActionValueBinding",
+          "properties": {
+            "inputActionValueBindings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/BlueprintEnhancedInputActionBinding"
+              }
+            }
+          },
+          "required": [
+            "inputActionValueBindings"
+          ]
+        },
+        "EnhancedInputComponent": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputComponent",
+          "properties": {},
+          "methods": [
+            {
+              "name": "GetBoundActionValue",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "Action",
+                  "type": "UInputAction*"
+                }
+              ]
+            }
+          ]
+        },
+        "EnhancedInputDeveloperSettings": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputDeveloperSettings - \"Enhanced Input\"",
+          "properties": {
+            "defaultMappingContexts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/DefaultContextSetting"
+              },
+              "description": "Category=Enhanced Input | UPROPERTY(EditAnywhere)"
+            },
+            "defaultWorldSubsystemMappingContexts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/DefaultContextSetting"
+              },
+              "description": "Category=Enhanced Input|World Subsystem | UPROPERTY(EditAnywhere)"
+            },
+            "platformSettings": {
+              "type": "string",
+              "description": "Category=Enhanced Input | UPROPERTY(EditAnywhere)"
+            },
+            "userSettingsClass": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(EditAnywhere) | Soft reference to UEnhancedInputUserSettings"
+            },
+            "defaultPlayerMappableKeyProfileClass": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(EditAnywhere) | Soft reference to UEnhancedPlayerMappableKeyProfile"
+            },
+            "inputSettingsSaveSlotName": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(EditAnywhere)"
+            },
+            "defaultWorldInputClass": {
+              "type": "string",
+              "description": "Category=Enhanced Input|World Subsystem | UPROPERTY(EditAnywhere) | Soft reference to UEnhancedPlayerInput"
+            },
+            "defaultMappingContextInputModeQuery": {
+              "type": "string",
+              "description": "Category=Enhanced Input|Input Modes | UPROPERTY(EditAnywhere) | Ref<GameplayTagQuery>"
+            },
+            "defaultInputMode": {
+              "type": "string",
+              "description": "Category=Enhanced Input|Input Modes | UPROPERTY(EditAnywhere) | Ref<GameplayTagContainer>"
+            }
+          },
+          "required": [
+            "defaultMappingContexts",
+            "defaultWorldSubsystemMappingContexts",
+            "platformSettings",
+            "userSettingsClass",
+            "defaultPlayerMappableKeyProfileClass",
+            "inputSettingsSaveSlotName",
+            "defaultWorldInputClass",
+            "defaultMappingContextInputModeQuery",
+            "defaultInputMode"
+          ]
+        },
+        "EnhancedInputEditorProjectSettings": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputEditorProjectSettings - \"Enhanced Input (Editor Only)\"",
+          "properties": {
+            "defaultEditorInputClass": {
+              "type": "string",
+              "description": "Category=Default | UPROPERTY(EditAnywhere) | Soft reference to UEnhancedPlayerInput"
+            },
+            "defaultMappingContexts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/DefaultContextSetting"
+              },
+              "description": "Category=Default | UPROPERTY(EditAnywhere)"
+            }
+          },
+          "required": [
+            "defaultEditorInputClass",
+            "defaultMappingContexts"
+          ]
+        },
+        "EnhancedInputEditorSettings": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputEditorSettings - \"Enhanced Input Editor Settings\"",
+          "properties": {
+            "visibleEventPinsByDefault": {
+              "type": "integer",
+              "description": "Category=Blueprints | UPROPERTY(EditAnywhere)"
+            }
+          },
+          "required": [
+            "visibleEventPinsByDefault"
+          ]
+        },
+        "EnhancedInputEditorSubsystem": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputEditorSubsystem",
+          "properties": {
+            "playerInput": {
+              "type": "string",
+              "description": "Ref<EnhancedPlayerInput>"
+            }
+          },
+          "required": [
+            "playerInput"
+          ],
+          "methods": [
+            {
+              "name": "PushInputComponent",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "InInputComponent",
+                  "type": "UInputComponent*"
+                }
+              ]
+            },
+            {
+              "name": "PopInputComponent",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "InInputComponent",
+                  "type": "UInputComponent*"
+                }
+              ]
+            },
+            {
+              "name": "StartConsumingInput",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "StopConsumingInput",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "IsConsumingInput",
+              "specifiers": [
+                "BlueprintCallable",
+                "BlueprintPure"
+              ]
+            }
+          ]
+        },
+        "EnhancedInputLibrary": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputLibrary",
+          "properties": {},
+          "methods": [
+            {
+              "name": "RequestRebuildControlMappingsUsingContext",
+              "specifiers": [
+                "BlueprintCallable",
+                "BlueprintCosmetic"
+              ],
+              "params": [
+                {
+                  "name": "Context",
+                  "type": "UInputMappingContext*"
+                },
+                {
+                  "name": "bForceImmediately",
+                  "type": "bool"
+                }
+              ]
+            },
+            {
+              "name": "BreakInputActionValue",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "InActionValue",
+                  "type": "FInputActionValue"
+                },
+                {
+                  "name": "X",
+                  "type": "double&"
+                },
+                {
+                  "name": "Y",
+                  "type": "double&"
+                },
+                {
+                  "name": "Z",
+                  "type": "double&"
+                },
+                {
+                  "name": "Type",
+                  "type": "EInputActionValueType&"
+                }
+              ]
+            },
+            {
+              "name": "MakeInputActionValueOfType",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "X",
+                  "type": "double"
+                },
+                {
+                  "name": "Y",
+                  "type": "double"
+                },
+                {
+                  "name": "Z",
+                  "type": "double"
+                },
+                {
+                  "name": "ValueType",
+                  "type": "EInputActionValueType"
+                }
+              ]
+            },
+            {
+              "name": "GetMappingName",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "ActionKeyMapping",
+                  "type": "FEnhancedActionKeyMapping&"
+                }
+              ]
+            },
+            {
+              "name": "IsActionKeyMappingPlayerMappable",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "ActionKeyMapping",
+                  "type": "FEnhancedActionKeyMapping&"
+                }
+              ]
+            },
+            {
+              "name": "GetBoundActionValue",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "Actor",
+                  "type": "AActor*"
+                },
+                {
+                  "name": "Action",
+                  "type": "UInputAction*"
+                }
+              ]
+            },
+            {
+              "name": "Conv_InputActionValueToBool",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "InValue",
+                  "type": "FInputActionValue"
+                }
+              ]
+            },
+            {
+              "name": "Conv_InputActionValueToAxis1D",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "InValue",
+                  "type": "FInputActionValue"
+                }
+              ]
+            },
+            {
+              "name": "Conv_InputActionValueToAxis2D",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "InValue",
+                  "type": "FInputActionValue"
+                }
+              ]
+            },
+            {
+              "name": "Conv_InputActionValueToAxis3D",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "ActionValue",
+                  "type": "FInputActionValue"
+                }
+              ]
+            },
+            {
+              "name": "Conv_InputActionValueToString",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "ActionValue",
+                  "type": "FInputActionValue"
+                }
+              ],
+              "display_name": "To String (InputActionValue)"
+            },
+            {
+              "name": "Conv_TriggerEventValueToString",
+              "specifiers": [
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "TriggerEvent",
+                  "type": "ETriggerEvent"
+                }
+              ],
+              "display_name": "To String (ETriggerEvent)"
+            },
+            {
+              "name": "FlushPlayerInput",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "PlayerController",
+                  "type": "APlayerController*"
+                }
+              ]
+            }
+          ]
+        },
+        "EnhancedInputLocalPlayerSubsystem": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputLocalPlayerSubsystem",
+          "properties": {
+            "controlMappingsRebuiltDelegate": {
+              "type": "string",
+              "description": "Category=Input | Ref<OnControlMappingsRebuilt>"
+            },
+            "onMappingContextAdded": {
+              "type": "string",
+              "description": "Category=Input | Ref<OnMappingContextAdded>"
+            },
+            "onMappingContextRemoved": {
+              "type": "string",
+              "description": "Category=Input | Ref<OnMappingContextRemoved>"
+            },
+            "onPostUserSettingsInitialized": {
+              "type": "string",
+              "description": "Category=Input | Ref<OnUserSettingsPostInitialized>"
+            },
+            "userSettings": {
+              "type": "string",
+              "description": "Ref<EnhancedInputUserSettings>"
+            }
+          },
+          "required": [
+            "controlMappingsRebuiltDelegate",
+            "onMappingContextAdded",
+            "onMappingContextRemoved",
+            "onPostUserSettingsInitialized",
+            "userSettings"
+          ]
+        },
+        "EnhancedInputPlatformSettings": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputPlatformSettings",
+          "properties": {
+            "shouldLogMappingContextRedirects": {
+              "type": "boolean",
+              "description": "Category=Default | UPROPERTY(Config, EditAnywhere)"
+            }
+          },
+          "required": [
+            "shouldLogMappingContextRedirects"
+          ]
+        },
+        "EnhancedInputUserSettings": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputUserSettings",
+          "properties": {
+            "onSettingsChanged": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(Transient) | Ref<EnhancedInputUserSettingsChanged>"
+            },
+            "onSettingsApplied": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(Transient) | Ref<EnhancedInputUserSettingsApplied>"
+            },
+            "onKeyProfileChanged": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(Transient) | Ref<MappableKeyProfileChanged>"
+            },
+            "currentProfileIdentifier": {
+              "type": "string",
+              "description": "UPROPERTY(SaveGame) | Ref<GameplayTag>"
+            },
+            "currentProfileIdentifierString": {
+              "type": "string",
+              "description": "UPROPERTY(SaveGame)"
+            },
+            "owningLocalPlayer": {
+              "type": "string",
+              "description": "UPROPERTY(Transient) | Reference to ULocalPlayer"
+            }
+          },
+          "required": [
+            "onSettingsChanged",
+            "onSettingsApplied",
+            "onKeyProfileChanged",
+            "currentProfileIdentifier",
+            "currentProfileIdentifierString",
+            "owningLocalPlayer"
+          ],
+          "methods": [
+            {
+              "name": "ApplySettings",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "SaveSettings",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "AsyncSaveSettings",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "MapPlayerKey",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "InArgs",
+                  "type": "FMapPlayerKeyArgs&"
+                },
+                {
+                  "name": "FailureReason",
+                  "type": "FGameplayTagContainer&"
+                }
+              ]
+            },
+            {
+              "name": "UnMapPlayerKey",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "InArgs",
+                  "type": "FMapPlayerKeyArgs&"
+                },
+                {
+                  "name": "FailureReason",
+                  "type": "FGameplayTagContainer&"
+                }
+              ]
+            },
+            {
+              "name": "ResetAllPlayerKeysInRow",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "InArgs",
+                  "type": "FMapPlayerKeyArgs&"
+                },
+                {
+                  "name": "FailureReason",
+                  "type": "FGameplayTagContainer&"
+                }
+              ]
+            },
+            {
+              "name": "ResetKeyProfileToDefault",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "ProfileId",
+                  "type": "FGameplayTag&"
+                },
+                {
+                  "name": "FailureReason",
+                  "type": "FGameplayTagContainer&"
+                }
+              ]
+            },
+            {
+              "name": "ResetKeyProfileIdToDefault",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "ProfileId",
+                  "type": "FString&"
+                },
+                {
+                  "name": "FailureReason",
+                  "type": "FGameplayTagContainer&"
+                }
+              ]
+            },
+            {
+              "name": "SetActiveKeyProfile",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "InProfileId",
+                  "type": "FString&"
+                }
+              ]
+            },
+            {
+              "name": "SetKeyProfileToDefault",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "RegisterInputMappingContext",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "IMC",
+                  "type": "UInputMappingContext*"
+                }
+              ]
+            },
+            {
+              "name": "RegisterInputMappingContexts",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "MappingContexts",
+                  "type": "TSet<UInputMappingContext*>&"
+                }
+              ]
+            },
+            {
+              "name": "UnregisterInputMappingContext",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "IMC",
+                  "type": "UInputMappingContext*"
+                }
+              ]
+            },
+            {
+              "name": "UnregisterInputMappingContexts",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "MappingContexts",
+                  "type": "TSet<UInputMappingContext*>&"
+                }
+              ]
+            },
+            {
+              "name": "IsMappingContextRegistered",
+              "specifiers": [
+                "BlueprintCallable",
+                "BlueprintPure"
+              ],
+              "params": [
+                {
+                  "name": "IMC",
+                  "type": "UInputMappingContext*"
+                }
+              ]
+            }
+          ]
+        },
+        "EnhancedInputWorldSubsystem": {
+          "type": "object",
+          "description": "UE Class: UEnhancedInputWorldSubsystem",
+          "properties": {
+            "playerInput": {
+              "type": "string",
+              "description": "Ref<EnhancedPlayerInput>"
+            }
+          },
+          "required": [
+            "playerInput"
+          ],
+          "methods": [
+            {
+              "name": "AddActorInputComponent",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "Actor",
+                  "type": "AActor*"
+                }
+              ]
+            },
+            {
+              "name": "RemoveActorInputComponent",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "Actor",
+                  "type": "AActor*"
+                }
+              ]
+            }
+          ]
+        },
+        "EnhancedPlayerInput": {
+          "type": "object",
+          "description": "UE Class: UEnhancedPlayerInput",
+          "properties": {
+            "enhancedActionMappings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/EnhancedActionKeyMapping"
+              },
+              "description": "UPROPERTY(Transient)"
+            },
+            "currentInputMode": {
+              "type": "string",
+              "description": "UPROPERTY(Transient) | Ref<GameplayTagContainer>"
+            },
+            "keysPressedThisTick": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "description": "Ref<Vector>"
+              },
+              "description": "UPROPERTY(Transient) | TMap<FKey,FVector>"
+            }
+          },
+          "required": [
+            "enhancedActionMappings",
+            "currentInputMode",
+            "keysPressedThisTick"
+          ]
+        },
+        "EnhancedPlayerMappableKeyProfile": {
+          "type": "object",
+          "description": "UE Class: UEnhancedPlayerMappableKeyProfile [BlueprintType]",
+          "properties": {
+            "profileIdentifier": {
+              "type": "string",
+              "description": "UPROPERTY(SaveGame) | Ref<GameplayTag>"
+            },
+            "profileIdentifierString": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(BlueprintReadOnly, EditAnywhere, SaveGame)"
+            },
+            "owningUserId": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(BlueprintReadOnly, Transient, VisibleAnywhere) | Ref<PlatformUserId>"
+            },
+            "displayName": {
+              "type": "string",
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(BlueprintReadWrite, EditAnywhere, SaveGame)"
+            },
+            "playerMappedKeys": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/properties/KeyMappingRow"
+              },
+              "description": "Category=Enhanced Input|User Settings | UPROPERTY(BlueprintReadOnly, EditAnywhere, Transient) | TMap<FName,FKeyMappingRow>"
+            }
+          },
+          "required": [
+            "profileIdentifier",
+            "profileIdentifierString",
+            "owningUserId",
+            "displayName",
+            "playerMappedKeys"
+          ],
+          "methods": [
+            {
+              "name": "SetDisplayName",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "NewDisplayName",
+                  "type": "FText&"
+                }
+              ]
+            },
+            {
+              "name": "ResetMappingToDefault",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "InMappingName",
+                  "type": "FName"
+                }
+              ]
+            },
+            {
+              "name": "DumpProfileToLog",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "ToString",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "GetMappedKeysInRow",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "MappingName",
+                  "type": "FName"
+                },
+                {
+                  "name": "OutKeys",
+                  "type": "TArray<FKey>&"
+                }
+              ]
+            },
+            {
+              "name": "QueryPlayerMappedKeys",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "Options",
+                  "type": "FPlayerMappableKeyQueryOptions&"
+                },
+                {
+                  "name": "OutKeys",
+                  "type": "TArray<FKey>&"
+                }
+              ]
+            },
+            {
+              "name": "GetMappingNamesForKey",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "InKey",
+                  "type": "FKey&"
+                },
+                {
+                  "name": "OutMappingNames",
+                  "type": "TArray<FName>&"
+                }
+              ]
+            },
+            {
+              "name": "K2_FindKeyMapping",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "OutKeyMapping",
+                  "type": "FPlayerKeyMapping&"
+                },
+                {
+                  "name": "InArgs",
+                  "type": "FMapPlayerKeyArgs&"
+                }
+              ],
+              "display_name": "Find Key Mapping"
+            },
+            {
+              "name": "ResetToDefault",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            },
+            {
+              "name": "DoesMappingPassQueryOptions",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "PlayerMapping",
+                  "type": "FPlayerKeyMapping&"
+                },
+                {
+                  "name": "Options",
+                  "type": "FPlayerMappableKeyQueryOptions&"
+                }
+              ]
+            }
+          ]
+        },
+        "InputAction": {
+          "type": "object",
+          "description": "UE Class: UInputAction [BlueprintType]",
+          "properties": {
+            "actionDescription": {
+              "type": "string",
+              "description": "Category=Description | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "triggerWhenPaused": {
+              "type": "boolean",
+              "description": "Category=Action | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "consumeInput": {
+              "type": "boolean",
+              "description": "Category=Input Consumption | UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "consumesActionAndAxisMappings": {
+              "type": "boolean",
+              "description": "Category=Input Consumption | UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "reserveAllMappings": {
+              "type": "boolean",
+              "description": "Category=Action | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "triggerEventsThatConsumeLegacyKeys": {
+              "type": "integer",
+              "description": "Category=Input Consumption | UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            },
+            "valueType": {
+              "$ref": "#/properties/InputActionValueType",
+              "description": "Category=Action | UPROPERTY(AssetRegistrySearchable, BlueprintReadOnly, EditAnywhere)"
+            },
+            "accumulationBehavior": {
+              "$ref": "#/properties/InputActionAccumulationBehavior",
+              "description": "Category=Action | UPROPERTY(AdvancedDisplay, BlueprintReadOnly, EditAnywhere)"
+            },
+            "playerMappableKeySettings": {
+              "type": "string",
+              "description": "Category=User Settings | UPROPERTY(BlueprintReadWrite, EditAnywhere) | Ref<PlayerMappableKeySettings>"
+            }
+          },
+          "required": [
+            "actionDescription",
+            "triggerWhenPaused",
+            "consumeInput",
+            "consumesActionAndAxisMappings",
+            "reserveAllMappings",
+            "triggerEventsThatConsumeLegacyKeys",
+            "valueType",
+            "accumulationBehavior",
+            "playerMappableKeySettings"
+          ]
+        },
+        "InputActionEventNodeSpawner": {
+          "type": "object",
+          "description": "UE Class: UInputActionEventNodeSpawner",
+          "properties": {
+            "weakActionPtr": {
+              "type": "string",
+              "description": "Reference to const UInputAction"
+            }
+          },
+          "required": [
+            "weakActionPtr"
+          ]
+        },
+        "InputAction_Factory": {
+          "type": "object",
+          "description": "UE Class: UInputAction_Factory",
+          "properties": {
+            "inputActionClass": {
+              "type": "string",
+              "description": "Category=InputAction | UPROPERTY(EditAnywhere) | TSubclassOf<UInputAction>"
+            }
+          },
+          "required": [
+            "inputActionClass"
+          ]
+        },
+        "InputDebugKeyDelegateBinding": {
+          "type": "object",
+          "description": "UE Class: UInputDebugKeyDelegateBinding",
+          "properties": {
+            "inputDebugKeyDelegateBindings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/BlueprintInputDebugKeyDelegateBinding"
+              }
+            }
+          },
+          "required": [
+            "inputDebugKeyDelegateBindings"
+          ]
+        },
+        "InputMappingContext": {
+          "type": "object",
+          "description": "UE Class: UInputMappingContext [BlueprintType]",
+          "properties": {
+            "mappings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/EnhancedActionKeyMapping"
+              },
+              "description": "Category=Mappings | UPROPERTY(BlueprintReadOnly)"
+            },
+            "defaultKeyMappings": {
+              "$ref": "#/properties/InputMappingContextMappingData",
+              "description": "Category=Mappings | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "mappingProfileOverrides": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/properties/InputMappingContextMappingData"
+              },
+              "description": "Category=Mappings | UPROPERTY(BlueprintReadOnly, EditAnywhere) | TMap<FString,FInputMappingContextMappingData>"
+            },
+            "inputModeFilterOptions": {
+              "$ref": "#/properties/MappingContextInputModeFilterOptions",
+              "description": "Category=Input Modes | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "inputModeQueryOverride": {
+              "type": "string",
+              "description": "Category=Input Modes | UPROPERTY(BlueprintReadOnly, EditAnywhere) | Ref<GameplayTagQuery>"
+            },
+            "registrationTrackingMode": {
+              "$ref": "#/properties/MappingContextRegistrationTrackingMode",
+              "description": "Category=Registration | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "contextDescription": {
+              "type": "string",
+              "description": "Category=Description | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            }
+          },
+          "required": [
+            "mappings",
+            "defaultKeyMappings",
+            "mappingProfileOverrides",
+            "inputModeFilterOptions",
+            "inputModeQueryOverride",
+            "registrationTrackingMode",
+            "contextDescription"
+          ],
+          "methods": [
+            {
+              "name": "ShouldShowInputModeQuery"
+            },
+            {
+              "name": "UnmapKey",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "Action",
+                  "type": "UInputAction*"
+                },
+                {
+                  "name": "Key",
+                  "type": "FKey"
+                }
+              ]
+            },
+            {
+              "name": "UnmapAllKeysFromAction",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "Action",
+                  "type": "UInputAction*"
+                }
+              ]
+            },
+            {
+              "name": "UnmapAll",
+              "specifiers": [
+                "BlueprintCallable"
+              ]
+            }
+          ]
+        },
+        "InputMappingContext_Factory": {
+          "type": "object",
+          "description": "UE Class: UInputMappingContext_Factory",
+          "properties": {
+            "inputMappingContextClass": {
+              "type": "string",
+              "description": "Category=InputMappingContext | UPROPERTY(EditAnywhere) | TSubclassOf<class UInputMappingContext>"
+            }
+          },
+          "required": [
+            "inputMappingContextClass"
+          ]
+        },
+        "InputModifier": {
+          "type": "object",
+          "description": "UE Class: UInputModifier",
+          "properties": {},
+          "methods": [
+            {
+              "name": "ModifyRaw",
+              "specifiers": [
+                "BlueprintCallable",
+                "BlueprintNativeEvent"
+              ],
+              "params": [
+                {
+                  "name": "PlayerInput",
+                  "type": "UEnhancedPlayerInput*"
+                },
+                {
+                  "name": "CurrentValue",
+                  "type": "FInputActionValue"
+                },
+                {
+                  "name": "DeltaTime",
+                  "type": "float"
+                }
+              ]
+            },
+            {
+              "name": "GetVisualizationColor",
+              "specifiers": [
+                "BlueprintNativeEvent"
+              ],
+              "params": [
+                {
+                  "name": "SampleValue",
+                  "type": "FInputActionValue"
+                },
+                {
+                  "name": "FinalValue",
+                  "type": "FInputActionValue"
+                }
+              ]
+            },
+            {
+              "name": "ReceiveModifierReinstanced",
+              "specifiers": [
+                "BlueprintNativeEvent"
+              ],
+              "params": [
+                {
+                  "name": "OldModifier",
+                  "type": "UInputModifier*"
+                }
+              ]
+            }
+          ]
+        },
+        "InputModifierDeadZone": {
+          "type": "object",
+          "description": "UE Class: UInputModifierDeadZone - \"Dead Zone\"",
+          "properties": {
+            "lowerThreshold": {
+              "type": "number",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config)"
+            },
+            "upperThreshold": {
+              "type": "number",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config)"
+            },
+            "type": {
+              "$ref": "#/properties/DeadZoneType",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config)"
+            }
+          },
+          "required": [
+            "lowerThreshold",
+            "upperThreshold",
+            "type"
+          ]
+        },
+        "InputModifierFOVScaling": {
+          "type": "object",
+          "description": "UE Class: UInputModifierFOVScaling - \"FOV Scaling\"",
+          "properties": {
+            "fOVScale": {
+              "type": "number",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config)"
+            },
+            "fOVScalingType": {
+              "$ref": "#/properties/FOVScalingType",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config)"
+            }
+          },
+          "required": [
+            "fOVScale",
+            "fOVScalingType"
+          ]
+        },
+        "InputModifierNegate": {
+          "type": "object",
+          "description": "UE Class: UInputModifierNegate - \"Negate\"",
+          "properties": {
+            "x": {
+              "type": "boolean",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite)"
+            },
+            "y": {
+              "type": "boolean",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite)"
+            },
+            "z": {
+              "type": "boolean",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite)"
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "z"
+          ]
+        },
+        "InputModifierResponseCurveExponential": {
+          "type": "object",
+          "description": "UE Class: UInputModifierResponseCurveExponential - \"Response Curve - Exponential\"",
+          "properties": {
+            "curveExponent": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config) | Ref<Vector>"
+            }
+          },
+          "required": [
+            "curveExponent"
+          ]
+        },
+        "InputModifierResponseCurveUser": {
+          "type": "object",
+          "description": "UE Class: UInputModifierResponseCurveUser - \"Response Curve - User Defined\"",
+          "properties": {
+            "responseX": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite) | Ref<CurveFloat>"
+            },
+            "responseY": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite) | Ref<CurveFloat>"
+            },
+            "responseZ": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite) | Ref<CurveFloat>"
+            }
+          },
+          "required": [
+            "responseX",
+            "responseY",
+            "responseZ"
+          ]
+        },
+        "InputModifierScalar": {
+          "type": "object",
+          "description": "UE Class: UInputModifierScalar - \"Scalar\"",
+          "properties": {
+            "scalar": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, EditAnywhere) | Ref<Vector>"
+            }
+          },
+          "required": [
+            "scalar"
+          ]
+        },
+        "InputModifierSmoothDelta": {
+          "type": "object",
+          "description": "UE Class: UInputModifierSmoothDelta - \"Smooth Delta\"",
+          "properties": {
+            "smoothingMethod": {
+              "$ref": "#/properties/NormalizeInputSmoothingType",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config)"
+            },
+            "speed": {
+              "type": "number",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config)"
+            },
+            "easingExponent": {
+              "type": "number",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, Config)"
+            }
+          },
+          "required": [
+            "smoothingMethod",
+            "speed",
+            "easingExponent"
+          ]
+        },
+        "InputModifierSwizzleAxis": {
+          "type": "object",
+          "description": "UE Class: UInputModifierSwizzleAxis - \"Swizzle Input Axis Values\"",
+          "properties": {
+            "order": {
+              "$ref": "#/properties/InputAxisSwizzle",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadWrite, EditAnywhere)"
+            }
+          },
+          "required": [
+            "order"
+          ]
+        },
+        "InputTrigger": {
+          "type": "object",
+          "description": "UE Class: UInputTrigger",
+          "properties": {
+            "actuationThreshold": {
+              "type": "number",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            },
+            "shouldAlwaysTick": {
+              "type": "boolean",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadOnly, Config)"
+            },
+            "lastValue": {
+              "$ref": "#/properties/InputActionValue",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadOnly)"
+            }
+          },
+          "required": [
+            "actuationThreshold",
+            "shouldAlwaysTick",
+            "lastValue"
+          ],
+          "methods": [
+            {
+              "name": "IsActuated",
+              "specifiers": [
+                "BlueprintCallable"
+              ],
+              "params": [
+                {
+                  "name": "ForValue",
+                  "type": "FInputActionValue&"
+                }
+              ]
+            },
+            {
+              "name": "GetTriggerType",
+              "specifiers": [
+                "BlueprintCallable",
+                "BlueprintNativeEvent"
+              ]
+            },
+            {
+              "name": "UpdateState",
+              "specifiers": [
+                "BlueprintCallable",
+                "BlueprintNativeEvent"
+              ],
+              "params": [
+                {
+                  "name": "PlayerInput",
+                  "type": "UEnhancedPlayerInput*"
+                },
+                {
+                  "name": "ModifiedValue",
+                  "type": "FInputActionValue"
+                },
+                {
+                  "name": "DeltaTime",
+                  "type": "float"
+                }
+              ]
+            },
+            {
+              "name": "ReceiveTriggerReinstanced",
+              "specifiers": [
+                "BlueprintNativeEvent"
+              ],
+              "params": [
+                {
+                  "name": "OldTrigger",
+                  "type": "UInputTrigger*"
+                }
+              ]
+            }
+          ]
+        },
+        "InputTriggerChordAction": {
+          "type": "object",
+          "description": "UE Class: UInputTriggerChordAction - \"Chorded Action\"",
+          "properties": {
+            "chordAction": {
+              "type": "string",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite)"
+            }
+          },
+          "required": [
+            "chordAction"
+          ]
+        },
+        "InputTriggerHold": {
+          "type": "object",
+          "description": "UE Class: UInputTriggerHold - \"Hold\"",
+          "properties": {
+            "holdTimeThreshold": {
+              "type": "number",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            },
+            "isOneShot": {
+              "type": "boolean",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            }
+          },
+          "required": [
+            "holdTimeThreshold",
+            "isOneShot"
+          ]
+        },
+        "InputTriggerHoldAndRelease": {
+          "type": "object",
+          "description": "UE Class: UInputTriggerHoldAndRelease - \"Hold And Release\"",
+          "properties": {
+            "holdTimeThreshold": {
+              "type": "number",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            }
+          },
+          "required": [
+            "holdTimeThreshold"
+          ]
+        },
+        "InputTriggerPulse": {
+          "type": "object",
+          "description": "UE Class: UInputTriggerPulse - \"Pulse\"",
+          "properties": {
+            "triggerOnStart": {
+              "type": "boolean",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            },
+            "interval": {
+              "type": "number",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            },
+            "triggerLimit": {
+              "type": "integer",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            }
+          },
+          "required": [
+            "triggerOnStart",
+            "interval",
+            "triggerLimit"
+          ]
+        },
+        "InputTriggerRepeatedTap": {
+          "type": "object",
+          "description": "UE Class: UInputTriggerRepeatedTap - \"Repeated Tap\"",
+          "properties": {
+            "repeatDelay": {
+              "type": "number",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            },
+            "repeatTime": {
+              "type": "number"
+            },
+            "numberOfTapsWhichTriggerRepeat": {
+              "type": "integer",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            },
+            "tapReleaseTimeThreshold": {
+              "type": "number",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            },
+            "numberOfTapsSinceLastTrigger": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "repeatDelay",
+            "repeatTime",
+            "numberOfTapsWhichTriggerRepeat",
+            "tapReleaseTimeThreshold",
+            "numberOfTapsSinceLastTrigger"
+          ]
+        },
+        "InputTriggerTap": {
+          "type": "object",
+          "description": "UE Class: UInputTriggerTap - \"Tap\"",
+          "properties": {
+            "tapReleaseTimeThreshold": {
+              "type": "number",
+              "description": "Category=Trigger Settings | UPROPERTY(BlueprintReadWrite, Config, EditAnywhere)"
+            }
+          },
+          "required": [
+            "tapReleaseTimeThreshold"
+          ]
+        },
+        "K2Node_EnhancedInputAction": {
+          "type": "object",
+          "description": "UE Class: UK2Node_EnhancedInputAction",
+          "properties": {
+            "inputAction": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "inputAction"
+          ]
+        },
+        "K2Node_GetInputActionValue": {
+          "type": "object",
+          "description": "UE Class: UK2Node_GetInputActionValue",
+          "properties": {
+            "inputAction": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "inputAction"
+          ]
+        },
+        "PlayerMappableKeySettings": {
+          "type": "object",
+          "description": "UE Class: UPlayerMappableKeySettings",
+          "properties": {
+            "metadata": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadOnly, EditAnywhere) | Ref<Object>"
+            },
+            "name": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "displayName": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "displayCategory": {
+              "type": "string",
+              "description": "Category=Settings | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            },
+            "supportedKeyProfiles": {
+              "type": "string",
+              "description": "Ref<GameplayTagContainer>"
+            },
+            "supportedKeyProfileIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Category=Settings | UPROPERTY(BlueprintReadOnly, EditAnywhere)"
+            }
+          },
+          "required": [
+            "metadata",
+            "name",
+            "displayName",
+            "displayCategory",
+            "supportedKeyProfiles",
+            "supportedKeyProfileIds"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

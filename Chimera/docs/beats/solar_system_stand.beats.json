@@ -1,0 +1,41 @@
+{
+ "demo": "solar_system_stand",
+ "loop": 8,
+ "settle_s": 6,
+ "_provenance": "tb-0195 (fable-5, 2026-07-18): the grown-solar-system wiring witness. PRECONDITION: python -m core.system_to_ue5 --system 0 has staged the actors in the editor world (Grown_Ground patch at origin z=20, Grown_Star 14km out, Grown_P* siblings on the ecliptic band) from the trained artifacts (bigbang.systems.json + planet.trained.json via core.trainables.planet.resolve_system). The beat proves THE OPERATOR'S SENTENCE: a pawn STANDS on a world the ladder grew - reset onto the patch, let physics settle, assert the system's bodies exist, capture from inside PIE (H-2: viewport capture composites during PIE). Expects are rig-honest (H-30 vocabulary): is_pie + actor_exists only; the reset_position_verify RIG FAULT tripwire (tb-0184) guards the standing itself - if something moves the pawn, the beat blocks with rig attribution, never a false feature verdict.",
+ "beats": [
+  {
+   "name": "stand_on_grown_ocean_world",
+   "features": [
+    "solar_accretion",
+    "planet_averages"
+   ],
+   "actions": [
+    {
+     "reset_position": {
+      "x": 0,
+      "y": 0,
+      "z": 130
+     }
+    },
+    {
+     "wait": 3.0
+    },
+    {
+     "screenshot": "grown_world_stand_pie"
+    }
+   ],
+   "expects": [
+    {
+     "is_pie": true
+    },
+    {
+     "actor_exists": "Grown_Ground"
+    },
+    {
+     "actor_exists": "Grown_Star"
+    }
+   ]
+  }
+ ]
+}

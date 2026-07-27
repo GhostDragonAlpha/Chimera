@@ -1,0 +1,19 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of beacon_narrative. Cluster: beacon_narrative_uanimnode_de",
+  "name": "beacon_narrative_beacon_narrative_uanimnode_de",
+  "parent_rung": "beacon_narrative",
+  "walls": [
+    "UAnimNode_DeadBlending property must be trainable",
+    "Satisfies beacon_narrative constraints in composition"
+  ],
+  "element_query": {
+    "categories": [
+      "UAnimNode_DeadBlendi"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}

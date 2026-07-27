@@ -1,0 +1,15 @@
+[
+ {
+  "id": "atom_b774073c4166",
+  "feature": "Demo_Level",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "file_md5_not",
+   "path": "Content/Levels/chimeradefaultlevel.umap",
+   "md5_prefix": "b734cff5"
+  },
+  "desc": "default level is NOT template-stamped",
+  "provenance": "CLAUDE.md troubleshooting: template-stamp trap"
+ }
+]

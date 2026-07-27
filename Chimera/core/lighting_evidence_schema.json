@@ -1,0 +1,582 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Player Character Lighting Evidence Schema",
+  "description": "Evidence collection schema for Player Character Lighting acceptance test suite (5 criteria). Feeds result_grader_aaa_expanded for spec_fidelity and technical_correctness scoring.",
+  "type": "object",
+  "required": [
+    "feature_name",
+    "tests",
+    "criteria_declared",
+    "evidence"
+  ],
+  "properties": {
+    "feature_name": {
+      "type": "string",
+      "description": "Feature identifier (e.g., 'Player_Character_Lighting')",
+      "examples": ["Player_Character_Lighting"]
+    },
+    "loop_id": {
+      "type": "integer",
+      "description": "Development loop iteration",
+      "examples": [1, 2]
+    },
+    "session_name": {
+      "type": "string",
+      "description": "Sleepwalker or test session identifier",
+      "examples": ["PIE_Session_001", "Automation_Run_July_7"]
+    },
+    "tests": {
+      "type": "object",
+      "required": ["passed", "failed", "criteria_total"],
+      "properties": {
+        "passed": {
+          "type": "integer",
+          "description": "Number of acceptance criteria that passed (0-5)",
+          "minimum": 0,
+          "maximum": 5,
+          "examples": [2, 4, 5]
+        },
+        "failed": {
+          "type": "integer",
+          "description": "Number of acceptance criteria that failed (0-5)",
+          "minimum": 0,
+          "maximum": 5,
+          "examples": [3, 1, 0]
+        },
+        "criteria_total": {
+          "type": "integer",
+          "description": "Total acceptance criteria declared (always 5 for lighting)",
+          "const": 5
+        }
+      }
+    },
+    "criteria_declared": {
+      "type": "array",
+      "description": "Full list of declared acceptance criteria (DSL source)",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "acceptance_condition", "test_type"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Criterion index (1-5)",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "name": {
+            "type": "string",
+            "description": "Criterion name from acceptance test suite",
+            "enum": [
+              "Lighting_Radiometry_Visor_Glow_Measurement",
+              "Lighting_Shadow_Distance_Profiling",
+              "Lighting_Contact_Shadow_Close_Range",
+              "Lighting_Dynamic_Shadow_Update_Rate",
+              "Lighting_Ambient_Occlusion_Crease_Definition"
+            ]
+          },
+          "acceptance_condition": {
+            "type": "string",
+            "description": "Formal acceptance condition from DSL"
+          },
+          "test_type": {
+            "type": "string",
+            "description": "Test methodology",
+            "enum": [
+              "Screenshot color picker + histogram analysis",
+              "Engine profiling + visual inspection",
+              "Screenshot detail analysis at <2m",
+              "Sleepwalker PIE beat (move light, capture frames)",
+              "Material inspection + screenshot analysis"
+            ]
+          },
+          "pass_condition": {
+            "type": "string",
+            "description": "Specific pass condition for result grader"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "description": "Measured evidence for each criterion",
+      "properties": {
+        "criterion_1_radiometry": {
+          "type": "object",
+          "description": "Visor glow radiometry measurements",
+          "properties": {
+            "criterion_name": {
+              "const": "Lighting_Radiometry_Visor_Glow_Measurement"
+            },
+            "criterion_passed": {
+              "type": "boolean"
+            },
+            "color_rgb": {
+              "type": "object",
+              "description": "Captured visor emissive RGB color",
+              "properties": {
+                "r": {
+                  "type": "number",
+                  "description": "Red channel (0.0-1.0)",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "examples": [0.8]
+                },
+                "g": {
+                  "type": "number",
+                  "description": "Green channel (0.0-1.0)",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "examples": [0.9]
+                },
+                "b": {
+                  "type": "number",
+                  "description": "Blue channel (0.0-1.0)",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "examples": [1.0]
+                }
+              },
+              "required": ["r", "g", "b"]
+            },
+            "color_spec": {
+              "type": "object",
+              "description": "DSL-declared specification for visor color",
+              "properties": {
+                "r": { "const": 0.8 },
+                "g": { "const": 0.9 },
+                "b": { "const": 1.0 }
+              }
+            },
+            "color_error": {
+              "type": "object",
+              "description": "Per-channel color error (absolute difference)",
+              "properties": {
+                "r": { "type": "number" },
+                "g": { "type": "number" },
+                "b": { "type": "number" }
+              }
+            },
+            "color_within_tolerance": {
+              "type": "boolean",
+              "description": "All RGB channels within ±0.05 tolerance"
+            },
+            "hdr_peak": {
+              "type": "number",
+              "description": "Captured HDR peak intensity (0.0-1.0+)",
+              "examples": [0.5, 0.48, 0.52]
+            },
+            "hdr_peak_spec": {
+              "type": "number",
+              "description": "DSL-declared HDR intensity target",
+              "const": 0.5
+            },
+            "hdr_peak_tolerance_range": {
+              "type": "object",
+              "description": "Acceptable range (±20% tolerance)",
+              "properties": {
+                "min": { "const": 0.4 },
+                "max": { "const": 0.6 }
+              }
+            },
+            "hdr_peak_within_tolerance": {
+              "type": "boolean",
+              "description": "HDR peak within 0.4-0.6 range"
+            },
+            "hue_degrees": {
+              "type": "number",
+              "description": "Captured HSV hue (0-360 degrees)",
+              "minimum": 0,
+              "maximum": 360,
+              "examples": [210]
+            },
+            "hue_spec_range": {
+              "type": "object",
+              "description": "DSL-declared hue specification (cool blue)",
+              "properties": {
+                "min": { "const": 180 },
+                "max": { "const": 240 }
+              }
+            },
+            "hue_within_tolerance": {
+              "type": "boolean",
+              "description": "Hue within 180-240 degrees (cool blue spectrum)"
+            },
+            "screenshot_path": {
+              "type": "string",
+              "description": "Path to captured radiometry screenshot",
+              "examples": ["Saved/Screenshots/visor_radiometry_capture.png"]
+            },
+            "measurement_tool": {
+              "type": "string",
+              "description": "Tool used for radiometry analysis",
+              "const": "radiometry_probe"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "criterion_2_shadow_distance": {
+          "type": "object",
+          "description": "Shadow distance profiling evidence",
+          "properties": {
+            "criterion_name": {
+              "const": "Lighting_Shadow_Distance_Profiling"
+            },
+            "criterion_passed": {
+              "type": "boolean"
+            },
+            "shadow_distance_measured": {
+              "type": "number",
+              "description": "Measured ShadowDistance parameter (UU)",
+              "examples": [5000.0, 4999.5, 5000.1]
+            },
+            "shadow_distance_spec": {
+              "type": "number",
+              "description": "DSL-declared ShadowDistance",
+              "const": 5000.0
+            },
+            "shadow_distance_error": {
+              "type": "number",
+              "description": "Absolute error (UU)",
+              "examples": [0.0, 0.1, 1.0]
+            },
+            "shadow_distance_within_tolerance": {
+              "type": "boolean",
+              "description": "Measured value within ±1.0 UU tolerance"
+            },
+            "visual_horizon_match": {
+              "type": "boolean",
+              "description": "Visual shadow horizon matches expected depth"
+            },
+            "screenshot_path": {
+              "type": "string",
+              "description": "Path to shadow distance visual reference"
+            },
+            "mcp_query_success": {
+              "type": "boolean",
+              "description": "MCP runtime_report query succeeded"
+            },
+            "engine_profiling_data": {
+              "type": "object",
+              "description": "Raw MCP profiling output",
+              "properties": {
+                "ShadowDistance": { "type": "number" },
+                "ContactShadow": { "type": "boolean" },
+                "DynamicShadows": { "type": "boolean" }
+              }
+            },
+            "measurement_tool": {
+              "type": "string",
+              "const": "mcp_inspect_runtime_report"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "criterion_3_contact_shadows": {
+          "type": "object",
+          "description": "Contact shadow close-range detail evidence",
+          "properties": {
+            "criterion_name": {
+              "const": "Lighting_Contact_Shadow_Close_Range"
+            },
+            "criterion_passed": {
+              "type": "boolean"
+            },
+            "visor_shadows_visible": {
+              "type": "boolean",
+              "description": "Shadows under helmet visor detected in close-range screenshot"
+            },
+            "hand_recesses_dark": {
+              "type": "boolean",
+              "description": "Hand/glove recesses properly shadowed/occluded"
+            },
+            "no_light_leaking": {
+              "type": "boolean",
+              "description": "No artifacts or light leaking through geometry"
+            },
+            "all_checks_pass": {
+              "type": "boolean",
+              "description": "All 3 visual checks passed (requirement: 3/3)"
+            },
+            "camera_distance": {
+              "type": "number",
+              "description": "Camera distance from character (UU)",
+              "examples": [200, 150, 180]
+            },
+            "camera_target": {
+              "type": "string",
+              "description": "Camera target (e.g., 'character_head')",
+              "examples": ["character_head", "hands"]
+            },
+            "screenshot_path": {
+              "type": "string",
+              "description": "Path to close-range screenshot"
+            },
+            "measurement_tool": {
+              "type": "string",
+              "const": "vision_analysis_contact_shadow"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "criterion_4_dynamic_shadows": {
+          "type": "object",
+          "description": "Dynamic shadow update rate evidence (real-time light rotation)",
+          "properties": {
+            "criterion_name": {
+              "const": "Lighting_Dynamic_Shadow_Update_Rate"
+            },
+            "criterion_passed": {
+              "type": "boolean"
+            },
+            "frame_latency": {
+              "type": "integer",
+              "description": "Frames between light rotation and shadow direction update",
+              "minimum": 0,
+              "examples": [0, 1, 2]
+            },
+            "frame_latency_spec": {
+              "type": "integer",
+              "description": "Target frame latency (spec: <=1 frame)",
+              "const": 1
+            },
+            "frame_latency_within_spec": {
+              "type": "boolean",
+              "description": "Latency <= 1 frame"
+            },
+            "smoothness_ratio": {
+              "type": "number",
+              "description": "Shadow direction smoothness (0.0-1.0, where 1.0 = perfectly smooth)",
+              "minimum": 0,
+              "maximum": 1,
+              "examples": [0.95, 0.90, 0.85]
+            },
+            "smoothness_target": {
+              "type": "number",
+              "description": "Target smoothness threshold (spec: >=0.90)",
+              "const": 0.90
+            },
+            "smoothness_within_spec": {
+              "type": "boolean",
+              "description": "Smoothness >= 0.90 (no ghosting)"
+            },
+            "light_rotation_degrees": {
+              "type": "number",
+              "description": "Light rotation angle during test (degrees)",
+              "const": 90
+            },
+            "frame_count": {
+              "type": "integer",
+              "description": "Number of frames captured during rotation",
+              "minimum": 2,
+              "examples": [6, 10, 12]
+            },
+            "frame_screenshots": {
+              "type": "array",
+              "description": "Paths to captured frame screenshots",
+              "items": { "type": "string" }
+            },
+            "ghosting_detected": {
+              "type": "boolean",
+              "description": "Shadow ghosting or lag artifacts detected"
+            },
+            "measurement_tool": {
+              "type": "string",
+              "const": "sleepwalker_beat_script_shadow_update"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "criterion_5_ambient_occlusion": {
+          "type": "object",
+          "description": "Ambient occlusion crease definition evidence",
+          "properties": {
+            "criterion_name": {
+              "const": "Lighting_Ambient_Occlusion_Crease_Definition"
+            },
+            "criterion_passed": {
+              "type": "boolean"
+            },
+            "neck_creases_darkened": {
+              "type": "boolean",
+              "description": "Neck and shoulder creases show AO darkening"
+            },
+            "knuckles_shaded": {
+              "type": "boolean",
+              "description": "Glove knuckles have visible AO shading"
+            },
+            "silhouette_edges_3d": {
+              "type": "boolean",
+              "description": "Silhouette edges read as 3D (not flat)"
+            },
+            "all_visual_checks_pass": {
+              "type": "boolean",
+              "description": "All 4 visual checks passed (requirement: 4/4)"
+            },
+            "ao_texture_resolution": {
+              "type": "string",
+              "description": "Detected AO map resolution",
+              "enum": ["512", "1K", "2K", "4K", "UNKNOWN"],
+              "examples": ["1K", "2K"]
+            },
+            "ao_resolution_adequate": {
+              "type": "boolean",
+              "description": "AO resolution >= 1K (spec: 1K+ minimum)"
+            },
+            "ao_quality_setting": {
+              "type": "string",
+              "description": "Engine AO quality setting",
+              "enum": ["low", "medium", "high", "ultra"],
+              "examples": ["high"]
+            },
+            "screenshot_path": {
+              "type": "string",
+              "description": "Path to AO detail screenshot"
+            },
+            "measurement_tool": {
+              "type": "string",
+              "const": "vision_analysis_ambient_occlusion"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "description": "Stability and performance telemetry (supporting evidence for result grader)",
+      "properties": {
+        "crash_free": {
+          "type": "boolean",
+          "description": "True if no crashes/assertions in engine log during test"
+        },
+        "fps": {
+          "type": "number",
+          "description": "Average FPS during lighting tests",
+          "minimum": 0,
+          "examples": [60, 59.5, 45]
+        },
+        "target_fps": {
+          "type": "number",
+          "description": "Target FPS for test",
+          "const": 60
+        },
+        "fps_consistent": {
+          "type": "boolean",
+          "description": "FPS variance < 5% throughout test"
+        },
+        "memory_growth": {
+          "type": "boolean",
+          "description": "No unbounded memory growth (60s soak test)"
+        },
+        "log_file": {
+          "type": "string",
+          "description": "Path to UE log file analyzed for crash markers"
+        }
+      }
+    },
+    "spec_fidelity": {
+      "type": "object",
+      "description": "DSL specification fidelity measurement",
+      "properties": {
+        "declared_parameters": {
+          "type": "integer",
+          "description": "Total DSL parameters for lighting (visor color, intensity, hue, shadow distance, AO quality)",
+          "const": 13
+        },
+        "verified_parameters": {
+          "type": "integer",
+          "description": "DSL parameters actually verified by tests",
+          "minimum": 0,
+          "maximum": 13,
+          "examples": [5, 10, 13]
+        },
+        "fidelity_ratio": {
+          "type": "number",
+          "description": "verified_parameters / declared_parameters (0.0-1.0)",
+          "minimum": 0,
+          "maximum": 1,
+          "examples": [0.38, 0.77, 1.0]
+        },
+        "declared_parameters_list": {
+          "type": "array",
+          "description": "Enumeration of all DSL parameters",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "dsl_value": {},
+              "verified": { "type": "boolean" },
+              "measured_value": {}
+            }
+          }
+        }
+      }
+    },
+    "grading_notes": {
+      "type": "string",
+      "description": "Notes for result grader (low-scoring category breakdown, next steps)",
+      "examples": [
+        "Criterion 1 (radiometry): RGB within tolerance but hue slightly out of range (244 deg, spec 180-240). Recommend visor emissive tuning. Criteria 4-5 deferred to sleepwalker PIE session.",
+        "All 5 criteria passed at B-level (79/100). Radiometry marginally acceptable; AO resolution at 1K threshold."
+      ]
+    },
+    "measurement_metadata": {
+      "type": "object",
+      "description": "Metadata about measurement execution",
+      "properties": {
+        "test_harness": {
+          "type": "string",
+          "const": "UE5_Automation_Framework"
+        },
+        "test_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "engine_version": {
+          "type": "string",
+          "examples": ["5.8", "5.8.0"]
+        },
+        "project_path": {
+          "type": "string",
+          "examples": ["E:\\PythonChimera\\Chimera"]
+        },
+        "mcp_tools_used": {
+          "type": "array",
+          "description": "MCP tools invoked during testing",
+          "items": {
+            "type": "string",
+            "enum": [
+              "control_editor_screenshot",
+              "inspect_runtime_report",
+              "move_actor",
+              "radiometry_probe",
+              "vision_analysis"
+            ]
+          }
+        },
+        "sleepwalker_beat_script": {
+          "type": "string",
+          "description": "Path to beat script used (if PIE testing)",
+          "examples": ["docs/beats/lighting_validation.beats.json"]
+        }
+      }
+    }
+  }
+}

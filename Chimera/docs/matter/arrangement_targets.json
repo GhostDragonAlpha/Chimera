@@ -1,0 +1,58 @@
+{
+  "targets": {
+    "truck": {
+      "region_00": {
+        "aspect": 1.2876674746706025,
+        "verticality": 0.47637548314818456,
+        "alignment": 0.5350900609706657,
+        "clustering": 4.699310302734375,
+        "ground_contact": 0.021111111111111112,
+        "hollowness": 0.06888888888888889,
+        "spread_ratio": 0.7765980112651439,
+        "n_splats": 900
+      },
+      "region_01": {
+        "aspect": 1.098532127289481,
+        "verticality": 0.43964415713494936,
+        "alignment": 0.5740550941449138,
+        "clustering": 4.678950309753418,
+        "ground_contact": 0.027777777777777776,
+        "hollowness": 0.028888888888888888,
+        "spread_ratio": 0.9103056480172326,
+        "n_splats": 900
+      },
+      "region_02": {
+        "aspect": 1.7634141077064152,
+        "verticality": 0.4674458662163859,
+        "alignment": 0.5391798646910444,
+        "clustering": 5.131195545196533,
+        "ground_contact": 0.01888888888888889,
+        "hollowness": 0.013333333333333334,
+        "spread_ratio": 0.5670817737194187,
+        "n_splats": 900
+      },
+      "region_03": {
+        "aspect": 0.8273746836158553,
+        "verticality": 0.45949945373725315,
+        "alignment": 0.515598679587344,
+        "clustering": 5.212924003601074,
+        "ground_contact": 0.0077777777777777776,
+        "hollowness": 0.14888888888888888,
+        "spread_ratio": 1.20864225096872,
+        "n_splats": 900
+      },
+      "region_04": {
+        "aspect": 0.4679950260827874,
+        "verticality": 0.30050339020957595,
+        "alignment": 0.5763680284444017,
+        "clustering": 8.172406196594238,
+        "ground_contact": 0.09222222222222222,
+        "hollowness": 0.0033333333333333335,
+        "spread_ratio": 2.1367748464555305,
+        "n_splats": 900
+      }
+    }
+  },
+  "_provenance": "MEASURED arrangement statistics from real scans",
+  "_note": "Identical keys to core/trainables/arrangement._facts, so an emitted arrangement and a photographed one are compared on the same numbers. Regions are local because arrangement is local."
+}

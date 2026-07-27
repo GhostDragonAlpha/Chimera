@@ -1,0 +1,401 @@
+{
+  "name": "Camera_Cinematic_Sequence",
+  "description": "The 30-second UE5 Sequencer camera flythrough path through the canyon environment. Keyframes, curves, focal length, timing.",
+  "created": "2026-07-19T17:28:36.095368",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the camera path reveal geological formations the player would miss on foot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the flythrough timing match a natural viewing pace (not too fast, not too slow)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Can the Sequencer path be re-triggered from a menu or kiosk?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 4,
+      "category": "fame",
+      "question": "Does the opening shot establish biomes, scale, and atmosphere within 3 seconds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Is the camera path smooth enough for a Steam trailer clip without re-editing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Does the flythrough end on a memorable frame that invites wishlisting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 7,
+      "category": "world",
+      "question": "Does the camera path avoid clipping through terrain or props?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 8,
+      "category": "world",
+      "question": "Does the path follow natural sight-lines the player would naturally explore?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Are there transitional pauses at scenic overlooks during the 30-second run?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 10,
+      "category": "shipping",
+      "question": "Does the Sequencer asset exist as a Level Sequence Blueprint in the project?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 11,
+      "category": "shipping",
+      "question": "Can the flythrough be triggered from a Python MCP command for automated testing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 12,
+      "category": "shipping",
+      "question": "Does the camera path complete without hitch, pop-in, or streaming stall?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 13,
+      "category": "foundation",
+      "question": "Does the MCP toolchain support spawning and playing a Level Sequence programmatically?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 14,
+      "category": "platform",
+      "question": "Does the Sequencer work in UE5.8 without custom C++ extensions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 15,
+      "category": "performance",
+      "question": "Does the flythrough maintain 30+ fps on RTX 3060 with all cinematics enabled?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 16,
+      "category": "accessibility",
+      "question": "Can the flythrough be paused or skipped by the player?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Text-based output is screen-reader friendly. Color-coded states need pattern fallback."
+    },
+    {
+      "id": 17,
+      "category": "audio",
+      "question": "Does a music or ambient audio track sync with the Sequencer timeline?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio design deferred to v2. v1 uses text-only feedback."
+    },
+    {
+      "id": 18,
+      "category": "vision",
+      "question": "Does a cinematic flythrough make the game feel more real than a gameplay clip would?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 19,
+      "category": "tradeoff",
+      "question": "What gameplay features are deferred while we polish the flythrough timing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building this defers other features. Worth the tradeoff for educational value."
+    },
+    {
+      "id": 20,
+      "category": "evidence",
+      "question": "What existing UE5 demo flythroughs establish the quality bar (e.g. Valley of the Ancient)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 21,
+      "category": "terminal",
+      "question": "Does this chain reach a human who watches the trailer and decides to play?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the canyon terrain being fully streamed and LOD-stable?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on the atmospheric fog and sky system being tuned?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that MCP can orchestrate a cinematic sequence end-to-end?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 25,
+      "category": "derived_from",
+      "question": "Was the 30-second duration derived from Steam trailer best-practices research?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 26,
+      "category": "requires",
+      "question": "What Sequencer editor knowledge is needed to place and smooth camera keyframes?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 27,
+      "category": "shipping",
+      "question": "Can UE5 Sequencer keyframes be created from MCP-spawned camera waypoints?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Waypoints are positional markers. Sequencer keyframes need manual creation or a Sequencer-specific MCP tool. Waypoints serve as visual guides."
+    },
+    {
+      "id": 28,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Camera waypoints serve as positional guides. UE5 Sequencer needed for actual cin...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Camera waypoints serve as positional guides. UE5 Sequencer needed for actual cinematic flythrough keyframes."
+    },
+    {
+      "id": 29,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 30-second flythrough tempo: 5s per geological zone entrance. 7 zones = ~35s tota...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "30-second flythrough tempo: 5s per geological zone entrance. 7 zones = ~35s total flythrough."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 33,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 34,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 37,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 38,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 39,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 40,
+      "category": "economy",
+      "question": "How does the cinematic flythrough function as an economic tour that introduces players to resource zones, biomes with harvestable materials, and trade-route geography visible from the flight path?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The cinematic sequence is the player's first economic orientation \u2014 it reveals where resources cluster (ore veins in canyon walls, crystal seams near strata transitions), which biomes yield which material tiers, and the spatial layout that will later define trade routes. This visual catalog of opportunity is the foundation of the player's mental economic map, directly influencing early extraction efficiency and travel planning."
+    },
+    {
+      "id": 41,
+      "category": "narrative",
+      "question": "What story moment does each pre-scripted camera shot serve \u2014 arrival at a new canyon, discovering a ruin, or witnessing a weather event?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The cinematic camera tells the story of the player's journey: every establishing shot frames a discovery, and every close-up emphasizes what matters about that discovery."
+    },
+    {
+      "id": 42,
+      "category": "UX",
+      "question": "Does the cinematic camera path maintain visual interest without camera shake or motion sickness during the 30-second passive flythrough?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The flythrough uses smooth UE5 Sequencer curves with no sudden acceleration. Focal length stays in comfortable 35-50mm range. Player never controls the camera -- this is pure spectacle."
+    },
+    {
+      "id": 43,
+      "category": "save_load",
+      "question": "Does the camera path keyframe data (position, rotation, FOV at each waypoint) need to persist between sessions, or is it authored at build time?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Path keyframes are authored at build time in Sequencer. No runtime save/load needed. Only camera FOV preference and starting position may optionally persist."
+    },
+    {
+      "id": 44,
+      "category": "physics",
+      "question": "Does the camera flythrough obey any physical constraints (acceleration limits, momentum, collision) or is it purely cinematic spline interpolation?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Purely cinematic. The camera follows an authored spline with no physics. No collision response, no momentum, no acceleration curves beyond Sequencer easing."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

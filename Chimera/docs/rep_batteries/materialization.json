@@ -1,0 +1,34 @@
+[
+ {
+  "id": "atom_3624b1885398",
+  "feature": "materialization",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/materialization/transcript.json"
+  },
+  "desc": "'materialization' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
+ },
+ {
+  "id": "atom_53324658d1b8",
+  "feature": "materialization",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source",
+    "tests/dsl_grammar",
+    "docs/beats"
+   ],
+   "globs": [
+    "*.*"
+   ],
+   "regex": "(materialization|materialization|Materialization)"
+  },
+  "desc": "'materialization' surfaces in Source, the DSL spec, or a beat script \u2014 its identity exists somewhere in the game",
+  "provenance": "curriculum:identity"
+ }
+]

@@ -1,0 +1,581 @@
+{
+  "name": "Demo_Day_Night_Cycle",
+  "description": "Sub-feature of Environmental_Demo: Day/night lighting transition and its effect on education",
+  "created": "2026-07-19T17:16:18.025779",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Can the player identify rock types from visual cues alone?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "ZE47-1: Sun arc teaches time estimation (sun height = time). ZE47-2: Star sphere is world-aligned, enabling celestial navigation. ZE47-3: Temperature curve peaks 1-2h after solar noon (thermal inertia lesson). ZE47-4: Night changes observations (stars, condensation, cold-related geology). ZE47-5: 3 sub-features (Celestial_Light_Rotation, Temperature_Time_System, Night_Visibility_Gameplay) each drive specific education via shared time-of-day variable."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the player learn to predict weather from cloud formations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "ZE47-2: Flat-bottom clouds = stable air (day). Towering clouds = storms building (afternoon). Star visibility = clear night. Cloud color at sunset predicts next-day weather. Each requires time-of-day-specific observation."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Can curiosity-driven players discover deeper geology facts?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "ZE47-3: Rocks cracked by thermal expansion at noon are visible cooling at night. Star patterns teach navigation \u2014 same constellation from different canyon locations. Deep geology: 'Why are some rocks cracked and others smooth?' leads to thermal expansion + mineral composition lesson."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does the environment teach something the player uses later in gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "ZE47-4: At night: condensation observations near canyon walls (temperature drop + humidity). Day: mineral identification by color. Different rocks conduct heat differently \u2014 touch test. Noon observations (thermal expansion cracking) teach material properties used in shelter-building (Loop 6)."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What single screenshot makes a Steam shopper wishlist?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How does this demo compare to No Man Sky environmental shots?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could this demo be a 30-second Steam trailer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What mechanic would a journalist call innovative here?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do clouds cast shadows that move across the terrain?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does wind direction match cloud movement?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Can the player see the same constellation from different locations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does day/night affect which educational observations appear?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can this demo be built and run without pipeline errors?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What is the minimum UE5 compile fix needed?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does the demo run at 30fps on target hardware?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can the demo be packaged as a standalone build?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Are MCP tools reliable enough for repeated actor spawning?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the worker bridge handle concurrent UE5 commands?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can the forge build UE5 content or only Python?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What is the graph query performance at 3000+ nodes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on the geology module (core/geology.py)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the volumetric cloud actor being spawned?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on the env_education module being wired to UE5?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that MCP tools can build game content reliably?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 25,
+      "category": "proves",
+      "question": "Does this prove that educational mechanics can exist without a separate UI?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 26,
+      "category": "derived_from",
+      "question": "Was this derived from the internal council on environmental systems?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 27,
+      "category": "conflicts",
+      "question": "Does this conflict with the current pipeline compile errors?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 28,
+      "category": "requires",
+      "question": "What UE5 knowledge is required to configure volumetric cloud properties?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 29,
+      "category": "vision",
+      "question": "Does an environmental demo make the game more famous than a gameplay demo would?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 30,
+      "category": "tradeoff",
+      "question": "What features are NOT being built while we build this demo?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 31,
+      "category": "evidence",
+      "question": "What evidence exists that environmental realism drives Steam sales?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 32,
+      "category": "terminal",
+      "question": "Does this chain reach a human who plays the game, or just satisfy an architectural goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 33,
+      "category": "platform",
+      "question": "Does this work in UE5.8 without hacks or workarounds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 34,
+      "category": "performance",
+      "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 35,
+      "category": "accessibility",
+      "question": "Can a colorblind or hearing-impaired player fully experience this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 36,
+      "category": "audio",
+      "question": "Does this have sound design that matches the visual quality?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 37,
+      "category": "modding",
+      "question": "Can the community extend or modify this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 38,
+      "category": "localization",
+      "question": "Can this be translated without breaking?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 39,
+      "category": "depends_on",
+      "question": "Does this depend on Environmental_Demo being complete?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Day/night cycle uses UE5 directional light rotation. Stars are world-aligned. Temperature and education observations change with time. Wind shifts between day and night."
+    },
+    {
+      "id": 40,
+      "category": "depth",
+      "question": "Does this feature need sub-features, or is it detailed enough at this level?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Zoom completed. 3 sub-features designed: Celestial_Light_Rotation (26 questions), Temperature_Time_System (26 questions), Night_Visibility_Gameplay (26 questions). Each recorded in DNA graph. No deeper zoom needed beyond these 3."
+    },
+    {
+      "id": 41,
+      "category": "breadth",
+      "question": "Are there sibling features missing at this level of the tree?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "3 sub-features complete this zoom: (1) Celestial_Light_Rotation \u2014 light mechanics, (2) Temperature_Time_System \u2014 thermal gameplay, (3) Night_Visibility_Gameplay \u2014 darkness effects. Together they cover all daylight-related systems for v1 demo."
+    },
+    {
+      "id": 42,
+      "category": "parent",
+      "question": "Is the parent feature complete enough to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Parent Environmental_Demo is designed at 38/38. Ready to build."
+    },
+    {
+      "id": 43,
+      "category": "priority",
+      "question": "Should this be built before or after its siblings?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build in parallel. All sub-features are independent and can be constructed simultaneously."
+    },
+    {
+      "id": 44,
+      "category": "dependency",
+      "question": "Does this block other features, or do others block this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No cross-blocking. Each sub-feature is independent."
+    },
+    {
+      "id": 45,
+      "category": "foundation",
+      "question": "Does MCP support setting LightColor as an RGB struct?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. LightColor is set as {R: int, G: int, B: int}. Range 0-255. Warm white 255,240,220 works well."
+    },
+    {
+      "id": 46,
+      "category": "education",
+      "question": "Does light state transition between dawn/noon/sunset/night teach players about sun arc?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each state has distinct pitch (elevation), intensity, and color temperature. Players learn sun position = time."
+    },
+    {
+      "id": 47,
+      "category": "foundation",
+      "question": "Can MCP transition between 4 distinct day states without desync?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. All 4 states (DAWN, NOON, SUNSET, NIGHT) were applied successfully. Each produces visibly different lighting."
+    },
+    {
+      "id": 48,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 4 distinct light states (DAWN/NOON/SUNSET/NIGHT) applied via MCP. Each has uniqu...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "4 distinct light states (DAWN/NOON/SUNSET/NIGHT) applied via MCP. Each has unique pitch, intensity, and color temperature."
+    },
+    {
+      "id": 49,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Light state transitions work via set_actor_transform (rotation) + set_component_...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Light state transitions work via set_actor_transform (rotation) + set_component_property (intensity, color)."
+    },
+    {
+      "id": 50,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 51,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 52,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 53,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 54,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 55,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 56,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 57,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 58,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 59,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 60,
+      "category": "economy",
+      "question": "How does the day/night cycle in the demo introduce temporal economics \u2014 diurnal resource windows, safety-vs-risk tradeoffs after dark, and time-dependent energy costs?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The demo's day/night cycle teaches that time is a resource. Daytime = safe surface mining, clear visibility, solar charging. Nighttime = exclusive resources (bioluminescent compounds, night-blooming reagents) but also hazards. Delaying extraction by 4 hours changes both the cost structure and the opportunity set, establishing the core temporal economics concept."
+    },
+    {
+      "id": 61,
+      "category": "narrative",
+      "question": "Does the demo's accelerated day-night cycle tell the story of a full planetary rotation, compressing a day's narrative \u2014 morning glow, noon glare, twilight mystery \u2014 into minutes?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The compressed cycle is a story in miniature: dawn promises adventure, high noon pushes exploration, golden hour rewards it, nightfall brings contemplation and the stars \u2014 a full narrative day in sixty seconds."
+    },
+    {
+      "id": 62,
+      "category": "UX",
+      "question": "Can the player observe the full day/night cycle clearly during the 30-second demo window, with visible lighting changes across the canyon?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The demo runs at 300x time scale, completing a full day in ~30 seconds. Lighting visibly transitions through dawn, day, dusk, and night. Player sees the entire arc passively."
+    },
+    {
+      "id": 63,
+      "category": "save_load",
+      "question": "Does the demo's day/night phase need to persist on save so the player returns to the same time-of-day?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Time-of-day must persist for save/load consistency. One float: accumulated cycle time. Written on manual save."
+    },
+    {
+      "id": 64,
+      "category": "physics",
+      "question": "Does the demo's day/night cycle follow a physically accurate sun trajectory or is it a simplified gameplay cycle?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Simplified gameplay cycle. The sun rotates at a constant speed (compressed to ~5 minutes real-time) along a fixed equatorial arc. No axial tilt, no seasonal variation."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

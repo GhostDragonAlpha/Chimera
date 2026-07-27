@@ -1,0 +1,401 @@
+{
+  "name": "Celestial_Light_Rotation",
+  "description": "Sub-feature of Demo_Day_Night_Cycle: UE5 directional light rotation simulating sun arc, and world-aligned star sphere rotation for night sky",
+  "created": "2026-07-20T00:00:00.000000",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the sun arc teach the player about axial tilt or seasonal variation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. The sun follows a fixed equatorial arc. Seasonal axial tilt is a future enhancement that would teach real astronomy."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player use sun position to estimate time of day without a HUD clock?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sun height above horizon maps directly to time of day. Players learn that low sun = morning/evening, overhead = noon. Shadow length reinforces this."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does the star sphere enable celestial navigation (finding north via stars)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. The star sphere is world-aligned so constellations maintain fixed positions relative to the terrain. A polar star equivalent could teach navigation, but no pointer or educational trigger marks it yet."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Do sunrise and sunset happen at predictable, learnable times?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The rotation rate is constant, so sunrise/sunset occur at fixed intervals. Players can learn the pattern and plan activities around daylight."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What single screenshot of the rotation system would impress Steam shoppers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "A four-panel showing the same canyon at dawn, noon, sunset, and night \u2014 with the sun position visibly different in each and long shadows at morning/evening."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How does this compare to Minecraft's day/night cycle in visual fidelity?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minecraft uses a skydome tint. We use UE5 directional light rotation with real shadow casting. Star sphere adds depth. The fidelity gap is substantial and screenshot-visible."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could a timelapse of the rotation be a social media clip?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A 15-second timelapse compressing a full day cycle with cloud movement and changing shadows is social media content. The star sphere rotating in at dusk is a natural hook."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What would a journalist call the most impressive visual detail of the rotation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Shadow length changing continuously. UE5's dynamic shadow system means every rock and canyon wall casts a shadow that stretches at sunset and shrinks at noon \u2014 visible without any UI."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Does the directional light rotation affect cloud lighting and cloud shadows?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The directional light rotates in world space, so volumetric cloud lighting follows naturally. Cloud color shifts from warm orange at sunset to cool blue at noon to dark at night."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Are star positions consistent if the player teleports across the map?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The star sphere is world-aligned, so the same stars appear in the same positions regardless of player location. This creates a persistent sky that grounds the world."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Does the moon (or any secondary celestial body) rotate independently?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. Only the sun (directional light) and star sphere rotate. A moon with independent orbit and phase cycle is a future enhancement."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does the rotation rate match a believable day length for an alien world?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "The day length is compressed for gameplay (5-10 minutes real-time). No canonical alien day length is established, but the rate is configurable via the directional light's rotation speed parameter."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can the directional light rotation be implemented purely in UE5 BP/level blueprint?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. UE5 directional light supports blueprint-controlled rotation via timeline or tick. No C++ required for the basic rotation. Star sphere rotation uses the same mechanism."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What is the minimum UE5 work to get a visible day/night transition?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "One directional light in the level with a timeline rotating its Yaw 360 degrees over the day period. One sky sphere actor with a rotating material parameter for star visibility. Both are level blueprint operations."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does the rotation system add measurable load to the render thread?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Negligible. The directional light itself is zero-cost (it exists regardless). Rotating it is a transform update. The star sphere is a static mesh with an emissive material. No additional draw calls."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can the light rotation be paused, reversed, or speed-controlled at runtime?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A blueprint-controlled time-of-day variable can be paused, scaled, or set absolutely. This enables cinematic controls (slow-motion sunset) and debugging."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Does MCP support setting directional light rotation at runtime?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. mcp_set_actor_transform or set_component_property on the directional light component can set rotation. Verified pattern from existing MCP tests."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Will the star sphere rotate smoothly at 30fps without stutter?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The rotation is a simple float interpolation. No physics, no collision, no tick-dependent computation. It runs on the game thread with minimal cost."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can the rotation system coexist with the volumetric cloud system's independent time?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes, with a shared time-of-day variable. Both systems read from the same clock. Cloud properties (density, color) can branch on the same value. No runtime conflict."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What happens to cached lightmaps when the directional light rotates dynamically?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Dynamic directional lights do not use baked lightmaps. The light is fully dynamic, with shadow casting via shadow maps. No lightmap invalidation occurs."
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on the UE5 directional light actor existing in the demo level?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The rotation system requires a directional light in the level. If the demo level has no directional light, the system has nothing to rotate."
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the star sphere mesh (SM_StarSphere) being present?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The star sphere is a separate actor. If it is not spawned, the night sky will be empty (black) when the directional light rotates below the horizon."
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on Demo_Volumetric_Clouds for full visual effect?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No. The rotation system works independently of clouds. However, the full visual experience (sunset illuminating clouds, stars appearing through clear sky) requires both systems active."
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that UE5 can do a world-aligned day/night cycle without engine modifications?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Directional light rotation and sky sphere rotation are built-in UE5 capabilities. This proves our pipeline can create a dynamic sky with zero engine forking."
+    },
+    {
+      "id": 25,
+      "category": "proves",
+      "question": "Does this prove that time-of-day can be a gameplay-relevant variable, not just cosmetic?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. The rotation system provides the time-of-day signal. Whether it drives gameplay (visibility, temperature, spawns) depends on the systems that consume it. Alone, it is cosmetic."
+    },
+    {
+      "id": 26,
+      "category": "derived_from",
+      "question": "Was this derived from the Demo_Day_Night_Cycle surface design?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The parent feature established that day/night uses UE5 directional light rotation and world-aligned stars. This sub-feature specifies the rotation mechanics in detail."
+    },
+    {
+      "id": 27,
+      "category": "shipping",
+      "question": "Can the directional light rotation be controlled via MCP set_actor_transform?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Pitch controls sun elevation (-90=midnight, 0=horizon, 90=noon). Yaw rotates 360 for full day cycle."
+    },
+    {
+      "id": 28,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Directional light rotation controllable via MCP. Pitch -70 to 60 maps midnight t...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directional light rotation controllable via MCP. Pitch -70 to 60 maps midnight to noon. Yaw 0-360 for full rotation."
+    },
+    {
+      "id": 29,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Star sphere needs separate rotation. Not yet spawned. World-aligned stars need s...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Star sphere needs separate rotation. Not yet spawned. World-aligned stars need sky sphere actor."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 33,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 34,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 37,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 38,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 39,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 40,
+      "category": "economy",
+      "question": "How does the day/night sun arc create temporal harvesting windows where solar-dependent activities (photovoltaic charging, photosensitive material collection, heat-requiring crafting) have time-sensitive profitability?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Sun arc creates a predictable economic rhythm. Solar-powered equipment charges at peak efficiency only during midday, photosynthetic reagents are harvestable only during certain light angles, and certain minerals are extractable only during specific illumination windows. Players who optimize their daily schedule \u2014 charging at noon, mining dark minerals at midnight \u2014 extract more value per 24-hour cycle."
+    },
+    {
+      "id": 41,
+      "category": "narrative",
+      "question": "Does the slow rotation of celestial light sources across the sky tell the story of this planet's place in its solar system \u2014 its day length, axial tilt, and orbital season?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The celestial cycle is the planet's pulse: the length of day tells you how fast it spins, the arc of the sun tells you its axial tilt, the color of light tells you its atmospheric chemistry."
+    },
+    {
+      "id": 42,
+      "category": "UX",
+      "question": "Does the celestial rotation feel continuous and natural to the player without visible angular jumps when time-of-day advances, especially during fast-forwarded time?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Sun light rotates on a continuous quaternion slerp. Star sphere rotates separately. At 100x time scale the motion is visible but smooth -- no stepping artifacts."
+    },
+    {
+      "id": 43,
+      "category": "save_load",
+      "question": "Does the current time-of-day (sun angle, star sphere rotation) need to persist and resume on load, or does the cycle always restart from dawn?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes, time-of-day must persist. If the player saves at sunset and loads the save, the sun should still be at sunset position. One float value: accumulated rotation angle. Written only on manual save or checkpoint."
+    },
+    {
+      "id": 44,
+      "category": "physics",
+      "question": "Does the sun arc model real orbital mechanics (axial tilt, latitude-dependent arc, seasonal variation) or is it a fixed equatorial rotation?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Fixed equatorial rotation in v1. Axial tilt and seasonal variation are identified as future enhancement. The rotation rate is constant and the arc is symmetric about the zenith with no seasonal change."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

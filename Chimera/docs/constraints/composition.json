@@ -1,0 +1,23 @@
+{
+  "_provenance": "Composition pass — trains the seams between all 9 rungs using sleepwalker beat data. The measure function runs a full game loop beat and checks inter-rung dependencies. Research basis: WorldModelData's 200+ properties per frame approach, using our own sleepwalker as the data engine.",
+  "name": "composition",
+  "mirror_wall": "The full game loop must close. Player spawns on formed terrain, survives via shelter, explores for resources, helps an NPC, builds beacon components, and the signal reflects their choices.",
+  "inputs": "all 9 rung outputs",
+  "walls": [
+    "Player spawns on formed, walkable terrain (rung 2 output)",
+    "O2 drains and shelter refills work in the same session (rung 3 + rung 5)",
+    "At least one resource type exists in the spawn biome (rung 4 output)",
+    "At least one NPC with a need exists near the resource spawn zone (rung 7)",
+    "Giving the correct resource to the NPC unlocks a blueprint (rung 7 + rung 8)",
+    "The beacon can be activated from unlocked blueprints (rung 8 + rung 9)",
+    "Signal strength at beacon activation equals f(NPCs helped) (rung 9)",
+    "Full loop completes without crash or softlock in under 5 minutes of play"
+  ],
+  "gpu": false,
+  "sleepwalker": true,
+  "output": {
+    "format": "Composed game state: spawn point, shelter position, resource layout, NPC positions, beacon position, signal curve",
+    "next_rung": null,
+    "single_level": true
+  }
+}

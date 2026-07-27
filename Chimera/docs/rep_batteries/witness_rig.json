@@ -1,0 +1,14 @@
+[
+ {
+  "id": "atom_b4efbd0fd750",
+  "feature": "witness_rig",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "The witness anchor (0,0,130) must never sit inside colliding geometry: SM_StarSphere (2km-radius colliding shell centered at origin, unowned"
+  },
+  "desc": "regression (PIE): The witness anchor (0,0,130) must never sit inside colliding geometry: SM_StarSphere (2km-radius col",
+  "provenance": "elimination:elim_41064db78ef9a045"
+ }
+]

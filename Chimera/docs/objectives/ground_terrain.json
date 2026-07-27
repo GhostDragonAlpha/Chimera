@@ -1,0 +1,10 @@
+{
+  "_provenance": "Ground terrain rung — GPU Cellular Potts. measure_batch enabled.",
+  "scenario": "Grow 3D terrain from Cellular Potts on GPU. Sand and rock must segregate into distinct zones. Bedrock must form immovable foundation. Surface must be walkable.",
+  "constraints": [
+    {"kind": "at_least", "measure": "n_materials", "min": 2, "hard": true, "wall": "At least 2 material types must form"},
+    {"kind": "band", "measure": "repose_angle", "min": 25, "max": 50, "hard": true, "wall": "Angle of repose must be in [25, 50]"},
+    {"kind": "at_least", "measure": "has_bedrock", "min": 1, "hard": true, "wall": "Bedrock must exist as foundation"},
+    {"kind": "at_least", "measure": "walkable_area", "min": 0.20, "wall": "At least 20% surface walkable"}
+  ]
+}

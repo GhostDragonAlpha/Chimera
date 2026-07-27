@@ -1,0 +1,16 @@
+[
+ {
+  "id": "atom_c9d44abce7e4",
+  "feature": "audio_visual_sync/report_telemetry",
+  "tier": 2,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_lacks",
+   "root": "Source/Chimera/ProceduralGenerated/Sound",
+   "glob": "*.cpp",
+   "regex": "=\\s*999(\\.0f?)?\\b"
+  },
+  "desc": "no hardcoded 999 fallback sentinel in Sound (defaults mean the backend isn't populating \u2014 H-31/H-32 smell)",
+  "provenance": "H-31"
+ }
+]

@@ -1,0 +1,77 @@
+{
+ "demo": "materialized_runtime",
+ "loop": 8,
+ "settle_s": 8,
+ "_provenance": "tb-0198 (fable-5, 2026-07-18): the RIGHT-WAY materialization witness, replacing tb-0197's refuted editor-staged version (surprise_f14d0396d25cb260: the GLB patch imported rotated 90 deg and the old beat asserted existence, not contact - the pawn stood on the flat plane while a sideways wall photobombed). This beat tests the RUNTIME UMaterializationSubsystem (generator-owned, trained literals baked with provenance): no editor staging exists in the loop - the subsystem forms the ground itself in PIE. CONTACT is asserted, not existence: the pawn resets high over the patch field and must SETTLE INTO THE RELIEF BAND - pawn_z_above 100 proves it rests on formed columns (resting on the bare Floor at z=0 would read ~90 at capsule center; columns run ~1-6m so rest reads 150-700), pawn_z_below 800 proves it is not levitating or perched on legacy staging. Formation is asserted by HEARING THE SUBSYSTEM'S OWN MARKERS (sub-43 raw-tail hearing): '[Materialize] subsystem online' at PIE start, '[Materialize] formed cell' as the bubble builds. Beat 2 is REAL INPUT (H-14): 6s of held W at jog speed crosses at least one 24m patch boundary in WHICHEVER direction the pawn faces (spawn rotation is unset, so no direction-specific cell id is asserted - an honest vocabulary limit, recorded); pawn_z_above 100 AFTER the walk is the direction-independent bubble-follows proof: if formation failed ahead, the pawn walks off the formed field and settles on the bare Floor at ~90. PRECONDITION: reload chimeradefaultlevel from disk first (discard any legacy staging actors) - the saved level is the clean post-sphere-kill state.",
+ "beats": [
+  {
+   "name": "bubble_forms_and_pawn_stands_on_relief",
+   "features": [
+    "materialization",
+    "granular_matter",
+    "planet_averages"
+   ],
+   "actions": [
+    {
+     "reset_position": {
+      "x": 1100,
+      "y": 1100,
+      "z": 900
+     }
+    },
+    {
+     "wait": 5.0
+    },
+    {
+     "screenshot": "materialized_runtime_stand"
+    }
+   ],
+   "expects": [
+    {
+     "is_pie": true
+    },
+    {
+     "log_contains": "[Materialize] subsystem online"
+    },
+    {
+     "log_contains": "[Materialize] formed cell"
+    },
+    {
+     "pawn_z_above": 100
+    },
+    {
+     "pawn_z_below": 800
+    }
+   ]
+  },
+  {
+   "name": "bubble_follows_the_walking_pawn",
+   "features": [
+    "materialization"
+   ],
+   "actions": [
+    {
+     "key": "W",
+     "hold_s": 6.0
+    },
+    {
+     "wait": 2.0
+    },
+    {
+     "screenshot": "materialized_runtime_walk"
+    }
+   ],
+   "expects": [
+    {
+     "is_pie": true
+    },
+    {
+     "pawn_z_above": 100
+    },
+    {
+     "pawn_z_below": 800
+    }
+   ]
+  }
+ ]
+}

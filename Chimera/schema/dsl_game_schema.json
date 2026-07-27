@@ -1,0 +1,923 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "game_settings": {
+      "type": "object",
+      "properties": {
+        "camera_perspective": {
+          "type": "string",
+          "enum": ["first_person", "third_person"]
+        },
+        "game_mode": {
+          "type": "string",
+          "enum": ["single_player", "multiplayer"]
+        }
+      },
+      "required": ["camera_perspective", "game_mode"]
+    },
+    "game": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "engine_version": {"type": "string"},
+        "target_platforms": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "required": ["title", "engine_version", "target_platforms"]
+    },
+    "narrative": {
+      "type": "object",
+      "properties": {
+        "acts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "name": {"type": "string"}
+            },
+            "required": ["id", "name"]
+          }
+        },
+        "factions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "name": {"type": "string"},
+              "relation": {"type": "string"}
+            },
+            "required": ["id", "name", "relation"]
+          }
+        },
+        "dialogue_trees": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "nodes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "string"},
+                    "speaker": {"type": "string"},
+                    "text": {"type": "string"}
+                  },
+                  "required": ["id"]
+                }
+              }
+            },
+            "required": ["id"]
+          }
+        },
+        "cutscenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"}
+            },
+            "required": ["id"]
+          }
+        }
+      }
+    },
+    "gameplay": {
+      "type": "object",
+      "properties": {
+        "characters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "inherits": {"type": "string"}
+            },
+            "required": ["name", "inherits"]
+          }
+        },
+        "abilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "uses_gas": {"type": "boolean"},
+              "ability_tags": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            },
+            "required": ["name"]
+          }
+        },
+        "combat_system": {
+          "type": "object",
+          "properties": {
+            "damage_formulas": {"type": "string"},
+            "hit_reactions": {"type": "boolean"},
+            "status_effects": {
+              "type": "array",
+              "items": {"type": "string"}
+            }
+          }
+        },
+        "inventory": {
+          "type": "object"
+        },
+        "progression": {
+          "type": "object"
+        },
+        "survival_stats": {
+          "type": "object",
+          "properties": {
+            "stats": {
+              "type": "array",
+              "items": {"type": "string"}
+            }
+          }
+        },
+        "crafting_systems": {
+          "type": "object",
+          "properties": {
+            "recipes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "inputs": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                  },
+                  "output": {"type": "string"},
+                  "quantity": {"type": "integer"}
+                }
+              }
+            },
+            "workstations": {
+              "type": "array",
+              "items": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "world": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "environment_assets": {"type": "boolean"},
+              "spawn_points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {"type": "string"},
+                    "position": {"type": "string"}
+                  },
+                  "required": ["name"]
+                }
+              }
+            },
+            "required": ["name"]
+          }
+        },
+        "npcs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "behavior_tree": {"type": "string"},
+              "dialogue_tree": {"type": "string"}
+            },
+            "required": ["name"]
+          }
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "properties": {
+        "hud": {
+          "type": "object",
+          "properties": {
+            "elements": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "using_common_ui": {"type": "boolean"}
+          }
+        },
+        "pause_menu": {
+          "type": "object"
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "properties": {
+        "music_cues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"}
+            },
+            "required": ["name"]
+          }
+        },
+        "sfx": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"}
+            },
+            "required": ["name"]
+          }
+        },
+        "dynamic_mixing_rules": {"type": "boolean"}
+      }
+    },
+    "technical": {
+      "type": "object",
+      "properties": {
+        "network_model": {"type": "string"},
+        "replication": {
+          "type": "object",
+          "properties": {
+            "properties": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "rpcs": {
+              "type": "array",
+              "items": {"type": "string"}
+            }
+          }
+        },
+        "performance": {
+          "type": "object",
+          "properties": {
+            "target_fps": {"type": "integer"},
+            "lod_strategy": {"type": "string"}
+          }
+        },
+        "module_dependencies": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "required": ["network_model", "module_dependencies"]
+    },
+    "art_direction": {
+      "type": "object",
+      "properties": {
+        "style": {"type": "string"},
+        "color_palette": {"type": "string"}
+      }
+    },
+    "celestial_systems": {
+      "type": "object",
+      "properties": {
+        "celestial_bodies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "type": {"type": "string"},
+              "radius_km": {"type": "integer"},
+              "atmosphere_density": {"type": "number"},
+              "has_moons": {"type": "boolean"},
+              "moon_count": {"type": "integer"},
+              "atmospheric_composition": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "surface_temperature_min": {"type": "integer"},
+              "surface_temperature_max": {"type": "integer"},
+              "is_artificial": {"type": "boolean"},
+              "station_class": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "flight_components": {
+      "type": "object",
+      "properties": {
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "type": {"type": "string"},
+              "thrust_force_newtons": {"type": "integer"},
+              "fuel_consumption_kg_per_sec": {"type": "number"},
+              "fuel_type": {"type": "string"},
+              "max_temperature_kelvin": {"type": "integer"},
+              "energy_requirement_megajoules": {"type": "integer"},
+              "cool_down_seconds": {"type": "integer"},
+              "requires_quantum_anchor": {"type": "boolean"},
+              "max_range_light_years": {"type": "integer"},
+              "shield_strength_points": {"type": "integer"},
+              "regeneration_rate_per_sec": {"type": "integer"},
+              "energy_drain_per_hit": {"type": "integer"},
+              "shield_type": {"type": "string"},
+              "detection_range_km": {"type": "integer"},
+              "scan_modes": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "jamming_resistance_level": {"type": "integer"}
+            }
+          }
+        }
+      }
+    },
+    "ship_classes": {
+      "type": "object",
+      "properties": {
+        "ships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "category": {"type": "string"},
+              "crew_capacity": {"type": "integer"},
+              "cargo_volume_cubic_meters": {"type": "integer"},
+              "has_quantum_drive": {"type": "boolean"},
+              "has_weapon_systems": {"type": "boolean"},
+              "weapon_slots": {"type": "integer"},
+              "max_speed_km_per_sec": {"type": "integer"},
+              "shield_class": {"type": "string"},
+              "maneuverability_rating": {"type": "integer"}
+            }
+          }
+        }
+      }
+    },
+    "economy_systems": {
+      "type": "object",
+      "properties": {
+        "commodities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "category": {"type": "string"},
+              "base_value_credits": {"type": "integer"},
+              "market_volatility": {"type": "number"},
+              "production_locations": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "consumption_regions": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "trade_restrictions": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        },
+        "trade_routes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "origin_system": {"type": "string"},
+              "destination_systems": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "typical_cargo_types": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "route_safety_rating": {"type": "number"},
+              "pirate_activity_level": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "quantum_travel_systems": {
+      "type": "object",
+      "properties": {
+        "quantum_anchors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "location_coordinates": {
+                "type": "array",
+                "items": {"type": "number"}
+              },
+              "anchor_strength": {"type": "integer"},
+              "max_concurrent_jumps": {"type": "integer"},
+              "recharge_rate_per_second": {"type": "number"},
+              "supports_ship_classes": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        },
+        "quantum_jump_paths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "origin_anchor": {"type": ["string", "null"]},
+              "destination_anchor": {"type": ["string", "null"]},
+              "distance_light_years": {"type": "number"},
+              "travel_time_seconds": {"type": "integer"},
+              "energy_cost_megajoules": {"type": "integer"},
+              "requires_favorable_nimbus_conditions": {"type": "boolean"},
+              "nimbus_condition_threshold": {"type": "number"}
+            }
+          }
+        },
+        "quantum_weather_systems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phenomenon": {"type": "string"},
+              "affects_jump_safety": {"type": "boolean"},
+              "safety_reduction_percentage": {"type": "integer"},
+              "duration_variation_minutes": {
+                "type": "array",
+                "items": {"type": "integer"}
+              },
+              "affected_radius_light_years": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "planet_generation_systems": {
+      "type": "object",
+      "properties": {
+        "planet_generators": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "generator_type": {"type": "string"},
+              "base_biomes": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "terrain_detail_levels": {
+                "type": "array",
+                "items": {"type": "integer"}
+              },
+              "supports_dynamic_weather": {"type": "boolean"},
+              "weather_systems": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "cloud_layers": {"type": "integer"},
+              "turbulence_factor": {"type": "number"},
+              "color_gradients": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "has_ring_system": {"type": "boolean"},
+              "cluster_density_per_cubic_km": {"type": "number"},
+              "size_variation_meters": {
+                "type": "array",
+                "items": {"type": "integer"}
+              },
+              "composition_types": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "spawn_resource_nodes": {"type": "boolean"}
+            }
+          }
+        },
+        "biome_configs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "vegetation_density": {"type": "number"},
+              "tree_height_range_meters": {
+                "type": "array",
+                "items": {"type": "integer"}
+              },
+              "ground_texture_types": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "wildlife_spawns": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "resource_nodes": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "terrain_roughness": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "tests": {
+      "type": "object",
+      "properties": {
+        "test_definitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "type": {"type": "string", "enum": ["unit", "integration", "balance"]},
+              "description": {"type": "string"},
+              "iterations": {"type": "integer", "default": 1, "minimum": 1},
+              "setup": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "action": {"type": "string"},
+                    "params": {"type": "object"}
+                  }
+                }
+              },
+              "action": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "action": {"type": "string"},
+                    "params": {"type": "object"}
+                  }
+                }
+              },
+              "assert": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "expression": {"type": "string"},
+                    "operator": {"type": "string"},
+                    "expected": {},
+                    "tolerance": {"type": "number"}
+                  }
+                }
+              },
+              "cleanup": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "action": {"type": "string"},
+                    "params": {"type": "object"}
+                  }
+                }
+              }
+            },
+            "required": ["name", "type", "setup", "action", "assert"]
+          }
+        }
+      }
+    },
+    "flight_model": {
+      "type": "object",
+      "properties": {
+        "type": {"type": "string"},
+        "thrust_acceleration": {"type": "number"},
+        "max_speed_kmh": {"type": "integer"},
+        "turn_rate_deg_per_sec": {"type": "integer"},
+        "inertia_damping": {"type": "number"}
+      }
+    },
+    "ship_systems": {
+      "type": "object",
+      "properties": {
+        "ships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "inherits": {"type": "string"},
+              "fuel_capacity_liters": {"type": "integer"},
+              "cargo_capacity_kg": {"type": "integer"},
+              "system": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "consumption_rate_per_km": {"type": "number"},
+                  "travel_time_seconds": {"type": "integer"},
+                  "fuel_cost_per_jump_liters": {"type": "integer"}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "economy_systems": {
+      "type": "object",
+      "properties": {
+        "commodities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "base_type": {"type": "string"},
+              "unit": {"type": "string"},
+              "market_price": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "market": {"type": "string"},
+                    "buy_price_per_kg": {"type": "integer"},
+                    "sell_price_per_kg": {"type": "integer"},
+                    "buy_price_per_unit": {"type": "integer"},
+                    "sell_price_per_unit": {"type": "integer"},
+                    "buy_price_per_ration": {"type": "integer"},
+                    "sell_price_per_ration": {"type": "integer"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "trade_routes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "origin": {"type": "string"},
+              "destination": {"type": "string"},
+               "commodities_allowed": {
+                 "type": "array",
+                 "items": {"type": "string"}
+               }
+             }
+           }
+         }
+       }
+     },
+    "procedural_generation": {
+      "type": "object",
+      "description": "Curated high-level PCG game design concepts",
+      "properties": {
+        "pcg_graphs": {
+          "type": "array",
+          "description": "PCG graph definitions for procedural content generation",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "graph_type": {"type": "string"},
+              "data_collections": {
+                "type": "array",
+                "description": "References FPCGDataCollection from the generated PCG schema",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "collection_name": {"type": "string"},
+                    "cancel_execution_on_empty": {"type": "boolean"},
+                    "cancel_execution": {"type": "boolean"},
+                    "generated_type_ref": {
+                      "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGDataCollection"
+                    }
+                  }
+                }
+              },
+              "tagged_data_items": {
+                "type": "array",
+                "description": "References FPCGTaggedData from the generated PCG schema",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tags": {
+                      "type": "array",
+                      "items": {"type": "string"}
+                    },
+                    "pin": {"type": "string"},
+                    "b_pinless_data": {"type": "boolean"},
+                    "b_is_used_multiple_times": {"type": "boolean"},
+                    "generated_type_ref": {
+                      "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGTaggedData"
+                    }
+                  }
+                }
+              },
+              "metadata_domains": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "attribute_selectors": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "procedural_generation_types": {
+      "type": "object",
+      "description": "Generated UE5 PCG API types — references the auto-generated schema for full type definitions",
+      "properties": {
+        "enums": {
+          "type": "object",
+          "description": "PCG enums from generated schema (EPCGChangeType, EPCGActorFilter, etc.)",
+          "properties": {
+            "change_type": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGChangeType"
+            },
+            "actor_filter": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGActorFilter"
+            },
+            "component_dirty_flag": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGComponentDirtyFlag"
+            },
+            "component_generation_trigger": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGComponentGenerationTrigger"
+            },
+            "data_type": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGDataType"
+            },
+            "settings_type": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGSettingsType"
+            },
+            "graph_usage": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGGraphUsage"
+            },
+            "execution_phase": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGExecutionPhase"
+            },
+            "metadata_types": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/enums/properties/PCGMetadataTypes"
+            }
+          }
+        },
+        "structs": {
+          "type": "object",
+          "description": "PCG structs from generated schema (FPCGTaggedData, FPCGDataCollection, etc.)",
+          "properties": {
+            "tagged_data": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGTaggedData"
+            },
+            "data_collection": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGDataCollection"
+            },
+            "point": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGPoint"
+            },
+            "pin_properties": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGPinProperties"
+            },
+            "actor_selector_settings": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGActorSelectorSettings"
+            },
+            "attribute_property_selector": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGAttributePropertySelector"
+            },
+            "world_common_query_params": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/structs/properties/PCGWorldCommonQueryParams"
+            }
+          }
+        },
+        "classes": {
+          "type": "object",
+          "description": "PCG classes from generated schema (APCGVolume, APCGWorldActor, etc.)",
+          "properties": {
+            "pcg_volume": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/classes/properties/PCGVolume"
+            },
+            "pcg_world_actor": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/classes/properties/PCGWorldActor"
+            },
+            "pcg_partition_actor": {
+              "$ref": "./generated/pcg_dsl_schema.json#/properties/classes/properties/PCGPartitionActor"
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "level": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "player_start": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "array",
+              "items": {"type": "number"}
+            }
+          },
+          "required": ["location"]
+        },
+        "skybox_type": {"type": "string"},
+        "lights": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {"type": "string"},
+              "position": {
+                "type": "array",
+                "items": {"type": "number"}
+              },
+              "rotation": {
+                "type": "array",
+                "items": {"type": "number"}
+              },
+              "intensity": {"type": "number"},
+              "color": {
+                "type": "string"
+              }
+            },
+            "required": ["type", "position"]
+          }
+        },
+        "world_bounds": {
+          "type": "object",
+          "properties": {
+            "min_location": {
+              "type": "array",
+              "items": {"type": "number"}
+            },
+            "max_location": {
+              "type": "array",
+              "items": {"type": "number"}
+            }
+          },
+          "required": ["min_location", "max_location"]
+        },
+        "station_placements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "station_name": {"type": "string"},
+              "location": {
+                "type": "array",
+                "items": {"type": "number"}
+              }
+            },
+            "required": ["station_name", "location"]
+          }
+        },
+        "planet_placements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "planet_name": {"type": "string"},
+              "location": {
+                "type": "array",
+                "items": {"type": "number"}
+              },
+              "scale": {"type": "number"}
+            },
+            "required": ["planet_name", "location"]
+          }
+        }
+      },
+      "required": ["name", "player_start"]
+    }
+  },
+  "required": ["game", "technical"],
+  "additionalProperties": true
+}

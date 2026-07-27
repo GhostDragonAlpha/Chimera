@@ -1,0 +1,723 @@
+# The Compositional World Model — everything specific, trained separately
+
+> **The human's thesis, 2026-07-17, verbatim intent:** *"Not a world model like they are
+> making with a trained everything — I'm making a world model with everything specific
+> being trained separately."*
+>
+> This document names the destination. It is INTENT, per the Contract's rule — claims
+> about intent do not rot; claims about state are pointers to the commands that print
+> them. Read `TRAINING_PROTOCOL.md` for the method, `THE_EVOLUTION_ENGINE.md` for the
+> machine, `THE_MATTER_MODEL.md` for the substrate, `CHIMERA_VISION.py` for the seed
+> this all serves.
+
+---
+
+## 0. The one sentence
+
+**A world model assembled from many small models — each trained separately against its
+own machine-checkable objective, each verified piece-by-piece through the studio's own
+gates, composed inside a real engine that keeps receipts — instead of one giant model
+trained end-to-end that dreams everything at once and can prove nothing.**
+
+---
+
+## 1. The two positions
+
+There are two ways to build a "world model videogame."
+
+**The monolith** (the frontier-lab position; every shipped demo of it shares the shape):
+train one enormous model on everything at once — video, actions, worlds — and let it
+dream the game frame by frame. As of this document's writing the known public examples
+(Genie-class interactive world generation, the playable neural-Minecraft demos, the
+game-video generators) all share three structural holes, and they are not polish gaps:
+
+1. **No persistence.** Walk away from a thing and the dream forgets it existed.
+2. **No physics guarantees.** Nothing is measurable; objects merge; gravity negotiates.
+3. **No game underneath.** No economy, no progression, no consequence — a steerable
+   dream, not a game.
+
+**The composition** (this studio's position): the world is made of many specific
+pieces — a weather, an economy, a creature's body, a creature's brain, a memorial
+curve, a director's ecology — and **each piece is trained separately**, against its own
+objective, by an optimiser that runs six orders of magnitude faster than a person can
+tune, then composed by the engine. The engine — not a context window — holds the state.
+
+Now read the seed's Design Laws against the monolith's three holes:
+
+| Seed law (`CHIMERA_VISION.py`) | The monolith's hole it answers |
+|---|---|
+| Law 4: *"Nothing observed is lost. Footprints, pits, shelters, debts of kindness persist across generations."* | No persistence |
+| Law 1: *"The world answers the body — every verb has physical, audible, visible consequence."* | No physics guarantees |
+| Law 2: *"The bad ending is a costless life... taught only through consequence."* | No game underneath |
+
+The seed was written before this thesis had a name, and it is already the exact negation
+of the monolith's failure modes. **The winnable first is not "first neural game" — that
+ship has sailed. It is the first persistent, physically-grounded, consequence-bearing
+world-model game.** Persistence and grounding are THE open problems in that literature;
+this architecture gets them free, because the engine is real.
+
+---
+
+## 2. Why composition wins here — and what it costs
+
+- **It fits the hardware.** Each piece is small: the trainer does 26k–37k evals/sec on
+  this box for data domains; a brain population runs 16,384 worlds in one GPU kernel at
+  1.5 of 24 GiB. The monolith needs a frontier lab's cluster. You cannot out-compute
+  them; **they cannot out-decompose you**, because their whole bet is against
+  decomposition.
+- **Every piece is verifiable.** A trained piece has pinned walls, a rep battery, a
+  witness, a why-chain that terminates at PHYSICS. You cannot unit-test a dream; you can
+  audit a trained economy — this studio has (400,000 configs; the optimiser refused to
+  fix a structural flaw with prices and exposed the missing `elasticity` field instead).
+- **Persistence is free.** State lives in the engine and `core/world_store.py` (proven
+  at 1M nodes, sub-ms). Law 4 is trivial here and unsolved in the monolith world.
+- **Swappability.** Retrain the weather without touching the creatures. The monolith
+  entangles everything it learns; the composition isolates every failure.
+- **The exploit is the product.** Each separate objective gets audited by its own
+  optimiser at 35 kHz (the lollipop, the satisficer, the outriggers, the lottery
+  ticket — each a real spec hole surfaced faster than any playtest). A monolith's
+  failures are undiagnosable; a composition's failures arrive labeled with the piece
+  that owns them.
+
+**The honest costs, stated as plainly:**
+
+- **The interfaces are authored, not learned.** The DSL is the interface contract
+  between pieces. A monolith gets cross-system coherence implicitly (when it gets it at
+  all); we must *earn* it, piece by piece, at the seams.
+- **The seams are where the bugs live.** When N separately-trained systems compose,
+  nothing yet measures whether the trained weather starves the trained economy. §5 is
+  the answer, and it is the one genuinely new machinery this thesis demands.
+- **No free generalization.** A new system is a new domain + objective — work, every
+  time. That is also why it stays auditable.
+
+---
+
+## 3. The identity: this studio already IS a compositional world-model trainer
+
+This is the load-bearing observation, and the full-system read makes it unmistakable.
+The workflow was never merely process — **it is a per-piece training harness**, and it
+says so in its own founding documents:
+
+> `docs/GAUNTLET.md`, the curriculum's commission, verbatim: *"it'll also be like
+> training an AI — if an AI was one feature, think of it like that."* And below it:
+> *"The AI-training reading is literal: a feature enrolls like a model entering
+> training; grade bands are curriculum-learning stages; every passed checkpoint is a
+> saved, evaluated state in its transcript; the PhD dissertation... is the final eval
+> before deployment."*
+
+Map the machinery onto a training loop and every organ lands:
+
+| Training-loop concept | The studio organ that already is it |
+|---|---|
+| genome / parameters | the DSL (`tests/dsl_grammar/*.chimera`) — "THE DSL IS THE GENOME" |
+| genotype→phenotype | `core/game_code_generator.py` → UBT → the running game |
+| per-piece learner | `core/trainer.py` + `core/trainables/<f>.py` + `docs/objectives/<f>.json` |
+| loss / objective | the objective JSON — physics, never taste, ≥1 `maximize` term |
+| honest eval (anti-overfit) | worst-of-N restarts; `robustness`; `core/gait.py` the witness |
+| training curriculum | `core/curriculum.py` K→PhD, 7 bands, 69 checkpoints |
+| accumulated verification | `core/rep_engine.py` — resolution through repetition, tiers 0–4 |
+| eval-in-deployment | `core/sleepwalker.py` beats in PIE; telemetry; the result grade |
+| the training gate | `core/training_gate.py` — un-enrolled work cannot even close |
+| regularizer / envelope | `core/malcolm.py` — 15 walls, admission control, edge-of-chaos |
+| which piece trains next | `core/helm.py` — the seed-vs-reality gap, ranked |
+| experience replay / consolidation | circadian night: `dream_loop`, distiller, gardener, history book |
+| checkpointed weights | the DNA graph — every mutation, build, verification, recorded typed |
+
+Nothing in that table is a metaphor being stretched. "Train the piece you worked" is
+enforced at task closure. Features literally cannot finish without accumulating reps.
+**The compositional world model is not a pivot. It is the name of the building.**
+
+And the composition is *governed*, not hoped for: Malcolm's walls already constrain the
+composition itself — `interacting_systems_per_slice [3,7]`, `coupling_degree_k ≤ 4`
+(Kauffman's criticality band: below it the network freezes, above it dissolves; the
+regulatory-network cap in `TERRARIUM_DESIGN.md` §3 lands on the same constant for the
+same reason), `active_dots [2,24]`. The envelope is a composition gauge in embryo.
+
+---
+
+## 4. The seed is the spec — its §10 is a shelf of untrained models
+
+`CHIMERA_VISION.py` §10 (world systems) is written as C++ shells around **data tables**.
+Every table is a genome; every shell is the authored code that expresses it. That is
+exactly the trainer's hard boundary (train DATA, author CODE) drawn through the middle
+of every system — the C++ is written once by the generator; the data trains forever.
+
+The trainable surface, walked system by system:
+
+| Seed system (§10) | Its data (the genome) | What GOOD means (the objective's shape) |
+|---|---|---|
+| `UWeatherSubsystem` | `WIND`: gust period, storm period/duration, speeds | **The Law-4 tension made a band:** storms erase sand footprints (the memento mori) — erasure must come often enough to ache, rarely enough that prints matter. Gust energy that reads as weather, not noise; no dead calm, no permanent storm. |
+| `UStarMemorialSubsystem` + `UCostlessLifeEndingDiagnostic` | `STAR`: `brightness_k`, `bright_lights_yard`; the `1−exp(−w/k)` curve | Law 2 made perceptual physics: a costless life must be *visibly* dim; distinct sacrifice weights must yield distinguishable stars; the night-light sum stays inside the lighting budget. Monotone, discriminable, bounded. |
+| `USacrificeLogComponent` | `SACRIFICE_WEIGHTS` table | Weights such that endings distribute meaningfully across honest playstyles — no single act dominates the mirror; QUIET vs BRIGHT is reachable from play, not luck. |
+| `UDirectorSubsystem` | stranger cadence, `SCENARIOS` mix, `can_pay` fraction, pirate trigger | An **ecology**: encounter pressure inside `active_dots [2,24]`; the design rules stay invariant under training (first stranger of a generation cannot pay; pirates only bother the visibly rich during storms) — those are HARD gates, not tunables. |
+| `AGroundActor` | `SURFACE_TABLE`: traction / makes_print / dust / synth per surface | Traversal variety measurable by the sleepwalker: every surface changes movement or sound observably (Law 1); no surface is a no-op skin. |
+| `UGenerationSubsystem` | inheritance rules (credit halving, heirloom carry) | Generational difficulty neither compounds to ruin nor resets to zero; the heir starts poorer but not hopeless — a band on effective progression across N simulated lives. |
+| `FStationMarket` / `UFactionSubsystem` | prices, standings ladders | Already begun (`core/trainables/economy.py`); the remaining pins name the next structural loci: station specialisation, demand cycles, stock limits. |
+| creatures (the terrarium line) | L-system genomes; brain weights | Done and proven — the template every row above follows (`brain_gpu.trained.json`: periodicity 0.78, robustness 0.76). |
+
+Run `python -m core.helm targets` for the live gap; the wellspring already mints board
+tasks from it. What this thesis adds is the **discipline**: when a §10 system comes up
+for building, its C++ shell is authored once, and its numbers are NEVER hand-argued —
+they get a domain, an objective, a membrane run, and pins.
+
+**The economy precedent generalizes:** when a domain's pins prove the DSL lacks a locus
+(as `elasticity` was proven missing by 400,000 evals), the fix flows top-down — add the
+field to the DSL, teach the generator to emit it, retrain. The trainer is how the DSL
+discovers what fields it needs.
+
+---
+
+## 5. The seams — the one genuinely new machinery
+
+Separately-trained pieces compose; the composition itself must be measured, or we are
+hoping. The instrument already exists in parts — what is new is pointing it at PAIRS.
+
+**A seam objective is a measurable claim about two trained systems interacting.** The
+seed states several outright:
+
+- **weather × footprints** (Law 4 vs the memento mori): after a storm passes, sand
+  prints are gone and METAL prints remain — `FStormEvent.prints_erased > 0` when prints
+  existed; between storms, prints persist across sessions.
+- **director × economy**: pirates spawn iff `credits > 200 ∧ storm_active` — a
+  conditional the sleepwalker can drive both ways (rich in storm, poor in storm, rich in
+  calm) and read back.
+- **weather × suit**: `GE_DustClog_Storm` applied iff storm ∧ ¬indoors — four states,
+  four read-backs.
+- **memorial × night**: bright ancestors measurably lift the Yard's night luminance
+  (`NightLightLevel` → the Lumen memorial term), within frame budget.
+- **habitat × attributes**: module effects present iff inside — proximity drives GAS,
+  read back per module.
+
+Mechanically, seams are **additive to existing organs, not a new engine**:
+
+1. **Seam rep atoms** — `rep_engine` atoms whose probe spans two features (the probe
+   registry already takes arbitrary specs; a seam battery `docs/rep_batteries/seam_*.json`
+   is just atoms whose evidence names both). Red seam atoms mint board tasks through the
+   existing ripener/wellspring path.
+2. **Seam beats** — beat scripts that drive one system to observe another
+   (`docs/beats/seam_*.beats.json`), linted like all beats (a seam beat must be able to
+   FAIL for the seam it tags — the tautology rule applies doubly here).
+3. **Seam objectives for co-training** — when two domains' data interact (director
+   cadence × economy wealth), train them **jointly against seam constraints** in one
+   membrane run: the composition trained as a composition, still without touching code.
+
+The envelope governs how many seams may be live at once (`coupling_degree_k ≤ 4` is
+exactly this number); a seam that cannot be stated as physics or a read-back is not a
+seam — it is taste, and taste is the human's (§7).
+
+---
+
+## 6. Where learned models enter — still compositional, never the renderer
+
+Three rungs of *learned* world models fit inside the composition without ever becoming
+a monolith. Each is a separate model with a separate objective, verified separately:
+
+1. **Agents that imagine (model-based control).** A latent-dynamics model learned from
+   `mujoco-warp` rollouts, per creature class; the brain plans by rolling futures
+   forward in imagination. This is a true world model in the technical sense, small
+   enough for this GPU, and it extends `core/trainables/brain_gpu.py` — same membrane,
+   same honest evaluation (worst-of-N applies to imagined futures too, or the
+   imagination becomes the new lottery ticket).
+2. **The Director as a learned policy.** §10's `UDirectorSubsystem` upgraded from tuned
+   cadences to a small sequence model over `world_store` telemetry streams — predicting
+   the player's next stretch and steering encounter pressure — trained against the SAME
+   ecology objective as its tuned predecessor, so the learned director is judged by the
+   measures the tuned one was. The design invariants (first stranger cannot pay; pirates
+   need storms and wealth) remain HARD gates the policy cannot trade away.
+3. **Imagination as a mechanic.** The Erisaid's mirror and the memorial's visions are
+   the honest home for generative models INSIDE the game — a small action-conditioned
+   model fine-tuned on sleepwalker footage (the studio's automated playtests are
+   action-labeled gameplay video: a world-model training set that accumulates as a side
+   effect of verification). Bounded, low-res, diegetic — the dream rendered as a dream,
+   inside a world that is real.
+
+**The sleepwalker data asset deserves its own sentence:** frontier labs scrape
+unlabeled video and infer actions; this studio's witness infrastructure generates
+unlimited footage of its own game where every frame's causing action is *known* and the
+telemetry ground truth rides alongside. That is the rarest ingredient of the monolith
+approach, produced here as exhaust.
+
+---
+
+## 7. What this thesis does NOT claim
+
+- **No neural renderer.** The engine renders; models feed it. Rung 6.3 is a mechanic,
+  not a display path.
+- **No end-to-end training.** The moment everything trains against everything, the
+  audit trail dies and this becomes a worse monolith.
+- **No trained fun.** `TRAINING_PROTOCOL.md` §7 stands: you can train the substrate
+  (a creature that stands, an economy that doesn't inflate, a storm cadence in a band);
+  you cannot train *unsettling*, *clever*, or *lost-then-relieved*. NO REFERENCE, NO
+  VERDICT — the human supplies what good means; every objective in §4 is a human
+  sentence made measurable, and the ones that can't be are the human's to keep.
+- **No open-ended evolution shipped live.** Thirty years of ALife stagnation; evolution
+  stays a supervised bake in a membrane (`THE_EVOLUTION_ENGINE.md` §6).
+- **No claim of beating monoliths at their own game.** A Genie-class model will always
+  dream wider; it will not remember a footprint, prove a storm, or carry a debt of
+  kindness across a generation. Different game. Ours.
+
+---
+
+## 8. The ladder — every rung independently abandonable
+
+| # | rung | what proves it | KILL IF |
+|---|---|---|---|
+| 1 | **Three seed domains** — weather cadence, memorial curve, director ecology: `core/trainables/{weather,memorial,director}.py` + objectives, trained in membranes, pins read | three `*.trained.json` winners whose pins name real spec holes | an objective cannot be stated as physics/read-backs without smuggling taste |
+| 2 | **Trained data flows top-down** — DSL grows the loci the pins demand; generator emits trained tables into the §10 shells (the elasticity precedent, repeated) | a UBT-green build whose weather/memorial numbers came from a `.trained.json`, not an argument | the DSL⇄generator round-trip costs more than the training saved |
+| 3 | **Seam batteries + seam beats** — the five seams of §5 as rep atoms and lintable beats; red seams mint tasks | seam atoms green for the right reason; a deliberately broken seam goes red | seams prove unmeasurable headless (then they wait for PIE lanes, not deletion) |
+| 4 | **An agent that imagines** — latent dynamics on brain_gpu rollouts; plan-by-imagination beats the reactive brain on the SAME honest eval | worst-of-N distance/periodicity ≥ the reactive baseline, same membrane discipline | imagination trains but transfers nothing (dreams don't survive contact) |
+| 5 | **The learned Director** — sequence model over world_store, judged by the tuned director's own objective, invariants as hard gates | ecology measures in-band across N sleepwalker sessions; invariants never violated | the policy can't beat the tuned tables it replaced |
+| 6 | **The composition at scale** — §10's full data surface trained, seams green, the whole experience witnessed holistically | the collapse: automated observation over the composed world | the seams multiply faster than they green (then narrow `coupling_degree_k`, which is what it is for) |
+
+Rungs 1–3 need zero new engine machinery. Rung 4 is the first new model class; 5 the
+second; 6 is not a build step but the state the conveyor converges to.
+
+---
+
+## 9. Files
+
+| path | role |
+|---|---|
+| `CHIMERA_VISION.py` | the seed — the spec the composition realizes; §10 is the shelf |
+| `core/trainer.py` + `core/trainables/` + `docs/objectives/` | the per-piece learners |
+| `core/rep_engine.py` + `docs/rep_batteries/` | per-piece memory; seam batteries land here |
+| `core/curriculum.py` | the per-piece training program (the literal reading) |
+| `core/sleepwalker.py` + `docs/beats/` | the witness — and the action-labeled data engine |
+| `core/malcolm.py` + `docs/envelope.json` | the composition governor (`coupling_degree_k`) |
+| `core/helm.py` | which piece trains next |
+| `core/membrane.py` | where every training run lives |
+| `docs/TRAINING_PROTOCOL.md` | the method every rung obeys |
+| `docs/THE_EVOLUTION_ENGINE.md` | the machine, proven on creatures |
+| `docs/THE_MATTER_MODEL.md` | the substrate: even matter is compositional |
+
+> The monolith bets that one model can learn a world. This studio bets that a world is
+> too important to be one model — that a footprint should persist because ground is
+> real, a storm should cost because weather is real, and a star should be exactly as
+> bright as what a life gave up, because the curve that says so was trained against
+> that sentence and can prove it. Everything specific. Trained separately. Composed
+> where physics keeps the receipts.
+
+---
+---
+
+# PART II — THE SUBSTRATE ENGINE
+
+> **The human's second commission, 2026-07-18, assembled from their own words:**
+> *"Make matter atoms... and just piece them together. I want to use the same physics
+> that the universe uses."* · *"I know it's computationally impossible — but not if we
+> give it the proper context through pre-programmed algorithms."* · *"If we can train
+> the SHAPES and we can train the MOVEMENTS, what else do we need?"* · *"The magic
+> sauce is Gaussian splatting... little shapes that are translucent and angled."* ·
+> *"We'd have to program Gaussian in a way that allows dynamic lighting — Substrate in
+> Unreal Engine is the technology that would make it possible."* And the closing
+> sentence, which is the whole part in one line:
+>
+> **"It'll be both a physics and a rendering engine that combines physics to make
+> rendering possible."**
+
+---
+
+## 10. The problem Part II solves — the AI cannot invent decompositions
+
+Part I's §4 asks the LLM to write a bespoke domain per seed system. That works for the
+systems the seed already names — but inventing trainable framings for arbitrary content
+is creative decomposition, and it is the LLM's weakest act. The human's fix: **go below
+the systems.** On a universal matter substrate, decomposition stops being invented and
+becomes mechanical:
+
+- **A world model is exactly two things: state and dynamics.** The human named them —
+  **SHAPES** (what matter is arranged as) and **MOVEMENTS** (how arrangements change).
+  Train shapes; train movements; compose. There is no third kind of thing.
+- **Objectives collapse into a template library.** Shape objectives: *stands, holds
+  under load, encloses volume, spans a gap.* Movement objectives: *travels, lifts,
+  cycles, throws* — always worst-of-N, always robustness (`TRAINING_PROTOCOL.md` §3.5).
+  The AI stops inventing framings and starts filling templates — the thing it is
+  actually good at.
+- Both trainables are ALREADY PROVEN on this box: shapes (`core/terrarium.py`, 35k
+  evals/sec) and movements (`core/trainables/brain_gpu.py`, honest eval), composed
+  (`core/rig.py` — the trained brain posing the grown flesh). Part II generalizes the
+  proven pair from creatures to *everything*.
+
+Part I's system-level domains (weather, memorial, director) remain valid — they are
+cheap data trainables. The **long road** is substrate-level.
+
+---
+
+## 11. The atom — one primitive, two field sets
+
+The Matter Model's brick (`THE_MATTER_MODEL.md` §2) and the rendering primitive unify
+into a single particle:
+
+```
+ATOM {
+  physical   — the brick:  identity, density, stiffness, adhesion[], tear, granularity
+  optical    — the slab:   albedo, roughness, F0, subsurface MFP, translucency, anisotropy
+  footprint  — the splat:  position + oriented anisotropic covariance
+                           (the covariance hands you a surface normal and a spread for free)
+}
+```
+
+At the research frontier the splat and the simulation particle are already the same
+object — continuum physics run directly on Gaussians is an existing line of work (as of
+model knowledge; **verify the current state at build time**, the research gate will
+demand it). The two ideas are not being combined; they are the same primitive wearing
+two field sets.
+
+---
+
+## 12. Two engines, one substrate
+
+Every engine today keeps **two copies of the world**: a low-resolution invisible one
+for physics (collision proxies, capsules) and a high-resolution dead one for rendering
+(meshes that feel nothing), glued by animation. A whole class of bugs lives in the gap
+between the copies. The substrate engine keeps ONE copy: **the render state IS the
+physical state.** Nothing is drawn that is not physically there; nothing exists that
+cannot be seen.
+
+And the human's sentence runs in BOTH directions, which is why it is an engine and not
+an aesthetic:
+
+- **Physics makes rendering affordable.** Coalescence is a physical event (quiet
+  uniform matter congeals into a rigid aggregate) and it IS the LOD system. The dune is
+  drawable because it is asleep.
+- **Rendering makes physics affordable.** Visibility and activity tell the substrate
+  where to spend live simulation (the BEHAVE budget). The wound simulates because
+  someone is looking at it, cutting into it.
+
+### The rendering division of labor
+
+| layer | carried by | does |
+|---|---|---|
+| **Geometry** | the Gaussian footprint — oriented anisotropic spread from the covariance | where matter is; how its surface is oriented |
+| **Material** | an Unreal **Substrate** slab, parameterized per-particle from the atom's optical fields | what the matter is, optically — the brick's `optical` maps ~1:1 onto slab parameters |
+| **Light** | Lumen + the 27-hour sun + the memorial night-light — the engine's own pipeline | dynamic illumination, shadows, GI |
+
+**Splats carry MATTER, not LIGHT.** Captured 3DGS bakes real-world lighting into its
+radiance — which is exactly why it cannot be relit, and why relighting is a research
+problem *for capture pipelines*. This studio EMITS splats from grown matter whose true
+material parameters it already knows — nothing was ever entangled, so nothing needs
+disentangling. The hard research problem becomes an engineering problem: render the
+particles into the deferred pipeline (oriented particles writing GBuffer attributes,
+dithered/stochastic opacity for the soft edges) and let Unreal light the matter.
+
+**The honest trade:** captured splats look real largely because real global
+illumination is baked in. Relighting dynamically means realism is EARNED from materials
++ Lumen — which is where this studio's advantage (ground-truth materials per atom)
+actually lives. Earned, not free.
+
+**The convergence that matters to THIS studio:** in a physics-rendered world, a
+screenshot is a physics measurement. The visual gate and the witness gate converge by
+construction — "looks right" and "is right" stop being separate claims, which is the
+gap H-14 exists to police.
+
+---
+
+## 13. The scale ladder — pre-programmed laws per scale
+
+*"The same physics the universe uses"* does not mean simulating atoms — the universe
+itself is computed with effective theories per scale (nobody derives sand from quarks).
+The pre-programmed algorithms the human names ARE these per-scale laws:
+
+- **grain scale** — contact physics where the shovel digs, live particles at the wound;
+- **bulk scale** — statics where the dune sleeps: one rigid aggregate, one draw;
+- **the switch** — coalesce/fracture (`THE_MATTER_MODEL.md` §6, rung 4 — the one real
+  unbuilt machine): quiet uniform regions merge (with hysteresis; merging forgets
+  per-cell state, so merge only what individuality you will surrender); a cut fractures
+  locally, instantly.
+
+**On abandoning standard landscaping:** less radical than it sounds. The seed's
+`AGroundActor` already bypasses UE Landscape — procedural height plus LIVE dig deltas
+(`GA_Dig` writes into the ground's own truth). Terrain-as-matter is that same ground
+made of atoms: coalesced at rest, fracturing under the shovel, splat-rendered. The
+experiment that decides it is rung C below.
+
+---
+
+## 14. What else is needed — the short honest list
+
+The human asked: *"if we can train the shapes and we can train the movements, what else
+do we need?"* The studio's own measured findings answer — the list is short:
+
+1. **Joints.** Rung 1.5 proved it physically: adhesion alone cannot hold an axis
+   (Rayleigh-Plateau pinching). Shapes need typed connections — tendons, hinges,
+   sockets. The part that failed when omitted gets named.
+2. **The scale ladder** (§13) — coalesce/fracture is the one real build.
+3. **The read-surface.** Law 1 — the world answers the body — means the substrate must
+   expose the variables verbs touch: traction, temperature, tear. A physics world
+   nothing reads is a screensaver. "Pull only what the game reads" is the whole rule.
+4. **Objective templates** — small, reusable, physics-not-taste (§10).
+5. **Storage, measured early.** Splats and Nanite make detail free to *draw*, not to
+   *store*. This bounds the ambition; measure it, never assume it.
+6. **Substrate maturity in UE 5.8** — per-particle slab parameter binding, deferred
+   compositing, performance: verify LIVE at build time (model knowledge ends before
+   5.8; the research gate on rung D′ enforces this).
+
+Fun stays the human's. That never changes, at any scale.
+
+---
+
+## 15. The experiment ladder — every rung killable
+
+| rung | experiment | inputs that already exist | KILL IF |
+|---|---|---|---|
+| **A** | **Brick→splat emission**, headless: emit one Gaussian per surface tissue-voxel of the baked limb (optical fields from tissue type), render N views under a MOVING light with a small splat rasterizer, in a membrane | `core/bake.py` voxel tissues; `core/rig.py` | it cannot beat the marching-cubes render of the same limb, or relighting artifacts dominate |
+| **B** | **Movement**: skin the splats with rig.py's own LBS weights, replay the trained gait, check temporal coherence | `core/rig.py --mode walk` frames | splats shear/swim/pop under animation |
+| **C** | **Terrain-as-matter (the shovel test)**, headless first: a bounded ground patch of atoms, coalesced at rest, a scripted dig fractures it locally, grain physics on the freed particles, splats follow | the seed's `DIG`/`GA_Dig` design; MuJoCo grain sim | fracture seams cannot be stitched, or the grain budget breaks the frame — then landscaping is NOT abandoned and the finding is recorded |
+| **D′** | **In-engine**: the limb as per-particle Substrate-shaded splats in the LIVE editor under a moving directional light (the 27h-sun stand-in), MCP viewport screenshot, side-by-side vs its own mesh | rung A's emitter; the MCP bridge | no viable UE 5.8 path (plugin/Niagara/GBuffer) reaches acceptable compositing + perf, or it cannot match the mesh under dynamic light |
+
+A and B are pure Python on artifacts that exist today. C decides the landscaping
+question honestly in both directions. D′ is where Unreal's own Substrate earns its
+place in the stack — and where the live research happens.
+
+---
+
+## 16. The Matter Library — the data spine
+
+> **The human's third commission, 2026-07-18, verbatim:** *"a library of materials ....
+> esentaly typs of mater ind its propertys of interaction and also what the surface
+> looks like even know it is not a surface but more of an average!"*
+
+The substrate engine's data is not datasets. It is **the periodic table of the game** —
+`docs/matter/matter_library.json` — three columns, exactly as commissioned:
+
+1. **Types of matter** — the brick identities. Ten now (tendon joined 2026-07-14's
+   nine), derived from what the game already reads: the seed's six environment
+   surfaces (sand, basin, rock, metal, ice, interior — `SURFACE_TABLE` subsumed)
+   plus the witnessed tissues (skin, muscle, bone, tendon — optics verbatim from
+   rung A's relight renders).
+2. **Properties of interaction** — pairwise, but NEVER an N² hand-written matrix:
+   materials declare an interface **family** (mineral_dry, metallic, cryo,
+   composite_built, organic_wet, organic_hard); rules are written family×family (a
+   handful); only exceptional couples get explicit entries. The seed already contained
+   the first exception rows without naming them: `SURFACE_TABLE` *is* the boot×ground
+   interaction, and the storm×sand print-erasure *is* a weather×matter pair.
+3. **Appearance as a DISTRIBUTION, never a surface** — every appearance value is a
+   mean plus a spread, because the human's instinct is the physically correct
+   ontology: a real surface already IS a statistical average of its microstructure
+   (roughness literally = the variance of micro-facet normals; PBR renders the
+   statistics, never the facets). The splat emitter SAMPLES the distribution per
+   particle (mottled, organic); a coalesced aggregate uses the MEAN (cheap, smooth).
+   **Coalesce = take the average at a coarser scale. Fracture = sample individuals
+   back out. The LOD system and the appearance model are the same operation.**
+
+**Provenance per number, no exceptions** (same taxonomy as Malcolm's walls): `seed`
+(the vision's own tables) · `code` (survived a witnessed render/run) · `researched`
+(cited + cached source) · `provisional` (model-knowledge estimate — **a named debt**)
+· `trained` (a `.trained.json` objective output) · `design` (a chosen game value,
+admitted as such). A provisional value is not wrong to ship; shipping it *untagged*
+would be.
+
+**One library, four readers:** the adhesion assembler (physical + interaction), the
+splat emitter (appearance — replacing its hardcoded tissue table), rung D′'s UE
+Substrate slabs (appearance), and the trainer domains (physical/interaction columns
+as seeds — `trained` provenance flows back in). The library is how a new thing enters
+the world: a new entry, not new engine code.
+
+**Appearance entries are TRAINABLE against captured reality** (the human, 2026-07-18:
+*"we may have to train materials from looking at real splat scans"*). Real
+splat/photogrammetry scans of actual materials — rock, regolith, ice, worn metal —
+are reality's own answer sheet for "what the surface looks like as an average": NO
+REFERENCE, NO VERDICT is satisfied because the scan IS the reference. The loop runs
+in **statistics space, never image space**: extract descriptor vectors from the scan
+(albedo moments, luma-vs-chroma variance split, spatial autocorrelation length = the
+grain/mottle scale) and from our emitted splat population, and train the entry's
+distribution parameters until the statistics match — thousands of evals/sec, no
+renderer in the loop. Provenance: `trained(ref=<scan>)`. **The WITNESS is the UE
+SUBSTRATE render** (the human's standing directive: quality is judged in-engine under
+Substrate + Lumen, rung D′) — side-by-side against the scan; the CPU sandbox
+(`core/matter_items.py`) is a probe, never the judge. Candidate scan sources, to be
+licensing-verified live: Quixel Megascans via Fab (real-world scans, free for Unreal
+use), CC0 photogrammetry captures, and eventually our own captures.
+
+**HONEST STATUS OF THE EXTRACTION LOOP (2026-07-18, load-bearing — do not let a
+green artifact imply otherwise):** `docs/matter/reference_scans/` contains ONLY
+synthetic placeholders (`SOURCES.md`: "ZERO FILES DOWNLOADED"; every exemplar
+tagged provisional, "supersede on sight"). `material_appearance.trained.json`
+was additionally trained against **None** until 2026-07-18 — the trainer calls
+`measure(genome)` with one argument and the domain never self-loaded its
+reference (fixed: it now loads the scan named by `CHIMERA_MATAPP_SCAN`, loudly).
+The reality → descriptors → trained-library loop CLOSES ONLY when real scans
+land and the appearance retrains against them, and the trained values must then
+flow into **UE Substrate slab parameters** (albedo AND roughness — the operator's
+directive: roughness must physically matter). Until then, every appearance
+number in the library is a placeholder wearing trained clothes.
+
+---
+
+## 17. The agent inside the cube — sensing by derivation (2026-07-18, the night it landed)
+
+> The human, watching the camera fumble by screenshots: *"You have no idea how to move
+> a camera in three dimensional space since you've never done that before... you don't
+> even need to look at screenshots if you understand the phys, the math... the entire
+> game world is just one giant cube. THIS is what I mean by world model."*
+
+The inversion that completes Part II: **the world model is the AGENT'S senses, not
+only the game's substrate.** An LLM has no embodied spatial intuition — so it must
+never navigate by pixels. Built and proven live:
+
+- **`core/scene_model.py`** — the editor world held as math: one bulk ingest (every
+  tracked actor: class, transform, known-vs-assumed extent, inside-the-cube check),
+  cameras SOLVED from state, and a PREDICTION written before any pixel (which actors
+  must be visible, at what coverage, how far off-axis). A screenshot is verification
+  of a prediction; divergence = stale model or a LYING PATHWAY. Prediction error IS
+  the training signal — the studio's own loop, pointed at the agent's tooling.
+- **`core/photo_studio.py`** — the tuned stage: reserved block far from the playfield,
+  engine-plane ground, exact slots, framings computed from `d = r/(fill·tan(fov/2))`,
+  settle-delay captures. No number in any shot is ever guessed.
+- **Two traps paid for and recorded:** the bridge executes console commands FOR REAL
+  but an immediate screenshot captures the PRE-command frame (~2s settle fixes it);
+  and divergences between API readbacks and rendered state are detected in ONE step by
+  prediction-vs-pixels instead of hand-aimed shot sequences.
+- **`core/splat_gpu.py`** — the splat rasterizer as a Warp kernel: 41× per frame,
+  162 fps relight sweeps, parity MAE 2.2e-4 vs the CPU reference. Warp now runs all
+  three pillars — physics, brains, light — on one kernel dialect.
+- **Substrate is ON** (production-ready since 5.7; enabled for this upgraded project,
+  Adaptive GBuffer; the whole level auto-converted and renders). The first splat cloud
+  is in-engine; VertexColor→slab wiring is the held remainder of rung D′.
+- **Pattern, not averages** (the human's binding correction): material identification
+  in the photo corpus is TEXTURE matching — multi-scale filter-bank energies, grain
+  autocorrelation, periodicity — because identical color moments can carry
+  nothing-alike materials (Julesz). Color stats come last. The harvester (tb-0180)
+  region-scans many photos on the GPU, reads pixels like byte streams (never
+  vision-model glancing), and retrieves sample regions from ONE human-tagged exemplar
+  — the tag is the reference, per NO REFERENCE, NO VERDICT.
+- **The resolution verdict** (the human, on the first cloud): *"a baby toy compared to
+  what we need"* — sub-cm splats at 200k–1.5M density is the standing target
+  (tb-0179), with the 3DGS tile pipeline as the named rasterizer upgrade past ~100k.
+
+---
+
+## 18. The emergence rung — the box of sand, and the big bang (2026-07-18)
+
+> The human: *"each particle is held in, not by the force of gravity, but by the force
+> of the surrounding objects... autonomous functions that don't require calculation
+> because the aggregate of simple calculations allows for emergence."* And then:
+> *"Theoretically we should be able to just create a metaphorical big bang and allow
+> solar systems to form as it were. That would be natural emergence. And then if we
+> had a game where we could interact with that environment that was created — that's
+> the idea."*
+
+Three real mechanisms, each with a name, none a stretch:
+
+1. **The self-contained entity is a LOCAL UPDATE RULE** — `rule(me, neighborhood) →
+   me'`. No global solver. Held-by-neighbors is textbook granular statics: force
+   chains carry the load (photoelastic experiments show them), and the Janssen
+   effect (1895) — silo walls, not the floor, carry the fill — is why an hourglass
+   runs at constant rate. The player's intuition and the substrate's mechanism are
+   the same mechanism.
+2. **The aggregate IS the physics** — nobody programs the pile, the avalanche, or
+   the 34°; those are consequences of the rule. Already proven in this repo twice:
+   `core/matter.py` (one adhesion energy per tissue pair → layered anatomy) and now
+   `core/trainables/granular.py`.
+3. **"No calculation" = FIXED POINTS + SLEEPING** — a settled pile is a computation
+   that has HALTED. Cost is proportional to CHANGE, never to world size: the quiet
+   universe is data. This is the only known way a persistent world scales, and it is
+   the same move as coalesce/fracture — a slept region coalesces to its average
+   *because held-by-neighbors makes its microstate redundant*.
+
+**HOW EMERGENCE IS SET (the studio's move): you don't call for it — you SELECT for
+it.** The local rule is the genome (topple thresholds, cohesion, kinetics — DATA).
+The emergent macro-numbers are the measure (angle of repose, settling to a true
+fixed point, avalanche locality — facts no rule states, so they cannot be faked,
+only produced). Researched reality is the objective (lunar regolith repose ~35–40°,
+Lunar Sourcebook 1991 / Carrier; the library's D50=72 µm is already pinned).
+`docs/objectives/granular.json` binds them; the trainer turns the crank. Emergence
+is the phenotype under selection.
+
+**v0 stands (tb-0192):** a stochastic sandpile height-field (BTW lineage, held
+subcritical on purpose — a game wants perturbations that heal, not system-spanning
+cascades). Totality by bounded `for`; honest eval by N fixed-seed restarts,
+worst-cased; first smoke run emerged a frozen drip-castle chimney and the measure
+was rebuilt to SEE it (flank + aspect + consistency = the needle detector,
+`surprise_0a8748de89fd2afe`). Honest scope: a height-field has no load network —
+no Janssen, no arching, no Beverloo claims until v1's full 2D occupancy grid.
+
+**THE BIG BANG is this same thesis one rung up the scale ladder (§13) — and as of
+the same day, IT IS BUILT AND TRAINED, not aspiration.**
+`core/trainables/bigbang.py` + `bigbang_gpu.py` (GPU-resident: whole population ×
+restarts in Warp, zero in-loop syncs, 159 evals/sec = 1,656× the CPU baseline)
+grow solar systems from a seeded embryo disk under softened gravity + inelastic
+mergers + torque-free gas drag, with an **L_z HONESTY LEDGER** (orbital + spin +
+escaped must equal t0 — it caught a real structural bug on first smoke: stale
+post-merge forces, drift 0.527). The trained winner
+(`docs/objectives/bigbang.trained.json`): **Kepler's third law EMERGES — slope
+1.483 with r² 0.9998, measured empirically from the grown orbits' own winding
+periods, never coded** — star 98% of mass, 3–4 planets per system, ecc 0.115,
+disk flat to 0.004°, disk_frac pinned at its MMSN-consistent minimum.
+**RUNG CONFLATION is the named failure mode this rung paid for**: five trained
+rounds could not grow planets from pebbles while settling a system (an N0=256
+granularity probe made it WORSE — more seeds, hotter disk); the human's
+correction — *"think of the planet as ONE when we get to that scale"* — became
+the rung split (star pre-formed as body 0, seeds = Chambers-2001 protoplanet
+embryos) and the multi-planet regime unlocked on the *untrained* smoke.
+The rung HANDS DOWN its averages as data: `--export-catalog` →
+`docs/objectives/bigbang.systems.json` (5 systems, each planet ONE (m, a, e)
+triple), consumed by the PLANET-AVERAGES RUNG (`core/trainables/planet.py`,
+trained same day): researched effective laws (T_eq, Jeans retention, greenhouse,
+moist-greenhouse limit, condensation, interior heat, ice-albedo fixed point)
+resolve every grown planet's climate — **the operator bar met (oceans in every
+system HARD, atmospheres 100%, interior gradients on every rocky world), the
+habitable zone EMERGING unplaced as hot_rock → ocean → frozen ladders in all
+five systems, and the learned constants LANDING ON RESEARCH: moist_limit
+352.8 K (Kasting ~340–350), Jeans threshold 5.5 (literature ~6), greenhouse
+exponent 0.585 (the Venus–Earth bracket 0.60).** Then the game is played
+*inside the settled result*, which wakes locally wherever a body touches it
+(§12): the big bang runs at generation time, sleeps at play time, and the player
+interacts with a world that earned its shape — witnessed: the pawn stood on a
+grown ocean world's ground the same night (§19).
+
+---
+
+## 19. The fractal, the bubble, and the death of the aesthetic pass (2026-07-18)
+
+> The human, rejecting "aesthetic pass" as a concept: *"It shouldn't need an
+> aesthetic pass if you have all the LOD for the meaning — I should be able to have
+> a character that can walk on the planet and essentially materializes the ground
+> particles around the player. Basically this entire game is a big fractal that we
+> can zoom in and out of."* And, mid-build: *"This is the part where you have to
+> MIX MATTER TOGETHER."*
+
+**NO AESTHETIC PASSES — an aesthetic pass is an admission the model is incomplete.**
+Appearance DERIVES at every scale or the ladder is broken somewhere. LOD is not
+triangle decimation; it is **LOD OF MEANING**: each level is the rung below's
+average, and approaching something decompresses it through the trained local laws.
+Determinism is the fractal property: seed = (system, planet, patch coords) — the
+same coordinates materialize the same ground forever, because the world IS the seed
+plus the laws (compression as intelligence, §18).
+
+**THE RECORD, corrected (2026-07-18, same day):** tb-0197's first realization —
+`core/materialize.py`, editor-staged GLB — was **REFUTED BY THE OPERATOR'S OWN
+SCREENSHOT** (surprise_f14d0396d25cb260): the patch imported ROTATED 90° (glTF
+Y-up vs UE Z-up) and the witness had asserted *existence, not contact* — the pawn
+stood on the flat average plane beside a sideways wall while the beat passed.
+That file is retained as a SUPERSEDED Python reference of the forming rule only.
+
+**The standing realization is the RUNTIME one (tb-0198,
+`Source/Chimera/ProceduralGenerated/Materialization/` — generator-owned via
+`generate_materialization_subsystem_files`):** `UMaterializationSubsystem`
+(UTickableWorldSubsystem, Game/PIE only) forms the ground IN THE RUNNING GAME —
+trained granular literals baked with provenance (h_crit 1.181 / p_topple 0.515),
+resolved planet climate (ocean_cov 0.0304 from the bigbang→planet chain), C++
+sandpile to a fixed point per cell, per-cell deterministic seeds (same
+coordinates = same ground, forever), instanced-cube columns with REAL collision,
+water at the derived sea level, the bubble forming 3×3 around the pawn
+one-patch-per-tick and COALESCING beyond radius 2. **Witnessed by CONTACT, not
+existence** (simtest_a43f778f4392a6e8, 2/2): the pawn settles into the relief
+band (`pawn_z_above 100` AND `pawn_z_below 800` — bare-floor rest reads ~90),
+the subsystem's own `[Materialize]` markers are HEARD from the raw log tail, and
+after SIX SECONDS of real held-W the pawn is still in the band — ground formed
+under a moving player. Built native (no glTF, no importer), the axis bug class
+is unrepresentable. Honest scope: stepped voxel columns (mesh smoothing needs a
+generator-owned Build.cs lane for the DynamicMesh module); water sheet has no
+collision; no direction-specific new-cell assert yet (spawn rotation is unset —
+a set_rotation beat verb is the named upgrade).
+
+---
+
+> Part I said: everything specific, trained separately, composed where physics keeps
+> the receipts. Part II says what everything is MADE of, and who does the seeing:
+> one atom carrying its matter and its appearance; shapes and movements as the only
+> two things ever trained; physics that congeals into rendering where the world is
+> quiet and wakes into simulation where a body touches it. A physics engine and a
+> rendering engine that are the same engine — because matter simulated correctly is
+> already most of the way to being seen correctly.

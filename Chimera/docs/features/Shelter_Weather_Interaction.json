@@ -1,0 +1,375 @@
+{
+  "name": "Shelter_Weather_Interaction",
+  "description": "How storms, wind, temperature, and precipitation affect shelter structural integrity and habitability.",
+  "parent": "Shelter_Habitat",
+  "created": "2026-07-19T17:17:00.000000",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does storm damage to shelters teach real structural engineering principles like wind load and stress concentration?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Shelters facing storm wind take damage on windward faces first. Corner joints fail under repeated stress, teaching real failure modes."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can players learn about wind load, stress concentration, and fatigue cycles by observing shelter failure patterns?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Damage accumulates at joints and unsupported spans first. Players learn that repeated minor storms fatigue materials faster than one big storm."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does shelter positioning relative to terrain teach microclimate awareness and wind-shadow principles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A shelter in the lee of a ridge takes less wind damage. Canyon shelters experience wind funneling. Players learn terrain meteorology."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Can players learn to predict weather by observing predictive visual cues (cloud formations, wind changes, pressure drops)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Approaching storms have visual precursors. Players who read these signs can reinforce shelters or evacuate before the storm hits."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Is dynamic storm damage with physics-based shelter destruction a shareable, viral-worthy moment?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A storm ripping the roof off a poorly built shelter while the player scrambles to repair is a highly shareable emergent moment."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Does surviving a named storm inside a player-built shelter create lasting memorable gameplay stories?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Surviving a category-5 storm because of smart material choices creates a narrative the player will retell."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Can weather-driven shelter interaction differentiate our game from survival games with static bases?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Most survival games have indestructible player bases. Ours make shelter a dynamic, vulnerable system that requires maintenance."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "Does visible shelter damage accumulation (cracks, holes, warped frames) drive emotional attachment and urgency?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Watching your shelter deteriorate creates maintenance urgency and makes each storm feel threatening."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do different storm types (sandstorm, blizzard, electrical storm, acid rain) have distinct visual and physical damage profiles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sandstorms abrade surfaces. Blizzards load roofs with snow weight. Acid rain degrades materials chemically. Each requires different countermeasures."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does wind direction relative to shelter orientation affect which modules take damage first?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Windward modules take damage first. Leeward modules are partially protected. A rotated shelter survives a directional storm better."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Can players forecast incoming severe weather using visual cues (cloud formation, wind speed, atmospheric glow)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Weather has build-up phases with distinct skybox and particle changes. Players learn to read these signs."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does accumulated damage affect shelter habitability (drafts, leaks, temperature loss) before structural failure?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A cracked module leaks heat and lets in precipitation. The player feels the consequence before total collapse."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can weather-shelter interaction reuse the existing planetary weather system's storm events and wind vectors?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The weather system already produces storms and wind vectors. Shelter interaction consumes these as damage inputs."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "Is shelter damage accumulation simulation cheap enough for real-time updates on the RTX 3060?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Damage is a per-module float updated on weather tick (every 5-10s). No per-frame physics needed for accumulation."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Can a basic storm-damage demo (wind applies damage to windward module, visual cracking) be built in one day?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Wind vector dot-product with module face, damage accumulation, and material parameter blend for cracking texture can be prototyped in 6 hours."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Does shelter damage state persist correctly across save/load cycles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Per-module damage percentage, accumulated weather exposure, and repair state serialize to the save game JSON."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Does the game code generator need templates for damage state visualization components and weather interaction handlers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A shelter damage component (health, damage type, visual state) and a weather interaction interface need generator templates."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Can weather interaction (storm applies damage, shelter degrades) be verified via automated sleepwalker sim?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can place a known shelter, trigger a storm, wait N ticks, and query per-module damage values."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Is damage accumulation easily implementable as material health points consumed by weather events?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each module has (max_health, current_health, damage_rate_per_storm_class). Weather reduces health. Repair restores it."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "Can damage thresholds (crack at 75%, leak at 50%, collapse at 0%) be balanced via data tables?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Damage thresholds, repair costs, and weather resistance are data-driven per material and per module type."
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does weather interaction depend on the planetary weather system being fully operational?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Shelter interaction requires storm events, wind vectors, and precipitation data from the active weather system."
+    },
+    {
+      "id": 22,
+      "category": "proves",
+      "question": "Does this prove that survival mechanics can meaningfully interact with environmental systems (not just exist alongside them)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Shelter-weather interaction proves the environment directly affects player-built structures, not just the player character."
+    },
+    {
+      "id": 23,
+      "category": "derived_from",
+      "question": "Was this sub-feature derived from Shelter_Habitat question 9 (weather physically affects shelter integrity)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Shelter_Habitat Q9 establishes that storms damage weak structures, which requires detailed weather-shelter interaction to implement."
+    },
+    {
+      "id": 24,
+      "category": "conflicts",
+      "question": "Does real-time physics-based shelter deformation during storms conflict with the 30+ fps performance target?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minor conflict. Full deformable mesh physics is expensive. Use material parameter blending for visual damage, not vertex deformation."
+    },
+    {
+      "id": 25,
+      "category": "requires",
+      "question": "What UE5 physics and weather knowledge is required for implementing storm damage on shelters?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "UE5 weather system API, material parameter collections, per-actor damage component pattern, and data-driven material resistance."
+    },
+    {
+      "id": 26,
+      "category": "vision",
+      "question": "Does teaching weather science and structural meteorology through shelter gameplay serve the educational RPG vision?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Weather-shelter interaction teaches real meteorology and structural engineering. This directly serves the educational mission."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How does weather damage create recurring repair costs that form a maintenance economy, where storm frequency determines shelter total-cost-of-ownership?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Weather makes shelter an ongoing expense. A standard shelter in a low-weather zone (10 storms/month) costs 5 material units/month in repairs. In a high-weather zone (40 storms/month), repairs cost 25 units/month \u2014 5x the operating cost. This creates location-based economic decisions and differential land values based on microclimate."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does the shelter's interaction with weather tell the story of an environment that pushes back \u2014 hail hammering the roof, wind rattling the panels, snow piling at the door \u2014 making each storm a narrative event?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Weather-shelter interaction is the story of a relationship: a gentle rain is background music, a hailstorm is a crisis, a blizzard is a siege \u2014 the shelter protects but the player hears the weather's voice through the walls."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does the player feel the consequences of poor shelter placement or material choice through audiovisual cues (drips during rain, frost forming, wind howling through gaps) rather than abstract stat bars?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Rain on thatch roof = muffled thrum. Rain on metal = loud drumming. Gaps between modules show visible light leaks and wind particle effects. Interior breath fog appears in poorly-insulated shelters during cold. Frost creeps inward from module seams."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the accumulated weather damage per shelter module need to persist so damage is consistent across reloads?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Each module stores accumulated weather damage (float), current damage state (undamaged/damaged/critical/destroyed), and repair progress. Written on damage tick or repair action. Write frequency: every weather tick that changes state."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "What atmospheric physics govern weather effects on shelters \u2014 wind load (force based on exposed surface area), thermal cycling, or precipitation erosion?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Simplified wind load model. Damage rate scales with wind speed (exposed face takes more damage) and precipitation intensity. Thermal cycling (expansion/contraction from day/night temperature swings) is modeled as gradual fatigue damage. No fluid dynamics for water erosion."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

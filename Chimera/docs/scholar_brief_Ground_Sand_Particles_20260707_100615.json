@@ -1,0 +1,33 @@
+{
+  "fork": "conservative",
+  "feature": "Ground_Sand_Particles",
+  "approach": "Campus-canonical approach using engineering_school sources and local research corpus.",
+  "canonical_reference": "NASA Technical Reports",
+  "campus_sources": [
+    "NASA Technical Reports",
+    "Spacecraft Design Constraints and Requirements",
+    "Industrial Design Principles (Form Follows Function)",
+    "Engineering Form and Function Case Studies",
+    "Unreal Engine 5 Documentation: Modeling Mode",
+    "MCP Geometry Tools Documentation",
+    "Console Command References",
+    "UE5 Sculpting Tools Tutorials",
+    "Color Theory for Artists (online courses)",
+    "Composition Principles in Fine Art",
+    "PBR Materials Explained by Artists",
+    "Form and Silhouette Design Principles"
+  ],
+  "parameters": {
+    "research_method": "campus_canonical",
+    "sources_consulted": 15,
+    "confidence": "medium"
+  },
+  "principles": [],
+  "emotional_anchor": "Grounded in Engineering School expertise",
+  "acceptance_criteria": [
+    "Parameters extracted from A+ campus sources",
+    "At least 3 corpus references consulted",
+    "Numeric values (not adjectives)",
+    "Observable in-engine (proposed measurement method)"
+  ]
+}

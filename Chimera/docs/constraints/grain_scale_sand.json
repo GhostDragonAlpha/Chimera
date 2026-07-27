@@ -1,0 +1,15 @@
+{
+  "_provenance": "Sub-rung of ground terrain — grain-scale sand. Decomposes the 2-material terrain into individual grain physics. GPU-accelerated via matter_gpu.",
+  "name": "grain_scale_sand",
+  "parent_rung": "ground_terrain",
+  "gpu": true,
+  "walls": [
+    "Grain size must follow a power law distribution with exponent -2.5 to -3.0",
+    "Packing density must be 55-65% (random close packing)",
+    "Angle of repose must be 30-40 degrees at grain scale",
+    "At least 2 grain types must segregate (coarse vs fine) via differential adhesion",
+    "Footstep displacement must be 0.1-1.0mm per step at human walking speed"
+  ],
+  "element_query": {"categories": ["Material", "Particle", "Physics", "Collision", "Niagara"], "classes": ["PhysicalMaterial", "NiagaraEmitter", "StaticMesh"]},
+  "output": {"next_rung": "footstep_response", "format": "grain size distribution, packing density, repose angle per grain type"}
+}

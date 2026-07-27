@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "graphify": {
+      "type": "stdio",
+      "command": "C:\\Users\\allen\\.local\\bin\\graphify-mcp.exe",
+      "args": ["E:/PythonChimera/Chimera/docs/chimera_knowledge_graph.json"],
+      "env": {}
+    },
+    "playwright": {
+      "type": "http",
+      "url": "http://localhost:8342/sse",
+      "env": {
+        "PLAYWRIGHT_BROWSERS_PATH": "C:\\Users\\allen\\AppData\\Local\\ms-playwright"
+      }
+    }
+  },
+  "instructions": "Query the Graphify knowledge graph and browse for web research.\n\nThe Unreal Engine pipeline is RETIRED (2026-07-23) -- rendering is done by the Chimera engine (ParticleEngine/ChimeraEngine), not UE. The unreal-engine and chiR24-unreal-mcp servers were removed 2026-07-26 (operator request) because they were auto-launching UnrealEditor. Do not re-add them.\n\nKey tools:\n- graphify: query_graph, get_node, get_neighbors\n- playwright: browser_navigate, browser_snapshot, browser_screenshot, browser_click"
+}

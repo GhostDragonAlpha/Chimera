@@ -1,0 +1,18 @@
+{
+  "_provenance": "Market physics. Prices converge, arbitrage creates trade, factions matter.",
+  "maximize": [
+    "price_stability",
+    "price_convergence"
+  ],
+  "minimize": [
+    "arbitrage_opportunity_rate"
+  ],
+  "constraints": [
+    {"field": "arbitrage_opportunity_rate", "min": 1.0},
+    {"field": "trade_volume_mean", "max": 1000000}
+  ],
+  "walls": {
+    "price_stability": "Prices must converge. Unstable prices mean the economy is broken.",
+    "arbitrage_opportunity_rate": "There must be SOME arbitrage — a perfectly uniform economy has no trade incentive."
+  }
+}

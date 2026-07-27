@@ -1,0 +1,915 @@
+"""Sleepwalker — the AI playtester (automation amendment 2026-07-07).
+
+Plays the built game in PIE by executing a BEAT SCRIPT (docs/beats/*.beats.json)
+through proven MCP pathways: simulated key input, runtime read-backs, screenshots.
+Emits a witness chronicle and typed graph records.
+
+CONSTITUTION (fully automated verification):
+  - The sleepwalker records SimPlaytest evidence (observer='agent-sim'),
+    surprises (source='agent'), and pathway records. Automated observation is
+    the final collapse; machine signals are final in the distiller.
+  - Never trusts success:true — every beat expectation is a read-back.
+
+Beat schema (docs/beats/<demo>.beats.json):
+{
+  "demo": "regolith_yard", "loop": 1, "settle_s": 6,
+  "beats": [
+    {"name": "...", "features": ["Verb_Step"],
+     "actions": [ {"key": "W", "hold_s": 3.5} | {"wait": 1.0} |
+                  {"screenshot": "name"} | {"call": {"tool": "...", "args": {...}}} ],
+     "expects": [ {"is_pie": true} | {"pawn_class": "..."} |
+                  {"pawn_within": {"x":0,"y":0,"r":800}} |
+                  {"actor_exists": "Display_Suit"} | {"log_contains": "..."} ]}
+  ]
+}
+
+Usage:
+  python -m core.sleepwalker --beats docs/beats/regolith_yard.beats.json --session sim_smoke
+  Flags: --no-record (skip graph writes), --keep-pie (leave PIE running)
+"""
+
+import argparse
+import json
+import os
+import sys
+import time
+
+os.environ["CHIMERA_AGENT_SIM"] = (
+    "1"  # constitution sentinel: this process cannot fake human observations
+)
+from pathlib import Path
+
+try:
+    from core.telemetry_probe import MCPStdioClient
+    from core.witness import Witness
+    from core.graphify_interface import record_simtest, record_surprise, record_pathway
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from core.telemetry_probe import MCPStdioClient
+    from core.witness import Witness
+    from core.graphify_interface import record_simtest, record_surprise, record_pathway
+
+ROOT = Path(__file__).resolve().parent.parent
+
+# Maps a beat's `store_as` name to the canonical field the manage_tools bridge
+# returns. Lets beats use intent-named telemetry keys (sync_events_recorded,
+# walk_volume, ...) without the bridge having to mirror every alias.
+def fuzz_spec(spec: dict, seed: int = None) -> dict:
+    """FUZZ-THE-GREEN (weekly perturbation): jitter hold/wait durations on a
+    copy of the beat spec — beat ORDER is preserved (spawn-first invariants),
+    but timing wobbles ±40%. A green suite that breaks under jitter was
+    brittle; an odd-but-fine outcome is an engine-sourced surprise — exactly
+    what the container's emergence gauge eats. Deterministic per seed."""
+    import copy, random as _random
+    rng = _random.Random(seed)
+    fuzzed = copy.deepcopy(spec)
+    for beat in fuzzed.get("beats", []):
+        for a in beat.get("actions", []):
+            if "hold_s" in a:
+                a["hold_s"] = round(float(a["hold_s"]) * rng.uniform(0.6, 1.4), 2)
+            if "wait" in a:
+                a["wait"] = round(float(a["wait"]) * rng.uniform(0.5, 1.5), 2)
+        beat["_fuzzed"] = True
+    return fuzzed
+
+
+STORE_AS_KEY_ALIASES = {
+    "total_events": "count",
+    "sync_events_recorded": "count",
+    "avg_latency_ms": "avg_latency_ms",
+    "max_latency_ms": "max_latency_ms",
+    "sync_latency_ms_max": "max_latency_ms",
+    # Peak capture (tb-0018): last_volume reads the post-key_up DECELERATION
+    # TAIL (simtest_9aac4a49214915ad: sprint captured 0.431 while the pawn
+    # provably covered 2800uu at full sprint). GetMaxFootstepVolume's peak is
+    # immune to when the capture lands, so walk/sprint compare honestly.
+    "walk_volume": "max_volume",
+    "sprint_volume": "max_volume",
+}
+
+# (removed 2026-07-13) The _TELEMETRY_SCRIPTS execute_python fallback was deleted:
+# it searched for a 'SandSound' component and read bare properties, but the real
+# telemetry getters are STATIC UFUNCTIONs on UChimeraMovementComponent (a module-
+# global TArray), and the search used the EDITOR world not PIE (MCP_PATHWAYS #33).
+# Tier 1 (manage_tools native) handles these correctly; per "no fallback ladders"
+# a Tier-1 failure now surfaces honestly instead of via this wrong-and-silent tier.
+
+
+class Sleepwalker:
+    def __init__(self, beats_path: str, session: str, record: bool = True):
+        self.spec = json.loads(Path(beats_path).read_text(encoding="utf-8"))
+        self.session = session
+        self.record = record
+        self.c = MCPStdioClient()
+        self.w = Witness(session, source="agent-sim")
+        self.outcomes = []
+
+    # ---- MCP primitives (read-back discipline) ----
+    def _call(self, tool: str, args: dict) -> dict:
+        r = self.c.call(tool, args)
+        sc = r.get("result", {}).get("structuredContent", {})
+        if not sc:
+            # Some responses (e.g. manage_tools' engine-forwarded actions) carry
+            # their payload as a JSON string in content[0].text instead of
+            # structuredContent — parse that instead of treating it as a failure.
+            content = r.get("result", {}).get("content") or []
+            if content and content[0].get("type") == "text":
+                try:
+                    sc = json.loads(content[0]["text"])
+                except (ValueError, KeyError):
+                    sc = {}
+        if not sc.get("success"):
+            raise RuntimeError(
+                f"{tool}.{args.get('action')}: {sc.get('message', 'failed')[:120]}"
+            )
+        return sc.get("result") or {}
+
+    def _call_or_default(self, tool: str, args: dict, default: dict = None) -> dict:
+        """Like _call but returns default dict on failure instead of raising."""
+        try:
+            return self._call(tool, args)
+        except (RuntimeError, Exception):
+            return default or {}
+
+    def _runtime(self) -> dict:
+        return self._call("inspect", {"action": "runtime_report"})
+
+    def _read_component_float(self, actor: str, component: str, prop: str):
+        """Read a numeric component property as a hard fact. Returns float or
+        None (graceful — never raises) so an expect can distinguish an
+        unreadable property from a failed transition."""
+        try:
+            r = self.c.call(
+                "control_actor",
+                {
+                    "action": "get_component_property",
+                    "actorName": actor,
+                    "componentName": component,
+                    "propertyName": prop,
+                },
+            ) or {}
+        except Exception:
+            return None
+        sc = (r.get("result") or {}).get("structuredContent") or {}
+        if not sc.get("success"):
+            return None
+        res = sc.get("result") or {}
+        val = (res.get("data") or {}).get("value")
+        if val is None:
+            val = res.get("value")
+        if isinstance(val, str):
+            # A bool UPROPERTY (e.g. bLowO2, bInShelter) may come back serialized as
+            # the string "true"/"false" rather than a JSON bool depending on the
+            # bridge's reflection path -- coerce before the numeric parse below so
+            # component_property_above/below stays reliable for bool properties too.
+            low = val.strip().lower()
+            if low == "true":
+                return 1.0
+            if low == "false":
+                return 0.0
+        try:
+            return float(val)
+        except (TypeError, ValueError):
+            return None
+
+    # (removed 2026-07-13) _build_telemetry_python / _extract_scalar were the
+    # helpers for the deleted Tier-2 execute_python telemetry fallback — orphaned
+    # once the fallback ladder was removed (see the _TELEMETRY_SCRIPTS breadcrumb).
+
+    def _key(self, key: str, hold_s: float, modifier: str | None = None):
+        if modifier:
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_down", "key": modifier},
+            )
+        self._call(
+            "control_editor",
+            {"action": "simulate_input", "type": "key_down", "key": key},
+        )
+        time.sleep(max(0.05, hold_s))
+        self._call(
+            "control_editor", {"action": "simulate_input", "type": "key_up", "key": key}
+        )
+        if modifier:
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_up", "key": modifier},
+            )
+
+    # ---- beat machinery ----
+    def _do_action(self, a: dict):
+        if "key" in a:
+            self.w.mark("action", {"key": a["key"], "hold_s": a.get("hold_s", 0.2)})
+            modifier = "LeftShift" if a.get("shift") else None
+            self._key(a["key"], float(a.get("hold_s", 0.2)), modifier=modifier)
+        elif "key_down" in a:
+            # Press-and-leave-held (no auto-release): for verifying a state that only
+            # exists while a key is down (e.g. crouch), since expects are only checked
+            # after all of a beat's actions complete -- a normal "key" action would
+            # already have released by then. Pair with a "key_up" action (this beat or
+            # the next) to release it before subsequent beats run.
+            self.w.mark("action", {"key_down": a["key_down"]})
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_down", "key": a["key_down"]},
+            )
+        elif "key_up" in a:
+            self.w.mark("action", {"key_up": a["key_up"]})
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_up", "key": a["key_up"]},
+            )
+        elif "wait" in a:
+            time.sleep(float(a["wait"]))
+        elif "screenshot" in a:
+            # TRAP (docs/MCP_PATHWAYS.md #32): editor_viewport/game_viewport read the
+            # render target via FViewport::ReadPixels, which runs BEFORE Slate/UMG
+            # compositing -- a UMG HUD (WID_O2HUD) never appears in those modes even
+            # though it's genuinely on screen. Only full_editor_window (a true Slate
+            # window capture) shows it. Default stays editor_viewport for backward
+            # compatibility with existing beat files that only want a world screenshot;
+            # pass {"screenshot": "name", "mode": "full_editor_window"} to verify UI.
+            mode = a.get("mode", "editor_viewport")
+            self._call(
+                "control_editor",
+                {
+                    "action": "screenshot",
+                    "mode": mode,
+                    "filename": a["screenshot"],
+                },
+            )
+            self.w.mark("screenshot", {"filename": a["screenshot"], "mode": mode})
+        elif "interact" in a or "pickup" in a:
+            self.w.mark("action", {"interact": True, "hold_s": a.get("hold_s", 0.2)})
+            # Simulate 'E' key for interact/pickup
+            self._key("E", float(a.get("hold_s", 0.2)))
+        elif "drop" in a:
+            self.w.mark("action", {"drop": True, "hold_s": a.get("hold_s", 0.2)})
+            # Simulate 'Q' key for drop
+            self._key("Q", float(a.get("hold_s", 0.2)))
+        elif "call" in a:
+            self.w.mark("action", {"call": a["call"].get("tool")})
+            self._call(a["call"]["tool"], a["call"]["args"])
+        elif "move_to" in a:
+            # BugItGo console command for movement/camera move (editor mode only)
+            loc = a["move_to"]
+            x = float(loc.get("x", 0))
+            y = float(loc.get("y", 0))
+            z = float(loc.get("z", 0))
+            pitch = float(loc.get("pitch", 0))
+            yaw = float(loc.get("yaw", 0))
+            roll = float(loc.get("roll", 0))
+            self.w.mark(
+                "action",
+                {
+                    "move_to": {
+                        "x": x,
+                        "y": y,
+                        "z": z,
+                        "pitch": pitch,
+                        "yaw": yaw,
+                        "roll": roll,
+                    }
+                },
+            )
+            self._call(
+                "control_editor",
+                {
+                    "action": "console_command",
+                    "command": f"BugItGo {x} {y} {z} {pitch} {yaw} {roll}",
+                },
+            )
+
+        elif "reset_position" in a:
+            # Position reset for pawn during PIE (BugItGo doesn't work in PIE).
+            # Uses control_actor set_transform on the possessed pawn directly.
+            #
+            # tb-0184 fix: the default anchor used to be {"x":0,"y":0,"z":130.0}
+            # and z was computed as `anchor["z"] + loc["z"]` whenever the beat
+            # supplied a z — i.e. ADDED to, not replaced by, the anchor default.
+            # For x/y this is harmless (their anchor defaults to 0.0, so adding
+            # is a no-op), but every existing beat file supplies z (almost
+            # always 130, matching PlayerStart/the placed pawn's own ground
+            # height) with NO anchor, so EVERY ONE of them was silently sent to
+            # the engine as z=260 (130+130), not the z=130 the beat author
+            # wrote — this is exactly the "reset_position{z:260}" this task's
+            # own recipe cites (surprise_ae20639b202d972b): that 260 was never
+            # a beat's request, it was 130 (requested) + 130 (this bug). Fixed
+            # by making the no-anchor default z 0.0, matching x/y, so a
+            # supplied z is used AS the absolute world coordinate — exactly
+            # what the comment below already documented as the intended,
+            # backward-compatible behaviour. GROUND_Z_FALLBACK below preserves
+            # the old sensible-default behaviour for the (currently unused by
+            # any beat file) case of a beat omitting z entirely with no anchor.
+            GROUND_Z_FALLBACK = 130.0
+            loc = a["reset_position"]
+            anchor = {"x": 0.0, "y": 0.0, "z": 0.0}
+            anchor_name = loc.get("anchor")
+            if anchor_name == "habitat" and getattr(self, "habitat_estimate", None):
+                anchor = self.habitat_estimate
+            elif anchor_name == "spawn" and getattr(self, "spawn_location", None):
+                anchor = self.spawn_location
+            # With an anchor, x/y/z are OFFSETS from it; without one (the original,
+            # backward-compatible behaviour every existing beat file relies on),
+            # x/y/z are absolute world coordinates (anchor defaults to origin).
+            x = anchor["x"] + float(loc.get("x", 0))
+            y = anchor["y"] + float(loc.get("y", 0))
+            if "z" in loc:
+                z = anchor["z"] + float(loc["z"])
+            else:
+                z = anchor["z"] if anchor_name else GROUND_Z_FALLBACK
+            self.w.mark(
+                "action",
+                {"reset_position": {"x": x, "y": y, "z": z, "anchor": anchor_name}},
+            )
+            # Find the possessed pawn name from runtime_report first
+            rt = self._runtime()
+            pawn_name = (rt.get("pawn") or {}).get("name", "")
+            if not pawn_name:
+                raise RuntimeError(
+                    f"reset_position failed: no possessed pawn found in runtime_report"
+                )
+            self._call(
+                "control_actor",
+                {
+                    "actorName": pawn_name,
+                    "action": "set_transform",
+                    "location": {"x": x, "y": y, "z": z},
+                },
+            )
+            # tb-0184 (witness rig: reset_position does not ground the pawn):
+            # the bridge's set_transform already verifies the write landed at
+            # the instant it ran (bLocMatch), but proven-live evidence
+            # (surprise_ae20639b202d972b + this task's own repro) shows the
+            # pawn can still be found tens-to-hundreds-of-thousands of units
+            # in the air moments later — an external per-tick force keeps
+            # acting on the pawn regardless of which (if any) MCP call is
+            # made, so a reset that was momentarily correct does not stay
+            # correct. Read the position straight back so THIS session's
+            # chronicle records whether the ground actually held, instead of
+            # trusting the write-time echo and letting a later expect fail
+            # against a corrupted position with no attribution back to the
+            # reset. A large deviation here is a RIG/PAWN fault, not the
+            # tagged feature's — raise distinctly so run()'s outcome=blocked
+            # path carries that in the evidence (H-29: attribute rejection to
+            # the actual failing subsystem).
+            rt_verify = self._runtime()
+            actual_loc = (
+                (rt_verify.get("pawn") or {}).get("transform") or {}
+            ).get("location") or {}
+            actual_z = float(actual_loc.get("z", float("nan")))
+            delta_z = actual_z - z
+            self.w.mark(
+                "reset_position_verify",
+                {"requested_z": z, "actual_z": actual_z, "delta_z": delta_z},
+            )
+            RESET_POSITION_TOLERANCE_UU = 2000.0  # see tb-0184: real corruption is 7,000+/tick, settle jitter is O(10)
+            if not (abs(delta_z) <= RESET_POSITION_TOLERANCE_UU):
+                raise RuntimeError(
+                    f"RIG FAULT (tb-0184, not a feature defect): reset_position wrote "
+                    f"z={z:.0f} but pawn now reads z={actual_z:.0f} (delta={delta_z:+.0f}uu) "
+                    f"— something external is still moving the pawn every tick; do not "
+                    f"indict this beat's tagged feature from this failure"
+                )
+        elif "advance_suit_seconds" in a:
+            # Compress game-time instead of waiting real time (design directive
+            # Part A #2): simulates N seconds of the suit's OWN drain/regen math
+            # (USuitLifeSupportComponent's per-game-minute rates) in one instant
+            # write, rather than a beat waiting out the real ~5-6 minute curve.
+            #
+            # REVISED 2026-07-13 (empirical failure this session, simtest evidence):
+            # the original implementation called AdvanceLifeSupport(N) via
+            # execute_python, searching for the component with
+            # unreal.EditorLevelLibrary.get_all_level_actors() -- that call resolves
+            # the EDITOR world, not the active PIE world, so during a live PIE session
+            # it can never find the runtime-attached (NewObject'd at OnPossess)
+            # SuitLifeSupportComponent at all. Confirmed live: O2 barely moved
+            # (93.61, consistent with ordinary real-time beat drain, not a 950s
+            # fast-forward). `control_actor` actions, by contrast, ARE proven to
+            # resolve the live PIE world in this exact session (reset_position/
+            # get_component_property both worked correctly throughout this same run)
+            # -- so this now computes the resulting O2 value itself (same formula
+            # the component's TickLifeSupport uses: O2 -= rate_per_min * seconds/60,
+            # clamped 0..100) and writes it via the PROVEN set_component_property
+            # pathway, reading the current value first via the equally-proven
+            # get_component_property (_read_component_float). A short settle wait
+            # afterward lets the component's OWN next real Tick (still running
+            # normally in PIE) call UpdateO2Edges() off the new baseline, so
+            # bLowO2/bDead flip via the REAL edge-detection logic, not an assertion.
+            seconds = float(a["advance_suit_seconds"])
+            rate_per_min = float(a.get("rate_per_min", -6.0))  # default: idle drain
+            prop = str(a.get("property", "O2"))
+            comp = str(a.get("component", "SuitLifeSupportComponent"))
+            # min_floor defaults to 0 (matches the component's own clamp), but a
+            # drain beat wanting "low-O2 alarm, not death" should pass a small
+            # positive floor (e.g. 5.0) -- with a large-enough `seconds` the
+            # computed delta then exceeds any realistic starting value's range,
+            # so the result reliably lands AT the floor regardless of exactly
+            # what the real preceding beats left O2 at, without ever hitting the
+            # bDead edge this compression isn't meant to demonstrate.
+            min_floor = float(a.get("min_floor", 0.0))
+            max_ceiling = float(a.get("max_ceiling", 100.0))
+            self.w.mark("action", {"advance_suit_seconds": seconds, "rate_per_min": rate_per_min, "property": prop})
+            rt = self._runtime()
+            pawn_name = (rt.get("pawn") or {}).get("name", "")
+            current = self._read_component_float(pawn_name, comp, prop) if pawn_name else None
+            if current is None:
+                self.w.mark("action_warning", {"advance_suit_seconds": "current value unreadable, skipping write"})
+            else:
+                new_val = max(min_floor, min(max_ceiling, current + rate_per_min * (seconds / 60.0)))
+                self._call(
+                    "control_actor",
+                    {
+                        "action": "set_component_property",
+                        "actorName": pawn_name,
+                        "componentName": comp,
+                        "properties": {prop: new_val},
+                    },
+                )
+                self.w.mark("action_result", {"advance_suit_seconds": seconds, "before": current, "after": new_val})
+                time.sleep(0.3)  # let the component's real Tick process edges off the new value
+        elif "command" in a:
+            cmd = a["command"]
+            self.w.mark("action", {"command": cmd})
+            call_args = {"action": cmd}
+            for k, v in a.items():
+                if k not in ("command",):
+                    call_args[k] = v
+
+            # ── Tier 1: manage_tools bridge ──
+            result = self._call_or_default("manage_tools", call_args)
+            command_succeeded = bool(result)
+
+            # NO FALLBACK LADDER (CLAUDE.md law). Tier 1 (manage_tools native) is
+            # the ONLY telemetry path. The old Tier-2 (execute_python against the
+            # wrong class + the editor world, not PIE — see MCP_PATHWAYS #33) and
+            # Tier-3 (hardcoded 999/0.5/0 defaults) were removed: they papered over
+            # real failures with fake data — the very source of the count=0 /
+            # latency=999 telemetry noise. A telemetry command that can't read real
+            # data now FAILS the beat honestly instead of faking a green result.
+            if not command_succeeded:
+                self.w.mark(
+                    "action_error",
+                    {
+                        "command": cmd,
+                        "error": "manage_tools telemetry command failed — no fallback, real data unavailable",
+                    },
+                )
+            else:
+                store_as = a.get("store_as")
+                if store_as and isinstance(result, dict):
+                    # Map a beat's store_as name to the canonical key the
+                    # bridge returns (e.g. 'count'/'last_volume').
+                    key = STORE_AS_KEY_ALIASES.get(store_as, store_as)
+                    if key in result:
+                        if not hasattr(self, "telemetry_results"):
+                            self.telemetry_results = {}
+                        self.telemetry_results[store_as] = result[key]
+            return result
+        else:
+            raise ValueError(f"unknown action {a}")
+
+    def _check_expect(self, e: dict, rt: dict, log_lines: list) -> tuple[bool, str]:
+        if "is_pie" in e:
+            ok = bool(rt.get("isPIE")) == bool(e["is_pie"])
+            return ok, f"isPIE={rt.get('isPIE')}"
+        if "pawn_class" in e:
+            cls = (rt.get("pawn") or {}).get("class", "")
+            return cls == e["pawn_class"], f"pawn_class={cls}"
+        if "pawn_within" in e:
+            loc = ((rt.get("pawn") or {}).get("transform") or {}).get("location") or {}
+            t = e["pawn_within"]
+            dx = float(loc.get("x", 1e9)) - float(t["x"])
+            dy = float(loc.get("y", 1e9)) - float(t["y"])
+            d = (dx * dx + dy * dy) ** 0.5
+            return d <= float(
+                t["r"]
+            ), f"dist={d:.0f}uu (loc x={loc.get('x')}, y={loc.get('y')})"
+        if "actor_exists" in e:
+            actors = rt.get("actors") or []
+            names = {a.get("label") for a in actors} | {a.get("name") for a in actors}
+            return e["actor_exists"] in names, f"present={e['actor_exists'] in names}"
+        if "log_contains" in e:
+            # tb-0185: log_lines is the FULL unfiltered log tail for this beat's
+            # window (Witness.drain_all_new()), not the old [DEMOBEAT]-only
+            # subset — that filtering happened before this check ever saw the
+            # log, so any marker not tagged [DEMOBEAT] ([GestureWheel]/
+            # [Weather]/[Memorial]/[Sacrifice]/[Footstep]/[NPCTrade]) could
+            # never match. [DEMOBEAT]-anchored expects still match identically:
+            # those lines are a strict subset of log_lines.
+            hit = any(e["log_contains"] in ln for ln in log_lines)
+            return hit, f"log_hit={hit}"
+        if "world_is" in e:
+            w = str(rt.get("worldName", ""))
+            return e["world_is"] in w, f"world={w}"
+        if "pawn_z_above" in e:
+            z = float(
+                (
+                    ((rt.get("pawn") or {}).get("transform") or {}).get("location")
+                    or {}
+                ).get("z", -1e9)
+            )
+            return z > float(e["pawn_z_above"]), f"z={z:.0f}"
+        if "pawn_z_below" in e:
+            z = float(
+                (
+                    ((rt.get("pawn") or {}).get("transform") or {}).get("location")
+                    or {}
+                ).get("z", 1e9)
+            )
+            return z < float(e["pawn_z_below"]), f"z={z:.0f}"
+        if "pawn_property_toggles" in e:
+            # Active, reversible HARD-FACT check for a state TOGGLE (e.g. crouch):
+            # read a component property (standing) -> press key -> read (active) ->
+            # release key -> read (released); require a DROP that then RESTORES.
+            # Fails on a no-op toggle, a permanently-changed value, AND a gravity
+            # fall (none produce a reversible drop). Replaces the pawn_z_below
+            # proxy that passed even when Verb_Bend crouch was completely broken.
+            spec = e["pawn_property_toggles"]
+            key = str(spec.get("key", "C"))
+            comp = str(spec.get("component", "CollisionCylinder"))
+            prop = str(spec.get("property", "CapsuleHalfHeight"))
+            min_drop = float(spec.get("min_drop", 20.0))
+            settle = float(spec.get("settle_s", 1.2))
+            pawn = (rt.get("pawn") or {}).get("name", "")
+            if not pawn:
+                return False, "pawn_property_toggles: no possessed pawn"
+            standing = self._read_component_float(pawn, comp, prop)
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_down", "key": key},
+            )
+            time.sleep(settle)
+            active = self._read_component_float(pawn, comp, prop)
+            self._call(
+                "control_editor",
+                {"action": "simulate_input", "type": "key_up", "key": key},
+            )
+            time.sleep(settle)
+            released = self._read_component_float(pawn, comp, prop)
+            if standing is None or active is None or released is None:
+                return False, (
+                    f"pawn_property_toggles: {comp}.{prop} unreadable "
+                    f"(standing={standing} active={active} released={released})"
+                )
+            drop = standing - active
+            restore = released - active
+            ok = bool(drop >= min_drop and restore >= 0.5 * drop)
+            return ok, (
+                f"{prop} {standing:.0f}->{active:.0f}->{released:.0f} "
+                f"drop={drop:.0f} restore={restore:.0f} min_drop={min_drop:.0f}"
+            )
+        # NOTE: control_rotation_yaw_delta removed 2026-07-09 — requires MCP bridge
+        # to read ControlRotation from controller (ChiR24-Unreal_mcp-test not installed).
+        # Mouse look is correctly implemented in ADemoPlayerController::Turn/LookUp
+        # via AddYawInput/AddPitchInput; verification requires live PIE with bridge.
+        if "pawn_velocity_magnitude" in e:
+            try:
+                vel = ((rt.get("pawn") or {}).get("transform") or {}).get(
+                    "velocity"
+                ) or {}
+                vx = float(vel.get("x", 0))
+                vy = float(vel.get("y", 0))
+                vz = float(vel.get("z", 0))
+                magnitude = (vx * vx + vy * vy + vz * vz) ** 0.5
+                threshold = float(e["pawn_velocity_magnitude"])
+                return (
+                    magnitude >= threshold,
+                    f"velocity_mag={magnitude:.2f} (threshold={threshold})",
+                )
+            except Exception:
+                return False, "Failed to read pawn velocity from runtime_report"
+        if "actor_count_min" in e:
+            try:
+                actors = rt.get("actors") or []
+                count = len(actors)
+                min_count = int(e["actor_count_min"])
+                return count >= min_count, f"actor_count={count} (min={min_count})"
+            except Exception:
+                return False, "Failed to read actor count from runtime_report"
+        if "component_property_below" in e or "component_property_above" in e:
+            # Generic, reusable hard-fact check: read a numeric/bool property off a
+            # named component (default: the suit) via the SAME proven get_component_property
+            # pathway pawn_property_toggles already uses for the crouch check -- no
+            # execute_python return-value parsing involved, so this is unaffected by
+            # any uncertainty in that pathway's output plumbing.
+            key = "component_property_below" if "component_property_below" in e else "component_property_above"
+            spec = e[key]
+            pawn = (rt.get("pawn") or {}).get("name", "")
+            comp = str(spec.get("component", "SuitLifeSupportComponent"))
+            prop = str(spec["property"])
+            if not pawn:
+                return False, f"{key}: no possessed pawn"
+            val = self._read_component_float(pawn, comp, prop)
+            if val is None:
+                return False, f"{key}: {comp}.{prop} unreadable"
+            threshold = float(spec["value"])
+            ok = (val < threshold) if key == "component_property_below" else (val > threshold)
+            return ok, f"{comp}.{prop}={val:.2f} threshold={threshold} ({key})"
+        if "screenshot_taken" in e:
+            ok = True
+            return ok, f"screenshot_taken=True (proven action executed)"
+        if "total_events_gt" in e:
+            val = getattr(self, "telemetry_results", {}).get("total_events", 0)
+            return val > float(e["total_events_gt"]), f"total_events={val}"
+        if "avg_latency_ms_lt" in e:
+            val = getattr(self, "telemetry_results", {}).get("avg_latency_ms", 1e9)
+            return val < float(e["avg_latency_ms_lt"]), f"avg_latency_ms={val}"
+        if "max_latency_ms_lt" in e:
+            val = getattr(self, "telemetry_results", {}).get("max_latency_ms", 1e9)
+            return val < float(e["max_latency_ms_lt"]), f"max_latency_ms={val}"
+        if "sync_events_recorded" in e:
+            val = getattr(self, "telemetry_results", {}).get("sync_events_recorded", 0)
+            return val >= float(e["sync_events_recorded"]), f"sync_events_recorded={val}"
+        if "sync_latency_ms_max" in e:
+            val = getattr(self, "telemetry_results", {}).get("sync_latency_ms_max", 1e9)
+            return val <= float(e["sync_latency_ms_max"]), f"sync_latency_ms_max={val}"
+        if "volume_scales_with_speed" in e:
+            tr = getattr(self, "telemetry_results", {})
+            wv, sv = tr.get("walk_volume"), tr.get("sprint_volume")
+            if wv is None or sv is None:
+                return False, "volume_scales_with_speed: walk/sprint volume not captured"
+            return bool(sv > wv * 1.5), f"walk_volume={wv} sprint_volume={sv}"
+        return False, f"unknown expect {list(e.keys())}"
+
+    def run(self, keep_pie: bool = False) -> dict:
+        settle = float(self.spec.get("settle_s", 6))
+        self.w.mark("session_start", {"demo": self.spec.get("demo")})
+        # No-blockers law: editor down -> self-heal via unblock before giving up.
+        try:
+            rt = self._runtime()
+        except Exception:
+            from core.unblock import ensure_editor
+
+            ok, note = ensure_editor()
+            if not ok:
+                record_pathway(
+                    "sleepwalker",
+                    "beat_run",
+                    "blocked",
+                    {"session": self.session},
+                    f"editor unreachable, self-heal failed: {note[:100]}",
+                )
+                chronicle = self.w.finalize()
+                return {
+                    "session": self.session,
+                    "demo": self.spec.get("demo"),
+                    "beats_total": 0,
+                    "beats_reached": 0,
+                    "outcomes": [],
+                    "chronicle": chronicle,
+                    "temperature": f"[SIM] Sleepwalk skipped: editor unreachable ({note[:80]}) — recorded, shift continues.",
+                }
+            rt = self._runtime()
+        # PIE-collision guard (prerequisite for nightly rhythm): check isPIE=false first.
+        if rt.get("isPIE"):
+            record_pathway(
+                "sleepwalker",
+                "pie_collision_guard",
+                "blocked",
+                {"reason": "live session exists (isPIE=true)"},
+            )
+            # skip and note it
+            chronicle = self.w.finalize()
+            return {
+                "session": self.session,
+                "demo": self.spec.get("demo"),
+                "beats_total": 0,
+                "beats_reached": 0,
+                "outcomes": [],
+                "chronicle": chronicle,
+                "temperature": "[SIM] Sleepwalk skipped: live PIE session exists (isPIE=true). Prerequisite for nightly rhythm not met.",
+                "skipped_pie_active": True,
+            }
+        self._call("control_editor", {"action": "play"})
+        try:
+            time.sleep(settle)
+            # Capture the pawn's true spawn location before any beat moves it, so
+            # beats can reference world-relative anchors (e.g. "habitat") without
+            # hardcoding a PlayerStart position that varies by level/session.
+            # Mirrors ADemoPlayerController::SpawnDemoHabitatIfNeeded's own formula
+            # (habitat = spawn - Forward*500) -- forward is a fixed +X all session
+            # since control rotation never turns without mouse-look input.
+            self.spawn_location = None
+            self.habitat_estimate = None
+            try:
+                rt0 = self._runtime()
+                loc0 = ((rt0.get("pawn") or {}).get("transform") or {}).get("location") or {}
+                if loc0:
+                    sx, sy, sz = float(loc0.get("x", 0)), float(loc0.get("y", 0)), float(loc0.get("z", 130))
+                    self.spawn_location = {"x": sx, "y": sy, "z": sz}
+                    self.habitat_estimate = {"x": sx - 500.0, "y": sy, "z": sz}
+                    self.w.mark("spawn_captured", {"spawn": self.spawn_location, "habitat_estimate": self.habitat_estimate})
+            except Exception:
+                pass
+            for beat in self.spec.get("beats", []):
+                name = beat.get("name", "?")
+                self.w.mark("beat_start", {"beat": name})
+                outcome, evidence = "reached", []
+                try:
+                    for a in beat.get("actions", []):
+                        self._do_action(a)
+                    self.w.drain_demobeats()  # unchanged: chronicle "demobeat" marks
+                    # tb-0185: log_contains expects need the FULL raw tail for this
+                    # beat's window, not just [DEMOBEAT]-tagged lines — drain_all_new()
+                    # shares drain_demobeats()'s bounded offset-cursor read (no second
+                    # file read) and is a superset of it, so existing [DEMOBEAT]-anchored
+                    # expects are unaffected; non-DEMOBEAT markers become audible.
+                    raw_log = self.w.drain_all_new()
+                    rt = self._runtime()
+                    loc = ((rt.get("pawn") or {}).get("transform") or {}).get(
+                        "location"
+                    ) or {}
+                    self.w.mark(
+                        "beat_snapshot",
+                        {
+                            "beat": name,
+                            "loc": [loc.get("x"), loc.get("y"), loc.get("z")],
+                        },
+                    )
+                    for e in beat.get("expects", []):
+                        ok, note = self._check_expect(e, rt, raw_log)
+                        evidence.append({"expect": e, "ok": ok, "note": note})
+                        if not ok:
+                            outcome = "failed"
+                except Exception as ex:
+                    outcome = "blocked"
+                    evidence.append({"error": str(ex)[:200]})
+                self.outcomes.append(
+                    {
+                        "beat": name,
+                        "outcome": outcome,
+                        "features": beat.get("features", []),
+                        "evidence": evidence,
+                    }
+                )
+                self.w.mark("beat_end", {"beat": name, "outcome": outcome})
+        finally:
+            if not keep_pie:
+                try:
+                    self._call("control_editor", {"action": "stop_pie"})
+                except Exception:
+                    pass
+        return self._finish()
+
+    def _finish(self) -> dict:
+        # THE CONTAINER's sensor wire (tuning pass 2026-07-12): every walk
+        # refreshes docs/world/telemetry_last.json so malcolm's hardware walls
+        # (frame_time_ms, system_memory_gb) stay measured, not admission-only.
+        try:
+            import re as _re
+            perf = self._call_or_default("inspect",
+                                         {"action": "get_performance_stats"})
+            m = _re.search(r'fps"?\s*[:=]\s*"?([0-9.]+)', json.dumps(perf))
+            snapshot = {}
+            if m:
+                snapshot["fps"] = float(m.group(1))
+                # Automated walk: the editor is driven via MCP, not focus-guaranteed,
+                # so this fps is trend-only. Mark it unfocused → malcolm treats the
+                # frame-time wall as UNMEASURED, never a false CONTAIN breach (H-13).
+                snapshot["foregrounded"] = False
+            from core.telemetry_probe import _editor_memory_gb
+            mem = _editor_memory_gb()
+            if mem is not None:
+                snapshot["system_memory_gb"] = mem
+            if snapshot:
+                from datetime import datetime as _dt, timezone as _tz
+                snapshot["ts"] = _dt.now(_tz.utc).isoformat()[:19]
+                p = Path(__file__).resolve().parents[1] / "docs" / "world" / "telemetry_last.json"
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(json.dumps(snapshot, indent=1), encoding="utf-8")
+        except Exception:
+            pass                                    # sensors never wedge a walk
+
+        chronicle = self.w.finalize()
+
+        # THE METRONOME (tier-3 feel): every walk refreshes feel_last.json —
+        # input->feedback latency, juice density, dead air — mined from this
+        # chronicle x the UE log. Guarded: feel never wedges a walk.
+        try:
+            from core.metronome import analyze as _feel
+            _feel(session=self.session)
+        except Exception:
+            pass
+
+        total = len(self.outcomes)
+        reached = sum(1 for o in self.outcomes if o["outcome"] == "reached")
+        fails = [o for o in self.outcomes if o["outcome"] != "reached"]
+        def _failing_note(o):
+            """The FAILING expect's evidence (walk_volume=X sprint_volume=Y),
+            not whatever expect happened to run last — three PIE cycles were
+            burned 2026-07-12 theorizing about numbers this string already
+            held (simtest_9aac4a49214915ad)."""
+            failing = next((e for e in o.get("evidence", [])
+                            if e.get("ok") is False), None)
+            if failing is not None:
+                return (f"expect {json.dumps(failing.get('expect'))[:60]} "
+                        f"-> {str(failing.get('note'))[:110]}")
+            return json.dumps(o["evidence"][-1])[:110] if o.get("evidence") else "?"
+
+        temperature = (
+            f"[SIM] {reached}/{total} beats reached in '{self.spec.get('demo')}'."
+            + (
+                f" Failures: "
+                + "; ".join(
+                    f"{o['beat']} ({o['outcome']}: {_failing_note(o)})"
+                    for o in fails
+                )
+                if fails
+                else " Clean walk."
+            )
+        )
+        result = {
+            "session": self.session,
+            "demo": self.spec.get("demo"),
+            "beats_total": total,
+            "beats_reached": reached,
+            "outcomes": self.outcomes,
+            "chronicle": chronicle,
+            "temperature": temperature,
+        }
+        if self.record:
+            node = record_simtest(
+                session=self.session,
+                demo=self.spec.get("demo", "?"),
+                beats_total=total,
+                beats_reached=reached,
+                outcomes=self.outcomes,
+                timeline_path=chronicle,
+                temperature=temperature,
+            )
+            result["simtest_node"] = node
+            for o in fails:
+                record_surprise(
+                    context=f"Sleepwalker expected beat '{o['beat']}' to be reachable "
+                    f"({self.spec.get('demo')})",
+                    reality=f"{o['outcome']}: {json.dumps(o['evidence'][-1])[:160]}",
+                    lesson_hint="sim-discovered gap; verify before human session",
+                    source="agent",
+                )
+            record_pathway(
+                "sleepwalker",
+                "beat_run",
+                "success" if not fails else "partial",
+                {"session": self.session, "reached": f"{reached}/{total}"},
+            )
+        return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Run the Sleepwalker AI playtester")
+    parser.add_argument("--beats", required=True)
+    parser.add_argument("--session", required=True)
+    parser.add_argument("--no-record", action="store_true")
+    parser.add_argument("--keep-pie", action="store_true")
+    parser.add_argument("--fuzz", type=int, metavar="SEED", default=None,
+                        help="Fuzz-the-Green: jitter hold/wait timings ±40%% "
+                             "(deterministic per SEED); breakage = brittleness, "
+                             "oddness = emergence-gauge food")
+    parser.add_argument("--agent-id", default=None,
+                        help="Editor-scheduler agent id (for parallel runs)")
+    args = parser.parse_args()
+
+    # [SCHEDULER] Claim exclusive editor access in OPEN mode so PIE / screenshots
+    # work and parallel agents (pipelines, other sleepwalkers) don't collide on
+    # the editor. Falls back gracefully if the scheduler module is unavailable.
+    agent_id = None
+    try:
+        from core.editor_scheduler import request_editor, release_editor
+        from uuid import uuid4
+        agent_id = args.agent_id or f"sleepwalker-{uuid4().hex[:8]}"
+        if not request_editor("open", agent_id, timeout=120):
+            print("  [SCHEDULER] Could not acquire editor lock (timeout); proceeding unlocked.")
+            agent_id = None
+    except Exception as e:
+        print(f"  [SCHEDULER] editor lock unavailable ({e}); proceeding without it.")
+        agent_id = None
+
+    sw = Sleepwalker(args.beats, args.session, record=not args.no_record)
+    if args.fuzz is not None:
+        sw.spec = fuzz_spec(sw.spec, seed=args.fuzz)
+        print(f"[fuzz] timings jittered (seed {args.fuzz}) — green that breaks was brittle")
+    try:
+        result = sw.run(keep_pie=args.keep_pie)
+    finally:
+        if agent_id:
+            try:
+                release_editor(agent_id)
+            except Exception:
+                pass
+    print(json.dumps({k: v for k, v in result.items() if k != "outcomes"}, indent=1))
+    for o in result["outcomes"]:
+        print(
+            f"  {o['outcome']:>7}  {o['beat']}  features={','.join(o['features']) or '-'}"
+        )
+        if o["outcome"] != "reached":
+            # surface EVERY failing expect's evidence right here — the numbers
+            # an agent needs live in these notes, not in the graph three hops away
+            for e in o.get("evidence", []):
+                if e.get("ok") is False:
+                    print(f"           x {json.dumps(e.get('expect'))[:70]}"
+                          f"  ->  {str(e.get('note'))[:120]}")
+
+
+if __name__ == "__main__":
+    main()

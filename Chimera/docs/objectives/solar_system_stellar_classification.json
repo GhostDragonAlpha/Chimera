@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for solar_system_stellar_classification",
+  "scenario": "Train solar_system_stellar_classification sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_star_color_varies_wi",
+      "min": 1,
+      "hard": true,
+      "wall": "Star color varies with surface temperature"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_spectral_class_deter",
+      "min": 1,
+      "hard": true,
+      "wall": "Spectral class determines light output"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_multiple_star_types_",
+      "min": 1,
+      "hard": true,
+      "wall": "Multiple star types must be distinguishable"
+    }
+  ]
+}

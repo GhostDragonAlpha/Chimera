@@ -1,0 +1,386 @@
+[
+ {
+  "id": "atom_09a51d1f1daf",
+  "feature": "subsystem/Economy",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UEconomyRouteSpecComponent\\b|UEconomyRouteSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UEconomyRouteSpecComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_4a34781fbcb3",
+  "feature": "subsystem/Economy",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UEconomyRouteSpecComponent\\b|UEconomyRouteSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UEconomyRouteSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_00304cb3c46a",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bConsumptionRegions\\b"
+  },
+  "desc": "UPROPERTY ConsumptionRegions (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_01343d92302d",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBasePrice\\b"
+  },
+  "desc": "UPROPERTY BasePrice (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_0d85ea4db985",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBuyPriceMultiplier\\b"
+  },
+  "desc": "UPROPERTY BuyPriceMultiplier (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_232072be492c",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bProductionLocations\\b"
+  },
+  "desc": "UPROPERTY ProductionLocations (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_320b41c67446",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOriginSystem\\b"
+  },
+  "desc": "UPROPERTY OriginSystem (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_3682fcbddf99",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDestinationSystems\\b"
+  },
+  "desc": "UPROPERTY DestinationSystems (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_40d7f765fdf5",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStationName\\b"
+  },
+  "desc": "UPROPERTY StationName (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_41b56f52e53f",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDemandMultiplier\\b"
+  },
+  "desc": "UPROPERTY DemandMultiplier (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_4573067758e1",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCommodityList\\b"
+  },
+  "desc": "UPROPERTY CommodityList (EconomyManager.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyManager.h"
+ },
+ {
+  "id": "atom_4e445442cd17",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bPirateActivityLevel\\b"
+  },
+  "desc": "UPROPERTY PirateActivityLevel (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_5ccf1db7bd32",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnCommodityPriceChanged\\b"
+  },
+  "desc": "UPROPERTY OnCommodityPriceChanged (EconomyManager.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyManager.h"
+ },
+ {
+  "id": "atom_5f9551e71f88",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentDemand\\b"
+  },
+  "desc": "UPROPERTY CurrentDemand (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_60f1d8dfa902",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMarketVolatility\\b"
+  },
+  "desc": "UPROPERTY MarketVolatility (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_659e57605071",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTypicalCargoTypes\\b"
+  },
+  "desc": "UPROPERTY TypicalCargoTypes (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_86edf19722d2",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bAvailableCommodities\\b"
+  },
+  "desc": "UPROPERTY AvailableCommodities (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_8b59b25536c2",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bRouteSafetyRating\\b"
+  },
+  "desc": "UPROPERTY RouteSafetyRating (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_90677b6dbb19",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCommodityName\\b"
+  },
+  "desc": "UPROPERTY CommodityName (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_9916066f750a",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDescription\\b"
+  },
+  "desc": "UPROPERTY Description (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_a016f39605b0",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLocation\\b"
+  },
+  "desc": "UPROPERTY Location (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_b4cdd9fc3115",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bStationTradingList\\b"
+  },
+  "desc": "UPROPERTY StationTradingList (EconomyManager.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyManager.h"
+ },
+ {
+  "id": "atom_c1f2664b479c",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSupplyMultiplier\\b"
+  },
+  "desc": "UPROPERTY SupplyMultiplier (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_d0fb639cd86d",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSellPriceMultiplier\\b"
+  },
+  "desc": "UPROPERTY SellPriceMultiplier (StationTradingData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:StationTradingData.h"
+ },
+ {
+  "id": "atom_d5645f96a044",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTradeRestrictions\\b"
+  },
+  "desc": "UPROPERTY TradeRestrictions (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ },
+ {
+  "id": "atom_d65d3f2bdab3",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentSupply\\b"
+  },
+  "desc": "UPROPERTY CurrentSupply (CommodityData.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:CommodityData.h"
+ },
+ {
+  "id": "atom_e94861445924",
+  "feature": "subsystem/Economy",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBaseValueCredits\\b"
+  },
+  "desc": "UPROPERTY BaseValueCredits (EconomyRouteSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:EconomyRouteSpecComponent.h"
+ }
+]

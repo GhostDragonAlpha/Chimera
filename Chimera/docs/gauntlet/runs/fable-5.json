@@ -1,0 +1,85 @@
+{
+  "agent": "fable-5",
+  "station": 7,
+  "entered_at": "2026-07-12T03:49:33+00:00",
+  "attempts": [
+    {
+      "ts": "2026-07-12T03:51:27+00:00",
+      "station": "orientation",
+      "score": 67,
+      "passed": false,
+      "failed_checks": [
+        "names the current spiral loop",
+        "names one of that loop's OPEN features"
+      ]
+    },
+    {
+      "ts": "2026-07-12T03:52:53+00:00",
+      "station": "orientation",
+      "score": 100,
+      "passed": true,
+      "failed_checks": []
+    },
+    {
+      "ts": "2026-07-12T03:53:08+00:00",
+      "station": "scribe",
+      "score": 100,
+      "passed": true,
+      "failed_checks": []
+    },
+    {
+      "ts": "2026-07-12T03:53:40+00:00",
+      "station": "scholar",
+      "score": 75,
+      "passed": false,
+      "failed_checks": [
+        "anchored to an open board task id"
+      ]
+    },
+    {
+      "ts": "2026-07-12T03:54:24+00:00",
+      "station": "scholar",
+      "score": 100,
+      "passed": true,
+      "failed_checks": []
+    },
+    {
+      "ts": "2026-07-12T03:54:43+00:00",
+      "station": "cartographer",
+      "score": 100,
+      "passed": true,
+      "failed_checks": []
+    },
+    {
+      "ts": "2026-07-12T03:55:08+00:00",
+      "station": "gatekeeper",
+      "score": 100,
+      "passed": true,
+      "failed_checks": []
+    },
+    {
+      "ts": "2026-07-12T03:55:42+00:00",
+      "station": "tunnel_run",
+      "score": 100,
+      "passed": true,
+      "failed_checks": []
+    },
+    {
+      "ts": "2026-07-12T03:56:28+00:00",
+      "station": "exit_gate",
+      "score": 100,
+      "passed": true,
+      "failed_checks": []
+    }
+  ],
+  "station_scores": {
+    "orientation": 100,
+    "scribe": 100,
+    "scholar": 100,
+    "cartographer": 100,
+    "gatekeeper": 100,
+    "tunnel_run": 100,
+    "exit_gate": 100
+  },
+  "completed_at": "2026-07-12T03:56:28+00:00"
+}

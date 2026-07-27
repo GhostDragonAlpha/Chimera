@@ -1,0 +1,72 @@
+{
+  "demo": "system_features",
+  "loop": 8,
+  "settle_s": 6,
+  "_provenance": "System features beat script for System_Economy, System_SaveLoad, System_Factions, System_Missions. Exercises core system functionality in PIE.",
+  "beats": [
+    {
+      "name": "system_economy_check",
+      "features": ["System_Economy"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 2.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {
+          "log_contains": "[Economy]",
+          "note": "System_Economy witness: economy system must log economic activity"
+        }
+      ]
+    },
+    {
+      "name": "system_save_load_check",
+      "features": ["System_SaveLoad"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 2.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {
+          "log_contains": "[SaveLoad]",
+          "note": "System_SaveLoad witness: save/load system must log save activity"
+        }
+      ]
+    },
+    {
+      "name": "system_factions_check",
+      "features": ["System_Factions"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 2.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {
+          "log_contains": "[Faction]",
+          "note": "System_Factions witness: factions system must log faction activity"
+        }
+      ]
+    },
+    {
+      "name": "system_missions_check",
+      "features": ["System_Missions"],
+      "actions": [
+        {"reset_position": {"x": 0, "y": 400, "z": 130}},
+        {"wait": 2.0}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"pawn_class": "BP_Astronaut_Character_C"},
+        {
+          "log_contains": "[Mission]",
+          "note": "System_Missions witness: missions system must log mission activity"
+        }
+      ]
+    }
+  ]
+}

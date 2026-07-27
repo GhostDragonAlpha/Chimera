@@ -1,0 +1,14 @@
+[
+ {
+  "id": "atom_110b31025880",
+  "feature": "Diagnose WeightShift 2/4 test failures: first-tick response + settle-test sampling",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/Diagnose__WeightShift__2__4__test__failures__first__tick__response__settle__test__sampling/transcript.json"
+  },
+  "desc": "'Diagnose WeightShift 2/4 test failures: first-tick response + settle-test sampling' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
+ }
+]

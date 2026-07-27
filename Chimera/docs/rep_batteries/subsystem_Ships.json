@@ -1,0 +1,176 @@
+[
+ {
+  "id": "atom_10ac1eda91cc",
+  "feature": "subsystem/Ships",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UShipClassSpecComponent\\b|UShipClassSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UShipClassSpecComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:ShipClassSpecComponent.h"
+ },
+ {
+  "id": "atom_d54648074e4d",
+  "feature": "subsystem/Ships",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*UShipClassSpecComponent\\b|UShipClassSpecComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component UShipClassSpecComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:ShipClassSpecComponent.h"
+ },
+ {
+  "id": "atom_02c9dfc2d101",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bManeuverabilityRating\\b"
+  },
+  "desc": "UPROPERTY ManeuverabilityRating (ShipClassSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipClassSpecComponent.h"
+ },
+ {
+  "id": "atom_37db7de1c204",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCargoVolumeCubicMeters\\b"
+  },
+  "desc": "UPROPERTY CargoVolumeCubicMeters (ShipClassSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipClassSpecComponent.h"
+ },
+ {
+  "id": "atom_5b781c1b3503",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShipCategory\\b"
+  },
+  "desc": "UPROPERTY ShipCategory (AShip_Trader_Vessel_Alpha.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:AShip_Trader_Vessel_Alpha.h"
+ },
+ {
+  "id": "atom_71637a7877db",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShieldRegenRate\\b"
+  },
+  "desc": "UPROPERTY ShieldRegenRate (AShip_Trader_Vessel_Alpha.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:AShip_Trader_Vessel_Alpha.h"
+ },
+ {
+  "id": "atom_7697d64bb8a5",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbHasWeaponSystems\\b"
+  },
+  "desc": "UPROPERTY bHasWeaponSystems (ShipClassSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipClassSpecComponent.h"
+ },
+ {
+  "id": "atom_7a59e8f1f1a0",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShieldClass\\b"
+  },
+  "desc": "UPROPERTY ShieldClass (ShipClassSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipClassSpecComponent.h"
+ },
+ {
+  "id": "atom_bb9614762503",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxSpeedKmPerSec\\b"
+  },
+  "desc": "UPROPERTY MaxSpeedKmPerSec (ShipClassSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipClassSpecComponent.h"
+ },
+ {
+  "id": "atom_cb8ca4d33767",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bHullHealth\\b"
+  },
+  "desc": "UPROPERTY HullHealth (AShip_Trader_Vessel_Alpha.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:AShip_Trader_Vessel_Alpha.h"
+ },
+ {
+  "id": "atom_ea02120d31d2",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbHasQuantumDrive\\b"
+  },
+  "desc": "UPROPERTY bHasQuantumDrive (ShipClassSpecComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:ShipClassSpecComponent.h"
+ },
+ {
+  "id": "atom_eeab96ed1404",
+  "feature": "subsystem/Ships",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bShieldCapacity\\b"
+  },
+  "desc": "UPROPERTY ShieldCapacity (AShip_Trader_Vessel_Alpha.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:AShip_Trader_Vessel_Alpha.h"
+ }
+]

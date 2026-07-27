@@ -1,0 +1,120 @@
+{
+  "discovery_timestamp": "2026-07-03T10:20:50.564657",
+  "elapsed_seconds": 0.006346,
+  "summary": {
+    "total_tests": 12,
+    "working_pathways": 11,
+    "failed_pathways": 1
+  },
+  "working_pathways": [
+    {
+      "pathway_id": "e2bcc6e1a0a782e5",
+      "name": "control_actor.spawn_actor",
+      "params": {
+        "actorName": "TestActor",
+        "classPath": "/Game/Test/TestMesh.TestMesh"
+      }
+    },
+    {
+      "pathway_id": "bfcc157b9845af4f",
+      "name": "control_actor.set_transform",
+      "params": {
+        "actorName": "TestActor",
+        "location": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    },
+    {
+      "pathway_id": "b32c5ecd966dd4f5",
+      "name": "control_actor.get_components",
+      "params": {
+        "actorName": "TestActor"
+      }
+    },
+    {
+      "pathway_id": "0c2452cef6157ee7",
+      "name": "control_actor.set_component_property",
+      "params": {
+        "actorName": "TestActor",
+        "componentName": "StaticMeshComponent0",
+        "properties": {
+          "material": "/Game/Test/TestMesh.TestMesh"
+        }
+      }
+    },
+    {
+      "pathway_id": "2b71f99ef3b93312",
+      "name": "manage_asset.search_assets",
+      "params": {
+        "directory": "/Game/",
+        "classNames": [
+          "StaticMesh"
+        ],
+        "limit": 1
+      }
+    },
+    {
+      "pathway_id": "6ffec8d2840444f9",
+      "name": "control_editor.screenshot",
+      "params": {
+        "filename": "test_screenshot.png"
+      }
+    },
+    {
+      "pathway_id": "55ed510358244605",
+      "name": "control_editor.set_camera_position",
+      "params": {
+        "location": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      }
+    },
+    {
+      "pathway_id": "a2404dbda84bc38f",
+      "name": "inspect.get_project_settings",
+      "params": {}
+    },
+    {
+      "pathway_id": "d67a1ddda2eeab2a",
+      "name": "inspect.get_material_details",
+      "params": {
+        "objectPath": "/Game/Test/TestMesh.TestMesh"
+      }
+    },
+    {
+      "pathway_id": "c8557ae43e3efeb8",
+      "name": "manage_level.list_levels",
+      "params": {}
+    },
+    {
+      "pathway_id": "206f887b81c8056c",
+      "name": "manage_level.create_light",
+      "params": {
+        "lightType": "Directional",
+        "intensity": 100.0,
+        "location": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    }
+  ],
+  "failed_pathways": [
+    {
+      "pathway_id": "9810613b031a15b5",
+      "name": "manage_asset.list_instances",
+      "error": "Action not previously tested"
+    }
+  ]
+}

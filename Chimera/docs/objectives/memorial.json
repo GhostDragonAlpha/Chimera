@@ -1,0 +1,67 @@
+{
+  "name": "memorial",
+  "author": "LLM (sub-22), from Design Law 2 stated as perceptual physics — not a target weight table.",
+  "scenario": "CWM rung 1 (docs/THE_COMPOSITIONAL_WORLD_MODEL.md §4, UStarMemorialSubsystem row). Design Law 2: 'the bad ending is a costless life... taught only through consequence.' That consequence must be SEEN, not merely computed. A costless life's star must read as visibly dim; three honest playstyles (costless, quiet, generous) must produce discriminably different stars, not a cluster nobody can tell apart; sacrifice that pays off must pay off RELIABLY, not by luck; and the Yard's night-light budget should read as earned across a lineage, not pegged at its ceiling regardless of how anyone played. Nothing here names a target brightness_k, bright_lights_yard, or sacrifice weight — those are the ANSWER. This states only the consequence.",
+  "constraints": [
+    {
+      "measure": "monotonicity_violations",
+      "kind": "at_most",
+      "max": 0.0,
+      "weight": 3.0,
+      "hard": true,
+      "why": "THE STRUCTURAL GATE. A life that sacrificed strictly more must never end up with a strictly dimmer star, across the whole simulated population (tiers and lineages alike) — otherwise the memorial mechanic actively LIES to the player about what it just watched them do. Mathematically this should be near-impossible for a well-formed curve (1-exp(-w/k) is strictly increasing in w for any k>0), which is exactly why it belongs here: it is cheap insurance against a degenerate genome (k<=0, or a mutation bug) slipping through everything else. Measured at the seed: 0 violations."
+    },
+    {
+      "measure": "frac_dim_costless",
+      "kind": "at_least",
+      "min": 0.90,
+      "weight": 3.0,
+      "hard": true,
+      "why": "LAW 2'S OWN PROMISE, MADE MEASURABLE. A COSTLESS playstyle (plays the self-interested, profitable option almost every time) must overwhelmingly produce a star BELOW the visibility threshold — the bad ending has to be seeable, not just computable. This is NOT trivially true for every genome: probed adversarially (bright_lights_yard=0.05, brightness_k=1.0) this measure drops to 0.785, well under the floor, because a low-enough threshold plus a steep-enough curve lets even an occasional accidental low-cost act read as lit. Measured at the seed: 1.000 (comfortably inside, not riding the wall)."
+    },
+    {
+      "measure": "frac_bright_generous",
+      "kind": "at_least",
+      "min": 0.85,
+      "weight": 2.5,
+      "hard": true,
+      "why": "THE MIRROR OF THE PREVIOUS GATE, and CWM §4's own success criterion for this exact row: 'QUIET vs BRIGHT is reachable from play, not luck.' A GENEROUS playstyle (sacrifices often, including the costly acts) must RELIABLY cross into a bright star — if it doesn't, the biggest sacrifices in the game buy nothing dependable, and the ending becomes a coin flip instead of an earned mirror. Probed adversarially (bright_lights_yard=0.95, brightness_k=20.0) this collapses to 0.000 — a real, violatable gate, not decoration. Measured at the seed: 0.995."
+    },
+    {
+      "measure": "min_tier_separation",
+      "kind": "maximize",
+      "ref": 0.15,
+      "weight": 2.5,
+      "why": "THE CLIMBING TERM for playstyle discriminability (TRAINING_PROTOCOL.md §3: a spec made only of walls gets you exactly the walls — this keeps paying past any floor). The minimum brightness gap between adjacent tiers (costless->quiet, quiet->generous); at the seed the BOTTLENECK is quiet->generous (0.129), not costless->quiet (0.777) — quiet already reads nearly as bright as generous, so a player who does the small, occasional right thing looks almost as remembered as one who gave everything. There is no natural ceiling on how separable three playstyles can be, so ref=0.15 (seed sits at sat~0.46, non-saturating) keeps the optimiser pulling the tiers apart rather than declaring 'separate enough' the moment they clear a wall."
+    },
+    {
+      "measure": "min_kind_gap",
+      "kind": "maximize",
+      "ref": 0.05,
+      "weight": 1.5,
+      "why": "THE FINER-GRAINED SIBLING of the same law, at the level of the 8 individual SACRIFICE_WEIGHTS rather than playstyle archetypes — 'distinct sacrifice weights must yield discriminable brightness', read literally. Computed by lighting each of the 8 kinds alone and taking the smallest gap between adjacent (deduplicated) brightness values — an exact tie between two kinds is NOT a violation (two different acts can honestly cost the same), but a narrow non-zero gap between two DIFFERENT costs means a player cannot tell them apart by the star alone. Seed measures 0.0485 (ref=0.05 keeps it non-saturating, sat~0.49)."
+    },
+    {
+      "measure": "night_light_final_mean",
+      "kind": "band",
+      "min": 0.15,
+      "max": 0.45,
+      "weight": 1.5,
+      "why": "THE NIGHT-LIGHT BUDGET SHOULD READ AS EARNED, GRADUALLY, ACROSS A LINEAGE — not identical and maxed for every yard regardless of how a whole line of heirs actually lived. The seed VIOLATES this today: simulated across 80 independent lineages of 16 heirs each (population mix 20% costless / 50% quiet / 30% generous), NightLightLevel hits exactly its 0.5 ceiling in EVERY lineage (night_light_at_cap_frac = 1.0) — because 0.18 x roughly 3 bright stars already clears the 0.5 cap, and 'quiet' alone is already 83% likely to cross bright_lights_yard under the seed curve. The genome cannot move the fixed 0.18-per-star multiplier or the 0.5 cap (both are simulation constants, not trained here — see docs/THE_COMPOSITIONAL_WORLD_MODEL.md §4), but it CAN move bright_lights_yard and brightness_k, which change how many stars clear the bar at all. This band is the honest record that the seed already fails it, and names WHERE the remaining slack is."
+    },
+    {
+      "measure": "night_light_at_cap_frac",
+      "kind": "at_most",
+      "max": 0.5,
+      "weight": 1.5,
+      "why": "the direct operationalisation of 'the night-light sum stays inside the lighting budget' (CWM §4): if EVERY lineage saturates the cap (seed: 1.0), the budget is not a budget, it is a foregone conclusion, and the Yard reads identically bright no matter what the lineage actually did. This is expected to stay PINNED or violated given the fixed 0.18/0.5 constants — read the pin, do not chase it past what bright_lights_yard/brightness_k can actually buy."
+    },
+    {
+      "measure": "night_light_zero_frac",
+      "kind": "at_most",
+      "max": 0.30,
+      "weight": 1.0,
+      "why": "the opposite failure, guarding against over-correcting the previous two constraints: if bright_lights_yard trains so high that most lineages never light the yard AT ALL, the memorial mechanic becomes invisible rather than earned. Seed measures 0.0 (no risk yet); this exists so the optimiser cannot fix saturation by making brightness effectively unreachable."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "_provenance": "Design Laws 2+3 as physics. Mirror must discriminate costless from generous, approach must reveal information progressively.",
+  "maximize": [
+    "information_per_step",
+    "costless_self_visible_fraction",
+    "generous_star_brightness",
+    "navigation_efficiency"
+  ],
+  "minimize": [
+    "comprehension_time"
+  ],
+  "constraints": [
+    {"field": "comprehension_time_worst", "max": 80},
+    {"field": "dwell_browsing", "min": 0.1},
+    {"field": "dwell_idle", "max": 0.4},
+    {"field": "zone_distant_visible.mean", "min": 1},
+    {"field": "zone_near_visible.mean", "min": 5},
+    {"field": "response_diversity", "min": 0.0}
+  ],
+  "walls": {
+    "costless_self_visible_fraction": "A costless life MUST be visible. Design Law 2: the lesson is taught through consequence. If the mirror is blank, the lesson cannot be learned.",
+    "generous_star_brightness": "A generous life MUST be visibly brighter. The mirror discriminates sacrifice."
+  }
+}

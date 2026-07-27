@@ -1,0 +1,25 @@
+{
+  "_provenance": "Planet surface rung — consumes solar system planet triples (mass, a, e). The Mirror of Erised is encoded as a hard wall: at least one habitable planet must exist, making the player's world precious and the choice to help meaningful.",
+  "name": "planet_surface",
+  "mirror_wall": "At least one planet must be habitable (breathable atmosphere, survivable temperature). A system where no planet can support life fails the Mirror — there is no costless escape to another world.",
+  "input": "docs/objectives/bigbang.systems.json — planet triples (m_rel, a, e)",
+  "walls": [
+    "At least one planet must be habitable: breathable atmosphere, 250-320K surface temp, liquid water possible",
+    "Inner planets (a < 0.5 AU) must be rocky: high density, thin atmosphere, high surface temp",
+    "Outer planets (a > 1.0 AU) must be gaseous or icy: low density, thick atmosphere, cold",
+    "Surface gravity must be consistent with planet mass and radius (g = GM/r² within 30%)",
+    "Planet radius must be consistent with mass and type (rocky ~0.5-2 R_earth, gas ~2-20 R_earth)",
+    "At least one non-habitable planet must exist (the choice to help must have an opportunity cost)",
+    "No two planets may have identical biome distributions (each world must feel distinct)"
+  ],
+  "element_query": {
+    "categories": ["Spec", "Planet", "Atmosphere", "Temperature", "Biome", "Gravity"],
+    "classes": ["CelestialBodySpecComponent", "PlanetGenerationSpecComponent", "CelestialMaths", "SkyAtmosphereComponent"]
+  },
+  "output": {
+    "file": "docs/objectives/planet_surface.systems.json",
+    "format": "Per planet: radius, gravity, atmosphere density, temperature range, biome type, habitability flag",
+    "next_rung": "ground_terrain",
+    "what_passes": "For surface planet: radius, gravity, atmosphere, temperature, biome map reference"
+  }
+}

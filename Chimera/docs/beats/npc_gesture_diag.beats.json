@@ -1,0 +1,25 @@
+{
+  "demo": "npc_gesture_diag",
+  "loop": 5,
+  "settle_s": 4,
+  "_provenance": "First NPC interaction test: verify NPC spawned, gesture wheel works, NPC has behavior.",
+  "beats": [
+    {
+      "name": "npc_exists_and_gesture",
+      "features": ["NPC_Basic_Model", "NPC_Basic_AI"],
+      "actions": [
+        {"reset_position": {"x": 500, "y": 300, "z": 130}},
+        {"wait": 2.0},
+        {"key": "Tab", "hold_s": 0.3},
+        {"wait": 0.5},
+        {"key": "Tab", "hold_s": 0.3},
+        {"wait": 0.5},
+        {"screenshot": "npc_gesture_test"}
+      ],
+      "expects": [
+        {"is_pie": true},
+        {"actor_exists": "NPC_Trader"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+ "demo": "audio_visual_sync",
+ "loop": 1,
+ "settle_s": 10,
+ "_provenance": "Audio-Visual Synchronization Verification: footstep particles + audio trigger latency measurement",
+ "beats": [
+  {
+   "name": "spawn_and_verify_audio_system",
+   "features": [
+    "Player_Character_Model",
+    "Verb_Step",
+    "Ground_Sand_Sound"
+   ],
+   "actions": [
+    {
+     "wait": 1.0
+    },
+    {
+     "command": "ClearFootstepSyncTelemetry"
+    }
+   ],
+   "expects": [
+    {
+     "world_is": "chimeradefaultlevel"
+    },
+    {
+     "is_pie": true
+    },
+    {
+     "pawn_class": "BP_Astronaut_Character_C"
+    }
+   ],
+   "_note": "Initialize footstep sync telemetry measurement"
+  },
+  {
+   "name": "walk_slow_on_sand",
+   "features": [
+    "Verb_Step",
+    "Ground_Sand_Surface",
+    "Ground_Sand_Particles",
+    "Ground_Sand_Sound"
+   ],
+   "actions": [
+    {
+     "key": "W",
+     "hold_s": 2.5,
+     "note": "slow walk = volume ~0.4-0.5"
+    },
+    {
+     "wait": 0.5
+    },
+    {
+     "command": "GetFootstepSyncEventCount",
+     "store_as": "sync_events_recorded"
+    },
+    {
+     "command": "GetMaxFootstepSyncLatencyMs",
+     "store_as": "sync_latency_ms_max"
+    },
+    {
+     "command": "GetMaxFootstepVolume",
+     "store_as": "walk_volume",
+     "note": "peak capture (tb-0018): immune to post-release decel tail"
+    },
+    {
+     "command": "GetFootstepSyncEventCount",
+     "store_as": "sync_events_recorded"
+    },
+    {
+     "command": "GetMaxFootstepSyncLatencyMs",
+     "store_as": "sync_latency_ms_max"
+    },
+    {
+     "command": "GetMaxFootstepVolume",
+     "store_as": "walk_volume",
+     "note": "peak capture (tb-0018): immune to post-release decel tail"
+    }
+   ],
+   "expects": [
+    {
+     "pawn_within": {
+      "x": 1500,
+      "y": 0,
+      "r": 800
+     }
+    },
+    {
+     "sync_latency_ms_max": 100.0,
+     "note": "AAA standard: <100ms from particle spawn to audio trigger"
+    },
+    {
+     "sync_events_recorded": 3,
+     "note": "Expect ~3 footsteps during 2.5s walk (400ms interval)"
+    }
+   ],
+   "_note": "Measure audio-visual sync latency during slow walk"
+  },
+  {
+   "name": "walk_fast_on_sand",
+   "features": [
+    "Verb_Step",
+    "Ground_Sand_Particles",
+    "Ground_Sand_Sound"
+   ],
+   "actions": [
+    {
+     "reset_position": {
+      "x": 0,
+      "y": 0,
+      "z": 100
+     },
+     "note": "H-25: position-expect beats reset first"
+    },
+    {
+     "key_down": "LeftShift",
+     "note": "tb-0016: sprint held via the REAL key path (H-14); IsInputKeyDown drives SetSprinting -> MaxWalkSpeed x2"
+    },
+    {
+     "key": "W",
+     "hold_s": 2.0,
+     "note": "sprint = volume ~0.9-1.0"
+    },
+    {
+     "key_up": "LeftShift"
+    },
+    {
+     "wait": 0.5
+    },
+    {
+     "command": "GetMaxFootstepVolume",
+     "store_as": "sprint_volume",
+     "note": "peak capture (tb-0018): immune to post-release decel tail"
+    },
+    {
+     "command": "GetFootstepSyncEventCount",
+     "store_as": "sync_events_recorded"
+    },
+    {
+     "command": "GetMaxFootstepSyncLatencyMs",
+     "store_as": "sync_latency_ms_max"
+    }
+   ],
+   "expects": [
+    {
+     "pawn_within": {
+      "x": 0,
+      "y": 0,
+      "r": 3200
+     }
+    },
+    {
+     "sync_latency_ms_max": 100.0,
+     "note": "Latency must remain <100ms even at high speed"
+    },
+    {
+     "volume_scales_with_speed": true,
+     "note": "Sprint volume should be 2-3x louder than walk"
+    }
+   ],
+   "_note": "Verify audio-visual sync under high-speed movement"
+  },
+  {
+   "name": "dwell_and_measure",
+   "features": [
+    "Ground_Sand_Particles"
+   ],
+   "actions": [
+    {
+     "wait": 2.0,
+     "note": "Allow particles to settle"
+    },
+    {
+     "screenshot": "audio_visual_sync_sand_basin"
+    }
+   ],
+   "expects": [
+    {
+     "is_pie": true
+    },
+    {
+     "actor_exists": "Actor_NS_SandDust",
+     "note": "Ground_Sand_Particles witness: sand dust particle actor must exist"
+    }
+   ],
+   "_note": "Final measurement snapshot"
+  },
+  {
+   "name": "report_telemetry",
+   "features": [
+    "Verb_Step"
+   ],
+   "actions": [
+    {
+     "command": "GetFootstepSyncEventCount",
+     "store_as": "total_events"
+    },
+    {
+     "command": "GetAverageFootstepSyncLatencyMs",
+     "store_as": "avg_latency_ms"
+    },
+    {
+     "command": "GetMaxFootstepSyncLatencyMs",
+     "store_as": "max_latency_ms"
+    }
+   ],
+   "expects": [
+    {
+     "total_events_gt": 5,
+     "note": "Expect at least 5 footsteps recorded"
+    },
+    {
+     "avg_latency_ms_lt": 50.0,
+     "note": "Average latency should be <50ms (one frame @ 60fps)"
+    },
+    {
+     "max_latency_ms_lt": 100.0,
+     "note": "Max latency AAA standard: <100ms"
+    }
+   ],
+   "_note": "Query and verify sync telemetry data"
+  }
+ ]
+}

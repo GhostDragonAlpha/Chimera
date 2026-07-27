@@ -1,0 +1,33 @@
+{
+  "_provenance": "Emergent repose angle from local toppling rules. The pile's slope is never named in the genome — it either emerges from the physics or it does not. Design Laws 1+3 as physics: simple agents producing complex order.",
+  "maximize": [
+    "angle_mean_deg",
+    "probe_locality_worst"
+  ],
+  "minimize": [
+    "unsettled_worst",
+    "angle_spread_deg",
+    "angle_consistency_deg",
+    "settle_sweeps_worst",
+    "avalanche_mean_worst",
+    "avalanche_max_worst"
+  ],
+  "constraints": [
+    {"field": "unsettled_worst", "max": 0},
+    {"field": "angle_mean_deg", "min": 18.0, "max": 42.0},
+    {"field": "angle_spread_deg", "max": 12.0},
+    {"field": "angle_consistency_deg", "max": 10.0},
+    {"field": "frozen_fraction_mean", "max": 0.25},
+    {"field": "settle_sweeps_worst", "max": 3000},
+    {"field": "avalanche_max_worst", "max": 800},
+    {"field": "probe_locality_worst", "min": 0.01},
+    {"field": "topples_per_grain_mean", "min": 0.1}
+  ],
+  "walls": {
+    "unsettled_worst": "The pile MUST reach a fixed point. A config that never settles is not a sandpile — it is a fluid with no repose, and the domain has no floor.",
+    "angle_mean_deg": "The emergent angle MUST fall inside the researched granular range (26-42 deg). Below 18 deg is a puddle, not a pile; above 42 deg violates the Coulomb friction ceiling for loose regolith. This is the domain's headline: a physics fact the genome never names.",
+    "angle_consistency_deg": "Flank angle and aspect angle MUST converge. A pile where the fitted slope disagrees with the peak geometry by >10 deg is a needle-on-apron — a frozen chimney atop a free-grain apron — not a coherent emergent form.",
+    "frozen_fraction_mean": "Cohesion MUST stay modest. A frozen fraction above 0.25 means the pile is a glued sculpture, not a self-organizing granular system — the 'autonomous function' property dissolves.",
+    "probe_locality_worst": "A single-grain perturbation MUST remain local. This IS the emergence thesis measured: cost proportional to CHANGE, not to world size. Zero locality means every poke triggers a system-spanning avalanche — no computation has halted."
+  }
+}

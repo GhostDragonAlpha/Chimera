@@ -1,0 +1,436 @@
+{
+  "area_count": 10,
+  "perception_range_override": 300.0,
+  "alert_level": "aggressive",
+  "difficulty": "hard",
+  "controllers": [
+    {
+      "controller_id": "ai_ctrl_0042_0",
+      "type": "guard",
+      "class_path": "/Game/AI/AC_Guard.ACGuard_C",
+      "position": {
+        "x": -151.99655832874657,
+        "y": -71.99061812188184,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_0",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Guard.BT_Guard",
+        "tick_interval": 0.5
+      },
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_1",
+      "type": "patrol",
+      "class_path": "/Game/AI/AC_Patrol.ACPatrol_C",
+      "position": {
+        "x": 875.670788532484,
+        "y": 56.5438359753316,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_1",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Patrol.BT_Patrol",
+        "tick_interval": 1.0
+      },
+      "patrol_route": [
+        {
+          "name": "PatrolWaypoint_01_for_ai_ctrl_0042_1",
+          "position": {
+            "x": 1317.809270514798,
+            "y": 475.463371983477,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_02_for_ai_ctrl_0042_1",
+          "position": {
+            "x": 1336.5392159688943,
+            "y": 648.4785651691427,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_03_for_ai_ctrl_0042_1",
+          "position": {
+            "x": 1120.3043828345724,
+            "y": 344.55399379363837,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_04_for_ai_ctrl_0042_1",
+          "position": {
+            "x": 1498.9028874463318,
+            "y": 584.8777245392423,
+            "z": 0.0
+          }
+        }
+      ],
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_2",
+      "type": "ambush",
+      "class_path": "/Game/AI/AC_Ambush.ACAmbush_C",
+      "position": {
+        "x": 1467.8204264414132,
+        "y": -24.985017700713456,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_2",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Ambush.BT_Ambush",
+        "tick_interval": 2.0
+      },
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_3",
+      "type": "patrol",
+      "class_path": "/Game/AI/AC_Patrol.ACPatrol_C",
+      "position": {
+        "x": -90.03584806284692,
+        "y": 801.713692193076,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_0",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Patrol.BT_Patrol",
+        "tick_interval": 1.0
+      },
+      "patrol_route": [
+        {
+          "name": "PatrolWaypoint_01_for_ai_ctrl_0042_3",
+          "position": {
+            "x": 368.4762220303862,
+            "y": 1174.9193357701047,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_02_for_ai_ctrl_0042_3",
+          "position": {
+            "x": 421.33570280163013,
+            "y": 1115.4610072897747,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_03_for_ai_ctrl_0042_3",
+          "position": {
+            "x": 116.9387208500398,
+            "y": 1024.0606830936028,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_04_for_ai_ctrl_0042_3",
+          "position": {
+            "x": 195.87054155278543,
+            "y": 1156.4695910555397,
+            "z": 0.0
+          }
+        }
+      ],
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_4",
+      "type": "patrol",
+      "class_path": "/Game/AI/AC_Patrol.ACPatrol_C",
+      "position": {
+        "x": 703.6280482197275,
+        "y": 847.9630200894474,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_1",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Patrol.BT_Patrol",
+        "tick_interval": 1.0
+      },
+      "patrol_route": [
+        {
+          "name": "PatrolWaypoint_01_for_ai_ctrl_0042_4",
+          "position": {
+            "x": 933.9284770426463,
+            "y": 1131.355101022475,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_02_for_ai_ctrl_0042_4",
+          "position": {
+            "x": 1194.3333814990474,
+            "y": 1257.4126737804727,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_03_for_ai_ctrl_0042_4",
+          "position": {
+            "x": 946.1732899989481,
+            "y": 1050.3397777823193,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_04_for_ai_ctrl_0042_4",
+          "position": {
+            "x": 1073.7680681418285,
+            "y": 1519.4575845600698,
+            "z": 0.0
+          }
+        }
+      ],
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_5",
+      "type": "guard",
+      "class_path": "/Game/AI/AC_Guard.ACGuard_C",
+      "position": {
+        "x": 1510.540999053023,
+        "y": 828.5650188402908,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_2",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Guard.BT_Guard",
+        "tick_interval": 0.5
+      },
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_6",
+      "type": "ambush",
+      "class_path": "/Game/AI/AC_Ambush.ACAmbush_C",
+      "position": {
+        "x": -157.92039690302047,
+        "y": 1697.8621605864985,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_0",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Ambush.BT_Ambush",
+        "tick_interval": 2.0
+      },
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_7",
+      "type": "guard",
+      "class_path": "/Game/AI/AC_Guard.ACGuard_C",
+      "position": {
+        "x": 748.8801652857574,
+        "y": 1489.75343993977,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_1",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Guard.BT_Guard",
+        "tick_interval": 0.5
+      },
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_8",
+      "type": "ambush",
+      "class_path": "/Game/AI/AC_Ambush.ACAmbush_C",
+      "position": {
+        "x": 1547.7102544360405,
+        "y": 1469.6786698816472,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_2",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Ambush.BT_Ambush",
+        "tick_interval": 2.0
+      },
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    },
+    {
+      "controller_id": "ai_ctrl_0042_9",
+      "type": "patrol",
+      "class_path": "/Game/AI/AC_Patrol.ACPatrol_C",
+      "position": {
+        "x": 111.19819723118712,
+        "y": 2433.192330037405,
+        "z": 0.0
+      },
+      "area_id": "deploy_area_0",
+      "behavior_tree": {
+        "path": "/Game/AI/BT_Patrol.BT_Patrol",
+        "tick_interval": 1.0
+      },
+      "patrol_route": [
+        {
+          "name": "PatrolWaypoint_01_for_ai_ctrl_0042_9",
+          "position": {
+            "x": 505.60881280516514,
+            "y": 2815.9316317375014,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_02_for_ai_ctrl_0042_9",
+          "position": {
+            "x": 462.5397916906162,
+            "y": 2951.93036942251,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_03_for_ai_ctrl_0042_9",
+          "position": {
+            "x": 302.0488206716692,
+            "y": 2678.056190476817,
+            "z": 0.0
+          }
+        },
+        {
+          "name": "PatrolWaypoint_04_for_ai_ctrl_0042_9",
+          "position": {
+            "x": 806.483705017655,
+            "y": 2971.192221971747,
+            "z": 0.0
+          }
+        }
+      ],
+      "perception_config": {
+        "alert_level": "aggressive",
+        "vision_radius": 600.0,
+        "detection_time": 0.5,
+        "attack_range": 200.0,
+        "flee_chance": 0.0,
+        "sound_hearing_range": 800.0
+      },
+      "difficulty_settings": {
+        "enemy_health_mult": 1.3,
+        "damage_mult": 1.4,
+        "spawn_rate": 1.5
+      }
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "coverage_stats": {
+      "total_controllers": 10,
+      "areas_covered": 3,
+      "expected_areas": 3,
+      "min_per_area": 3,
+      "max_per_area": 4
+    }
+  }
+}

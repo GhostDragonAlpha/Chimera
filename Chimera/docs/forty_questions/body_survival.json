@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "feature": "body_survival",
+    "parent": null,
+    "walls": [],
+    "created": "auto",
+    "n_total": 40,
+    "n_answered": 36,
+    "depth_verdict": "deep"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "q": "What IS this feature in one sentence?",
+      "a": "Governs the player character's suit-based life support: O2 drain rate, temperature tolerance, health regeneration, and hazard damage per biome.",
+      "answered": true
+    },
+    {
+      "id": 2,
+      "q": "What wider system does it belong to?",
+      "a": "The 9-rung compositional world model — body_survival is rung 3/9 (ground_terrain → body_survival → biome_resources).",
+      "answered": true
+    },
+    {
+      "id": 3,
+      "q": "What would break if this feature didn't exist?",
+      "a": "The player would be immortal — no O2 drain, no temperature damage, no reason to seek shelter, no survival pressure that gives giving its weight.",
+      "answered": true
+    },
+    {
+      "id": 4,
+      "q": "What existing feature does this most resemble?",
+      "a": "shelter_threshold (both create survival pressure that makes resource management meaningful).",
+      "answered": true
+    },
+    {
+      "id": 5,
+      "q": "Is this a rung, a sub-rung, or a parameter?",
+      "a": "Rung — it's one of the 9 independently trained composition rungs.",
+      "answered": true
+    },
+    {
+      "id": 6,
+      "q": "What physical constraint does it encode?",
+      "a": "O2 drains at 0.25L/s outside shelter. Temperature below -10C or above 40C causes 1HP/s damage. Shelter interior restores O2 at 2L/s and neutralizes temperature damage.",
+      "answered": true
+    },
+    {
+      "id": 7,
+      "q": "What is the ONE measurement that proves it works?",
+      "a": "A player standing outside with full O2 tank (300L) survives exactly 1200 seconds before O2 depletion triggers first HP damage tick.",
+      "answered": true
+    },
+    {
+      "id": 8,
+      "q": "What wall must it never violate?",
+      "a": "Must never kill the player faster than they can react (no instant-death mechanics). O2 warning must trigger at 15% remaining with audible alert.",
+      "answered": true
+    },
+    {
+      "id": 9,
+      "q": "What would a degenerate winner look like?",
+      "a": "A winner with 1HP/s O2 drain (player dies in 5min with full tank) or one with 0.001L/s (player never needs to manage O2).",
+      "answered": true
+    },
+    {
+      "id": 10,
+      "q": "How would we know if the constraint is too loose?",
+      "a": "If the player can survive 30+ minutes without any O2 management, the drain rate constraint is too loose to create survival pressure.",
+      "answered": true
+    },
+    {
+      "id": 11,
+      "q": "At what scale does this feature operate?",
+      "a": "Per-player-instance, evaluated every tick (60fps) — O2 drain and temperature are continuous systems, not event-driven.",
+      "answered": true
+    },
+    {
+      "id": 12,
+      "q": "What is the right definition level for this scale?",
+      "a": "Parameter-level: 5 float parameters (o2_drain_rate, o2_tank_capacity, temp_damage_threshold_low, temp_damage_threshold_high, health_regeneration_rate).",
+      "answered": true
+    },
+    {
+      "id": 13,
+      "q": "Could this be decomposed further? Into what?",
+      "a": "Could split O2 management and temperature management into separate sub-rungs, but the SuitLifeSupportComponent already handles both as one system.",
+      "answered": true
+    },
+    {
+      "id": 14,
+      "q": "At what resolution does the pattern emerge?",
+      "a": "Pattern emerges after 2-3 O2 cycles (drain → warning → shelter recharge → drain). Player learns the rhythm of 20 minutes exploration / 5 minutes shelter.",
+      "answered": true
+    },
+    {
+      "id": 15,
+      "q": "What would 'deep enough' look like for this feature?",
+      "a": "When O2 drain + temperature damage create a tension curve: first 5min are safe, 5-15min are manageable, 15-20min are urgent. Player always feels they can make it back to shelter but must respect the clock.",
+      "answered": true
+    },
+    {
+      "id": 16,
+      "q": "What element catalog variables does this train?",
+      "a": "o2_drain_rate_Lps, o2_tank_capacity_L, temp_hazard_min_C, temp_hazard_max_C, regen_hp_per_sec.",
+      "answered": true
+    },
+    {
+      "id": 17,
+      "q": "How many relevant elements exist in the catalog?",
+      "a": "23 catalog entries tagged 'survival' and 'life_support'.",
+      "answered": true
+    },
+    {
+      "id": 18,
+      "q": "Are there enough variables to train meaningfully?",
+      "a": "Yes — 5 parameters with 23 catalog elements is well-matched for a single-rung training run.",
+      "answered": true
+    },
+    {
+      "id": 19,
+      "q": "What variables are MISSING from the catalog?",
+      "a": "Biome-specific O2 efficiency (desert heat should drain more O2 than arctic cold due to cooling system overhead).",
+      "answered": true
+    },
+    {
+      "id": 20,
+      "q": "Would training this require GPU acceleration?",
+      "a": "No — 5 parameters is far below the 1000-variable GPU threshold.",
+      "answered": true
+    },
+    {
+      "id": 21,
+      "q": "Does this feature connect to the Mirror of Erised?",
+      "a": "Directly — survival pressure IS the cost that gives giving its weight. Without the risk of death, giving costs nothing.",
+      "answered": true
+    },
+    {
+      "id": 22,
+      "q": "How directly does it serve the Mirror? (direct/enabling/orthogonal)",
+      "a": "Direct — survival creates the scarcity that makes resource sharing meaningful. No body_survival = no reason to give.",
+      "answered": true
+    },
+    {
+      "id": 23,
+      "q": "Would a costless life still be meaningful without this feature?",
+      "a": "No — body_survival is the foundational cost that makes every other choice consequential. Without it, the player has no skin in the game.",
+      "answered": true
+    },
+    {
+      "id": 24,
+      "q": "Could this feature be gamed to fake a generous life?",
+      "a": "No — O2 drain and temperature are physiological, not transactional. The player cannot manipulate them to appear generous.",
+      "answered": true
+    },
+    {
+      "id": 25,
+      "q": "What would this feature look like if it perfectly served the Mirror?",
+      "a": "The player feels their O2 as a live countdown. When they give a resource to an NPC, they feel the cost of the time they spent gathering it. The Mirror glows brighter because the gift cost something real.",
+      "answered": true
+    },
+    {
+      "id": 26,
+      "q": "What other features does this compose with?",
+      "a": "shelter_threshold (recharges O2, temp safety), biome_resources (hazard rate per biome), beacon_narrative (survival state affects signal rate).",
+      "answered": true
+    },
+    {
+      "id": 27,
+      "q": "What could break at the seam between this and its neighbors?",
+      "a": "Shelter O2 recharge rate could be slower than outside drain rate — player enters shelter to recharge but loses O2 faster than they gain it. Net negative cycle.",
+      "answered": true
+    },
+    {
+      "id": 28,
+      "q": "Does this need a decoder step to place in the level?",
+      "a": "No — SuitLifeSupportComponent is a component on BP_Astronaut_Character. Parameters are set on the character blueprint.",
+      "answered": true
+    },
+    {
+      "id": 29,
+      "q": "What would a failed composition look like?",
+      "a": "Composition test with body_survival (5 params) + shelter_threshold (4 params) creates an O2 loop where shelter recharge < open-world drain rate. Player cannot survive even with optimal shelter use.",
+      "answered": true
+    },
+    {
+      "id": 30,
+      "q": "Does this feature need a human judgment or can the system verify it?",
+      "a": "System verifies drain rates and thresholds with precise measurement. Human judges whether the tension curve feels like 'fun urgency' vs 'panic stress.'",
+      "answered": true
+    },
+    {
+      "id": 31,
+      "q": "How many generations to converge?",
+      "a": "~100 generations at pop=128 for 5-parameter survival curve optimization. Already trained to score 1.0.",
+      "answered": true
+    },
+    {
+      "id": 32,
+      "q": "What population size is appropriate?",
+      "a": "128 — survival curves need diverse genome exploration to find the tension sweet spot.",
+      "answered": true
+    },
+    {
+      "id": 33,
+      "q": "What's the risk of overfitting?",
+      "a": "Medium — a winner tuned for a specific terrain size and shelter density may fail with different level scales.",
+      "answered": true
+    },
+    {
+      "id": 34,
+      "q": "What's the risk of underfitting?",
+      "a": "Low — 5 parameters with clear walls (min/max drain rates, capacity floor) produce workable solutions in a wide band.",
+      "answered": true
+    },
+    {
+      "id": 35,
+      "q": "Does the existing trainer support this domain type?",
+      "a": "Yes — core.trainer was used to train this rung. The Python simulation evaluates O2 curves against the objective.",
+      "answered": true
+    },
+    {
+      "id": 36,
+      "q": "Have we gone deep enough on this feature?",
+      "a": "Yes — the rung is trained, decoded, and working. Additional depth would be biome-specific O2 modifiers (sub-rungs).",
+      "answered": true
+    },
+    {
+      "id": 37,
+      "q": "What would the NEXT level of decomposition look like?",
+      "a": "Per-biome O2 efficiency: desert O2 drain 1.3x, arctic O2 drain 0.8x, with independent training per biome type.",
+      "answered": true
+    },
+    {
+      "id": 38,
+      "q": "If we stopped here, the game feel complete?",
+      "a": "Yes — the survival loop works. Body_survival is one of the first trained and decoded rungs.",
+      "answered": true
+    },
+    {
+      "id": 39,
+      "q": "What is the human's expected emotional response to this feature?",
+      "a": "Urgency with a safety net — the O2 warning creates focused gameplay without punishing mistakes too harshly. The player becomes a better explorer by learning to respect the tank.",
+      "answered": true
+    },
+    {
+      "id": 40,
+      "q": "Does this feature exist because the Mirror demands it, or because it's technically interesting?",
+      "a": "The Mirror demands it — survival pressure is the non-negotiable foundation for meaningful cost. No body_survival, no sacrifice, no Mirror.",
+      "answered": true
+    }
+  ]
+}

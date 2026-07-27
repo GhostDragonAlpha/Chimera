@@ -1,0 +1,20 @@
+{
+  "feature": "Travel_Vehicle_Flight",
+  "slug": "Travel_Vehicle_Flight",
+  "description": "Witness beats for Travel_Vehicle_Flight - requires Unreal Editor",
+  "beats": [
+    {
+      "id": "beat_01_tb-0143",
+      "name": "Travel_Vehicle_Flight witness verification",
+      "expected": "Travel_Vehicle_Flight functions correctly in-editor",
+      "steps": [
+        "Spawn Travel_Vehicle_Flight actor/component in level",
+        "Verify visual appearance and behavior",
+        "Run sleepwalker beats if available",
+        "Record simtest node ID"
+      ]
+    }
+  ],
+  "requires_editor": true,
+  "created_at": "2026-07-19T02:30:00+00:00"
+}

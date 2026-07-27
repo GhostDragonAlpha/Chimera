@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for npc_social_population_density",
+  "scenario": "Train npc_social_population_density sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_npc_spawns_avoid_pla",
+      "min": 1,
+      "hard": true,
+      "wall": "NPC spawns avoid player spawn zone"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_npc_density_higher_n",
+      "min": 0.5,
+      "hard": true,
+      "wall": "NPC density higher near resources"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_maximum_10_npcs_visi",
+      "min": 1,
+      "hard": true,
+      "wall": "Maximum 10 NPCs visible at once"
+    }
+  ]
+}

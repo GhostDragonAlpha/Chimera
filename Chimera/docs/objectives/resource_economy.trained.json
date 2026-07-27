@@ -1,0 +1,45 @@
+{
+  "objective": "resource_economy",
+  "score": 0.7358543863252737,
+  "measures": {
+    "credits_per_hour": 266.98152792553634,
+    "resources_mined": 3,
+    "top_resource_share": 0.4417382201843172,
+    "evenness": 0.5582617798156828,
+    "idle_resources": 2,
+    "tiers_used": 2,
+    "progression_gain": 2.4521197366029686,
+    "hours_to_next_tool": 6.0,
+    "price_order": 1.0
+  },
+  "genome": {
+    "tool_cost_scale": 0.615346113210748,
+    "res": {
+      "gold_placer": {
+        "abundance": 0.10333886894067719,
+        "mineral_frac": 2.840542375743392e-06,
+        "price": 67006.25303733443
+      },
+      "iron_ore": {
+        "abundance": 0.3310238324261121,
+        "mineral_frac": 0.4462004209924038,
+        "price": 0.1756079778462174
+      },
+      "coal": {
+        "abundance": 0.3,
+        "mineral_frac": 0.867413095386194,
+        "price": 0.05557206207173596
+      },
+      "copper_vein": {
+        "abundance": 0.1113256656900598,
+        "mineral_frac": 0.027018388935305733,
+        "price": 11.805864820363492
+      },
+      "diamond": {
+        "abundance": 0.02077418189106413,
+        "mineral_frac": 6.193765375306297e-07,
+        "price": 300684.90937206347
+      }
+    }
+  }
+}

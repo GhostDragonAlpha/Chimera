@@ -1,0 +1,525 @@
+game "DeepSpaceTrader" {
+    engine_version = "5.8";
+    target_platforms = ["PC"];
+}
+
+game_settings {
+    camera_perspective = "third_person";
+    game_mode = "single_player";
+    Game_Feel = "responsive_scifi";  # Target: <150ms input feedback, <3s dead air
+}
+
+narrative {
+    acts = [
+        {"id": "act_1", "name": "Beginning Trader"},
+        {"id": "act_2", "name": "Building Empire"},
+        {"id": "act_3", "name": "Pirate Wars"}
+    ];
+    
+    factions = [
+        {"id": "faction_orbital_council", "name": "Orbital Council", "relation": "neutral"},
+        {"id": "faction_titan_miners", "name": "Titan Miners Guild", "relation": "friendly"},
+        {"id": "faction_pirate_syndicate", "name": "Void Syndicate", "relation": "hostile"}
+    ];
+}
+
+technical {
+    network_model = "standalone";
+    performance { target_fps=60, LOD_strategy="standard" };
+    module_dependencies = ["GameplayAbilities", "EnhancedInput", "AIModule"];
+
+    environmental {
+        wind_system_enabled = true;
+        wind_response = 1.0;  # Full wind interaction (0.0-1.0)
+        wind_base_speed = 500.0;  # UU/s
+        wind_base_direction = (1.0, 0.0, 0.0);  # Eastward
+        wind_variance = 0.3;  # 30% oscillation (gust patterns)
+        wind_cycle_time = 10.0;  # 10 second cycle
+
+        dust_particles {
+            wind_response = 1.0;  # Particles respond fully to wind
+            gravity_scale = 0.3;  # Slower settling
+            accumulation_enabled = true;
+        }
+    }
+}
+
+art_direction {
+    style = "sci_fi_realistic";
+    color_palette = ["dark_space", "metallic_grey", "blue_hologram", "orange_alert"];
+}
+
+world {
+    planet "Titan" {
+        type = "gas_giant_moon";
+        gravity_g = 1.5;
+        atmosphere_density = 0.8;
+        
+        biome_config "outpost_region" {
+            vegetation_density = 0.0,
+            ground_texture_types = ["metal_plating", "concrete", "rust"],
+            resource_nodes = ["titanium_ore", "ice_crystals"];
+        }
+    }
+    
+    planet "Ares-Prime" {
+        type = "terrestrial";
+        gravity_g = 0.9;
+        atmosphere_density = 0.6;
+        
+        biome_config "industrial_zone" {
+            vegetation_density = 0.1,
+            ground_texture_types = ["concrete", "metal_grating", "dust"],
+            resource_nodes = ["synthetic_food_raw", "iron_ore"];
+        }
+    }
+}
+
+celestial {
+    space_station "Orbital_Hub_7" {
+        orbits_planet = "Titan";
+        capacity_crew = 50;
+        facilities = ["market", "fuel_depot", "repair_dock", "mission_board"];
+    }
+    
+    space_station "Ares_Market_Central" {
+        orbits_planet = "Ares-Prime";
+        capacity_crew = 120;
+        facilities = ["market", "fuel_depot", "repair_dock", "mission_board", "black_market"];
+    }
+    
+    pirate_outpost "Shadow_Reef" {
+        orbits_planet = "Titan";
+        hidden = true;
+        facilities = ["black_market", "weapon_forging", "hideout"];
+    }
+}
+
+flight_model {
+    type = "arcade_space_flight";
+    thrust_acceleration = 25.0;
+    max_speed_kmh = 1200;
+    turn_rate_deg_per_sec = 90;
+    inertia_damping = 0.85;
+}
+
+ship_systems {
+    ship "Trader_Vessel_Alpha" inherits "ASpaceShip" {
+        fuel_capacity_liters = 10000;
+        cargo_capacity_kg = 50000;
+        
+        hardpoints {
+            weapon_slot { name = "ForwardCannons"; size = "S2"; count = 2; type = "fixed"; }
+            weapon_slot { name = "TurretTop"; size = "S1"; count = 1; type = "remote_turret"; }
+        }
+        
+        shield_capacity = 1000.0;
+        shield_regen_rate = 50.0;
+        hull_health = 5000.0;
+        
+        system "Fuel_Tank" {
+            consumption_rate_per_km = 0.5;
+        }
+        
+        system "Quantum_Engine" {
+            travel_time_seconds = 30;
+            fuel_cost_per_jump_liters = 2000;
+        }
+    }
+    
+    ship_class "Scout_Vessel_Beta" inherits "ASpaceShip" {
+        fuel_capacity_liters = 5000;
+        cargo_capacity_kg = 10000;
+        
+        hardpoints {
+            weapon_slot { name = "ForwardCannons"; size = "S2"; count = 2; type = "fixed"; }
+            weapon_slot { name = "TurretTop"; size = "S1"; count = 1; type = "remote_turret"; }
+        }
+        
+        shield_capacity = 600.0;
+        shield_regen_rate = 30.0;
+        hull_health = 3000.0;
+        
+        system "Fuel_Tank" {
+            consumption_rate_per_km = 0.3;
+        }
+        
+        system "Quantum_Engine" {
+            travel_time_seconds = 20;
+            fuel_cost_per_jump_liters = 1000;
+        }
+    }
+    
+    ship_class "Heavy_Freighter_Gamma" inherits "ASpaceShip" {
+        fuel_capacity_liters = 25000;
+        cargo_capacity_kg = 200000;
+        
+        hardpoints {
+            weapon_slot { name = "TurretTop"; size = "S1"; count = 2; type = "remote_turret"; }
+        }
+        
+        shield_capacity = 1500.0;
+        shield_regen_rate = 75.0;
+        hull_health = 8000.0;
+        
+        system "Fuel_Tank" {
+            consumption_rate_per_km = 1.0;
+        }
+        
+        system "Quantum_Engine" {
+            travel_time_seconds = 60;
+            fuel_cost_per_jump_liters = 5000;
+        }
+    }
+}
+
+quantum_travel {
+    route "Orbital_Hub_7_to_Surface" {
+        origin = "Orbital_Hub_7";
+        destination = "Titan_Surface_Outpost";
+        travel_time_seconds = 30;
+        fuel_cost_liters = 2000;
+        requires_quantum_drive = true;
+        interdiction_chance = 0.1;
+    }
+    
+    route "Orbital_Hub_7_to_Ares" {
+        origin = "Orbital_Hub_7";
+        destination = "Ares_Market_Central";
+        travel_time_seconds = 45;
+        fuel_cost_liters = 3000;
+        requires_quantum_drive = true;
+        interdiction_chance = 0.2;
+    }
+    
+    route "Ares_to_Shadow_Reef" {
+        origin = "Ares_Market_Central";
+        destination = "Shadow_Reef";
+        travel_time_seconds = 60;
+        fuel_cost_liters = 4000;
+        requires_quantum_drive = true;
+        danger_level = "high";
+        interdiction_chance = 0.3;
+    }
+}
+
+economy_systems {
+    commodity "Titanium" {
+        base_type = "mineral";
+        unit = "kg";
+        
+        market_price "Orbital_Hub_7_Market" {
+            buy_price_per_kg = 80;
+            sell_price_per_kg = 72;
+        }
+
+        market_price "Titan_Surface_Outpost_Market" {
+            buy_price_per_kg = 45;
+            sell_price_per_kg = 40;
+        }
+    }
+    
+    commodity "Iron_Ore" {
+        base_type = "mineral";
+        unit = "kg";
+        
+        market_price "Ares_Market_Central_Market" {
+            buy_price_per_kg = 30;
+            sell_price_per_kg = 25;
+        }
+    }
+    
+    commodity "Synthetic_Food" {
+        base_type = "consumable";
+        unit = "rations";
+        
+        market_price "Ares_Market_Central_Market" {
+            buy_price_per_ration = 15;
+            sell_price_per_ration = 12;
+        }
+    }
+    
+    commodity "Quantum_Cores" {
+        base_type = "technology";
+        unit = "units";
+        
+        market_price "Orbital_Hub_7_Market" {
+            buy_price_per_unit = 5000;
+            sell_price_per_unit = 4200;
+        }
+    }
+
+    trade_route "Station_to_Surface_Trade" {
+        origin = "Orbital_Hub_7";
+        destination = "Titan_Surface_Outpost";
+        commodities_allowed = ["Titanium", "Ice_Crystals"];
+    }
+    
+    trade_route "Ares_to_Orbital_Trade" {
+        origin = "Ares_Market_Central";
+        destination = "Orbital_Hub_7";
+        commodities_allowed = ["Iron_Ore", "Synthetic_Food"];
+    }
+}
+
+ui {
+    hud_layout "Trader_HUD" {
+        elements = [
+            {"name": "fuel_gauge", "position": "bottom_left"},
+            {"name": "cargo_display", "position": "top_right"},
+            {"name": "market_panel", "position": "center"}
+        ];
+    }
+    
+    mission_board_ui "Mission_Dashboard" {
+        sections = ["available_contracts", "active_missions", "completed_quests"];
+    }
+
+    gesture_wheel_ui "GestureWheel" {
+        type = "radial_social_menu";
+        input_key = "TAB";
+        hold_to_open = true;
+        gestures = [
+            {"name": "Wave", "index": 0},
+            {"name": "Offer", "index": 1},
+            {"name": "Refuse", "index": 2},
+            {"name": "Point", "index": 3},
+            {"name": "Kneel", "index": 4},
+            {"name": "Beckon", "index": 5},
+            {"name": "Thank", "index": 6}
+        ];
+    }
+}
+
+gameplay {
+    character "Player_Pilot" inherits "ACharacter" {
+        ability_system_component = "ASC_Player";
+        attribute_set = "AS_PlayerAttributes";
+        default_abilities = ["GA_FlyShip", "GA_InteractMarket", "GA_InitiateCombat"];
+    }
+    
+    survival_stats {
+        fuel_stat = true,
+        cargo_weight_stat = true;
+    }
+    
+    combat_system {
+        damage_formulas = "standard_gas_formula";
+        hit_reactions = false;
+        status_effects = ["shield_depletion", "system_damage"];
+    }
+}
+
+missions_contracts {
+    mission "Delivery_Titanium_Batch_1" {
+        type = "delivery";
+        faction = "faction_titan_miners";
+        origin_station = "Titan_Surface_Outpost";
+        destination_station = "Orbital_Hub_7";
+        required_commodity = "Titanium";
+        quantity_kg = 500;
+        reward_credits = 25000;
+        penalty_failed = 0;
+    }
+    
+    mission "Smuggle_Quantum_Cores" {
+        type = "smuggling";
+        faction = "faction_pirate_syndicate";
+        origin_station = "Shadow_Reef";
+        destination_station = "Ares_Market_Central_black_market";
+        required_commodity = "Quantum_Cores";
+        quantity_units = 2;
+        reward_credits = 100000;
+        penalty_failed = 5000;
+        danger_level = "high";
+    }
+    
+    mission "Escort_Convoy" {
+        type = "escort";
+        faction = "faction_orbital_council";
+        origin_station = "Orbital_Hub_7";
+        destination_station = "Ares_Market_Central";
+        required_commodity = "Synthetic_Food";
+        quantity_rations = 1000;
+        reward_credits = 50000;
+        penalty_failed = 10000;
+        enemy_factions = ["faction_pirate_syndicate"];
+    }
+}
+
+level {
+    name = "DeepSpaceTrader_DefaultLevel";
+    player_start {
+        location = [0, 0, 100];
+    };
+    skybox_type = "deep_space";
+    
+    light {
+        type = "DirectionalLight";
+        position = [0, 0, 1000];
+        rotation = [-45, -45, 0];
+        intensity = 1.0;
+        color = "white";
+    };
+    
+    light {
+        type = "SkyLight";
+        position = [0, 0, 500];
+        rotation = [0, 0, 0];
+        intensity = 0.5;
+        color = "sky_blue";
+    };
+    
+    world_bounds {
+        min_location = [-100000, -100000, -1000];
+        max_location = [100000, 100000, 50000];
+    };
+    
+    station_placements {
+        station_placement "Orbital_Hub_7" {
+            name = "Orbital_Hub_7";
+            location = [0, 0, 0];
+        };
+        
+        station_placement "Ares_Market_Central" {
+            name = "Ares_Market_Central";
+            location = [50000, 0, 0];
+        };
+        
+        station_placement "Shadow_Reef" {
+            name = "Shadow_Reef";
+            location = [-30000, 20000, 0];
+        };
+    };
+    
+    planet_placements {
+        planet_placement "Titan" {
+            name = "Titan";
+            location = [100000, 0, 0];
+            scale = 5.0;
+        };
+        
+        planet_placement "Ares-Prime" {
+            name = "Ares-Prime";
+            location = [50000, 50000, 0];
+            scale = 3.0;
+        };
+    };
+}
+
+tests {
+    test "BuyTitaniumReducesCreditsAndAddsToCargo" {
+        type = "unit";
+        description = "Buying Titanium at the station reduces player credits and adds Titanium to cargo";
+        
+        setup {
+            spawn_actor(type = "Character", id = "player", class = "Player_Pilot");
+            add_credits(actor = "player", amount = 10000);
+            set_market_price(market = "Orbital_Hub_7_Market", commodity = "Titanium", price_per_kg = 50);
+        }
+        
+        action {
+            buy_commodity(actor = "player", market = "Orbital_Hub_7_Market", commodity = "Titanium", quantity_kg = 100);
+        }
+        
+        assert {
+            player_credits(actor = "player") == 9500;
+            inventory_count(actor = "player", item = "Titanium", unit = "kg") == 100;
+        }
+    }
+    
+    test "QuantumTravelConsumesFuel" {
+        type = "integration";
+        description = "Flying from station to planet consumes quantum fuel via Quantum_Engine system";
+        
+        setup {
+            spawn_actor(type = "Ship", id = "test_ship", class = "Trader_Vessel_Alpha");
+            set_system_fuel(actor = "test_ship", system = "Fuel_Tank", amount_liters = 10000);
+            grant_ability(actor = "test_ship", ability = "Quantum_Spool_Jump");
+        }
+        
+        action {
+            activate_quantum_travel(actor = "test_ship", route = "Orbital_Hub_7_to_Surface");
+        }
+        
+        assert {
+            system_fuel_remaining(actor = "test_ship", system = "Fuel_Tank") <= 8000;
+            quantum_drive_status(actor = "test_ship") == "cooldown";
+        }
+    }
+    
+    test "MissionDeliveryRewardOnCompletion" {
+        type = "integration";
+        description = "Completing a delivery mission grants credits and marks mission as complete";
+        
+        setup {
+            spawn_actor(type = "Character", id = "player", class = "Player_Pilot");
+            add_mission(actor = "player", mission = "Delivery_Titanium_Batch_1");
+            add_item(actor = "player", item = "Titanium", quantity = 500, unit = "kg");
+        }
+        
+        action {
+            complete_mission(actor = "player", mission = "Delivery_Titanium_Batch_1");
+        }
+        
+        assert {
+            player_credits(actor = "player") >= 25000;
+            mission_status(actor = "player", mission = "Delivery_Titanium_Batch_1") == "completed";
+        }
+    }
+}
+
+procedural_generation {
+    pcg_graph "Environment_Clutter_Graph" {
+        graph_type = "PCGGraphComponent";
+        
+        data_collections {
+            collection "Clutter_Collection" {
+                cancel_execution_on_empty = false;
+                cancel_execution = false;
+            }
+        }
+        
+        tagged_data_items {
+            item "Rock_Cluster_Data" {
+                tags = ["Clutter", "Rocks"];
+                pin = "Output";
+                b_pinless_data = false;
+                b_is_used_multiple_times = true;
+            }
+            
+            item "Debris_Field_Data" {
+                tags = ["Clutter", "Debris"];
+                pin = "Output";
+                b_pinless_data = false;
+                b_is_used_multiple_times = false;
+            }
+        }
+        
+        metadata_domains = ["PCGMetadata", "LevelDesign"];
+        attribute_selectors = ["Location", "Rotation", "Scale"];
+    }
+    
+    pcg_graph "Planet_Surface_Generation" {
+        graph_type = "PCGGraphComponent";
+        
+        data_collections {
+            collection "Surface_Collection" {
+                cancel_execution_on_empty = true;
+                cancel_execution = false;
+            }
+        }
+        
+        tagged_data_items {
+            item "Vegetation_Data" {
+                tags = ["Biome", "Vegetation"];
+                pin = "SpawnPoints";
+                b_pinless_data = false;
+                b_is_used_multiple_times = true;
+            }
+        }
+        
+        metadata_domains = ["PCGMetadata", "BiomeGeneration"];
+        attribute_selectors = ["Location", "Rotation", "Scale", "Density"];
+    }
+}

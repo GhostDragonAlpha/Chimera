@@ -1,0 +1,374 @@
+{
+  "name": "Flight_Orbital_Mechanics",
+  "description": "Physics-based flight model for ship travel: orbital insertion, gravity well traversal, delta-v maneuvers, and real orbital mechanics. Sub-feature of Travel_Systems.",
+  "created": "2026-07-19T17:32:15.310558",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the flight model teach real orbital mechanics through hands-on maneuvering?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player learn delta-v budgeting and transfer orbits through gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 3,
+      "category": "fame",
+      "question": "Is orbital-mechanics flight visually impressive enough for trailer/marketing capture?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 4,
+      "category": "fame",
+      "question": "Does physics-based flight differentiate us from arcade space games in marketing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 5,
+      "category": "world",
+      "question": "Do celestial body masses and distances produce visibly realistic orbital behavior?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 6,
+      "category": "world",
+      "question": "Can the player perform gravity slingshot maneuvers around planets for speed/direction change?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 7,
+      "category": "shipping",
+      "question": "Does the flight model compile cleanly in UE5.8 without engine hacks?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 8,
+      "category": "shipping",
+      "question": "Can basic orbital insertion and escape be prototyped within one development sprint?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 9,
+      "category": "foundation",
+      "question": "Does the existing FlightComponent provide the velocity/thrust/rotation needed for orbital physics?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 10,
+      "category": "foundation",
+      "question": "Can the generator produce orbital-configurable ship classes with customizable thrust/mass values?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 11,
+      "category": "platform",
+      "question": "Does UE5.8's physics engine support high-precision floating-point for orbital-scale distances without hacks?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 12,
+      "category": "performance",
+      "question": "Does the orbital simulation run at 30+ fps on RTX 3060 with 10+ simultaneous orbiting bodies?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does this depend on the Celestial_Body system providing mass, position, and orbital data?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does orbital-mechanics flight prove that Travel_Systems has genuine educational depth?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was this derived from Travel_Systems question Q31 requiring sub-features for the flight model?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does physics-based flight conflict with an accessibility mode for simplified movement?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What physics simulation knowledge is required to implement N-body orbital calculations in UE5?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does orbital mechanics need sub-sub-features (e.g., SOI switching, patched-conic approximation) or is this level sufficient?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are sibling sub-features missing at this level \u2014 e.g., docking mechanics, auto-pilot assist?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is Travel_Systems designed at sufficient depth to support this orbital-mechanics sub-feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should orbital mechanics be built before Fuel_Consumption or Navigation, since fuel budgeting depends on orbital state?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does this block Star_System_Navigation, which needs orbital state for route plotting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does physics-based orbital flight serve the 'most famous educational RPG' goal by teaching real rocket science?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What is sacrificed by implementing real orbital mechanics instead of simplified point-and-click travel?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building this defers other features. Worth the tradeoff for educational value."
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows that players value real orbital mechanics (Kerbal Space Program, Space Engineers player bases)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does the orbital-mechanics learning chain reach a human actually understanding delta-v and gravity wells?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "What fuel-cost gradients, gravity-well exit windows, and orbital-insertion burn requirements create a delta-v economy where navigation skill directly translates to fuel cost savings?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Orbital mechanics is the physics engine of the travel economy. A pilot using Oberth maneuvers achieves orbit insertion with 30-40% less fuel than brute-force ascent. Skill = delta-v saved = credits earned. The gradient is steepest in high-gravity systems, making gravity knowledge economically valuable route-planning intelligence."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does mastering orbital mechanics tell the story of becoming a real pilot \u2014 from struggling with basic orbits to planning interplanetary transfers, each maneuver a chapter in the player's skill journey?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The orbital mechanics journey is a hero's arc: the player starts unable to orbit, learns through failure, achieves orbital insertion (first victory), executes a transfer burn (mastery), and finally slingshots between worlds (expertise)."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does orbital flight feel intuitive to control -- can the player establish orbit, execute transfer burns, and manage delta-v without reading a manual or memorizing keyboard shortcuts?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Controls use throttle (W/S) and attitude (mouse) with on-screen orbital vector indicators. A prograde/retrograde assist mode simplifies burns. Delta-v readout shows remaining budget. Tutorial tooltip appears on first orbit."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the ship's orbital state (position, velocity vector, current reference body, orbital parameters) need to persist and resume accurately on load?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Orbital state is the most critical save data for this feature: position (x,y,z), velocity vector (vx,vy,vz), current reference body, and time since insertion. This is ~7 floats. Written on manual save or checkpoint. Frequent auto-saves recommended during orbital maneuvers."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "Does the flight model use real N-body orbital mechanics (Newtonian gravitation, Keplerian orbits, Lagrange points) or simplified patched-conic approximation?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Simplified two-body patched-conic approximation in v1. Each body's sphere of influence is modeled separately with Newtonian gravity (F = GMm/r\u00b2). N-body interactions are deferred. This is sufficient for teaching orbital insertion, transfer burns, and gravity well traversal."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

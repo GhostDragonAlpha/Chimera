@@ -1,0 +1,33 @@
+{
+  "_provenance": "Locomotion as a physics fact, not a morphology check. Distance travelled under rigid-body dynamics, with robustness across randomized starts — no single lucky pose wins. The body co-evolves with the CPG rhythm; the objective binds what a GOOD walker IS.",
+  "maximize": [
+    "distance",
+    "robustness",
+    "straightness"
+  ],
+  "minimize": [
+    "exploded",
+    "degenerate",
+    "airborne_frac",
+    "energy"
+  ],
+  "constraints": [
+    {"field": "exploded", "max": 0},
+    {"field": "degenerate", "max": 0},
+    {"field": "distance", "min": 0.5},
+    {"field": "robustness", "min": 0.30},
+    {"field": "straightness", "min": 0.40},
+    {"field": "airborne_frac", "max": 0.40},
+    {"field": "torso_z", "min": 0.05, "max": 0.60},
+    {"field": "energy", "max": 200.0}
+  ],
+  "walls": {
+    "exploded": "The body MUST survive simulation. NaN position or flung to orbit is not a walker — it is a debris field. This gate catches every degenerate before it scores.",
+    "degenerate": "The body MUST pass the structural floor. Under-size bodies, zero-length bones, and hair-thin limbs are NOT creatures — they are exploits the last run found and this gate walls out.",
+    "distance": "A walker MUST travel at least 0.5 body lengths. Zero distance means the body fell over and twitched — the name is walker, not seizure. The seed quadruped already walks ~2 body lengths; this floor exists only to catch regressions.",
+    "robustness": "The worst restart MUST travel at least 30% of the mean. Below 0.30 means the body has a LUCKY pose, not a gait — change the start height by 2 cm and it collapses. A limit cycle is robust ~1.0; a lottery ticket is ~0.0.",
+    "airborne_frac": "The walker MUST stay on the ground. Above 40% airborne means it is launching itself ballistically — that is not walking, it is ricocheting. The first CPU winner was a neutron-star bristlebot; this is the physics gate that catches its successor.",
+    "torso_z": "Torso height MUST stay between heel and half a body height. Crawling on the ground (0.05) means it never stood up; towering above 0.60 means it is a stilt-walker, not a balanced quadruped. Both are degenerate optima the first run produced.",
+    "energy": "Energy per unit material MUST be bounded. 999.0 is the dead sentinel; above 200.0 means every joint is fighting every other joint — a convulsion, not a coordinated gait. The brain's job is to lower this; the body's job is to not start at seizure-level waste."
+  }
+}

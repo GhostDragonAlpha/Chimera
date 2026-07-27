@@ -1,0 +1,15 @@
+{
+  "_provenance": "Rung 3 — player body survival loop. O2/battery/dust drain rates.",
+  "name": "body_survival",
+  "mirror_wall": "Survival must be real but fair. Instant death or impossible survival both fail the Mirror.",
+  "input": "rung 2: player spawn point on formed terrain",
+  "walls": [
+    "Walking player must drain full O2 tank in 5-7 minutes",
+    "Sprinting must drain O2 at least 2x walking rate",
+    "Shelter proximity must refill O2 faster than it drains",
+    "Battery must drain only at night",
+    "Death must be recoverable (respawn at shelter with partial resources)"
+  ],
+  "element_query": {"categories": ["Suit", "LifeSupport", "Oxygen", "Battery", "Damage"], "classes": ["SuitLifeSupportComponent", "CharacterMovementComponent"]},
+  "output": {"next_rung": "biome_resources", "format": "drain rates, refill rates, respawn config"}
+}

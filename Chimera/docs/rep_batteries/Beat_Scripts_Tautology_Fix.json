@@ -1,0 +1,14 @@
+[
+ {
+  "id": "atom_1ff9f0c5ff4b",
+  "feature": "Beat_Scripts_Tautology_Fix",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/Beat_Scripts_Tautology_Fix/transcript.json"
+  },
+  "desc": "'Beat_Scripts_Tautology_Fix' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
+ }
+]

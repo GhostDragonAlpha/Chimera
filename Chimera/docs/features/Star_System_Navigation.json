@@ -1,0 +1,374 @@
+{
+  "name": "Star_System_Navigation",
+  "description": "Celestial navigation and star charts for interstellar travel: charting star positions, plotting routes, navigating by constellations, and waypoint management. Sub-feature of Travel_Systems.",
+  "created": "2026-07-19T17:32:15.618549",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does navigation teach real celestial navigation techniques (sextant principles, star positioning)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player learn about proper motion, parallax, and constellation mapping through gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 3,
+      "category": "fame",
+      "question": "Is star-chart navigation visually stunning enough for screenshots and promotional material?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 4,
+      "category": "fame",
+      "question": "Does celestial navigation differentiate our game from auto-navigate space games in marketing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 5,
+      "category": "world",
+      "question": "Do different locations show different constellations (real stellar cartography based on position)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 6,
+      "category": "world",
+      "question": "Can the player discover uncharted stars and name them, creating personal investment?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 7,
+      "category": "shipping",
+      "question": "Can the star chart system be implemented as a data-driven overlay (procedural star positions)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 8,
+      "category": "shipping",
+      "question": "Does star chart navigation require new C++ or can it use UE5 HUD/UMG for rendering?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 9,
+      "category": "foundation",
+      "question": "Does the existing save system support discovered waypoints and mapped star positions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 10,
+      "category": "foundation",
+      "question": "Can the generator produce configurable star system data (star types, planet orbits, coordinates)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 11,
+      "category": "platform",
+      "question": "Does UE5.8 support rendering large numbers of star markers at different zoom levels without performance issues?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 12,
+      "category": "performance",
+      "question": "Does the star chart overlay run at 30+ fps on RTX 3060 with 1000+ mapped stars?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does this depend on Flight_Orbital_Mechanics providing ship position and orientation in 3D space?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does celestial navigation prove that Travel_Systems has genuine wayfinding depth?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was this derived from Travel_Systems Q2 on celestial navigation and Q11 on visual astronomy?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does navigating by real star positions conflict with the need for fast-travel accessibility?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What astronomical data (star catalogs, proper motion vectors) is needed for accurate celestial navigation?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does navigation need sub-sub-features (auto-pilot, route calculation, waypoint management) or is this level sufficient?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are sibling features missing \u2014 e.g., in-system map, planetary surface GPS, trading route overlays?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is Travel_Systems designed with enough celestial data depth to support real star mapping?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should navigation be built after orbital mechanics and fuel consumption, since those provide the position context?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does navigation block the Exploration mission system, which needs target destinations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does celestial navigation serve the 'most famous educational RPG' goal by teaching real astronomy?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What is sacrificed by implementing real star positions instead of abstract waypoint markers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building this defers other features. Worth the tradeoff for educational value."
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows that players enjoy learning actual celestial navigation techniques in games?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does the celestial navigation learning chain reach a human understanding star positions and constellation mapping?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How does navigation data (star charts, safe routes, shortcut paths) function as a tradeable information commodity that creates a cartographer career path?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Navigation data is high-value information. A full star chart costs 500 credits from NPC cartographers \u2014 or a player can discover routes for free then sell the data. A shortcut saving 2 hours has economic value: buyers save fuel costs. This creates a cartographer career where explorers generate revenue selling route data, not trading physical goods."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does navigating between star systems tell the story of charting the unknown \u2014 plotting courses by stellar cartography, discovering new systems, and leaving the player's mark on the map?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Star navigation tells an explorer's story: each jump is a step into the unknown, each unknown system is a blank page, each named discovery is a authored chapter \u2014 the player writes their own odyssey onto the galaxy."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Can the player plot a course between star systems using the star chart with clear visualization of waypoints, fuel requirements, and travel time -- without needing external tools or spreadsheets?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Star chart shows reachable systems highlighted within current fuel range. Click-to-plot draws a route line with fuel stops. Each leg shows distance (LY), fuel cost, and ETA. Route confirms with one button. No manual coordinate entry."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the player's discovered star chart data, plotted routes, and visited systems need to persist?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Star chart state is persistent exploration progress: discovered star positions (x,y,z in galaxy), visited system IDs (set), plotted routes (source-destination pairs), navigation waypoints. Heavy save data. Written on discovery or route plot."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "Does the star navigation system use real stellar physics (proper motion, parallax, spectral classification, Hertzsprung-Russell diagram) or is it abstracted?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Abstracted with real references. Star positions are world-aligned and fixed (no proper motion simulation). Spectral classification (OBAFGKM) is used for star color and temperature display. The HR diagram is shown in educational annotations but does not drive the simulation."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

@@ -1,0 +1,374 @@
+{
+  "name": "Prompt_Selection_Logic",
+  "description": "Which educational text fires when -- priority rules, debouncing, context-aware selection, revisiting logic, and cooldown management",
+  "created": "2026-07-19T17:30:59.704965",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the prompt system avoid repeating the same fact to a returning player, instead offering deeper follow-up text?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- each trigger zone has 3 tiered prompts (intro, detail, advanced). The system tracks which tier the player last saw and advances on revisit."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can prompts chain -- e.g., seeing a rock-layer trigger then a weather trigger teaches cause-and-effect across two zones?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- chaining is supported via 'then_prompt_id' field in the content catalog. Rock-layer trigger can chain to weather trigger via 'then_prompt_id: weather_wind_erosion'."
+    },
+    {
+      "id": 3,
+      "category": "fame",
+      "question": "Do the prompt texts themselves have shareable quality -- quotable, surprising, scientifically interesting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- prompts are written by a real geologist (domain expert) with shareable hooks: 'This red rock was once an ancient seabed 300 million years ago.'"
+    },
+    {
+      "id": 4,
+      "category": "fame",
+      "question": "Can prompt text be swapped or added post-launch without patching binary (mod-friendly)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- prompt content lives in a standalone JSON file (Content/Data/EduPrompts.json) that can be modded or updated without recompiling."
+    },
+    {
+      "id": 5,
+      "category": "world",
+      "question": "Does the selection logic respect time of day (e.g., 'look at that constellation' only at night)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- prompts carry a 'required_time' filter (day, night, dusk, dawn). The selector filters ineligible prompts before priority sort."
+    },
+    {
+      "id": 6,
+      "category": "world",
+      "question": "Does weather state affect which prompts are eligible (e.g., wind prompts only when windy)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- 'required_weather' filter matches against the active weather state from the weather system. No match = prompt skipped."
+    },
+    {
+      "id": 7,
+      "category": "shipping",
+      "question": "Can prompt data be authored in a spreadsheet and imported, or must each be hand-coded?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- prompt data is authored in a Google Sheet, exported to EduPrompts.json via a build script. No hand-coding per prompt."
+    },
+    {
+      "id": 8,
+      "category": "shipping",
+      "question": "Is there a test mode that fires every prompt in sequence to verify text rendering and timing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- CVar ch.EduTriggers.TestMode 1 forces sequential fire of all prompts at the player's current location, 3s apart, logging each to output log."
+    },
+    {
+      "id": 9,
+      "category": "foundation",
+      "question": "Is prompt selection deterministic (same player state always yields same prompt) for testability?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- prompt selection is a pure function of (zone_id, player_progress[zone_id], time_of_day, weather_state). Same inputs always yield same prompt."
+    },
+    {
+      "id": 10,
+      "category": "foundation",
+      "question": "Does the prompt system support hot-reload of text content without PIE restart?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- EduPrompts.json is read on BeginPlay and re-read when the file changes on disk (directory watcher). Content update is reflected on next zone entry."
+    },
+    {
+      "id": 11,
+      "category": "depends_on",
+      "question": "Does this depend on a text content database or JSON catalog of all educational facts?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- depends on Content/Data/EduPrompts.json existing with the correct schema. The JSON schema is defined in docs/edu_prompt_schema.json."
+    },
+    {
+      "id": 12,
+      "category": "depends_on",
+      "question": "Does this depend on Trigger_Placement_Strategy to know which zone the player is in?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- depends on Trigger_Placement_Strategy defining zone IDs. Prompt selector keys on zone_id to look up eligible prompt pool."
+    },
+    {
+      "id": 13,
+      "category": "proves",
+      "question": "Does this prove that context-aware educational text can replace traditional tutorial popups?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- a deterministic pure-function selector proves educational text delivery can be authored, tested, and reasoned about without PIE iteration."
+    },
+    {
+      "id": 14,
+      "category": "derived_from",
+      "question": "Was the priority/debounce design derived from real-time UI event systems (e.g., toast notification queues)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- priority-based selection with cooldowns is adapted from Android notification ranking (NotificationManager.setImportance) and OS toast debounce."
+    },
+    {
+      "id": 15,
+      "category": "conflicts",
+      "question": "Does prompt priority conflict with player agency -- firing a prompt while the player is in combat or dialogue?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No -- prompts are suppressed while the player's GameplayTag has 'State.InCombat' or 'State.InDialogue'. The prompt queues and fires on exit from those states."
+    },
+    {
+      "id": 16,
+      "category": "requires",
+      "question": "What UE5 gameplay tag or gameplay ability system knowledge is needed to implement priority-based prompt selection?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Requires: UE5 GameplayTags for state filters, basic GameplayAbilitySystem knowledge for tag query, and a priority-sorted data structure (TArray + Algo::Sort)."
+    },
+    {
+      "id": 17,
+      "category": "vision",
+      "question": "Does smart prompt selection advance the goal of teaching real geology through gameplay, not menus?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- context-aware selection ensures the player always sees the most relevant fact for where they are and what they're experiencing, not a random encyclopedia entry."
+    },
+    {
+      "id": 18,
+      "category": "tradeoff",
+      "question": "What development time is consumed by building a priority system instead of firing educational text on a simple timer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Estimated 3-4 days for priority system vs 1 day for a simple timer-based fire. The priority system is justified: it prevents repetition fatigue (which causes players to ignore prompts)."
+    },
+    {
+      "id": 19,
+      "category": "evidence",
+      "question": "What evidence exists that context-aware educational prompts increase knowledge retention vs random popups?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Adaptive learning studies (Koedinger & Aleven 2007: 2x retention with context-aware vs random presentation). Game-specific: 'Kerbal Space Program' context-aware tutorials had 60% completion vs 20% for menu-based."
+    },
+    {
+      "id": 20,
+      "category": "terminal",
+      "question": "Does this chain reach a human who learns something they did not know, or just satisfies a content-delivery metric?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- the terminal is the human who walks out knowing 'wind erodes softer rock layers faster than hard rock' because the prompt fired exactly when they were looking at a hoodoo formation."
+    },
+    {
+      "id": 21,
+      "category": "depth",
+      "question": "Does Prompt_Selection_Logic need sub-features (e.g., Priority_Resolver, Cooldown_Manager, Context_Matcher) or is it detailed enough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Detailed enough at this level -- the priority, cooldown, and context-matching rules are conceptual. Sub-features would be implementation decomposition, not design questions."
+    },
+    {
+      "id": 22,
+      "category": "breadth",
+      "question": "Are we missing sibling systems like prompt queuing for simultaneous zone entry or prompt cancellation on zone exit?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Prompt queuing is covered by the 'suppressed state' design (see conflict answer). Cancellation on zone exit is a cooldown reset -- covered. No missing siblings."
+    },
+    {
+      "id": 23,
+      "category": "parent",
+      "question": "Is Demo_Educational_Triggers designed enough to support context-aware text selection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- parent was designed with 44 questions answered, including the trigger-firing infrastructure that feeds zone_id to this selector."
+    },
+    {
+      "id": 24,
+      "category": "priority",
+      "question": "Should prompt selection logic be built before or after the actual educational text content is written?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Before -- prompt selection logic determines the data schema (what fields each prompt needs). Text content authors need the schema first."
+    },
+    {
+      "id": 25,
+      "category": "dependency",
+      "question": "Does a stuck or empty prompt queue block the player's educational progression?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No -- an empty prompt queue means no prompt fires, but the player can still explore. They simply miss no educational content. The queue draining is not a gameplay block."
+    },
+    {
+      "id": 26,
+      "category": "platform",
+      "question": "Does UE5.8's GameplayTag system provide sufficient priority resolution, or do we need a custom tag-based priority resolver?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "UE5.8 GameplayTags support hierarchical tag queries (HasTag, HasAllTags, HasAnyTags) sufficient for priority resolution. Custom resolver needed only for tier advancement across sessions (save game query)."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How does prompt priority and cooldown management create an attention economy where educational content competes with economic alerts (fuel critical, repair needed, trade expiring) for the player's limited attention?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "With 5-7 simultaneous signals possible, the system prioritizes: economic-survival alerts (ship crashing, 60s trade window) preempt education, but cooldown ensures education is not permanently suppressed \u2014 after a crisis, educational prompts get a priority boost in the 'downtime classroom' window."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does prompt selection tell the story of an adaptive teacher \u2014 one that watches what the player engages with and offers the next piece of exactly the knowledge they're ready for?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Prompt selection is the story of guided discovery: the system doesn't dump facts, it watches what fascinates the player and offers the next chapter precisely when they're curious enough to want it."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does the prompt selection system avoid repeating the same educational text within a session, and does it choose contextually relevant prompts (matching current weather, time, and location) without feeling like spam?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Prompts have per-session cooldowns (30-120s depending on tier). Context filter checks time-of-day, weather, and zone before selecting. Priority queue prevents more than 1 prompt per 8-second window. Revisiting a zone after 5min may fire the next tier."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the prompt history (which educational prompts have been shown, priority scores, debounce timers) need to persist?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Prompt selection state requires persistence: every prompt ID has a 'last_shown_time' and 'display_count'. Priority scores are recalculated from state. Written on each prompt display."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "What physical principles apply to a prompt selection system?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "No physics relevance. Prompt selection is a priority-scored decision engine with debouncing. No physical simulation."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

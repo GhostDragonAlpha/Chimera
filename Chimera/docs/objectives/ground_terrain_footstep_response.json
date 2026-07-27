@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for ground_terrain_footstep_response",
+  "scenario": "Train ground_terrain_footstep_response sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_footstep_displaces_g",
+      "min": 1,
+      "hard": true,
+      "wall": "Footstep displaces grains 5-15cm radius"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_footprint_persists_5",
+      "min": 0.5,
+      "hard": true,
+      "wall": "Footprint persists 5+ seconds"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_dust_puff_on_impact",
+      "min": 1,
+      "hard": true,
+      "wall": "Dust puff on impact"
+    }
+  ]
+}

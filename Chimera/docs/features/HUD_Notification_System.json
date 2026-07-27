@@ -1,0 +1,374 @@
+{
+  "name": "HUD_Notification_System",
+  "description": "How educational text appears to the player -- UI widget, animation, readability, dismiss behavior, visual style, and accessibility",
+  "created": "2026-07-19T17:30:59.998970",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does the HUD presentation maximize reading comprehension (font size, contrast, duration, position)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- font size 18pt minimum at 1080p (scales with DPI), white-on-dark with 4.5:1 contrast ratio, 8s auto-dismiss with 2s fade, positioned in lower-center FOV."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player re-read a dismissed notification from an in-game log or journal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- each dismissed notification is added to an in-game journal (EduJournal.txt saved to player save dir) accessible from the pause menu."
+    },
+    {
+      "id": 3,
+      "category": "fame",
+      "question": "Does the notification style look polished enough for a Steam trailer close-up?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet -- v1 uses a simple semi-transparent black bar with white text. Polished styling (animated icon, subtle border glow) is v2. Functional is enough for demo trailer."
+    },
+    {
+      "id": 4,
+      "category": "fame",
+      "question": "Can stream viewers clearly see the educational text, or is it too small/fast?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- 18pt font at 1080p is visible on stream at 720p. Duration min 8s ensures even slow readers can absorb. Lower-center placement avoids stream overlay."
+    },
+    {
+      "id": 5,
+      "category": "world",
+      "question": "Does the notification appear diegetically rather than as a floating UI panel?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially -- it appears as a HUD overlay styled as a 'visor readout' with a subtle scanline edge to feel diegetic, not a floating world-space widget."
+    },
+    {
+      "id": 6,
+      "category": "world",
+      "question": "Can the player toggle notifications off without leaving the game world?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- CVar ch.EduTriggers.HideNotifications 1 suppresses all educational HUD output. Toggled from the in-game settings menu under 'Gameplay'."
+    },
+    {
+      "id": 7,
+      "category": "shipping",
+      "question": "Is the HUD widget built in UMG and ready for localization without recompilation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- built as a UMG Widget Blueprint with text bound to a string parameter, ready for localization via FText localization system."
+    },
+    {
+      "id": 8,
+      "category": "shipping",
+      "question": "Does the notification system degrade gracefully at non-standard resolutions or FOV?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- uses UE5 SafeZone slot for 16:9, 21:9, and 32:9. Font scales with DPI. Below 720p notification shrinks to 14pt minimum but maintains contrast ratio."
+    },
+    {
+      "id": 9,
+      "category": "foundation",
+      "question": "Is the notification system event-driven (not tick-dependent)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- fires on a 'NewEduPrompt' event dispatched by Prompt_Selection_Logic. The widget listens via event dispatcher, never ticks."
+    },
+    {
+      "id": 10,
+      "category": "foundation",
+      "question": "Does the HUD support a notification queue for rapid successive triggers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- a TQueue<FPromptData> holds pending notifications. While current notification is displayed, new arrivals queue. Max depth 5; older entries dropped with warning."
+    },
+    {
+      "id": 11,
+      "category": "depends_on",
+      "question": "Does this depend on a main HUD widget being already placed in the level?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- depends on a parent 'MainHUD' UMG widget being added to the player controller's viewport."
+    },
+    {
+      "id": 12,
+      "category": "depends_on",
+      "question": "Does this depend on Prompt_Selection_Logic to supply the text string?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- the HUD receives the final prompt text string from Prompt_Selection_Logic. Without that system, the HUD has no text to display."
+    },
+    {
+      "id": 13,
+      "category": "proves",
+      "question": "Does this prove educational content can be delivered without a separate menu screen?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- delivers educational text without opening a menu, pausing the game, or pulling focus away from the canyon environment."
+    },
+    {
+      "id": 14,
+      "category": "derived_from",
+      "question": "Was the fade-in/fade-out animation derived from accessibility best practices?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- fade-in: 500ms, hold: min 6s (WCAG 2.2.1), fade-out: 500ms. Dismiss-on-input for faster readers. Total timing matches WCAG 2.2.3."
+    },
+    {
+      "id": 15,
+      "category": "conflicts",
+      "question": "Does the notification overlap existing HUD elements (health, compass, objective marker)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No -- placed in lower-center (y-offset -150 from center at 1080p), which does not overlap health bar (upper-left), compass (upper-center), or objective (upper-right)."
+    },
+    {
+      "id": 16,
+      "category": "requires",
+      "question": "What UMG and widget animation knowledge is needed for safe-zone-aware notifications?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Requires: UMG Widget Blueprint, widget animation (fade via timeline), SafeZone slot, event dispatcher binding, FText localization basics."
+    },
+    {
+      "id": 17,
+      "category": "vision",
+      "question": "Does clean HUD presentation make educational content feel like a reward, not a chore?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- non-intrusive presentation ensures the player reads because they want to, not because a modal popup demands it. Discovery feels rewarding."
+    },
+    {
+      "id": 18,
+      "category": "tradeoff",
+      "question": "What screen real estate is consumed by notifications instead of showing environmental beauty?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal -- single-line semi-transparent bar at lower-center (~5% of screen height). The other 95% remains unobstructed for environmental viewing."
+    },
+    {
+      "id": 19,
+      "category": "evidence",
+      "question": "What evidence exists that HUD-based notifications are more effective than audio-only or world-space text?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio-only misses visual connection to the rock formation (cannot say 'this red stripe'). World-space text occludes what it describes. HUD overlay balances visibility and context."
+    },
+    {
+      "id": 20,
+      "category": "terminal",
+      "question": "Does this chain reach a human who can read and absorb the text comfortably?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- human enters zone -> prompt selected -> text appears on visor HUD -> human reads it while looking at the rock -> human understands. Terminal is comprehension."
+    },
+    {
+      "id": 21,
+      "category": "depth",
+      "question": "Does HUD_Notification_System need sub-features (Animator, SafeZone_Resolver, History_Log)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Detailed enough at this level -- animation, safe-zone, and history-log are implementation details of a single HUD widget, not separate design features."
+    },
+    {
+      "id": 22,
+      "category": "breadth",
+      "question": "Are we missing sibling systems like audio narration for visually impaired players?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio narration is a separate accessibility feature for v2. Not a sibling to visual HUD; it would be a parallel output channel."
+    },
+    {
+      "id": 23,
+      "category": "parent",
+      "question": "Is Demo_Educational_Triggers designed enough to define HUD requirements?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes -- parent designed with 44 questions covering the full trigger-and-prompt pipeline. HUD requirements are well-defined: display, queue, dismiss, log."
+    },
+    {
+      "id": 24,
+      "category": "priority",
+      "question": "Should HUD be built before or after the first educational text is written?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "After -- HUD needs actual text content to display during dev. Write 3 sample prompts first, then build HUD to display them."
+    },
+    {
+      "id": 25,
+      "category": "dependency",
+      "question": "Does an incomplete HUD block playtesting of educational content delivery?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially -- playtesting can use PrintString (temporary) for text delivery. HUD blocks final visual polish testing but not functional delivery testing."
+    },
+    {
+      "id": 26,
+      "category": "platform",
+      "question": "Does UE5.8's UMG SafeZone widget handle all common aspect ratios, or do we need custom resolution scaling?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "UE5.8 SafeZone widget handles 16:9, 16:10, 21:9, and 32:9 correctly. No custom resolution scaling needed; a DPI scale curve recommended for 4K+."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How does notification design affect player reaction time in time-sensitive economic decisions \u2014 limited-stock bidding, repair-before-break warnings, trade-window expiration?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "HUD notifications are the attention-allocation mechanism. A red 'low fuel' alert triggers immediate response; a subtle 'trade opportunity nearby' ping may be missed. The design determines which economic signals players act on. A critical repair alert for a cheap tool may interrupt a high-value mining operation, while an important trade window in a minor notification may go unnoticed."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does the notification system tell the story of the player's relationship with their ship \u2014 a companion that alerts them to danger, opportunity, and the quiet needs of the journey?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The HUD is the ship's voice: system-status pings are the ship checking in, discovery alerts are the ship getting excited, low-fuel warnings are the ship worrying \u2014 a non-human character with a quiet personality."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Do educational notifications appear in a consistent, non-blocking screen location that does not obstruct navigation, and can the player dismiss or recall past notifications easily?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Notifications appear in the lower-right corner (outside the center 60% of screen). They auto-dismiss after 6 seconds. A history log (key: H) shows the last 20 notifications. No notification blocks input or covers the reticle."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the notification history (which messages the player has seen/dismissed) and queue state need to persist across sessions?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Dismissed notification IDs should persist to avoid re-showing dismissed messages. Queue state (pending notifications) should also persist. Written on notification dismiss."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "Does the HUD notification system have any physics-based animation (spring dynamics for pop-in, velocity-based scrolling)?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "No physics simulation. Animations are authored keyframes in UMG. Pop-in uses simple scale/fade curves. No spring dynamics or physics-driven layout."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

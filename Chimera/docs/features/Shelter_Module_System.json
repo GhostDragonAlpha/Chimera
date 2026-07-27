@@ -1,0 +1,375 @@
+{
+  "name": "Shelter_Module_System",
+  "description": "Building blocks and snap-points for constructing shelters from modular components.",
+  "parent": "Shelter_Habitat",
+  "created": "2026-07-19T17:15:00.000000",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does snap-point placement teach spatial reasoning and structural awareness?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Players learn that module orientation, stacking order, and connection points determine structural integrity."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Do different module shapes (cube, dome, arch, corridor) teach real structural engineering principles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Arch modules distribute load differently than flat roofs. Players discover this through collapse feedback."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Can players learn about load distribution by stacking modules incorrectly and observing failure?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A module stacked without support underneath collapses under weather load, teaching real load-path principles."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does module orientation (rotation, flip, alignment) affect structural stability in the simulation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A rotated module may misalign snap-points, creating weak joints that fail first in storms."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "Is modular snap-point building a top wishlisted feature for survival/crafting games?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Modular building consistently ranks as a top-5 wishlist feature in survival game surveys."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "Does snap-point construction generate shareable timelapse videos of shelter builds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Build timelapses with snap-preview and placement feedback are highly shareable content."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Can players create unique, recognizable shelter designs that express personal style?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The module set allows thousands of combinations. Unique designs become player identity markers."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "Does our snap-point system offer more flexibility and education than competitor building systems?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Competitors use fictional building rules. Ours teach real structural principles through snap constraints."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do modules physically deform or shift under stress from weather and time?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Modules show visual wear, slight displacement, and joint separation under sustained stress."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Can modules be painted, textured, or customized with player markings?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each module supports material overrides and decal placement for personalization."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Do modules cast correct shadows and interact properly with the dynamic lighting system?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each module generates correct shadow geometry and interior occlusion. Lights inside cast through windows."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Can modules be placed on uneven terrain with automatic foundation adjustment?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Foundation modules auto-adapt to terrain slope with pillar-style height adjustment."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can the module system reuse existing PCG and actor spawning technology?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Existing PCG splines and matter_gpu.py terrain data can provide foundation snapping surfaces."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "Is snap-point alignment solvable with standard UE5 collision and socket systems?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. UE5 sockets and collision primitive overlap checks handle basic snap alignment. No custom physics needed for v1."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Can a basic 3-module shelter (floor, wall, roof) be built and demoed within one day of implementation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Three basic cube modules with forward snap-points can be placed via MCP actor spawning in under 4 hours."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Does the module system support full save/load of module positions, rotations, and connections?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Module transform, parent-child snap hierarchy, and material overrides serialize to the save game JSON."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Does the game code generator need new templates for module base classes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A new AShelterModule C++ base class with snap-point component array needs generator templates."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Can snap-point positions and types be defined in data-driven JSON tables for modding support?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Each module type references a data table row defining snap-point count, positions, and allowed connection types."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can sleepwalker verify correct module placement and snap alignment?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can place a module, query its location and connected neighbors, and verify snap distances."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "Do placed modules need navmesh updates or AI pathfinding recalculations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Modules that block or create walkable surfaces trigger dynamic navmesh rebuild for the affected area."
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does the module system depend on the terrain system providing stable foundation surfaces?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Terrain height data and collision are needed for foundation module placement and ground contact."
+    },
+    {
+      "id": 22,
+      "category": "proves",
+      "question": "Does this prove that procedural modular building works in UE5.8 without engine modifications?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Proves that UE5.8 actor spawning, sockets, and collision provide a complete building system without engine forks."
+    },
+    {
+      "id": 23,
+      "category": "derived_from",
+      "question": "Was this sub-feature derived from Shelter_Habitat question 31 (needs sub-features)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Shelter_Habitat Q31 explicitly identifies module system as a required sub-feature at deeper zoom level."
+    },
+    {
+      "id": 24,
+      "category": "conflicts",
+      "question": "Does the snap-point grid system conflict with freeform terrain placement on steep slopes?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minor conflict. Grid-aligned modules may overhang on steep terrain. Foundation pillars solve this with slight visual offset."
+    },
+    {
+      "id": 25,
+      "category": "requires",
+      "question": "What UE5 C++ knowledge is required for implementing snap-point detection and alignment?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "UE5 actor component system, socket transforms, overlap collision queries, and basic constraint solving."
+    },
+    {
+      "id": 26,
+      "category": "vision",
+      "question": "Does modular shelter construction serve the most famous educational RPG's goal of teaching real-world skills?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Teaching structural engineering through play directly serves the educational RPG vision."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How do modular blueprints, component costs, and expansion multipliers create a construction economy where efficient layout design minimizes material waste?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Modularity introduces optimization economics. A 4m x 4m base module costs 40 units. Adding a second module in-line costs only 30 (shared wall), while a detached module costs a full 50. Adjacency bonuses incentivize compact connected designs. Efficient floor plans save 20-30% on materials compared to sprawling layouts."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does modular shelter construction tell the story of incremental progress \u2014 starting with a single cramped module and expanding room by room, each addition marking a milestone in the player's survival?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Module by module, the shelter tells a growth story: the first room is pure survival, the second adds comfort, the third adds purpose (a lab, a workshop), and the final layout is a map of the player's entire journey."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Do modular snap-points align predictably, and does the player receive instant feedback (highlight glow, snap sound, UI confirmation) when a module connects correctly?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Available snap points glow blue when a held module is within 1m. Connection triggers a white flash and short chime. Connected modules show a seam highlight for 2 seconds. Misaligned modules push away with a soft clunk sound."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the module blueprint definition, placement state, and connections to other modules need to persist?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Module placement is the core persistent data: module type ID, world transform (location + rotation), connected module IDs (array), current health. Written on module placement, destruction, or manual save."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "Do module connections use physics constraints (snap-point alignment, joint strength, shear force limits) or simple positional snapping?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Simple positional snapping with snap-point alignment. Connection integrity is tracked as a health value, not simulated via physics joints. Modules interlock via authored snap points similar to Valheim or Satisfactory."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

@@ -1,0 +1,38 @@
+{
+  "_STATUS": "FILLED (a starting point). Adopted 2026-07-22 from a seed-AI draft the operator explicitly confirmed as their will ('make this the will ... it's a start'). The weights/convictions below are the OPERATOR'S confirmed numbers, transcribed verbatim; the AI injected none of its own. Imperfect by the operator's own framing — refine it by editing the numbers here, or let recorded comparisons bend it over time. NOTE: the draft was AI-INFERRED rather than fully interviewed (the seed-AI stopped and guessed some axes, and painted a persona — physics/piloting/DCS/organizations — that should be checked against what the operator actually said). The operator adopted it anyway as a first pass.",
+  "_GOVERNANCE": "HUMAN-ONLY. The running system NEVER writes this file (core/taste.py has no writer — enforced by test). An AI may PROPOSE edits (staged to CAPCOM for approval) but must never write it. The AI placed the operator's CONFIRMED values here at their explicit request; it did not choose any of them.",
+  "_fields": {
+    "weight": "How much this property pulls the preference, and which way. Positive = more is preferred; negative = less; 0 = no effect. Size = strength; weights are on the standardized 'scale' so they're comparable across properties.",
+    "conviction": "How firmly held — how much contrary evidence it takes to move it. ~0.25 evidence per recorded comparison, so conviction 5 resists ~20 contrary choices. Sure = high; hunch = low.",
+    "scale": "The property's normal spread across designs; puts every property on one comparable footing. A fact about the property, not a taste."
+  },
+  "_what_the_axes_are": "Each axis is a MEASURABLE property (a fact computed with no observer). Taste lives only in the weights over them. Add/remove axes freely, but every axis must be measurable with no observer — a matter of judgment belongs in the weights, or nowhere.",
+  "_how_to_use_this": "Edit each axis's weight (sign=direction, size=strength) and conviction (how sure). Leave 'scale' near the property's real spread. You are the only writer of this file.",
+  "axes": {
+    "skill_gap": {
+      "_measures": "How much better a skilled attempt does than a random one — the room to be good. 1 = skill buys nothing (luck); higher = more room for mastery.",
+      "weight": 1.8,
+      "conviction": 5.0,
+      "scale": 20.0
+    },
+    "punishes_naive": {
+      "_measures": "How much the obvious-but-wrong approach costs vs doing nothing. 1 = harmless; above 1 = it backfires (a trap to learn around).",
+      "weight": 0.6,
+      "conviction": 2.0,
+      "scale": 1.5
+    },
+    "learnability": {
+      "_measures": "How much an attempt improves by paying attention and adjusting. 0 = attention doesn't help; toward 1 = practice pays off strongly.",
+      "weight": 1.5,
+      "conviction": 4.5,
+      "scale": 0.3
+    },
+    "headroom": {
+      "_measures": "Where the best possible attempt lands relative to trivial. Near 0 = too easy (handed to you); near 1 = too hard (even the best barely dents it). Measures how much is left at mastery.",
+      "weight": 1.3,
+      "conviction": 4.0,
+      "scale": 0.25
+    }
+  },
+  "_summary": "Prefers deep physics-based mastery, visible skill growth through practice, and an endless ceiling to climb. Enjoys structured social cooperation but bounces off abstract, spreadsheet-like gameplay. Naive punishments are tolerable learning tools, but not the primary draw."
+}

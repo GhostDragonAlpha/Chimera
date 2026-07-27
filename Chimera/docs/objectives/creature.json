@@ -1,0 +1,27 @@
+{
+  "_provenance": "A body that stands under its own weight. The genome is a skeleton; the measure reports structural facts about the grown body. It never mentions legs — legs, if they appear, are the ANSWER. Design Law 1: the simplest rules produce the richest order. Three degenerate optima (lollipop, blob-on-stilts, mast-with-outriggers) proved that static geometry can be gamed; the walker domain picks up where this ends.",
+  "maximize": [
+    "stands",
+    "tip_deg",
+    "height",
+    "symmetry"
+  ],
+  "minimize": [
+    "volume"
+  ],
+  "constraints": [
+    {"field": "stands", "min": 1.0},
+    {"field": "tip_deg", "min": 22.0},
+    {"field": "height", "min": 0.22},
+    {"field": "symmetry", "min": 0.65},
+    {"field": "volume", "max": 0.010},
+    {"field": "bones", "min": 12, "max": 44}
+  ],
+  "walls": {
+    "stands": "The centre of gravity MUST project inside the support polygon. stands=0 means it is a thing lying down — not a creature. This is THE gate: every other measure is meaningless if the body cannot hold itself up.",
+    "tip_deg": "The body MUST survive a real tilt before toppling. Below 22 degrees means a small slope sends it over — the lollipop (boulder on a pole) tipped at 7.8 degrees. A quadruped starts at ~26.6. This is the term that makes carrying mass high COST you the robustness needed to keep it there.",
+    "height": "The body MUST be carried clear of the ground. Below 0.22 body lengths means the body is a pancake — perfectly stable, maximally useless. A pancake wins every structural check and cannot walk.",
+    "volume": "Volume MUST stay bounded. Above 0.01 means a single enormous bone dominates — the lollipop exploit: mass goes as r^2, so one bone free-rides. Charging per bone count lets one enormous bone escape; charging volume catches it.",
+    "symmetry": "The body SHOULD exhibit bilateral symmetry. Real development is symmetric because it is cheap, not because symmetry is fitness — but below 0.65 means the body is a random spray of limbs, and natural selection does not produce that."
+  }
+}

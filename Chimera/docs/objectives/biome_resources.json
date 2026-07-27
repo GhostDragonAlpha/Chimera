@@ -1,0 +1,19 @@
+{
+  "_provenance": "biome_resources rung",
+  "scenario": "Train biome_resources parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "n_resource_types",
+      "min": 6,
+      "hard": true,
+      "wall": "6 resource types"
+    },
+    {
+      "kind": "at_most",
+      "measure": "inventory_slots",
+      "max": 8,
+      "wall": "8 inventory max"
+    }
+  ]
+}

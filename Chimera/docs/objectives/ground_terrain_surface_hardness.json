@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for ground_terrain_surface_hardness",
+  "scenario": "Train ground_terrain_surface_hardness sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_compression_strength",
+      "min": 1,
+      "hard": true,
+      "wall": "Compression strength varies by surface type"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_rock_harder_than_san",
+      "min": 1,
+      "hard": true,
+      "wall": "Rock harder than sand"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_surface_hardness_aff",
+      "min": 1,
+      "hard": true,
+      "wall": "Surface hardness affects footstep audio"
+    }
+  ]
+}

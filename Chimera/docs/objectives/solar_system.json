@@ -1,0 +1,14 @@
+{
+  "_provenance": "Solar system rung — delegates to bigbang's measure function. Uses trainer's constraint format (min/max/value as appropriate).",
+  "scenario": "Grow a solar system from a seeded protoplanetary disk. The star must dominate. Kepler's law must emerge.",
+  "constraints": [
+    {"kind": "at_least", "measure": "n_planets_worst", "min": 3, "wall": "At least 3 bound planets must form in every restart"},
+    {"kind": "at_least", "measure": "central_frac_mean", "min": 0.90, "wall": "Star must contain at least 90% of system mass"},
+    {"kind": "at_least", "measure": "kepler_r2_worst", "min": 0.90, "wall": "Kepler's law must fit with R^2 >= 0.90 in worst restart"},
+    {"kind": "target", "measure": "kepler_slope_mean", "value": 1.5, "tol": 0.2, "wall": "Kepler slope must be near 1.5"},
+    {"kind": "at_most", "measure": "ecc_median_mean", "max": 0.30, "wall": "Eccentricity must average below 0.30"},
+    {"kind": "at_most", "measure": "lz_drift_worst", "max": 0.05, "wall": "Angular momentum drift must be under 5%"},
+    {"kind": "at_most", "measure": "merges_late_worst", "max": 2, "wall": "At most 2 late mergers"},
+    {"kind": "at_most", "measure": "escaped_frac_worst", "max": 0.15, "wall": "At most 15% of mass may escape"}
+  ]
+}

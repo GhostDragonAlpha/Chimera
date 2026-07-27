@@ -1,0 +1,374 @@
+{
+  "name": "Scanner_Progression_System",
+  "description": "How the scanner upgrades over time: radius upgrades, scan-time reduction, new detection categories (fossils, minerals, lifeforms), durability system, and knowledge-tier unlocks tied to player XP.",
+  "created": "2026-07-19T17:30:05.289932",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does scanner progression unlock deeper science (surface-ID -> composition analysis -> formation history)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Can the progression system be shown as a compelling Steam trailer hook: 'Scan rocks -> unlock geology PhD'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Does scanner progression feel like real scientific instrument advancement (bigger dish = more data), not a game-y skill tree?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can progression be shipped incrementally (v1: radius only, v2: new categories, v3: composition analysis)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Does progression depend on a player XP/level system (does that system exist yet)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Does the upgrade system work in UE5.8 using existing GameplayAbilitySystem or custom UpgradeComponent?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Does tracking scan count, categories unlocked, and upgrade tiers add measurable save-game overhead?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Can a player who only scans occasionally still unlock meaningful upgrades (casual vs completionist pacing)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Text-based output is screen-reader friendly. Color-coded states need pattern fallback."
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Do scanner upgrades have distinct unlock sounds (new category unlocked, radius increased) that reward progression?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio design deferred to v2. v1 uses text-only feedback."
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Do players share scanner progression or is each player's scanner independent in co-op?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Single-player only. Multiplayer is future scope."
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can modders define new upgrade tiers, categories, and unlock conditions through data tables?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Data-driven design allows community extension via JSON and Blueprints."
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Are upgrade descriptions, category names, and unlock notifications localizable without code changes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "All text strings are extractable to JSON for translation."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does the progression system depend on the Player_Progression/XP feature being built first?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does this prove that educational content can be gated rewardingly (progression = deeper science) without frustrating?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was this derived from Educational_Scanner Q4 (scan radius/time/durability as upgradable properties)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does gating science behind progression conflict with the educational mission (player must scan a lot before learning deep geology)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What C++/Blueprint systems are needed (upgrade component, save-game tier storage, XP hooks)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does this need sub-sub-features (Upgrade_Tree, Category_Unlocks, Knowledge_Tiers) or are 26 Qs enough?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are sibling progression features missing (e.g., Scanner_Recipe_Unlocks, Scanner_Crafting)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is Educational_Scanner designed enough to finalize progression (ATool_Scanner Durability/ScanRadius/ScanTime properties stable)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should progression be designed before or after the base scan mechanic works (progression depends on base scan existing)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does progression block other scanner features, or do UI/audio need to be built before progression can be shown?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does a meaningful progression system (unlock deeper science through scanning) serve 'most famous educational RPG'?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What is sacrificed by making progression scan-count-based vs XP-based (casual players vs depth)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building this defers other features. Worth the tradeoff for educational value."
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows that gating educational content behind progression (KSP tech tree) increases motivation vs open access?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does the progression chain reach PLAYER MASTERY (player earns deeper knowledge through curiosity) or is it just a grind loop?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How do scanner upgrade costs, unlockable detection categories, and knowledge-tier gating create a progression economy where early specialization shapes late-game earning potential?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Scanner progression is an economic branching path. Each upgrade costs materials and credits \u2014 choosing fossil detection means forgoing mineral upgrades. If fossil-rich strata are abundant locally, that specialization pays off faster. The system forces investment in domain-specific capital, creating natural specialization that enables trade between scanner specialists."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does scanner progression tell the story of the player becoming a better field scientist \u2014 starting with basic identification and graduating to chemical analysis, dating, and holographic reconstruction?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Scanner upgrades are a research arc: the player starts identifying rocks by name, graduates to understanding their composition, then their age, then their history \u2014 each upgrade reveals a deeper layer of the planet's story."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does the scanner upgrade progression feel rewarding -- do radius increases, scan-speed reductions, and new detection categories arrive at satisfying intervals that encourage further exploration?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Upgrades unlock at XP thresholds: scan range +50% at level 2, fossil detection at level 3, scan time -40% at level 4, lifeform detection at level 5. Each upgrade triggers a brief UI celebration animation. Cadence: ~20 minutes of play per level."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does every scanner upgrade state (unlocked tiers, current calibration level, XP/progress toward next unlock) need to persist?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. This is inherently a progression system: unlocked upgrade tiers (array of IDs), current calibration level (integer), scan count per category (integer per category). This IS the persistent state. Written on upgrade unlock or manual save."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "Does scanner progression model real instrument physics (signal-to-noise ratio improving with calibration, resolution increasing with aperture) for educational value?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Abstracted progression. Upgrades improve numerical parameters (range +25%, scan speed -30%, new category unlock) rather than simulating real instrument physics. The educational connection is explained in flavor text but not simulated."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

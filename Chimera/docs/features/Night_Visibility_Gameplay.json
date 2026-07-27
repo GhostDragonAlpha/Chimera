@@ -1,0 +1,374 @@
+{
+  "name": "Night_Visibility_Gameplay",
+  "description": "Sub-feature of Demo_Day_Night_Cycle: How darkness at night affects gameplay mechanics, exploration, and educational observations",
+  "created": "2026-07-20T00:00:00.000000",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does night enable educational observations that are invisible during the day?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Stars, bioluminescence, nocturnal animal sounds, and condensation (visible at dawn) are all night-specific observations. The env_education module can key observations to a 'is_night' flag."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player identify rocks by touch or sound at night if they cannot see them?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. No tactile or audio-based rock identification exists. At night, the scanner tool should provide audio/UI feedback that compensates for darkness, but this is not yet implemented."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Does night teach the player about human vision limitations vs. technology augmentation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. The player simply cannot see well at night. A future enhancement could provide night vision goggles or a scanner night mode that contrasts natural vs. augmented vision."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does the educational content differ between a clear night and a cloudy night?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. Cloud cover affects star visibility visually but does not change educational observations. A future enhancement could compare clear vs. overcast night skies."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What single screenshot of night gameplay would make Steam shoppers wishlist?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "A canyon under starlight with visible rock strata silhouettes and a player scanner casting a small cone of light. One image that says 'exploration continues after dark.'"
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How does night gameplay compare to Subnautica's night cycle?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Subnautica's night is dangerous (predators). Our night is educational (stars, temperature, different observations). The differentiator is that night is not just a hazard \u2014 it is a different classroom."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could 'night changes what you learn' be a compelling Steam description line?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. 'The same canyon teaches different lessons at midnight than at noon. Come back at night and see what you missed.' That is a retention hook and a marketing line simultaneously."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What would a journalist call the most innovative aspect of night gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "That darkness does not block education \u2014 it changes it. Most games make night a nuisance. This game makes night a different experience with its own curriculum."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Does moonlight or starlight provide enough illumination to navigate without artificial light?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. UE5's sky light provides ambient illumination from the star sphere. On a clear night, players can see silhouettes and major terrain features but cannot read fine detail or distinguish rock types by color."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does the player character have a flashlight or headlamp that activates automatically at night?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. No player light source exists. The player relies on starlight and the scanner tool's UI feedback. A flashlight is a recommended enhancement for v1.1."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Are there nocturnal visual effects (bioluminescence, glowing minerals) that only appear at night?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. Bioluminescent flora or glowing mineral veins are particle/VFX enhancements that would make night exploration visually rewarding. This is high-value future scope."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does fog or mist form in the canyon at night due to temperature drop?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. Ground fog at dawn is a visual enhancement that would reinforce the temperature system (condensation from overnight cooling). The temperature curve provides the data; the fog VFX is a separate implementation."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can night visibility be implemented purely through UE5 lighting and post-processing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. UE5 exposure compensation, sky light intensity, and directional light brightness all handle night naturally. The engine's eye adaptation system automatically adjusts to darkness. No custom shaders needed."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What is the minimum UE5 work to make night feel dark but playable?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Configure directional light intensity to approach 0 at night (not negative, just very dim). Set sky light to use the star sphere as its cubemap. Enable auto-exposure. Total: 3 blueprint nodes."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does night visibility have performance implications (more shadow resolve areas)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Slightly. Dynamic shadow resolution does not increase at night, but the visible shadow cascade range remains the same. However, pure darkness can mask distant LOD transitions, potentially improving perceived quality."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can night be skipped or fast-forwarded for players who dislike darkness?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A 'wait until dawn' mechanic can be implemented as a UI button or campfire interaction. This respects player preference while preserving the system for those who engage with it."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Can MCP verify that the player is in darkness by capturing and analyzing a viewport screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. mcp_capture_viewport mode=editor_viewport returns a screenshot. Vision analysis can measure average pixel brightness to determine whether night has fallen. This enables automated night testing."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the sleepwalker beat runner support night-specific expects (is_dark, star_visible)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. The sleepwalker's expect vocabulary (13 actions, 19 expects) does not include light-level checks. A new expect like 'screen_darkness < 0.2' would need to be added to the sleepwalker's dispatch."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can educational observations at night be triggered independently of player line-of-sight?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. If observations are proximity-triggered (entering a volume), the player does not need to see the object. The observation text can reference the darkness ('You hear water dripping \u2014 it must be condensation from the overnight temperature drop')."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What happens to the scanner tool at night \u2014 does it have a night mode?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not in v1. The scanner tool has no night mode. A future enhancement could give the scanner a low-light amplification mode that reveals rock details the naked eye cannot see, teaching about technology augmentation."
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on Celestial_Light_Rotation providing the darkness state?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Night is defined as the directional light being below the horizon (or below a brightness threshold). The celestial rotation system determines when it is night; this system defines what night means for gameplay."
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on Temperature_Time_System for night-specific educational observations?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Night-specific educational content (cold-related geology facts, condensation, star identification) requires temperature data. The two systems combine to produce night-specific observations."
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on the Demo_Educational_Triggers system for proximity-based night observations?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Night observations that fire when the player enters a trigger volume require the educational triggers system. The trigger volume checks time-of-day before deciding which observation to show."
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that darkness can be a gameplay feature rather than a visual limitation?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. By changing which educational observations are available at night, darkness becomes a design feature. Players have a reason to play at night (different content) rather than waiting for daylight."
+    },
+    {
+      "id": 25,
+      "category": "proves",
+      "question": "Does this prove that an educational game does not need constant visibility to teach?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Night teaches that science happens even when you cannot see clearly. Thermal expansion at night, condensation at dawn, star positions \u2014 these are real concepts that require darkness to understand."
+    },
+    {
+      "id": 26,
+      "category": "derived_from",
+      "question": "Was this derived from the Demo_Day_Night_Cycle surface design (how night affects gameplay and education)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The parent feature asked 'Does day/night affect which educational observations appear?' This sub-feature answers that question in detail, defining the gameplay and educational consequences of darkness."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "What night-specific resources and nocturnal creature activity create a darkness economy where night-vision equipment investments unlock exclusive after-hours market access?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Night is an economic filter. Bioluminescent organisms (for glow reagents) emerge only after sunset. Certain minerals are only identifiable by phosphorescent response in darkness. Nocturnal creatures drop materials worthless by day but valuable for night-vision crafting. Players who invest in night vision (~500 credits) gain exclusive access to a market segment day-only players cannot touch."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does reduced visibility at night tell a survival story \u2014 the player must navigate by starlight, use their scanner as a flashlight, and find shelter before full dark \u2014 making nightfall a narrative event?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Night is a story transition: the world narrows to the reach of your light, every sound is amplified, every shadow hides possibility. Surviving the night is a small heroic act repeated every cycle."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does nighttime darkness create meaningful gameplay constraint -- limited visibility, reliance on light sources, heightened threat awareness -- without making basic navigation impossible or frustrating?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Night reduces view distance to 30m (vs 200m daytime). Equipped light source (flashlight/headlamp) restores 50m. Stars provide 15m ambient silhouette visibility. Player can always see terrain at their feet. Nav markers remain visible at any distance."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the player's night-vision equipment state (active, charge level, upgrade level) and visibility settings need to persist?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Night vision equipment state (on/off, battery charge, upgrade tier) must persist. Also the player's brightness/contrast preferences for accessibility. Written on manual save or equipment change."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "Does night visibility simulate real scotopic/photopic vision (rod/cone adaptation, pupil dilation over time) or is it a simple brightness curve?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Simple brightness curve in v1. Eye adaptation (darkness exposure time affecting visibility) is approximated but does not model real rod/cone photochemistry. Full adaptation takes ~2 seconds game-time, not the real-world 20-30 minutes."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

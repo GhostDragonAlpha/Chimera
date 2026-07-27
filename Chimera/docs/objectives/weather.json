@@ -1,0 +1,37 @@
+{
+  "_provenance": "The UWeatherSubsystem storm/gust cadence as a trainable domain. The genome IS the WIND table; the objective binds the Law-4 tension: storms must erase often enough to ACHE and rarely enough that footprints MATTER. Both failure modes are measurable.",
+  "maximize": [
+    "storm_interval_days_mean",
+    "mean_footprint_lifetime_days",
+    "lifetime_period_ratio"
+  ],
+  "minimize": [
+    "dead_calm_fraction_worst",
+    "storm_time_fraction_worst",
+    "gust_interval_cv"
+  ],
+  "constraints": [
+    {"field": "storm_interval_days_min", "min": 1.0},
+    {"field": "storm_interval_days_mean", "min": 3.0, "max": 14.0},
+    {"field": "storm_duration_hours_mean", "min": 0.2, "max": 2.0},
+    {"field": "storm_duration_hours_max", "max": 8.0},
+    {"field": "sand_erasure_fraction_min", "min": 0.90},
+    {"field": "longest_footprint_lifetime_days", "min": 0.5},
+    {"field": "mean_footprint_lifetime_days", "min": 0.2},
+    {"field": "lifetime_period_ratio", "min": 0.01, "max": 0.25},
+    {"field": "dead_calm_fraction_worst", "max": 0.60},
+    {"field": "storm_time_fraction_worst", "max": 0.10},
+    {"field": "gust_interval_mean_s", "min": 5.0, "max": 120.0},
+    {"field": "gust_interval_cv", "max": 1.5},
+    {"field": "robustness", "min": 0.15}
+  ],
+  "walls": {
+    "storm_interval_days_min": "The shortest gap between storms MUST be at least 1 day. Below 1 day means storms chain-endlessly — the player never sees calm weather, and footprints never survive long enough to matter. The 'too often' failure mode of Law 4.",
+    "sand_erasure_fraction_min": "Every storm MUST erase sand footprints. The vision's mechanic is unconditional: 'every footprint whose surface is not METAL is wiped'. Below 0.90 means the simulated mechanic does not match the shipped one. This is expected to sit near 1.0 — it is an audit, not a tuned number.",
+    "longest_footprint_lifetime_days": "The longest-living footprint MUST survive at least half a day. Below 0.5 days means even the freshest track is gone by the next storm — the player can never return to their own path. The 'too rare' failure mode of Law 4.",
+    "lifetime_period_ratio": "Mean footprint lifetime MUST be between 1% and 25% of the mean storm interval. Below 1% means footprints are vaporized — they never accumulate. Above 25% means storms are so rare that the entire landscape is a permanent scrapbook. Both are the Law-4 tension collapsed to one side.",
+    "dead_calm_fraction_worst": "Dead calm MUST stay below 60% of non-storm time. Above 60% means the world is perceptually static — no breeze, no gust — for most of the player's experience. The weather system's job is to be FELT, not to be absent.",
+    "storm_time_fraction_worst": "Permanent storm MUST NOT exceed 10% of total time. Above 10% means the player spends more than 1 in 10 hours in a storm — the world is hostile by default, and the storm mechanic loses meaning.",
+    "robustness": "The shortest storm interval MUST be at least 15% of the mean. Below 0.15 means the cadence has a pathological outlier — one restart drew a 0.5-day gap while the mean is 7 days. The player does not experience the mean; they experience the worst draw."
+  }
+}

@@ -1,0 +1,456 @@
+[
+ {
+  "id": "atom_004e2b6be4d9",
+  "feature": "subsystem/Suit",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USuitLifeSupportComponent\\b|USuitLifeSupportComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USuitLifeSupportComponent is spawned/registered somewhere (H-34)",
+  "provenance": "reflection:UCLASS:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_504ac86b7391",
+  "feature": "subsystem/Suit",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "roots": [
+    "Source/Chimera/ProceduralGenerated",
+    "core"
+   ],
+   "globs": [
+    "*.cpp",
+    "game_code_generator.py"
+   ],
+   "regex": "(CreateDefaultSubobject|NewObject)\\s*<\\s*USuitLifeSupportComponent\\b|USuitLifeSupportComponent[^;\\n]*RegisterComponent"
+  },
+  "desc": "component USuitLifeSupportComponent is spawned/registered in the shipped code OR its generator (H-34)",
+  "provenance": "reflection:UCLASS:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_0de13b950db8",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bO2DrainIdlePerMin\\b"
+  },
+  "desc": "UPROPERTY O2DrainIdlePerMin (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_127abbe75974",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnLowO2Changed\\b"
+  },
+  "desc": "UPROPERTY OnLowO2Changed (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_1afa1b6de631",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbShowOnScreenReadout\\b"
+  },
+  "desc": "UPROPERTY bShowOnScreenReadout (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_21b04dd3682a",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bIntegrity\\b"
+  },
+  "desc": "UPROPERTY Integrity (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_21b918c79d95",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBattery\\b"
+  },
+  "desc": "UPROPERTY Battery (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_22412c75430f",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bMaxO2\\b"
+  },
+  "desc": "UPROPERTY MaxO2 (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_28066e0d58e8",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bO2DrainWalkPerMin\\b"
+  },
+  "desc": "UPROPERTY O2DrainWalkPerMin (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_3290dec9186a",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbDead\\b"
+  },
+  "desc": "UPROPERTY bDead (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_4ff2030d7a41",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbExposedToStorm\\b"
+  },
+  "desc": "UPROPERTY bExposedToStorm (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_53acb4a897fa",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bWalkSpeedThreshold\\b"
+  },
+  "desc": "UPROPERTY WalkSpeedThreshold (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_5e61f5028877",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustClogScrubPerMin\\b"
+  },
+  "desc": "UPROPERTY DustClogScrubPerMin (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_5e71849ff4da",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSecondsSurvived\\b"
+  },
+  "desc": "UPROPERTY SecondsSurvived (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_60a3ddd5e506",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustClog\\b"
+  },
+  "desc": "UPROPERTY DustClog (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_7126e969b4ef",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbAtBatteryBank\\b"
+  },
+  "desc": "UPROPERTY bAtBatteryBank (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_713ca4d1f194",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bO2DrainSprintPerMin\\b"
+  },
+  "desc": "UPROPERTY O2DrainSprintPerMin (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_88487516ac7f",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbAtOxygenGarden\\b"
+  },
+  "desc": "UPROPERTY bAtOxygenGarden (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_98a5b8c96fee",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbOverrideExertion\\b"
+  },
+  "desc": "UPROPERTY bOverrideExertion (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_9cab3bb29167",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bOnSuitO2Depleted\\b"
+  },
+  "desc": "UPROPERTY OnSuitO2Depleted (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_a5143f079df4",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTemperature\\b"
+  },
+  "desc": "UPROPERTY Temperature (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_a5ede6bda539",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bO2RegenGardenPerMin\\b"
+  },
+  "desc": "UPROPERTY O2RegenGardenPerMin (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_a7bf8b601c7e",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bLowO2Threshold\\b"
+  },
+  "desc": "UPROPERTY LowO2Threshold (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_b73108e9e7ef",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbIsNight\\b"
+  },
+  "desc": "UPROPERTY bIsNight (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_bc73375198d7",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bTimesDepleted\\b"
+  },
+  "desc": "UPROPERTY TimesDepleted (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_bdcd6e93f90e",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bCurrentExertion\\b"
+  },
+  "desc": "UPROPERTY CurrentExertion (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_bf3192201273",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBatteryRegenBankPerMin\\b"
+  },
+  "desc": "UPROPERTY BatteryRegenBankPerMin (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_c4aae9cd1020",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bSprintSpeedThreshold\\b"
+  },
+  "desc": "UPROPERTY SprintSpeedThreshold (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_c9f27cd03f0f",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bBatteryDrainNightPerMin\\b"
+  },
+  "desc": "UPROPERTY BatteryDrainNightPerMin (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_cd99d852edb9",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbInShelter\\b"
+  },
+  "desc": "UPROPERTY bInShelter (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_d13155b91378",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bDustClogStormPerMin\\b"
+  },
+  "desc": "UPROPERTY DustClogStormPerMin (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ },
+ {
+  "id": "atom_dd5006a8c996",
+  "feature": "subsystem/Suit",
+  "tier": 1,
+  "kind": "headless",
+  "probe": {
+   "type": "tree_contains",
+   "root": "Source/Chimera/ProceduralGenerated",
+   "glob": "*.cpp",
+   "regex": "\\bbLowO2\\b"
+  },
+  "desc": "UPROPERTY bLowO2 (SuitLifeSupportComponent.h) is used in a .cpp, not dead metadata",
+  "provenance": "reflection:UPROPERTY:SuitLifeSupportComponent.h"
+ }
+]

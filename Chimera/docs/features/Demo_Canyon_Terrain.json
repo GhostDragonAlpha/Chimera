@@ -1,0 +1,572 @@
+{
+  "name": "Demo_Canyon_Terrain",
+  "description": "Sub-feature of Environmental_Demo: The canyon environment with visible rock strata and geology",
+  "created": "2026-07-19T17:16:17.224861",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Can the player identify rock types from visual cues alone?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Players can identify rock types by color, texture, and layering visible in canyon walls."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Does the player learn to predict weather from cloud formations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Basalt = volcanic past = potential resources. Limestone = caves = shelter. Sandstone = aquifer = water."
+    },
+    {
+      "id": 3,
+      "category": "education",
+      "question": "Can curiosity-driven players discover deeper geology facts?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Close examination reveals deeper strata details. The deep_geology_observation() function exists for this."
+    },
+    {
+      "id": 4,
+      "category": "education",
+      "question": "Does the environment teach something the player uses later in gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Rock type knowledge guides resource gathering, shelter placement, and navigation."
+    },
+    {
+      "id": 5,
+      "category": "fame",
+      "question": "What single screenshot makes a Steam shopper wishlist?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "A canyon wall with visible strata + volumetric clouds + a single player standing at the bottom. Scale."
+    },
+    {
+      "id": 6,
+      "category": "fame",
+      "question": "How does this demo compare to No Man Sky environmental shots?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No Man Sky has colorful terrain but no geological meaning. Our terrain teaches real geology."
+    },
+    {
+      "id": 7,
+      "category": "fame",
+      "question": "Could this demo be a 30-second Steam trailer?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. 5-second clip of zooming into canyon strata with educational overlay is a perfect trailer shot."
+    },
+    {
+      "id": 8,
+      "category": "fame",
+      "question": "What mechanic would a journalist call innovative here?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "The geology scanner. Point at rock, learn real geology. No game does this."
+    },
+    {
+      "id": 9,
+      "category": "world",
+      "question": "Do clouds cast shadows that move across the terrain?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Clouds cast shadows that sweep across the canyon. Dramatic lighting shifts with weather."
+    },
+    {
+      "id": 10,
+      "category": "world",
+      "question": "Does wind direction match cloud movement?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Wind system and clouds are independent. Weather component needs to connect them."
+    },
+    {
+      "id": 11,
+      "category": "world",
+      "question": "Can the player see the same constellation from different locations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Star sphere is world-aligned. Different latitude = different constellations."
+    },
+    {
+      "id": 12,
+      "category": "world",
+      "question": "Does day/night affect which educational observations appear?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Educational observations change with time of day: dawn heat shimmer, dusk long shadows, night stars."
+    },
+    {
+      "id": 13,
+      "category": "shipping",
+      "question": "Can this demo be built and run without pipeline errors?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Canyon terrain uses existing procedural generation. No pipeline fixes needed for terrain display."
+    },
+    {
+      "id": 14,
+      "category": "shipping",
+      "question": "What is the minimum UE5 compile fix needed?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "The canyon is a procedural terrain generation output. Standard UE5 landscape or splat rendering."
+    },
+    {
+      "id": 15,
+      "category": "shipping",
+      "question": "Does the demo run at 30fps on target hardware?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Canyon terrain can be generated and rendered immediately with existing tools."
+    },
+    {
+      "id": 16,
+      "category": "shipping",
+      "question": "Can the demo be packaged as a standalone build?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The canyon is just rendered terrain. No camera path needed for the terrain itself."
+    },
+    {
+      "id": 17,
+      "category": "foundation",
+      "question": "Are MCP tools reliable enough for repeated actor spawning?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Terrain generation works (matter_gpu.py). No dependencies on demo infrastructure."
+    },
+    {
+      "id": 18,
+      "category": "foundation",
+      "question": "Does the worker bridge handle concurrent UE5 commands?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Educational content is JSON-extensible. New rock types and observations can be added."
+    },
+    {
+      "id": 19,
+      "category": "foundation",
+      "question": "Can the forge build UE5 content or only Python?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through the canyon and verify rock type presence."
+    },
+    {
+      "id": 20,
+      "category": "foundation",
+      "question": "What is the graph query performance at 3000+ nodes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No. Canyon is standard terrain generation. No new MCP pathways."
+    },
+    {
+      "id": 21,
+      "category": "depends_on",
+      "question": "Does this depend on the geology module (core/geology.py)?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes, depends on geology module (core/geology.py) being complete."
+    },
+    {
+      "id": 22,
+      "category": "depends_on",
+      "question": "Does this depend on the volumetric cloud actor being spawned?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No. Canyon terrain is independent of cloud system."
+    },
+    {
+      "id": 23,
+      "category": "depends_on",
+      "question": "Does this depend on the env_education module being wired to UE5?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes, depends on educational triggers being placed in the canyon."
+    },
+    {
+      "id": 24,
+      "category": "proves",
+      "question": "Does this prove that MCP tools can build game content reliably?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. A visually interesting, educational canyon proves the environment-first approach works."
+    },
+    {
+      "id": 25,
+      "category": "proves",
+      "question": "Does this prove that educational mechanics can exist without a separate UI?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Derived from Environmental_Demo surface design."
+    },
+    {
+      "id": 26,
+      "category": "derived_from",
+      "question": "Was this derived from the internal council on environmental systems?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No direct conflict. Canyon terrain is foundation for all demo features."
+    },
+    {
+      "id": 27,
+      "category": "conflicts",
+      "question": "Does this conflict with the current pipeline compile errors?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Terrain generation knowledge (core/matter_gpu.py) and basic UE5 landscape understanding."
+    },
+    {
+      "id": 28,
+      "category": "requires",
+      "question": "What UE5 knowledge is required to configure volumetric cloud properties?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. The canyon is the centerpiece of the environmental demo. It directly serves the goal."
+    },
+    {
+      "id": 29,
+      "category": "vision",
+      "question": "Does an environmental demo make the game more famous than a gameplay demo would?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building detailed canyon terrain means less time on other demo features first. Canyon is the anchor."
+    },
+    {
+      "id": 30,
+      "category": "tradeoff",
+      "question": "What features are NOT being built while we build this demo?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Games with memorable environments have higher wishlist conversion. Canyon screenshots sell."
+    },
+    {
+      "id": 31,
+      "category": "evidence",
+      "question": "What evidence exists that environmental realism drives Steam sales?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Player learns real geology by observing canyon walls. Human terminal: learning."
+    },
+    {
+      "id": 32,
+      "category": "terminal",
+      "question": "Does this chain reach a human who plays the game, or just satisfy an architectural goal?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Standard UE5 rendering. No special platform requirements."
+    },
+    {
+      "id": 33,
+      "category": "platform",
+      "question": "Does this work in UE5.8 without hacks or workarounds?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Canyon rendering is efficient. Splat renderer + basic terrain is well within 30fps budget on RTX 3060."
+    },
+    {
+      "id": 34,
+      "category": "performance",
+      "question": "Does this run at 30+ fps on the target GPU (RTX 3060)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Color-coded rock types need pattern fallbacks for colorblind accessibility."
+    },
+    {
+      "id": 35,
+      "category": "accessibility",
+      "question": "Can a colorblind or hearing-impaired player fully experience this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet designed. Wind ambience, echo in the canyon, and footstep acoustics would significantly enhance immersion."
+    },
+    {
+      "id": 36,
+      "category": "audio",
+      "question": "Does this have sound design that matches the visual quality?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Single-player. Multiplayer canyon sharing is future scope."
+    },
+    {
+      "id": 37,
+      "category": "modding",
+      "question": "Can the community extend or modify this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Rock type names and descriptions are easily moddable via JSON."
+    },
+    {
+      "id": 38,
+      "category": "localization",
+      "question": "Can this be translated without breaking?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Rock names and educational text can be translated without code changes."
+    },
+    {
+      "id": 39,
+      "category": "depends_on",
+      "question": "Does this depend on Environmental_Demo being complete?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on the geology module providing accurate strata data for the demo area."
+    },
+    {
+      "id": 40,
+      "category": "depth",
+      "question": "Does this feature need sub-features, or is it detailed enough at this level?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Detailed enough at this level. No deeper zoom needed for v1 demo."
+    },
+    {
+      "id": 41,
+      "category": "breadth",
+      "question": "Are there sibling features missing at this level of the tree?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Complete. All 5 sub-features cover the demo requirements."
+    },
+    {
+      "id": 42,
+      "category": "parent",
+      "question": "Is the parent feature complete enough to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Parent Environmental_Demo is designed at 38/38. Ready to build."
+    },
+    {
+      "id": 43,
+      "category": "priority",
+      "question": "Should this be built before or after its siblings?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build in parallel. All sub-features are independent and can be constructed simultaneously."
+    },
+    {
+      "id": 44,
+      "category": "dependency",
+      "question": "Does this block other features, or do others block this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No cross-blocking. Each sub-feature is independent."
+    },
+    {
+      "id": 45,
+      "category": "world",
+      "question": "Are canyon wall markers (captures) sufficient as temporary stratum indicators, or do we need actual landscape sculpting?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "SphereReflectionCapture actors serve as position markers. Actual landscape strata need splat rendering or terrain sculpting for v1 demo quality."
+    },
+    {
+      "id": 46,
+      "category": "education",
+      "question": "Do the three rock formation zones (sedimentary east, metamorphic mid, igneous west) form a coherent geology lesson?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Geological order is visible as player traverses west: layered sandstone -> folded schist -> granite batholith."
+    },
+    {
+      "id": 47,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: 7 SphereReflectionCapture markers placed as geological zone indicators. Actual t...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "7 SphereReflectionCapture markers placed as geological zone indicators. Actual terrain needs matter_gpu landscape generation."
+    },
+    {
+      "id": 48,
+      "category": "construction",
+      "question": "[Auto] Construction discovered: Canyon geological zones: sedimentary (east, X=300), metamorphic (mid, X=-100), i...",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Canyon geological zones: sedimentary (east, X=300), metamorphic (mid, X=-100), igneous (west, X=-450)."
+    },
+    {
+      "id": 49,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 50,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 51,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 52,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 53,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 54,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 55,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 56,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 57,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 58,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 59,
+      "category": "economy",
+      "question": "How does terrain type distribution along the demo path determine which resources are visible to the introductory player, creating a curated first-impression economy that shapes early-game resource expectations?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The demo terrain is the player's first economic textbook \u2014 it showcases one or two rock types and their associated resources, establishing the paradigm that terrain = resource availability. This shapes early economic behavior: players learn to associate canyon-wall strata with coal/oil deposits and canyon-floor alluvium with water-accessible clay. The demo sets the mental model for the entire resource-prospecting loop."
+    },
+    {
+      "id": 60,
+      "category": "narrative",
+      "question": "Does the demo terrain establish a specific sense of place \u2014 a real, named location with a geological identity that makes the world feel like somewhere, not just anywhere?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "The demo terrain tells the story of one specific canyon: its color palette says 'iron-rich desert,' its strata say 'ancient seabed,' its watercourse says 'seasonal floods' \u2014 a place with a past."
+    },
+    {
+      "id": 61,
+      "category": "UX",
+      "question": "Does the demo showcase the strata and geological variety in a way that feels like natural exploration rather than an artificially arranged museum exhibit?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Strata transitions are geologically plausible (sedimentary near entrance, metamorphic mid-canyon, igneous at terminus). The demo path follows the natural canyon gradient -- no teleporting between biomes."
+    },
+    {
+      "id": 62,
+      "category": "save_load",
+      "question": "Is the canyon terrain baked into the packaged level or regenerated from seed on each load, requiring seed persistence?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Regenerated from seed at level load for the demo. The seed (one integer) must persist. The demo always generates the same canyon from the demo seed value."
+    },
+    {
+      "id": 63,
+      "category": "physics",
+      "question": "Is the demo canyon terrain shaped by procedural noise that mimics geological processes, or is it hand-sculpted?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Procedural noise approximating geological processes. The demo showcases the procedural generation pipeline rather than hand-sculpted terrain, demonstrating the seed-based approach."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

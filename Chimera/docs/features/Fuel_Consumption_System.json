@@ -1,0 +1,374 @@
+{
+  "name": "Fuel_Consumption_System",
+  "description": "Energy management and efficiency for ship travel: fuel types, delta-v budgeting, consumption rates, refueling mechanics, and efficiency optimization. Sub-feature of Travel_Systems.",
+  "created": "2026-07-19T17:32:15.461036",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Does fuel management teach real rocket equation (Tsiolkovsky) principles through gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 2,
+      "category": "education",
+      "question": "Can the player learn efficiency tradeoffs between different maneuvers (Hohmann vs. direct transfer)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 3,
+      "category": "fame",
+      "question": "Is fuel-as-resource tension compelling enough for gameplay marketing (survival/strategy angle)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 4,
+      "category": "fame",
+      "question": "Can educational fuel efficiency minigames be a unique selling point in marketing?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 5,
+      "category": "world",
+      "question": "Does fuel consumption reflect real physics (higher thrust = more fuel, gravity well depth = more cost)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 6,
+      "category": "world",
+      "question": "Can the player run out of fuel and require rescue, creating emergent gameplay?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 7,
+      "category": "shipping",
+      "question": "Can the fuel system be implemented as a data-driven component parameter (fuel capacity, burn rate)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 8,
+      "category": "shipping",
+      "question": "Does fuel consumption require new C++ or can it leverage existing UE5 gameplay ability system?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 9,
+      "category": "foundation",
+      "question": "Does the save system support fuel state serialization (current fuel level, max capacity, fuel type)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 10,
+      "category": "foundation",
+      "question": "Can the generator produce fuel-tuned ship classes with different efficiency profiles?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 11,
+      "category": "platform",
+      "question": "Does UE5.8 support continuous fuel consumption tracking without performance issues?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 12,
+      "category": "performance",
+      "question": "Does the fuel tracking system add negligible overhead (no per-frame allocations for fuel burn calculations)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Does this depend on Flight_Orbital_Mechanics providing thrust and delta-v metrics?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Does fuel consumption prove that Travel_Systems has real resource-management depth?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Was this derived from Travel_Systems Q3 on delta-v and rocket science principles?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Does strict fuel realism conflict with fun/accessibility for casual players?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What data do we need about real rocket fuel types and specific impulse for educational accuracy?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 18,
+      "category": "depth",
+      "question": "Does fuel need sub-sub-features (fuel types, refueling stations, efficiency upgrades) or is this level sufficient?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 19,
+      "category": "breadth",
+      "question": "Are sibling features missing \u2014 e.g., cargo mass affecting fuel consumption, fuel pricing economy?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 20,
+      "category": "parent",
+      "question": "Is Travel_Systems designed to support fuel as a core resource mechanic?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 21,
+      "category": "priority",
+      "question": "Should fuel consumption be built after orbital mechanics (which defines the fuel costs) but before navigation?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 22,
+      "category": "dependency",
+      "question": "Does this block Star_System_Navigation, which needs fuel-state data for route feasibility?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 23,
+      "category": "vision",
+      "question": "Does real fuel management serve the educational RPG goal by teaching resource physics?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 24,
+      "category": "tradeoff",
+      "question": "What is sacrificed by implementing realistic fuel instead of infinite-fuel travel?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building this defers other features. Worth the tradeoff for educational value."
+    },
+    {
+      "id": 25,
+      "category": "evidence",
+      "question": "What evidence shows that fuel management adds to player engagement rather than frustration?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 26,
+      "category": "terminal",
+      "question": "Does the fuel-efficiency learning chain reach a human understanding specific impulse and delta-v constraints?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How does delta-v costing, fuel-type price differentials (hydrogen vs. antimatter vs. solar), and refueling station scarcity create a travel economy where fuel budgeting is the primary constraint on trade route profitability?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Fuel is the operating cost of the interstellar economy. Hydrogen (cheap, low specific impulse) works for intrasystem hops; antimatter (expensive, high specific impulse) for interstellar transits. Refueling station density determines route viability \u2014 routes with mid-point stations are economical; those without require dead-weight fuel reserves, reducing cargo capacity and profit."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "Does fuel consumption tell the story of a finite resource that forces hard choices \u2014 every burn a tradeoff between ambition and survival, every drop a memory of the last refuel?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Fuel is the story of scarcity: a full tank is freedom, an empty tank is desperation. Every burn tells the story of a decision \u2014 go further or save for return \u2014 and the best stories come from the wrong choice."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does the fuel gauge provide clear, at-a-glance feedback about remaining delta-v, current consumption rate, and efficiency status without requiring the player to do mental math?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "HUD shows delta-v remaining as a segmented bar (each segment = 100m/s). Current burn rate shows as a live number. Efficiency color-codes (green=optimal, yellow=wasteful, red=emergency). No calculation needed."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the fuel state per tank/resource type need to persist, and are consumption rates deterministic so fuel level is identical on reload at the same state?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Fuel levels per tank and fuel type are persistent state. Consumption must be deterministic (based on delta-v expended, not real time) so reloading at the same orbital position gives the same fuel level. Written on burn completion or manual save."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "Does fuel consumption model the Tsiolkovsky rocket equation with real specific impulse values for different fuel types, teaching the exponential cost of delta-v?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. The rocket equation is the core mechanic. Different fuel types have different Isp values (chemical: ~350s, nuclear-thermal: ~900s, ion: ~3000s). The player must budget delta-v against the rocket equation, learning that higher Isp means less fuel for the same delta-v but potentially lower thrust."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

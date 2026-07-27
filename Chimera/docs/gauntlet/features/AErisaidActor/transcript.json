@@ -1,0 +1,15 @@
+{
+  "feature": "AErisaidActor",
+  "slug": "AErisaidActor",
+  "enrolled_at": "2026-07-19T00:50:16+00:00",
+  "enrolled_by": "manual",
+  "band_index": 0,
+  "passed": {
+    "tier_0_identity": {
+      "timestamp": "2026-07-19T01:30:00+00:00",
+      "evidence": "AErisaidActor DSL spec created, C++ files generated (5.1KB header + 8.9KB source), rep engine passes all atoms"
+    }
+  },
+  "attempts": [],
+  "graduations": []
+}

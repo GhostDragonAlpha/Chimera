@@ -1,0 +1,29 @@
+{
+  "_provenance": "NPC dialogue sub-rung. Gesture-based communication, no text.",
+  "name": "npc_dialogue",
+  "parent_rung": "npc_social",
+  "walls": [
+    "NPC needs must be communicated without text (animation, posture, gesture)",
+    "Each NPC must have at least 3 distinct gesture states (idle, need, satisfied)",
+    "Player gesture response must be within 200 units of NPC",
+    "NPC must path to nearest resource point after being helped",
+    "NPC must despawn or become non-interactive after reaching destination"
+  ],
+  "element_query": {
+    "categories": [
+      "Animation",
+      "Gesture",
+      "AI",
+      "Pathfinding"
+    ],
+    "classes": [
+      "AnimSequence",
+      "SkeletalMeshComponent",
+      "AIController"
+    ]
+  },
+  "output": {
+    "next_rung": "trade_ui",
+    "format": "gesture set per NPC, response radius, path params"
+  }
+}

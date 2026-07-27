@@ -1,0 +1,43 @@
+{
+  "objective": "director",
+  "score": 0.9532864677738019,
+  "measures": {
+    "concurrent_dots_p95_worst_low": 6.0,
+    "concurrent_dots_p95_worst_high": 7.0,
+    "concurrent_dots_mean_of_restarts": 3.8914119271677783,
+    "concurrent_dots_max_ever": 28.0,
+    "encounter_gap_mean_worst_low": 0.17944372439339437,
+    "encounter_gap_mean_worst_high": 0.18145081527878673,
+    "encounter_gap_min_days_ever": 6.659729443470042e-05,
+    "encounter_gap_cv_mean": 0.4667008740520682,
+    "scenario_entropy_norm": 0.9964900906390135,
+    "pirate_gate_violations": 0.0,
+    "pirate_gate_violations_observed": 0.0,
+    "pirate_gate_violations_probed": 0.0,
+    "pirate_spawns_correct_total": 60718.0,
+    "pirate_spawns_total": 718.0,
+    "first_stranger_paid_fraction": 0.0,
+    "generations_completed_min": 10.0,
+    "days_simulated_min": 90.0
+  },
+  "genome": {
+    "stranger_cadence_min_days": 0.2,
+    "stranger_cadence_max_days": 0.3,
+    "trader_cadence_min_days": 0.6020850695072915,
+    "trader_cadence_max_days": 0.6943616578318949,
+    "scenario_weights": {
+      "o2": 1.1004562064833323,
+      "parts": 1.075137450767366,
+      "water": 1.0110734567300461,
+      "warmth": 0.957502710995578,
+      "burial": 0.9770304261063656,
+      "ride": 1.0079930768933494
+    },
+    "can_pay_fraction": 0.07902426449495664,
+    "first_stranger_can_pay_fraction": 0.0,
+    "pirate_storm_gate_bypass_fraction": 0.0,
+    "pirate_wealth_gate_bypass_fraction": 0.0,
+    "pirate_wealth_threshold": 443.75491635232527,
+    "pirate_spawn_rate_per_sec": 0.007063275024474129
+  }
+}

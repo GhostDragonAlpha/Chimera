@@ -1,0 +1,23 @@
+{
+  "_provenance": "Auto-decomposed sub-rung of npc_social. Cluster: reciprocity",
+  "name": "npc_social_reciprocity",
+  "parent_rung": "npc_social",
+  "walls": [
+    "Helped NPCs provide unique blueprints",
+    "No immediate reward for helping",
+    "Blueprint unlock has visual feedback"
+  ],
+  "element_query": {
+    "categories": [
+      "Reciprocity",
+      "Trade",
+      "Exchange",
+      "Return"
+    ],
+    "classes": []
+  },
+  "output": {
+    "next_rung": null,
+    "format": "auto-decomposed sub-rung parameters"
+  }
+}

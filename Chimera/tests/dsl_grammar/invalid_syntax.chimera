@@ -1,0 +1,12 @@
+game "InvalidGame" {
+    engine_version = "5.4"
+    target_platforms = ["PC", "PS5"]
+
+gameplay {
+    character "Player" inherits "ACharacter" {
+        ability_system_component "ASC";
+}
+
+technical {
+    network_model = "client_server";
+    module_dependencies = ["GameplayAbilities"];

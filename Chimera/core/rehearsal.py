@@ -1,0 +1,395 @@
+"""Rehearsal — data-level generational rollouts that decide the next move.
+
+(SLEEPWALKER_DESIGN.md M2.) Enumerates candidate next-actions, scores each with
+deterministic priors mined from the DNA graph (no LM, no wall-clock randomness),
+prints a VETO TABLE (one human sentence reverses any decision), and on --decide
+records a SimulationRollout node and prepends a recipe-carrying NEXT item to
+task_progress.md (handoff invariant).
+
+Candidates come from two sources, merged:
+  1. the graph: every feature whose LATEST FeatureUpdate status is
+     'needs_refinement' (human- or grade-reopened → highest value)
+  2. optional --candidates-file JSON: [{"name", "recipe", "capable_only": bool,
+     "value": float}] — how duty cycles/architecture docs curate structured work
+     (e.g. DEMO_ARCHITECTURE phases)
+
+Deterministic policy: score = value x p_success / cost (+ exploration bonus when
+history is thin). All inputs printed; confidence exposed, never faked.
+"""
+
+import argparse
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+try:
+    from core.graphify_interface import load_dna_graph, record_rollout
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from graphify_interface import load_dna_graph, record_rollout
+
+try:
+    from core.visionkeeper import score_candidate_for_vision_fit
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    try:
+        from visionkeeper import score_candidate_for_vision_fit
+    except ImportError:
+        # VisionKeeper not available — no-op (graceful degradation)
+        def score_candidate_for_vision_fit(name, why, recipe):
+            return 1.0, "VisionKeeper unavailable"
+
+
+def _vision_fit_multiplier(
+    candidate_name: str, candidate_why: str, candidate_recipe: str
+) -> tuple[float, str]:
+    """Apply VisionKeeper's vision_fit multiplier to a candidate.
+
+    This closes the Visionkeeper -> rehearsal wiring gap (DREAM_ROSTER #3).
+    Scores each candidate for STORY_BIBLE alignment before rehearsal ranks it.
+    Returns: (vision_fit_multiplier, one-line judgment)
+    """
+    return score_candidate_for_vision_fit(
+        candidate_name, candidate_why, candidate_recipe
+    )
+
+
+ROOT = Path(__file__).resolve().parent.parent
+TASK_PROGRESS = ROOT.parent / "task_progress.md"
+
+
+def _latest_feature_statuses(nodes):
+    latest = {}
+    for n in nodes:
+        if n.get("type") == "FeatureUpdate":
+            name = (
+                n.get("feature_name")
+                or n.get("feature")
+                or (n.get("parameters") or {}).get("feature")
+            )
+            ts = n.get("timestamp", "")
+            st = n.get("status") or (n.get("parameters") or {}).get("status")
+            if name and (name not in latest or ts > latest[name][1]):
+                latest[name] = (st, ts)
+    return {k: v[0] for k, v in latest.items()}
+
+
+def _priors(nodes, name):
+    """Mine per-candidate priors: grade history, sim outcomes, failure mentions."""
+    p_success, evidence, n_signals = 0.6, [], 0  # uninformed prior
+    grades = [
+        n
+        for n in nodes
+        if n.get("type") == "ProfessorGrade"
+        and name.lower() in json.dumps(n, default=str).lower()
+    ]
+    if grades:
+        g = sorted(grades, key=lambda n: n.get("timestamp", ""))[-1]
+        letter = str(g.get("grade", "")).upper()[:1]
+        p_success = {"A": 0.9, "B": 0.78, "C": 0.5, "F": 0.35}.get(letter, 0.6)
+        evidence.append(f"grade:{letter}")
+        n_signals += 1
+    sims = [n for n in nodes if n.get("type") == "SimPlaytest"]
+    hit_total = hit_reached = 0
+    for s in sims:
+        for o in s.get("outcomes", []):
+            if name in (o.get("features") or []):
+                hit_total += 1
+                hit_reached += 1 if o.get("outcome") == "reached" else 0
+    if hit_total:
+        frac = hit_reached / hit_total
+        p_success = 0.5 * p_success + 0.5 * frac
+        evidence.append(f"sim:{hit_reached}/{hit_total}")
+        n_signals += 1
+    fails = sum(
+        1
+        for n in nodes
+        if n.get("error_category") not in (None, "", "none")
+        and name.lower() in str(n.get("fix_description", "")).lower()
+    )
+    if fails:
+        p_success = max(0.2, p_success - 0.05 * min(fails, 6))
+        evidence.append(f"failure_mentions:{fails}")
+        n_signals += 1
+    exploration = 0.25 if n_signals == 0 else (0.1 if n_signals == 1 else 0.0)
+    return p_success, exploration, evidence
+
+
+def _known_blockers(nodes):
+    """Mine recorded dead ends: bridge actions proven NOT_IMPLEMENTED/facade."""
+    blocked_actions = set()
+    for n in nodes:
+        if n.get("type") == "pathway_attempt" and n.get("result") not in (
+            "success",
+            None,
+        ):
+            blob = json.dumps(n, default=str).lower()
+            if "not_implemented" in blob or "facade" in blob:
+                tool = str(n.get("tool", ""))
+                action = str(n.get("action", ""))
+                if action:
+                    blocked_actions.add(action.lower())
+    return blocked_actions
+
+
+def apply_freshness(rows, nodes):
+    """Work-conservation: a candidate carrying cooldown_h + fresh_marker is dead work
+    while a successful matching record younger than the cooldown exists. Re-verifying
+    a clean system is idling, not working."""
+    from datetime import datetime, timezone, timedelta
+
+    now = datetime.now(timezone.utc)
+    for r in rows:
+        cd, marker = r.get("cooldown_h"), r.get("fresh_marker")
+        if not cd or not marker:
+            continue
+        for n in nodes:
+            if (
+                str(marker).lower() in str(n.get("fix_description", "")).lower()
+                and n.get("error_signature") == "success_no_error"
+            ):
+                try:
+                    ts = datetime.fromisoformat(
+                        str(n.get("timestamp", "")).replace("Z", "+00:00")
+                    )
+                    if ts.tzinfo is None:
+                        ts = ts.replace(tzinfo=timezone.utc)
+                except ValueError:
+                    continue
+                if now - ts < timedelta(hours=float(cd)):
+                    r["score"] = round(r["score"] * 0.05, 3)
+                    r["why"] = (
+                        f"FRESHLY VERIFIED {str(n.get('timestamp', ''))[:16]} — re-running adds nothing (cooldown {cd}h)"
+                    )
+                    break
+    rows.sort(key=lambda x: -x["score"])
+    return rows
+
+
+def apply_no_dead_ends(rows, nodes):
+    """NO-DEAD-ENDS LAW: a candidate whose recipe depends on a recorded dead end is
+    demoted to near-zero and REPLACED by its unblocker (the repair IS the work).
+
+    ALREADY-DONE LAW (2026-07-14): a candidate whose feature's latest ledger status
+    says finished (implemented/verified/observed/encoded) is demoted the same way —
+    observed live: rehearsal re-proposed 'Costless Life Bad Ending Trigger' for a
+    whole session though CostlessLifeEndingDiagnostic.cpp was implemented+verified,
+    feeding the false 'nothing left to do' idle state."""
+    _DONE = {"implemented", "verified", "observed", "observed_provisional", "encoded"}
+    _ledger = {str(k).lower().replace(" ", "_"): v[1] if isinstance(v, tuple) else v
+               for k, v in _latest_feature_statuses(nodes).items()}
+    blocked_actions = _known_blockers(nodes)
+    out, spawned = [], []
+    for r in rows:
+        _key = str(r.get("name", "")).lower().replace(" ", "_")
+        _st = _ledger.get(_key)
+        if _st in _DONE:
+            out.append({**r, "score": round(r.get("score", 1.0) * 0.02, 3),
+                        "why": f"ALREADY-DONE DEMOTED (ledger status={_st}) — "
+                               f"pick unfinished work instead"})
+            continue
+        blob = (r.get("recipe", "") + " " + r.get("why", "")).lower()
+        hits = [a for a in blocked_actions if a in blob]
+        explicit = r.get("blocked_by")
+        if hits or explicit:
+            reason = (
+                explicit or f"recipe depends on dead-end action(s): {', '.join(hits)}"
+            )
+            r = {
+                **r,
+                "score": round(r["score"] * 0.05, 3),
+                "why": f"DEAD-END DEMOTED ({reason}) — do the unblocker instead",
+            }
+            ub_name = f"Unblock_{r['name']}"
+            if not any(x["name"] == ub_name for x in rows + spawned):
+                spawned.append(
+                    {
+                        "name": ub_name,
+                        "value": r.get("value", 1.0) + 0.5,
+                        "capable_only": True,
+                        "cost": 2.0,
+                        "p_success": 0.6,
+                        "explore_bonus": 0.0,
+                        "score": round(((r.get("value", 1.0) + 0.5) * 0.6) / 2.0, 3),
+                        "why": f"repairs the blocker holding {r['name']} ({reason})",
+                        "evidence": ["no-dead-ends law"],
+                        "recipe": r.get(
+                            "unblock_recipe",
+                            f"Implement the missing bridge capability blocking {r['name']} in Plugins/McpAutomationBridge, verify with a read-back, record_pathway, then rerun the original recipe.",
+                        ),
+                    }
+                )
+        out.append(r)
+    out.extend(spawned)
+    out.sort(key=lambda r: -r["score"])
+    return out
+
+
+def apply_vision_fit(rows, nodes):
+    """Apply VisionKeeper's vision_fit multiplier to candidates.
+
+    This closes the Visionkeeper -> rehearsal wiring gap (DREAM_ROSTER #3).
+    Scores each candidate for STORY_BIBLE alignment before rehearsal ranks it:
+    - Directly embodies Design Law #2 / Observation Collapse: 1.3x
+    - Aligns with resonant minimalism / regolith-grey palette: 1.2x
+    - Tier-1 roster gap hire (scholar/muse/visionkeeper): 1.4x
+    - System infrastructure (demo/terminal/economy): 1.0x
+    - Operational / CI/CD rhythm: 0.8x
+    - The floor work (groundskeeping/gardener): 0.9x
+    - Neutral fit: 1.0x
+
+    Multiplier range: 0.2–1.5, clamped.
+    """
+    for r in rows:
+        name = r.get("name", "")
+        why = r.get("why", "")
+        recipe = r.get("recipe", "")
+
+        vision_fit, judgment = _vision_fit_multiplier(name, why, recipe)
+
+        # Apply multiplier to score
+        original_score = r["score"]
+        r["score"] = round(original_score * vision_fit, 3)
+        r["vision_fit"] = vision_fit
+        r["vision_judgment"] = judgment
+
+    rows.sort(key=lambda x: -x["score"])
+    return rows
+
+
+def enumerate_candidates(nodes, candidates_file=None):
+    cands = {}
+    for name, status in _latest_feature_statuses(nodes).items():
+        # Only features whose latest status is 'needs_refinement' are candidates
+        if status != "needs_refinement":
+            continue
+        cands[name] = {
+            "name": name,
+            "value": 2.0,
+            "capable_only": False,
+            "why": f"needs_refinement (status={status})",
+            "recipe": f"fetch study guide: python -c \"from core.graphify_interface import graphify_query; import json; n=graphify_query('feature','{name}')[-1]; print(json.dumps(n.get('parameters',{{}}),default=str,indent=1)[:2000])\"",
+        }
+    if candidates_file:
+        for c in json.loads(Path(candidates_file).read_text(encoding="utf-8")):
+            cands[c["name"]] = {
+                "name": c["name"],
+                "value": float(c.get("value", 1.0)),
+                "capable_only": bool(c.get("capable_only", False)),
+                "why": c.get("why", "curated"),
+                "blocked_by": c.get("blocked_by"),
+                "cooldown_h": c.get("cooldown_h"),
+                "fresh_marker": c.get("fresh_marker"),
+                "unblock_recipe": c.get("unblock_recipe"),
+                "recipe": c.get("recipe", "(no recipe provided — a wish, rank last)"),
+            }
+    return list(cands.values())
+
+
+def score_candidates(nodes, cands):
+    rows = []
+    for c in cands:
+        p, explore, evidence = _priors(nodes, c["name"])
+        cost = 2.0 if c.get("capable_only") else 1.0
+        if "(no recipe" in c.get("recipe", ""):
+            cost *= 2.0  # wishes are expensive
+        score = (c["value"] * p) / cost + explore
+        rows.append(
+            {
+                **c,
+                "p_success": round(p, 2),
+                "explore_bonus": explore,
+                "cost": cost,
+                "score": round(score, 3),
+                "evidence": evidence or ["no history (exploration)"],
+            }
+        )
+    rows.sort(key=lambda r: -r["score"])
+    return rows
+
+
+def veto_table(rows):
+    lines = [
+        "",
+        "REHEARSAL DECISION — veto any line with one sentence to the agent",
+        f"{'rank':<5}{'score':<8}{'p':<6}{'cost':<6}{'candidate':<38}why / evidence",
+    ]
+    for i, r in enumerate(rows[:10], 1):
+        vf = r.get("vision_fit", "")
+        vj = r.get("vision_judgment", "")
+        extra = f" [vf={vf}] {vj}" if vf else ""
+        lines.append(
+            f"{i:<5}{r['score']:<8}{r['p_success']:<6}{r['cost']:<6}"
+            f"{r['name'][:36]:<38}{r['why']} | {','.join(r['evidence'])}{extra}"
+        )
+    return "\n".join(lines)
+
+
+def write_next_item(top):
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%MZ")
+    block = (
+        f"# Rehearsal decision {stamp} — next move: {top['name']}\n\n"
+        f"Chosen by core.rehearsal (score {top['score']}, p_success {top['p_success']}, "
+        f"evidence: {', '.join(top['evidence'])}). Human may veto with one sentence.\n\n"
+        f"## NEXT (rehearsal-chosen; recipe per handoff invariant)\n"
+        f"1. **{top['name']}**{' `capable sessions only`' if top.get('capable_only') else ''} — "
+        f"{top['why']}. Recipe: {top['recipe']}\n"
+        f"   Skip-condition: human vetoed in reply → rerun `python -m core.rehearsal --decide`.\n\n---\n\n"
+    )
+    old = TASK_PROGRESS.read_text(encoding="utf-8") if TASK_PROGRESS.exists() else ""
+    TASK_PROGRESS.write_text(block + old, encoding="utf-8")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Rehearsal: decide the next move")
+    parser.add_argument("--candidates-file", default=None)
+    parser.add_argument(
+        "--decide",
+        action="store_true",
+        help="record SimulationRollout + write NEXT item (default: dry-run)",
+    )
+    parser.add_argument("--dry-run", action="store_true", help="explicit no-write mode")
+    args = parser.parse_args()
+
+    nodes = load_dna_graph().get("nodes", [])
+    cands = enumerate_candidates(nodes, args.candidates_file)
+    if not cands:
+        print(
+            "rehearsal: no candidates (queue empty and no candidates file) — nothing to decide"
+        )
+        return
+    rows = score_candidates(nodes, cands)
+    rows = apply_vision_fit(
+        rows, nodes
+    )  # VisionKeeper -> rehearsal wiring (DREAM_ROSTER #3)
+    rows = apply_no_dead_ends(rows, nodes)
+    print(veto_table(rows))
+    if args.decide and not args.dry_run:
+        top = rows[0]
+        node = record_rollout(
+            chosen=top["name"],
+            candidates=[
+                {k: r[k] for k in ("name", "score", "p_success", "cost", "why")}
+                for r in rows[:10]
+            ],
+            rationale=f"value {top['value']} x p {top['p_success']} / cost {top['cost']} "
+            f"+ explore {top['explore_bonus']}; evidence {top['evidence']}",
+        )
+        write_next_item(top)
+
+        # Auto-advance: append the ## NEXT (auto-advance) block so the next agent
+        # can continue without manual editing. This is idempotent — if the marker
+        # already exists we leave the file alone.
+        auto_block = """\n## NEXT (auto-advance)\n1. **Continue** via `python -m core.rehearsal --decide` — operator decision carried, flawed crouch beat proxy chip carried.\n\n---\n"""
+        if "## NEXT (auto-advance)" not in TASK_PROGRESS.read_text(encoding="utf-8"):
+            TASK_PROGRESS.write_text(auto_block + TASK_PROGRESS.read_text(encoding="utf-8"), encoding="utf-8")
+
+        print(f"\ndecided -> {node}; NEXT item prepended to {TASK_PROGRESS}")
+
+    else:
+        print("\n(dry-run: no records written; use --decide to commit the choice)")
+
+
+if __name__ == "__main__":
+    main()

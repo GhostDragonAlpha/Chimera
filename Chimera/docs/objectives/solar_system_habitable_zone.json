@@ -1,0 +1,27 @@
+{
+  "_provenance": "Auto-decomposed objective for solar_system_habitable_zone",
+  "scenario": "Train solar_system_habitable_zone sub-rung parameters",
+  "constraints": [
+    {
+      "kind": "at_least",
+      "measure": "wall_0_habitable_zone_radiu",
+      "min": 1,
+      "hard": true,
+      "wall": "Habitable zone radius depends on star luminosity"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_1_at_least_one_planet_",
+      "min": 1,
+      "hard": true,
+      "wall": "At least one planet must be in habitable zone"
+    },
+    {
+      "kind": "at_least",
+      "measure": "wall_2_atmospheric_retentio",
+      "min": 1,
+      "hard": true,
+      "wall": "Atmospheric retention requires sufficient gravity"
+    }
+  ]
+}

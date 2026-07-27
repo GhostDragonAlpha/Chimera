@@ -1,0 +1,102 @@
+{
+  "_provenance": "Arrangement trained against MEASURED statistics from a real scan, not taste. Targets come from Construction/arrangement_dna.py run on truck.splat; the domain reports identical keys, so an emitted arrangement and a photographed one are compared on the same numbers.",
+  "_why_this_exists": "build_child had three hand-written forms, so driving a whole section returned {'clump': 1147} -- every object a clump, the section reading as gravel however varied its genomes. The arrangement dimension held three points and the trainer could not reach it.",
+  "_the_gap_to_close": "Real regions of truck.splat cluster at 4.699, 4.679, 5.131, 5.213 and 8.172. The three hand-authored forms reach 1.277 .. 1.497, and NONE of them lands inside the measured band on any of the four facts. Real matter is 3-5x more clustered than the old vocabulary could express.",
+  "_reachability_probed_before_training": "140 random genomes: clustering min 0.868, median 1.543, max 4.375 -- ZERO reach 4.5. Pushed to the genome bounds, clusters=4 + cluster_tight=0.02 reaches 6.692, inside the band, with robustness 0.45-0.48. So the band IS expressible but only in a narrow corner. A hard floor at clustering>=4.5 would have scored the whole initial population zero and left no gradient; a hard robustness>=0.55 would have zeroed exactly the corner that reaches reality. Both were softened. A gate you cannot reach is not strict, it is blind.",
+  "maximize": [
+    "seen_margin",
+    "robustness"
+  ],
+  "minimize": [
+    "clustering_off",
+    "aspect_off",
+    "verticality_off",
+    "alignment_off"
+  ],
+  "constraints": [
+    {
+      "field": "robustness",
+      "min": 0.35,
+      "hard": true,
+      "why": "the coin-toss gate. Every fact is already worst-cased over 5 restarts; below 0.35 the worst restart is less than a third of the mean, which means the rule does not reproduce its own form and the genome won a lottery. Set BELOW the 0.45-0.48 of the reachable high-clustering corner on purpose, so it kills luck without killing reality."
+    },
+    {
+      "field": "clustering",
+      "max": 12.0,
+      "hard": true,
+      "why": "the degenerate-winner guard. Nothing in the initial population is near it, so it never removes gradient; it only bites if the optimiser collapses every piece onto one point, which would score perfectly on every band error while being a dot rather than an object."
+    },
+    {
+      "field": "total_off",
+      "max": 0.5,
+      "why": "the summary fact. Each dimension is normalised by its own band width, so this is 'outside the measured envelope by at most half a band width, totalled over all four'. Soft: it is the target, not a gate."
+    },
+    {
+      "field": "n_active_clusters",
+      "min": 2.0,
+      "why": "a single cluster cannot express sub-grouping, and sub-grouping is what distinguishes a tuft of blades from a heap of gravel. Soft, because a genuinely monolithic material is a legitimate answer if the numbers demand it."
+    },
+    {
+      "field": "ground_contact",
+      "min": 0.05,
+      "why": "matter that touches nothing is floating. Soft -- some real regions are canopy, which barely contacts."
+    },
+    {
+      "field": "band_margin",
+      "min": 0.15,
+      "why": "THE FLOOR UNDER THE WEIGHTED MEAN. seen_margin has no floor, so round 3 zeroed verticality's margin to 0.045 -- buying aspect (77.6% weight) at the cost of a fact that is 2.1 JNDs wide and therefore VISIBLE. Perception is allowed to set PRIORITY and not to license abandoning an axis. band_margin is the MIN over four, so a floor on it is a floor on every one of them."
+    }
+  ],
+  "walls": {
+    "robustness": "The one maximize, and deliberately not clustering. Clustering is a BAND in reality (4.679 .. 8.172), and the trainer's own doctrine says a maximize that saturates is a band wearing a maximize's clothes -- maximizing it would drive the winner to the most extreme region of the truck rather than a typical one. Robustness never saturates, is physics rather than taste, and asks the only question that distinguishes a rule from an accident: does the same rule make the same form from a different seed?",
+    "clustering_off": "Distance OUTSIDE the measured band, normalised by the band's own width, and zero anywhere inside it. Real material varies across regions; an objective demanding one value would be fitting noise. This is the term that carries the whole 3-5x gap.",
+    "total_off": "Normalisation is load-bearing. Clustering spans 3.49 and alignment spans 0.06 -- a raw sum would weight clustering 58x for no physical reason and the winner would match cluster density while getting orientation completely wrong.",
+    "n_active_clusters": "Read this one in the PINNED report. If the winner sits on 2, the objective is buying sub-grouping too cheaply and the number should come from the scan instead of from me.",
+    "band_margin": "THE REPAIR AFTER ROUND 1. The first winner satisfied every constraint with verticality 0.476 against a 0.476 ceiling -- inside the band by zero. Constraints asked 'are you inside?', which the cheapest boundary point answers as well as the centre, so nothing pulled it off the wall. Margin asks 'how far from the edge?', and it is physics rather than taste: a genome with room on all sides has CHILDREN that are still real material, and per-object variation is bought by centrality. Measured cost of not having it: 38% of jittered children survived at 1% of range, 3% at 22%.",
+    "seen_margin": "THE PSYCHOPHYSICS REPAIR (round 3). band_margin is the MIN over four facts and was pinned all day by the two a person cannot see: alignment's band is 1.1 JNDs wide (below the ~5.12 deg orientation discrimination threshold -- its two ends look IDENTICAL) and verticality's is 2.1, while aspect's is 27.2 and was never the constraint. seen_margin weights each fact's margin by how much of it reaches a person (aspect 77.6%, clustering 11.4%, verticality 6.1%, alignment 4.9%), so the optimiser spends its budget where a viewer will notice. Perception sets PRIORITY, never a veto: total_off still holds all four inside reality, because an invisible fact still constrains what the matter IS and a genome free to wander in an unseen dimension can drift somewhere that becomes visible under a different light or distance. Constants and limits: core/perception.py."
+  },
+  "_targets_from_scan": {
+    "source": "truck.splat, 5 regions, Construction/arrangement_dna.py",
+    "_NOTE": "Bands are RANGE-DEBIASED at load time -- see core/trainables/arrangement.py targets(). The raw min..max of 5 regions covers only ~67% of the population and is ~1.69x too narrow; targets() widens each to a 95% coverage band on the liability scale, keyed on the region count so a 2nd scan auto-shrinks the correction. Do not hardcode band numbers here -- they would drift from the code.",
+    "raw_bands_for_reference": {
+      "aspect": [
+        0.468,
+        1.763
+      ],
+      "verticality": [
+        0.301,
+        0.476
+      ],
+      "alignment": [
+        0.516,
+        0.576
+      ],
+      "clustering": [
+        4.679,
+        8.172
+      ]
+    },
+    "debiased_bands_at_n5": {
+      "aspect": [
+        0.325,
+        3.037
+      ],
+      "verticality": [
+        0.283,
+        0.584
+      ],
+      "alignment": [
+        0.497,
+        0.599
+      ],
+      "clustering": [
+        3.406,
+        8.719
+      ]
+    }
+  },
+  "_honest_limit": "One scan, one material class. These targets describe truck-scan matter, not grass or bark or regolith. Each kind needs its own measured targets; training every form against this one would produce a world where everything is arranged like a truck.",
+  "_round_2": "Round 1 scored 0.9680, landed total_off=0 inside all four bands, robustness 0.9096 -- and was UNUSABLE for variation because it sat on an edge. The objective was iterated, not the artifact.",
+  "_round_3": "Round 2 maximized band_margin and capped at 0.196, held there by the two facts below or near the threshold of human vision. Psychophysics was recruited to answer 'how precise does this need to be', and the answer reordered the objective.",
+  "_round_4": "Round 3 raised seen_margin 0.196 -> 0.911 and put the 27-JND fact dead centre, then paid for it by pinning verticality to its edge. A weighted mean has no floor; this adds one. Third time in one day the optimiser audited the spec rather than the artifact."
+}

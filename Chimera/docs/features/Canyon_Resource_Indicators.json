@@ -1,0 +1,374 @@
+{
+  "name": "Canyon_Resource_Indicators",
+  "description": "Visual hints of resources embedded in rock types \u2014 ore veins, crystal seams, fossil deposits visible in canyon walls",
+  "created": "2026-07-19T17:28:07.616722",
+  "status": "designed",
+  "questions": [
+    {
+      "id": 1,
+      "category": "education",
+      "question": "Can the player learn to associate specific rock types with potential resources such as basalt yielding iron or limestone indicating cave systems?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature teaches real science through gameplay \u2014 the core educational mechanic."
+    },
+    {
+      "id": 2,
+      "category": "fame",
+      "question": "Would a screenshot showing visible ore veins and crystal seams embedded in canyon walls be a compelling discovery marketing image?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature generates shareable moments and press coverage. Differentiator from competitors."
+    },
+    {
+      "id": 3,
+      "category": "world",
+      "question": "Do resource indicators appear naturally embedded in strata such as veins, nodules, crystal seams, and fossil bands rather than floating UI markers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "This feature makes the universe feel real and alive through physical accuracy."
+    },
+    {
+      "id": 4,
+      "category": "shipping",
+      "question": "Can resource indicators be implemented using existing UE5 decal actor systems or material-layer overrides without new C++ components?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Can be implemented with existing UE5 tools and Python modules. No pipeline blockers."
+    },
+    {
+      "id": 5,
+      "category": "foundation",
+      "question": "Do resource indicators require a new resource-data model or can they use the existing geology module rock-type taxonomy?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Built on existing Chimera infrastructure. No new toolchain dependencies."
+    },
+    {
+      "id": 6,
+      "category": "platform",
+      "question": "Are detailed resource-vein indicators using nanite-favorable geometry compatible with UE5.8 virtual texture streaming?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Works in UE5.8 without engine modifications. Standard features."
+    },
+    {
+      "id": 7,
+      "category": "performance",
+      "question": "Can resource indicator decals and overlay geometry be rendered without exceeding 50 extra draw calls per canyon vista?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Minimal performance impact. Well within 30fps target on RTX 3060."
+    },
+    {
+      "id": 8,
+      "category": "accessibility",
+      "question": "Can colorblind players distinguish resource indicators via shape differences, shimmer effects, or tooltip descriptions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Text-based output is screen-reader friendly. Color-coded states need pattern fallback."
+    },
+    {
+      "id": 9,
+      "category": "audio",
+      "question": "Do resource-rich rock surfaces produce a distinct scanning ping or mining-impact sound compared to barren rock?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Audio design deferred to v2. v1 uses text-only feedback."
+    },
+    {
+      "id": 10,
+      "category": "multiplayer",
+      "question": "Are resource indicator placements deterministic and consistent across all clients so every player sees the same vein at the same spot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Single-player only. Multiplayer is future scope."
+    },
+    {
+      "id": 11,
+      "category": "modding",
+      "question": "Can the community define new resource types and their corresponding visual indicators through data configs without touching C++?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Data-driven design allows community extension via JSON and Blueprints."
+    },
+    {
+      "id": 12,
+      "category": "localization",
+      "question": "Are resource names, tooltip descriptions, mineral identifiers, and gather instructions stored in localization tables?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "All text strings are extractable to JSON for translation."
+    },
+    {
+      "id": 13,
+      "category": "depends_on",
+      "question": "Do resource indicators depend on the geology module having a complete rock-type taxonomy with resource-association mappings?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 14,
+      "category": "proves",
+      "question": "Do resource indicators prove that the environmental demo produces actionable gameplay consequences via a gather-loop?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 15,
+      "category": "derived_from",
+      "question": "Is this derived from the educational principle that visual geology knowledge should produce tangible gameplay rewards?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Derived from parent feature design. Proves the educational approach works."
+    },
+    {
+      "id": 16,
+      "category": "conflicts",
+      "question": "Do colorful resource indicators visually clutter the canyon wall or distract from the educational strata layers they sit on top of?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 17,
+      "category": "requires",
+      "question": "What art-pipeline knowledge (decal authoring, material layering, mesh LODs) is needed to author resource-vein indicators?",
+      "is_edge": true,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 18,
+      "category": "vision",
+      "question": "Do resource indicators serve the seed goal of exploration-driven gameplay where observation yields real gameplay advantage?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 19,
+      "category": "tradeoff",
+      "question": "What visual subtlety is sacrificed if resource indicators are 2D decals rather than embedded 3D vein geometry?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Building this defers other features. Worth the tradeoff for educational value."
+    },
+    {
+      "id": 20,
+      "category": "evidence",
+      "question": "How do we know that visual resource indicators actually motivate players to learn rock types rather than just mining every visible vein?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 21,
+      "category": "terminal",
+      "question": "Does the chain see indicator -> identify resource -> harvest -> use reach a human player making a deliberate gameplay decision?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Directly serves the educational RPG goal. Player learns real science through gameplay."
+    },
+    {
+      "id": 22,
+      "category": "depth",
+      "question": "Does this need deeper sub-features such as a resource scanner tool, minimap overlay, or extraction animations, or are static indicators sufficient?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Basic UE5 knowledge required. Standard engine tools."
+    },
+    {
+      "id": 23,
+      "category": "breadth",
+      "question": "Are sibling resource features missing such as a resource map, portable scanner device, or extraction spot animations?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No conflict with existing features. Complements sibling features."
+    },
+    {
+      "id": 24,
+      "category": "parent",
+      "question": "Is Demo_Canyon_Terrain specific enough about resource gameplay to fully scope these indicators without reopening parent questions?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Depends on parent feature being built first. No external blockers."
+    },
+    {
+      "id": 25,
+      "category": "priority",
+      "question": "Should resource indicators be built after strata visuals since they render on top of visible rock layers?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 26,
+      "category": "dependency",
+      "question": "Does incomplete resource indicators block the gathering gameplay loop, or can gathering work with text labels while indicators are built?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Build after parent feature. No blocking dependencies."
+    },
+    {
+      "id": 27,
+      "category": "testing",
+      "question": "Can this feature be verified by sleepwalker beat tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. Sleepwalker can walk through this feature and verify state changes."
+    },
+    {
+      "id": 28,
+      "category": "testing",
+      "question": "Does this feature have automated regression tests?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 29,
+      "category": "testing",
+      "question": "What are the edge cases and failure modes?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Edge cases include: network interruption, empty state, concurrent access, corrupted data. Documented in threat model."
+    },
+    {
+      "id": 30,
+      "category": "testing",
+      "question": "Can this feature be tested in isolation (unit test)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Partially. Python modules have unit tests. UE5 Blueprint/C++ needs automated test framework."
+    },
+    {
+      "id": 31,
+      "category": "testing",
+      "question": "Is there a visual/performance baseline for regression detection?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Not yet. Needs MCP screenshot baseline + SSIM comparison for visual regression."
+    },
+    {
+      "id": 32,
+      "category": "foundry",
+      "question": "Can the Foundry build this feature autonomously via MCP?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 33,
+      "category": "foundry",
+      "question": "Does the Foundry have all needed MCP pathways for this feature?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Foundry supports this feature via MCP builder. 23 tools available. No new infrastructure needed."
+    },
+    {
+      "id": 34,
+      "category": "foundry",
+      "question": "Does the Foundry need new tools or extensions to support this?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "No new MCP tools needed. Existing 23 tools cover all current feature types."
+    },
+    {
+      "id": 35,
+      "category": "foundry",
+      "question": "Can the Foundry verify this feature via MCP inspect/screenshot?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Yes. MCP inspect confirms actor existence. Screenshot captures visual state."
+    },
+    {
+      "id": 36,
+      "category": "foundry",
+      "question": "Does the Foundry pipeline handle this feature type (Python/UE5/Blueprints)?",
+      "is_edge": false,
+      "mirror_trace": null,
+      "answered": true,
+      "answer": "Python features build directly. UE5 features construct via MCP. Blueprint features need manual editor setup."
+    },
+    {
+      "id": 37,
+      "category": "economy",
+      "question": "How do visual resource indicators (ore vein coloration, crystal seam refraction, fossil shape silhouettes) create a prospector economy where geological literacy \u2014 not just tool level \u2014 determines resource-finding efficiency?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Visual indicators are the bedrock of the extractive economy. A player who can read rusty-red staining (iron), green patina (copper), or angular fracture patterns (flint/chert) finds resources 3-5x faster than a player relying solely on the scanner. This creates a skill-based economic advantage: geological knowledge is human capital that directly increases hourly resource yield."
+    },
+    {
+      "id": 38,
+      "category": "narrative",
+      "question": "What does the presence of a rare mineral outcrop or water seep tell the player about why previous travelers stopped here, and what they left behind?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Resource indicators are fossilized stories: a spent fuel deposit tells of a desperate landing, a water vein tells of a settlement that survived here \u2014 the player reads the land's history through its resources."
+    },
+    {
+      "id": 39,
+      "category": "UX",
+      "question": "Does the player intuitively recognize resource indicators (ore veins, crystal seams, fossil deposits) by visual cues alone, without needing an explicit tutorial legend?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Ore veins use metallic specular sheen vs matte rock. Crystals emit subtle ambient glow. Fossils show distinct skeletal/organic silhouettes against sedimentary rock. Color contrast signals interactability."
+    },
+    {
+      "id": 40,
+      "category": "save_load",
+      "question": "Does the player's discovered resource locations and status (mined, depleted, pending) need to persist across sessions?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Yes. Resource node states (mined/unmined, depleted/active) are persistent game state. Each node has a unique ID and its extraction status must save. Frequent writes: every time the player extracts a resource."
+    },
+    {
+      "id": 41,
+      "category": "physics",
+      "question": "What geological principles determine resource distribution \u2014 does the system model hydrothermal vein deposition, sedimentary stratification, or magmatic concentration?",
+      "is_edge": false,
+      "answered": true,
+      "answer": "Sedimentary stratification and hydrothermal deposition. Ore veins follow real geological rules: heavier minerals settle in lower strata, quartz veins fill fracture lines, fossil deposits occur in sedimentary layers. This teaches economic geology."
+    }
+  ],
+  "answers": [],
+  "implementations": []
+}

@@ -1,0 +1,352 @@
+[
+ {
+  "id": "atom_825e22fef6a1",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "beat schema or MCP dispatch as root cause"
+  },
+  "desc": "regression (PIE): beat schema or MCP dispatch as root cause",
+  "provenance": "elimination:elim_043bb7affad30ff4"
+ },
+ {
+  "id": "atom_e177b8f4639f",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "beat expect schema as root cause"
+  },
+  "desc": "regression (PIE): beat expect schema as root cause",
+  "provenance": "elimination:elim_71b935361cee2319"
+ },
+ {
+  "id": "atom_f8b931c24756",
+  "feature": "audio_visual_sync/telemetry_accessors",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "MCP action handlers / command dispatch as root cause"
+  },
+  "desc": "regression (PIE): MCP action handlers / command dispatch as root cause",
+  "provenance": "elimination:elim_65f84a195c149377"
+ },
+ {
+  "id": "atom_54d1e3ac2917",
+  "feature": "Malcolm_Envelope",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "heuristics_per_night breach as a real leak"
+  },
+  "desc": "regression (PIE): heuristics_per_night breach as a real leak",
+  "provenance": "elimination:elim_58026efcf3adc442"
+ },
+ {
+  "id": "atom_5dd9d400019c",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "interacting_systems_per_slice",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall interacting_systems_per_slice holds: band [3,7] systems (design)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_6253d5ddcc75",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "system_memory_gb",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall system_memory_gb holds: band [None,12.0] GB (provisional)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_694afde79fd6",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "coupling_degree_k",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall coupling_degree_k holds: band [1,4] systems (design)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_70501328fb95",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "audio_voices",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall audio_voices holds: band [None,32] concurrent (provisional)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_973ba12d9844",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "frame_time_ms",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall frame_time_ms holds: band [None,16.6] ms (researched)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_ad6dc26f36da",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "vram_gb",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall vram_gb holds: band [None,12.0] GB (researched)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_e60ec42bb189",
+  "feature": "Malcolm_Envelope",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "axis": "active_dots",
+   "note": "telemetry/PIE-measured wall (frame/vram/dots/voices)"
+  },
+  "desc": "container wall active_dots holds: band [2,24] NPCs (provisional)",
+  "provenance": "malcolm:envelope"
+ },
+ {
+  "id": "atom_005234adebc4",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-19",
+   "note": "Before running a rejection sweep, use the most recent simtest for that feature -- an old simtest_id can indict a feature already fixed and r"
+  },
+  "desc": "H-19 (PIE-judged): Before running a rejection sweep, use the most recent simtest for that feature -",
+  "provenance": "H-19"
+ },
+ {
+  "id": "atom_594988d24778",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-24",
+   "note": "A feature tagged only by movement beats is hostage to rig health \u2014 zero-displacement failures (GameMode PlayerControllerClass unset) indict "
+  },
+  "desc": "H-24 (PIE-judged): A feature tagged only by movement beats is hostage to rig health \u2014 zero-displace",
+  "provenance": "H-24"
+ },
+ {
+  "id": "atom_5f25eb2b6a10",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-22",
+   "note": "Read back live-PIE pawn components before staging an interaction verb \u2014 PickUp's component was never attached, bound, or given a level actor"
+  },
+  "desc": "H-22 (PIE-judged): Read back live-PIE pawn components before staging an interaction verb \u2014 PickUp's",
+  "provenance": "H-22"
+ },
+ {
+  "id": "atom_7e2caadfec60",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-29",
+   "note": "Compound beats fail for shifting root causes (frozen input, then missing SandDrift_FX) \u2014 attribute rejection to the failing expect's subsyst"
+  },
+  "desc": "H-29 (PIE-judged): Compound beats fail for shifting root causes (frozen input, then missing SandDri",
+  "provenance": "H-29"
+ },
+ {
+  "id": "atom_8612dc419b3b",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-14",
+   "note": "Verified-by-injection is not playable \u2014 never stage a feature for observation until real player input drives it end-to-end, read back in PIE"
+  },
+  "desc": "H-14 (PIE-judged): Verified-by-injection is not playable \u2014 never stage a feature for observation un",
+  "provenance": "H-14"
+ },
+ {
+  "id": "atom_dda2858f149b",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-28",
+   "note": "Probe jumps by timed pawn_z read-back, not log_contains \u2014 and reset_position first: z=-26947 shows the pawn had already drifted off the worl"
+  },
+  "desc": "H-28 (PIE-judged): Probe jumps by timed pawn_z read-back, not log_contains \u2014 and reset_position fir",
+  "provenance": "H-28"
+ },
+ {
+  "id": "atom_f0b9d8a33ee9",
+  "feature": "Sleepwalker_Beats",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "rule": "H-25",
+   "note": "Position-expect beats must reset_position at beat start \u2014 W-drift accumulates across sequential beats and BugItGo is refused during PIE."
+  },
+  "desc": "H-25 (PIE-judged): Position-expect beats must reset_position at beat start \u2014 W-drift accumulates ac",
+  "provenance": "H-25"
+ },
+ {
+  "id": "atom_f918fbdf2961",
+  "feature": "Sprint_Input/capture_peak",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "last-footstep volume as a valid sprint measurement"
+  },
+  "desc": "regression (PIE): last-footstep volume as a valid sprint measurement",
+  "provenance": "elimination:elim_1b283361406a25a0"
+ },
+ {
+  "id": "atom_1821a9771ce9",
+  "feature": "Sprint_Input/harness_parity",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "bridge LShift-vs-LeftShift mismatch as a live blocker"
+  },
+  "desc": "regression (PIE): bridge LShift-vs-LeftShift mismatch as a live blocker",
+  "provenance": "elimination:elim_e1ceb1b092b179af"
+ },
+ {
+  "id": "atom_0e27a9381e7a",
+  "feature": "Sprint_Input/readback",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "note": "beat: key_down LeftShift -> pawn speed read-back >= 300cm/s"
+  },
+  "desc": "part 'readback' of Sprint_Input: live read-back: a beat proves the verb changed the world",
+  "provenance": "decomposition:dc_b1af6b6e2f33"
+ },
+ {
+  "id": "atom_d8e0db8d71df",
+  "feature": "Substrate_Terrain",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "free-sphere DEM macro-particles at ATOM_PITCH~0.167m recoalesce seamlessly into the heightfield without an explicit blend pass, AND the curr"
+  },
+  "desc": "regression (PIE): free-sphere DEM macro-particles at ATOM_PITCH~0.167m recoalesce seamlessly into the heightfield with",
+  "provenance": "elimination:elim_d7f65379cd4984b1"
+ },
+ {
+  "id": "atom_fe7cb44403d0",
+  "feature": "Substrate_Terrain",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "Coarse free-sphere MuJoCo grain physics (ATOM_PITCH ~0.167m macro-particles standing in for 0.07mm regolith grains, GA_Dig's own dig footpri"
+  },
+  "desc": "regression (PIE): Coarse free-sphere MuJoCo grain physics (ATOM_PITCH ~0.167m macro-particles standing in for 0.07mm r",
+  "provenance": "elimination:elim_06e43126d4d0332f"
+ },
+ {
+  "id": "atom_80e981b2a84c",
+  "feature": "System_DSL_Fidelity",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "probe token-noise as the dominant cause of DSL battery reds"
+  },
+  "desc": "regression (PIE): probe token-noise as the dominant cause of DSL battery reds",
+  "provenance": "elimination:elim_5db874e721a6c962"
+ },
+ {
+  "id": "atom_fbfbbf3d4952",
+  "feature": "System_DSL_Fidelity",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "probe token-noise as dominant cause of battery reds"
+  },
+  "desc": "regression (PIE): probe token-noise as dominant cause of battery reds",
+  "provenance": "elimination:elim_fc1e3b5e9ce65fbe"
+ },
+ {
+  "id": "atom_8b318e36b0d8",
+  "feature": "System_SaveGame",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "SaveGame UPROPERTY fields as dead metadata (used-in-cpp atom false positives)"
+  },
+  "desc": "regression (PIE): SaveGame UPROPERTY fields as dead metadata (used-in-cpp atom false positives)",
+  "provenance": "elimination:elim_8f4f3dbdf1bd7e24"
+ },
+ {
+  "id": "atom_7e07a59820c3",
+  "feature": "Verb_Step",
+  "tier": 2,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "audio volume-scaling as the walk_fast_on_sand failure cause"
+  },
+  "desc": "regression (PIE): audio volume-scaling as the walk_fast_on_sand failure cause",
+  "provenance": "elimination:elim_b58535a07e3675b0"
+ },
+ {
+  "id": "atom_b4efbd0fd750",
+  "feature": "witness_rig",
+  "tier": 1,
+  "kind": "pie",
+  "probe": {
+   "type": "pie",
+   "boundary": "The witness anchor (0,0,130) must never sit inside colliding geometry: SM_StarSphere (2km-radius colliding shell centered at origin, unowned"
+  },
+  "desc": "regression (PIE): The witness anchor (0,0,130) must never sit inside colliding geometry: SM_StarSphere (2km-radius col",
+  "provenance": "elimination:elim_41064db78ef9a045"
+ }
+]

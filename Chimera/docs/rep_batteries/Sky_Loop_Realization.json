@@ -1,0 +1,14 @@
+[
+ {
+  "id": "atom_69ab2014144b",
+  "feature": "Sky_Loop_Realization",
+  "tier": 0,
+  "kind": "headless",
+  "probe": {
+   "type": "glob_nonempty",
+   "pattern": "docs/gauntlet/features/Sky_Loop_Realization/transcript.json"
+  },
+  "desc": "'Sky_Loop_Realization' is enrolled in the curriculum (school record on disk)",
+  "provenance": "curriculum:enrolled"
+ }
+]

@@ -1,0 +1,38 @@
+{
+  "material": "ice",
+  "provenance": "provisional-tag",
+  "source_provenance": [
+    "synthetic-placeholder"
+  ],
+  "n_regions_pooled": 17,
+  "descriptors": {
+    "albedo_mean_luminance": 0.7969536003460207,
+    "albedo_std_luminance": 0.043267488471939994,
+    "albedo_skew_luminance": -0.05881440760910632,
+    "albedo_kurt_luminance": -0.3408955947415877,
+    "luma_variance": 0.0018720755586694598,
+    "chroma_variance": 0.0028088963592686955,
+    "luma_chroma_ratio": 0.6664808198573946
+  },
+  "pattern_descriptors": {
+    "filter_bank_energies": [
+      67.04033234540154,
+      20.79520057229435,
+      67.65542063993566,
+      20.754973692052506,
+      337.21053000057447,
+      54.40167258767521,
+      340.70511223288145,
+      54.379256080178656,
+      1495.3198529411766,
+      648.0074211569394,
+      1524.137357823989,
+      641.2135943244485
+    ],
+    "grain_length_px": 8.941176470588236,
+    "periodicity": 0.0,
+    "anisotropy": 0.3221802145706539,
+    "roughness_proxy_from_texture_energy": 525.9796402083123
+  },
+  "note": "descriptors above are COLOR MOMENTS ONLY, kept in this shape for compatibility with core.trainables.material_appearance.load_reference_descriptors(); pattern_descriptors is what actually IDENTIFIED these regions as material \u2014 color moments were never the retrieval basis (Julesz)."
+}
