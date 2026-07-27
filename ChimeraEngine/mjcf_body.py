@@ -35,7 +35,7 @@ def _fmt(v) -> str:
 
 
 def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665),
-            visual: bool = False) -> str:
+            visual: bool = False, floor: bool = False) -> str:
     """Our Link tree as MJCF. Every number is carried across, nothing is re-derived."""
     t = h.tree
     kids = {i: [] for i in range(-1, len(t.links))}
@@ -65,13 +65,14 @@ def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665),
             r = frac * float(getattr(h, 'height', 1.75))
             col = '0.80 0.83 0.90' if key in ('chest', 'head') else '0.68 0.72 0.82'
             vis = (f'{pad}  <geom type="capsule" fromto="0 0 0 0 0 {far:.4f}" size="{r:.4f}" '
-                   f'contype="0" conaffinity="0" rgba="{col} 1"/>')
+                   f'contype="{1 if floor else 0}" conaffinity="0" rgba="{col} 1"/>')
         out = [f'{pad}<body name="{L.name}" pos="{_fmt(L.anchor)}">']
         if vis:
             out.append(vis)
         out += [
                f'{pad}  <joint name="{L.name}" type="hinge" axis="{_fmt(L.axis)}" '
-               f'pos="0 0 0" limited="false" damping="0" armature="0" stiffness="0"/>',
+               f'pos="0 0 0" limited="false" damping="{0.2 if floor else 0}" '
+               f'armature="{0.02 if floor else 0}" stiffness="0"/>',
                f'{pad}  <inertial pos="{_fmt(L.com)}" mass="{L.mass:.10g}" '
                f'diaginertia="{I[0,0]:.10g} {I[1,1]:.10g} {I[2,2]:.10g}"/>']
         for c in kids[i]:
@@ -81,9 +82,17 @@ def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665),
 
     Ib = np.asarray(t.base_inertia, float)
     head = []
-    if visual:
-        head = ['  <visual><global offwidth="900" offheight="700"/></visual>',
-                '  <asset>',
+    if visual or floor:
+        head += ['  <visual><global offwidth="900" offheight="700"/></visual>']
+    if floor:
+        head += ['  <asset><texture name="grid" type="2d" builtin="checker" '
+                 'rgb1="0.16 0.18 0.24" rgb2="0.10 0.11 0.15" width="300" height="300"/>'
+                 '<material name="grid" texture="grid" texrepeat="8 8" reflectance="0.1"/></asset>',
+                 '  <worldbody><geom name="floor" type="plane" size="6 6 0.1" pos="0 0 0" '
+                 'contype="0" conaffinity="1" material="grid" condim="3" friction="0.9 0.1 0.1"/>'
+                 '<light pos="2 -2 4" dir="-0.5 0.5 -1" diffuse="1 1 1"/></worldbody>']
+    if visual and not floor:
+        head += ['  <asset>',
                 '    <texture name="sky" type="skybox" builtin="gradient" rgb1="0.10 0.12 0.20" '
                 'rgb2="0.02 0.03 0.06" width="64" height="64"/>',
                 '  </asset>',
