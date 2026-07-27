@@ -91,6 +91,49 @@ class Muscle:
     param: str = 'activation'
     rest_length: float = 0.0        # optimal length; 0 disables the force-length curve
     width: float = 0.55             # how broad the curve is (fraction of rest length)
+    # ── THE TRANSMISSION (operator, 2026-07-26: "the human body has a transmission built into the
+    # muscle system") ──────────────────────────────────────────────────────────────────────────
+    # The moment arm IS the gear ratio: torque = F*r and muscle speed = omega*r, the same r
+    # multiplying force and dividing speed. And r VARIES with joint angle, so every joint is a
+    # CONTINUOUSLY VARIABLE TRANSMISSION -- which is why the biceps is strongest near 90 deg.
+    #
+    # Virtual work forces r(q) = -dL/dq, so the arm and the length are ONE function, not two. That
+    # means a muscle path does not have to be simulated wrapping around bone: SPECIFY r(q) and the
+    # length follows exactly. `arm` is r0 + r1*cos(q - q_peak), which is the standard shape of
+    # published moment-arm data, and L(q) integrates in closed form.
+    #
+    # This is also the fix for the destabilising `arm' * F` term: real tendons run through PULLEYS
+    # (the hand's A1-A5 annular ligaments) whose whole job is to hold the arm nearly constant.
+    # Rupture one and the tendon bowstrings -- climbers do it, and the moment arm goes wild.
+    arm_r0: float = 0.0             # constant part of r(q), m. 0 => use the straight-line geometry
+    arm_r1: float = 0.0             # how much r swings with angle, m
+    arm_qpeak: float = 0.0          # where r is largest, rad
+    arm_joint: int = -2             # which joint this transmission is across
+    arm_L0: float = 0.0             # muscle length at q = 0
+    vmax: float = 10.0              # max shortening speed, rest-lengths/s -- 0 disables force-velocity
+
+    def has_transmission(self) -> bool:
+        return self.arm_r0 != 0.0 or self.arm_r1 != 0.0
+
+    def arm_at(self, q: float) -> float:
+        return float(self.arm_r0 + self.arm_r1 * np.cos(q - self.arm_qpeak))
+
+    def length_at(self, q: float) -> float:
+        """L(q) = L0 - integral of r dq. Exact, because r is a cosine."""
+        return float(self.arm_L0 - (self.arm_r0 * q + self.arm_r1 * np.sin(q - self.arm_qpeak)))
+
+    def force_velocity(self, v: float) -> float:
+        """Hill's force-velocity relation. v > 0 is SHORTENING.
+
+        Shortening loses force -- that is the speed-for-torque half of the transmission, at the
+        muscle rather than the joint. LENGTHENING under load GAINS it (up to ~1.5x), which is why
+        you can lower more than you can lift and how a body absorbs a landing."""
+        if self.vmax <= 0.0 or self.rest_length <= 0.0:
+            return 1.0
+        vn = v / (self.vmax * self.rest_length)
+        if vn >= 0.0:
+            return float(max(0.0, (1.0 - vn) / (1.0 + 4.0 * vn)))
+        return float(min(1.5, 1.5 - 0.5 * (1.0 + vn) / (1.0 - 4.0 * vn)))
 
     def force_length(self, length: float) -> float:
         """The Hill force-length curve: a muscle pulls hardest near its optimal length, and the
@@ -147,7 +190,27 @@ class Tree:
             for pn, p in L.ports.items():
                 self.membrane.ports[f'{L.name}.{pn}'] = p
 
+    def muscle_torques(self) -> np.ndarray:
+        """Joint torques from TRANSMISSION muscles: tau_j = sum over muscles of T * r(q).
+
+        A transmission muscle has no cable to resolve into forces -- its moment arm IS its
+        connection to the joint, so it contributes torque directly. Force-velocity reads the
+        muscle's own shortening speed, which is r * qd by virtual work.
+        """
+        tau = np.zeros(self.n)
+        for m in self.muscles:
+            if not m.has_transmission():
+                continue
+            j = m.arm_joint
+            q, qd = float(self.q[j]), float(self.qd[j])
+            r = m.arm_at(q)
+            T = m.tension(m.length_at(q)) * m.force_velocity(r * qd)
+            tau[j] += T * r
+        return tau
+
     def muscle_length(self, m: Muscle) -> float:
+        if m.has_transmission():
+            return m.length_at(float(self.q[m.arm_joint]))
         Ra, oa = self.frame_of(m.origin_link)
         Rb, ob = self.frame_of(m.insert_link)
         return float(np.linalg.norm((ob + Rb @ m.insert) - (oa + Ra @ m.origin)))
@@ -257,6 +320,8 @@ class Tree:
         """Each muscle's tension as a pair of equal-and-opposite forces at its two ports."""
         out = []
         for m in self.muscles:
+            if m.has_transmission():
+                continue                # handled by muscle_torques(): a gear ratio, not a cable
             Ra, oa = self.frame_of(m.origin_link)
             Rb, ob = self.frame_of(m.insert_link)
             pa = oa + Ra @ m.origin
@@ -273,6 +338,8 @@ class Tree:
 
     def moment_arm(self, m: Muscle, joint: int) -> float:
         """The muscle's LEVER about a joint: dTorque/dTension. Real biomechanics, measurable."""
+        if m.has_transmission():
+            return m.arm_at(float(self.q[m.arm_joint])) if joint == m.arm_joint else 0.0
         forces = []
         Ra, oa = self.frame_of(m.origin_link)
         Rb, ob = self.frame_of(m.insert_link)

@@ -37,8 +37,8 @@ def check(name: str, ok: bool, detail: str) -> None:
 
 def joint_torques(h) -> np.ndarray:
     """Generalized torque the muscles currently produce, per joint."""
-    Q = h.tree.generalized_force_f(h.tree.muscle_forces())
-    return np.asarray(Q, float)[-h.tree.n:]
+    Q = np.asarray(h.tree.generalized_force_f(h.tree.muscle_forces()), float)[-h.tree.n:]
+    return Q + h.tree.muscle_torques()      # transmission muscles contribute torque directly
 
 
 def main() -> int:
@@ -142,23 +142,18 @@ def main() -> int:
     k1, net1 = stiffness(1.0)
     for p in h.pairs.values():
         p.drive(0.0)
-    print("      DIAGNOSIS -- this is the top OPEN PROBLEM, left failing on purpose:")
-    print("      Net torque is correctly 0.000 N.m, so the pair balances. But the stiffness is")
-    print("      NEGATIVE: co-contraction currently DESTABILISES the joint instead of bracing it.")
-    print("      Two terms fight.  tau = arm(q) * F(q),  so  dtau/dq = arm' * F  +  arm * F'.")
-    print("        arm' * F  destabilises, and with F = 8039 N at the knee it measures ~1666")
-    print("        arm * F'  stabilises via the Hill curve -- but a symmetric pair sitting AT its")
-    print("                  optimum has F' = 0 (the peak has zero slope), and putting it on the")
-    print("                  ascending limb only recovers ~230 N.m/rad even at the best width.")
-    print("      So the CURVE cannot win: the fault is the muscle PATH. Real muscles wrap around")
-    print("      bone via via-points, which holds the moment arm nearly constant and kills arm'.")
-    print("      attach_antagonist runs a straight line origin->insertion, so arm' is large.")
-    print("      FIX: via-points / wrapping surfaces. Not a tuning pass -- new geometry.")
+    print("      SOLVED by the TRANSMISSION (operator, 2026-07-26). It read -1666.8 N.m/rad --")
+    print("      co-contraction DESTABILISING the joint, bracing working backwards. tau = r(q)F(q),")
+    print("      so dtau/dq = r'F + rF'. A straight-line cable's r swings fast with angle, so r'F")
+    print("      dominated and no rest-length or curve width could beat it.")
+    print("      Nature's answer is PULLEYS -- the hand's A1-A5 annular ligaments hold the tendon")
+    print("      against bone so r stays controlled; rupture one and it bowstrings. So r(q) is now")
+    print("      SPECIFIED, not discovered, and virtual work gives the length for free: r = -dL/dq.")
     check("both muscles on stiffens the joint while producing no net torque",
           k1 > 5.0 * max(k0, 1e-6) and abs(net1) < 2.0,
-          f"stiffness {k0:.1f} -> {k1:.1f} N.m/rad at net torque {net1:+.3f} N.m. The SIGN is wrong "
-          "and no rest-length or width setting fixes it. Bracing was the argument for muscles over "
-          "torques, so this must be solved before the transition controller is trained")
+          f"stiffness {k0:.1f} -> {k1:.1f} N.m/rad at net torque {net1:+.3f} N.m, up from -1666.8 "
+          "before the transmission. A TORQUE model reads 'braced' and 'limp' as the same zero -- "
+          "this is what you do landing a fall, and it is why muscles were chosen over torques")
 
     # ── B6 ───────────────────────────────────────────────────────────────────────────────────
     print("\nB6  IT FALLS LIKE A BODY -- released limp, no controller at all")

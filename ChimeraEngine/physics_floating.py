@@ -201,6 +201,8 @@ class FloatingTree(Tree):
         if extra_forces:
             forces += list(extra_forces)
         Q = self.generalized_force_f(forces) if forces else np.zeros(self.nv)
+        # TRANSMISSION muscles contribute torque directly -- a gear ratio has no cable to resolve.
+        Q[-self.n:] = Q[-self.n:] + self.muscle_torques()
         return np.linalg.solve(self.mass_matrix_f(), Q - self.bias_f())
 
     def step(self, dt: float, extra_forces=None) -> None:

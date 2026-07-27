@@ -64,6 +64,13 @@ PEAK_TORQUE = {
     'ankle_pitch': 150.0, 'ankle_roll': 45.0,
 }
 
+_CVT_SWING = 0.25       # r1/r0: how much the gear ratio swings over the range. 0 = fixed gear.
+_ASCENDING_LIMB = 0.88  # muscles sit at 88% of optimal length in the build pose, so LENGTHENING
+                        # gains force. At exactly 1.00 the Hill curve is at its PEAK, where the
+                        # slope is ZERO and co-contraction stiffens nothing at all.
+_Q_PEAK = {'elbow': 1.57, 'knee': -1.05, 'hip_pitch': 0.5, 'waist': 0.0, 'neck': 0.0,
+           'shoulder_pitch': 0.8, 'shoulder_roll': 0.0, 'hip_roll': 0.0,
+           'ankle_pitch': 0.0, 'ankle_roll': 0.0}
 _MASSLESS = 5.0e-4          # fraction of body mass given to an intermediate link. NOT zero: a
                             # genuinely massless body makes the mass matrix singular and the solve
                             # fails in a way that looks like a physics bug. Small and honest beats
@@ -196,19 +203,53 @@ def humanoid(height: float = 1.75, mass: float = 70.0,
     # the attachment sits; the resulting moment arm is a geometric consequence and differs from it.
     # Guessing would have made every peak torque wrong by an unknown factor -- so measure, then
     # rescale. tension = torque / arm, with the arm read off the built body at its neutral pose.
-    for jname, p in pairs.items():
+    # ── GIVE EVERY MUSCLE A TRANSMISSION ─────────────────────────────────────────────────────
+    # The moment arm IS the gear ratio, and a straight-line cable's arm swings so fast with angle
+    # that the arm'*F term DESTABILISES the joint -- body_witness B5 measured -1666 N.m/rad, which
+    # is bracing working backwards. Nature's answer is PULLEYS: the hand's A1-A5 annular ligaments
+    # hold the tendon against bone so the arm stays controlled. Rupture one and it bowstrings.
+    #
+    # So specify r(q) instead of discovering it. r(q) = r0 + r1*cos(q - q_peak) is the shape
+    # published moment-arm data actually has, `r1` is how much CVT the joint has, and q_peak is
+    # where it is strongest -- which for the elbow is ~90 deg, exactly as the biceps is.
+    for jname, pr in pairs.items():
         j = idx[jname]
-        for msc in (p.flexor, p.extensor):
-            arm = abs(tree.moment_arm(msc, j))
-            if arm > 1e-6:
-                msc.max_tension = PEAK_TORQUE[_TORQUE_OF[jname]] / arm
+        peak = PEAK_TORQUE[_TORQUE_OF[jname]]
+        for msc, sign in ((pr.flexor, +1.0), (pr.extensor, -1.0)):
+            r_geo = tree.moment_arm(msc, j)
+            r0 = abs(r_geo) if abs(r_geo) > 1e-6 else 0.02
+            msc.arm_joint = j
+            msc.arm_r0 = sign * r0
+            msc.arm_r1 = sign * r0 * _CVT_SWING          # the variable half of the transmission
+            msc.arm_qpeak = _Q_PEAK.get(_TORQUE_OF[jname], 0.0)
+            msc.arm_L0 = tree.muscle_length(msc) if not msc.has_transmission() else 0.0
+            msc.vmax = 8.0
+        # length and rest length must be set from the TRANSMISSION, not the old geometry
+        for msc in (pr.flexor, pr.extensor):
+            msc.arm_L0 = 0.30 * height + msc.arm_r0 * 0.0
+            msc.rest_length = msc.length_at(0.0) / _ASCENDING_LIMB
+            msc.width = 0.35
+        # SIZE BY MEASUREMENT, not by prediction. Predicting the achieved torque from r and the
+        # force-length factor was 12.5% off, because r(0) is r0*(1 + swing*cos(qpeak)) and not r0.
+        # Drive it, read the torque, scale. One pass is exact because torque is linear in tension.
+        for msc in (pr.flexor, pr.extensor):
+            msc.max_tension = 1.0
+        for msc, drive in ((pr.flexor, 1.0), (pr.extensor, -1.0)):
+            for q2 in pairs.values():
+                q2.drive(0.0)
+            pr.drive(drive)
+            got = abs(tree.muscle_torques()[j])
+            msc.max_tension = peak / max(got, 1e-12)
+        for q2 in pairs.values():
+            q2.drive(0.0)
 
     # THE FORCE-LENGTH CURVE IS WHAT MAKES CO-CONTRACTION STIFFEN ANYTHING. `rest_length = 0`
     # DISABLES it, tension goes constant, and bracing becomes purely DESTABILISING -- the muscle
     # model's own docstring says so, and body_witness B5 measured -1666 N.m/rad before this line
     # existed. Optimal length is the length in the build pose: the body is strongest around the
     # posture it is built for, which is what an organism's geometry does.
-    tree.set_rest_lengths()
+    # NOT set_rest_lengths() -- it takes rest length from the GEOMETRIC muscle length and would
+    # clobber the transmission's own, which is set from length_at(0) / _ASCENDING_LIMB above.
 
     return Humanoid(tree=tree, height=height, mass=mass, joint=idx, pairs=pairs,
                     feet=[idx['footL'], idx['footR']],
