@@ -126,12 +126,22 @@ _MASSLESS = 5.0e-4          # fraction of body mass given to an intermediate lin
                             # zero and broken -- and body_witness B2 measures the conditioning.
 
 
-def _seg(name, mass, length, anchor, axis, parent, radius=None):
-    """A capsule-ish segment hinged at one end, extending along -Z in its own frame."""
+def _seg(name, mass, length, anchor, axis, parent, radius=None, up=False):
+    """A capsule-ish segment hinged at one end. `up` extends it along +Z instead of -Z.
+
+    THE DIRECTION IS NOT COSMETIC AND IT WAS WRONG. Every segment used to extend along -Z, which is
+    right for arms and legs -- they hang -- and wrong for the chest and head, which rise. Meanwhile
+    the ANCHORS placed children as if the torso went UP: the head is anchored at +L(chest) in chest
+    coordinates. So the skeleton's connectivity said "up" while its mass and geometry said "down",
+    and 24.85 kg of torso -- the heaviest segment in the body -- sat BELOW the pelvis with the head
+    floating above nothing. Found by RENDERING it; no number in any witness would have shown it,
+    because every mass and length was individually correct.
+    """
     r = radius if radius is not None else max(length * 0.12, 1e-3)
     ixx = mass * (3.0 * r * r + length * length) / 12.0
+    sgn = 1.0 if up else -1.0
     return Link(name=name, mass=mass, inertia=np.diag([ixx, ixx, 0.5 * mass * r * r]),
-                com=np.array([0.0, 0.0, -length / 2.0]), anchor=np.asarray(anchor, float),
+                com=np.array([0.0, 0.0, sgn * length / 2.0]), anchor=np.asarray(anchor, float),
                 axis=np.asarray(axis, float), parent=parent)
 
 
@@ -196,8 +206,8 @@ def humanoid(height: float = 1.75, mass: float = 70.0,
         return len(links) - 1
 
     # trunk and head -- the base IS the pelvis, so `parent=-1` means "hinged to the pelvis"
-    i_chest = add(_seg('chest', m('chest'), L('chest'), (0, 0, L('pelvis')), Y, -1))
-    add(_seg('head', m('head'), L('head'), (0, 0, L('chest')), Y, i_chest))
+    i_chest = add(_seg('chest', m('chest'), L('chest'), (0, 0, L('pelvis')), Y, -1, up=True))
+    add(_seg('head', m('head'), L('head'), (0, 0, L('chest')), Y, i_chest, up=True))
 
     for side, sgn in (('L', 1.0), ('R', -1.0)):
         h = add(_hub(f'shoulder{side}', hub_m, (0.0, sgn * sw, L('chest')), Y, i_chest))

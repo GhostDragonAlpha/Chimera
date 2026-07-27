@@ -34,7 +34,8 @@ def _fmt(v) -> str:
     return ' '.join(f'{float(x):.10g}' for x in np.asarray(v, float).ravel())
 
 
-def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665)) -> str:
+def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665),
+            visual: bool = False) -> str:
     """Our Link tree as MJCF. Every number is carried across, nothing is re-derived."""
     t = h.tree
     kids = {i: [] for i in range(-1, len(t.links))}
@@ -45,7 +46,30 @@ def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665)) -> str:
         L = t.links[i]
         pad = '  ' * depth
         I = np.asarray(L.inertia, float)
-        out = [f'{pad}<body name="{L.name}" pos="{_fmt(L.anchor)}">',
+        # VISUAL-ONLY GEOMS. contype/conaffinity 0 means they never collide, and the compiler is
+        # set inertiafromgeom="false" with an explicit <inertial> on every body -- so adding these
+        # cannot touch mass, inertia or contact. The physics stays bit-identical to the model
+        # mjcf_witness measured agreeing to 1e-13 m; these exist purely so a human can SEE it.
+        vis = ''
+        if visual:
+            # ANATOMICAL radii, not inertial ones. Deriving the radius from I_zz gave a thin rod
+            # for every segment, so a correctly-assembled body rendered as a bundle of sticks and
+            # nothing about its proportions was checkable by eye. These are visual-only geoms, so
+            # thickness is free -- and being able to SEE the body is what caught the torso bug.
+            dz = float(L.com[2])
+            ln = abs(2.0 * dz) if abs(dz) > 1e-6 else 0.05
+            far = 2.0 * dz if abs(dz) > 1e-6 else -0.05
+            key = L.name.rstrip('LR')
+            frac = {'chest': .085, 'head': .050, 'upperarm': .028, 'forearm': .024,
+                    'thigh': .048, 'shin': .034, 'foot': .030}.get(key, .022)
+            r = frac * float(getattr(h, 'height', 1.75))
+            col = '0.80 0.83 0.90' if key in ('chest', 'head') else '0.68 0.72 0.82'
+            vis = (f'{pad}  <geom type="capsule" fromto="0 0 0 0 0 {far:.4f}" size="{r:.4f}" '
+                   f'contype="0" conaffinity="0" rgba="{col} 1"/>')
+        out = [f'{pad}<body name="{L.name}" pos="{_fmt(L.anchor)}">']
+        if vis:
+            out.append(vis)
+        out += [
                f'{pad}  <joint name="{L.name}" type="hinge" axis="{_fmt(L.axis)}" '
                f'pos="0 0 0" limited="false" damping="0" armature="0" stiffness="0"/>',
                f'{pad}  <inertial pos="{_fmt(L.com)}" mass="{L.mass:.10g}" '
@@ -56,14 +80,24 @@ def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665)) -> str:
         return out
 
     Ib = np.asarray(t.base_inertia, float)
-    lines = ['<mujoco model="chimera_humanoid">',
+    head = []
+    if visual:
+        head = ['  <visual><global offwidth="900" offheight="700"/></visual>',
+                '  <asset>',
+                '    <texture name="sky" type="skybox" builtin="gradient" rgb1="0.10 0.12 0.20" '
+                'rgb2="0.02 0.03 0.06" width="64" height="64"/>',
+                '  </asset>',
+                '  <worldbody><light pos="1.2 -1.2 2.2" dir="-0.4 0.4 -1" diffuse="1 1 1"/>'
+                '</worldbody>']
+    lines = ['<mujoco model="chimera_humanoid">'] + head + [
              # armature/damping ZERO and NO geoms: our engine has neither rotor inertia nor
              # collision, so anything MuJoCo adds here would be a difference we introduced
              # ourselves and then measured as disagreement.
              f'  <option timestep="{dt:.10g}" gravity="{_fmt(gravity)}" integrator="Euler" '
              f'iterations="100" tolerance="1e-12"/>',
              '  <compiler angle="radian" inertiafromgeom="false"/>',
-             '  <worldbody>',
+             '  <worldbody>',]
+    lines += [
              f'    <body name="pelvis" pos="{_fmt(t.base_pos)}">',
              '      <freejoint name="root"/>',
              f'      <inertial pos="{_fmt(t.base_com)}" mass="{t.base_mass:.10g}" '
