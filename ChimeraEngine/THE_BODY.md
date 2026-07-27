@@ -541,3 +541,79 @@ be stubbed, or be retired with the tree.
 
 So the order that gets the tree deleted soonest: extract the **16**, re-run the six witnesses,
 decide separately whether the three tooling consumers are worth carrying or worth dropping.
+
+---
+
+## 9. THE TRANSITION CONTROLLER — the spec (2026-07-27)
+
+Everything else is built. This is the one thing that must be TRAINED, and §4.7 established why:
+the planner decides *where* the next contact goes; this moves a limb *there* without falling. One
+policy, reused by walking, climbing, getting up and EVA.
+
+### 9.1 The task, stated so it can be scored
+**Given** a stance and a target contact point for one limb, **reach it and hold** — while the other
+contacts keep the body up.
+
+```
+episode      start from a stance, planner picks a target, run 1.5 s of sim
+success      the swing limb is within 3 cm of the target AND all other contacts held
+              AND base tilt from LOCAL up stayed under 25 deg throughout
+terminate    early on: tilt > 60 deg (fallen), or any non-swing contact broken
+```
+
+Nothing in that mentions gait, style, or what a step should look like. Those are consequences.
+
+### 9.2 What it sees and does — ALREADY FROZEN
+`body.OBSERVATION` (96) and `body.ACTION` (36), unchanged since §3.1. The observation includes
+**gravity strength**, which is what makes one policy work from an asteroid to a super-Earth, and
+the action is muscle activations in [0,1] — so **co-contraction is a legal move** and bracing on
+landing is something the policy can discover rather than something authored.
+
+### 9.3 The reward, in physics not taste
+```
++  progress of the swing limb toward the target      (the task)
++  survival, per tick upright                        (do not fall)
+-  cost of transport, integral of muscle work        (the SAME quantity that gives the planner
+                                                      its step length and the Apollo bunny-hop)
+-  contact slip at the supporting limbs              (measurable: tangential velocity at a
+                                                      contact that should be static)
+```
+No term for "looks natural." If it looks wrong, the missing term is a physical one.
+
+### 9.4 The randomisation ranges ARE A CONTRACT (§3.5)
+A policy interpolates inside its training distribution and degrades outside it, so the range must
+CONTAIN everything the game will ever do:
+
+```
+gravity        0.001 .. 12 m/s^2      asteroid to super-Earth. CONDITIONED, not just randomised.
+start pose     the whole fallen space  supine, prone, on one side, crouched, mid-stride
+ground mu      0.10 .. 0.95            ice to dry rock -- and it is NOT in the observation, so the
+                                       policy must infer it from slipping. That is stepping onto
+                                       ice and finding out.
+slope          0 .. 35 deg
+carried mass   0 .. 40 kg
+perturbation   0 .. 400 N impulses     the shove that F6/P3 already measured toppling at
+```
+
+### 9.5 SCORING — the rule that has already cost this project once
+**Score every genome from N randomised starts and keep the WORST.** Report
+`robustness = worst / mean`; a real controller is ~1.0, a lucky one is ~0.
+
+This is not a preference. A celebrated 13.52-body-length walker in this repo had
+`periodicity 0.25` and lost 5.5 body lengths to a **one-micron** nudge — 80,000 evaluations spent
+selecting lucky dice. One rollout is a coin toss.
+
+### 9.6 Where it runs
+`mjcf_body.FastBody` steps this body in **3.3 us** against the numpy engine's 51 ms, and
+`mjcf_witness` proved the two agree to **1e-13 m** — so training in MuJoCo and running in this
+engine are the same world. For the population, `mujoco-warp` measured **2,358 evals/sec** on this
+box, whole population in ONE kernel. THE ONE RULE from `CLAUDE.md`: **nothing reads back from the
+GPU inside the rollout loop** — a previous attempt did 1,575 syncs per batch and ran 300x SLOWER
+than the CPU.
+
+### 9.7 The known gap to close first
+MuJoCo has `<tendon><spatial>` wrapping and `<actuator><muscle>` (§7.1), but our transmission is
+currently a sampled `r(q)` table on our side only. Before training: express the same curves as
+MuJoCo tendon geometry, and witness that the actuated bodies agree the way the passive ones already
+do. Training against a different actuator than the game runs would reproduce, at the muscle layer,
+exactly the sim-to-sim mistake §3.4 exists to prevent.
