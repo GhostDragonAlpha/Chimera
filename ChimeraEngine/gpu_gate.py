@@ -41,13 +41,15 @@ def gpu_temp() -> float:
 class GPUHeatGate:
     """Samples GPU temperature across a run and judges whether the card actually did work.
 
-    `rise_c` is how many degrees above idle the GPU must climb to count as "used". Idle on this 4090
-    is ~35-40 C; a real training kernel pushes it well past 55-60 C. A run that never rises by
-    `rise_c` was starved -- the kernels were too small and the GPU waited on the host.
+    `min_peak_c` is the ABSOLUTE temperature the GPU must reach to count as "used" -- set by the
+    operator at 54 C. Idle on this 4090 is ~41 C; a real training kernel pushes it well past 55-60 C.
+    An absolute floor is stricter and clearer than a relative rise: it does not matter what the card
+    started at, it has to physically get hot. A run whose peak never reaches `min_peak_c` was
+    starved -- the kernels were too small and the GPU waited on the host.
     """
 
-    def __init__(self, rise_c: float = 8.0, period: float = 1.0):
-        self.rise_c = rise_c
+    def __init__(self, min_peak_c: float = 54.0, period: float = 1.0):
+        self.min_peak_c = min_peak_c
         self.period = period
         self.idle = None
         self.samples = []
@@ -75,23 +77,24 @@ class GPUHeatGate:
             self._t.join(timeout=3)
         idle = self.idle if self.idle is not None else 0.0
         peak = max(self.samples, default=idle)
-        rise = peak - idle
-        return (rise >= self.rise_c,
-                dict(idle=idle, peak=peak, rise=rise, required=self.rise_c,
+        return (peak >= self.min_peak_c,
+                dict(idle=idle, peak=peak, required=self.min_peak_c,
                      samples=len(self.samples)))
 
     def enforce(self) -> dict:
-        """Print the verdict and REFUSE (exit 1) if the GPU stayed cold. Call at the end of a run."""
+        """Print the verdict and REFUSE (exit 1) if the GPU never reached min_peak_c. Call at the
+        end of a run."""
         ok, s = self.verdict()
         print(f"\n[gpu-heat-gate] idle {s['idle']:.0f} C -> peak {s['peak']:.0f} C  "
-              f"(rose {s['rise']:.0f} C over {s['samples']} samples; need +{s['required']:.0f} C)")
+              f"(over {s['samples']} samples; the GPU MUST reach {s['required']:.0f} C)")
         if not ok:
-            print("[gpu-heat-gate] REFUSED: the GPU stayed COLD -- it did no real work.")
-            print("  Temperature is the witness, and there was none. The training ran starved:")
-            print("  small kernels, the card idle between Python steps. Raise the world/env count")
-            print("  toward the 16,384 this 4090 runs in one kernel (docs: GPU for the population).")
+            print(f"[gpu-heat-gate] REFUSED: peak {s['peak']:.0f} C < the required {s['required']:.0f} C "
+                  "-- the GPU did not do real work.")
+            print("  Temperature is the witness. The training ran starved: small kernels, the card")
+            print("  idle between Python steps. Raise the world/env count toward the 16,384 this")
+            print("  4090 runs in one kernel (docs: GPU for the population).")
             raise SystemExit(1)
-        print("[gpu-heat-gate] PASS: the GPU heated up -- it did real work.")
+        print(f"[gpu-heat-gate] PASS: the GPU reached {s['peak']:.0f} C -- it did real work.")
         return s
 
 
@@ -99,7 +102,7 @@ if __name__ == '__main__':
     # Self-test: read the temperature and prove the gate REFUSES a cold (no-work) run.
     print(f"current GPU temperature: {gpu_temp():.0f} C")
     print("\nproving the gate fires on a COLD run (no GPU work for 4 s):")
-    g = GPUHeatGate(rise_c=8.0).start()
+    g = GPUHeatGate(min_peak_c=54.0).start()
     time.sleep(4)                                  # do nothing -- the GPU should stay cold
     try:
         g.enforce()
