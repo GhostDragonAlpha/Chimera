@@ -51,7 +51,7 @@ def to_mjcf(h: Humanoid, dt: float = 1e-3, gravity=(0.0, 0.0, -9.80665),
         # cannot touch mass, inertia or contact. The physics stays bit-identical to the model
         # mjcf_witness measured agreeing to 1e-13 m; these exist purely so a human can SEE it.
         vis = ''
-        if visual:
+        if visual or floor:
             # ANATOMICAL radii, not inertial ones. Deriving the radius from I_zz gave a thin rod
             # for every segment, so a correctly-assembled body rendered as a bundle of sticks and
             # nothing about its proportions was checkable by eye. These are visual-only geoms, so
