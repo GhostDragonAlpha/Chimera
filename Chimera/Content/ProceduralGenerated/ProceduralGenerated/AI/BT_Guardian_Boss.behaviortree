@@ -1,6 +1,0 @@
-/Script/AIGraph.BehaviorTreeDefinition
-{
-	RootNode={
-		Class=BTService_BlueprintBase_C
-	}
-}

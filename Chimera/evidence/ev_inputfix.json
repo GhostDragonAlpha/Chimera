@@ -1,4 +1,0 @@
-{"tests":{"passed":6,"failed":0,"skipped":0,"ran_in_editor":true,"criteria_total":6},
- "telemetry":{"crash_free":true,"fps":119.99904156496706,"target_fps":60,"unbounded_growth":false},
- "checklist":{"feedback":true,"consistency":true,"meaningful_parameters":true,"fail_safety":true,"balance_sanity":true},
- "spec_fidelity":0.95}

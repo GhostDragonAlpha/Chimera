@@ -1,3 +1,0 @@
-# Tunnel Note - pi-agent-1
-
-My resource footprint for this task is `docs/gauntlet/pi-agent-1/**`, which includes all the gauntlet artifact checkpoints I've created (orientation.md, research.md, graph.md, gates.md, tunnel_note.md). Staying inside this footprint protects other agents by ensuring that my work doesn't conflict with or overwrite files belonging to other concurrent tasks. The task board's resource-footprint system allows parallel development by guaranteeing that claimed tasks have disjoint file sets, so each agent can work independently without stomping on each other's editor or module-DLL locks. By confining my writes to the gauntlet directory, I ensure that other agents working on different features or tasks can proceed safely in their own footprints.
