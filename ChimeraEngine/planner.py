@@ -319,28 +319,86 @@ class Planner:
 
     # ── decide ───────────────────────────────────────────────────────────────────────────────
     def plan(self, st: Stance, limbs, goal=None, mode='walk') -> tuple:
-        """Best next contact over the given limbs. Returns (choice, all_scored)."""
+        """Best next contact. ARRAYS ALL THE WAY, and exactly ONE Candidate is built -- the winner.
+
+        Two things make this cheap, and the second is the interesting one:
+
+          * scoring is array arithmetic, so 96 candidates cost about what one used to
+          * TOPPLE AND STRENGTH DO NOT DEPEND ON WHERE THE FOOT LANDS. They ask whether the body
+            stays up while THIS LIMB IS LIFTED, which is one question per limb, not one per
+            candidate. Computing them 96 times was computing the same answer 96 times.
+        """
         goal_dir = None
         if goal is not None:
             g = np.asarray(goal, float) - st.com
             g = g - np.dot(g, self.up) * self.up
             if np.linalg.norm(g) > 1e-9:
                 goal_dir = g / np.linalg.norm(g)
-        scored = []
-        share = max(8, self.node_budget // max(1, len(limbs)))
+
+        best = None
+        best_score = -np.inf
+        n_seen = 0
         for limb in limbs:
-            saved, self.node_budget = self.node_budget, share
-            for c in self.candidates(st, limb, goal_dir):
-                scored.append(self.evaluate(st, c, goal))
-            self.node_budget = saved
-        ok = [c for c in scored if c.feasible]
-        if not ok:
-            return None, scored
-        if mode == 'rise':                              # GET UP: buy height, not distance
-            best = max(ok, key=lambda c: float(np.dot(c.point, self.up)) - 0.4 * c.cost)
-        else:                                           # WALK: buy progress per unit energy
-            best = max(ok, key=lambda c: c.progress - 0.25 * c.cost)
-        return best, scored
+            # ONE topple/strength test for the whole limb
+            sup = st.support_points(lifting=limb)
+            if not self._com_supported(st.com, sup):
+                n_seen += 1
+                continue
+            if st.mass * self.gravity * self._com_offset(st.com, sup) > st.max_hip_torque:
+                n_seen += 1
+                continue
+
+            hip = st.hip.get(limb, st.com)
+            reach = st.reach.get(limb, 0.9)
+            share = max(8, self.node_budget // max(1, len(limbs)))
+            n_d = int(np.clip(round(np.sqrt(share / 1.4)), 2, self.n_dists))
+            n_dirs = int(np.clip(share // max(1, n_d), 4, 40))
+            h = max(0.0, float(hip[2]) - self.terrain.height_at(float(hip[0]), float(hip[1])))
+            r_max = float(np.sqrt(max(0.0, reach * reach - h * h)))
+            if r_max < 1e-3:
+                continue
+            bias = np.arctan2(goal_dir[1], goal_dir[0]) if goal_dir is not None else 0.0
+            A = 2 * np.pi * np.arange(n_dirs) / n_dirs + bias
+            R = r_max * (0.25 + 0.72 * np.arange(n_d) / max(1, n_d - 1))
+            AA, RR = np.meshgrid(A, R, indexing='ij')
+            X = (hip[0] + RR * np.cos(AA)).ravel()[:share]
+            Y = (hip[1] + RR * np.sin(AA)).ravel()[:share]
+            Z = self.terrain.height_many(X, Y)
+            SL, NR = self.terrain.slope_many(X, Y)
+            MU, REP = self.terrain.mu_many(X, Y)
+            n_seen += len(X)
+            d3 = np.sqrt((X - hip[0]) ** 2 + (Y - hip[1]) ** 2 + (Z - hip[2]) ** 2)
+            ok = (np.tan(SL) <= MU) & (SL <= REP) & (d3 <= reach)
+            if self.blocked:
+                for k in np.nonzero(ok)[0]:
+                    key = (limb, (round(float(X[k]), 2), round(float(Y[k]), 2), round(float(Z[k]), 2)))
+                    if self.blocked.get(key, 0) > 0:
+                        ok[k] = False
+            if not ok.any():
+                continue
+            P = np.stack([X, Y, Z], axis=1)
+            rise = np.maximum(0.0, (P - hip) @ self.up + 0.9)
+            cost = st.mass * self.gravity * rise * 0.02 + 0.5 * d3 ** 2
+            if mode == 'rise':
+                score = P @ self.up - 0.4 * cost
+            elif goal_dir is not None:
+                step = P - hip
+                prog = (step - np.outer(step @ self.up, self.up)) @ goal_dir
+                score = prog - 0.25 * cost
+            else:
+                score = -0.25 * cost
+            score = np.where(ok, score, -np.inf)
+            k = int(np.argmax(score))
+            if score[k] > best_score:
+                best_score = float(score[k])
+                # THE ONLY Candidate BUILT. 96 dataclass allocations became one.
+                c = Candidate(limb=limb, point=P[k], normal=NR[k], slope=float(SL[k]),
+                              cost=float(cost[k]))
+                if goal_dir is not None:
+                    step = P[k] - hip
+                    c.progress = float(np.dot(step - np.dot(step, self.up) * self.up, goal_dir))
+                best = c
+        return best, [] if best is None else [best]
 
     # ── the runtime memory that makes it look like it is thinking ────────────────────────────
     def mark_failed(self, c: Candidate, ticks: int = 120) -> None:
