@@ -147,49 +147,121 @@ just floatier.
 
 ---
 
-## 4. THE ORDER — and why GETTING UP is first
+## 4. CONTACT-FIRST — one planner, one controller, three costs
 
-The operator: *"the robot starts out on the ground as a pile of robot, and then it gets itself up
-like a normal human that's waking up. That would probably be the first thing, because we'll need
-that ability when we fall down, and we will be falling down in many different configurations."*
+> **The operator, 2026-07-26:** *"Everything is like a mountain climber even when walking on two
+> feet... all we'd have to do is calculate getting up and then calculate what is the FIRST STEP,
+> because that's all we ever need — we repeat it... It happens instantaneously. There's no training
+> on the spot."*
 
-**This is correct, and the reasons are stronger than the intuition.**
+This section replaced an earlier plan that had four sequential training runs. It is **smaller** than
+what it replaced, which is the sign it is right.
 
-1. **Get-up CONTAINS standing.** The last second of getting up *is* balancing. Train get-up and
-   standing arrives free; train standing first and you have a policy that works from one pose.
-2. **It is self-supervising.** "Are you up?" is trivially measurable — COM height above the local
-   surface, only feet in contact, held for N seconds. No reference motion, no gait quality metric,
-   no taste. Walking needs a target velocity *and* a quality measure, which is a much harder
-   objective to write without encoding taste.
-3. **Its initial-state distribution is the whole space.** A get-up policy is trained from bodies
-   dumped on the ground in arbitrary configurations, so it sees the broadest state distribution of
-   any skill. That is the opposite of the failure this project already paid for — the celebrated
-   walker that scored `periodicity 0.25` and lost 5.5 body lengths to a one-micron nudge, because
-   it had been trained from one initial condition and was selecting luck.
-4. **There is direct precedent.** Hwangbo et al., *Science Robotics* 2019, trained ANYmal to
-   recover to its feet from arbitrary fallen configurations with exactly this approach. This is not
-   speculative.
-5. **The game needs it most.** In a game where you genuinely fall, "can't get up" is unshippable.
+### 4.1 The reframe
+Split movement in two, the way Atlas and ANYmal do rather than the way research papers do:
 
-### The batches
-The operator asked what groups together. Skills share a training run when they share an
-**objective**, not when they feel related:
+- a **PLANNER** decides *where the next contact goes*
+- a **CONTROLLER** moves one limb there without falling
 
-| # | batch | one reward | why together |
-|---|---|---|---|
-| **1** | **POSTURE** — get up, stand, resist a shove, survive a landing | *reach and hold the upright configuration* | all four are the same goal from different starts; a shove is just a new start |
-| **2** | **LOCOMOTION** — walk, turn, stop, speed control | *track a commanded velocity in the local tangent plane* | one reward with a commanded direction; needs posture solid first |
-| **3** | **CONTACT SKILLS** — reach, grab, carry, brace, climb | *make and hold contact at the hand while staying up* | changes the mass distribution, so posture must already be robust |
-| **4** | **ZERO-G / EVA** — orient, push off, catch a handhold | *reach a target attitude and stop* | no ground; a different problem, see §5 |
+Then walking, climbing and getting up stop being three skills. They are **one loop with three cost
+functions:**
 
-Prone, crouched, on-your-back and aiming are **not** separate items. They are configurations
-batch 1 already passes through, and batch 3 lets you aim from them. That is the whole payoff of
-throwing away the state machine.
+| | contacts | the cost rewards |
+|---|---|---|
+| walking | feet | progress toward the goal per unit energy |
+| getting up | elbows, hands, knees, feet | COM height gained per unit energy |
+| climbing | hands + feet, keep 3 | ascent, subject to 3-contact stability |
+| EVA | handholds | the same loop with nothing to stand on |
 
-Curriculum inside batch 1, easiest first: land supine on flat ground → arbitrary orientation →
-random g → slope → a shove partway up.
+Same enumerate-score-pick. Same "move a limb from A to B while the others hold you up." Swap the
+objective, get a different behaviour.
 
----
+### 4.2 ONE STEP AT A TIME — receding horizon
+Plan one contact, execute it, **throw the plan away**, re-plan. Repetition produces the traverse.
+Never plan the route; plan the step. This is why it is cheap:
+
+```
+2 limbs x ~48 placements (8 directions x 6 distances)          =    96 candidates
+per candidate: friction cone, reachability, support polygon,
+               terrain slope, torque feasibility               ~    50 flops
+small value net (64x64) per candidate                          ~ 8,000 flops
+                                                        total  ~   0.8 MFLOP
+```
+
+Microseconds. A 1 ms budget is 100x more than it needs. **Nothing is trained at runtime and nothing
+is deeply searched at runtime** — it is enumerate, score, pick.
+
+### 4.3 THE ONE REAL GAP: greedy walks into dead ends
+Pure greedy takes the locally best foothold and arrives somewhere with no feasible next step — it
+finds out one step too late, and falls.
+
+Getting up shows it worst. From flat on your back, "raise my COM" refuses to **roll onto your side
+first**, because rolling *lowers* the COM. But rolling is how you get up. Greedy cannot see past
+the dip.
+
+**The fix is a learned VALUE FUNCTION, not a deeper search.** Score each candidate by *how good is
+the situation this leaves me in*, not *how much progress does this make*. The value net IS the
+lookahead, compressed into something evaluated in microseconds — the AlphaZero pattern, and the
+project's own thesis: compress the expensive search into weights and evaluate instead.
+
+### 4.4 WHAT REPLACES THE 45-DEGREE RULE
+Games hard-code "slopes over 45 degrees are unclimbable." The real answer is six measurable limits,
+and every one is already in this engine:
+
+| real limit | the law | where it lives |
+|---|---|---|
+| you slip | `tan(theta) > mu` — the friction cone | `Coupling` / `ContactModel.mu` |
+| the ground gives way | angle of repose | measured: **40.03 deg** for regolith (`granular.py`) |
+| you cannot reach | limb length vs foothold distance | morphology |
+| you fall over | COM projection outside the support polygon | geometry, per contact set |
+| not strong enough | required joint moment > what the muscles make | the muscle model |
+| not worth it | cost of transport | energy, measured |
+
+**And `tan(45 deg) = 1.0`.** The industry's magic constant is exactly the friction angle for
+`mu = 1.0` — a coefficient nobody wrote down and everybody assumed, then applied to ice and gravel
+alike. With real numbers: rubber on rock `mu ~ 0.9` -> **42 deg**; boots on dry regolith
+`mu ~ 0.6` -> **31 deg**; ice `mu ~ 0.1` -> **5.7 deg**.
+
+Regolith's own angle of repose is 40.03 deg, so the steepest natural dust slope is ~40 deg and you
+slip at ~31. **A fresh crater wall is unwalkable** — which is what Apollo crews reported, and
+nobody has to author it.
+
+### 4.5 GAIT IS NOT AUTHORED EITHER
+Cost of transport (energy per unit distance per unit weight, dimensionless, ~0.2 for human walking)
+is the objective. Preferred step length and preferred speed fall out of minimising it rather than
+being tuned.
+
+And the **Froude number** `Fr = v^2 / (g L)` decides which gait wins; humans switch walk->run at
+`Fr ~ 0.5`:
+
+```
+Earth, 0.9 m leg:  v = sqrt(0.5 x 9.81 x 0.9) = 2.10 m/s
+Moon:              v = sqrt(0.5 x 1.62 x 0.9) = 0.85 m/s   <- barely a stroll
+```
+
+In 1/6 g, walking stops being efficient at walking pace, so the optimum becomes a hop. **That is the
+Apollo bunny-hop, predicted from one dimensionless group.** A gravity-conditioned planner
+rediscovers it, because on the Moon the hop wins on cost of transport. No gait authored, nobody
+told it about the Moon.
+
+### 4.6 The seam that can lie
+The planner can propose a foothold the controller cannot actually reach. Robotics solves this by
+giving the planner a **learned reachability model** — the controller tells the planner what it can
+do. Design that feedback in from the start; bolting it on later means re-training the planner.
+
+Runtime failure handling is then free, and it is the behaviour the operator asked for: try a
+foothold, fail to reach it, **mark it infeasible for a few seconds**, pick the next candidate. The
+player watches the character struggle at a slope, fail twice, and route around. Nothing is scripted
+-- it is the search visibly working.
+
+### 4.7 What still has to be trained
+Only two things, and both are small compared to "learn to walk":
+
+1. **The transition controller** — move one limb from A to B while the others hold you up. Reused by
+   every behaviour above. This is where the balance problem lives and where the GPU hours go.
+2. **The value function** — how good is the situation this contact leaves me in. Trains alongside.
+
+Everything else is enumeration and measured physics.
 
 ## 5. EVA — and the thing already proven that nobody planned for
 
@@ -216,13 +288,25 @@ thing you only get if the physics is real.
 
 ## 6. WHAT TO DO NEXT, in order
 
-1. **Build the real body** (§3.3) — ~14 links, and freeze it. Half a day.
-2. **Freeze the observation and action spaces** (§3.1, §3.2), gravity strength included. Hours.
+1. **Build the real body** (§3.3) — ~14 links, muscle-actuated (§3.2), and freeze it. Half a day.
+2. **Freeze the observation and action spaces** (§3.1), gravity strength included. Hours.
 3. **WITNESS OUR PHYSICS AGAINST MUJOCO** on that exact body (§3.4). A day, and it is the one that
    prevents the expensive backtrack. Do not skip it because training looks more exciting.
-4. **Train batch 1, POSTURE**, gravity-conditioned, scored from N randomised starts keeping the
-   **worst** (`robustness` = worst/mean; a real controller is ~1.0, a lucky one is ~0).
-5. Only then, batch 2.
+4. **Build the PLANNER first — it needs no training** (§4.2, §4.4). Enumerate candidate contacts,
+   score them against the six measured limits, pick. It is testable on day one against a static
+   body: *given this pose and this terrain, where can a foot go?* Render the candidates and look at
+   them. This is the cheapest large piece of the system and it is pure geometry plus physics that
+   already exists.
+5. **Train the TRANSITION CONTROLLER** (§4.7) — one limb, A to B, others holding. Gravity-
+   conditioned. Scored from N randomised starts keeping the **worst** (`robustness` = worst/mean;
+   a real controller is ~1.0, a lucky one is ~0).
+6. **Train the VALUE FUNCTION** alongside it (§4.3), which is what stops the greedy planner walking
+   into dead ends.
+7. Swap cost functions for get-up / walk / climb / EVA (§4.1). No new system.
+
+Step 4 before step 5 is deliberate: the planner is free, visible, and debuggable, and building it
+first tells you what the controller actually has to be able to do — which is the reachability model
+of §4.6 arriving by construction rather than by retrofit.
 
 **The rule that survives all of it:** one rollout is a coin toss. It cost this project a celebrated
 walker that turned out to be noise, and it will cost a celebrated get-up the same way if the
