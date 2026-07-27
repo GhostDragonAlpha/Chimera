@@ -262,6 +262,72 @@ Only two things, and both are small compared to "learn to walk":
 2. **The value function** — how good is the situation this contact leaves me in. Trains alongside.
 
 Everything else is enumeration and measured physics.
+### 4.8 THE PLANNER'S BUDGET IS A CHARACTER STAT
+
+> **The operator, 2026-07-26:** *"Maybe how many steps your character plans ahead is a feature of
+> the character itself that can be upgraded. It could be part of a movement intelligence."*
+
+Yes -- and it is the correct place to put a stat, for a reason worth stating as a rule.
+
+**Price it first.** Beam search keeping the best 8 at each level:
+
+```
+depth 1     96 node evals    0.8 MFLOP     "greedy"
+depth 2   ~864               7   MFLOP
+depth 3  ~1632              13   MFLOP
+depth 4  ~2400              19   MFLOP     "plans ahead"
+```
+
+1.15 GFLOP/s at 60 Hz for the top end. **The whole range from clumsy to expert is free**, so this is
+a pure design dial and not a performance tradeoff.
+
+**Express it as a NODE BUDGET, not a depth.** Chess engines do not sell skill as "depth 4", they use
+iterative deepening against a budget -- and that is better here because **depth then emerges from how
+hard the terrain is.** On flat ground few footholds are plausible, so a small budget still reaches
+depth 6. On a boulder field the branching explodes and a large budget only reaches depth 2.
+
+The consequence is the good part: **the stat only matters where the ground is hard.** Walking a
+corridor, a low-budget character is indistinguishable from a high one. On scree the difference is
+immediate -- one picks a line, the other commits to a rock that dead-ends and has to back off.
+Self-scaling difficulty out of one integer.
+
+#### THE RULE THAT KEEPS STATS FROM CORRUPTING THE SIMULATION
+
+> **A stat may change the BODY or the DECISION. It may NEVER change the PHYSICS.**
+
+    WRONG   "movement intelligence +10 -> you slip 10% less"   (a lie about friction)
+    RIGHT   "movement intelligence = node budget"              (friction identical; you choose better)
+
+A clumsy character and an expert on the same rock face meet the same mu, the same reach, the same
+torque limits. The expert is not luckier. They pick better footholds. A stat defined this way cannot
+corrupt the simulation because it never touches it.
+
+Every stat this game needs fits under that rule:
+
+| stat | what it actually is | body or controller |
+|---|---|---|
+| strength | joint torque limits | body |
+| flexibility | joint range limits | body |
+| stamina | energy budget before cost of transport bites | body |
+| movement intelligence | planner node budget | controller |
+| body awareness | proprioception noise | controller |
+| reflexes | replan rate | controller |
+
+#### AND INJURY COMES FREE
+
+A hurt left leg is: reduced torque limit + reduced joint range + noisier proprioception, on that limb
+only. The planner's torque-feasibility check then rejects footholds asking too much of it, so it
+takes shorter steps on that side and shifts weight to the right.
+
+**That is a limp, and nobody authored it.** No limp animation, no injury state, no modifier -- three
+numbers moving on one limb and a planner that respects its own constraints.
+
+The same mechanism gives a heavy pack (mass and balance change), a stiff pressurised suit (joint
+ranges shrink -- exactly what an EVA suit does, and why Apollo crews moved the way they did), and
+fatigue (the energy budget tightens, so it starts choosing cheaper lines).
+
+---
+
 
 ## 5. EVA — and the thing already proven that nobody planned for
 
