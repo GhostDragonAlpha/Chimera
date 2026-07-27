@@ -157,6 +157,11 @@ WorldModel/training_data/images/
 # Session-generated / large artifacts (2026-07-22) — never commit
 /sam2_b.pt
 /*.pt
+
+# Vendored MyoSuite models (large meshes, cloned from github MyoHub/myo_sim) + trained weights
+vendor/
+ChimeraEngine/*.pt
+ChimeraEngine/*.npy
 /chat_session_full.txt
 /web/object.json
 /web/*.png

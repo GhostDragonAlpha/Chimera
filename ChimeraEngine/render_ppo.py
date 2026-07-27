@@ -63,6 +63,11 @@ def main() -> int:
 
     out = sys.argv[sys.argv.index('--out') + 1] if '--out' in sys.argv else 'ppo_stand'
     dev = 'cpu'
+    # --passive zeroes the policy so ONLY the spinal reflex acts: does the pre-configured body stand
+    # with no learned control at all? --gain scales the reflex strength to probe how stiff it needs.
+    PASSIVE = '--passive' in sys.argv
+    GAIN = float(sys.argv[sys.argv.index('--gain') + 1]) if '--gain' in sys.argv else 1.0
+    REFLEX = (5.0 * GAIN, 0.4 * GAIN, 0.6)
 
     meta = np.load(HERE / 'ppo_meta.npy', allow_pickle=True).item()
     OBS, HID, STAND_Z = int(meta['OBS']), int(meta['HID']), float(meta['STAND_Z'])
@@ -100,8 +105,9 @@ def main() -> int:
             up = quat_up(quat, torch)
             ob = torch.nan_to_num(torch.cat([up, angvel, q, qd], 1)).clamp(-20, 20)
             mean, _std, _v = ac(ob)                       # deterministic: act on the mean
-            a = mean.clamp(0.0, 1.0)
-            tau = torch.nan_to_num(muscle_torque_gpu(tb, q, qd, a, torch, q_ref=q_ref)).clamp(-400, 400)
+            a = torch.zeros(1, ACT_DIM) if PASSIVE else mean.clamp(0.0, 1.0)
+            tau = torch.nan_to_num(muscle_torque_gpu(tb, q, qd, a, torch,
+                                   q_ref=q_ref, reflex=REFLEX)).clamp(-400, 400)
             d.ctrl[:] = tau.squeeze(0).numpy()
             for _ in range(CONTROL_EVERY):
                 mujoco.mj_step(m, d)
