@@ -508,3 +508,36 @@ walked before anything moves, or the deletion takes the physics stack down with 
 
 **The urgency is already gone.** The churn this was meant to stop came from the Stop hook's
 `git add -A`, now scoped, and the retired tree can sit there indefinitely doing no harm.
+
+### 8.1 The closure, WALKED (2026-07-27)
+
+49 modules total — but they are not one lump. Measured per entry point:
+
+```
+core.membranes    ->  16 modules
+core.saturation   ->   1
+core.eden         ->   4
+core.capcom       ->  26     <- the expensive tail: world_store, task_board,
+                                preflight, the gates, the rep engine
+```
+
+**And the consumers split along the same line:**
+
+| needs | modules pulled | who imports it |
+|---|---|---|
+| `membranes`, `saturation` | **~16** | `physics.py`, `physics_articulated.py`, `engine_state.py`, `fields_witness.py`, `gravity_witness.py` |
+| `capcom`, `eden`, `scene` | **26+** | `appearance.py`, `human_messenger.py`, `sound_messenger.py` |
+
+That is the whole job, and it is two jobs rather than one:
+
+**THE PHYSICS EXTRACTION IS ~16 MODULES AND UNBLOCKS THE DELETION.** Everything built in the
+body/planner/fields work depends only on `membranes` + `saturation`. Move that closure and the
+simulation stops needing `Chimera/` at all.
+
+**THE TOOLING EXTRACTION IS THE EXPENSIVE ONE**, and it is optional. `capcom` drags in the whole
+studio-automation substrate — the SQLite world store, the task board, the gates. Those three
+consumers are messengers and appearance plumbing, not physics. They can keep the `sys.path` shim,
+be stubbed, or be retired with the tree.
+
+So the order that gets the tree deleted soonest: extract the **16**, re-run the six witnesses,
+decide separately whether the three tooling consumers are worth carrying or worth dropping.
