@@ -46,6 +46,9 @@ MINIBATCH = 4096
 LR = 3e-4
 ENT = 0.003
 VCOEF = 0.5
+ALIVE_BONUS = 0.15                    # reward per living control-step (DeepMimic's alive bonus)
+FALL_H = 0.9                          # head below this height (m) => fallen; that world terminates
+FALL_UP = 0.3                         # torso upright.z below this => toppled; that world terminates
 
 
 def build_ac(OBS, torch, dev):
@@ -109,7 +112,7 @@ def main() -> int:
     print(f'\nPPO: imitate the standing reference\n' + '=' * 74)
     print(f'  {W} envs x {T} steps = {W*T} samples/iter   actor-critic {OBS}->{HID}->{ACT_DIM}')
     print(f'  reward = pose-match x uprightness x root-height (the validated imitation reward)\n')
-    print(f"  {'iter':>4}{'reward/step':>12}{'poseMatch':>10}{'value':>8}{'sec':>7}")
+    print(f"  {'iter':>4}{'reward/step':>12}{'poseMatch':>10}{'value':>8}{'surv%':>7}{'sec':>7}")
     print('  ' + '-' * 46)
 
     def quat_up(q):
@@ -143,6 +146,8 @@ def main() -> int:
         lp_b = torch.zeros(T, W, device=dev)
         val_b = torch.zeros(T, W, device=dev)
         rew_b = torch.zeros(T, W, device=dev)
+        alive_b = torch.zeros(T, W, device=dev)
+        alive = torch.ones(W, device=dev)            # 1 while up; latches to 0 once a world falls
 
         # ── ROLLOUT (no grad; the sim is a black box) ──
         with torch.no_grad():
@@ -153,19 +158,28 @@ def main() -> int:
                 raw = dist.sample()
                 lp = dist.log_prob(raw).sum(-1)
                 a = raw.clamp(0.0, 1.0)                       # muscle activations in [0,1]
-                ctrl[:] = torch.nan_to_num(muscle_torque_gpu(tb, qpos[:, 7:], qvel[:, 6:], a, torch)
-                                           ).clamp(-400, 400)
+                # q_ref engages the spinal stretch reflex inside the muscle model (the biological PD)
+                ctrl[:] = torch.nan_to_num(muscle_torque_gpu(tb, qpos[:, 7:], qvel[:, 6:], a, torch,
+                                           q_ref=q_ref)).clamp(-400, 400)
                 for _ in range(CONTROL_EVERY):
                     mjw.step(m, d)
-                obs_b[t] = o; act_b[t] = raw; lp_b[t] = lp; val_b[t] = v; rew_b[t] = reward()
+                # EARLY TERMINATION: once a world's head drops or its torso topples it is fallen and
+                # earns nothing more -- a policy cannot bank reward by standing then collapsing late.
+                head_z = torch.nan_to_num(xpos[:, HEAD, 2], nan=0.0)
+                upr = quat_up(torch.nan_to_num(qpos[:, 3:7]))[:, 2]
+                alive = alive * ((head_z > FALL_H) & (upr > FALL_UP)).float()
+                obs_b[t] = o; act_b[t] = raw; lp_b[t] = lp; val_b[t] = v
+                rew_b[t] = (reward() + ALIVE_BONUS) * alive   # alive bonus, zeroed after a fall
+                alive_b[t] = alive
             _, _, last_v = ac(observe())
 
         # ── GAE ──
         adv = torch.zeros(T, W, device=dev); gae = torch.zeros(W, device=dev)
         for t in reversed(range(T)):
             nextv = last_v if t == T - 1 else val_b[t + 1]
-            delta = rew_b[t] + GAMMA * nextv - val_b[t]
-            gae = delta + GAMMA * LAM * gae
+            mask = alive_b[t]                       # no bootstrap / no advantage past a fall
+            delta = rew_b[t] + GAMMA * nextv * mask - val_b[t]
+            gae = delta + GAMMA * LAM * mask * gae
             adv[t] = gae
         ret = adv + val_b
         # flatten
@@ -195,8 +209,9 @@ def main() -> int:
                 opt.step()
 
         pm = torch.exp(-2.0 * qpos[:, 7:].pow(2).mean(1)).mean().item()
+        surv = 100.0 * alive_b[-1].mean().item()     # % of worlds still upright at episode end
         print(f'  {it:4d}{rew_b.mean().item():12.4f}{pm:10.3f}{val_b.mean().item():8.3f}'
-              f'{time.perf_counter()-ti:7.1f}')
+              f'{surv:7.1f}{time.perf_counter()-ti:7.1f}')
 
     print('\n  ' + '-' * 46)
     print(f'  total {time.perf_counter()-t_all:.0f}s')

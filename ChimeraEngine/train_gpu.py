@@ -67,14 +67,12 @@ def muscle_tables(h, device, torch):
                 width=T(width), vmax=T(vmax), n=n)
 
 
-def muscle_torque_gpu(tb, q, qd, act, torch):
-    """tau = sum over the joint's two muscles of T(a, L, v) * r(q), batched over worlds.
-
-    Each muscle uses its OWN arm and length table (X6 fix), and the Hill force-velocity term the
-    first port dropped is restored. Witnessed against the CPU reference by muscle_witness (X6).
-    """
+def _muscle_rL(tb, q, torch):
+    """Interpolate each muscle's OWN moment arm r(q) and length L(q). (W,n,2) each. Extracted from
+    muscle_torque_gpu UNCHANGED so the stretch reflex reuses the exact same interpolation the torque
+    uses -- one code path, and the X6 witness that covers the torque covers this too."""
     W, n = q.shape
-    q = torch.nan_to_num(q); qd = torch.nan_to_num(qd)
+    q = torch.nan_to_num(q)
     x = torch.clamp((q - tb['q0']) / tb['dq'], 0.0, tb['S'] - 1.0001)
     i0 = x.long().clamp(0, tb['S'] - 2)
     f = (x - i0.float()).unsqueeze(-1)                       # (W, n, 1)
@@ -88,6 +86,46 @@ def muscle_torque_gpu(tb, q, qd, act, torch):
     c0 = gather_ms(tb['cum'], i0); c1 = gather_ms(tb['cum'], i0 + 1)
     r = r0 + (r1 - r0) * f                                   # (W, n, 2) each muscle's own arm
     L = tb['L0'].unsqueeze(0) - (c0 + (c1 - c0) * f)         # (W, n, 2) each muscle's own length
+    return r, L
+
+
+def reflex_activation(tb, q, qd, q_ref, torch, kp=5.0, kd=0.4, cap=0.6):
+    """SPINAL STRETCH REFLEX (myotatic) -- the biological PD, and the 'hold the leg rigid' mechanism.
+
+    A muscle stretched past the length it has in the reference pose, OR lengthening, reflexively
+    contracts to resist the stretch -- exactly the knee-jerk loop, sensed by the muscle spindle
+    (length + rate). It is RESTORING by construction: of an antagonist pair, only the STRETCHED
+    muscle fires, so a knee beginning to buckle drives its EXTENSOR (not its flexor) and the buckle
+    is opposed. This is what a spinal cord does; it is not a robotics position servo bolted on top.
+
+    Returns extra activation in [0, cap] per muscle (W, n, 2), added to the policy's command. The
+    policy then learns ON a spinally-stabilized body instead of having to invent damping from raw
+    open-loop activation -- the missing ingredient the SOTA supplies with a PD controller.
+    """
+    W, n = q.shape
+    r, L = _muscle_rL(tb, q, torch)
+    qr = q_ref.unsqueeze(0).expand(W, n) if q_ref.dim() == 1 else q_ref
+    _, L_ref = _muscle_rL(tb, qr, torch)
+    rest = torch.where(tb['rest'] > 0.0, tb['rest'], torch.ones_like(tb['rest']))
+    stretch = (L - L_ref) / rest                            # >0 : longer than at the reference pose
+    rate = (-(r * qd.unsqueeze(-1))) / (tb['vmax'] * rest)  # dL/dt normalized (lengthening = +)
+    return torch.clamp(kp * torch.clamp(stretch, min=0.0)
+                       + kd * torch.clamp(rate, min=0.0), 0.0, cap)
+
+
+def muscle_torque_gpu(tb, q, qd, act, torch, q_ref=None, reflex=(5.0, 0.4, 0.6)):
+    """tau = sum over the joint's two muscles of T(a, L, v) * r(q), batched over worlds.
+
+    Each muscle uses its OWN arm and length table (X6 fix), and the Hill force-velocity term the
+    first port dropped is restored. Witnessed against the CPU reference by muscle_witness (X6).
+
+    With `q_ref` given, the spinal stretch reflex is ADDED to `act` before the force is computed
+    (reflex=(kp, kd, cap)); with q_ref=None this is byte-identical to the X6-witnessed path, so the
+    witness still holds and the reflex is strictly opt-in.
+    """
+    W, n = q.shape
+    qd = torch.nan_to_num(qd)
+    r, L = _muscle_rL(tb, q, torch)
     # GUARD rest <= 0 exactly as the CPU force_length/force_velocity do: return 1.0. Several leg
     # muscles have negative rest_length (L0 = 0.30*height is smaller than the moment-arm integral),
     # and the CPU DISABLES both curves there. Without this guard the GPU computed a bogus factor --
@@ -106,6 +144,8 @@ def muscle_torque_gpu(tb, q, qd, act, torch):
     fv_neg = torch.clamp(1.5 - 0.5 * (1.0 + vm) / (1.0 - 4.0 * vm), max=1.5)
     fv = torch.where(active, torch.where(vn >= 0.0, fv_pos, fv_neg), torch.ones_like(vn))
     a = act.view(W, n, 2).clamp(0.0, 1.0)
+    if q_ref is not None:                                    # add the spinal stretch reflex
+        a = torch.clamp(a + reflex_activation(tb, q, qd, q_ref, torch, *reflex), 0.0, 1.0)
     Tn = a * tb['tmax'] * fl * fv
     return (Tn * r).sum(-1)                                  # each muscle's tension times its arm
 

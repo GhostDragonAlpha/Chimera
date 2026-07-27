@@ -72,6 +72,7 @@ def main() -> int:
     d = mujoco.MjData(m)
     HEAD = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, 'head')
     tb = muscle_tables(h, dev, torch)
+    q_ref = torch.zeros(n)                            # standing reference for the stretch reflex
 
     ac = build_ac(OBS, HID, torch)
     ac.load_state_dict(torch.load(HERE / 'ppo_policy.pt', map_location=dev))
@@ -100,7 +101,7 @@ def main() -> int:
             ob = torch.nan_to_num(torch.cat([up, angvel, q, qd], 1)).clamp(-20, 20)
             mean, _std, _v = ac(ob)                       # deterministic: act on the mean
             a = mean.clamp(0.0, 1.0)
-            tau = torch.nan_to_num(muscle_torque_gpu(tb, q, qd, a, torch)).clamp(-400, 400)
+            tau = torch.nan_to_num(muscle_torque_gpu(tb, q, qd, a, torch, q_ref=q_ref)).clamp(-400, 400)
             d.ctrl[:] = tau.squeeze(0).numpy()
             for _ in range(CONTROL_EVERY):
                 mujoco.mj_step(m, d)
