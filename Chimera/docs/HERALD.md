@@ -1,4 +1,4 @@
-# The Herald — 2026-07-26
+# The Herald — 2026-07-27
 
 **Good news:** 72 feature(s) have now earned full trust through repeated testing — ADotCharacter, AErisaidActor, audio_visual_sync/report_telemetry and more.
 **Watch:** 9 feature(s) failed some checks recently (Any position-dependent beat against chimeradefault, Game_Feel, Substrate_Engine); they are on the work board with evidence attached.
