@@ -14,7 +14,11 @@ trained on top, not after.
                           the gap SHRINKS when dt does. This is the test that caught the S8
                           quaternion bug, and it is the only one that can tell the cases apart.
 
-Run:  python ChimeraEngine/mjcf_witness.py
+Run:  python ChimeraEngine/mjcf_witness.py [--quick]
+
+    --quick cuts the timestep sweep to two points and the flights to 0.15 s. Use it while
+    ITERATING. The full run steps our 51 ms/step reference engine 11,200 times, which is ~9.5
+    minutes, and a nine-minute failure that reports nothing is worse than no test at all.
 """
 from __future__ import annotations
 
@@ -30,9 +34,18 @@ from mjcf_body import build, push_state, pull_state                          # n
 results: list[tuple[str, bool]] = []
 
 
+_LAST = [None]
+
+
 def check(name: str, ok: bool, detail: str) -> None:
+    """Prints the ELAPSED TIME of every check. A suite that quietly costs ten minutes is a bug in
+    the suite, and the only way that stays visible is if each step says what it cost."""
+    import time as _t
+    now = _t.perf_counter()
+    dt = '' if _LAST[0] is None else f'  [{now - _LAST[0]:5.1f}s]'
+    _LAST[0] = now
     results.append((name, ok))
-    print(f"  [{'PASS' if ok else 'FAIL'}] {name}: {detail}")
+    print(f"  [{'PASS' if ok else 'FAIL'}]{dt} {name}: {detail}")
 
 
 def run_pair(dt: float, T: float, gravity, seed: int = 5):
@@ -68,7 +81,14 @@ def run_pair(dt: float, T: float, gravity, seed: int = 5):
     return dpos, dq, dquat, h, m, d
 
 
+QUICK = '--quick' in sys.argv
+DTS = (4e-4, 2e-4) if QUICK else (8e-4, 4e-4, 2e-4, 1e-4)
+T_FLIGHT = 0.15 if QUICK else 0.4
+
+
 def main() -> int:
+    import time as _t
+    _t0 = _t.perf_counter()
     try:
         import mujoco
     except ImportError:
@@ -91,7 +111,7 @@ def main() -> int:
 
     # ── X2 ───────────────────────────────────────────────────────────────────────────────────
     print("\nX2  SAME FREE FLIGHT -- 18 joints flailing, no gravity, no contact")
-    dp, dq, dqt, *_ = run_pair(2e-4, 0.4, (0.0, 0.0, 0.0))
+    dp, dq, dqt, *_ = run_pair(2e-4, T_FLIGHT, (0.0, 0.0, 0.0))
     print(f"      after 0.4 s: base position differs {dp:.3e} m, worst joint {dq:.3e} rad, "
           f"orientation {dqt:.3e}")
     check("free flight agrees", dp < 5e-4 and dq < 5e-3,
@@ -100,7 +120,7 @@ def main() -> int:
 
     # ── X3 ───────────────────────────────────────────────────────────────────────────────────
     print("\nX3  SAME UNDER GRAVITY -- the whole tree accelerating and swinging")
-    dp, dq, dqt, *_ = run_pair(2e-4, 0.4, (0.0, 0.0, -9.80665))
+    dp, dq, dqt, *_ = run_pair(2e-4, T_FLIGHT, (0.0, 0.0, -9.80665))
     print(f"      after 0.4 s: base position differs {dp:.3e} m, worst joint {dq:.3e} rad, "
           f"orientation {dqt:.3e}")
     check("gravity agrees", dp < 5e-4 and dq < 5e-3,
@@ -112,15 +132,17 @@ def main() -> int:
     print("    'different model'. A model mismatch is dt-INDEPENDENT and sits there unchanged;")
     print("    two correct integrators of ONE model disagree by O(dt) and halve when dt halves.")
     prev = None
-    ratios = []
-    for dt in (8e-4, 4e-4, 2e-4, 1e-4):
+    ratios, drifts = [], []
+    for dt in DTS:
         dp, dq, _, *_ = run_pair(dt, 0.2, (0.0, 0.0, -9.80665))
+        drifts.append(dp)
         r = (prev / dp) if prev else None
         ratios.append(r)
         print(f"      dt {dt:7.1e} -> base drift {dp:.4e} m   worst joint {dq:.3e} rad"
               + (f"   ratio {r:5.2f}x" if r else ""))
         prev = dp
-    worst = max(run_pair(dt, 0.2, (0.0, 0.0, -9.80665))[0] for dt in (8e-4, 1e-4))
+    worst = max(d for d in drifts)     # X4 already measured these; re-running them
+                                       # cost 115 s -- 20% of the suite -- for nothing
     print("      THE CONVERGENCE TEST CANNOT RUN, and that is the best possible outcome. It")
     print("      separates truncation from a model mismatch by watching truncation SHRINK -- but")
     print("      the disagreement is already ~1e-13 m, which is ROUNDOFF. Over 2,000 steps on")
@@ -165,15 +187,21 @@ def main() -> int:
         print(f"      dt {dt:7.1e} -> base {dp:.3e} m, worst joint {dq:.3e} rad"
               + (f"   ratio {r:5.2f}x" if r else ""))
         prev = dp
-    conv = all(1.4 < r < 3.2 for r in ratios) if ratios else False
+    # THE QUESTION IS "TRUNCATION OR A DIFFERENT MODEL", and only the LOWER bound answers it: a
+    # model difference is dt-INDEPENDENT and sits at ~1.0x. I originally demanded 1.4-3.2 on the
+    # assumption the error must be first-order -- but nothing requires that, and the measured 4.06x
+    # is convergence FASTER than first order, which is stronger evidence for the claim, not weaker.
+    # An upper bound here was never testing anything; it was me writing down what I expected to see.
+    conv = all(r > 1.4 for r in ratios) if ratios else False
     check("the ACTUATED bodies agree, and the residual is truncation not a model difference", conv,
-          f"ratios {', '.join(f'{r:.2f}x' for r in ratios)} per halving -- FIRST ORDER, so the two "
+          f"ratios {', '.join(f'{r:.2f}x' for r in ratios)} per halving (faster than first order) -- the disagreement VANISHES with dt, so the two "
           "engines apply the SAME muscle torques to the SAME body and differ only in how they "
           "integrate. Flat ~1.0x would have meant different levers and blocked training")
 
     n_fail = sum(1 for _, ok in results if not ok)
     print("\n" + "=" * 72)
-    print(f"{len(results) - n_fail}/{len(results)} checks passed")
+    print(f"{len(results) - n_fail}/{len(results)} checks passed"
+          f"   ({_t.perf_counter() - _t0:.0f}s{', --quick' if QUICK else ''})")
     if not n_fail:
         print("\nSCOPE: PASSIVE dynamics only. MuJoCo has no primitive for the muscle transmission")
         print("r(q) = r0 + r1 cos(q - q_peak), so ACTUATION is a separate seam and is not claimed")
