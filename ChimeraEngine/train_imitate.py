@@ -55,7 +55,7 @@ def main() -> int:
 
     W = pop
     m = mjw.put_model(mjm)
-    d = mjw.put_data(mjm, mjd, nworld=W, nconmax=64)   # PER WORLD, not total (W*8 overflows int32 at large W)
+    d = mjw.put_data(mjm, mjd, nworld=W, nconmax=64, njmax=128)   # PER WORLD (W*8 overflowed; njmax clears nefc drops)
     qpos = wp.to_torch(d.qpos); qvel = wp.to_torch(d.qvel); ctrl = wp.to_torch(d.ctrl)
     xpos = wp.to_torch(d.xpos)
     tb = muscle_tables(h, dev, torch)

@@ -89,12 +89,14 @@ def main() -> int:
 
     W = envs
     m = mjw.put_model(mjm)
-    # nconmax is PER WORLD (mujoco_warp allocates nconmax*nworld total contacts). A humanoid
-    # on a floor plane with self-collision off makes only a few dozen contacts; 64/world is
-    # ample and matches the library's own default heuristic (~48). The old `W*8` treated this
-    # per-world number as a total, so the pool was 8*W*W -- exactly 2**31 at W=16384, which
-    # overflowed warp's int32 array shape. Per-world constant is correct at every population.
-    d = mjw.put_data(mjm, mjd, nworld=W, nconmax=64)
+    # nconmax and njmax are PER WORLD (mujoco_warp allocates *nworld total). A humanoid on a
+    # floor plane with self-collision off makes only a few dozen contacts; 64/world is ample
+    # (the library's own default heuristic is ~48). The old `W*8` treated this per-world number
+    # as a total, so the pool was 8*W*W -- exactly 2**31 at W=16384, overflowing warp's int32
+    # array shape. njmax is the constraint-solver row budget: the run logged repeated
+    # "nefc overflow - please increase njmax to 68/72", i.e. warp was DROPPING constraints it
+    # could not fit and training against degraded physics. 128/world clears it with headroom.
+    d = mjw.put_data(mjm, mjd, nworld=W, nconmax=64, njmax=128)
     qpos = wp.to_torch(d.qpos); qvel = wp.to_torch(d.qvel); ctrl = wp.to_torch(d.ctrl)
     xpos = wp.to_torch(d.xpos)
     tb = muscle_tables(h, dev, torch)
