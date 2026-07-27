@@ -54,9 +54,13 @@ def apply_couplings(m, d, driver_adr: int) -> None:
         a_ind = m.jnt_qposadr[ind]
         if a_ind != driver_adr:
             continue
-        q = d.qpos[a_ind]
+        # MuJoCo's mjEQ_JOINT is defined RELATIVE TO THE REFERENCE POSE, not in absolute angles:
+        #     qpos1 - qpos1_0  =  a0 + a1 y + a2 y^2 + a3 y^3 + a4 y^4,   y = qpos2 - qpos2_0
+        # Feeding it absolute q made the knee report a 1008 mm lever -- a metre-long bone.
+        a_dep = m.jnt_qposadr[dep]
+        y = d.qpos[a_ind] - m.qpos0[a_ind]
         c = m.eq_data[e][:5]
-        d.qpos[m.jnt_qposadr[dep]] = c[0] + c[1]*q + c[2]*q**2 + c[3]*q**3 + c[4]*q**4
+        d.qpos[a_dep] = m.qpos0[a_dep] + c[0] + c[1]*y + c[2]*y**2 + c[3]*y**3 + c[4]*y**4
 
 
 def moment_arm(m, d, joint: str, actuators, ang: float, h: float = 2e-4) -> float:

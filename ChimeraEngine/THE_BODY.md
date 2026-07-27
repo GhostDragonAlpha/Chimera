@@ -437,3 +437,40 @@ LAST tendon instead of raising. Assert `>= 0` on every id.
 Muscle geometry stops being authored and becomes **transferred**: place tendon sites and wrapping
 surfaces so the resulting `r(q)` reproduces the published curve, on our joints. The 6 joints still
 marked ASSUMED in `body.MOMENT_ARM` have a source now.
+
+### 7.5 The knee: THREE hypotheses tested, all wrong, and what is now actually known
+
+The knee reads a 1008 mm moment arm — a metre-long lever. Each attempt narrowed it:
+
+1. **"The couplings are not applied."** Wrong. Evaluating the seven `mjEQ_JOINT` polynomials and
+   writing `qpos` does move the coupled DOFs, and they move **smoothly**:
+   `translation1` 0.0000 → −0.0155, `rotation2` 0.0000 → −0.0769 → −0.0035 across 0 → −100°.
+2. **"The polynomial is relative to the reference pose."** It is (`qpos1 − qpos1_0 = poly(qpos2 −
+   qpos2_0)`), and fixing that changed **nothing**, because `qpos0` is zero for these joints.
+3. **"The finite difference straddles a discontinuity."** Wrong — see (1); the coupled DOFs are
+   continuous, so ±h does not jump.
+
+**What the length curve actually shows.** `vaslat_r` over 0 → −100° of knee flexion:
+
+```
+   0 deg  0.29563      Quadriceps LENGTHENING with flexion is correct in sign.
+ -20 deg  0.28435      But it SHORTENS to -20 and then reverses -- so r crosses
+ -30 deg  0.28415      ZERO near -25 deg, which is why the arm read 3.2 mm at 0.
+ -60 deg  0.34652      And 0.284 -> 0.524 over the back half is dL/dq ~ 170 mm,
+-100 deg  0.52356      four times any real quadriceps lever.
+```
+
+A moment arm that crosses zero mid-range and then reaches 170 mm is not a knee. The suspect that
+survives is the **PATELLA**: three of the seven couplings are `knee_angle_r_beta_*`, which drive the
+patellar body the quadriceps tendon routes over, and one of them (`beta_rotation1`) has a strongly
+quadratic coefficient set `[0.0105, 0.0248, −1.3165, 0.7163, −0.1383]`. If the patella is mis-posed,
+the tendon wraps the wrong side of it and the lever inverts — which is exactly the signature above.
+
+**This is not a MyoSuite bug to route around; it is the mechanism we came for.** The patella IS the
+pulley that holds the quadriceps tendon off the joint centre, and it is the whole reason the knee's
+arm is large and flat. Getting it right is the point, not a detail.
+
+**Next attempt should stop hand-posing and let MuJoCo solve it** — drive `knee_angle_r` with a
+weld/equality-respecting solve (`mj_step` to settle, or `mj_inverse` with the constraint solver
+active) rather than writing `qpos` and calling `mj_forward`. Until then the knee curve in
+`body.MOMENT_ARM` stays on the published papers, which give 53.4/38.6 mm and pass B9.
