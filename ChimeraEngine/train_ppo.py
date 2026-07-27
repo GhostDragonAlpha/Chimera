@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from body import ACT_DIM, humanoid                                           # noqa: E402
 from mjcf_body import to_mjcf                                                # noqa: E402
 from train_gpu import muscle_tables, muscle_torque_gpu                       # noqa: E402
+from gpu_gate import GPUHeatGate                                             # noqa: E402
 
 DT = 5e-4
 CONTROL_EVERY = 20
@@ -120,6 +121,7 @@ def main() -> int:
         return pose * upr * hh
 
     gen = torch.Generator(device=dev).manual_seed(1)
+    heat = GPUHeatGate().start()          # the GPU must get HOT or this run does not count
     t_all = time.perf_counter()
     for it in range(iters):
         ti = time.perf_counter()
@@ -195,6 +197,7 @@ def main() -> int:
     np.save(Path(__file__).resolve().parent / 'ppo_meta.npy',
             dict(OBS=OBS, HID=HID, STAND_Z=STAND_Z))
     print('  saved ppo_policy.pt')
+    heat.enforce()                        # REFUSES (exit 1) if the GPU stayed cold
     return 0
 
 
