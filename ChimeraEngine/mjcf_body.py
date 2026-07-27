@@ -147,11 +147,14 @@ class FastBody:
         push_state(h, self.d)
         mujoco.mj_forward(self.m, self.d)
 
-    def step(self, n: int = 1, actuated: bool = True) -> None:
+    def step(self, n: int = 1, actuated: bool = True, control_every: int = 1) -> None:
         """One tick. With `actuated`, OUR muscle model computes the joint torques and MuJoCo
         integrates them -- the measured half and the fast half, each doing its own job."""
-        for _ in range(n):
-            if actuated and self.h.tree.muscles:
+        # CONTROL IS DECIMATED, and that is physiology rather than a shortcut: neural drive to a
+        # muscle runs at ~50-100 Hz, not at the 500 Hz a 2 ms physics tick would imply. Recomputing
+        # tau every tick was both 36x slower AND less honest than the body it models.
+        for k in range(n):
+            if actuated and self.h.tree.muscles and (k % control_every == 0):
                 self.sync_to_tree()                  # muscle torque depends on q and qd
                 self.d.ctrl[:] = self.h.tree.muscle_torques()
             self._mj.mj_step(self.m, self.d)
