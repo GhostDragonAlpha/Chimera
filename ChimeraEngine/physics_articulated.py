@@ -31,8 +31,12 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from physics import quat_to_mat, Actuator                      # noqa: E402
+_HERE = str(Path(__file__).resolve().parent)
 _REPO = Path(__file__).resolve().parents[1]
-for _p in (str(_REPO), str(_REPO / "Chimera")):
+# core/ now lives HERE, beside the physics that uses it -- copied out of the retired
+# Chimera/ tree so the simulation no longer depends on it. This directory must come
+# FIRST or a stale Chimera/core would shadow it.
+for _p in (str(_HERE), str(_REPO)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 from core.membranes import Membrane, Port, State, Verb          # noqa: E402
