@@ -112,14 +112,41 @@ class Muscle:
     arm_L0: float = 0.0             # muscle length at q = 0
     vmax: float = 10.0              # max shortening speed, rest-lengths/s -- 0 disables force-velocity
 
+    # THE TABLE. A cosine was a GUESS about what shape measured moment-arm data would turn out to
+    # have, and it is not the shape: fitting one over a narrow sweep is ILL-CONDITIONED, so a real
+    # 36.7-44.0 mm ankle curve came back as r0 = 2.6 mm with a swing of 15.8 -- a valid
+    # least-squares answer whose parameters mean nothing. r = -dL/dq is EXACT, so sampling r(q) and
+    # integrating it reproduces the measurement with no shape assumed and nothing to condition.
+    arm_q: np.ndarray = None            # sample angles, ascending
+    arm_r: np.ndarray = None            # SIGNED moment arm at each sample
+    arm_cum: np.ndarray = None          # cumulative integral of r, so L(q) is a lookup not a solve
+
+    def set_arm_table(self, qs, rs, joint: int, L0: float) -> None:
+        qs = np.asarray(qs, float)
+        rs = np.asarray(rs, float)
+        order = np.argsort(qs)
+        self.arm_q, self.arm_r = qs[order], rs[order]
+        dq = np.diff(self.arm_q)
+        mid = 0.5 * (self.arm_r[1:] + self.arm_r[:-1])
+        self.arm_cum = np.concatenate([[0.0], np.cumsum(mid * dq)])   # trapezoid
+        self.arm_joint = joint
+        self.arm_L0 = float(L0)
+
+    def has_table(self) -> bool:
+        return self.arm_q is not None
+
     def has_transmission(self) -> bool:
-        return self.arm_r0 != 0.0 or self.arm_r1 != 0.0
+        return self.has_table() or self.arm_r0 != 0.0 or self.arm_r1 != 0.0
 
     def arm_at(self, q: float) -> float:
+        if self.has_table():
+            return float(np.interp(q, self.arm_q, self.arm_r))
         return float(self.arm_r0 + self.arm_r1 * np.cos(q - self.arm_qpeak))
 
     def length_at(self, q: float) -> float:
-        """L(q) = L0 - integral of r dq. Exact, because r is a cosine."""
+        """L(q) = L0 - integral of r dq, which is exact for either store."""
+        if self.has_table():
+            return float(self.arm_L0 - np.interp(q, self.arm_q, self.arm_cum))
         return float(self.arm_L0 - (self.arm_r0 * q + self.arm_r1 * np.sin(q - self.arm_qpeak)))
 
     def force_velocity(self, v: float) -> float:

@@ -97,6 +97,26 @@ MOMENT_ARM = {
     'shoulder_roll':  (0.035, 0.20,  0.000, 'ASSUMED'),
     'ankle_roll':     (0.025, 0.15,  0.000, 'ASSUMED'),
 }
+def arm_curve(key: str, scale: float = 1.0, n: int = 33):
+    """(angles, moment arms) for a joint. MEASURED curves come from the MyoSuite sweep cached in
+    docs/moment_arms.json; the rest are sampled from the old cosine so there is ONE code path and
+    the difference between real and assumed is a data question, not a code question."""
+    import json
+    cache = Path(__file__).resolve().parent.parent / 'docs' / 'moment_arms.json'
+    if cache.exists():
+        data = json.loads(cache.read_text())
+        if key in data:
+            d = data[key]
+            return np.array(d['q']), np.array(d['r']) * scale
+    r0, swing, qpk, _ = MOMENT_ARM[key]
+    # CENTRE THE SAMPLES ON THE PEAK. np.interp CLAMPS outside its range rather than wrapping, so
+    # a table over [-pi, pi] silently returns the endpoint value for a joint whose peak is at
+    # +1.571 and whose antipode is therefore at +4.71. That read 36.0 mm where the curve says 20.5,
+    # and it looked like a plausible moment arm rather than like an out-of-range lookup.
+    qs = np.linspace(qpk - np.pi, qpk + np.pi, n)
+    return qs, r0 * scale * (1.0 + swing * np.cos(qs - qpk))
+
+
 _ASCENDING_LIMB = 0.88  # muscles sit at 88% of optimal length in the build pose, so LENGTHENING
                         # gains force. At exactly 1.00 the Hill curve is at its PEAK, where the
                         # slope is ZERO and co-contraction stiffens nothing at all.
@@ -245,17 +265,14 @@ def humanoid(height: float = 1.75, mass: float = 70.0,
         j = idx[jname]
         peak = PEAK_TORQUE[_TORQUE_OF[jname]]
         for msc, sign in ((pr.flexor, +1.0), (pr.extensor, -1.0)):
-            r0, swing, qpk, _src = MOMENT_ARM[_TORQUE_OF[jname]]
-            r0 = r0 * (height / 1.75)                    # arms scale with the person
-            msc.arm_joint = j
-            msc.arm_r0 = sign * r0
-            msc.arm_r1 = sign * r0 * swing               # the variable half of the transmission
-            msc.arm_qpeak = qpk
+            key = _TORQUE_OF[jname]
+            scale = height / 1.75                        # arms scale with the person
+            qs, rs = arm_curve(key, scale)
+            msc.set_arm_table(qs, sign * rs, j, L0=0.30 * height)
             msc.arm_L0 = tree.muscle_length(msc) if not msc.has_transmission() else 0.0
             msc.vmax = 8.0
         # length and rest length must be set from the TRANSMISSION, not the old geometry
         for msc in (pr.flexor, pr.extensor):
-            msc.arm_L0 = 0.30 * height + msc.arm_r0 * 0.0
             msc.rest_length = msc.length_at(0.0) / _ASCENDING_LIMB
             msc.width = 0.35
         # SIZE BY MEASUREMENT, not by prediction. Predicting the achieved torque from r and the
