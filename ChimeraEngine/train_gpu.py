@@ -96,9 +96,14 @@ def muscle_torque_gpu(tb, q, qd, act, torch):
     e = (L / torch.where(active, tb['rest'], torch.ones_like(tb['rest'])) - 1.0) / tb['width']
     fl = torch.where(active, torch.exp(-e * e), torch.ones_like(e))
     v = r * qd.unsqueeze(-1)
-    vn = v / (tb['vmax'] * torch.where(active, tb['rest'], torch.ones_like(tb['rest'])))
-    fv_pos = torch.clamp((1.0 - vn) / (1.0 + 4.0 * vn), min=0.0)
-    fv_neg = torch.clamp(1.5 - 0.5 * (1.0 + vn) / (1.0 - 4.0 * vn), max=1.5)
+    vn = torch.clamp(v / (tb['vmax'] * torch.where(active, tb['rest'], torch.ones_like(tb['rest']))),
+                     -5.0, 5.0)
+    # EACH branch uses vn clamped to ITS OWN domain, so no denominator can hit the singularity that
+    # torch.where would otherwise evaluate in the unused branch (vn=0.25 -> 1-4vn=0 -> NaN, which
+    # poisoned the whole batch -> every world scored 0).
+    vp = torch.clamp(vn, min=0.0); vm = torch.clamp(vn, max=0.0)
+    fv_pos = torch.clamp((1.0 - vp) / (1.0 + 4.0 * vp), min=0.0)
+    fv_neg = torch.clamp(1.5 - 0.5 * (1.0 + vm) / (1.0 - 4.0 * vm), max=1.5)
     fv = torch.where(active, torch.where(vn >= 0.0, fv_pos, fv_neg), torch.ones_like(vn))
     a = act.view(W, n, 2).clamp(0.0, 1.0)
     Tn = a * tb['tmax'] * fl * fv
