@@ -157,6 +157,64 @@ def main() -> int:
           "in a normalized average the weight IS the coverage, so dimming it would eat the "
           "silhouette and show background through -- the dark-rim bug, again")
 
+    # ── S6-S8: the ATMOSPHERE crossed the seam too ───────────────────────────────────────────
+    import re
+    from fields import EARTH_AIR, AtmosphereField                                # noqa: E402
+    js = (HERE.parent / 'web' / 'renderer' / 'main.js').read_text()
+
+    print("\nS6  the renderer DERIVES tau, it does not paste it")
+    b550 = float(re.search(r'BETA550\s*=\s*([\d.e-]+)', js).group(1))
+    hjs = float(re.search(r'SCALE_H\s*=\s*(\d+)', js).group(1))
+    tau_js = [b550 * (550.0 / w) ** 4 * hjs for w in (680.0, 550.0, 440.0)]
+    tau_py = [EARTH_AIR.rayleigh_beta(w) * EARTH_AIR.scale_height() for w in (680.0, 550.0, 440.0)]
+    print(f"      renderer  tau = ({tau_js[0]:.4f}, {tau_js[1]:.4f}, {tau_js[2]:.4f})   "
+          f"from beta550={b550:.3e}, H={hjs}")
+    print(f"      fields.py tau = ({tau_py[0]:.4f}, {tau_py[1]:.4f}, {tau_py[2]:.4f})   "
+          f"from rayleigh_beta x scale_height()")
+    worst = max(abs(a - b) / b for a, b in zip(tau_js, tau_py))
+    check("both sides compute tau from the same two constants", worst < 0.005,
+          f"worst disagreement {100*worst:.2f}% -- three pasted numbers in the shader would have "
+          "been a second source of truth waiting to drift")
+
+    print("\nS7  the shader's AIRMASS is the same Kasten-Young the field uses")
+    afield = AtmosphereField(center=(0, 0, 0), radius=6.371e6, air=EARTH_AIR)
+
+    def am_shader(cz):                      # transcribed from splat.wgsl fn airmass()
+        if cz <= 0.0:
+            return 40.0
+        z = np.degrees(np.arccos(np.clip(cz, 0.0, 1.0)))
+        return 1.0 / (cz + 0.50572 * (96.07995 - z) ** -1.6364)
+
+    ok_am = True
+    for zd in (0.0, 30.0, 60.0, 80.0, 88.0):
+        cz = np.cos(np.radians(zd))
+        p = np.array([0.0, 0.0, 6.371e6 + 2.0])
+        L = np.array([np.sin(np.radians(zd)), 0.0, cz])
+        a_s, a_f = am_shader(cz), afield.airmass(p, L)
+        ok_am &= abs(a_s - a_f) < 1e-6
+        print(f"      zenith {zd:5.1f} deg -> shader {a_s:6.3f}   field {a_f:6.3f}")
+    check("shader and field agree on airmass to 1e-6", ok_am,
+          "same formula, two languages -- and NOT 1/cos(z), which says infinity at the horizon "
+          "where the true answer is 37.9")
+
+    print("\nS8  the SUNSET: blue overhead, red at the horizon -- from path length alone")
+    for zd in (0.0, 60.0, 80.0, 88.0, 90.0):
+        cz = np.cos(np.radians(zd))
+        am = am_shader(cz)
+        t = np.exp(-np.array(tau_py) * am)
+        scat = t * np.array(tau_py)
+        sky = scat / max(scat.max(), 1e-9)
+        print(f"      {zd:5.1f} deg  am {am:6.2f}  ground ({t[0]:.3f}, {t[1]:.3f}, {t[2]:.3f})   "
+              f"sky ({sky[0]:.2f}, {sky[1]:.2f}, {sky[2]:.2f})")
+    cz0, cz9 = 1.0, np.cos(np.radians(90.0))
+    s0 = np.exp(-np.array(tau_py) * am_shader(cz0)) * np.array(tau_py)
+    s9 = np.exp(-np.array(tau_py) * am_shader(cz9)) * np.array(tau_py)
+    s0, s9 = s0 / s0.max(), s9 / s9.max()
+    check("the sky goes from blue to red as the path lengthens",
+          s0[2] > 3 * s0[0] and s9[0] > 100 * s9[2],
+          f"overhead blue is {s0[2]/s0[0]:.1f}x red; at the horizon red is {s9[0]/max(s9[2],1e-9):.0f}x "
+          "blue -- one exp(), and the sunset is a CONSEQUENCE rather than an art pass")
+
     n_fail = sum(1 for _, ok in results if not ok)
     print("\n" + "=" * 68)
     print(f"{len(results) - n_fail}/{len(results)} checks passed")

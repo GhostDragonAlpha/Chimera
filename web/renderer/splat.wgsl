@@ -46,7 +46,18 @@ struct U {
   flags2: vec4f,         // backFaceMargin, normalizedSurface, depthEpsK, unused
   flags3: vec4f,         // coverageSharpness, unused x3
   light: vec4f,          // xyz = world unit vector TOWARD the star, w = ambient (w < 0 => unlit)
+  tau: vec4f,            // xyz = Rayleigh optical depth at zenith per RGB, w = strength (0 = off)
 };
+
+// AIRMASS -- how many vertical columns of air a ray crossed. Kasten-Young, NOT 1/cos(z): the
+// secant diverges to infinity at the horizon, where the true answer is ~38 because the atmosphere
+// CURVES with the planet. Straight-line thinking on a round world breaks exactly where you most
+// want to look, which here is the terminator.
+fn airmass(cz: f32) -> f32 {
+  if (cz <= 0.0) { return 40.0; }
+  let z = degrees(acos(clamp(cz, 0.0, 1.0)));
+  return 1.0 / (cz + 0.50572 * pow(96.07995 - z, -1.6364));
+}
 
 @group(0) @binding(0) var<uniform> U_: U;
 @group(0) @binding(1) var<storage, read>        splats: array<Splat>;
@@ -133,6 +144,7 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
   // SECOND messenger for that same claim: same law, independent implementation, and if the
   // terminator lands anywhere but halfway round, the two disagree and one of them is wrong.
   var shade = 1.0;
+  var tint = vec3f(1.0, 1.0, 1.0);
   if (U_.light.w >= 0.0) {
     var nOut: vec3f;
     if (isSurface) {
@@ -151,7 +163,28 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
       // it instead of ringing a dark planet in daylight.
       nOut = normalize(s.pos);
     }
-    shade = U_.light.w + (1.0 - U_.light.w) * max(dot(nOut, U_.light.xyz), 0.0);
+    let cz = dot(nOut, U_.light.xyz);          // cos of the SOLAR ZENITH ANGLE -- the same N.L
+    shade = U_.light.w + (1.0 - U_.light.w) * max(cz, 0.0);
+
+    // ── ATMOSPHERIC TRANSMITTANCE ────────────────────────────────────────────────────────────
+    // fields.py A5: beta scaled by 1/lambda^4 from one 550 nm anchor reproduces the published
+    // 440/680 coefficients, and at the horizon the direct sun comes through 6076x redder than
+    // blue. That is not an artistic sunset, it is a PATH LENGTH -- and the path length is a
+    // function of cz, which we already have. So the reddening costs one exp().
+    if (U_.tau.w > 0.0) {
+      let t = exp(-U_.tau.xyz * airmass(cz) * U_.tau.w);   // what SURVIVES the column
+      if (isSurface) {
+        tint = t;                    // ground is lit by what got through: white -> amber -> red
+      } else {
+        // Air does not glow, it SCATTERS. Single-scattering: the light reaching this parcel is
+        // already reddened by exp(-tau*am), and it scatters toward the eye in proportion to beta,
+        // which is blue-weighted. The product is the whole sky in one line -- BLUE overhead
+        // (short path, blue scatters most) and RED at the limb (long path has eaten the blue
+        // before it could scatter). Renormalised because this is a HUE, not a dimming.
+        let scat = t * U_.tau.xyz;
+        tint = scat / max(max(scat.r, scat.g), max(scat.b, 1e-6));
+      }
+    }
   }
 
   let focal = U_.cfg.x;
@@ -208,7 +241,7 @@ fn preprocess(@builtin(global_invocation_id) gid: vec3u) {
   // Lighting multiplies the COLOUR, never the weight. In a normalized average the weight IS the
   // coverage, so dimming it would eat the silhouette and show background through -- exactly the
   // dark-rim bug the back-face fade caused. A dark surface must still be OPAQUE.
-  proj[i] = Proj(vec2f(sx, sy), z, R, inv, select(-opaF, opaF, isSurface), s.col * shade, zsig);
+  proj[i] = Proj(vec2f(sx, sy), z, R, inv, select(-opaF, opaF, isSurface), s.col * shade * tint, zsig);
 
   let tilesX = u32(U_.screen.z); let tilesY = u32(U_.screen.w);
   let tx0 = u32(clamp(floor((sx - R) / f32(TILE)), 0.0, f32(tilesX - 1u)));

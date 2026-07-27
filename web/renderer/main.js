@@ -1,7 +1,7 @@
 // Chimera renderer v2 -- SPIKE host. Owns setup only; the frame loop is entirely GPU passes.
 // Measures each pass with timestamp-query (no host-side guessing), which is the point of the spike.
 
-const BUILD = 'v3.2-sun-controls';
+const BUILD = 'v3.3-atmosphere';
 const TILE = 16, WG = 256, RADIX_PASSES = 8, UNI_STRIDE = 256;
 const MAX_PAIRS = 2_000_000;
 const MAX_NUMWG = Math.ceil(MAX_PAIRS / WG);
@@ -107,7 +107,14 @@ async function main() {
   // ambient < 0, which the shader reads as "unlit" -- so the default is byte-identical to before
   // and lighting can be switched off to compare.
   let sunOn = true, sunAzim = 0.9, sunElev = 0.15, ambient = 0.06, sunSpin = false;
-  const uniData = new Float32Array(44);
+  // ATMOSPHERE: Rayleigh optical depth at zenith, per RGB. DERIVED from one 550 nm anchor by the
+  // 1/lambda^4 law -- the same two constants ChimeraEngine/fields.py uses, and that scaling
+  // reproduces the published 440/680 nm coefficients (witnessed, fields_witness.py A5). Pasting
+  // three tuned numbers here would have been a second source of truth waiting to drift.
+  const BETA550 = 1.35e-5, SCALE_H = 8427;              // Earth: 1/m, and RT/(Mg) in metres
+  const TAU = [680, 550, 440].map(w => BETA550 * Math.pow(550 / w, 4) * SCALE_H);
+  let airStrength = 1.0;                                 // 0 = vacuum world, 1 = Earth-like
+  const uniData = new Float32Array(48);
   function writeUniforms() {
     const ce = Math.cos(elev);
     const P = [radius * ce * Math.sin(azim), -radius * ce * Math.cos(azim), radius * Math.sin(elev)];
@@ -132,7 +139,8 @@ async function main() {
                  backMargin, normOn?1:0, depthEps, 0,
                  covK, 0, 0, 0,
                  Math.cos(sunElev)*Math.cos(sunAzim), Math.cos(sunElev)*Math.sin(sunAzim),
-                 Math.sin(sunElev), sunOn ? ambient : -1]);
+                 Math.sin(sunElev), sunOn ? ambient : -1,
+                 TAU[0], TAU[1], TAU[2], airStrength]);
     for (let p = 0; p < RADIX_PASSES; p++) {              // one slot per radix pass; only the shift differs
       uniData[22] = p * 4;
       device.queue.writeBuffer(uni, p * UNI_STRIDE, uniData);
@@ -370,7 +378,20 @@ async function main() {
   window.__spin = (v) => { spin = !!v; return spin; };
   window.__sun = (v) => { sunOn = !!v; return sunOn; };
   window.__sunspin = (v) => { sunSpin = !!v; return sunSpin; };
-  window.__sunstate = () => ({ on: sunOn, spin: sunSpin, azim: sunAzim, elev: sunElev, ambient });
+  window.__sunstate = () => ({ on: sunOn, spin: sunSpin, azim: sunAzim, elev: sunElev, ambient,
+                               air: airStrength, tau: TAU.map(v => +v.toFixed(4)) });
+  window.__air = (v) => { airStrength = v; return airStrength; };
+  // THE SUNSET PROBE: what colour does the shader's own transmittance give at each solar zenith
+  // angle? This is the renderer answering the question fields_witness.py A5 asks of the field.
+  window.__sunset = () => [0, 30, 60, 80, 88, 90].map(zd => {
+    const cz = Math.cos(zd * Math.PI / 180);
+    const z = zd, am = cz <= 0 ? 40 : 1 / (cz + 0.50572 * Math.pow(96.07995 - z, -1.6364));
+    const t = TAU.map(tt => Math.exp(-tt * am * airStrength));
+    const scat = t.map((v, k) => v * TAU[k]); const m = Math.max(...scat, 1e-6);
+    return { zenithDeg: zd, airmass: +am.toFixed(2),
+             ground: t.map(v => +v.toFixed(4)),
+             sky: scat.map(v => +(v / m).toFixed(3)) };
+  });
   window.__sunazim = (v) => { sunAzim = v; return sunAzim; };
   window.__sunelev = (v) => { sunElev = v; return sunElev; };
   window.__ambient = (v) => { ambient = v; return ambient; };
