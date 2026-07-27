@@ -44,9 +44,34 @@ fi
 # --- the completeness gate must not rot (docs/THE_FORMULA.md S2b/S7) --------
 # DRY is a MEASURED saturation (Chao2 completeness + dry tail), proven every run -- never an
 # assertion. If you touch the gate, it must still refuse an incomplete (hand-declared) set.
-if command -v python >/dev/null 2>&1 && [ -d Chimera/core ]; then
-  if ! ( cd Chimera && python -m core.saturation --staged ); then
+if command -v python >/dev/null 2>&1 && [ -d ChimeraEngine/core ]; then
+  if ! ( cd ChimeraEngine && python -m core.saturation --staged ); then
     fail=1
+  fi
+fi
+
+# --- perf-guard: slowness is the one failure that never announces itself ----
+# Wrong code raises. Slow code returns the CORRECT answer and stays invisible until somebody sits
+# through it, so the pull toward the single-threaded readable implementation has no counter-force.
+# This is the counter-force. Budgets are declared in ChimeraEngine/perf_witness.py; an entry that
+# should be slow declares budget=inf WITH A REASON, the way bind-guard wants `# bind-public:`.
+#
+# Only runs when engine code is staged -- a docs commit should not pay for a benchmark. Escape
+# hatch CHIMERA_SKIP_PERF=1 matches the other gates: it must never be able to trap the operator
+# out of committing, only make the slow choice visible.
+if command -v python >/dev/null 2>&1 && [ "${CHIMERA_SKIP_PERF:-}" != "1" ]; then
+  if git diff --cached --name-only | grep -qE '^ChimeraEngine/.*\.py$'; then
+    if ! python ChimeraEngine/perf_witness.py > /tmp/chimera_perf.$$ 2>&1; then
+      echo "[perf-guard] REFUSED: a declared performance budget is blown."
+      sed -n '/BUDGET(S) BLOWN/,$p' /tmp/chimera_perf.$$ | head -20
+      echo "  full report: python ChimeraEngine/perf_witness.py"
+      echo "  if the entry SHOULD be slow, give it budget=inf and say WHY in perf_witness.py"
+      echo "  override once with: CHIMERA_SKIP_PERF=1 git commit ..."
+      fail=1
+    else
+      echo "[perf-guard] PASS: every declared performance budget met."
+    fi
+    rm -f /tmp/chimera_perf.$$
   fi
 fi
 
