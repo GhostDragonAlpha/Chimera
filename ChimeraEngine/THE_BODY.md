@@ -474,3 +474,37 @@ arm is large and flat. Getting it right is the point, not a detail.
 weld/equality-respecting solve (`mj_step` to settle, or `mj_inverse` with the constraint solver
 active) rather than writing `qpos` and calling `mj_forward`. Until then the knee curve in
 `body.MOMENT_ARM` stays on the published papers, which give 53.4/38.6 mm and pass B9.
+
+---
+
+## 8. EXTRACTING FROM THE RETIRED `Chimera/` TREE — the manifest (2026-07-27)
+
+The tree is **2,378 tracked files** and cannot simply be deleted: `ChimeraEngine` reaches into it.
+`core/membranes.py` exists ONLY there (measured — `core/membranes.py` at the root does not exist,
+and the import resolves to `Chimera/core/membranes.py`), and `physics.py:31` /
+`physics_articulated.py:35` add `Chimera/` to `sys.path` to find it.
+
+**Everything ChimeraEngine imports from it:**
+
+```
+core.capcom        core.eden        core.membranes        core.saturation        core.scene
+```
+
+plus two file reads: `gen_decl.py:14` and `human_messenger.py:31` want `Chimera/docs/THE_STORY.md`.
+
+**Why this is not a small job.** Those five are only the FIRST level. Each carries its own
+transitive dependencies inside `Chimera/core/`, and `capcom` in particular sits on `world_store`
+(the SQLite substrate holding the DNA graph, rep ledger and CAPCOM stores). The closure has to be
+walked before anything moves, or the deletion takes the physics stack down with it.
+
+**The safe order**, and the ordering matters more than the speed:
+
+1. Walk the transitive closure of those five modules — list every file actually reached.
+2. Move that closure into `ChimeraEngine/`, keeping the `core.` package name so imports are
+   unchanged, and drop the two `sys.path` insertions.
+3. Re-run ALL SIX witness suites green: body, planner, mjcf, nervous, contact, gravity.
+4. **Only then** delete. Everything is in git history, so the deletion itself is recoverable —
+   what is not recoverable cheaply is a half-moved tree with broken imports.
+
+**The urgency is already gone.** The churn this was meant to stop came from the Stop hook's
+`git add -A`, now scoped, and the retired tree can sit there indefinitely doing no harm.
