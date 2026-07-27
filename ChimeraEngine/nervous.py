@@ -56,19 +56,26 @@ class Antagonist:
 
 def attach_antagonist(tree: Tree, joint: int, parent_link: int, child_link: int,
                       offset: float, along: float, max_tension: float,
-                      name: str = 'j') -> Antagonist:
+                      name: str = 'j', offset_axis=(1.0, 0.0, 0.0)) -> Antagonist:
     """Bolt a flexor/extensor pair across a joint, then VERIFY the two levers oppose each other.
 
     The pair is placed symmetrically about the joint axis; which one turns out to be the flexor is
     then read off the measured moment arms rather than assumed from the geometry.
     """
+    # `offset_axis` is the direction the pair straddles the joint in. It MUST be perpendicular to
+    # the hinge axis or neither muscle has a moment arm -- an X-offset about an X-hinge is zero
+    # leverage, and the check below catches it rather than quietly producing a limp joint.
+    u = np.asarray(offset_axis, float)
+    u = u / (np.linalg.norm(u) + 1e-15)
     a = tree.add_muscle(make_muscle(f'{name}_a', origin_link=parent_link,
-                                    origin=(offset, 0.0, along),
-                                    insert_link=child_link, insert=(offset * 0.5, 0.0, -along),
+                                    origin=tuple(u * offset + np.array([0.0, 0.0, along])),
+                                    insert_link=child_link,
+                                    insert=tuple(u * offset * 0.5 - np.array([0.0, 0.0, along])),
                                     max_tension=max_tension))
     b = tree.add_muscle(make_muscle(f'{name}_b', origin_link=parent_link,
-                                    origin=(-offset, 0.0, along),
-                                    insert_link=child_link, insert=(-offset * 0.5, 0.0, -along),
+                                    origin=tuple(-u * offset + np.array([0.0, 0.0, along])),
+                                    insert_link=child_link,
+                                    insert=tuple(-u * offset * 0.5 - np.array([0.0, 0.0, along])),
                                     max_tension=max_tension))
     arm_a = tree.moment_arm(a, joint)
     arm_b = tree.moment_arm(b, joint)
