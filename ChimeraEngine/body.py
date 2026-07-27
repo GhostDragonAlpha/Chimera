@@ -64,13 +64,37 @@ PEAK_TORQUE = {
     'ankle_pitch': 150.0, 'ankle_roll': 45.0,
 }
 
-_CVT_SWING = 0.25       # r1/r0: how much the gear ratio swings over the range. 0 = fixed gear.
+# ── MEASURED MOMENT-ARM PROFILES ─────────────────────────────────────────────────────────────
+# r(q) = r0 * (1 + swing * cos(q - q_peak)).  These were my ESTIMATES until 2026-07-26; the ones
+# marked MEASURED are now from published in-vivo data, and the ones marked ASSUMED still are not.
+# Keeping the distinction visible is the point: a table half-full of real numbers that LOOKS full
+# is worse than one that says which half is which.
+#
+#   elbow  MEASURED  biceps moment arm is maximal at 90.13 +/- 8.47 deg of elbow flexion
+#                    (Konstanz CPA, "Muscle length and its moment arm of elbow muscles"), and runs
+#                    ~2 cm near extension to ~5 cm at the peak -> swing ~0.43
+#   knee   MEASURED  patellar tendon ~46 mm and NEARLY CONSTANT from 0 to 70 deg flexion, 53 mm at
+#                    ~22 deg, 38 mm in terminal flexion (Dandridge 2022 J Orthop Res; in-vivo
+#                    across daily activities). Small swing -- the knee is close to a FIXED gear.
+#   ankle  MEASURED  Achilles moment arm RISES with plantarflexion: 5.4 -> 7.0 cm as the ankle goes
+#                    -15 to +30 deg (in-vivo MVC). Not a peak inside the range -- a ramp, so q_peak
+#                    sits at the plantarflexed end rather than mid-range.
+#   the rest ASSUMED -- no data pulled yet. Flagged, not hidden.
+MOMENT_ARM = {
+    'elbow':          (0.036, 0.43, +1.571, 'MEASURED'),
+    'knee':           (0.046, 0.16, -0.520, 'MEASURED'),
+    'ankle_pitch':    (0.050, 0.13, -0.350, 'MEASURED'),
+    'hip_pitch':      (0.055, 0.25, +0.500, 'ASSUMED'),
+    'hip_roll':       (0.045, 0.15,  0.000, 'ASSUMED'),
+    'waist':          (0.060, 0.20,  0.000, 'ASSUMED'),
+    'neck':           (0.030, 0.20,  0.000, 'ASSUMED'),
+    'shoulder_pitch': (0.040, 0.30, +0.800, 'ASSUMED'),
+    'shoulder_roll':  (0.035, 0.20,  0.000, 'ASSUMED'),
+    'ankle_roll':     (0.025, 0.15,  0.000, 'ASSUMED'),
+}
 _ASCENDING_LIMB = 0.88  # muscles sit at 88% of optimal length in the build pose, so LENGTHENING
                         # gains force. At exactly 1.00 the Hill curve is at its PEAK, where the
                         # slope is ZERO and co-contraction stiffens nothing at all.
-_Q_PEAK = {'elbow': 1.57, 'knee': -1.05, 'hip_pitch': 0.5, 'waist': 0.0, 'neck': 0.0,
-           'shoulder_pitch': 0.8, 'shoulder_roll': 0.0, 'hip_roll': 0.0,
-           'ankle_pitch': 0.0, 'ankle_roll': 0.0}
 _MASSLESS = 5.0e-4          # fraction of body mass given to an intermediate link. NOT zero: a
                             # genuinely massless body makes the mass matrix singular and the solve
                             # fails in a way that looks like a physics bug. Small and honest beats
@@ -216,12 +240,12 @@ def humanoid(height: float = 1.75, mass: float = 70.0,
         j = idx[jname]
         peak = PEAK_TORQUE[_TORQUE_OF[jname]]
         for msc, sign in ((pr.flexor, +1.0), (pr.extensor, -1.0)):
-            r_geo = tree.moment_arm(msc, j)
-            r0 = abs(r_geo) if abs(r_geo) > 1e-6 else 0.02
+            r0, swing, qpk, _src = MOMENT_ARM[_TORQUE_OF[jname]]
+            r0 = r0 * (height / 1.75)                    # arms scale with the person
             msc.arm_joint = j
             msc.arm_r0 = sign * r0
-            msc.arm_r1 = sign * r0 * _CVT_SWING          # the variable half of the transmission
-            msc.arm_qpeak = _Q_PEAK.get(_TORQUE_OF[jname], 0.0)
+            msc.arm_r1 = sign * r0 * swing               # the variable half of the transmission
+            msc.arm_qpeak = qpk
             msc.arm_L0 = tree.muscle_length(msc) if not msc.has_transmission() else 0.0
             msc.vmax = 8.0
         # length and rest length must be set from the TRANSMISSION, not the old geometry

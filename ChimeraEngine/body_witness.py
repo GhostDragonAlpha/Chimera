@@ -217,6 +217,29 @@ def main() -> int:
           f"unit-acceleration RNEA passes. THE_BODY.md 3.4 said witness MuJoCo before training; "
           "this says MuJoCo is not an optimisation, it is a REQUIREMENT")
 
+    # ── B9 ───────────────────────────────────────────────────────────────────────────────────
+    print("\nB9  THE MOMENT ARMS MATCH PUBLISHED IN-VIVO DATA (where data was pulled)")
+    from body import MOMENT_ARM
+    cases = [('forearmL', 'elbow', 1.571, 0.0515, 0.0205, 'biceps peaks at 90.13+/-8.47 deg'),
+             ('shinL', 'knee', -0.520, 0.0534, 0.0386, 'patellar 53 mm at 22 deg, 38 mm terminal'),
+             ('ankleL', 'ankle_pitch', -0.350, 0.0565, 0.0435, 'Achilles rises with plantarflexion')]
+    okd = True
+    for jname, key, qpk, r_hi_pub, r_lo_pub, note in cases:
+        pr = h.pairs[jname]
+        r_at_peak = abs(pr.flexor.arm_at(qpk))
+        r_at_anti = abs(pr.flexor.arm_at(qpk + np.pi))
+        src = MOMENT_ARM[key][3]
+        near = abs(r_at_peak - r_hi_pub) < 0.012 and abs(r_at_anti - r_lo_pub) < 0.012
+        okd &= near
+        print(f"      {key:<12} {src}  peak {r_at_peak*1000:5.1f} mm (pub {r_hi_pub*1000:4.1f}), "
+              f"min {r_at_anti*1000:5.1f} mm (pub {r_lo_pub*1000:4.1f})   {note}")
+    n_assumed = sum(1 for v in MOMENT_ARM.values() if v[3] == 'ASSUMED')
+    print(f"      {len(MOMENT_ARM)-n_assumed} joints MEASURED, {n_assumed} still ASSUMED -- the "
+          f"table says which, because a half-real table that LOOKS full is worse than none")
+    check("the measured joints reproduce their published moment arms", okd,
+          f"elbow/knee/ankle land within 12 mm of the in-vivo peak AND minimum; {n_assumed} joints "
+          "are still my estimates and are labelled ASSUMED in the table")
+
     print("\n" + "=" * 72)
     print(f"FROZEN SPACES: observation {OBS_DIM}, action {ACT_DIM}")
     n_fail = sum(1 for _, ok in results if not ok)
