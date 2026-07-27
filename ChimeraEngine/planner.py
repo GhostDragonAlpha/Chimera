@@ -73,6 +73,38 @@ class Terrain:
                 h += bh * np.sqrt(max(0.0, 1.0 - (d / r) ** 2))
         return float(h)
 
+    def height_many(self, X, Y):
+        """Height for a whole candidate sweep at once. The per-point version walked a Python loop
+        over boulders and patches for EVERY sample, so a 96-candidate sweep paid that ~500 times
+        once normals are counted. Same arithmetic, one pass."""
+        X = np.asarray(X, float); Y = np.asarray(Y, float)
+        h = np.zeros_like(X)
+        if self.kind in ('slope', 'ramp'):
+            h = h + X * np.tan(np.radians(self.slope_deg))
+        if self.kind == 'step':
+            h = h + np.where(X > self.step_at, self.step_height, 0.0)
+        for (bx, by, r, bh) in self.boulders:
+            d = np.hypot(X - bx, Y - by)
+            h = h + np.where(d < r, bh * np.sqrt(np.maximum(0.0, 1.0 - (d / r) ** 2)), 0.0)
+        return h
+
+    def slope_many(self, X, Y, eps: float = 0.02):
+        X = np.asarray(X, float); Y = np.asarray(Y, float)
+        dzdx = (self.height_many(X + eps, Y) - self.height_many(X - eps, Y)) / (2 * eps)
+        dzdy = (self.height_many(X, Y + eps) - self.height_many(X, Y - eps)) / (2 * eps)
+        nz = 1.0 / np.sqrt(dzdx ** 2 + dzdy ** 2 + 1.0)
+        return np.arccos(np.clip(nz, -1.0, 1.0)), np.stack([-dzdx * nz, -dzdy * nz, nz], axis=-1)
+
+    def mu_many(self, X, Y):
+        X = np.asarray(X, float); Y = np.asarray(Y, float)
+        mu = np.full(X.shape, FRICTION.get(self.material, 0.7))
+        rep = np.full(X.shape, REPOSE.get(self.material, np.pi))
+        for (px, py, r, mat) in self.patches:
+            inside = np.hypot(X - px, Y - py) <= r
+            mu = np.where(inside, FRICTION.get(mat, 0.7), mu)
+            rep = np.where(inside, REPOSE.get(mat, np.pi), rep)
+        return mu, rep
+
     def normal_at(self, x: float, y: float, eps: float = 0.02) -> np.ndarray:
         dzdx = (self.height_at(x + eps, y) - self.height_at(x - eps, y)) / (2 * eps)
         dzdy = (self.height_at(x, y + eps) - self.height_at(x, y - eps)) / (2 * eps)
@@ -165,26 +197,36 @@ class Planner:
         # hard ground it is worth everything, which is the whole point of the stat.
         n_d = int(np.clip(round(np.sqrt(self.node_budget / 1.4)), 2, self.n_dists))
         n_dirs = int(np.clip(self.node_budget // max(1, n_d), 4, 40))
+        # ONE SWEEP, NOT A LOOP. Every candidate's position, height, slope and normal comes out
+        # of a handful of array ops instead of ~500 scalar terrain calls.
+        bias = np.arctan2(goal_dir[1], goal_dir[0]) if goal_dir is not None else 0.0
+        A = 2 * np.pi * np.arange(n_dirs) / n_dirs + bias
+        R = r_max * (0.25 + 0.72 * np.arange(n_d) / max(1, n_d - 1))
+        AA, RR = np.meshgrid(A, R, indexing='ij')
+        X = (hip[0] + RR * np.cos(AA)).ravel()[:self.node_budget]
+        Y = (hip[1] + RR * np.sin(AA)).ravel()[:self.node_budget]
+        Z = self.terrain.height_many(X, Y)
+        SL, NR = self.terrain.slope_many(X, Y)
+        MU, REP = self.terrain.mu_many(X, Y)
+        d3 = np.sqrt((X - hip[0]) ** 2 + (Y - hip[1]) ** 2 + (Z - hip[2]) ** 2)
+        # the three PURELY LOCAL refusals, decided for the whole sweep at once
+        bad = np.where(np.tan(SL) > MU, 'slip',
+              np.where(SL > REP, 'collapse',
+              np.where(d3 > reach, 'reach', '')))
         out = []
-        for i in range(n_dirs):
-            a = 2 * np.pi * i / n_dirs
-            if goal_dir is not None:                    # bias the sweep toward where we are going
-                a += np.arctan2(goal_dir[1], goal_dir[0])
-            for j in range(n_d):
-                r = r_max * (0.25 + 0.72 * j / max(1, n_d - 1))
-                x = float(hip[0] + r * np.cos(a))
-                y = float(hip[1] + r * np.sin(a))
-                z = self.terrain.height_at(x, y)
-                p = np.array([x, y, z])
-                out.append(Candidate(limb=limb, point=p, normal=self.terrain.normal_at(x, y),
-                                     slope=self.terrain.slope_at(x, y)))
-                if len(out) >= self.node_budget:
-                    return out
+        for k in range(len(X)):
+            c = Candidate(limb=limb, point=np.array([X[k], Y[k], Z[k]]),
+                          normal=NR[k], slope=float(SL[k]))
+            if bad[k]:
+                c.feasible, c.refused_by = False, str(bad[k])
+            out.append(c)
         return out
 
     # ── the six limits ───────────────────────────────────────────────────────────────────────
     def evaluate(self, st: Stance, c: Candidate, goal=None) -> Candidate:
         x, y = c.point[0], c.point[1]
+        if not c.feasible:            # already refused by the vectorised sweep
+            return c
 
         if self.blocked.get((c.limb, tuple(np.round(c.point, 2))), 0) > 0:
             c.feasible, c.refused_by = False, 'tried'
